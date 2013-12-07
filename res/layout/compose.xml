@@ -32,7 +32,7 @@
 				android:paddingLeft="0dp"
 				android:paddingRight="8dp">
 
-				<org.mariotaku.twidere.view.ActionBarHomeAsUpIndicator
+				<de.vanita5.twittnuker.view.ActionBarHomeAsUpIndicator
 					android:layout_width="wrap_content"
 					android:layout_height="match_parent"/>
 
@@ -54,13 +54,13 @@
 					android:orientation="vertical"
 					android:paddingLeft="4dp">
 
-					<org.mariotaku.twidere.view.ActionBarTitleView
+					<de.vanita5.twittnuker.view.ActionBarTitleView
 						android:id="@+id/actionbar_title"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:singleLine="true"/>
 
-					<org.mariotaku.twidere.view.ActionBarSubtitleView
+					<de.vanita5.twittnuker.view.ActionBarSubtitleView
 						android:id="@+id/actionbar_subtitle"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
 		android:layout_height="wrap_content"
 		android:orientation="vertical">
 
-		<org.mariotaku.twidere.view.AccountsColorFrameLayout
+		<de.vanita5.twittnuker.view.AccountsColorFrameLayout
 			android:id="@+id/accounts_color"
 			android:layout_width="match_parent"
 			android:layout_height="0dp"
@@ -119,7 +119,7 @@
 				android:layout_height="wrap_content"
 				android:padding="@dimen/element_spacing_default">
 
-				<org.mariotaku.twidere.view.StatusComposeEditText
+				<de.vanita5.twittnuker.view.StatusComposeEditText
 					android:id="@+id/edit_text"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
@@ -130,9 +130,9 @@
 					android:minLines="10">
 
 					<requestFocus/>
-				</org.mariotaku.twidere.view.StatusComposeEditText>
+				</de.vanita5.twittnuker.view.StatusComposeEditText>
 			</FrameLayout>
-		</org.mariotaku.twidere.view.AccountsColorFrameLayout>
+		</de.vanita5.twittnuker.view.AccountsColorFrameLayout>
 
 		<org.mariotaku.menubar.MenuBar
 			android:id="@+id/menu_bar"

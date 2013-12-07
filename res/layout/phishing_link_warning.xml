@@ -11,7 +11,7 @@
 		android:text="@string/phishing_link_warning_message_1"
 		android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-	<org.mariotaku.twidere.view.AutoAdjustHeightImageView
+	<de.vanita5.twittnuker.view.AutoAdjustHeightImageView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginBottom="8dp"

@@ -40,7 +40,7 @@
   <string name="select_account">Selecione a conta</string>
   <string name="username">Nome de Usuário</string>
   <string name="password">Senha</string>
-  <string name="label_tweetstore_provider">Provedor de banco de dados do Twidere</string>
+  <string name="label_tweetstore_provider">Provedor de banco de dados do Twittnuker</string>
   <string name="label_refresh_service">Atualizar serviço</string>
   <string name="open_in_browser">Abrir no navegador</string>
   <string name="tap_to_load_more">Toque para carregar mais</string>
@@ -51,7 +51,7 @@
   <string name="unfavorite">Desfavoritar</string>
   <string name="reply">Responder</string>
   <string name="share">Compartilhar</string>
-  <string name="share_via_twidere">Compartilhar via Twidere</string>
+  <string name="share_via_twidere">Compartilhar via Twittnuker</string>
   <string name="view_image">Imagem</string>
   <string name="view_map">Mapa</string>
   <string name="view_status">Ver tweet</string>
@@ -62,9 +62,9 @@
   <string name="followers">Seguidores</string>
   <string name="following">Seguindo</string>
   <string name="about">Sobre</string>
-  <string name="about_summary">Sobre o Twidere</string>
+  <string name="about_summary">Sobre o Twittnuker</string>
   <string name="open_source_license">Licença de código aberto</string>
-  <string name="license_summary">O Twidere está licenciado sobre o GPLv3.</string>
+  <string name="license_summary">O Twittnuker está licenciado sobre o GPLv3.</string>
   <string name="api">API</string>
   <string name="default_api_settings">Configurações padrão da API</string>
   <string name="consumer_key">Chave de consumidor</string>
@@ -84,7 +84,7 @@
   <string name="clear_databases_summary">Limpar todos os tweets, perfis e mensagens. Você não irá perder as credenciais de sua conta.</string>
   <string name="look_and_feel">Aparência</string>
   <string name="dark_theme">Usar o tema escuro</string>
-  <string name="dark_theme_summary">Usar o tema Holo Dark no Twidere.</string>
+  <string name="dark_theme_summary">Usar o tema Holo Dark no Twittnuker.</string>
   <string name="display_profile_image">Exibir a imagem de perfil</string>
   <string name="image_load_summary">Desativar isso irá aumentar a velocidade de carregamento da lista e reduzir o uso de dados.</string>
   <string name="in_reply_to">Em resposta a <xliff:g id="user_name">%s</xliff:g></string>
@@ -146,7 +146,7 @@
   <string name="created_at">Criado em</string>
   <string name="search_hint">Procurar por tweets ou usuários</string>
   <string name="remember_position">Lembrar posição</string>
-  <string name="remember_position_summary">Lembrar da posição dos tweets na lista/aba antes de fechar o Twidere</string>
+  <string name="remember_position_summary">Lembrar da posição dos tweets na lista/aba antes de fechar o Twittnuker</string>
   <string name="user_blocked">Usuário bloqueado.</string>
   <string name="users_blocked">Usuários bloqueados.</string>
   <string name="user_unblocked">Usuário desbloqueado.</string>
@@ -322,7 +322,7 @@
   <string name="status">Tweetar</string>
   <string name="preview">Visualizar</string>
   <string name="api_upgrade_notice_title">MUITO IMPORTANTE!</string>
-  <string name="api_upgrade_notice_message">  O Twitter anunciou sua nova versão de API (1.1).\n\n  Desde esta versão, o Twidere usa a API versão 1.1.\n\n  É ALTAMENTE RECOMENDADO logar de novo, ou haverá problemas.\n\n  O que mudou?\n  *Intervalos de atualização mais apertados, por sessão, você só pode atualizar sua timeline 15 vezes em 15 minutos.\n  *Você não pode ver quem te retweetou, não pode ver tweets retweetados para você.\n  *Se você usa o Twidere como seu cliente StatusNet, muitas funções serão perdidas.\n\n  Lamento o inconveniente, mas você sabe - O Twitter está prestes a matar clientes de terceiros, eu não posso fazer nada a respeito.</string>
+  <string name="api_upgrade_notice_message">  O Twitter anunciou sua nova versão de API (1.1).\n\n  Desde esta versão, o Twittnuker usa a API versão 1.1.\n\n  É ALTAMENTE RECOMENDADO logar de novo, ou haverá problemas.\n\n  O que mudou?\n  *Intervalos de atualização mais apertados, por sessão, você só pode atualizar sua timeline 15 vezes em 15 minutos.\n  *Você não pode ver quem te retweetou, não pode ver tweets retweetados para você.\n  *Se você usa o Twittnuker como seu cliente StatusNet, muitas funções serão perdidas.\n\n  Lamento o inconveniente, mas você sabe - O Twitter está prestes a matar clientes de terceiros, eu não posso fazer nada a respeito.</string>
   <string name="connection_timeout">Tempo de espera da conexão</string>
   <string name="name_display_option">Opções de exibição de nome</string>
   <string name="both">Ambos</string>
@@ -361,7 +361,7 @@
   <string name="action_subscribing_to_list">ao se inscrever na lista</string>
   <string name="action_unsubscribing_from_list">ao remover inscrição</string>
   <string name="status_is_duplicate">Seu tweet está duplicado.</string>
-  <string name="data_profiling_summary">Twidere participa de uma pesquisa sobre comportamento social de usuários pela UC Davis.\n\nOs dados que nós coletamos e porque:\nDados coletados:\n1. Twitter ID\n2. Timeline do usuário (predição baseada nos interesses e interações)\n3. Cliques do usuário num tweet (predição baseada nos interesses e interações sociais)\n4. Localização genérica (um bom indicador de quando o usuário irá acessar o Twitter)\n\nO Twidere vai enviar estes dados apenas quando seu aparelho estiver com o Wi-Fi  ligado e o carregador conectado, assim não afetará seu pacote de dados nem drenar sua bateria.</string>
+  <string name="data_profiling_summary">Twittnuker participa de uma pesquisa sobre comportamento social de usuários pela UC Davis.\n\nOs dados que nós coletamos e porque:\nDados coletados:\n1. Twitter ID\n2. Timeline do usuário (predição baseada nos interesses e interações)\n3. Cliques do usuário num tweet (predição baseada nos interesses e interações sociais)\n4. Localização genérica (um bom indicador de quando o usuário irá acessar o Twitter)\n\nO Twittnuker vai enviar estes dados apenas quando seu aparelho estiver com o Wi-Fi  ligado e o carregador conectado, assim não afetará seu pacote de dados nem drenar sua bateria.</string>
   <string name="data_profiling">Estatísticas de Uso</string>
   <string name="enable_data_profiling">Permitir Relatórios</string>
   <string name="data_profiling_notification_ticker">Adesão de Estatísticas</string>
@@ -370,7 +370,7 @@
   <string name="silent_notifications">Notificações silenciosas</string>
   <string name="silent_notifications_summary">Desativar toque/vibração em notificações</string>
   <string name="disable_background_service">Desativar serviço em segundo plano</string>
-  <string name="disable_background_service_summary">O Twidere não executa serviços em segundo plano se você desabilitar a atualização automática e perfil de dados, não se preocupe!</string>
+  <string name="disable_background_service_summary">O Twittnuker não executa serviços em segundo plano se você desabilitar a atualização automática e perfil de dados, não se preocupe!</string>
   <string name="pull_to_load_conversation_label">Puxe para carregar a conversa...</string>
   <string name="pull_to_load_conversation_release_label">Solte para carregar a conversa...</string>
   <string name="text_copied">Texto copiado para a área de transferência.</string>
@@ -420,7 +420,7 @@
   <string name="re_sign_in_needed">Você pode ter que fazer login das suas contas novamente.</string>
   <string name="disable_tab_swipe">Desativar deslize de abas</string>
   <string name="sign_in_method_introduction_title">Como isso funciona?</string>
-  <string name="sign_in_method_introduction">A maioria dos clientes tais como o twicca abrem um navegador para você inserir suas credenciais, e então lhe redirecionam de volta. Isso com o tempo se torna bem inconveniente.\nO Twidere usa passos mais simples, sem ter que abrir nenhum navegador. Não se preocupe com a senha, o Twidere nunca vai armazená-la, é totalmente seguro!</string>
+  <string name="sign_in_method_introduction">A maioria dos clientes tais como o twicca abrem um navegador para você inserir suas credenciais, e então lhe redirecionam de volta. Isso com o tempo se torna bem inconveniente.\nO Twittnuker usa passos mais simples, sem ter que abrir nenhum navegador. Não se preocupe com a senha, o Twittnuker nunca vai armazená-la, é totalmente seguro!</string>
   <string name="quote_protected_status_notice">Não é recomendado citar tweets de perfis protegidos.</string>
   <string name="edit_draft">Editar rascunho</string>
   <string name="profile_image">Imagem do perfil</string>
@@ -474,7 +474,7 @@
   <string name="created_by">Criada por <xliff:g id="created_by">%s</xliff:g></string>
   <string name="add_to_list">Adicionar à lista</string>
   <string name="account_delete_confirm_title">Excluir conta</string>
-  <string name="account_delete_confirm_message">Esta conta será removida do Twidere.</string>
+  <string name="account_delete_confirm_message">Esta conta será removida do Twittnuker.</string>
   <string name="for_advanced_users_only">SOMENTE PARA USUÁRIOS AVANÇADOS!</string>
   <string name="theme">Tema</string>
   <string name="theme_dark">Escuro</string>
@@ -502,18 +502,18 @@
   <string name="name_first">Exibir o nome primeiro</string>
   <string name="settings_wizard">Assistente de configuração</string>
   <string name="wizard_page_welcome_title">Bem-vindo</string>
-  <string name="wizard_page_welcome_text">Obrigado por escolher o Twidere.\nO que você quer configurar agora?</string>
+  <string name="wizard_page_welcome_text">Obrigado por escolher o Twittnuker.\nO que você quer configurar agora?</string>
   <string name="wizard_page_welcome_yes">Sim</string>
   <string name="next">Próximo</string>
   <string name="wizard_page_welcome_use_default_settings">Usar as configurações padrão</string>
   <string name="wizard_page_welcome_import_settings">Importar configurações</string>
   <string name="wizard_page_theme_text">Escolha seu tema preferido.</string>
-  <string name="wizard_page_tabs_text">Adicione algumas abas ao Twidere.\nMantenha o controle de perfis ou assuntos que você gosta.</string>
+  <string name="wizard_page_tabs_text">Adicione algumas abas ao Twittnuker.\nMantenha o controle de perfis ou assuntos que você gosta.</string>
   <string name="wizard_page_tabs_unchanged_message">Você pode adicionar abas em \"Configurações\" - \"Abas\"</string>
   <string name="wizard_page_finished_title">Concluído</string>
-  <string name="wizard_page_finished_text">Agora o Twidere está pronto para o uso.</string>
+  <string name="wizard_page_finished_text">Agora o Twittnuker está pronto para o uso.</string>
   <string name="invalid_tab">Aba invalida</string>
-  <string name="send_crash_report">Enviar relatório de erros do Twidere</string>
+  <string name="send_crash_report">Enviar relatório de erros do Twittnuker</string>
   <string name="add_to_filter">Adicionar filtro</string>
   <string name="user_filter_name">Usuário: <xliff:g id="name">%s</xliff:g></string>
   <string name="keyword_filter_name">Palavra-chave: <xliff:g id="name">%s</xliff:g></string>
@@ -527,7 +527,7 @@
   <string name="signing_in_error_browser_sign_in_hint">Erro ao fazer login, talvez você precise usar um navegador para isso. (Isso vai ignorar as configurações da API durante o login)</string>
   <string name="report_user">Denunciar <xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">Vai mesmo denunciar <xliff:g id="name">%s</xliff:g> por spam?</string>
-  <string name="twidere_test">Teste do Twidere</string>
+  <string name="twidere_test">Teste do Twittnuker</string>
   <string name="donate_via_paypal">Doar via PayPal</string>
   <string name="donate_via_alipay">Doar via Alipay</string>
   <string name="staggered_home_timeline">Timeline Escalonada</string>

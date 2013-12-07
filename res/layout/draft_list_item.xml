@@ -3,7 +3,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content">
 
-	<org.mariotaku.twidere.view.CardItemLinearLayout
+	<de.vanita5.twittnuker.view.CardItemLinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginBottom="4dp"
@@ -14,7 +14,7 @@
 		android:duplicateParentState="true"
 		android:orientation="vertical">
 
-		<org.mariotaku.twidere.view.AccountsColorFrameLayout
+		<de.vanita5.twittnuker.view.AccountsColorFrameLayout
 			android:id="@+id/accounts_color"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
 				android:paddingTop="8dp"
 				android:textAppearance="?android:textAppearanceSmall"
 				android:textColor="?android:textColorPrimary"/>
-		</org.mariotaku.twidere.view.AccountsColorFrameLayout>
+		</de.vanita5.twittnuker.view.AccountsColorFrameLayout>
 
 		<View
 			android:id="@+id/divider"
@@ -40,12 +40,12 @@
 			android:layout_height="0.2dp"
 			android:background="#40808080"/>
 
-		<org.mariotaku.twidere.view.ImagePreviewContainer
+		<de.vanita5.twittnuker.view.ImagePreviewContainer
 			android:id="@+id/image_preview_container"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content">
 
-			<org.mariotaku.twidere.view.ForegroundImageView
+			<de.vanita5.twittnuker.view.ForegroundImageView
 				android:id="@+id/image_preview"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
@@ -59,7 +59,7 @@
 				android:layout_height="wrap_content"
 				android:layout_gravity="center"
 				android:layout_margin="16dp"/>
-		</org.mariotaku.twidere.view.ImagePreviewContainer>
-	</org.mariotaku.twidere.view.CardItemLinearLayout>
+		</de.vanita5.twittnuker.view.ImagePreviewContainer>
+	</de.vanita5.twittnuker.view.CardItemLinearLayout>
 
 </FrameLayout>

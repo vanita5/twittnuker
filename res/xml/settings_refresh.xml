@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	android:title="@string/refresh">
 
-	<org.mariotaku.twidere.preference.AutoRefreshAccountsListPreference
+	<de.vanita5.twittnuker.preference.AutoRefreshAccountsListPreference
 		android:key="cat_auto_refresh"
 		android:title="@string/auto_refresh"/>
 
@@ -23,7 +23,7 @@
 			android:title="@string/stop_auto_refresh_when_battery_low"
 			android:summary="@string/stop_auto_refresh_when_battery_low_summary"/>
 
-		<org.mariotaku.twidere.preference.HomeRefreshContentPreference
+		<de.vanita5.twittnuker.preference.HomeRefreshContentPreference
 			android:key="home_refresh"
 			android:title="@string/home_refresh"/>
 

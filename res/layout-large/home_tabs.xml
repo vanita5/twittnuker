@@ -17,7 +17,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
 			android:layout_gravity="left"
-			class="org.mariotaku.twidere.view.TabPageIndicator"
+			class="de.vanita5.twittnuker.view.TabPageIndicator"
 			android:dividerPadding="4dp"
 			android:dividerVertical="?android:dividerVertical"/>
 	</LinearLayout>

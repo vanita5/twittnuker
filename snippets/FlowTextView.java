@@ -1,4 +1,4 @@
-package org.mariotaku.twidere.view;
+package de.vanita5.twittnuker.view;
 
 import java.util.ArrayList;
 import java.util.Arrays;

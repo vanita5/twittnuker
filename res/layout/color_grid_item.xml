@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.mariotaku.twidere.view.SquareFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.SquareFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:layout_gravity="center"
@@ -22,4 +22,4 @@
 		android:textColor="?android:attr/textColorPrimary"
 		android:visibility="gone"/>
 
-</org.mariotaku.twidere.view.SquareFrameLayout>
+</de.vanita5.twittnuker.view.SquareFrameLayout>

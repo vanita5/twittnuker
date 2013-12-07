@@ -17,7 +17,7 @@
 
 package de.keyboardsurfer.android.widget.crouton;
 
-import static org.mariotaku.twidere.util.Utils.announceForAccessibilityCompat;
+import static de.vanita5.twittnuker.util.Utils.announceForAccessibilityCompat;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

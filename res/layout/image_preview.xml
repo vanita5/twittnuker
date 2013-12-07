@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.mariotaku.twidere.view.SquareFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.SquareFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/image_preview"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content">
@@ -15,7 +15,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"/>
 
-		<org.mariotaku.twidere.view.NavigationArrowButton
+		<de.vanita5.twittnuker.view.NavigationArrowButton
 			android:id="@+id/prev_image"
 			android:layout_width="64dp"
 			android:layout_height="match_parent"
@@ -24,7 +24,7 @@
 			android:src="@drawable/arrow_left_holo"
 			android:visibility="gone"/>
 
-		<org.mariotaku.twidere.view.NavigationArrowButton
+		<de.vanita5.twittnuker.view.NavigationArrowButton
 			android:id="@+id/next_image"
 			android:layout_width="64dp"
 			android:layout_height="match_parent"
@@ -51,4 +51,4 @@
 			android:textStyle="bold"/>
 	</FrameLayout>
 
-</org.mariotaku.twidere.view.SquareFrameLayout>
+</de.vanita5.twittnuker.view.SquareFrameLayout>

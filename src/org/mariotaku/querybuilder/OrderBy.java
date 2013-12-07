@@ -27,7 +27,7 @@
 
 package org.mariotaku.querybuilder;
 
-import org.mariotaku.twidere.util.ArrayUtils;
+import de.vanita5.twittnuker.util.ArrayUtils;
 
 public class OrderBy implements SQLLang {
 

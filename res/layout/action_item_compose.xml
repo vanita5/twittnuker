@@ -7,7 +7,7 @@
 	android:clickable="true"
 	android:orientation="horizontal">
 
-	<org.mariotaku.twidere.view.ComposeTextCountView
+	<de.vanita5.twittnuker.view.ComposeTextCountView
 		android:id="@+id/send_text_count"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"

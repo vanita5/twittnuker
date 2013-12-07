@@ -2,10 +2,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	android:title="@string/tabs">
 
-	<org.mariotaku.twidere.preference.WizardPageNavPreference
+	<de.vanita5.twittnuker.preference.WizardPageNavPreference
 		android:key="edit_custom_tabs"
 		android:title="@string/edit"/>
-	<org.mariotaku.twidere.preference.WizardPageNavPreference
+	<de.vanita5.twittnuker.preference.WizardPageNavPreference
 		android:key="use_defaults"
 		android:title="@string/wizard_page_welcome_use_default_settings"/>
 

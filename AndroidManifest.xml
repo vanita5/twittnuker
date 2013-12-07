@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="org.mariotaku.twidere"
+	package="de.vanita5.twittnuker"
 	android:installLocation="auto"
-	android:versionCode="80"
-	android:versionName="0.2.9.4">
+	android:versionCode="1"
+	android:versionName="0.1">
 
 	<uses-sdk
 		android:minSdkVersion="14"
@@ -38,9 +38,9 @@
 	<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
 
 	<application
-		android:name=".app.TwidereApplication"
+		android:name=".app.TwittnukerApplication"
 		android:allowBackup="true"
-		android:backupAgent="org.mariotaku.twidere.backup.TwidereBackupAgentHelper"
+		android:backupAgent=".backup.TwittnukerBackupAgentHelper"
 		android:hardwareAccelerated="true"
 		android:icon="@drawable/ic_launcher"
 		android:label="@string/app_name"
@@ -109,7 +109,7 @@
 			android:launchMode="singleTop"
 			android:windowSoftInputMode="adjustResize">
 			<intent-filter>
-				<action android:name="org.mariotaku.twidere.HOME"/>
+				<action android:name="de.vanita5.twittnuker.HOME"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
@@ -135,12 +135,12 @@
 			android:windowSoftInputMode="adjustResize">
 			<intent-filter android:label="@string/compose">
 				<action android:name="android.intent.action.MAIN"/>
-				<action android:name="org.mariotaku.twidere.COMPOSE"/>
-				<action android:name="org.mariotaku.twidere.REPLY"/>
-				<action android:name="org.mariotaku.twidere.QUOTE"/>
-				<action android:name="org.mariotaku.twidere.EDIT_DRAFT"/>
-				<action android:name="org.mariotaku.twidere.MENTION"/>
-				<action android:name="org.mariotaku.twidere.REPLY_MULTIPLE"/>
+				<action android:name="de.vanita5.twittnuker.COMPOSE"/>
+				<action android:name="de.vanita5.twide.vanita5.twittnuker.REPLY"/>
+				<action android:name="de.vanita5.twittnuker.QUOTE"/>
+				<action android:name="de.vanita5.twittnuker.EDIT_DRAFT"/>
+				<action android:name="de.vanita5.twittnuker.MENTION"/>
+				<action android:name="de.vanita5.twittnuker.REPLY_MULTIPLE"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
@@ -163,7 +163,7 @@
 			android:label="@string/sign_in"
 			android:windowSoftInputMode="adjustResize">
 			<intent-filter>
-				<action android:name="org.mariotaku.twidere.TWITTER_LOGIN"/>
+				<action android:name="de.vanita5.twittnuker.TWITTER_LOGIN"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
@@ -173,7 +173,7 @@
 			android:label="@string/browser_sign_in"
 			android:windowSoftInputMode="adjustResize">
 			<intent-filter>
-				<action android:name="org.mariotaku.twidere.TWITTER_BROWSER_LOGIN"/>
+				<action android:name="de.vanita5.twittnuker.TWITTER_BROWSER_LOGIN"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
@@ -184,7 +184,7 @@
 			android:windowSoftInputMode="adjustResize">
 			<intent-filter>
 				<action android:name="android.intent.action.MANAGE_NETWORK_USAGE"/>
-				<action android:name="org.mariotaku.twidere.SETTINGS"/>
+				<action android:name="de.vanita5.twittnuker.SETTINGS"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
@@ -197,7 +197,7 @@
 			android:name=".activity.FiltersActivity"
 			android:label="@string/filters">
 			<intent-filter>
-				<action android:name="org.mariotaku.twidere.FILTERS"/>
+				<action android:name="de.vanita5.twittnuker.FILTERS"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
@@ -216,7 +216,7 @@
 			android:label="@string/select_account"
 			android:theme="@style/Theme.Twidere.Light.Dialog">
 			<intent-filter>
-				<action android:name="org.mariotaku.twidere.SELECT_ACCOUNT"/>
+				<action android:name="de.vanita5.twittnuker.SELECT_ACCOUNT"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
@@ -226,7 +226,7 @@
 			android:exported="false"
 			android:label="@string/browser">
 			<intent-filter>
-				<action android:name="org.mariotaku.twidere.VIEW_WEBPAGE"/>
+				<action android:name="de.vanita5.twittnuker.VIEW_WEBPAGE"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 
@@ -323,7 +323,7 @@
 			android:label="@string/drafts"
 			android:launchMode="singleTop">
 			<intent-filter>
-				<action android:name="org.mariotaku.twidere.DRAFTS"/>
+				<action android:name="de.vanita5.twittnuker.DRAFTS"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
@@ -340,7 +340,7 @@
 			android:launchMode="singleTop"
 			android:theme="@style/Theme.Twidere.Viewer">
 			<intent-filter>
-				<action android:name="org.mariotaku.twidere.VIEW_IMAGE"/>
+				<action android:name="de.vanita5.twittnuker.VIEW_IMAGE"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 				<category android:name="android.intent.category.BROWSABLE"/>
@@ -373,8 +373,8 @@
 			android:theme="@style/Theme.Blank"
 			android:windowSoftInputMode="adjustResize">
 			<intent-filter>
-				<action android:name="org.mariotaku.twidere.PICK_FILE"/>
-				<action android:name="org.mariotaku.twidere.PICK_DIRECTORY"/>
+				<action android:name="de.vanita5.twittnuker.PICK_FILE"/>
+				<action android:name="de.vanita5.twittnuker.PICK_DIRECTORY"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
@@ -385,7 +385,7 @@
 			android:label="@string/edit_profile"
 			android:windowSoftInputMode="adjustResize">
 			<intent-filter>
-				<action android:name="org.mariotaku.twidere.EDIT_USER_PROFILE"/>
+				<action android:name="de.vanita5.twittnuker.EDIT_USER_PROFILE"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
@@ -400,8 +400,8 @@
 			android:label="@string/add_tab"
 			android:theme="@style/Theme.Blank.Dialog">
 			<intent-filter>
-				<action android:name="org.mariotaku.twidere.ADD_TAB"/>
-				<action android:name="org.mariotaku.twidere.EDIT_TAB"/>
+				<action android:name="de.vanita5.twittnuker.ADD_TAB"/>
+				<action android:name="de.vanita5.twittnuker.EDIT_TAB"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
@@ -426,7 +426,7 @@
 			android:label="@string/permissions_request"
 			android:theme="@style/Theme.Twidere.Light.Dialog">
 			<intent-filter>
-				<action android:name="org.mariotaku.twidere.REQUEST_PERMISSIONS"/>
+				<action android:name="de.vanita5.twittnuker.REQUEST_PERMISSIONS"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
@@ -435,7 +435,7 @@
 			android:name=".activity.CameraCropActivity"
 			android:exported="false">
 			<intent-filter>
-				<action android:name="org.mariotaku.twidere.CAMERA_CROP"/>
+				<action android:name="de.vanita5.twittnuker.CAMERA_CROP"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
@@ -445,8 +445,8 @@
 			android:label="@string/select_user_list"
 			android:theme="@style/Theme.Blank.Dialog">
 			<intent-filter>
-				<action android:name="org.mariotaku.twidere.SELECT_USER"/>
-				<action android:name="org.mariotaku.twidere.SELECT_USER_LIST"/>
+				<action android:name="de.vanita5.twittnuker.SELECT_USER"/>
+				<action android:name="de.vanita5.twittnuker.SELECT_USER_LIST"/>
 
 				<category android:name="android.intent.category.DEFAULT"/>
 			</intent-filter>
@@ -479,17 +479,17 @@
 
 		<provider
 			android:name=".provider.TwidereDataProvider"
-			android:authorities="twidere"
+			android:authorities="twittnuker"
 			android:exported="true"
 			android:grantUriPermissions="true"
 			android:label="@string/label_tweetstore_provider"/>
 		<provider
 			android:name=".provider.TwidereCommandProvider"
-			android:authorities="twidere.command"
+			android:authorities="twittnuker.command"
 			android:exported="true"/>
 		<provider
 			android:name=".provider.RecentSearchProvider"
-			android:authorities="org.mariotaku.twidere.provider.SearchRecentSuggestions"/>
+			android:authorities="de.vanita5.twittnuker.provider.SearchRecentSuggestions"/>
 
 		<receiver android:name=".receiver.ConnectivityStateReceiver">
 			<intent-filter>

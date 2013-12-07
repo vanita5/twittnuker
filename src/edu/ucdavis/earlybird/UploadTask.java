@@ -1,6 +1,6 @@
 package edu.ucdavis.earlybird;
 
-import static org.mariotaku.twidere.util.Utils.copyStream;
+import static de.vanita5.twittnuker.util.Utils.copyStream;
 
 import android.content.Context;
 import android.content.SharedPreferences;

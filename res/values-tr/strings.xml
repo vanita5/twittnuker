@@ -28,7 +28,7 @@
   <string name="select_account">Hesap seç</string>
   <string name="username">Kullanıcı adı</string>
   <string name="password">Şifre</string>
-  <string name="label_tweetstore_provider">Twidere veritabanı sağlayıcı</string>
+  <string name="label_tweetstore_provider">Twittnuker veritabanı sağlayıcı</string>
   <string name="label_refresh_service">Servisi yenile</string>
   <string name="open_in_browser">Tarayıcıda aç</string>
   <string name="tap_to_load_more">Daha fazlasını yüklemek için dokunun</string>
@@ -39,7 +39,7 @@
   <string name="unfavorite">Favorilerinden çıkar</string>
   <string name="reply">Cevapla</string>
   <string name="share">Paylaş</string>
-  <string name="share_via_twidere">Twidere üzerinden paylaş</string>
+  <string name="share_via_twidere">Twittnuker üzerinden paylaş</string>
   <string name="view_image">Resim</string>
   <string name="view_map">Harita</string>
   <string name="view_status">Tweeti görüntüle</string>
@@ -48,8 +48,8 @@
   <string name="pick_from_gallery">Galeriden seç</string>
   <string name="followers">Takipçilerin</string>
   <string name="about">Hakkında</string>
-  <string name="about_summary">Twidere hakkında</string>
-  <string name="license_summary">Twidere GPLv3 altında lisanslıdır.</string>
+  <string name="about_summary">Twittnuker hakkında</string>
+  <string name="license_summary">Twittnuker GPLv3 altında lisanslıdır.</string>
   <string name="gzip_compressing">GZip sıkıştırması</string>
   <string name="gzip_compressing_summary">Tüm API isteklerini sıkıştırır, veri kullanımını azaltabilir, fakat tüm API sunucularında çalışmayabilir.</string>
   <string name="storage">Depolama</string>
@@ -61,7 +61,7 @@
   <string name="clear_databases_summary">Tüm tweetleri, profilleri, mesajları sil. Hesabınızdaki veriler silinmez.</string>
   <string name="look_and_feel">Görünüş ve kullanışlılık</string>
   <string name="dark_theme">Siyah temayi kullan</string>
-  <string name="dark_theme_summary">Twidere için siyah temayi kullan.</string>
+  <string name="dark_theme_summary">Twittnuker için siyah temayi kullan.</string>
   <string name="display_profile_image">Profil resmini göster</string>
   <string name="image_load_summary">Bunu pasif yapmak listenin kaydırılma hızını artırır ve kullanılan veri miktarını azaltır.</string>
   <string name="in_reply_to"><xliff:g id="user_name">%s</xliff:g>\'e cevap olarak</string>
@@ -112,7 +112,7 @@
   <string name="created_at">Oluşturuldu:</string>
   <string name="search_hint">Tweet yada kullanıcı ara</string>
   <string name="remember_position">Konumu hatırla</string>
-  <string name="remember_position_summary">Liste/Sekme konumunu Twidere kapanmadan kaydet</string>
+  <string name="remember_position_summary">Liste/Sekme konumunu Twittnuker kapanmadan kaydet</string>
   <string name="user_blocked">Bu kullanıcıyı engellediniz.</string>
   <string name="users_blocked">Bu kullanıcılar engellendi.</string>
   <string name="user_unblocked">Bu kullanıcıyı engellenenlerden çıkardınız.</string>
@@ -252,7 +252,7 @@
   <string name="separate_retweet_action_summary">tweet menüsünde retweet ve alıntı butonlarının ikisini de göster</string>
   <string name="preview">Önizleme</string>
   <string name="api_upgrade_notice_title">ÇOK ÖNEMLİ!</string>
-  <string name="api_upgrade_notice_message">  Twitter API\'nin yeni versiyonunu (1.1) çıkardı.\n\n  Bu versiyondan itibaren, Twidere onların API versiyonunu kullanıyor.\n\n  Tekrar giriş yapmanız ISRARLA TAVSİYE EDİLİR, yoksa kullanırken bir çok problemle karşılaşırsınız.\n\n  1.1 versiyonu ile API\'de ne değişti?\n  *Daha sıkı sorgu limitleri, mesela, zaman akışınızı 15 dakikada ancak 15 kez alabileceksiniz.\n  *Sizi kimlerini retweet ettiğini de, size retweet edilen tweetleri de göremeyeceksiniz.\n  *StatusNet istemcisi olarak Twidere kullanırsanız, API değişiklikleri nedeniyle pek çok özellik kaybedilecek.\n\n  Bu sıkıntıdan ötürü üzgünüz, fakat malum - Twitter diğer twit programlarını ortadan kaldırmaya niyetli, bu konuda yapabileceğim birşey yok.</string>
+  <string name="api_upgrade_notice_message">  Twitter API\'nin yeni versiyonunu (1.1) çıkardı.\n\n  Bu versiyondan itibaren, Twittnuker onların API versiyonunu kullanıyor.\n\n  Tekrar giriş yapmanız ISRARLA TAVSİYE EDİLİR, yoksa kullanırken bir çok problemle karşılaşırsınız.\n\n  1.1 versiyonu ile API\'de ne değişti?\n  *Daha sıkı sorgu limitleri, mesela, zaman akışınızı 15 dakikada ancak 15 kez alabileceksiniz.\n  *Sizi kimlerini retweet ettiğini de, size retweet edilen tweetleri de göremeyeceksiniz.\n  *StatusNet istemcisi olarak Twittnuker kullanırsanız, API değişiklikleri nedeniyle pek çok özellik kaybedilecek.\n\n  Bu sıkıntıdan ötürü üzgünüz, fakat malum - Twitter diğer twit programlarını ortadan kaldırmaya niyetli, bu konuda yapabileceğim birşey yok.</string>
   <string name="connection_timeout">Bağlantı zaman aşımı</string>
   <string name="name_display_option">İsim görünüm ayarı</string>
   <string name="both">Her ikisi</string>

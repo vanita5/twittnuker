@@ -7,7 +7,7 @@
 	<PreferenceCategory
 		android:key="category_multimedia_contents"
 		android:title="@string/multimedia_contents">
-		<org.mariotaku.twidere.preference.ImageUploaderPreference
+		<de.vanita5.twittnuker.preference.ImageUploaderPreference
 			android:key="image_uploader"
 			android:title="@string/image_uploader"/>
 
@@ -19,7 +19,7 @@
 			android:summary="@string/image_upload_format_summary"
 			android:title="@string/image_upload_format"/>
 
-		<org.mariotaku.twidere.preference.ImagePreloadPreference
+		<de.vanita5.twittnuker.preference.ImagePreloadPreference
 			android:key="image_preload_options"
 			android:title="@string/image_preload_options"/>
 
@@ -31,7 +31,7 @@
 	<PreferenceCategory
 		android:key="category_content"
 		android:title="@string/content">
-		<org.mariotaku.twidere.preference.TweetShortenerPreference
+		<de.vanita5.twittnuker.preference.TweetShortenerPreference
 			android:key="tweet_shortener"
 			android:title="@string/tweet_shortener"/>
 
@@ -63,7 +63,7 @@
 			android:summary="@string/load_more_automatically_summary"
 			android:title="@string/load_more_automatically"/>
 
-		<org.mariotaku.twidere.preference.SeekBarDialogPreference
+		<de.vanita5.twittnuker.preference.SeekBarDialogPreference
 			android:defaultValue="20"
 			android:key="load_item_limit"
 			android:summary="@string/load_item_limit_summary"
@@ -77,7 +77,7 @@
 			android:summary="@string/remember_position_summary"
 			android:title="@string/remember_position"/>
 
-		<org.mariotaku.twidere.preference.TrendsLocationPreference
+		<de.vanita5.twittnuker.preference.TrendsLocationPreference
 			android:key="trends_location"
 			android:summary="@string/trends_location_summary"
 			android:title="@string/trends_location"/>
@@ -85,23 +85,23 @@
 	<PreferenceCategory
 		android:key="category_storage"
 		android:title="@string/storage">
-		<org.mariotaku.twidere.preference.SeekBarDialogPreference
+		<de.vanita5.twittnuker.preference.SeekBarDialogPreference
 			android:defaultValue="100"
 			android:key="database_item_limit"
 			android:summary="@string/database_item_limit_summary"
 			android:title="@string/database_item_limit"
 			app:max="500"/>
 
-		<org.mariotaku.twidere.preference.ClearSearchHistoryPreference
+		<de.vanita5.twittnuker.preference.ClearSearchHistoryPreference
 			android:key="clear_search_history"
 			android:title="@string/clear_search_history"/>
 
-		<org.mariotaku.twidere.preference.ClearCachePreference
+		<de.vanita5.twittnuker.preference.ClearCachePreference
 			android:key="clear_cache"
 			android:summary="@string/clear_cache_summary"
 			android:title="@string/clear_cache"/>
 
-		<org.mariotaku.twidere.preference.ClearDatabasesPreference
+		<de.vanita5.twittnuker.preference.ClearDatabasesPreference
 			android:key="clear_databases"
 			android:summary="@string/clear_databases_summary"
 			android:title="@string/clear_databases"/>

@@ -21,7 +21,8 @@ import android.widget.FrameLayout;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-import org.mariotaku.twidere.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+
 
 /**
  * A simple text label view that can be applied as a "badge" to any given

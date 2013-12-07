@@ -34,8 +34,8 @@ import org.mariotaku.gallery3d.anim.CanvasAnimation;
 import org.mariotaku.gallery3d.util.ApiHelper;
 import org.mariotaku.gallery3d.util.GalleryUtils;
 import org.mariotaku.gallery3d.util.MotionEventHelper;
-import org.mariotaku.twidere.R;
-import org.mariotaku.twidere.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

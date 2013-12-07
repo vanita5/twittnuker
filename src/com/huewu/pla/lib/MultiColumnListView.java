@@ -26,7 +26,7 @@ import android.view.View;
 
 import com.huewu.pla.lib.internal.PLAListView;
 
-import org.mariotaku.twidere.R;
+import de.vanita5.twittnuker.R;
 
 /**
  * @author huewu.ynag

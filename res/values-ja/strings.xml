@@ -40,7 +40,7 @@
   <string name="select_account">アカウントを選択</string>
   <string name="username">ユーザー名かメールアドレス</string>
   <string name="password">パスワード</string>
-  <string name="label_tweetstore_provider">Twidereのデータベースストレージ</string>
+  <string name="label_tweetstore_provider">Twittnukerのデータベースストレージ</string>
   <string name="label_refresh_service">サービスをリフレッシュ</string>
   <string name="label_background_operation_service">バックグラウンド操作サービス</string>
   <string name="open_in_browser">ブラウザで開く</string>
@@ -52,7 +52,7 @@
   <string name="unfavorite">お気に入りから削除</string>
   <string name="reply">返信</string>
   <string name="share">共有</string>
-  <string name="share_via_twidere">Twidereで共有</string>
+  <string name="share_via_twidere">Twittnukerで共有</string>
   <string name="view_image">画像</string>
   <string name="view_map">地図</string>
   <string name="view_status">ツイート</string>
@@ -63,9 +63,9 @@
   <string name="followers">フォロワー</string>
   <string name="following">フォロー中</string>
   <string name="about">バージョン情報</string>
-  <string name="about_summary">Twidereについて</string>
+  <string name="about_summary">Twittnukerについて</string>
   <string name="open_source_license">オープンソースライセンス</string>
-  <string name="license_summary">Twidereは GPLv3 ライセンスの下で提供されています。</string>
+  <string name="license_summary">Twittnukerは GPLv3 ライセンスの下で提供されています。</string>
   <string name="api">API</string>
   <string name="default_api_settings">デフォルトAPI設定</string>
   <string name="consumer_key">Consumer key</string>
@@ -85,7 +85,7 @@
   <string name="clear_databases_summary">データを完全に消去します。\nご心配なく、アカウント情報は失われません。</string>
   <string name="look_and_feel">テーマ</string>
   <string name="dark_theme">ダークテーマを適用</string>
-  <string name="dark_theme_summary">Twidereにダークテーマを適用します。</string>
+  <string name="dark_theme_summary">Twittnukerにダークテーマを適用します。</string>
   <string name="display_profile_image">プロフィール画像を表示</string>
   <string name="image_load_summary">無効にするとリストのスクロール速度が速くなり、データ通信量を抑えられます。</string>
   <string name="in_reply_to"><xliff:g id="user_name">%s</xliff:g>さんへの返信</string>
@@ -147,7 +147,7 @@
   <string name="created_at">作成日</string>
   <string name="search_hint">ツイートかユーザーの検索</string>
   <string name="remember_position">位置を記憶</string>
-  <string name="remember_position_summary">Twidereを閉じる時にリスト/タブの位置を記憶します。</string>
+  <string name="remember_position_summary">Twittnukerを閉じる時にリスト/タブの位置を記憶します。</string>
   <string name="user_blocked">このユーザーをブロックしました。</string>
   <string name="users_blocked">選択したユーザーをブロックしました。</string>
   <string name="user_unblocked">このユーザーのブロックを解除しました。</string>
@@ -324,7 +324,7 @@
   <string name="status">ツイート</string>
   <string name="preview">プレビュー</string>
   <string name="api_upgrade_notice_title">十分ご注意ください！</string>
-  <string name="api_upgrade_notice_message">  Twitter API Version 1.1 の提供が開始されます。\n\n  これからTwidereはAPI1.1を採用します。\n\n  問題が発生する可能性を防ぐため、既存アカウントをTwidereから削除して再ログインすることを強くお勧めします。\n\n  利用ルール変更点：\n  *レート制限が厳しくなりました。例:１５分間でホームTLの更新回数は１５回のみ\n  *あなたのツイートをリツイートしたユーザーが見えなくなりました。\n  *TwidereをStatusNetのクライントとして利用している場合、APIルールの変更でいろんな機能を失うことになります。\n\n  ご不便をおかけして申し訳ございませんが、こちらも何もできません。Twitterはサードパーティクライアントを厳しく制限しているのです。</string>
+  <string name="api_upgrade_notice_message">  Twitter API Version 1.1 の提供が開始されます。\n\n  これからTwittnukerはAPI1.1を採用します。\n\n  問題が発生する可能性を防ぐため、既存アカウントをTwittnukerから削除して再ログインすることを強くお勧めします。\n\n  利用ルール変更点：\n  *レート制限が厳しくなりました。例:１５分間でホームTLの更新回数は１５回のみ\n  *あなたのツイートをリツイートしたユーザーが見えなくなりました。\n  *TwittnukerをStatusNetのクライントとして利用している場合、APIルールの変更でいろんな機能を失うことになります。\n\n  ご不便をおかけして申し訳ございませんが、こちらも何もできません。Twitterはサードパーティクライアントを厳しく制限しているのです。</string>
   <string name="connection_timeout">接続タイムアウト</string>
   <string name="name_display_option">ユーザー名の表示形式</string>
   <string name="both">両方</string>
@@ -363,7 +363,7 @@
   <string name="action_subscribing_to_list">リスト登録</string>
   <string name="action_unsubscribing_from_list">リスト登録解除</string>
   <string name="status_is_duplicate">既にあなたは同じツイートを送信済みです。</string>
-  <string name="data_profiling_summary">Twidereはカリフォルニア大学デービス校でのSNSでの行動調査に協力しています。\n\n必要としているデータとその理由は以下の通りです:\n収集するデータ:\n1. ユーザーのTwitter ID\n2. ユーザーのタイムライン (ユーザーとソーシャルの動向を調べる目的のため)\n3. ユーザーのツイート上でのタップ (ユーザーとソーシャルの動向を調べる目的のため)\n4. 大まかな位置情報 (いつユーザーがTwitterにアクセスするのか調べるため)\n\nTwidereはWi-fiに接続され充電している時にのみデータを送信するので無駄な通信をしたりバッテリーを消費することはありません。</string>
+  <string name="data_profiling_summary">Twittnukerはカリフォルニア大学デービス校でのSNSでの行動調査に協力しています。\n\n必要としているデータとその理由は以下の通りです:\n収集するデータ:\n1. ユーザーのTwitter ID\n2. ユーザーのタイムライン (ユーザーとソーシャルの動向を調べる目的のため)\n3. ユーザーのツイート上でのタップ (ユーザーとソーシャルの動向を調べる目的のため)\n4. 大まかな位置情報 (いつユーザーがTwitterにアクセスするのか調べるため)\n\nTwittnukerはWi-fiに接続され充電している時にのみデータを送信するので無駄な通信をしたりバッテリーを消費することはありません。</string>
   <string name="data_profiling">匿名利用状況データ</string>
   <string name="enable_data_profiling">報告を有効にします</string>
   <string name="data_profiling_notification_ticker">オプトインします</string>
@@ -372,7 +372,7 @@
   <string name="silent_notifications">通知を止める時間帯</string>
   <string name="silent_notifications_summary">着信音/バイブ通知を無効にします。</string>
   <string name="disable_background_service">バックグラウンドサービスを無効にする</string>
-  <string name="disable_background_service_summary">Twidereは自動更新と匿名データ送信を無効にすれば裏で動きません!</string>
+  <string name="disable_background_service_summary">Twittnukerは自動更新と匿名データ送信を無効にすれば裏で動きません!</string>
   <string name="pull_to_load_conversation_label">引っ張って会話を表示…</string>
   <string name="pull_to_load_conversation_release_label">指を離すと会話を読み込む…</string>
   <string name="text_copied">テキストがクリップボードにコピーされました。</string>
@@ -422,7 +422,7 @@
   <string name="re_sign_in_needed">ログインし直してください。</string>
   <string name="disable_tab_swipe">タブのスワイプ操作を無効化</string>
   <string name="sign_in_method_introduction_title">どんなふうに動作するの?</string>
-  <string name="sign_in_method_introduction">"twiccaのようなほとんどのクライアントではブラウザを開いてユーザー名とパスワードを入力させた後クライアントに戻ります。\nTwidereではそんな面倒なことをせずにログインできます。パスワードの保管などはしていないのでご安心ください。"</string>
+  <string name="sign_in_method_introduction">"twiccaのようなほとんどのクライアントではブラウザを開いてユーザー名とパスワードを入力させた後クライアントに戻ります。\nTwittnukerではそんな面倒なことをせずにログインできます。パスワードの保管などはしていないのでご安心ください。"</string>
   <string name="quote_protected_status_notice">非公開ツイートを引用するのはおすすめできません。</string>
   <string name="edit_draft">下書きを編集</string>
   <string name="profile_image">プロフィール画像</string>
@@ -484,7 +484,7 @@
   <string name="created_by"><xliff:g id="created_by">%s</xliff:g>により作成</string>
   <string name="add_to_list">リストに追加</string>
   <string name="account_delete_confirm_title">アカウントの削除</string>
-  <string name="account_delete_confirm_message">Twidereからアカウントを削除します。</string>
+  <string name="account_delete_confirm_message">Twittnukerからアカウントを削除します。</string>
   <string name="for_advanced_users_only">上級者向けです!</string>
   <string name="theme">テーマ</string>
   <string name="theme_dark">ダーク</string>
@@ -512,7 +512,7 @@
   <string name="name_first">名前を先に表示</string>
   <string name="settings_wizard">設定ウィザード</string>
   <string name="wizard_page_welcome_title">ようこそ</string>
-  <string name="wizard_page_welcome_text">Twidereを選んで頂きありがとうございます。\n初期設定をしますか?</string>
+  <string name="wizard_page_welcome_text">Twittnukerを選んで頂きありがとうございます。\n初期設定をしますか?</string>
   <string name="wizard_page_welcome_yes">はい</string>
   <string name="next">次へ</string>
   <string name="wizard_page_welcome_use_default_settings">デフォルト設定を使用</string>
@@ -521,9 +521,9 @@
   <string name="wizard_page_tabs_text">タブを追加します。\n気になるキーワードを含むツイートやユーザーの検索をするタブも追加出来ます。</string>
   <string name="wizard_page_tabs_unchanged_message">設定 - タブでタブを追加出来ます。</string>
   <string name="wizard_page_finished_title">完了</string>
-  <string name="wizard_page_finished_text">Twidereを使う準備ができました。</string>
+  <string name="wizard_page_finished_text">Twittnukerを使う準備ができました。</string>
   <string name="invalid_tab">不正なタブです</string>
-  <string name="send_crash_report">Twidereのクラッシュレポートを送信</string>
+  <string name="send_crash_report">Twittnukerのクラッシュレポートを送信</string>
   <string name="add_to_filter">フィルタに追加</string>
   <string name="user_filter_name">ユーザー: <xliff:g id="name">%s</xliff:g></string>
   <string name="keyword_filter_name">キーワード: <xliff:g id="name">%s</xliff:g></string>
@@ -537,7 +537,7 @@
   <string name="signing_in_error_browser_sign_in_hint">ログインエラー、ブラウザでログインする方法を試してみてください。(カスタムAPI設定は無視されます)</string>
   <string name="report_user"><xliff:g id="name">%s</xliff:g>をスパム報告する</string>
   <string name="report_user_confirm_message"><xliff:g id="name">%s</xliff:g>をスパムとして報告しますか?</string>
-  <string name="twidere_test">Twidereテスト</string>
+  <string name="twidere_test">Twittnukerテスト</string>
   <string name="donate_via_paypal">PayPalで寄付</string>
   <string name="donate_via_alipay">Alipayで寄付</string>
   <string name="staggered_home_timeline">二列ホームTL</string>

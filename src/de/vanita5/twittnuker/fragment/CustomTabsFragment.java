@@ -1,0 +1,392 @@
+/*
+ *			Twittnuker - Twitter client for Android
+ * 
+ * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package de.vanita5.twittnuker.fragment;
+
+import static de.vanita5.twittnuker.util.CustomTabUtils.getConfiguraionMap;
+import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconDrawable;
+import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconObject;
+import static de.vanita5.twittnuker.util.CustomTabUtils.getTabTypeName;
+import static de.vanita5.twittnuker.util.CustomTabUtils.isTabAdded;
+import static de.vanita5.twittnuker.util.CustomTabUtils.isTabTypeValid;
+import static de.vanita5.twittnuker.util.Utils.getAccountIds;
+import static de.vanita5.twittnuker.util.Utils.isOfficialConsumerKeySecret;
+
+import android.app.Activity;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.Loader;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.ActionMode;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.SubMenu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.ListView;
+
+import com.mobeta.android.dslv.DragSortListView;
+import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
+
+import org.mariotaku.popupmenu.PopupMenu;
+import org.mariotaku.querybuilder.Columns.Column;
+import org.mariotaku.querybuilder.RawItemArray;
+import org.mariotaku.querybuilder.Where;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
+import de.vanita5.twittnuker.graphic.DropShadowDrawable;
+import de.vanita5.twittnuker.model.CustomTabConfiguration;
+import de.vanita5.twittnuker.model.Panes;
+import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
+import de.vanita5.twittnuker.provider.TweetStore.Tabs;
+import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+
+public class CustomTabsFragment extends BaseListFragment implements LoaderCallbacks<Cursor>, Panes.Right,
+		MultiChoiceModeListener {
+
+	private ContentResolver mResolver;
+
+	private DragSortListView mListView;
+
+	private PopupMenu mPopupMenu;
+
+	private CustomTabsAdapter mAdapter;
+
+	private final BroadcastReceiver mStateReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(final Context context, final Intent intent) {
+			if (getActivity() == null || !isAdded() || isDetached()) return;
+			final String action = intent.getAction();
+			if (BROADCAST_TABS_UPDATED.equals(action)) {
+				getLoaderManager().restartLoader(0, null, CustomTabsFragment.this);
+				invalidateOptionsMenu();
+			}
+		}
+
+	};
+
+	@Override
+	public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
+		switch (item.getItemId()) {
+			case MENU_DELETE: {
+				final Where where = Where.in(new Column(Tabs._ID), new RawItemArray(mListView.getCheckedItemIds()));
+				mResolver.delete(Tabs.CONTENT_URI, where.getSQL(), null);
+				break;
+			}
+		}
+		mode.finish();
+		return true;
+	}
+
+	@Override
+	public void onActivityCreated(final Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		setHasOptionsMenu(true);
+		mResolver = getContentResolver();
+		final Context context = getActivity();
+		mAdapter = new CustomTabsAdapter(context);
+		setListAdapter(mAdapter);
+		setEmptyText(getString(R.string.no_tab_hint));
+		mListView = (DragSortListView) getListView();
+		mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		mListView.setMultiChoiceModeListener(this);
+		getLoaderManager().initLoader(0, null, this);
+		setListShown(false);
+	}
+
+	@Override
+	public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+		switch (requestCode) {
+			case REQUEST_ADD_TAB: {
+				if (resultCode == Activity.RESULT_OK) {
+					final ContentValues values = new ContentValues();
+					values.put(Tabs.NAME, data.getStringExtra(EXTRA_NAME));
+					values.put(Tabs.ICON, data.getStringExtra(EXTRA_ICON));
+					values.put(Tabs.TYPE, data.getStringExtra(EXTRA_TYPE));
+					values.put(Tabs.ARGUMENTS, data.getStringExtra(EXTRA_ARGUMENTS));
+					values.put(Tabs.POSITION, mAdapter.getCount());
+					mResolver.insert(Tabs.CONTENT_URI, values);
+				}
+				break;
+			}
+			case REQUEST_EDIT_TAB: {
+				if (resultCode == Activity.RESULT_OK && data.hasExtra(EXTRA_ID)) {
+					final ContentValues values = new ContentValues();
+					values.put(Tabs.NAME, data.getStringExtra(EXTRA_NAME));
+					values.put(Tabs.ICON, data.getStringExtra(EXTRA_ICON));
+					final String where = String.format("%s = %d", Tabs._ID, data.getLongExtra(EXTRA_ID, -1));
+					mResolver.update(Tabs.CONTENT_URI, values, where, null);
+				}
+				break;
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
+		new MenuInflater(getActivity()).inflate(R.menu.action_multi_select_items, menu);
+		return true;
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
+		return new CursorLoader(getActivity(), Tabs.CONTENT_URI, Tabs.COLUMNS, null, null, Tabs.DEFAULT_SORT_ORDER);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+		inflater.inflate(R.menu.menu_custom_tabs, menu);
+	}
+
+	@Override
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+		final View view = inflater.inflate(android.R.layout.list_content, null, false);
+		final ListView originalList = (ListView) view.findViewById(android.R.id.list);
+		final ViewGroup listContainer = (ViewGroup) originalList.getParent();
+		listContainer.removeView(originalList);
+		inflater.inflate(R.layout.custom_tabs, listContainer, true);
+		return view;
+	}
+
+	@Override
+	public void onDestroyActionMode(final ActionMode mode) {
+
+	}
+
+	@Override
+	public void onItemCheckedStateChanged(final ActionMode mode, final int position, final long id,
+			final boolean checked) {
+		updateTitle(mode);
+	}
+
+	@Override
+	public void onListItemClick(final ListView l, final View v, final int position, final long id) {
+		final Cursor c = mAdapter.getCursor();
+		c.moveToPosition(mAdapter.getCursorPosition(position));
+		final Intent intent = new Intent(INTENT_ACTION_EDIT_TAB);
+		intent.setClass(getActivity(), CustomTabEditorActivity.class);
+		intent.putExtra(EXTRA_ID, c.getLong(c.getColumnIndex(Tabs._ID)));
+		intent.putExtra(EXTRA_TYPE, c.getString(c.getColumnIndex(Tabs.TYPE)));
+		intent.putExtra(EXTRA_NAME, c.getString(c.getColumnIndex(Tabs.NAME)));
+		intent.putExtra(EXTRA_ICON, c.getString(c.getColumnIndex(Tabs.ICON)));
+		startActivityForResult(intent, REQUEST_EDIT_TAB);
+	}
+
+	@Override
+	public void onLoaderReset(final Loader<Cursor> loader) {
+		mAdapter.changeCursor(null);
+	}
+
+	@Override
+	public void onLoadFinished(final Loader<Cursor> loader, final Cursor cursor) {
+		mAdapter.changeCursor(cursor);
+		setListShown(true);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item) {
+		switch (item.getItemId()) {
+			default: {
+				final Intent intent = item.getIntent();
+				if (intent == null) return false;
+				startActivityForResult(intent, REQUEST_ADD_TAB);
+				return true;
+			}
+		}
+	}
+
+	@Override
+	public boolean onPrepareActionMode(final ActionMode mode, final Menu menu) {
+		updateTitle(mode);
+		return true;
+	}
+
+	@Override
+	public void onPrepareOptionsMenu(final Menu menu) {
+		final Resources res = getResources();
+		final boolean is_official_key_secret = isOfficialConsumerKeySecret(getActivity());
+		final long[] account_ids = getAccountIds(getActivity());
+		final MenuItem itemAdd = menu.findItem(R.id.add_submenu);
+		if (itemAdd != null && itemAdd.hasSubMenu()) {
+			final SubMenu subMenu = itemAdd.getSubMenu();
+			subMenu.clear();
+			final HashMap<String, CustomTabConfiguration> map = getConfiguraionMap();
+			final List<Entry<String, CustomTabConfiguration>> tabs = new ArrayList<Entry<String, CustomTabConfiguration>>(
+					map.entrySet());
+			Collections.sort(tabs, CustomTabConfigurationComparator.SINGLETON);
+			for (final Entry<String, CustomTabConfiguration> entry : tabs) {
+				final String type = entry.getKey();
+				final CustomTabConfiguration conf = entry.getValue();
+				final Intent intent = new Intent(INTENT_ACTION_ADD_TAB);
+				intent.setClass(getActivity(), CustomTabEditorActivity.class);
+				intent.putExtra(EXTRA_TYPE, type);
+				final MenuItem subItem = subMenu.add(conf.getDefaultTitle());
+				final boolean is_activities_tab = TAB_TYPE_ACTIVITIES_ABOUT_ME.equals(type)
+						|| TAB_TYPE_ACTIVITIES_BY_FRIENDS.equals(type);
+				final boolean account_id_required = conf.getAccountRequirement() == CustomTabConfiguration.ACCOUNT_REQUIRED;
+				final boolean should_disable = conf.isSingleTab() && isTabAdded(getActivity(), type)
+						|| is_activities_tab && !is_official_key_secret || account_id_required
+						&& account_ids.length == 0;
+				subItem.setVisible(!should_disable);
+				subItem.setEnabled(!should_disable);
+				subItem.setIcon(new DropShadowDrawable(res, res.getDrawable(conf.getDefaultIcon()), 2, 0x80000000));
+				subItem.setIntent(intent);
+			}
+		}
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		registerReceiver(mStateReceiver, new IntentFilter(BROADCAST_TABS_UPDATED));
+	}
+
+	@Override
+	public void onStop() {
+		if (mPopupMenu != null) {
+			mPopupMenu.dismiss();
+		}
+		unregisterReceiver(mStateReceiver);
+		final ArrayList<Integer> positions = mAdapter.getCursorPositions();
+		final Cursor c = mAdapter.getCursor();
+		if (positions != null && c != null && !c.isClosed()) {
+			final int idIdx = c.getColumnIndex(Tabs._ID);
+			for (int i = 0, j = positions.size(); i < j; i++) {
+				c.moveToPosition(positions.get(i));
+				final long id = c.getLong(idIdx);
+				final ContentValues values = new ContentValues();
+				values.put(Tabs.POSITION, i);
+				final String where = Tabs._ID + " = " + id;
+				mResolver.update(Tabs.CONTENT_URI, values, where, null);
+			}
+		}
+		super.onStop();
+	}
+
+	private void updateTitle(final ActionMode mode) {
+		if (mListView == null || mode == null || getActivity() == null) return;
+		final int count = mListView.getCheckedItemCount();
+		mode.setTitle(getResources().getQuantityString(R.plurals.Nitems_selected, count, count));
+	}
+
+	public static class CustomTabsAdapter extends SimpleDragSortCursorAdapter implements OnClickListener {
+
+		private final Context mContext;
+
+		private CursorIndices mIndices;
+
+		public CustomTabsAdapter(final Context context) {
+			super(context, R.layout.custom_tab_list_item, null, new String[0], new int[0], 0);
+			mContext = context;
+		}
+
+		@Override
+		public void bindView(final View view, final Context context, final Cursor cursor) {
+			super.bindView(view, context, cursor);
+			final TwoLineWithIconViewHolder holder = (TwoLineWithIconViewHolder) view.getTag();
+			// holder.checkbox.setVisibility(View.VISIBLE);
+			// holder.checkbox.setCompoundDrawablesWithIntrinsicBounds(0, 0,
+			// R.drawable.ic_menu_refresh, 0);
+			// holder.checkbox.setOnClickListener(this);
+			final String type = cursor.getString(mIndices.type);
+			final String name = cursor.getString(mIndices.name);
+			if (isTabTypeValid(type)) {
+				final String type_name = getTabTypeName(context, type);
+				final String icon = cursor.getString(mIndices.icon);
+				holder.text1.setText(TextUtils.isEmpty(name) ? type_name : name);
+				holder.text2.setVisibility(View.VISIBLE);
+				holder.text2.setText(type_name);
+				final Drawable d = getTabIconDrawable(mContext, getTabIconObject(icon));
+				holder.icon.setVisibility(View.VISIBLE);
+				if (d != null) {
+					holder.icon.setImageDrawable(new DropShadowDrawable(context.getResources(), d, 2, 0x80000000));
+				} else {
+					holder.icon.setImageDrawable(new DropShadowDrawable(context.getResources(), R.drawable.ic_tab_list,
+							2, 0x80000000));
+				}
+			} else {
+				holder.icon.setImageDrawable(new DropShadowDrawable(context.getResources(), R.drawable.ic_tab_invalid,
+						2, 0x80000000));
+				holder.text1.setText(name);
+				holder.text2.setText(R.string.invalid_tab);
+			}
+		}
+
+		@Override
+		public void changeCursor(final Cursor cursor) {
+			if (cursor != null) {
+				mIndices = new CursorIndices(cursor);
+			}
+			super.changeCursor(cursor);
+		}
+
+		@Override
+		public View newView(final Context context, final Cursor cursor, final ViewGroup parent) {
+			final View view = super.newView(context, cursor, parent);
+			final Object tag = view.getTag();
+			if (!(tag instanceof TwoLineWithIconViewHolder)) {
+				final TwoLineWithIconViewHolder holder = new TwoLineWithIconViewHolder(view);
+				view.setTag(holder);
+			}
+			return view;
+		}
+
+		@Override
+		public void onClick(final View view) {
+			// TODO Auto-generated method stub
+
+		}
+
+		static class CursorIndices {
+			final int _id, name, icon, type, arguments;
+
+			CursorIndices(final Cursor mCursor) {
+				_id = mCursor.getColumnIndex(Tabs._ID);
+				icon = mCursor.getColumnIndex(Tabs.ICON);
+				name = mCursor.getColumnIndex(Tabs.NAME);
+				type = mCursor.getColumnIndex(Tabs.TYPE);
+				arguments = mCursor.getColumnIndex(Tabs.ARGUMENTS);
+			}
+		}
+
+	}
+
+}

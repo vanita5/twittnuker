@@ -4,7 +4,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<org.mariotaku.twidere.view.SlidingPaneView
+	<de.vanita5.twittnuker.view.SlidingPaneView
 		android:id="@+id/sliding_pane"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

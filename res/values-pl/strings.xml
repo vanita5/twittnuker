@@ -40,7 +40,7 @@
   <string name="select_account">Wybierz konto</string>
   <string name="username">Nazwa użytkownika</string>
   <string name="password">Hasło</string>
-  <string name="label_tweetstore_provider">Dostawca bazy Twidere</string>
+  <string name="label_tweetstore_provider">Dostawca bazy Twittnuker</string>
   <string name="label_refresh_service">Odświeżanie</string>
   <string name="label_background_operation_service">Background operation service</string>
   <string name="open_in_browser">Otwórz w przeglądarce</string>
@@ -52,7 +52,7 @@
   <string name="unfavorite">Usuń z ulubionych</string>
   <string name="reply">Odpowiedz</string>
   <string name="share">Udostępnij</string>
-  <string name="share_via_twidere">Udostępnij przez Twidere</string>
+  <string name="share_via_twidere">Udostępnij przez Twittnuker</string>
   <string name="view_image">Obraz</string>
   <string name="view_map">Mapa</string>
   <string name="view_status">Wyświetl ćwierka</string>
@@ -63,9 +63,9 @@
   <string name="followers">Obserwujący</string>
   <string name="following">Following</string>
   <string name="about">O...</string>
-  <string name="about_summary">O Twidere</string>
+  <string name="about_summary">O Twittnuker</string>
   <string name="open_source_license">Licencja open source</string>
-  <string name="license_summary">Twidere jest licencjonowany na GPLv3.</string>
+  <string name="license_summary">Twittnuker jest licencjonowany na GPLv3.</string>
   <string name="api">API</string>
   <string name="default_api_settings">Ustawienia domyślnego API</string>
   <string name="consumer_key">Klucz klienta</string>
@@ -85,7 +85,7 @@
   <string name="clear_databases_summary">Wyczyść wszystkie tweety, profile, wiadomości. Dane logowania twojego konta zostaną zachowane.</string>
   <string name="look_and_feel">Wygląd</string>
   <string name="dark_theme">Użyj ciemnego motywu</string>
-  <string name="dark_theme_summary">Użyj ciemnego motywu dla Twidere.</string>
+  <string name="dark_theme_summary">Użyj ciemnego motywu dla Twittnuker.</string>
   <string name="display_profile_image">Wyświetl obraz profilu</string>
   <string name="image_load_summary">Wyłączenie zwiększy prędkość przewijania listy i zmniejszy ilość przesyłanych danych.</string>
   <string name="in_reply_to">W odpowiedzi do <xliff:g id="user_name">%s</xliff:g></string>
@@ -147,7 +147,7 @@
   <string name="created_at">Utworzone w</string>
   <string name="search_hint">Szukaj ćwierków lub użytkowników</string>
   <string name="remember_position">Zapamiętaj pozycję</string>
-  <string name="remember_position_summary">Zapamiętaj pozycję listy/zakładki przed zamknięciem Twidere</string>
+  <string name="remember_position_summary">Zapamiętaj pozycję listy/zakładki przed zamknięciem Twittnuker</string>
   <string name="user_blocked">Zablokowano tego użytkownika.</string>
   <string name="users_blocked">Zablokowano tych użytkowników.</string>
   <string name="user_unblocked">Odblokowano tego użytkownika.</string>
@@ -324,7 +324,7 @@
   <string name="status">Ćwierk</string>
   <string name="preview">Podgląd</string>
   <string name="api_upgrade_notice_title">BARDZO WAŻNE!</string>
-  <string name="api_upgrade_notice_message">  Obowiązuje nowa wersja 1.1 API Twittera.\n\n Od tego momentu Twidere używa wersji 1.1 API.\n\n PROSIMY się ponownie zalogować, aby uniknąć wielu możliwych problemów.\n\n Jakie zmiany przynosi wersja 1.1 API? Między innymi:\n * Większe ograniczenia rate limit, na przykład, odtąd możesz aktualizować swój strumień główny wpisów jedynie 15 razy na 15 minut.\n * Nie możesz od razu zobaczyć kto przesłał dalej Twojego ćwierka.\n * Jeśli używasz Twidere jako StatusNet Client, wiele funkcji jest wyłączonych z powodu zmian API.\n\n Przepraszamy za te niedogodności, ale nie mamy wpływu na politykę Twittera.</string>
+  <string name="api_upgrade_notice_message">  Obowiązuje nowa wersja 1.1 API Twittera.\n\n Od tego momentu Twittnuker używa wersji 1.1 API.\n\n PROSIMY się ponownie zalogować, aby uniknąć wielu możliwych problemów.\n\n Jakie zmiany przynosi wersja 1.1 API? Między innymi:\n * Większe ograniczenia rate limit, na przykład, odtąd możesz aktualizować swój strumień główny wpisów jedynie 15 razy na 15 minut.\n * Nie możesz od razu zobaczyć kto przesłał dalej Twojego ćwierka.\n * Jeśli używasz Twittnuker jako StatusNet Client, wiele funkcji jest wyłączonych z powodu zmian API.\n\n Przepraszamy za te niedogodności, ale nie mamy wpływu na politykę Twittera.</string>
   <string name="connection_timeout">Przekroczono limit czasu oczekiwania</string>
   <string name="name_display_option">Wyświetlanie nazwy</string>
   <string name="both">Oba</string>
@@ -372,7 +372,7 @@
   <string name="silent_notifications">Ciche powiadomienia</string>
   <string name="silent_notifications_summary">Wyłącz dzwonek/wibracje dla powiadomień</string>
   <string name="disable_background_service">Wyłącz pracę w tle</string>
-  <string name="disable_background_service_summary">Twidere doesn\'t have background service if you disable auto refresh and data profiling, don\'t be silly!</string>
+  <string name="disable_background_service_summary">Twittnuker doesn\'t have background service if you disable auto refresh and data profiling, don\'t be silly!</string>
   <string name="pull_to_load_conversation_label">Przeciągnij by pokazać rozmowę</string>
   <string name="pull_to_load_conversation_release_label">Puść aby pokazać rozmowę</string>
   <string name="text_copied">Tekst skopiowany do schowka.</string>
@@ -422,7 +422,7 @@
   <string name="re_sign_in_needed">Może być konieczne ponowne zalogowanie się.</string>
   <string name="disable_tab_swipe">Wyłącz przełączanie kart gestem</string>
   <string name="sign_in_method_introduction_title">Jak to działa?</string>
-  <string name="sign_in_method_introduction">Most clients like twicca opens a browser asking you to type username and password, and then takes you back to heir clients. Sometimes this can become very inconvenient.\nTwidere uses more simple steps to sign in, without opening the browser. Don\'t worry about your password, Twidere will never store it, it\'s totally safe!</string>
+  <string name="sign_in_method_introduction">Most clients like twicca opens a browser asking you to type username and password, and then takes you back to heir clients. Sometimes this can become very inconvenient.\nTwittnuker uses more simple steps to sign in, without opening the browser. Don\'t worry about your password, Twittnuker will never store it, it\'s totally safe!</string>
   <string name="quote_protected_status_notice">Nie jest zalecane cytowanie chronionych ćwierków.</string>
   <string name="edit_draft">Edytuj szkic</string>
   <string name="profile_image">Obraz profilu</string>
@@ -484,7 +484,7 @@
   <string name="created_by">Created by <xliff:g id="created_by">%s</xliff:g></string>
   <string name="add_to_list">Dodaj do listy</string>
   <string name="account_delete_confirm_title">Usuń konto</string>
-  <string name="account_delete_confirm_message">Konto zostanie usunięte z Twidere.</string>
+  <string name="account_delete_confirm_message">Konto zostanie usunięte z Twittnuker.</string>
   <string name="for_advanced_users_only">TYLKO DLA ZAAWANSOWANYCH UŻYTKOWNIKÓW!</string>
   <string name="theme">Motyw</string>
   <string name="theme_dark">Ciemny</string>
@@ -512,20 +512,20 @@
   <string name="name_first">Najpierw wyświetlana nazwa</string>
   <string name="settings_wizard">Kreator ustawień</string>
   <string name="wizard_page_welcome_title">Witamy</string>
-  <string name="wizard_page_welcome_text">Dziękujemy za wybranie Twidere.\nCzy chcesz go skonfigurować teraz?</string>
+  <string name="wizard_page_welcome_text">Dziękujemy za wybranie Twittnuker.\nCzy chcesz go skonfigurować teraz?</string>
   <string name="wizard_page_welcome_yes">Tak</string>
   <string name="next">Dalej</string>
   <string name="wizard_page_welcome_use_default_settings">Użyj ustawień domyślnych</string>
   <string name="wizard_page_welcome_import_settings">Zaimportuj ustawienia</string>
   <string name="wizard_page_theme_text">Wybierz swój motyw.</string>
-  <string name="wizard_page_tabs_text">Dodaj karty do Twidere.\nŚledź ludzi bądź rzeczy na których Ci zależy.</string>
+  <string name="wizard_page_tabs_text">Dodaj karty do Twittnuker.\nŚledź ludzi bądź rzeczy na których Ci zależy.</string>
   <string name="wizard_page_tabs_unchanged_message">Możesz dodać karty w \"Ustawienia\" - \"Karty\"</string>
   <string name="wizard_page_cards_text">Config card items.</string>
   <string name="wizard_page_hints_text">Here\'re some useful hints.</string>
   <string name="wizard_page_finished_title">Zakończono</string>
-  <string name="wizard_page_finished_text">Twidere jest już gotowy do działania.</string>
+  <string name="wizard_page_finished_text">Twittnuker jest już gotowy do działania.</string>
   <string name="invalid_tab">Nieprawidłowa karta</string>
-  <string name="send_crash_report">Send crash report of Twidere</string>
+  <string name="send_crash_report">Send crash report of Twittnuker</string>
   <string name="add_to_filter">Add to filter</string>
   <string name="user_filter_name">User: <xliff:g id="name">%s</xliff:g></string>
   <string name="keyword_filter_name">Keyword: <xliff:g id="name">%s</xliff:g></string>
@@ -539,7 +539,7 @@
   <string name="signing_in_error_browser_sign_in_hint">Error while signing in, you may need to use browser sign in method. (This will ignore custom API settings during sign in)</string>
   <string name="report_user">Report <xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">Are you sure to report <xliff:g id="name">%s</xliff:g> for spam?</string>
-  <string name="twidere_test">Twidere test</string>
+  <string name="twidere_test">Twittnuker test</string>
   <string name="donate_via_paypal">Donate via PayPal</string>
   <string name="donate_via_alipay">Donate via Alipay</string>
   <string name="staggered_home_timeline">Staggered Home Timeline</string>

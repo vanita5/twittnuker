@@ -15,7 +15,7 @@
      limitations under the License.
 -->
 
-<org.mariotaku.twidere.view.ColorLabelRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.ColorLabelRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
 			android:textAppearance="?android:attr/textAppearanceSmall"/>
 	</LinearLayout>
 
-	<org.mariotaku.twidere.view.ActivatedCheckBox
+	<de.vanita5.twittnuker.view.ActivatedCheckBox
 		android:id="@android:id/checkbox"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -79,4 +79,4 @@
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		android:textColor="@android:color/white"/>
 
-</org.mariotaku.twidere.view.ColorLabelRelativeLayout>
+</de.vanita5.twittnuker.view.ColorLabelRelativeLayout>

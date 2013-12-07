@@ -49,7 +49,7 @@
   <string name="unfavorite">Onfavoriet</string>
   <string name="reply">Antwoord</string>
   <string name="share">Delen</string>
-  <string name="share_via_twidere">Deel via Twidere</string>
+  <string name="share_via_twidere">Deel via Twittnuker</string>
   <string name="view_image">Afbeelding</string>
   <string name="view_map">Kaart</string>
   <string name="view_status">Bekijk tweet</string>
@@ -59,8 +59,8 @@
   <string name="statuses">Tweets</string>
   <string name="followers">Volgers</string>
   <string name="about">Over</string>
-  <string name="about_summary">Over Twidere</string>
-  <string name="license_summary">Twidere is gelicentieerd onder GPLv3.</string>
+  <string name="about_summary">Over Twittnuker</string>
+  <string name="license_summary">Twittnuker is gelicentieerd onder GPLv3.</string>
   <string name="api">API</string>
   <string name="consumer_key">Consumenten sleutel</string>
   <string name="consumer_key_summary">Consumenten sleutel voor accounts in OAuth/xAuth modus</string>
@@ -79,7 +79,7 @@
   <string name="clear_databases_summary">Wis alle tweets, profielen, berichten. Uw accountgegevens zullen niet verloren gaan.</string>
   <string name="look_and_feel">Vormgeving en stijl</string>
   <string name="dark_theme">Gebruik donkere thema</string>
-  <string name="dark_theme_summary">Gebruik het donkere thema voor Twidere.</string>
+  <string name="dark_theme_summary">Gebruik het donkere thema voor Twittnuker.</string>
   <string name="display_profile_image">Geef profielafbeeldingen weer</string>
   <string name="image_load_summary">Dit uitschakelen versnelt het scrollen en vermindert data verkeer.</string>
   <string name="in_reply_to">In antwoord aan <xliff:g id="user_name">%s</xliff:g>;</string>
@@ -139,7 +139,7 @@
   <string name="created_at">Gemaakt op</string>
   <string name="search_hint">Zoek tweets of gebruikers</string>
   <string name="remember_position">Onthoud positie</string>
-  <string name="remember_position_summary">Onthoud lijst of tab positie voor afsluiten Twidere</string>
+  <string name="remember_position_summary">Onthoud lijst of tab positie voor afsluiten Twittnuker</string>
   <string name="user_blocked">Deze gebruiker is geblokkeerd.</string>
   <string name="users_blocked">Geblokkeerde gebruikers.</string>
   <string name="user_unblocked">Deze gebruiker is gedeblokkeerd.</string>

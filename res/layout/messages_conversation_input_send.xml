@@ -9,7 +9,7 @@
 		android:layout_height="wrap_content"
 		android:layout_weight="1">
 
-		<org.mariotaku.twidere.view.StatusComposeEditText
+		<de.vanita5.twittnuker.view.StatusComposeEditText
 			android:id="@+id/edit_text"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
@@ -23,7 +23,7 @@
 			android:singleLine="false">
 
 			<requestFocus/>
-		</org.mariotaku.twidere.view.StatusComposeEditText>
+		</de.vanita5.twittnuker.view.StatusComposeEditText>
 
 		<TextView
 			android:id="@+id/text_count"

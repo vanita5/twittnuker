@@ -20,7 +20,7 @@
 			android:layout_marginRight="-12.5dp"
 			android:background="?cardItemMessageProfileImageIncomingBackground">
 
-			<org.mariotaku.twidere.view.ForegroundImageView
+			<de.vanita5.twittnuker.view.ForegroundImageView
 				android:id="@+id/incoming_profile_image"
 				android:layout_width="@dimen/icon_size_card_list_item"
 				android:layout_height="@dimen/icon_size_card_list_item"
@@ -29,7 +29,7 @@
 				android:src="@drawable/ic_profile_image_default"/>
 		</FrameLayout>
 
-		<org.mariotaku.twidere.view.MessageCardItemFrameLayout
+		<de.vanita5.twittnuker.view.MessageCardItemFrameLayout
 			android:id="@+id/incoming_message_content_frame"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
 				android:orientation="vertical"
 				android:padding="@dimen/element_spacing_default">
 
-				<org.mariotaku.twidere.view.HandleSpanClickTextView
+				<de.vanita5.twittnuker.view.HandleSpanClickTextView
 					android:id="@+id/incoming_text"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -58,9 +58,9 @@
 					android:layout_height="wrap_content"
 					android:textColor="?android:attr/textColorSecondary"/>
 			</LinearLayout>
-		</org.mariotaku.twidere.view.MessageCardItemFrameLayout>
+		</de.vanita5.twittnuker.view.MessageCardItemFrameLayout>
 
-		<org.mariotaku.twidere.view.ListMenuOverflowButton
+		<de.vanita5.twittnuker.view.ListMenuOverflowButton
 			android:id="@+id/incoming_item_menu"
 			android:layout_width="@dimen/item_menu_width_default"
 			android:layout_height="@dimen/item_menu_height_default"
@@ -87,7 +87,7 @@
 			android:layout_marginLeft="-12.5dp"
 			android:background="?cardItemMessageProfileImageOutgoingBackground">
 
-			<org.mariotaku.twidere.view.ForegroundImageView
+			<de.vanita5.twittnuker.view.ForegroundImageView
 				android:id="@+id/outgoing_profile_image"
 				android:layout_width="@dimen/icon_size_card_list_item"
 				android:layout_height="@dimen/icon_size_card_list_item"
@@ -96,7 +96,7 @@
 				android:src="@drawable/ic_profile_image_default"/>
 		</FrameLayout>
 
-		<org.mariotaku.twidere.view.MessageCardItemFrameLayout
+		<de.vanita5.twittnuker.view.MessageCardItemFrameLayout
 			android:id="@+id/outgoing_message_content_container"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
 				android:orientation="vertical"
 				android:padding="@dimen/element_spacing_default">
 
-				<org.mariotaku.twidere.view.HandleSpanClickTextView
+				<de.vanita5.twittnuker.view.HandleSpanClickTextView
 					android:id="@+id/outgoing_text"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -125,9 +125,9 @@
 					android:layout_height="wrap_content"
 					android:textColor="?android:attr/textColorSecondary"/>
 			</LinearLayout>
-		</org.mariotaku.twidere.view.MessageCardItemFrameLayout>
+		</de.vanita5.twittnuker.view.MessageCardItemFrameLayout>
 
-		<org.mariotaku.twidere.view.ListMenuOverflowButton
+		<de.vanita5.twittnuker.view.ListMenuOverflowButton
 			android:id="@+id/outgoing_item_menu"
 			android:layout_width="@dimen/item_menu_width_default"
 			android:layout_height="@dimen/item_menu_height_default"

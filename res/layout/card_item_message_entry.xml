@@ -5,7 +5,7 @@
 	android:layout_height="wrap_content"
 	tools:context=".adapter.DirectMessagesEntryAdapter">
 
-	<org.mariotaku.twidere.view.CardItemLinearLayout
+	<de.vanita5.twittnuker.view.CardItemLinearLayout
 		android:id="@+id/content"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
 			android:orientation="horizontal"
 			android:padding="8dp">
 
-			<org.mariotaku.twidere.view.ForegroundImageView
+			<de.vanita5.twittnuker.view.ForegroundImageView
 				android:id="@+id/profile_image"
 				android:layout_width="@dimen/icon_size_card_list_item"
 				android:layout_height="@dimen/icon_size_card_list_item"
@@ -48,7 +48,7 @@
 					android:layout_alignParentLeft="true"
 					android:layout_toLeftOf="@+id/time">
 
-					<org.mariotaku.twidere.view.HandleSpanClickTextView
+					<de.vanita5.twittnuker.view.HandleSpanClickTextView
 						android:id="@+id/name"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
 						android:textStyle="bold"/>
 				</FrameLayout>
 
-				<org.mariotaku.twidere.view.HandleSpanClickTextView
+				<de.vanita5.twittnuker.view.HandleSpanClickTextView
 					android:id="@+id/screen_name"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
 					android:textAppearance="?android:attr/textAppearanceSmall"
 					android:textColor="?android:attr/textColorSecondary"/>
 
-				<org.mariotaku.twidere.view.ShortTimeView
+				<de.vanita5.twittnuker.view.ShortTimeView
 					android:id="@+id/time"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -96,9 +96,9 @@
 			android:padding="8dp"
 			android:textAppearance="?android:attr/textAppearanceSmall"
 			android:textColor="?android:attr/textColorSecondary"/>
-	</org.mariotaku.twidere.view.CardItemLinearLayout>
+	</de.vanita5.twittnuker.view.CardItemLinearLayout>
 
-	<org.mariotaku.twidere.view.ListMenuOverflowButton
+	<de.vanita5.twittnuker.view.ListMenuOverflowButton
 		android:id="@+id/item_menu"
 		android:layout_width="32dp"
 		android:layout_height="40dp"

@@ -7,8 +7,9 @@ import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.util.Log;
 
-import org.mariotaku.twidere.Constants;
-import org.mariotaku.twidere.util.Utils;
+import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.util.Utils;
+
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;

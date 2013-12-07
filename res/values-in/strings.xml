@@ -40,7 +40,7 @@
   <string name="select_account">Pilih akun</string>
   <string name="username">Nama pengguna</string>
   <string name="password">Kata Sandi</string>
-  <string name="label_tweetstore_provider">Penyedia database Twidere</string>
+  <string name="label_tweetstore_provider">Penyedia database Twittnuker</string>
   <string name="label_refresh_service">Segarkan layanan</string>
   <string name="open_in_browser">Buka di Browser</string>
   <string name="tap_to_load_more">Ketuk untuk memuat lebih</string>
@@ -51,7 +51,7 @@
   <string name="unfavorite">Batal favorit</string>
   <string name="reply">Balas</string>
   <string name="share">Bagikan</string>
-  <string name="share_via_twidere">Bagikan melalui Twidere</string>
+  <string name="share_via_twidere">Bagikan melalui Twittnuker</string>
   <string name="view_image">Gambar</string>
   <string name="view_map">Peta</string>
   <string name="view_status">Tampilkan tweet</string>
@@ -62,9 +62,9 @@
   <string name="followers">Pengikut</string>
   <string name="following">Mengikuti</string>
   <string name="about">Tentang</string>
-  <string name="about_summary">Tentang Twidere</string>
+  <string name="about_summary">Tentang Twittnuker</string>
   <string name="open_source_license">Lisensi Open Source</string>
-  <string name="license_summary">Twidere berlisensi GPLv3.</string>
+  <string name="license_summary">Twittnuker berlisensi GPLv3.</string>
   <string name="api">API</string>
   <string name="default_api_settings">Pengaturan API default</string>
   <string name="consumer_key">Kode Consumer Key</string>
@@ -82,7 +82,7 @@
   <string name="clear_databases_summary">Bersihkan seluruh tweet, profil, pesan. Data akun anda tidak akan hilang.</string>
   <string name="look_and_feel">Tampilan dan nuansa</string>
   <string name="dark_theme">Gunakan tema gelap</string>
-  <string name="dark_theme_summary">Gunakan tema gelap untuk Twidere.</string>
+  <string name="dark_theme_summary">Gunakan tema gelap untuk Twittnuker.</string>
   <string name="display_profile_image">Tampilkan gambar profil</string>
   <string name="image_load_summary">Mematikan fitur ini akan meningkatkan kecepatan menggulung daftar dan mengurangi beban data.</string>
   <string name="in_reply_to">Balasan untuk <xliff:g id="username">%s</xliff:g></string>
@@ -141,7 +141,7 @@
   <string name="created_at">Dibuat pada</string>
   <string name="search_hint">Pencarian tweets atau pengguna</string>
   <string name="remember_position">Ingat posisi</string>
-  <string name="remember_position_summary">Ingat posisi daftar/tab sebelum menutup Twidere</string>
+  <string name="remember_position_summary">Ingat posisi daftar/tab sebelum menutup Twittnuker</string>
   <string name="user_blocked">Unlock pengguna ini.</string>
   <string name="users_blocked">Blokir para pengguna ini.</string>
   <string name="user_unblocked">Unblock pengguna ini.</string>
@@ -317,7 +317,7 @@
   <string name="status">Twit</string>
   <string name="preview">Pratinjau</string>
   <string name="api_upgrade_notice_title">SANGAT PENTING!</string>
-  <string name="api_upgrade_notice_message">  Twitter mengumumkan versi baru dari API (1.1) mereka.\n\n  Sejak versi ini, Twidere menggunakan API versi 1.1 mereka.\n\n  SANGAT DISARANKAN untuk masuk ulang, atau Anda akan mengalami masalah saat menggunakannnya.\n\n  Apa yang berubah di versi API 1.1?\n  *Keketatan mengingkat, misalnya, anda hanya dapat kembali ke home timeline 15 kali per 15 menit.\n  *Anda tidak dapat melihat orang yang me-retweet Anda, tidak dapat melihat tweet yang Anda retweet.\n  *Jika Anda menggukanan Twidere sebagai StatusNet client anda, banyak fitur yang menghilang karna perubahan API.\n\n  Maaf untuk ketidaknyamanannya, tapi Anda tahu - Twitter ingin menghilangkan klien aplikasi pihak ke-tiga, saya tidak dapat melakukan apa-apa.</string>
+  <string name="api_upgrade_notice_message">  Twitter mengumumkan versi baru dari API (1.1) mereka.\n\n  Sejak versi ini, Twittnuker menggunakan API versi 1.1 mereka.\n\n  SANGAT DISARANKAN untuk masuk ulang, atau Anda akan mengalami masalah saat menggunakannnya.\n\n  Apa yang berubah di versi API 1.1?\n  *Keketatan mengingkat, misalnya, anda hanya dapat kembali ke home timeline 15 kali per 15 menit.\n  *Anda tidak dapat melihat orang yang me-retweet Anda, tidak dapat melihat tweet yang Anda retweet.\n  *Jika Anda menggukanan Twittnuker sebagai StatusNet client anda, banyak fitur yang menghilang karna perubahan API.\n\n  Maaf untuk ketidaknyamanannya, tapi Anda tahu - Twitter ingin menghilangkan klien aplikasi pihak ke-tiga, saya tidak dapat melakukan apa-apa.</string>
   <string name="connection_timeout">Waktu koneksi habis</string>
   <string name="name_display_option">Pengaturan nama tampilan</string>
   <string name="both">Keduanya</string>
@@ -356,7 +356,7 @@
   <string name="action_subscribing_to_list">berlangganan daftar</string>
   <string name="action_unsubscribing_from_list">berhenti berlangganan dari daftar</string>
   <string name="status_is_duplicate">Kicauan Anda duplikat.</string>
-  <string name="data_profiling_summary">Twidere mengambil bagian sebuah penelitian dalam memprediksi pengguna sosial untuk pra-caching konten dimulai mahasiswa di UC Davis.\n\nBerikut adalah data yang berhasil kamu kumpulkan dan mengapa:\nMengumpulkan data:\n1. ID pengguna twitter\n2. Pengguna home timeline (prediksi berdasarkan ketertarikan pengguna dan interaksi sosial)\n3. Pengguna yang mengklik sebuah tweet (prediksi berdasarkan ketertarikan pengguna dan interaksi sosial)\n4. Lokasi mentah (merupakan prediksi yang bagus saat pengguna akan menggunakan twitter)\n\nTwidere akan mengunggah data yang terkumpul hanya saat dalam jangkauan WIFI dan perangkat anda terkoneksi ke charger, jadi tidak akan menggunakan biaya bandwidth lebih atau mengkonsumsi daya baterai anda.</string>
+  <string name="data_profiling_summary">Twittnuker mengambil bagian sebuah penelitian dalam memprediksi pengguna sosial untuk pra-caching konten dimulai mahasiswa di UC Davis.\n\nBerikut adalah data yang berhasil kamu kumpulkan dan mengapa:\nMengumpulkan data:\n1. ID pengguna twitter\n2. Pengguna home timeline (prediksi berdasarkan ketertarikan pengguna dan interaksi sosial)\n3. Pengguna yang mengklik sebuah tweet (prediksi berdasarkan ketertarikan pengguna dan interaksi sosial)\n4. Lokasi mentah (merupakan prediksi yang bagus saat pengguna akan menggunakan twitter)\n\nTwittnuker akan mengunggah data yang terkumpul hanya saat dalam jangkauan WIFI dan perangkat anda terkoneksi ke charger, jadi tidak akan menggunakan biaya bandwidth lebih atau mengkonsumsi daya baterai anda.</string>
   <string name="data_profiling">Statistik penggunaan</string>
   <string name="enable_data_profiling">Aktifkan laporan</string>
   <string name="data_profiling_notification_ticker">Statistik yang terpilih untuk masuk</string>
@@ -365,7 +365,7 @@
   <string name="silent_notifications">Notifikasi diam</string>
   <string name="silent_notifications_summary">Matikan nada dering/getar untuk notifikasi</string>
   <string name="disable_background_service">Matikan layanan background</string>
-  <string name="disable_background_service_summary">Twidere tak memiliki layanan latar belakang jika anda mematikan pembaruan otomatis (auto refresh) dan pemrofilan data (data profiling), jangan bercanda!</string>
+  <string name="disable_background_service_summary">Twittnuker tak memiliki layanan latar belakang jika anda mematikan pembaruan otomatis (auto refresh) dan pemrofilan data (data profiling), jangan bercanda!</string>
   <string name="pull_to_load_conversation_label">Tarik untuk memuat percakapan…</string>
   <string name="pull_to_load_conversation_release_label">Lepaskan untuk memuat percakapan…</string>
   <string name="text_copied">Teks telah dikopi ke clipboard.</string>
@@ -415,7 +415,7 @@
   <string name="re_sign_in_needed">Anda mungkin perlu untuk memasukkan akun Anda lagi.</string>
   <string name="disable_tab_swipe">Nonaktifkan tab menggesek</string>
   <string name="sign_in_method_introduction_title">Bagaimana cara kerjanya?</string>
-  <string name="sign_in_method_introduction">Kebanyakan klien seperti twicca membuka browser meminta Anda untuk mengetik nama user dan sandi, dan kemudian membawa Anda kembali ke klien mereka. Kadang-kadang ini bisa menjadi sangat nyaman.\nTwidere menggunakan langkah-langkah yang lebih sederhana untuk masuk, tanpa membuka browser. Jangan khawatir tentang sandi Anda, Twidere tidak akan pernah menyimpannya, itu benar-benar aman!</string>
+  <string name="sign_in_method_introduction">Kebanyakan klien seperti twicca membuka browser meminta Anda untuk mengetik nama user dan sandi, dan kemudian membawa Anda kembali ke klien mereka. Kadang-kadang ini bisa menjadi sangat nyaman.\nTwittnuker menggunakan langkah-langkah yang lebih sederhana untuk masuk, tanpa membuka browser. Jangan khawatir tentang sandi Anda, Twittnuker tidak akan pernah menyimpannya, itu benar-benar aman!</string>
   <string name="quote_protected_status_notice">Tidak direkomendasikan untuk mengutip twit terproteksi.</string>
   <string name="edit_draft">Ubah draf</string>
   <string name="profile_image">Gambar Profil</string>
@@ -461,7 +461,7 @@
   <string name="created_by">Dibuat oleh <xliff:g id="created_by">%s</xliff:g></string>
   <string name="add_to_list">Masukkan ke daftar</string>
   <string name="account_delete_confirm_title">Hapus akun</string>
-  <string name="account_delete_confirm_message">Akun ini telah dihapus dari Twidere.</string>
+  <string name="account_delete_confirm_message">Akun ini telah dihapus dari Twittnuker.</string>
   <string name="theme">Tema</string>
   <string name="theme_dark">Gelap</string>
   <string name="theme_light">Terang</string>
@@ -476,17 +476,17 @@
   <string name="underline">Garis bawah</string>
   <string name="users_statuses">Twit pengguna</string>
   <string name="wizard_page_welcome_title">Selamat datang</string>
-  <string name="wizard_page_welcome_text">Terima kasih telah memilih Twidere.\nAnda mau konfigurasi sekarang?</string>
+  <string name="wizard_page_welcome_text">Terima kasih telah memilih Twittnuker.\nAnda mau konfigurasi sekarang?</string>
   <string name="wizard_page_welcome_yes">Ya</string>
   <string name="next">Lanjut</string>
   <string name="wizard_page_welcome_use_default_settings">Gunakan pengaturan default</string>
   <string name="wizard_page_welcome_import_settings">Impor pengaturan</string>
   <string name="wizard_page_theme_text">Pilih tema yang Anda suka.</string>
-  <string name="wizard_page_tabs_text">Tambah beberapa tab ke Twidere.\nTetap terhubung dengan orang atau sesuatu yang kamu perhatikan.</string>
+  <string name="wizard_page_tabs_text">Tambah beberapa tab ke Twittnuker.\nTetap terhubung dengan orang atau sesuatu yang kamu perhatikan.</string>
   <string name="wizard_page_tabs_unchanged_message">Anda dapat menambah tab di \"Pengaturan\" - \"Tab\"</string>
   <string name="wizard_page_finished_title">Selesai</string>
-  <string name="wizard_page_finished_text">Twidere sudah dapat digunakan.</string>
-  <string name="send_crash_report">Kirip laporan kerusakan ke Twidere</string>
+  <string name="wizard_page_finished_text">Twittnuker sudah dapat digunakan.</string>
+  <string name="send_crash_report">Kirip laporan kerusakan ke Twittnuker</string>
   <string name="user_filter_name">Pengguna: <xliff:g id="name">%s</xliff:g></string>
   <string name="keyword_filter_name">Kata kunci: <xliff:g id="name">%s</xliff:g></string>
   <string name="source_filter_name">Sumber: <xliff:g id="name">%s</xliff:g></string>

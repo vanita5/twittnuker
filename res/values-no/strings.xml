@@ -34,7 +34,7 @@
   <string name="select_account">Velg konto</string>
   <string name="username">Brukernavn</string>
   <string name="password">Passord</string>
-  <string name="label_tweetstore_provider">Twidere database leverandør</string>
+  <string name="label_tweetstore_provider">Twittnuker database leverandør</string>
   <string name="label_refresh_service">Oppdaterings service</string>
   <string name="open_in_browser">Åpne i nettleser</string>
   <string name="tap_to_load_more">Trykk for å laste inn mer</string>
@@ -45,7 +45,7 @@
   <string name="unfavorite">Ikke favoritt</string>
   <string name="reply">Svar</string>
   <string name="share">Del</string>
-  <string name="share_via_twidere">Del via Twidere</string>
+  <string name="share_via_twidere">Del via Twittnuker</string>
   <string name="view_image">Bilde</string>
   <string name="view_map">Kart</string>
   <string name="view_status">Vis tweet</string>
@@ -56,9 +56,9 @@
   <string name="followers">Følgere</string>
   <string name="following">Følger</string>
   <string name="about">Om</string>
-  <string name="about_summary">Om Twidere</string>
+  <string name="about_summary">Om Twittnuker</string>
   <string name="open_source_license">Åpen kildekode lisens</string>
-  <string name="license_summary">Twidere er lisensiert under GPLv3.</string>
+  <string name="license_summary">Twittnuker er lisensiert under GPLv3.</string>
   <string name="api">API</string>
   <string name="default_api_settings">Standard API instillinger</string>
   <string name="consumer_key">Bruker nøkkel</string>

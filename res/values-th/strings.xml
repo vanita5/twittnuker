@@ -36,7 +36,7 @@
   <string name="select_account">เลือกบัญชี</string>
   <string name="username">ชื่อผู้ใช้</string>
   <string name="password">รหัสผ่าน</string>
-  <string name="label_tweetstore_provider">ผู้ให้บริการญานข้อมูล Twidere</string>
+  <string name="label_tweetstore_provider">ผู้ให้บริการญานข้อมูล Twittnuker</string>
   <string name="label_refresh_service">เรียกบริการอีกครั้ง</string>
   <string name="open_in_browser">เปิดในเบราเซอร์</string>
   <string name="tap_to_load_more">แตะเพื่อโหลดเพิ่ม</string>
@@ -47,7 +47,7 @@
   <string name="unfavorite">เลิกถูกใจ</string>
   <string name="reply">ตอบ</string>
   <string name="share">แบ่งปัน</string>
-  <string name="share_via_twidere">แบ่งปันผ่าน Twidere</string>
+  <string name="share_via_twidere">แบ่งปันผ่าน Twittnuker</string>
   <string name="view_image">รูปภาพ</string>
   <string name="view_map">แผนที่</string>
   <string name="view_status">อ่านทวีต</string>
@@ -56,8 +56,8 @@
   <string name="pick_from_gallery">เลือกจากคลังภาพ</string>
   <string name="followers">ผู้ติดตาม</string>
   <string name="about">เกี่ยวกับ</string>
-  <string name="about_summary">เกี่ยวกับ Twidere</string>
-  <string name="license_summary">Twidere แจกจ่ายภายใต้สัญญาอนุญาต GPLv3</string>
+  <string name="about_summary">เกี่ยวกับ Twittnuker</string>
+  <string name="license_summary">Twittnuker แจกจ่ายภายใต้สัญญาอนุญาต GPLv3</string>
   <string name="api">API</string>
   <string name="consumer_key">Consumer key</string>
   <string name="consumer_secret">Consumer secret</string>
@@ -74,7 +74,7 @@
   <string name="clear_databases_summary">ล้างทวีต, ข้อมูลส่วนตัว, และข้อความทั้งหมด แต่บัญชีของคุณจะยังคงอยู่</string>
   <string name="look_and_feel">รูปร่างหน้าตา</string>
   <string name="dark_theme">ใช้โทนสีดำ</string>
-  <string name="dark_theme_summary">ให้ Twidere ใช้โทนสีดำ</string>
+  <string name="dark_theme_summary">ให้ Twittnuker ใช้โทนสีดำ</string>
   <string name="display_profile_image">แสดงรูปโปรไฟล์</string>
   <string name="image_load_summary">ปิดตัวเลือกนี้จะช่วยเพิ่มความเร็วการเลื่อนหน้า และลดการใช้ปริมาณข้อมูล</string>
   <string name="in_reply_to">ในการตอบกลับถึง <xliff:g id="user_name">%s</xliff:g></string>
@@ -125,7 +125,7 @@
   <string name="created_at">สร้างเมื่อ</string>
   <string name="search_hint">ค้นหาทวีตหรือผู้ใช้</string>
   <string name="remember_position">จำตำแหน่ง</string>
-  <string name="remember_position_summary">จำแท็บหรือรายการที่เปิดไว้ก่อนปิด Twidere</string>
+  <string name="remember_position_summary">จำแท็บหรือรายการที่เปิดไว้ก่อนปิด Twittnuker</string>
   <string name="user_blocked">บล็อคผู้ใช้นี้แล้ว</string>
   <string name="users_blocked">บล็อคผู้ใช้เหล่านี้แล้ว</string>
   <string name="user_unblocked">เลิกบล็อคผู้ใช้นี้</string>

@@ -5,7 +5,7 @@
 	android:layout_height="wrap_content"
 	tools:context=".adapter.ParcelableUserListsAdapter">
 
-	<org.mariotaku.twidere.view.CardItemLinearLayout
+	<de.vanita5.twittnuker.view.CardItemLinearLayout
 		android:id="@+id/content"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
 			android:paddingRight="24dp"
 			android:paddingTop="8dp">
 
-			<org.mariotaku.twidere.view.ForegroundImageView
+			<de.vanita5.twittnuker.view.ForegroundImageView
 				android:id="@+id/profile_image"
 				android:layout_width="@dimen/icon_size_card_list_item"
 				android:layout_height="@dimen/icon_size_card_list_item"
@@ -105,9 +105,9 @@
 				android:singleLine="true"
 				android:textAppearance="?android:attr/textAppearanceSmall"/>
 		</TableRow>
-	</org.mariotaku.twidere.view.CardItemLinearLayout>
+	</de.vanita5.twittnuker.view.CardItemLinearLayout>
 
-	<org.mariotaku.twidere.view.ListMenuOverflowButton
+	<de.vanita5.twittnuker.view.ListMenuOverflowButton
 		android:id="@+id/item_menu"
 		android:layout_width="32dp"
 		android:layout_height="40dp"

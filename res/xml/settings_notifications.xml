@@ -2,14 +2,14 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	android:title="@string/notifications">
 
-	<org.mariotaku.twidere.preference.NotificationAccountsListPreference
+	<de.vanita5.twittnuker.preference.NotificationAccountsListPreference
 		android:key="cat_accounts"
 		android:title="@string/accounts"/>
 
 	<PreferenceCategory
 		android:key="cat_general"
 		android:title="@string/general">
-		<org.mariotaku.twidere.preference.SilentNotificationsPreference
+		<de.vanita5.twittnuker.preference.SilentNotificationsPreference
 			android:key="silent_notifications"
 			android:summary="@string/silent_notifications_summary"
 			android:title="@string/silent_notifications"/>

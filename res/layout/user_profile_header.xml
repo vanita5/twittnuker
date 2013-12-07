@@ -19,13 +19,13 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content">
 
-			<org.mariotaku.twidere.view.ProfileImageBannerLayout
+			<de.vanita5.twittnuker.view.ProfileImageBannerLayout
 				android:id="@+id/profile_image_banner"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_gravity="center"/>
 
-			<org.mariotaku.twidere.view.ColorLabelLinearLayout
+			<de.vanita5.twittnuker.view.ColorLabelLinearLayout
 				android:id="@+id/profile_name_container"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
 					android:layout_height="wrap_content"
 					android:singleLine="true"
 					android:textAppearance="?android:textAppearanceSmall"/>
-			</org.mariotaku.twidere.view.ColorLabelLinearLayout>
+			</de.vanita5.twittnuker.view.ColorLabelLinearLayout>
 		</FrameLayout>
 
 		<LinearLayout
@@ -68,7 +68,7 @@
 				android:text="@string/description"
 				android:textAppearance="?android:textAppearanceMedium"/>
 
-			<org.mariotaku.twidere.view.HandleSpanClickTextView
+			<de.vanita5.twittnuker.view.HandleSpanClickTextView
 				android:id="@+id/description"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
 				android:text="@string/url"
 				android:textAppearance="?android:textAppearanceMedium"/>
 
-			<org.mariotaku.twidere.view.HandleSpanClickTextView
+			<de.vanita5.twittnuker.view.HandleSpanClickTextView
 				android:id="@+id/url"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -261,7 +261,7 @@
 		</TableRow>
 	</LinearLayout>
 
-	<org.mariotaku.twidere.view.ListMenuOverflowButton
+	<de.vanita5.twittnuker.view.ListMenuOverflowButton
 		android:id="@+id/more_options"
 		android:layout_width="48dp"
 		android:layout_height="56dp"

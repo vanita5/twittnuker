@@ -1,5 +1,5 @@
 /*
- * 				Twidere - Twitter client for Android
+ *			Twittnuker - Twitter client for Android
  *
  *  Copyright (C) 2012-2013 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -34,13 +34,14 @@ import android.util.DisplayMetrics;
 import com.nostra13.universalimageloader.cache.disc.DiscCacheAware;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
 
+import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.util.Exif;
+import de.vanita5.twittnuker.util.ImageValidator;
+import de.vanita5.twittnuker.util.ParseUtils;
+
 import org.mariotaku.gallery3d.util.BitmapUtils;
 import org.mariotaku.gallery3d.util.GalleryUtils;
-import org.mariotaku.twidere.Constants;
-import org.mariotaku.twidere.app.TwidereApplication;
-import org.mariotaku.twidere.util.Exif;
-import org.mariotaku.twidere.util.ImageValidator;
-import org.mariotaku.twidere.util.ParseUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -63,7 +64,7 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
 		mHandler = new Handler();
 		mUri = uri;
 		mListener = listener;
-		final TwidereApplication app = TwidereApplication.getInstance(context);
+		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mDownloader = app.getFullImageDownloader();
 		mDiscCache = app.getFullDiscCache();
 		final Resources res = context.getResources();

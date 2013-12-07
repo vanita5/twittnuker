@@ -36,7 +36,7 @@
   <string name="select_account">選擇帳號</string>
   <string name="username">用戶名</string>
   <string name="password">密碼</string>
-  <string name="label_tweetstore_provider">Twidere 資料庫存儲</string>
+  <string name="label_tweetstore_provider">Twittnuker 資料庫存儲</string>
   <string name="label_refresh_service">刷新服務</string>
   <string name="open_in_browser">在瀏覽器中打開</string>
   <string name="tap_to_load_more">輕按以加載更多</string>
@@ -47,7 +47,7 @@
   <string name="unfavorite">取消收藏</string>
   <string name="reply">回覆</string>
   <string name="share">分享</string>
-  <string name="share_via_twidere">通過 Twidere 分享</string>
+  <string name="share_via_twidere">通過 Twittnuker 分享</string>
   <string name="view_image">圖像</string>
   <string name="view_map">地圖</string>
   <string name="view_status">推文</string>
@@ -56,8 +56,8 @@
   <string name="pick_from_gallery">從圖庫中選取</string>
   <string name="followers">關注者</string>
   <string name="about">關於</string>
-  <string name="about_summary">關於 Twidere</string>
-  <string name="license_summary">Twidere 以 GPLv3 許可發佈</string>
+  <string name="about_summary">關於 Twittnuker</string>
+  <string name="license_summary">Twittnuker 以 GPLv3 許可發佈</string>
   <string name="api">API</string>
   <string name="consumer_key">Consumer key</string>
   <string name="consumer_key_summary">OAuth/xAuth認證時預設的consumer key</string>
@@ -76,7 +76,7 @@
   <string name="clear_databases_summary">清除資料庫中的推文、私信等。不必擔心，你的帳號信息不會丟失</string>
   <string name="look_and_feel">觀感</string>
   <string name="dark_theme">使用暗色主題</string>
-  <string name="dark_theme_summary">為 Twidere 使用暗色主題</string>
+  <string name="dark_theme_summary">為 Twittnuker 使用暗色主題</string>
   <string name="display_profile_image">顯示個人資料圖片</string>
   <string name="image_load_summary">關閉可以加快列表的滾動速度，以及減少數據流量</string>
   <string name="in_reply_to">回覆<xliff:g id="user_name">%s</xliff:g></string>
@@ -133,7 +133,7 @@
   <string name="created_at">創建日期</string>
   <string name="search_hint">搜索推文或用戶</string>
   <string name="remember_position">記住位置</string>
-  <string name="remember_position_summary">打開Twidere時，恢復到退出前列表/頁面的位置</string>
+  <string name="remember_position_summary">打開Twittnuker時，恢復到退出前列表/頁面的位置</string>
   <string name="user_blocked">你阻止了這個用戶</string>
   <string name="users_blocked">你阻止了這些用戶</string>
   <string name="user_unblocked">你解除了對這個用戶的阻止</string>
@@ -296,7 +296,7 @@
   <string name="separate_retweet_action_summary">在推文菜單中同時顯示“轉推”和“引用”</string>
   <string name="preview">預覽</string>
   <string name="api_upgrade_notice_title">非常重要！</string>
-  <string name="api_upgrade_notice_message">　　Twitter宣佈了他們的新API及政策。自從這個版本起，Twidere開始使用Twitter的API版本1.1，以及在部分設計上遵守了Twitter設計規範。\n\n　　強烈建議你重新登錄，否則可能會遇到很多問題，如無法查看收藏/搜索/趨勢等。\n\n　　API的更改會帶來什麼影響？\n\n　　*由於twip使用舊的API版本，將不能與這個版本的Twidere正常工作\n　　*JTAPI和GTAP需要將之前的末尾的“/1/”修改成“/1.1/”\n　　*更多API限制，在15分鐘內你只能更新15次左右時間綫或發送15條推文\n　　*如果你使用Twidere作為其他微博客服務的客戶端，更多功能可能不可用，例如查看收藏/阻止的用戶等\n\n　　對於帶來的不便，我深表歉意。但是你應該知道——Twitter正試圖對三方客戶端趕盡殺絶。我盡最大可能保證你使用Twidere正常，也儘可能“違反”一些荒謬的設計規範，但是對於Twitter在API上的更加嚴苛的政策，我無能為力。對於遇到的各種不屬於應用本身的問題，請不要埋怨我，那不是我的錯。</string>
+  <string name="api_upgrade_notice_message">　　Twitter宣佈了他們的新API及政策。自從這個版本起，Twittnuker開始使用Twitter的API版本1.1，以及在部分設計上遵守了Twitter設計規範。\n\n　　強烈建議你重新登錄，否則可能會遇到很多問題，如無法查看收藏/搜索/趨勢等。\n\n　　API的更改會帶來什麼影響？\n\n　　*由於twip使用舊的API版本，將不能與這個版本的Twittnuker正常工作\n　　*JTAPI和GTAP需要將之前的末尾的“/1/”修改成“/1.1/”\n　　*更多API限制，在15分鐘內你只能更新15次左右時間綫或發送15條推文\n　　*如果你使用Twittnuker作為其他微博客服務的客戶端，更多功能可能不可用，例如查看收藏/阻止的用戶等\n\n　　對於帶來的不便，我深表歉意。但是你應該知道——Twitter正試圖對三方客戶端趕盡殺絶。我盡最大可能保證你使用Twittnuker正常，也儘可能“違反”一些荒謬的設計規範，但是對於Twitter在API上的更加嚴苛的政策，我無能為力。對於遇到的各種不屬於應用本身的問題，請不要埋怨我，那不是我的錯。</string>
   <string name="connection_timeout">連接超時</string>
   <string name="name_display_option">名字顯示選項</string>
   <string name="both">兩者兼有</string>
@@ -304,7 +304,7 @@
   <string name="notification_mention"><xliff:g id="user">%s</xliff:g> 提到了你</string>
   <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> 給你發送了一條私信</string>
   <string name="status_is_duplicate">你發送了重複的推文</string>
-  <string name="data_profiling_summary">Twidere 參與了一個由UC Davis大學的學生發起的，為了通過預測使用者在社交網絡中的行為來為一些應用預先載入內容（便于在地鐵等沒有信號的地方閲讀）的非盈利性質的研究。\n\n以下是我們想要收集到的你的信息，以及收集它們的原因：\n收集到的信息\n1. 你的ID（人類不可讀）\n2. 你更新主頁時間綫的推文ID（預測你的興趣以及行為）\n3. 你點擊了哪些推文，以及它們所含有的連結\n4. 粗略位置（統計使用者的來源）\n\nTwidere 只會在Wifi可用，並且充電時上傳這些信息，所以它並不會花費額外的數據費用和電量。</string>
+  <string name="data_profiling_summary">Twittnuker 參與了一個由UC Davis大學的學生發起的，為了通過預測使用者在社交網絡中的行為來為一些應用預先載入內容（便于在地鐵等沒有信號的地方閲讀）的非盈利性質的研究。\n\n以下是我們想要收集到的你的信息，以及收集它們的原因：\n收集到的信息\n1. 你的ID（人類不可讀）\n2. 你更新主頁時間綫的推文ID（預測你的興趣以及行為）\n3. 你點擊了哪些推文，以及它們所含有的連結\n4. 粗略位置（統計使用者的來源）\n\nTwittnuker 只會在Wifi可用，並且充電時上傳這些信息，所以它並不會花費額外的數據費用和電量。</string>
   <string name="data_profiling">使用信息統計</string>
   <string name="enable_data_profiling">啟用報告</string>
   <string name="data_profiling_notification_ticker">使用信息統計請求</string>
@@ -313,7 +313,7 @@
   <string name="silent_notifications">靜默通知</string>
   <string name="silent_notifications_summary">在特定時間為通知禁用鈴聲和震動</string>
   <string name="disable_background_service">禁用後台服務</string>
-  <string name="disable_background_service_summary">別傻了，Twidere在關閉自動刷新和數據統計之後是沒有後台服務的。</string>
+  <string name="disable_background_service_summary">別傻了，Twittnuker在關閉自動刷新和數據統計之後是沒有後台服務的。</string>
   <string name="pull_to_load_conversation_label">下拉並釋放以加載對話…</string>
   <string name="pull_to_load_conversation_release_label">釋放加載對話…</string>
   <string name="text_copied">文本已複製到剪貼板</string>
@@ -363,7 +363,7 @@
   <string name="re_sign_in_needed">你可能需要重新登錄你的帳號</string>
   <string name="disable_tab_swipe">禁用滑動切換標籤頁</string>
   <string name="sign_in_method_introduction_title">輸入密碼登錄是怎樣工作的？</string>
-  <string name="sign_in_method_introduction">大多數客戶端（例如twicca）通過打開瀏覽器驗證登錄Twitter，然後瀏覽器再將你引導回客戶端。有時這會導致許多不便，因為一些第三方瀏覽器不會引導你回客戶端。\nTwidere使用更加簡便的步驟代替瀏覽器登錄到Twitter，不必擔心你會泄露你的密碼，這個方式非常安全！\nTwidere不會保存密碼，僅在登錄時發送給Twitter，只要網絡足夠安全，你的密碼永遠不會被第三方獲取！</string>
+  <string name="sign_in_method_introduction">大多數客戶端（例如twicca）通過打開瀏覽器驗證登錄Twitter，然後瀏覽器再將你引導回客戶端。有時這會導致許多不便，因為一些第三方瀏覽器不會引導你回客戶端。\nTwittnuker使用更加簡便的步驟代替瀏覽器登錄到Twitter，不必擔心你會泄露你的密碼，這個方式非常安全！\nTwittnuker不會保存密碼，僅在登錄時發送給Twitter，只要網絡足夠安全，你的密碼永遠不會被第三方獲取！</string>
   <string name="edit_draft">編輯草稿</string>
   <string name="profile_image">個人資料圖片</string>
   <string name="my_profile_image">我的個人資料圖片</string>
@@ -410,6 +410,6 @@
   <string name="created_by">由<xliff:g id="created_by">%s</xliff:g>創建</string>
   <string name="add_to_list">添加到列表</string>
   <string name="account_delete_confirm_title">刪除帳號</string>
-  <string name="account_delete_confirm_message">這個帳號將會從Twidere中刪除</string>
+  <string name="account_delete_confirm_message">這個帳號將會從Twittnuker中刪除</string>
   <string name="for_advanced_users_only">僅限高級用戶更改！</string>
 </resources>

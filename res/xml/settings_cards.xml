@@ -6,10 +6,10 @@
 	<PreferenceCategory
 		android:key="cat_card_preview"
 		android:title="@string/preview">
-		<org.mariotaku.twidere.preference.CardPreviewPreference android:key="card_preview"/>
+		<de.vanita5.twittnuker.preference.CardPreviewPreference android:key="card_preview"/>
 	</PreferenceCategory>
 
-	<org.mariotaku.twidere.preference.SeekBarDialogPreference
+	<de.vanita5.twittnuker.preference.SeekBarDialogPreference
 		android:defaultValue="@integer/default_text_size"
 		android:key="text_size_int"
 		android:summary="@string/text_size_summary"
@@ -38,7 +38,7 @@
 		android:summary="@string/image_load_summary"
 		android:title="@string/display_image_preview"/>
 
-	<org.mariotaku.twidere.preference.LinkHighlightPreference
+	<de.vanita5.twittnuker.preference.LinkHighlightPreference
 		android:defaultValue="none"
 		android:key="link_highlight_option"
 		android:summary="%s"

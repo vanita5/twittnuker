@@ -16,8 +16,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-import org.mariotaku.twidere.R;
-import org.mariotaku.twidere.util.MathUtils;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.MathUtils;
 
 public class SwipeBackLayout extends FrameLayout {
 	/**

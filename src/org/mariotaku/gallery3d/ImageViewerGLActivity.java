@@ -43,12 +43,13 @@ import org.mariotaku.gallery3d.ui.PhotoView;
 import org.mariotaku.gallery3d.ui.SynchronizedHandler;
 import org.mariotaku.gallery3d.util.GalleryUtils;
 import org.mariotaku.gallery3d.util.ThreadPool;
-import org.mariotaku.twidere.Constants;
-import org.mariotaku.twidere.R;
-import org.mariotaku.twidere.activity.support.TwidereSwipeBackActivity;
-import org.mariotaku.twidere.util.SaveImageTask;
-import org.mariotaku.twidere.util.ThemeUtils;
-import org.mariotaku.twidere.util.Utils;
+
+import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.support.TwidereSwipeBackActivity;
+import de.vanita5.twittnuker.util.SaveImageTask;
+import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.Utils;
 
 import java.io.File;
 

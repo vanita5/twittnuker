@@ -13,8 +13,8 @@ import android.view.Window;
 
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 
-import org.mariotaku.twidere.R;
-import org.mariotaku.twidere.TwidereConstants;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.TwidereConstants;
 
 /**
  * @author Yrom

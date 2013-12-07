@@ -51,7 +51,7 @@
   <string name="unfavorite">Удалить из избранного</string>
   <string name="reply">Ответить</string>
   <string name="share">Поделиться</string>
-  <string name="share_via_twidere">Twidere</string>
+  <string name="share_via_twidere">Twittnuker</string>
   <string name="view_image">Изображение</string>
   <string name="view_map">Карта</string>
   <string name="view_status">Просмотр твита</string>
@@ -61,8 +61,8 @@
   <string name="statuses">Твиты</string>
   <string name="followers">Читатели</string>
   <string name="about">О программе</string>
-  <string name="about_summary">О программе Twidere</string>
-  <string name="license_summary">Twidere использует лицензию GPLv3.</string>
+  <string name="about_summary">О программе Twittnuker</string>
+  <string name="license_summary">Twittnuker использует лицензию GPLv3.</string>
   <string name="api">API</string>
   <string name="default_api_settings">Настройки API по-умолчанию</string>
   <string name="consumer_key">Ключ авторизации пользователя</string>
@@ -82,7 +82,7 @@
   <string name="clear_databases_summary">Очистить все твиты, профили, сообщения. Данные аккаунта не будут потеряны.</string>
   <string name="look_and_feel">Внешний вид</string>
   <string name="dark_theme">Использовать темную тему</string>
-  <string name="dark_theme_summary">Использовать темную тему для Twidere.</string>
+  <string name="dark_theme_summary">Использовать темную тему для Twittnuker.</string>
   <string name="display_profile_image">Изображение для профиля</string>
   <string name="image_load_summary">Отключение позволит увеличить скорость прокрутки и уменьшить расходуемый трафик.</string>
   <string name="in_reply_to">В ответ на <xliff:g id="user_name">%s</xliff:g></string>
@@ -144,7 +144,7 @@
   <string name="created_at">Создан</string>
   <string name="search_hint">Поиск твитов или пользователей</string>
   <string name="remember_position">Запомнить положение</string>
-  <string name="remember_position_summary">Запомнить позицию списка/вкладки перед выходом из Twidere</string>
+  <string name="remember_position_summary">Запомнить позицию списка/вкладки перед выходом из Twittnuker</string>
   <string name="user_blocked">Заблокировать этого пользователя.</string>
   <string name="users_blocked">Заблокировать этих пользователей.</string>
   <string name="user_unblocked">Разблокировать этого пользователя.</string>
@@ -310,7 +310,7 @@
   <string name="separate_retweet_action_summary">Показывает в меню оба действия: ретвит и цитировать</string>
   <string name="preview">Предпросмотр</string>
   <string name="api_upgrade_notice_title">Очень важно!</string>
-  <string name="api_upgrade_notice_message">  Twitter анонсировал новую версию своего API (вер.1.1).\n\n  Начиная с этой версии Twidere, будет использоваться именно данный API версии 1.1.\n\n  НАСТОЯТЕЛЬНО РЕКОМЕНДУЕТСЯ перелогиниться, чтобы избежать возможных проблем, связанных с переходом на новый API.\n\n  Что изменилось в Twitter API версии 1.1?\n  *Ограничения по скорости обновления. Например, возможность обновления вашей Ленты ограничена 15-ю запросами в течении 15 минут.\n  *Вы не можете увидеть, кто ретвитнул ваше сообщение, Вы не можете видеть твиты, ретвитнутые вам другими.\n  *Если вы используете Twidere как ваш StatusNet-клиент, большинство возможностей будет потеряно в связи с изменениями в API.\n\n  Извините за неудобства, но я ничего не могу с этим поделать. Политика Twitter направлена против сторонних программ-клиентов.</string>
+  <string name="api_upgrade_notice_message">  Twitter анонсировал новую версию своего API (вер.1.1).\n\n  Начиная с этой версии Twittnuker, будет использоваться именно данный API версии 1.1.\n\n  НАСТОЯТЕЛЬНО РЕКОМЕНДУЕТСЯ перелогиниться, чтобы избежать возможных проблем, связанных с переходом на новый API.\n\n  Что изменилось в Twitter API версии 1.1?\n  *Ограничения по скорости обновления. Например, возможность обновления вашей Ленты ограничена 15-ю запросами в течении 15 минут.\n  *Вы не можете увидеть, кто ретвитнул ваше сообщение, Вы не можете видеть твиты, ретвитнутые вам другими.\n  *Если вы используете Twittnuker как ваш StatusNet-клиент, большинство возможностей будет потеряно в связи с изменениями в API.\n\n  Извините за неудобства, но я ничего не могу с этим поделать. Политика Twitter направлена против сторонних программ-клиентов.</string>
   <string name="connection_timeout">Таймаут соединения</string>
   <string name="name_display_option">Настройки отображения имени</string>
   <string name="both">Оба</string>
@@ -318,7 +318,7 @@
   <string name="notification_mention"><xliff:g id="user">%s</xliff:g> упомянул вас.</string>
   <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> отправил вам личное сообщение.</string>
   <string name="status_is_duplicate">Этот твит уже опубликован.</string>
-  <string name="data_profiling_summary">Twidere принимает участие в исследованиях по прогнозированию поведения пользователей (для кэширования содержания), начатого студентами Калифорнийского университета в Дэвисе\n\nДалее приведен список данных, которые мы хотели бы собрать, и объяснение - зачем.\nЭто:\n1. Идентификатор пользователя\n2. Лента пользователя (прогнозирование, основанное на интересах пользователей и их социальном взаимодействии)\n3. Нажатия пользователей на твиты (прогнозирование, основанное на интересах пользователей и их социальном взаимодействии)\n4. Огрубленные данные о местоположении (прогнозирование, где пользователи пользуются Twitter)\n\nTwidere будет отправлять собранные данные только тогда, когда устройство подключено к Wi-Fi и к зарядному устройству, так что это не причинит вам неприятностей, связанных с дополнительными денежными расходами или расходом энергии аккумулятора.</string>
+  <string name="data_profiling_summary">Twittnuker принимает участие в исследованиях по прогнозированию поведения пользователей (для кэширования содержания), начатого студентами Калифорнийского университета в Дэвисе\n\nДалее приведен список данных, которые мы хотели бы собрать, и объяснение - зачем.\nЭто:\n1. Идентификатор пользователя\n2. Лента пользователя (прогнозирование, основанное на интересах пользователей и их социальном взаимодействии)\n3. Нажатия пользователей на твиты (прогнозирование, основанное на интересах пользователей и их социальном взаимодействии)\n4. Огрубленные данные о местоположении (прогнозирование, где пользователи пользуются Twitter)\n\nTwittnuker будет отправлять собранные данные только тогда, когда устройство подключено к Wi-Fi и к зарядному устройству, так что это не причинит вам неприятностей, связанных с дополнительными денежными расходами или расходом энергии аккумулятора.</string>
   <string name="data_profiling">Статистика использования</string>
   <string name="enable_data_profiling">Включить отправку отчетов</string>
   <string name="data_profiling_notification_ticker">Статистика собрана</string>
@@ -327,7 +327,7 @@
   <string name="silent_notifications">Бесшумное уведомление</string>
   <string name="silent_notifications_summary">Выключить звук/вибрацию для уведомления</string>
   <string name="disable_background_service">Выключить фоновый режим</string>
-  <string name="disable_background_service_summary">Twidere не использует фоновый сервис при отключенном автообновлении.</string>
+  <string name="disable_background_service_summary">Twittnuker не использует фоновый сервис при отключенном автообновлении.</string>
   <string name="pull_to_load_conversation_label">Потяните, чтобы показать беседу…</string>
   <string name="pull_to_load_conversation_release_label">Отпустите, чтобы показать беседу…</string>
   <string name="text_copied">Текст скопирован в буфер обмена.</string>
@@ -377,7 +377,7 @@
   <string name="re_sign_in_needed">Может понадобиться повторный вход в ваш аккаунт.</string>
   <string name="disable_tab_swipe">Отключить свайп между табами</string>
   <string name="sign_in_method_introduction_title">Как это работает?</string>
-  <string name="sign_in_method_introduction">Большинство программ-клиентов, таких как twicca, открывает запрос логина и пароля через браузер, а затем возвращает вас обратно в программу-клиент. Иногда это очень неудобно.\nTwidere использует другой, более простой механизм входа без перехода в браузер. Не переживайте за ваши пароли, Twidere нигде их не хранит, это абсолютно безопасно!</string>
+  <string name="sign_in_method_introduction">Большинство программ-клиентов, таких как twicca, открывает запрос логина и пароля через браузер, а затем возвращает вас обратно в программу-клиент. Иногда это очень неудобно.\nTwittnuker использует другой, более простой механизм входа без перехода в браузер. Не переживайте за ваши пароли, Twittnuker нигде их не хранит, это абсолютно безопасно!</string>
   <string name="edit_draft">Редактировать черновик</string>
   <string name="profile_image">Изображение в профиле</string>
   <string name="my_profile_image">Мое изображение в профиле</string>
@@ -424,6 +424,6 @@
   <string name="created_by">Создано пользователем <xliff:g id="created_by">%s</xliff:g></string>
   <string name="add_to_list">Добавить к списку</string>
   <string name="account_delete_confirm_title">Удалить учетную запись</string>
-  <string name="account_delete_confirm_message">Эта учетная запись будет удалена из Twidere.</string>
+  <string name="account_delete_confirm_message">Эта учетная запись будет удалена из Twittnuker.</string>
   <string name="for_advanced_users_only">ТОЛЬКО ДЛЯ ПРОДВИНУТЫХ ПОЛЬЗОВАТЕЛЕЙ!</string>
 </resources>

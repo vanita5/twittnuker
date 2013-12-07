@@ -16,7 +16,7 @@ import android.widget.PopupWindow.OnDismissListener;
 
 import org.mariotaku.internal.menu.MenuAdapter;
 import org.mariotaku.internal.menu.MenuUtils;
-import org.mariotaku.twidere.R;
+import de.vanita5.twittnuker.R;
 
 public class PopupMenu implements OnDismissListener, OnItemClickListener, OnTouchListener {
 

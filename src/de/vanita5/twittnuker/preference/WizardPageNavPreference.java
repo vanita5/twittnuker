@@ -1,0 +1,33 @@
+package de.vanita5.twittnuker.preference;
+
+import android.content.Context;
+import android.preference.Preference;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.TextView;
+
+import de.vanita5.twittnuker.R;
+
+public final class WizardPageNavPreference extends Preference {
+
+	public WizardPageNavPreference(final Context context) {
+		this(context, null);
+	}
+
+	public WizardPageNavPreference(final Context context, final AttributeSet attrs) {
+		this(context, attrs, android.R.attr.preferenceStyle);
+	}
+
+	public WizardPageNavPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+		super(context, attrs, defStyle);
+		setLayoutResource(R.layout.wizard_page_nav_item);
+	}
+
+	@Override
+	protected void onBindView(final View view) {
+		super.onBindView(view);
+		final TextView title = (TextView) view.findViewById(android.R.id.title);
+		title.setText(getTitle());
+	}
+
+}

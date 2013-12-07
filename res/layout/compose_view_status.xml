@@ -3,7 +3,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content">
 
-	<org.mariotaku.twidere.view.ColorLabelLinearLayout
+	<de.vanita5.twittnuker.view.ColorLabelLinearLayout
 		android:id="@+id/content"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
 			android:orientation="horizontal"
 			android:padding="8dp">
 
-			<org.mariotaku.twidere.view.ForegroundImageView
+			<de.vanita5.twittnuker.view.ForegroundImageView
 				android:id="@+id/profile_image"
 				android:layout_width="@dimen/icon_size_card_list_item"
 				android:layout_height="@dimen/icon_size_card_list_item"
@@ -40,7 +40,7 @@
 					android:layout_alignParentLeft="true"
 					android:layout_toLeftOf="@+id/time">
 
-					<org.mariotaku.twidere.view.HandleSpanClickTextView
+					<de.vanita5.twittnuker.view.HandleSpanClickTextView
 						android:id="@+id/name"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
 						android:textStyle="bold"/>
 				</FrameLayout>
 
-				<org.mariotaku.twidere.view.HandleSpanClickTextView
+				<de.vanita5.twittnuker.view.HandleSpanClickTextView
 					android:id="@+id/screen_name"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
 					android:textAppearance="?android:attr/textAppearanceSmall"
 					android:textColor="?android:attr/textColorSecondary"/>
 
-				<org.mariotaku.twidere.view.ShortTimeView
+				<de.vanita5.twittnuker.view.ShortTimeView
 					android:id="@+id/time"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
 					android:textColor="?android:attr/textColorSecondary"/>
 			</RelativeLayout>
 
-			<org.mariotaku.twidere.view.ForegroundImageView
+			<de.vanita5.twittnuker.view.ForegroundImageView
 				android:id="@+id/my_profile_image"
 				android:layout_width="@dimen/icon_size_card_list_item"
 				android:layout_height="@dimen/icon_size_card_list_item"
@@ -86,7 +86,7 @@
 			android:layout_height="0.2dp"
 			android:background="#40808080"/>
 
-		<org.mariotaku.twidere.view.HandleSpanClickTextView
+		<de.vanita5.twittnuker.view.HandleSpanClickTextView
 			android:id="@+id/text"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -94,13 +94,13 @@
 			android:textAppearance="?android:attr/textAppearanceSmall"
 			android:textColor="?android:attr/textColorSecondary"/>
 
-		<org.mariotaku.twidere.view.ImagePreviewContainer
+		<de.vanita5.twittnuker.view.ImagePreviewContainer
 			android:id="@+id/image_preview_container"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:visibility="gone">
 
-			<org.mariotaku.twidere.view.ForegroundImageView
+			<de.vanita5.twittnuker.view.ForegroundImageView
 				android:id="@+id/image_preview"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
@@ -114,7 +114,7 @@
 				android:layout_height="wrap_content"
 				android:layout_gravity="center"
 				android:layout_margin="16dp"/>
-		</org.mariotaku.twidere.view.ImagePreviewContainer>
+		</de.vanita5.twittnuker.view.ImagePreviewContainer>
 
 		<TextView
 			android:id="@+id/reply_retweet_status"
@@ -123,6 +123,6 @@
 			android:drawablePadding="4dp"
 			android:padding="8dp"
 			android:textColor="?android:attr/textColorSecondary"/>
-	</org.mariotaku.twidere.view.ColorLabelLinearLayout>
+	</de.vanita5.twittnuker.view.ColorLabelLinearLayout>
 
 </ScrollView>

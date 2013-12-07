@@ -19,10 +19,10 @@ import android.widget.TextView;
 
 import org.mariotaku.internal.menu.MenuUtils;
 import org.mariotaku.popupmenu.PopupMenu;
-import org.mariotaku.twidere.R;
-import org.mariotaku.twidere.util.ThemeUtils;
-import org.mariotaku.twidere.util.Utils;
-import org.mariotaku.twidere.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 
 import java.util.ArrayList;
 

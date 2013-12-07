@@ -5,9 +5,9 @@ import android.content.Context;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mariotaku.twidere.BuildConfig;
-import org.mariotaku.twidere.util.ArrayUtils;
-import org.mariotaku.twidere.util.Utils;
+import de.vanita5.twittnuker.BuildConfig;
+import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.util.Utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

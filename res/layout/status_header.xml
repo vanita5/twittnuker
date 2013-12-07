@@ -13,7 +13,7 @@
 		android:background="?cardItemBackground"
 		android:orientation="vertical">
 
-		<org.mariotaku.twidere.view.ColorLabelRelativeLayout
+		<de.vanita5.twittnuker.view.ColorLabelRelativeLayout
 			android:id="@+id/profile"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
 					android:layout_marginLeft="8dp"
 					android:layout_marginRight="8dp"/>
 			</FrameLayout>
-		</org.mariotaku.twidere.view.ColorLabelRelativeLayout>
+		</de.vanita5.twittnuker.view.ColorLabelRelativeLayout>
 
 		<View
 			android:layout_width="match_parent"
@@ -107,7 +107,7 @@
 			android:layout_height="wrap_content"
 			android:visibility="gone">
 
-			<org.mariotaku.twidere.view.MapImageView
+			<de.vanita5.twittnuker.view.MapImageView
 				android:id="@+id/map_view"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"

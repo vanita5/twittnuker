@@ -35,7 +35,7 @@
   <string name="select_account">Válasszon fiókot</string>
   <string name="username">Felhasználónév</string>
   <string name="password">Jelszó</string>
-  <string name="label_tweetstore_provider">Twidere adatbázis szolgáltató</string>
+  <string name="label_tweetstore_provider">Twittnuker adatbázis szolgáltató</string>
   <string name="open_in_browser">Megnyitás böngészőben</string>
   <string name="tap_to_load_more">Érintse meg ha többet szeretne</string>
   <string name="delete">Törlés</string>
@@ -43,7 +43,7 @@
   <string name="cancel_retweet">Retweet visszavonása</string>
   <string name="reply">Válasz</string>
   <string name="share">Megosztás</string>
-  <string name="share_via_twidere">Megosztás Twidere-n keresztül</string>
+  <string name="share_via_twidere">Megosztás Twittnuker-n keresztül</string>
   <string name="view_image">Kép</string>
   <string name="view_map">Térkép</string>
   <string name="view_status">Tweet megjelenítése</string>
@@ -52,8 +52,8 @@
   <string name="pick_from_gallery">Választás a Galériából</string>
   <string name="followers">Követők</string>
   <string name="about">Általános infó</string>
-  <string name="about_summary">A Twidere-ről</string>
-  <string name="license_summary">A Twidere GPLv3 licensz alatt érhető el.</string>
+  <string name="about_summary">A Twittnuker-ről</string>
+  <string name="license_summary">A Twittnuker GPLv3 licensz alatt érhető el.</string>
   <string name="api">API</string>
   <string name="consumer_key">Felhasználói kulcs</string>
   <string name="consumer_secret">Felhasználói kulcs</string>
@@ -65,7 +65,7 @@
   <string name="clear_databases">Adatbázisok ürítése</string>
   <string name="look_and_feel">Megjelenés és működés</string>
   <string name="dark_theme">Sötét téma használata</string>
-  <string name="dark_theme_summary">Sötés téma használata a Twidere-hez.</string>
+  <string name="dark_theme_summary">Sötés téma használata a Twittnuker-hez.</string>
   <string name="display_profile_image">Profilkép megjelenítése</string>
   <string name="in_reply_to">Válasz neki: <xliff:g id="username">%s</xliff:g></string>
   <string name="retweeted_by"><xliff:g id="user_name">%s</xliff:g> retweetelte ezt</string>
@@ -113,7 +113,7 @@
   <string name="created_at">Létrehozva:</string>
   <string name="search_hint">Keresés tweetek és felhasználók között</string>
   <string name="remember_position">Pozíció megjegyzése</string>
-  <string name="remember_position_summary">Lista/fül pozíció megjegyzése a Twidere bezárása előtt</string>
+  <string name="remember_position_summary">Lista/fül pozíció megjegyzése a Twittnuker bezárása előtt</string>
   <string name="user_blocked">Felhasználó blokkolva.</string>
   <string name="user_unblocked">Felhasználó blokkolás feloldva.</string>
   <string name="reported_user_for_spam">Felhasználó megjelölve spammerként.</string>
@@ -233,7 +233,7 @@
   <string name="follow_request_sent">Követési kérelem elküldve</string>
   <string name="preview">Előnézet</string>
   <string name="api_upgrade_notice_title">NAGYON FONTOS!</string>
-  <string name="api_upgrade_notice_message">  Twitter bejelentette az API-jának új (1.1-es) verzióját.\n\n  E verzió óta a Twidere a Twitter API 1.1-es verzióját használja.\n\n  Ezért NAGYON JAVASOLT újra belépnie, ellenkező esetben problémák lehetnek a Twidere használata során.\n\n  Mi változott az 1.1-es API verzióban?\n  *Még szigorúbb kapcsolodási szabályok. Például: 15 percenkén maximum 15x tudja lekérdezni a saját oldalát.\n  *Nem fogja látni, hogy ki retwettelte önt\n  *Ha Status Net kliensként használja több funkció nem fog menni az API változások miatt.\n\n  Elnézést a kellemetlenségért, de ezekről csak a Twitter tehet.</string>
+  <string name="api_upgrade_notice_message">  Twitter bejelentette az API-jának új (1.1-es) verzióját.\n\n  E verzió óta a Twittnuker a Twitter API 1.1-es verzióját használja.\n\n  Ezért NAGYON JAVASOLT újra belépnie, ellenkező esetben problémák lehetnek a Twittnuker használata során.\n\n  Mi változott az 1.1-es API verzióban?\n  *Még szigorúbb kapcsolodási szabályok. Például: 15 percenkén maximum 15x tudja lekérdezni a saját oldalát.\n  *Nem fogja látni, hogy ki retwettelte önt\n  *Ha Status Net kliensként használja több funkció nem fog menni az API változások miatt.\n\n  Elnézést a kellemetlenségért, de ezekről csak a Twitter tehet.</string>
   <string name="connection_timeout">Időtúllépés kapcsolódáskor</string>
   <string name="name_display_option">Név kiírása opció</string>
   <string name="both">Mindkettő</string>

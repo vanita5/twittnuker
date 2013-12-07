@@ -40,7 +40,7 @@
   <string name="select_account">选择帐号</string>
   <string name="username">用户名</string>
   <string name="password">密码</string>
-  <string name="label_tweetstore_provider">Twidere 数据库存储</string>
+  <string name="label_tweetstore_provider">Twittnuker 数据库存储</string>
   <string name="label_refresh_service">刷新服务</string>
   <string name="label_background_operation_service">后台操作服务</string>
   <string name="open_in_browser">在浏览器中打开</string>
@@ -52,7 +52,7 @@
   <string name="unfavorite">取消收藏</string>
   <string name="reply">回复</string>
   <string name="share">分享</string>
-  <string name="share_via_twidere">通过 Twidere 分享</string>
+  <string name="share_via_twidere">通过 Twittnuker 分享</string>
   <string name="view_image">图像</string>
   <string name="view_map">地图</string>
   <string name="view_status">推文</string>
@@ -63,9 +63,9 @@
   <string name="followers">关注者</string>
   <string name="following">关注</string>
   <string name="about">关于</string>
-  <string name="about_summary">关于 Twidere</string>
+  <string name="about_summary">关于 Twittnuker</string>
   <string name="open_source_license">开源许可</string>
-  <string name="license_summary">Twidere 以 GPLv3 许可发布</string>
+  <string name="license_summary">Twittnuker 以 GPLv3 许可发布</string>
   <string name="api">API</string>
   <string name="default_api_settings">默认API设定</string>
   <string name="consumer_key">Consumer key</string>
@@ -85,7 +85,7 @@
   <string name="clear_databases_summary">清除数据库中的推文、私信等。不必担心，你的帐号信息不会丢失</string>
   <string name="look_and_feel">观感</string>
   <string name="dark_theme">使用暗色主题</string>
-  <string name="dark_theme_summary">为 Twidere 使用暗色主题</string>
+  <string name="dark_theme_summary">为 Twittnuker 使用暗色主题</string>
   <string name="display_profile_image">显示个人资料图片</string>
   <string name="image_load_summary">关闭可以加快列表的滚动速度，以及减少数据流量</string>
   <string name="in_reply_to">回复<xliff:g id="user_name">%s</xliff:g></string>
@@ -147,7 +147,7 @@
   <string name="created_at">创建日期</string>
   <string name="search_hint">搜索推文或用户</string>
   <string name="remember_position">记住位置</string>
-  <string name="remember_position_summary">打开Twidere时，恢复到退出前列表/页面的位置</string>
+  <string name="remember_position_summary">打开Twittnuker时，恢复到退出前列表/页面的位置</string>
   <string name="user_blocked">你阻止了这个用户</string>
   <string name="users_blocked">你阻止了这些用户</string>
   <string name="user_unblocked">你解除了对这个用户的阻止</string>
@@ -325,7 +325,7 @@
   <string name="status">推文</string>
   <string name="preview">预览</string>
   <string name="api_upgrade_notice_title">非常重要！</string>
-  <string name="api_upgrade_notice_message">　　Twitter宣布了他们的新API及政策。自从这个版本起，Twidere开始使用Twitter的API版本1.1，以及在部分设计上遵守了Twitter设计规范。\n\n　　强烈建议你重新登录，否则可能会遇到很多问题，如无法查看收藏/搜索/趋势等。\n\n　　API的更改会带来什么影响？\n\n　　*由于twip使用旧的API版本，将不能与这个版本的Twidere正常工作\n　　*JTAPI和GTAP需要将之前的末尾的“/1/”修改成“/1.1/”\n　　*更多API限制，在15分钟内你只能更新15次左右时间线或发送15条推文\n　　*如果你使用Twidere作为其他微博客服务的客户端，更多功能可能不可用，例如查看收藏/阻止的用户等\n\n　　对于带来的不便，我深表歉意。但是你应该知道——Twitter正试图对三方客户端赶尽杀绝。我尽最大可能保证你使用Twidere正常，也尽可能“违反”一些荒谬的设计规范，但是对于Twitter在API上的更加严苛的政策，我无能为力。对于遇到的各种不属于应用本身的问题，请不要埋怨我，那不是我的错。</string>
+  <string name="api_upgrade_notice_message">　　Twitter宣布了他们的新API及政策。自从这个版本起，Twittnuker开始使用Twitter的API版本1.1，以及在部分设计上遵守了Twitter设计规范。\n\n　　强烈建议你重新登录，否则可能会遇到很多问题，如无法查看收藏/搜索/趋势等。\n\n　　API的更改会带来什么影响？\n\n　　*由于twip使用旧的API版本，将不能与这个版本的Twittnuker正常工作\n　　*JTAPI和GTAP需要将之前的末尾的“/1/”修改成“/1.1/”\n　　*更多API限制，在15分钟内你只能更新15次左右时间线或发送15条推文\n　　*如果你使用Twittnuker作为其他微博客服务的客户端，更多功能可能不可用，例如查看收藏/阻止的用户等\n\n　　对于带来的不便，我深表歉意。但是你应该知道——Twitter正试图对三方客户端赶尽杀绝。我尽最大可能保证你使用Twittnuker正常，也尽可能“违反”一些荒谬的设计规范，但是对于Twitter在API上的更加严苛的政策，我无能为力。对于遇到的各种不属于应用本身的问题，请不要埋怨我，那不是我的错。</string>
   <string name="connection_timeout">连接超时</string>
   <string name="name_display_option">名字显示选项</string>
   <string name="both">两者兼有</string>
@@ -364,7 +364,7 @@
   <string name="action_subscribing_to_list">订阅到列表</string>
   <string name="action_unsubscribing_from_list">退订列表</string>
   <string name="status_is_duplicate">你发送了重复的推文</string>
-  <string name="data_profiling_summary">Twidere 参与了一个由UC Davis大学的学生发起的，为了通过预测使用者在社交网络中的行为来为一些应用预先载入内容（便于在地铁等没有信号的地方阅读）的非盈利性质的研究。\n\n以下是我们想要收集到的你的信息，以及收集它们的原因：\n收集到的信息\n1. 你的ID（人类不可读）\n2. 你更新主页时间线的推文ID（预测你的兴趣以及行为）\n3. 你点击了哪些推文，以及它们所含有的链接\n4. 粗略位置（统计使用者的来源）\n\nTwidere 只会在Wifi可用，并且充电时上传这些信息，所以它并不会花费额外的数据费用和电量。</string>
+  <string name="data_profiling_summary">Twittnuker 参与了一个由UC Davis大学的学生发起的，为了通过预测使用者在社交网络中的行为来为一些应用预先载入内容（便于在地铁等没有信号的地方阅读）的非盈利性质的研究。\n\n以下是我们想要收集到的你的信息，以及收集它们的原因：\n收集到的信息\n1. 你的ID（人类不可读）\n2. 你更新主页时间线的推文ID（预测你的兴趣以及行为）\n3. 你点击了哪些推文，以及它们所含有的链接\n4. 粗略位置（统计使用者的来源）\n\nTwittnuker 只会在Wifi可用，并且充电时上传这些信息，所以它并不会花费额外的数据费用和电量。</string>
   <string name="data_profiling">使用信息统计</string>
   <string name="enable_data_profiling">启用报告</string>
   <string name="data_profiling_notification_ticker">使用信息统计请求</string>
@@ -373,7 +373,7 @@
   <string name="silent_notifications">静默通知</string>
   <string name="silent_notifications_summary">在特定时间为通知禁用铃声和震动</string>
   <string name="disable_background_service">禁用后台服务</string>
-  <string name="disable_background_service_summary">别傻了，Twidere在关闭自动刷新和数据统计之后是没有后台服务的。</string>
+  <string name="disable_background_service_summary">别傻了，Twittnuker在关闭自动刷新和数据统计之后是没有后台服务的。</string>
   <string name="pull_to_load_conversation_label">下拉并释放以加载对话…</string>
   <string name="pull_to_load_conversation_release_label">释放加载对话…</string>
   <string name="text_copied">文本已复制到剪贴板</string>
@@ -423,7 +423,7 @@
   <string name="re_sign_in_needed">你可能需要重新登录你的帐号</string>
   <string name="disable_tab_swipe">禁用滑动切换标签页</string>
   <string name="sign_in_method_introduction_title">输入密码登录是怎样工作的？</string>
-  <string name="sign_in_method_introduction">大多数客户端（例如twicca）通过打开浏览器验证登录Twitter，然后浏览器再将你引导回客户端。有时这会导致许多不便，因为一些第三方浏览器不会引导你回客户端。\nTwidere使用更加简便的步骤代替浏览器登录到Twitter，不必担心你会泄露你的密码，这个方式非常安全！\nTwidere不会保存密码，仅在登录时发送给Twitter，只要网络足够安全，你的密码永远不会被第三方获取！</string>
+  <string name="sign_in_method_introduction">大多数客户端（例如twicca）通过打开浏览器验证登录Twitter，然后浏览器再将你引导回客户端。有时这会导致许多不便，因为一些第三方浏览器不会引导你回客户端。\nTwittnuker使用更加简便的步骤代替浏览器登录到Twitter，不必担心你会泄露你的密码，这个方式非常安全！\nTwittnuker不会保存密码，仅在登录时发送给Twitter，只要网络足够安全，你的密码永远不会被第三方获取！</string>
   <string name="quote_protected_status_notice">不建议引用受保护的推文</string>
   <string name="edit_draft">编辑草稿</string>
   <string name="profile_image">个人资料图片</string>
@@ -485,7 +485,7 @@
   <string name="created_by">由<xliff:g id="created_by">%s</xliff:g>创建</string>
   <string name="add_to_list">添加到列表</string>
   <string name="account_delete_confirm_title">删除帐号</string>
-  <string name="account_delete_confirm_message">这个帐号将会从Twidere中删除</string>
+  <string name="account_delete_confirm_message">这个帐号将会从Twittnuker中删除</string>
   <string name="for_advanced_users_only">仅限高级用户更改！</string>
   <string name="theme">主题</string>
   <string name="theme_dark">暗色</string>
@@ -513,20 +513,20 @@
   <string name="name_first">优先显示名字</string>
   <string name="settings_wizard">设定向导</string>
   <string name="wizard_page_welcome_title">欢迎</string>
-  <string name="wizard_page_welcome_text">感谢你选择Twidere。\n你想现在设定它吗？</string>
+  <string name="wizard_page_welcome_text">感谢你选择Twittnuker。\n你想现在设定它吗？</string>
   <string name="wizard_page_welcome_yes">是的</string>
   <string name="next">下一步</string>
   <string name="wizard_page_welcome_use_default_settings">使用默认设定</string>
   <string name="wizard_page_welcome_import_settings">导入设定</string>
   <string name="wizard_page_theme_text">选择一个你喜欢的主题。</string>
-  <string name="wizard_page_tabs_text">添加一些标签页到Twidere。\n时刻关注你在意的人和事。</string>
+  <string name="wizard_page_tabs_text">添加一些标签页到Twittnuker。\n时刻关注你在意的人和事。</string>
   <string name="wizard_page_tabs_unchanged_message">你可以稍后在设定中添加标签页</string>
   <string name="wizard_page_cards_text">设定卡片项。</string>
   <string name="wizard_page_hints_text">这里有一些有用的小提示。</string>
   <string name="wizard_page_finished_title">完成</string>
-  <string name="wizard_page_finished_text">现在Twidere已经可以使用了。</string>
+  <string name="wizard_page_finished_text">现在Twittnuker已经可以使用了。</string>
   <string name="invalid_tab">无效标签页</string>
-  <string name="send_crash_report">发送Twidere的崩溃报告</string>
+  <string name="send_crash_report">发送Twittnuker的崩溃报告</string>
   <string name="add_to_filter">添加到过滤器</string>
   <string name="user_filter_name">用户：<xliff:g id="name">%s</xliff:g></string>
   <string name="keyword_filter_name">关键词：<xliff:g id="name">%s</xliff:g></string>
@@ -540,7 +540,7 @@
   <string name="signing_in_error_browser_sign_in_hint">登录时发生问题，你可能需要使用“浏览器登录”。（这将在登录时暂时忽略自定义API设定）</string>
   <string name="report_user">报告<xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">你确定报告<xliff:g id="name">%s</xliff:g>发送垃圾信息吗？</string>
-  <string name="twidere_test">Twidere 测试</string>
+  <string name="twidere_test">Twittnuker 测试</string>
   <string name="donate_via_paypal">通过PayPal捐助</string>
   <string name="donate_via_alipay">通过支付宝捐助</string>
   <string name="staggered_home_timeline">主页信息流</string>

@@ -40,7 +40,7 @@
   <string name="select_account">Account auswählen</string>
   <string name="username">Benutzername</string>
   <string name="password">Passwort</string>
-  <string name="label_tweetstore_provider">Twidere Datenbank Anbieter</string>
+  <string name="label_tweetstore_provider">Twittnuker Datenbank Anbieter</string>
   <string name="label_refresh_service">Dienst aktualisieren</string>
   <string name="label_background_operation_service">Hintergrund Dienst</string>
   <string name="open_in_browser">Im Browser öffnen</string>
@@ -52,7 +52,7 @@
   <string name="unfavorite">Favorit löschen</string>
   <string name="reply">Antworten</string>
   <string name="share">Teilen</string>
-  <string name="share_via_twidere">Teile über Twidere</string>
+  <string name="share_via_twidere">Twittnuker</string>
   <string name="view_image">Bild</string>
   <string name="view_map">Karte</string>
   <string name="view_status">Tweet</string>
@@ -63,9 +63,9 @@
   <string name="followers">Follower</string>
   <string name="following">Folgen</string>
   <string name="about">Über</string>
-  <string name="about_summary">Über Twidere</string>
+  <string name="about_summary">Über Twittnuker</string>
   <string name="open_source_license">Open Source Lizenz</string>
-  <string name="license_summary">Twidere ist unter GPLv3 lizenziert.</string>
+  <string name="license_summary">Twittnuker ist unter GPLv3 lizenziert.</string>
   <string name="api">API</string>
   <string name="default_api_settings">Standard API Einstellungen</string>
   <string name="consumer_key">Benutzerschlüssel</string>
@@ -85,7 +85,7 @@
   <string name="clear_databases_summary">Alle Tweets, Profile und Nachrichten löschen. Deine Account-Informationen werden nicht gelöscht.</string>
   <string name="look_and_feel">Aussehen</string>
   <string name="dark_theme">Benutze dunkles Theme</string>
-  <string name="dark_theme_summary">Benutze das dunkle Theme für Twidere.</string>
+  <string name="dark_theme_summary">Benutze das dunkle Theme für Twittnuker.</string>
   <string name="display_profile_image">Zeige Profilbilder</string>
   <string name="image_load_summary">Deaktivierung um die Scroll-Geschwindigkeit zu erhöhen und den Datenverbrauch zu verringern.</string>
   <string name="in_reply_to">Als Antwort auf <xliff:g id="user_name">%s</xliff:g></string>
@@ -322,7 +322,7 @@
   <string name="status">Tweet</string>
   <string name="preview">Vorschau</string>
   <string name="api_upgrade_notice_title">SEHR WICHTIG!</string>
-  <string name="api_upgrade_notice_message">Twitter hat eine neue Version (1.1) seiner API angekündigt.\n\n Ab dieser Version benutzt Twidere diese neue Version 1.1.\n\n Wir empfehlenden dir DRINGEND dich neu anzumelden, sonst kann es zu Benutzungsproblemen kommen.\n\n Was hat sich mit der API Version 1.1 geändert?\n *Viel striktere Begrenzungen beim Datenabruf, man kann die Timeline nur noch 15 mal in 15 Minuten aktualisieren.\n *Man kann nicht mehr sehen, wer einen retweetet hat.\n *Wenn Twidere mit StatusNet benutzt wird gehen durch die API-Änderungen einige Funktionen verlohren.\n\n Das tut mir leid, aber wie vielleicht bekannt ist – Twitter ist dabei, alle Apps von Dritten rauszuschmeißen, ich kann daran nichts ändern.</string>
+  <string name="api_upgrade_notice_message">Twitter hat eine neue Version (1.1) seiner API angekündigt.\n\n Ab dieser Version benutzt Twittnuker diese neue Version 1.1.\n\n Wir empfehlenden dir DRINGEND dich neu anzumelden, sonst kann es zu Benutzungsproblemen kommen.\n\n Was hat sich mit der API Version 1.1 geändert?\n *Viel striktere Begrenzungen beim Datenabruf, man kann die Timeline nur noch 15 mal in 15 Minuten aktualisieren.\n *Man kann nicht mehr sehen, wer einen retweetet hat.\n *Wenn Twittnuker mit StatusNet benutzt wird gehen durch die API-Änderungen einige Funktionen verlohren.\n\n Das tut mir leid, aber wie vielleicht bekannt ist – Twitter ist dabei, alle Apps von Dritten rauszuschmeißen, ich kann daran nichts ändern.</string>
   <string name="connection_timeout">Zeitüberschreitung der Verbindung</string>
   <string name="name_display_option">Anzeigeoptionen für Namen</string>
   <string name="both">Beide</string>
@@ -361,7 +361,7 @@
   <string name="action_subscribing_to_list">Liste abonnieren</string>
   <string name="action_unsubscribing_from_list">Liste deabonnieren</string>
   <string name="status_is_duplicate">Dein Tweet ist ein Duplikat.</string>
-  <string name="data_profiling_summary">Twidere hat an einem Forschungsvorhaben von Studenten der UC Davis zur Vorhersage des Verhaltens von Benutzern in Sozialen Netzwerken teilgenommen, um Inhalt im vorraus laden zu können.\n\nDiese Daten wollen wir sammeln:\nGesammelte Daten:\n1. Die Twitter-ID des Benutzers\n2. Die Timeline des Benutzers (Vorhersage basiert auf den Interessen und Interaktionen des Benutzers)\n3. Klicks auf Tweets (Vorhersage basiert auf den Interessen und Interaktionen des Benutzers)\n4. Grober Aufenthaltsort (welcher ein guter Hinweis ist, ob der Benutzer Twitter benutzen wird)\n\nTwidere lädt die gesammelten Daten nur hoch, wenn WLAN verfügbar ist und das Gerät aufgeladen wird, so dass es weder zusätzliche Kosten verursacht noch Akkuladung verbraucht.</string>
+  <string name="data_profiling_summary">Twittnuker hat an einem Forschungsvorhaben von Studenten der UC Davis zur Vorhersage des Verhaltens von Benutzern in Sozialen Netzwerken teilgenommen, um Inhalt im vorraus laden zu können.\n\nDiese Daten wollen wir sammeln:\nGesammelte Daten:\n1. Die Twitter-ID des Benutzers\n2. Die Timeline des Benutzers (Vorhersage basiert auf den Interessen und Interaktionen des Benutzers)\n3. Klicks auf Tweets (Vorhersage basiert auf den Interessen und Interaktionen des Benutzers)\n4. Grober Aufenthaltsort (welcher ein guter Hinweis ist, ob der Benutzer Twitter benutzen wird)\n\nTwittnuker lädt die gesammelten Daten nur hoch, wenn WLAN verfügbar ist und das Gerät aufgeladen wird, so dass es weder zusätzliche Kosten verursacht noch Akkuladung verbraucht.</string>
   <string name="data_profiling">Nutzungsstatistiken</string>
   <string name="enable_data_profiling">Berichten einschalten</string>
   <string name="data_profiling_notification_ticker">Statistiken Optimieren</string>
@@ -419,8 +419,8 @@
   <string name="preload_wifi_only">Vorausladen nur mit WLAN</string>
   <string name="re_sign_in_needed">Du musst dich gegebenenfalls erneut mit deinem Account anmelden.</string>
   <string name="disable_tab_swipe">Deaktiviere wischen für Reiter</string>
-  <string name="sign_in_method_introduction_title">Wie funktioniert es?</string>
-  <string name="sign_in_method_introduction">Die meisten Twitter Apps wie twicca öffnen einen Browser, um den Benutzernamen und das Password einzugeben und kommen dann wieder Zurück zur App. Manchmal ist dieses sehr umständlich.\nTwidere  verwendet einfachere Schritte zum  anmelden, ohne Verwendung eines Browsers. Keine Sorge um das Password, Twidere speichert es niemals. Es ist sicher!</string>
+  <string name="sign_in_method_introduction_title">Wie funktioniert das?</string>
+  <string name="sign_in_method_introduction">Die meisten Twitter Apps wie twicca öffnen einen Browser, um den Benutzernamen und das Password einzugeben und kommen dann wieder Zurück zur App. Manchmal ist dieses sehr umständlich.\nTwittnuker  verwendet einfachere Schritte zum  anmelden, ohne Verwendung eines Browsers. Keine Sorge um das Password, Twittnuker speichert es niemals. Es ist sicher!</string>
   <string name="quote_protected_status_notice">Es ist nicht empfehlenswert, geschützte Tweets zu zitieren.</string>
   <string name="edit_draft">Bearbeite Entwurf</string>
   <string name="profile_image">Profilbild</string>
@@ -483,7 +483,7 @@
   <string name="created_by">Erstellt von <xliff:g id="created_by">%s</xliff:g></string>
   <string name="add_to_list">Zur Liste hinzufügen</string>
   <string name="account_delete_confirm_title">Account löschen</string>
-  <string name="account_delete_confirm_message">Dieser Account wird von Twidere gelöscht.</string>
+  <string name="account_delete_confirm_message">Dieser Account wird von Twittnuker gelöscht.</string>
   <string name="for_advanced_users_only">NUR FÜR ERFAHRENE BENUTZER!</string>
   <string name="theme">Theme</string>
   <string name="theme_dark">Dunkel</string>
@@ -524,7 +524,7 @@
   <string name="wizard_page_finished_title">Fertig</string>
   <string name="wizard_page_finished_text">Twittnuker ist jetzt fertig eingerichtet.</string>
   <string name="invalid_tab">Ungültiger Tab</string>
-  <string name="send_crash_report">(D) Send crash report of Twidere</string>
+  <string name="send_crash_report">(D) Send crash report of Twittnuker</string>
   <string name="add_to_filter">Zum Filter hinzufügen</string>
   <string name="user_filter_name">Benutzer: <xliff:g id="name">%s</xliff:g></string>
   <string name="keyword_filter_name">(D) Keyword: <xliff:g id="name">%s</xliff:g></string>

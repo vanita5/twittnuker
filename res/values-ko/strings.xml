@@ -37,7 +37,7 @@
   <string name="select_account">계정 선택</string>
   <string name="username">사용자명</string>
   <string name="password">패스워드</string>
-  <string name="label_tweetstore_provider">Twidere 데이터베이스 공급자</string>
+  <string name="label_tweetstore_provider">Twittnuker 데이터베이스 공급자</string>
   <string name="label_refresh_service">서비스 새로고침</string>
   <string name="open_in_browser">브라우저에서 열기</string>
   <string name="tap_to_load_more">더 보기</string>
@@ -48,7 +48,7 @@
   <string name="unfavorite">관심글 해제</string>
   <string name="reply">답변</string>
   <string name="share">공유</string>
-  <string name="share_via_twidere">Twidere를 통해 공유</string>
+  <string name="share_via_twidere">Twittnuker를 통해 공유</string>
   <string name="view_image">이미지</string>
   <string name="view_map">지도</string>
   <string name="view_status">트윗 보기</string>
@@ -58,9 +58,9 @@
   <string name="statuses">트윗</string>
   <string name="followers">팔로워</string>
   <string name="about">정보</string>
-  <string name="about_summary">Twidere에 대해서</string>
+  <string name="about_summary">Twittnuker에 대해서</string>
   <string name="open_source_license">오픈 소스 라이센스</string>
-  <string name="license_summary">Twidere의 라이센스는 GPLv3을 따릅니다.</string>
+  <string name="license_summary">Twittnuker의 라이센스는 GPLv3을 따릅니다.</string>
   <string name="api">API</string>
   <string name="default_api_settings">기본 API 설정</string>
   <string name="consumer_key">컨슈머 키</string>
@@ -75,7 +75,7 @@
   <string name="clear_databases_summary">모든 트윗,프로필,메시지를 삭제합니다. 당신의 계정 상태는 그대로입니다.</string>
   <string name="look_and_feel">모양</string>
   <string name="dark_theme">어두운 테마 사용</string>
-  <string name="dark_theme_summary">Twidere에 어두운 테마를 적용합니다.</string>
+  <string name="dark_theme_summary">Twittnuker에 어두운 테마를 적용합니다.</string>
   <string name="display_profile_image">프로필 이미지 표시</string>
   <string name="in_reply_to"><xliff:g id="user_name">%s</xliff:g> 님의 트윗에 대한 답에서.</string>
   <string name="retweeted_by"><xliff:g id="user_name">%s</xliff:g>이(가) 리트윗함</string>
@@ -133,7 +133,7 @@
   <string name="created_at">생성: </string>
   <string name="search_hint">트윗이나 사용자 검색</string>
   <string name="remember_position">위치 기억하기</string>
-  <string name="remember_position_summary">Twidere를 종료하기 전에 목록, 탭의 위치를 기억합니다</string>
+  <string name="remember_position_summary">Twittnuker를 종료하기 전에 목록, 탭의 위치를 기억합니다</string>
   <string name="user_blocked">사용자 차단</string>
   <string name="users_blocked">이 유저들을 차단하였습니다.</string>
   <string name="user_unblocked">사용자 차단 해제</string>
@@ -292,7 +292,7 @@
   <string name="separate_retweet_action_summary">트윗 메뉴에서 리트윗과 인용 메뉴를 따로 표시합니다.</string>
   <string name="preview">미리보기</string>
   <string name="api_upgrade_notice_title">매우 중요합니다!</string>
-  <string name="api_upgrade_notice_message">트위터가 API 1.1버젼을 공개하였습니다.\n\n Twidere는 이번 버젼부터 API 1.1버젼을 사용합니다.\n\n 지금 그대로 사용하시면 많은 오류가 발생할 수 있으므로, *반드시*다시 로그인하시길 바랍니다.\n\n&lt;API 1.1에서의 변경점&gt;\n*사용 제한 기준이 강화되었습니다. 대표적으로,이제는 15분동안 단 15번만 타임라인 새로고침이 가능합니다.\n누가 당신의 트윗을 리트윗했는지 볼 수 없으며,당신에게 리트윗된 트윗 역시 볼 수 없습니다.\n*Twidere를 StatusNet 클라이언트로 사용중이시라면, API 변경으로 많은 기능들이 없어질 것입니다. \m\n불편을 드려 죄송합니다. 하지만 트위터가 서드파티 앱을 죽이려 하고 있어서, 저는 아무것도 할 수 없습니다.</string>
+  <string name="api_upgrade_notice_message">트위터가 API 1.1버젼을 공개하였습니다.\n\n Twittnuker는 이번 버젼부터 API 1.1버젼을 사용합니다.\n\n 지금 그대로 사용하시면 많은 오류가 발생할 수 있으므로, *반드시*다시 로그인하시길 바랍니다.\n\n&lt;API 1.1에서의 변경점&gt;\n*사용 제한 기준이 강화되었습니다. 대표적으로,이제는 15분동안 단 15번만 타임라인 새로고침이 가능합니다.\n누가 당신의 트윗을 리트윗했는지 볼 수 없으며,당신에게 리트윗된 트윗 역시 볼 수 없습니다.\n*Twittnuker를 StatusNet 클라이언트로 사용중이시라면, API 변경으로 많은 기능들이 없어질 것입니다. \m\n불편을 드려 죄송합니다. 하지만 트위터가 서드파티 앱을 죽이려 하고 있어서, 저는 아무것도 할 수 없습니다.</string>
   <string name="connection_timeout">연결시간 초과</string>
   <string name="name_display_option">화면 이름 옵션</string>
   <string name="both">둘 다</string>

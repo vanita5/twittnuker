@@ -15,8 +15,8 @@ import android.view.ViewConfiguration;
 
 import it.sephiroth.android.library.imagezoom.ScaleGestureDetector.OnScaleGestureListener;
 
-import org.mariotaku.twidere.BuildConfig;
-import org.mariotaku.twidere.Constants;
+import de.vanita5.twittnuker.BuildConfig;
+import de.vanita5.twittnuker.Constants;
 
 public class ImageViewTouch extends ImageViewTouchBase implements Constants {
 

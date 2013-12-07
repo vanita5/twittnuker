@@ -15,7 +15,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content">
 
-				<org.mariotaku.twidere.view.ProfileImageBannerLayout
+				<de.vanita5.twittnuker.view.ProfileImageBannerLayout
 					android:id="@+id/profile_image_banner"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"

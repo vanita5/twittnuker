@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
-import org.mariotaku.twidere.R;
+import de.vanita5.twittnuker.R;
 
 import java.util.List;
 

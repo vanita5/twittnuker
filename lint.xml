@@ -11,7 +11,7 @@
         <ignore path="res/values/holo__styles.xml" />
         <ignore path="res/values/popup__styles.xml" />
         <ignore path="res/values/styles.xml" />
-        <ignore path="src/org/mariotaku/twidere/activity/SettingsDetailsActivity.java" />
+        <ignore path="src/de/vanita5/twittnuker/activity/SettingsDetailsActivity.java" />
     </issue>
     <issue id="UseSparseArrays">
         <ignore path="src/twitter4j/internal/json/MediaEntityJSONImpl.java" />

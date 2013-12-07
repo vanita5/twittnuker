@@ -6,12 +6,12 @@
 	android:layout_height="match_parent"
 	tools:context=".activity.SettingsWizardActivity">
 
-	<org.mariotaku.twidere.view.ExtendedViewPager
+	<de.vanita5.twittnuker.view.ExtendedViewPager
 		android:id="@+id/pager"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"/>
 
-	<org.mariotaku.twidere.view.LinePageIndicator
+	<de.vanita5.twittnuker.view.LinePageIndicator
 		android:id="@+id/indicator"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"

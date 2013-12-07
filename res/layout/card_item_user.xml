@@ -3,7 +3,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content">
 
-	<org.mariotaku.twidere.view.CardItemLinearLayout
+	<de.vanita5.twittnuker.view.CardItemLinearLayout
 		android:id="@+id/content"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -132,9 +132,9 @@
 				android:singleLine="true"
 				android:textAppearance="?android:attr/textAppearanceSmall"/>
 		</TableRow>
-	</org.mariotaku.twidere.view.CardItemLinearLayout>
+	</de.vanita5.twittnuker.view.CardItemLinearLayout>
 
-	<org.mariotaku.twidere.view.ListMenuOverflowButton
+	<de.vanita5.twittnuker.view.ListMenuOverflowButton
 		android:id="@+id/item_menu"
 		android:layout_width="32dp"
 		android:layout_height="40dp"

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:twidere="http://schemas.android.com/apk/res/org.mariotaku.twidere"
+	xmlns:twittnuker="http://schemas.android.com/apk/res/de.vanita5.twittnuker"
 	android:title="@string/notifications">
 
-	<org.mariotaku.twidere.preference.RingtonePreference
+	<de.vanita5.twittnuker.preference.RingtonePreference
 		android:key="notification_ringtone"
 		android:title="@string/notification_ringtone"/>
 
-	<org.mariotaku.twidere.preference.ColorPickerPreference
+	<de.vanita5.twittnuker.preference.ColorPickerPreference
 		android:defaultValue="@android:color/holo_blue_dark"
 		android:key="notification_light_color"
 		android:title="@string/notification_light_color"/>
@@ -15,18 +15,18 @@
 	<PreferenceCategory
 		android:key="cat_notifications_type"
 		android:title="@string/notifications_type">
-		<org.mariotaku.twidere.preference.NotificationTypePreference
+		<de.vanita5.twittnuker.preference.NotificationTypePreference
 			android:key="notification_type_home"
 			android:title="@string/home"
-			twidere:notificationType="none"/>
-		<org.mariotaku.twidere.preference.NotificationTypePreference
+			twittnuker:notificationType="none"/>
+		<de.vanita5.twittnuker.preference.NotificationTypePreference
 			android:key="notification_type_mentions"
 			android:title="@string/mentions"
-			twidere:notificationType="vibration|light"/>
-		<org.mariotaku.twidere.preference.NotificationTypePreference
+			twittnuker:notificationType="vibration|light"/>
+		<de.vanita5.twittnuker.preference.NotificationTypePreference
 			android:key="notification_type_direct_messages"
 			android:title="@string/direct_messages"
-			twidere:notificationType="ringtone|vibration|light"/>
+			twittnuker:notificationType="ringtone|vibration|light"/>
 	</PreferenceCategory>
 
 </PreferenceScreen>

@@ -40,7 +40,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.WrapperListAdapter;
 
-import org.mariotaku.twidere.util.LongSparseArrayUtils;
+import de.vanita5.twittnuker.util.LongSparseArrayUtils;
+
 
 import java.util.ArrayList;
 

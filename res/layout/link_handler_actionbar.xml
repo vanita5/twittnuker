@@ -8,13 +8,13 @@
 	android:orientation="vertical"
 	android:padding="4dp">
 
-	<org.mariotaku.twidere.view.ActionBarTitleView
+	<de.vanita5.twittnuker.view.ActionBarTitleView
 		android:id="@+id/actionbar_title"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:singleLine="true"/>
 
-	<org.mariotaku.twidere.view.ActionBarSubtitleView
+	<de.vanita5.twittnuker.view.ActionBarSubtitleView
 		android:id="@+id/actionbar_subtitle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

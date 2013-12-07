@@ -40,7 +40,7 @@
   <string name="select_account">Tria un compte</string>
   <string name="username">Nom d\'usuari</string>
   <string name="password">Contrasenya</string>
-  <string name="label_tweetstore_provider">Proveïdor de la base de dades de Twidere</string>
+  <string name="label_tweetstore_provider">Proveïdor de la base de dades de Twittnuker</string>
   <string name="label_refresh_service">Actualitza el servei</string>
   <string name="open_in_browser">Obrir al navegador</string>
   <string name="tap_to_load_more">Feu un toc per carregar-ne més</string>
@@ -51,7 +51,7 @@
   <string name="unfavorite">Desmarca com a preferit</string>
   <string name="reply">Respon</string>
   <string name="share">Compartir</string>
-  <string name="share_via_twidere">Compartir via Twidere</string>
+  <string name="share_via_twidere">Compartir via Twittnuker</string>
   <string name="view_image">Imatge</string>
   <string name="view_map">Mapa</string>
   <string name="view_status">Mostra piulada</string>
@@ -62,9 +62,9 @@
   <string name="followers">Seguidors</string>
   <string name="following">Seguidors</string>
   <string name="about">Quant al</string>
-  <string name="about_summary">Quant a Twidere</string>
+  <string name="about_summary">Quant a Twittnuker</string>
   <string name="open_source_license">Llicència de codi obert</string>
-  <string name="license_summary">El Twidere està llicenciat sota la GPLv3.</string>
+  <string name="license_summary">El Twittnuker està llicenciat sota la GPLv3.</string>
   <string name="api">API</string>
   <string name="default_api_settings">Paràmetres per defecte de l\'API</string>
   <string name="consumer_key">Clau del consumidor</string>
@@ -84,7 +84,7 @@
   <string name="clear_databases_summary">Buida totes les piulades, perfils i missatges. Les dades credencials del teu compte no es perdran.</string>
   <string name="look_and_feel">Entorn i comportament</string>
   <string name="dark_theme">Utilitzar tema fosc</string>
-  <string name="dark_theme_summary">Utilitza el tema fosc a Twidere.</string>
+  <string name="dark_theme_summary">Utilitza el tema fosc a Twittnuker.</string>
   <string name="display_profile_image">Mostra la imatge del perfil</string>
   <string name="image_load_summary">Desactivant aquesta opció s\'incrementarà la velocitat del desplaçament i es reduirà l\'ús de dades.</string>
   <string name="in_reply_to">En resposta a <xliff:g id="user_name">%s</xliff:g></string>
@@ -146,7 +146,7 @@
   <string name="created_at">Creat a les</string>
   <string name="search_hint">Cerca piulades o usuaris</string>
   <string name="remember_position">Recorda la posició</string>
-  <string name="remember_position_summary">Recorda la posició a la llista/pestanya abans de tancar Twidere</string>
+  <string name="remember_position_summary">Recorda la posició a la llista/pestanya abans de tancar Twittnuker</string>
   <string name="user_blocked">Bloqueja aquest usuari.</string>
   <string name="users_blocked">Aquests usuaris estan bloquejats.</string>
   <string name="user_unblocked">Desbloquejar aquest usuari.</string>
@@ -322,7 +322,7 @@
   <string name="status">Piulada</string>
   <string name="preview">Previsualització</string>
   <string name="api_upgrade_notice_title">MOLT IMPORTANT!</string>
-  <string name="api_upgrade_notice_message">Des que Twitter va treure la nova versió de la seva API (1.1)\n\n Twidere l\'està utilitzant.\n\n És MOLT RECOMANABLE tancar i tornar obrir la sessió o tindràs alguns problemes utilitzant aquesta versió.\n\n Els canvis en aquesta versió de l\'API:\n *Una freqüència més restringida d\'actualització de la cronologia. Ara només es pot actualitzar 15 cops cada 15 minuts.\n *No es pot veure qui t\'ha repiulat ni qui t\'ha enviat repiulades.\n *Si fas servir Twidere com un client d\'StatusNet, has perdut algunes funcions pels canvis a l\'API.\n\n Disculpeu pels inconvenients però, com sabeu, Twitter està intentant d\'eliminar les aplicacions de tercers i no puc fer-hi res.</string>
+  <string name="api_upgrade_notice_message">Des que Twitter va treure la nova versió de la seva API (1.1)\n\n Twittnuker l\'està utilitzant.\n\n És MOLT RECOMANABLE tancar i tornar obrir la sessió o tindràs alguns problemes utilitzant aquesta versió.\n\n Els canvis en aquesta versió de l\'API:\n *Una freqüència més restringida d\'actualització de la cronologia. Ara només es pot actualitzar 15 cops cada 15 minuts.\n *No es pot veure qui t\'ha repiulat ni qui t\'ha enviat repiulades.\n *Si fas servir Twittnuker com un client d\'StatusNet, has perdut algunes funcions pels canvis a l\'API.\n\n Disculpeu pels inconvenients però, com sabeu, Twitter està intentant d\'eliminar les aplicacions de tercers i no puc fer-hi res.</string>
   <string name="connection_timeout">Temps màxim de connexió exhaurit</string>
   <string name="name_display_option">Opcions per mostrar el nom</string>
   <string name="both">Ambdós</string>
@@ -357,7 +357,7 @@
   <string name="action_adding_member">Afegint el membre</string>
   <string name="action_signing_in">Està accedint</string>
   <string name="status_is_duplicate">La teva piulada està duplicada.</string>
-  <string name="data_profiling_summary">Twidere va participar en un projecte iniciat pels estudiants de la UC Davis per predir els comportaments socials dels usuaris de continguts pre-carregats.\n\nHeus aquí les dades que volíem recopilar i per què:\nDades obtingudes:\n1. Nom d\'usuari de Twitter.\n2. La cronologia de l\'usuari (predita basada en els interessos de l\'usuari i la seva interacció social)\n3. Els clics del l\'usuari a una piulada (predits basat en els interessos de l\'usuari i la seva interacció social).\n4. Localització no exacta (que és un indicador de la hora d\'accés de l\'usuari a Twitter)\n\nTwidere carregarà les dades obtingudes només en una xarxa Wi-Fi i quan tingueu el vostre dispositiu connectat al carregador, així que no us costarà us de dades extra o us descarregarà la bateria.</string>
+  <string name="data_profiling_summary">Twittnuker va participar en un projecte iniciat pels estudiants de la UC Davis per predir els comportaments socials dels usuaris de continguts pre-carregats.\n\nHeus aquí les dades que volíem recopilar i per què:\nDades obtingudes:\n1. Nom d\'usuari de Twitter.\n2. La cronologia de l\'usuari (predita basada en els interessos de l\'usuari i la seva interacció social)\n3. Els clics del l\'usuari a una piulada (predits basat en els interessos de l\'usuari i la seva interacció social).\n4. Localització no exacta (que és un indicador de la hora d\'accés de l\'usuari a Twitter)\n\nTwittnuker carregarà les dades obtingudes només en una xarxa Wi-Fi i quan tingueu el vostre dispositiu connectat al carregador, així que no us costarà us de dades extra o us descarregarà la bateria.</string>
   <string name="data_profiling">Estadístiques d\'Ús</string>
   <string name="enable_data_profiling">Activar Informes</string>
   <string name="data_profiling_notification_ticker">S\'ha optat a les estadístiques</string>
@@ -366,7 +366,7 @@
   <string name="silent_notifications">Notificacions silencioses</string>
   <string name="silent_notifications_summary">Desactiva el to/vibració de les notificacions</string>
   <string name="disable_background_service">Desactivar el servei en segon pla</string>
-  <string name="disable_background_service_summary">El Twidere no opera en rerefons si desactives l‘actualització automàtica i la recollida de dades, no siguis ruc!</string>
+  <string name="disable_background_service_summary">El Twittnuker no opera en rerefons si desactives l‘actualització automàtica i la recollida de dades, no siguis ruc!</string>
   <string name="pull_to_load_conversation_label">Desplaça cap a baix per carregar la conversa...</string>
   <string name="pull_to_load_conversation_release_label">Solta per carregar la conversa...</string>
   <string name="text_copied">Text copia al porta-retalls.</string>
@@ -416,7 +416,7 @@
   <string name="re_sign_in_needed">S\'han tancat totes les sessions. Has de tornar a obrir-les.</string>
   <string name="disable_tab_swipe">Desactiva la navegació entre pestanyes fent lliscar el dit</string>
   <string name="sign_in_method_introduction_title">Com funciona, això?</string>
-  <string name="sign_in_method_introduction">La majoria de clients, com twicca, fan servir un navegador per introduir el nom i la contrasenya d\'usuari, però això pot ser molt molest.\nEl Twidere fa el mateix d\'una manera més senzilla, sense obrir el navegador. Així que no et preocupis per la teva contrasenya, no la desarem enlloc, és completament segur!</string>
+  <string name="sign_in_method_introduction">La majoria de clients, com twicca, fan servir un navegador per introduir el nom i la contrasenya d\'usuari, però això pot ser molt molest.\nEl Twittnuker fa el mateix d\'una manera més senzilla, sense obrir el navegador. Així que no et preocupis per la teva contrasenya, no la desarem enlloc, és completament segur!</string>
   <string name="edit_draft">Edita l\'esborrany</string>
   <string name="profile_image">Imatge de perfil</string>
   <string name="my_profile_image">La meva imatge de perfil</string>
@@ -463,7 +463,7 @@
   <string name="created_by">Creat per <xliff:g id="created_by">%s</xliff:g></string>
   <string name="add_to_list">Afegeix a la llista</string>
   <string name="account_delete_confirm_title">Esborra el compte</string>
-  <string name="account_delete_confirm_message">Esteu apunt d\'esborrar aquest compte del Twidere.</string>
+  <string name="account_delete_confirm_message">Esteu apunt d\'esborrar aquest compte del Twittnuker.</string>
   <string name="for_advanced_users_only">NOMÉS PER A USUARIS AVANÇATS!</string>
   <string name="theme">Tema</string>
   <string name="theme_dark">Fosc</string>
@@ -479,7 +479,7 @@
 (Això no farà cas de la configuració d\'API personalitzades a sessió)</string>
   <string name="report_user">Reportar <xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">¿Està segur que vol reportar  <xliff:g id="name">%s</xliff:g> a brossa?</string>
-  <string name="twidere_test">Prova Twidere </string>
+  <string name="twidere_test">Prova Twittnuker </string>
   <string name="donate_via_paypal">Fes una donació via PayPal</string>
   <string name="donate_via_alipay">Fes una donació via Alipay</string>
 </resources>

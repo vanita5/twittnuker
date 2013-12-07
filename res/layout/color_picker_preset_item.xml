@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.mariotaku.twidere.view.ColorView xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.ColorView xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="@dimen/color_button_width"
 	android:layout_height="match_parent"
 	android:background="?android:selectableItemBackground"
