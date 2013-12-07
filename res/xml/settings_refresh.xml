@@ -20,7 +20,8 @@
 		<CheckBoxPreference
 			android:defaultValue="true"
 			android:key="stop_auto_refresh_when_battery_low"
-			android:title="@string/stop_auto_refresh_when_battery_low"/>
+			android:title="@string/stop_auto_refresh_when_battery_low"
+			android:summary="@string/stop_auto_refresh_when_battery_low_summary"/>
 
 		<org.mariotaku.twidere.preference.HomeRefreshContentPreference
 			android:key="home_refresh"

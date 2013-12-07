@@ -332,6 +332,7 @@
 	<string name="both">Both</string>
 	<string name="browser_sign_in">Browser sign in</string>
 	<string name="stop_auto_refresh_when_battery_low">Stop auto refresh when battery is low</string>
+    <string name="stop_auto_refresh_when_battery_low_summary">Disables auto refresh on low battery</string>
 	<string name="notification_mention"><xliff:g id="user">%s</xliff:g> mentioned you.</string>
 	<string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> sent you a direct message.</string>
 	<string name="notification_direct_message_multiple_messages"><xliff:g id="user">%1$s</xliff:g> sent you <xliff:g id="messages_count">%2$d</xliff:g> direct messages.</string>
@@ -446,6 +447,7 @@
 	<string name="direct_message_deleted">Direct message deleted.</string>
 	<string name="import_from">Import from…</string>
 	<string name="link_to_quoted_status">Link to quoted tweet</string>
+	<string name="link_to_quoted_status_summary">Adds the link to the original status on quote</string>
 	<string name="followed_user">Followed <xliff:g id="user">%s</xliff:g>.</string>
 	<string name="unfollowed_user">Unfollowed <xliff:g id="user">%s</xliff:g>.</string>
 	<string name="blocked_user">Blocked <xliff:g id="user">%s</xliff:g>.</string>
