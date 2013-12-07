@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item
+		android:id="@id/add"
+		android:icon="@android:drawable/ic_menu_add"
+		android:showAsAction="always"
+		android:title="@string/add_rule"/>
+	<item
+		android:id="@+id/enable_in_home_timeline"
+		android:checkable="true"
+		android:checked="true"
+		android:icon="@drawable/ic_menu_home"
+		android:title="@string/enable_in_home_timeline"/>
+	<item
+		android:id="@+id/enable_in_mentions"
+		android:checkable="true"
+		android:checked="true"
+		android:icon="@drawable/ic_menu_mention"
+		android:title="@string/enable_in_mentions"/>
+	<item
+		android:id="@+id/enable_for_rts"
+		android:checkable="true"
+		android:checked="true"
+		android:icon="@drawable/ic_menu_retweet"
+		android:title="@string/enable_for_rts"/>
+
+</menu>

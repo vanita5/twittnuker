@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<CheckBoxPreference
+		android:defaultValue="false"
+		android:key="quick_send"
+		android:summary="@string/quick_send_summary"
+		android:title="@string/quick_send"/>
+
+	<ListPreference
+		android:defaultValue="ask"
+		android:entries="@array/entries_compose_quit_action"
+		android:entryValues="@array/values_compose_quit_action"
+		android:key="compose_quit_action"
+		android:title="@string/compose_quit_action"/>
+
+	<CheckBoxPreference
+		android:defaultValue="false"
+		android:key="no_close_after_tweet_sent"
+		android:summary="@string/no_close_after_status_updated_summary"
+		android:title="@string/no_close_after_status_updated"/>
+
+	<Preference
+		android:fragment="org.mariotaku.twidere.fragment.DataProfilingSettingsFragment"
+		android:key="data_profiling_settings"
+		android:title="@string/data_profiling"/>
+	<Preference
+		android:key="disable_background_service"
+		android:summary="@string/disable_background_service_summary"
+		android:title="@string/disable_background_service"/>
+
+</PreferenceScreen>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	android:title="@string/wizard_page_welcome_title">
+
+	<org.mariotaku.twidere.preference.WizardPageNavPreference
+		android:key="next_page"
+		android:title="@string/wizard_page_welcome_yes"/>
+	<org.mariotaku.twidere.preference.WizardPageNavPreference
+		android:key="use_defaults"
+		android:title="@string/wizard_page_welcome_use_default_settings"/>
+
+</PreferenceScreen>

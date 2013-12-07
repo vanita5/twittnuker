@@ -1,0 +1,247 @@
+/*
+ *				Twidere - Twitter client for Android
+ * 
+ * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.mariotaku.twidere.adapter;
+
+import static org.mariotaku.twidere.util.Utils.configBaseCardAdapter;
+import static org.mariotaku.twidere.util.Utils.findDirectMessageInDatabases;
+import static org.mariotaku.twidere.util.Utils.formatToLongTimeString;
+import static org.mariotaku.twidere.util.Utils.getLinkHighlightOptionInt;
+import static org.mariotaku.twidere.util.Utils.openUserProfile;
+
+import android.app.Activity;
+import android.content.Context;
+import android.database.Cursor;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.text.Html;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+
+import org.mariotaku.twidere.R;
+import org.mariotaku.twidere.adapter.iface.IDirectMessagesAdapter;
+import org.mariotaku.twidere.app.TwidereApplication;
+import org.mariotaku.twidere.model.DirectMessageCursorIndices;
+import org.mariotaku.twidere.model.ParcelableDirectMessage;
+import org.mariotaku.twidere.util.ImageLoaderWrapper;
+import org.mariotaku.twidere.util.MultiSelectManager;
+import org.mariotaku.twidere.util.OnDirectMessageLinkClickHandler;
+import org.mariotaku.twidere.util.TwidereLinkify;
+import org.mariotaku.twidere.view.holder.DirectMessageConversationViewHolder;
+
+public class DirectMessagesConversationAdapter extends SimpleCursorAdapter implements IDirectMessagesAdapter,
+		OnClickListener {
+
+	private final ImageLoaderWrapper mImageLoader;
+	private final Context mContext;
+	private final TwidereLinkify mLinkify;
+	private final MultiSelectManager mMultiSelectManager;
+
+	private MenuButtonClickListener mListener;
+
+	private int mLinkHighlightOption, mLinkHighlightColor;
+	private boolean mDisplayProfileImage, mAnimationEnabled = true;
+	private float mTextSize;
+	private int mMaxAnimationPosition;
+
+	private DirectMessageCursorIndices mIndices;
+
+	public DirectMessagesConversationAdapter(final Context context) {
+		super(context, R.layout.card_item_message_conversation, null, new String[0], new int[0], 0);
+		mContext = context;
+		final TwidereApplication app = TwidereApplication.getInstance(context);
+		mMultiSelectManager = app.getMultiSelectManager();
+		mImageLoader = app.getImageLoaderWrapper();
+		mLinkify = new TwidereLinkify(new OnDirectMessageLinkClickHandler(context));
+		configBaseCardAdapter(context, this);
+	}
+
+	@Override
+	public void bindView(final View view, final Context context, final Cursor cursor) {
+		final int position = cursor.getPosition();
+		final DirectMessageConversationViewHolder holder = (DirectMessageConversationViewHolder) view.getTag();
+
+		final long account_id = cursor.getLong(mIndices.account_id);
+		final long message_timestamp = cursor.getLong(mIndices.message_timestamp);
+		final boolean is_outgoing = cursor.getInt(mIndices.is_outgoing) == 1;
+		holder.incoming_message_container.setVisibility(is_outgoing ? View.GONE : View.VISIBLE);
+		holder.outgoing_message_container.setVisibility(is_outgoing ? View.VISIBLE : View.GONE);
+		holder.setTextSize(mTextSize);
+		holder.incoming_text.setText(Html.fromHtml(cursor.getString(mIndices.text)));
+		holder.outgoing_text.setText(Html.fromHtml(cursor.getString(mIndices.text)));
+		mLinkify.applyAllLinks(holder.incoming_text, account_id, false);
+		mLinkify.applyAllLinks(holder.outgoing_text, account_id, false);
+		holder.incoming_text.setMovementMethod(null);
+		holder.outgoing_text.setMovementMethod(null);
+		holder.incoming_time.setText(formatToLongTimeString(mContext, message_timestamp));
+		holder.outgoing_time.setText(formatToLongTimeString(mContext, message_timestamp));
+		holder.incoming_profile_image_container.setVisibility(mDisplayProfileImage ? View.VISIBLE : View.GONE);
+		holder.outgoing_profile_image_container.setVisibility(mDisplayProfileImage ? View.VISIBLE : View.GONE);
+		if (mDisplayProfileImage) {
+			final String profile_image_url_string = cursor.getString(mIndices.sender_profile_image_url);
+			mImageLoader.displayProfileImage(holder.incoming_profile_image, profile_image_url_string);
+			mImageLoader.displayProfileImage(holder.outgoing_profile_image, profile_image_url_string);
+			holder.incoming_profile_image.setTag(position);
+			holder.outgoing_profile_image.setTag(position);
+		}
+		if (position > mMaxAnimationPosition) {
+			if (mAnimationEnabled) {
+				view.startAnimation(holder.item_animation);
+			}
+			mMaxAnimationPosition = position;
+		}
+		holder.incoming_item_menu.setTag(position);
+		holder.outgoing_item_menu.setTag(position);
+		super.bindView(view, context, cursor);
+	}
+
+	@Override
+	public ParcelableDirectMessage findItem(final long id) {
+		for (int i = 0, count = getCount(); i < count; i++) {
+			if (getItemId(i) == id) return getDirectMessage(i);
+		}
+		return null;
+	}
+
+	public ParcelableDirectMessage getDirectMessage(final int position) {
+		final Cursor c = getCursor();
+		if (c == null || c.isClosed()) return null;
+		c.moveToPosition(position);
+		final long account_id = c.getLong(mIndices.account_id);
+		final long message_id = c.getLong(mIndices.message_id);
+		return findDirectMessageInDatabases(mContext, account_id, message_id);
+	}
+
+	@Override
+	public View newView(final Context context, final Cursor cursor, final ViewGroup parent) {
+		final View view = super.newView(context, cursor, parent);
+		final Object tag = view.getTag();
+		if (!(tag instanceof DirectMessageConversationViewHolder)) {
+			final DirectMessageConversationViewHolder holder = new DirectMessageConversationViewHolder(view);
+			view.setTag(holder);
+			holder.incoming_profile_image.setOnClickListener(this);
+			holder.outgoing_profile_image.setOnClickListener(this);
+			holder.incoming_item_menu.setOnClickListener(this);
+			holder.outgoing_item_menu.setOnClickListener(this);
+		}
+		return view;
+	}
+
+	@Override
+	public void onClick(final View view) {
+		if (mMultiSelectManager.isActive()) return;
+		final Object tag = view.getTag();
+		final int position = tag instanceof Integer ? (Integer) tag : -1;
+		if (position == -1) return;
+		switch (view.getId()) {
+			case R.id.incoming_profile_image:
+			case R.id.outgoing_profile_image: {
+				final ParcelableDirectMessage message = getDirectMessage(position);
+				if (message == null) return;
+				if (mContext instanceof Activity) {
+					openUserProfile((Activity) mContext, message.account_id, message.sender_id,
+							message.sender_screen_name);
+				}
+				break;
+			}
+			case R.id.incoming_item_menu:
+			case R.id.outgoing_item_menu: {
+				if (position == -1 || mListener == null) return;
+				mListener.onMenuButtonClick(view, position, getItemId(position));
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void setAnimationEnabled(final boolean anim) {
+		if (mAnimationEnabled == anim) return;
+		mAnimationEnabled = anim;
+	}
+
+	@Override
+	public void setDisplayNameFirst(final boolean name_first) {
+
+	}
+
+	@Override
+	public void setDisplayProfileImage(final boolean display) {
+		if (display != mDisplayProfileImage) {
+			mDisplayProfileImage = display;
+			notifyDataSetChanged();
+		}
+	}
+
+	@Override
+	public void setLinkHighlightColor(final int color) {
+		if (color == mLinkHighlightColor) return;
+		mLinkHighlightColor = color;
+		mLinkify.setHighlightColor(color);
+		notifyDataSetChanged();
+	}
+
+	@Override
+	public void setLinkHighlightOption(final String option) {
+		final int option_int = getLinkHighlightOptionInt(option);
+		if (option_int == mLinkHighlightOption) return;
+		mLinkHighlightOption = option_int;
+		switch (option_int) {
+			case LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT:
+			case LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE:
+				mLinkify.setHighlightOption(option_int);
+				break;
+			default:
+				mLinkify.setHighlightOption(LINK_HIGHLIGHT_OPTION_CODE_BOTH);
+		}
+		notifyDataSetChanged();
+	}
+
+	@Override
+	public void setMaxAnimationPosition(final int position) {
+		mMaxAnimationPosition = position;
+	}
+
+	@Override
+	public void setMenuButtonClickListener(final MenuButtonClickListener listener) {
+		mListener = listener;
+	}
+
+	@Override
+	public void setNicknameOnly(final boolean nickname_only) {
+
+	}
+
+	@Override
+	public void setTextSize(final float text_size) {
+		if (text_size != mTextSize) {
+			mTextSize = text_size;
+			notifyDataSetChanged();
+		}
+	}
+
+	@Override
+	public Cursor swapCursor(final Cursor cursor) {
+		if (cursor != null) {
+			mIndices = new DirectMessageCursorIndices(cursor);
+		} else {
+			mIndices = null;
+		}
+		return super.swapCursor(cursor);
+	}
+}

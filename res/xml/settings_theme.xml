@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	android:title="@string/theme">
+
+	<PreferenceCategory
+		android:key="cat_theme_preview"
+		android:title="@string/preview">
+		<org.mariotaku.twidere.preference.ThemePreviewPreference android:key="theme_preview"/>
+	</PreferenceCategory>
+
+	<ListPreference
+		android:defaultValue="twidere"
+		android:entries="@array/entries_theme"
+		android:entryValues="@array/values_theme"
+		android:key="theme"
+		android:summary="%s"
+		android:title="@string/theme"/>
+	<ListPreference
+		android:defaultValue="default"
+		android:entries="@array/entries_theme_background"
+		android:entryValues="@array/values_theme_background"
+		android:key="theme_background"
+		android:summary="%s"
+		android:title="@string/theme_background"/>
+
+	<org.mariotaku.twidere.preference.ColorPickerPreference
+		android:defaultValue="@android:color/holo_blue_dark"
+		android:key="theme_color"
+		android:title="@string/theme_color"/>
+
+</PreferenceScreen>

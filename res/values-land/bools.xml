@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<bool name="tab_display_label">true</bool>
+	<bool name="home_display_icon">true</bool>
+	<bool name="shadow_slidable">false</bool>
+
+</resources>

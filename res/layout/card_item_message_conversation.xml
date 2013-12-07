@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="?android:attr/activatedBackgroundIndicator"
+	android:descendantFocusability="blocksDescendants"
+	android:padding="8dp">
+
+	<RelativeLayout
+		android:id="@+id/incoming_message_container"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<FrameLayout
+			android:id="@+id/incoming_profile_image_container"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_alignTop="@+id/incoming_message_content_frame"
+			android:layout_marginRight="-12.5dp"
+			android:background="?cardItemMessageProfileImageIncomingBackground">
+
+			<org.mariotaku.twidere.view.ForegroundImageView
+				android:id="@+id/incoming_profile_image"
+				android:layout_width="@dimen/icon_size_card_list_item"
+				android:layout_height="@dimen/icon_size_card_list_item"
+				android:foreground="?android:selectableItemBackground"
+				android:scaleType="fitCenter"
+				android:src="@drawable/ic_profile_image_default"/>
+		</FrameLayout>
+
+		<org.mariotaku.twidere.view.MessageCardItemFrameLayout
+			android:id="@+id/incoming_message_content_frame"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@+id/incoming_profile_image_container"
+			android:background="?cardItemMessageIncomingBackground">
+
+			<LinearLayout
+				android:id="@+id/incoming_message_content"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:minHeight="@dimen/icon_size_card_list_item"
+				android:orientation="vertical"
+				android:padding="@dimen/element_spacing_default">
+
+				<org.mariotaku.twidere.view.HandleSpanClickTextView
+					android:id="@+id/incoming_text"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingRight="16dp"
+					android:textAppearance="?android:attr/textAppearanceSmall"
+					android:textColor="?android:attr/textColorSecondary"/>
+
+				<TextView
+					android:id="@+id/incoming_time"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="?android:attr/textColorSecondary"/>
+			</LinearLayout>
+		</org.mariotaku.twidere.view.MessageCardItemFrameLayout>
+
+		<org.mariotaku.twidere.view.ListMenuOverflowButton
+			android:id="@+id/incoming_item_menu"
+			android:layout_width="@dimen/item_menu_width_default"
+			android:layout_height="@dimen/item_menu_height_default"
+			android:layout_alignRight="@+id/incoming_message_content_frame"
+			android:layout_alignTop="@+id/incoming_message_content_frame"
+			android:clickable="true"
+			android:paddingBottom="@dimen/item_menu_padding_bottom_default"
+			android:paddingLeft="@dimen/item_menu_padding_end_default"
+			android:paddingRight="@dimen/item_menu_padding_start_default"
+			android:paddingTop="@dimen/item_menu_padding_top_default"/>
+	</RelativeLayout>
+
+	<RelativeLayout
+		android:id="@+id/outgoing_message_container"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<FrameLayout
+			android:id="@+id/outgoing_profile_image_container"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignBottom="@+id/outgoing_message_content_container"
+			android:layout_alignParentRight="true"
+			android:layout_marginLeft="-12.5dp"
+			android:background="?cardItemMessageProfileImageOutgoingBackground">
+
+			<org.mariotaku.twidere.view.ForegroundImageView
+				android:id="@+id/outgoing_profile_image"
+				android:layout_width="@dimen/icon_size_card_list_item"
+				android:layout_height="@dimen/icon_size_card_list_item"
+				android:foreground="?android:selectableItemBackground"
+				android:scaleType="fitCenter"
+				android:src="@drawable/ic_profile_image_default"/>
+		</FrameLayout>
+
+		<org.mariotaku.twidere.view.MessageCardItemFrameLayout
+			android:id="@+id/outgoing_message_content_container"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toLeftOf="@+id/outgoing_profile_image_container"
+			android:background="?cardItemMessageOutgoingBackground">
+
+			<LinearLayout
+				android:id="@+id/outgoing_message_content"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:minHeight="@dimen/icon_size_card_list_item"
+				android:orientation="vertical"
+				android:padding="@dimen/element_spacing_default">
+
+				<org.mariotaku.twidere.view.HandleSpanClickTextView
+					android:id="@+id/outgoing_text"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingLeft="16dp"
+					android:textAppearance="?android:attr/textAppearanceSmall"
+					android:textColor="?android:attr/textColorSecondary"/>
+
+				<TextView
+					android:id="@+id/outgoing_time"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="?android:attr/textColorSecondary"/>
+			</LinearLayout>
+		</org.mariotaku.twidere.view.MessageCardItemFrameLayout>
+
+		<org.mariotaku.twidere.view.ListMenuOverflowButton
+			android:id="@+id/outgoing_item_menu"
+			android:layout_width="@dimen/item_menu_width_default"
+			android:layout_height="@dimen/item_menu_height_default"
+			android:layout_alignLeft="@+id/outgoing_message_content_container"
+			android:layout_alignTop="@+id/outgoing_message_content_container"
+			android:clickable="true"
+			android:paddingBottom="@dimen/item_menu_padding_bottom_default"
+			android:paddingLeft="@dimen/item_menu_padding_start_default"
+			android:paddingRight="@dimen/item_menu_padding_end_default"
+			android:paddingTop="@dimen/item_menu_padding_top_default"/>
+	</RelativeLayout>
+
+</FrameLayout>

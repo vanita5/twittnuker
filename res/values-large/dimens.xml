@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<dimen name="pane_spacing_left">150dp</dimen>
+	<dimen name="pane_spacing_right">150dp</dimen>
+	<dimen name="icon_size_wizard_large">480dp</dimen>
+	<dimen name="default_dualpane_shadow_width">6dp</dimen>
+	<dimen name="left_drawer_width">320dp</dimen>
+	<dimen name="accounts_drawer_name_size">18sp</dimen>
+	<dimen name="accounts_drawer_screen_name_size">16sp</dimen>
+	<dimen name="accounts_drawer_default_indicator_size">14sp</dimen>
+	<dimen name="accounts_drawer_switch_label_size">18sp</dimen>
+	<dimen name="accounts_drawer_child_size">18sp</dimen>
+	<dimen name="text_size_wizard_title">96sp</dimen>
+	<dimen name="text_size_wizard_text">32sp</dimen>
+	<dimen name="text_size_wizard_nav_item">36sp</dimen>
+	<dimen name="line_indicator_line_width_wizard">32dp</dimen>
+	<dimen name="line_indicator_stroke_width_wizard">4dp</dimen>
+	<dimen name="home_actions_item_width">68dp</dimen>
+	<dimen name="home_actions_button_size">64dp</dimen>
+
+</resources>

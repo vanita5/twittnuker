@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<style name="Widget.Twidere.ActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse">
+		<item name="android:background">@drawable/ab_twidere_solid_color_holo</item>
+		<item name="android:actionButtonStyle">@style/Widget.Twidere.ActionButton</item>
+	</style>
+
+	<style name="Widget.Twidere.ActionBar.Dark" parent="android:Widget.Holo.ActionBar.Solid">
+		<item name="android:background">@drawable/ab_twidere_solid_dark_holo</item>
+		<item name="android:actionButtonStyle">@style/Widget.Twidere.ActionButton</item>
+	</style>
+
+	<style name="Widget.Twidere.ActionBar.Light" parent="android:Widget.Holo.Light.ActionBar.Solid">
+		<item name="android:background">@drawable/ab_twidere_solid_light_holo</item>
+		<item name="android:actionButtonStyle">@style/Widget.Twidere.Light.ActionButton</item>
+	</style>
+
+	<style name="Widget.Twidere.ActionBar.Light.DarkActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse">
+		<item name="android:background">@drawable/ab_twidere_solid_dark_holo</item>
+		<item name="android:actionButtonStyle">@style/Widget.Twidere.ActionButton</item>
+	</style>
+
+	<style name="Widget.Twidere.Viewer.ActionBar" parent="android:Widget.Holo.ActionBar">
+		<item name="android:background">#80000000</item>
+	</style>
+
+	<style name="Widget.Twidere.ImageButton.Borderless" parent="android:Widget.Holo.ImageButton">
+		<item name="android:background">?android:attr/selectableItemBackground</item>
+	</style>
+
+	<style name="Widget.Twidere.Light.ImageButton.Borderless" parent="android:Widget.Holo.Light.ImageButton">
+		<item name="android:background">?android:attr/selectableItemBackground</item>
+	</style>
+
+	<style name="Widget.Twidere.SelectableView" parent="android:Widget.Holo">
+		<item name="android:background">?android:attr/selectableItemBackground</item>
+	</style>
+
+	<style name="Widget.Twidere.Light.SelectableView" parent="android:Widget.Holo.Light">
+		<item name="android:background">?android:attr/selectableItemBackground</item>
+	</style>
+
+	<style name="Widget.Twidere.TextView" parent="android:Widget.Holo.TextView">
+		<item name="android:fontFamily">sans-serif-light</item>
+	</style>
+
+	<style name="Widget.Twidere.Light.TextView" parent="android:Widget.Holo.Light.TextView">
+		<item name="android:fontFamily">sans-serif-light</item>
+	</style>
+
+	<style name="Widget.Twidere.CompoundButton.RadioButton" parent="android:Widget.Holo.CompoundButton.RadioButton">
+		<item name="android:fontFamily">sans-serif-light</item>
+	</style>
+
+	<style name="Widget.Twidere.Light.CompoundButton.RadioButton" parent="android:Widget.Holo.Light.CompoundButton.RadioButton">
+		<item name="android:fontFamily">sans-serif-light</item>
+	</style>
+
+	<style name="Widget.Twidere.CompoundButton.CheckBox" parent="android:Widget.Holo.CompoundButton.CheckBox">
+		<item name="android:fontFamily">sans-serif-light</item>
+	</style>
+
+	<style name="Widget.Twidere.Light.CompoundButton.CheckBox" parent="android:Widget.Holo.Light.CompoundButton.CheckBox">
+		<item name="android:fontFamily">sans-serif-light</item>
+	</style>
+
+	<style name="Widget.Twidere.ActionButton" parent="android:Widget.Holo.ActionButton">
+		<item name="android:background">?android:attr/selectableItemBackground</item>
+	</style>
+
+	<style name="Widget.Twidere.Light.ActionButton" parent="android:Widget.Holo.Light.ActionButton">
+		<item name="android:background">?android:attr/selectableItemBackground</item>
+	</style>
+
+	<style name="Widget.Twidere.Spinner" parent="android:Widget.Holo.Spinner">
+		<item name="android:background">@drawable/spinner_background_holo_dark</item>
+		<item name="android:dropDownSelector">@drawable/list_selector_holo_dark</item>
+	</style>
+
+	<style name="Widget.Twidere.Spinner.DropDown"></style>
+
+	<style name="Widget.Twidere.Spinner.DropDown.ActionBar">
+		<item name="android:background">@drawable/spinner_ab_holo_dark</item>
+	</style>
+
+	<style name="Widget.Twidere.Light.Spinner" parent="android:Widget.Holo.Light.Spinner">
+		<item name="android:background">@drawable/spinner_background_holo_light</item>
+		<item name="android:dropDownSelector">@drawable/list_selector_holo_light</item>
+	</style>
+
+	<style name="Widget.Twidere.Light.Spinner.DropDown"></style>
+
+	<style name="Widget.Twidere.Light.Spinner.DropDown.ActionBar">
+		<item name="android:background">@drawable/spinner_ab_holo_light</item>
+	</style>
+
+	<style name="Widget.Twidere.Dark.ActionBar.TabView" parent="@android:style/Widget.Holo.ActionBar.TabView">
+		<item name="android:background">@drawable/tab_indicator_ab_twidere_dark</item>
+	</style>
+
+	<style name="Widget.Twidere.Light.ActionBar.TabView" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
+		<item name="android:background">@drawable/tab_indicator_ab_twidere_light</item>
+	</style>
+
+	<style name="Animation.Twidere.Activity" parent="android:Animation.Activity">
+		<item name="android:activityOpenEnterAnimation">@anim/activity_open_enter</item>
+		<item name="android:activityOpenExitAnimation">@anim/activity_open_exit</item>
+		<item name="android:activityCloseEnterAnimation">@anim/activity_close_enter</item>
+		<item name="android:activityCloseExitAnimation">@anim/activity_close_exit</item>
+	</style>
+
+	<style name="Widget.TabPageIndicator.TabItem" parent="@android:style/Widget">
+		<item name="android:background">@drawable/tab_indicator_vpi_nocolor</item>
+	</style>
+
+	<style name="Widget.TabPageIndicator.TabItem.Content" parent="@android:style/Widget">
+		<item name="android:gravity">center</item>
+		<item name="android:paddingLeft">8dp</item>
+		<item name="android:paddingRight">8dp</item>
+		<item name="android:paddingTop">6dp</item>
+		<item name="android:paddingBottom">6dp</item>
+		<item name="android:orientation">horizontal</item>
+	</style>
+
+	<style name="Widget.TabPageIndicator.TabItem.TextView" parent="@android:style/Widget.Holo.TextView">
+		<item name="android:textAppearance">@style/TextAppearance.TabPageIndicator</item>
+		<item name="android:textColor">#fff3f3f3</item>
+		<item name="android:textStyle">bold</item>
+		<item name="android:layout_gravity">center</item>
+		<item name="android:gravity">center</item>
+		<item name="android:paddingTop">4dp</item>
+		<item name="android:paddingBottom">4dp</item>
+		<item name="android:singleLine">true</item>
+	</style>
+
+	<style name="Widget.TabPageIndicator.TabItem.TextView.Dark">
+		<item name="android:textColor">#fff3f3f3</item>
+	</style>
+
+	<style name="Widget.TabPageIndicator.TabItem.TextView.Light">
+		<item name="android:textColor">#ff000000</item>
+	</style>
+
+	<style name="Widget.TabPageIndicator.TabItem.TextView.Light.DarkActionBar">
+		<item name="android:textColor">#fff3f3f3</item>
+	</style>
+
+	<style name="TextAppearance.TabPageIndicator" parent="@android:style/TextAppearance.Small"/>
+
+	<style name="SwipeBackLayout">
+		<item name="edgeSize">16dip</item>
+		<item name="shadowLeft">@drawable/shadow_left</item>
+		<item name="shadowRight">@drawable/shadow_right</item>
+		<item name="shadowBottom">@drawable/shadow_bottom</item>
+		<item name="scalePercent">@fraction/swipeback_scale_exit</item>
+		<item name="scrimAlpha">0.75</item>
+	</style>
+
+</resources>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	tools:context=".activity.EditCustomTabActivity">
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:padding="16dp">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_vertical"
+				android:orientation="horizontal">
+
+				<Spinner
+					android:id="@+id/tab_icon_spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:padding="@dimen/element_spacing_default"
+					tools:listitem="@layout/custom_tab_icon_spinner_item"/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:padding="@dimen/element_spacing_default">
+
+					<TextView
+						android:id="@+id/tab_type_name"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:paddingLeft="@dimen/element_spacing_default"
+						android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+					<EditText
+						android:id="@+id/tab_name"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:hint="@string/name"
+						android:textAppearance="?android:attr/textAppearanceMedium"/>
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/account_container"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
+
+				<TextView
+					style="?android:listSeparatorTextViewStyle"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="@string/account"/>
+
+				<Spinner
+					android:id="@+id/account_spinner"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:padding="@dimen/element_spacing_default"
+					tools:listitem="@layout/two_line_list_item_small"/>
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/secondary_field_container"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
+
+				<TextView
+					android:id="@+id/secondary_field_label"
+					style="?android:listSeparatorTextViewStyle"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="@string/user"/>
+
+				<FrameLayout
+					android:id="@+id/secondary_field"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:background="?android:selectableItemBackground"
+					android:clickable="true"
+					android:onClick="onClick"
+					android:padding="@dimen/element_spacing_default">
+
+					<include layout="@layout/two_line_list_item_small"/>
+				</FrameLayout>
+			</LinearLayout>
+		</LinearLayout>
+	</ScrollView>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="0.2dp"
+		android:background="#40808080"/>
+
+	<Button
+		android:id="@+id/save"
+		style="?android:borderlessButtonStyle"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/button_bar_height"
+		android:layout_gravity="center_horizontal"
+		android:gravity="center"
+		android:onClick="onClick"
+		android:text="@android:string/ok"/>
+
+</LinearLayout>
