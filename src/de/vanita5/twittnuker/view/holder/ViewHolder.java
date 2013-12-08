@@ -5,7 +5,6 @@ import android.view.View;
 
 import de.vanita5.twittnuker.Constants;
 
-
 public class ViewHolder implements Constants {
 
 	public View view;
@@ -15,11 +14,11 @@ public class ViewHolder implements Constants {
 		this.view = view;
 	}
 
-	protected View findViewById(final int id) {
+	public View findViewById(final int id) {
 		return view.findViewById(id);
 	}
 
-	protected Context getContext() {
+	public Context getContext() {
 		return view.getContext();
 	}
 

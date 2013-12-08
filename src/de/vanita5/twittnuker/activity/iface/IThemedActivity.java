@@ -22,11 +22,15 @@
 
 package de.vanita5.twittnuker.activity.iface;
 
+import android.content.res.Resources;
+
 public interface IThemedActivity {
 
 	public int getCurrentThemeResource();
 
 	public void navigateUpFromSameTask();
+	
+	public Resources getDefaultResources();
 
 	public void overrideCloseAnimationIfNeeded();
 

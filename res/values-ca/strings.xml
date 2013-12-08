@@ -176,7 +176,7 @@
   <string name="refresh_interval">Interval d\'actualizació</string>
   <string name="refresh_interval_summary">Els intervals de refresc curts utilitzen més bateria i ús de dades.</string>
   <string name="content_to_refresh">Contingut per actualitzar</string>
-  <string name="content_to_nofity">Contingut per notificar</string>
+  <string name="content_to_notify">Contingut per notificar</string>
   <string name="notifications_type">Tipus de notificacions</string>
   <string name="notifications_type_summary">Aquesta opció NO modificarà configuracions del sistema.</string>
   <string name="sound">So</string>
@@ -197,8 +197,8 @@
   <string name="type_to_compose">Escriu per redactar</string>
   <string name="users_lists">Llistes de l\'usuari</string>
   <string name="lists_following_user">Llistes que segueixen a aquest usuari</string>
-  <string name="Nstatuses_quantity_one">Tens una nova piulada.</string>
-  <string name="Nstatuses_quantity_other">Tens <xliff:g id="items">%d</xliff:g> piulades noves.</string>
+  <string name="you_have_N_new_statuses_quantity_one">Tens una nova piulada.</string>
+  <string name="you_have_N_new_statuses_quantity_other">Tens <xliff:g id="items">%d</xliff:g> piulades noves.</string>
   <string name="item_1_minute">1 minut</string>
   <string name="item_3_minutes">3 minuts</string>
   <string name="item_5_minutes">5 minuts</string>

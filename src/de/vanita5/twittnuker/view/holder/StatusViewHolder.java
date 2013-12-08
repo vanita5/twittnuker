@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -26,6 +26,7 @@ import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -42,7 +43,7 @@ public class StatusViewHolder extends CardViewHolder {
 	public final TextView name, screen_name, reply_retweet_status;
 	public final ShortTimeView time;
 	public final TextView text;
-	public final View image_preview_container;
+	public final ViewGroup image_preview_container;
 	public final ProgressBar image_preview_progress;
 	public final IColorLabelView content;
 	private final View gap_indicator;
@@ -59,7 +60,7 @@ public class StatusViewHolder extends CardViewHolder {
 		final Context context = getContext();
 		content = (IColorLabelView) findViewById(R.id.content);
 		gap_indicator = findViewById(R.id.gap_indicator);
-		image_preview_container = findViewById(R.id.image_preview_container);
+		image_preview_container = (ViewGroup) findViewById(R.id.image_preview_container);
 		profile_image = (ImageView) findViewById(R.id.profile_image);
 		my_profile_image = (ImageView) findViewById(R.id.my_profile_image);
 		image_preview = (ImageView) findViewById(R.id.image_preview);
@@ -116,7 +117,7 @@ public class StatusViewHolder extends CardViewHolder {
 		final String display_name = getDisplayName(getContext(), user_id, name, screen_name, name_first, nickname_only,
 				false);
 		reply_retweet_status.setText(getString(R.string.in_reply_to, display_name));
-		reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_reply, 0, 0, 0);
+		reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_conversation, 0, 0, 0);
 	}
 
 	public void setRetweetedBy(final long count, final long user_id, final String name, final String screen_name) {
@@ -146,14 +147,15 @@ public class StatusViewHolder extends CardViewHolder {
 		time.setCompoundDrawablesWithIntrinsicBounds(0, 0, res, 0);
 	}
 
-	public void setTextSize(final float text_size) {
-		if (this.text_size == text_size) return;
+	public boolean setTextSize(final float text_size) {
+		if (this.text_size == text_size) return false;
 		this.text_size = text_size;
 		text.setTextSize(text_size);
 		name.setTextSize(text_size);
 		screen_name.setTextSize(text_size * 0.75f);
 		time.setTextSize(text_size * 0.65f);
 		reply_retweet_status.setTextSize(text_size * 0.65f);
+		return true;
 	}
 
 	public void setUserColor(final int color) {

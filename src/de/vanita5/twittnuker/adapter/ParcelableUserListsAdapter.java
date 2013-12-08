@@ -1,7 +1,10 @@
 /*
  *			Twittnuker - Twitter client for Android
- * 
- * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *
+ * Copyright (C) 2013 vanita5 <mail@vanita5.de>
+ *
+ * This program incorporates a modified version of Twidere.
+ * Copyright (C) 2012-2013 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,12 +40,13 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.UserListViewHolder;
 
 import java.util.List;
 import java.util.Locale;
 
-public class ParcelableUserListsAdapter extends ArrayAdapter<ParcelableUserList> implements IBaseCardAdapter,
+public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserList> implements IBaseCardAdapter,
 		OnClickListener {
 
 	private final Context mContext;
@@ -50,14 +54,17 @@ public class ParcelableUserListsAdapter extends ArrayAdapter<ParcelableUserList>
 	private final MultiSelectManager mMultiSelectManager;
 	private final Locale mLocale;
 
-	private boolean mDisplayProfileImage, mDisplayNameFirst, mNicknameOnly, mAnimationEnabled;
-	private float mTextSize;
+	private boolean mAnimationEnabled;
 	private int mMaxAnimationPosition;
 
 	private MenuButtonClickListener mListener;
 
 	public ParcelableUserListsAdapter(final Context context) {
-		super(context, R.layout.card_item_user_list);
+		this(context, Utils.isCompactCards(context));
+	}
+
+	public ParcelableUserListsAdapter(final Context context, final boolean compactCards) {
+		super(context, getItemResource(compactCards));
 		mContext = context;
 		mLocale = context.getResources().getConfiguration().locale;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
@@ -88,18 +95,22 @@ public class ParcelableUserListsAdapter extends ArrayAdapter<ParcelableUserList>
 			holder.item_menu.setOnClickListener(this);
 			view.setTag(holder);
 		}
+
+		// Clear images in prder to prevent images in recycled view shown.
+		holder.profile_image.setImageDrawable(null);
+
 		final ParcelableUserList user_list = getItem(position);
 		final String display_name = getDisplayName(mContext, user_list.user_id, user_list.user_name,
-				user_list.user_screen_name, mDisplayNameFirst, mNicknameOnly, false);
-		holder.setTextSize(mTextSize);
+				user_list.user_screen_name, isDisplayNameFirst(), isNicknameOnly(), false);
+		holder.setTextSize(getTextSize());
 		holder.name.setText(user_list.name);
 		holder.created_by.setText(mContext.getString(R.string.created_by, display_name));
 		holder.description.setVisibility(TextUtils.isEmpty(user_list.description) ? View.GONE : View.VISIBLE);
 		holder.description.setText(user_list.description);
 		holder.members_count.setText(getLocalizedNumber(mLocale, user_list.members_count));
 		holder.subscribers_count.setText(getLocalizedNumber(mLocale, user_list.subscribers_count));
-		holder.profile_image.setVisibility(mDisplayProfileImage ? View.VISIBLE : View.GONE);
-		if (mDisplayProfileImage) {
+		holder.profile_image.setVisibility(isDisplayProfileImage() ? View.VISIBLE : View.GONE);
+		if (isDisplayProfileImage()) {
 			mProfileImageLoader.displayProfileImage(holder.profile_image, user_list.user_profile_image_url);
 		}
 		holder.profile_image.setTag(position);
@@ -154,30 +165,6 @@ public class ParcelableUserListsAdapter extends ArrayAdapter<ParcelableUserList>
 	}
 
 	@Override
-	public void setDisplayNameFirst(final boolean name_first) {
-		if (mDisplayNameFirst == name_first) return;
-		mDisplayNameFirst = name_first;
-		notifyDataSetChanged();
-	}
-
-	@Override
-	public void setDisplayProfileImage(final boolean display) {
-		if (display != mDisplayProfileImage) {
-			mDisplayProfileImage = display;
-			notifyDataSetChanged();
-		}
-	}
-
-	@Override
-	public void setLinkHighlightColor(final int color) {
-	}
-
-	@Override
-	public void setLinkHighlightOption(final String option) {
-
-	}
-
-	@Override
 	public void setMaxAnimationPosition(final int position) {
 		mMaxAnimationPosition = position;
 	}
@@ -187,18 +174,7 @@ public class ParcelableUserListsAdapter extends ArrayAdapter<ParcelableUserList>
 		mListener = listener;
 	}
 
-	@Override
-	public void setNicknameOnly(final boolean nickname_only) {
-		if (mNicknameOnly == nickname_only) return;
-		mNicknameOnly = nickname_only;
-		notifyDataSetChanged();
-	}
-
-	@Override
-	public void setTextSize(final float text_size) {
-		if (text_size != mTextSize) {
-			mTextSize = text_size;
-			notifyDataSetChanged();
-		}
+	private static int getItemResource(final boolean compactCards) {
+		return compactCards ? R.layout.card_item_user_list_compact : R.layout.card_item_user_list;
 	}
 }

@@ -1,7 +1,6 @@
 package de.vanita5.twittnuker.preference;
 
 import android.content.Context;
-import android.preference.ListPreference;
 import android.text.SpannableString;
 import android.util.AttributeSet;
 
@@ -9,7 +8,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.text.TwidereHighLightStyle;
 
-public class LinkHighlightPreference extends ListPreference implements Constants {
+public class LinkHighlightPreference extends AutoInvalidateListPreference implements Constants {
 
 	private static final int[] ENTRIES_RES = { R.string.none, R.string.highlight, R.string.underline, R.string.both };
 	private static final String[] VALUES = { LINK_HIGHLIGHT_OPTION_NONE, LINK_HIGHLIGHT_OPTION_HIGHLIGHT,

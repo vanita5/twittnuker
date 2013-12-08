@@ -1,10 +1,13 @@
 package de.vanita5.twittnuker.util;
 
+import android.os.StrictMode;
+import android.os.StrictMode.ThreadPolicy;
+import android.os.StrictMode.VmPolicy;
 import android.util.Log;
 
 public class StrictModeUtils {
 
-	public static final String LOGTAG = "Twittnuker.StrictMode";
+	public static final String LOGTAG = "Twidere.StrictMode";
 	public static final String CLASS_NAME = StrictModeUtils.class.getName();
 
 	public static void checkDiskIO() {
@@ -28,6 +31,20 @@ public class StrictModeUtils {
 				log_counter = 0;
 			}
 		}
+	}
+
+	public static void detectAllThreadPolicy() {
+		final ThreadPolicy.Builder threadPolicyBuilder = new ThreadPolicy.Builder();
+		threadPolicyBuilder.detectAll();
+		threadPolicyBuilder.penaltyLog();
+		StrictMode.setThreadPolicy(threadPolicyBuilder.build());
+	}
+
+	public static void detectAllVmPolicy() {
+		final VmPolicy.Builder vmPolicyBuilder = new VmPolicy.Builder();
+		vmPolicyBuilder.detectAll();
+		vmPolicyBuilder.penaltyLog();
+		StrictMode.setVmPolicy(vmPolicyBuilder.build());
 	}
 
 }

@@ -3,69 +3,168 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content">
 
-	<de.vanita5.twittnuker.view.ColorLabelRelativeLayout
+	<de.vanita5.twittnuker.view.CardItemGapView
+		android:id="@+id/gap_indicator"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/element_size_default"
+		android:background="?android:selectableItemBackground"
+		android:gravity="center"
+		android:text="@string/tap_to_load_more"
+		android:textAppearance="?android:textAppearanceMedium"
+		android:textColor="?android:colorForeground"
+		android:textStyle="bold"
+		android:visibility="gone"/>
+
+	<de.vanita5.twittnuker.view.CardItemLinearLayout
 		android:id="@+id/content"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginBottom="4dp"
-		android:layout_marginLeft="8dp"
-		android:layout_marginRight="8dp"
-		android:layout_marginTop="4dp"
-		android:background="?cardItemBackground">
+		android:layout_marginBottom="@dimen/element_spacing_small"
+		android:layout_marginLeft="@dimen/element_spacing_default"
+		android:layout_marginRight="@dimen/element_spacing_default"
+		android:layout_marginTop="@dimen/element_spacing_small"
+		android:background="?cardItemBackground"
+		android:orientation="vertical">
 
-		<ImageView
-			android:id="@+id/profile_image"
-			android:layout_width="@dimen/icon_size_card_list_item"
-			android:layout_height="@dimen/icon_size_card_list_item"
-			android:contentDescription="@string/profile_image"
-			android:scaleType="fitCenter"/>
-
-		<TextView
-			android:id="@+id/title"
-			android:layout_width="wrap_content"
+		<LinearLayout
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_alignParentTop="true"
-			android:layout_alignWithParentIfMissing="true"
-			android:layout_marginLeft="4dp"
-			android:layout_toLeftOf="@+id/time"
-			android:layout_toRightOf="@+id/profile_image"
-			android:singleLine="false"
-			android:textAppearance="?android:attr/textAppearanceSmall"
-			android:textColor="?android:attr/textColorPrimary"
-			android:textStyle="bold"/>
+			android:baselineAligned="false"
+			android:gravity="center_vertical"
+			android:orientation="horizontal"
+			android:paddingBottom="@dimen/element_spacing_default"
+			android:paddingLeft="@dimen/element_spacing_default"
+			android:paddingRight="24dp"
+			android:paddingTop="@dimen/element_spacing_default">
 
-		<TextView
+			<de.vanita5.twittnuker.view.ForegroundImageView
+				android:id="@+id/profile_image"
+				android:layout_width="@dimen/icon_size_card_list_item"
+				android:layout_height="@dimen/icon_size_card_list_item"
+				android:layout_marginRight="@dimen/element_spacing_default"
+				android:layout_weight="0"
+				android:contentDescription="@string/profile_image"
+				android:foreground="?android:selectableItemBackground"
+				android:scaleType="fitCenter"/>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:gravity="center_vertical"
+					android:orientation="horizontal">
+
+					<FrameLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_weight="1">
+
+						<de.vanita5.twittnuker.view.HandleSpanClickTextView
+							android:id="@+id/name"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:singleLine="true"
+							android:textAppearance="?android:attr/textAppearanceSmall"
+							android:textColor="?android:attr/textColorPrimary"
+							android:textStyle="bold"/>
+					</FrameLayout>
+
+					<de.vanita5.twittnuker.view.ShortTimeView
+						android:id="@+id/time"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_weight="0"
+						android:drawablePadding="@dimen/element_spacing_small"
+						android:singleLine="true"
+						android:textColor="?android:attr/textColorSecondary"/>
+				</LinearLayout>
+
+				<de.vanita5.twittnuker.view.HandleSpanClickTextView
+					android:id="@+id/screen_name"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:singleLine="true"
+					android:textAppearance="?android:attr/textAppearanceSmall"
+					android:textColor="?android:attr/textColorSecondary"/>
+			</LinearLayout>
+
+			<de.vanita5.twittnuker.view.ForegroundImageView
+				android:id="@+id/my_profile_image"
+				android:layout_width="@dimen/icon_size_card_list_item"
+				android:layout_height="@dimen/icon_size_card_list_item"
+				android:layout_marginLeft="@dimen/element_spacing_default"
+				android:layout_weight="0"
+				android:contentDescription="@string/my_profile_image"
+				android:foreground="?android:selectableItemBackground"
+				android:scaleType="fitCenter"/>
+		</LinearLayout>
+
+		<View
+			android:id="@+id/divider"
+			android:layout_width="match_parent"
+			android:layout_height="0.2dp"
+			android:background="#40808080"/>
+
+		<de.vanita5.twittnuker.view.ImagePreviewContainer
+			android:id="@+id/image_preview_container"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:visibility="gone">
+
+			<de.vanita5.twittnuker.view.ForegroundImageView
+				android:id="@+id/image_preview"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:foreground="?android:selectableItemBackground"
+				android:scaleType="centerCrop"/>
+
+			<ProgressBar
+				android:id="@+id/image_preview_progress"
+				style="?android:attr/progressBarStyleHorizontal"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_margin="@dimen/element_spacing_large"/>
+		</de.vanita5.twittnuker.view.ImagePreviewContainer>
+
+		<de.vanita5.twittnuker.view.HandleSpanClickTextView
 			android:id="@+id/text"
-			android:layout_width="wrap_content"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_alignLeft="@+id/title"
-			android:layout_alignParentRight="true"
-			android:layout_alignWithParentIfMissing="true"
-			android:layout_below="@+id/title"
+			android:paddingBottom="@dimen/element_spacing_default"
+			android:paddingLeft="@dimen/element_spacing_default"
+			android:paddingRight="@dimen/element_spacing_default"
+			android:paddingTop="@dimen/element_spacing_default"
 			android:textAppearance="?android:attr/textAppearanceSmall"
 			android:textColor="?android:attr/textColorSecondary"/>
 
 		<TextView
-			android:id="@+id/time"
-			android:layout_width="wrap_content"
+			android:id="@+id/reply_retweet_status"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_alignBaseline="@+id/title"
-			android:layout_alignParentRight="true"
-			android:layout_alignWithParentIfMissing="true"
-			android:drawablePadding="4dp"
-			android:gravity="center_vertical|right"
+			android:drawablePadding="@dimen/element_spacing_small"
+			android:paddingBottom="@dimen/element_spacing_default"
+			android:paddingLeft="@dimen/element_spacing_default"
+			android:paddingRight="@dimen/element_spacing_default"
+			android:paddingTop="@dimen/element_spacing_small"
+			android:singleLine="true"
 			android:textColor="?android:attr/textColorSecondary"/>
 
 		<LinearLayout
 			android:id="@+id/activity_profile_image_container"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_alignWithParentIfMissing="true"
-			android:layout_below="@+id/text"
-			android:layout_marginLeft="18dp"
-			android:layout_marginTop="4dp"
-			android:layout_toRightOf="@+id/profile_image"
-			android:orientation="horizontal">
+			android:gravity="center_vertical"
+			android:orientation="horizontal"
+			android:paddingBottom="@dimen/element_spacing_default"
+			android:paddingLeft="@dimen/element_spacing_default"
+			android:paddingRight="@dimen/element_spacing_default"
+			android:paddingTop="@dimen/element_spacing_small">
 
 			<ImageView
 				android:id="@+id/activity_profile_image_1"
@@ -106,19 +205,27 @@
 				android:layout_margin="2dp"
 				android:contentDescription="@string/profile_image"
 				android:scaleType="fitCenter"/>
-		</LinearLayout>
 
-		<TextView
-			android:id="@+id/reply_status"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignWithParentIfMissing="true"
-			android:layout_below="@+id/activity_profile_image_container"
-			android:layout_toRightOf="@+id/profile_image"
-			android:drawablePadding="4dp"
-			android:paddingLeft="8dp"
-			android:paddingTop="4dp"
-			android:textColor="?android:attr/textColorSecondary"/>
-	</de.vanita5.twittnuker.view.ColorLabelRelativeLayout>
+			<TextView
+				android:id="@+id/activity_profile_image_more_number"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_margin="2dp"
+				android:layout_weight="1"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:textColor="?android:attr/textColorPrimary"
+				android:textStyle="bold"/>
+		</LinearLayout>
+	</de.vanita5.twittnuker.view.CardItemLinearLayout>
+
+	<de.vanita5.twittnuker.view.ListMenuOverflowButton
+		android:id="@+id/item_menu"
+		android:layout_width="@dimen/item_menu_width_default"
+		android:layout_height="@dimen/item_menu_height_default"
+		android:layout_gravity="right|top"
+		android:paddingBottom="@dimen/item_menu_padding_bottom_default"
+		android:paddingLeft="@dimen/item_menu_padding_start_default"
+		android:paddingRight="@dimen/item_menu_padding_end_default"
+		android:paddingTop="@dimen/item_menu_padding_top_default"/>
 
 </FrameLayout>

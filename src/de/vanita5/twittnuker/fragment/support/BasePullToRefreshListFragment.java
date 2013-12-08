@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -42,7 +42,6 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.pulltorefresh.TwidereHeaderTransformer;
-
 
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh.SetupWizard;
@@ -136,7 +135,7 @@ public abstract class BasePullToRefreshListFragment extends BaseSupportListFragm
 		builder.refreshOnUp(true);
 		builder.scrollDistance(DEFAULT_PULL_TO_REFRESH_SCROLL_DISTANCE);
 		builder.headerTransformer(new TwidereHeaderTransformer());
-		if (!isDetached()) {
+		if (!isDetached() && getActivity() != null) {
 			final SetupWizard wizard = ActionBarPullToRefresh.from(getActivity());
 			wizard.allChildrenArePullable();
 			wizard.listener(this);

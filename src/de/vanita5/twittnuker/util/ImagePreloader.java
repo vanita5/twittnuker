@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -31,7 +31,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import de.vanita5.twittnuker.Constants;
 
-
 import java.io.File;
 
 /**
@@ -53,14 +52,6 @@ public class ImagePreloader implements Constants {
 		mImageLoader = loader;
 		mDiscCache = loader.getDiscCache();
 		mHandler = new Handler();
-	}
-
-	/**
-	 * Cancels any downloads, shuts down the executor pool, and then purges the
-	 * caches.
-	 */
-	public void cancel() {
-		mImageLoader.destroy();
 	}
 
 	public File getCachedImageFile(final String url) {

@@ -64,7 +64,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PagerIndic
 	int mMaxTabWidth;
 
 	private int mSelectedTabIndex;
-	private final int mTabColor;
+	private final int mTabHighlightColor;
 	private boolean mSwitchingEnabled = true;
 
 	private boolean mDisplayLabel, mDisplayIcon = true;
@@ -99,12 +99,12 @@ public class TabPageIndicator extends HorizontalScrollView implements PagerIndic
 	public TabPageIndicator(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
 		setHorizontalScrollBarEnabled(false);
-		mTabColor = ThemeUtils.getUserThemeColor(context);
+		mShouldApplyColorFilterToTabIcons = ThemeUtils.shouldApplyColorFilterToTabIcons(context);
+		mTabHighlightColor = isInEditMode() ? 0 : ThemeUtils.getUserThemeColor(context);
+		mTabIconColor = isInEditMode() ? 0 : ThemeUtils.getActionIconColor(context);
 		mInflater = LayoutInflater.from(context);
 		mTabLayout = new LinearLayout(context);
 		mTabLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
-		mShouldApplyColorFilterToTabIcons = ThemeUtils.shouldApplyColorFilterToTabIcons(context);
-		mTabIconColor = ThemeUtils.getTabIconColor(context);
 		addView(mTabLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.MATCH_PARENT));
 	}
@@ -308,7 +308,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PagerIndic
 
 	private void addTab(final CharSequence label, final Drawable icon, final int index) {
 		// Workaround for not being able to pass a defStyle on pre-3.0
-		final TabView tabView = (TabView) mInflater.inflate(R.layout.vpi__tab, null);
+		final TabView tabView = (TabView) mInflater.inflate(R.layout.tab_item_vpi, null);
 		tabView.init(this, mDisplayLabel ? label : null, mDisplayIcon ? icon : null, index);
 		tabView.setFocusable(true);
 		tabView.setOnClickListener(mTabClickListener);
@@ -316,7 +316,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PagerIndic
 		tabView.setContentDescription(label);
 		mTabLayout.addView(tabView, new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1));
 		if (ThemeUtils.shouldApplyColorFilter(getContext())) {
-			ThemeUtils.applyBackground(tabView, mTabColor);
+			ThemeUtils.applyBackground(tabView, mTabHighlightColor);
 		}
 	}
 

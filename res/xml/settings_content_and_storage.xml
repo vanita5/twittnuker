@@ -46,8 +46,7 @@
 		<CheckBoxPreference
 			android:defaultValue="true"
 			android:key="link_to_quoted_tweet"
-			android:title="@string/link_to_quoted_status"
-			android:summary="@string/link_to_quoted_status_summary"/>
+			android:title="@string/link_to_quoted_status"/>
 
 		<EditTextPreference
 			android:defaultValue="[TITLE] - [TEXT]"
@@ -90,6 +89,7 @@
 			android:key="database_item_limit"
 			android:summary="@string/database_item_limit_summary"
 			android:title="@string/database_item_limit"
+			app:min="50"
 			app:max="500"/>
 
 		<de.vanita5.twittnuker.preference.ClearSearchHistoryPreference

@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.activity;
 
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import de.vanita5.twittnuker.Constants;
@@ -32,22 +33,26 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
-
 @SuppressLint("Registered")
 public class BaseActivity extends BaseThemedActivity implements Constants {
 
 	private boolean mInstanceStateSaved, mIsVisible, mIsOnTop;
 
-	public MessagesManager getMessagesManager() {
-		return getTwittnukerApplication() != null ? getTwittnukerApplication().getMessagesManager() : null;
+	@Override
+	public Resources getDefaultResources() {
+		return super.getResources();
 	}
 
-	public TwittnukerApplication getTwittnukerApplication() {
+	public MessagesManager getMessagesManager() {
+		return getTwidereApplication() != null ? getTwidereApplication().getMessagesManager() : null;
+	}
+
+	public TwittnukerApplication getTwidereApplication() {
 		return (TwittnukerApplication) getApplication();
 	}
 
 	public AsyncTwitterWrapper getTwitterWrapper() {
-		return getTwittnukerApplication() != null ? getTwittnukerApplication().getTwitterWrapper() : null;
+		return getTwidereApplication() != null ? getTwidereApplication().getTwitterWrapper() : null;
 	}
 
 	public boolean isOnTop() {

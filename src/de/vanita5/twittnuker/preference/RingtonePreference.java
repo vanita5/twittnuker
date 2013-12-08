@@ -24,13 +24,12 @@ import android.database.Cursor;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.preference.ListPreference;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ArrayUtils;
 
-public class RingtonePreference extends ListPreference {
+public class RingtonePreference extends AutoInvalidateListPreference {
 
 	private Ringtone[] mRingtones;
 	private String[] mEntries, mValues;

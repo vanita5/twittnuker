@@ -1,7 +1,10 @@
 /*
  *			Twittnuker - Twitter client for Android
- * 
- * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *
+ * Copyright (C) 2013 vanita5 <mail@vanita5.de>
+ *
+ * This program incorporates a modified version of Twidere.
+ * Copyright (C) 2012-2013 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +29,9 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
-
+import de.vanita5.twittnuker.util.Utils;
 
 public abstract class BaseThemedActivity extends Activity implements IThemedActivity {
 
@@ -74,6 +78,10 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
+		if (Utils.isDebugBuild()) {
+			StrictModeUtils.detectAllVmPolicy();
+			StrictModeUtils.detectAllThreadPolicy();
+		}
 		if (shouldOverrideActivityAnimation()) {
 			ThemeUtils.overrideActivityOpenAnimation(this);
 		}

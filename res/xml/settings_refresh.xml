@@ -9,7 +9,7 @@
 	<PreferenceCategory
 		android:key="cat_general"
 		android:title="@string/general">
-		<ListPreference
+		<de.vanita5.twittnuker.preference.AutoInvalidateListPreference
 			android:defaultValue="15"
 			android:entries="@array/entries_refresh_interval"
 			android:entryValues="@array/values_refresh_interval"
@@ -20,8 +20,7 @@
 		<CheckBoxPreference
 			android:defaultValue="true"
 			android:key="stop_auto_refresh_when_battery_low"
-			android:title="@string/stop_auto_refresh_when_battery_low"
-			android:summary="@string/stop_auto_refresh_when_battery_low_summary"/>
+			android:title="@string/stop_auto_refresh_when_battery_low"/>
 
 		<de.vanita5.twittnuker.preference.HomeRefreshContentPreference
 			android:key="home_refresh"

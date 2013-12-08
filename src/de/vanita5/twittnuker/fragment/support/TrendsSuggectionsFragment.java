@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -43,7 +43,6 @@ import de.vanita5.twittnuker.provider.TweetStore.CachedTrends;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 
-
 public class TrendsSuggectionsFragment extends BasePullToRefreshListFragment implements LoaderCallbacks<Cursor>,
 		Panes.Left {
 
@@ -60,10 +59,7 @@ public class TrendsSuggectionsFragment extends BasePullToRefreshListFragment imp
 		public void onReceive(final Context context, final Intent intent) {
 			if (getActivity() == null || !isAdded() || isDetached()) return;
 			final String action = intent.getAction();
-			if (BROADCAST_TRENDS_UPDATED.equals(action)) {
-				setRefreshComplete();
-				getLoaderManager().restartLoader(0, null, TrendsSuggectionsFragment.this);
-			} else if (BROADCAST_TASK_STATE_CHANGED.equals(action)) {
+			if (BROADCAST_TASK_STATE_CHANGED.equals(action)) {
 				updateRefreshState();
 			}
 		}
@@ -118,8 +114,8 @@ public class TrendsSuggectionsFragment extends BasePullToRefreshListFragment imp
 	@Override
 	public void onStart() {
 		super.onStart();
-		final IntentFilter filter = new IntentFilter(BROADCAST_TRENDS_UPDATED);
-		filter.addAction(BROADCAST_TASK_STATE_CHANGED);
+		getLoaderManager().restartLoader(0, null, this);
+		final IntentFilter filter = new IntentFilter(BROADCAST_TASK_STATE_CHANGED);
 		registerReceiver(mStatusReceiver, filter);
 	}
 

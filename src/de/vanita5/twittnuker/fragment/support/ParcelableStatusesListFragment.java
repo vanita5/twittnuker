@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -30,13 +30,12 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
+import org.mariotaku.jsonserializer.JSONSerializer;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.loader.DummyParcelableStatusesLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.ArrayUtils;
-
-import org.mariotaku.jsonserializer.JSONSerializer;
 
 import java.io.File;
 import java.io.IOException;
@@ -138,13 +137,6 @@ public abstract class ParcelableStatusesListFragment extends BaseStatusesListFra
 	public void onDestroyView() {
 		saveStatuses();
 		super.onDestroyView();
-	}
-
-	@Override
-	public final void onPostStart() {
-		if (isActivityFirstCreated()) {
-			getLoaderManager().restartLoader(0, getArguments(), this);
-		}
 	}
 
 	@Override

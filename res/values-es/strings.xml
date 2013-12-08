@@ -174,7 +174,7 @@
   <string name="refresh_interval">Intervalo de actualización</string>
   <string name="refresh_interval_summary">¡Un menor intervalo de actualización consume mas batería y datos!</string>
   <string name="content_to_refresh">Contenido para actualizar</string>
-  <string name="content_to_nofity">Contenido para notificar</string>
+  <string name="content_to_notify">Contenido para notificar</string>
   <string name="notifications_type">Tipo de notificaciones</string>
   <string name="notifications_type_summary">Esta opción no anulará la configuración del sistema.</string>
   <string name="sound">Sonido</string>
@@ -195,7 +195,7 @@
   <string name="type_to_compose">Escriba para componer</string>
   <string name="users_lists">Listas del usuario</string>
   <string name="lists_following_user">Listas que siguen a este usuario</string>
-  <string name="Nstatuses_quantity_one">Tienes un nuevo tweet</string>
+  <string name="you_have_N_new_statuses_quantity_one">Tienes un nuevo tweet</string>
   <string name="item_1_minute">1 minuto</string>
   <string name="item_3_minutes">3 minutos</string>
   <string name="item_5_minutes">5 minutos</string>

@@ -27,7 +27,7 @@
 		<item>@string/inbox</item>
 		<item>@string/trends</item>
 	</string-array>
-	<string-array name="entries_refresh_notification_content">
+	<string-array name="entries_notification_content">
 		<item>@string/home</item>
 		<item>@string/mentions</item>
 		<item>@string/inbox</item>
@@ -98,15 +98,13 @@
 	</string-array>
 	<string-array name="entries_theme">
 		<item>@string/theme_twidere</item>
-		<item>@string/theme_dark</item>
 		<item>@string/theme_light</item>
-		<item>@string/theme_light_darkactionbar</item>
+		<item>@string/theme_dark</item>
 	</string-array>
 	<string-array name="values_theme">
 		<item>twidere</item>
-		<item>dark</item>
 		<item>light</item>
-		<item>light_darkactionbar</item>
+		<item>dark</item>
 	</string-array>
 	<string-array name="entries_link_highlight_option">
 		<item>@string/none</item>
@@ -123,6 +121,16 @@
 		<item>@string/theme_background_default</item>
 		<item>@string/theme_background_solid</item>
 		<item>@string/theme_background_transparent</item>
+	</string-array>
+	<string-array name="dependency_values_actionbar_theme">
+		<item>twidere</item>
+		<item>light</item>
+	</string-array>
+	<string-array name="dependency_values_true">
+		<item>true</item>
+	</string-array>
+	<string-array name="dependency_values_false">
+		<item>false</item>
 	</string-array>
 
 </resources>

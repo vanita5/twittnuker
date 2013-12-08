@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -51,8 +51,8 @@ import com.huewu.pla.lib.internal.PLAAbsListView;
 
 import org.mariotaku.popupmenu.PopupMenu;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
+import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.task.AsyncTask;
@@ -62,6 +62,7 @@ import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.PositionManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
@@ -89,8 +90,8 @@ abstract class BaseStatusesMultiColumnListFragment<Data> extends BasePullToRefre
 	private int mListScrollOffset;
 
 	private MultiSelectManager mMultiSelectManager;
-	private PositionManager mPositionManager;
 
+	private PositionManager mPositionManager;
 	private final Map<Long, Set<Long>> mUnreadCountsToRemove = Collections
 			.synchronizedMap(new HashMap<Long, Set<Long>>());
 
@@ -185,7 +186,7 @@ abstract class BaseStatusesMultiColumnListFragment<Data> extends BasePullToRefre
 			if (status == null) return;
 			final AsyncTwitterWrapper twitter = getTwitterWrapper();
 			if (twitter != null) {
-				twitter.removeUnreadCounts(getActivity(), getTabPosition(), status.account_id, status.id);
+				TwitterWrapper.removeUnreadCounts(getActivity(), getTabPosition(), status.account_id, status.id);
 			}
 			final StatusViewHolder holder = (StatusViewHolder) tag;
 			if (holder.show_as_gap) {
@@ -403,6 +404,10 @@ abstract class BaseStatusesMultiColumnListFragment<Data> extends BasePullToRefre
 		return (MultiColumnListView) inflater.inflate(R.layout.base_multi_column_list, null, false);
 	}
 
+	protected final int getListScrollOffset() {
+		return mListScrollOffset;
+	}
+
 	protected abstract long[] getNewestStatusIds();
 
 	protected abstract long[] getOldestStatusIds();
@@ -460,6 +465,8 @@ abstract class BaseStatusesMultiColumnListFragment<Data> extends BasePullToRefre
 
 	protected abstract boolean shouldShowAccountColor();
 
+	protected abstract void updateRefreshState();
+
 	private void addReadPosition(final int firstVisibleItem) {
 		if (mFirstVisibleItem != firstVisibleItem) {
 			mReadPositions.add(firstVisibleItem);
@@ -487,7 +494,8 @@ abstract class BaseStatusesMultiColumnListFragment<Data> extends BasePullToRefre
 		final int activated_color = ThemeUtils.getUserThemeColor(getActivity());
 		mPopupMenu = PopupMenu.getInstance(getActivity(), view);
 		mPopupMenu.inflate(R.menu.action_status);
-		final boolean separate_retweet_action = mPreferences.getBoolean(PREFERENCE_KEY_SEPARATE_RETWEET_ACTION, false);
+		final boolean separate_retweet_action = mPreferences.getBoolean(PREFERENCE_KEY_SEPARATE_RETWEET_ACTION,
+				PREFERENCE_DEFAULT_SEPARATE_RETWEET_ACTION);
 		final Menu menu = mPopupMenu.getMenu();
 		setMenuForStatus(getActivity(), menu, status);
 		final MenuItem retweet_submenu = menu.findItem(R.id.retweet_submenu);

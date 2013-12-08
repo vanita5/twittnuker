@@ -7,24 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
-public class SupportWebViewFragment extends Fragment {
+import de.vanita5.twittnuker.R;
 
-	static final int INTERNAL_WEBVIEW_ID = 0x00ff1001;
+public class SupportWebViewFragment extends Fragment {
 
 	public final WebView getWebView() {
 		final View view = getView();
-		return (WebView) view.findViewById(INTERNAL_WEBVIEW_ID);
+		return (WebView) view.findViewById(R.id.webview);
 	}
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-		final View view = new WebView(getActivity());
-		final ViewGroup.LayoutParams lp = container.generateLayoutParams(null);
-		lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-		lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-		view.setId(INTERNAL_WEBVIEW_ID);
-		view.setLayoutParams(lp);
-		return view;
+		return inflater.inflate(R.layout.webview, container, false);
 	}
 
 }

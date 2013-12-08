@@ -1,6 +1,6 @@
 #Twittnuker - Android 4.0+ Twitter Client#
 
-Twittnuker is a [free](https://www.gnu.org/philosophy/free-sw.html) Twitter App for Android 4.0+ Smartphones, based on the [Twidere Project](https://github.com/mariotaku/twidere) with various improvements.
+Twittnuker is a [free](https://www.gnu.org/philosophy/free-sw.html) Twitter App for Android 4.0+ Smartphones, based on the [Twidere Project](https://github.com/mariotaku/twidere) (Version 0.2.9.6-update2) with various improvements.
 
 Major Twidere Updates may/will be merged into Twittnuker.
 

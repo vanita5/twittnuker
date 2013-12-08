@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  *
  * Copyright (C) 2012-2013 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -19,18 +19,6 @@
 package de.vanita5.twittnuker;
 
 import de.vanita5.twittnuker.annotation.PreferenceType;
-import de.vanita5.twittnuker.provider.TweetStore;
-import de.vanita5.twittnuker.provider.TweetStore.Accounts;
-import de.vanita5.twittnuker.provider.TweetStore.CachedHashtags;
-import de.vanita5.twittnuker.provider.TweetStore.CachedStatuses;
-import de.vanita5.twittnuker.provider.TweetStore.CachedTrends;
-import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
-import de.vanita5.twittnuker.provider.TweetStore.Drafts;
-import de.vanita5.twittnuker.provider.TweetStore.Filters;
-import de.vanita5.twittnuker.provider.TweetStore.Mentions;
-import de.vanita5.twittnuker.provider.TweetStore.Statuses;
-import de.vanita5.twittnuker.provider.TweetStore.Tabs;
 
 /**
  * Public constants for both Twidere app and its extensions
@@ -97,6 +85,7 @@ public interface TwidereConstants {
 	public static final String AUTHORITY_ACTIVITIES_BY_FRIENDS = "activities_by_friends";
 	public static final String AUTHORITY_INCOMING_FRIENDSHIPS = "incoming_friendships";
 	public static final String AUTHORITY_STATUS_RETWEETERS = "status_retweeters";
+	public static final String AUTHORITY_STATUS_REPLIES = "status_replies";
 
 	public static final String QUERY_PARAM_ACCOUNT_ID = "account_id";
 	public static final String QUERY_PARAM_ACCOUNT_IDS = "account_ids";
@@ -113,11 +102,11 @@ public interface TwidereConstants {
 	public static final String QUERY_PARAM_NOTIFY = "notify";
 	public static final String QUERY_PARAM_LAT = "lat";
 	public static final String QUERY_PARAM_LNG = "lng";
-	public static final String QUERY_PARAM_CONVERSATION_ID = "conversation_id";
 	public static final String QUERY_PARAM_URL = "url";
 	public static final String QUERY_PARAM_NAME = "name";
 	public static final String QUERY_PARAM_FINISH_ONLY = "finish_only";
 	public static final String QUERY_PARAM_NEW_ITEMS_COUNT = "new_items_count";
+	public static final String QUERY_PARAM_RECIPIENT_ID = "recipient_id";
 
 	public static final String DEFAULT_PROTOCOL = PROTOCOL_HTTPS;
 
@@ -157,6 +146,8 @@ public interface TwidereConstants {
 	public static final String PREFERENCE_KEY_THEME = "theme";
 	@PreferenceType(PreferenceType.STRING)
 	public static final String PREFERENCE_KEY_THEME_BACKGROUND = "theme_background";
+	@PreferenceType(PreferenceType.BOOLEAN)
+	public static final String PREFERENCE_KEY_THEME_DARK_ACTIONBAR = "theme_dark_actionbar";
 	@PreferenceType(PreferenceType.INT)
 	public static final String PREFERENCE_KEY_THEME_COLOR = "theme_color";
 	@PreferenceType(PreferenceType.NULL)
@@ -216,17 +207,11 @@ public interface TwidereConstants {
 	@PreferenceType(PreferenceType.BOOLEAN)
 	public static final String PREFERENCE_KEY_AUTO_REFRESH_TRENDS = "auto_refresh_trends";
 	@PreferenceType(PreferenceType.BOOLEAN)
-	public static final String PREFERENCE_KEY_NOTIFICATION_ENABLE_HOME_TIMELINE = "notification_enable_home_timeline";
+	public static final String PREFERENCE_KEY_HOME_TIMELINE_NOTIFICATION = "home_timeline_notification";
 	@PreferenceType(PreferenceType.BOOLEAN)
-	public static final String PREFERENCE_KEY_NOTIFICATION_ENABLE_MENTIONS = "notification_enable_mentions";
+	public static final String PREFERENCE_KEY_MENTIONS_NOTIFICATION = "mentions_notification";
 	@PreferenceType(PreferenceType.BOOLEAN)
-	public static final String PREFERENCE_KEY_NOTIFICATION_ENABLE_DIRECT_MESSAGES = "notification_enable_direct_messages";
-	@PreferenceType(PreferenceType.BOOLEAN)
-	public static final String PREFERENCE_KEY_NOTIFICATION_HAVE_SOUND = "notification_have_sound";
-	@PreferenceType(PreferenceType.BOOLEAN)
-	public static final String PREFERENCE_KEY_NOTIFICATION_HAVE_VIBRATION = "notification_have_vibration";
-	@PreferenceType(PreferenceType.BOOLEAN)
-	public static final String PREFERENCE_KEY_NOTIFICATION_HAVE_LIGHTS = "notification_have_lights";
+	public static final String PREFERENCE_KEY_DIRECT_MESSAGES_NOTIFICATION = "direct_messages_notification";
 	public static final String PREFERENCE_KEY_LOCAL_TRENDS_WOEID = "local_trends_woeid";
 	public static final String PREFERENCE_KEY_NOTIFICATION_RINGTONE = "notification_ringtone";
 	public static final String PREFERENCE_KEY_NOTIFICATION_LIGHT_COLOR = "notification_light_color";
@@ -283,6 +268,9 @@ public interface TwidereConstants {
 	public static final String PREFERENCE_KEY_NOTIFICATION_TYPE_HOME = "notification_type_home";
 	public static final String PREFERENCE_KEY_NOTIFICATION_TYPE_MENTIONS = "notification_type_mentions";
 	public static final String PREFERENCE_KEY_NOTIFICATION_TYPE_DIRECT_MESSAGES = "notification_type_direct_messages";
+	public static final String PREFERENCE_KEY_COMPACT_CARDS = "compact_cards";
+	public static final String PREFERENCE_KEY_DISPLAY_TAB_LABEL = "display_tab_label";
+	public static final String PREFERENCE_KEY_LIVE_WALLPAPER_SCALE = "live_wallpaper_scale";
 
 	public static final String PREFERENCE_DEFAULT_QUOTE_FORMAT = "RT @" + FORMAT_PATTERN_NAME + ": "
 			+ FORMAT_PATTERN_TEXT;
@@ -302,9 +290,14 @@ public interface TwidereConstants {
 	public static final int PREFERENCE_DEFAULT_NOTIFICATION_TYPE_DIRECT_MESSAGES = NOTIFICATION_FLAG_RINGTONE
 			| NOTIFICATION_FLAG_VIBRATION | NOTIFICATION_FLAG_LIGHT;
 
+	public static final boolean PREFERENCE_DEFAULT_HOME_TIMELINE_NOTIFICATION = false;
+	public static final boolean PREFERENCE_DEFAULT_MENTIONS_NOTIFICATION = true;
+	public static final boolean PREFERENCE_DEFAULT_DIRECT_MESSAGES_NOTIFICATION = true;
+
 	public static final int PREFERENCE_DEFAULT_DATABASE_ITEM_LIMIT = 100;
 	public static final int PREFERENCE_DEFAULT_LOAD_ITEM_LIMIT = 20;
 	public static final boolean PREFERENCE_DEFAULT_HARDWARE_ACCELERATION = true;
+	public static final boolean PREFERENCE_DEFAULT_SEPARATE_RETWEET_ACTION = true;
 
 	public static final String INTENT_PACKAGE_PREFIX = "de.vanita5.twittnuker.";
 
@@ -347,14 +340,8 @@ public interface TwidereConstants {
 	public static final String INTENT_ACTION_EXTENSION_SETTINGS = INTENT_PACKAGE_PREFIX + "EXTENSION_SETTINGS";
 
 	public static final String INTENT_ACTION_UPDATE_STATUS = INTENT_PACKAGE_PREFIX + "UPDATE_STATUS";
+	public static final String INTENT_ACTION_SEND_DIRECT_MESSAGE = INTENT_PACKAGE_PREFIX + "SEND_DIRECT_MESSAGE";
 
-	public static final String BROADCAST_HOME_TIMELINE_DATABASE_UPDATED = INTENT_PACKAGE_PREFIX
-			+ "HOME_TIMELINE_DATABASE_UPDATED";
-	public static final String BROADCAST_MENTIONS_DATABASE_UPDATED = INTENT_PACKAGE_PREFIX
-			+ "MENTIONS_DATABASE_UPDATED";
-	public static final String BROADCAST_ACCOUNT_LIST_DATABASE_UPDATED = INTENT_PACKAGE_PREFIX
-			+ "ACCOUNT_LIST_DATABASE_UPDATED";
-	public static final String BROADCAST_DRAFTS_DATABASE_UPDATED = INTENT_PACKAGE_PREFIX + "DRAFTS_DATABASE_UPDATED";
 	public static final String BROADCAST_HOME_TIMELINE_REFRESHED = INTENT_PACKAGE_PREFIX + "HOME_TIMELINE_REFRESHED";
 	public static final String BROADCAST_MENTIONS_REFRESHED = INTENT_PACKAGE_PREFIX + "MENTIONS_REFRESHED";
 	public static final String BROADCAST_TASK_STATE_CHANGED = INTENT_PACKAGE_PREFIX + "TASK_STATE_CHANGED";
@@ -366,26 +353,16 @@ public interface TwidereConstants {
 	public static final String BROADCAST_PROFILE_BANNER_UPDATED = INTENT_PACKAGE_PREFIX + "PROFILE_BANNER_UPDATED";
 	public static final String BROADCAST_USER_LIST_DETAILS_UPDATED = INTENT_PACKAGE_PREFIX
 			+ "USER_LIST_DETAILS_UPDATED";
-	public static final String BROADCAST_DATABASE_UPDATED = INTENT_PACKAGE_PREFIX + "DATABASE_UPDATED";
+
 	public static final String BROADCAST_FAVORITE_CHANGED = INTENT_PACKAGE_PREFIX + "FAVORITE_CHANGED";
 	public static final String BROADCAST_RETWEET_CHANGED = INTENT_PACKAGE_PREFIX + "RETWEET_CHANGED";
-	public static final String BROADCAST_RECEIVED_DIRECT_MESSAGES_REFRESHED = INTENT_PACKAGE_PREFIX
-			+ "RECEIVED_DIRECT_MESSAGES_REFRESHED";
-	public static final String BROADCAST_SENT_DIRECT_MESSAGES_REFRESHED = INTENT_PACKAGE_PREFIX
-			+ "SENT_DIRECT_MESSAGES_REFRESHED";
-	public static final String BROADCAST_RECEIVED_DIRECT_MESSAGES_DATABASE_UPDATED = INTENT_PACKAGE_PREFIX
-			+ "RECEIVED_DIRECT_MESSAGES_DATABASE_UPDATED";
-	public static final String BROADCAST_SENT_DIRECT_MESSAGES_DATABASE_UPDATED = INTENT_PACKAGE_PREFIX
-			+ "SENT_DIRECT_MESSAGES_DATABASE_UPDATED";
 	public static final String BROADCAST_STATUS_DESTROYED = INTENT_PACKAGE_PREFIX + "STATUS_DESTROYED";
-	public static final String BROADCAST_TRENDS_UPDATED = INTENT_PACKAGE_PREFIX + "TRENDS_UPDATED";
 	public static final String BROADCAST_USER_LIST_MEMBERS_DELETED = INTENT_PACKAGE_PREFIX + "USER_LIST_MEMBER_DELETED";
 	public static final String BROADCAST_USER_LIST_MEMBERS_ADDED = INTENT_PACKAGE_PREFIX + "USER_LIST_MEMBER_ADDED";
 	public static final String BROADCAST_USER_LIST_SUBSCRIBED = INTENT_PACKAGE_PREFIX + "USER_LIST_SUBSRCIBED";
 	public static final String BROADCAST_USER_LIST_UNSUBSCRIBED = INTENT_PACKAGE_PREFIX + "USER_LIST_UNSUBSCRIBED";
 	public static final String BROADCAST_USER_LIST_CREATED = INTENT_PACKAGE_PREFIX + "USER_LIST_CREATED";
 	public static final String BROADCAST_USER_LIST_DELETED = INTENT_PACKAGE_PREFIX + "USER_LIST_DELETED";
-	public static final String BROADCAST_TABS_UPDATED = INTENT_PACKAGE_PREFIX + "TABS_UPDATED";
 	public static final String BROADCAST_FILTERS_UPDATED = INTENT_PACKAGE_PREFIX + "FILTERS_UPDATED";
 	public static final String BROADCAST_REFRESH_HOME_TIMELINE = INTENT_PACKAGE_PREFIX + "REFRESH_HOME_TIMELINE";
 	public static final String BROADCAST_REFRESH_MENTIONS = INTENT_PACKAGE_PREFIX + "REFRESH_MENTIONS";
@@ -406,6 +383,7 @@ public interface TwidereConstants {
 	public static final String BROADCAST_HOME_ACTIVITY_ONSTOP = INTENT_PACKAGE_PREFIX + "HOME_ACTIVITY_ONSTOP";
 	public static final String BROADCAST_HOME_ACTIVITY_ONDESTROY = INTENT_PACKAGE_PREFIX + "HOME_ACTIVITY_ONDESTROY";
 	public static final String BROADCAST_UNREAD_COUNT_UPDATED = INTENT_PACKAGE_PREFIX + "UNREAD_COUNT_UPDATED";
+	public static final String BROADCAST_DATABASE_READY = INTENT_PACKAGE_PREFIX + "DATABASE_READY";
 
 	public static final String EXTRA_LATITUDE = "latitude";
 	public static final String EXTRA_LONGITUDE = "longitude";
@@ -414,7 +392,6 @@ public interface TwidereConstants {
 	public static final String EXTRA_MENTIONS = "mentions";
 	public static final String EXTRA_ACCOUNT_ID = "account_id";
 	public static final String EXTRA_ACCOUNT_IDS = "account_ids";
-	public static final String EXTRA_CONVERSATION_ID = "conversation_id";
 	public static final String EXTRA_PAGE = "page";
 	public static final String EXTRA_DATA = "data";
 	public static final String EXTRA_QUERY = "query";
@@ -451,6 +428,7 @@ public interface TwidereConstants {
 	public static final String EXTRA_ITEMS_INSERTED = "items_inserted";
 	public static final String EXTRA_INITIAL_TAB = "initial_tab";
 	public static final String EXTRA_NOTIFICATION_ID = "notification_id";
+	public static final String EXTRA_NOTIFICATION_ACCOUNT = "notification_account";
 	public static final String EXTRA_FROM_NOTIFICATION = "from_notification";
 	public static final String EXTRA_IS_PUBLIC = "is_public";
 	public static final String EXTRA_USER = "user";
@@ -487,10 +465,12 @@ public interface TwidereConstants {
 	public static final String EXTRA_IS_MY_ACCOUNT = "is_my_account";
 	public static final String EXTRA_TAB_TYPE = "tab_type";
 	public static final String EXTRA_ACCOUNT = "account";
-	public static final String EXTRA_ACTIVITY_SCREENSHOT = "activity_screenshot";
-	public static final String EXTRA_ACTIVITY_SCREENSHOT_ENCODED = "activity_screenshot_encoded";
+	public static final String EXTRA_ACTIVITY_SCREENSHOT_ID = "activity_screenshot_id";
 	public static final String EXTRA_COLOR = "color";
 	public static final String EXTRA_ALPHA_SLIDER = "alpha_slider";
+	public static final String EXTRA_OPEN_ACCOUNTS_DRAWER = "open_accounts_drawer";
+	public static final String EXTRA_RECIPIENT_ID = "recipient_id";
+	public static final String EXTRA_OFFICIAL_KEY_ONLY = "official_key_only";
 
 	public static final int MENU_GROUP_STATUS_EXTENSION = 10;
 	public static final int MENU_GROUP_COMPOSE_EXTENSION = 11;
@@ -516,52 +496,26 @@ public interface TwidereConstants {
 	public static final int REQUEST_SELECT_USER_LIST = 17;
 	public static final int REQUEST_SWIPEBACK_ACTIVITY = 101;
 
-	public static final String TABLE_ACCOUNTS = Accounts.TABLE_NAME;
-	public static final String TABLE_STATUSES = Statuses.TABLE_NAME;
-	public static final String TABLE_MENTIONS = Mentions.TABLE_NAME;
-	public static final String TABLE_DRAFTS = Drafts.TABLE_NAME;
-	public static final String TABLE_CACHED_HASHTAGS = CachedHashtags.TABLE_NAME;
-	public static final String TABLE_CACHED_USERS = CachedUsers.TABLE_NAME;
-	public static final String TABLE_CACHED_STATUSES = CachedStatuses.TABLE_NAME;
-	public static final String TABLE_FILTERED_USERS = Filters.Users.TABLE_NAME;
-	public static final String TABLE_FILTERED_KEYWORDS = Filters.Keywords.TABLE_NAME;
-	public static final String TABLE_FILTERED_SOURCES = Filters.Sources.TABLE_NAME;
-	public static final String TABLE_FILTERED_LINKS = Filters.Links.TABLE_NAME;
-	public static final String TABLE_DIRECT_MESSAGES = DirectMessages.TABLE_NAME;
-	public static final String TABLE_DIRECT_MESSAGES_INBOX = DirectMessages.Inbox.TABLE_NAME;
-	public static final String TABLE_DIRECT_MESSAGES_OUTBOX = DirectMessages.Outbox.TABLE_NAME;
-	public static final String TABLE_DIRECT_MESSAGES_CONVERSATION = DirectMessages.Conversation.TABLE_NAME;
-	public static final String TABLE_DIRECT_MESSAGES_CONVERSATION_SCREEN_NAME = DirectMessages.Conversation.TABLE_NAME_SCREEN_NAME;
-	public static final String TABLE_DIRECT_MESSAGES_CONVERSATIONS_ENTRY = DirectMessages.ConversationsEntry.TABLE_NAME;
-	public static final String TABLE_TRENDS_LOCAL = CachedTrends.Local.TABLE_NAME;
-	public static final String TABLE_TABS = Tabs.TABLE_NAME;
-	public static final String TABLE_NOTIFICATIONS = TweetStore.Notifications.TABLE_NAME;
-	public static final String TABLE_PREFERENCES = TweetStore.Preferences.TABLE_NAME;
-	public static final String TABLE_PERMISSIONS = TweetStore.Permissions.TABLE_NAME;
-	public static final String TABLE_DNS = TweetStore.DNS.TABLE_NAME;
-	public static final String TABLE_CACHED_IMAGES = TweetStore.CachedImages.TABLE_NAME;
-	public static final String TABLE_CACHE_FILES = TweetStore.CacheFiles.TABLE_NAME;
-	public static final String TABLE_UNREAD_COUNTS = TweetStore.UnreadCounts.TABLE_NAME;
-
 	public static final int TABLE_ID_ACCOUNTS = 1;
-	public static final int TABLE_ID_STATUSES = 2;
-	public static final int TABLE_ID_MENTIONS = 3;
-	public static final int TABLE_ID_DIRECT_MESSAGES = 11;
-	public static final int TABLE_ID_DIRECT_MESSAGES_INBOX = 12;
-	public static final int TABLE_ID_DIRECT_MESSAGES_OUTBOX = 13;
-	public static final int TABLE_ID_DIRECT_MESSAGES_CONVERSATION = 14;
-	public static final int TABLE_ID_DIRECT_MESSAGES_CONVERSATION_SCREEN_NAME = 15;
-	public static final int TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRY = 16;
-	public static final int TABLE_ID_FILTERED_USERS = 21;
-	public static final int TABLE_ID_FILTERED_KEYWORDS = 22;
-	public static final int TABLE_ID_FILTERED_SOURCES = 23;
-	public static final int TABLE_ID_FILTERED_LINKS = 24;
-	public static final int TABLE_ID_TRENDS_LOCAL = 31;
-	public static final int TABLE_ID_DRAFTS = 41;
-	public static final int TABLE_ID_TABS = 42;
-	public static final int TABLE_ID_CACHED_USERS = 51;
-	public static final int TABLE_ID_CACHED_STATUSES = 52;
-	public static final int TABLE_ID_CACHED_HASHTAGS = 53;
+	public static final int TABLE_ID_STATUSES = 12;
+	public static final int TABLE_ID_MENTIONS = 13;
+	public static final int TABLE_ID_DIRECT_MESSAGES = 21;
+	public static final int TABLE_ID_DIRECT_MESSAGES_INBOX = 22;
+	public static final int TABLE_ID_DIRECT_MESSAGES_OUTBOX = 23;
+	public static final int TABLE_ID_DIRECT_MESSAGES_CONVERSATION = 24;
+	public static final int TABLE_ID_DIRECT_MESSAGES_CONVERSATION_SCREEN_NAME = 25;
+	public static final int TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES = 26;
+	public static final int TABLE_ID_FILTERED_USERS = 31;
+	public static final int TABLE_ID_FILTERED_KEYWORDS = 32;
+	public static final int TABLE_ID_FILTERED_SOURCES = 33;
+	public static final int TABLE_ID_FILTERED_LINKS = 34;
+	public static final int TABLE_ID_TRENDS_LOCAL = 41;
+	public static final int TABLE_ID_DRAFTS = 51;
+	public static final int TABLE_ID_TABS = 52;
+	public static final int TABLE_ID_CACHED_USERS = 61;
+	public static final int TABLE_ID_CACHED_STATUSES = 62;
+	public static final int TABLE_ID_CACHED_HASHTAGS = 63;
+	public static final int VIRTUAL_TABLE_ID_DATABASE_READY = 100;
 	public static final int VIRTUAL_TABLE_ID_NOTIFICATIONS = 101;
 	public static final int VIRTUAL_TABLE_ID_PREFERENCES = 102;
 	public static final int VIRTUAL_TABLE_ID_ALL_PREFERENCES = 103;
@@ -570,13 +524,15 @@ public interface TwidereConstants {
 	public static final int VIRTUAL_TABLE_ID_CACHED_IMAGES = 106;
 	public static final int VIRTUAL_TABLE_ID_CACHE_FILES = 107;
 	public static final int VIRTUAL_TABLE_ID_UNREAD_COUNTS = 108;
+	public static final int VIRTUAL_TABLE_ID_UNREAD_COUNTS_BY_TYPE = 109;
 
 	public static final int NOTIFICATION_ID_HOME_TIMELINE = 1;
 	public static final int NOTIFICATION_ID_MENTIONS = 2;
 	public static final int NOTIFICATION_ID_DIRECT_MESSAGES = 3;
 	public static final int NOTIFICATION_ID_DRAFTS = 4;
 	public static final int NOTIFICATION_ID_DATA_PROFILING = 5;
-	public static final int NOTIFICATION_ID_UPDATE_STATUS = 6;
+	public static final int NOTIFICATION_ID_UPDATE_STATUS = 101;
+	public static final int NOTIFICATION_ID_SEND_DIRECT_MESSAGE = 102;
 
 	public static final String ICON_SPECIAL_TYPE_CUSTOMIZE = "_customize";
 

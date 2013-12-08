@@ -177,7 +177,7 @@
   <string name="refresh_interval">更新間隔</string>
   <string name="refresh_interval_summary">更新間隔を短くすると消費電力や通信量が増えます。慎重に設定してください。</string>
   <string name="content_to_refresh">更新するコンテンツ</string>
-  <string name="content_to_nofity">通知するコンテンツ</string>
+  <string name="content_to_notify">通知するコンテンツ</string>
   <string name="notifications_type">通知のタイプ</string>
   <string name="notifications_type_summary">このオプションはシステム設定を上書きしません。</string>
   <string name="sound">音</string>
@@ -198,8 +198,8 @@
   <string name="type_to_compose">メッセージを入力</string>
   <string name="users_lists">保存しているリスト</string>
   <string name="lists_following_user">追加されているリスト</string>
-  <string name="Nstatuses_quantity_one">新しいツイートが一件あります。</string>
-  <string name="Nstatuses_quantity_other">新しいツイートが<xliff:g id="items">%d</xliff:g>件あります。</string>
+  <string name="you_have_N_new_statuses_quantity_one">新しいツイートが一件あります。</string>
+  <string name="you_have_N_new_statuses_quantity_other">新しいツイートが<xliff:g id="items">%d</xliff:g>件あります。</string>
   <string name="item_1_minute">1分</string>
   <string name="item_3_minutes">3分</string>
   <string name="item_5_minutes">5分</string>

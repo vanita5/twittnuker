@@ -1,9 +1,9 @@
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.ContentResolverUtils.bulkDelete;
-import static de.vanita5.twittnuker.util.ContentResolverUtils.bulkInsert;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeFilterdUserContentValues;
 import static de.vanita5.twittnuker.util.Utils.getDisplayName;
-import static de.vanita5.twittnuker.util.Utils.makeFilterdUserContentValues;
+import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
+import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

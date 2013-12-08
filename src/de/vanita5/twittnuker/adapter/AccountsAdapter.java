@@ -1,7 +1,10 @@
 /*
  *			Twittnuker - Twitter client for Android
- * 
- * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *
+ * Copyright (C) 2013 vanita5 <mail@vanita5.de>
+ *
+ * This program incorporates a modified version of Twidere.
+ * Copyright (C) 2012-2013 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,7 +126,7 @@ public class AccountsAdapter extends SimpleCursorAdapter implements Constants {
 	public Cursor swapCursor(final Cursor cursor) {
 		if (cursor != null) {
 			mAccountIdIdx = cursor.getColumnIndex(Accounts.ACCOUNT_ID);
-			mUserColorIdx = cursor.getColumnIndex(Accounts.USER_COLOR);
+			mUserColorIdx = cursor.getColumnIndex(Accounts.COLOR);
 			mProfileImageIdx = cursor.getColumnIndex(Accounts.PROFILE_IMAGE_URL);
 			mScreenNameIdx = cursor.getColumnIndex(Accounts.SCREEN_NAME);
 		}

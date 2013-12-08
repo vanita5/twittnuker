@@ -23,10 +23,10 @@
 package de.vanita5.twittnuker.activity.support;
 
 import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeAccountContentValues;
 import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
 import static de.vanita5.twittnuker.util.Utils.isUserLoggedIn;
-import static de.vanita5.twittnuker.util.Utils.makeAccountContentValues;
 import static de.vanita5.twittnuker.util.Utils.setUserAgent;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.trim;
@@ -60,7 +60,6 @@ import de.keyboardsurfer.android.widget.crouton.CroutonLifecycleCallback;
 import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.AuthorizeActivity;
 import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -69,10 +68,10 @@ import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.ColorAnalyser;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
-import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticationException;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticityTokenException;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.WrongUserPassException;
+import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.net.HttpClientImpl;
 import de.vanita5.twittnuker.view.ColorPickerView;
 
@@ -131,20 +130,17 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 		switch (requestCode) {
 			case REQUEST_EDIT_API: {
 				if (resultCode == RESULT_OK) {
-					final Bundle extras = data != null ? data.getExtras() : null;
-					if (extras != null) {
-						mRestBaseURL = data.getStringExtra(Accounts.REST_BASE_URL);
-						mSigningRestBaseURL = data.getStringExtra(Accounts.SIGNING_REST_BASE_URL);
-						mOAuthBaseURL = data.getStringExtra(Accounts.OAUTH_BASE_URL);
-						mSigningOAuthBaseURL = data.getStringExtra(Accounts.SIGNING_OAUTH_BASE_URL);
-						mAuthType = data.getIntExtra(Accounts.AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
-						mConsumerKey = data.getStringExtra(Accounts.CONSUMER_KEY);
-						mConsumerSecret = data.getStringExtra(Accounts.CONSUMER_SECRET);
-						final boolean is_twip_o_mode = mAuthType == Accounts.AUTH_TYPE_TWIP_O_MODE;
-						mUsernamePasswordContainer.setVisibility(is_twip_o_mode ? View.GONE : View.VISIBLE);
-						mSigninSignupContainer.setOrientation(is_twip_o_mode ? LinearLayout.VERTICAL
-								: LinearLayout.HORIZONTAL);
-					}
+					mRestBaseURL = data.getStringExtra(Accounts.REST_BASE_URL);
+					mSigningRestBaseURL = data.getStringExtra(Accounts.SIGNING_REST_BASE_URL);
+					mOAuthBaseURL = data.getStringExtra(Accounts.OAUTH_BASE_URL);
+					mSigningOAuthBaseURL = data.getStringExtra(Accounts.SIGNING_OAUTH_BASE_URL);
+					mAuthType = data.getIntExtra(Accounts.AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
+					mConsumerKey = data.getStringExtra(Accounts.CONSUMER_KEY);
+					mConsumerSecret = data.getStringExtra(Accounts.CONSUMER_SECRET);
+					final boolean is_twip_o_mode = mAuthType == Accounts.AUTH_TYPE_TWIP_O_MODE;
+					mUsernamePasswordContainer.setVisibility(is_twip_o_mode ? View.GONE : View.VISIBLE);
+					mSigninSignupContainer.setOrientation(is_twip_o_mode ? LinearLayout.VERTICAL
+							: LinearLayout.HORIZONTAL);
 				}
 				setSignInButton();
 				invalidateOptionsMenu();
@@ -158,7 +154,7 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 				break;
 			}
 			case REQUEST_BROWSER_SIGN_IN: {
-				if (resultCode == BaseSupportActivity.RESULT_OK) if (data != null && data.getExtras() != null) {
+				if (resultCode == BaseSupportActivity.RESULT_OK && data != null) {
 					doLogin(data);
 				}
 				break;
@@ -272,7 +268,7 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 				if (mAuthType != Accounts.AUTH_TYPE_OAUTH || mTask != null
 						&& mTask.getStatus() == AsyncTask.Status.RUNNING) return false;
 				saveEditedText();
-				final Intent intent = new Intent(this, AuthorizeActivity.class);
+				final Intent intent = new Intent(this, BrowserSignInActivity.class);
 				intent.putExtra(Accounts.CONSUMER_KEY, mConsumerKey);
 				intent.putExtra(Accounts.CONSUMER_SECRET, mConsumerSecret);
 				startActivityForResult(intent, REQUEST_BROWSER_SIGN_IN);
@@ -313,7 +309,7 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 		outState.putInt(Accounts.AUTH_TYPE, mAuthType);
 		outState.putLong(EXTRA_API_LAST_CHANGE, mAPIChangeTimestamp);
 		if (mUserColor != null) {
-			outState.putInt(Accounts.USER_COLOR, mUserColor);
+			outState.putInt(Accounts.COLOR, mUserColor);
 		}
 		super.onSaveInstanceState(outState);
 	}
@@ -345,8 +341,8 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 			mUsername = savedInstanceState.getString(Accounts.SCREEN_NAME);
 			mPassword = savedInstanceState.getString(Accounts.PASSWORD);
 			mAuthType = savedInstanceState.getInt(Accounts.AUTH_TYPE);
-			if (savedInstanceState.containsKey(Accounts.USER_COLOR)) {
-				mUserColor = savedInstanceState.getInt(Accounts.USER_COLOR, Color.TRANSPARENT);
+			if (savedInstanceState.containsKey(Accounts.COLOR)) {
+				mUserColor = savedInstanceState.getInt(Accounts.COLOR, Color.TRANSPARENT);
 			}
 			mAPIChangeTimestamp = savedInstanceState.getLong(EXTRA_API_LAST_CHANGE);
 		}

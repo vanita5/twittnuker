@@ -40,14 +40,11 @@
 	<application
 		android:name=".app.TwittnukerApplication"
 		android:allowBackup="true"
-		android:backupAgent=".backup.TwittnukerBackupAgentHelper"
+		android:backupAgent=".backup.TwidereBackupAgentHelper"
 		android:hardwareAccelerated="true"
 		android:icon="@drawable/ic_launcher"
 		android:label="@string/app_name"
 		android:theme="@style/Theme.Blank">
-		<uses-library
-			android:name="com.google.android.maps"
-			android:required="false"/>
 		<uses-library
 			android:name="com.sec.android.app.multiwindow"
 			android:required="false"/>
@@ -136,7 +133,7 @@
 			<intent-filter android:label="@string/compose">
 				<action android:name="android.intent.action.MAIN"/>
 				<action android:name="de.vanita5.twittnuker.COMPOSE"/>
-				<action android:name="de.vanita5.twide.vanita5.twittnuker.REPLY"/>
+				<action android:name="de.vanita5.twittnuker.REPLY"/>
 				<action android:name="de.vanita5.twittnuker.QUOTE"/>
 				<action android:name="de.vanita5.twittnuker.EDIT_DRAFT"/>
 				<action android:name="de.vanita5.twittnuker.MENTION"/>
@@ -169,8 +166,9 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:name=".activity.AuthorizeActivity"
+			android:name=".activity.support.BrowserSignInActivity"
 			android:label="@string/browser_sign_in"
+			android:theme="@style/Theme.Blank.Dialog"
 			android:windowSoftInputMode="adjustResize">
 			<intent-filter>
 				<action android:name="de.vanita5.twittnuker.TWITTER_BROWSER_LOGIN"/>
@@ -209,12 +207,12 @@
 		<activity
 			android:name=".activity.support.APIEditorActivity"
 			android:label="@string/edit_api"
-			android:theme="@style/Theme.Twidere.Light.Dialog"
+			android:theme="@style/Theme.Blank.Dialog"
 			android:windowSoftInputMode="adjustResize"/>
 		<activity
 			android:name=".activity.support.AccountSelectorActivity"
 			android:label="@string/select_account"
-			android:theme="@style/Theme.Twidere.Light.Dialog">
+			android:theme="@style/Theme.Blank.Dialog">
 			<intent-filter>
 				<action android:name="de.vanita5.twittnuker.SELECT_ACCOUNT"/>
 
@@ -278,6 +276,9 @@
 					android:scheme="twidere"/>
 				<data
 					android:host="status_retweeters"
+					android:scheme="twidere"/>
+				<data
+					android:host="status_replies"
 					android:scheme="twidere"/>
 				<data
 					android:host="statuses"
@@ -424,7 +425,7 @@
 		<activity
 			android:name=".activity.support.RequestPermissionsActivity"
 			android:label="@string/permissions_request"
-			android:theme="@style/Theme.Twidere.Light.Dialog">
+			android:theme="@style/Theme.Blank.Dialog">
 			<intent-filter>
 				<action android:name="de.vanita5.twittnuker.REQUEST_PERMISSIONS"/>
 
@@ -476,6 +477,90 @@
 		<service
 			android:name="edu.ucdavis.earlybird.UCDService"
 			android:settingsActivity=".activity.DataProfilingSettingsActivity"/>
+		<service
+			android:name=".service.DashClockHomeUnreadCountService"
+			android:icon="@drawable/ic_extension_twidere"
+			android:label="@string/dashclock_home_unread_count_name"
+			android:permission="com.google.android.apps.dashclock.permission.READ_EXTENSION_DATA">
+			<intent-filter>
+				<action android:name="com.google.android.apps.dashclock.Extension"/>
+			</intent-filter>
+
+			<meta-data
+				android:name="protocolVersion"
+				android:value="2"/>
+			<meta-data
+				android:name="worldReadable"
+				android:value="true"/>
+			<meta-data
+				android:name="description"
+				android:value="@string/dashclock_home_unread_count_description"/>
+		</service>
+		<service
+			android:name=".service.DashClockMentionsUnreadCountService"
+			android:icon="@drawable/ic_extension_mentions"
+			android:label="@string/dashclock_mentions_unread_count_name"
+			android:permission="com.google.android.apps.dashclock.permission.READ_EXTENSION_DATA">
+			<intent-filter>
+				<action android:name="com.google.android.apps.dashclock.Extension"/>
+			</intent-filter>
+
+			<meta-data
+				android:name="protocolVersion"
+				android:value="2"/>
+			<meta-data
+				android:name="worldReadable"
+				android:value="true"/>
+			<meta-data
+				android:name="description"
+				android:value="@string/dashclock_mentions_unread_count_description"/>
+		</service>
+		<service
+			android:name=".service.DashClockMessagesUnreadCountService"
+			android:icon="@drawable/ic_extension_messages"
+			android:label="@string/dashclock_messages_unread_count_name"
+			android:permission="com.google.android.apps.dashclock.permission.READ_EXTENSION_DATA">
+			<intent-filter>
+				<action android:name="com.google.android.apps.dashclock.Extension"/>
+			</intent-filter>
+
+			<meta-data
+				android:name="protocolVersion"
+				android:value="2"/>
+			<meta-data
+				android:name="worldReadable"
+				android:value="true"/>
+			<meta-data
+				android:name="description"
+				android:value="@string/dashclock_messages_unread_count_description"/>
+		</service>
+		<service
+			android:name=".service.NyanWallpaperService"
+			android:enabled="false"
+			android:exported="true"
+			android:icon="@drawable/nyan_sakamoto_thumbnail"
+			android:label="@string/nyan_sakamoto"
+			android:permission="android.permission.BIND_WALLPAPER"
+			android:process=":wallpaper">
+			<intent-filter android:priority="1">
+				<action android:name="android.service.wallpaper.WallpaperService"/>
+			</intent-filter>
+
+			<meta-data
+				android:name="android.service.wallpaper"
+				android:resource="@xml/nyan_wallpaper"/>
+		</service>
+		<service
+			android:name=".service.NyanDaydreamService"
+			android:enabled="false"
+			android:exported="true"
+			android:icon="@drawable/nyan_sakamoto_thumbnail"
+			android:label="@string/nyan_sakamoto"
+			android:process=":daydream">
+			<intent-filter android:priority="1">
+				<action android:name="android.service.dreams.DreamService"/>
+			</intent-filter>
+		</service>
 
 		<provider
 			android:name=".provider.TwidereDataProvider"

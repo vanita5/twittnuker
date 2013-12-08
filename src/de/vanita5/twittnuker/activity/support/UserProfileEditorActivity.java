@@ -63,18 +63,18 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.task.AsyncTask.Status;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
-import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileBannerImageTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileTask;
+import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.view.ProfileImageBannerLayout;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
 import java.io.File;
 
-public class UserProfileEditorActivity extends TwidereSwipeBackActivity implements OnSizeChangedListener, TextWatcher,
+public class UserProfileEditorActivity extends BaseSupportActivity implements OnSizeChangedListener, TextWatcher,
 		OnClickListener, CroutonLifecycleCallback, LoaderCallbacks<SingleResponse<ParcelableUser>> {
 
 	private static final int LOADER_ID_USER = 1;
@@ -351,14 +351,15 @@ public class UserProfileEditorActivity extends TwidereSwipeBackActivity implemen
 	protected void onCreate(final Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
-		final Bundle extras = getIntent().getExtras();
-		if (extras == null || !isMyAccount(this, extras.getLong(EXTRA_ACCOUNT_ID))) {
+		final Intent intent = getIntent();
+		final long accountId = intent.getLongExtra(EXTRA_ACCOUNT_ID, -1);
+		if (!isMyAccount(this, accountId)) {
 			finish();
 			return;
 		}
 		mAsyncTaskManager = TwittnukerApplication.getInstance(this).getAsyncTaskManager();
 		mLazyImageLoader = TwittnukerApplication.getInstance(this).getImageLoaderWrapper();
-		mAccountId = extras.getLong(EXTRA_ACCOUNT_ID);
+		mAccountId = accountId;
 		setContentView(R.layout.edit_user_profile);
 		// setOverrideExitAniamtion(false);
 		getActionBar().setDisplayHomeAsUpEnabled(true);

@@ -1,7 +1,10 @@
 /*
  *			Twittnuker - Twitter client for Android
- * 
- * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *
+ * Copyright (C) 2013 vanita5 <mail@vanita5.de>
+ *
+ * This program incorporates a modified version of Twidere.
+ * Copyright (C) 2012-2013 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,12 +26,25 @@ import android.widget.ListAdapter;
 
 import de.vanita5.twittnuker.Constants;
 
-
 public interface IBaseAdapter extends Constants, ListAdapter {
+
+	public int getLinkHighlightColor();
+
+	public int getLinkHighlightOption();
+
+	public float getTextSize();
+
+	public boolean isDisplayNameFirst();
+
+	public boolean isDisplayProfileImage();
+
+	public boolean isNicknameOnly();
+
+	public boolean isShowAccountColor();
 
 	public void notifyDataSetChanged();
 
-	public void setDisplayNameFirst(boolean name_first);
+	public void setDisplayNameFirst(boolean nameFirst);
 
 	public void setDisplayProfileImage(boolean display);
 
@@ -37,6 +53,8 @@ public interface IBaseAdapter extends Constants, ListAdapter {
 	public void setLinkHighlightOption(String option);
 
 	public void setNicknameOnly(boolean nickname_only);
+
+	public void setShowAccountColor(boolean show);
 
 	public void setTextSize(float text_size);
 }

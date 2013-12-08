@@ -22,24 +22,18 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import static de.vanita5.twittnuker.util.Utils.getAccountColors;
 import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
 
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.text.TextUtils;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -48,24 +42,19 @@ import android.view.View;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import org.mariotaku.popupmenu.PopupMenu;
 import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.adapter.DraftsAdapter;
+import de.vanita5.twittnuker.model.CursorDraftIndices;
 import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
-import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
-import de.vanita5.twittnuker.view.AccountsColorFrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,17 +72,6 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 
 	private float mTextSize;
 
-	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(final Context context, final Intent intent) {
-			final String action = intent.getAction();
-			if (BROADCAST_DRAFTS_DATABASE_UPDATED.equals(action)) {
-				getLoaderManager().restartLoader(0, null, DraftsActivity.this);
-			}
-		}
-	};
-
 	@Override
 	public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
 		switch (item.getItemId()) {
@@ -104,20 +82,21 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 				break;
 			}
 			case MENU_SEND: {
-				final AsyncTwitterWrapper twitter = getTwitterWrapper();
-				if (twitter == null) return false;
 				final Cursor c = mAdapter.getCursor();
 				if (c == null || c.isClosed()) return false;
 				final SparseBooleanArray checked = mListView.getCheckedItemPositions();
-				final List<ParcelableStatusUpdate> list = new ArrayList<ParcelableStatusUpdate>();
+				final List<DraftItem> list = new ArrayList<DraftItem>();
+				final CursorDraftIndices indices = new CursorDraftIndices(c);
 				for (int i = 0, j = checked.size(); i < j; i++) {
-					if (checked.valueAt(i)) {
-						list.add(new ParcelableStatusUpdate(new DraftItem(c, checked.keyAt(i))));
+					if (checked.valueAt(i) && c.moveToPosition(checked.keyAt(i))) {
+						list.add(new DraftItem(c, indices));
 					}
 				}
-				twitter.updateStatusesAsync(list.toArray(new ParcelableStatusUpdate[list.size()]));
-				final Where where = Where.in(new Column(Drafts._ID), new RawItemArray(mListView.getCheckedItemIds()));
-				mResolver.delete(Drafts.CONTENT_URI, where.getSQL(), null);
+				if (sendDrafts(list)) {
+					final Where where = Where.in(new Column(Drafts._ID),
+							new RawItemArray(mListView.getCheckedItemIds()));
+					mResolver.delete(Drafts.CONTENT_URI, where.getSQL(), null);
+				}
 				break;
 			}
 			default: {
@@ -155,8 +134,11 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 	@Override
 	public void onItemClick(final AdapterView<?> view, final View child, final int position, final long id) {
 		final Cursor c = mAdapter.getCursor();
-		if (c == null || c.isClosed()) return;
-		editDraft(new DraftItem(c, position));
+		if (c == null || c.isClosed() || !c.moveToPosition(position)) return;
+		final DraftItem item = new DraftItem(c, new CursorDraftIndices(c));
+		if (item.action_type == Drafts.ACTION_UPDATE_STATUS || item.action_type <= 0) {
+			editDraft(item);
+		}
 	}
 
 	@Override
@@ -187,17 +169,6 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 	}
 
 	@Override
-	public void onStart() {
-		final IntentFilter filter = new IntentFilter(BROADCAST_DRAFTS_DATABASE_UPDATED);
-		registerReceiver(mStatusReceiver, filter);
-		final AsyncTwitterWrapper twitter = getTwitterWrapper();
-		if (twitter != null) {
-			twitter.clearNotification(NOTIFICATION_ID_DRAFTS);
-		}
-		super.onStart();
-	}
-
-	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mResolver = getContentResolver();
@@ -214,7 +185,7 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 		mListView.setOnItemClickListener(this);
 		mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		mListView.setMultiChoiceModeListener(this);
-		getLoaderManager().initLoader(0, null, this);
+		getSupportLoaderManager().initLoader(0, null, this);
 	}
 
 	@Override
@@ -229,8 +200,16 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 	}
 
 	@Override
+	protected void onStart() {
+		final AsyncTwitterWrapper twitter = getTwitterWrapper();
+		if (twitter != null) {
+			twitter.clearNotificationAsync(NOTIFICATION_ID_DRAFTS);
+		}
+		super.onStart();
+	}
+
+	@Override
 	protected void onStop() {
-		unregisterReceiver(mStatusReceiver);
 		if (mPopupMenu != null) {
 			mPopupMenu.dismiss();
 		}
@@ -246,64 +225,27 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 		startActivityForResult(intent, REQUEST_COMPOSE);
 	}
 
+	private boolean sendDrafts(final List<DraftItem> list) {
+		final AsyncTwitterWrapper twitter = getTwitterWrapper();
+		if (twitter == null) return false;
+		for (final DraftItem item : list) {
+			if (item.action_type == Drafts.ACTION_UPDATE_STATUS || item.action_type <= 0) {
+				twitter.updateStatusesAsync(new ParcelableStatusUpdate(item));
+			} else if (item.action_type == Drafts.ACTION_SEND_DIRECT_MESSAGE) {
+				final long recipientId = item.action_extras.optLong(EXTRA_RECIPIENT_ID);
+				if (item.account_ids == null || item.account_ids.length <= 0 || recipientId <= 0) {
+					continue;
+				}
+				final long accountId = item.account_ids[0];
+				twitter.sendDirectMessageAsync(accountId, recipientId, item.text);
+			}
+		}
+		return true;
+	}
+
 	private void updateTitle(final ActionMode mode) {
 		if (mListView == null || mode == null) return;
 		final int count = mListView.getCheckedItemCount();
 		mode.setTitle(getResources().getQuantityString(R.plurals.Nitems_selected, count, count));
-	}
-
-	static class DraftsAdapter extends SimpleCursorAdapter {
-
-		private final ImageLoaderWrapper mImageLoader;
-		private final ImageLoadingHandler mImageLoadingHandler;
-
-		private float mTextSize;
-		private int mAccountIdsIdx, mTextIdx, mImageUriIdx;
-
-		public DraftsAdapter(final Context context) {
-			super(context, R.layout.draft_list_item, null, new String[0], new int[0], 0);
-			mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
-			mImageLoadingHandler = new ImageLoadingHandler();
-		}
-
-		@Override
-		public void bindView(final View view, final Context context, final Cursor cursor) {
-			final long[] account_ids = ArrayUtils.parseLongArray(cursor.getString(mAccountIdsIdx), ',');
-			final String content = cursor.getString(mTextIdx);
-			final String image_uri = cursor.getString(mImageUriIdx);
-			final TextView text = (TextView) view.findViewById(R.id.text);
-			final ImageView image_preview = (ImageView) view.findViewById(R.id.image_preview);
-			final AccountsColorFrameLayout account_colors = (AccountsColorFrameLayout) view
-					.findViewById(R.id.accounts_color);
-			account_colors.setColors(getAccountColors(context, account_ids));
-			text.setTextSize(mTextSize);
-			final boolean empty_content = TextUtils.isEmpty(content);
-			if (empty_content) {
-				text.setText(R.string.empty_content);
-			} else {
-				text.setText(content);
-			}
-			text.setTypeface(Typeface.DEFAULT, empty_content ? Typeface.ITALIC : Typeface.NORMAL);
-			final View image_preview_container = view.findViewById(R.id.image_preview_container);
-			image_preview_container.setVisibility(TextUtils.isEmpty(image_uri) ? View.GONE : View.VISIBLE);
-			if (!TextUtils.isEmpty(image_uri) && !image_uri.equals(mImageLoadingHandler.getLoadingUri(image_preview))) {
-				mImageLoader.displayPreviewImage(image_preview, image_uri, mImageLoadingHandler);
-			}
-		}
-
-		public void setTextSize(final float text_size) {
-			mTextSize = text_size;
-		}
-
-		@Override
-		public Cursor swapCursor(final Cursor c) {
-			final Cursor old = super.swapCursor(c);
-			if (c != null) {
-				mAccountIdsIdx = c.getColumnIndex(Drafts.ACCOUNT_IDS);
-				mTextIdx = c.getColumnIndex(Drafts.TEXT);
-				mImageUriIdx = c.getColumnIndex(Drafts.IMAGE_URI);
-			}
-			return old;
-		}
 	}
 }

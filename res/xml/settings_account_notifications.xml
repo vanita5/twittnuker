@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:twittnuker="http://schemas.android.com/apk/res/de.vanita5.twittnuker"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:title="@string/notifications">
 
+	<de.vanita5.twittnuker.preference.NotificationContentPreference
+		android:key="content_to_notify"
+		android:title="@string/content_to_notify"/>
+	
 	<de.vanita5.twittnuker.preference.RingtonePreference
 		android:key="notification_ringtone"
 		android:title="@string/notification_ringtone"/>
@@ -18,15 +22,24 @@
 		<de.vanita5.twittnuker.preference.NotificationTypePreference
 			android:key="notification_type_home"
 			android:title="@string/home"
-			twittnuker:notificationType="none"/>
+			app:dependencyKey="home_timeline_notification"
+			app:dependencyValueDefault="false"
+			app:dependencyValues="@array/dependency_values_true"
+			app:notificationType="none"/>
 		<de.vanita5.twittnuker.preference.NotificationTypePreference
 			android:key="notification_type_mentions"
 			android:title="@string/mentions"
-			twittnuker:notificationType="vibration|light"/>
+			app:dependencyKey="mentions_notification"
+			app:dependencyValueDefault="false"
+			app:dependencyValues="@array/dependency_values_true"
+			app:notificationType="vibration|light"/>
 		<de.vanita5.twittnuker.preference.NotificationTypePreference
 			android:key="notification_type_direct_messages"
 			android:title="@string/direct_messages"
-			twittnuker:notificationType="ringtone|vibration|light"/>
+			app:dependencyKey="direct_messages_notification"
+			app:dependencyValueDefault="false"
+			app:dependencyValues="@array/dependency_values_true"
+			app:notificationType="ringtone|vibration|light"/>
 	</PreferenceCategory>
 
 </PreferenceScreen>

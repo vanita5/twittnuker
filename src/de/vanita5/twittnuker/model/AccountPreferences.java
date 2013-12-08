@@ -2,9 +2,11 @@ package de.vanita5.twittnuker.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
-
 
 public class AccountPreferences implements Constants {
 
@@ -33,7 +35,7 @@ public class AccountPreferences implements Constants {
 				PREFERENCE_DEFAULT_NOTIFICATION_TYPE_DIRECT_MESSAGES);
 	}
 
-	public int getHomeNotificationType() {
+	public int getHomeTimelineNotificationType() {
 		return mPreferences.getInt(PREFERENCE_KEY_NOTIFICATION_TYPE_HOME, PREFERENCE_DEFAULT_NOTIFICATION_TYPE_HOME);
 	}
 
@@ -44,6 +46,12 @@ public class AccountPreferences implements Constants {
 
 	public int getNotificationLightColor() {
 		return mPreferences.getInt(PREFERENCE_KEY_NOTIFICATION_LIGHT_COLOR, getDefaultNotificationLightColor());
+	}
+
+	public Uri getNotificationRingtone() {
+		final Uri def = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		final String path = mPreferences.getString(PREFERENCE_KEY_NOTIFICATION_RINGTONE, null);
+		return TextUtils.isEmpty(path) ? def : Uri.parse(path);
 	}
 
 	public boolean isAutoRefreshDirectMessagesEnabled() {
@@ -66,6 +74,20 @@ public class AccountPreferences implements Constants {
 
 	public boolean isAutoRefreshTrendsEnabled() {
 		return mPreferences.getBoolean(PREFERENCE_KEY_AUTO_REFRESH_TRENDS, PREFERENCE_DEFAULT_AUTO_REFRESH_TRENDS);
+	}
+
+	public boolean isDirectMessagesNotificationEnabled() {
+		return mPreferences.getBoolean(PREFERENCE_KEY_DIRECT_MESSAGES_NOTIFICATION,
+				PREFERENCE_DEFAULT_DIRECT_MESSAGES_NOTIFICATION);
+	}
+
+	public boolean isHomeTimelineNotificationEnabled() {
+		return mPreferences.getBoolean(PREFERENCE_KEY_HOME_TIMELINE_NOTIFICATION,
+				PREFERENCE_DEFAULT_HOME_TIMELINE_NOTIFICATION);
+	}
+
+	public boolean isMentionsNotificationEnabled() {
+		return mPreferences.getBoolean(PREFERENCE_KEY_MENTIONS_NOTIFICATION, PREFERENCE_DEFAULT_MENTIONS_NOTIFICATION);
 	}
 
 	public boolean isNotificationEnabled() {

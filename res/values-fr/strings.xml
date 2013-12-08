@@ -174,7 +174,7 @@
   <string name="refresh_interval">Intervalle d\'actualisation</string>
   <string name="refresh_interval_summary">Des fréquences de rafraîchissement plus élevées consomment plus de batterie et plus de trafic réseau!</string>
   <string name="content_to_refresh">Contenu à actualiser</string>
-  <string name="content_to_nofity">Contenu à notifier</string>
+  <string name="content_to_notify">Contenu à notifier</string>
   <string name="notifications_type">Type de notifications</string>
   <string name="notifications_type_summary">Cette option ne remplacera PAS les paramètres système.</string>
   <string name="sound">Son</string>
@@ -195,8 +195,8 @@
   <string name="type_to_compose">Tapez pour composer</string>
   <string name="users_lists">Listes de l\'utilisateur</string>
   <string name="lists_following_user">Liste dont cet utilisateur est membre</string>
-  <string name="Nstatuses_quantity_one">Vous avez un nouveau tweet.</string>
-  <string name="Nstatuses_quantity_other">Vous avez <xliff:g id="items">%d</xliff:g> nouveaux tweets.</string>
+  <string name="you_have_N_new_statuses_quantity_one">Vous avez un nouveau tweet.</string>
+  <string name="you_have_N_new_statuses_quantity_other">Vous avez <xliff:g id="items">%d</xliff:g> nouveaux tweets.</string>
   <string name="item_1_minute">1 minute</string>
   <string name="item_3_minutes">3 minutes</string>
   <string name="item_5_minutes">5 minutes</string>

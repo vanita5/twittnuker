@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ * 				Twidere - Twitter client for Android
  *
  *  Copyright (C) 2012-2013 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -29,8 +29,10 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.provider.TweetStore.Notifications;
 import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
 
+import twitter4j.DirectMessage;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -45,35 +47,19 @@ import java.util.Set;
 
 public class TwitterWrapper implements Constants {
 
-	public int clearUnreadCount(final Context context, final int position) {
+	public static int clearNotification(final Context context, final int notificationType, final long accountId) {
+		final Uri.Builder builder = Notifications.CONTENT_URI.buildUpon();
+		builder.appendPath(String.valueOf(notificationType));
+		if (accountId > 0) {
+			builder.appendPath(String.valueOf(accountId));
+		}
+		return context.getContentResolver().delete(builder.build(), null, null);
+	}
+
+	public static int clearUnreadCount(final Context context, final int position) {
 		if (context == null || position < 0) return 0;
 		final Uri uri = UnreadCounts.CONTENT_URI.buildUpon().appendPath(String.valueOf(position)).build();
 		return context.getContentResolver().delete(uri, null, null);
-	}
-
-	public int removeUnreadCounts(final Context context, final int position, final long account_id,
-			final long... status_ids) {
-		if (context == null || position < 0 || status_ids == null || status_ids.length == 0) return 0;
-		int result = 0;
-		final Uri.Builder builder = UnreadCounts.CONTENT_URI.buildUpon();
-		builder.appendPath(String.valueOf(position));
-		builder.appendPath(String.valueOf(account_id));
-		builder.appendPath(ArrayUtils.toString(status_ids, ',', false));
-		result += context.getContentResolver().delete(builder.build(), null, null);
-		return result;
-	}
-
-	public int removeUnreadCounts(final Context context, final int position, final Map<Long, Set<Long>> counts) {
-		if (context == null || position < 0 || counts == null) return 0;
-		int result = 0;
-		for (final Entry<Long, Set<Long>> entry : counts.entrySet()) {
-			final Uri.Builder builder = UnreadCounts.CONTENT_URI.buildUpon();
-			builder.appendPath(String.valueOf(position));
-			builder.appendPath(String.valueOf(entry.getKey()));
-			builder.appendPath(ListUtils.toString(new ArrayList<Long>(entry.getValue()), ',', false));
-			result += context.getContentResolver().delete(builder.build(), null, null);
-		}
-		return result;
 	}
 
 	public static SingleResponse<Boolean> deleteProfileBannerImage(final Context context, final long account_id) {
@@ -85,6 +71,31 @@ public class TwitterWrapper implements Constants {
 		} catch (final TwitterException e) {
 			return new SingleResponse<Boolean>(false, e);
 		}
+	}
+
+	public static int removeUnreadCounts(final Context context, final int position, final long account_id,
+			final long... status_ids) {
+		if (context == null || position < 0 || status_ids == null || status_ids.length == 0) return 0;
+		int result = 0;
+		final Uri.Builder builder = UnreadCounts.CONTENT_URI.buildUpon();
+		builder.appendPath(String.valueOf(position));
+		builder.appendPath(String.valueOf(account_id));
+		builder.appendPath(ArrayUtils.toString(status_ids, ',', false));
+		result += context.getContentResolver().delete(builder.build(), null, null);
+		return result;
+	}
+
+	public static int removeUnreadCounts(final Context context, final int position, final Map<Long, Set<Long>> counts) {
+		if (context == null || position < 0 || counts == null) return 0;
+		int result = 0;
+		for (final Entry<Long, Set<Long>> entry : counts.entrySet()) {
+			final Uri.Builder builder = UnreadCounts.CONTENT_URI.buildUpon();
+			builder.appendPath(String.valueOf(position));
+			builder.appendPath(String.valueOf(entry.getKey()));
+			builder.appendPath(ListUtils.toString(new ArrayList<Long>(entry.getValue()), ',', false));
+			result += context.getContentResolver().delete(builder.build(), null, null);
+		}
+		return result;
 	}
 
 	public static SingleResponse<ParcelableUser> updateProfile(final Context context, final long account_id,
@@ -145,6 +156,31 @@ public class TwitterWrapper implements Constants {
 			}
 		}
 		return SingleResponse.nullInstance();
+	}
+
+	public static final class MessageListResponse extends TwitterListResponse<DirectMessage> {
+
+		public final boolean truncated;
+
+		public MessageListResponse(final long account_id, final Exception exception) {
+			this(account_id, -1, -1, null, false, exception);
+		}
+
+		public MessageListResponse(final long account_id, final List<DirectMessage> list) {
+			this(account_id, -1, -1, list, false, null);
+		}
+
+		public MessageListResponse(final long account_id, final long max_id, final long since_id,
+				final int load_item_limit, final List<DirectMessage> list, final boolean truncated) {
+			this(account_id, max_id, since_id, list, truncated, null);
+		}
+
+		MessageListResponse(final long account_id, final long max_id, final long since_id,
+				final List<DirectMessage> list, final boolean truncated, final Exception exception) {
+			super(account_id, max_id, since_id, list, exception);
+			this.truncated = truncated;
+		}
+
 	}
 
 	public static final class StatusListResponse extends TwitterListResponse<Status> {

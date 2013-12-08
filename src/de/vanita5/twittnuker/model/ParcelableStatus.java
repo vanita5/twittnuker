@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -19,25 +19,24 @@
 
 package de.vanita5.twittnuker.model;
 
-import static de.vanita5.twittnuker.util.ContentValuesUtils.getAsBoolean;
-import static de.vanita5.twittnuker.util.ContentValuesUtils.getAsInteger;
-import static de.vanita5.twittnuker.util.ContentValuesUtils.getAsLong;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.formatStatusText;
 import static de.vanita5.twittnuker.util.Utils.getBiggerTwitterProfileImage;
 import static de.vanita5.twittnuker.util.Utils.getInReplyToName;
+import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsBoolean;
+import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsInteger;
+import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsLong;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.mariotaku.jsonserializer.JSONParcel;
+import org.mariotaku.jsonserializer.JSONParcelable;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
-
-import org.mariotaku.jsonserializer.JSONParcel;
-import org.mariotaku.jsonserializer.JSONParcelable;
 
 import twitter4j.Status;
 import twitter4j.User;
@@ -143,7 +142,7 @@ public class ParcelableStatus implements Parcelable, JSONParcelable, Comparable<
 		mentions = ParcelableUserMention.fromJSONString(values.getAsString(Statuses.MENTIONS));
 	}
 
-	public ParcelableStatus(final Cursor cursor, final StatusCursorIndices indices) {
+	public ParcelableStatus(final Cursor cursor, final CursorStatusIndices indices) {
 		retweet_id = indices.retweet_id != -1 ? cursor.getLong(indices.retweet_id) : -1;
 		retweeted_by_id = indices.retweeted_by_user_id != -1 ? cursor.getLong(indices.retweeted_by_user_id) : -1;
 		id = indices.status_id != -1 ? cursor.getLong(indices.status_id) : -1;

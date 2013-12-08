@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -20,9 +20,12 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserColor;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserNickname;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.setUserColor;
 import static de.vanita5.twittnuker.util.Utils.cancelRetweet;
-import static de.vanita5.twittnuker.util.Utils.clearUserColor;
-import static de.vanita5.twittnuker.util.Utils.clearUserNickname;
 import static de.vanita5.twittnuker.util.Utils.findStatus;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
@@ -31,20 +34,19 @@ import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
 import static de.vanita5.twittnuker.util.Utils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getMapStaticImageUri;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-import static de.vanita5.twittnuker.util.Utils.getUserColor;
-import static de.vanita5.twittnuker.util.Utils.getUserNickname;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 import static de.vanita5.twittnuker.util.Utils.isSameAccount;
 import static de.vanita5.twittnuker.util.Utils.openImage;
 import static de.vanita5.twittnuker.util.Utils.openMap;
+import static de.vanita5.twittnuker.util.Utils.openStatusReplies;
 import static de.vanita5.twittnuker.util.Utils.openStatusRetweeters;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 import static de.vanita5.twittnuker.util.Utils.scrollListToPosition;
 import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
-import static de.vanita5.twittnuker.util.Utils.setUserColor;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
+import static de.vanita5.twittnuker.util.Utils.startStatusShareChooser;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -104,8 +106,8 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.PreviewMedia;
 import de.vanita5.twittnuker.model.SingleResponse;
-import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.text.method.StatusContentMovementMethod;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
@@ -146,7 +148,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	private ImageLoaderWrapper mImageLoader;
 	private Handler mHandler;
 	private TextView mNameView, mScreenNameView, mTextView, mTimeSourceView, mInReplyToView, mLocationView,
-			mRetweetView;
+			mRetweetView, mRepliesView;
 
 	private ImageView mProfileImageView, mMapView;
 	private Button mFollowButton;
@@ -316,7 +318,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		args.putLong(EXTRA_ACCOUNT_ID, status.account_id);
 		args.putLong(EXTRA_STATUS_ID, status.id);
 		args.putParcelable(EXTRA_STATUS, status);
-		if (shouldUseSmartBar()) {
+		if (shouldUseNativeMenu()) {
 			getActivity().supportInvalidateOptionsMenu();
 		} else {
 			setMenuForStatus(getActivity(), mMenuBar.getMenu(), status);
@@ -338,14 +340,15 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		final TwidereLinkify linkify = new TwidereLinkify(new OnLinkClickHandler(getActivity()));
 		linkify.setHighlightColor(mPreferences.getInt(PREFERENCE_KEY_THEME_COLOR, new TextPaint().linkColor));
 		linkify.applyAllLinks(mTextView, status.account_id, status.is_possibly_sensitive);
-		final String time = formatToLongTimeString(getActivity(), status.timestamp);
+		mTextView.setMovementMethod(StatusContentMovementMethod.getInstance());
+		final String timeString = formatToLongTimeString(getActivity(), status.timestamp);
 		final String source_html = status.source;
-		if (!isEmpty(time) && !isEmpty(source_html)) {
-			mTimeSourceView.setText(Html.fromHtml(getString(R.string.time_source, time, source_html)));
-		} else if (isEmpty(time) && !isEmpty(source_html)) {
+		if (!isEmpty(timeString) && !isEmpty(source_html)) {
+			mTimeSourceView.setText(Html.fromHtml(getString(R.string.time_source, timeString, source_html)));
+		} else if (isEmpty(timeString) && !isEmpty(source_html)) {
 			mTimeSourceView.setText(Html.fromHtml(getString(R.string.source, source_html)));
-		} else if (!isEmpty(time) && isEmpty(source_html)) {
-			mTimeSourceView.setText(time);
+		} else if (!isEmpty(timeString) && isEmpty(source_html)) {
+			mTimeSourceView.setText(timeString);
 		}
 		mTimeSourceView.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -423,7 +426,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		setPullToRefreshEnabled(shouldEnablePullToRefresh());
-		setHasOptionsMenu(shouldUseSmartBar());
+		setHasOptionsMenu(shouldUseNativeMenu());
 		setListShownNoAnimation(true);
 		mHandler = new Handler();
 		mListView = getListView();
@@ -440,11 +443,12 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		mImagePreviewAdapter = new MediaPreviewAdapter(getActivity());
 		mLoadImagesIndicator.setOnClickListener(this);
 		mInReplyToView.setOnClickListener(this);
+		mRepliesView.setOnClickListener(this);
 		mFollowButton.setOnClickListener(this);
 		mProfileView.setOnClickListener(this);
 		mLocationContainer.setOnClickListener(this);
 		mRetweetView.setOnClickListener(this);
-		mMenuBar.setVisibility(shouldUseSmartBar() ? View.GONE : View.VISIBLE);
+		mMenuBar.setVisibility(shouldUseNativeMenu() ? View.GONE : View.VISIBLE);
 		mMenuBar.inflate(R.menu.menu_status);
 		mMenuBar.setIsBottomBar(true);
 		mMenuBar.setOnMenuItemClickListener(mMenuItemClickListener);
@@ -461,8 +465,8 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		if (intent == null || mStatus == null) return;
 		switch (requestCode) {
 			case REQUEST_SET_COLOR: {
-				if (resultCode == Activity.RESULT_OK) if (intent != null && intent.getExtras() != null) {
-					final int color = intent.getIntExtra(Accounts.USER_COLOR, Color.TRANSPARENT);
+				if (resultCode == Activity.RESULT_OK && intent != null) {
+					final int color = intent.getIntExtra(EXTRA_COLOR, Color.TRANSPARENT);
 					setUserColor(getActivity(), mStatus.user_id, color);
 				}
 				break;
@@ -485,6 +489,10 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 			}
 			case R.id.in_reply_to: {
 				showConversation();
+				break;
+			}
+			case R.id.replies_view: {
+				openStatusReplies(getActivity(), mStatus.account_id, mStatus.id, mStatus.user_screen_name);
 				break;
 			}
 			case R.id.location_container: {
@@ -522,7 +530,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 	@Override
 	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-		if (!shouldUseSmartBar()) return;
+		if (!shouldUseNativeMenu()) return;
 		inflater.inflate(R.menu.menu_status, menu);
 	}
 
@@ -547,6 +555,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		mProfileImageView = (ImageView) mHeaderView.findViewById(R.id.profile_image);
 		mTimeSourceView = (TextView) mHeaderView.findViewById(R.id.time_source);
 		mInReplyToView = (TextView) mHeaderView.findViewById(R.id.in_reply_to);
+		mRepliesView = (TextView) mHeaderView.findViewById(R.id.replies_view);
 		mFollowButton = (Button) mHeaderView.findViewById(R.id.follow);
 		mFollowIndicator = mHeaderView.findViewById(R.id.follow_indicator);
 		mFollowInfoProgress = (ProgressBar) mHeaderView.findViewById(R.id.follow_info_progress);
@@ -604,13 +613,13 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
-		if (!shouldUseSmartBar() || mStatus == null) return false;
+		if (!shouldUseNativeMenu() || mStatus == null) return false;
 		return handleMenuItemClick(item);
 	}
 
 	@Override
 	public void onPrepareOptionsMenu(final Menu menu) {
-		if (!shouldUseSmartBar() || mStatus == null) return;
+		if (!shouldUseNativeMenu() || mStatus == null) return;
 		setMenuForStatus(getActivity(), menu, mStatus);
 	}
 
@@ -648,6 +657,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		mInReplyToView.setTextSize(text_size * 0.85f);
 		mLocationView.setTextSize(text_size * 0.85f);
 		mRetweetView.setTextSize(text_size * 0.85f);
+		mRepliesView.setTextSize(text_size * 0.85f);
 	}
 
 	@Override
@@ -671,13 +681,9 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 	protected boolean handleMenuItemClick(final MenuItem item) {
 		if (mStatus == null) return false;
-		final String text_plain = mStatus.text_plain;
 		switch (item.getItemId()) {
 			case MENU_SHARE: {
-				final Intent intent = new Intent(Intent.ACTION_SEND);
-				intent.setType("text/plain");
-				intent.putExtra(Intent.EXTRA_TEXT, "@" + mStatus.user_screen_name + ": " + text_plain);
-				startActivity(Intent.createChooser(intent, getString(R.string.share)));
+				startStatusShareChooser(getActivity(), mStatus);
 				break;
 			}
 			case MENU_COPY: {
@@ -730,6 +736,8 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 			}
 			case MENU_SET_COLOR: {
 				final Intent intent = new Intent(getActivity(), ColorPickerDialogActivity.class);
+				intent.putExtra(EXTRA_COLOR, getUserColor(getActivity(), mStatus.user_id, true));
+				intent.putExtra(EXTRA_ALPHA_SLIDER, false);
 				startActivityForResult(intent, REQUEST_SET_COLOR);
 				break;
 			}
@@ -854,8 +862,13 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		updateImageSelectButton(mImagePreviewGallery.getSelectedItemPosition());
 	}
 
-	private boolean shouldUseSmartBar() {
-		return getActivity() instanceof LinkHandlerActivity && SmartBarUtils.hasSmartBar();
+	private boolean shouldUseNativeMenu() {
+		final boolean isInLinkHandler = getActivity() instanceof LinkHandlerActivity;
+		// final boolean isLargeScreen =
+		// getResources().getBoolean(R.bool.is_large_screen);
+		// return isInLinkHandler && (SmartBarUtils.hasSmartBar() ||
+		// !isLargeScreen);
+		return isInLinkHandler && SmartBarUtils.hasSmartBar();
 	}
 
 	private void showConversation() {
@@ -974,16 +987,16 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 		private SingleResponse<Boolean> isAllFollowing() {
 			if (status == null) return SingleResponse.nullInstance();
-			if (status.user_id == status.account_id) return SingleResponse.dataOnly(true);
+			if (status.user_id == status.account_id) return SingleResponse.withData(true);
 			final Twitter twitter = getTwitterInstance(context, status.account_id, false);
 			if (twitter == null) return SingleResponse.nullInstance();
 			try {
 				final Relationship result = twitter.showFriendship(status.account_id, status.user_id);
 				if (!result.isSourceFollowingTarget()) {
-					SingleResponse.dataOnly(false);
+					SingleResponse.withData(false);
 				}
 			} catch (final TwitterException e) {
-				return SingleResponse.exceptionOnly(e);
+				return SingleResponse.withException(e);
 			}
 			return SingleResponse.nullInstance();
 		}
@@ -1166,12 +1179,12 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		public SingleResponse<ParcelableStatus> loadInBackground() {
 			if (!mOmitIntentExtra && mExtras != null) {
 				final ParcelableStatus cache = mExtras.getParcelable(EXTRA_STATUS);
-				if (cache != null) return SingleResponse.dataOnly(cache);
+				if (cache != null) return SingleResponse.withData(cache);
 			}
 			try {
-				return SingleResponse.dataOnly(findStatus(getContext(), mAccountId, mStatusId));
+				return SingleResponse.withData(findStatus(getContext(), mAccountId, mStatusId));
 			} catch (final TwitterException e) {
-				return SingleResponse.exceptionOnly(e);
+				return SingleResponse.withException(e);
 			}
 		}
 

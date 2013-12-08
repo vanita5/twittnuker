@@ -1,7 +1,10 @@
 /*
  *			Twittnuker - Twitter client for Android
- * 
- * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *
+ * Copyright (C) 2013 vanita5 <mail@vanita5.de>
+ *
+ * This program incorporates a modified version of Twidere.
+ * Copyright (C) 2012-2013 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,11 +22,11 @@
 
 package de.vanita5.twittnuker.adapter;
 
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
-import static de.vanita5.twittnuker.util.Utils.getUserColor;
-import static de.vanita5.twittnuker.util.Utils.getUserNickname;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 
 import android.content.Context;
@@ -38,26 +41,31 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
 
 import java.util.List;
 import java.util.Locale;
 
-public class ParcelableUsersAdapter extends ArrayAdapter<ParcelableUser> implements IBaseCardAdapter, OnClickListener {
+public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> implements IBaseCardAdapter,
+		OnClickListener {
 
 	private final ImageLoaderWrapper mProfileImageLoader;
 	private final MultiSelectManager mMultiSelectManager;
 	private final Context mContext;
 	private final Locale mLocale;
 
-	private boolean mDisplayProfileImage, mShowAccountColor, mNicknameOnly, mAnimationEnabled;
-	private float mTextSize;
+	private boolean mAnimationEnabled;
 	private int mMaxAnimationPosition;
 
 	private MenuButtonClickListener mListener;
 
 	public ParcelableUsersAdapter(final Context context) {
-		super(context, R.layout.card_item_user);
+		this(context, Utils.isCompactCards(context));
+	}
+
+	public ParcelableUsersAdapter(final Context context, final boolean compactCards) {
+		super(context, getItemResource(compactCards));
 		mContext = context;
 		mLocale = context.getResources().getConfiguration().locale;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
@@ -83,21 +91,27 @@ public class ParcelableUsersAdapter extends ArrayAdapter<ParcelableUser> impleme
 			holder.item_menu.setOnClickListener(this);
 			view.setTag(holder);
 		}
+
+		// Clear images in prder to prevent images in recycled view shown.
+		holder.profile_image.setImageDrawable(null);
+
 		final ParcelableUser user = getItem(position);
 
-		holder.setAccountColorEnabled(mShowAccountColor);
+		final boolean showAccountColor = isShowAccountColor();
 
-		if (mShowAccountColor) {
+		holder.setAccountColorEnabled(showAccountColor);
+
+		if (showAccountColor) {
 			holder.setAccountColor(getAccountColor(mContext, user.account_id));
 		}
 
 		holder.setUserColor(getUserColor(mContext, user.id));
 
-		holder.setTextSize(mTextSize);
+		holder.setTextSize(getTextSize());
 		holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0,
 				getUserTypeIconRes(user.is_verified, user.is_protected), 0);
 		final String nick = getUserNickname(mContext, user.id);
-		holder.name.setText(TextUtils.isEmpty(nick) ? user.name : mNicknameOnly ? nick : mContext.getString(
+		holder.name.setText(TextUtils.isEmpty(nick) ? user.name : isNicknameOnly() ? nick : mContext.getString(
 				R.string.name_with_nickname, user.name, nick));
 		holder.screen_name.setText("@" + user.screen_name);
 		holder.description.setVisibility(TextUtils.isEmpty(user.description_unescaped) ? View.GONE : View.VISIBLE);
@@ -109,8 +123,8 @@ public class ParcelableUsersAdapter extends ArrayAdapter<ParcelableUser> impleme
 		holder.statuses_count.setText(getLocalizedNumber(mLocale, user.statuses_count));
 		holder.followers_count.setText(getLocalizedNumber(mLocale, user.followers_count));
 		holder.friends_count.setText(getLocalizedNumber(mLocale, user.friends_count));
-		holder.profile_image.setVisibility(mDisplayProfileImage ? View.VISIBLE : View.GONE);
-		if (mDisplayProfileImage) {
+		holder.profile_image.setVisibility(isDisplayProfileImage() ? View.VISIBLE : View.GONE);
+		if (isDisplayProfileImage()) {
 			mProfileImageLoader.displayProfileImage(holder.profile_image, user.profile_image_url);
 		}
 		holder.item_menu.setTag(position);
@@ -161,28 +175,6 @@ public class ParcelableUsersAdapter extends ArrayAdapter<ParcelableUser> impleme
 	}
 
 	@Override
-	public void setDisplayNameFirst(final boolean name_first) {
-
-	}
-
-	@Override
-	public void setDisplayProfileImage(final boolean display) {
-		if (display != mDisplayProfileImage) {
-			mDisplayProfileImage = display;
-			notifyDataSetChanged();
-		}
-	}
-
-	@Override
-	public void setLinkHighlightColor(final int color) {
-	}
-
-	@Override
-	public void setLinkHighlightOption(final String option) {
-
-	}
-
-	@Override
 	public void setMaxAnimationPosition(final int position) {
 		mMaxAnimationPosition = position;
 	}
@@ -192,26 +184,8 @@ public class ParcelableUsersAdapter extends ArrayAdapter<ParcelableUser> impleme
 		mListener = listener;
 	}
 
-	@Override
-	public void setNicknameOnly(final boolean nickname_only) {
-		if (mNicknameOnly == nickname_only) return;
-		mNicknameOnly = nickname_only;
-		notifyDataSetChanged();
-	}
-
-	public void setShowAccountColor(final boolean show) {
-		if (show != mShowAccountColor) {
-			mShowAccountColor = show;
-			notifyDataSetChanged();
-		}
-	}
-
-	@Override
-	public void setTextSize(final float text_size) {
-		if (text_size != mTextSize) {
-			mTextSize = text_size;
-			notifyDataSetChanged();
-		}
+	private static int getItemResource(final boolean compactCards) {
+		return compactCards ? R.layout.card_item_user_compact : R.layout.card_item_user;
 	}
 
 }

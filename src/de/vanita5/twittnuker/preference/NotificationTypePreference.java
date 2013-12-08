@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -24,14 +24,13 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
-import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.widget.ListView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 
-public class NotificationTypePreference extends DialogPreference implements Constants {
+public class NotificationTypePreference extends ValueDependencyDialogPreference implements Constants {
 
 	private final int mDefaultValue;
 

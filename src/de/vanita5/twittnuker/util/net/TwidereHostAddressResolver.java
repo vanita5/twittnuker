@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -28,7 +28,6 @@ import android.util.Log;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.HostsFileParser;
 import de.vanita5.twittnuker.util.Utils;
-
 import org.xbill.DNS.AAAARecord;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.CNAMERecord;
@@ -57,7 +56,6 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 	private final HostsFileParser mHosts = new HostsFileParser();
 	private final HostCache mHostCache = new HostCache(512);
 	private final boolean mLocalMappingOnly;
-	private final boolean mIsDebugBuild;
 	private final String mDnsAddress;
 
 	private Resolver mDns;
@@ -72,7 +70,6 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 		final String address = mPreferences.getString(PREFERENCE_KEY_DNS_SERVER, DEFAULT_DNS_SERVER_ADDRESS);
 		mDnsAddress = isValidIpAddress(address) ? address : DEFAULT_DNS_SERVER_ADDRESS;
 		mLocalMappingOnly = local_only;
-		mIsDebugBuild = Utils.isDebuggable(context);
 	}
 
 	@Override
@@ -80,7 +77,7 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 		if (host == null || !mPreferences.getBoolean(PREFERENCE_KEY_IGNORE_SSL_ERROR, false)) return null;
 		// First, I'll try to load address cached.
 		if (mHostCache.containsKey(host)) {
-			if (mIsDebugBuild) {
+			if (Utils.isDebugBuild()) {
 				Log.d(RESOLVER_LOGTAG, "Got cached address " + mHostCache.get(host) + " for host " + host);
 			}
 			return mHostCache.get(host);
@@ -90,7 +87,7 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 		if (mHostMapping.contains(host)) {
 			final String host_addr = mHostMapping.getString(host, null);
 			mHostCache.put(host, host_addr);
-			if (mIsDebugBuild) {
+			if (Utils.isDebugBuild()) {
 				Log.d(RESOLVER_LOGTAG, "Got mapped address " + host_addr + " for host " + host);
 			}
 			return host_addr;
@@ -99,7 +96,7 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 		if (mHosts.contains(host)) {
 			final String host_addr = mHosts.getAddress(host);
 			mHostCache.put(host, host_addr);
-			if (mIsDebugBuild) {
+			if (Utils.isDebugBuild()) {
 				Log.d(RESOLVER_LOGTAG, "Got mapped address " + host_addr + " for host " + host);
 			}
 			return host_addr;
@@ -112,7 +109,7 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 			if (mHostMapping.contains(top_domain)) {
 				final String host_addr = mHostMapping.getString(top_domain, null);
 				mHostCache.put(top_domain, host_addr);
-				if (mIsDebugBuild) {
+				if (Utils.isDebugBuild()) {
 					Log.d(RESOLVER_LOGTAG, "Got mapped address (top domain) " + host_addr + " for host " + host);
 				}
 				return host_addr;
@@ -148,7 +145,7 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 					}
 				}
 				if (mHostCache.put(host, host_addr) != null) {
-					if (mIsDebugBuild) {
+					if (Utils.isDebugBuild()) {
 						Log.d(RESOLVER_LOGTAG, "Resolved address " + host_addr + " for host " + host);
 					}
 					return host_addr;
@@ -164,12 +161,12 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 				host_addr = ipv6_addr.getHostAddress();
 			} else if (record instanceof CNAMERecord) return resolve(((CNAMERecord) record).getTarget().toString());
 			mHostCache.put(host, host_addr);
-			if (mIsDebugBuild) {
+			if (Utils.isDebugBuild()) {
 				Log.d(RESOLVER_LOGTAG, "Resolved address " + host_addr + " for host " + host);
 			}
 			return host_addr;
 		}
-		if (mIsDebugBuild) {
+		if (Utils.isDebugBuild()) {
 			Log.w(RESOLVER_LOGTAG, "Resolve address " + host + " failed, using original host");
 		}
 		return host;

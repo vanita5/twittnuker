@@ -1,7 +1,10 @@
 /*
  *			Twittnuker - Twitter client for Android
- * 
- * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *
+ * Copyright (C) 2013 vanita5 <mail@vanita5.de>
+ *
+ * This program incorporates a modified version of Twidere.
+ * Copyright (C) 2012-2013 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,21 +37,25 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManagerTrojan;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.FloatMath;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
@@ -59,19 +66,19 @@ import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CursorAdapter;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import android.widget.SearchView.OnQueryTextListener;
-import android.widget.SearchView.OnSuggestionListener;
+import android.widget.Toast;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
 import com.readystatesoftware.viewbadger.BadgeView;
 
 import edu.ucdavis.earlybird.ProfilingUtil;
@@ -85,16 +92,17 @@ import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
-import de.vanita5.twittnuker.fragment.support.HomeTimelineFragment;
-import de.vanita5.twittnuker.fragment.support.MentionsFragment;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.SupportTabSpec;
+import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
+import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.SwipebackActivityUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UnreadCountUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -109,8 +117,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends DualPaneActivity implements OnClickListener, OnPageChangeListener,
-		SupportFragmentCallback, OnOpenedListener, OnClosedListener, OnQueryTextListener, OnSuggestionListener,
-		OnLongClickListener, OnActionExpandListener {
+		SupportFragmentCallback, SlidingMenu.OnOpenedListener, SlidingMenu.OnClosedListener,
+		SearchView.OnQueryTextListener, SearchView.OnSuggestionListener, OnLongClickListener, OnActionExpandListener,
+		SearchView.OnCloseListener {
 
 	private final BroadcastReceiver mStateReceiver = new BroadcastReceiver() {
 
@@ -119,20 +128,21 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 			final String action = intent.getAction();
 			if (BROADCAST_TASK_STATE_CHANGED.equals(action)) {
 				updateActionsButton();
-			} else if (BROADCAST_ACCOUNT_LIST_DATABASE_UPDATED.equals(action)) {
-				notifyAccountsChanged();
-				updateUnreadCount();
 			} else if (BROADCAST_UNREAD_COUNT_UPDATED.equals(action)) {
 				updateUnreadCount();
 			}
 		}
 
 	};
+
+	private final Handler mHandler = new Handler();
+
+	private final ContentObserver mAccountChangeObserver = new AccountChangeObserver(this, mHandler);
+
 	private final ArrayList<SupportTabSpec> mCustomTabs = new ArrayList<SupportTabSpec>();
-
 	private final SparseArray<Fragment> mAttachedFragments = new SparseArray<Fragment>();
-	private final SparseBooleanArray mPullRefreshStates = new SparseBooleanArray();
 
+	private final SparseBooleanArray mPullRefreshStates = new SparseBooleanArray();
 	private boolean mBottomActionsButton;
 
 	private Account mSelectedAccountToSearch;
@@ -142,23 +152,27 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	private AsyncTwitterWrapper mTwitterWrapper;
 
 	private NotificationManager mNotificationManager;
+
 	private MultiSelectEventHandler mMultiSelectHandler;
 	private ActionBar mActionBar;
 	private SupportTabsAdapter mPagerAdapter;
-
 	private ExtendedViewPager mViewPager;
-	private TabPageIndicator mIndicator;
 
+	private TabPageIndicator mIndicator;
 	private SlidingMenu mSlidingMenu;
+
 	private View mHomeActionsActionView, mActionsButtonLayout, mEmptyTabHint;
 	private LeftDrawerFrameLayout mLeftDrawerContainer;
 	private SearchView mSearchView;
-
 	private Fragment mCurrentVisibleFragment;
 
 	private UpdateUnreadCountTask mUpdateUnreadCountTask;
 
 	private MenuItem mSearchItem;
+
+	private final Rect mRect = new Rect();
+
+	private boolean mTabDisplayLabel;
 
 	public void closeAccountsDrawer() {
 		if (mSlidingMenu == null) return;
@@ -227,7 +241,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 					startActivity(new Intent(INTENT_ACTION_COMPOSE));
 				} else {
 					if (classEquals(DirectMessagesFragment.class, tab.cls)) {
-						openDirectMessagesConversation(this, -1, -1, null);
+						openDirectMessagesConversation(this, -1, -1);
 					} else if (classEquals(TrendsSuggectionsFragment.class, tab.cls)) {
 						openSearchView(null);
 					} else {
@@ -237,15 +251,25 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 				break;
 			}
 			case R.id.save_search: {
-
+				if (mTwitterWrapper == null || mSearchView == null || mSelectedAccountToSearch == null) return;
+				final String query = ParseUtils.parseString(mSearchView.getQuery());
+				if (TextUtils.isEmpty(query)) return;
+				mTwitterWrapper.createSavedSearchAsync(mSelectedAccountToSearch.account_id, query);
 				break;
 			}
 		}
 	}
 
 	@Override
+	public boolean onClose() {
+		if (mSearchView == null) return false;
+		mSearchView.setQuery(null, false);
+		return true;
+	}
+
+	@Override
 	public void onClosed() {
-		updatePullToRefreshLayoutScroll(0);
+		updatePullToRefreshLayoutScroll(0, true);
 	}
 
 	@Override
@@ -269,6 +293,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		saveSearch.setOnClickListener(this);
 		saveSearch.setOnLongClickListener(this);
 		mSearchView = (SearchView) actionView.findViewById(R.id.search_view);
+		mSearchView.setOnCloseListener(this);
 		mSearchView.setOnQueryTextListener(this);
 		mSearchView.setOnSuggestionListener(this);
 		final SearchManager sm = (SearchManager) getSystemService(SEARCH_SERVICE);
@@ -318,6 +343,10 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 				headerView.setEnabled(mPullRefreshStates.get(mAttachedFragments.keyAt(i)));
 			}
 		}
+		if (mSearchView != null) {
+			mSearchView.setIconified(true);
+			mSearchView.setQuery(null, false);
+		}
 		return true;
 	}
 
@@ -331,12 +360,15 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 				headerView.setEnabled(false);
 			}
 		}
+		if (mSearchView != null) {
+			mSearchView.setIconified(false);
+		}
 		return true;
 	}
 
 	@Override
 	public void onOpened() {
-		updatePullToRefreshLayoutScroll(1);
+		updatePullToRefreshLayoutScroll(1, true);
 	}
 
 	@Override
@@ -374,7 +406,6 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 
 	@Override
 	public void onPageSelected(final int position) {
-		clearNotification(position);
 		if (mSlidingMenu.isMenuShowing()) {
 			mSlidingMenu.showContent();
 		}
@@ -429,6 +460,16 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		c.moveToPosition(position);
 		mSearchView.setQuery(a.convertToString(c), false);
 		return true;
+	}
+
+	@Override
+	public void onWindowFocusChanged(final boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		if (mSlidingMenu != null && mSlidingMenu.isMenuShowing()) {
+			updatePullToRefreshLayoutScroll(1, false);
+		} else {
+			updatePullToRefreshLayoutScroll(0, false);
+		}
 	}
 
 	public void openSearchView(final Account account) {
@@ -515,16 +556,21 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	/** Called when the activity is first created. */
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if (!Utils.isDatabaseReady(this)) {
+			Toast.makeText(this, R.string.preparing_database_toast, Toast.LENGTH_SHORT).show();
+			finish();
+			return;
+		}
 		mTwitterWrapper = getTwitterWrapper();
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mMultiSelectHandler = new MultiSelectEventHandler(this);
 		mMultiSelectHandler.dispatchOnCreate();
 		final Resources res = getResources();
-		final boolean home_display_icon = res.getBoolean(R.bool.home_display_icon);
-		super.onCreate(savedInstanceState);
-		final long[] account_ids = getAccountIds(this);
-		if (account_ids.length == 0) {
+		final boolean displayIcon = res.getBoolean(R.bool.home_display_icon);
+		final long[] accountIds = getAccountIds(this);
+		if (accountIds.length == 0) {
 			final Intent sign_in_intent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
 			sign_in_intent.setClass(this, SignInActivity.class);
 			startActivity(sign_in_intent);
@@ -539,8 +585,10 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 			return;
 		}
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONCREATE));
-		final boolean refresh_on_start = mPreferences.getBoolean(PREFERENCE_KEY_REFRESH_ON_START, false);
-		final int initial_tab = handleIntent(intent, savedInstanceState == null);
+		final boolean refreshOnStart = mPreferences.getBoolean(PREFERENCE_KEY_REFRESH_ON_START, false);
+		final boolean defDisplayLabel = res.getBoolean(R.bool.default_display_tab_label);
+		mTabDisplayLabel = mPreferences.getBoolean(PREFERENCE_KEY_DISPLAY_TAB_LABEL, defDisplayLabel);
+		final int initialTabPosition = handleIntent(intent, savedInstanceState == null);
 		mActionBar = getActionBar();
 		mActionBar.setCustomView(R.layout.home_tabs);
 
@@ -553,26 +601,32 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		mViewPager.setOffscreenPageLimit(3);
 		mIndicator.setViewPager(mViewPager);
 		mIndicator.setOnPageChangeListener(this);
-		mIndicator.setDisplayLabel(res.getBoolean(R.bool.tab_display_label));
+		mIndicator.setDisplayLabel(mTabDisplayLabel);
 		mHomeActionsActionView.setOnClickListener(this);
 		mHomeActionsActionView.setOnLongClickListener(this);
 		mActionsButtonLayout.setOnClickListener(this);
 		initTabs();
 		final boolean tabs_not_empty = mPagerAdapter.getCount() != 0;
 		mEmptyTabHint.setVisibility(tabs_not_empty ? View.GONE : View.VISIBLE);
-		mActionBar.setDisplayShowHomeEnabled(home_display_icon || !tabs_not_empty);
-		mActionBar.setHomeButtonEnabled(home_display_icon || !tabs_not_empty);
+		mActionBar.setDisplayShowHomeEnabled(displayIcon || !tabs_not_empty);
+		mActionBar.setHomeButtonEnabled(displayIcon || !tabs_not_empty);
 		mActionBar.setDisplayShowTitleEnabled(!tabs_not_empty);
 		mActionBar.setDisplayShowCustomEnabled(tabs_not_empty);
-		setTabPosition(initial_tab);
-		if (refresh_on_start && savedInstanceState == null) {
-			mTwitterWrapper.refreshAll();
-		}
+		setTabPosition(initialTabPosition);
 		setupSlidingMenu();
 		showDataProfilingRequest();
 		initUnreadCount();
 		updateActionsButton();
 		updateSlidingMenuTouchMode();
+
+		if (savedInstanceState == null) {
+			if (refreshOnStart) {
+				mTwitterWrapper.refreshAll();
+			}
+			if (intent.getBooleanExtra(EXTRA_OPEN_ACCOUNTS_DRAWER, false)) {
+				openAccountsDrawer();
+			}
+		}
 	}
 
 	@Override
@@ -599,11 +653,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		invalidateOptionsMenu();
 		updateActionsButtonStyle();
 		updateActionsButton();
-		if (mSlidingMenu.isMenuShowing()) {
-			updatePullToRefreshLayoutScroll(1);
-		} else {
-			updatePullToRefreshLayoutScroll(0);
-		}
+		updateSlidingMenuTouchMode();
 	}
 
 	@Override
@@ -611,11 +661,13 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		super.onStart();
 		mMultiSelectHandler.dispatchOnStart();
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONSTART));
+		final ContentResolver resolver = getContentResolver();
+		resolver.registerContentObserver(Accounts.CONTENT_URI, true, mAccountChangeObserver);
 		final IntentFilter filter = new IntentFilter(BROADCAST_TASK_STATE_CHANGED);
-		filter.addAction(BROADCAST_ACCOUNT_LIST_DATABASE_UPDATED);
 		filter.addAction(BROADCAST_UNREAD_COUNT_UPDATED);
 		registerReceiver(mStateReceiver, filter);
-		if (isTabsChanged(getHomeTabs(this))) {
+		if (isTabsChanged(getHomeTabs(this))
+				|| mPreferences.getBoolean(PREFERENCE_KEY_DISPLAY_TAB_LABEL, mTabDisplayLabel) != mTabDisplayLabel) {
 			restart();
 		}
 		// UCD
@@ -627,6 +679,8 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	protected void onStop() {
 		mMultiSelectHandler.dispatchOnStop();
 		unregisterReceiver(mStateReceiver);
+		final ContentResolver resolver = getContentResolver();
+		resolver.unregisterContentObserver(mAccountChangeObserver);
 		mPreferences.edit().putInt(PREFERENCE_KEY_SAVED_TAB_POSITION, mViewPager.getCurrentItem()).commit();
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONSTOP));
 
@@ -643,18 +697,6 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		}
 	}
 
-	private void clearNotification(final int position) {
-		if (mPagerAdapter == null || mTwitterWrapper == null) return;
-		final SupportTabSpec tab = mPagerAdapter.getTab(position);
-		if (classEquals(HomeTimelineFragment.class, tab.cls)) {
-			mTwitterWrapper.clearNotification(NOTIFICATION_ID_HOME_TIMELINE);
-		} else if (classEquals(MentionsFragment.class, tab.cls)) {
-			mTwitterWrapper.clearNotification(NOTIFICATION_ID_MENTIONS);
-		} else if (classEquals(DirectMessagesFragment.class, tab.cls)) {
-			mTwitterWrapper.clearNotification(NOTIFICATION_ID_DIRECT_MESSAGES);
-		}
-	}
-
 	private LeftDrawerFrameLayout getLeftDrawerContainer() {
 		return mLeftDrawerContainer;
 	}
@@ -667,44 +709,41 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		return l.getHeaderView();
 	}
 
-	private int handleIntent(final Intent intent, final boolean first_create) {
-		// Reset intent
+	private int handleIntent(final Intent intent, final boolean firstCreate) {
+		// use packge's class loader to prevent BadParcelException
+		intent.setExtrasClassLoader(getClassLoader());
+		// reset intent
 		setIntent(new Intent(this, HomeActivity.class));
 		final String action = intent.getAction();
 		if (Intent.ACTION_SEARCH.equals(action)) {
 			final String query = intent.getStringExtra(SearchManager.QUERY);
-			final long account_id = getDefaultAccountId(this);
-			openSearch(this, account_id, query);
+			final long accountId = getDefaultAccountId(this);
+			openSearch(this, accountId, query);
 			return -1;
 		}
-		final Bundle extras = intent.getExtras();
-		final boolean refresh_on_start = mPreferences.getBoolean(PREFERENCE_KEY_REFRESH_ON_START, false);
-		final long[] refreshed_ids = extras != null ? extras.getLongArray(EXTRA_IDS) : null;
-		if (refreshed_ids != null) {
-			mTwitterWrapper.refreshAll(refreshed_ids);
-		} else if (first_create && refresh_on_start) {
+		final boolean refreshOnStart = mPreferences.getBoolean(PREFERENCE_KEY_REFRESH_ON_START, false);
+		final long[] refreshedIds = intent.getLongArrayExtra(EXTRA_IDS);
+		if (refreshedIds != null) {
+			mTwitterWrapper.refreshAll(refreshedIds);
+		} else if (firstCreate && refreshOnStart) {
 			mTwitterWrapper.refreshAll();
 		}
 
-		final int initial_tab;
-		if (extras != null) {
-			final int tab = extras.getInt(EXTRA_INITIAL_TAB, -1);
-			initial_tab = tab != -1 ? tab : getAddedTabPosition(this, extras.getString(EXTRA_TAB_TYPE));
-			if (initial_tab != -1 && mViewPager != null) {
-				clearNotification(initial_tab);
-			}
-			final Intent extra_intent = extras.getParcelable(EXTRA_EXTRA_INTENT);
-			if (extra_intent != null) {
-				if (isTwidereLink(extra_intent.getData()) && isDualPaneMode()) {
-					showFragment(createFragmentForIntent(this, extra_intent), true);
-				} else {
-					startActivity(extra_intent);
-				}
-			}
-		} else {
-			initial_tab = -1;
+		final int tab = intent.getIntExtra(EXTRA_INITIAL_TAB, -1);
+		final int initialTab = tab != -1 ? tab : getAddedTabPosition(this, intent.getStringExtra(EXTRA_TAB_TYPE));
+		if (initialTab != -1 && mViewPager != null) {
+			// clearNotification(initial_tab);
 		}
-		return initial_tab;
+		final Intent extraIntent = intent.getParcelableExtra(EXTRA_EXTRA_INTENT);
+		if (extraIntent != null && firstCreate) {
+			extraIntent.setExtrasClassLoader(getClassLoader());
+			if (isTwidereLink(extraIntent.getData()) && isDualPaneMode()) {
+				showFragment(createFragmentForIntent(this, extraIntent), true);
+			} else {
+				SwipebackActivityUtils.startSwipebackActivity(this, extraIntent);
+			}
+		}
+		return initialTab;
 	}
 
 	private boolean hasActivatedTask() {
@@ -743,11 +782,28 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		return data != null && SCHEME_TWIDERE.equals(data.getScheme());
 	}
 
+	private void openAccountsDrawer() {
+		if (mSlidingMenu == null) return;
+		mSlidingMenu.showMenu();
+	}
+
 	private boolean openSettingsWizard() {
 		if (mPreferences == null || mPreferences.getBoolean(PREFERENCE_KEY_SETTINGS_WIZARD_COMPLETED, false))
 			return false;
 		startActivity(new Intent(this, SettingsWizardActivity.class));
 		return true;
+	}
+
+	private void setPullToRefreshLayoutScroll(final WindowManager wm, final Fragment f, final int scrollX,
+			final int statusBarHeight, final boolean horizontalScroll) {
+		if (f == null || f.isDetached() || f.getActivity() == null) return;
+		final View headerView = getPullToRefreshHeaderView(f);
+		if (headerView != null) {
+			headerView.setScrollX(scrollX);
+			if (!horizontalScroll) {
+				updatePullToRefreshY(wm, headerView, statusBarHeight);
+			}
+		}
 	}
 
 	private void setTabPosition(final int initial_tab) {
@@ -842,25 +898,59 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		mActionsButtonLayout.setLayoutParams(compose_lp);
 	}
 
-	private void updatePullToRefreshLayoutScroll(final float percentOpen) {
+	private void updatePullToRefreshLayoutScroll(final float percentOpen, final boolean horizontalScroll) {
+		final Window w = getWindow();
+		final WindowManager wm = getWindowManager();
+		final View decorView = w.getDecorView();
+		decorView.getWindowVisibleDisplayFrame(mRect);
+		final int statusBarHeight = mRect.top;
 		final LeftDrawerFrameLayout ld = getLeftDrawerContainer();
 		if (ld == null) return;
+		final int scrollX = -Math.round(percentOpen * ld.getMeasuredWidth());
 		ld.setPercentOpen(percentOpen);
 		for (int i = 0, j = mAttachedFragments.size(); i < j; i++) {
 			final Fragment f = mAttachedFragments.valueAt(i);
-			final View headerView = getPullToRefreshHeaderView(f);
-			if (headerView != null) {
-				headerView.scrollTo((int) -FloatMath.ceil(percentOpen * ld.getMeasuredWidth()), 0);
-			}
+			setPullToRefreshLayoutScroll(wm, f, scrollX, statusBarHeight, horizontalScroll);
 		}
+		setPullToRefreshLayoutScroll(wm, getLeftPaneFragment(), scrollX, statusBarHeight, horizontalScroll);
+		setPullToRefreshLayoutScroll(wm, getRightPaneFragment(), scrollX, statusBarHeight, horizontalScroll);
 	}
 
 	private void updateSlidingMenuTouchMode() {
 		if (mViewPager == null || mSlidingMenu == null) return;
 		final int position = mViewPager.getCurrentItem();
-		final int mode = position == 0 && !isLeftPaneUsed() ? SlidingMenu.TOUCHMODE_FULLSCREEN
+		final int mode = !mViewPager.isEnabled() || position == 0 && !isLeftPaneUsed() ? SlidingMenu.TOUCHMODE_FULLSCREEN
 				: SlidingMenu.TOUCHMODE_MARGIN;
 		mSlidingMenu.setTouchModeAbove(mode);
+	}
+
+	private static void updatePullToRefreshY(final WindowManager wm, final View view, final int y) {
+		if (view == null || wm == null || view.getWindowToken() == null) return;
+		final ViewGroup.LayoutParams lp = view.getLayoutParams();
+		if (!(lp instanceof WindowManager.LayoutParams)) return;
+		final WindowManager.LayoutParams wlp = (WindowManager.LayoutParams) lp;
+		wlp.y = y;
+		wm.updateViewLayout(view, wlp);
+	}
+
+	private static final class AccountChangeObserver extends ContentObserver {
+		private final HomeActivity mActivity;
+
+		public AccountChangeObserver(final HomeActivity activity, final Handler handler) {
+			super(handler);
+			mActivity = activity;
+		}
+
+		@Override
+		public void onChange(final boolean selfChange) {
+			onChange(selfChange, null);
+		}
+
+		@Override
+		public void onChange(final boolean selfChange, final Uri uri) {
+			mActivity.notifyAccountsChanged();
+			mActivity.updateUnreadCount();
+		}
 	}
 
 	private static class ListenerCanvasTransformer implements CanvasTransformer {
@@ -872,7 +962,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 
 		@Override
 		public void transformCanvas(final Canvas canvas, final float percentOpen) {
-			mHomeActivity.updatePullToRefreshLayoutScroll(percentOpen);
+			mHomeActivity.updatePullToRefreshLayoutScroll(percentOpen, true);
 		}
 
 	}

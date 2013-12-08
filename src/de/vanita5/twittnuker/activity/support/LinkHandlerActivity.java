@@ -46,6 +46,7 @@ import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
+import de.vanita5.twittnuker.util.SmartBarUtils;
 
 public class LinkHandlerActivity extends TwidereSwipeBackActivity implements OnClickListener, OnLongClickListener {
 
@@ -166,7 +167,9 @@ public class LinkHandlerActivity extends TwidereSwipeBackActivity implements OnC
 	private void setUiOptions(final Uri data) {
 		switch (matchLinkId(data)) {
 			case LINK_ID_STATUS: {
-				getWindow().setUiOptions(ActivityInfo.UIOPTION_SPLIT_ACTION_BAR_WHEN_NARROW);
+				if (SmartBarUtils.hasSmartBar()) {
+					getWindow().setUiOptions(ActivityInfo.UIOPTION_SPLIT_ACTION_BAR_WHEN_NARROW);
+				}
 				break;
 			}
 		}
@@ -174,6 +177,7 @@ public class LinkHandlerActivity extends TwidereSwipeBackActivity implements OnC
 
 	private boolean showFragment(final Uri uri) {
 		final Intent intent = getIntent();
+		intent.setExtrasClassLoader(getClassLoader());
 		final Fragment fragment = createFragmentForIntent(this, intent);
 		if (uri == null || fragment == null) return false;
 		switch (matchLinkId(uri)) {
@@ -255,6 +259,10 @@ public class LinkHandlerActivity extends TwidereSwipeBackActivity implements OnC
 			}
 			case LINK_ID_STATUS_RETWEETERS: {
 				setTitle(R.string.users_retweeted_this);
+				break;
+			}
+			case LINK_ID_STATUS_REPLIES: {
+				setTitle(R.string.replies);
 				break;
 			}
 			case LINK_ID_SEARCH: {

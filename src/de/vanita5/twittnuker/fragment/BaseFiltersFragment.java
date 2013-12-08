@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -104,6 +104,7 @@ public abstract class BaseFiltersFragment extends BaseListFragment implements Lo
 		mListView.setMultiChoiceModeListener(this);
 		setEmptyText(getString(R.string.no_rule));
 		getLoaderManager().initLoader(0, null, this);
+		setListShown(false);
 	}
 
 	@Override
@@ -149,6 +150,7 @@ public abstract class BaseFiltersFragment extends BaseListFragment implements Lo
 	@Override
 	public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
 		mAdapter.swapCursor(data);
+		setListShown(true);
 	}
 
 	@Override

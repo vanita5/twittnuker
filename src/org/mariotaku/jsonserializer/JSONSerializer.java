@@ -135,7 +135,7 @@ public class JSONSerializer {
 		try {
 			json.put(KEY_CLASS, array.getClass().getComponentType().getName());
 			json.put(KEY_OBJECT, toJSONArray(array));
-			if (BuildConfig.DEBUG) {
+			if (Utils.isDebugBuild()) {
 				writer.write(json.toString(4));
 			} else {
 				writer.write(json.toString());

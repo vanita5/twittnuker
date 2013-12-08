@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -23,23 +23,28 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-public final class TweetStore {
+public interface TweetStore {
 
 	public static final String AUTHORITY = "twittnuker";
 
-	private static final String TYPE_PRIMARY_KEY = "INTEGER PRIMARY KEY AUTOINCREMENT";
-	private static final String TYPE_INT = "INTEGER";
-	private static final String TYPE_INT_UNIQUE = "INTEGER UNIQUE";
-	private static final String TYPE_BOOLEAN = "INTEGER(1)";
-	private static final String TYPE_TEXT = "TEXT";
-	private static final String TYPE_TEXT_NOT_NULL = "TEXT NOT NULL";
+	public static final String TYPE_PRIMARY_KEY = "INTEGER PRIMARY KEY AUTOINCREMENT";
+	public static final String TYPE_INT = "INTEGER";
+	public static final String TYPE_INT_UNIQUE = "INTEGER UNIQUE";
+	public static final String TYPE_BOOLEAN = "INTEGER(1)";
+	public static final String TYPE_TEXT = "TEXT";
+	public static final String TYPE_TEXT_NOT_NULL = "TEXT NOT NULL";
 
 	public static final String CONTENT_PATH_NULL = "null_content";
+
+	public static final String CONTENT_PATH_DATABASE_READY = "database_ready";
 
 	public static final Uri BASE_CONTENT_URI = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT)
 			.authority(AUTHORITY).build();
 
 	public static final Uri CONTENT_URI_NULL = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH_NULL);
+
+	public static final Uri CONTENT_URI_DATABASE_READY = Uri.withAppendedPath(BASE_CONTENT_URI,
+			CONTENT_PATH_DATABASE_READY);
 
 	public static final Uri[] STATUSES_URIS = new Uri[] { Statuses.CONTENT_URI, Mentions.CONTENT_URI,
 			CachedStatuses.CONTENT_URI };
@@ -100,7 +105,7 @@ public final class TweetStore {
 		 * Token Secret of the account.<br>
 		 * Type: TEXT
 		 */
-		public static final String TOKEN_SECRET = "token_secret";
+		public static final String OAUTH_TOKEN_SECRET = "oauth_token_secret";
 
 		public static final String REST_BASE_URL = "rest_base_url";
 
@@ -110,7 +115,7 @@ public final class TweetStore {
 
 		public static final String SIGNING_OAUTH_BASE_URL = "signing_oauth_base_url";
 
-		public static final String USER_COLOR = "user_color";
+		public static final String COLOR = "color";
 
 		/**
 		 * Set to a non-zero integer if the account is activated. <br>
@@ -131,9 +136,9 @@ public final class TweetStore {
 		public static final String PROFILE_BANNER_URL = "profile_banner_url";
 
 		public static final String[] COLUMNS = new String[] { _ID, NAME, SCREEN_NAME, ACCOUNT_ID, AUTH_TYPE,
-				BASIC_AUTH_PASSWORD, OAUTH_TOKEN, TOKEN_SECRET, CONSUMER_KEY, CONSUMER_SECRET, REST_BASE_URL,
+				BASIC_AUTH_PASSWORD, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, CONSUMER_KEY, CONSUMER_SECRET, REST_BASE_URL,
 				SIGNING_REST_BASE_URL, OAUTH_BASE_URL, SIGNING_OAUTH_BASE_URL, PROFILE_IMAGE_URL, PROFILE_BANNER_URL,
-				USER_COLOR, IS_ACTIVATED };
+				COLOR, IS_ACTIVATED };
 
 		public static final String[] TYPES = new String[] { TYPE_PRIMARY_KEY, TYPE_TEXT_NOT_NULL, TYPE_TEXT_NOT_NULL,
 				TYPE_INT_UNIQUE, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
@@ -310,25 +315,29 @@ public final class TweetStore {
 
 			public static final String DEFAULT_SORT_ORDER = MESSAGE_TIMESTAMP + " ASC";
 
-			public static final String TABLE_NAME = "messages_conversation";
-			public static final String CONTENT_PATH = TABLE_NAME;
+			public static final String CONTENT_PATH_SEGMENT = "conversation";
+			public static final String CONTENT_PATH_SEGMENT_SCREEN_NAME = "conversation_screen_name";
 
-			public static final String TABLE_NAME_SCREEN_NAME = "messages_conversation_screen_name";
+			public static final String CONTENT_PATH = DirectMessages.CONTENT_PATH + "/" + CONTENT_PATH_SEGMENT;
+			public static final String CONTENT_PATH_SCREEN_NAME = DirectMessages.CONTENT_PATH + "/"
+					+ CONTENT_PATH_SEGMENT_SCREEN_NAME;
 
-			public static final String CONTENT_PATH_SCREEN_NAME = TABLE_NAME_SCREEN_NAME;
+			public static final Uri CONTENT_URI = Uri
+					.withAppendedPath(DirectMessages.CONTENT_URI, CONTENT_PATH_SEGMENT);
 
-			public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
-
-			public static final Uri CONTENT_URI_SCREEN_NAME = Uri.withAppendedPath(BASE_CONTENT_URI,
-					CONTENT_PATH_SCREEN_NAME);
+			public static final Uri CONTENT_URI_SCREEN_NAME = Uri.withAppendedPath(DirectMessages.CONTENT_URI,
+					CONTENT_PATH_SEGMENT_SCREEN_NAME);
 		}
 
-		public static interface ConversationsEntry extends BaseColumns {
+		public static interface ConversationEntries extends BaseColumns {
 
-			public static final String TABLE_NAME = "messages_conversations_entry";
-			public static final String CONTENT_PATH = TABLE_NAME;
+			public static final String TABLE_NAME = "messages_conversation_entries";
 
-			public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
+			public static final String CONTENT_PATH_SEGMENT = "conversation_entries";
+			public static final String CONTENT_PATH = DirectMessages.CONTENT_PATH + "/" + CONTENT_PATH_SEGMENT;
+
+			public static final Uri CONTENT_URI = Uri
+					.withAppendedPath(DirectMessages.CONTENT_URI, CONTENT_PATH_SEGMENT);
 
 			public static final String MESSAGE_TIMESTAMP = "message_timestamp";
 			public static final String NAME = "name";
@@ -353,9 +362,11 @@ public final class TweetStore {
 
 			public static final String TABLE_NAME = "messages_inbox";
 
-			public static final String CONTENT_PATH = TABLE_NAME;
+			public static final String CONTENT_PATH_SEGMENT = "inbox";
+			public static final String CONTENT_PATH = DirectMessages.CONTENT_PATH + "/" + CONTENT_PATH_SEGMENT;
 
-			public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
+			public static final Uri CONTENT_URI = Uri
+					.withAppendedPath(DirectMessages.CONTENT_URI, CONTENT_PATH_SEGMENT);
 
 		}
 
@@ -363,9 +374,11 @@ public final class TweetStore {
 
 			public static final String TABLE_NAME = "messages_outbox";
 
-			public static final String CONTENT_PATH = TABLE_NAME;
+			public static final String CONTENT_PATH_SEGMENT = "outbox";
+			public static final String CONTENT_PATH = DirectMessages.CONTENT_PATH + "/" + CONTENT_PATH_SEGMENT;
 
-			public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
+			public static final Uri CONTENT_URI = Uri
+					.withAppendedPath(DirectMessages.CONTENT_URI, CONTENT_PATH_SEGMENT);
 
 		}
 
@@ -388,6 +401,9 @@ public final class TweetStore {
 
 	public static interface Drafts extends BaseColumns {
 
+		public static final int ACTION_UPDATE_STATUS = 1;
+		public static final int ACTION_SEND_DIRECT_MESSAGE = 2;
+
 		public static final String TABLE_NAME = "drafts";
 		public static final String CONTENT_PATH = TABLE_NAME;
 
@@ -405,25 +421,35 @@ public final class TweetStore {
 		 */
 		public static final String ACCOUNT_IDS = "account_ids";
 
-		public static final String IMAGE_URI = "image_uri";
+		public static final String MEDIA_URI = "media_uri";
 
 		public static final String LOCATION = "location";
 
 		public static final String IN_REPLY_TO_STATUS_ID = "in_reply_to_status_id";
 
-		public static final String ATTACHED_IMAGE_TYPE = "attached_image_type";
+		public static final String MEDIA_TYPE = "media_type";
 
 		public static final String IS_POSSIBLY_SENSITIVE = "is_possibly_sensitive";
 
-		public static final String[] COLUMNS = new String[] { _ID, TEXT, ACCOUNT_IDS, LOCATION, IMAGE_URI,
-				IN_REPLY_TO_STATUS_ID, ATTACHED_IMAGE_TYPE, IS_POSSIBLY_SENSITIVE };
+		public static final String TIMESTAMP = "timestamp";
+
+		public static final String ACTION_TYPE = "action_type";
+
+		public static final String ACTION_EXTRAS = "action_extras";
+
+		public static final String[] COLUMNS = new String[] { _ID, TEXT, ACCOUNT_IDS, LOCATION, MEDIA_URI,
+				IN_REPLY_TO_STATUS_ID, MEDIA_TYPE, IS_POSSIBLY_SENSITIVE, TIMESTAMP, ACTION_TYPE, ACTION_EXTRAS };
 
 		public static final String[] TYPES = new String[] { TYPE_PRIMARY_KEY, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
-				TYPE_TEXT, TYPE_INT, TYPE_INT, TYPE_BOOLEAN };
+				TYPE_TEXT, TYPE_INT, TYPE_INT, TYPE_BOOLEAN, TYPE_INT, TYPE_INT, TYPE_TEXT };
 
 	}
 
 	public static interface Filters extends BaseColumns {
+
+		public static final String CONTENT_PATH = "filters";
+
+		public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
 
 		public static final String VALUE = "value";
 
@@ -434,25 +460,33 @@ public final class TweetStore {
 		public static interface Keywords extends Filters {
 
 			public static final String TABLE_NAME = "filtered_keywords";
-			public static final String CONTENT_PATH = TABLE_NAME;
-			public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
+			public static final String CONTENT_PATH_SEGMENT = "keywords";
+			public static final String CONTENT_PATH = Filters.CONTENT_PATH + "/" + CONTENT_PATH_SEGMENT;
+			public static final Uri CONTENT_URI = Uri.withAppendedPath(Filters.CONTENT_URI, CONTENT_PATH_SEGMENT);
 		}
 
 		public static interface Links extends Filters {
 
 			public static final String TABLE_NAME = "filtered_links";
-			public static final String CONTENT_PATH = TABLE_NAME;
-			public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
+			public static final String CONTENT_PATH_SEGMENT = "links";
+			public static final String CONTENT_PATH = Filters.CONTENT_PATH + "/" + CONTENT_PATH_SEGMENT;
+			public static final Uri CONTENT_URI = Uri.withAppendedPath(Filters.CONTENT_URI, CONTENT_PATH_SEGMENT);
 		}
 
 		public static interface Sources extends Filters {
 
 			public static final String TABLE_NAME = "filtered_sources";
-			public static final String CONTENT_PATH = TABLE_NAME;
-			public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
+			public static final String CONTENT_PATH_SEGMENT = "sources";
+			public static final String CONTENT_PATH = Filters.CONTENT_PATH + "/" + CONTENT_PATH_SEGMENT;
+			public static final Uri CONTENT_URI = Uri.withAppendedPath(Filters.CONTENT_URI, CONTENT_PATH_SEGMENT);
 		}
 
 		public static interface Users extends BaseColumns {
+
+			public static final String TABLE_NAME = "filtered_users";
+			public static final String CONTENT_PATH_SEGMENT = "users";
+			public static final String CONTENT_PATH = Filters.CONTENT_PATH + "/" + CONTENT_PATH_SEGMENT;
+			public static final Uri CONTENT_URI = Uri.withAppendedPath(Filters.CONTENT_URI, CONTENT_PATH_SEGMENT);
 
 			public static final String USER_ID = "user_id";
 			public static final String NAME = "name";
@@ -462,9 +496,6 @@ public final class TweetStore {
 
 			public static final String[] TYPES = new String[] { TYPE_PRIMARY_KEY, TYPE_INT_UNIQUE, TYPE_TEXT_NOT_NULL,
 					TYPE_TEXT_NOT_NULL };
-			public static final String TABLE_NAME = "filtered_users";
-			public static final String CONTENT_PATH = TABLE_NAME;
-			public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
 		}
 	}
 
@@ -708,9 +739,7 @@ public final class TweetStore {
 
 	public static interface UnreadCounts extends BaseColumns {
 
-		public static final String TABLE_NAME = "unread_counts";
-
-		public static final String CONTENT_PATH = TABLE_NAME;
+		public static final String CONTENT_PATH = "unread_counts";
 
 		public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
 
@@ -723,5 +752,14 @@ public final class TweetStore {
 		public static final String[] MATRIX_COLUMNS = new String[] { TAB_POSITION, TAB_TYPE, COUNT };
 
 		public static final String[] COLUMNS = new String[] { _ID, TAB_POSITION, TAB_TYPE, COUNT };
+
+		public static interface ByType extends UnreadCounts {
+
+			public static final String CONTENT_PATH_SEGMENT = "by_type";
+
+			public static final String CONTENT_PATH = UnreadCounts.CONTENT_PATH + "/" + CONTENT_PATH_SEGMENT;
+
+			public static final Uri CONTENT_URI = Uri.withAppendedPath(UnreadCounts.CONTENT_URI, CONTENT_PATH_SEGMENT);
+		}
 	}
 }

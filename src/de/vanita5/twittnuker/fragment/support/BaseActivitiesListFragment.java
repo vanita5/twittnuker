@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -29,11 +29,10 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.widget.ListView;
 
+import org.mariotaku.jsonserializer.JSONSerializer;
 import de.vanita5.twittnuker.adapter.BaseParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.util.ArrayUtils;
-
-import org.mariotaku.jsonserializer.JSONSerializer;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,6 +64,7 @@ public abstract class BaseActivitiesListFragment extends BasePullToRefreshListFr
 		setListAdapter(mAdapter);
 		final ListView lv = getListView();
 		lv.setDivider(null);
+		lv.setSelector(android.R.color.transparent);
 		getLoaderManager().initLoader(0, getArguments(), this);
 		setListShown(false);
 	}

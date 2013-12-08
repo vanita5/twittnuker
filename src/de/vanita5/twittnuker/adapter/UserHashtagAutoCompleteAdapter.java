@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -19,7 +19,7 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.Utils.getUserNickname;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -37,7 +37,6 @@ import android.widget.TextView;
 import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.Where;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -99,6 +98,10 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 		final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
 		final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
 		final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
+
+		// Clear images in prder to prevent images in recycled view shown.
+		icon.setImageDrawable(null);
+
 		if (mScreenNameIdx != -1 && mNameIdx != -1 && mUserIdIdx != -1) {
 			final String nick = getUserNickname(context, cursor.getLong(mUserIdIdx));
 			final String name = cursor.getString(mNameIdx);

@@ -42,7 +42,6 @@
   <string name="password">Passwort</string>
   <string name="label_tweetstore_provider">Twittnuker Datenbank Anbieter</string>
   <string name="label_refresh_service">Dienst aktualisieren</string>
-  <string name="label_background_operation_service">Hintergrund Dienst</string>
   <string name="open_in_browser">Im Browser öffnen</string>
   <string name="tap_to_load_more">Weitere Tweets laden</string>
   <string name="delete">Löschen</string>
@@ -177,6 +176,7 @@
   <string name="refresh_interval">Aktualisierungsintervall</string>
   <string name="refresh_interval_summary">Kürzere Aktualisierungsintervalle verbrauchen mehr Batterie und Datenvolumen!</string>
   <string name="content_to_refresh">Zu aktualisierende Inhalte</string>
+  <string name="content_to_notify">Inhalte für die Benachrichtigung</string>
   <string name="notifications_type">Benachrichtigungstyp</string>
   <string name="notifications_type_summary">Diese Option ändert KEINE Systemeinstellungen.</string>
   <string name="sound">Ton</string>
@@ -198,6 +198,8 @@
   <string name="type_to_compose">Schreibe etwas</string>
   <string name="users_lists">Eigene Listen</string>
   <string name="lists_following_user">Mitglied von Liste</string>
+  <string name="you_have_N_new_statuses_quantity_one">Sie haben neue Tweets</string>
+  <string name="you_have_N_new_statuses_quantity_other">Sie haben <xliff:g id="items">%d</xliff:g> neue Tweets.</string>
   <string name="item_1_minute">1 Minute</string>
   <string name="item_3_minutes">3 Minuten</string>
   <string name="item_5_minutes">5 Minuten</string>
@@ -566,4 +568,7 @@
   <string name="theme_background_default">Default</string>
   <string name="theme_background_solid">Weiss/Schwarz</string>
   <string name="theme_background_transparent">Transparent</string>
+  <string name="theme_dark_actionbar">Dunkle Action Bar</string>
+  <string name="compact_cards">Kompakt anzeigen</string>
+  <string name="compact_cards_summary">Mehr Tweets auf dem Bildschirm</string>
 </resources>

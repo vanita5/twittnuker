@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -28,13 +28,13 @@ import android.os.Bundle;
 
 public class TabSpec {
 
-	public final String name;
+	public final CharSequence name;
 	public final Object icon;
 	public final Class<? extends Fragment> cls;
 	public final Bundle args;
 	public final int position;
 
-	public TabSpec(final String name, final Object icon, final Class<? extends Fragment> cls, final Bundle args,
+	public TabSpec(final CharSequence name, final Object icon, final Class<? extends Fragment> cls, final Bundle args,
 			final int position) {
 		if (cls == null) throw new IllegalArgumentException("Fragment cannot be null!");
 		if (name == null && icon == null)

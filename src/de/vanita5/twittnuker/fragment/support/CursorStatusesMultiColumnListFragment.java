@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -27,10 +27,7 @@ import static de.vanita5.twittnuker.util.Utils.getTableNameByUri;
 import static de.vanita5.twittnuker.util.Utils.shouldEnableFiltersForRTs;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,23 +42,17 @@ import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.adapter.CursorStatusesAdapter;
+import de.vanita5.twittnuker.provider.TweetStore.Accounts;
+import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
 
 public abstract class CursorStatusesMultiColumnListFragment extends BaseStatusesMultiColumnListFragment<Cursor> {
 
-	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(final Context context, final Intent intent) {
-			if (getActivity() == null || !isAdded() || isDetached()) return;
-			final String action = intent.getAction();
-			if (BROADCAST_ACCOUNT_LIST_DATABASE_UPDATED.equals(action) || BROADCAST_FILTERS_UPDATED.equals(action)) {
-				getLoaderManager().restartLoader(0, null, CursorStatusesMultiColumnListFragment.this);
-			}
-		}
-	};
+	private final SupportFragmentReloadCursorObserver mReloadContentObserver = new SupportFragmentReloadCursorObserver(
+			this, 0, this);
 
 	public HomeActivity getHomeActivity() {
 		final Activity activity = getActivity();
@@ -88,13 +79,16 @@ public abstract class CursorStatusesMultiColumnListFragment extends BaseStatuses
 		} else {
 			getListView().setEmptyView(null);
 		}
-		final Where account_where = Where.in(new Column(Statuses.ACCOUNT_ID), new RawItemArray(account_ids));
+		final Where accountWhere = Where.in(new Column(Statuses.ACCOUNT_ID), new RawItemArray(account_ids));
+		final Where where;
 		if (isFiltersEnabled()) {
-			account_where.and(new Where(buildStatusFilterWhereClause(table, null,
-					shouldEnableFiltersForRTs(getActivity()))));
+			final Where filterWhere = new Where(buildStatusFilterWhereClause(table, null,
+					shouldEnableFiltersForRTs(getActivity())));
+			where = Where.and(accountWhere, filterWhere);
+		} else {
+			where = accountWhere;
 		}
-		return new CursorLoader(getActivity(), uri, CursorStatusesAdapter.CURSOR_COLS, account_where.getSQL(), null,
-				sort_by);
+		return new CursorLoader(getActivity(), uri, CursorStatusesAdapter.CURSOR_COLS, where.getSQL(), null, sort_by);
 	}
 
 	@Override
@@ -135,7 +129,7 @@ public abstract class CursorStatusesMultiColumnListFragment extends BaseStatuses
 			case SCROLL_STATE_TOUCH_SCROLL: {
 				final AsyncTwitterWrapper twitter = getTwitterWrapper();
 				if (twitter != null) {
-					twitter.clearNotification(getNotificationIdToClear());
+					twitter.clearNotificationAsync(getNotificationType(), getAccountId());
 				}
 				break;
 			}
@@ -148,15 +142,18 @@ public abstract class CursorStatusesMultiColumnListFragment extends BaseStatuses
 	@Override
 	public void onStart() {
 		super.onStart();
-		final IntentFilter filter = new IntentFilter(BROADCAST_ACCOUNT_LIST_DATABASE_UPDATED);
-		filter.addAction(BROADCAST_FILTERS_UPDATED);
-		registerReceiver(mStatusReceiver, filter);
+		final ContentResolver resolver = getContentResolver();
+		resolver.registerContentObserver(Filters.CONTENT_URI, true, mReloadContentObserver);
+		if (getAccountId() <= 0) {
+			resolver.registerContentObserver(Accounts.CONTENT_URI, true, mReloadContentObserver);
+		}
 	}
 
 	@Override
 	public void onStop() {
 		savePosition();
-		unregisterReceiver(mStatusReceiver);
+		final ContentResolver resolver = getContentResolver();
+		resolver.unregisterContentObserver(mReloadContentObserver);
 		super.onStop();
 	}
 
@@ -172,7 +169,7 @@ public abstract class CursorStatusesMultiColumnListFragment extends BaseStatuses
 		return getNewestStatusIdsFromDatabase(getActivity(), getContentUri());
 	}
 
-	protected abstract int getNotificationIdToClear();
+	protected abstract int getNotificationType();
 
 	@Override
 	protected long[] getOldestStatusIds() {

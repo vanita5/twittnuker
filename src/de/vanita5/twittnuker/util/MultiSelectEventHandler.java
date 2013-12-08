@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -19,10 +19,10 @@
 
 package de.vanita5.twittnuker.util;
 
-import static de.vanita5.twittnuker.util.ContentResolverUtils.bulkDelete;
-import static de.vanita5.twittnuker.util.ContentResolverUtils.bulkInsert;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeFilterdUserContentValues;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenNames;
-import static de.vanita5.twittnuker.util.Utils.makeFilterdUserContentValues;
+import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
+import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;

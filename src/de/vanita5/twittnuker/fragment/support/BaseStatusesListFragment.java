@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -26,6 +26,7 @@ import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 import static de.vanita5.twittnuker.util.Utils.openStatus;
 import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
+import static de.vanita5.twittnuker.util.Utils.startStatusShareChooser;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -48,8 +49,8 @@ import android.widget.ListView;
 
 import org.mariotaku.popupmenu.PopupMenu;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
+import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.task.AsyncTask;
@@ -59,6 +60,7 @@ import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.PositionManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
 import java.util.Collections;
@@ -150,7 +152,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 			final ParcelableStatus status = mAdapter.getStatus(position - mListView.getHeaderViewsCount());
 			final AsyncTwitterWrapper twitter = getTwitterWrapper();
 			if (twitter != null) {
-				twitter.removeUnreadCounts(getActivity(), getTabPosition(), status.account_id, status.id);
+				TwitterWrapper.removeUnreadCounts(getActivity(), getTabPosition(), status.account_id, status.id);
 			}
 			if (((StatusViewHolder) tag).show_as_gap) return false;
 			setItemSelected(status, position, !mMultiSelectManager.isSelected(status));
@@ -177,14 +179,16 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 	public void onListItemClick(final ListView l, final View v, final int position, final long id) {
 		final Object tag = v.getTag();
 		if (tag instanceof StatusViewHolder) {
-			final ParcelableStatus status = mAdapter.getStatus(position - l.getHeaderViewsCount());
+			final int pos = position - l.getHeaderViewsCount();
+			final ParcelableStatus status = mAdapter.getStatus(pos);
 			if (status == null) return;
 			final AsyncTwitterWrapper twitter = getTwitterWrapper();
 			if (twitter != null) {
-				twitter.removeUnreadCounts(getActivity(), getTabPosition(), status.account_id, status.id);
+				TwitterWrapper.removeUnreadCounts(getActivity(), getTabPosition(), status.account_id, status.id);
 			}
 			if (((StatusViewHolder) tag).show_as_gap) {
-				getStatuses(new long[] { status.account_id }, new long[] { status.id }, null);
+				final long since_id = position + 1 < mAdapter.getActualCount() ? mAdapter.getStatus(pos + 1).id : -1;
+				getStatuses(new long[] { status.account_id }, new long[] { status.id }, new long[] { since_id });
 				mListView.setItemChecked(position, false);
 			} else {
 				if (mMultiSelectManager.isActive()) {
@@ -261,10 +265,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 				break;
 			}
 			case MENU_SHARE: {
-				final Intent intent = new Intent(Intent.ACTION_SEND);
-				intent.setType("text/plain");
-				intent.putExtra(Intent.EXTRA_TEXT, "@" + status.user_screen_name + ": " + status.text_plain);
-				startActivity(Intent.createChooser(intent, getString(R.string.share)));
+				startStatusShareChooser(getActivity(), status);
 				break;
 			}
 			case MENU_COPY: {
@@ -400,6 +401,10 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 		updateRefreshState();
 	}
 
+	protected final int getListScrollOffset() {
+		return mListScrollOffset;
+	}
+
 	protected abstract long[] getNewestStatusIds();
 
 	protected abstract long[] getOldestStatusIds();
@@ -486,7 +491,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 		if (view == null || status == null) return;
 		final AsyncTwitterWrapper twitter = getTwitterWrapper();
 		if (twitter != null) {
-			twitter.removeUnreadCounts(getActivity(), getTabPosition(), status.account_id, status.id);
+			TwitterWrapper.removeUnreadCounts(getActivity(), getTabPosition(), status.account_id, status.id);
 		}
 		if (mPopupMenu != null && mPopupMenu.isShowing()) {
 			mPopupMenu.dismiss();
@@ -494,7 +499,8 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 		final int activated_color = ThemeUtils.getUserThemeColor(getActivity());
 		mPopupMenu = PopupMenu.getInstance(getActivity(), view);
 		mPopupMenu.inflate(R.menu.action_status);
-		final boolean separate_retweet_action = mPreferences.getBoolean(PREFERENCE_KEY_SEPARATE_RETWEET_ACTION, false);
+		final boolean separate_retweet_action = mPreferences.getBoolean(PREFERENCE_KEY_SEPARATE_RETWEET_ACTION,
+				PREFERENCE_DEFAULT_SEPARATE_RETWEET_ACTION);
 		final Menu menu = mPopupMenu.getMenu();
 		setMenuForStatus(getActivity(), menu, status);
 		final MenuItem retweet_submenu = menu.findItem(R.id.retweet_submenu);

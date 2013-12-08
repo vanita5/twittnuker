@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ * 				Twidere - Twitter client for Android
  *
  *  Copyright (C) 2012-2013 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -53,7 +53,7 @@ public class ClickableImageView extends ImageView {
 		final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Twidere);
 		mIgnorePadding = a.getBoolean(R.styleable.Twidere_ignorePadding, false);
 		a.recycle();
-		final int color = ThemeUtils.getUserThemeColor(context);
+		final int color = isInEditMode() ? 0 : ThemeUtils.getUserThemeColor(context);
 		final int mHighlightColor = Color.argb(0x80, Color.red(color), Color.green(color), Color.blue(color));
 		mHighlightPaint = new Paint();
 		mHighlightPaint.setColor(mHighlightColor);

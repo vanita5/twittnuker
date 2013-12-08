@@ -3,7 +3,6 @@ package me.imid.swipebacklayout.lib.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -15,12 +14,14 @@ import me.imid.swipebacklayout.lib.SwipeBackLayout;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.TwidereConstants;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.util.SwipebackActivityUtils.SwipebackScreenshotManager;
 
 /**
  * @author Yrom
  * 
  */
-public class SwipeBackActivityHelper {
+public class SwipeBackActivityHelper implements TwidereConstants {
 	private final Activity mActivity;
 	private SwipeBackLayout mSwipeBackLayout;
 
@@ -46,10 +47,12 @@ public class SwipeBackActivityHelper {
 	public void onPostCreate() {
 		mSwipeBackLayout.attachToActivity(mActivity);
 		final Intent intent = mActivity.getIntent();
-		final byte[] shot = intent.getByteArrayExtra(TwidereConstants.EXTRA_ACTIVITY_SCREENSHOT_ENCODED);
-		final Bitmap b = shot != null ? BitmapFactory.decodeByteArray(shot, 0, shot.length) : null;
+		final TwittnukerApplication app = TwittnukerApplication.getInstance(mActivity);
+		final SwipebackScreenshotManager sm = app.getSwipebackScreenshotManager();
+		final Bitmap b = sm.get(intent.getLongExtra(EXTRA_ACTIVITY_SCREENSHOT_ID, -1));
 		final Drawable d = b != null ? new BitmapDrawable(mActivity.getResources(), b) : new ColorDrawable(0);
 		mSwipeBackLayout.setWindowBackgroundDrawable(d);
+		mSwipeBackLayout.setEnableGesture(d != null);
 	}
 
 }

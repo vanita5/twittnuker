@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -43,7 +43,6 @@ import com.huewu.pla.lib.MultiColumnListView;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.util.pulltorefresh.TwidereHeaderTransformer;
 import de.vanita5.twittnuker.util.pulltorefresh.viewdelegates.PLAAbsListViewDelegate;
-
 
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh.SetupWizard;
@@ -135,12 +134,14 @@ public abstract class BasePullToRefreshMultiColumnListFragment extends BaseSuppo
 		final Options.Builder builder = new Options.Builder();
 		builder.scrollDistance(DEFAULT_PULL_TO_REFRESH_SCROLL_DISTANCE);
 		builder.headerTransformer(new TwidereHeaderTransformer());
-		final SetupWizard wizard = ActionBarPullToRefresh.from(getActivity());
-		wizard.allChildrenArePullable();
-		wizard.useViewDelegate(MultiColumnListView.class, new PLAAbsListViewDelegate());
-		wizard.listener(this);
-		wizard.options(builder.build());
-		wizard.setup(mPullToRefreshLayout);
+		if (!isDetached() && getActivity() != null) {
+			final SetupWizard wizard = ActionBarPullToRefresh.from(getActivity());
+			wizard.allChildrenArePullable();
+			wizard.useViewDelegate(MultiColumnListView.class, new PLAAbsListViewDelegate());
+			wizard.listener(this);
+			wizard.options(builder.build());
+			wizard.setup(mPullToRefreshLayout);
+		}
 		// ViewCompat.setOverScrollMode(lv, ViewCompat.OVER_SCROLL_NEVER);
 		lframe.addView(plv, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT));

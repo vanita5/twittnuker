@@ -1,7 +1,10 @@
 /*
  *			Twittnuker - Twitter client for Android
- * 
- * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *
+ * Copyright (C) 2013 vanita5 <mail@vanita5.de>
+ *
+ * This program incorporates a modified version of Twidere.
+ * Copyright (C) 2012-2013 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,13 +38,10 @@ import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
 import java.util.List;
 
-public class SimpleParcelableUserListsAdapter extends ArrayAdapter<ParcelableUserList> implements IBaseAdapter {
+public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserList> implements IBaseAdapter {
 
 	private final Context mContext;
 	private final ImageLoaderWrapper mProfileImageLoader;
-
-	private boolean mDisplayProfileImage, mNicknameOnly;
-	private boolean mDisplayNameFirst;
 
 	public SimpleParcelableUserListsAdapter(final Context context) {
 		super(context, R.layout.two_line_list_item);
@@ -71,13 +71,17 @@ public class SimpleParcelableUserListsAdapter extends ArrayAdapter<ParcelableUse
 			holder = new TwoLineWithIconViewHolder(view);
 			view.setTag(holder);
 		}
+
+		// Clear images in prder to prevent images in recycled view shown.
+		holder.icon.setImageDrawable(null);
+
 		final ParcelableUserList user_list = getItem(position);
 		final String display_name = getDisplayName(mContext, user_list.user_id, user_list.user_name,
-				user_list.user_screen_name, mDisplayNameFirst, mNicknameOnly, false);
+				user_list.user_screen_name, isDisplayNameFirst(), isNicknameOnly(), false);
 		holder.text1.setText(user_list.name);
 		holder.text2.setText(mContext.getString(R.string.created_by, display_name));
-		holder.icon.setVisibility(mDisplayProfileImage ? View.VISIBLE : View.GONE);
-		if (mDisplayProfileImage) {
+		holder.icon.setVisibility(isDisplayProfileImage() ? View.VISIBLE : View.GONE);
+		if (isDisplayProfileImage()) {
 			mProfileImageLoader.displayProfileImage(holder.icon, user_list.user_profile_image_url);
 		}
 		return view;
@@ -95,38 +99,4 @@ public class SimpleParcelableUserListsAdapter extends ArrayAdapter<ParcelableUse
 		}
 	}
 
-	@Override
-	public void setDisplayNameFirst(final boolean name_first) {
-		if (mDisplayNameFirst == name_first) return;
-		mDisplayNameFirst = name_first;
-		notifyDataSetChanged();
-	}
-
-	@Override
-	public void setDisplayProfileImage(final boolean display) {
-		if (display != mDisplayProfileImage) {
-			mDisplayProfileImage = display;
-			notifyDataSetChanged();
-		}
-	}
-
-	@Override
-	public void setLinkHighlightColor(final int color) {
-	}
-
-	@Override
-	public void setLinkHighlightOption(final String option) {
-
-	}
-
-	@Override
-	public void setNicknameOnly(final boolean nickname_only) {
-		if (mNicknameOnly == nickname_only) return;
-		mNicknameOnly = nickname_only;
-		notifyDataSetChanged();
-	}
-
-	@Override
-	public void setTextSize(final float text_size) {
-	}
 }

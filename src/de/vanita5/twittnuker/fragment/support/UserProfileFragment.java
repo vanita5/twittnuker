@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -20,10 +20,14 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeFilterdUserContentValues;
 import static de.vanita5.twittnuker.util.ParseUtils.parseLong;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserColor;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserNickname;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.setUserColor;
 import static de.vanita5.twittnuker.util.Utils.addIntentToMenu;
-import static de.vanita5.twittnuker.util.Utils.clearUserColor;
-import static de.vanita5.twittnuker.util.Utils.clearUserNickname;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
@@ -32,11 +36,8 @@ import static de.vanita5.twittnuker.util.Utils.getErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.getOriginalTwitterProfileImage;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-import static de.vanita5.twittnuker.util.Utils.getUserColor;
-import static de.vanita5.twittnuker.util.Utils.getUserNickname;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.isMyAccount;
-import static de.vanita5.twittnuker.util.Utils.makeFilterdUserContentValues;
 import static de.vanita5.twittnuker.util.Utils.openImage;
 import static de.vanita5.twittnuker.util.Utils.openIncomingFriendships;
 import static de.vanita5.twittnuker.util.Utils.openSavedSearches;
@@ -54,7 +55,6 @@ import static de.vanita5.twittnuker.util.Utils.openUserTimeline;
 import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
 import static de.vanita5.twittnuker.util.Utils.setMenuItemIcon;
 import static de.vanita5.twittnuker.util.Utils.setMenuItemTitle;
-import static de.vanita5.twittnuker.util.Utils.setUserColor;
 import static de.vanita5.twittnuker.util.Utils.showInfoMessage;
 
 import android.app.Activity;
@@ -436,7 +436,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 		switch (requestCode) {
 			case REQUEST_SET_COLOR: {
 				if (resultCode == Activity.RESULT_OK && intent != null) {
-					final int color = intent.getIntExtra(Accounts.USER_COLOR, Color.TRANSPARENT);
+					final int color = intent.getIntExtra(EXTRA_COLOR, Color.TRANSPARENT);
 					setUserColor(getActivity(), mUserId, color);
 				}
 				break;
@@ -538,7 +538,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 
 	@Override
 	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-		inflater.inflate(R.menu.menu_user_profile, menu);
+		inflater.inflate(R.menu.menu_user_user_list, menu);
 	}
 
 	@Override
@@ -679,12 +679,14 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 				builder.scheme(SCHEME_TWIDERE);
 				builder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
 				builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(mAccountId));
-				builder.appendQueryParameter(QUERY_PARAM_CONVERSATION_ID, String.valueOf(mUser.id));
+				builder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(mUser.id));
 				startActivity(new Intent(Intent.ACTION_VIEW, builder.build()));
 				break;
 			}
 			case MENU_SET_COLOR: {
 				final Intent intent = new Intent(getActivity(), ColorPickerDialogActivity.class);
+				intent.putExtra(EXTRA_COLOR, getUserColor(getActivity(), mUser.id, true));
+				intent.putExtra(EXTRA_ALPHA_SLIDER, false);
 				startActivityForResult(intent, REQUEST_SET_COLOR);
 				break;
 			}
@@ -770,24 +772,24 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 	public void onPrepareOptionsMenu(final Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		final AsyncTwitterWrapper twitter = getTwitterWrapper();
-		final boolean is_myself = mUser != null && mUser.account_id == mUser.id || mAccountId == mUserId;
-		final boolean is_following_me = mFriendship != null && mFriendship.isTargetFollowingSource();
-		final boolean is_following = mFriendship != null && mFriendship.isSourceFollowingTarget();
-		final boolean is_protected = mUser != null && mUser.is_protected;
-		final boolean is_creating_friendship = twitter != null && mUser != null
+		final boolean isMyself = mUser != null && mUser.account_id == mUser.id || mAccountId == mUserId;
+		final boolean isFollowingMe = mFriendship != null && mFriendship.isTargetFollowingSource();
+		final boolean isFollowing = mFriendship != null && mFriendship.isSourceFollowingTarget();
+		final boolean isProtected = mUser != null && mUser.is_protected;
+		final boolean isCreatingFriendship = twitter != null && mUser != null
 				&& twitter.isCreatingFriendship(mUser.account_id, mUser.id);
-		final boolean is_destroying_friendship = twitter != null && mUser != null
+		final boolean isDestroyingFriendship = twitter != null && mUser != null
 				&& twitter.isDestroyingFriendship(mUser.account_id, mUser.id);
-		setMenuItemAvailability(menu, MENU_EDIT, is_myself);
-		setMenuItemAvailability(menu, MENU_FOLLOW, mUser != null && mFriendship != null && !is_creating_friendship
-				&& !is_destroying_friendship && !is_myself && !is_following);
-		setMenuItemAvailability(menu, MENU_UNFOLLOW, mUser != null && mFriendship != null && !is_creating_friendship
-				&& !is_destroying_friendship && !is_myself && is_following);
-		setMenuItemIcon(menu, MENU_FOLLOW, is_following_me ? R.drawable.ic_menu_follow_following_you
+		setMenuItemAvailability(menu, MENU_EDIT, isMyself);
+		setMenuItemAvailability(menu, MENU_FOLLOW, mUser != null && mFriendship != null && !isCreatingFriendship
+				&& !isDestroyingFriendship && !isMyself && !isFollowing);
+		setMenuItemAvailability(menu, MENU_UNFOLLOW, mUser != null && mFriendship != null && !isCreatingFriendship
+				&& !isDestroyingFriendship && !isMyself && isFollowing);
+		setMenuItemIcon(menu, MENU_FOLLOW, isFollowingMe ? R.drawable.ic_menu_follow_following_you
 				: R.drawable.ic_menu_follow);
-		setMenuItemIcon(menu, MENU_UNFOLLOW, is_following_me ? R.drawable.ic_menu_unfollow_following_you
+		setMenuItemIcon(menu, MENU_UNFOLLOW, isFollowingMe ? R.drawable.ic_menu_unfollow_following_you
 				: R.drawable.ic_menu_unfollow);
-		setMenuItemTitle(menu, MENU_FOLLOW, is_protected ? R.string.send_follow_request : R.string.follow);
+		setMenuItemTitle(menu, MENU_FOLLOW, isProtected ? R.string.send_follow_request : R.string.follow);
 	}
 
 	@Override

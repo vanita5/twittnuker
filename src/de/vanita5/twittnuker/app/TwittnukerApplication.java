@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -19,10 +19,11 @@
 
 package de.vanita5.twittnuker.app;
 
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.initUserColor;
 import static de.vanita5.twittnuker.util.Utils.getBestCacheDir;
-import static de.vanita5.twittnuker.util.Utils.hasActiveConnection;
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
-import static de.vanita5.twittnuker.util.Utils.initUserColor;
+import static de.vanita5.twittnuker.util.Utils.startProfilingServiceIfNeeded;
+import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
 import android.app.Application;
 import android.content.ComponentName;
@@ -33,6 +34,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -42,6 +44,7 @@ import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
+import com.nostra13.universalimageloader.utils.L;
 
 import edu.ucdavis.earlybird.UCDService;
 
@@ -60,11 +63,14 @@ import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.DatabaseHelper;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageMemoryCache;
 import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.StrictModeUtils;
+import de.vanita5.twittnuker.util.SwipebackActivityUtils.SwipebackScreenshotManager;
+import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
 import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator;
 import de.vanita5.twittnuker.util.net.TwidereHostAddressResolver;
@@ -89,7 +95,8 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 	private TwidereImageDownloader mImageDownloader, mFullImageDownloader;
 	private DiscCacheAware mDiscCache, mFullDiscCache;
 	private MessagesManager mCroutonsManager;
-
+	private SQLiteOpenHelper mSQLiteOpenHelper;
+	private SwipebackScreenshotManager mSwipebackScreenshotManager;
 	private HostAddressResolver mResolver;
 	private SQLiteDatabase mDatabase;
 
@@ -129,6 +136,11 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 
 	public ImageLoader getImageLoader() {
 		if (mImageLoader != null) return mImageLoader;
+		if (Utils.isDebugBuild()) {
+			L.enableLogging();
+		} else {
+			L.disableLogging();
+		}
 		final ImageLoader loader = ImageLoader.getInstance();
 		final ImageLoaderConfiguration.Builder cb = new ImageLoaderConfiguration.Builder(this);
 		cb.threadPoolSize(8);
@@ -156,7 +168,19 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 
 	public SQLiteDatabase getSQLiteDatabase() {
 		if (mDatabase != null) return mDatabase;
-		return mDatabase = new DatabaseHelper(this, DATABASES_NAME, DATABASES_VERSION).getWritableDatabase();
+
+		StrictModeUtils.checkDiskIO();
+		return mDatabase = getSQLiteOpenHelper().getWritableDatabase();
+	}
+
+	public SQLiteOpenHelper getSQLiteOpenHelper() {
+		if (mSQLiteOpenHelper != null) return mSQLiteOpenHelper;
+		return mSQLiteOpenHelper = new TwidereSQLiteOpenHelper(this, DATABASES_NAME, DATABASES_VERSION);
+	}
+
+	public SwipebackScreenshotManager getSwipebackScreenshotManager() {
+		if (mSwipebackScreenshotManager != null) return mSwipebackScreenshotManager;
+		return mSwipebackScreenshotManager = new SwipebackScreenshotManager();
 	}
 
 	public AsyncTwitterWrapper getTwitterWrapper() {
@@ -166,6 +190,9 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 
 	@Override
 	public void onCreate() {
+		if (Utils.isDebugBuild()) {
+			StrictModeUtils.detectAllVmPolicy();
+		}
 		super.onCreate();
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mHandler = new Handler();
@@ -173,28 +200,25 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		configACRA();
 		initializeAsyncTask();
 		GalleryUtils.initialize(this);
-		if (mPreferences.getBoolean(PREFERENCE_KEY_UCD_DATA_PROFILING, false)) {
-			startService(new Intent(this, UCDService.class));
-		}
-		if (mPreferences.getBoolean(PREFERENCE_KEY_AUTO_REFRESH, false)) {
-			startService(new Intent(this, RefreshService.class));
-		}
 		initAccountColor(this);
 		initUserColor(this);
 
 		final PackageManager pm = getPackageManager();
 		final ComponentName main = new ComponentName(this, MainActivity.class);
 		final ComponentName main2 = new ComponentName(this, Main2Activity.class);
-		final boolean main_disabled = pm.getComponentEnabledSetting(main) != PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
-		final boolean main2_disabled = pm.getComponentEnabledSetting(main2) != PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
-		final boolean no_entry = main_disabled && main2_disabled;
+		final boolean mainDisabled = pm.getComponentEnabledSetting(main) != PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
+		final boolean main2Disabled = pm.getComponentEnabledSetting(main2) != PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
+		final boolean no_entry = mainDisabled && main2Disabled;
 		if (no_entry) {
 			pm.setComponentEnabledSetting(main, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
 					PackageManager.DONT_KILL_APP);
-		} else if (!main_disabled) {
+		} else if (!mainDisabled) {
 			pm.setComponentEnabledSetting(main2, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
 					PackageManager.DONT_KILL_APP);
 		}
+
+		startProfilingServiceIfNeeded(this);
+		startRefreshServiceIfNeeded(this);
 	}
 
 	@Override
@@ -207,23 +231,16 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 
 	@Override
 	public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
-		if (PREFERENCE_KEY_AUTO_REFRESH.equals(key) || PREFERENCE_KEY_REFRESH_INTERVAL.equals(key)) {
-			final Intent intent = new Intent(this, RefreshService.class);
-			stopService(intent);
-			if (preferences.getBoolean(PREFERENCE_KEY_AUTO_REFRESH, false) && hasActiveConnection(this)) {
-				startService(intent);
-			}
+		if (PREFERENCE_KEY_REFRESH_INTERVAL.equals(key)) {
+			stopService(new Intent(this, RefreshService.class));
+			startRefreshServiceIfNeeded(this);
 		} else if (PREFERENCE_KEY_ENABLE_PROXY.equals(key) || PREFERENCE_KEY_CONNECTION_TIMEOUT.equals(key)
 				|| PREFERENCE_KEY_PROXY_HOST.equals(key) || PREFERENCE_KEY_PROXY_PORT.equals(key)
 				|| PREFERENCE_KEY_FAST_IMAGE_LOADING.equals(key)) {
 			reloadConnectivitySettings();
 		} else if (PREFERENCE_KEY_UCD_DATA_PROFILING.equals(key)) {
-			final Intent intent = new Intent(this, UCDService.class);
-			if (preferences.getBoolean(PREFERENCE_KEY_UCD_DATA_PROFILING, false)) {
-				startService(intent);
-			} else {
-				stopService(intent);
-			}
+			stopService(new Intent(this, UCDService.class));
+			startProfilingServiceIfNeeded(this);
 		}
 	}
 

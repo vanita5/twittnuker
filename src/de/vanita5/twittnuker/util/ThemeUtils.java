@@ -25,8 +25,6 @@ import de.vanita5.twittnuker.view.CardItemLinearLayout;
 import de.vanita5.twittnuker.view.ForegroundImageView;
 import de.vanita5.twittnuker.view.ShortTimeView;
 
-import java.util.HashMap;
-
 public class ThemeUtils implements Constants {
 
 	private static final int[] ANIM_OPEN_STYLE_ATTRS = { android.R.attr.activityOpenEnterAnimation,
@@ -41,41 +39,6 @@ public class ThemeUtils implements Constants {
 	private static final String THEME_NAME_TWIDERE = "twidere";
 	private static final String THEME_NAME_DARK = "dark";
 	private static final String THEME_NAME_LIGHT = "light";
-	private static final String THEME_NAME_LIGHT_DARKACTIONBAR = "light_darkactionbar";
-
-	private static final HashMap<String, ThemeMap> THEME_MAPS = new HashMap<String, ThemeMap>();
-	private static final ThemeMap THEMES = new ThemeMap();
-	private static final ThemeMap THEMES_SOLID = new ThemeMap();
-	private static final ThemeMap THEMES_TRANSPARENT = new ThemeMap();
-	private static final ThemeMap THEMES_DIALOG = new ThemeMap();
-	private static final ThemeMap THEMES_COMPOSE = new ThemeMap();
-
-	static {
-		THEMES.put(THEME_NAME_TWIDERE, R.style.Theme_Twidere);
-		THEMES.put(THEME_NAME_DARK, R.style.Theme_Twidere_Dark);
-		THEMES.put(THEME_NAME_LIGHT, R.style.Theme_Twidere_Light);
-		THEMES.put(THEME_NAME_LIGHT_DARKACTIONBAR, R.style.Theme_Twidere_Light_DarkActionBar);
-		THEMES_SOLID.put(THEME_NAME_TWIDERE, R.style.Theme_Twidere_SolidBackground);
-		THEMES_SOLID.put(THEME_NAME_DARK, R.style.Theme_Twidere_Dark_SolidBackground);
-		THEMES_SOLID.put(THEME_NAME_LIGHT, R.style.Theme_Twidere_Light_SolidBackground);
-		THEMES_SOLID.put(THEME_NAME_LIGHT_DARKACTIONBAR, R.style.Theme_Twidere_Light_DarkActionBar_SolidBackground);
-		THEMES_TRANSPARENT.put(THEME_NAME_TWIDERE, R.style.Theme_Twidere_Transparent);
-		THEMES_TRANSPARENT.put(THEME_NAME_DARK, R.style.Theme_Twidere_Dark_Transparent);
-		THEMES_TRANSPARENT.put(THEME_NAME_LIGHT, R.style.Theme_Twidere_Light_Transparent);
-		THEMES_TRANSPARENT.put(THEME_NAME_LIGHT_DARKACTIONBAR, R.style.Theme_Twidere_Light_DarkActionBar_Transparent);
-		THEMES_DIALOG.put(THEME_NAME_TWIDERE, R.style.Theme_Twidere_Light_Dialog);
-		THEMES_DIALOG.put(THEME_NAME_DARK, R.style.Theme_Twidere_Dark_Dialog);
-		THEMES_DIALOG.put(THEME_NAME_LIGHT, R.style.Theme_Twidere_Light_Dialog);
-		THEMES_DIALOG.put(THEME_NAME_LIGHT_DARKACTIONBAR, R.style.Theme_Twidere_Light_Dialog);
-		THEMES_COMPOSE.put(THEME_NAME_TWIDERE, R.style.Theme_Twidere_Compose);
-		THEMES_COMPOSE.put(THEME_NAME_DARK, R.style.Theme_Twidere_Dark_Compose);
-		THEMES_COMPOSE.put(THEME_NAME_LIGHT, R.style.Theme_Twidere_Light_Compose);
-		THEMES_COMPOSE.put(THEME_NAME_LIGHT_DARKACTIONBAR, R.style.Theme_Twidere_Light_DarkActionBar_Compose);
-
-		THEME_MAPS.put(THEME_BACKGROUND_DEFAULT, THEMES);
-		THEME_MAPS.put(THEME_BACKGROUND_SOLID, THEMES_SOLID);
-		THEME_MAPS.put(THEME_BACKGROUND_TRANSPARENT, THEMES_TRANSPARENT);
-	}
 
 	private ThemeUtils() {
 		throw new AssertionError();
@@ -90,6 +53,7 @@ public class ThemeUtils implements Constants {
 		if (actionBar == null || context == null) return;
 		actionBar.setBackgroundDrawable(getActionBarBackground(context, applyAlpha));
 		actionBar.setSplitBackgroundDrawable(getActionBarSplitBackground(context, applyAlpha));
+		actionBar.setStackedBackgroundDrawable(getActionBarStackedBackground(context, applyAlpha));
 	}
 
 	public static void applyBackground(final View view) {
@@ -121,20 +85,7 @@ public class ThemeUtils implements Constants {
 				android.R.attr.actionBarStyle, 0);
 		final Drawable d = a.getDrawable(0);
 		a.recycle();
-		if (d == null) return null;
-		final Drawable mutated = d.mutate();
-		if (mutated instanceof LayerDrawable) {
-			final Drawable colorLayer = ((LayerDrawable) mutated).findDrawableByLayerId(R.id.color_layer);
-			if (colorLayer != null) {
-				final int color = getUserThemeColor(context);
-				colorLayer.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
-			}
-		}
-		if (applyAlpha) {
-			final boolean isTransparentBackground = isTransparentBackground(context);
-			mutated.setAlpha(isTransparentBackground ? 0xa0 : 0xff);
-		}
-		return mutated;
+		return applyActionBarDrawable(context, d, applyAlpha);
 	}
 
 	public static Context getActionBarContext(final Context context) {
@@ -150,20 +101,35 @@ public class ThemeUtils implements Constants {
 				android.R.attr.actionBarStyle, 0);
 		final Drawable d = a.getDrawable(0);
 		a.recycle();
-		if (d == null) return null;
-		final Drawable mutated = d.mutate();
-		if (mutated instanceof LayerDrawable) {
-			final Drawable colorLayer = ((LayerDrawable) mutated).findDrawableByLayerId(R.id.color_layer);
-			if (colorLayer != null) {
-				final int color = getUserThemeColor(context);
-				colorLayer.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
-			}
+		return applyActionBarDrawable(context, d, applyAlpha);
+	}
+
+	public static Drawable getActionBarStackedBackground(final Context context, final boolean applyAlpha) {
+		final TypedArray a = context.obtainStyledAttributes(null, new int[] { android.R.attr.backgroundStacked },
+				android.R.attr.actionBarStyle, 0);
+		final Drawable d = a.getDrawable(0);
+		a.recycle();
+		return applyActionBarDrawable(context, d, applyAlpha);
+
+	}
+
+	public static int getActionIconColor(final Context context) {
+		return getActionIconColor(getThemeResource(context));
+	}
+
+	public static int getActionIconColor(final int themeRes) {
+		switch (themeRes) {
+			case R.style.Theme_Twidere_Light:
+			case R.style.Theme_Twidere_Light_SolidBackground:
+			case R.style.Theme_Twidere_Light_Transparent:
+			case R.style.Theme_Twidere_Light_Compose:
+			case R.style.Theme_Twidere_Colored:
+			case R.style.Theme_Twidere_Colored_SolidBackground:
+			case R.style.Theme_Twidere_Colored_Transparent:
+			case R.style.Theme_Twidere_Colored_Compose:
+				return 0xC0333333;
 		}
-		if (applyAlpha) {
-			final boolean isTransparentBackground = isTransparentBackground(context);
-			mutated.setAlpha(isTransparentBackground ? 0xa0 : 0xff);
-		}
-		return mutated;
+		return Color.WHITE;
 	}
 
 	public static Drawable getCardItemBackground(final Context context) {
@@ -174,21 +140,33 @@ public class ThemeUtils implements Constants {
 	}
 
 	public static int getComposeThemeResource(final Context context) {
-		return getComposeThemeResource(getThemeName(context));
+		return getComposeThemeResource(getThemeNameOption(context), getDarkActionBarOption(context));
 	}
 
-	public static int getComposeThemeResource(final String name) {
-		final Integer res = THEMES_COMPOSE.get(name);
-		return res != null ? res : R.style.Theme_Twidere_Compose;
+	public static int getComposeThemeResource(final String name, final boolean darkActionBar) {
+		if (THEME_NAME_TWIDERE.equals(name))
+			return darkActionBar ? R.style.Theme_Twidere_Colored_DarkActionBar_Compose
+					: R.style.Theme_Twidere_Colored_Compose;
+		else if (THEME_NAME_LIGHT.equals(name))
+			return darkActionBar ? R.style.Theme_Twidere_Light_DarkActionBar_Compose
+					: R.style.Theme_Twidere_Light_Compose;
+		else if (THEME_NAME_DARK.equals(name)) return R.style.Theme_Twidere_Dark_Compose;
+		return R.style.Theme_Twidere_Colored_Compose;
+	}
+
+	public static boolean getDarkActionBarOption(final Context context) {
+		if (context == null) return true;
+		final SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+		return pref == null || pref.getBoolean(PREFERENCE_KEY_THEME_DARK_ACTIONBAR, true);
 	}
 
 	public static int getDialogThemeResource(final Context context) {
-		return getDialogThemeResource(getThemeName(context));
+		return getDialogThemeResource(getThemeNameOption(context));
 	}
 
 	public static int getDialogThemeResource(final String name) {
-		final Integer res = THEMES_DIALOG.get(name);
-		return res != null ? res : R.style.Theme_Twidere_Dark_Dialog;
+		if (THEME_NAME_DARK.equals(name)) return R.style.Theme_Twidere_Dark_Dialog;
+		return R.style.Theme_Twidere_Light_Dialog;
 	}
 
 	public static int getDrawerThemeResource(final Context context) {
@@ -197,10 +175,11 @@ public class ThemeUtils implements Constants {
 
 	public static int getDrawerThemeResource(final int themeRes) {
 		switch (themeRes) {
-			case R.style.Theme_Twidere_Transparent:
 			case R.style.Theme_Twidere_Dark_Transparent:
 			case R.style.Theme_Twidere_Light_Transparent:
 			case R.style.Theme_Twidere_Light_DarkActionBar_Transparent:
+			case R.style.Theme_Twidere_Colored_DarkActionBar_Transparent:
+			case R.style.Theme_Twidere_Colored_Transparent:
 				return R.style.Theme_Twidere_Drawer_Dark_Transparent;
 		}
 		return R.style.Theme_Twidere_Drawer_Dark;
@@ -231,21 +210,6 @@ public class ThemeUtils implements Constants {
 		return d;
 	}
 
-	public static int getTabIconColor(final Context context) {
-		return getTabIconColor(getThemeResource(context));
-	}
-
-	public static int getTabIconColor(final int themeRes) {
-		switch (themeRes) {
-			case R.style.Theme_Twidere_Light:
-			case R.style.Theme_Twidere_Light_SolidBackground:
-			case R.style.Theme_Twidere_Light_Compose:
-			case R.style.Theme_Twidere_Light_Transparent:
-				return 0xC0333333;
-		}
-		return Color.WHITE;
-	}
-
 	public static int getTextAppearanceLarge(final Context context) {
 		final TypedArray a = context.obtainStyledAttributes(null, new int[] { android.R.attr.textAppearanceLarge });
 		final int textAppearance = a.getResourceId(0, android.R.style.TextAppearance_Holo_Large);
@@ -273,10 +237,11 @@ public class ThemeUtils implements Constants {
 
 	public static int getThemeAlpha(final int themeRes) {
 		switch (themeRes) {
-			case R.style.Theme_Twidere_Transparent:
 			case R.style.Theme_Twidere_Dark_Transparent:
 			case R.style.Theme_Twidere_Light_Transparent:
 			case R.style.Theme_Twidere_Light_DarkActionBar_Transparent:
+			case R.style.Theme_Twidere_Colored_Transparent:
+			case R.style.Theme_Twidere_Colored_DarkActionBar_Transparent:
 				return 0xa0;
 		}
 		return 0xff;
@@ -285,6 +250,7 @@ public class ThemeUtils implements Constants {
 	public static String getThemeBackgroundOption(final Context context) {
 		if (context == null) return THEME_BACKGROUND_DEFAULT;
 		final SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+		if (pref == null) return THEME_BACKGROUND_DEFAULT;
 		return pref.getString(PREFERENCE_KEY_THEME_BACKGROUND, THEME_BACKGROUND_DEFAULT);
 	}
 
@@ -296,19 +262,42 @@ public class ThemeUtils implements Constants {
 		return color;
 	}
 
-	public static String getThemeName(final Context context) {
+	public static String getThemeNameOption(final Context context) {
 		if (context == null) return THEME_NAME_TWIDERE;
 		final SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		return pref != null ? pref.getString(PREFERENCE_KEY_THEME, THEME_NAME_TWIDERE) : THEME_NAME_TWIDERE;
 	}
 
 	public static int getThemeResource(final Context context) {
-		return getThemeResource(getThemeName(context), getThemeBackgroundOption(context));
+		return getThemeResource(getThemeNameOption(context), getThemeBackgroundOption(context),
+				getDarkActionBarOption(context));
 	}
 
-	public static int getThemeResource(final String name, final String background) {
-		final ThemeMap themes = THEME_MAPS.containsKey(background) ? THEME_MAPS.get(background) : THEMES;
-		return themes.containsKey(name) ? themes.get(name) : R.style.Theme_Twidere;
+	public static int getThemeResource(final String name, final String background, final boolean darkActionBar) {
+		if (THEME_NAME_TWIDERE.equals(name)) {
+			if (THEME_BACKGROUND_SOLID.equals(background))
+				return darkActionBar ? R.style.Theme_Twidere_Colored_DarkActionBar_SolidBackground
+						: R.style.Theme_Twidere_Colored_SolidBackground;
+			else if (THEME_BACKGROUND_TRANSPARENT.equals(background))
+				return darkActionBar ? R.style.Theme_Twidere_Colored_DarkActionBar_Transparent
+						: R.style.Theme_Twidere_Colored_Transparent;
+			return darkActionBar ? R.style.Theme_Twidere_Colored_DarkActionBar : R.style.Theme_Twidere_Colored;
+		} else if (THEME_NAME_LIGHT.equals(name)) {
+			if (THEME_BACKGROUND_SOLID.equals(background))
+				return darkActionBar ? R.style.Theme_Twidere_Light_DarkActionBar_SolidBackground
+						: R.style.Theme_Twidere_Light_SolidBackground;
+			else if (THEME_BACKGROUND_TRANSPARENT.equals(background))
+				return darkActionBar ? R.style.Theme_Twidere_Light_DarkActionBar_Transparent
+						: R.style.Theme_Twidere_Light_Transparent;
+			return darkActionBar ? R.style.Theme_Twidere_Light_DarkActionBar : R.style.Theme_Twidere_Light;
+
+		} else if (THEME_NAME_DARK.equals(name)) {
+			if (THEME_BACKGROUND_SOLID.equals(background))
+				return R.style.Theme_Twidere_Dark_SolidBackground;
+			else if (THEME_BACKGROUND_TRANSPARENT.equals(background)) return R.style.Theme_Twidere_Dark_Transparent;
+			return R.style.Theme_Twidere_Dark;
+		}
+		return R.style.Theme_Twidere_Colored_DarkActionBar;
 	}
 
 	public static int getTitleTextAppearance(final Context context) {
@@ -364,10 +353,14 @@ public class ThemeUtils implements Constants {
 
 	public static boolean isColoredActionBar(final int themeRes) {
 		switch (themeRes) {
-			case R.style.Theme_Twidere:
-			case R.style.Theme_Twidere_SolidBackground:
-			case R.style.Theme_Twidere_Transparent:
-			case R.style.Theme_Twidere_Compose:
+			case R.style.Theme_Twidere_Colored:
+			case R.style.Theme_Twidere_Colored_SolidBackground:
+			case R.style.Theme_Twidere_Colored_Compose:
+			case R.style.Theme_Twidere_Colored_Transparent:
+			case R.style.Theme_Twidere_Colored_DarkActionBar:
+			case R.style.Theme_Twidere_Colored_DarkActionBar_SolidBackground:
+			case R.style.Theme_Twidere_Colored_DarkActionBar_Transparent:
+			case R.style.Theme_Twidere_Colored_DarkActionBar_Compose:
 				return true;
 		}
 		return false;
@@ -406,6 +399,10 @@ public class ThemeUtils implements Constants {
 			case R.style.Theme_Twidere_Light_SolidBackground:
 			case R.style.Theme_Twidere_Light_Transparent:
 			case R.style.Theme_Twidere_Light_Compose:
+			case R.style.Theme_Twidere_Colored:
+			case R.style.Theme_Twidere_Colored_SolidBackground:
+			case R.style.Theme_Twidere_Colored_Transparent:
+			case R.style.Theme_Twidere_Colored_Compose:
 				return true;
 		}
 		return false;
@@ -421,7 +418,8 @@ public class ThemeUtils implements Constants {
 
 	public static boolean isTransparentBackground(final int themeRes) {
 		switch (themeRes) {
-			case R.style.Theme_Twidere_Transparent:
+			case R.style.Theme_Twidere_Colored_Transparent:
+			case R.style.Theme_Twidere_Colored_DarkActionBar_Transparent:
 			case R.style.Theme_Twidere_Dark_Transparent:
 			case R.style.Theme_Twidere_Light_Transparent:
 			case R.style.Theme_Twidere_Light_DarkActionBar_Transparent:
@@ -536,6 +534,7 @@ public class ThemeUtils implements Constants {
 			final TextView textView = (TextView) statusContentView.findViewById(R.id.text);
 			final TextView timeSourceView = (TextView) statusContentView.findViewById(R.id.time_source);
 			final TextView retweetView = (TextView) statusContentView.findViewById(R.id.retweet_view);
+			final TextView repliesView = (TextView) statusContentView.findViewById(R.id.replies_view);
 			final Drawable cardItemBackground = getCardItemBackground(theme);
 			applyThemeAlphaToDrawable(theme, cardItemBackground);
 			ViewAccessor.setBackground(cardView, cardItemBackground);
@@ -545,15 +544,18 @@ public class ThemeUtils implements Constants {
 			textView.setTextColor(textColorPrimary);
 			timeSourceView.setTextColor(textColorSecondary);
 			retweetView.setTextColor(textColorSecondary);
+			repliesView.setTextColor(textColorSecondary);
 
 			nameView.setTextSize(defaultTextSize * 1.25f);
 			textView.setTextSize(defaultTextSize * 1.25f);
 			screenNameView.setTextSize(defaultTextSize * 0.85f);
 			timeSourceView.setTextSize(defaultTextSize * 0.85f);
 			retweetView.setTextSize(defaultTextSize * 0.85f);
+			repliesView.setTextSize(defaultTextSize * 0.85f);
 
 			profileView.setBackgroundResource(0);
 			retweetView.setBackgroundResource(0);
+			repliesView.setBackgroundResource(0);
 			textView.setTextIsSelectable(false);
 
 			profileImageView.setImageResource(R.drawable.ic_launcher);
@@ -572,10 +574,14 @@ public class ThemeUtils implements Constants {
 
 	public static boolean shouldApplyColorFilter(final int res) {
 		switch (res) {
-			case R.style.Theme_Twidere:
-			case R.style.Theme_Twidere_SolidBackground:
-			case R.style.Theme_Twidere_Compose:
-			case R.style.Theme_Twidere_Transparent:
+			case R.style.Theme_Twidere_Colored:
+			case R.style.Theme_Twidere_Colored_SolidBackground:
+			case R.style.Theme_Twidere_Colored_Compose:
+			case R.style.Theme_Twidere_Colored_Transparent:
+			case R.style.Theme_Twidere_Colored_DarkActionBar:
+			case R.style.Theme_Twidere_Colored_DarkActionBar_SolidBackground:
+			case R.style.Theme_Twidere_Colored_DarkActionBar_Compose:
+			case R.style.Theme_Twidere_Colored_DarkActionBar_Transparent:
 				return false;
 		}
 		return true;
@@ -589,10 +595,21 @@ public class ThemeUtils implements Constants {
 		return isLightActionBar(res);
 	}
 
-	private static final class ThemeMap extends HashMap<String, Integer> {
-
-		private static final long serialVersionUID = -4526137301872382454L;
-
+	private static Drawable applyActionBarDrawable(final Context context, final Drawable d, final boolean applyAlpha) {
+		if (d == null) return null;
+		final Drawable mutated = d.mutate();
+		if (mutated instanceof LayerDrawable) {
+			final Drawable colorLayer = ((LayerDrawable) mutated).findDrawableByLayerId(R.id.color_layer);
+			if (colorLayer != null) {
+				final int color = getUserThemeColor(context);
+				colorLayer.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+			}
+		}
+		if (applyAlpha) {
+			final boolean isTransparentBackground = isTransparentBackground(context);
+			mutated.setAlpha(isTransparentBackground ? 0xa0 : 0xff);
+		}
+		return mutated;
 	}
 
 }

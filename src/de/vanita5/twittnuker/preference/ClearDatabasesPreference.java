@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -31,7 +31,8 @@ import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.provider.TweetStore.CachedStatuses;
-
+import de.vanita5.twittnuker.provider.TweetStore.Notifications;
+import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
 
 public class ClearDatabasesPreference extends AsyncTaskPreference implements Constants, OnPreferenceClickListener {
 
@@ -64,6 +65,8 @@ public class ClearDatabasesPreference extends AsyncTaskPreference implements Con
 		for (final Uri uri : CACHE_URIS) {
 			resolver.delete(uri, null, null);
 		}
+		resolver.delete(Notifications.CONTENT_URI, null, null);
+		resolver.delete(UnreadCounts.CONTENT_URI, null, null);
 	}
 
 }

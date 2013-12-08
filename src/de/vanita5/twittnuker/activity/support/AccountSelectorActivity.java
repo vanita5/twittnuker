@@ -23,14 +23,13 @@
 package de.vanita5.twittnuker.activity.support;
 
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,15 +44,18 @@ import de.vanita5.twittnuker.util.ArrayUtils;
 public class AccountSelectorActivity extends BaseSupportDialogActivity implements LoaderCallbacks<Cursor>,
 		OnClickListener {
 
-	private final BroadcastReceiver mStateReceiver = new BroadcastReceiver() {
+	private final ContentObserver mContentObserver = new ContentObserver(null) {
 
 		@Override
-		public void onReceive(final Context context, final Intent intent) {
-			final String action = intent.getAction();
-			if (BROADCAST_ACCOUNT_LIST_DATABASE_UPDATED.equals(action)) {
-				if (!isFinishing()) {
-					getLoaderManager().restartLoader(0, null, AccountSelectorActivity.this);
-				}
+		public void onChange(final boolean selfChange) {
+			onChange(selfChange, null);
+		}
+
+		@Override
+		public void onChange(final boolean selfChange, final Uri uri) {
+			// Handle change.
+			if (!isFinishing()) {
+				getLoaderManager().restartLoader(0, null, AccountSelectorActivity.this);
 			}
 		}
 	};
@@ -98,8 +100,8 @@ public class AccountSelectorActivity extends BaseSupportDialogActivity implement
 	public void onLoadFinished(final Loader<Cursor> loader, final Cursor cursor) {
 		mAdapter.swapCursor(cursor);
 		if (cursor != null && mFirstCreated) {
-			final Bundle extras = getIntent().getExtras();
-			final long[] activated_ids = extras != null ? extras.getLongArray(EXTRA_IDS) : null;
+			final Intent intent = getIntent();
+			final long[] activated_ids = intent.getLongArrayExtra(EXTRA_IDS);
 			for (int i = 0, j = mAdapter.getCount(); i < j; i++) {
 				mListView.setItemChecked(i, ArrayUtils.contains(activated_ids, mAdapter.getItemId(i)));
 			}
@@ -132,14 +134,12 @@ public class AccountSelectorActivity extends BaseSupportDialogActivity implement
 	@Override
 	protected void onStart() {
 		super.onStart();
-		final IntentFilter filter = new IntentFilter(BROADCAST_ACCOUNT_LIST_DATABASE_UPDATED);
-		registerReceiver(mStateReceiver, filter);
-
+		getContentResolver().registerContentObserver(Accounts.CONTENT_URI, true, mContentObserver);
 	}
 
 	@Override
 	protected void onStop() {
-		unregisterReceiver(mStateReceiver);
+		getContentResolver().unregisterContentObserver(mContentObserver);
 		super.onStop();
 	}
 

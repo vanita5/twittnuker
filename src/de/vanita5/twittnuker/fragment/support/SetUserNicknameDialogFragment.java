@@ -1,7 +1,7 @@
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.clearUserNickname;
-import static de.vanita5.twittnuker.util.Utils.setUserNickname;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserNickname;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.setUserNickname;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

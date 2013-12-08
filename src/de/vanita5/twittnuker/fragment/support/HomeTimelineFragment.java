@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ *				Twidere - Twitter client for Android
  * 
  * Copyright (C) 2012 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -29,7 +29,6 @@ import android.net.Uri;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
-
 public class HomeTimelineFragment extends CursorStatusesListFragment {
 
 	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
@@ -40,9 +39,6 @@ public class HomeTimelineFragment extends CursorStatusesListFragment {
 			final String action = intent.getAction();
 			if (BROADCAST_HOME_TIMELINE_REFRESHED.equals(action)) {
 				setRefreshComplete();
-				getLoaderManager().restartLoader(0, null, HomeTimelineFragment.this);
-			} else if (BROADCAST_HOME_TIMELINE_DATABASE_UPDATED.equals(action)) {
-				getLoaderManager().restartLoader(0, null, HomeTimelineFragment.this);
 			} else if (BROADCAST_TASK_STATE_CHANGED.equals(action)) {
 				updateRefreshState();
 			}
@@ -50,19 +46,17 @@ public class HomeTimelineFragment extends CursorStatusesListFragment {
 	};
 
 	@Override
-	public int getStatuses(final long[] account_ids, final long[] max_ids, final long[] since_ids) {
+	public int getStatuses(final long[] accountIds, final long[] maxIds, final long[] sinceIds) {
 		final AsyncTwitterWrapper twitter = getTwitterWrapper();
 		if (twitter == null) return 0;
-		if (max_ids == null) return twitter.refreshAll();
-		return twitter.getHomeTimelineAsync(account_ids, max_ids, since_ids);
+		if (maxIds == null) return twitter.refreshAll(accountIds);
+		return twitter.getHomeTimelineAsync(accountIds, maxIds, sinceIds);
 	}
 
 	@Override
 	public void onStart() {
 		super.onStart();
 		final IntentFilter filter = new IntentFilter(BROADCAST_HOME_TIMELINE_REFRESHED);
-		filter.addAction(BROADCAST_ACCOUNT_LIST_DATABASE_UPDATED);
-		filter.addAction(BROADCAST_HOME_TIMELINE_DATABASE_UPDATED);
 		filter.addAction(BROADCAST_TASK_STATE_CHANGED);
 		registerReceiver(mStatusReceiver, filter);
 	}
@@ -79,7 +73,7 @@ public class HomeTimelineFragment extends CursorStatusesListFragment {
 	}
 
 	@Override
-	protected int getNotificationIdToClear() {
+	protected int getNotificationType() {
 		return NOTIFICATION_ID_HOME_TIMELINE;
 	}
 
