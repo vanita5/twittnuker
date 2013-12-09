@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.Constants;
 
 
 @TargetApi(Build.VERSION_CODES.FROYO)
-public class TwittnukerBackupAgentHelper extends BackupAgentHelper implements Constants {
+public class TwidereBackupAgentHelper extends BackupAgentHelper implements Constants {
 
 	// A key to uniquely identify the set of backup data
 	static final String PREFS_BACKUP_KEY = "preference_backup";
