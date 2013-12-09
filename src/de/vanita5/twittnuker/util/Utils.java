@@ -2108,8 +2108,8 @@ public final class Utils implements Constants {
 		final boolean enable_proxy = prefs.getBoolean(PREFERENCE_KEY_ENABLE_PROXY, false);
 		// Here I use old consumer key/secret because it's default key for older
 		// versions
-		final String pref_consumer_key = prefs.getString(PREFERENCE_KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY);
-		final String pref_consumer_secret = prefs.getString(PREFERENCE_KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET);
+		final String pref_consumer_key = prefs.getString(PREFERENCE_KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
+		final String pref_consumer_secret = prefs.getString(PREFERENCE_KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
 		final StringBuilder where = new StringBuilder();
 		where.append(Accounts.ACCOUNT_ID + " = " + account_id);
 		final Cursor c = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
@@ -2165,8 +2165,8 @@ public final class Utils implements Constants {
 							cb.setOAuthConsumerKey(pref_consumer_key);
 							cb.setOAuthConsumerSecret(pref_consumer_secret);
 						} else {
-							cb.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
-							cb.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
+							cb.setOAuthConsumerKey(TWITTER_CONSUMER_KEY_2);
+							cb.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET_2);
 						}
 						final String token = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN));
 						final String tokenSecret = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN_SECRET));

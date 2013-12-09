@@ -27,8 +27,8 @@ package de.vanita5.twittnuker;
  */
 public interface Constants extends TwidereConstants {
 
-	public static final String DATABASES_NAME = "twidere.sqlite";
-	public static final int DATABASES_VERSION = 55;
+	public static final String DATABASES_NAME = "twittnuker.sqlite";
+	public static final int DATABASES_VERSION = 1;
 
 	public static final String GOOGLE_MAPS_API_KEY_RELEASE = "0kjPwJOe_zwYjzGc9uYak7vhm_Sf3eob-2L3Xzw";
 	public static final String GOOGLE_MAPS_API_KEY_DEBUG = "0kjPwJOe_zwY9p6kT-kygu4mxwysyOOpfkaXqTA";
@@ -129,11 +129,11 @@ public interface Constants extends TwidereConstants {
 
 	public static final String FRAGMENT_TAG_API_UPGRADE_NOTICE = "api_upgrade_notice";
 
-	public static final String TWIDERE_PREVIEW_NICKNAME = "Twidere";
-	public static final String TWIDERE_PREVIEW_NAME = "Twidere Project";
-	public static final String TWIDERE_PREVIEW_SCREEN_NAME = "TwidereProject";
-	public static final String TWIDERE_PREVIEW_TEXT_HTML = "Twidere is an open source twitter client for Android, see <a href='https://github.com/mariotaku/twidere'>github.com/mariotak&#8230;<a/>";
-	public static final String TWIDERE_PREVIEW_SOURCE = "Twidere for Android";
+	public static final String TWIDERE_PREVIEW_NICKNAME = "Twittnuker";
+	public static final String TWIDERE_PREVIEW_NAME = "Twittnuker Project";
+	public static final String TWIDERE_PREVIEW_SCREEN_NAME = "twittnuker";
+	public static final String TWIDERE_PREVIEW_TEXT_HTML = "Twittnuker is an open source twitter client for Android, see <a href='https://github.com/vanita5/twittnuker'>https://github.com/vanita5/twittnuker<a/>";
+	public static final String TWIDERE_PREVIEW_SOURCE = "Twittnuker";
 
 	public static final int HONDAJOJO_ID = 514378421;
 	public static final String HONDAJOJO_SCREEN_NAME = "@HondaJOJO";
