@@ -42,6 +42,7 @@
   <string name="password">Passwort</string>
   <string name="label_tweetstore_provider">Twittnuker Datenbank Anbieter</string>
   <string name="label_refresh_service">Dienst aktualisieren</string>
+  <string name="label_background_operation_service">Hintergrunddienst</string>
   <string name="open_in_browser">Im Browser öffnen</string>
   <string name="tap_to_load_more">Weitere Tweets laden</string>
   <string name="delete">Löschen</string>
@@ -77,6 +78,7 @@
   <string name="gzip_compressing_summary">API-Anfragen komprimieren: Kann den Datenverbrauch verringen, funktioniert aber nicht bei allen Servern.</string>
   <string name="storage">Speicher</string>
   <string name="database_item_limit">Maximale Größe der Datenbank</string>
+
   <string name="database_item_limit_summary">Anzahl der Objekte, die maximal pro Account gespeichert werden. Ein niedrigerer Wert spart Speicherplatz und erhöht die Ladegeschwindigkeit.</string>
   <string name="clear_cache">Cache löschen</string>
   <string name="clear_cache_summary">Lösche Profilbild-Cache.</string>
@@ -166,6 +168,8 @@
   <string name="unblock">Blockierung aufheben</string>
   <string name="report_for_spam">Spam melden</string>
   <string name="mute_user">Benutzer stummschalten</string>
+
+
   <string name="user_muted">Benutzer zur Filterliste hinzugefügt. Tweets dieses Benutzers erscheinen nicht in der Zeitleiste oder bei Erwähnungen.</string>
   <string name="users_muted">Benutzer zur Filterliste hinzugefügt. Tweets dieser Benutzer erscheinen nicht in der Zeitleiste oder bei Erwähnungen.</string>
   <string name="inbox">Eingang</string>
@@ -301,6 +305,7 @@
   <string name="activity_about_me_follow_multi"><xliff:g id="user">%s</xliff:g> und <xliff:g id="count">%d</xliff:g> Weitere folgen dir.</string>
   <string name="activity_about_me_retweet"><xliff:g id="user">%s</xliff:g> retweetete deinen Tweet.</string>
   <string name="activity_about_me_retweet_multi"><xliff:g id="user">%s</xliff:g> und <xliff:g id="count">%d</xliff:g> Weitere retweeteten deinen Tweet.</string>
+  <string name="activity_about_me_list_member_added"><xliff:g id="user">%s</xliff:g> zu deiner Liste hinzugefügt.</string>
   <string name="activity_about_me_list_member_added"><xliff:g id="user">%s</xliff:g> hat Dich zur Liste hinzugefügt.</string>
   <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%s</xliff:g> und <xliff:g id="count">%d</xliff:g> Weitere haben Dich zu ihren Listen hinzugefügt.</string>
   <string name="activity_by_friends_favorite"><xliff:g id="user">%1$s</xliff:g> favorisierte <xliff:g id="target">%2$s</xliff:g>s tweet.</string>
@@ -324,6 +329,7 @@
   <string name="status">Tweet</string>
   <string name="preview">Vorschau</string>
   <string name="api_upgrade_notice_title">SEHR WICHTIG!</string>
+
   <string name="api_upgrade_notice_message">Twitter hat eine neue Version (1.1) seiner API angekündigt.\n\n Ab dieser Version benutzt Twittnuker diese neue Version 1.1.\n\n Wir empfehlenden dir DRINGEND dich neu anzumelden, sonst kann es zu Benutzungsproblemen kommen.\n\n Was hat sich mit der API Version 1.1 geändert?\n *Viel striktere Begrenzungen beim Datenabruf, man kann die Timeline nur noch 15 mal in 15 Minuten aktualisieren.\n *Man kann nicht mehr sehen, wer einen retweetet hat.\n *Wenn Twittnuker mit StatusNet benutzt wird gehen durch die API-Änderungen einige Funktionen verlohren.\n\n Das tut mir leid, aber wie vielleicht bekannt ist – Twitter ist dabei, alle Apps von Dritten rauszuschmeißen, ich kann daran nichts ändern.</string>
   <string name="connection_timeout">Zeitüberschreitung der Verbindung</string>
   <string name="name_display_option">Anzeigeoptionen für Namen</string>
@@ -331,6 +337,8 @@
   <string name="browser_sign_in">Browseranmeldung</string>
   <string name="stop_auto_refresh_when_battery_low">Energiesparen</string>
   <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
+  <string name="notification_status">Neuer Tweet von <xliff:g id="user">%s</xliff:g></string>
+  <string name="notification_status_multiple">Neuer Tweet von <xliff:g id="user">%1$s</xliff:g> und <xliff:g id="count">%2$d</xliff:g> anderen</string>
   <string name="notification_mention"><xliff:g id="user">%s</xliff:g> erwähnte dich.</string>
   <string name="notification_mention_multiple"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="count">%2$d</xliff:g> andere erwähnten dich.</string>
   <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> hat dir eine Direktnachricht geschickt.</string>
@@ -339,6 +347,7 @@
   <string name="action_getting_status">lade Tweet</string>
   <string name="action_getting_statuses">lade Tweets</string>
   <string name="action_updating_status">sende Tweet</string>
+  <string name="action_sending_direct_message">sende Direktnachricht</string>
   <string name="action_refreshing_timelines">aktualisiere Timelines</string>
   <string name="action_refreshing_home_timeline">aktualisiere Home Timeline</string>
   <string name="action_refreshing_mentions">aktualisiere Erwähnungen</string>
@@ -362,7 +371,9 @@
   <string name="action_reporting_for_spam">als Spam melden</string>
   <string name="action_subscribing_to_list">Liste abonnieren</string>
   <string name="action_unsubscribing_from_list">Liste deabonnieren</string>
+  <string name="action_saving_search">Suche speichern</string>
   <string name="status_is_duplicate">Dein Tweet ist ein Duplikat.</string>
+
   <string name="data_profiling_summary">Twittnuker hat an einem Forschungsvorhaben von Studenten der UC Davis zur Vorhersage des Verhaltens von Benutzern in Sozialen Netzwerken teilgenommen, um Inhalt im vorraus laden zu können.\n\nDiese Daten wollen wir sammeln:\nGesammelte Daten:\n1. Die Twitter-ID des Benutzers\n2. Die Timeline des Benutzers (Vorhersage basiert auf den Interessen und Interaktionen des Benutzers)\n3. Klicks auf Tweets (Vorhersage basiert auf den Interessen und Interaktionen des Benutzers)\n4. Grober Aufenthaltsort (welcher ein guter Hinweis ist, ob der Benutzer Twitter benutzen wird)\n\nTwittnuker lädt die gesammelten Daten nur hoch, wenn WLAN verfügbar ist und das Gerät aufgeladen wird, so dass es weder zusätzliche Kosten verursacht noch Akkuladung verbraucht.</string>
   <string name="data_profiling">Nutzungsstatistiken</string>
   <string name="enable_data_profiling">Berichten einschalten</string>
@@ -413,6 +424,7 @@
   <string name="default_ringtone">Standard Klingelton</string>
   <string name="phishing_link_warning">Warnung vor Phishing Links</string>
   <string name="phishing_link_warning_summary">Warnung beim Öffnen eines möglichen Phishing Links in Direktnachrichten.</string>
+
   <string name="phishing_link_warning_message_1">Du öffnest gerade einen Link in einer Direktnachricht, der dich möglicherweise zu einer Phishing Seite leiten könnte.\n\nÜberprüfe die Webadresse zweimal, bevor du persönliche Daten eingibst.</string>
   <string name="phishing_link_warning_message_2">Willst du wirklich fortfahren?</string>
   <string name="image_preload_options">Bildvorabladen Optionen</string>
@@ -422,6 +434,7 @@
   <string name="re_sign_in_needed">Du musst dich gegebenenfalls erneut mit deinem Account anmelden.</string>
   <string name="disable_tab_swipe">Deaktiviere wischen für Reiter</string>
   <string name="sign_in_method_introduction_title">Wie funktioniert das?</string>
+
   <string name="sign_in_method_introduction">Die meisten Twitter Apps wie twicca öffnen einen Browser, um den Benutzernamen und das Password einzugeben und kommen dann wieder Zurück zur App. Manchmal ist dieses sehr umständlich.\nTwittnuker  verwendet einfachere Schritte zum  anmelden, ohne Verwendung eines Browsers. Keine Sorge um das Password, Twittnuker speichert es niemals. Es ist sicher!</string>
   <string name="quote_protected_status_notice">Es ist nicht empfehlenswert, geschützte Tweets zu zitieren.</string>
   <string name="edit_draft">Bearbeite Entwurf</string>
@@ -442,6 +455,7 @@
   <string name="retweet_cancelled">Retweet entfernt.</string>
   <string name="direct_message_sent">DM gesendet.</string>
   <string name="direct_message_deleted">DM gelöscht.</string>
+  <string name="search_saved">Suche gespeichert.</string>
   <string name="import_from">Importiere aus…</string>
   <string name="link_to_quoted_status">Zitierten Tweet verlinken</string>
   <string name="link_to_quoted_status_summary">Fügt beim zitieren den Link zum originalen Tweet hinzu</string>
@@ -459,6 +473,7 @@
   <string name="unsubscribed_from_list">Listenabonnement von \"<xliff:g id="list">%s</xliff:g>\" entfernt.</string>
   <string name="added_N_users_to_list_quantity_one"><xliff:g id="items">%1$d</xliff:g> Benutzer zur Liste \"<xliff:g id="list">%2$s</xliff:g>\" hinzugefügt.</string>
   <string name="added_N_users_to_list_quantity_other"><xliff:g id="items">%1$d</xliff:g> Benutzer zur Liste \"<xliff:g id="list">%2$s</xliff:g>\" hinzugefügt.</string>
+  <string name="added_user_to_list"><xliff:g id="user">%1$s</xliff:g> zur Liste \"<xliff:g id="list">%2$s</xliff:g>\" hinzugefügt.</string>
   <string name="deleted_user_from_list"><xliff:g id="user">%1$s</xliff:g> von Liste \"<xliff:g id="list">%2$s</xliff:g>\" entfernt.</string>
   <string name="deleted_N_users_from_list_quantity_one"><xliff:g id="items">%1$d</xliff:g> Benutzer von Liste \"<xliff:g id="list">%2$s</xliff:g>\" entfernt.</string>
   <string name="deleted_N_users_from_list_quantity_other"><xliff:g id="items">%1$d</xliff:g> Benutzer von Liste \"<xliff:g id="list">%2$s</xliff:g>\" entfernt.</string>
@@ -535,6 +550,8 @@
   <string name="block_user_confirm_message"><xliff:g id="name">%s</xliff:g> blocken? Dieser Benutzer kann dir dann nicht folgen, dich erwähnen oder dir DMs schicken.</string>
   <string name="unfollow_user"><xliff:g id="name">%s</xliff:g> entfolgen</string>
   <string name="unfollow_user_confirm_message"><xliff:g id="name">%s</xliff:g> entfolgen? Du kannst die Tweets dieses Users dann nicht mehr sehen.</string>
+  <string name="delete_user_list">Lösche Liste <xliff:g id="name">%s</xliff:g></string>
+  <string name="delete_user_list_confirm_message">Lösche Liste <xliff:g id="name">%s</xliff:g>? Das kann nicht rückgängig gemacht werden.</string>
   <string name="delete_user_list">(D) Liste löschen <xliff:g id="name">%s</xliff:g></string>
   <string name="delete_user_list_confirm_message">(D) Delete list <xliff:g id="name">%s</xliff:g>? This can\' be undone.</string>
   <string name="signing_in_error_browser_sign_in_hint">Fehler beim anmelden. Du musst vielleicht die Browser Anmeldung benutzen. (Eigenen API Keys werden dabei ignoriert)</string>
@@ -562,6 +579,8 @@
   <string name="delete_user"><xliff:g id="name">%s</xliff:g> löschen</string>
   <string name="delete_users">Benutzer löschen</string>
   <string name="delete_user_confirm_message"><xliff:g id="name">%s</xliff:g> löschen? Das kann nicht rückgängig gemacht werden.</string>
+  <string name="toggle">(D) Toggle</string>
+  <string name="general">General</string>
   <string name="hints">Tipps</string>
   <string name="finish">Fertig</string>
   <string name="theme_background">Theme Hintergrund</string>
@@ -569,6 +588,32 @@
   <string name="theme_background_solid">Weiss/Schwarz</string>
   <string name="theme_background_transparent">Transparent</string>
   <string name="theme_dark_actionbar">Dunkle Action Bar</string>
+  <string name="wizard_hint_compose_select_account">Klicke auf dieses Icon, um den Account zum tweeten auszuwählen.</string>
+  <string name="wizard_hint_quote_format">Stelle das Zitierformat unter &quot;Settings&quot; - &quot;Content &amp; Storage&quot; ein.</string>
+  <string name="wizard_hint_filters">Du kannst unerwünschte Tweets mithilfe von &quot;Filtern&quot; ausblenden.</string>
+  <string name="replies">Antworten</string>
   <string name="compact_cards">Kompakt anzeigen</string>
   <string name="compact_cards_summary">Mehr Tweets auf dem Bildschirm</string>
+  <string name="dashclock_home_unread_count_name">(D) Twittnuker home unread count</string>
+  <string name="dashclock_home_unread_count_description">(D) Home unread count</string>
+  <string name="dashclock_mentions_unread_count_name">(D) Twittnuker mentions unread count</string>
+  <string name="dashclock_mentions_unread_count_description">(D) Mentions unread count</string>
+  <string name="dashclock_messages_unread_count_name">(D) Twittnuker messages unread count</string>
+  <string name="dashclock_messages_unread_count_description">(D) Messages unread count</string>
+  <string name="N_new_statuses_quantity_one"><xliff:g id="items">%d</xliff:g> neuer Tweet</string>
+  <string name="N_new_statuses_quantity_other"><xliff:g id="items">%d</xliff:g> neue Tweets</string>
+  <string name="N_new_mentions_quantity_one"><xliff:g id="items">%d</xliff:g> neue Mention</string>
+  <string name="N_new_mentions_quantity_other"><xliff:g id="items">%d</xliff:g> neue Mentions</string>
+  <string name="N_new_messages_quantity_one"><xliff:g id="items">%d</xliff:g> neue Unterhaltun</string>
+  <string name="N_new_messages_quantity_other"><xliff:g id="items">%d</xliff:g> neue Unterhaltungen</string>
+  <string name="share_subject_format"><xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>), um <xliff:g id="time">%3$s</xliff:g></string>
+  <string name="rate_limit">Rate limit</string>
+  <string name="wizard_hint_rate_limit">Falls Rate Limit Probleme auftreten liegt das an Twitter\'s API Beschränkungen.</string>
+  <string name="preparing_database">Bereite Datenbank vor</string>
+  <string name="preparing_database_toast">Bereite Datenbank vor, bitte hab etwas Geduld.</string>
+  <string name="action_name_saved_at_time"><xliff:g id="action">%1$s</xliff:g>, gespeichert um <xliff:g id="time">%2$s</xliff:g></string>
+  <string name="update_status">Sende Tweet</string>
+  <string name="sending_direct_message">Sende Direktnachricht</string>
+  <string name="display_tab_label">(D) Display tab label</string>
+  <string name="livewp_daydream_enabled_message">Here\'s a little present for you, find it in your system settings :)</string>
 </resources>
