@@ -499,7 +499,7 @@
   <string name="delete_user_list_confirm_message">Êtes vous sûr de vouloir supprimer la liste <xliff:g id="name">%s</xliff:g>?</string>
   <string name="report_user">Signaler <xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">Êtes vous sûr de vouloir signer <xliff:g id="name">%s</xliff:g> pour spam?</string>
-  <string name="donate_via_paypal">Faire un don via PayPal</string>
+  <string name="donate_twidere_via_paypal">Faire un don via PayPal</string>
   <string name="donate_via_alipay">Faire un don vie Alipay</string>
   <string name="developed_by">Développé par</string>
   <string name="donators">Donateurs</string>

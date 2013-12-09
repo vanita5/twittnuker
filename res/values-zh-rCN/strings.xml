@@ -547,7 +547,7 @@
   <string name="report_user">报告<xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">你确定报告<xliff:g id="name">%s</xliff:g>发送垃圾信息吗？</string>
   <string name="twidere_test">Twittnuker 测试</string>
-  <string name="donate_via_paypal">通过PayPal捐助</string>
+  <string name="donate_twidere_via_paypal">通过PayPal捐助</string>
   <string name="pay_via_paypal">直接通过PayPal付款</string>
   <string name="pay_via_paypal_summary">当你看到“This recipient is not eligible to receive funds”时可使用这个方式</string>
   <string name="donate_via_alipay">通过支付宝捐助</string>

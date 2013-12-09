@@ -552,13 +552,15 @@
 	<string name="report_user">Report <xliff:g id="name">%s</xliff:g></string>
 	<string name="report_user_confirm_message">Report <xliff:g id="name">%s</xliff:g> for spam? You\'ll also block this user.</string>
 	<string name="twidere_test">Twittnuker test</string>
-	<string name="donate_via_paypal">Donate via PayPal</string>
+	<string name="donate_twidere_via_paypal">Donate Twidere via PayPal</string>
+	<string name="donate_twidere_via_paypal_summary">Donate to the original Twidere Project via PayPal</string>
 	<string name="pay_via_paypal">Pay via PayPal directly</string>
 	<string name="pay_via_paypal_summary">When you see &quot;This recipient is not eligible to receive funds&quot;</string>
 	<string name="donate_via_alipay">Donate via Alipay</string>
 	<string name="staggered_home_timeline">Staggered Home Timeline</string>
 	<string name="unread_count">Unread count</string>
 	<string name="developed_by">Developed by</string>
+	<string name="twidere_developed_by">Based on Twidere by</string>
 	<string name="project_account">Project account</string>
 	<string name="donators">Donators</string>
 	<string name="translators">Translators</string>
@@ -610,5 +612,7 @@
 	<string name="sending_direct_message">Sending direct message</string>
 	<string name="display_tab_label">Display tab label</string>
 	<string name="livewp_daydream_enabled_message">Here\'s a little present for you, find it in your system settings :)</string>
-
+	<string name="contact">Contact</string>
+	<string name="mail">Mail</string>
+	<string name="mail_summary">Send mail to twittnuker@vanita5.de to report bugs or request features</string>
 </resources>

@@ -528,7 +528,7 @@
   <string name="report_user">Denunciar <xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">Vai mesmo denunciar <xliff:g id="name">%s</xliff:g> por spam?</string>
   <string name="twidere_test">Teste do Twittnuker</string>
-  <string name="donate_via_paypal">Doar via PayPal</string>
+  <string name="donate_twidere_via_paypal">Doar via PayPal</string>
   <string name="donate_via_alipay">Doar via Alipay</string>
   <string name="staggered_home_timeline">Timeline Escalonada</string>
   <string name="unread_count">Contagem de não-lidos</string>

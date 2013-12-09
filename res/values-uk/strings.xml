@@ -528,7 +528,7 @@
   <string name="report_user">Повідомити про <xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">Ви справді повідомите про <xliff:g id="name">%s</xliff:g> як спамера?</string>
   <string name="twidere_test">Тест Twittnuker</string>
-  <string name="donate_via_paypal">Пожертва через PayPal</string>
+  <string name="donate_twidere_via_paypal">Пожертва через PayPal</string>
   <string name="donate_via_alipay">Пожертва через Alipay</string>
   <string name="staggered_home_timeline">Домашня часова стрічка</string>
   <string name="unread_count">Число непрочитаних</string>

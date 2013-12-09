@@ -538,7 +538,7 @@
   <string name="report_user"><xliff:g id="name">%s</xliff:g>をスパム報告する</string>
   <string name="report_user_confirm_message"><xliff:g id="name">%s</xliff:g>をスパムとして報告しますか?</string>
   <string name="twidere_test">Twittnukerテスト</string>
-  <string name="donate_via_paypal">PayPalで寄付</string>
+  <string name="donate_twidere_via_paypal">PayPalで寄付</string>
   <string name="donate_via_alipay">Alipayで寄付</string>
   <string name="staggered_home_timeline">二列ホームTL</string>
   <string name="unread_count">未読数の表示</string>

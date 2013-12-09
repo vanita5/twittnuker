@@ -480,6 +480,6 @@
   <string name="report_user">Reportar <xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">¿Està segur que vol reportar  <xliff:g id="name">%s</xliff:g> a brossa?</string>
   <string name="twidere_test">Prova Twittnuker </string>
-  <string name="donate_via_paypal">Fes una donació via PayPal</string>
+  <string name="donate_twidere_via_paypal">Fes una donació via PayPal</string>
   <string name="donate_via_alipay">Fes una donació via Alipay</string>
 </resources>

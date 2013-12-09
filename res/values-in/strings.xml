@@ -492,7 +492,7 @@
   <string name="source_filter_name">Sumber: <xliff:g id="name">%s</xliff:g></string>
   <string name="block_user">Blok <xliff:g id="name">%s</xliff:g></string>
   <string name="block_user_confirm_message">Apakah Anda yakin memblokir <xliff:g id="name">%s</xliff:g>?</string>
-  <string name="donate_via_paypal">Donasi via PayPal</string>
+  <string name="donate_twidere_via_paypal">Donasi via PayPal</string>
   <string name="donate_via_alipay">Donasi via Alipay</string>
   <string name="donators">Donatur</string>
   <string name="translators">Penerjemah</string>
