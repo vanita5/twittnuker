@@ -336,12 +336,6 @@
   <string name="action_updating_status">envoyer le tweet</string>
   <string name="action_sending_direct_message">envoyer le message privé</string>
   <string name="status_is_duplicate">Vous avez déjà tweeté ça.</string>
-  <string name="data_profiling_summary">Twittnuker a participé à une recherche sur la prévision du comportement social de l\'utilisateur au contenu de pré-caching commencé par des étudiants de UC Davis.\n\nVoici les données que nous souhaitons collecter et pourquoi:\n1. Identifiant Twitter de l\'utilisateur\n2. Fil d\'actualité de l\'utilisateur (prévisions basées sur l\'intéret de l\'utilisateur et les interactions sociales)\n3. Le clic de l\'utilisateur sur un tweet (prévisions basées sur l\'intéret de l\'utilisateur et les interactions sociales)\n4. Position géographique (ce qui est bon indicateur lorsque l\'utilisateur accèdera à Twitter)\n\nTwittnuker n\'envoi les informations collectées seulement quand le Wi-Fi est activé et que l\'appareil est connecté à un chargeur, cela n\'affectera pas votre bande passante et ne videra aps votre batterie.</string>
-  <string name="data_profiling">Statistiques d\'utilisation</string>
-  <string name="enable_data_profiling">Activer les rapports</string>
-  <string name="data_profiling_notification_ticker">Statistiques Opt in</string>
-  <string name="data_profiling_notification_title">Statistique d\'utilisation</string>
-  <string name="data_profiling_notification_desc">Activer ou Désactiver les statistiques d\'utilisation</string>
   <string name="silent_notifications">Notifications silencieuses</string>
   <string name="silent_notifications_summary">Désactiver sonnerie/vibrations pour les notifications</string>
   <string name="disable_background_service">Désactiver le service en arrière-plan</string>

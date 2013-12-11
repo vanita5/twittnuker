@@ -346,12 +346,6 @@
   <string name="action_adding_member">añadiendo miembro</string>
   <string name="action_retweeting">retuiteando</string>
   <string name="status_is_duplicate">Tu tuit está duplicado.</string>
-  <string name="data_profiling_summary">Twittnuker participó en una investigación sobre predicción del comportamiento social de los usuarios para pre-cachear contenido compartido por los estudiantes de la UC Davis.\n\nEstos son los datos que queríamos recopilar y el por qué:\nDatos recopilados:\n1. ID de usuario de Twitter\n2. Timeline principal del usuario (predicción basada en los intereses del usuario e interacción social)\n3. Clicks de usuario en un tweet (predicción basada en los intereseses del usuario e interacción social)\n4. Localización básica (buena para predecir cuándo un usuario accederá a Twitter)\n\nTwittnuker subirá los datos recopilados sólo cuando una conexión WiFi esté disponible y tu dispositivo esté conectado a la corriente, de manera que no te supondrá costes adicionales por consumo extra de ancho de banda o consumo de batería.</string>
-  <string name="data_profiling">Estadísticas de uso</string>
-  <string name="enable_data_profiling">Activar reportes</string>
-  <string name="data_profiling_notification_ticker">Estadísticas activas</string>
-  <string name="data_profiling_notification_title">Estadísticas de uso</string>
-  <string name="data_profiling_notification_desc">Activar o desactivar estadísticas de uso</string>
   <string name="silent_notifications">Silenciar notificaciones</string>
   <string name="silent_notifications_summary">Desactivar tono/vibrar para notificaciones</string>
   <string name="disable_background_service">Desactivar servicio en segundo plano</string>

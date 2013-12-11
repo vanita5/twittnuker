@@ -361,12 +361,6 @@
   <string name="action_subscribing_to_list">ao se inscrever na lista</string>
   <string name="action_unsubscribing_from_list">ao remover inscrição</string>
   <string name="status_is_duplicate">Seu tweet está duplicado.</string>
-  <string name="data_profiling_summary">Twittnuker participa de uma pesquisa sobre comportamento social de usuários pela UC Davis.\n\nOs dados que nós coletamos e porque:\nDados coletados:\n1. Twitter ID\n2. Timeline do usuário (predição baseada nos interesses e interações)\n3. Cliques do usuário num tweet (predição baseada nos interesses e interações sociais)\n4. Localização genérica (um bom indicador de quando o usuário irá acessar o Twitter)\n\nO Twittnuker vai enviar estes dados apenas quando seu aparelho estiver com o Wi-Fi  ligado e o carregador conectado, assim não afetará seu pacote de dados nem drenar sua bateria.</string>
-  <string name="data_profiling">Estatísticas de Uso</string>
-  <string name="enable_data_profiling">Permitir Relatórios</string>
-  <string name="data_profiling_notification_ticker">Adesão de Estatísticas</string>
-  <string name="data_profiling_notification_title">Estatísticas de Uso</string>
-  <string name="data_profiling_notification_desc">Ativar ou Desativar Estatísticas de Uso</string>
   <string name="silent_notifications">Notificações silenciosas</string>
   <string name="silent_notifications_summary">Desativar toque/vibração em notificações</string>
   <string name="disable_background_service">Desativar serviço em segundo plano</string>

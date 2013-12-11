@@ -33,8 +33,6 @@ import android.net.Uri;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 
-import edu.ucdavis.earlybird.ProfilingUtil;
-
 
 public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 
@@ -47,10 +45,7 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 	@Override
 	public void onLinkClick(final String link, final String orig, final long account_id, final int type,
 			final boolean sensitive) {
-		if (activity == null) return;
-		// UCD
-		ProfilingUtil.profile(activity, account_id, "Click, " + link + ", " + type);
-
+		
 		if (activity == null) return;
 		switch (type) {
 			case TwidereLinkify.LINK_TYPE_MENTION: {

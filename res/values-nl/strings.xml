@@ -304,8 +304,6 @@
   <string name="notification_mention"><xliff:g id="user">%s</xliff:g> vermeldde jou.</string>
   <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> zond jou een direct message.</string>
   <string name="status_is_duplicate">Jouw tweet is dubbel.</string>
-  <string name="data_profiling">Gebruiksstatistieken</string>
-  <string name="data_profiling_notification_title">Gebruiksstatistieken</string>
   <string name="silent_notifications">Stille notificaties</string>
   <string name="pull_to_load_conversation_label">Trek om de conversatie te laden</string>
   <string name="pull_to_load_conversation_release_label">Laat los om de conversatie te laden</string>

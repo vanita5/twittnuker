@@ -91,8 +91,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import edu.ucdavis.earlybird.ProfilingUtil;
-
 import org.mariotaku.menubar.MenuBar;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
@@ -294,10 +292,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		final boolean status_unchanged = mStatus != null && status != null && status.equals(mStatus);
 		if (!status_unchanged) {
 			getListAdapter().setData(null);
-			if (mStatus != null) {
-				// UCD
-				ProfilingUtil.profile(getActivity(), mStatus.account_id, "End, " + mStatus.id);
-			}
 		} else {
 			setSelection(0);
 		}
@@ -305,10 +299,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 			mConversationTask.cancel(true);
 		}
 		mStatus = status;
-		if (mStatus != null) {
-			// UCD
-			ProfilingUtil.profile(getActivity(), mStatus.account_id, "Start, " + mStatus.id);
-		}
 		if (!status_unchanged) {
 			clearPreviewImages();
 			hidePreviewImages();
@@ -503,8 +493,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 			}
 			case R.id.load_images: {
 				loadPreviewImages();
-				// UCD
-				ProfilingUtil.profile(getActivity(), mStatus.account_id, "Thumbnail click, " + mStatus.id);
 				break;
 			}
 			case R.id.retweet_view: {
@@ -572,10 +560,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 	@Override
 	public void onDestroyView() {
-		// UCD
-		if (mStatus != null) {
-			ProfilingUtil.profile(getActivity(), mStatus.account_id, "End, " + mStatus.id);
-		}
 		mStatus = null;
 		final LoaderManager lm = getLoaderManager();
 		lm.destroyLoader(LOADER_ID_STATUS);
@@ -591,8 +575,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
 		final String image = mImagePreviewAdapter.getItem(position);
 		if (mStatus == null || image == null) return;
-		// UCD
-		ProfilingUtil.profile(getActivity(), mStatus.account_id, "Large image click, " + mStatus.id + ", " + image);
 		openImage(getActivity(), image, mStatus.is_possibly_sensitive);
 	}
 

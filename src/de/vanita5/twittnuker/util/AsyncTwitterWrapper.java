@@ -44,8 +44,6 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 
-import edu.ucdavis.earlybird.ProfilingUtil;
-
 import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.Where;
@@ -2089,9 +2087,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				deleteWhere.append(Where.in(new Column(Statuses.STATUS_ID), new RawItemArray(statusIds)).getSQL());
 				final Uri deleteUri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY, false));
 				final int rowsDeleted = mResolver.delete(deleteUri, deleteWhere.toString(), null);
-				// UCD
-				ProfilingUtil.profile(mContext, account_id,
-						"Download tweets, " + ArrayUtils.toString(statusIds, ',', true));
 				all_statuses.addAll(Arrays.asList(values));
 				// Insert previously fetched items.
 				final Uri insertUri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY, notify));

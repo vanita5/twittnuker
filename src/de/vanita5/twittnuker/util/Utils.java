@@ -94,7 +94,6 @@ import com.huewu.pla.lib.internal.PLAListView;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.CroutonConfiguration;
 import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
-import edu.ucdavis.earlybird.UCDService;
 
 import org.apache.http.NameValuePair;
 import org.mariotaku.gallery3d.ImageViewerGLActivity;
@@ -3707,16 +3706,6 @@ public final class Utils implements Constants {
 	public static void showWarnMessage(final Context context, final int resId, final boolean long_message) {
 		if (context == null) return;
 		showWarnMessage(context, context.getText(resId), long_message);
-	}
-
-	public static void startProfilingServiceIfNeeded(final Context context) {
-		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final Intent profilingServiceIntent = new Intent(context, UCDService.class);
-		if (prefs.getBoolean(PREFERENCE_KEY_UCD_DATA_PROFILING, false)) {
-			context.startService(profilingServiceIntent);
-		} else {
-			context.stopService(profilingServiceIntent);
-		}
 	}
 
 	public static void startRefreshServiceIfNeeded(final Context context) {

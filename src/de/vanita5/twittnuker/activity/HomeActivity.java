@@ -33,8 +33,6 @@ import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
 
 import android.app.ActionBar;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -53,7 +51,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManagerTrojan;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
 import android.util.SparseArray;
@@ -80,8 +77,6 @@ import android.widget.Toast;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
 import com.readystatesoftware.viewbadger.BadgeView;
-
-import edu.ucdavis.earlybird.ProfilingUtil;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.DualPaneActivity;
@@ -150,8 +145,6 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	private SharedPreferences mPreferences;
 
 	private AsyncTwitterWrapper mTwitterWrapper;
-
-	private NotificationManager mNotificationManager;
 
 	private MultiSelectEventHandler mMultiSelectHandler;
 	private ActionBar mActionBar;
@@ -564,7 +557,6 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		}
 		mTwitterWrapper = getTwitterWrapper();
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mMultiSelectHandler = new MultiSelectEventHandler(this);
 		mMultiSelectHandler.dispatchOnCreate();
 		final Resources res = getResources();
@@ -614,7 +606,6 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		mActionBar.setDisplayShowCustomEnabled(tabs_not_empty);
 		setTabPosition(initialTabPosition);
 		setupSlidingMenu();
-		showDataProfilingRequest();
 		initUnreadCount();
 		updateActionsButton();
 		updateSlidingMenuTouchMode();
@@ -670,8 +661,6 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 				|| mPreferences.getBoolean(PREFERENCE_KEY_DISPLAY_TAB_LABEL, mTabDisplayLabel) != mTabDisplayLabel) {
 			restart();
 		}
-		// UCD
-		ProfilingUtil.profile(this, ProfilingUtil.FILE_NAME_APP, "App onStart");
 		updateUnreadCount();
 	}
 
@@ -684,8 +673,6 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		mPreferences.edit().putInt(PREFERENCE_KEY_SAVED_TAB_POSITION, mViewPager.getCurrentItem()).commit();
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONSTOP));
 
-		// UCD
-		ProfilingUtil.profile(this, ProfilingUtil.FILE_NAME_APP, "App onStop");
 		super.onStop();
 	}
 
@@ -839,21 +826,6 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		}
 		if (isDualPaneMode()) {
 			mSlidingMenu.addIgnoredView(getSlidingPane().getRightPaneContainer());
-		}
-	}
-
-	private void showDataProfilingRequest() {
-		if (mPreferences.getBoolean(PREFERENCE_KEY_SHOW_UCD_DATA_PROFILING_REQUEST, true)) {
-			final Intent intent = new Intent(this, DataProfilingSettingsActivity.class);
-			final PendingIntent content_intent = PendingIntent.getActivity(this, 0, intent, 0);
-			final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-			builder.setAutoCancel(true);
-			builder.setSmallIcon(R.drawable.ic_stat_info);
-			builder.setTicker(getString(R.string.data_profiling_notification_ticker));
-			builder.setContentTitle(getString(R.string.data_profiling_notification_title));
-			builder.setContentText(getString(R.string.data_profiling_notification_desc));
-			builder.setContentIntent(content_intent);
-			mNotificationManager.notify(NOTIFICATION_ID_DATA_PROFILING, builder.build());
 		}
 	}
 

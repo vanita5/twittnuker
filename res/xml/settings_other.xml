@@ -22,10 +22,6 @@
 		android:title="@string/no_close_after_status_updated"/>
 
 	<Preference
-		android:fragment="de.vanita5.twittnuker.fragment.DataProfilingSettingsFragment"
-		android:key="data_profiling_settings"
-		android:title="@string/data_profiling"/>
-	<Preference
 		android:key="disable_background_service"
 		android:summary="@string/disable_background_service_summary"
 		android:title="@string/disable_background_service"/>

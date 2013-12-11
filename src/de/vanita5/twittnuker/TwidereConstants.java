@@ -231,8 +231,6 @@ public interface TwidereConstants {
 	public static final String PREFERENCE_KEY_CONNECTION_TIMEOUT = "connection_timeout";
 	public static final String PREFERENCE_KEY_NAME_FIRST = "name_first";
 	public static final String PREFERENCE_KEY_STOP_AUTO_REFRESH_WHEN_BATTERY_LOW = "stop_auto_refresh_when_battery_low";
-	public static final String PREFERENCE_KEY_UCD_DATA_PROFILING = "ucd_data_profiling";
-	public static final String PREFERENCE_KEY_SHOW_UCD_DATA_PROFILING_REQUEST = "show_ucd_data_profiling_request";
 	public static final String PREFERENCE_KEY_DISPLAY_SENSITIVE_CONTENTS = "display_sensitive_contents";
 	public static final String PREFERENCE_KEY_PHISHING_LINK_WARNING = "phishing_link_warning";
 	public static final String PREFERENCE_KEY_FAST_SCROLL_THUMB = "fast_scroll_thumb";

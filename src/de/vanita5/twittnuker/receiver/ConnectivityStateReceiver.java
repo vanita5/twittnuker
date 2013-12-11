@@ -19,7 +19,6 @@
 
 package de.vanita5.twittnuker.receiver;
 
-import static de.vanita5.twittnuker.util.Utils.startProfilingServiceIfNeeded;
 import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
 import android.content.BroadcastReceiver;
@@ -41,7 +40,6 @@ public class ConnectivityStateReceiver extends BroadcastReceiver implements Cons
 			Log.d(RECEIVER_LOGTAG, String.format("Received Broadcast %s", intent));
 		}
 		if (!ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) return;
-		startProfilingServiceIfNeeded(context);
 		startRefreshServiceIfNeeded(context);
 	}
 }

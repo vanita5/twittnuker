@@ -301,11 +301,6 @@
   <string name="notification_mention"><xliff:g id="user">%s</xliff:g> 이 당신에게 멘션을 보냈습니다.</string>
   <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> 이 당신에게 DM을 보냈습니다.</string>
   <string name="status_is_duplicate">이미 올린 트윗입니다.</string>
-  <string name="data_profiling">사용 통계</string>
-  <string name="enable_data_profiling">보고 사용</string>
-  <string name="data_profiling_notification_ticker">통계에 참여합니다.</string>
-  <string name="data_profiling_notification_title">사용 통계</string>
-  <string name="data_profiling_notification_desc">사용 통계 켬/끔</string>
   <string name="silent_notifications">조용한 알림</string>
   <string name="silent_notifications_summary">알림시 벨소리/진동 해제</string>
   <string name="disable_background_service">백그라운드 서비스 사용 안함</string>

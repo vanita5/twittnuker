@@ -260,10 +260,6 @@
   <string name="notification_mention"><xliff:g id="user">%s</xliff:g> senden bahsetti.</string>
   <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> sana direkt mesaj gönderdi.</string>
   <string name="status_is_duplicate">Aynı tweet daha önce gönderilmiş.</string>
-  <string name="data_profiling">Kullanıcı İstatistikleri</string>
-  <string name="enable_data_profiling">Rapor göndermeyi aç</string>
-  <string name="data_profiling_notification_title">Kullanıcı İstatistikleri</string>
-  <string name="data_profiling_notification_desc">Kullanıcı İstatistiklerini Aç veya Kapat</string>
   <string name="silent_notifications">Sessiz bildirimler</string>
   <string name="silent_notifications_summary">Bildirimler için ses/titreşim kapat</string>
   <string name="disable_background_service">Arkaplan hizmetini kapat</string>

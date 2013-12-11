@@ -274,10 +274,6 @@
   <string name="notification_mention">ذكرك <xliff:g id="user">%s</xliff:g>.</string>
   <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> راسلك مباشرة.</string>
   <string name="status_is_duplicate">غردت هذا مسبقا.</string>
-  <string name="data_profiling">إحصائيات الاستخدام</string>
-  <string name="enable_data_profiling">تمكين التبليغ</string>
-  <string name="data_profiling_notification_title">إحصائيات الاستخدام</string>
-  <string name="data_profiling_notification_desc">تمكين أو تعطيل إحصائيات الاستخدام</string>
   <string name="silent_notifications">تنبيهات صامتة</string>
   <string name="silent_notifications_summary">تعطيل الصوت/الاهتزاز للتنبيهات</string>
   <string name="disable_background_service">تعطيل الخدمات الخلفية</string>

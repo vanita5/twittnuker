@@ -304,12 +304,6 @@
   <string name="notification_mention"><xliff:g id="user">%s</xliff:g> 提到了你</string>
   <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> 給你發送了一條私信</string>
   <string name="status_is_duplicate">你發送了重複的推文</string>
-  <string name="data_profiling_summary">Twittnuker 參與了一個由UC Davis大學的學生發起的，為了通過預測使用者在社交網絡中的行為來為一些應用預先載入內容（便于在地鐵等沒有信號的地方閲讀）的非盈利性質的研究。\n\n以下是我們想要收集到的你的信息，以及收集它們的原因：\n收集到的信息\n1. 你的ID（人類不可讀）\n2. 你更新主頁時間綫的推文ID（預測你的興趣以及行為）\n3. 你點擊了哪些推文，以及它們所含有的連結\n4. 粗略位置（統計使用者的來源）\n\nTwittnuker 只會在Wifi可用，並且充電時上傳這些信息，所以它並不會花費額外的數據費用和電量。</string>
-  <string name="data_profiling">使用信息統計</string>
-  <string name="enable_data_profiling">啟用報告</string>
-  <string name="data_profiling_notification_ticker">使用信息統計請求</string>
-  <string name="data_profiling_notification_title">使用信息統計</string>
-  <string name="data_profiling_notification_desc">啟用或停用使用信息統計</string>
   <string name="silent_notifications">靜默通知</string>
   <string name="silent_notifications_summary">在特定時間為通知禁用鈴聲和震動</string>
   <string name="disable_background_service">禁用後台服務</string>

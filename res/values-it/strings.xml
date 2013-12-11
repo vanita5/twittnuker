@@ -302,12 +302,6 @@
   <string name="notification_mention">Sei stato menzionato da <xliff:g id="user">%s</xliff:g>.</string>
   <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> ti ha inviato un messaggio diretto.</string>
   <string name="status_is_duplicate">Tweet doppio.</string>
-  <string name="data_profiling_summary">Twittnuker ha preso parte a una ricerca iniziata dagli studenti in UC Davis sulla predizione dei comportamenti sociali dell\'utente, per pre-caricare i contenuti.\n\nDi seguito elenchiamo i dati che vorremmo raccogliere e perchè:\nDati raccolti:\n1. ID twitter dell\'utente\n2. Timeline utente (predizione basata sugli interessi dell\'utente e sulle interazioni sociali)\n3. L\'utente preme su un tweet (predizione basata sugli interessi dell\'utente e sulle interazioni sociali)4. Localizzazione generica (serve a prevedere quando l\'utente accederà a twitter)\n\nTwittnuker eseguirà l\'upload dei dati solo quando il dispositivo è connesso con WiFi e all\'alimentazione, di modo da non comportare consumi di banda e di batteria.</string>
-  <string name="data_profiling">Statistiche di utilizzo</string>
-  <string name="enable_data_profiling">Abilita reporting</string>
-  <string name="data_profiling_notification_ticker">Statistiche attivate</string>
-  <string name="data_profiling_notification_title">Statistiche di utilizzo</string>
-  <string name="data_profiling_notification_desc">Abilita o disabilita statistiche di utilizzo</string>
   <string name="silent_notifications">Notifiche silenziose</string>
   <string name="silent_notifications_summary">Disattiva suoneria/vibrazione per le notifiche</string>
   <string name="disable_background_service">Disabilita servizio in backround</string>

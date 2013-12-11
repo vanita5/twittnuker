@@ -356,12 +356,6 @@
   <string name="action_subscribing_to_list">berlangganan daftar</string>
   <string name="action_unsubscribing_from_list">berhenti berlangganan dari daftar</string>
   <string name="status_is_duplicate">Kicauan Anda duplikat.</string>
-  <string name="data_profiling_summary">Twittnuker mengambil bagian sebuah penelitian dalam memprediksi pengguna sosial untuk pra-caching konten dimulai mahasiswa di UC Davis.\n\nBerikut adalah data yang berhasil kamu kumpulkan dan mengapa:\nMengumpulkan data:\n1. ID pengguna twitter\n2. Pengguna home timeline (prediksi berdasarkan ketertarikan pengguna dan interaksi sosial)\n3. Pengguna yang mengklik sebuah tweet (prediksi berdasarkan ketertarikan pengguna dan interaksi sosial)\n4. Lokasi mentah (merupakan prediksi yang bagus saat pengguna akan menggunakan twitter)\n\nTwittnuker akan mengunggah data yang terkumpul hanya saat dalam jangkauan WIFI dan perangkat anda terkoneksi ke charger, jadi tidak akan menggunakan biaya bandwidth lebih atau mengkonsumsi daya baterai anda.</string>
-  <string name="data_profiling">Statistik penggunaan</string>
-  <string name="enable_data_profiling">Aktifkan laporan</string>
-  <string name="data_profiling_notification_ticker">Statistik yang terpilih untuk masuk</string>
-  <string name="data_profiling_notification_title">Statistik penggunaan</string>
-  <string name="data_profiling_notification_desc">Aktifkan atau Matikan Statistik penggunaan</string>
   <string name="silent_notifications">Notifikasi diam</string>
   <string name="silent_notifications_summary">Matikan nada dering/getar untuk notifikasi</string>
   <string name="disable_background_service">Matikan layanan background</string>

@@ -369,12 +369,6 @@
   <string name="action_unsubscribing_from_list">Liste deabonnieren</string>
   <string name="action_saving_search">Suche speichern</string>
   <string name="status_is_duplicate">Dein Tweet ist ein Duplikat.</string>
-  <string name="data_profiling_summary">Twittnuker hat an einem Forschungsvorhaben von Studenten der UC Davis zur Vorhersage des Verhaltens von Benutzern in Sozialen Netzwerken teilgenommen, um Inhalt im vorraus laden zu können.\n\nDiese Daten wollen wir sammeln:\nGesammelte Daten:\n1. Die Twitter-ID des Benutzers\n2. Die Timeline des Benutzers (Vorhersage basiert auf den Interessen und Interaktionen des Benutzers)\n3. Klicks auf Tweets (Vorhersage basiert auf den Interessen und Interaktionen des Benutzers)\n4. Grober Aufenthaltsort (welcher ein guter Hinweis ist, ob der Benutzer Twitter benutzen wird)\n\nTwittnuker lädt die gesammelten Daten nur hoch, wenn WLAN verfügbar ist und das Gerät aufgeladen wird, so dass es weder zusätzliche Kosten verursacht noch Akkuladung verbraucht.</string>
-  <string name="data_profiling">Nutzungsstatistiken</string>
-  <string name="enable_data_profiling">Berichten einschalten</string>
-  <string name="data_profiling_notification_ticker">Statistiken Optimieren</string>
-  <string name="data_profiling_notification_title">Nutzungsstatistiken</string>
-  <string name="data_profiling_notification_desc">Aktiviere oder deaktivere Benutzer-Statisiken</string>
   <string name="silent_notifications">Ruhemodus</string>
   <string name="silent_notifications_summary">Ton/Vibration für Benachrichtigungen zu bestimmten Zeiten ausschalten</string>
   <string name="disable_background_service">Deaktivere Hintergrunddienst</string>

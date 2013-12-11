@@ -22,7 +22,6 @@ package de.vanita5.twittnuker.app;
 import static de.vanita5.twittnuker.util.UserColorNicknameUtils.initUserColor;
 import static de.vanita5.twittnuker.util.Utils.getBestCacheDir;
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
-import static de.vanita5.twittnuker.util.Utils.startProfilingServiceIfNeeded;
 import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
 import android.app.Application;
@@ -45,8 +44,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.nostra13.universalimageloader.utils.L;
-
-import edu.ucdavis.earlybird.UCDService;
 
 import org.acra.ACRA;
 import org.acra.ReportField;
@@ -217,7 +214,6 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 					PackageManager.DONT_KILL_APP);
 		}
 
-		startProfilingServiceIfNeeded(this);
 		startRefreshServiceIfNeeded(this);
 	}
 
@@ -238,9 +234,6 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 				|| PREFERENCE_KEY_PROXY_HOST.equals(key) || PREFERENCE_KEY_PROXY_PORT.equals(key)
 				|| PREFERENCE_KEY_FAST_IMAGE_LOADING.equals(key)) {
 			reloadConnectivitySettings();
-		} else if (PREFERENCE_KEY_UCD_DATA_PROFILING.equals(key)) {
-			stopService(new Intent(this, UCDService.class));
-			startProfilingServiceIfNeeded(this);
 		}
 	}
 
