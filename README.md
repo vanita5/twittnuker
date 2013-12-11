@@ -8,7 +8,7 @@ Major Twidere Updates may/will be merged into Twittnuker.
 ## Features ##
 
 * Pure & Clean Holo design works for both ICS and pre-ICS devices
-* Four themes [<sup><font color=red>2</font></sup>](#note2) (Light theme with colored ActionBar, Dark theme, Light theme, Light theme with dark ActionBar), theme color will change if you're using CM9+/AOKP
+* Four themes (Light theme with colored ActionBar, Dark theme, Light theme, Light theme with dark ActionBar), theme color will change if you're using CM9+/AOKP
 * Dual pane layout for Tablets
 * Image preview (disabled by default in order to reduce network usage)
 * Built in image viewer and map viewer
