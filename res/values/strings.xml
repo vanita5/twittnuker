@@ -559,6 +559,7 @@
 	<string name="donate_via_alipay">Donate via Alipay</string>
 	<string name="staggered_home_timeline">Staggered Home Timeline</string>
 	<string name="unread_count">Unread count</string>
+	<string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
 	<string name="developed_by">Developed by</string>
 	<string name="twidere_developed_by">Based on Twidere by</string>
 	<string name="project_account">Project account</string>

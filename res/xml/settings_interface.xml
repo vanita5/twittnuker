@@ -6,7 +6,8 @@
 	<CheckBoxPreference
 		android:defaultValue="true"
 		android:key="unread_count"
-		android:title="@string/unread_count"/>
+		android:title="@string/unread_count"
+		android:summary="@string/unread_count_summary"/>
 	<CheckBoxPreference
 		android:defaultValue="true"
 		android:key="separate_retweet_action"

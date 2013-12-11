@@ -504,7 +504,7 @@
   <string name="query">(D) Query</string>
   <string name="nickname_only">Nur Nickname</string>
   <string name="nickname_only_summary">Ersetze Username mit Nickname wenn verfügbar</string>
-  <string name="input_text">(D) Eingabe Text</string>
+  <string name="input_text">Eingabe Text</string>
   <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
   <string name="lists_following_user_with_name">Mitglied von Liste</string>
   <string name="highlight">Hervorheben</string>
@@ -531,7 +531,7 @@
   <string name="send_crash_report">Error Meldung von Twittnuker senden</string>
   <string name="add_to_filter">Zum Filter hinzufügen</string>
   <string name="user_filter_name">Benutzer: <xliff:g id="name">%s</xliff:g></string>
-  <string name="keyword_filter_name">(D) Keyword: <xliff:g id="name">%s</xliff:g></string>
+  <string name="keyword_filter_name">Keyword: <xliff:g id="name">%s</xliff:g></string>
   <string name="source_filter_name">Quelle: <xliff:g id="name">%s</xliff:g></string>
   <string name="block_user"><xliff:g id="name">%s</xliff:g> blocken</string>
   <string name="block_user_confirm_message"><xliff:g id="name">%s</xliff:g> blocken? Dieser Benutzer kann dir dann nicht folgen, dich erwähnen oder dir DMs schicken.</string>
@@ -539,8 +539,8 @@
   <string name="unfollow_user_confirm_message"><xliff:g id="name">%s</xliff:g> entfolgen? Du kannst die Tweets dieses Users dann nicht mehr sehen.</string>
   <string name="delete_user_list">Lösche Liste <xliff:g id="name">%s</xliff:g></string>
   <string name="delete_user_list_confirm_message">Lösche Liste <xliff:g id="name">%s</xliff:g>? Das kann nicht rückgängig gemacht werden.</string>
-  <string name="delete_user_list">(D) Liste löschen <xliff:g id="name">%s</xliff:g></string>
-  <string name="delete_user_list_confirm_message">(D) Delete list <xliff:g id="name">%s</xliff:g>? This can\' be undone.</string>
+  <string name="delete_user_list">Liste löschen <xliff:g id="name">%s</xliff:g></string>
+  <string name="delete_user_list_confirm_message">Liste <xliff:g id="name">%s</xliff:g> löschen? Das kann nicht rückgängig gemacht werden.</string>
   <string name="signing_in_error_browser_sign_in_hint">Fehler beim anmelden. Du musst vielleicht die Browser Anmeldung benutzen. (Eigenen API Keys werden dabei ignoriert)</string>
   <string name="report_user"><xliff:g id="name">%s</xliff:g> melden</string>
   <string name="report_user_confirm_message"><xliff:g id="name">%s</xliff:g> wegen Spam melden? Dadurch wird der Benutzer auch geblockt.</string>
@@ -549,8 +549,9 @@
   <string name="pay_via_paypal">(D) Pay via PayPal directly</string>
   <string name="pay_via_paypal_summary">(D) When you see &quot;This recipient is not eligible to receive funds&quot;</string>
   <string name="donate_via_alipay">(D) Donate via Alipay</string>
-  <string name="staggered_home_timeline">(D) Staggered Home Timeline</string>
-  <string name="unread_count">(D) Unread count</string>
+  <string name="staggered_home_timeline">Gestaffelte Timeline (Multi Column)</string>
+  <string name="unread_count">Ungelesen</string>
+  <string name="unread_count_summary">Zeigt die Anzahl an ungelesenen Tweets oder Nachrichten im Tab an</string>
   <string name="developed_by">Entwickelt von</string>
   <string name="twidere_developed_by">Basiert auf Twidere von</string>
   <string name="project_account">Project Account</string>
@@ -602,7 +603,7 @@
   <string name="action_name_saved_at_time"><xliff:g id="action">%1$s</xliff:g>, gespeichert um <xliff:g id="time">%2$s</xliff:g></string>
   <string name="update_status">Sende Tweet</string>
   <string name="sending_direct_message">Sende Direktnachricht</string>
-  <string name="display_tab_label">(D) Display tab label</string>
+  <string name="display_tab_label">Zeige Tab Überschriften</string>
   <string name="livewp_daydream_enabled_message">Here\'s a little present for you, find it in your system settings :)</string>  
   <string name="contact">Kontakt</string>
   <string name="mail">Mail</string>
