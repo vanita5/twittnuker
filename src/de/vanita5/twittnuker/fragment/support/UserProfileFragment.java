@@ -676,7 +676,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 			}
 			case MENU_SEND_DIRECT_MESSAGE: {
 				final Uri.Builder builder = new Uri.Builder();
-				builder.scheme(SCHEME_TWIDERE);
+				builder.scheme(SCHEME_TWITTNUKER);
 				builder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
 				builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(mAccountId));
 				builder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(mUser.id));

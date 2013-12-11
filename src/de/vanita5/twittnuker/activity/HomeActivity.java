@@ -779,7 +779,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	}
 
 	private boolean isTwidereLink(final Uri data) {
-		return data != null && SCHEME_TWIDERE.equals(data.getScheme());
+		return data != null && SCHEME_TWITTNUKER.equals(data.getScheme());
 	}
 
 	private void openAccountsDrawer() {

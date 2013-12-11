@@ -11,21 +11,21 @@
 			android:title="@string/project_account">
 			<intent
 				android:action="android.intent.action.VIEW"
-				android:data="twidere://user?user_id=2238101485&amp;finish_only=true"/>
+				android:data="twittnuker://user?user_id=2238101485&amp;finish_only=true"/>
 		</Preference>
 		<Preference
 			android:summary="@string/developer_name"
 			android:title="@string/developed_by">
 			<intent
 				android:action="android.intent.action.VIEW"
-				android:data="twidere://user?user_id=335920521&amp;finish_only=true"/>
+				android:data="twittnuker://user?user_id=335920521&amp;finish_only=true"/>
 		</Preference>
 		<Preference
 			android:summary="@string/twidere_developer_name"
 			android:title="@string/twidere_developed_by">
 			<intent
 				android:action="android.intent.action.VIEW"
-				android:data="twidere://user?user_id=57610574&amp;finish_only=true"/>
+				android:data="twittnuker://user?user_id=57610574&amp;finish_only=true"/>
 		</Preference>
 	</PreferenceCategory>
 	<PreferenceCategory

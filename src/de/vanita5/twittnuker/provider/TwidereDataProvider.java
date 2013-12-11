@@ -677,7 +677,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		contentIntent.putExtra(EXTRA_TAB_TYPE, TAB_TYPE_DIRECT_MESSAGES);
 		if (messagesCount == 1) {
 			final Uri.Builder uriBuilder = new Uri.Builder();
-			uriBuilder.scheme(SCHEME_TWIDERE);
+			uriBuilder.scheme(SCHEME_TWITTNUKER);
 			uriBuilder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
 			uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(firstItem.account_id));
 			uriBuilder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(firstItem.sender_id));
@@ -753,7 +753,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		contentIntent.putExtra(EXTRA_TAB_TYPE, TAB_TYPE_MENTIONS_TIMELINE);
 		if (statusesSize == 1) {
 			final Uri.Builder uriBuilder = new Uri.Builder();
-			uriBuilder.scheme(SCHEME_TWIDERE);
+			uriBuilder.scheme(SCHEME_TWITTNUKER);
 			uriBuilder.authority(AUTHORITY_STATUS);
 			uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(firstItem.account_id));
 			uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(firstItem.id));

@@ -252,70 +252,70 @@
 
 				<data
 					android:host="user"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="users"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="user_timeline"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="user_favorites"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="user_followers"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="user_friends"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="user_blocks"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="status"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="status_retweeters"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="status_replies"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="statuses"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="direct_messages_conversation"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="user_list"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="user_lists"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="user_list_timeline"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="user_list_members"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="user_list_subscribers"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="user_list_memberships"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="saved_searches"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="user_mentions"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="incoming_friendships"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 				<data
 					android:host="search"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 			</intent-filter>
 		</activity>
 		<activity
@@ -364,7 +364,7 @@
 
 				<data
 					android:host="map"
-					android:scheme="twidere"/>
+					android:scheme="twittnuker"/>
 			</intent-filter>
 		</activity>
 		<activity
