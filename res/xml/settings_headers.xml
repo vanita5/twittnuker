@@ -31,10 +31,12 @@
 		android:fragment="de.vanita5.twittnuker.fragment.CustomTabsFragment"
 		android:icon="@drawable/ic_menu_home"
 		android:title="@string/tabs"/>
-	<header
-		android:fragment="de.vanita5.twittnuker.fragment.ExtensionsListFragment"
-		android:icon="@drawable/ic_menu_extension"
-		android:title="@string/extensions"/>
+<!-- 	No extension support atm. -->
+<!-- 	Twidere extensions may not work with Twittnuker and some of them will be merged (e.g. Streaming API) -->
+<!-- 	<header -->
+<!-- 		android:fragment="de.vanita5.twittnuker.fragment.ExtensionsListFragment" -->
+<!-- 		android:icon="@drawable/ic_menu_extension" -->
+<!-- 		android:title="@string/extensions"/> -->
 	<header
 		android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
 		android:icon="@drawable/ic_menu_server"
