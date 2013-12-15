@@ -7,9 +7,9 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 
-import de.vanita5.twittnuker.TwidereConstants;
+import de.vanita5.twittnuker.TwittnukerConstants;
 
-public final class SupportFragmentReloadCursorObserver extends ContentObserver implements TwidereConstants {
+public final class SupportFragmentReloadCursorObserver extends ContentObserver implements TwittnukerConstants {
 
 	private final Fragment mFragment;
 	private final int mLoaderId;

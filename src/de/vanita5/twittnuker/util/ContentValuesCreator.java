@@ -8,7 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariotaku.jsonserializer.JSONSerializer;
-import de.vanita5.twittnuker.TwidereConstants;
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -36,7 +36,7 @@ import twitter4j.conf.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ContentValuesCreator implements TwidereConstants {
+public final class ContentValuesCreator implements TwittnukerConstants {
 
 	public static ContentValues makeAccountContentValues(final Configuration conf, final String basic_password,
 			final AccessToken access_token, final User user, final int auth_type, final int color) {

@@ -608,4 +608,10 @@
   <string name="contact">Kontakt</string>
   <string name="mail">Mail</string>
   <string name="mail_summary">Kontaktiere twittnuker@vanita5.de wegen Bugs und Feature Requests</string>
+  <string name="streaming">Streaming</string>
+  <string name="stream_enabled">Streaming aktivieren</string>
+  <string name="stream_enabled_summary">Bei aktiver Verbindung mit einem WLAN wird die Timeline gestreamt</string>
+  <string name="stream_notification">Streaming Notification</string>
+  <string name="stream_notification_summary">Eine Notification wird angezeigt, solange der Streaming Service läuft</string>
+  <string name="streaming_service_running">Streaming...</string>
 </resources>

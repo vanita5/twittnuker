@@ -12,12 +12,12 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.Window;
 
-import de.vanita5.twittnuker.TwidereConstants;
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 
 import java.util.WeakHashMap;
 
-public class SwipebackActivityUtils implements TwidereConstants {
+public class SwipebackActivityUtils implements TwittnukerConstants {
 
 	public static void setActivityScreenshot(final Activity activity, final Intent target) {
 		if (activity == null || target == null) return;

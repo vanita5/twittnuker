@@ -33,9 +33,13 @@ import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
 
 import android.app.ActionBar;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -45,7 +49,9 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -53,6 +59,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManagerTrojan;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
@@ -82,6 +89,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.DualPaneActivity;
 import de.vanita5.twittnuker.activity.support.SignInActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
@@ -91,6 +99,9 @@ import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
+import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
+import de.vanita5.twittnuker.provider.TweetStore.Mentions;
+import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -106,6 +117,16 @@ import de.vanita5.twittnuker.view.ExtendedViewPager;
 import de.vanita5.twittnuker.view.LeftDrawerFrameLayout;
 import de.vanita5.twittnuker.view.TabPageIndicator;
 
+import twitter4j.DirectMessage;
+import twitter4j.StallWarning;
+import twitter4j.Status;
+import twitter4j.StatusDeletionNotice;
+import twitter4j.Twitter;
+import twitter4j.TwitterStream;
+import twitter4j.TwitterStreamFactory;
+import twitter4j.User;
+import twitter4j.UserList;
+import twitter4j.UserStreamListener;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 
 import java.util.ArrayList;
@@ -125,10 +146,21 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 				updateActionsButton();
 			} else if (BROADCAST_UNREAD_COUNT_UPDATED.equals(action)) {
 				updateUnreadCount();
+			} else if (WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION.equals(action)) {
+				if (intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false)) {
+					//WiFi Connection
+					connectToStream();
+				} else {
+					//Lost WiFi Connection
+					closeStream();
+				}
 			}
 		}
 
 	};
+	
+	private static final Uri[] STATUSES_URIS = new Uri[] { Statuses.CONTENT_URI, Mentions.CONTENT_URI };
+	private static final Uri[] MESSAGES_URIS = new Uri[] { DirectMessages.Inbox.CONTENT_URI, DirectMessages.Outbox.CONTENT_URI };
 
 	private final Handler mHandler = new Handler();
 
@@ -166,6 +198,10 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	private final Rect mRect = new Rect();
 
 	private boolean mTabDisplayLabel;
+	private boolean mStreaming = false;
+	protected boolean hasStreamLoaded = false;
+	
+	protected TwitterStream twitterStream;
 
 	public void closeAccountsDrawer() {
 		if (mSlidingMenu == null) return;
@@ -583,6 +619,8 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		final int initialTabPosition = handleIntent(intent, savedInstanceState == null);
 		mActionBar = getActionBar();
 		mActionBar.setCustomView(R.layout.home_tabs);
+		
+		mStreaming = mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ENABLED, false);
 
 		final View view = mActionBar.getCustomView();
 		mIndicator = (TabPageIndicator) view.findViewById(android.R.id.tabs);
@@ -622,6 +660,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 
 	@Override
 	protected void onDestroy() {
+		closeStream();
 		// Delete unused items in databases.
 		cleanDatabasesByItemLimit(this);
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONDESTROY));
@@ -645,6 +684,58 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		updateActionsButtonStyle();
 		updateActionsButton();
 		updateSlidingMenuTouchMode();
+		
+		if(!hasStreamLoaded || hasStreamingChanged()) {
+			hasStreamLoaded = false;
+			connectToStream();
+		}
+	}
+	
+	private boolean hasStreamingChanged() {
+		final boolean streaming = mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ENABLED, false);
+		return mStreaming != streaming;
+	}
+	
+	public void connectToStream() {
+		if(mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ENABLED, false)) {
+			if(twitterStream != null) {
+				ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+				if (cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI) != null
+						&& cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
+					hasStreamLoaded = true;
+					twitterStream.user(); //Initialize stream
+					if (mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_NOTIFICATION, false)) {
+						NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+						final Intent intent = new Intent(this, HomeActivity.class);
+						final Notification.Builder builder = new Notification.Builder(this);
+						builder.setOngoing(true);
+						builder.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
+						builder.setSmallIcon(R.drawable.ic_stat_twidere);
+						builder.setContentTitle(getString(R.string.app_name));
+						builder.setContentText(getString(R.string.streaming_service_running));
+						builder.setTicker(getString(R.string.streaming_service_running));
+						notificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
+					}
+				}
+			}
+		}
+	}
+	
+	public void closeStream() {
+		if (twitterStream != null) {
+			twitterStream.shutdown();
+//			if (mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_NOTIFICATION, false)) { //
+				NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+				notificationManager.cancel(NOTIFICATION_ID_STREAMING);
+//			}
+		}
+	}
+	
+	public boolean isStreaming() {
+		if(twitterStream != null) { //TODO check this
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -662,6 +753,12 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 			restart();
 		}
 		updateUnreadCount();
+		
+		if (mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ENABLED, false)) {
+			Twitter twitter = Utils.getDefaultTwitterInstance(getApplicationContext(), true);
+			twitterStream = new TwitterStreamFactory().getInstance(twitter.getAuthorization());
+			twitterStream.addListener(new UserStreamListenerImpl(getApplicationContext(), mPreferences.getLong(PREFERENCE_KEY_DEFAULT_ACCOUNT_ID, -1)));
+		}
 	}
 
 	@Override
@@ -985,6 +1082,203 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 			}
 		}
 
+	}
+	
+	static class UserStreamListenerImpl implements UserStreamListener {
+		
+		private final long account_id;
+		private final String screen_name;
+		private final ContentResolver resolver;
+		private final boolean large_profile_image;
+		
+		public UserStreamListenerImpl(final Context context, final long account_id) {
+			this.account_id = account_id;
+			large_profile_image = context.getResources().getBoolean(R.bool.hires_profile_image);
+			resolver = context.getContentResolver();
+			screen_name = Utils.getAccountScreenName(context, account_id);
+		}
+
+		@Override
+		public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
+			final long status_id = statusDeletionNotice.getStatusId();
+			final String where = Statuses.STATUS_ID + " = " + status_id;
+			for(final Uri uri : STATUSES_URIS) {
+				resolver.delete(uri, where, null);
+			}
+		}
+
+		@Override
+		public void onScrubGeo(long userId, long upToStatusId) {
+			final String where = Statuses.USER_ID + " = " + userId + " AND " + Statuses.STATUS_ID + " >= " + upToStatusId;
+			final ContentValues values = new ContentValues();
+			values.putNull(Statuses.LOCATION);
+			for(final Uri uri : STATUSES_URIS) {
+				resolver.update(uri, values, where, null);
+			}
+		}
+
+		@Override
+		public void onStallWarning(StallWarning warning) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onStatus(Status status) {
+			final ContentValues values = Utils.makeStatusContentValues(status, account_id, large_profile_image);
+			if (values != null) {
+				final String where = Statuses.ACCOUNT_ID + " = " + account_id + " AND " + Statuses.STATUS_ID + " = " + status.getId();
+				resolver.delete(Statuses.CONTENT_URI, where, null);
+				resolver.delete(Mentions.CONTENT_URI, where, null);
+				final Uri.Builder status_uri_builder = Statuses.CONTENT_URI.buildUpon();
+				status_uri_builder.appendQueryParameter(TwittnukerApplication.QUERY_PARAM_NOTIFY, "true");
+				final Uri status_uri = status_uri_builder.build();
+				resolver.insert(status_uri, values);
+				final Status rt = status.getRetweetedStatus();
+				if (rt != null && rt.getText().contains("@" + screen_name) || rt == null && status.getText().contains("@" + screen_name)) {
+					final Uri.Builder mention_uri_builder = Mentions.CONTENT_URI.buildUpon();
+					mention_uri_builder.appendQueryParameter(TwittnukerApplication.QUERY_PARAM_NOTIFY, "true");
+					final Uri mention_uri = mention_uri_builder.build();
+					resolver.insert(mention_uri, values);
+				}
+			}
+		}
+
+		@Override
+		public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onException(Exception ex) {
+			Log.w(LOGTAG, ex);
+		}
+
+		@Override
+		public void onBlock(User source, User blockedUser) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onDeletionNotice(long directMessageId, long userId) {
+			final String where = DirectMessages.MESSAGE_ID + " = " + directMessageId;
+			for(final Uri uri : MESSAGES_URIS) {
+				resolver.delete(uri, where, null);
+			}
+		}
+
+		@Override
+		public void onDirectMessage(DirectMessage directMessage) {
+			if(directMessage == null || directMessage.getId() <= 0) return;
+			
+			for(final Uri uri : MESSAGES_URIS) {
+				final String where = DirectMessages.ACCOUNT_ID + " = " + account_id + " AND " + DirectMessages.MESSAGE_ID + " = " + directMessage.getId();
+				resolver.delete(uri, where, null);
+			}
+			final User sender = directMessage.getSender();
+			final User recipient = directMessage.getRecipient();
+			
+			if(sender.getId() == account_id) {
+				final ContentValues values = Utils.makeDirectMessageContentValues(directMessage, account_id, true, large_profile_image);
+				if(values != null) {
+					resolver.insert(DirectMessages.Outbox.CONTENT_URI, values);
+				}
+			}
+			if(recipient.getId() == account_id) {
+				final ContentValues values = Utils.makeDirectMessageContentValues(directMessage, account_id, false, large_profile_image);
+				final Uri.Builder builder = DirectMessages.Inbox.CONTENT_URI.buildUpon();
+				builder.appendQueryParameter(TwittnukerApplication.QUERY_PARAM_NOTIFY, "true");
+				if(values != null) {
+					resolver.insert(builder.build(), values);
+				}
+			}
+		}
+
+		@Override
+		public void onFavorite(User source, User target, Status favoritedStatus) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onFollow(User source, User followedUser) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onFriendList(long[] friendIds) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onUnblock(User source, User unblockedUser) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onUnfavorite(User source, User target,
+				Status unfavoritedStatus) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onUserListCreation(User listOwner, UserList list) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onUserListDeletion(User listOwner, UserList list) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onUserListMemberAddition(User addedMember, User listOwner,
+				UserList list) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onUserListMemberDeletion(User deletedMember,
+				User listOwner, UserList list) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onUserListSubscription(User subscriber, User listOwner,
+				UserList list) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onUserListUnsubscription(User subscriber, User listOwner,
+				UserList list) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onUserListUpdate(User listOwner, UserList list) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onUserProfileUpdate(User updatedUser) {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 
 }

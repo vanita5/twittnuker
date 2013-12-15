@@ -30,6 +30,7 @@ import static de.vanita5.twittnuker.util.TwidereLinkify.TWITTER_PROFILE_IMAGES_A
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -96,7 +97,9 @@ import de.keyboardsurfer.android.widget.crouton.CroutonConfiguration;
 import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 
 import org.apache.http.NameValuePair;
+import org.json.JSONArray;
 import org.mariotaku.gallery3d.ImageViewerGLActivity;
+import org.mariotaku.jsonserializer.JSONSerializer;
 import org.mariotaku.querybuilder.AllColumns;
 import org.mariotaku.querybuilder.Columns;
 import org.mariotaku.querybuilder.Columns.Column;
@@ -148,6 +151,7 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.provider.TweetStore;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.CacheFiles;
@@ -173,6 +177,7 @@ import de.vanita5.twittnuker.util.net.HttpClientImpl;
 
 import twitter4j.DirectMessage;
 import twitter4j.EntitySupport;
+import twitter4j.GeoLocation;
 import twitter4j.MediaEntity;
 import twitter4j.RateLimitStatus;
 import twitter4j.Status;
@@ -3776,5 +3781,92 @@ public final class Utils implements Constants {
 				}
 			}
 		}
+	}
+	
+	public static ContentValues makeStatusContentValues(final Status orig, final long account_id, final boolean large_profile_image) {
+		if (orig == null || orig.getId() <= 0) return null;
+		final ContentValues values = new ContentValues();
+		values.put(Statuses.ACCOUNT_ID, account_id);
+		values.put(Statuses.STATUS_ID, orig.getId());
+		values.put(Statuses.MY_RETWEET_ID, orig.getCurrentUserRetweet());
+		final boolean is_retweet = orig.isRetweet();
+		final Status status;
+		final Status retweeted_status = is_retweet ? orig.getRetweetedStatus() : null;
+		if (retweeted_status != null) {
+			final User retweet_user = orig.getUser();
+			values.put(Statuses.RETWEET_ID, retweeted_status.getId());
+			values.put(Statuses.RETWEETED_BY_USER_ID, retweet_user.getId());
+			values.put(Statuses.RETWEETED_BY_USER_NAME, retweet_user.getName());
+			values.put(Statuses.RETWEETED_BY_USER_SCREEN_NAME, retweet_user.getScreenName());
+			status = retweeted_status;
+		} else {
+			status = orig;
+		}
+		final User user = status.getUser();
+		if (user != null) {
+			final long user_id = user.getId();
+			final String profile_image_url = ParseUtils.parseString(user.getProfileImageUrlHttps());
+			final String name = user.getName(), screen_name = user.getScreenName();
+			values.put(Statuses.USER_ID, user_id);
+			values.put(Statuses.USER_NAME, name);
+			values.put(Statuses.USER_SCREEN_NAME, screen_name);
+			values.put(Statuses.IS_PROTECTED, user.isProtected());
+			values.put(Statuses.IS_VERIFIED, user.isVerified());
+			values.put(Statuses.USER_PROFILE_IMAGE_URL, large_profile_image ? getBiggerTwitterProfileImage(profile_image_url) : profile_image_url);
+			values.put(CachedUsers.IS_FOLLOWING, user != null ? user.isFollowing() : false);
+		}
+		if (status.getCreatedAt() != null) {
+			values.put(Statuses.STATUS_TIMESTAMP, status.getCreatedAt().getTime());
+		}
+		final String text_html = formatStatusText(status);
+		values.put(Statuses.TEXT_HTML, text_html);
+		values.put(Statuses.TEXT_PLAIN, status.getText());
+		values.put(Statuses.TEXT_UNESCAPED, toPlainText(text_html));
+		values.put(Statuses.RETWEET_COUNT, status.getRetweetCount());
+		values.put(Statuses.IN_REPLY_TO_STATUS_ID, status.getInReplyToStatusId());
+		values.put(Statuses.IN_REPLY_TO_USER_ID, status.getInReplyToUserId());
+		values.put(Statuses.IN_REPLY_TO_USER_NAME, getInReplyToName(status));
+		values.put(Statuses.IN_REPLY_TO_USER_SCREEN_NAME, status.getInReplyToScreenName());
+		values.put(Statuses.SOURCE, status.getSource());
+		values.put(Statuses.IS_POSSIBLY_SENSITIVE, status.isPossiblySensitive());
+		final GeoLocation location = status.getGeoLocation();
+		if (location != null) {
+			values.put(Statuses.LOCATION, location.getLatitude() + "," + location.getLongitude());
+		}
+		values.put(Statuses.IS_RETWEET, is_retweet);
+		values.put(Statuses.IS_FAVORITE, status.isFavorited());
+		values.put(Statuses.MEDIA_LINK, MediaPreviewUtils.getSupportedFirstLink(status));
+		final JSONArray json = JSONSerializer.toJSONArray(ParcelableUserMention.fromUserMentionEntities(status.getUserMentionEntities()));
+		values.put(Statuses.MENTIONS, json.toString());
+		return values;
+	}
+	
+	public static ContentValues makeDirectMessageContentValues(final DirectMessage message, final long account_id, final boolean is_outgoing, final boolean large_profile_image) {
+		if (message == null || message.getId() <= 0) return null;
+		final ContentValues values = new ContentValues();
+		final User sender = message.getSender(), recipient = message.getRecipient();
+		if (sender == null || recipient == null) return null;
+		final String sender_profile_image_url = parseString(sender.getProfileImageUrlHttps());
+		final String recipient_profile_image_url = parseString(recipient.getProfileImageUrlHttps());
+		values.put(DirectMessages.ACCOUNT_ID, account_id);
+		values.put(DirectMessages.MESSAGE_ID, message.getId());
+		values.put(DirectMessages.MESSAGE_TIMESTAMP, message.getCreatedAt().getTime());
+		values.put(DirectMessages.SENDER_ID, sender.getId());
+		values.put(DirectMessages.RECIPIENT_ID, recipient.getId());
+		values.put(DirectMessages.TEXT_HTML, formatDirectMessageText(message));
+		values.put(DirectMessages.TEXT_PLAIN, message.getText());
+		values.put(DirectMessages.IS_OUTGOING, is_outgoing);
+		values.put(DirectMessages.SENDER_NAME, sender.getName());
+		values.put(DirectMessages.SENDER_SCREEN_NAME, sender.getScreenName());
+		values.put(DirectMessages.RECIPIENT_NAME, recipient.getName());
+		values.put(DirectMessages.RECIPIENT_SCREEN_NAME, recipient.getScreenName());
+		values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL, large_profile_image ? getBiggerTwitterProfileImage(sender_profile_image_url) : sender_profile_image_url);
+		values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, large_profile_image ? getBiggerTwitterProfileImage(recipient_profile_image_url) : recipient_profile_image_url);
+		return values;
+	}
+	
+	public static String parseString(final Object object) {
+		if (object == null) return null;
+		return String.valueOf(object);
 	}
 }

@@ -13,7 +13,7 @@ import android.view.Window;
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.TwidereConstants;
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.SwipebackActivityUtils.SwipebackScreenshotManager;
 
@@ -21,7 +21,7 @@ import de.vanita5.twittnuker.util.SwipebackActivityUtils.SwipebackScreenshotMana
  * @author Yrom
  * 
  */
-public class SwipeBackActivityHelper implements TwidereConstants {
+public class SwipeBackActivityHelper implements TwittnukerConstants {
 	private final Activity mActivity;
 	private SwipeBackLayout mSwipeBackLayout;
 

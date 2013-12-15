@@ -26,7 +26,7 @@ import de.vanita5.twittnuker.annotation.PreferenceType;
  * @author mariotaku
  * 
  */
-public interface TwidereConstants {
+public interface TwittnukerConstants {
 
 	public static final String APP_NAME = "Twittnuker";
 	public static final String APP_PROJECT_URL = "https://github.com/vanita5/twittnuker";
@@ -267,6 +267,8 @@ public interface TwidereConstants {
 	public static final String PREFERENCE_KEY_COMPACT_CARDS = "compact_cards";
 	public static final String PREFERENCE_KEY_DISPLAY_TAB_LABEL = "display_tab_label";
 	public static final String PREFERENCE_KEY_LIVE_WALLPAPER_SCALE = "live_wallpaper_scale";
+	public static final String PREFERENCE_KEY_STREAMING_ENABLED = "stream_enabled";
+	public static final String PREFERENCE_KEY_STREAMING_NOTIFICATION = "stream_notification";
 
 	public static final String PREFERENCE_DEFAULT_QUOTE_FORMAT = "RT @" + FORMAT_PATTERN_NAME + ": "
 			+ FORMAT_PATTERN_TEXT;
@@ -526,7 +528,7 @@ public interface TwidereConstants {
 	public static final int NOTIFICATION_ID_MENTIONS = 2;
 	public static final int NOTIFICATION_ID_DIRECT_MESSAGES = 3;
 	public static final int NOTIFICATION_ID_DRAFTS = 4;
-	public static final int NOTIFICATION_ID_DATA_PROFILING = 5;
+	public static final int NOTIFICATION_ID_STREAMING = 6;
 	public static final int NOTIFICATION_ID_UPDATE_STATUS = 101;
 	public static final int NOTIFICATION_ID_SEND_DIRECT_MESSAGE = 102;
 

@@ -9,11 +9,11 @@ import android.graphics.Color;
 import android.support.v4.util.LongSparseArray;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.TwidereConstants;
+import de.vanita5.twittnuker.TwittnukerConstants;
 
 import java.util.Map;
 
-public class UserColorNicknameUtils implements TwidereConstants {
+public class UserColorNicknameUtils implements TwittnukerConstants {
 
 	private static LongSparseArray<Integer> sUserColors = new LongSparseArray<Integer>();
 	private static LongSparseArray<String> sUserNicknames = new LongSparseArray<String>();

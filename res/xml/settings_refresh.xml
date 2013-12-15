@@ -5,6 +5,24 @@
 	<de.vanita5.twittnuker.preference.AutoRefreshAccountsListPreference
 		android:key="cat_auto_refresh"
 		android:title="@string/auto_refresh"/>
+	
+	<PreferenceCategory 
+	    android:key="cat_streaming"
+	    android:title="@string/streaming">
+	    
+	    <CheckBoxPreference 
+	        android:defaultValue="false"
+			android:key="stream_enabled"
+			android:summary="@string/stream_enabled_summary"
+			android:title="@string/stream_enabled"/>
+	    
+	    <CheckBoxPreference
+	        android:dependency="stream_enabled"
+			android:defaultValue="true"
+			android:key="stream_notification"
+			android:summary="@string/stream_notification_summary"
+			android:title="@string/stream_notification"/>
+	</PreferenceCategory>
 
 	<PreferenceCategory
 		android:key="cat_general"

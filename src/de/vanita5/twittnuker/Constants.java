@@ -25,7 +25,7 @@ package de.vanita5.twittnuker;
  * @author mariotaku
  * 
  */
-public interface Constants extends TwidereConstants {
+public interface Constants extends TwittnukerConstants {
 
 	public static final String DATABASES_NAME = "twittnuker.sqlite";
 	public static final int DATABASES_VERSION = 1;

@@ -4,12 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
 
-import de.vanita5.twittnuker.TwidereConstants;
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.fragment.AccountRefreshSettingsFragment;
 import de.vanita5.twittnuker.model.Account;
 
 
-public class AutoRefreshAccountsListPreference extends AccountsListPreference implements TwidereConstants {
+public class AutoRefreshAccountsListPreference extends AccountsListPreference implements TwittnukerConstants {
 
 	public AutoRefreshAccountsListPreference(final Context context) {
 		super(context);

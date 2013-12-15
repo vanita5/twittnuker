@@ -39,6 +39,7 @@
 	<string name="error_message_rate_limit">Twitter\'s rate limit exceeded, please retry <xliff:g id="time">%s</xliff:g></string>
 	<string name="error_message_rate_limit_with_action">Twitter\'s rate limit exceeded while <xliff:g id="action">%1$s</xliff:g>, please retry <xliff:g id="time">%2$s</xliff:g></string>
 	<string name="select_account">Select account</string>
+	<string name="select_accounts">Select accounts</string>
 	<string name="username">Username</string>
 	<string name="password">Password</string>
 	<string name="label_tweetstore_provider">Twittnuker database provider</string>
@@ -616,4 +617,11 @@
 	<string name="contact">Contact</string>
 	<string name="mail">Mail</string>
 	<string name="mail_summary">Send mail to twittnuker@vanita5.de to report bugs or request features</string>
+	<string name="streaming">Streaming</string>
+	<string name="stream_enabled">Enable Streaming</string>
+	<string name="stream_enabled_summary">Stream Timeline when connected to a WiFi network</string>
+	<string name="stream_notification">Streaming Notification</string>
+	<string name="stream_notification_summary">Shows a static notification when connected to the stream</string>
+	<string name="streaming_service_running">Streaming...</string>
+	<string name="request_permission">Permission request to access Twittnuker</string>
 </resources>
