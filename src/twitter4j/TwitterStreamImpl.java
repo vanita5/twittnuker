@@ -515,7 +515,7 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
 					} catch (final IOException ignore) {
 					} catch (final Exception e) {
 						e.printStackTrace();
-						logger.warn(e.getMessage());
+						logger.warn(""+e.getMessage());
 					}
 				}
 			} finally {

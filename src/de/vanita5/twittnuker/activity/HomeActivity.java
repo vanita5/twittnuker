@@ -49,8 +49,9 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.net.wifi.SupplicantState;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -147,11 +148,22 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 			} else if (BROADCAST_UNREAD_COUNT_UPDATED.equals(action)) {
 				updateUnreadCount();
 			} else if (WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION.equals(action)) {
-				if (intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false)) {
-					//WiFi Connection
+				if (!mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ON_MOBILE, false) && !intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false)) {
+					closeStream();
+				}
+			} else if (WifiManager.SUPPLICANT_STATE_CHANGED_ACTION.equals(action)) {
+				if(mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ON_MOBILE, false)) {
+					return;
+				}
+				
+				SupplicantState supplicantState;
+				WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+				WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+				supplicantState = wifiInfo.getSupplicantState();
+				
+				if (SupplicantState.COMPLETED.equals(supplicantState)) {
 					connectToStream();
 				} else {
-					//Lost WiFi Connection
 					closeStream();
 				}
 			}
@@ -699,9 +711,13 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	public void connectToStream() {
 		if(mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ENABLED, false)) {
 			if(twitterStream != null) {
-				ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-				if (cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI) != null
-						&& cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
+				SupplicantState supplicantState;
+				WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+				WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+				supplicantState = wifiInfo.getSupplicantState();
+				
+				if (mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ON_MOBILE, false)
+						|| SupplicantState.COMPLETED.equals(supplicantState)) {
 					hasStreamLoaded = true;
 					twitterStream.user(); //Initialize stream
 					if (mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_NOTIFICATION, false)) {
@@ -723,11 +739,9 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	
 	public void closeStream() {
 		if (twitterStream != null) {
+			NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+			notificationManager.cancel(NOTIFICATION_ID_STREAMING);
 			twitterStream.shutdown();
-//			if (mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_NOTIFICATION, false)) { //
-				NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-				notificationManager.cancel(NOTIFICATION_ID_STREAMING);
-//			}
 		}
 	}
 	
@@ -747,6 +761,8 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		resolver.registerContentObserver(Accounts.CONTENT_URI, true, mAccountChangeObserver);
 		final IntentFilter filter = new IntentFilter(BROADCAST_TASK_STATE_CHANGED);
 		filter.addAction(BROADCAST_UNREAD_COUNT_UPDATED);
+		filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+		filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
 		registerReceiver(mStateReceiver, filter);
 		if (isTabsChanged(getHomeTabs(this))
 				|| mPreferences.getBoolean(PREFERENCE_KEY_DISPLAY_TAB_LABEL, mTabDisplayLabel) != mTabDisplayLabel) {
