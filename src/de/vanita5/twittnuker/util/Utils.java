@@ -1947,7 +1947,7 @@ public final class Utils implements Constants {
 			return 0x1A33B5E5;
 		else if (is_favorite)
 			return 0x1AFFBB33;
-		else if (is_retweet) return 0x1A66CC00;
+//		else if (is_retweet) return 0x1A66CC00;
 		return Color.TRANSPARENT;
 	}
 
