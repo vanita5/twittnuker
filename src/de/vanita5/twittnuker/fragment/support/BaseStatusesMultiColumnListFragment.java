@@ -22,13 +22,14 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.cancelRetweet;
 import static de.vanita5.twittnuker.util.Utils.clearListViewChoices;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 import static de.vanita5.twittnuker.util.Utils.openStatus;
 import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
+import static de.vanita5.twittnuker.util.Utils.retweet;
+import static de.vanita5.twittnuker.util.Utils.favorite;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -285,12 +286,7 @@ abstract class BaseStatusesMultiColumnListFragment<Data> extends BasePullToRefre
 			}
 			case R.id.direct_retweet:
 			case MENU_RETWEET: {
-				if (isMyRetweet(status)) {
-					cancelRetweet(twitter, status);
-				} else {
-					final long id_to_retweet = status.retweet_id > 0 ? status.retweet_id : status.id;
-					twitter.retweetStatus(status.account_id, id_to_retweet);
-				}
+				retweet(status, twitter);
 				break;
 			}
 			case R.id.direct_quote:
@@ -302,6 +298,12 @@ abstract class BaseStatusesMultiColumnListFragment<Data> extends BasePullToRefre
 				startActivity(intent);
 				break;
 			}
+			case R.id.direct_love:
+			case MENU_LOVE: {
+				retweet(status, twitter);
+				favorite(status, twitter);
+				break;
+			}
 			case MENU_REPLY: {
 				final Intent intent = new Intent(INTENT_ACTION_REPLY);
 				final Bundle bundle = new Bundle();
@@ -311,11 +313,7 @@ abstract class BaseStatusesMultiColumnListFragment<Data> extends BasePullToRefre
 				break;
 			}
 			case MENU_FAVORITE: {
-				if (status.is_favorite) {
-					twitter.destroyFavoriteAsync(status.account_id, status.id);
-				} else {
-					twitter.createFavoriteAsync(status.account_id, status.id);
-				}
+				favorite(status, twitter);
 				break;
 			}
 			case MENU_DELETE: {

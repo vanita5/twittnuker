@@ -32,6 +32,10 @@
 		android:id="@id/favorite"
 		android:icon="@drawable/ic_menu_star"
 		android:title="@string/favorite"/>
+	<item 
+	    android:id="@+id/direct_love"
+	    android:icon="@drawable/ic_menu_heart"
+	    android:title="@string/love"/>
 	<item
 		android:id="@id/share"
 		android:icon="@android:drawable/ic_menu_share"

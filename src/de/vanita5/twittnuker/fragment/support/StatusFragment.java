@@ -50,6 +50,8 @@ import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 import static de.vanita5.twittnuker.util.Utils.startStatusShareChooser;
+import static de.vanita5.twittnuker.util.Utils.retweet;
+import static de.vanita5.twittnuker.util.Utils.favorite;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -678,13 +680,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 				break;
 			}
 			case MENU_RETWEET: {
-				if (isMyRetweet(mStatus)) {
-					cancelRetweet(mTwitterWrapper, mStatus);
-				} else {
-					final long id_to_retweet = mStatus.is_retweet && mStatus.retweet_id > 0 ? mStatus.retweet_id
-							: mStatus.id;
-					mTwitterWrapper.retweetStatus(mStatus.account_id, id_to_retweet);
-				}
+				retweet(mStatus, mTwitterWrapper);
 				break;
 			}
 			case MENU_QUOTE: {
@@ -693,6 +689,11 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 				bundle.putParcelable(EXTRA_STATUS, mStatus);
 				intent.putExtras(bundle);
 				startActivity(intent);
+				break;
+			}
+			case MENU_LOVE: {
+				retweet(mStatus, mTwitterWrapper);
+				favorite(mStatus, mTwitterWrapper);
 				break;
 			}
 			case MENU_REPLY: {
@@ -704,11 +705,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 				break;
 			}
 			case MENU_FAVORITE: {
-				if (mStatus.is_favorite) {
-					mTwitterWrapper.destroyFavoriteAsync(mStatus.account_id, mStatus.id);
-				} else {
-					mTwitterWrapper.createFavoriteAsync(mStatus.account_id, mStatus.id);
-				}
+				favorite(mStatus, mTwitterWrapper);
 				break;
 			}
 			case MENU_DELETE: {

@@ -67,5 +67,6 @@
 	<item name="add_to_filter" type="id"/>
 	<item name="follow" type="id"/>
 	<item name="unfollow" type="id"/>
+	<item name="love" type="id"/>
 
 </resources>

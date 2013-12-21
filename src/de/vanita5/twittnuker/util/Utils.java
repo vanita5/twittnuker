@@ -3872,4 +3872,21 @@ public final class Utils implements Constants {
 		if (object == null) return null;
 		return String.valueOf(object);
 	}
+	
+	public static void retweet(ParcelableStatus status, AsyncTwitterWrapper twitter) {
+		if (isMyRetweet(status)) {
+			cancelRetweet(twitter, status);
+		} else {
+			final long id_to_retweet = status.retweet_id > 0 ? status.retweet_id : status.id;
+			twitter.retweetStatus(status.account_id, id_to_retweet);
+		}
+	}
+	
+	public static void favorite(ParcelableStatus status, AsyncTwitterWrapper twitter) {
+		if (status.is_favorite) {
+			twitter.destroyFavoriteAsync(status.account_id, status.id);
+		} else {
+			twitter.createFavoriteAsync(status.account_id, status.id);
+		}
+	}
 }
