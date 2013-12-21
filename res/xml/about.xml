@@ -76,11 +76,11 @@
 <!-- 	</PreferenceCategory> -->
 	<PreferenceCategory android:title="@string/special_thanks_to">
 		<Preference
-			android:summary="Be the first to support the Twittnuker Project!"
-			android:title="YOU">
-<!-- 			<intent -->
-<!-- 				android:action="android.intent.action.VIEW" -->
-<!-- 				android:data="https://twitter.com/intent/tweet?text=Hey%20%40_vanita5%2C%20let%20me%20help%20you%20with...%0A%2Fvia%20%40twittnuker"/> -->
+			android:summary="For the awesome logos"
+			android:title="deus_ki">
+			<intent
+				android:action="android.intent.action.VIEW"
+				android:data="twittnuker://user?user_id=1716619506&amp;finish_only=true"/>
 		</Preference>
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/contact">
