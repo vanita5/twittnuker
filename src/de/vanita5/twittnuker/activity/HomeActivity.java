@@ -432,6 +432,12 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 				}
 				return true;
 			}
+			case MENU_SEARCH: {
+				if (mSearchItem != null) {
+					mSearchItem.expandActionView();
+				}
+				return true;
+			}
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -514,7 +520,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	}
 
 	public void openSearchView(final Account account) {
-		if (mSearchItem == null) {
+		if (mSearchItem == null || !mSearchItem.isVisible()) {
 			onSearchRequested();
 			return;
 		}

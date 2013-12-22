@@ -25,6 +25,8 @@ package de.vanita5.twittnuker.activity;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.makeFilterdUserContentValues;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 
+import org.mariotaku.querybuilder.Where;
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
@@ -205,8 +207,7 @@ public class FiltersActivity extends BaseActivity implements TabListener, OnPage
 				final ParcelableUser user = data.getParcelableExtra(EXTRA_USER);
 				final ContentValues values = makeFilterdUserContentValues(user);
 				final ContentResolver resolver = getContentResolver();
-				resolver.delete(Filters.Users.CONTENT_URI, String.format("%s  = %d", Filters.Users.USER_ID, user.id),
-						null);
+				resolver.delete(Filters.Users.CONTENT_URI, Where.equals(Filters.Users.USER_ID, user.id).getSQL(), null);
 				resolver.insert(Filters.Users.CONTENT_URI, values);
 				break;
 			}

@@ -27,6 +27,8 @@
 
 package org.mariotaku.querybuilder;
 
+import java.util.Locale;
+
 import org.mariotaku.querybuilder.Columns.Column;
 
 public class Where implements SQLLang {
@@ -46,7 +48,7 @@ public class Where implements SQLLang {
 	}
 
 	public static Where equals(final String l, final long r) {
-		return new Where(String.format("%s = %d", l, r));
+		return new Where(String.format(Locale.US, "%s = %d", l, r));
 	}
 
 	public static Where equals(final String l, final String r) {
@@ -58,7 +60,7 @@ public class Where implements SQLLang {
 	}
 
 	public static Where notEquals(final String l, final long r) {
-		return new Where(String.format("%s != %d", l, r));
+		return new Where(String.format(Locale.US, "%s != %d", l, r));
 	}
 
 	public static Where notEquals(final String l, final String r) {

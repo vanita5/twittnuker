@@ -47,6 +47,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.mariotaku.querybuilder.Where;
+
 public class CacheUsersStatusesTask extends AsyncTask<Void, Void, Void> implements Constants {
 
 	private final TwitterListResponse<twitter4j.Status>[] all_statuses;
@@ -89,7 +91,7 @@ public class CacheUsersStatusesTask extends AsyncTask<Void, Void, Void> implemen
 					final ContentValues filtered_users_values = new ContentValues();
 					filtered_users_values.put(Filters.Users.NAME, user.getName());
 					filtered_users_values.put(Filters.Users.SCREEN_NAME, user.getScreenName());
-					final String filtered_users_where = String.format("%s = %d", Filters.Users.USER_ID, user.getId());
+					final String filtered_users_where = Where.equals(Filters.Users.USER_ID, user.getId()).getSQL();
 					resolver.update(Filters.Users.CONTENT_URI, filtered_users_values, filtered_users_where, null);
 				}
 			}
