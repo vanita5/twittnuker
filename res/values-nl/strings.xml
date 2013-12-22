@@ -59,13 +59,9 @@
   <string name="statuses">Tweets</string>
   <string name="followers">Volgers</string>
   <string name="about">Over</string>
-  <string name="about_summary">Over Twittnuker</string>
-  <string name="license_summary">Twittnuker is gelicentieerd onder GPLv3.</string>
   <string name="api">API</string>
   <string name="consumer_key">Consumenten sleutel</string>
-  <string name="consumer_key_summary">Consumenten sleutel voor accounts in OAuth/xAuth modus</string>
   <string name="consumer_secret">Consumenten geheim</string>
-  <string name="consumer_secret_summary">Consumenten geheim voor accounts in OAuth/xAuth modus</string>
   <string name="ignore_ssl_error">SLL-fout negeren</string>
   <string name="ignore_ssl_error_summary">Negeer SLL Fout, zet dit aan als u problemen ondervindt met aangepaste API-server.</string>
   <string name="gzip_compressing">GZip comprimeren</string>
@@ -78,12 +74,9 @@
   <string name="clear_databases">Leeg databases</string>
   <string name="clear_databases_summary">Wis alle tweets, profielen, berichten. Uw accountgegevens zullen niet verloren gaan.</string>
   <string name="look_and_feel">Vormgeving en stijl</string>
-  <string name="dark_theme">Gebruik donkere thema</string>
-  <string name="dark_theme_summary">Gebruik het donkere thema voor Twittnuker.</string>
   <string name="display_profile_image">Geef profielafbeeldingen weer</string>
   <string name="image_load_summary">Dit uitschakelen versnelt het scrollen en vermindert data verkeer.</string>
   <string name="in_reply_to">In antwoord aan <xliff:g id="user_name">%s</xliff:g>;</string>
-  <string name="in_reply_to_pull_to_load_conversation">In antwoord op <xliff:g id="user_name">%s</xliff:g>, trek om gesprek te laden</string>
   <string name="retweeted_by"><xliff:g id="user_name">%s</xliff:g> retweet dit</string>
   <string name="retweeted_by_with_count"><xliff:g id="user_name">%1$s</xliff:g> en <xliff:g id="retweet_count">%2$d</xliff:g> anderen hebben dit ge-retweet</string>
   <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> personen hebben dit ge-retweet</string>
@@ -92,7 +85,6 @@
   <string name="quote_user">Quote <xliff:g id="user_name">%s</xliff:g>;</string>
   <string name="time_source"><xliff:g id="time">%1$s</xliff:g>, via <xliff:g id="source">%2$s</xliff:g>;</string>
   <string name="source">via <xliff:g id="source"> %s </xliff:g></string>
-  <string name="filter">Filter</string>
   <string name="filters">Filters</string>
   <string name="users">Gebruikers</string>
   <string name="user">Gebruiker</string>
@@ -116,12 +108,10 @@
   <string name="load_more_automatically_summary">Laad meer content (bijv. foto\'s kaarten, statussen) automatisch</string>
   <string name="quote">Citeer</string>
   <string name="add_rule">Regel toevoegen</string>
-  <string name="longclick_to_delete">Houd ingedrukt om te verwijderen.</string>
   <string name="text_size">lettergrootte</string>
   <string name="text_size_summary">Lettergrootte van statussen.</string>
   <string name="cannot_get_location">Kan uw locatie niet verkrijgen.</string>
   <string name="drafts">Concepten</string>
-  <string name="delete_all">Verwijder alle</string>
   <string name="description">Beschrijving</string>
   <string name="location">Locatie</string>
   <string name="url">URL</string>
@@ -164,22 +154,16 @@
   <string name="inbox">Inbox</string>
   <string name="load_images">Afbeeldingen laden</string>
   <string name="other_settings">Andere instellingen</string>
-  <string name="refresh_and_notifications">Vernieuw &amp; Notificaties</string>
   <string name="auto_refresh">Auto vernieuwen</string>
   <string name="refresh_interval">Vernieuw interval</string>
-  <string name="refresh_interval_summary">Korte vernieuwingsintervallen verbruiken meer batterij en netwerk data!</string>
   <string name="content_to_refresh">Inhoud vernieuwen</string>
   <string name="content_to_notify">Inhoud melden</string>
   <string name="notifications_type">Notificatie type</string>
-  <string name="notifications_type_summary">Deze optie zal GEEN systeeminstellingen overschrijven.</string>
   <string name="sound">Geluid</string>
   <string name="vibration">Trilling</string>
   <string name="light">Lichten</string>
   <string name="notifications">Notificaties</string>
-  <string name="new_notifications">Nieuwe notificaties</string>
   <string name="screen_name">Gebruikersnaam</string>
-  <string name="sort_timeline_by_time">Sorteer tijdlijn bij tijd</string>
-  <string name="sort_timeline_by_time_summary">Dit kan er voor zorgen dat retweets op de verkeerde plaats verschijnen, maar kan helpen als je andere services gebruikt zoals Indenti.ca.</string>
   <string name="refresh_on_start">Vernieuw bij starten</string>
   <string name="refresh_on_start_summary">Vernieuw timeline en vermeldingingen bij opstarten.</string>
   <string name="list_timeline">Lijst tijdlijn</string>
@@ -188,7 +172,6 @@
   <string name="type_to_compose">Typ om op te stellen</string>
   <string name="users_lists">Gebruiker\'s lijst</string>
   <string name="lists_following_user">Lijsten die deze gebruiker volgt</string>
-  <string name="item_1_minute">1 minuut</string>
   <string name="item_3_minutes">3 minuten</string>
   <string name="item_5_minutes">5 minuten</string>
   <string name="item_10_minutes">10 minuten</string>
@@ -197,8 +180,6 @@
   <string name="item_1_hour">1 uur</string>
   <string name="item_2_hours">2 uur</string>
   <string name="item_4_hours">4 uur</string>
-  <string name="solid_color_background">Effen kleur achtergrond</string>
-  <string name="solid_color_background_summary">Dit kan handig zijn als het scherm van uw apparaat AMOLED is.</string>
   <string name="following_you">Volgt jou</string>
   <string name="trends_location">Trends locatie</string>
   <string name="trends_location_summary">Stel locatie in voor lokale trends.</string>
@@ -212,14 +193,9 @@
   <string name="is_public">Openbaar</string>
   <string name="send_direct_message">Stuur DM</string>
   <string name="extensions">Uitbreidingen</string>
-  <string name="open_with_extensions">Open met uitbreidingen</string>
   <string name="uninstall">Verwijder</string>
   <string name="saved_searches">Opgeslagen zoekopdrachten</string>
-  <string name="default_tabs">Standaard tabbladen</string>
   <string name="add_tab">Voeg een tabblad toe</string>
-  <string name="tab_type">Tabblad type</string>
-  <string name="unused">Ongebruikt</string>
-  <string name="list_name">Lijstnaam</string>
   <string name="edit_tab">Wijzig tab</string>
   <string name="move_up">Omhoog</string>
   <string name="move_down">Omlaag</string>
@@ -250,8 +226,6 @@
   <string name="multimedia_contents">Multimedia inhoud</string>
   <string name="show_absolute_time">Laat absolute tijd zien</string>
   <string name="show_absolute_time_summary">Laat absolute tijd in tweets zien</string>
-  <string name="mute_source">Demp bron</string>
-  <string name="source_muted"><xliff:g id="source">%s</xliff:g> toegevoegd aan filter-lijst. Je zult geen tweets van deze bron meer zien in je tijdlijn en meldingen.</string>
   <string name="user_mentions">Gebruiker vermeldingen</string>
   <string name="dual_pane_layout">Dubbel Paneel Lay-out</string>
   <string name="landscape">Landschap</string>
@@ -259,12 +233,9 @@
   <string name="quick_send">Druk op \"Enter\" om te versturen</string>
   <string name="quick_send_summary">Verstuur tweet met \"Enter\".</string>
   <string name="discard">Verwerp</string>
-  <string name="multi_select">Select meerdere</string>
   <string name="Nitems_selected_quantity_one">1 item geselecteerd</string>
   <string name="Nitems_selected_quantity_other"><xliff:g id="items">%d</xliff:g> items geselecteerd</string>
   <string name="view">Bekijk</string>
-  <string name="hardware_acceleration">Hardware-versnelling</string>
-  <string name="hardware_acceleration_summary">Sommige apparaten zullen beter werken na het aanzetten, SOMMIGE NIET. Android 3.0+ ALLEEN. DIT VERVANGT GEEN SYSTEEM INSTELLINGEN!</string>
   <string name="custom_host_mapping">Aangepaste host toewijzingen</string>
   <string name="custom_host_mapping_summary">Host toewijzingen zoals /etc/hosts, maar heeft geen aanvullende rechten nodig.</string>
   <string name="host">Host</string>
@@ -292,24 +263,16 @@
   <string name="activity_by_friends_list_member_added"><xliff:g id="user">%1$s</xliff:g> heeft <xliff:g id="target">%2$s</xliff:g> toegevoegt aan zijn lijst.</string>
   <string name="activity_by_friends_list_created"><xliff:g id="user">%1$s</xliff:g> aangemaakte lijst <xliff:g id="target">%2$s</xliff:g>.</string>
   <string name="activity_by_friends_list_created_multi"><xliff:g id="user">%1$s</xliff:g> aangemaakte lijst <xliff:g id="target">%2$s</xliff:g> en <xliff:g id="count">%3$d</xliff:g> meer.</string>
-  <string name="cannot_get_callback_url">Krijg geen reactie, controleer gebruikersnaam en wachtwoord.</string>
   <string name="incoming_friendships">De volgende aanvragen zijn nog niet afgehandeld</string>
-  <string name="click_to_open_menu">Klik om item menu te openen</string>
   <string name="preview">Voorbeeld</string>
-  <string name="api_upgrade_notice_title">ZEER BELANGRIJK!</string>
   <string name="connection_timeout">Connectie timeout</string>
-  <string name="name_display_option">Naamweergave optie</string>
   <string name="both">Beide</string>
   <string name="browser_sign_in">Browser aanmelding</string>
   <string name="notification_mention"><xliff:g id="user">%s</xliff:g> vermeldde jou.</string>
   <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> zond jou een direct message.</string>
   <string name="status_is_duplicate">Jouw tweet is dubbel.</string>
   <string name="silent_notifications">Stille notificaties</string>
-  <string name="pull_to_load_conversation_label">Trek om de conversatie te laden</string>
-  <string name="pull_to_load_conversation_release_label">Laat los om de conversatie te laden</string>
   <string name="text_copied">Tekst gekopieerd naar plakbord.</string>
-  <string name="load_from_here">Laad vanaf hier</string>
-  <string name="loading">Aan het laden</string>
   <string name="edit_draft">Wijzig concept</string>
   <string name="profile_image">Profielfoto</string>
   <string name="my_profile_image">Mijn profielfoto</string>

@@ -63,15 +63,11 @@
   <string name="followers">Obserwujący</string>
   <string name="following">Following</string>
   <string name="about">O...</string>
-  <string name="about_summary">O Twittnuker</string>
   <string name="open_source_license">Licencja open source</string>
-  <string name="license_summary">Twittnuker jest licencjonowany na GPLv3.</string>
   <string name="api">API</string>
   <string name="default_api_settings">Ustawienia domyślnego API</string>
   <string name="consumer_key">Klucz klienta</string>
-  <string name="consumer_key_summary">Klucz klienta dla nowych kont, z których logowano się w trybie OAuth/xAuth</string>
   <string name="consumer_secret">Consumer secret</string>
-  <string name="consumer_secret_summary">Hasło klienta dla nowych kont, z których logowano się w trybie OAuth/xAuth</string>
   <string name="ignore_ssl_error">Ignoruj błąd SSL</string>
   <string name="ignore_ssl_error_summary">Ignoruj błąd SSL, włącz jeśli masz problemy z niestandardowym serwerem API.</string>
   <string name="gzip_compressing">Kompresja GZip</string>
@@ -84,12 +80,9 @@
   <string name="clear_databases">Wyczyść bazy danych</string>
   <string name="clear_databases_summary">Wyczyść wszystkie tweety, profile, wiadomości. Dane logowania twojego konta zostaną zachowane.</string>
   <string name="look_and_feel">Wygląd</string>
-  <string name="dark_theme">Użyj ciemnego motywu</string>
-  <string name="dark_theme_summary">Użyj ciemnego motywu dla Twittnuker.</string>
   <string name="display_profile_image">Wyświetl obraz profilu</string>
   <string name="image_load_summary">Wyłączenie zwiększy prędkość przewijania listy i zmniejszy ilość przesyłanych danych.</string>
   <string name="in_reply_to">W odpowiedzi do <xliff:g id="user_name">%s</xliff:g></string>
-  <string name="in_reply_to_pull_to_load_conversation">W odpowiedzi do <xliff:g id="user_name">%s</xliff:g>, pociągnij, aby załadować rozmowę</string>
   <string name="retweeted_by"><xliff:g id="user_name">%s</xliff:g> przesłał dalej</string>
   <string name="retweeted_by_with_count"><xliff:g id="user_name">%1$s</xliff:g> oraz <xliff:g id="retweet_count">%2$d</xliff:g> innych przesłało dalej</string>
   <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> przesłało dalej</string>
@@ -98,7 +91,6 @@
   <string name="quote_user">Cytuj <xliff:g id="user_name">%s</xliff:g></string>
   <string name="time_source"><xliff:g id="time">%1$s</xliff:g>, poprzez <xliff:g id="source">%2$s</xliff:g></string>
   <string name="source">poprzez <xliff:g id="source">%s</xliff:g></string>
-  <string name="filter">Filtr</string>
   <string name="filters">Filtry</string>
   <string name="users">Użytkownicy</string>
   <string name="user">Użytkownik</string>
@@ -123,12 +115,10 @@
   <string name="load_more_automatically_summary">Ładuj więcej treści (zdjęć, map, statusów) automatycznie</string>
   <string name="quote">Cytuj</string>
   <string name="add_rule">Dodaj regułę</string>
-  <string name="longclick_to_delete">Przytrzymaj aby usunąć.</string>
   <string name="text_size">Rozmiar tekstu</string>
   <string name="text_size_summary">Rozmiar tekstu statusu.</string>
   <string name="cannot_get_location">Nie można wyszukać lokalizacji.</string>
   <string name="drafts">Szkice</string>
-  <string name="delete_all">Usuń wszystko</string>
   <string name="description">Opis</string>
   <string name="location">Lokalizacja</string>
   <string name="url">Adres URL</string>
@@ -172,22 +162,16 @@
   <string name="inbox">Odebrane</string>
   <string name="load_images">Załaduj obrazy</string>
   <string name="other_settings">Inne ustawienia</string>
-  <string name="refresh_and_notifications">Odświeżanie &amp; Powiadomienia</string>
   <string name="auto_refresh">Automatyczne odświeżanie</string>
   <string name="refresh_interval">Przedział odświeżania</string>
-  <string name="refresh_interval_summary">Częstsze odświeżanie zużywa więcej baterii i zwiększa przesył danych!</string>
   <string name="content_to_refresh">Zawartość do odświeżania</string>
   <string name="content_to_notify">Zawartość do powiadamiania</string>
   <string name="notifications_type">Rodzaj powiadomień</string>
-  <string name="notifications_type_summary">To NIE nadpisze ustawień systemowych.</string>
   <string name="sound">Dźwięk</string>
   <string name="vibration">Wibracja</string>
   <string name="light">Światełko</string>
   <string name="notifications">Powiadomienia</string>
-  <string name="new_notifications">Nowe powiadomienia</string>
   <string name="screen_name">Nazwa użytkownika</string>
-  <string name="sort_timeline_by_time">Sortuj strumień wpisów według czasu</string>
-  <string name="sort_timeline_by_time_summary">Może spowodować pokazywanie retweetów w złym miejscu, ale może być pomocne, jeśli używasz innych serwisów jak Identi.ca.</string>
   <string name="refresh_on_start">Odśwież na starcie</string>
   <string name="refresh_on_start_summary">Odśwież strumień i wzmianki przy uruchomieniu.</string>
   <string name="refresh_after_status_updated">Odśwież po wysłaniu ćwierka</string>
@@ -198,9 +182,6 @@
   <string name="type_to_compose">Wpisuj</string>
   <string name="users_lists">Listy użytkownika</string>
   <string name="lists_following_user">Listy obserwujące tego użytkownika</string>
-  <string name="you_have_N_new_statuses_quantity_one">Masz nowego ćwierka.</string>
-  <string name="you_have_N_new_statuses_quantity_other">Masz <xliff:g id="items">%d</xliff:g> nowych ćwierków.</string>
-  <string name="item_1_minute">1 minuta</string>
   <string name="item_3_minutes">3 minuty</string>
   <string name="item_5_minutes">5 minut</string>
   <string name="item_10_minutes">10 minut</string>
@@ -210,8 +191,6 @@
   <string name="item_2_hours">2 godziny</string>
   <string name="item_4_hours">4 godziny</string>
   <string name="display_image_preview">Wyświetl podgląd obrazów</string>
-  <string name="solid_color_background">Głęboki kolor tła</string>
-  <string name="solid_color_background_summary">Może być przydatne dla ekranów AMOLED.</string>
   <string name="following_you">Obserwujący Cię</string>
   <string name="user_list">Lista</string>
   <string name="user_lists">Lists</string>
@@ -228,16 +207,10 @@
   <string name="is_public">Publiczny</string>
   <string name="send_direct_message">Wyślij Wiadomość Prywatną</string>
   <string name="extensions">Rozszerzenia</string>
-  <string name="open_with_extensions">Otwórz z rozszerzeniami</string>
-  <string name="view_user_list">Zobacz listę</string>
   <string name="uninstall">Odinstaluj</string>
   <string name="saved_searches">Zapisane wyniki wyszukiwania</string>
   <string name="tabs">Karty</string>
-  <string name="default_tabs">Domyślne zakładki</string>
   <string name="add_tab">Dodaj zakładkę</string>
-  <string name="tab_type">Typ zakładki</string>
-  <string name="unused">Nieużywany</string>
-  <string name="list_name">Nazwa listy</string>
   <string name="edit_tab">Edytuj zakładkę</string>
   <string name="move_up">Przenieś w górę</string>
   <string name="move_down">Przenieś w dół</string>
@@ -268,8 +241,6 @@
   <string name="multimedia_contents">Zawartość multimedialna</string>
   <string name="show_absolute_time">Pokazuj czas bezwględny</string>
   <string name="show_absolute_time_summary">Pokazuj czas bezwględny w ćwierkach</string>
-  <string name="mute_source">Wycisz źródło</string>
-  <string name="source_muted">Dodano \"<xliff:g id="source">%s</xliff:g>\" do listy filtrów. Nie zobaczysz ćwierków z tego źródła w strumieniu głównym i/lub liście wzmianek.</string>
   <string name="user_mentions">Wzmianki</string>
   <string name="dual_pane_layout">Układ z podwójnym panelem</string>
   <string name="landscape">Układ poziomy</string>
@@ -278,12 +249,9 @@
   <string name="quick_send_summary">Wysyła ćwierka po wciśnięciu Enter.</string>
   <string name="unsaved_status">Ćwierk nie wysłany ani nie zachowany.</string>
   <string name="discard">Porzuć</string>
-  <string name="multi_select">Zaznaczanie wielokrotne</string>
   <string name="Nitems_selected_quantity_one">1 element zaznaczony</string>
   <string name="Nitems_selected_quantity_other">Elementów zaznaczonych: <xliff:g id="items">%d</xliff:g></string>
   <string name="view">Wyświetl</string>
-  <string name="hardware_acceleration">Przyspieszenie sprzętowe</string>
-  <string name="hardware_acceleration_summary">Na niektórych urządzeniach działanie będzie płynniejsze, ale NIE NA WSZYSTKICH. Tylko Android 3.0+. USTAWIENIA SYSTEMOWE NIE ZOSTANĄ NADPISANE!</string>
   <string name="custom_host_mapping">Ustawianie mapowania hosta</string>
   <string name="custom_host_mapping_summary">Mapowanie hostów, nie wymaga żadnych dodatkowych uprawnień.</string>
   <string name="host">Host</string>
@@ -311,22 +279,16 @@
   <string name="activity_by_friends_list_member_added"><xliff:g id="user">%1$s</xliff:g> added <xliff:g id="target">%2$s</xliff:g> to list.</string>
   <string name="activity_by_friends_list_created"><xliff:g id="user">%1$s</xliff:g> created list <xliff:g id="target">%2$s</xliff:g>.</string>
   <string name="activity_by_friends_list_created_multi"><xliff:g id="user">%1$s</xliff:g> created list <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="count">%3$d</xliff:g> more.</string>
-  <string name="cannot_get_callback_url">Cannot get callback, please check your username and password.</string>
   <string name="status_not_updated">Ćwierk nie został wysłany.</string>
   <string name="status_not_updated_summary">Ćwierk nie został wysłany, zapisano w szkicach.</string>
   <string name="incoming_friendships">Oczekujące prośby obserwowania</string>
-  <string name="click_to_open_menu">Kliknij, aby otworzyć menu</string>
-  <string name="click_to_open_menu_summary">Dotknij, aby otworzyć menu, długie dotknięcie, aby wybrać kilka.</string>
   <string name="send_follow_request">Wyślij prośbę obserwowania</string>
   <string name="follow_request_sent">Prośba obserwowania wysłana</string>
   <string name="separate_retweet_action">Osobna akcja przesłania dalej</string>
   <string name="separate_retweet_action_summary">Pokaż obie akcje przesłania dalej i cytowania w menu ćwierka</string>
   <string name="status">Ćwierk</string>
   <string name="preview">Podgląd</string>
-  <string name="api_upgrade_notice_title">BARDZO WAŻNE!</string>
-  <string name="api_upgrade_notice_message">  Obowiązuje nowa wersja 1.1 API Twittera.\n\n Od tego momentu Twittnuker używa wersji 1.1 API.\n\n PROSIMY się ponownie zalogować, aby uniknąć wielu możliwych problemów.\n\n Jakie zmiany przynosi wersja 1.1 API? Między innymi:\n * Większe ograniczenia rate limit, na przykład, odtąd możesz aktualizować swój strumień główny wpisów jedynie 15 razy na 15 minut.\n * Nie możesz od razu zobaczyć kto przesłał dalej Twojego ćwierka.\n * Jeśli używasz Twittnuker jako StatusNet Client, wiele funkcji jest wyłączonych z powodu zmian API.\n\n Przepraszamy za te niedogodności, ale nie mamy wpływu na politykę Twittera.</string>
   <string name="connection_timeout">Przekroczono limit czasu oczekiwania</string>
-  <string name="name_display_option">Wyświetlanie nazwy</string>
   <string name="both">Oba</string>
   <string name="browser_sign_in">Logowanie w przeglądarce</string>
   <string name="stop_auto_refresh_when_battery_low">Zatrzymaj automatyczne odświeżanie przy słabej baterii</string>
@@ -336,10 +298,8 @@
   <string name="notification_mention_multiple"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="count">%2$d</xliff:g> others mentioned you.</string>
   <string name="notification_direct_message_multiple_users"><xliff:g id="user">%1$s</xliff:g> i <xliff:g id="users_count">%2$d</xliff:g> innych użytkowników wysłali Ci <xliff:g id="messages_count">%3$d</xliff:g> wiadomości.</string>
   <string name="action_getting_status">getting tweet</string>
-  <string name="action_getting_statuses">getting tweets</string>
   <string name="action_updating_status">sending tweet</string>
   <string name="action_sending_direct_message">sending direct message</string>
-  <string name="action_refreshing_timelines">refreshing timelines</string>
   <string name="action_refreshing_home_timeline">refreshing home timeline</string>
   <string name="action_refreshing_mentions">refreshing mentions</string>
   <string name="action_refreshing_direct_messages">refreshing direct messages</string>
@@ -367,10 +327,7 @@
   <string name="silent_notifications_summary">Wyłącz dzwonek/wibracje dla powiadomień</string>
   <string name="disable_background_service">Wyłącz pracę w tle</string>
   <string name="disable_background_service_summary">Twittnuker doesn\'t have background service if you disable auto refresh and data profiling, don\'t be silly!</string>
-  <string name="pull_to_load_conversation_label">Przeciągnij by pokazać rozmowę</string>
-  <string name="pull_to_load_conversation_release_label">Puść aby pokazać rozmowę</string>
   <string name="text_copied">Tekst skopiowany do schowka.</string>
-  <string name="load_from_here">Ładuj od tego miejsca</string>
   <string name="amount_usd">Wartość (USD)</string>
   <string name="donate">Zrób darowiznę</string>
   <string name="hashtag">Hashtag</string>
@@ -381,7 +338,6 @@
   <string name="sensitive_content_warning">Ten ćwierk może zawierać wrażliwą zawartość, kontynuować?</string>
   <string name="mark_as_sensitive">Oznacz jako wrażliwe</string>
   <string name="remove_sensitive_mark">Usuń oznaczenie jako wrażliwe</string>
-  <string name="loading">Ładowanie…</string>
   <string name="none">Brak</string>
   <string name="large">Duży</string>
   <string name="small">Mały</string>
@@ -400,9 +356,6 @@
   <string name="no_thanks">Nie, dziękuję</string>
   <string name="revoke_permissions">Odwołaj pozwolenia</string>
   <string name="fast_scroll_thumb">Szybkie przewijanie palcem</string>
-  <string name="link_highlighting">Podświetlanie odnośników</string>
-  <string name="fast_timeline_processing">Szybkie przetwarzanie strumienia</string>
-  <string name="fast_timeline_processing_summary">Ignoruj WSZYSTKIE szczegóły w strumieniu, włączenie zwiększy wydajność.</string>
   <string name="indicate_my_status">Wyróżniaj moje ćwierki</string>
   <string name="default_ringtone">Domyślny dzwonek</string>
   <string name="phishing_link_warning">Ostrzeżenie od linku phishingowym</string>
@@ -413,7 +366,6 @@
   <string name="profile_images">Obrazy profilu</string>
   <string name="preview_images">Podgląd obrazków</string>
   <string name="preload_wifi_only">Wczytuj tylko gdy działa Wi-Fi</string>
-  <string name="re_sign_in_needed">Może być konieczne ponowne zalogowanie się.</string>
   <string name="disable_tab_swipe">Wyłącz przełączanie kart gestem</string>
   <string name="sign_in_method_introduction_title">Jak to działa?</string>
   <string name="sign_in_method_introduction">Most clients like twicca opens a browser asking you to type username and password, and then takes you back to heir clients. Sometimes this can become very inconvenient.\nTwittnuker uses more simple steps to sign in, without opening the browser. Don\'t worry about your password, Twittnuker will never store it, it\'s totally safe!</string>
@@ -479,11 +431,9 @@
   <string name="add_to_list">Dodaj do listy</string>
   <string name="account_delete_confirm_title">Usuń konto</string>
   <string name="account_delete_confirm_message">Konto zostanie usunięte z Twittnuker.</string>
-  <string name="for_advanced_users_only">TYLKO DLA ZAAWANSOWANYCH UŻYTKOWNIKÓW!</string>
   <string name="theme">Motyw</string>
   <string name="theme_dark">Ciemny</string>
   <string name="theme_light">Jasny</string>
-  <string name="theme_light_darkactionbar">Jasny z ciemnym ActionBar</string>
   <string name="settings_interface">Interfejs</string>
   <string name="no_rule">Brak regół</string>
   <string name="enable_in_mentions">Włącz we wzmiankach</string>
