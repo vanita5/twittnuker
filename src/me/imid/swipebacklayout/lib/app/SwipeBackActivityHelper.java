@@ -43,6 +43,15 @@ public class SwipeBackActivityHelper implements TwittnukerConstants {
 		w.setBackgroundDrawable(new ColorDrawable(0));
 		mSwipeBackLayout = (SwipeBackLayout) LayoutInflater.from(mActivity).inflate(R.layout.swipeback_layout, null);
 	}
+	
+	public void onDestroy() {
+		if (mActivity.isFinishing()) {
+			final Intent intent = mActivity.getIntent();
+			final TwittnukerApplication app = TwittnukerApplication.getInstance(mActivity);
+			final SwipebackScreenshotManager sm = app.getSwipebackScreenshotManager();
+			sm.remove(intent.getLongExtra(EXTRA_ACTIVITY_SCREENSHOT_ID, -1));
+		}
+	}
 
 	public void onPostCreate() {
 		mSwipeBackLayout.attachToActivity(mActivity);

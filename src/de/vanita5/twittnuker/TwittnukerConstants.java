@@ -270,6 +270,7 @@ public interface TwittnukerConstants {
 	public static final String PREFERENCE_KEY_COMPACT_CARDS = "compact_cards";
 	public static final String PREFERENCE_KEY_DISPLAY_TAB_LABEL = "display_tab_label";
 	public static final String PREFERENCE_KEY_LIVE_WALLPAPER_SCALE = "live_wallpaper_scale";
+	public static final String PREFERENCE_KEY_LONG_CLICK_TO_OPEN_MENU = "long_click_to_open_menu";
 	public static final String PREFERENCE_KEY_STREAMING_ENABLED = "stream_enabled";
 	public static final String PREFERENCE_KEY_STREAMING_NOTIFICATION = "stream_notification";
 	public static final String PREFERENCE_KEY_STREAMING_ON_MOBILE = "stream_on_mobile";

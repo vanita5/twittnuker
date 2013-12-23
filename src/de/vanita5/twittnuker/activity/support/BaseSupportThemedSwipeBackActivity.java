@@ -86,4 +86,10 @@ public class BaseSupportThemedSwipeBackActivity extends BaseSupportActivity impl
 		super.onPostCreate(savedInstanceState);
 		mSwipebackHelper.onPostCreate();
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mSwipebackHelper.onDestroy();
+	}
 }

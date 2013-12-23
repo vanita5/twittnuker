@@ -170,7 +170,8 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 		return mContext;
 	}
 
-	protected ImageLoaderWrapper getImageLoader() {
+	@Override
+	public ImageLoaderWrapper getImageLoader() {
 		return mImageLoader;
 	}
 

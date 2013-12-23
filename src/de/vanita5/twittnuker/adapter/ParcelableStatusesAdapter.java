@@ -59,7 +59,6 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 		IStatusesAdapter<List<ParcelableStatus>>, OnClickListener {
 
 	private final Context mContext;
-	private final ImageLoaderWrapper mImageLoader;
 	private final MultiSelectManager mMultiSelectManager;
 	private final SQLiteDatabase mDatabase;
 	private final ImageLoadingHandler mImageLoadingHandler;
@@ -81,7 +80,6 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 		mContext = context;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mMultiSelectManager = app.getMultiSelectManager();
-		mImageLoader = app.getImageLoaderWrapper();
 		mDatabase = app.getSQLiteDatabase();
 		mImageLoadingHandler = new ImageLoadingHandler();
 		configBaseCardAdapter(context, this);
@@ -167,6 +165,7 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 
 		if (!showGap) {
 			final TwidereLinkify linkify = getLinkify();
+			final ImageLoaderWrapper loader = getImageLoader();
 			final int highlightOption = getLinkHighlightOption();
 			final boolean mShowAccountColor = isShowAccountColor();
 
@@ -224,8 +223,8 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 				holder.setReplyTo(status.in_reply_to_user_id, status.in_reply_to_name, status.in_reply_to_screen_name);
 			}
 			if (isDisplayProfileImage()) {
-				mImageLoader.displayProfileImage(holder.my_profile_image, status.user_profile_image_url);
-				mImageLoader.displayProfileImage(holder.profile_image, status.user_profile_image_url);
+				loader.displayProfileImage(holder.my_profile_image, status.user_profile_image_url);
+				loader.displayProfileImage(holder.profile_image, status.user_profile_image_url);
 				holder.profile_image.setTag(position);
 				holder.my_profile_image.setTag(position);
 			} else {
@@ -241,7 +240,7 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 					holder.image_preview_progress.setVisibility(View.GONE);
 				} else if (!status.media_link.equals(mImageLoadingHandler.getLoadingUri(holder.image_preview))) {
 					holder.image_preview.setBackgroundResource(0);
-					mImageLoader.displayPreviewImage(holder.image_preview, status.media_link, mImageLoadingHandler);
+					loader.displayPreviewImage(holder.image_preview, status.media_link, mImageLoadingHandler);
 				}
 				holder.image_preview.setTag(position);
 			}

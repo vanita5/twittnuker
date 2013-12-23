@@ -7,18 +7,18 @@ import android.view.View;
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 
 public class SwipeBackActivity extends FragmentActivity implements SwipeBackActivityBase {
-	private SwipeBackActivityHelper mHelper;
+	private SwipeBackActivityHelper mSwipebackHelper;
 
 	@Override
 	public View findViewById(final int id) {
 		final View v = super.findViewById(id);
-		if (v == null && mHelper != null) return mHelper.findViewById(id);
+		if (v == null && mSwipebackHelper != null) return mSwipebackHelper.findViewById(id);
 		return v;
 	}
 
 	@Override
 	public SwipeBackLayout getSwipeBackLayout() {
-		return mHelper.getSwipeBackLayout();
+		return mSwipebackHelper.getSwipeBackLayout();
 	}
 
 	@Override
@@ -34,13 +34,19 @@ public class SwipeBackActivity extends FragmentActivity implements SwipeBackActi
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mHelper = new SwipeBackActivityHelper(this);
-		mHelper.onActivtyCreate();
+		mSwipebackHelper = new SwipeBackActivityHelper(this);
+		mSwipebackHelper.onActivtyCreate();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mSwipebackHelper.onDestroy();
 	}
 
 	@Override
 	protected void onPostCreate(final Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-		mHelper.onPostCreate();
+		mSwipebackHelper.onPostCreate();
 	}
 }

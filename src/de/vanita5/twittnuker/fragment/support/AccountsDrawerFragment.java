@@ -170,7 +170,7 @@ public class AccountsDrawerFragment extends BaseSupportFragment implements Loade
 					}
 					case MENU_SET_COLOR: {
 						final Intent intent = new Intent(getActivity(), ColorPickerDialogActivity.class);
-						intent.putExtra(EXTRA_COLOR, account.user_color);
+						intent.putExtra(EXTRA_COLOR, account.color);
 						intent.putExtra(EXTRA_ALPHA_SLIDER, false);
 						startActivityForResult(intent, REQUEST_SET_COLOR);
 						break;

@@ -29,6 +29,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 
@@ -44,6 +46,7 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
 	private boolean mDisplayProfileImage, mNicknameOnly, mDisplayNameFirst, mShowAccountColor;
 
 	private final SharedPreferences mNicknamePrefs, mColorPrefs;
+	private final ImageLoaderWrapper mImageLoader;
 
 	public BaseArrayAdapter(final Context context, final int layoutRes) {
 		this(context, layoutRes, null);
@@ -51,11 +54,18 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
 
 	public BaseArrayAdapter(final Context context, final int layoutRes, final Collection<? extends T> collection) {
 		super(context, layoutRes, collection);
+		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mLinkify = new TwidereLinkify(new OnLinkClickHandler(context));
+		mImageLoader = app.getImageLoaderWrapper();
 		mNicknamePrefs = context.getSharedPreferences(USER_NICKNAME_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mColorPrefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mNicknamePrefs.registerOnSharedPreferenceChangeListener(this);
 		mColorPrefs.registerOnSharedPreferenceChangeListener(this);
+	}
+	
+	@Override
+	public ImageLoaderWrapper getImageLoader() {
+		return mImageLoader;
 	}
 
 	@Override

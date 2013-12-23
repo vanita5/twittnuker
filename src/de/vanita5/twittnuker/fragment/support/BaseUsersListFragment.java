@@ -42,7 +42,6 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
 import org.mariotaku.popupmenu.PopupMenu;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.loader.DummyParcelableUsersLoader;
@@ -247,7 +246,7 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 	}
 
 	protected int getUserMenuResource() {
-		return R.menu.action_user_list;
+		return 0;
 	}
 
 	protected abstract Loader<List<ParcelableUser>> newLoaderInstance(Context context, Bundle args);
@@ -286,7 +285,10 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 			mPopupMenu.dismiss();
 		}
 		mPopupMenu = PopupMenu.getInstance(getActivity(), view);
-		mPopupMenu.inflate(getUserMenuResource());
+		final int menuRes = getUserMenuResource();
+		if (menuRes != 0) {
+		   	mPopupMenu.inflate(menuRes);
+		}
 		final Menu menu = mPopupMenu.getMenu();
 		final Intent extensions_intent = new Intent(INTENT_ACTION_EXTENSION_OPEN_USER);
 		final Bundle extensions_extras = new Bundle();

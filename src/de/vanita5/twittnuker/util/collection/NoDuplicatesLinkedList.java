@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package de.vanita5.twittnuker.util.collection;
 
 import java.util.Collection;
 import java.util.LinkedList;

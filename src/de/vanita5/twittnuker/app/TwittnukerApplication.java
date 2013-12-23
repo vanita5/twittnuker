@@ -181,7 +181,7 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 
 	public SwipebackScreenshotManager getSwipebackScreenshotManager() {
 		if (mSwipebackScreenshotManager != null) return mSwipebackScreenshotManager;
-		return mSwipebackScreenshotManager = new SwipebackScreenshotManager();
+		return mSwipebackScreenshotManager = new SwipebackScreenshotManager(this);
 	}
 
 	public AsyncTwitterWrapper getTwitterWrapper() {
