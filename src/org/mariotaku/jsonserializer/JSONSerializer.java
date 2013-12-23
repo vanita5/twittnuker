@@ -5,7 +5,6 @@ import android.content.Context;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.Utils;
 
@@ -28,6 +27,7 @@ public class JSONSerializer {
 
 	public static <T extends JSONParcelable> T[] arrayFromJSON(final JSONParcelable.Creator<T> creator,
 			final JSONArray json) {
+		if (creator == null) throw new NullPointerException("JSON_CREATOR must not be null!");
 		if (json == null) return null;
 		final int size = json.length();
 		final T[] list = creator.newArray(size);
@@ -58,6 +58,7 @@ public class JSONSerializer {
 	}
 
 	public static <T extends JSONParcelable> T[] fromJSON(final JSONParcelable.Creator<T> creator, final JSONArray json) {
+		if (creator == null) throw new NullPointerException("JSON_CREATOR must not be null!");
 		if (json == null) return null;
 		final int size = json.length();
 		final T[] array = creator.newArray(size);
@@ -68,6 +69,7 @@ public class JSONSerializer {
 	}
 
 	public static <T extends JSONParcelable> T fromJSON(final JSONParcelable.Creator<T> creator, final JSONObject json) {
+		if (creator == null) throw new NullPointerException("JSON_CREATOR must not be null!");
 		if (json == null) return null;
 		return creator.createFromParcel(new JSONParcel(json));
 	}
@@ -95,8 +97,8 @@ public class JSONSerializer {
 		reader.close();
 		try {
 			final JSONObject json = new JSONObject(buf.toString());
-			final JSONParcelable.Creator<T> creator = getCreator(json.optString(KEY_CLASS));
-			return listFromJSON(creator, json.optJSONArray(KEY_OBJECT));
+			final JSONParcelable.Creator<T> creator = getCreator(json.getString(KEY_CLASS));
+			return listFromJSON(creator, json.getJSONArray(KEY_OBJECT));
 		} catch (final JSONException e) {
 			throw new IOException();
 		}
@@ -104,6 +106,7 @@ public class JSONSerializer {
 
 	public static <T extends JSONParcelable> List<T> listFromJSON(final JSONParcelable.Creator<T> creator,
 			final JSONArray json) {
+		if (creator == null) throw new NullPointerException("JSON_CREATOR must not be null!");
 		if (json == null) return null;
 		final int size = json.length();
 		final List<T> list = new ArrayList<T>(size);

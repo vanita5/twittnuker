@@ -5,13 +5,15 @@
 
 	<PreferenceCategory
 		android:key="cat_theme_preview"
-		android:title="@string/preview">
+		android:title="@string/preview"
+		android:order="11">
 		<de.vanita5.twittnuker.preference.ThemePreviewPreference android:key="theme_preview"/>
 	</PreferenceCategory>
 
 	<de.vanita5.twittnuker.preference.AutoInvalidateListPreference
 		android:defaultValue="twidere"
 		android:entries="@array/entries_theme"
+		android:order="21"
 		android:entryValues="@array/values_theme"
 		android:key="theme"
 		android:summary="%s"
@@ -19,6 +21,7 @@
 	<de.vanita5.twittnuker.preference.AutoInvalidateListPreference
 		android:defaultValue="default"
 		android:entries="@array/entries_theme_background"
+		android:order="22"
 		android:entryValues="@array/values_theme_background"
 		android:key="theme_background"
 		android:summary="%s"
@@ -27,6 +30,7 @@
 	<de.vanita5.twittnuker.preference.ValueDependencyCheckBoxPreference
 		android:defaultValue="true"
 		android:key="theme_dark_actionbar"
+		android:order="23"
 		android:title="@string/theme_dark_actionbar"
 		app:dependencyKey="theme"
 		app:dependencyValueDefault="twidere"
@@ -35,6 +39,7 @@
 	<de.vanita5.twittnuker.preference.ColorPickerPreference
 		android:defaultValue="@android:color/holo_blue_dark"
 		android:key="theme_color"
+		android:order="24"
 		android:title="@string/theme_color"/>
 
 </PreferenceScreen>

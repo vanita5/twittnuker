@@ -27,13 +27,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
+import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.widget.ListView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 
-public class NotificationTypePreference extends ValueDependencyDialogPreference implements Constants {
+public class NotificationTypePreference extends DialogPreference implements Constants {
 
 	private final int mDefaultValue;
 

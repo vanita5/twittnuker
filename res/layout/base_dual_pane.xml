@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<de.vanita5.twittnuker.view.SlidingPaneView xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:twittnuker="http://schemas.android.com/apk/res/de.vanita5.twittnuker"
-	android:id="@+id/sliding_pane"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	twittnuker:paneFadeType="both"
-	twittnuker:paneLayoutLeft="@layout/base_pane_left_content"
-	twittnuker:paneLayoutRight="@layout/base_pane_right_content"
-	twittnuker:paneShadowDrawable="@drawable/shadow_holo"
-	twittnuker:paneShadowSlidable="@bool/shadow_slidable"
-	twittnuker:paneShadowWidth="@dimen/default_dualpane_shadow_width"
-	twittnuker:paneSpacingLeft="@dimen/pane_spacing_left"
-	twittnuker:paneSpacingRight="@dimen/pane_spacing_right"/>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:twittnuker="http://schemas.android.com/apk/res/de.vanita5.twittnuker">
+
+        <de.vanita5.twittnuker.view.SlidingPaneView
+                android:id="@+id/sliding_pane"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                twittnuker:paneFadeType="both"
+                twittnuker:paneLayoutLeft="@layout/base_pane_left_content"
+                twittnuker:paneLayoutRight="@layout/base_pane_right_content"
+                twittnuker:paneShadowDrawable="@drawable/shadow_holo"
+                twittnuker:paneShadowSlidable="@bool/shadow_slidable"
+                twittnuker:paneShadowWidth="@dimen/default_dualpane_shadow_width"
+                twittnuker:paneSpacingLeft="@dimen/pane_spacing_left"
+                twittnuker:paneSpacingRight="@dimen/pane_spacing_right"/>
+
+</merge>

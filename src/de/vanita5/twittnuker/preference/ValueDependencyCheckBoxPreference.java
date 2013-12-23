@@ -45,6 +45,12 @@ public class ValueDependencyCheckBoxPreference extends CheckBoxPreference implem
 			updateEnableState();
 		}
 	}
+	
+	@Override
+	protected void notifyHierarchyChanged() {
+		super.notifyHierarchyChanged();
+		updateEnableState();
+	}
 
 	@Override
 	protected void onAttachedToHierarchy(final PreferenceManager preferenceManager) {

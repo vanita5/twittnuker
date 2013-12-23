@@ -101,6 +101,7 @@ import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 
 import org.apache.http.NameValuePair;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.mariotaku.gallery3d.ImageViewerGLActivity;
 import org.mariotaku.jsonserializer.JSONSerializer;
 import org.mariotaku.querybuilder.AllColumns;
@@ -2083,6 +2084,8 @@ public final class Utils implements Constants {
 				return getErrorMessage(context, action, context.getString(R.string.network_error));
 		} else if (te.getCause() instanceof IOException)
 			return getErrorMessage(context, action, context.getString(R.string.network_error));
+		else if (te.getCause() instanceof JSONException)
+			return getErrorMessage(context, action, context.getString(R.string.api_data_corrupted));
 		else
 			return getErrorMessage(context, action, trimLineBreak(te.getMessage()));
 	}
@@ -3482,20 +3485,38 @@ public final class Utils implements Constants {
 				favorite.setTitle(R.string.favorite);
 			}
 		}
-		final MenuItem moreItem = menu.findItem(R.id.more_submenu);
-		final Menu moreSubmenu = moreItem != null && moreItem.hasSubMenu() ? moreItem.getSubMenu() : menu;
-		moreSubmenu.removeGroup(MENU_GROUP_STATUS_EXTENSION);
+		menu.removeGroup(MENU_GROUP_STATUS_EXTENSION);
 		final Intent extensionIntent = new Intent(INTENT_ACTION_EXTENSION_OPEN_STATUS);
 		extensionIntent.setExtrasClassLoader(context.getClassLoader());
 		extensionIntent.putExtra(EXTRA_STATUS, status);
-		addIntentToMenu(context, moreSubmenu, extensionIntent, MENU_GROUP_STATUS_EXTENSION);
-		final MenuItem share_item = menu.findItem(R.id.share_submenu);
-		final Menu shareSubmenu = share_item != null && share_item.hasSubMenu() ? share_item.getSubMenu() : null;
+		addIntentToMenu(context, menu, extensionIntent, MENU_GROUP_STATUS_EXTENSION);
+		final MenuItem shareItem = menu.findItem(R.id.share_submenu);
+		final Menu shareSubmenu = shareItem != null && shareItem.hasSubMenu() ? shareItem.getSubMenu() : null;
 		if (shareSubmenu != null) {
 			final Intent shareIntent = createStatusShareIntent(context, status);
 			shareSubmenu.removeGroup(MENU_GROUP_STATUS_SHARE);
 			addIntentToMenu(context, shareSubmenu, shareIntent, MENU_GROUP_STATUS_SHARE);
 		}
+	}
+	
+	public static boolean truncateMessages(final List<DirectMessage> in, final List<DirectMessage> out, final long since_id) {
+		for (final DirectMessage message : in) {
+			if (since_id > 0 && message.getId() <= since_id) {
+				continue;
+			}
+			out.add(message);
+		}
+		return in.size() != out.size();
+	}
+
+	public static boolean truncateStatuses(final List<twitter4j.Status> in, final List<twitter4j.Status> out, final long since_id) {
+		for (final twitter4j.Status status : in) {
+			if (since_id > 0 && status.getId() <= since_id) {
+				continue;
+			}
+			out.add(status);
+		}
+		return in.size() != out.size();
 	}
 
 	public static void setMenuItemAvailability(final Menu menu, final int id, final boolean available) {
