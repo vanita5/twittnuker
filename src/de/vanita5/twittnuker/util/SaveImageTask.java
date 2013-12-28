@@ -105,12 +105,11 @@ public class SaveImageTask extends AsyncTask<Void, Void, File> implements Consta
 			if (extension == null) return null;
 			final String name_to_save = name.indexOf(".") != -1 ? name : name + "." + extension;
 			final File pub_dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-			if (pub_dir == null) return null;
 			final File save_dir = new File(pub_dir, "Twittnuker");
 			if (!save_dir.isDirectory() && !save_dir.mkdirs()) return null;
 			final File save_file = new File(save_dir, name_to_save);
 			FileUtils.copyFile(image_file, save_file);
-			if (save_file != null && mime_type != null) {
+			if (mime_type != null) {
 				MediaScannerConnection.scanFile(context, new String[] { save_file.getPath() },
 						new String[] { mime_type }, null);
 			}

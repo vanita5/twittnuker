@@ -856,9 +856,7 @@ public final class Utils implements Constants {
 				}
 			}
 		}
-		if (fragment != null) {
-			fragment.setArguments(args);
-		}
+        fragment.setArguments(args);
 		return fragment;
 	}
 
@@ -3485,7 +3483,7 @@ public final class Utils implements Constants {
 		}
 		final MenuItem itemRetweetSubmenu = menu.findItem(R.id.retweet_submenu);
 		if (itemRetweetSubmenu != null) {
-			final Drawable icon = retweet.getIcon().mutate();
+			final Drawable icon = itemRetweetSubmenu.getIcon().mutate();
 			if (isMyRetweet) {
 				icon.setColorFilter(activated_color, Mode.MULTIPLY);
 			} else {

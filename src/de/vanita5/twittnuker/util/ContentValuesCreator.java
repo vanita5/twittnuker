@@ -233,7 +233,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 			values.put(Statuses.IS_VERIFIED, user.isVerified());
 			values.put(Statuses.USER_PROFILE_IMAGE_URL,
 					large_profile_image ? Utils.getBiggerTwitterProfileImage(profile_image_url) : profile_image_url);
-			values.put(CachedUsers.IS_FOLLOWING, user != null ? user.isFollowing() : false);
+            values.put(CachedUsers.IS_FOLLOWING, user.isFollowing());
 		}
 		if (status.getCreatedAt() != null) {
 			values.put(Statuses.STATUS_TIMESTAMP, status.getCreatedAt().getTime());

@@ -517,7 +517,7 @@ public final class Query {
 		appendParameter("until", until, params);
 		appendParameter("result_type", resultType, params);
 		params.add(WITH_TWITTER_USER_ID);
-		if (params != null) {
+		if (extra_params != null) {
 			for (final HttpParameter param : extra_params) {
 				params.add(param);
 			}

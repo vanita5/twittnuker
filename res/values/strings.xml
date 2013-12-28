@@ -575,6 +575,7 @@
 	<string name="livewp_daydream_enabled_message">Here\'s a little present for you, find it in your system settings :)</string>
     <string name="multi_select">Multi select</string>
     <string name="long_click_to_open_menu">Long click to open menu</string>
+    <string name="swipe_back">Swipe to close</string>
     <string name="center">Center</string>
 	<string name="contact">Contact</string>
 	<string name="mail">Mail</string>

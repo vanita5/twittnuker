@@ -185,13 +185,15 @@ public class HttpClientImpl extends HttpClientBase implements HttpClient, HttpRe
 					} else {
 						break;
 					}
-				} finally {
-					try {
-						os.close();
-					} catch (final Exception ignore) {
-					}
-				}
-			} catch (final IOException ioe) {
+                } finally {
+                    try {
+                        if (os != null) {
+                            os.close();
+                        }
+                    } catch (final IOException ignore) {
+                    }
+                }
+            } catch (final IOException ioe) {
 				// connection timeout or read timeout
 				if (retriedCount == CONF.getHttpRetryCount())
 				// throw new TwitterException(ioe.getMessage(), ioe,

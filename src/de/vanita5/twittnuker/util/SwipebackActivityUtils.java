@@ -3,6 +3,7 @@ package de.vanita5.twittnuker.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -28,6 +29,8 @@ public class SwipebackActivityUtils implements TwittnukerConstants {
 
 	public static void setActivityScreenshot(final Activity activity, final Intent target) {
 		if (activity == null || target == null) return;
+        final SharedPreferences prefs = activity.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        if (!prefs.getBoolean(PREFERENCE_KEY_SWIPE_BACK, true)) return;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(activity);
 		final SwipebackScreenshotManager sm = app.getSwipebackScreenshotManager();
 		final long key = System.currentTimeMillis();

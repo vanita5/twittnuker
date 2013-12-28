@@ -225,9 +225,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 		@Override
 		protected SingleResponse<List<ParcelableUserList>> doInBackground(final Void... params) {
 			final Twitter twitter = getTwitterInstance(mActivity, mAccountId, false);
-			if (twitter == null) {
-				SingleResponse.nullInstance();
-			}
+            if (twitter == null) return SingleResponse.nullInstance();
 			try {
 				final ResponseList<UserList> lists = twitter.getUserLists(mScreenName);
 				final List<ParcelableUserList> data = new ArrayList<ParcelableUserList>();
