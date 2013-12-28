@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.activity.support;
 
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import de.vanita5.twittnuker.Constants;
@@ -36,25 +37,30 @@ public class BaseSupportDialogActivity extends BaseSupportThemedActivity impleme
 
 	private boolean mInstanceStateSaved;
 
-	public TwittnukerApplication getTwittnukerApplication() {
-		return (TwittnukerApplication) getApplication();
+	@Override
+    public Resources getResources() {
+        return getDefaultResources();
 	}
 
 	@Override
-	public final boolean shouldOverrideActivityAnimation() {
-		// Dialog theme should never use custom animations
-		return false;
-	}
-
-	@Override
-	protected int getThemeColor() {
+	public int getThemeColor() {
 		return ThemeUtils.getThemeColor(this);
 	}
 
 	@Override
-	protected int getThemeResource() {
+	public int getThemeResource() {
 		return ThemeUtils.getDialogThemeResource(this);
 	}
+
+    public TwittnukerApplication getTwittnukerApplication() {
+        return (TwittnukerApplication) getApplication();
+    }
+
+    @Override
+    public final boolean shouldOverrideActivityAnimation() {
+        // Dialog theme should never use custom animations
+        return false;
+    }
 
 	protected boolean isStateSaved() {
 		return mInstanceStateSaved;

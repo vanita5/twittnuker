@@ -34,17 +34,17 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class ColorPickerDialogActivity extends BaseSupportDialogActivity implements OnColorSelectedListener {
 
+    @Override
+    public int getThemeResource() {
+        return ThemeUtils.getNoDisplayThemeResource(this);
+    }
+
 	@Override
 	public void onColorSelected(final int color) {
 		final Intent intent = new Intent();
 		intent.putExtra(EXTRA_COLOR, color);
 		setResult(RESULT_OK, intent);
 		finish();
-	}
-
-	@Override
-	protected int getThemeResource() {
-		return ThemeUtils.getNoDisplayThemeResource(this);
 	}
 
 	@Override

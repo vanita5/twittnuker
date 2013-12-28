@@ -37,16 +37,18 @@ import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 
 	protected final Activity activity;
+    protected final MultiSelectManager manager;
 
-	public OnLinkClickHandler(final Context context) {
+    public OnLinkClickHandler(final Context context, final MultiSelectManager manager) {
 		activity = context instanceof Activity ? (Activity) context : null;
+        this.manager = manager;
 	}
 
 	@Override
 	public void onLinkClick(final String link, final String orig, final long account_id, final int type,
 			final boolean sensitive) {
 		
-		if (activity == null) return;
+		if (activity == null || manager.isActive()) return;
 		switch (type) {
 			case TwidereLinkify.LINK_TYPE_MENTION: {
 				openUserProfile(activity, account_id, -1, link);
@@ -88,6 +90,7 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 	}
 
 	protected void openLink(final String link) {
+        if (activity == null || manager.isActive()) return;
 		final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		activity.startActivity(intent);

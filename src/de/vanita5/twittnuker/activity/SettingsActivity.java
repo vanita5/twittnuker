@@ -54,6 +54,16 @@ public class SettingsActivity extends BaseThemedPreferenceActivity {
 		return mAdapter = new HeaderAdapter(this);
 	}
 
+    @Override
+    public int getThemeColor() {
+        return ThemeUtils.getUserThemeColor(this);
+    }
+
+    @Override
+    public int getThemeResource() {
+        return ThemeUtils.getThemeResource(this);
+    }
+
 	@Override
 	public void onBuildHeaders(final List<Header> target) {
 		loadHeadersFromResource(R.xml.settings_headers, target);
@@ -97,16 +107,6 @@ public class SettingsActivity extends BaseThemedPreferenceActivity {
 	public void switchToHeader(final String fragmentName, final Bundle args) {
 		if (fragmentName == null) return;
 		super.switchToHeader(fragmentName, args);
-	}
-
-	@Override
-	protected int getThemeColor() {
-		return ThemeUtils.getUserThemeColor(this);
-	}
-
-	@Override
-	protected int getThemeResource() {
-		return ThemeUtils.getThemeResource(this);
 	}
 
 	@Override

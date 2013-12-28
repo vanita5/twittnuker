@@ -199,6 +199,16 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	}
 
+    @Override
+    public Resources getResources() {
+        return getThemedResources();
+    }
+
+    @Override
+    public int getThemeResource() {
+        return getComposeThemeResource(this);
+    }
+
 	public boolean handleMenuItem(final MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_TAKE_PHOTO: {
@@ -530,11 +540,6 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	}
 
 	@Override
-	protected int getThemeResource() {
-		return getComposeThemeResource(this);
-	}
-
-	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		// requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
@@ -816,23 +821,19 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		return true;
 	}
 
-	private boolean handleReplyMultipleIntent(final String[] screen_names, final long account_id, final long in_reply_to_status_id) {
-		if (screen_names == null || screen_names.length == 0 || account_id <= 0)
-			return false;
-		final String my_screen_name = getAccountScreenName(this, account_id);
-		if (isEmpty(my_screen_name))
-			return false;
-		final int selection_start = mEditText.length();
-		for (final String screen_name : screen_names) {
-			if (screen_name.equalsIgnoreCase(my_screen_name)) {
+    private boolean handleReplyMultipleIntent(final String[] screenNames, final long accountId, final long inReplyToStatusId) {
+        if (screenNames == null || screenNames.length == 0 || accountId <= 0) return false;
+        final String myScreenName = getAccountScreenName(this, accountId);
+        if (isEmpty(myScreenName)) return false;
+        for (final String screenName : screenNames) {
+              if (screenName.equalsIgnoreCase(myScreenName)) {
 				continue;
 			}
-			mEditText.append("@" + screen_name + " ");
+            mEditText.append("@" + screenName + " ");
 		}
-		final int selection_end = mEditText.length();
-		mEditText.setSelection(selection_start, selection_end);
-		mSendAccountIds = new long[] { account_id };
-		mInReplyToStatusId = in_reply_to_status_id;
+        mEditText.setSelection(mEditText.length());
+        mSendAccountIds = new long[] { accountId };
+        mInReplyToStatusId = inReplyToStatusId;
 		return true;
 	}
 

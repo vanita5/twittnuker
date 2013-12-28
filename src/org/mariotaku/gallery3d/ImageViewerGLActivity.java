@@ -304,7 +304,7 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 	}
 
 	@Override
-	protected int getThemeResource() {
+	public int getThemeResource() {
 		return ThemeUtils.getViewerThemeResource(this);
 	}
 

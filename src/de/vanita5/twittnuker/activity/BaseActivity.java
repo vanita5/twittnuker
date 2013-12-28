@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.activity;
 
 import android.annotation.SuppressLint;
-import android.content.res.Resources;
 import android.os.Bundle;
 
 import de.vanita5.twittnuker.Constants;
@@ -38,13 +37,18 @@ public class BaseActivity extends BaseThemedActivity implements Constants {
 
 	private boolean mInstanceStateSaved, mIsVisible, mIsOnTop;
 
+    public MessagesManager getMessagesManager() {
+        return getTwidereApplication() != null ? getTwidereApplication().getMessagesManager() : null;
+    }
+
 	@Override
-	public Resources getDefaultResources() {
-		return super.getResources();
+    public int getThemeColor() {
+        return ThemeUtils.getUserThemeColor(this);
 	}
 
-	public MessagesManager getMessagesManager() {
-		return getTwidereApplication() != null ? getTwidereApplication().getMessagesManager() : null;
+    @Override
+    public int getThemeResource() {
+        return ThemeUtils.getThemeResource(this);
 	}
 
 	public TwittnukerApplication getTwidereApplication() {
@@ -65,16 +69,6 @@ public class BaseActivity extends BaseThemedActivity implements Constants {
 
 	protected BasePullToRefreshListFragment getCurrentPullToRefreshFragment() {
 		return null;
-	}
-
-	@Override
-	protected int getThemeColor() {
-		return ThemeUtils.getUserThemeColor(this);
-	}
-
-	@Override
-	protected int getThemeResource() {
-		return ThemeUtils.getThemeResource(this);
 	}
 
 	protected boolean isStateSaved() {

@@ -49,6 +49,7 @@ import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
+import de.vanita5.twittnuker.util.Utils;
 
 import java.util.Collections;
 import java.util.List;
@@ -226,10 +227,20 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 		configBaseCardAdapter(getActivity(), mAdapter);
 	}
 
-	@Override
-	public void onStart() {
-		super.onStart();
-		mMultiSelectManager.registerCallback(this);
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMultiSelectManager.registerCallback(this);
+        final int choiceMode = mListView.getChoiceMode();
+        if (mMultiSelectManager.isActive()) {
+            if (choiceMode != ListView.CHOICE_MODE_MULTIPLE) {
+                mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+            }
+        } else {
+            if (choiceMode != ListView.CHOICE_MODE_NONE) {
+                Utils.clearListViewChoices(mListView);
+            }
+        }
 	}
 
 	@Override

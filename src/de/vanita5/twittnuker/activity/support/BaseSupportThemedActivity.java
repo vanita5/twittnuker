@@ -33,6 +33,22 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 		return super.getResources();
 	}
 
+    @Override
+    public Resources getResources() {
+        return getThemedResources();
+    }
+
+    @Override
+    public abstract int getThemeColor();
+
+    @Override
+    public final Resources getThemedResources() {
+        return super.getResources();
+    }
+
+    @Override
+    public abstract int getThemeResource();
+
 	@Override
 	public void navigateUpFromSameTask() {
 		NavUtils.navigateUpFromSameTask(this);
@@ -52,10 +68,6 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 	public boolean shouldOverrideActivityAnimation() {
 		return true;
 	}
-
-	protected abstract int getThemeColor();
-
-	protected abstract int getThemeResource();
 
 	protected final boolean isThemeChanged() {
 		return getThemeResource() != mCurrentThemeResource || getThemeColor() != mCurrentThemeColor;
