@@ -208,7 +208,7 @@ public class LongSparseArray<E> implements Cloneable {
 	 * no such mapping has been made.
 	 */
 	@SuppressWarnings("unchecked")
-	private E get(final long key, final E valueIfKeyNotFound) {
+	public E get(final long key, final E valueIfKeyNotFound) {
 		final int i = binarySearch(mKeys, 0, mSize, key);
 
 		if (i < 0 || mValues[i] == DELETED)

@@ -46,7 +46,6 @@ import twitter4j.User;
 import twitter4j.UserList;
 import twitter4j.UserStreamListener;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
-import android.R;
 import android.app.ActionBar;
 import android.app.Notification;
 import android.app.NotificationManager;

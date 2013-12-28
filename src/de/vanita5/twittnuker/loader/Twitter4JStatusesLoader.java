@@ -20,6 +20,7 @@
 package de.vanita5.twittnuker.loader;
 
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.Utils.truncateStatuses;
 
 import android.content.Context;
 import android.content.SharedPreferences;

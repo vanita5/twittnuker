@@ -2117,9 +2117,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				final String deleteWhere = Where.and(accountWhere, statusWhere).getSQL();
 				final Uri deleteUri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY, false));
 				final int rowsDeleted = mResolver.delete(deleteUri, deleteWhere, null);
-				// UCD
-				ProfilingUtil.profile(mContext, account_id,
-						"Download tweets, " + ArrayUtils.toString(statusIds, ',', true));
 				all_statuses.addAll(Arrays.asList(values));
 				// Insert previously fetched items.
 				final Uri insertUri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY, notify));

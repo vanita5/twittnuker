@@ -86,7 +86,7 @@ import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.ImagePreloader;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
-import de.vanita5.twittnuker.util.NoDuplicatesCopyOnWriteArrayList;
+import de.vanita5.twittnuker.util.collection.NoDuplicatesCopyOnWriteArrayList;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.PermissionsManager;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder;

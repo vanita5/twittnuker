@@ -47,6 +47,9 @@ import static de.vanita5.twittnuker.util.Utils.getStatusTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.openImageDirectly;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
+import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
+
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -105,6 +108,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 
 import org.mariotaku.menubar.MenuBar;
+import org.mariotaku.gallery3d.util.LongSparseArray;
 import org.mariotaku.popupmenu.PopupMenu;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -128,6 +132,7 @@ import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.ComposeTextCountView;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
+import de.vanita5.twittnuker.adapter.BaseArrayAdapter;
 
 import java.io.File;
 import java.io.InputStream;
@@ -1139,7 +1144,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 				dismiss();
 				return;
 			}
-			final TwidereApplication application = getApplication();
+			final TwittnukerApplication application = getApplication();
 			final ImageLoaderWrapper loader = application.getImageLoaderWrapper();
 			final SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 			final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
