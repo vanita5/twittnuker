@@ -62,6 +62,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
@@ -82,7 +83,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -90,7 +90,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -149,13 +148,16 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	private static final String EXTRA_SHOULD_SAVE_ACCOUNTS = "should_save_accounts";
 
 	private static final String EXTRA_ORIGINAL_TEXT = "original_text";
+
+    private final Validator mValidator = new Validator();
+    private final Extractor mExtractor = new Extractor();
+
 	private AsyncTwitterWrapper mTwitterWrapper;
 	private LocationManager mLocationManager;
 	private SharedPreferences mPreferences;
 
 	private ParcelableLocation mRecentLocation;
 	private ContentResolver mResolver;
-	private final Validator mValidator = new Validator();
 	private ImageLoaderWrapper mImageLoader;
 	private AsyncTask<Void, Void, ?> mTask;
 	private PopupMenu mPopupMenu;
@@ -168,6 +170,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	private ProgressBar mProgress;
 	private Gallery mAccountSelector;
 	private View mAccountSelectorDivider, mBottomSendDivider;
+    private View mBottomMenuContainer;
 
 	private AccountSelectorAdapter mAccountSelectorAdapter;
 
@@ -399,7 +402,8 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		mTitleView = (TextView) findViewById(R.id.actionbar_title);
 		mSubtitleView = (TextView) findViewById(R.id.actionbar_subtitle);
 		mImageThumbnailPreview = (ImageView) findViewById(R.id.image_thumbnail_preview);
-		mBottomMenuBar = (MenuBar) findViewById(R.id.menu_bar);
+		mBottomMenuBar = (MenuBar) findViewById(R.id.bottom_menu);
+        mBottomMenuContainer = findViewById(R.id.bottom_menu_container);
 		mActionMenuBar = (MenuBar) findViewById(R.id.action_menu);
 		mProgress = (ProgressBar) findViewById(R.id.actionbar_progress_indeterminate);
 		mAccountSelectorDivider = findViewById(R.id.account_selector_divider);
@@ -610,7 +614,6 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		mBottomMenuBar.setVisibility(useBottomMenu ? View.VISIBLE : View.GONE);
 		mActionMenuBar.setVisibility(useBottomMenu ? View.GONE : View.VISIBLE);
 		mSendView.setVisibility(bottomSendButton ? View.GONE : View.VISIBLE);
-		mAccountSelectorDivider.setVisibility(bottomSendButton ? View.GONE : View.VISIBLE);
 		mBottomSendDivider.setVisibility(bottomSendButton ? View.VISIBLE : View.GONE);
 		mBottomSendView.setVisibility(bottomSendButton ? View.VISIBLE : View.GONE);
 		mSendView.setOnLongClickListener(this);
@@ -623,27 +626,29 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			final Intent image_extensions_intent = new Intent(INTENT_ACTION_EXTENSION_EDIT_IMAGE);
 			addIntentToMenu(this, showingMenu, image_extensions_intent, MENU_GROUP_IMAGE_EXTENSION);
 		}
-		setMenu();
-		updateAccountSelection();
-		final LinearLayout.LayoutParams bottomMenuParams = (LayoutParams) mBottomMenuBar.getLayoutParams();
-		final LinearLayout.LayoutParams accountSelectorParams = (LayoutParams) mAccountSelector.getLayoutParams();
+		final LinearLayout.LayoutParams bottomMenuContainerParams = (LinearLayout.LayoutParams) mBottomMenuContainer.getLayoutParams();
+        final LinearLayout.LayoutParams accountSelectorParams = (LinearLayout.LayoutParams) mAccountSelector.getLayoutParams();
+        final int maxItemsShown;
+        final Resources res = getResources();
 		if (isSingleAccount()) {
-			// mAccountSelectorDivider.setVisibility(View.GONE);
-			// mAccountSelector.setVisibility(View.GONE);
 			accountSelectorParams.weight = 0;
 			accountSelectorParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-			bottomMenuParams.weight = 1;
-			bottomMenuParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            bottomMenuContainerParams.weight = 1;
+            bottomMenuContainerParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            maxItemsShown = res.getInteger(R.integer.max_compose_menu_buttons_bottom_singleaccount);
+            mAccountSelectorDivider.setVisibility(View.VISIBLE);
 		} else {
-			// mAccountSelectorDivider.setVisibility(View.VISIBLE);
-			// mAccountSelector.setVisibility(View.VISIBLE);
 			accountSelectorParams.weight = 1;
 			accountSelectorParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-			bottomMenuParams.weight = 0;
-			bottomMenuParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            bottomMenuContainerParams.weight = 0;
+            bottomMenuContainerParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            maxItemsShown = res.getInteger(R.integer.max_compose_menu_buttons_bottom);
+            mAccountSelectorDivider.setVisibility(bottomSendButton ? View.GONE : View.VISIBLE);
 		}
-		mBottomMenuBar.setLayoutParams(bottomMenuParams);
-	}
+        mBottomMenuBar.setMaxItemsShown(maxItemsShown);
+        setMenu();
+        updateAccountSelection();
+    }
 
 	@Override
 	protected void onStart() {
@@ -789,19 +794,21 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	}
 
 	private boolean handleReplyIntent(final ParcelableStatus status) {
-		if (status == null || status.id <= 0)
-			return false;
-		final String my_screen_name = getAccountScreenName(this, status.account_id);
-		if (isEmpty(my_screen_name))
-			return false;
-		final Set<String> mentions = new Extractor().extractMentionedScreennames(status.text_plain);
+		if (status == null || status.id <= 0) return false;
+        final String myScreenName = getAccountScreenName(this, status.account_id);
+        if (isEmpty(myScreenName)) return false;
 		mEditText.append("@" + status.user_screen_name + " ");
 		final int selection_start = mEditText.length();
-		for (final String screen_name : mentions) {
-			if (screen_name.equalsIgnoreCase(status.user_screen_name) || screen_name.equalsIgnoreCase(my_screen_name)) {
+        if (!isEmpty(status.retweeted_by_screen_name)) {
+            mEditText.append("@" + status.retweeted_by_screen_name + " ");
+        }
+        final Set<String> mentions = mExtractor.extractMentionedScreennames(status.text_plain);
+        for (final String mention : mentions) {
+            if (mention.equalsIgnoreCase(status.user_screen_name) || mention.equalsIgnoreCase(myScreenName)
+                    || mention.equalsIgnoreCase(status.retweeted_by_screen_name)) {
 				continue;
 			}
-			mEditText.append("@" + screen_name + " ");
+            mEditText.append("@" + mention + " ");
 		}
 		final int selection_end = mEditText.length();
 		mEditText.setSelection(selection_start, selection_end);

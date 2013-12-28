@@ -1,6 +1,7 @@
 package org.mariotaku.menubar;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.mariotaku.internal.menu.MenuUtils;
 import org.mariotaku.popupmenu.PopupMenu;
@@ -121,7 +122,7 @@ public class MenuBar extends LinearLayout implements MenuItem.OnMenuItemClickLis
 				itemsNotShowing.add(item);
 			}
 		}
-		if (!itemsNotShowing.isEmpty()) {
+		if (hasVisibleItems(itemsNotShowing)) {
 			addViewToMenuBar(createMoreOverflowButton(itemsNotShowing));
 		}
 		for (int i = 0, childCount = getChildCount(); i < childCount; i++) {
@@ -197,6 +198,13 @@ public class MenuBar extends LinearLayout implements MenuItem.OnMenuItemClickLis
 		return view;
 	}
 
+    private static boolean hasVisibleItems(final List<MenuItem> menuItems) {
+        for (final MenuItem item : menuItems) {
+            if (item.isVisible()) return true;
+        }
+        return false;
+    }
+
 	private boolean isBottomBar() {
 		return mIsBottomBar;
 	}
@@ -257,7 +265,7 @@ public class MenuBar extends LinearLayout implements MenuItem.OnMenuItemClickLis
 
 		@Override
 		public void onClick(final View actionView) {
-			if (menuItems.isEmpty()) return;
+			if (!hasVisibleItems(menuItems)) return;
 			final PopupMenu popupMenu = PopupMenu.getInstance(actionView.getContext(), actionView);
 			popupMenu.setOnMenuItemClickListener(menuBar);
 			popupMenu.setMenu(MenuUtils.createMenu(menuBar.getContext(), menuItems));

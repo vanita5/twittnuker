@@ -29,12 +29,16 @@ import static de.vanita5.twittnuker.util.Utils.cleanDatabasesByItemLimit;
 import static de.vanita5.twittnuker.util.Utils.createFragmentForIntent;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
+import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
+import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
 import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
+import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.vanita5.twittnuker.util.Utils;
 import twitter4j.DirectMessage;
 import twitter4j.StallWarning;
 import twitter4j.Status;
@@ -61,7 +65,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.database.ContentObserver;
-import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -86,12 +89,10 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.CursorAdapter;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -123,7 +124,6 @@ import de.vanita5.twittnuker.util.SmartBarUtils;
 import de.vanita5.twittnuker.util.SwipebackActivityUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UnreadCountUtils;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.ExtendedViewPager;
 import de.vanita5.twittnuker.view.LeftDrawerFrameLayout;
@@ -200,7 +200,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	
 	private boolean mBottomComposeButton;
 
-	private boolean mTabDisplayLabel;
+    private int mTabDisplayOption;
 	private boolean mStreaming = false;
 	protected boolean hasStreamLoaded = false;
 	
@@ -338,7 +338,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	public boolean onLongClick(final View v) {
 		switch (v.getId()) {
 			case R.id.home_actions_item: {
-				Utils.showMenuItemToast(v, v.getContentDescription(), false);
+                showMenuItemToast(v, v.getContentDescription(), false);
 				return true;
 			}
 		}
@@ -500,7 +500,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		mBottomComposeButton = isBottomComposeButton();
 		setUiOptions(getWindow());
 		super.onCreate(savedInstanceState);
-		if (!Utils.isDatabaseReady(this)) {
+		if (!isDatabaseReady(this)) {
 			Toast.makeText(this, R.string.preparing_database_toast, Toast.LENGTH_SHORT).show();
 			finish();
 			return;
@@ -528,8 +528,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		}
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONCREATE));
 		final boolean refreshOnStart = mPreferences.getBoolean(PREFERENCE_KEY_REFRESH_ON_START, false);
-		final boolean defDisplayLabel = res.getBoolean(R.bool.default_display_tab_label);
-		mTabDisplayLabel = mPreferences.getBoolean(PREFERENCE_KEY_DISPLAY_TAB_LABEL, defDisplayLabel);
+        mTabDisplayOption = getTabDisplayOptionInt(this);
 		final int initialTabPosition = handleIntent(intent, savedInstanceState == null);
 		mActionBar = getActionBar();
 		if (SmartBarUtils.hasSmartBar()) {
@@ -547,7 +546,13 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		mViewPager.setOffscreenPageLimit(3);
 		mIndicator.setViewPager(mViewPager);
 		mIndicator.setOnPageChangeListener(this);
-		mIndicator.setDisplayLabel(mTabDisplayLabel);
+        if (mTabDisplayOption != 0) {
+            mIndicator.setDisplayLabel((mTabDisplayOption & TAB_DIPLAY_OPTION_CODE_LABEL) != 0);
+            mIndicator.setDisplayIcon((mTabDisplayOption & TAB_DIPLAY_OPTION_CODE_ICON) != 0);
+        } else {
+            mIndicator.setDisplayLabel(false);
+            mIndicator.setDisplayIcon(true);
+        }
 		mActionsButtonLayout.setOnClickListener(this);
 		initTabs();
 		final boolean tabsNotEmpty = mPagerAdapter.getCount() > 0;
@@ -667,7 +672,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
 		registerReceiver(mStateReceiver, filter);
 		if (isTabsChanged(getHomeTabs(this)) || mBottomComposeButton != isBottomComposeButton()
-				|| mPreferences.getBoolean(PREFERENCE_KEY_DISPLAY_TAB_LABEL, mTabDisplayLabel) != mTabDisplayLabel) {
+				|| getTabDisplayOptionInt(this) != mTabDisplayOption) {
 			restart();
 		}
 		updateUnreadCount();
