@@ -1,0 +1,57 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.7.1'
+    }
+}
+
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://github.com/vanita5/mvn-repo/raw/master/'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
+    compile 'com.mobeta.android.dslv:drag-sort-listview:0.6.1'
+    compile 'com.jeremyfeinstein.slidingmenu:slidingmenu:1.3-SNAPSHOT'
+    compile 'com.google.android.gms:play-services:4.0.30'
+    compile 'com.android.support:support-v13:19.0.0'
+    compile 'ch.acra:acra:4.5.0'
+    compile 'com.google.android.apps.dashclock:dashclock-api:2.0.0'
+    compile 'org.apache.httpcomponents:httpmime:4.2.1'
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.0"
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+
+    //Workaround
+    //https://code.google.com/p/android/issues/detail?id=61573
+    packagingOptions {
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE.txt'
+    }
+}
