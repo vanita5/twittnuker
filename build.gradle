@@ -27,6 +27,7 @@ dependencies {
     compile 'ch.acra:acra:4.5.0'
     compile 'com.google.android.apps.dashclock:dashclock-api:2.0.0'
     compile 'org.apache.httpcomponents:httpmime:4.2.1'
+    compile 'com.negusoft:holoaccent:0.9'
 }
 
 android {
