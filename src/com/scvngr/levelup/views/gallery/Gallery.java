@@ -179,7 +179,6 @@ public final class Gallery extends AbsSpinner implements GestureDetector.OnGestu
 	private boolean mIsRtl = true;
 
 	private boolean mScrollToChildAfterItemClickEnabled;
-	private boolean mScrollWhenChildsLesserThanItems;
 	private boolean mRightSpacingEnabled;
 
 	/**
@@ -214,7 +213,6 @@ public final class Gallery extends AbsSpinner implements GestureDetector.OnGestu
 		mGestureDetector = new GestureDetector(context, this);
 		mGestureDetector.setIsLongpressEnabled(true);
 		setScrollAfterItemClickEnabled(true);
-		setScrollWhenChildsLesserThanItems(true);
 		setScrollRightSpacingEnabled(true);
 	}
 
@@ -504,9 +502,6 @@ public final class Gallery extends AbsSpinner implements GestureDetector.OnGestu
 		mRightSpacingEnabled = enabled;
 	}
 
-	public void setScrollWhenChildsLesserThanItems(final boolean enabled) {
-		mScrollWhenChildsLesserThanItems = enabled;
-	}
 
 	/**
 	 * Sets the spacing between items in a Gallery.
@@ -1366,8 +1361,6 @@ public final class Gallery extends AbsSpinner implements GestureDetector.OnGestu
 	void trackMotionScroll(final int deltaX) {
 
 		if (getChildCount() == 0) return;
-
-		if (!mScrollWhenChildsLesserThanItems && mAdapter != null && getChildCount() >= mAdapter.getCount()) return;
 
 		final boolean toLeft = deltaX < 0;
 
