@@ -29,7 +29,10 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 
+import com.negusoft.holoaccent.AccentHelper;
+
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.theme.TwidereAccentHelper;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -37,6 +40,7 @@ import de.vanita5.twittnuker.util.Utils;
 public abstract class BaseThemedActivity extends Activity implements IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor;
+    private AccentHelper mAccentHelper;
 
 	@Override
 	public void finish() {
@@ -45,17 +49,17 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 	}
 
 	@Override
-	public final int getCurrentThemeResource() {
+	public final int getCurrentThemeResourceId() {
 		return mCurrentThemeResource;
 	}
 
     @Override
-    public final Resources getDefaultResources() {
+    public Resources getDefaultResources() {
         return super.getResources();
     }
 
     @Override
-    public Resources getResources() {
+    public final Resources getResources() {
         return getThemedResources();
     }
 
@@ -64,11 +68,14 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 
     @Override
     public final Resources getThemedResources() {
-        return super.getResources();
+        if (mAccentHelper == null) {
+            mAccentHelper = new TwidereAccentHelper(ThemeUtils.getUserThemeColor(this));
+        }
+        return mAccentHelper.getResources(this, super.getResources());
     }
 
     @Override
-    public abstract int getThemeResource();
+    public abstract int getThemeResourceId();
 
 	@Override
 	public void navigateUpFromSameTask() {
@@ -91,7 +98,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 	}
 
 	protected final boolean isThemeChanged() {
-		return getThemeResource() != mCurrentThemeResource || getThemeColor() != mCurrentThemeColor;
+		return getThemeResourceId() != mCurrentThemeResource || getThemeColor() != mCurrentThemeColor;
 	}
 
 	@Override
@@ -125,7 +132,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 	}
 
 	private final void setTheme() {
-		mCurrentThemeResource = getThemeResource();
+		mCurrentThemeResource = getThemeResourceId();
 		mCurrentThemeColor = getThemeColor();
 		setTheme(mCurrentThemeResource);
 	}

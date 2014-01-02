@@ -72,6 +72,7 @@ import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticationExcep
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticityTokenException;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.WrongUserPassException;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.net.HttpClientImpl;
 import de.vanita5.twittnuker.view.ColorPickerView;
 
@@ -612,7 +613,8 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 
 		@Override
 		public Dialog onCreateDialog(final Bundle savedInstanceState) {
-			final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 			builder.setTitle(R.string.sign_in_method_introduction_title);
 			builder.setMessage(R.string.sign_in_method_introduction);
 			builder.setPositiveButton(android.R.string.ok, null);

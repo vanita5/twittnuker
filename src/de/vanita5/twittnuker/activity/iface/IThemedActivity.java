@@ -26,7 +26,7 @@ import android.content.res.Resources;
 
 public interface IThemedActivity {
 
-	public int getCurrentThemeResource();
+	public int getCurrentThemeResourceId();
 
 	public void navigateUpFromSameTask();
 	
@@ -36,7 +36,7 @@ public interface IThemedActivity {
 
     public Resources getThemedResources();
 
-    public int getThemeResource();
+    public int getThemeResourceId();
 
 	public void overrideCloseAnimationIfNeeded();
 

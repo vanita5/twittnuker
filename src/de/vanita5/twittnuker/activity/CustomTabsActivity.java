@@ -2,6 +2,7 @@ package de.vanita5.twittnuker.activity;
 
 import static de.vanita5.twittnuker.util.CustomTabUtils.getHomeTabs;
 
+import android.app.ActionBar;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -13,7 +14,7 @@ import de.vanita5.twittnuker.model.SupportTabSpec;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomTabsActivity extends BaseActivity {
+public class CustomTabsActivity extends BasePreferenceActivity {
 
 	private final List<SupportTabSpec> mCustomTabs = new ArrayList<SupportTabSpec>();
 
@@ -38,7 +39,11 @@ public class CustomTabsActivity extends BaseActivity {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		final FragmentManager fm = getFragmentManager();
+        final ActionBar ab = getActionBar();
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
+        final FragmentManager fm = getFragmentManager();
 		fm.beginTransaction().replace(android.R.id.content, new CustomTabsFragment()).commit();
 		initTabs();
 	}

@@ -67,6 +67,7 @@ import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredUsersFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class FiltersActivity extends BaseActivity implements TabListener, OnPageChangeListener {
 
@@ -243,10 +244,10 @@ public class FiltersActivity extends BaseActivity implements TabListener, OnPage
 
 		@Override
 		public Dialog onCreateDialog(final Bundle savedInstanceState) {
-			final Context context = getActivity();
-			final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 			buildDialog(builder);
-			final View view = LayoutInflater.from(context).inflate(R.layout.auto_complete_textview, null);
+            final View view = LayoutInflater.from(wrapped).inflate(R.layout.auto_complete_textview, null);
 			builder.setView(view);
 			mEditText = (AutoCompleteTextView) view.findViewById(R.id.edit_text);
 			final Bundle args = getArguments();

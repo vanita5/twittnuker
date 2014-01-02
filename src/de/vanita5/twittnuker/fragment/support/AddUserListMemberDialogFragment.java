@@ -2,6 +2,7 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +15,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class AddUserListMemberDialogFragment extends BaseSupportDialogFragment implements
 		DialogInterface.OnClickListener {
@@ -40,14 +42,15 @@ public class AddUserListMemberDialogFragment extends BaseSupportDialogFragment i
 
 	@Override
 	public Dialog onCreateDialog(final Bundle savedInstanceState) {
-		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		final View view = LayoutInflater.from(getActivity()).inflate(R.layout.auto_complete_textview, null);
+        final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+        final View view = LayoutInflater.from(wrapped).inflate(R.layout.auto_complete_textview, null);
 		builder.setView(view);
 		mEditText = (AutoCompleteTextView) view.findViewById(R.id.edit_text);
 		if (savedInstanceState != null) {
 			mEditText.setText(savedInstanceState.getCharSequence(EXTRA_TEXT));
 		}
-		mUserAutoCompleteAdapter = new UserHashtagAutoCompleteAdapter(getActivity());
+        mUserAutoCompleteAdapter = new UserHashtagAutoCompleteAdapter(wrapped);
 		mEditText.setAdapter(mUserAutoCompleteAdapter);
 		mEditText.setThreshold(1);
 		mEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(20) });

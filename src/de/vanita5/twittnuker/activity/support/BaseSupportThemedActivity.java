@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 
+import com.negusoft.holoaccent.AccentHelper;
+
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.theme.TwidereAccentHelper;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -16,6 +19,7 @@ import de.vanita5.twittnuker.util.Utils;
 public abstract class BaseSupportThemedActivity extends FragmentActivity implements IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor;
+    private AccentHelper mAccentHelper;
 
 	@Override
 	public void finish() {
@@ -24,7 +28,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 	}
 
 	@Override
-	public final int getCurrentThemeResource() {
+	public final int getCurrentThemeResourceId() {
 		return mCurrentThemeResource;
 	}
 	
@@ -43,11 +47,14 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 
     @Override
     public final Resources getThemedResources() {
-        return super.getResources();
+        if (mAccentHelper == null) {
+            mAccentHelper = new TwidereAccentHelper(ThemeUtils.getUserThemeColor(this));
+        }
+        return mAccentHelper.getResources(this, super.getResources());
     }
 
     @Override
-    public abstract int getThemeResource();
+    public abstract int getThemeResourceId();
 
 	@Override
 	public void navigateUpFromSameTask() {
@@ -70,7 +77,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 	}
 
 	protected final boolean isThemeChanged() {
-		return getThemeResource() != mCurrentThemeResource || getThemeColor() != mCurrentThemeColor;
+		return getThemeResourceId() != mCurrentThemeResource || getThemeColor() != mCurrentThemeColor;
 	}
 
 	@Override
@@ -105,7 +112,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 	}
 
 	private final void setTheme() {
-		mCurrentThemeResource = getThemeResource();
+		mCurrentThemeResource = getThemeResourceId();
 		mCurrentThemeColor = getThemeColor();
 		setTheme(mCurrentThemeResource);
 	}

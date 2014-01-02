@@ -32,6 +32,7 @@
   <string name="error_occurred">エラーが発生しました。もう一度お試しください。</string>
   <string name="error_already_logged_in">あなたは既にログインしています。</string>
   <string name="no_account_selected">アカウントが選択されていません。</string>
+  <string name="empty_account_selection_disallowed">最低でもひとつのアカウントを選んでください。</string>
   <string name="error_unknown_error">エラー：詳細不明、バグかもしれません…</string>
   <string name="error_message">エラー：<xliff:g id="message">%s</xliff:g></string>
   <string name="error_message_with_action"><xliff:g id="action">%1$s</xliff:g>中のエラー: <xliff:g id="message">%2$s</xliff:g></string>
@@ -98,7 +99,7 @@
   <string name="sources">クライアント</string>
   <string name="content">ツイート</string>
   <string name="customize">カスタマイズ</string>
-  <string name="set_nickname">ニックネームの設定</string>
+  <string name="set_nickname">ﾆｯｸﾈｰﾑの設定</string>
   <string name="set_color">色を設定</string>
   <string name="clear">クリア</string>
   <string name="pick_color">色を選択</string>
@@ -155,21 +156,22 @@
   <string name="proxy_port">ポート番号</string>
   <string name="block">ブロック</string>
   <string name="unblock">ブロックを解除</string>
-  <string name="report_for_spam">スパムを報告</string>
+  <string name="report_for_spam">スパム報告</string>
   <string name="mute_user">非表示にする</string>
   <string name="user_muted">このユーザーをフィルターリストに追加します。ホーム / つながり でこのユーザーのツイートを非表示にします。</string>
   <string name="users_muted">複数のユーザーをフィルターリストに追加します。ホーム / つながり でこのユーザーのツイートを非表示にします。</string>
   <string name="inbox">受信箱</string>
   <string name="load_images">画像を読み込む</string>
-  <string name="other_settings">他の設定</string>
+  <string name="other_settings">その他の設定</string>
   <string name="auto_refresh">自動更新</string>
   <string name="refresh_interval">更新間隔</string>
   <string name="content_to_refresh">更新するコンテンツ</string>
   <string name="content_to_notify">通知するコンテンツ</string>
   <string name="notifications_type">通知のタイプ</string>
   <string name="sound">音</string>
+  <string name="ringtone">通知音</string>
   <string name="vibration">バイブ</string>
-  <string name="light">LED通知</string>
+  <string name="light">LED点灯</string>
   <string name="notifications">通知</string>
   <string name="screen_name">ユーザー名</string>
   <string name="refresh_on_start">起動時に更新</string>
@@ -178,10 +180,10 @@
   <string name="refresh_after_status_updated_summary">ツイート送信後にTLとつながりを更新します。</string>
   <string name="list_timeline">リストタイムライン</string>
   <string name="list_members">リスト内アカウント</string>
-  <string name="list_subscribers">リストフォロー数</string>
+  <string name="list_subscribers">リスト保存ユーザー数</string>
   <string name="type_to_compose">メッセージを入力</string>
-  <string name="users_lists">保存しているリスト</string>
-  <string name="lists_following_user">追加されているリスト</string>
+  <string name="users_lists">保存したリスト</string>
+  <string name="lists_following_user">追加されたリスト</string>
   <string name="item_3_minutes">3分</string>
   <string name="item_5_minutes">5分</string>
   <string name="item_10_minutes">10分</string>
@@ -199,7 +201,7 @@
   <string name="trends">トレンド</string>
   <string name="accounts">アカウント</string>
   <string name="account">アカウント</string>
-  <string name="mention_this_user">このユーザー宛にツイート</string>
+  <string name="mention_this_user">この人へツイート</string>
   <string name="signing_in_please_wait">ログイン中です。しばらくお待ちください。もう一度戻るボタンを押すと終了します。</string>
   <string name="connectivity">接続</string>
   <string name="add_member">ユーザーを追加</string>
@@ -252,7 +254,7 @@
   <string name="Nitems_selected_quantity_one">1 アイテムを選択</string>
   <string name="Nitems_selected_quantity_other"><xliff:g id="items">%d</xliff:g> アイテムを選択</string>
   <string name="view">表示</string>
-  <string name="custom_host_mapping">カスタムホストマッピング</string>
+  <string name="custom_host_mapping">ホストマッピングの設定</string>
   <string name="custom_host_mapping_summary">rootedでなくても/etc/hostsのようにホストマッピングができます。</string>
   <string name="host">ホスト</string>
   <string name="address">アドレス (他のホストアドレスも可)</string>
@@ -270,6 +272,7 @@
   <string name="activity_about_me_retweet"><xliff:g id="user">%s</xliff:g>さんがあなたのツイートをリツイートしました。</string>
   <string name="activity_about_me_retweet_multi"><xliff:g id="user">%s</xliff:g> と他 <xliff:g id="count">%d</xliff:g> 人があなたのツイートをリツイートしました。</string>
   <string name="activity_about_me_list_member_added"><xliff:g id="user">%s</xliff:g>さんがあなたをリストに追加しました。</string>
+  <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g>さんがあなたをリスト"<xliff:g id="list">%2$s</xliff:g>\"\"に追加しました。</string>
   <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%s</xliff:g> と他 <xliff:g id="count">%d</xliff:g>人があなたをリストに追加しました。</string>
   <string name="activity_by_friends_favorite"><xliff:g id="user">%1$s</xliff:g>さんは<xliff:g id="target">%2$s</xliff:g>さんのツイートをお気に入りに登録しました。</string>
   <string name="activity_by_friends_favorite_multi"><xliff:g id="user">%1$s</xliff:g>さんは<xliff:g id="target">%2$s</xliff:g>さんと他<xliff:g id="count">%3$d</xliff:g>人のツイートをお気に入りに登録しました。</string>
@@ -282,7 +285,7 @@
   <string name="status_not_updated">ツイートは送信されませんでした。</string>
   <string name="status_not_updated_summary">ツイートは送信されませんでした。下書きに保存されています。</string>
   <string name="incoming_friendships">保留中のフォローリクエスト</string>
-  <string name="send_follow_request">フォローリクエストを送信する。</string>
+  <string name="send_follow_request">フォローリクエストを送信</string>
   <string name="follow_request_sent">フォローリクエストを送信しました。</string>
   <string name="separate_retweet_action">リツイートと引用の分離</string>
   <string name="separate_retweet_action_summary">リツイートと引用の両方をメニューに同時表示します。</string>
@@ -292,10 +295,12 @@
   <string name="both">両方</string>
   <string name="browser_sign_in">ブラウザでログイン</string>
   <string name="stop_auto_refresh_when_battery_low">電池残量不足時に自動更新を停止</string>
+  <string name="notification_status"><xliff:g id="user">%s</xliff:g>さんの新しいツイート</string>
+  <string name="notification_status_multiple"><xliff:g id="user">%1$s</xliff:g>さんと他<xliff:g id="count">%2$d</xliff:g>人の新しいツイート</string>
   <string name="notification_mention"><xliff:g id="user">%s</xliff:g>さんからあなた宛のツイートがあります。</string>
+  <string name="notification_mention_multiple"><xliff:g id="user">%1$s</xliff:g>と他<xliff:g id="count">%2$d</xliff:g>人からあなた宛のツイートがあります。</string>
   <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g>さんからDMが届きました。</string>
   <string name="notification_direct_message_multiple_messages"><xliff:g id="user">%1$s</xliff:g>さんはあなたに<xliff:g id="messages_count">%2$d</xliff:g>通のDMを送信しました。</string>
-  <string name="notification_mention_multiple"><xliff:g id="user">%1$s</xliff:g>と他<xliff:g id="count">%2$d</xliff:g>人からあなた宛のツイートがあります。</string>
   <string name="notification_direct_message_multiple_users"><xliff:g id="user">%1$s</xliff:g>さんと他<xliff:g id="users_count">%2$d</xliff:g>人があなたに<xliff:g id="messages_count">%3$d</xliff:g>通のDMを送信しました。</string>
   <string name="action_getting_status">ツイート取得</string>
   <string name="action_updating_status">ツイート送信</string>
@@ -320,8 +325,10 @@
   <string name="action_signing_in">ログイン</string>
   <string name="action_retweeting">リツイート</string>
   <string name="action_reporting_for_spam">スパム報告</string>
-  <string name="action_subscribing_to_list">リスト登録</string>
-  <string name="action_unsubscribing_from_list">リスト登録解除</string>
+  <string name="action_subscribing_to_list">リストの保存</string>
+  <string name="action_unsubscribing_from_list">リストの保存解除</string>
+  <string name="action_saving_search">検索の保存</string>
+  <string name="action_deleting_search">検索の削除</string>
   <string name="status_is_duplicate">既にあなたは同じツイートを送信済みです。</string>
   <string name="silent_notifications">通知を止める時間帯</string>
   <string name="silent_notifications_summary">着信音/バイブ通知を無効にします。</string>
@@ -378,6 +385,7 @@
   <string name="wrong_url_format">不正なURL形式です。</string>
   <string name="wrong_username_password">間違ったユーザー名/パスワードです。</string>
   <string name="network_error">ネットワークエラー</string>
+  <string name="api_data_corrupted">APIデータが破損しています。</string>
   <string name="ssl_error">SSLエラー、\"SSLエラーを無視\"設定をオンにしてください。</string>
   <string name="wrong_api_key">不正なAPI URLかconsumer key/secretなので修正してください。</string>
   <string name="status_updated">ツイートを送信しました。</string>
@@ -388,9 +396,14 @@
   <string name="retweet_cancelled">リツイートをキャンセルしました。</string>
   <string name="direct_message_sent">DMを送信しました。</string>
   <string name="direct_message_deleted">DMを削除しました。</string>
+  <string name="search_saved">検索を保存しました。</string>
+  <string name="search_name_saved">検索 \"<xliff:g id="name">%s</xliff:g>\"を保存しました。</string>
+  <string name="search_deleted">検索を削除しました。</string>
+  <string name="search_name_deleted">検索 \"<xliff:g id="name">%s</xliff:g>\"を削除しました。</string>
   <string name="import_from">インポート</string>
   <string name="link_to_quoted_status">引用ツイートへのリンク</string>
   <string name="followed_user"><xliff:g id="user">%s</xliff:g>さんをフォローしました。</string>
+  <string name="sent_follow_request_to_user">フォローリクエストを<xliff:g id="user">%s</xliff:g>さんに送りました。</string>
   <string name="unfollowed_user"><xliff:g id="user">%s</xliff:g>さんのフォローを解除しました。</string>
   <string name="blocked_user"><xliff:g id="user">%s</xliff:g>さんをブロックしました。</string>
   <string name="unblocked_user"><xliff:g id="user">%s</xliff:g>さんのブロックを解除しました。</string>
@@ -400,18 +413,19 @@
   <string name="created_list">リスト\"<xliff:g id="list">%s</xliff:g>\"を作成しました。</string>
   <string name="deleted_list">リスト\"<xliff:g id="list">%s</xliff:g>\"を削除しました。</string>
   <string name="updated_list_details">リスト\"<xliff:g id="list">%s</xliff:g>\"の詳細を更新しました。</string>
-  <string name="subscribed_to_list">リスト\"<xliff:g id="list">%s</xliff:g>\"に登録しました。</string>
-  <string name="unsubscribed_from_list">リスト\"<xliff:g id="list">%s</xliff:g>\"の登録を解除しました。</string>
+  <string name="subscribed_to_list">リスト\"<xliff:g id="list">%s</xliff:g>\"を保存しました。</string>
+  <string name="unsubscribed_from_list">リスト\"<xliff:g id="list">%s</xliff:g>\"の保存を解除しました。</string>
   <string name="added_N_users_to_list_quantity_one"><xliff:g id="items">%1$d</xliff:g>人のユーザーをリスト"<xliff:g id="list">%2$s</xliff:g>\"に追加しました。</string>
   <string name="added_N_users_to_list_quantity_other"><xliff:g id="items">%1$d</xliff:g>人のユーザーをリスト"<xliff:g id="list">%2$s</xliff:g>\"に追加しました。</string>
+  <string name="added_user_to_list"><xliff:g id="user">%1$s</xliff:g>さんをリスト"<xliff:g id="list">%2$s</xliff:g>\"に追加しました。</string>
   <string name="deleted_user_from_list"><xliff:g id="user">%1$s</xliff:g>さんをリスト"<xliff:g id="list">%2$s</xliff:g>\"から削除しました。</string>
   <string name="deleted_N_users_from_list_quantity_one"><xliff:g id="items">%1$d</xliff:g>人のユーザーをリスト"<xliff:g id="list">%2$s</xliff:g>\"から削除しました。</string>
   <string name="deleted_N_users_from_list_quantity_other"><xliff:g id="items">%1$d</xliff:g>人のユーザーをリスト"<xliff:g id="list">%2$s</xliff:g>\"から削除しました。</string>
   <string name="delete_user_from_list_confirm"><xliff:g id="user">%1$s</xliff:g>さんをリスト"<xliff:g id="list">%2$s</xliff:g>\"から削除しますか?</string>
   <string name="delete_N_users_from_list_confirm_quantity_one"><xliff:g id="items">%1$d</xliff:g>人のユーザーをリスト"<xliff:g id="list">%2$s</xliff:g>\"から削除しますか?</string>
   <string name="delete_N_users_from_list_confirm_quantity_other"><xliff:g id="items">%1$d</xliff:g>人のユーザーをリスト"<xliff:g id="list">%2$s</xliff:g>\"から削除しますか?</string>
-  <string name="subscribe">登録</string>
-  <string name="unsubscribe">登録を解除</string>
+  <string name="subscribe">保存</string>
+  <string name="unsubscribe">保存を解除</string>
   <string name="background_toast_notification">バックグラウンドトースト通知</string>
   <string name="background_toast_notification_summary">バックグラウンドに切り替わったときにトースト通知を表示します。</string>
   <string name="original_status">元のツイート</string>
@@ -420,7 +434,7 @@
   <string name="no_close_after_status_updated">編集画面をツイート送信後に開いたままにする</string>
   <string name="no_close_after_status_updated_summary">ツイート編集画面の動作を変更します。</string>
   <string name="status_saved_to_draft">ツイートは下書きに保存されました。</string>
-  <string name="default_account">デフォルト</string>
+  <string name="default_account">デフォルトアカウント</string>
   <string name="daily_statuses_count"><xliff:g id="created_at">%1$s</xliff:g> (一日に平均<xliff:g id="daily_tweet">%2$d</xliff:g>回ツイート)</string>
   <string name="empty_content">コンテンツなし</string>
   <string name="fast_image_loading">高速画像読み込み</string>
@@ -429,7 +443,7 @@
   <string name="select_user">ユーザーの選択</string>
   <string name="created_by"><xliff:g id="created_by">%s</xliff:g>により作成</string>
   <string name="add_to_list">リストに追加</string>
-  <string name="account_delete_confirm_title">アカウントの削除</string>
+  <string name="account_delete_confirm_title">サインアウト</string>
   <string name="account_delete_confirm_message">Twittnukerからアカウントを削除します。</string>
   <string name="theme">テーマ</string>
   <string name="theme_dark">ダーク</string>
@@ -464,6 +478,8 @@
   <string name="wizard_page_theme_text">好きなテーマを選んでください。</string>
   <string name="wizard_page_tabs_text">タブを追加します。\n気になるキーワードを含むツイートやユーザーの検索をするタブも追加出来ます。</string>
   <string name="wizard_page_tabs_unchanged_message">設定 - タブでタブを追加出来ます。</string>
+  <string name="wizard_page_cards_text">カードアイテムを編集します。</string>
+  <string name="wizard_page_hints_text">お役立ちヒント!</string>
   <string name="wizard_page_finished_title">完了</string>
   <string name="wizard_page_finished_text">Twittnukerを使う準備ができました。</string>
   <string name="invalid_tab">不正なタブです</string>
@@ -473,14 +489,18 @@
   <string name="keyword_filter_name">キーワード: <xliff:g id="name">%s</xliff:g></string>
   <string name="source_filter_name">クライアント: <xliff:g id="name">%s</xliff:g></string>
   <string name="block_user"><xliff:g id="name">%s</xliff:g>をブロック</string>
-  <string name="block_user_confirm_message"><xliff:g id="name">%s</xliff:g>をブロックしますか?</string>
+  <string name="block_user_confirm_message"><xliff:g id="name">%s</xliff:g>さんをブロックしますか? このユーザーがあなたをフォローしたり@ツイートやDMを送信したり出来ないようにします。</string>
   <string name="unfollow_user"><xliff:g id="name">%s</xliff:g>のフォローを解除</string>
-  <string name="unfollow_user_confirm_message"><xliff:g id="name">%s</xliff:g>のフォローを解除しますか?</string>
+  <string name="unfollow_user_confirm_message"><xliff:g id="name">%s</xliff:g>さんのフォローを解除しますか? このユーザーのツイートをTLで表示しないようにします。</string>
   <string name="delete_user_list">リスト<xliff:g id="name">%s</xliff:g>を削除</string>
-  <string name="delete_user_list_confirm_message">リスト<xliff:g id="name">%s</xliff:g>を削除しますか?</string>
+  <string name="delete_user_list_confirm_message">リスト<xliff:g id="name">%s</xliff:g>を削除しますか? 復元はできません。</string>
+  <string name="unsubscribe_from_user_list">リスト<xliff:g id="name">%s</xliff:g>の保存を解除</string>
+  <string name="unsubscribe_from_user_list_confirm_message">リスト<xliff:g id="name">%s</xliff:g>の保存を解除しますか? 後で保存し直すことも出来ます。</string>
+  <string name="delete_saved_search">保存した検索 \"<xliff:g id="name">%s</xliff:g>\"を削除</string>
+  <string name="delete_saved_search_confirm_message">保存した検索\"<xliff:g id="name">%s</xliff:g>\"を削除しますか? 再保存がすぐにはできないようになります。</string>
   <string name="signing_in_error_browser_sign_in_hint">ログインエラー、ブラウザでログインする方法を試してみてください。(カスタムAPI設定は無視されます)</string>
   <string name="report_user"><xliff:g id="name">%s</xliff:g>をスパム報告する</string>
-  <string name="report_user_confirm_message"><xliff:g id="name">%s</xliff:g>をスパムとして報告しますか?</string>
+  <string name="report_user_confirm_message"><xliff:g id="name">%s</xliff:g>をスパム報告しますか? 同時にブロックもします。</string>
   <string name="twidere_test">Twittnukerテスト</string>
   <string name="donate_twidere_via_paypal">PayPalで寄付</string>
   <string name="donate_via_alipay">Alipayで寄付</string>
@@ -488,7 +508,7 @@
   <string name="unread_count">未読数の表示</string>
   <string name="developed_by">開発者</string>
   <string name="project_account">プロジェクトアカウント</string>
-  <string name="donators">寄付者</string>
+  <string name="donators">寄付したユーザー</string>
   <string name="translators">翻訳者</string>
   <string name="translate">翻訳に協力する</string>
   <string name="sponsored_by">スポンサー</string>
@@ -500,5 +520,49 @@
   <string name="no_tab_hint">タブ無し</string>
   <string name="delete_user"><xliff:g id="name">%s</xliff:g>さんを削除</string>
   <string name="delete_users">ユーザーを削除</string>
-  <string name="delete_user_confirm_message"><xliff:g id="name">%s</xliff:g>さんを削除しますか?</string>
+  <string name="delete_user_confirm_message"><xliff:g id="name">%s</xliff:g>さんを削除しますか? 復元は出来ません。</string>
+  <string name="toggle">切り替え</string>
+  <string name="general">基本</string>
+  <string name="hints">ヒント</string>
+  <string name="finish">終了</string>
+  <string name="theme_background">テーマ背景</string>
+  <string name="theme_background_default">デフォルト</string>
+  <string name="theme_background_solid">白/黒一色</string>
+  <string name="theme_background_transparent">背景透過</string>
+  <string name="theme_dark_actionbar">黒アクションバー</string>
+  <string name="wizard_hint_compose_select_account">ツイート編集時にこのアイコンをタップするとアカウントを選択できます。</string>
+  <string name="wizard_hint_quote_format">引用の書式は\"設定\" - \"コンテンツ &amp; ストレージ\"で設定できます。</string>
+  <string name="wizard_hint_filters">\"フィルタ\"を使うとみたくないツイートをTLや通知で表示しないように出来ます。</string>
+  <string name="view_replies">会話を表示</string>
+  <string name="compact_cards">カードのコンパクト化</string>
+  <string name="compact_cards_summary">画面あたりのカード表示数を増やせます。</string>
+  <string name="dashclock_home_unread_count_name">Twittnuker ホームTL未読数表示</string>
+  <string name="dashclock_home_unread_count_description">ホームTLの未読数を表示</string>
+  <string name="dashclock_mentions_unread_count_name">Twittnuker @ツイート未読数表示</string>
+  <string name="dashclock_mentions_unread_count_description">自分宛の未読@ツイート数を表示</string>
+  <string name="dashclock_messages_unread_count_name">Twittnuker DM未読数表示</string>
+  <string name="dashclock_messages_unread_count_description">未読DM数を表示</string>
+  <string name="N_new_statuses_quantity_one"><xliff:g id="items">%d</xliff:g>件の未読ツイート</string>
+  <string name="N_new_statuses_quantity_other"><xliff:g id="items">%d</xliff:g>件の未読ツイート</string>
+  <string name="N_new_mentions_quantity_one"><xliff:g id="items">%d</xliff:g>件の未読@ツイート</string>
+  <string name="N_new_mentions_quantity_other"><xliff:g id="items">%d</xliff:g>件の未読@ツイート</string>
+  <string name="N_new_messages_quantity_one"><xliff:g id="items">%d</xliff:g>件の未読DM</string>
+  <string name="N_new_messages_quantity_other"><xliff:g id="items">%d</xliff:g>件の未読DM</string>
+  <string name="share_subject_format"><xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>) - <xliff:g id="time">%3$s</xliff:g></string>
+  <string name="rate_limit">API制限</string>
+  <string name="wizard_hint_rate_limit">API制限が発生するのはTwitterのせいなので開発者を責めないでください。</string>
+  <string name="preparing_database">データベースの準備中</string>
+  <string name="preparing_database_toast">データベースの準備中、お待ちください</string>
+  <string name="action_name_saved_at_time"><xliff:g id="action">%1$s</xliff:g> - 保存日時:<xliff:g id="time">%2$s</xliff:g></string>
+  <string name="update_status">ツイート</string>
+  <string name="sending_direct_message">DM</string>
+  <string name="tab_display_option">タブの表示オプション</string>
+  <string name="livewp_daydream_enabled_message">システム設定のどこかにプレゼントを隠したぜ!</string>
+  <string name="center">中央</string>
+  <string name="multi_select">複数選択</string>
+  <string name="long_click_to_open_menu">長押しでメニューを表示</string>
+  <string name="swipe_back">スワイプで閉じる</string>
+  <string name="tab_display_option_icon">アイコン</string>
+  <string name="tab_display_option_label">ラベル</string>
+  <string name="tab_display_option_both">両方</string>
 </resources>

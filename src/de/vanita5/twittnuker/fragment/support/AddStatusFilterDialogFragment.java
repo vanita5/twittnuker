@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
@@ -23,6 +24,7 @@ import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -93,7 +95,8 @@ public class AddStatusFilterDialogFragment extends BaseSupportDialogFragment imp
 
 	@Override
 	public Dialog onCreateDialog(final Bundle savedInstanceState) {
-		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 		mFilterItems = getFilterItemsInfo();
 		final String[] entries = new String[mFilterItems.length];
 		for (int i = 0, j = entries.length; i < j; i++) {

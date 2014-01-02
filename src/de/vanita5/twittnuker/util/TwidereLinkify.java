@@ -115,7 +115,7 @@ public final class TwidereLinkify implements Constants {
 	public TwidereLinkify(final OnLinkClickListener listener, final int highlightOption, final int highlightColor) {
 		mOnLinkClickListener = listener;
 		setHighlightOption(highlightOption);
-		setHighlightColor(highlightColor);
+        setLinkTextColor(highlightColor);
 	}
 
 	public final void applyAllLinks(final TextView view, final long account_id, final boolean sensitive) {
@@ -165,9 +165,9 @@ public final class TwidereLinkify implements Constants {
 				LINK_HIGHLIGHT_OPTION_CODE_NONE, mHighlightColor);
 	}
 
-	public void setHighlightColor(final int color) {
-		mHighlightColor = color;
-	}
+    public void setLinkTextColor(final int color) {
+        mHighlightColor = color;
+    }
 
 	public void setHighlightOption(final int style) {
 		mHighlightOption = style;

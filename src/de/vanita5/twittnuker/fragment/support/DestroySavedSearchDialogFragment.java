@@ -2,8 +2,11 @@ package de.vanita5.twittnuker.fragment.support;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.ThemeUtils;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -30,7 +33,8 @@ public class DestroySavedSearchDialogFragment extends BaseSupportDialogFragment 
 
 	@Override
 	public Dialog onCreateDialog(final Bundle savedInstanceState) {
-		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 		final String name = getSearchName();
 		if (name != null) {
 			builder.setTitle(getString(R.string.delete_saved_search, name));

@@ -126,6 +126,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.ComposeTextCountView;
@@ -205,7 +206,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
     }
 
     @Override
-    public int getThemeResource() {
+    public int getThemeResourceId() {
         return getComposeThemeResource(this);
     }
 
@@ -1128,7 +1129,8 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 		@Override
 		public Dialog onCreateDialog(final Bundle savedInstanceState) {
-			final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 			builder.setMessage(R.string.unsaved_status);
 			builder.setPositiveButton(R.string.save, this);
 			builder.setNegativeButton(R.string.discard, this);

@@ -47,7 +47,7 @@ public class BaseActivity extends BaseThemedActivity implements Constants {
 	}
 
     @Override
-    public int getThemeResource() {
+    public int getThemeResourceId() {
         return ThemeUtils.getThemeResource(this);
 	}
 

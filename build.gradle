@@ -4,11 +4,16 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.1'
+        classpath 'com.android.tools.build:gradle:0.7.+'
     }
 }
 
 apply plugin: 'android'
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
 
 repositories {
     mavenCentral()
@@ -28,6 +33,7 @@ dependencies {
     compile 'com.google.android.apps.dashclock:dashclock-api:2.0.0'
     compile 'org.apache.httpcomponents:httpmime:4.2.1'
     compile 'com.negusoft:holoaccent:0.9'
+    compile 'org.mariotaku:menucomponent:0.1-SNAPSHOT'
 }
 
 android {

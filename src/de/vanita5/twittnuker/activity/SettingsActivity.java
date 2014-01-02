@@ -33,19 +33,16 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
-import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.holder.ViewHolder;
 
 import java.util.List;
 
-public class SettingsActivity extends BaseThemedPreferenceActivity {
+public class SettingsActivity extends BasePreferenceActivity {
 
 	private HeaderAdapter mAdapter;
-	private boolean mIsCallingFinish;
 
 	@Override
 	public void finish() {
-		mIsCallingFinish = true;
 		super.finish();
 	}
 
@@ -53,16 +50,6 @@ public class SettingsActivity extends BaseThemedPreferenceActivity {
 		if (mAdapter != null) return mAdapter;
 		return mAdapter = new HeaderAdapter(this);
 	}
-
-    @Override
-    public int getThemeColor() {
-        return ThemeUtils.getUserThemeColor(this);
-    }
-
-    @Override
-    public int getThemeResource() {
-        return ThemeUtils.getThemeResource(this);
-    }
 
 	@Override
 	public void onBuildHeaders(final List<Header> target) {
@@ -93,11 +80,6 @@ public class SettingsActivity extends BaseThemedPreferenceActivity {
 	}
 
 	@Override
-	public boolean shouldOverrideActivityAnimation() {
-		return getCurrentThemeResource() == 0 || mIsCallingFinish && !isThemeChanged();
-	}
-
-	@Override
 	public void switchToHeader(final Header header) {
 		if (header == null || header.fragment == null && header.intent == null) return;
 		super.switchToHeader(header);
@@ -116,18 +98,12 @@ public class SettingsActivity extends BaseThemedPreferenceActivity {
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-		mIsCallingFinish = false;
 		super.onCreate(savedInstanceState);
 		setIntent(getIntent().addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		if (savedInstanceState != null) {
 			invalidateHeaders();
 		}
-	}
-
-	@Override
-	protected boolean shouldRestartWhenThemeChanged() {
-		return !isMultiPane() && !getIntent().hasExtra(EXTRA_SHOW_FRAGMENT);
 	}
 
 	static class HeaderAdapter extends ArrayAdapter<Header> {

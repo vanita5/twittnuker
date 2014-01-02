@@ -7,12 +7,12 @@ import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
-import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.view.themed.ThemedTextView;
 
-public class CardItemGapView extends TextView {
+public class CardItemGapView extends ThemedTextView {
 
 	public CardItemGapView(final Context context) {
 		this(context, null);

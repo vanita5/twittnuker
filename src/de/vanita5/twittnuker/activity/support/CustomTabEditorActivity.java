@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.text.Collator;
 import java.util.Comparator;
@@ -372,7 +373,8 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 		@Override
 		public Dialog onCreateDialog(final Bundle savedInstanceState) {
 			final Bundle args = getArguments();
-			final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 			builder.setTitle(args.getString(EXTRA_TITLE));
 			builder.setPositiveButton(android.R.string.ok, this);
 			builder.setNegativeButton(android.R.string.cancel, null);

@@ -42,6 +42,7 @@
   <string name="password">Senha</string>
   <string name="label_tweetstore_provider">Provedor de banco de dados do Twittnuker</string>
   <string name="label_refresh_service">Atualizar serviço</string>
+  <string name="label_background_operation_service">Serviço de operação em segundo plano</string>
   <string name="open_in_browser">Abrir no navegador</string>
   <string name="tap_to_load_more">Toque para carregar mais</string>
   <string name="delete">Excluir</string>
@@ -164,13 +165,10 @@
   <string name="auto_refresh">Atualização automática</string>
   <string name="refresh_interval">Intervalo de atualização</string>
   <string name="content_to_refresh">Conteúdo para atualizar</string>
-  <string name="content_to_notify">Conteúdo para notificar</string>
   <string name="notifications_type">Tipo de notificações</string>
   <string name="sound">Som</string>
   <string name="vibration">Vibração</string>
-  <string name="light">Luzes</string>
   <string name="notifications">Notificações</string>
-  <string name="screen_name">Nome de Usuário</string>
   <string name="refresh_on_start">Atualizar ao iniciar</string>
   <string name="refresh_on_start_summary">Atualizar linha do tempo e menções ao iniciar.</string>
   <string name="refresh_after_status_updated">Atualizar ao tweetar</string>
@@ -192,6 +190,7 @@
   <string name="display_image_preview">Visualização de imagem</string>
   <string name="following_you">Seguindo você</string>
   <string name="user_list">Lista</string>
+  <string name="user_lists">Listas</string>
   <string name="trends_location">Localização de tópicos</string>
   <string name="trends_location_summary">Definir local para tópicos.</string>
   <string name="trends">Tópicos</string>
@@ -291,9 +290,9 @@
   <string name="browser_sign_in">Autenticação via navegador</string>
   <string name="stop_auto_refresh_when_battery_low">Parar de atualizar automaticamente quando a bateria estiver fraca</string>
   <string name="notification_mention"><xliff:g id="user">%s</xliff:g> mencionou você.</string>
+  <string name="notification_mention_multiple"><xliff:g id="user">%1$s</xliff:g> e outros <xliff:g id="count">%2$d</xliff:g> mencionaram você.</string>
   <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> lhe enviou uma mensagem direta.</string>
   <string name="notification_direct_message_multiple_messages"><xliff:g id="user">%1$s</xliff:g> lhe enviou <xliff:g id="messages_count">%2$d</xliff:g> mensagens diretas.</string>
-  <string name="notification_mention_multiple"><xliff:g id="user">%1$s</xliff:g> e outros <xliff:g id="count">%2$d</xliff:g> mencionaram você.</string>
   <string name="notification_direct_message_multiple_users"><xliff:g id="user">%1$s</xliff:g> e outros <xliff:g id="users_count">%2$d</xliff:g> lhe enviaram <xliff:g id="messages_count">%3$d</xliff:g> mensagens diretas.</string>
   <string name="action_getting_status">obtendo tweet</string>
   <string name="action_updating_status">enviando tweet</string>
@@ -400,6 +399,14 @@
   <string name="updated_list_details">Os detalhes da lista \"<xliff:g id="list">%s</xliff:g>\" foram atualizados.</string>
   <string name="subscribed_to_list">Inscrito na lista \"<xliff:g id="list">%s</xliff:g>\".</string>
   <string name="unsubscribed_from_list">Removida a inscrição na lista \"<xliff:g id="list">%s</xliff:g>\".</string>
+  <string name="added_N_users_to_list_quantity_one">Usuário <xliff:g id="items">%1$d</xliff:g> adicionado a lista "<xliff:g id="list">%2$s</xliff:g>\".</string>
+  <string name="added_N_users_to_list_quantity_other">Adicionados <xliff:g id="items">%1$d</xliff:g> usuários a lista "<xliff:g id="list">%2$s</xliff:g>\".</string>
+  <string name="deleted_user_from_list">Removidos <xliff:g id="user">%1$s</xliff:g> da lista "<xliff:g id="list">%2$s</xliff:g>\".</string>
+  <string name="deleted_N_users_from_list_quantity_one">Usuário <xliff:g id="items">%1$d</xliff:g> removido da lista "<xliff:g id="list">%2$s</xliff:g>\".</string>
+  <string name="deleted_N_users_from_list_quantity_other">Usuarios <xliff:g id="items">%1$d</xliff:g> removidos da lista "<xliff:g id="list">%2$s</xliff:g>\".</string>
+  <string name="delete_user_from_list_confirm">Remover <xliff:g id="user">%1$s</xliff:g> da lista "<xliff:g id="list">%2$s</xliff:g>\"?</string>
+  <string name="delete_N_users_from_list_confirm_quantity_one">Remover <xliff:g id="items">%1$d</xliff:g> usuário da lista "<xliff:g id="list">%2$s</xliff:g>\"?</string>
+  <string name="delete_N_users_from_list_confirm_quantity_other">Remover <xliff:g id="items">%1$d</xliff:g> usuários da lista "<xliff:g id="list">%2$s</xliff:g>\"?</string>
   <string name="subscribe">Inscrever-se</string>
   <string name="unsubscribe">Sair</string>
   <string name="background_toast_notification">Notificação toast em segundo plano</string>
@@ -410,7 +417,6 @@
   <string name="no_close_after_status_updated">Manter a tela de edição aberta após o tweet ser enviado</string>
   <string name="no_close_after_status_updated_summary">Um presentinho para os tagarelas</string>
   <string name="status_saved_to_draft">Tweet salvo como rascunho.</string>
-  <string name="default_account">Padrão</string>
   <string name="daily_statuses_count"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> tweet(s) por dia)</string>
   <string name="empty_content">Nenhum conteúdo</string>
   <string name="fast_image_loading">Carregamento rápido de imagens</string>
@@ -454,6 +460,8 @@
   <string name="wizard_page_theme_text">Escolha seu tema preferido.</string>
   <string name="wizard_page_tabs_text">Adicione algumas abas ao Twittnuker.\nMantenha o controle de perfis ou assuntos que você gosta.</string>
   <string name="wizard_page_tabs_unchanged_message">Você pode adicionar abas em \"Configurações\" - \"Abas\"</string>
+  <string name="wizard_page_cards_text">Configurar itens do cartão.</string>
+  <string name="wizard_page_hints_text">Aqui estão algumas dicas úteis.</string>
   <string name="wizard_page_finished_title">Concluído</string>
   <string name="wizard_page_finished_text">Agora o Twittnuker está pronto para o uso.</string>
   <string name="invalid_tab">Aba invalida</string>
@@ -463,14 +471,10 @@
   <string name="keyword_filter_name">Palavra-chave: <xliff:g id="name">%s</xliff:g></string>
   <string name="source_filter_name">Fonte: <xliff:g id="name">%s</xliff:g></string>
   <string name="block_user">Bloquear <xliff:g id="name">%s</xliff:g></string>
-  <string name="block_user_confirm_message">Deseja mesmo bloquear <xliff:g id="name">%s</xliff:g>?</string>
   <string name="unfollow_user">Deixar de seguir <xliff:g id="name">%s</xliff:g></string>
-  <string name="unfollow_user_confirm_message">Tem certeza de que não quer mais seguir <xliff:g id="name">%s</xliff:g>?</string>
   <string name="delete_user_list">Excluir a lista <xliff:g id="name">%s</xliff:g></string>
-  <string name="delete_user_list_confirm_message">Tem certeza de que vai excluir a lista <xliff:g id="name">%s</xliff:g>?</string>
   <string name="signing_in_error_browser_sign_in_hint">Erro ao fazer login, talvez você precise usar um navegador para isso. (Isso vai ignorar as configurações da API durante o login)</string>
   <string name="report_user">Denunciar <xliff:g id="name">%s</xliff:g></string>
-  <string name="report_user_confirm_message">Vai mesmo denunciar <xliff:g id="name">%s</xliff:g> por spam?</string>
   <string name="twidere_test">Teste do Twittnuker</string>
   <string name="donate_twidere_via_paypal">Doar via PayPal</string>
   <string name="donate_via_alipay">Doar via Alipay</string>
@@ -487,4 +491,14 @@
   <string name="account_options">Opções de conta</string>
   <string name="show_in_timeline">Exibir na timeline</string>
   <string name="cards">Cartões</string>
+  <string name="no_tab_hint">Sem abas</string>
+  <string name="delete_user">Apagar usuário <xliff:g id="name">%s</xliff:g></string>
+  <string name="delete_users">Apagar usuários</string>
+  <string name="toggle">Alternar</string>
+  <string name="general">Geral</string>
+  <string name="hints">Dicas</string>
+  <string name="finish">Terminar</string>
+  <string name="theme_background">Tema de fundo</string>
+  <string name="theme_background_solid">Branco/Preto puro</string>
+  <string name="theme_background_transparent">Transparente</string>
 </resources>

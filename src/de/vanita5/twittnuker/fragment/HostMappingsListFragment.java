@@ -56,6 +56,7 @@ import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.HostsFileParser;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.util.Map;
 
@@ -218,7 +219,8 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
 
 		@Override
 		public Dialog onCreateDialog(final Bundle savedInstanceState) {
-			final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 			final View view = LayoutInflater.from(getActivity()).inflate(R.layout.host_mapping_dialog_view, null);
 			builder.setView(view);
 			mEditHost = (EditText) view.findViewById(R.id.host);

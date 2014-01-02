@@ -21,6 +21,7 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class PhishingLinkWarningDialogFragment extends BaseSupportDialogFragment implements OnClickListener {
 
@@ -51,8 +53,9 @@ public class PhishingLinkWarningDialogFragment extends BaseSupportDialogFragment
 
 	@Override
 	public Dialog onCreateDialog(final Bundle savedInstanceState) {
-		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		final LayoutInflater inflater = LayoutInflater.from(getActivity());
+        final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+        final LayoutInflater inflater = LayoutInflater.from(wrapped);
 		builder.setTitle(android.R.string.dialog_alert_title);
 		builder.setView(inflater.inflate(R.layout.phishing_link_warning, null));
 		builder.setPositiveButton(android.R.string.ok, this);

@@ -180,6 +180,7 @@
 		<activity
 			android:name=".activity.SettingsActivity"
 			android:label="@string/settings"
+            android:theme="@style/Theme.Blank"
 			android:windowSoftInputMode="adjustResize">
 			<intent-filter>
 				<action android:name="android.intent.action.MANAGE_NETWORK_USAGE"/>
@@ -455,7 +456,7 @@
 		<activity
 			android:name=".activity.TestActivity"
 			android:launchMode="singleTop"
-			android:theme="@style/Theme.Test"
+			android:theme="@style/Theme.Blank"
 			android:windowSoftInputMode="adjustResize"/>
 		<activity
 			android:name=".activity.NyanActivity"
@@ -470,9 +471,6 @@
 		<service
 			android:name=".service.BackgroundOperationService"
 			android:label="@string/label_background_operation_service"/>
-		<service
-			android:name="edu.ucdavis.earlybird.UCDService"
-			android:settingsActivity=".activity.DataProfilingSettingsActivity"/>
 		<service
 			android:name=".service.DashClockHomeUnreadCountService"
 			android:icon="@drawable/ic_extension_twidere"
