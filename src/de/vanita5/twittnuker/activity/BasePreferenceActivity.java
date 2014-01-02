@@ -33,11 +33,17 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 
 public abstract class BasePreferenceActivity extends PreferenceActivity implements Constants {
 
+    private int mCurrentThemeResource;
+
 	@Override
 	public void finish() {
 		super.finish();
 		overrideCloseAnimationIfNeeded();
 	}
+
+    public int getThemeResourceId() {
+        return ThemeUtils.getSettingsThemeResource(this);
+    }
 
 	public void navigateUpFromSameTask() {
 		NavUtils.navigateUpFromSameTask(this);
@@ -52,6 +58,10 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
 		}
 	}
 
+    protected final boolean isThemeChanged() {
+        return getThemeResourceId() != mCurrentThemeResource;
+    }
+
 	public boolean shouldOverrideActivityAnimation() {
 		return true;
 	}
@@ -61,9 +71,18 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
 		if (shouldOverrideActivityAnimation()) {
 			ThemeUtils.overrideActivityOpenAnimation(this);
 		}
+        setTheme(mCurrentThemeResource = getThemeResourceId());
 		super.onCreate(savedInstanceState);
 		setActionBarBackground();
 	}
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isThemeChanged()) {
+            restart();
+        }
+    }
 
 	protected final void restart() {
 		restartActivity(this);

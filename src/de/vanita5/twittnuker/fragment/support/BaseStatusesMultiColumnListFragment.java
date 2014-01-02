@@ -53,7 +53,7 @@ import android.widget.ListView;
 import com.huewu.pla.lib.MultiColumnListView;
 import com.huewu.pla.lib.internal.PLAAbsListView;
 
-import org.mariotaku.popupmenu.PopupMenu;
+import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;

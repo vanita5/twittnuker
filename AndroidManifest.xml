@@ -456,7 +456,7 @@
 		<activity
 			android:name=".activity.TestActivity"
 			android:launchMode="singleTop"
-			android:theme="@style/Theme.Blank"
+			android:theme="@style/Theme.Twidere.Settings.Light"
 			android:windowSoftInputMode="adjustResize"/>
 		<activity
 			android:name=".activity.NyanActivity"

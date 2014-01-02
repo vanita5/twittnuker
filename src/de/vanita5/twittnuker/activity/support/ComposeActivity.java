@@ -106,9 +106,9 @@ import com.twitter.Validator;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 
-import org.mariotaku.menubar.MenuBar;
+import org.mariotaku.menucomponent.widget.MenuBar;
 import org.mariotaku.gallery3d.util.LongSparseArray;
-import org.mariotaku.popupmenu.PopupMenu;
+import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;

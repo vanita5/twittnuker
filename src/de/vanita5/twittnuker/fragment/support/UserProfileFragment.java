@@ -99,7 +99,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.mariotaku.popupmenu.PopupMenu;
+import org.mariotaku.menucomponent.widget.PopupMenu;
 import org.mariotaku.querybuilder.Where;
 
 import de.vanita5.twittnuker.R;

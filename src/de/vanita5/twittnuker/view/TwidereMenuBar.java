@@ -20,30 +20,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.themed;
+package de.vanita5.twittnuker.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.MultiAutoCompleteTextView;
+
+import org.mariotaku.menucomponent.widget.MenuBar;
 
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 
-public class ThemedMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
+public class TwidereMenuBar extends MenuBar {
 
-    public ThemedMultiAutoCompleteTextView(final Context context) {
+    public TwidereMenuBar(final Context context) {
         this(context, null);
     }
 
-    public ThemedMultiAutoCompleteTextView(final Context context, final AttributeSet attrs) {
-        this(context, attrs, android.R.attr.editTextStyle);
+    public TwidereMenuBar(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+        if (!hasBackground(attrs)) {
+            ViewAccessor.setBackground(this, ThemeUtils.getActionBarSplitBackground(context, true));
+        }
     }
 
-    public ThemedMultiAutoCompleteTextView(final Context context, final AttributeSet attrs, final int defStyle) {
-        super(context, attrs, defStyle);
-        if (!isInEditMode()) {
-            setLinkTextColor(ThemeUtils.getUserLinkTextColor(context));
-            setHighlightColor(ThemeUtils.getUserHighlightColor(context));
+    private static boolean hasBackground(final AttributeSet attrs) {
+        final int count = attrs.getAttributeCount();
+        for (int i = 0; i < count; i++) {
+            if (attrs.getAttributeNameResource(i) == android.R.attr.background) return true;
         }
+        return false;
     }
 
 }

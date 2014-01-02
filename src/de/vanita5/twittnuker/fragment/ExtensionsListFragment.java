@@ -38,7 +38,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
-import org.mariotaku.popupmenu.PopupMenu;
+import org.mariotaku.menucomponent.widget.PopupMenu;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;

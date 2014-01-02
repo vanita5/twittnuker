@@ -70,7 +70,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.mariotaku.popupmenu.PopupMenu;
+import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.ListActionAdapter;

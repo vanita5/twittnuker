@@ -54,7 +54,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.CroutonLifecycleCallback;
 import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 
-import org.mariotaku.popupmenu.PopupMenu;
+import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.loader.ParcelableUserLoader;

@@ -91,7 +91,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.mariotaku.menubar.MenuBar;
+import org.mariotaku.menucomponent.widget.MenuBar;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;

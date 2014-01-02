@@ -64,7 +64,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.twitter.Validator;
 
-import org.mariotaku.popupmenu.PopupMenu;
+import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
