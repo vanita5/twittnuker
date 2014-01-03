@@ -43,12 +43,13 @@ import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
+import de.vanita5.twittnuker.view.iface.ICardItemView.OnOverflowIconClickListener;
 
 import java.util.List;
 import java.util.Locale;
 
 public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> implements IBaseCardAdapter,
-		OnClickListener {
+		OnClickListener, OnOverflowIconClickListener {
 
 	private final ImageLoaderWrapper mProfileImageLoader;
 	private final MultiSelectManager mMultiSelectManager;
@@ -88,7 +89,7 @@ public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> imp
 			holder = (UserViewHolder) tag;
 		} else {
 			holder = new UserViewHolder(view);
-			holder.item_menu.setOnClickListener(this);
+			holder.content.setOnOverflowIconClickListener(this);
 			view.setTag(holder);
 		}
 
@@ -127,7 +128,7 @@ public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> imp
 		if (isDisplayProfileImage()) {
 			mProfileImageLoader.displayProfileImage(holder.profile_image, user.profile_image_url);
 		}
-		holder.item_menu.setTag(position);
+		holder.position = position;
 		if (position > mMaxAnimationPosition) {
 			if (mAnimationEnabled) {
 				view.startAnimation(holder.item_animation);
@@ -149,6 +150,17 @@ public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> imp
 				mListener.onMenuButtonClick(view, position, getItemId(position));
 				break;
 			}
+		}
+	}
+
+	@Override
+	public void onOverflowIconClick(final View view) {
+		final Object tag = view.getTag();
+		if (tag instanceof UserViewHolder) {
+			final UserViewHolder holder = (UserViewHolder) tag;
+			final int position = holder.position;
+			if (position == -1 || mListener == null) return;
+			mListener.onMenuButtonClick(view, position, getItemId(position));
 		}
 	}
 

@@ -26,16 +26,17 @@ import android.view.View;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.animation.CardItemAnimation;
+import de.vanita5.twittnuker.view.iface.ICardItemView;
 
 public class CardViewHolder extends ViewHolder {
 
 	public final CardItemAnimation item_animation;
-	public final View item_menu;
+	public final ICardItemView content;
 
 	public CardViewHolder(final View view) {
 		super(view);
+		content = (ICardItemView) view.findViewById(R.id.content);
 		item_animation = new CardItemAnimation();
-		item_menu = findViewById(R.id.item_menu);
 	}
 
 }

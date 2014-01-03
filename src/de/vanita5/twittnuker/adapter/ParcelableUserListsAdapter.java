@@ -92,7 +92,7 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 		} else {
 			holder = new UserListViewHolder(view);
 			holder.profile_image.setOnClickListener(this);
-			holder.item_menu.setOnClickListener(this);
+//			holder.item_menu.setOnClickListener(this);
 			view.setTag(holder);
 		}
 
@@ -114,7 +114,7 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 			mProfileImageLoader.displayProfileImage(holder.profile_image, user_list.user_profile_image_url);
 		}
 		holder.profile_image.setTag(position);
-		holder.item_menu.setTag(position);
+//		holder.item_menu.setTag(position);
 		if (position > mMaxAnimationPosition) {
 			if (mAnimationEnabled) {
 				view.startAnimation(holder.item_animation);

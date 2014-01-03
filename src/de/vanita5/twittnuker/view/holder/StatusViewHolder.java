@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.ShortTimeView;
-import de.vanita5.twittnuker.view.iface.IColorLabelView;
+import de.vanita5.twittnuker.view.iface.ICardItemView;
 
 public class StatusViewHolder extends CardViewHolder {
 
@@ -50,12 +50,11 @@ public class StatusViewHolder extends CardViewHolder {
 	public final TextView text;
 	public final ViewGroup image_preview_container;
 	public final ProgressBar image_preview_progress;
-	public final IColorLabelView content;
-	private final View gap_indicator;
 
 	private final float density;
 	private final boolean is_rtl;
 	public boolean show_as_gap;
+	public int position;
 	private boolean account_color_enabled;
 	private float text_size;
 	private boolean nickname_only, name_first;
@@ -64,8 +63,6 @@ public class StatusViewHolder extends CardViewHolder {
 	public StatusViewHolder(final View view) {
 		super(view);
 		final Context context = getContext();
-		content = (IColorLabelView) findViewById(R.id.content);
-		gap_indicator = findViewById(R.id.gap_indicator);
 		image_preview_container = (ViewGroup) findViewById(R.id.image_preview_container);
         profile_image = (ProfileImageView) findViewById(R.id.profile_image);
         my_profile_image = (ProfileImageView) findViewById(R.id.my_profile_image);
@@ -76,7 +73,7 @@ public class StatusViewHolder extends CardViewHolder {
 		text = (TextView) findViewById(R.id.text);
 		time = (ShortTimeView) findViewById(R.id.time);
 		reply_retweet_status = (TextView) findViewById(R.id.reply_retweet_status);
-		show_as_gap = gap_indicator != null && gap_indicator.isShown();
+		show_as_gap = content.isGap();
 		is_rtl = Utils.isRTL(context);
 		density = context.getResources().getDisplayMetrics().density;
 	}
@@ -141,14 +138,11 @@ public class StatusViewHolder extends CardViewHolder {
 	public void setShowAsGap(final boolean show_gap) {
 		show_as_gap = show_gap;
 		if (content != null) {
-			content.setVisibility(show_gap ? View.GONE : View.VISIBLE);
+			content.setIsGap(show_gap);
 		}
-		if (gap_indicator != null) {
-			gap_indicator.setVisibility(!show_gap ? View.GONE : View.VISIBLE);
-		}
-		if (item_menu != null) {
-			item_menu.setVisibility(show_gap ? View.GONE : View.VISIBLE);
-		}
+		// if (item_menu != null) {
+		// item_menu.setVisibility(show_gap ? View.GONE : View.VISIBLE);
+		// }
 	}
 
 	public void setStatusType(final boolean is_favorite, final boolean has_location, final boolean has_media,
@@ -173,14 +167,14 @@ public class StatusViewHolder extends CardViewHolder {
 	}
 
     public void setUserType(final boolean isVerified, final boolean isProtected) {
-        //    if (display_profile_image) {
-        //      profile_image.setUserType(isVerified, isProtected);
-        //      my_profile_image.setUserType(isVerified, isProtected);
-        //      name.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        //    } else {
-        profile_image.setUserType(false, false);
-        my_profile_image.setUserType(false, false);
-        name.setCompoundDrawablesWithIntrinsicBounds(0, 0, getUserTypeIconRes(isVerified, isProtected), 0);
-        //
+		// if (display_profile_image) {
+		// profile_image.setUserType(isVerified, isProtected);
+		// my_profile_image.setUserType(isVerified, isProtected);
+		// name.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+		// } else {
+		// profile_image.setUserType(false, false);
+		// my_profile_image.setUserType(false, false);
+		name.setCompoundDrawablesWithIntrinsicBounds(0, 0, getUserTypeIconRes(isVerified, isProtected), 0);
+		// }
     }
 }

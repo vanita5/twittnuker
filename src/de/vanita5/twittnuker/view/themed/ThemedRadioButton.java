@@ -20,28 +20,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.text;
+package de.vanita5.twittnuker.view.themed;
 
-import android.text.TextPaint;
-import android.text.style.CharacterStyle;
+import android.content.Context;
+import android.util.AttributeSet;
+import android.widget.RadioButton;
 
-import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class TwidereHighLightStyle extends CharacterStyle implements Constants {
+public class ThemedRadioButton extends RadioButton {
 
-	private final int option;
-
-	public TwidereHighLightStyle(final int option) {
-		this.option = option;
+	public ThemedRadioButton(final Context context) {
+		this(context, null);
 	}
 
-	@Override
-	public void updateDrawState(final TextPaint ds) {
-		if ((option & LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE) != 0) {
-			ds.setUnderlineText(true);
-		}
-		if ((option & LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT) != 0) {
-			ds.setColor(ds.linkColor);
+	public ThemedRadioButton(final Context context, final AttributeSet attrs) {
+		this(context, attrs, android.R.attr.checkboxStyle);
+	}
+
+	public ThemedRadioButton(final Context context, final AttributeSet attrs, final int defStyle) {
+		super(context, attrs, defStyle);
+		if (!isInEditMode()) {
+			setLinkTextColor(ThemeUtils.getUserLinkTextColor(context));
+			setHighlightColor(ThemeUtils.getUserHighlightColor(context));
+			setTypeface(ThemeUtils.getUserTypeface(context, getTypeface()));
 		}
 	}
+
 }

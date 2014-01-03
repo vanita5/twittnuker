@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.view;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Parcel;
@@ -176,7 +177,7 @@ public class SlidingPaneView extends ViewGroup {
 		if (rightPaneLayout == 0) throw new IllegalArgumentException();
 		mRightPaneView = inflater.inflate(rightPaneLayout, mFadingRightPaneContainer, true);
 
-		addView(mLeftPaneLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		addView(mLeftPaneLayout, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		addView(mRightPaneLayout, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
 		mViewShadow.setBackgroundResource(shadowDrawableRes);
@@ -309,6 +310,13 @@ public class SlidingPaneView extends ViewGroup {
 
 	public void setFlingDuration(final int duration) {
 		mFlingDuration = duration;
+	}
+
+	@Override
+	public void setLayerType(final int layerType, final Paint paint) {
+	    final int currLayerType = getLayerType();
+	    if (layerType == currLayerType) return;
+	    super.setLayerType(layerType, paint);
 	}
 
 	public void setRightPaneBackground(final int resId) {

@@ -20,28 +20,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.text;
+package de.vanita5.twittnuker.view.themed;
 
-import android.text.TextPaint;
-import android.text.style.CharacterStyle;
+import android.content.Context;
+import android.util.AttributeSet;
 
-import de.vanita5.twittnuker.Constants;
+import com.negusoft.holoaccent.R;
+import com.negusoft.holoaccent.widget.AccentSwitch;
 
-public class TwidereHighLightStyle extends CharacterStyle implements Constants {
+import de.vanita5.twittnuker.util.ThemeUtils;
 
-	private final int option;
+public class ThemedSwitch extends AccentSwitch {
 
-	public TwidereHighLightStyle(final int option) {
-		this.option = option;
+	public ThemedSwitch(final Context context) {
+		this(context, null);
 	}
 
-	@Override
-	public void updateDrawState(final TextPaint ds) {
-		if ((option & LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE) != 0) {
-			ds.setUnderlineText(true);
-		}
-		if ((option & LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT) != 0) {
-			ds.setColor(ds.linkColor);
+	public ThemedSwitch(final Context context, final AttributeSet attrs) {
+		this(context, attrs, R.attr.accentSwitchStyle);
+	}
+
+	public ThemedSwitch(final Context context, final AttributeSet attrs, final int defStyle) {
+		super(context, attrs, defStyle);
+		if (!isInEditMode()) {
+			setLinkTextColor(ThemeUtils.getUserLinkTextColor(context));
+			setHighlightColor(ThemeUtils.getUserHighlightColor(context));
+			setTypeface(ThemeUtils.getUserTypeface(context, getTypeface()));
 		}
 	}
+
 }

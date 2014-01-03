@@ -43,6 +43,7 @@ public class ThemedTextView extends TextView {
         if (!isInEditMode()) {
             setLinkTextColor(ThemeUtils.getUserLinkTextColor(context));
             setHighlightColor(ThemeUtils.getUserHighlightColor(context));
+			setTypeface(ThemeUtils.getUserTypeface(context, getTypeface()));
         }
     }
 

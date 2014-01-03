@@ -575,4 +575,5 @@
     <string name="multi_select">Mehrfachauswahl</string>
     <string name="long_click_to_open_menu">Langer Klick um das Menü zu öffnen</string>
     <string name="back">Zurück</string>
+    <string name="theme_font_family">Theme Font Family</string>
 </resources>

@@ -33,6 +33,7 @@ import com.negusoft.holoaccent.AccentHelper;
 
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.theme.TwidereAccentHelper;
+import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -40,6 +41,9 @@ import de.vanita5.twittnuker.util.Utils;
 public abstract class BaseThemedActivity extends Activity implements IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor;
+
+	private String mCurrentThemeFontFamily;
+
     private AccentHelper mAccentHelper;
 
 	@Override
@@ -74,6 +78,11 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
         return mAccentHelper.getResources(this, super.getResources());
     }
 
+	@Override
+	public String getThemeFontFamily() {
+		return ThemeUtils.getThemeFontFamily(this);
+	}
+
     @Override
     public abstract int getThemeResourceId();
 
@@ -98,7 +107,8 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 	}
 
 	protected final boolean isThemeChanged() {
-		return getThemeResourceId() != mCurrentThemeResource || getThemeColor() != mCurrentThemeColor;
+		return getThemeResourceId() != mCurrentThemeResource || getThemeColor() != mCurrentThemeColor
+				|| !CompareUtils.objectEquals(getThemeFontFamily(), mCurrentThemeFontFamily);
 	}
 
 	@Override
@@ -134,6 +144,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 	private final void setTheme() {
 		mCurrentThemeResource = getThemeResourceId();
 		mCurrentThemeColor = getThemeColor();
+		mCurrentThemeFontFamily = getThemeFontFamily();
 		setTheme(mCurrentThemeResource);
 	}
 }

@@ -52,11 +52,12 @@ import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
+import de.vanita5.twittnuker.view.iface.ICardItemView.OnOverflowIconClickListener;
 
 import java.util.List;
 
 public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus> implements
-		IStatusesAdapter<List<ParcelableStatus>>, OnClickListener {
+		IStatusesAdapter<List<ParcelableStatus>>, OnClickListener, OnOverflowIconClickListener {
 
 	private final Context mContext;
 	private final MultiSelectManager mMultiSelectManager;
@@ -153,7 +154,7 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 			holder.profile_image.setOnClickListener(this);
 			holder.my_profile_image.setOnClickListener(this);
 			holder.image_preview.setOnClickListener(this);
-			holder.item_menu.setOnClickListener(this);
+			holder.content.setOnOverflowIconClickListener(this);
 			view.setTag(holder);
 		}
 
@@ -245,7 +246,7 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 				}
 				holder.image_preview.setTag(position);
 			}
-			holder.item_menu.setTag(position);
+//			holder.item_menu.setTag(position);
 		}
 		if (position > mMaxAnimationPosition) {
 			if (mAnimationEnabled) {
@@ -283,11 +284,17 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 				}
 				break;
 			}
-			case R.id.item_menu: {
-				if (position == -1 || mListener == null) return;
-				mListener.onMenuButtonClick(view, position, getItemId(position));
-				break;
-			}
+		}
+	}
+
+	@Override
+	public void onOverflowIconClick(final View view) {
+		final Object tag = view.getTag();
+		if (tag instanceof StatusViewHolder) {
+			final StatusViewHolder holder = (StatusViewHolder) tag;
+			final int position = holder.position;
+			if (position == -1 || mListener == null) return;
+			mListener.onMenuButtonClick(view, position, getItemId(position));
 		}
 	}
 

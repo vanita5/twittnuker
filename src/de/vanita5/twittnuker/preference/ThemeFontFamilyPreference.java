@@ -23,34 +23,38 @@
 package de.vanita5.twittnuker.preference;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.SpannableString;
+import android.text.style.TypefaceSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.text.TwidereHighLightStyle;
-import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.ParseUtils;
 
-public class LinkHighlightPreference extends AutoInvalidateListPreference implements Constants {
+public class ThemeFontFamilyPreference extends AutoInvalidateListPreference implements Constants {
 
-    private static final int[] ENTRIES_RES = { R.string.none, R.string.highlight, R.string.underline,
-            R.string.highlight_and_underline };
-	private static final String[] VALUES = { LINK_HIGHLIGHT_OPTION_NONE, LINK_HIGHLIGHT_OPTION_HIGHLIGHT,
-			LINK_HIGHLIGHT_OPTION_UNDERLINE, LINK_HIGHLIGHT_OPTION_BOTH };
-	private static final int[] OPTIONS = { LINK_HIGHLIGHT_OPTION_CODE_NONE, LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT,
-			LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE, LINK_HIGHLIGHT_OPTION_CODE_BOTH };
+	private static final int[] ENTRIES_RES = {R.string.font_family_regular, R.string.font_family_condensed,
+			R.string.font_family_light};
+	private static final String[] VALUES = {FONT_FAMILY_REGULAR, FONT_FAMILY_CONDENSED, FONT_FAMILY_LIGHT};
 
-	public LinkHighlightPreference(final Context context) {
+	public ThemeFontFamilyPreference(final Context context) {
 		this(context, null);
 	}
 
-	public LinkHighlightPreference(final Context context, final AttributeSet attrs) {
+	public ThemeFontFamilyPreference(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+			setEnabled(false);
+			return;
+		}
 		final CharSequence[] entries = new CharSequence[VALUES.length];
 		for (int i = 0, j = entries.length; i < j; i++) {
-			entries[i] = getStyledEntry(OPTIONS[i], context.getString(ENTRIES_RES[i]));
+			final SpannableString str = new SpannableString(context.getString(ENTRIES_RES[i]));
+			str.setSpan(new TypefaceSpan(VALUES[i]), 0, str.length(), 0);
+			entries[i] = str;
 		}
 		setEntries(entries);
 		setEntryValues(VALUES);
@@ -59,15 +63,18 @@ public class LinkHighlightPreference extends AutoInvalidateListPreference implem
 	@Override
 	protected void onBindView(final View view) {
 		super.onBindView(view);
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
 		final TextView summary = (TextView) view.findViewById(android.R.id.summary);
 		summary.setVisibility(View.VISIBLE);
-		summary.setText(getStyledEntry(Utils.getLinkHighlightOptionInt(getValue()), getEntry()));
+		final String defEntry = getContext().getString(R.string.font_family_regular);
+		final SpannableString str = new SpannableString(ParseUtils.parseString(getEntry(), defEntry));
+		str.setSpan(new TypefaceSpan(getValue()), 0, str.length(), 0);
+		summary.setText(str);
 	}
 
-	private static CharSequence getStyledEntry(final int option, final CharSequence entry) {
-		final SpannableString str = new SpannableString(entry);
-		str.setSpan(new TwidereHighLightStyle(option), 0, str.length(), 0);
-		return str;
+	@Override
+	protected void onClick() {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
+		super.onClick();
 	}
-
 }

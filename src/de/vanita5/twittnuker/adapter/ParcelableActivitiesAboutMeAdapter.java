@@ -301,7 +301,7 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 				}
 				holder.image_preview.setTag(position);
 			}
-			holder.item_menu.setTag(position);
+//			holder.item_menu.setTag(position);
 		}
 	}
 

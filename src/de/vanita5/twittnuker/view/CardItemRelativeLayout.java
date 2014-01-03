@@ -32,19 +32,19 @@ import android.view.View;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.view.iface.ICardItemView;
 
-public class CardItemLinearLayout extends ColorLabelLinearLayout implements ICardItemView {
+public class CardItemRelativeLayout extends ColorLabelRelativeLayout implements ICardItemView {
 
 	private final DrawingHelper mDrawingHelper;
 
-	public CardItemLinearLayout(final Context context) {
+	public CardItemRelativeLayout(final Context context) {
 		this(context, null);
 	}
 
-	public CardItemLinearLayout(final Context context, final AttributeSet attrs) {
+	public CardItemRelativeLayout(final Context context, final AttributeSet attrs) {
 		this(context, attrs, R.attr.cardItemViewStyle);
 	}
 
-	public CardItemLinearLayout(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+	public CardItemRelativeLayout(final Context context, final AttributeSet attrs, final int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
 		mDrawingHelper = new DrawingHelper(this, context, attrs, defStyleAttr);
 	}
@@ -66,17 +66,17 @@ public class CardItemLinearLayout extends ColorLabelLinearLayout implements ICar
 
 	@Override
 	public boolean isGap() {
-	    return mDrawingHelper.isGap();
+		return mDrawingHelper.isGap();
 	}
 
 	@Override
 	public void setActivatedIndicator(final Drawable activatedIndicator) {
-	    mDrawingHelper.setActivatedIndicator(activatedIndicator);
+		mDrawingHelper.setActivatedIndicator(activatedIndicator);
 	}
 
 	@Override
 	public void setIsGap(final boolean isGap) {
-	    mDrawingHelper.setIsGap(isGap);
+		mDrawingHelper.setIsGap(isGap);
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public class CardItemLinearLayout extends ColorLabelLinearLayout implements ICar
 	protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
 		final int measuredWidth = MeasureSpec.getSize(widthMeasureSpec);
 		if (mDrawingHelper.isGap()) {
-		     setMeasuredDimension(measuredWidth, mDrawingHelper.getCardGapHeight());
+			setMeasuredDimension(measuredWidth, mDrawingHelper.getCardGapHeight());
 		} else {
 			final int measuredHeight = MeasureSpec.getSize(widthMeasureSpec);
 			setMeasuredDimension(measuredWidth, measuredHeight);
@@ -134,5 +134,4 @@ public class CardItemLinearLayout extends ColorLabelLinearLayout implements ICar
 	protected boolean verifyDrawable(final Drawable who) {
 		return super.verifyDrawable(who) || mDrawingHelper.verifyDrawable(who);
 	}
-
 }
