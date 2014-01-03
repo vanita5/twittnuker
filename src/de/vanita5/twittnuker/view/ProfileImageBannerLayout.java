@@ -32,8 +32,6 @@ import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import de.vanita5.twittnuker.util.ThemeUtils;
-
 
 public class ProfileImageBannerLayout extends ExtendedFrameLayout {
 
@@ -44,7 +42,8 @@ public class ProfileImageBannerLayout extends ExtendedFrameLayout {
 	private static final double PROFILE_IMAGE_TOP_MARGIN_FACTOR = 0.0875;
 
 	private final int mBorderWidth;
-	private final ImageView mProfileBannerImageView, mProfileImageView;
+    private final ImageView mProfileBannerImageView;
+    private final ProfileImageView mProfileImageView;
 
 	public ProfileImageBannerLayout(final Context context) {
 		this(context, null);
@@ -60,7 +59,7 @@ public class ProfileImageBannerLayout extends ExtendedFrameLayout {
 		mProfileBannerImageView = new ProfileBannerImageView(context);
 		mProfileBannerImageView.setId(VIEW_ID_PROFILE_BANNER);
 		addView(mProfileBannerImageView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		mProfileImageView = new ProfileImageView(context, mBorderWidth);
+        mProfileImageView = new ProfileImageViewInternal(context, mBorderWidth);
 		mProfileImageView.setId(VIEW_ID_PROFILE_IMAGE);
 		addView(mProfileImageView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
 				Gravity.CENTER_HORIZONTAL));
@@ -70,7 +69,7 @@ public class ProfileImageBannerLayout extends ExtendedFrameLayout {
 		return mProfileBannerImageView;
 	}
 
-	public ImageView getProfileImageView() {
+	public ProfileImageView getProfileImageView() {
 		return mProfileImageView;
 	}
 
@@ -90,12 +89,12 @@ public class ProfileImageBannerLayout extends ExtendedFrameLayout {
 		}
 	}
 
-	private static class ProfileImageView extends ForegroundImageView {
+    private static class ProfileImageViewInternal extends ProfileImageView {
 
 		private final Paint mWhitePaint, mBlackPaint;
 		private final int mPaddings;
 
-		private ProfileImageView(final Context context, final int padding) {
+        private ProfileImageViewInternal(final Context context, final int padding) {
 			super(context, null, 0);
 			ViewCompat.setLayerType(this, LAYER_TYPE_SOFTWARE, null);
 			mWhitePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -103,9 +102,7 @@ public class ProfileImageBannerLayout extends ExtendedFrameLayout {
 			mBlackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			mBlackPaint.setColor(Color.BLACK);
 			mPaddings = padding;
-			if (isInEditMode()) return;
 			setPadding(padding, padding, padding, padding);
-            setForeground(ThemeUtils.getImageHighlightDrawable(context));
 		}
 
 		@Override

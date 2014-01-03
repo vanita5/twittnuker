@@ -20,7 +20,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content">
 
-			<de.vanita5.twittnuker.view.ForegroundImageView
+			<de.vanita5.twittnuker.view.ProfileImageView
 				android:id="@+id/image_preview"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"

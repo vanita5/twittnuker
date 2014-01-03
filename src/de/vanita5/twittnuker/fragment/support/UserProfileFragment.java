@@ -39,7 +39,6 @@ import static de.vanita5.twittnuker.util.Utils.getErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.getOriginalTwitterProfileImage;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.isMyAccount;
 import static de.vanita5.twittnuker.util.Utils.openImage;
 import static de.vanita5.twittnuker.util.Utils.openIncomingFriendships;
@@ -124,6 +123,7 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.view.ColorLabelLinearLayout;
 import de.vanita5.twittnuker.view.ProfileImageBannerLayout;
+import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
 import twitter4j.Relationship;
@@ -142,7 +142,8 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 	private ImageLoaderWrapper mProfileImageLoader;
 	private SharedPreferences mPreferences;
 
-	private ImageView mProfileImageView, mProfileBannerView;
+    private ProfileImageView mProfileImageView;
+    private ImageView mProfileBannerView;
 	private TextView mNameView, mScreenNameView, mDescriptionView, mLocationView, mURLView, mCreatedAtView,
 			mTweetCount, mFollowersCount, mFriendsCount, mErrorMessageView;
 	private View mDescriptionContainer, mLocationContainer, mURLContainer, mTweetsContainer, mFollowersContainer,
@@ -308,8 +309,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 		final String nick = getUserNickname(getActivity(), user.id, true);
 		mNameView
 				.setText(TextUtils.isEmpty(nick) ? user.name : getString(R.string.name_with_nickname, user.name, nick));
-		mNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0,
-				getUserTypeIconRes(user.is_verified, user.is_protected), 0);
+        mProfileImageView.setUserType(user.is_verified, user.is_protected);
 		mScreenNameView.setText("@" + user.screen_name);
 		mDescriptionContainer.setVisibility(user_is_me || !isEmpty(user.description_html) ? View.VISIBLE : View.GONE);
 		mDescriptionView.setText(user.description_html != null ? Html.fromHtml(user.description_html) : null);

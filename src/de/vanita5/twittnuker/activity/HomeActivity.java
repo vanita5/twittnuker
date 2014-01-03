@@ -126,6 +126,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UnreadCountUtils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.ExtendedViewPager;
+import de.vanita5.twittnuker.view.HomeActionsActionView;
 import de.vanita5.twittnuker.view.LeftDrawerFrameLayout;
 import de.vanita5.twittnuker.view.TabPageIndicator;
 import de.vanita5.twittnuker.R;
@@ -190,7 +191,8 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	private TabPageIndicator mIndicator;
 	private SlidingMenu mSlidingMenu;
 
-	private View mActionsActionView, mActionsButtonLayout, mEmptyTabHint;
+    private View mActionsButtonLayout, mEmptyTabHint;
+    private HomeActionsActionView mActionsActionView;
 	private LeftDrawerFrameLayout mLeftDrawerContainer;
 	private Fragment mCurrentVisibleFragment;
 
@@ -264,7 +266,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	@Override
 	public void onClick(final View v) {
 		switch (v.getId()) {
-			case R.id.home_actions_item:
+            case R.id.actions:
 			case R.id.home_actions_button: {
 				if (mViewPager == null || mPagerAdapter == null) return;
 				final int position = mViewPager.getCurrentItem();
@@ -306,7 +308,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		getMenuInflater().inflate(R.menu.menu_home, menu);
 		final MenuItem actionsItem = menu.findItem(MENU_ACTIONS);
 		actionsItem.setVisible(SmartBarUtils.hasSmartBar() || !isBottomComposeButton());
-		mActionsActionView = actionsItem.getActionView();
+        mActionsActionView = (HomeActionsActionView) actionsItem.getActionView();
 		mActionsActionView.setOnClickListener(this);
 		mActionsActionView.setOnLongClickListener(this);
 		updateActionsButton();
@@ -337,7 +339,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	@Override
 	public boolean onLongClick(final View v) {
 		switch (v.getId()) {
-			case R.id.home_actions_item: {
+            case R.id.actions: {
                 showMenuItemToast(v, v.getContentDescription(), false);
 				return true;
 			}
@@ -900,7 +902,10 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 			}
 		}
 		setActionsView(mActionsButtonLayout, title, icon);
-		setActionsView(mActionsActionView, title, icon);
+        if (mActionsActionView != null) {
+            mActionsActionView.setIcon(icon);
+            mActionsActionView.setShowProgress(hasActivatedTask());
+        }
 	}
 
 	private void updateActionsButtonStyle() {

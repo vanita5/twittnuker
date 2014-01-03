@@ -20,13 +20,11 @@
 			android:layout_marginRight="-12.5dp"
 			android:background="?cardItemMessageProfileImageIncomingBackground">
 
-			<de.vanita5.twittnuker.view.ForegroundImageView
+			<de.vanita5.twittnuker.view.ProfileImageView
 				android:id="@+id/incoming_profile_image"
 				android:layout_width="@dimen/icon_size_card_list_item"
 				android:layout_height="@dimen/icon_size_card_list_item"
-				android:foreground="?android:selectableItemBackground"
-				android:scaleType="fitCenter"
-				android:src="@drawable/ic_profile_image_default"/>
+                android:scaleType="fitCenter"/>
 		</FrameLayout>
 
 		<de.vanita5.twittnuker.view.MessageCardItemFrameLayout
@@ -87,13 +85,11 @@
 			android:layout_marginLeft="-12.5dp"
 			android:background="?cardItemMessageProfileImageOutgoingBackground">
 
-			<de.vanita5.twittnuker.view.ForegroundImageView
+			<de.vanita5.twittnuker.view.ProfileImageView
 				android:id="@+id/outgoing_profile_image"
 				android:layout_width="@dimen/icon_size_card_list_item"
 				android:layout_height="@dimen/icon_size_card_list_item"
-				android:foreground="?android:selectableItemBackground"
-				android:scaleType="fitCenter"
-				android:src="@drawable/ic_profile_image_default"/>
+                android:scaleType="fitCenter"/>
 		</FrameLayout>
 
 		<de.vanita5.twittnuker.view.MessageCardItemFrameLayout

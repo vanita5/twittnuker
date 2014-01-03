@@ -28,6 +28,7 @@ import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
@@ -74,11 +75,12 @@ public final class DropShadowDrawable extends BitmapDrawable {
 
 	@Override
 	public void draw(final Canvas canvas) {
+        final Rect bounds = getBounds();
 		if (dropShadow != null) {
-			canvas.drawBitmap(dropShadow, 0, 0, null);
+            canvas.drawBitmap(dropShadow, bounds.left, bounds.top, null);
 		}
 		if (dropShadowMask != null) {
-			canvas.drawBitmap(dropShadowMask, 0, 0, null);
+            canvas.drawBitmap(dropShadowMask, bounds.left, bounds.top, null);
 		}
 		super.draw(canvas);
 	}

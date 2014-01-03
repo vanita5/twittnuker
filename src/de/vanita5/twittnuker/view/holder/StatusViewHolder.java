@@ -37,12 +37,14 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.ShortTimeView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 public class StatusViewHolder extends CardViewHolder {
 
-	public final ImageView my_profile_image, profile_image, image_preview;
+    public final ProfileImageView my_profile_image, profile_image;
+    public final ImageView image_preview;
 	public final TextView name, screen_name, reply_retweet_status;
 	public final ShortTimeView time;
 	public final TextView text;
@@ -57,6 +59,7 @@ public class StatusViewHolder extends CardViewHolder {
 	private boolean account_color_enabled;
 	private float text_size;
 	private boolean nickname_only, name_first;
+    private boolean display_profile_image;
 
 	public StatusViewHolder(final View view) {
 		super(view);
@@ -64,8 +67,8 @@ public class StatusViewHolder extends CardViewHolder {
 		content = (IColorLabelView) findViewById(R.id.content);
 		gap_indicator = findViewById(R.id.gap_indicator);
 		image_preview_container = (ViewGroup) findViewById(R.id.image_preview_container);
-		profile_image = (ImageView) findViewById(R.id.profile_image);
-		my_profile_image = (ImageView) findViewById(R.id.my_profile_image);
+        profile_image = (ProfileImageView) findViewById(R.id.profile_image);
+        my_profile_image = (ProfileImageView) findViewById(R.id.my_profile_image);
 		image_preview = (ImageView) findViewById(R.id.image_preview);
 		image_preview_progress = (ProgressBar) findViewById(R.id.image_preview_progress);
 		name = (TextView) findViewById(R.id.name);
@@ -77,6 +80,10 @@ public class StatusViewHolder extends CardViewHolder {
 		is_rtl = Utils.isRTL(context);
 		density = context.getResources().getDisplayMetrics().density;
 	}
+
+    public void setDisplayProfileImage(final boolean display) {
+        display_profile_image = display;
+    }
 
 	public void setAccountColor(final int color) {
 		content.drawEnd(account_color_enabled && !show_as_gap ? color : Color.TRANSPARENT);
@@ -165,8 +172,15 @@ public class StatusViewHolder extends CardViewHolder {
 		content.drawStart(show_as_gap ? Color.TRANSPARENT : color);
 	}
 
-	public void setUserType(final boolean is_verified, final boolean is_protected) {
-		final int res = getUserTypeIconRes(is_verified, is_protected);
-		name.setCompoundDrawablesWithIntrinsicBounds(0, 0, res, 0);
-	}
+    public void setUserType(final boolean isVerified, final boolean isProtected) {
+        //    if (display_profile_image) {
+        //      profile_image.setUserType(isVerified, isProtected);
+        //      my_profile_image.setUserType(isVerified, isProtected);
+        //      name.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        //    } else {
+        profile_image.setUserType(false, false);
+        my_profile_image.setUserType(false, false);
+        name.setCompoundDrawablesWithIntrinsicBounds(0, 0, getUserTypeIconRes(isVerified, isProtected), 0);
+        //
+    }
 }

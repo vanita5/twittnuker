@@ -102,6 +102,7 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 		final boolean showGap = isGap && !mGapDisallowed && position != getCount() - 1;
 
 		holder.setShowAsGap(showGap);
+        holder.setDisplayProfileImage(isDisplayProfileImage());
 
 		if (!showGap) {
 
