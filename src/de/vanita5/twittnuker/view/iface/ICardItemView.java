@@ -44,19 +44,21 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 
 public interface ICardItemView extends IColorLabelView {
 
+	public View getFakeOverflowButton();
+
 	public boolean isGap();
 
 	public void setActivatedIndicator(Drawable activatedIndicator);
 
 	public void setIsGap(boolean isGap);
 
+	public void setItemBackground(Drawable itemBackground);
+
 	public void setItemSelector(Drawable itemSelector);
 
 	public void setOnOverflowIconClickListener(final OnOverflowIconClickListener listener);
 
 	public void setOverflowIcon(Drawable overflowIcon);
-
-	public View getFakeOverflowButton();
 
 	public static final class DrawingHelper {
 
@@ -70,12 +72,9 @@ public interface ICardItemView extends IColorLabelView {
 		private final Rect mBackgroundPadding = new Rect();
 		private final Rect mOverflowIconBounds = new Rect();
 
-		private final Drawable mBackground;
-
+		private Drawable mBackground;
 		private Drawable mItemSelector;
-
 		private Drawable mActivatedIndicator;
-
 		private Drawable mOverflowIcon;
 
 		private boolean mIsGap;
@@ -98,19 +97,14 @@ public interface ICardItemView extends IColorLabelView {
 			mGapTextPaint.setColor(a.getColor(R.styleable.CardItemView_cardGapTextColor, Color.GRAY));
 			mGapTextPaint.setTextSize(a.getDimensionPixelSize(R.styleable.CardItemView_cardGapTextSize, 18));
 			mGapTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
-			mBackground = a.getDrawable(R.styleable.CardItemView_cardBackground);
 			mThemeColor = ThemeUtils.getUserThemeColor(context);
 			mOverflowIconGestureDetector = new GestureDetector(context, new OverflowIconGestureListener(this));
 			mFakeOverflowButton = new FakeOverflowButton(this);
+			setItemBackground(a.getDrawable(R.styleable.CardItemView_cardBackground));
 			setItemSelector(a.getDrawable(R.styleable.CardItemView_cardSelector));
 			setActivatedIndicator(a.getDrawable(R.styleable.CardItemView_cardActivatedIndicator));
 			setOverflowIcon(a.getDrawable(R.styleable.CardItemView_cardOverflowIcon));
 			a.recycle();
-			initDrawableAlpha();
-		}
-
-		public View getFakeOverflowButton() {
-			return mFakeOverflowButton;
 		}
 
 		public void dispatchDrawableStateChanged() {
@@ -196,6 +190,10 @@ public interface ICardItemView extends IColorLabelView {
 			return mCardGapHeight;
 		}
 
+		public View getFakeOverflowButton() {
+			return mFakeOverflowButton;
+		}
+
 		public boolean handleOverflowTouchEvent(final MotionEvent ev) {
 			return mOverflowIconGestureDetector.onTouchEvent(ev);
 		}
@@ -213,6 +211,9 @@ public interface ICardItemView extends IColorLabelView {
 		public void setActivatedIndicator(final Drawable activatedIndicator) {
 			preSetDrawable(mActivatedIndicator);
 			mActivatedIndicator = activatedIndicator;
+			if (activatedIndicator != null) {
+				activatedIndicator.setAlpha(0x80);
+			}
 			postSetDrawable(activatedIndicator);
 		}
 
@@ -221,9 +222,21 @@ public interface ICardItemView extends IColorLabelView {
 			mView.requestLayout();
 		}
 
+		public void setItemBackground(final Drawable itemBackground) {
+			preSetDrawable(mBackground);
+			mBackground = itemBackground;
+			if (itemBackground != null) {
+				itemBackground.setAlpha(0x80);
+			}
+			postSetDrawable(itemBackground);
+		}
+
 		public void setItemSelector(final Drawable itemSelector) {
 			preSetDrawable(mItemSelector);
 			mItemSelector = itemSelector;
+			if (itemSelector != null) {
+				itemSelector.setAlpha(0x80);
+			}
 			postSetDrawable(itemSelector);
 		}
 
@@ -242,18 +255,6 @@ public interface ICardItemView extends IColorLabelView {
 
 		public boolean verifyDrawable(final Drawable who) {
 			return who == mBackground || who == mItemSelector || who == mActivatedIndicator || who == mOverflowIcon;
-		}
-
-		private void initDrawableAlpha() {
-			if (mBackground != null) {
-				mBackground.setAlpha(0x80);
-			}
-			if (mItemSelector != null) {
-				mItemSelector.setAlpha(0x80);
-			}
-			if (mActivatedIndicator != null) {
-				mActivatedIndicator.setAlpha(0x80);
-			}
 		}
 
 		private void postSetDrawable(final Drawable curr) {

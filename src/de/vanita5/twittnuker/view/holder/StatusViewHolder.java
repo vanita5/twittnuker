@@ -39,7 +39,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.ShortTimeView;
-import de.vanita5.twittnuker.view.iface.ICardItemView;
 
 public class StatusViewHolder extends CardViewHolder {
 

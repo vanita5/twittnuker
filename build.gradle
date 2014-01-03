@@ -34,6 +34,7 @@ dependencies {
     compile 'org.apache.httpcomponents:httpmime:4.2.1'
     compile 'com.negusoft:holoaccent:0.9'
     compile 'org.mariotaku:menucomponent:0.1-SNAPSHOT'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.1'
 }
 
 android {

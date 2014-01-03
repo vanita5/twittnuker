@@ -45,6 +45,7 @@ import com.nostra13.universalimageloader.cache.disc.DiscCacheAware;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.nostra13.universalimageloader.utils.L;
 
@@ -64,7 +65,6 @@ import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
-import de.vanita5.twittnuker.util.ImageMemoryCache;
 import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
@@ -137,17 +137,19 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 
 	public ImageLoader getImageLoader() {
 		if (mImageLoader != null) return mImageLoader;
+		final ImageLoader loader = ImageLoader.getInstance();
+		final ImageLoaderConfiguration.Builder cb = new ImageLoaderConfiguration.Builder(this);
+		cb.threadPriority(Thread.NORM_PRIORITY - 2);
+		cb.denyCacheImageMultipleSizesInMemory();
+		cb.tasksProcessingOrder(QueueProcessingType.LIFO);
+		// cb.memoryCache(new ImageMemoryCache(40));
+		cb.discCache(getDiscCache());
+		cb.imageDownloader(getImageDownloader());
 		if (Utils.isDebugBuild()) {
-			L.enableLogging();
+			cb.writeDebugLogs();
 		} else {
 			L.disableLogging();
 		}
-		final ImageLoader loader = ImageLoader.getInstance();
-		final ImageLoaderConfiguration.Builder cb = new ImageLoaderConfiguration.Builder(this);
-		cb.threadPoolSize(8);
-		cb.memoryCache(new ImageMemoryCache(40));
-		cb.discCache(getDiscCache());
-		cb.imageDownloader(getImageDownloader());
 		loader.init(cb.build());
 		return mImageLoader = loader;
 	}

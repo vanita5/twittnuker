@@ -112,7 +112,6 @@ import org.mariotaku.querybuilder.Selectable;
 import org.mariotaku.querybuilder.Tables;
 import org.mariotaku.querybuilder.Where;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
-import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.CameraCropActivity;
