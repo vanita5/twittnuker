@@ -186,6 +186,7 @@
 	<string name="type_to_compose">Type to compose</string>
 	<string name="users_lists">User\'s lists</string>
 	<string name="lists_following_user">Lists following this user</string>
+    <string name="lists_following_me">Lists following me</string>
 	<string name="item_3_minutes">3 minutes</string>
 	<string name="item_5_minutes">5 minutes</string>
 	<string name="item_10_minutes">10 minutes</string>
@@ -258,7 +259,7 @@
 	<string name="view">View</string>
 	<string name="custom_host_mapping">Custom host mapping</string>
 	<string name="custom_host_mapping_summary">Host mapping like /etc/hosts, but does not require any additional permissions.</string>
-	<string name="host">Host</string>
+	<string name="host">Host (e.g. 127.0.0.1)</string>
 	<string name="address">Address (Can be another host address)</string>
 	<string name="add_host_mapping">Add host mapping</string>
 	<string name="tcp_dns_query">TCP DNS Query</string>
@@ -601,4 +602,5 @@
     <string name="font_family_condensed">Condensed</string>
     <string name="font_family_light">Light</string>
     <string name="font_family_thin">Thin</string>
+    <string name="translation_destination">Translation destination</string>
 </resources>

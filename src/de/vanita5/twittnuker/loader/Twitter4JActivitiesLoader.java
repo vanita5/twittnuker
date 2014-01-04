@@ -33,6 +33,7 @@ import org.mariotaku.jsonserializer.JSONSerializer;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 
 import twitter4j.Activity;
 import twitter4j.Paging;
@@ -50,7 +51,7 @@ public abstract class Twitter4JActivitiesLoader extends AsyncTaskLoader<List<Par
 	private final Context mContext;
 
 	private final long mAccountId;
-    private final List<ParcelableActivity> mData;
+	private final List<ParcelableActivity> mData = new NoDuplicatesArrayList<ParcelableActivity>();
 	private final boolean mIsFirstLoad;
     private final int mTabPosition;
 
@@ -63,8 +64,10 @@ public abstract class Twitter4JActivitiesLoader extends AsyncTaskLoader<List<Par
 		super(context);
 		mContext = context;
 		mAccountId = account_id;
-		mData = data;
 		mIsFirstLoad = data == null;
+		if (data != null) {
+			mData.addAll(data);
+		}
 		mTabPosition = tabPosition;
 		mSavedActivitiesFileArgs = save_file_args;
 		mHiResProfileImage = context.getResources().getBoolean(R.bool.hires_profile_image);
@@ -93,10 +96,7 @@ public abstract class Twitter4JActivitiesLoader extends AsyncTaskLoader<List<Par
 			if (cached == null) return Collections.emptyList();
 			return new CopyOnWriteArrayList<ParcelableActivity>(cached);
 		}
-		if (activities == null) {
-			if (mData == null) return Collections.emptyList();
-            return new CopyOnWriteArrayList<ParcelableActivity>(mData);
-		}
+		if (activities == null) return new CopyOnWriteArrayList<ParcelableActivity>(mData);
 		final List<ParcelableActivity> result = new ArrayList<ParcelableActivity>();
 		for (final Activity activity : activities) {
 			result.add(new ParcelableActivity(activity, mAccountId, mHiResProfileImage));

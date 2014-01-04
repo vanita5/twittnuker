@@ -27,13 +27,13 @@ import android.support.v4.content.AsyncTaskLoader;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ParcelableStatusesLoader extends AsyncTaskLoader<List<ParcelableStatus>> implements Constants {
 
-    private final List<ParcelableStatus> mData = new ArrayList<ParcelableStatus>();
+	private final List<ParcelableStatus> mData = new NoDuplicatesArrayList<ParcelableStatus>();
 	private final boolean mFirstLoad;
 	private final int mTabPosition;
 

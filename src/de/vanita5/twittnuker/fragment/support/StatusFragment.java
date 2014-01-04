@@ -39,6 +39,7 @@ import static de.vanita5.twittnuker.util.Utils.getMapStaticImageUri;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
+import static de.vanita5.twittnuker.util.Utils.isOfficialConsumerKeySecret;
 import static de.vanita5.twittnuker.util.Utils.isSameAccount;
 import static de.vanita5.twittnuker.util.Utils.openImage;
 import static de.vanita5.twittnuker.util.Utils.openMap;
@@ -99,11 +100,14 @@ import de.vanita5.twittnuker.adapter.MediaPreviewAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
 import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.PreviewMedia;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.text.method.StatusContentMovementMethod;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -738,6 +742,19 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 			case MENU_SET_NICKNAME: {
 				final String nick = getUserNickname(getActivity(), mStatus.user_id, true);
 				SetUserNicknameDialogFragment.show(getFragmentManager(), mStatus.user_id, nick);
+				break;
+			}
+			case MENU_TRANSLATE: {
+				final AccountWithCredentials account = Account.getAccountWithCredentials(getActivity(),
+				            mStatus.account_id);
+				final boolean isOAuth = account.auth_type == Accounts.AUTH_TYPE_OAUTH
+				            || account.auth_type == Accounts.AUTH_TYPE_XAUTH;
+				final String consumerKey = account.consumer_key, consumerSecret = account.consumer_secret;
+				if (isOAuth && isOfficialConsumerKeySecret(getActivity(), consumerKey, consumerSecret)) {
+					StatusTranslateDialogFragment.show(getFragmentManager(), mStatus);
+				} else {
+
+				}
 				break;
 			}
 			default: {

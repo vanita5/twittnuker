@@ -34,7 +34,6 @@
 		<!-- Card UI styles -->
 		<item name="cardItemBackground">@drawable/bg_card_item_dark</item>
 		<item name="cardItemBackgroundColor">#1a1a1a</item>
-		<item name="cardItemSelector">@drawable/card_item_selector_activated_holo_dark</item>
 		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_dark</item>
 		<item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_dark</item>
 		<item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_dark</item>
@@ -71,7 +70,6 @@
 		<!-- Card UI styles -->
 		<item name="cardItemBackground">@drawable/bg_card_item_light</item>
 		<item name="cardItemBackgroundColor">#f8f8f8</item>
-		<item name="cardItemSelector">@drawable/card_item_selector_activated_holo_light</item>
 		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_light</item>
 		<item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_light</item>
 		<item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_light</item>
@@ -108,7 +106,6 @@
 		<!-- Card UI styles -->
 		<item name="cardItemBackground">@drawable/bg_card_item_light</item>
 		<item name="cardItemBackgroundColor">#f8f8f8</item>
-		<item name="cardItemSelector">@drawable/card_item_selector_activated_holo_light</item>
 		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_light</item>
 		<item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_light</item>
 		<item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_light</item>
@@ -238,7 +235,6 @@
 		<!-- Card UI styles -->
 		<item name="cardItemBackground">@drawable/bg_card_item_dark</item>
 		<item name="cardItemBackgroundColor">#1a1a1a</item>
-		<item name="cardItemSelector">@drawable/card_item_selector_activated_holo_dark</item>
 		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_dark</item>
 		<item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_dark</item>
 		<item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_dark</item>
@@ -261,7 +257,6 @@
 		<!-- Card UI styles -->
 		<item name="cardItemBackground">@drawable/bg_card_item_light</item>
 		<item name="cardItemBackgroundColor">#f8f8f8</item>
-		<item name="cardItemSelector">@drawable/card_item_selector_activated_holo_light</item>
 		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_light</item>
 		<item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_light</item>
 		<item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_light</item>
@@ -352,7 +347,6 @@
 		<!-- Card UI styles -->
 		<item name="cardItemBackground">@drawable/bg_card_item_dark</item>
 		<item name="cardItemBackgroundColor">#1a1a1a</item>
-		<item name="cardItemSelector">@drawable/card_item_selector_activated_holo_dark</item>
 		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_dark</item>
 		<item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_dark</item>
 		<item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_dark</item>
@@ -431,7 +425,6 @@
         <!-- Card UI styles -->
         <item name="cardItemBackground">@drawable/bg_card_item_dark</item>
         <item name="cardItemBackgroundColor">#1a1a1a</item>
-        <item name="cardItemSelector">@drawable/card_item_selector_activated_holo_dark</item>
         <item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_dark</item>
         <item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_dark</item>
         <item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_dark</item>
@@ -461,7 +454,6 @@
         <!-- Card UI styles -->
         <item name="cardItemBackground">@drawable/bg_card_item_light</item>
         <item name="cardItemBackgroundColor">#f8f8f8</item>
-        <item name="cardItemSelector">@drawable/card_item_selector_activated_holo_light</item>
         <item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_light</item>
         <item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_light</item>
         <item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_light</item>

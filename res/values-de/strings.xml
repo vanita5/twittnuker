@@ -183,6 +183,7 @@
     <string name="type_to_compose">Schreibe etwas</string>
     <string name="users_lists">Eigene Listen</string>
     <string name="lists_following_user">Mitglied von Liste</string>
+    <string name="lists_following_me">Mitglied von Liste</string>
     <string name="item_3_minutes">3 Minuten</string>
     <string name="item_5_minutes">5 Minuten</string>
     <string name="item_10_minutes">10 Minuten</string>
@@ -255,8 +256,8 @@
     <string name="view">Ansicht</string>
     <string name="custom_host_mapping">Individuelles Host-Mapping</string>
     <string name="custom_host_mapping_summary">Host-Mapping wie /ect/hosts, ohne zusätzlich erforderliche Rechte.</string>
-    <string name="host">Host</string>
-    <string name="address">Adresse(Kann auch eine andere Host-Adresse sein)</string>
+    <string name="host">Host (Bsp.: 127.0.0.1)</string>
+    <string name="address">Adresse</string>
     <string name="add_host_mapping">Füge host mapping hinzu</string>
     <string name="tcp_dns_query">TCP DNS-Abfrage</string>
     <string name="tcp_dns_query_summary">Benutze TCP für DNS Anfragen, um DNS Cache Poisoning zu vermeiden.</string>
@@ -576,4 +577,5 @@
     <string name="long_click_to_open_menu">Langer Klick um das Menü zu öffnen</string>
     <string name="back">Zurück</string>
     <string name="theme_font_family">Theme Font Family</string>
+    <string name="translation_destination">Sprache zum Übersetzen</string>
 </resources>

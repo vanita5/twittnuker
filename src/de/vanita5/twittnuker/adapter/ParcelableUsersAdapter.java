@@ -32,7 +32,6 @@ import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.R;
@@ -49,7 +48,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> implements IBaseCardAdapter,
-		OnClickListener, OnOverflowIconClickListener {
+		OnOverflowIconClickListener {
 
 	private final ImageLoaderWrapper mProfileImageLoader;
 	private final MultiSelectManager mMultiSelectManager;
@@ -95,6 +94,7 @@ public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> imp
 
 		// Clear images in prder to prevent images in recycled view shown.
 		holder.profile_image.setImageDrawable(null);
+		holder.position = position;
 
 		final ParcelableUser user = getItem(position);
 
@@ -128,7 +128,6 @@ public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> imp
 		if (isDisplayProfileImage()) {
 			mProfileImageLoader.displayProfileImage(holder.profile_image, user.profile_image_url);
 		}
-		holder.position = position;
 		if (position > mMaxAnimationPosition) {
 			if (mAnimationEnabled) {
 				view.startAnimation(holder.item_animation);
@@ -139,22 +138,8 @@ public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> imp
 	}
 
 	@Override
-	public void onClick(final View view) {
-		if (mMultiSelectManager.isActive()) return;
-		final Object tag = view.getTag();
-		final int position = tag instanceof Integer ? (Integer) tag : -1;
-		if (position == -1) return;
-		switch (view.getId()) {
-			case R.id.item_menu: {
-				if (position == -1 || mListener == null) return;
-				mListener.onMenuButtonClick(view, position, getItemId(position));
-				break;
-			}
-		}
-	}
-
-	@Override
 	public void onOverflowIconClick(final View view) {
+		if (mMultiSelectManager.isActive()) return;
 		final Object tag = view.getTag();
 		if (tag instanceof UserViewHolder) {
 			final UserViewHolder holder = (UserViewHolder) tag;
