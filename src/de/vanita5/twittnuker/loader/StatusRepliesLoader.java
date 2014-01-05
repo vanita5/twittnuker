@@ -26,6 +26,8 @@ import android.content.Context;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
+import static de.vanita5.twittnuker.util.Utils.isOfficialTwitterInstance;
+
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -47,14 +49,25 @@ public class StatusRepliesLoader extends UserMentionsLoader {
 
 	@Override
 	public List<Status> getStatuses(final Twitter twitter, final Paging paging) throws TwitterException {
-		final List<Status> statuses = super.getStatuses(twitter, paging);
-		final List<Status> result = new ArrayList<Status>();
-		for (final Status status : statuses) {
-			if (status.getInReplyToStatusId() == mInReplyToStatusId) {
-				result.add(status);
+        if (isOfficialTwitterInstance(getContext(), twitter)) {
+            final List<Status> statuses = twitter.showConversation(mInReplyToStatusId, paging);
+            final List<Status> result = new ArrayList<Status>();
+            for (final Status status : statuses) {
+                if (status.getId() > mInReplyToStatusId) {
+                    result.add(status);
+                }
+            }
+            return result;
+        } else {
+            final List<Status> statuses = super.getStatuses(twitter, paging);
+            final List<Status> result = new ArrayList<Status>();
+            for (final Status status : statuses) {
+                if (status.getInReplyToStatusId() == mInReplyToStatusId) {
+                    result.add(status);
+                }
 			}
+            return result;
 		}
-		return result;
 	}
 
 }
