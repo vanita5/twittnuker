@@ -260,8 +260,15 @@ public class ThemeUtils implements Constants {
 	}
 
     public static int getSettingsThemeResource(final Context context) {
-        if (isDarkTheme(context)) return R.style.Theme_Twidere_Settings_Dark;
-        return R.style.Theme_Twidere_Settings_Light;
+        return getSettingsThemeResource(getThemeNameOption(context), getDarkActionBarOption(context));
+    }
+
+    public static int getSettingsThemeResource(final String name, final boolean darkActionBar) {
+        if (VALUE_THEME_NAME_TWIDERE.equals(name) || VALUE_THEME_NAME_LIGHT.equals(name))
+        return darkActionBar ? R.style.Theme_Twidere_Settings_Light_DarkActionBar
+                  : R.style.Theme_Twidere_Settings_Light;
+        else if (VALUE_THEME_NAME_DARK.equals(name)) return R.style.Theme_Twidere_Settings_Dark;
+        return R.style.Theme_Twidere_Settings_Light_DarkActionBar;
     }
 
 	public static int getTextAppearanceLarge(final Context context) {

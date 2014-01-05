@@ -107,6 +107,7 @@ import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment;
+import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
@@ -872,8 +873,12 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		mLeftDrawerContainer.setClipEnabled(isTransparentBackground);
 		mLeftDrawerContainer.setScrollScale(mSlidingMenu.getBehindScrollScale());
 		mSlidingMenu.setBehindCanvasTransformer(new ListenerCanvasTransformer(this));
+        final Window window = getWindow();
 		if (isTransparentBackground) {
 			ViewAccessor.setBackground(mSlidingMenu.getContent(), null);
+            window.setBackgroundDrawable(new EmptyDrawable());
+        } else {
+            window.setBackgroundDrawable(null);
 		}
 		if (isDualPaneMode()) {
 			mSlidingMenu.addIgnoredView(getSlidingPane().getRightPaneContainer());
