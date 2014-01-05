@@ -202,4 +202,5 @@ public interface IntentConstants {
 	public static final String EXTRA_CLEAR_BUTTON = "clear_button";
 	public static final String EXTRA_PATH = "path";
 	public static final String EXTRA_ACTION = "action";
+	public static final String EXTRA_FLAGS = "flags";
 }

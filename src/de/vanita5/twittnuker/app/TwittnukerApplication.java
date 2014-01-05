@@ -240,6 +240,12 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 				|| KEY_PROXY_HOST.equals(key) || KEY_PROXY_PORT.equals(key)
 				|| KEY_FAST_IMAGE_LOADING.equals(key)) {
 			reloadConnectivitySettings();
+		} else if (KEY_CONSUMER_KEY.equals(key) || KEY_CONSUMER_SECRET.equals(key) || KEY_REST_BASE_URL.equals(key)
+				|| KEY_OAUTH_BASE_URL.equals(key) || KEY_SIGNING_REST_BASE_URL.equals(key)
+			    || KEY_SIGNING_OAUTH_BASE_URL.equals(key) || KEY_AUTH_TYPE.equals(key)) {
+			final SharedPreferences.Editor editor = preferences.edit();
+			editor.putLong(KEY_API_LAST_CHANGE, System.currentTimeMillis());
+			editor.apply();
 		}
 	}
 

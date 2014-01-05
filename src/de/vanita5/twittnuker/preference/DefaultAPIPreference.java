@@ -183,7 +183,6 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 		editor.putString(KEY_SIGNING_OAUTH_BASE_URL, isEmpty(mSigningOAuthBaseURL) ? null
 				: mSigningOAuthBaseURL);
 		editor.putInt(KEY_AUTH_TYPE, mAuthType);
-		editor.putLong(KEY_API_LAST_CHANGE, System.currentTimeMillis());
 		editor.apply();
 	}
 
