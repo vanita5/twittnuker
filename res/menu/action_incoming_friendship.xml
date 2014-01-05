@@ -21,15 +21,15 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <de.vanita5.twittnuker.view.CardItemView
-        android:id="@+id/cardItemGapView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#f00"/>
+    <item
+        android:id="@id/accept"
+        android:icon="@drawable/ic_menu_accept"
+        android:title="@string/accept"/>
+    <item
+        android:id="@id/deny"
+        android:icon="@drawable/ic_menu_close_clear_cancel"
+        android:title="@string/deny"/>
 
-</LinearLayout>
+</menu>

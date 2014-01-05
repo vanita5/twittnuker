@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.model;
 
+import static de.vanita5.twittnuker.util.Utils.isOfficialConsumerKeySecret;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -190,6 +192,14 @@ public class Account implements Parcelable {
 			auth_type = cursor.getInt(indices.auth_type);
 			consumer_key = cursor.getString(indices.consumer_key);
 			consumer_secret = cursor.getString(indices.consumer_secret);
+		}
+
+		public static final boolean isOfficialCredentials(final Context context, final AccountWithCredentials account) {
+			if (account == null) return false;
+			final boolean isOAuth = account.auth_type == Accounts.AUTH_TYPE_OAUTH
+			          || account.auth_type == Accounts.AUTH_TYPE_XAUTH;
+			final String consumerKey = account.consumer_key, consumerSecret = account.consumer_secret;
+			return isOAuth && isOfficialConsumerKeySecret(context, consumerKey, consumerSecret);
 		}
 
 	}

@@ -76,7 +76,9 @@
 			android:summary="@string/gzip_compressing_summary"
 			android:title="@string/gzip_compressing"/>
 
-		<de.vanita5.twittnuker.preference.DefaultAPIPreference android:title="@string/default_api_settings"/>
+		<de.vanita5.twittnuker.preference.DefaultAPIPreference
+            android:summary="@string/default_api_settings_summary"
+            android:title="@string/default_api_settings"/>
 	</PreferenceCategory>
 
 </PreferenceScreen>

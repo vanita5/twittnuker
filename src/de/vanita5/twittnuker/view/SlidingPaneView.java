@@ -22,12 +22,14 @@
 
 package de.vanita5.twittnuker.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -112,6 +114,8 @@ public class SlidingPaneView extends ViewGroup {
 	private boolean mForceRefresh = false;
 
 	private boolean mShadowSlidable;
+
+	private final Handler mHandler = new Handler();
 
 	public SlidingPaneView(final Context context) {
 		this(context, null);
@@ -255,6 +259,23 @@ public class SlidingPaneView extends ViewGroup {
 		return mViewShadow.getVisibility() == VISIBLE;
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public void manageLayers(final float percentOpen) {
+		if (Build.VERSION.SDK_INT < 11) return;
+
+		    final boolean layer = percentOpen > 0.0f && percentOpen < 1.0f;
+		final int layerType = layer ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_NONE;
+		if (layerType != mRightPaneLayout.getLayerType()) {
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					mRightPaneLayout.setLayerType(layerType, null);
+					mLeftPaneLayout.setLayerType(layerType, null);
+				}
+			});
+		}
+	}
+
 	@Override
 	public void onRestoreInstanceState(final Parcelable state) {
 		if (!(state instanceof SavedState)) {
@@ -312,12 +333,12 @@ public class SlidingPaneView extends ViewGroup {
 		mFlingDuration = duration;
 	}
 
-	@Override
-	public void setLayerType(final int layerType, final Paint paint) {
-	    final int currLayerType = getLayerType();
-	    if (layerType == currLayerType) return;
-	    super.setLayerType(layerType, paint);
-	}
+//	@Override
+//	public void setLayerType(final int layerType, final Paint paint) {
+//	    final int currLayerType = getLayerType();
+//	    if (layerType == currLayerType) return;
+//	    super.setLayerType(layerType, paint);
+//	}
 
 	public void setRightPaneBackground(final int resId) {
 		mRightPaneBackgroundView.setBackgroundResource(resId);
@@ -797,10 +818,15 @@ public class SlidingPaneView extends ViewGroup {
 
 	private static class RightPaneLayout extends ExtendedLinearLayout {
 
+		private final ContentScrollController mController;
+		private final SlidingPaneView mParent;
+
 		private OnSwipeListener mOnSwipeListener;
 
 		public RightPaneLayout(final SlidingPaneView parent) {
 			super(parent.getContext());
+			mParent = parent;
+			mController = parent.getController();
 			ViewAccessor.enableHwAccelIfNecessary(this);
 			setOrientation(LinearLayout.HORIZONTAL);
 		}
@@ -822,6 +848,7 @@ public class SlidingPaneView extends ViewGroup {
 			if (mOnSwipeListener != null) {
 				mOnSwipeListener.onSwipe(-getScrollX());
 			}
+			mParent.manageLayers(mController.getScrollFactor());
 		}
 
 		public static interface OnSwipeListener {

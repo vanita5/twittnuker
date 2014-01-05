@@ -24,9 +24,17 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.loader.IDsUsersLoader;
 import de.vanita5.twittnuker.loader.IncomingFriendshipsLoader;
+import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
+import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
 
 public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment {
@@ -34,8 +42,38 @@ public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment 
 	@Override
 	public IDsUsersLoader newLoaderInstance(final Context context, final Bundle args) {
 		if (args == null) return null;
-		final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
-		return new IncomingFriendshipsLoader(context, account_id, getNextCursor(), getData());
+		final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+		return new IncomingFriendshipsLoader(context, accountId, getNextCursor(), getData());
+	}
+
+	@Override
+	public boolean onMenuItemClick(final MenuItem item) {
+	    switch (item.getItemId()) {
+			case MENU_ACCEPT: {
+				final AsyncTwitterWrapper twitter = getTwitterWrapper();
+				final ParcelableUser user = getSelectedUser();
+				if (twitter == null || user == null) return false;
+					twitter.acceptFriendshipAsync(user.account_id, user.id);
+					break;
+			}
+			case MENU_DENY: {
+				final AsyncTwitterWrapper twitter = getTwitterWrapper();
+				final ParcelableUser user = getSelectedUser();
+				if (twitter == null || user == null) return false;
+					twitter.denyFriendshipAsync(user.account_id, user.id);
+					break;
+			}
+		}
+		return super.onMenuItemClick(item);
+	}
+
+	@Override
+	protected void onPrepareItemMenu(final Menu menu) {
+	    final AccountWithCredentials account = Account.getAccountWithCredentials(getActivity(), getAccountId());
+	    if (AccountWithCredentials.isOfficialCredentials(getActivity(), account)) {
+			final MenuInflater inflater = new MenuInflater(getActivity());
+			inflater.inflate(R.menu.action_incoming_friendship, menu);
+		}
 	}
 
 }

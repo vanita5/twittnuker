@@ -94,7 +94,7 @@ public interface IForegroundView {
             a.recycle();
         }
 
-        public void draw(final Canvas canvas) {
+		public void dispatchOnDraw(final Canvas canvas) {
             if (mForeground != null) {
                 final Drawable foreground = mForeground;
 
@@ -123,23 +123,16 @@ public interface IForegroundView {
             }
         }
 
-        public void drawableStateChanged() {
-            if (mForeground != null && mForeground.isStateful()) {
-                mForeground.setState(mView.getDrawableState());
-            }
+		public void dispatchOnLayout(final boolean changed, final int left, final int top, final int right,
+			        final int bottom) {
+			mForegroundBoundsChanged = true;
         }
 
-        public Drawable getForeground() {
-            return mForeground;
+		public void dispatchOnSizeChanged(final int w, final int h, final int oldw, final int oldh) {
+			mForegroundBoundsChanged = true;
         }
 
-        public void jumpDrawablesToCurrentState() {
-            if (mForeground != null) {
-                mForeground.jumpToCurrentState();
-            }
-        }
-
-        public void onDraw(final Canvas canvas) {
+		public void draw(final Canvas canvas) {
             if (mForeground != null) {
                 final Drawable foreground = mForeground;
 
@@ -168,12 +161,20 @@ public interface IForegroundView {
             }
         }
 
-        public void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
-            mForegroundBoundsChanged = true;
+		public void drawableStateChanged() {
+			if (mForeground != null && mForeground.isStateful()) {
+				mForeground.setState(mView.getDrawableState());
+			}
         }
 
-        public void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
-            mForegroundBoundsChanged = true;
+		public Drawable getForeground() {
+			return mForeground;
+		}
+
+		public void jumpDrawablesToCurrentState() {
+			if (mForeground != null) {
+				mForeground.jumpToCurrentState();
+			}
         }
 
         public void setForeground(final Drawable drawable) {
