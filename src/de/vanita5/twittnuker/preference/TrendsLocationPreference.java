@@ -83,7 +83,7 @@ public class TrendsLocationPreference extends Preference implements Constants, O
 		if (editor == null) return;
 		final Location item = mAdapter.getItem(which);
 		if (item != null) {
-			editor.putInt(PREFERENCE_KEY_LOCAL_TRENDS_WOEID, item.getWoeid());
+			editor.putInt(KEY_LOCAL_TRENDS_WOEID, item.getWoeid());
 			editor.commit();
 		}
 		if (mDialog != null && mDialog.isShowing()) {
@@ -95,7 +95,7 @@ public class TrendsLocationPreference extends Preference implements Constants, O
 	protected void onClick() {
 		mPreferences = getSharedPreferences();
 		if (mPreferences == null) return;
-		mCheckedWoeId = mPreferences.getInt(PREFERENCE_KEY_LOCAL_TRENDS_WOEID, 1);
+		mCheckedWoeId = mPreferences.getInt(KEY_LOCAL_TRENDS_WOEID, 1);
 		if (mGetAvailableTrendsTask != null) {
 			mGetAvailableTrendsTask.cancel(false);
 		}

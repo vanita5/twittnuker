@@ -330,7 +330,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 		mTweetCount.setText(getLocalizedNumber(mLocale, user.statuses_count));
 		mFollowersCount.setText(getLocalizedNumber(mLocale, user.followers_count));
 		mFriendsCount.setText(getLocalizedNumber(mLocale, user.friends_count));
-		if (mPreferences.getBoolean(PREFERENCE_KEY_DISPLAY_PROFILE_IMAGE, true)) {
+		if (mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true)) {
 			mProfileImageLoader.displayProfileImage(mProfileImageView, user.profile_image_url);
 			final int def_width = getResources().getDisplayMetrics().widthPixels;
 			final int width = mBannerWidth > 0 ? mBannerWidth : def_width;

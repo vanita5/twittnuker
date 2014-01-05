@@ -264,8 +264,8 @@ public abstract class BaseFiltersFragment extends BaseListFragment implements Lo
 				super(context, android.R.layout.simple_list_item_activated_1, null, new String[0], new int[0], 0);
 				final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
 						Context.MODE_PRIVATE);
-				mNameFirst = prefs.getBoolean(PREFERENCE_KEY_NAME_FIRST, true);
-				mNicknameOnly = prefs.getBoolean(PREFERENCE_KEY_NICKNAME_ONLY, false);
+				mNameFirst = prefs.getBoolean(KEY_NAME_FIRST, true);
+				mNicknameOnly = prefs.getBoolean(KEY_NICKNAME_ONLY, false);
 			}
 
 			@Override

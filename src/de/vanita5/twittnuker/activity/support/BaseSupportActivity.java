@@ -106,7 +106,7 @@ public class BaseSupportActivity extends BaseSupportThemedActivity implements Co
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-		mCompactCards = mPreferences.getBoolean(PREFERENCE_KEY_COMPACT_CARDS, false);
+		mCompactCards = mPreferences.getBoolean(KEY_COMPACT_CARDS, false);
 	}
 
 	@Override
@@ -152,6 +152,6 @@ public class BaseSupportActivity extends BaseSupportThemedActivity implements Co
 	}
 
 	private boolean isCompactCardsModeChanged() {
-		return mCompactCards != mPreferences.getBoolean(PREFERENCE_KEY_COMPACT_CARDS, false);
+		return mCompactCards != mPreferences.getBoolean(KEY_COMPACT_CARDS, false);
 	}
 }

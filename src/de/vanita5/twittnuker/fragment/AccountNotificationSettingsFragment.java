@@ -33,7 +33,7 @@ public class AccountNotificationSettingsFragment extends BaseAccountPreferenceFr
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		final Preference preference = findPreference(PREFERENCE_KEY_NOTIFICATION_LIGHT_COLOR);
+		final Preference preference = findPreference(KEY_NOTIFICATION_LIGHT_COLOR);
 		final Account account = getAccount();
 		if (preference != null && account != null) {
 			preference.setDefaultValue(account.color);
@@ -47,12 +47,12 @@ public class AccountNotificationSettingsFragment extends BaseAccountPreferenceFr
 
 	@Override
 	protected boolean getSwitchPreferenceDefault() {
-		return PREFERENCE_DEFAULT_NOTIFICATION;
+		return DEFAULT_NOTIFICATION;
 	}
 
 	@Override
 	protected String getSwitchPreferenceKey() {
-		return PREFERENCE_KEY_NOTIFICATION;
+		return KEY_NOTIFICATION;
 	}
 
 }

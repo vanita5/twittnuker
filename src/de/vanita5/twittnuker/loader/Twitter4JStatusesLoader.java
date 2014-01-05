@@ -30,7 +30,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 
-import org.mariotaku.jsonserializer.JSONSerializer;
+import org.mariotaku.jsonserializer.JSONFileIO;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -90,7 +90,7 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
 		final boolean truncated;
 		final Context context = getContext();
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        final int loadItemLimit = prefs.getInt(PREFERENCE_KEY_LOAD_ITEM_LIMIT, PREFERENCE_DEFAULT_LOAD_ITEM_LIMIT);
+        final int loadItemLimit = prefs.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
 		try {
 			final Paging paging = new Paging();
 			paging.setCount(loadItemLimit);
@@ -139,7 +139,7 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
     private List<ParcelableStatus> getCachedData(final File file) {
         if (file == null) return null;
         try {
-            return JSONSerializer.listFromFile(file);
+			return JSONFileIO.readArrayList(file);
         } catch (final IOException e) {
             e.printStackTrace();
         }
@@ -149,7 +149,7 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
     private File getSerializationFile() {
         if (mSavedStatusesFileArgs == null) return null;
         try {
-            return JSONSerializer.getSerializationFile(mContext, mSavedStatusesFileArgs);
+			return JSONFileIO.getSerializationFile(mContext, mSavedStatusesFileArgs);
         } catch (final IOException e) {
             e.printStackTrace();
         }
@@ -159,11 +159,11 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
     private void saveCachedData(final File file, final List<ParcelableStatus> data) {
         if (file == null || data == null) return;
         final SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        final int databaseItemLimit = prefs.getInt(PREFERENCE_KEY_DATABASE_ITEM_LIMIT,
-                PREFERENCE_DEFAULT_DATABASE_ITEM_LIMIT);
+        final int databaseItemLimit = prefs.getInt(KEY_DATABASE_ITEM_LIMIT,
+                DEFAULT_DATABASE_ITEM_LIMIT);
         try {
             final List<ParcelableStatus> activities = data.subList(0, Math.min(databaseItemLimit, data.size()));
-            JSONSerializer.toFile(file, activities.toArray(new ParcelableStatus[activities.size()]));
+			JSONFileIO.writeArray(file, activities.toArray(new ParcelableStatus[activities.size()]));
         } catch (final IOException e) {
             e.printStackTrace();
         }

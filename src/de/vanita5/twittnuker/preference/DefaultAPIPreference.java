@@ -126,15 +126,15 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 	@Override
 	protected void onBindDialogView(final View view) {
 		final SharedPreferences pref = getSharedPreferences();
-		mConsumerKey = getNonEmptyString(pref, PREFERENCE_KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
-		mConsumerSecret = getNonEmptyString(pref, PREFERENCE_KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
-		mRestBaseURL = getNonEmptyString(pref, PREFERENCE_KEY_REST_BASE_URL, DEFAULT_REST_BASE_URL);
-		mOAuthBaseURL = getNonEmptyString(pref, PREFERENCE_KEY_OAUTH_BASE_URL, DEFAULT_OAUTH_BASE_URL);
-		mSigningRestBaseURL = getNonEmptyString(pref, PREFERENCE_KEY_SIGNING_REST_BASE_URL,
+		mConsumerKey = getNonEmptyString(pref, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
+		mConsumerSecret = getNonEmptyString(pref, KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
+		mRestBaseURL = getNonEmptyString(pref, KEY_REST_BASE_URL, DEFAULT_REST_BASE_URL);
+		mOAuthBaseURL = getNonEmptyString(pref, KEY_OAUTH_BASE_URL, DEFAULT_OAUTH_BASE_URL);
+		mSigningRestBaseURL = getNonEmptyString(pref, KEY_SIGNING_REST_BASE_URL,
 				DEFAULT_SIGNING_REST_BASE_URL);
-		mSigningOAuthBaseURL = getNonEmptyString(pref, PREFERENCE_KEY_SIGNING_OAUTH_BASE_URL,
+		mSigningOAuthBaseURL = getNonEmptyString(pref, KEY_SIGNING_OAUTH_BASE_URL,
 				DEFAULT_SIGNING_OAUTH_BASE_URL);
-		mAuthType = pref.getInt(PREFERENCE_KEY_AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
+		mAuthType = pref.getInt(KEY_AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
 
 		mEditRestBaseURL.setText(isEmpty(mRestBaseURL) ? DEFAULT_REST_BASE_URL : mRestBaseURL);
 		mButtonOAuth.setChecked(mAuthType == Accounts.AUTH_TYPE_OAUTH);
@@ -170,20 +170,20 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 		saveEditedText();
 		final SharedPreferences.Editor editor = getSharedPreferences().edit();
 		if (!isEmpty(mConsumerKey) && !isEmpty(mConsumerSecret)) {
-			editor.putString(PREFERENCE_KEY_CONSUMER_KEY, mConsumerKey);
-			editor.putString(PREFERENCE_KEY_CONSUMER_SECRET, mConsumerSecret);
+			editor.putString(KEY_CONSUMER_KEY, mConsumerKey);
+			editor.putString(KEY_CONSUMER_SECRET, mConsumerSecret);
 		} else {
-			editor.remove(PREFERENCE_KEY_CONSUMER_KEY);
-			editor.remove(PREFERENCE_KEY_CONSUMER_SECRET);
+			editor.remove(KEY_CONSUMER_KEY);
+			editor.remove(KEY_CONSUMER_SECRET);
 		}
-		editor.putString(PREFERENCE_KEY_REST_BASE_URL, isEmpty(mRestBaseURL) ? null : mRestBaseURL);
-		editor.putString(PREFERENCE_KEY_OAUTH_BASE_URL, isEmpty(mOAuthBaseURL) ? null : mOAuthBaseURL);
-		editor.putString(PREFERENCE_KEY_SIGNING_REST_BASE_URL, isEmpty(mSigningRestBaseURL) ? null
+		editor.putString(KEY_REST_BASE_URL, isEmpty(mRestBaseURL) ? null : mRestBaseURL);
+		editor.putString(KEY_OAUTH_BASE_URL, isEmpty(mOAuthBaseURL) ? null : mOAuthBaseURL);
+		editor.putString(KEY_SIGNING_REST_BASE_URL, isEmpty(mSigningRestBaseURL) ? null
 				: mSigningRestBaseURL);
-		editor.putString(PREFERENCE_KEY_SIGNING_OAUTH_BASE_URL, isEmpty(mSigningOAuthBaseURL) ? null
+		editor.putString(KEY_SIGNING_OAUTH_BASE_URL, isEmpty(mSigningOAuthBaseURL) ? null
 				: mSigningOAuthBaseURL);
-		editor.putInt(PREFERENCE_KEY_AUTH_TYPE, mAuthType);
-		editor.putLong(PREFERENCE_KEY_API_LAST_CHANGE, System.currentTimeMillis());
+		editor.putInt(KEY_AUTH_TYPE, mAuthType);
+		editor.putLong(KEY_API_LAST_CHANGE, System.currentTimeMillis());
 		editor.apply();
 	}
 

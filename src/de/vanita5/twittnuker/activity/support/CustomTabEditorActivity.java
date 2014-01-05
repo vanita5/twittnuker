@@ -185,9 +185,9 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 		final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
 		final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
 		final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
-		final boolean display_profile_image = mPreferences.getBoolean(PREFERENCE_KEY_DISPLAY_PROFILE_IMAGE, true);
-		final boolean nickname_only = mPreferences.getBoolean(PREFERENCE_KEY_NICKNAME_ONLY, false);
-		final boolean display_name = mPreferences.getBoolean(PREFERENCE_KEY_NAME_FIRST, true);
+		final boolean display_profile_image = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
+		final boolean nickname_only = mPreferences.getBoolean(KEY_NICKNAME_ONLY, false);
+		final boolean display_name = mPreferences.getBoolean(KEY_NAME_FIRST, true);
 		text1.setVisibility(View.VISIBLE);
 		text2.setVisibility(View.VISIBLE);
 		icon.setVisibility(display_profile_image ? View.VISIBLE : View.GONE);

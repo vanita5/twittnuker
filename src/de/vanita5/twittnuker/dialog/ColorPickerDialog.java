@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment.dialog;
+package de.vanita5.twittnuker.dialog;
 
 import android.app.AlertDialog;
 import android.content.Context;

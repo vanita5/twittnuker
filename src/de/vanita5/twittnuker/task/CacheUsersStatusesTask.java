@@ -33,6 +33,7 @@ import android.content.Context;
 
 import com.twitter.Extractor;
 
+import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.provider.TweetStore.CachedHashtags;
@@ -46,8 +47,6 @@ import twitter4j.User;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.mariotaku.querybuilder.Where;
 
 public class CacheUsersStatusesTask extends AsyncTask<Void, Void, Void> implements Constants {
 

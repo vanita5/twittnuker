@@ -199,7 +199,7 @@ public class AccountsDrawerFragment extends BaseSupportFragment implements Loade
 						break;
 					}
 					case MENU_SET_AS_DEFAULT: {
-						mPreferences.edit().putLong(PREFERENCE_KEY_DEFAULT_ACCOUNT_ID, account.account_id).commit();
+						mPreferences.edit().putLong(KEY_DEFAULT_ACCOUNT_ID, account.account_id).commit();
 						break;
 					}
 					case MENU_DELETE: {
@@ -286,13 +286,13 @@ public class AccountsDrawerFragment extends BaseSupportFragment implements Loade
 	@Override
 	public void onResume() {
 		super.onResume();
-		mAdapter.setDefaultAccountId(mPreferences.getLong(PREFERENCE_KEY_DEFAULT_ACCOUNT_ID, -1));
+		mAdapter.setDefaultAccountId(mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1));
 	}
 
 	@Override
 	public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-		if (PREFERENCE_KEY_DEFAULT_ACCOUNT_ID.equals(key)) {
-			mAdapter.setDefaultAccountId(mPreferences.getLong(PREFERENCE_KEY_DEFAULT_ACCOUNT_ID, -1));
+		if (KEY_DEFAULT_ACCOUNT_ID.equals(key)) {
+			mAdapter.setDefaultAccountId(mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1));
 		}
 	}
 

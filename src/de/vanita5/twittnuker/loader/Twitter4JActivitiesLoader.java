@@ -28,7 +28,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.content.AsyncTaskLoader;
 
-import org.mariotaku.jsonserializer.JSONSerializer;
+import org.mariotaku.jsonserializer.JSONFileIO;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -84,7 +84,7 @@ public abstract class Twitter4JActivitiesLoader extends AsyncTaskLoader<List<Par
 			}
 		}
         final SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        final int loadItemLimit = prefs.getInt(PREFERENCE_KEY_LOAD_ITEM_LIMIT, PREFERENCE_DEFAULT_LOAD_ITEM_LIMIT);
+        final int loadItemLimit = prefs.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
 		final List<Activity> activities;
 		try {
 			final Paging paging = new Paging();
@@ -125,7 +125,7 @@ public abstract class Twitter4JActivitiesLoader extends AsyncTaskLoader<List<Par
 		if (file == null)
 			return null;
 		try {
-			return JSONSerializer.listFromFile(file);
+			return JSONFileIO.readArrayList(file);
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
@@ -136,7 +136,7 @@ public abstract class Twitter4JActivitiesLoader extends AsyncTaskLoader<List<Par
 		if (mSavedActivitiesFileArgs == null)
 			return null;
 		try {
-			return JSONSerializer.getSerializationFile(mContext, mSavedActivitiesFileArgs);
+			return JSONFileIO.getSerializationFile(mContext, mSavedActivitiesFileArgs);
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
@@ -146,11 +146,11 @@ public abstract class Twitter4JActivitiesLoader extends AsyncTaskLoader<List<Par
 	private void saveCachedData(final File file, final List<ParcelableActivity> data) {
 		if (file == null || data == null) return;
         final SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        final int databaseItemLimit = prefs.getInt(PREFERENCE_KEY_DATABASE_ITEM_LIMIT,
-                PREFERENCE_DEFAULT_DATABASE_ITEM_LIMIT);
+        final int databaseItemLimit = prefs.getInt(KEY_DATABASE_ITEM_LIMIT,
+                DEFAULT_DATABASE_ITEM_LIMIT);
 		try {
             final List<ParcelableActivity> activities = data.subList(0, Math.min(databaseItemLimit, data.size()));
-			JSONSerializer.toFile(file, activities.toArray(new ParcelableActivity[activities.size()]));
+			JSONFileIO.writeArray(file, activities.toArray(new ParcelableActivity[activities.size()]));
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}

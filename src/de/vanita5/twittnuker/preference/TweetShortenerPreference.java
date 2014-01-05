@@ -66,7 +66,7 @@ public class TweetShortenerPreference extends DialogPreference implements Consta
 		if (editor == null) return;
 		final TweetShortenerSpec spec = mAvailableTweetShorteners[which];
 		if (spec != null) {
-			editor.putString(PREFERENCE_KEY_TWEET_SHORTENER, spec.cls);
+			editor.putString(KEY_TWEET_SHORTENER, spec.cls);
 			editor.commit();
 		}
 		dialog.dismiss();
@@ -77,7 +77,7 @@ public class TweetShortenerPreference extends DialogPreference implements Consta
 		super.onPrepareDialogBuilder(builder);
 		mPreferences = getSharedPreferences();
 		if (mPreferences == null) return;
-		final String component = mPreferences.getString(PREFERENCE_KEY_TWEET_SHORTENER, null);
+		final String component = mPreferences.getString(KEY_TWEET_SHORTENER, null);
 		final ArrayList<TweetShortenerSpec> specs = new ArrayList<TweetShortenerSpec>();
 		specs.add(new TweetShortenerSpec(getContext().getString(R.string.tweet_shortener_default), null));
 		final Intent query_intent = new Intent(INTENT_ACTION_EXTENSION_SHORTEN_TWEET);

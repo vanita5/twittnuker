@@ -122,7 +122,7 @@ public class TwidereImageDownloader implements ImageDownloader, Constants {
 	public void reloadConnectivitySettings() {
 		mClient = getImageLoaderHttpClient(mContext);
 		mFastImageLoading = mContext.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).getBoolean(
-				PREFERENCE_KEY_FAST_IMAGE_LOADING, true);
+				KEY_FAST_IMAGE_LOADING, true);
 		mProxy = getProxy(mContext);
 		mUserAgent = generateBrowserUserAgent();
 	}

@@ -29,9 +29,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.dialog.ColorPickerDialog;
+import de.vanita5.twittnuker.dialog.ColorPickerDialog;
 
-public class ColorPickerDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
+public final class ColorPickerDialogFragment extends BaseSupportDialogFragment implements
+	DialogInterface.OnClickListener {
 
 	@Override
 	public void onClick(final DialogInterface dialog, final int which) {
@@ -79,11 +80,15 @@ public class ColorPickerDialogFragment extends BaseSupportDialogFragment impleme
 		super.onSaveInstanceState(outState);
 	}
 
-    public interface Callback {
+	public static interface Callback {
+
+		public void onCancelled();
 
         public void onColorCleared();
 
         public void onColorSelected(int color);
+
+		public void onDismissed();
     }
 
 }

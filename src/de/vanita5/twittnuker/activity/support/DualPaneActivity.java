@@ -201,8 +201,8 @@ public class DualPaneActivity extends BaseSupportActivity implements OnBackStack
 		final int orientation = res.getConfiguration().orientation;
 		final int layout;
 		final boolean is_large_screen = res.getBoolean(R.bool.is_large_screen);
-		mDualPaneInPortrait = mPreferences.getBoolean(PREFERENCE_KEY_DUAL_PANE_IN_PORTRAIT, is_large_screen);
-		mDualPaneInLandscape = mPreferences.getBoolean(PREFERENCE_KEY_DUAL_PANE_IN_LANDSCAPE, is_large_screen);
+		mDualPaneInPortrait = mPreferences.getBoolean(KEY_DUAL_PANE_IN_PORTRAIT, is_large_screen);
+		mDualPaneInLandscape = mPreferences.getBoolean(KEY_DUAL_PANE_IN_LANDSCAPE, is_large_screen);
 		switch (orientation) {
 			case Configuration.ORIENTATION_LANDSCAPE:
 				layout = mDualPaneInLandscape || shouldForceEnableDualPaneMode() ? getDualPaneLayoutRes()
@@ -240,9 +240,9 @@ public class DualPaneActivity extends BaseSupportActivity implements OnBackStack
 		super.onStart();
 		final Resources res = getResources();
 		final boolean is_large_screen = res.getBoolean(R.bool.is_large_screen);
-		final boolean dual_pane_in_portrait = mPreferences.getBoolean(PREFERENCE_KEY_DUAL_PANE_IN_PORTRAIT,
+		final boolean dual_pane_in_portrait = mPreferences.getBoolean(KEY_DUAL_PANE_IN_PORTRAIT,
 				is_large_screen);
-		final boolean dual_pane_in_landscape = mPreferences.getBoolean(PREFERENCE_KEY_DUAL_PANE_IN_LANDSCAPE,
+		final boolean dual_pane_in_landscape = mPreferences.getBoolean(KEY_DUAL_PANE_IN_LANDSCAPE,
 				is_large_screen);
 		final int orientation = res.getConfiguration().orientation;
 		switch (orientation) {

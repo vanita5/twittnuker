@@ -142,11 +142,11 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 			} else if (BROADCAST_UNREAD_COUNT_UPDATED.equals(action)) {
 				updateUnreadCount();
 			} else if (WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION.equals(action)) {
-				if (!mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ON_MOBILE, false) && !intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false)) {
+				if (!mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false) && !intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false)) {
 					closeStream();
 				}
 			} else if (WifiManager.SUPPLICANT_STATE_CHANGED_ACTION.equals(action)) {
-				if(mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ON_MOBILE, false)) {
+				if(mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)) {
 					return;
 				}
 				
@@ -223,11 +223,11 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	public void notifyAccountsChanged() {
 		if (mPreferences == null) return;
 		final long[] account_ids = getAccountIds(this);
-		final long default_id = mPreferences.getLong(PREFERENCE_KEY_DEFAULT_ACCOUNT_ID, -1);
+		final long default_id = mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1);
 		if (account_ids == null || account_ids.length == 0) {
 			finish();
 		} else if (account_ids.length > 0 && !ArrayUtils.contains(account_ids, default_id)) {
-			mPreferences.edit().putLong(PREFERENCE_KEY_DEFAULT_ACCOUNT_ID, account_ids[0]).commit();
+			mPreferences.edit().putLong(KEY_DEFAULT_ACCOUNT_ID, account_ids[0]).commit();
 		}
 	}
 
@@ -462,7 +462,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		if (mIndicator == null || mUpdateUnreadCountTask != null
 				&& mUpdateUnreadCountTask.getStatus() == AsyncTask.Status.RUNNING) return;
 		mUpdateUnreadCountTask = new UpdateUnreadCountTask(mIndicator, mPreferences.getBoolean(
-				PREFERENCE_KEY_UNREAD_COUNT, true));
+				KEY_UNREAD_COUNT, true));
 		mUpdateUnreadCountTask.execute();
 	}
 
@@ -536,13 +536,13 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 			return;
 		}
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONCREATE));
-		final boolean refreshOnStart = mPreferences.getBoolean(PREFERENCE_KEY_REFRESH_ON_START, false);
+		final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
         mTabDisplayOption = getTabDisplayOptionInt(this);
 		final int initialTabPosition = handleIntent(intent, savedInstanceState == null);
 		mActionBar = getActionBar();
 		mActionBar.setCustomView(R.layout.home_tabs);
 		
-		mStreaming = mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ENABLED, false);
+		mStreaming = mPreferences.getBoolean(KEY_STREAMING_ENABLED, false);
 
 		final View view = mActionBar.getCustomView();
 		mIndicator = (TabPageIndicator) view.findViewById(android.R.id.tabs);
@@ -554,8 +554,8 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		mIndicator.setViewPager(mViewPager);
 		mIndicator.setOnPageChangeListener(this);
         if (mTabDisplayOption != 0) {
-            mIndicator.setDisplayLabel((mTabDisplayOption & TAB_DIPLAY_OPTION_CODE_LABEL) != 0);
-            mIndicator.setDisplayIcon((mTabDisplayOption & TAB_DIPLAY_OPTION_CODE_ICON) != 0);
+            mIndicator.setDisplayLabel((mTabDisplayOption & VALUE_TAB_DIPLAY_OPTION_CODE_LABEL) != 0);
+            mIndicator.setDisplayIcon((mTabDisplayOption & VALUE_TAB_DIPLAY_OPTION_CODE_ICON) != 0);
         } else {
             mIndicator.setDisplayLabel(false);
             mIndicator.setDisplayIcon(true);
@@ -608,7 +608,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	@Override
 	protected void onResume() {
 		super.onResume();
-		mViewPager.setEnabled(!mPreferences.getBoolean(PREFERENCE_KEY_DISABLE_TAB_SWIPE, false));
+		mViewPager.setEnabled(!mPreferences.getBoolean(KEY_DISABLE_TAB_SWIPE, false));
 		invalidateOptionsMenu();
 		updateActionsButtonStyle();
 		updateActionsButton();
@@ -621,23 +621,23 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	}
 	
 	private boolean hasStreamingChanged() {
-		final boolean streaming = mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ENABLED, false);
+		final boolean streaming = mPreferences.getBoolean(KEY_STREAMING_ENABLED, false);
 		return mStreaming != streaming;
 	}
 	
 	public void connectToStream() {
-		if(mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ENABLED, false)) {
+		if(mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
 			if(twitterStream != null) {
 				SupplicantState supplicantState;
 				WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 				WifiInfo wifiInfo = wifiManager.getConnectionInfo();
 				supplicantState = wifiInfo.getSupplicantState();
 				
-				if (mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ON_MOBILE, false)
+				if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
 						|| SupplicantState.COMPLETED.equals(supplicantState)) {
 					hasStreamLoaded = true;
 					twitterStream.user(); //Initialize stream
-					if (mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_NOTIFICATION, false)) {
+					if (mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, false)) {
 						NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 						final Intent intent = new Intent(this, HomeActivity.class);
 						final Notification.Builder builder = new Notification.Builder(this);
@@ -687,10 +687,10 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		}
 		updateUnreadCount();
 		
-		if (mPreferences.getBoolean(PREFERENCE_KEY_STREAMING_ENABLED, false)) {
+		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
 			Twitter twitter = Utils.getDefaultTwitterInstance(getApplicationContext(), true);
 			twitterStream = new TwitterStreamFactory().getInstance(twitter.getAuthorization());
-			twitterStream.addListener(new UserStreamListenerImpl(getApplicationContext(), mPreferences.getLong(PREFERENCE_KEY_DEFAULT_ACCOUNT_ID, -1)));
+			twitterStream.addListener(new UserStreamListenerImpl(getApplicationContext(), mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1)));
 		}
 	}
 
@@ -700,7 +700,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		unregisterReceiver(mStateReceiver);
 		final ContentResolver resolver = getContentResolver();
 		resolver.unregisterContentObserver(mAccountChangeObserver);
-		mPreferences.edit().putInt(PREFERENCE_KEY_SAVED_TAB_POSITION, mViewPager.getCurrentItem()).commit();
+		mPreferences.edit().putInt(KEY_SAVED_TAB_POSITION, mViewPager.getCurrentItem()).commit();
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONSTOP));
 
 		super.onStop();
@@ -708,7 +708,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 
 	protected void setPagingEnabled(final boolean enabled) {
 		if (mIndicator != null && mViewPager != null) {
-			mViewPager.setEnabled(!mPreferences.getBoolean(PREFERENCE_KEY_DISABLE_TAB_SWIPE, false));
+			mViewPager.setEnabled(!mPreferences.getBoolean(KEY_DISABLE_TAB_SWIPE, false));
 			mIndicator.setSwitchingEnabled(enabled);
 			mIndicator.setEnabled(enabled);
 		}
@@ -744,7 +744,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 			openSearch(this, accountId, query);
 			return -1;
 		}
-		final boolean refreshOnStart = mPreferences.getBoolean(PREFERENCE_KEY_REFRESH_ON_START, false);
+		final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
 		final long[] refreshedIds = intent.getLongArrayExtra(EXTRA_IDS);
 		if (refreshedIds != null) {
 			mTwitterWrapper.refreshAll(refreshedIds);
@@ -771,7 +771,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	
 	private boolean isBottomComposeButton() {
 		final SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-		return preferences != null && preferences.getBoolean(PREFERENCE_KEY_BOTTOM_COMPOSE_BUTTON, false);
+		return preferences != null && preferences.getBoolean(KEY_BOTTOM_COMPOSE_BUTTON, false);
 	}
 	
 	private void setUiOptions(final Window window) {
@@ -826,7 +826,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	}
 
 	private boolean openSettingsWizard() {
-		if (mPreferences == null || mPreferences.getBoolean(PREFERENCE_KEY_SETTINGS_WIZARD_COMPLETED, false))
+		if (mPreferences == null || mPreferences.getBoolean(KEY_SETTINGS_WIZARD_COMPLETED, false))
 			return false;
 		startActivity(new Intent(this, SettingsWizardActivity.class));
 		return true;
@@ -845,11 +845,11 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	}
 
 	private void setTabPosition(final int initial_tab) {
-		final boolean remember_position = mPreferences.getBoolean(PREFERENCE_KEY_REMEMBER_POSITION, true);
+		final boolean remember_position = mPreferences.getBoolean(KEY_REMEMBER_POSITION, true);
 		if (initial_tab >= 0) {
 			mViewPager.setCurrentItem(MathUtils.clamp(initial_tab, mPagerAdapter.getCount(), 0));
 		} else if (remember_position) {
-			final int position = mPreferences.getInt(PREFERENCE_KEY_SAVED_TAB_POSITION, 0);
+			final int position = mPreferences.getInt(KEY_SAVED_TAB_POSITION, 0);
 			mViewPager.setCurrentItem(MathUtils.clamp(position, mPagerAdapter.getCount(), 0));
 		}
 	}
@@ -922,7 +922,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		if (mActionsButton == null || mBottomActionsButton == null) return;
 		final boolean isBottomActionsButton = isBottomComposeButton();
 		final boolean showBottomActionsButton = !SmartBarUtils.hasSmartBar() && isBottomActionsButton;
-		final boolean leftsideComposeButton = mPreferences.getBoolean(PREFERENCE_KEY_LEFTSIDE_COMPOSE_BUTTON, false);
+		final boolean leftsideComposeButton = mPreferences.getBoolean(KEY_LEFTSIDE_COMPOSE_BUTTON, false);
 		final boolean isPaneUsed = isDualPaneMode() && isRightPaneUsed();
 		mActionsButton.setVisibility(isBottomActionsButton ? View.GONE : View.VISIBLE);
 		mBottomActionsButton.setVisibility(showBottomActionsButton && !isPaneUsed ? View.VISIBLE : View.GONE);

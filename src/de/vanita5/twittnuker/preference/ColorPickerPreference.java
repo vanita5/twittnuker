@@ -35,7 +35,7 @@ import android.widget.ImageView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.dialog.ColorPickerDialog;
+import de.vanita5.twittnuker.dialog.ColorPickerDialog;
 import de.vanita5.twittnuker.view.ColorPickerView;
 
 public class ColorPickerPreference extends Preference implements DialogInterface.OnClickListener, Constants {

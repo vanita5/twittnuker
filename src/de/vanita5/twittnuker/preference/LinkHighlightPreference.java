@@ -37,10 +37,10 @@ public class LinkHighlightPreference extends AutoInvalidateListPreference implem
 
     private static final int[] ENTRIES_RES = { R.string.none, R.string.highlight, R.string.underline,
             R.string.highlight_and_underline };
-	private static final String[] VALUES = { LINK_HIGHLIGHT_OPTION_NONE, LINK_HIGHLIGHT_OPTION_HIGHLIGHT,
-			LINK_HIGHLIGHT_OPTION_UNDERLINE, LINK_HIGHLIGHT_OPTION_BOTH };
-	private static final int[] OPTIONS = { LINK_HIGHLIGHT_OPTION_CODE_NONE, LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT,
-			LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE, LINK_HIGHLIGHT_OPTION_CODE_BOTH };
+	private static final String[] VALUES = { VALUE_LINK_HIGHLIGHT_OPTION_NONE, VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT,
+			VALUE_LINK_HIGHLIGHT_OPTION_UNDERLINE, VALUE_LINK_HIGHLIGHT_OPTION_BOTH };
+	private static final int[] OPTIONS = { VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE, VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT,
+			VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE, VALUE_LINK_HIGHLIGHT_OPTION_CODE_BOTH };
 
 	public LinkHighlightPreference(final Context context) {
 		this(context, null);

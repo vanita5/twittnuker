@@ -70,14 +70,14 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 	public TwidereHostAddressResolver(final Context context, final boolean local_only) {
 		mHostMapping = context.getSharedPreferences(HOST_MAPPING_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final String address = mPreferences.getString(PREFERENCE_KEY_DNS_SERVER, DEFAULT_DNS_SERVER_ADDRESS);
+		final String address = mPreferences.getString(KEY_DNS_SERVER, DEFAULT_DNS_SERVER_ADDRESS);
 		mDnsAddress = isValidIpAddress(address) ? address : DEFAULT_DNS_SERVER_ADDRESS;
 		mLocalMappingOnly = local_only;
 	}
 
 	@Override
 	public String resolve(final String host) throws IOException {
-		if (host == null || !mPreferences.getBoolean(PREFERENCE_KEY_IGNORE_SSL_ERROR, false)) return null;
+		if (host == null || !mPreferences.getBoolean(KEY_IGNORE_SSL_ERROR, false)) return null;
 		// First, I'll try to load address cached.
 		if (mHostCache.containsKey(host)) {
 			if (Utils.isDebugBuild()) {
@@ -120,7 +120,7 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 		}
 		initDns();
 		// Use TCP DNS Query if enabled.
-		if (mDns != null && mPreferences.getBoolean(PREFERENCE_KEY_TCP_DNS_QUERY, false)) {
+		if (mDns != null && mPreferences.getBoolean(KEY_TCP_DNS_QUERY, false)) {
 			final Name name = new Name(host);
 			final Record query = Record.newRecord(name, Type.A, DClass.IN);
 			if (query == null) return host;

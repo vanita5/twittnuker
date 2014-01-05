@@ -130,7 +130,7 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 		mListView = getListView();
 		mListView.setDivider(null);
 		mListView.setSelector(android.R.color.transparent);
-		mListView.setFastScrollEnabled(mPreferences.getBoolean(PREFERENCE_KEY_FAST_SCROLL_THUMB, false));
+		mListView.setFastScrollEnabled(mPreferences.getBoolean(KEY_FAST_SCROLL_THUMB, false));
 		// final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
 		// if (mAccountId != account_id) {
         // 	mAdapter.clear();
@@ -220,7 +220,7 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 	@Override
 	public void onResume() {
 		super.onResume();
-		mLoadMoreAutomatically = mPreferences.getBoolean(PREFERENCE_KEY_LOAD_MORE_AUTOMATICALLY, false);
+		mLoadMoreAutomatically = mPreferences.getBoolean(KEY_LOAD_MORE_AUTOMATICALLY, false);
 		configBaseCardAdapter(getActivity(), mAdapter);
 	}
 

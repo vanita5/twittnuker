@@ -126,9 +126,11 @@ public class Account implements Parcelable {
 				Accounts.COLUMNS, Accounts.ACCOUNT_ID + " = " + account_id, null, null);
 		if (cur != null) {
 			try {
-				final Indices indices = new Indices(cur);
-				cur.moveToFirst();
-				return new Account(cur, indices);
+				if (cur.getCount() > 0 && cur.moveToFirst()) {
+					final Indices indices = new Indices(cur);
+					cur.moveToFirst();
+					return new Account(cur, indices);
+				}
 			} finally {
 				cur.close();
 			}
@@ -172,9 +174,11 @@ public class Account implements Parcelable {
 				Accounts.COLUMNS, Accounts.ACCOUNT_ID + " = " + account_id, null, null);
 		if (cur != null) {
 			try {
-				final Indices indices = new Indices(cur);
-				cur.moveToFirst();
-				return new AccountWithCredentials(cur, indices);
+				if (cur.getCount() > 0 && cur.moveToFirst()) {
+					final Indices indices = new Indices(cur);
+					cur.moveToFirst();
+					return new AccountWithCredentials(cur, indices);
+				}
 			} finally {
 				cur.close();
 			}

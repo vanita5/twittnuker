@@ -114,7 +114,7 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 		mAdapter.setMenuButtonClickListener(this);
 		mMultiSelectManager = getMultiSelectManager();
 		mListView = getListView();
-		mListView.setFastScrollEnabled(mPreferences.getBoolean(PREFERENCE_KEY_FAST_SCROLL_THUMB, false));
+		mListView.setFastScrollEnabled(mPreferences.getBoolean(KEY_FAST_SCROLL_THUMB, false));
 		final Bundle args = getArguments() != null ? getArguments() : new Bundle();
 		final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
 		if (mAccountId != account_id) {
@@ -226,7 +226,7 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 	@Override
 	public void onResume() {
 		super.onResume();
-		mLoadMoreAutomatically = mPreferences.getBoolean(PREFERENCE_KEY_LOAD_MORE_AUTOMATICALLY, false);
+		mLoadMoreAutomatically = mPreferences.getBoolean(KEY_LOAD_MORE_AUTOMATICALLY, false);
 		configBaseCardAdapter(getActivity(), mAdapter);
 	}
 

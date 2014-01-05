@@ -55,8 +55,8 @@ public class AutoRefreshContentPreference extends MultiSelectListPreference impl
 
 	@Override
 	protected String[] getKeys() {
-		return new String[] { PREFERENCE_KEY_AUTO_REFRESH_HOME_TIMELINE, PREFERENCE_KEY_AUTO_REFRESH_MENTIONS,
-				PREFERENCE_KEY_AUTO_REFRESH_DIRECT_MESSAGES, PREFERENCE_KEY_AUTO_REFRESH_TRENDS };
+		return new String[] { KEY_AUTO_REFRESH_HOME_TIMELINE, KEY_AUTO_REFRESH_MENTIONS,
+				KEY_AUTO_REFRESH_DIRECT_MESSAGES, KEY_AUTO_REFRESH_TRENDS };
 	}
 
 	@Override

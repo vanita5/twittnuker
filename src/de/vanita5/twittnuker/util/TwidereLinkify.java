@@ -109,7 +109,7 @@ public final class TwidereLinkify implements Constants {
 	private int mHighlightOption, mHighlightColor;
 
 	public TwidereLinkify(final OnLinkClickListener listener) {
-		this(listener, LINK_HIGHLIGHT_OPTION_CODE_BOTH, 0);
+		this(listener, VALUE_LINK_HIGHLIGHT_OPTION_CODE_BOTH, 0);
 	}
 
 	public TwidereLinkify(final OnLinkClickListener listener, final int highlightOption, final int highlightColor) {
@@ -162,7 +162,7 @@ public final class TwidereLinkify implements Constants {
 	public final void applyUserProfileLinkNoHighlight(final TextView view, final long account_id, final long user_id,
 			final String screen_name) {
 		applyUserProfileLink(view, account_id, user_id, screen_name, mOnLinkClickListener,
-				LINK_HIGHLIGHT_OPTION_CODE_NONE, mHighlightColor);
+				VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE, mHighlightColor);
 	}
 
     public void setLinkTextColor(final int color) {

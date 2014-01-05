@@ -64,7 +64,7 @@ public class ImageUploaderPreference extends DialogPreference implements Constan
 		if (editor == null) return;
 		final ImageUploaderSpec spec = mAvailableImageUploaders[which];
 		if (spec != null) {
-			editor.putString(PREFERENCE_KEY_IMAGE_UPLOADER, spec.cls);
+			editor.putString(KEY_IMAGE_UPLOADER, spec.cls);
 			editor.commit();
 		}
 		dialog.dismiss();
@@ -75,7 +75,7 @@ public class ImageUploaderPreference extends DialogPreference implements Constan
 		mPreferences = getSharedPreferences();
 		super.onPrepareDialogBuilder(builder);
 		if (mPreferences == null) return;
-		final String component = mPreferences.getString(PREFERENCE_KEY_IMAGE_UPLOADER, null);
+		final String component = mPreferences.getString(KEY_IMAGE_UPLOADER, null);
 		final ArrayList<ImageUploaderSpec> specs = new ArrayList<ImageUploaderSpec>();
 		specs.add(new ImageUploaderSpec(getContext().getString(R.string.image_uploader_default), null));
 		final Intent query_intent = new Intent(INTENT_ACTION_EXTENSION_UPLOAD_IMAGE);

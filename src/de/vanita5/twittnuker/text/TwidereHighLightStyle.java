@@ -37,10 +37,10 @@ public class TwidereHighLightStyle extends CharacterStyle implements Constants {
 
 	@Override
 	public void updateDrawState(final TextPaint ds) {
-		if ((option & LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE) != 0) {
+		if ((option & VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE) != 0) {
 			ds.setUnderlineText(true);
 		}
-		if ((option & LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT) != 0) {
+		if ((option & VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT) != 0) {
 			ds.setColor(ds.linkColor);
 		}
 	}

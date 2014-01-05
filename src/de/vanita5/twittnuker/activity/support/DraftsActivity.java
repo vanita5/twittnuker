@@ -173,7 +173,7 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 		super.onCreate(savedInstanceState);
 		mResolver = getContentResolver();
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mTextSize = mPreferences.getInt(PREFERENCE_KEY_TEXT_SIZE, getDefaultTextSize(this));
+		mTextSize = mPreferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(this));
 		setContentView(android.R.layout.list_content);
 		// setOverrideExitAniamtion(false);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -191,7 +191,7 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 	@Override
 	protected void onResume() {
 		super.onResume();
-		final float text_size = mPreferences.getInt(PREFERENCE_KEY_TEXT_SIZE, getDefaultTextSize(this));
+		final float text_size = mPreferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(this));
 		mAdapter.setTextSize(text_size);
 		if (mTextSize != text_size) {
 			mTextSize = text_size;

@@ -69,7 +69,7 @@ public class DefaultWebViewClient extends WebViewClient {
 
 	@Override
 	public void onReceivedSslError(final WebView view, final SslErrorHandler handler, final SslError error) {
-		if (mPreferences.getBoolean(BaseWebViewFragment.PREFERENCE_KEY_IGNORE_SSL_ERROR, false)) {
+		if (mPreferences.getBoolean(BaseWebViewFragment.KEY_IGNORE_SSL_ERROR, false)) {
 			handler.proceed();
 		} else {
 			handler.cancel();

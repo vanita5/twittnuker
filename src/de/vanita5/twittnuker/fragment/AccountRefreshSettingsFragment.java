@@ -33,11 +33,11 @@ public class AccountRefreshSettingsFragment extends BaseAccountPreferenceFragmen
 
 	@Override
 	protected boolean getSwitchPreferenceDefault() {
-		return PREFERENCE_DEFAULT_AUTO_REFRESH;
+		return DEFAULT_AUTO_REFRESH;
 	}
 
 	@Override
 	protected String getSwitchPreferenceKey() {
-		return PREFERENCE_KEY_AUTO_REFRESH;
+		return KEY_AUTO_REFRESH;
 	}
 }

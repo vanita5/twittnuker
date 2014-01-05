@@ -85,7 +85,7 @@ public class TranslationDestinationPreference extends Preference implements Cons
 		if (editor == null) return;
 		final Language item = mAdapter.getItem(which);
 		if (item != null) {
-			editor.putString(PREFERENCE_KEY_TRANSLATION_DESTINATION, item.getCode());
+			editor.putString(KEY_TRANSLATION_DESTINATION, item.getCode());
 			editor.commit();
 		}
 		if (mDialog != null && mDialog.isShowing()) {
@@ -175,13 +175,13 @@ public class TranslationDestinationPreference extends Preference implements Cons
 		@Override
 		protected ResponseList<Language> doInBackground(final Void... args) {
 			final Twitter twitter = getDefaultTwitterInstance(getContext(), false);
-			final String pref = mPreferences.getString(PREFERENCE_KEY_TRANSLATION_DESTINATION, null);
+			final String pref = mPreferences.getString(KEY_TRANSLATION_DESTINATION, null);
 			if (twitter == null) return null;
 			try {
 				if (pref == null) {
 					mSelectedLanguageCode = twitter.getAccountSettings().getLanguage();
 					final Editor editor = mPreferences.edit();
-					editor.putString(PREFERENCE_KEY_TRANSLATION_DESTINATION, mSelectedLanguageCode);
+					editor.putString(KEY_TRANSLATION_DESTINATION, mSelectedLanguageCode);
 					editor.apply();
 				} else {
 					mSelectedLanguageCode = pref;

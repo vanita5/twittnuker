@@ -35,6 +35,8 @@ import static de.vanita5.twittnuker.util.Utils.getNewestStatusIdsFromDatabase;
 import static de.vanita5.twittnuker.util.Utils.getStatusIdsInDatabase;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.getUserName;
+import static de.vanita5.twittnuker.util.Utils.truncateMessages;
+import static de.vanita5.twittnuker.util.Utils.truncateStatuses;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
 
@@ -71,9 +73,6 @@ import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
-
-import static de.vanita5.twittnuker.util.Utils.truncateMessages;
-import static de.vanita5.twittnuker.util.Utils.truncateStatuses;;
 
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
@@ -234,9 +233,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		return mGetHomeTimelineTaskId = mAsyncTaskManager.add(task, true);
 	}
 
-	public int getLocalTrendsAsync(final long accountIds, final int woeid) {
+	public int getLocalTrendsAsync(final long accountId, final int woeid) {
 		mAsyncTaskManager.cancel(mGetLocalTrendsTaskId);
-		final GetLocalTrendsTask task = new GetLocalTrendsTask(accountIds, woeid);
+		final GetLocalTrendsTask task = new GetLocalTrendsTask(accountId, woeid);
 		return mGetLocalTrendsTaskId = mAsyncTaskManager.add(task, true);
 	}
 
@@ -262,24 +261,24 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		return mAsyncTaskManager.hasRunningTask();
 	}
 
-	public boolean isCreatingFriendship(final long accountIds, final long user_id) {
+	public boolean isCreatingFriendship(final long accountId, final long user_id) {
 		for (final ManagedAsyncTask<?, ?, ?> task : mAsyncTaskManager.getTaskSpecList()) {
 			if (task instanceof CreateFriendshipTask) {
 				final CreateFriendshipTask create_friendship = (CreateFriendshipTask) task;
 				if (create_friendship.getStatus() == AsyncTask.Status.RUNNING
-						&& create_friendship.getAccountId() == accountIds && create_friendship.getUserId() == user_id)
+						&& create_friendship.getAccountId() == accountId && create_friendship.getUserId() == user_id)
 					return true;
 			}
 		}
 		return false;
 	}
 
-	public boolean isDestroyingFriendship(final long accountIds, final long user_id) {
+	public boolean isDestroyingFriendship(final long accountId, final long user_id) {
 		for (final ManagedAsyncTask<?, ?, ?> task : mAsyncTaskManager.getTaskSpecList()) {
 			if (task instanceof DestroyFriendshipTask) {
 				final DestroyFriendshipTask create_friendship = (DestroyFriendshipTask) task;
 				if (create_friendship.getStatus() == AsyncTask.Status.RUNNING
-						&& create_friendship.getAccountId() == accountIds && create_friendship.getUserId() == user_id)
+						&& create_friendship.getAccountId() == accountId && create_friendship.getUserId() == user_id)
 					return true;
 			}
 		}
@@ -317,22 +316,20 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 	}
 
 	public int refreshAll(final long[] accountIds) {
-		if (mPreferences.getBoolean(PREFERENCE_KEY_HOME_REFRESH_MENTIONS,
-				HomeRefreshContentPreference.DEFAULT_ENABLE_MENTIONS)) {
+		if (mPreferences.getBoolean(KEY_HOME_REFRESH_MENTIONS, HomeRefreshContentPreference.DEFAULT_ENABLE_MENTIONS)) {
 			final long[] sinceIds = getNewestStatusIdsFromDatabase(mContext, Mentions.CONTENT_URI, accountIds);
 			getMentionsAsync(accountIds, null, sinceIds);
 		}
-		if (mPreferences.getBoolean(PREFERENCE_KEY_HOME_REFRESH_DIRECT_MESSAGES,
+		if (mPreferences.getBoolean(KEY_HOME_REFRESH_DIRECT_MESSAGES,
 				HomeRefreshContentPreference.DEFAULT_ENABLE_DIRECT_MESSAGES)) {
 			final long[] sinceIds = getNewestMessageIdsFromDatabase(mContext, DirectMessages.Inbox.CONTENT_URI,
 					accountIds);
 			getReceivedDirectMessagesAsync(accountIds, null, sinceIds);
 			getSentDirectMessagesAsync(accountIds, null, null);
 		}
-		if (mPreferences.getBoolean(PREFERENCE_KEY_HOME_REFRESH_TRENDS,
-				HomeRefreshContentPreference.DEFAULT_ENABLE_TRENDS)) {
+		if (mPreferences.getBoolean(KEY_HOME_REFRESH_TRENDS, HomeRefreshContentPreference.DEFAULT_ENABLE_TRENDS)) {
 			final long accountId = getDefaultAccountId(mContext);
-			final int woeId = mPreferences.getInt(PREFERENCE_KEY_LOCAL_TRENDS_WOEID, 1);
+			final int woeId = mPreferences.getInt(KEY_LOCAL_TRENDS_WOEID, 1);
 			getLocalTrendsAsync(accountId, woeId);
 		}
 		final long[] statusSinceIds = getNewestStatusIdsFromDatabase(mContext, Statuses.CONTENT_URI, accountIds);
@@ -409,9 +406,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		return 0;
 	}
 
-	public int updateUserListDetails(final long accountIds, final int list_id, final boolean is_public,
+	public int updateUserListDetails(final long accountId, final int list_id, final boolean is_public,
 			final String name, final String description) {
-		final UpdateUserListDetailsTask task = new UpdateUserListDetailsTask(accountIds, list_id, is_public, name,
+		final UpdateUserListDetailsTask task = new UpdateUserListDetailsTask(accountId, list_id, is_public, name,
 				description);
 		return mAsyncTaskManager.add(task, true);
 	}
@@ -444,14 +441,14 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 		@Override
 		protected void onPostExecute(final SingleResponse<Boolean> result) {
-			if (result != null && result.data != null && result.data) {
+			if (result.data != null && result.data) {
 				Utils.showOkMessage(mContext, R.string.profile_banner_image_updated, false);
 			} else {
 				Utils.showErrorMessage(mContext, R.string.action_updating_profile_banner_image, result.exception, true);
 			}
 			final Intent intent = new Intent(BROADCAST_PROFILE_BANNER_UPDATED);
 			intent.putExtra(EXTRA_USER_ID, mAccountId);
-			intent.putExtra(EXTRA_SUCCEED, result != null && result.data != null);
+			intent.putExtra(EXTRA_SUCCEED, result.data != null);
 			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
@@ -585,7 +582,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
-
 	class AddUserListMembersTask extends ManagedAsyncTask<Void, Void, SingleResponse<ParcelableUserList>> {
 
 		private final long accountId;
@@ -644,59 +640,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
-
-	class DenyFriendshipTask extends ManagedAsyncTask<Void, Void, SingleResponse<User>> {
-
-		private final long mAccountId;
-		private final long mUserId;
-
-		public DenyFriendshipTask(final long account_id, final long user_id) {
-			super(mContext, mAsyncTaskManager);
-			mAccountId = account_id;
-			mUserId = user_id;
-		}
-
-		public long getAccountId() {
-			return mAccountId;
-		}
-
-		public long getUserId() {
-			return mUserId;
-		}
-
-		@Override
-		protected SingleResponse<User> doInBackground(final Void... params) {
-
-			final Twitter twitter = getTwitterInstance(mContext, mAccountId, false);
-			if (twitter == null) return SingleResponse.nullInstance();
-			try {
-				final User user = twitter.denyFriendship(mUserId);
-				return SingleResponse.newInstance(user, null);
-			} catch (final TwitterException e) {
-				return SingleResponse.newInstance(null, e);
-			}
-		}
-
-		@Override
-		protected void onPostExecute(final SingleResponse<User> result) {
-			if (result.data != null) {
-				final User user = result.data;
-				final String message = mContext.getString(R.string.denied_users_follow_request,
-						getUserName(mContext, user));
-				mMessagesManager.showOkMessage(message, false);
-			} else {
-				mMessagesManager.showErrorMessage(R.string.action_denying_follow_request, result.exception, false);
-			}
-			final Intent intent = new Intent(BROADCAST_FRIENDSHIP_DENIED);
-			intent.putExtra(EXTRA_USER_ID, mUserId);
-			intent.putExtra(EXTRA_SUCCEED, result.data != null);
-			mContext.sendBroadcast(intent);
-			super.onPostExecute(result);
-		}
-
-	}
-
-
 	final class ClearNotificationTask extends AsyncTask<Void, Void, Integer> {
 		private final int notificationType;
 		private final long accountId;
@@ -739,14 +682,15 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 		@Override
 		protected SingleResponse<User> doInBackground(final Void... params) {
-
             final Twitter twitter = getTwitterInstance(mContext, account_id, false);
             if (twitter == null) return SingleResponse.nullInstance();
             try {
                 final User user = twitter.createBlock(user_id);
                 for (final Uri uri : STATUSES_URIS) {
-                    final String where = Statuses.ACCOUNT_ID + " = " + account_id + " AND " + Statuses.USER_ID + " = " + user_id;
+					final String where = Statuses.ACCOUNT_ID + " = " + account_id + " AND " + Statuses.USER_ID + " = "
+							+ user_id;
                     mResolver.delete(uri, where, null);
+
                 }
                 // I bet you don't want to see this user in your auto
                 // complete
@@ -1120,6 +1064,57 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
+	class DenyFriendshipTask extends ManagedAsyncTask<Void, Void, SingleResponse<User>> {
+
+		private final long mAccountId;
+		private final long mUserId;
+
+		public DenyFriendshipTask(final long account_id, final long user_id) {
+			super(mContext, mAsyncTaskManager);
+			mAccountId = account_id;
+			mUserId = user_id;
+		}
+
+		public long getAccountId() {
+			return mAccountId;
+		}
+
+		public long getUserId() {
+			return mUserId;
+		}
+
+		@Override
+		protected SingleResponse<User> doInBackground(final Void... params) {
+
+			final Twitter twitter = getTwitterInstance(mContext, mAccountId, false);
+			if (twitter == null) return SingleResponse.nullInstance();
+			try {
+				final User user = twitter.denyFriendship(mUserId);
+				return SingleResponse.newInstance(user, null);
+			} catch (final TwitterException e) {
+				return SingleResponse.newInstance(null, e);
+			}
+		}
+
+		@Override
+		protected void onPostExecute(final SingleResponse<User> result) {
+			if (result.data != null) {
+				final User user = result.data;
+				final String message = mContext.getString(R.string.denied_users_follow_request,
+						getUserName(mContext, user));
+				mMessagesManager.showOkMessage(message, false);
+			} else {
+				mMessagesManager.showErrorMessage(R.string.action_denying_follow_request, result.exception, false);
+			}
+			final Intent intent = new Intent(BROADCAST_FRIENDSHIP_DENIED);
+			intent.putExtra(EXTRA_USER_ID, mUserId);
+			intent.putExtra(EXTRA_SUCCEED, result.data != null);
+			mContext.sendBroadcast(intent);
+			super.onPostExecute(result);
+		}
+
+	}
+
 	class DestroyBlockTask extends ManagedAsyncTask<Void, Void, SingleResponse<User>> {
 
 		private final long account_id;
@@ -1133,7 +1128,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<User> doInBackground(final Void... params) {
-
             final Twitter twitter = getTwitterInstance(mContext, account_id, false);
             if (twitter == null) return SingleResponse.nullInstance();
             try {
@@ -1142,6 +1136,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             } catch (final TwitterException e) {
                 return SingleResponse.newInstance(null, e);
             }
+
         }
 
 		@Override
@@ -1374,7 +1369,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 		@Override
         protected SingleResponse<twitter4j.Status> doInBackground(final Void... params) {
-
             final Twitter twitter = getTwitterInstance(mContext, account_id, false);
             if (twitter == null) return SingleResponse.nullInstance();
             try {
@@ -1526,8 +1520,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			if (account_ids == null) return result;
 
 			int idx = 0;
-			final int load_item_limit = mPreferences.getInt(PREFERENCE_KEY_LOAD_ITEM_LIMIT,
-					PREFERENCE_DEFAULT_LOAD_ITEM_LIMIT);
+			final int load_item_limit = mPreferences.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
 			for (final long account_id : account_ids) {
 				final Twitter twitter = getTwitterInstance(mContext, account_id, true);
 				if (twitter != null) {
@@ -1747,8 +1740,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (mAccountIds == null) return result;
 
 			int idx = 0;
-			final int load_item_limit = mPreferences.getInt(PREFERENCE_KEY_LOAD_ITEM_LIMIT,
-					PREFERENCE_DEFAULT_LOAD_ITEM_LIMIT);
+			final int load_item_limit = mPreferences.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
             for (final long account_id : mAccountIds) {
 				final Twitter twitter = getTwitterInstance(mContext, account_id, true);
 				if (twitter != null) {
@@ -1903,7 +1895,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 		@Override
 		protected SingleResponse<User> doInBackground(final Void... params) {
-
 			final Twitter twitter = getTwitterInstance(mContext, account_id, false);
 			if (twitter != null) {
 				try {

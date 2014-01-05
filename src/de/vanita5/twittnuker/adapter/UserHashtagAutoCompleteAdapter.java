@@ -89,8 +89,8 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 		mProfileImageLoader = app != null ? app.getImageLoaderWrapper() : null;
 		mDatabase = app != null ? app.getSQLiteDatabase() : null;
 		mDisplayProfileImage = mPreferences != null
-				&& mPreferences.getBoolean(PREFERENCE_KEY_DISPLAY_PROFILE_IMAGE, true);
-		mNicknameOnly = mPreferences != null && mPreferences.getBoolean(PREFERENCE_KEY_NICKNAME_ONLY, false);
+				&& mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
+		mNicknameOnly = mPreferences != null && mPreferences.getBoolean(KEY_NICKNAME_ONLY, false);
 		mLocale = context.getResources().getConfiguration().locale;
 	}
 

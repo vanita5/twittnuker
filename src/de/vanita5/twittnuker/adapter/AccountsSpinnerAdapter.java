@@ -50,7 +50,7 @@ public class AccountsSpinnerAdapter extends ArrayAdapter<Account> {
 		mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
 		mDisplayProfileImage = context.getSharedPreferences(DirectMessagesConversationFragment.SHARED_PREFERENCES_NAME,
 				Context.MODE_PRIVATE).getBoolean(
-				DirectMessagesConversationFragment.PREFERENCE_KEY_DISPLAY_PROFILE_IMAGE, true);
+				DirectMessagesConversationFragment.KEY_DISPLAY_PROFILE_IMAGE, true);
 		mDisplayHiResProfileImage = context.getResources().getBoolean(R.bool.hires_profile_image);
 	}
 

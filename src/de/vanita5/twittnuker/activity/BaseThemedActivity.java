@@ -63,7 +63,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     }
 
     @Override
-    public final Resources getResources() {
+    public Resources getResources() {
         return getThemedResources();
     }
 

@@ -54,7 +54,7 @@ public class UserListTimelineLoader extends Twitter4JStatusesLoader {
 		mScreenName = screen_name;
 		mListName = list_name;
 		mFiltersForRts = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).getBoolean(
-				PREFERENCE_KEY_FILTERS_FOR_RTS, true);
+				KEY_FILTERS_FOR_RTS, true);
 	}
 
 	@Override

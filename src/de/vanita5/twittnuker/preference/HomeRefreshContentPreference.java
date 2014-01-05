@@ -53,8 +53,8 @@ public class HomeRefreshContentPreference extends MultiSelectListPreference impl
 
 	@Override
 	protected String[] getKeys() {
-		return new String[] { PREFERENCE_KEY_HOME_REFRESH_MENTIONS, PREFERENCE_KEY_HOME_REFRESH_DIRECT_MESSAGES,
-				PREFERENCE_KEY_HOME_REFRESH_TRENDS };
+		return new String[] { KEY_HOME_REFRESH_MENTIONS, KEY_HOME_REFRESH_DIRECT_MESSAGES,
+				KEY_HOME_REFRESH_TRENDS };
 	}
 
 	@Override

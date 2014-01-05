@@ -50,7 +50,7 @@ public class OnDirectMessageLinkClickHandler extends OnLinkClickHandler {
 			return;
 		}
 		final SharedPreferences prefs = activity.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		if (activity instanceof FragmentActivity && prefs.getBoolean(PREFERENCE_KEY_PHISHING_LINK_WARNING, true)) {
+		if (activity instanceof FragmentActivity && prefs.getBoolean(KEY_PHISHING_LINK_WARNING, true)) {
 			final FragmentManager fm = ((FragmentActivity) activity).getSupportFragmentManager();
 			final DialogFragment fragment = new PhishingLinkWarningDialogFragment();
 			final Bundle args = new Bundle();

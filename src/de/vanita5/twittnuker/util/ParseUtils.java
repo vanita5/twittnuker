@@ -104,13 +104,31 @@ public final class ParseUtils implements Constants {
 	}
 
 	public static double parseDouble(final String source) {
-		if (source == null) return -1;
+		return parseDouble(source, -1);
+	}
+
+	public static double parseDouble(final String source, final double def) {
+		if (source == null) return def;
 		try {
 			return Double.parseDouble(source);
 		} catch (final NumberFormatException e) {
 			// Wrong number format? Ignore them.
 		}
-		return -1;
+		return def;
+	}
+
+	public static float parseFloat(final String source) {
+		return parseFloat(source, -1);
+	}
+
+	public static float parseFloat(final String source, final float def) {
+		if (source == null) return def;
+		try {
+			return Float.parseFloat(source);
+		} catch (final NumberFormatException e) {
+			// Wrong number format? Ignore them.
+		}
+		return def;
 	}
 
 	public static int parseInt(final String source) {

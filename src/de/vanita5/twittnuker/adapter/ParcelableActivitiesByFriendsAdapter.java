@@ -77,7 +77,7 @@ public class ParcelableActivitiesByFriendsAdapter extends BaseParcelableActiviti
 					final ParcelableStatus status = target_statuses[0];
 					if (targetStatusesLength == 1) {
 						holder.text.setVisibility(View.VISIBLE);
-						if (highlightOption != LINK_HIGHLIGHT_OPTION_CODE_NONE) {
+						if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
 							holder.text.setText(Html.fromHtml(status.text_html));
 							linkify.applyAllLinks(holder.text, status.account_id, status.is_possibly_sensitive);
 							holder.text.setMovementMethod(null);
@@ -113,7 +113,7 @@ public class ParcelableActivitiesByFriendsAdapter extends BaseParcelableActiviti
 					holder.text.setVisibility(View.VISIBLE);
 					if (target_object_statuses != null && target_object_statuses.length > 0) {
 						final ParcelableStatus status = target_object_statuses[0];
-						if (highlightOption != LINK_HIGHLIGHT_OPTION_CODE_NONE) {
+						if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
 							holder.text.setText(Html.fromHtml(status.text_html));
 							linkify.applyAllLinks(holder.text, status.account_id, status.is_possibly_sensitive);
 							holder.text.setMovementMethod(null);

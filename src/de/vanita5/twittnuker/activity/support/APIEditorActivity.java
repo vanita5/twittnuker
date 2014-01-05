@@ -94,9 +94,8 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 	@Override
 	public void onClick(final View v) {
 		final SharedPreferences pref = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final String consumer_key = getNonEmptyString(pref, PREFERENCE_KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
-		final String consumer_secret = getNonEmptyString(pref, PREFERENCE_KEY_CONSUMER_SECRET,
-				TWITTER_CONSUMER_SECRET_2);
+		final String consumer_key = getNonEmptyString(pref, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
+		final String consumer_secret = getNonEmptyString(pref, KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
 
 		switch (v.getId()) {
 			case R.id.save: {
@@ -172,15 +171,15 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 
     public void saveAndFinish() {
         final SharedPreferences pref = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        final String consumerKey = getNonEmptyString(pref, PREFERENCE_KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
-        final String consumerSecret = getNonEmptyString(pref, PREFERENCE_KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
-        final String restBaseUrl = getNonEmptyString(pref, PREFERENCE_KEY_REST_BASE_URL, DEFAULT_REST_BASE_URL);
-        final String oauthBaseUrl = getNonEmptyString(pref, PREFERENCE_KEY_OAUTH_BASE_URL, DEFAULT_OAUTH_BASE_URL);
-        final String signingRestBaseUrl = getNonEmptyString(pref, PREFERENCE_KEY_SIGNING_REST_BASE_URL,
+		final String consumerKey = getNonEmptyString(pref, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
+		final String consumerSecret = getNonEmptyString(pref, KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
+		final String restBaseUrl = getNonEmptyString(pref, KEY_REST_BASE_URL, DEFAULT_REST_BASE_URL);
+		final String oauthBaseUrl = getNonEmptyString(pref, KEY_OAUTH_BASE_URL, DEFAULT_OAUTH_BASE_URL);
+		final String signingRestBaseUrl = getNonEmptyString(pref, KEY_SIGNING_REST_BASE_URL,
                 DEFAULT_SIGNING_REST_BASE_URL);
-        final String signingOAuthBaseUrl = getNonEmptyString(pref, PREFERENCE_KEY_SIGNING_OAUTH_BASE_URL,
+        final String signingOAuthBaseUrl = getNonEmptyString(pref, KEY_SIGNING_OAUTH_BASE_URL,
                 DEFAULT_SIGNING_OAUTH_BASE_URL);
-        final int authType = pref.getInt(PREFERENCE_KEY_AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
+        final int authType = pref.getInt(KEY_AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
         final Intent intent = new Intent();
         intent.putExtra(Accounts.REST_BASE_URL, isEmpty(mRestBaseURL) ? restBaseUrl : mRestBaseURL);
         intent.putExtra(Accounts.OAUTH_BASE_URL, isEmpty(mOAuthBaseURL) ? oauthBaseUrl : mOAuthBaseURL);

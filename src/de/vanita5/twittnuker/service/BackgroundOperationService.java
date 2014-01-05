@@ -123,8 +123,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 		mTwitter = app.getTwitterWrapper();
 		mBuilder = new NotificationCompat.Builder(this);
 		mMessagesManager = app.getMessagesManager();
-		final String uploader_component = mPreferences.getString(PREFERENCE_KEY_IMAGE_UPLOADER, null);
-		final String shortener_component = mPreferences.getString(PREFERENCE_KEY_TWEET_SHORTENER, null);
+		final String uploader_component = mPreferences.getString(KEY_IMAGE_UPLOADER, null);
+		final String shortener_component = mPreferences.getString(KEY_TWEET_SHORTENER, null);
 		mUseUploader = !isEmpty(uploader_component);
 		mUseShortener = !isEmpty(shortener_component);
 		mUploader = mUseUploader ? ImageUploaderInterface.getInstance(app, uploader_component) : null;
@@ -211,7 +211,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		// final Uri defRingtone =
 		// RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 		// final String path =
-		// mPreferences.getString(PREFERENCE_KEY_NOTIFICATION_RINGTONE, "");
+		// mPreferences.getString(KEY_NOTIFICATION_RINGTONE, "");
 		// builder.setSound(isEmpty(path) ? defRingtone : Uri.parse(path),
 		// Notification.STREAM_DEFAULT);
 		// builder.setLights(HOLO_BLUE_LIGHT, 1000, 2000);
@@ -303,7 +303,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 					}
 				}
 			}
-			if (mPreferences.getBoolean(PREFERENCE_KEY_REFRESH_AFTER_TWEET, false)) {
+			if (mPreferences.getBoolean(KEY_REFRESH_AFTER_TWEET, false)) {
 				mTwitter.refreshAll();
 			}
 		}

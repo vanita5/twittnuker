@@ -135,7 +135,7 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 		final TwittnukerApplication application = getApplication();
 		final ImageLoaderWrapper loader = application.getImageLoaderWrapper();
 		final SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mHolder.setTextSize(prefs.getInt(PREFERENCE_KEY_TEXT_SIZE, getDefaultTextSize(getActivity())));
+		mHolder.setTextSize(prefs.getInt(KEY_TEXT_SIZE, getDefaultTextSize(getActivity())));
 		mHolder.text.setText(translated.getText());
 		mHolder.name.setText(status.user_name);
 		mHolder.screen_name.setText("@" + status.user_screen_name);
@@ -148,7 +148,7 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 		mHolder.setUserColor(getUserColor(getActivity(), status.user_id, true));
 		mHolder.setHighlightColor(getStatusBackground(false, status.is_favorite, status.is_retweet));
 
-		mHolder.setIsMyStatus(is_my_status && !prefs.getBoolean(PREFERENCE_KEY_INDICATE_MY_STATUS, true));
+		mHolder.setIsMyStatus(is_my_status && !prefs.getBoolean(KEY_INDICATE_MY_STATUS, true));
 
 		mHolder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0,
 				getUserTypeIconRes(status.user_is_verified, status.user_is_protected), 0);
@@ -159,7 +159,7 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 		mHolder.reply_retweet_status
 				.setVisibility(status.in_reply_to_status_id != -1 || status.is_retweet ? View.VISIBLE : View.GONE);
 		if (status.is_retweet && !TextUtils.isEmpty(retweeted_by_name) && !TextUtils.isEmpty(retweeted_by_screen_name)) {
-			if (!prefs.getBoolean(PREFERENCE_KEY_NAME_FIRST, true)) {
+			if (!prefs.getBoolean(KEY_NAME_FIRST, true)) {
 				mHolder.reply_retweet_status.setText(status.retweet_count > 1 ? getString(
 						R.string.retweeted_by_with_count, retweeted_by_screen_name, status.retweet_count - 1)
 						: getString(R.string.retweeted_by, retweeted_by_screen_name));
@@ -177,7 +177,7 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 			mHolder.reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_conversation,
 					0, 0, 0);
 		}
-		if (prefs.getBoolean(PREFERENCE_KEY_DISPLAY_PROFILE_IMAGE, true)) {
+		if (prefs.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true)) {
 			loader.displayProfileImage(mHolder.my_profile_image, status.user_profile_image_url);
 			loader.displayProfileImage(mHolder.profile_image, status.user_profile_image_url);
 		} else {
@@ -213,12 +213,12 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 			final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 			if (twitter == null) return SingleResponse.nullInstance();
 			try {
-				final String prefDest = prefs.getString(PREFERENCE_KEY_TRANSLATION_DESTINATION, null);
+				final String prefDest = prefs.getString(KEY_TRANSLATION_DESTINATION, null);
 				final String dest;
 				if (TextUtils.isEmpty(prefDest)) {
 					dest = twitter.getAccountSettings().getLanguage();
 					final Editor editor = prefs.edit();
-					editor.putString(PREFERENCE_KEY_TRANSLATION_DESTINATION, dest);
+					editor.putString(KEY_TRANSLATION_DESTINATION, dest);
 					editor.apply();
 				} else {
 					dest = prefDest;

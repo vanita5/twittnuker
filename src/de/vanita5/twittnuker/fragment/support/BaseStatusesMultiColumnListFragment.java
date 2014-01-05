@@ -228,7 +228,7 @@ abstract class BaseStatusesMultiColumnListFragment<Data> extends BasePullToRefre
 		setRefreshComplete();
 		setProgressBarIndeterminateVisibility(false);
 		mAdapter.setShowAccountColor(shouldShowAccountColor());
-		final boolean remember_position = mPreferences.getBoolean(PREFERENCE_KEY_REMEMBER_POSITION, true);
+		final boolean remember_position = mPreferences.getBoolean(KEY_REMEMBER_POSITION, true);
 		final int curr_first_visible_position = mListView.getFirstVisiblePosition();
 		final long curr_viewed_id = mAdapter.getStatusId(curr_first_visible_position);
 		final long status_id;
@@ -342,17 +342,17 @@ abstract class BaseStatusesMultiColumnListFragment<Data> extends BasePullToRefre
 	@Override
 	public void onResume() {
 		super.onResume();
-		// mListView.setFastScrollEnabled(mPreferences.getBoolean(PREFERENCE_KEY_FAST_SCROLL_THUMB,
+		// mListView.setFastScrollEnabled(mPreferences.getBoolean(KEY_FAST_SCROLL_THUMB,
 		// false));
 		configBaseCardAdapter(getActivity(), mAdapter);
-		final boolean display_image_preview = mPreferences.getBoolean(PREFERENCE_KEY_DISPLAY_IMAGE_PREVIEW, false);
-		final boolean display_sensitive_contents = mPreferences.getBoolean(PREFERENCE_KEY_DISPLAY_SENSITIVE_CONTENTS,
+		final boolean display_image_preview = mPreferences.getBoolean(KEY_DISPLAY_IMAGE_PREVIEW, false);
+		final boolean display_sensitive_contents = mPreferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS,
 				false);
-		final boolean indicate_my_status = mPreferences.getBoolean(PREFERENCE_KEY_INDICATE_MY_STATUS, true);
+		final boolean indicate_my_status = mPreferences.getBoolean(KEY_INDICATE_MY_STATUS, true);
 		mAdapter.setDisplayImagePreview(display_image_preview);
 		mAdapter.setDisplaySensitiveContents(display_sensitive_contents);
 		mAdapter.setIndicateMyStatusDisabled(isMyTimeline() || !indicate_my_status);
-		mLoadMoreAutomatically = mPreferences.getBoolean(PREFERENCE_KEY_LOAD_MORE_AUTOMATICALLY, false);
+		mLoadMoreAutomatically = mPreferences.getBoolean(KEY_LOAD_MORE_AUTOMATICALLY, false);
 	}
 
 	@Override
@@ -505,8 +505,8 @@ abstract class BaseStatusesMultiColumnListFragment<Data> extends BasePullToRefre
 		final int activated_color = ThemeUtils.getUserThemeColor(getActivity());
 		mPopupMenu = PopupMenu.getInstance(getActivity(), view);
 		mPopupMenu.inflate(R.menu.action_status);
-		final boolean separate_retweet_action = mPreferences.getBoolean(PREFERENCE_KEY_SEPARATE_RETWEET_ACTION,
-				PREFERENCE_DEFAULT_SEPARATE_RETWEET_ACTION);
+		final boolean separate_retweet_action = mPreferences.getBoolean(KEY_SEPARATE_RETWEET_ACTION,
+				DEFAULT_SEPARATE_RETWEET_ACTION);
 		final Menu menu = mPopupMenu.getMenu();
 		setMenuForStatus(getActivity(), menu, status);
 		final MenuItem retweet_submenu = menu.findItem(R.id.retweet_submenu);

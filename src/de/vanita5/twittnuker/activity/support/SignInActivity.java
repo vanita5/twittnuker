@@ -393,9 +393,9 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 
 	private Configuration getConfiguration() {
 		final ConfigurationBuilder cb = new ConfigurationBuilder();
-		final boolean enable_gzip_compressing = mPreferences.getBoolean(PREFERENCE_KEY_GZIP_COMPRESSING, false);
-		final boolean ignore_ssl_error = mPreferences.getBoolean(PREFERENCE_KEY_IGNORE_SSL_ERROR, false);
-		final boolean enable_proxy = mPreferences.getBoolean(PREFERENCE_KEY_ENABLE_PROXY, false);
+		final boolean enable_gzip_compressing = mPreferences.getBoolean(KEY_GZIP_COMPRESSING, false);
+		final boolean ignore_ssl_error = mPreferences.getBoolean(KEY_IGNORE_SSL_ERROR, false);
+		final boolean enable_proxy = mPreferences.getBoolean(KEY_ENABLE_PROXY, false);
 		cb.setHostAddressResolver(mApplication.getHostAddressResolver());
 		cb.setHttpClientImplementation(HttpClientImpl.class);
 		setUserAgent(this, cb);
@@ -421,8 +421,8 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 		cb.setGZIPEnabled(enable_gzip_compressing);
 		cb.setIgnoreSSLError(ignore_ssl_error);
 		if (enable_proxy) {
-			final String proxy_host = mPreferences.getString(PREFERENCE_KEY_PROXY_HOST, null);
-			final int proxy_port = ParseUtils.parseInt(mPreferences.getString(PREFERENCE_KEY_PROXY_PORT, "-1"));
+			final String proxy_host = mPreferences.getString(KEY_PROXY_HOST, null);
+			final int proxy_port = ParseUtils.parseInt(mPreferences.getString(KEY_PROXY_PORT, "-1"));
 			if (!isEmpty(proxy_host) && proxy_port > 0) {
 				cb.setHttpProxyHost(proxy_host);
 				cb.setHttpProxyPort(proxy_port);
@@ -437,20 +437,20 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 	}
 
 	private void setDefaultAPI() {
-		final long api_last_change = mPreferences.getLong(PREFERENCE_KEY_API_LAST_CHANGE, mAPIChangeTimestamp);
+		final long api_last_change = mPreferences.getLong(KEY_API_LAST_CHANGE, mAPIChangeTimestamp);
 		final boolean default_api_changed = api_last_change != mAPIChangeTimestamp;
-		final String consumer_key = getNonEmptyString(mPreferences, PREFERENCE_KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
-		final String consumer_secret = getNonEmptyString(mPreferences, PREFERENCE_KEY_CONSUMER_SECRET,
+		final String consumer_key = getNonEmptyString(mPreferences, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
+		final String consumer_secret = getNonEmptyString(mPreferences, KEY_CONSUMER_SECRET,
 				TWITTER_CONSUMER_SECRET_2);
-		final String rest_base_url = getNonEmptyString(mPreferences, PREFERENCE_KEY_REST_BASE_URL,
+		final String rest_base_url = getNonEmptyString(mPreferences, KEY_REST_BASE_URL,
 				DEFAULT_REST_BASE_URL);
-		final String oauth_base_url = getNonEmptyString(mPreferences, PREFERENCE_KEY_OAUTH_BASE_URL,
+		final String oauth_base_url = getNonEmptyString(mPreferences, KEY_OAUTH_BASE_URL,
 				DEFAULT_OAUTH_BASE_URL);
-		final String signing_rest_base_url = getNonEmptyString(mPreferences, PREFERENCE_KEY_SIGNING_REST_BASE_URL,
+		final String signing_rest_base_url = getNonEmptyString(mPreferences, KEY_SIGNING_REST_BASE_URL,
 				DEFAULT_SIGNING_REST_BASE_URL);
-		final String signing_oauth_base_url = getNonEmptyString(mPreferences, PREFERENCE_KEY_SIGNING_OAUTH_BASE_URL,
+		final String signing_oauth_base_url = getNonEmptyString(mPreferences, KEY_SIGNING_OAUTH_BASE_URL,
 				DEFAULT_SIGNING_OAUTH_BASE_URL);
-		final int auth_type = mPreferences.getInt(PREFERENCE_KEY_AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
+		final int auth_type = mPreferences.getInt(KEY_AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
 		if (isEmpty(mConsumerKey) || default_api_changed) {
 			mConsumerKey = consumer_key;
 		}

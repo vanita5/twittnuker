@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,8 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.support.DataExportActivity;
+import de.vanita5.twittnuker.activity.support.DataImportActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.view.holder.ViewHolder;
 
@@ -43,11 +46,6 @@ import java.util.List;
 public class SettingsActivity extends BasePreferenceActivity {
 
 	private HeaderAdapter mAdapter;
-
-	@Override
-	public void finish() {
-		super.finish();
-	}
 
 	public HeaderAdapter getHeaderAdapter() {
 		if (mAdapter != null) return mAdapter;
@@ -63,10 +61,27 @@ public class SettingsActivity extends BasePreferenceActivity {
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu(final Menu menu) {
+		if (getIntent().getStringExtra(EXTRA_SHOW_FRAGMENT) != null) return false;
+		getMenuInflater().inflate(R.menu.menu_settings, menu);
+		return true;
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 			case MENU_HOME: {
 				onBackPressed();
+				return true;
+			}
+			case MENU_IMPORT_SETTINGS: {
+				final Intent intent = new Intent(this, DataImportActivity.class);
+				startActivity(intent);
+				return true;
+			}
+			case MENU_EXPORT_SETTINGS: {
+				final Intent intent = new Intent(this, DataExportActivity.class);
+				startActivity(intent);
 				return true;
 			}
 		}
@@ -109,7 +124,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 		}
 	}
 
-	static class HeaderAdapter extends ArrayAdapter<Header> {
+	private static class HeaderAdapter extends ArrayAdapter<Header> {
 
 		static final int HEADER_TYPE_CATEGORY = 0;
 		static final int HEADER_TYPE_NORMAL = 1;

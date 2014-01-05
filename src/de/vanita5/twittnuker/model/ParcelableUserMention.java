@@ -125,7 +125,7 @@ public class ParcelableUserMention implements Parcelable, JSONParcelable {
 	public static ParcelableUserMention[] fromJSONString(final String json) {
 		if (TextUtils.isEmpty(json)) return null;
 		try {
-			return JSONSerializer.arrayFromJSON(JSON_CREATOR, new JSONArray(json));
+			return JSONSerializer.createArray(JSON_CREATOR, new JSONArray(json));
 		} catch (final JSONException e) {
 			return null;
 		}

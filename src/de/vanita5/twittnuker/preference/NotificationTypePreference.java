@@ -98,7 +98,7 @@ public class NotificationTypePreference extends DialogPreference implements Cons
 	}
 
 	private int[] getFlags() {
-		return new int[] { NOTIFICATION_FLAG_RINGTONE, NOTIFICATION_FLAG_VIBRATION, NOTIFICATION_FLAG_LIGHT };
+		return new int[] { VALUE_NOTIFICATION_FLAG_RINGTONE, VALUE_NOTIFICATION_FLAG_VIBRATION, VALUE_NOTIFICATION_FLAG_LIGHT };
 	}
 
 }

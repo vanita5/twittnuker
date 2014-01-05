@@ -233,12 +233,12 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 
 	@Override
 	public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
-		if (PREFERENCE_KEY_REFRESH_INTERVAL.equals(key)) {
+		if (KEY_REFRESH_INTERVAL.equals(key)) {
 			stopService(new Intent(this, RefreshService.class));
 			startRefreshServiceIfNeeded(this);
-		} else if (PREFERENCE_KEY_ENABLE_PROXY.equals(key) || PREFERENCE_KEY_CONNECTION_TIMEOUT.equals(key)
-				|| PREFERENCE_KEY_PROXY_HOST.equals(key) || PREFERENCE_KEY_PROXY_PORT.equals(key)
-				|| PREFERENCE_KEY_FAST_IMAGE_LOADING.equals(key)) {
+		} else if (KEY_ENABLE_PROXY.equals(key) || KEY_CONNECTION_TIMEOUT.equals(key)
+				|| KEY_PROXY_HOST.equals(key) || KEY_PROXY_PORT.equals(key)
+				|| KEY_FAST_IMAGE_LOADING.equals(key)) {
 			reloadConnectivitySettings();
 		}
 	}

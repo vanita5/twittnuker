@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -41,6 +40,11 @@ public class ColorPickerDialogActivity extends BaseSupportDialogActivity impleme
         return ThemeUtils.getNoDisplayThemeResource(this);
     }
 
+	@Override
+	public void onCancelled() {
+		finish();
+	}
+
     @Override
     public void onColorCleared() {
         setResult(RESULT_CLEARED);
@@ -56,11 +60,16 @@ public class ColorPickerDialogActivity extends BaseSupportDialogActivity impleme
 	}
 
 	@Override
+	public void onDismissed() {
+		finish();
+	}
+
+	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (savedInstanceState == null) {
 			final Intent intent = getIntent();
-			final InternalColorPickerDialogFragment f = new InternalColorPickerDialogFragment();
+			final ColorPickerDialogFragment f = new ColorPickerDialogFragment();
 			final Bundle args = new Bundle();
 			args.putInt(EXTRA_COLOR, intent.getIntExtra(EXTRA_COLOR, Color.WHITE));
             args.putBoolean(EXTRA_CLEAR_BUTTON, intent.getBooleanExtra(EXTRA_CLEAR_BUTTON, false));
@@ -68,20 +77,6 @@ public class ColorPickerDialogActivity extends BaseSupportDialogActivity impleme
 			f.setArguments(args);
 			f.show(getSupportFragmentManager(), "color_picker_dialog");
 		}
-	}
-
-	public static class InternalColorPickerDialogFragment extends ColorPickerDialogFragment {
-
-		@Override
-		public void onCancel(final DialogInterface dialog) {
-			getActivity().finish();
-		}
-
-		@Override
-		public void onDismiss(final DialogInterface dialog) {
-			getActivity().finish();
-		}
-
 	}
 
 }

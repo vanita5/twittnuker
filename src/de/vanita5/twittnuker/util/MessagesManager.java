@@ -171,7 +171,7 @@ public final class MessagesManager implements Constants {
 	}
 
 	private boolean showToast() {
-		return mPreferences.getBoolean(PREFERENCE_KEY_BACKGROUND_TOAST_NOTIFICATION, false);
+		return mPreferences.getBoolean(KEY_BACKGROUND_TOAST_NOTIFICATION, false);
 	}
 
 }

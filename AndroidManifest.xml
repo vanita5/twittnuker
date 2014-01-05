@@ -359,7 +359,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.MapViewerActivity"
+            android:name=".activity.support.MapViewerActivity"
             android:exported="false"
             android:label="@string/view_map"
             android:theme="@style/Theme.Blank">
@@ -378,7 +378,7 @@
             android:name=".activity.support.FileSelectorActivity"
             android:exported="false"
             android:label="@string/pick_file"
-            android:theme="@style/Theme.Blank.Dialog"
+            android:theme="@style/Theme.Twidere.Light.NoDisplay"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.PICK_FILE" />
@@ -458,6 +458,14 @@
             android:name=".activity.SettingsWizardActivity"
             android:label="@string/settings_wizard"
             android:theme="@style/Theme.Twidere.Wizard" />
+        <activity
+            android:name=".activity.support.DataExportActivity"
+            android:label="@string/export_settings"
+            android:theme="@android:style/Theme.NoDisplay"/>
+        <activity
+            android:name=".activity.support.DataImportActivity"
+            android:label="@string/import_settings"
+            android:theme="@android:style/Theme.NoDisplay"/>
         <activity
             android:name=".activity.TestActivity"
             android:launchMode="singleTop"

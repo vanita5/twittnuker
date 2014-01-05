@@ -107,7 +107,7 @@ public class AccountsAdapter extends SimpleCursorAdapter implements Constants {
 
 	@Override
 	public void notifyDataSetChanged() {
-		mDefaultAccountId = mPreferences.getLong(PREFERENCE_KEY_DEFAULT_ACCOUNT_ID, -1);
+		mDefaultAccountId = mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1);
 		super.notifyDataSetChanged();
 	}
 

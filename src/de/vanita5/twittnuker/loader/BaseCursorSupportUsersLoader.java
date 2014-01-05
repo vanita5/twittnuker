@@ -45,8 +45,8 @@ public abstract class BaseCursorSupportUsersLoader extends Twitter4JUsersLoader 
 		super(context, account_id, data);
 		mCursor = cursor;
 		mPreferences = getContext().getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final int prefs_load_item_limit = mPreferences.getInt(PREFERENCE_KEY_LOAD_ITEM_LIMIT,
-				PREFERENCE_DEFAULT_LOAD_ITEM_LIMIT);
+		final int prefs_load_item_limit = mPreferences.getInt(KEY_LOAD_ITEM_LIMIT,
+				DEFAULT_LOAD_ITEM_LIMIT);
 		mLoadItemLimit = Math.min(100, prefs_load_item_limit);
 	}
 

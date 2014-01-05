@@ -593,4 +593,10 @@
     <string name="deny">Deny</string>
     <string name="accepted_users_follow_request"><xliff:g id="user">%s</xliff:g>\'s Folgeanfrage angenommen.</string>
     <string name="denied_users_follow_request"><xliff:g id="user">%s</xliff:g>\'s Folgeanfrage abgelehnt.</string>
+    <string name="import_settings">Import Settings</string>
+    <string name="export_settings">Export Settings</string>
+    <string name="export_settings_type_dialog_title">Export Settings…</string>
+    <string name="import_settings_type_dialog_title">Import Settings…</string>
+    <string name="nicknames">Nicknames</string>
+    <string name="user_colors">Benutzer-Farbschema</string>
 </resources>

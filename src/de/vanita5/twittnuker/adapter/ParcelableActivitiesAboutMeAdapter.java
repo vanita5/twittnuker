@@ -94,7 +94,7 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 
 					if (target_statuses_length > 0) {
 						final ParcelableStatus status = target_statuses[0];
-						if (highlightOption != LINK_HIGHLIGHT_OPTION_CODE_NONE) {
+						if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
 							holder.text.setText(Html.fromHtml(status.text_html));
 							linkify.applyAllLinks(holder.text, status.account_id, status.is_possibly_sensitive);
 							holder.text.setMovementMethod(null);
@@ -157,7 +157,7 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 
 					if (target_objects != null && target_objects.length > 0) {
 						final ParcelableStatus status = target_objects[0];
-						if (highlightOption != LINK_HIGHLIGHT_OPTION_CODE_NONE) {
+						if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
 							holder.text.setText(Html.fromHtml(status.text_html));
 							linkify.applyAllLinks(holder.text, status.account_id, status.is_possibly_sensitive);
 							holder.text.setMovementMethod(null);
@@ -233,7 +233,7 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 
 			holder.setAccountColorEnabled(showAccountColor);
 
-			if (highlightOption != LINK_HIGHLIGHT_OPTION_CODE_NONE) {
+			if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
 				holder.text.setText(Html.fromHtml(status.text_html));
 				linkify.applyAllLinks(holder.text, status.account_id, status.is_possibly_sensitive);
 				holder.text.setMovementMethod(null);
@@ -260,7 +260,7 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 			holder.name.setText(TextUtils.isEmpty(nick) ? status.user_name : isNicknameOnly() ? nick : mContext
 					.getString(R.string.name_with_nickname, status.user_name, nick));
 			holder.screen_name.setText("@" + status.user_screen_name);
-			if (highlightOption != LINK_HIGHLIGHT_OPTION_CODE_NONE) {
+			if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
 				linkify.applyUserProfileLinkNoHighlight(holder.name, status.account_id, status.user_id,
 						status.user_screen_name);
 				linkify.applyUserProfileLinkNoHighlight(holder.screen_name, status.account_id, status.user_id,

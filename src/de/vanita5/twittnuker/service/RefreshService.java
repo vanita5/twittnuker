@@ -182,7 +182,7 @@ public class RefreshService extends Service implements Constants {
 
 	private int getLocalTrends(final long[] accountIds) {
 		final long account_id = getDefaultAccountId(this);
-		final int woeid = mPreferences.getInt(PREFERENCE_KEY_LOCAL_TRENDS_WOEID, 1);
+		final int woeid = mPreferences.getInt(KEY_LOCAL_TRENDS_WOEID, 1);
 		return mTwitterWrapper.getLocalTrendsAsync(account_id, woeid);
 	}
 
@@ -210,8 +210,7 @@ public class RefreshService extends Service implements Constants {
 
 	private long getRefreshInterval() {
 		if (mPreferences == null) return 0;
-		final int prefValue = parseInt(mPreferences.getString(PREFERENCE_KEY_REFRESH_INTERVAL,
-				PREFERENCE_DEFAULT_REFRESH_INTERVAL));
+		final int prefValue = parseInt(mPreferences.getString(KEY_REFRESH_INTERVAL, DEFAULT_REFRESH_INTERVAL));
 		return Math.max(prefValue, 3) * 60 * 1000;
 	}
 

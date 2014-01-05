@@ -180,7 +180,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 
 		@Override
 		public void onReceivedSslError(final WebView view, final SslErrorHandler handler, final SslError error) {
-			if (mActivity.mPreferences.getBoolean(PREFERENCE_KEY_IGNORE_SSL_ERROR, false)) {
+			if (mActivity.mPreferences.getBoolean(KEY_IGNORE_SSL_ERROR, false)) {
 				handler.proceed();
 			} else {
 				handler.cancel();
@@ -227,12 +227,12 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 		@Override
 		protected RequestToken doInBackground(final Void... params) {
 			final ConfigurationBuilder cb = new ConfigurationBuilder();
-			final boolean enable_gzip_compressing = mPreferences.getBoolean(PREFERENCE_KEY_GZIP_COMPRESSING, false);
-			final boolean ignore_ssl_error = mPreferences.getBoolean(PREFERENCE_KEY_IGNORE_SSL_ERROR, false);
-			final boolean enable_proxy = mPreferences.getBoolean(PREFERENCE_KEY_ENABLE_PROXY, false);
-			final String consumer_key = getNonEmptyString(mPreferences, PREFERENCE_KEY_CONSUMER_KEY,
+			final boolean enable_gzip_compressing = mPreferences.getBoolean(KEY_GZIP_COMPRESSING, false);
+			final boolean ignore_ssl_error = mPreferences.getBoolean(KEY_IGNORE_SSL_ERROR, false);
+			final boolean enable_proxy = mPreferences.getBoolean(KEY_ENABLE_PROXY, false);
+			final String consumer_key = getNonEmptyString(mPreferences, KEY_CONSUMER_KEY,
 					TWITTER_CONSUMER_KEY_2);
-			final String consumer_secret = getNonEmptyString(mPreferences, PREFERENCE_KEY_CONSUMER_SECRET,
+			final String consumer_secret = getNonEmptyString(mPreferences, KEY_CONSUMER_SECRET,
 					TWITTER_CONSUMER_SECRET_2);
 			cb.setHostAddressResolver(mApplication.getHostAddressResolver());
 			cb.setHttpClientImplementation(HttpClientImpl.class);
@@ -251,8 +251,8 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 			cb.setGZIPEnabled(enable_gzip_compressing);
 			cb.setIgnoreSSLError(ignore_ssl_error);
 			if (enable_proxy) {
-				final String proxy_host = mPreferences.getString(PREFERENCE_KEY_PROXY_HOST, null);
-				final int proxy_port = ParseUtils.parseInt(mPreferences.getString(PREFERENCE_KEY_PROXY_PORT, "-1"));
+				final String proxy_host = mPreferences.getString(KEY_PROXY_HOST, null);
+				final int proxy_port = ParseUtils.parseInt(mPreferences.getString(KEY_PROXY_PORT, "-1"));
 				if (!isEmpty(proxy_host) && proxy_port > 0) {
 					cb.setHttpProxyHost(proxy_host);
 					cb.setHttpProxyPort(proxy_port);

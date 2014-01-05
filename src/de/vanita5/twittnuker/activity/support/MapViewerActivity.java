@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.activity;
+package de.vanita5.twittnuker.activity.support;
 
 import android.net.Uri;
 import android.os.Bundle;

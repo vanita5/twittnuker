@@ -94,7 +94,7 @@ public class MentionsFragment extends CursorStatusesListFragment {
 	@Override
 	protected boolean isFiltersEnabled() {
 		final SharedPreferences pref = getSharedPreferences();
-		return pref != null && pref.getBoolean(PREFERENCE_KEY_FILTERS_IN_MENTIONS, true);
+		return pref != null && pref.getBoolean(KEY_FILTERS_IN_MENTIONS, true);
 	}
 
 	@Override

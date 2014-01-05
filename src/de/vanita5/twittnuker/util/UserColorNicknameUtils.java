@@ -94,7 +94,7 @@ public class UserColorNicknameUtils implements TwittnukerConstants {
 		final String nick = getUserNickname(context, user_id);
 		if (isEmpty(nick)) return name;
 		final boolean nickname_only = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-				.getBoolean(PREFERENCE_KEY_NICKNAME_ONLY, false);
+				.getBoolean(KEY_NICKNAME_ONLY, false);
 		return nickname_only ? nick : context.getString(R.string.name_with_nickname, name, nick);
 	}
 

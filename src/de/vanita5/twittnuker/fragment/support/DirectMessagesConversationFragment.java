@@ -144,12 +144,12 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 		mListView = getListView();
 		mListView.setDivider(null);
 		mListView.setSelector(android.R.color.transparent);
-		mListView.setFastScrollEnabled(mPreferences.getBoolean(PREFERENCE_KEY_FAST_SCROLL_THUMB, false));
+		mListView.setFastScrollEnabled(mPreferences.getBoolean(KEY_FAST_SCROLL_THUMB, false));
 		mListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
 		mListView.setStackFromBottom(true);
 		setListShownNoAnimation(false);
 
-		if (mPreferences.getBoolean(PREFERENCE_KEY_QUICK_SEND, false)) {
+		if (mPreferences.getBoolean(KEY_QUICK_SEND, false)) {
 			mEditText.setOnEditorActionListener(this);
 		}
 		mEditText.addTextChangedListener(this);

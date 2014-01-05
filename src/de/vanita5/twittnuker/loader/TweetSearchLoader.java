@@ -49,7 +49,7 @@ public class TweetSearchLoader extends Twitter4JStatusesLoader {
 		super(context, accountId, maxId, sinceId, data, savedStatusesArgs, tabPosition);
 		mQuery = query;
 		mFiltersForRts = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).getBoolean(
-				PREFERENCE_KEY_FILTERS_FOR_RTS, true);
+				KEY_FILTERS_FOR_RTS, true);
 	}
 
 	@Override

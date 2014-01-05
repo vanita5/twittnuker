@@ -90,7 +90,7 @@ public class MultiColumnHomeTimelineFragment extends CursorStatusesMultiColumnLi
 	@Override
 	protected boolean isFiltersEnabled() {
 		final SharedPreferences pref = getSharedPreferences();
-		return pref != null && pref.getBoolean(PREFERENCE_KEY_FILTERS_IN_HOME_TIMELINE, true);
+		return pref != null && pref.getBoolean(KEY_FILTERS_IN_HOME_TIMELINE, true);
 	}
 
 	@Override

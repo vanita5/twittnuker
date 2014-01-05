@@ -70,7 +70,7 @@ public class ImagePreloader implements Constants {
 
 	public void preloadImage(final String url) {
 		if (TextUtils.isEmpty(url)) return;
-		if (!isOnWifi(mContext) && mPreferences.getBoolean(PREFERENCE_KEY_PRELOAD_WIFI_ONLY, true)) return;
+		if (!isOnWifi(mContext) && mPreferences.getBoolean(KEY_PRELOAD_WIFI_ONLY, true)) return;
 		mHandler.post(new Runnable() {
 
 			@Override

@@ -91,6 +91,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.scvngr.levelup.views.gallery.AdapterView;
+import com.scvngr.levelup.views.gallery.AdapterView.OnItemClickListener;
+import com.scvngr.levelup.views.gallery.AdapterView.OnItemSelectedListener;
+import com.scvngr.levelup.views.gallery.Gallery;
+
 import org.mariotaku.menucomponent.widget.MenuBar;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
@@ -119,11 +124,6 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 import de.vanita5.twittnuker.view.ExtendedFrameLayout;
-
-import com.scvngr.levelup.views.gallery.AdapterView;
-import com.scvngr.levelup.views.gallery.AdapterView.OnItemClickListener;
-import com.scvngr.levelup.views.gallery.AdapterView.OnItemSelectedListener;
-import com.scvngr.levelup.views.gallery.Gallery;
 
 import twitter4j.Relationship;
 import twitter4j.Twitter;
@@ -324,9 +324,9 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 		updateUserColor();
 		mProfileView.drawEnd(getAccountColor(getActivity(), status.account_id));
-		final boolean nickname_only = mPreferences.getBoolean(PREFERENCE_KEY_NICKNAME_ONLY, false);
-		final boolean name_first = mPreferences.getBoolean(PREFERENCE_KEY_NAME_FIRST, true);
-		final boolean display_image_preview = mPreferences.getBoolean(PREFERENCE_KEY_DISPLAY_IMAGE_PREVIEW, false);
+		final boolean nickname_only = mPreferences.getBoolean(KEY_NICKNAME_ONLY, false);
+		final boolean name_first = mPreferences.getBoolean(KEY_NAME_FIRST, true);
+		final boolean display_image_preview = mPreferences.getBoolean(KEY_DISPLAY_IMAGE_PREVIEW, false);
 		final String nick = getUserNickname(getActivity(), status.user_id, true);
 		mNameView.setText(TextUtils.isEmpty(nick) ? status.user_name : nickname_only ? nick : getString(
 				R.string.name_with_nickname, status.user_name, nick));
@@ -334,7 +334,8 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 				getUserTypeIconRes(status.user_is_verified, status.user_is_protected), 0);
 		mScreenNameView.setText("@" + status.user_screen_name);
 		mTextView.setText(Html.fromHtml(status.text_html));
-        final TwidereLinkify linkify = new TwidereLinkify(new OnLinkClickHandler(getActivity(), getMultiSelectManager()));
+		final TwidereLinkify linkify = new TwidereLinkify(
+				new OnLinkClickHandler(getActivity(), getMultiSelectManager()));
         linkify.setLinkTextColor(ThemeUtils.getUserLinkTextColor(getActivity()));
 		linkify.applyAllLinks(mTextView, status.account_id, status.is_possibly_sensitive);
 		mTextView.setMovementMethod(StatusContentMovementMethod.getInstance());
@@ -353,7 +354,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 				status.in_reply_to_screen_name, name_first, nickname_only, true);
 		mInReplyToView.setText(getString(R.string.in_reply_to, in_reply_to));
 
-		if (mPreferences.getBoolean(PREFERENCE_KEY_DISPLAY_PROFILE_IMAGE, true)) {
+		if (mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true)) {
 			final boolean hires_profile_image = getResources().getBoolean(R.bool.hires_profile_image);
 			mImageLoader.displayProfileImage(mProfileImageView,
 					hires_profile_image ? getBiggerTwitterProfileImage(status.user_profile_image_url)
@@ -436,7 +437,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 				.registerOnSharedPreferenceChangeListener(this);
 		mImageLoader = application.getImageLoaderWrapper();
 		mTwitterWrapper = getTwitterWrapper();
-		mLoadMoreAutomatically = mPreferences.getBoolean(PREFERENCE_KEY_LOAD_MORE_AUTOMATICALLY, false);
+		mLoadMoreAutomatically = mPreferences.getBoolean(KEY_LOAD_MORE_AUTOMATICALLY, false);
 		mImagePreviewAdapter = new MediaPreviewAdapter(getActivity());
 		mLoadImagesIndicator.setOnClickListener(this);
 		mInReplyToView.setOnClickListener(this);
@@ -472,7 +473,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 				break;
 			}
 		}
-
 	}
 
 	@Override
@@ -641,7 +641,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		filter.addAction(BROADCAST_RETWEET_CHANGED);
 		registerReceiver(mStatusReceiver, filter);
 		updateUserColor();
-		final int text_size = mPreferences.getInt(PREFERENCE_KEY_TEXT_SIZE, getDefaultTextSize(getActivity()));
+		final int text_size = mPreferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(getActivity()));
 		mTextView.setTextSize(text_size * 1.25f);
 		mNameView.setTextSize(text_size * 1.25f);
 		mScreenNameView.setTextSize(text_size * 0.85f);

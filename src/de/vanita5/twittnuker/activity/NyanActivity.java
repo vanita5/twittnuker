@@ -62,7 +62,7 @@ public class NyanActivity extends Activity implements Constants, OnLongClickList
 
 	@Override
 	public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-		if (PREFERENCE_KEY_LIVE_WALLPAPER_SCALE.equals(key)) {
+		if (KEY_LIVE_WALLPAPER_SCALE.equals(key)) {
 			updateSurface();
 		}
 	}
@@ -125,7 +125,7 @@ public class NyanActivity extends Activity implements Constants, OnLongClickList
 		if (mPreferences == null) return;
 		final Resources res = getResources();
 		final int def = res.getInteger(R.integer.default_live_wallpaper_scale);
-		mHelper.setScale(mPreferences.getInt(PREFERENCE_KEY_LIVE_WALLPAPER_SCALE, def));
+		mHelper.setScale(mPreferences.getInt(KEY_LIVE_WALLPAPER_SCALE, def));
 	}
 
 }

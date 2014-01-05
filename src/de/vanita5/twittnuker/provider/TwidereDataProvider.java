@@ -65,7 +65,8 @@ import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.util.Log;
 
-import org.mariotaku.jsonserializer.JSONSerializer;
+import org.mariotaku.jsonserializer.JSONFileIO;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.HomeActivity;
@@ -992,8 +993,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (values == null || values.length == 0) return 0;
 		// Add statuses that not filtered to list for future use.
 		int result = 0;
-		final boolean enabled = mPreferences.getBoolean(PREFERENCE_KEY_FILTERS_IN_MENTIONS, true);
-		final boolean filtersForRts = mPreferences.getBoolean(PREFERENCE_KEY_FILTERS_FOR_RTS, true);
+		final boolean enabled = mPreferences.getBoolean(KEY_FILTERS_IN_MENTIONS, true);
+		final boolean filtersForRts = mPreferences.getBoolean(KEY_FILTERS_FOR_RTS, true);
 		for (final ContentValues value : values) {
 			final ParcelableStatus status = new ParcelableStatus(value);
 			if (!enabled || !isFiltered(mDatabaseWrapper.getSQLiteDatabase(), status, filtersForRts)) {
@@ -1013,8 +1014,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (values == null || values.length == 0) return 0;
 		// Add statuses that not filtered to list for future use.
 		int result = 0;
-		final boolean enabled = mPreferences.getBoolean(PREFERENCE_KEY_FILTERS_IN_HOME_TIMELINE, true);
-		final boolean filtersForRts = mPreferences.getBoolean(PREFERENCE_KEY_FILTERS_FOR_RTS, true);
+		final boolean enabled = mPreferences.getBoolean(KEY_FILTERS_IN_HOME_TIMELINE, true);
+		final boolean filtersForRts = mPreferences.getBoolean(KEY_FILTERS_FOR_RTS, true);
 		for (final ContentValues value : values) {
 			final ParcelableStatus status = new ParcelableStatus(value);
 			if (!enabled || !isFiltered(mDatabaseWrapper.getSQLiteDatabase(), status, filtersForRts)) {
@@ -1113,12 +1114,12 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	private void preloadImages(final ContentValues... values) {
 		if (values == null) return;
 		for (final ContentValues v : values) {
-			if (mPreferences.getBoolean(PREFERENCE_KEY_PRELOAD_PROFILE_IMAGES, false)) {
+			if (mPreferences.getBoolean(KEY_PRELOAD_PROFILE_IMAGES, false)) {
 				mImagePreloader.preloadImage(v.getAsString(Statuses.USER_PROFILE_IMAGE_URL));
 				mImagePreloader.preloadImage(v.getAsString(DirectMessages.SENDER_PROFILE_IMAGE_URL));
 				mImagePreloader.preloadImage(v.getAsString(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL));
 			}
-			if (mPreferences.getBoolean(PREFERENCE_KEY_PRELOAD_PREVIEW_IMAGES, false)) {
+			if (mPreferences.getBoolean(KEY_PRELOAD_PREVIEW_IMAGES, false)) {
 				final String text_html = v.getAsString(Statuses.TEXT_HTML);
 				for (final PreviewMedia spec : MediaPreviewUtils.getImagesInStatus(text_html, false)) {
 					mImagePreloader.preloadImage(spec.url);
@@ -1178,8 +1179,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	private void restoreUnreadItemsFile(final Collection<UnreadItem> items, final String name) {
 		if (items == null || name == null) return;
 		try {
-			final File file = JSONSerializer.getSerializationFile(getContext(), name);
-			final List<UnreadItem> restored = JSONSerializer.listFromFile(file);
+			final File file = JSONFileIO.getSerializationFile(getContext(), name);
+			final List<UnreadItem> restored = JSONFileIO.readArrayList(file);
 			if (restored != null) {
 				items.addAll(restored);
 			}
@@ -1191,8 +1192,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	private void saveUnreadItemsFile(final Collection<UnreadItem> items, final String name) {
 		if (items == null || name == null) return;
 		try {
-			final File file = JSONSerializer.getSerializationFile(getContext(), name);
-			JSONSerializer.toFile(file, items.toArray(new UnreadItem[items.size()]));
+			final File file = JSONFileIO.getSerializationFile(getContext(), name);
+			JSONFileIO.writeArray(file, items.toArray(new UnreadItem[items.size()]));
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
@@ -1204,8 +1205,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	}
 
 	private void updatePreferences() {
-		mNameFirst = mPreferences.getBoolean(PREFERENCE_KEY_NAME_FIRST, false);
-		mNickOnly = mPreferences.getBoolean(PREFERENCE_KEY_NICKNAME_ONLY, false);
+		mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, false);
+		mNickOnly = mPreferences.getBoolean(KEY_NICKNAME_ONLY, false);
 	}
 
 	private static int clearUnreadCount(final List<UnreadItem> set, final long[] accountIds) {

@@ -67,7 +67,7 @@ public class ShortTimeView extends ThemedTextView implements Constants, OnShared
 
 	@Override
 	public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-		if (PREFERENCE_KEY_SHOW_ABSOLUTE_TIME.equals(key)) {
+		if (KEY_SHOW_ABSOLUTE_TIME.equals(key)) {
 			updateTimeDisplayOption();
 			invalidateTime();
 		}
@@ -100,7 +100,7 @@ public class ShortTimeView extends ThemedTextView implements Constants, OnShared
 
 	private void updateTimeDisplayOption() {
 		if (mPreferences == null) return;
-		mShowAbsoluteTime = mPreferences.getBoolean(PREFERENCE_KEY_SHOW_ABSOLUTE_TIME, false);
+		mShowAbsoluteTime = mPreferences.getBoolean(KEY_SHOW_ABSOLUTE_TIME, false);
 	}
 
 	private static class TickerRunnable implements Runnable {

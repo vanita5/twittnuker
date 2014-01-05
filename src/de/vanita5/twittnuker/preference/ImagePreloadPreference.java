@@ -49,7 +49,7 @@ public class ImagePreloadPreference extends MultiSelectListPreference implements
 
 	@Override
 	protected String[] getKeys() {
-		return new String[] { PREFERENCE_KEY_PRELOAD_PROFILE_IMAGES, PREFERENCE_KEY_PRELOAD_PREVIEW_IMAGES };
+		return new String[] { KEY_PRELOAD_PROFILE_IMAGES, KEY_PRELOAD_PREVIEW_IMAGES };
 	}
 
 	@Override

@@ -38,7 +38,8 @@ public class ThemeFontFamilyPreference extends AutoInvalidateListPreference impl
 
 	private static final int[] ENTRIES_RES = {R.string.font_family_regular, R.string.font_family_condensed,
 			R.string.font_family_light};
-	private static final String[] VALUES = {FONT_FAMILY_REGULAR, FONT_FAMILY_CONDENSED, FONT_FAMILY_LIGHT};
+	private static final String[] VALUES = { VALUE_THEME_FONT_FAMILY_REGULAR, VALUE_THEME_FONT_FAMILY_CONDENSED,
+			VALUE_THEME_FONT_FAMILY_LIGHT };
 
 	public ThemeFontFamilyPreference(final Context context) {
 		this(context, null);
