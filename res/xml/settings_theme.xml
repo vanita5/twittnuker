@@ -11,7 +11,7 @@
 	</PreferenceCategory>
 
 	<de.vanita5.twittnuker.preference.AutoInvalidateListPreference
-		android:defaultValue="twidere"
+		android:defaultValue="light"
 		android:entries="@array/entries_theme"
 		android:order="21"
 		android:entryValues="@array/values_theme"

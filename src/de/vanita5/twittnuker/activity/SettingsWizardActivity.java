@@ -485,7 +485,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		private static final String FRAGMENT_TAG = "initial_settings_dialog";
 
 		private static final String[] DEFAULT_TAB_TYPES = { TAB_TYPE_HOME_TIMELINE, TAB_TYPE_MENTIONS_TIMELINE,
-				TAB_TYPE_TRENDS_SUGGESTIONS, TAB_TYPE_DIRECT_MESSAGES };
+				TAB_TYPE_DIRECT_MESSAGES, TAB_TYPE_TRENDS_SUGGESTIONS };
 
 		private final SettingsWizardActivity mActivity;
 

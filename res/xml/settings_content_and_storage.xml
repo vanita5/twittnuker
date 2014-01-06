@@ -63,7 +63,7 @@
 			android:title="@string/load_more_automatically"/>
 
 		<de.vanita5.twittnuker.preference.SeekBarDialogPreference
-			android:defaultValue="20"
+			android:defaultValue="100"
 			android:key="load_item_limit"
 			android:summary="@string/load_item_limit_summary"
 			android:title="@string/load_item_limit"
