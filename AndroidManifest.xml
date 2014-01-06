@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.vanita5.twittnuker"
     android:installLocation="auto"
-    android:versionCode="3"
-    android:versionName="0.1-alpha2">
+    android:versionCode="4"
+    android:versionName="0.2-alpha3">
 
     <uses-sdk
         android:minSdkVersion="14"
