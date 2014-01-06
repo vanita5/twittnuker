@@ -330,21 +330,6 @@
   <string name="action_accepting_follow_request">takip isteği kabul ediliyor</string>
   <string name="action_denying_follow_request">takip isteği reddediliyor</string>
   <string name="status_is_duplicate">Aynı tweet daha önce gönderilmiş.</string>
-  <string name="data_profiling_summary">Twittnuker UC Davis\'teki öğrenciler tarafından \'kullanıcıların hazır içeriklere karşı sosyal davranışlarını tahmin etme\' üzerine yürütülen bir araştırmada yer aldı.
-
-Toplamak istediğimiz verilen ve nedenleri:
-Toplanmış veri:
-1. Kullanıcının Twitter\'i
-2. Kullanıcının ana zaman çizelgesi (Tahmin kullanıcının ilgisine ve sosyal aktivitesine göredir)
-3. Kullanıcının bir tweet\'a tıklaması (Tahmin kullanıcının ilgisine ve sosyal aktivitesine göredir)
-4. Yaklaşık konum (Kullanıcının ne zaman twitter\'a gireceğini tahmin etmede faydalıdır) 
-
-Twittnuker toplanmış verileri sadece WiFi kullanılabilir olduğunda ve cihazınız şarjda olduğunda gönderecek, bu nedenle bu işlem size ekstra veri kullanımına malolmayacak ve pilinizi tüketmeyecek.</string>
-  <string name="data_profiling">Kullanıcı İstatistikleri</string>
-  <string name="enable_data_profiling">Rapor göndermeyi aç</string>
-  <string name="data_profiling_notification_ticker">Tercih edilen istatistikler</string>
-  <string name="data_profiling_notification_title">Kullanıcı İstatistikleri</string>
-  <string name="data_profiling_notification_desc">Kullanıcı İstatistiklerini Aç veya Kapat</string>
   <string name="silent_notifications">Sessiz bildirimler</string>
   <string name="silent_notifications_summary">Bildirimler için ses/titreşim kapat</string>
   <string name="disable_background_service">Arkaplan hizmetini kapat</string>

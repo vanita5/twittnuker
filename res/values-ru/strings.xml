@@ -298,12 +298,6 @@
   <string name="notification_mention"><xliff:g id="user">%s</xliff:g> упомянул вас.</string>
   <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> отправил вам личное сообщение.</string>
   <string name="status_is_duplicate">Этот твит уже опубликован.</string>
-  <string name="data_profiling_summary">Twittnuker принимает участие в исследованиях по прогнозированию поведения пользователей (для кэширования содержания), начатого студентами Калифорнийского университета в Дэвисе\n\nДалее приведен список данных, которые мы хотели бы собрать, и объяснение - зачем.\nЭто:\n1. Идентификатор пользователя\n2. Лента пользователя (прогнозирование, основанное на интересах пользователей и их социальном взаимодействии)\n3. Нажатия пользователей на твиты (прогнозирование, основанное на интересах пользователей и их социальном взаимодействии)\n4. Огрубленные данные о местоположении (прогнозирование, где пользователи пользуются Twitter)\n\nTwittnuker будет отправлять собранные данные только тогда, когда устройство подключено к Wi-Fi и к зарядному устройству, так что это не причинит вам неприятностей, связанных с дополнительными денежными расходами или расходом энергии аккумулятора.</string>
-  <string name="data_profiling">Статистика использования</string>
-  <string name="enable_data_profiling">Включить отправку отчетов</string>
-  <string name="data_profiling_notification_ticker">Статистика собрана</string>
-  <string name="data_profiling_notification_title">Статистика использования</string>
-  <string name="data_profiling_notification_desc">Включить или выключить статистику использования</string>
   <string name="silent_notifications">Бесшумное уведомление</string>
   <string name="silent_notifications_summary">Выключить звук/вибрацию для уведомления</string>
   <string name="disable_background_service">Выключить фоновый режим</string>

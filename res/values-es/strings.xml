@@ -334,12 +334,6 @@
   <string name="action_accepting_follow_request">aceptando solicitud de seguimiento</string>
   <string name="action_denying_follow_request">rechazando petición de seguimiento</string>
   <string name="status_is_duplicate">Tu tuit está duplicado.</string>
-  <string name="data_profiling_summary">Twittnuker participó en una investigación sobre predicción del comportamiento social de los usuarios para pre-cachear contenido compartido por los estudiantes de la UC Davis.\n\nEstos son los datos que queríamos recopilar y el por qué:\nDatos recopilados:\n1. ID de usuario de Twitter\n2. Timeline principal del usuario (predicción basada en los intereses del usuario e interacción social)\n3. Clicks de usuario en un tweet (predicción basada en los intereseses del usuario e interacción social)\n4. Localización básica (buena para predecir cuándo un usuario accederá a Twitter)\n\nTwittnuker subirá los datos recopilados sólo cuando una conexión WiFi esté disponible y tu dispositivo esté conectado a la corriente, de manera que no te supondrá costes adicionales por consumo extra de ancho de banda o consumo de batería.</string>
-  <string name="data_profiling">Estadísticas de uso</string>
-  <string name="enable_data_profiling">Activar reportes</string>
-  <string name="data_profiling_notification_ticker">Estadísticas activas</string>
-  <string name="data_profiling_notification_title">Estadísticas de uso</string>
-  <string name="data_profiling_notification_desc">Activar o desactivar estadísticas de uso</string>
   <string name="silent_notifications">Silenciar notificaciones</string>
   <string name="silent_notifications_summary">Desactivar tono/vibrar para notificaciones</string>
   <string name="disable_background_service">Desactivar servicio en segundo plano</string>
@@ -505,7 +499,6 @@
   <string name="report_user">Bloquear a <xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">Denunciar a <xliff:g id="name">%s</xliff:g> por spam? también podrá bloquear a este usuario.</string>
   <string name="twidere_test">Test de Twittnuker</string>
-  <string name="donate_via_paypal">Donación vía PayPal</string>
   <string name="pay_via_paypal">Pagar vía PayPal directamente</string>
   <string name="pay_via_paypal_summary">Cuando vea \"Esto no es elegible para recibir fondos\"</string>
   <string name="donate_via_alipay">Donación vía Alipay</string>

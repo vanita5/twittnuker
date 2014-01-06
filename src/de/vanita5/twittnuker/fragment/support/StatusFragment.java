@@ -28,7 +28,6 @@ import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserNicknam
 import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
 import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
 import static de.vanita5.twittnuker.util.UserColorNicknameUtils.setUserColor;
-import static de.vanita5.twittnuker.util.Utils.cancelRetweet;
 import static de.vanita5.twittnuker.util.Utils.findStatus;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
@@ -38,7 +37,6 @@ import static de.vanita5.twittnuker.util.Utils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getMapStaticImageUri;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
-import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 import static de.vanita5.twittnuker.util.Utils.isSameAccount;
 import static de.vanita5.twittnuker.util.Utils.openImage;
 import static de.vanita5.twittnuker.util.Utils.openMap;
@@ -146,7 +144,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	private boolean mLoadMoreAutomatically;
 	private boolean mFollowInfoDisplayed, mLocationInfoDisplayed;
 	private boolean mStatusLoaderInitialized, mLocationLoaderInitialized;
-	private boolean mFollowInfoLoaderInitialized;;
+	private boolean mFollowInfoLoaderInitialized;
 	private boolean mShouldScroll;
 	private SharedPreferences mPreferences;
 	private AsyncTwitterWrapper mTwitterWrapper;

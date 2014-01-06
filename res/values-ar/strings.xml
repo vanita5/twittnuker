@@ -317,11 +317,6 @@
   <string name="action_unsubscribing_from_list">إلغاء الانخراط باللائحة</string>
   <string name="action_saving_search">جاري حفظ البحث</string>
   <string name="status_is_duplicate">تغريدتك هذه مزدوجة</string>
-  <string name="data_profiling">إحصائيات الاستخدام</string>
-  <string name="enable_data_profiling">تمكين التبليغ</string>
-  <string name="data_profiling_notification_ticker">تم المشاركة في الإحصائيات</string>
-  <string name="data_profiling_notification_title">إحصائيات الاستخدام</string>
-  <string name="data_profiling_notification_desc">تمكين أو تعطيل إحصائيات الاستخدام</string>
   <string name="silent_notifications">إخطارات صامتة</string>
   <string name="silent_notifications_summary">تعطيل الصوت/الاهتزاز للإخطارات</string>
   <string name="disable_background_service">تعطيل الخدمات الخلفية</string>
@@ -457,7 +452,6 @@
   <string name="delete_user_list">حذف القائمة <xliff:g id="name">%s</xliff:g></string>
   <string name="delete_user_list_confirm_message">حذف القائمة <xliff:g id="name">%s</xliff:g> ؟ لايمكن التراجع عن هذه العملية.</string>
   <string name="twidere_test">تجريب تويدر</string>
-  <string name="donate_via_paypal">التبرع عبر PayPal</string>
   <string name="pay_via_paypal">الدفع عن طريق PayPal مباشرة</string>
   <string name="pay_via_paypal_summary">عندما ترى \"هذا المستلم ليس مؤهلا لتلقي الأموال\"</string>
   <string name="donate_via_alipay">التبرع عبر Alipay</string>

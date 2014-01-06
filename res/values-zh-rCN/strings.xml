@@ -334,12 +334,6 @@
   <string name="action_accepting_follow_request">同意关注请求</string>
   <string name="action_denying_follow_request">拒绝关注请求</string>
   <string name="status_is_duplicate">你发送了重复的推文</string>
-  <string name="data_profiling_summary">Twittnuker 参与了一个由UC Davis大学的学生发起的，为了通过预测使用者在社交网络中的行为来为一些应用预先载入内容（便于在地铁等没有信号的地方阅读）的非盈利性质的研究。\n\n以下是我们想要收集到的你的信息，以及收集它们的原因：\n收集到的信息\n1. 你的ID（人类不可读）\n2. 你更新主页时间线的推文ID（预测你的兴趣以及行为）\n3. 你点击了哪些推文，以及它们所含有的链接\n4. 粗略位置（统计使用者的来源）\n\nTwittnuker 只会在Wifi可用，并且充电时上传这些信息，所以它并不会花费额外的数据费用和电量。</string>
-  <string name="data_profiling">使用信息统计</string>
-  <string name="enable_data_profiling">启用报告</string>
-  <string name="data_profiling_notification_ticker">使用信息统计请求</string>
-  <string name="data_profiling_notification_title">使用信息统计</string>
-  <string name="data_profiling_notification_desc">启用或停用使用信息统计</string>
   <string name="silent_notifications">静默通知</string>
   <string name="silent_notifications_summary">在特定时间为通知禁用铃声和震动</string>
   <string name="disable_background_service">禁用后台服务</string>
@@ -512,7 +506,6 @@
   <string name="report_user">报告<xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">报告<xliff:g id="name">%s</xliff:g>发送垃圾信息吗？你将同时阻止这个用户。</string>
   <string name="twidere_test">Twittnuker 测试</string>
-  <string name="donate_via_paypal">通过PayPal捐助</string>
   <string name="pay_via_paypal">直接通过PayPal付款</string>
   <string name="pay_via_paypal_summary">当你看到“This recipient is not eligible to receive funds”时可使用这个方式</string>
   <string name="donate_via_alipay">通过支付宝捐助</string>

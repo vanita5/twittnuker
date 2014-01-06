@@ -72,7 +72,7 @@ public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<Parcelabl
 		return mPrevCursor;
 	}
 
-	public abstract List<UserList> getUserLists(final Twitter twitter) throws TwitterException;;
+	public abstract List<UserList> getUserLists(final Twitter twitter) throws TwitterException;
 
 	@Override
 	public List<ParcelableUserList> loadInBackground() {

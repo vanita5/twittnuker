@@ -30,7 +30,6 @@ package org.mariotaku.querybuilder;
 import org.mariotaku.querybuilder.query.SQLAlterTableQuery;
 import org.mariotaku.querybuilder.query.SQLCreateTableQuery;
 import org.mariotaku.querybuilder.query.SQLCreateViewQuery;
-import org.mariotaku.querybuilder.query.SQLDropQuery;
 import org.mariotaku.querybuilder.query.SQLDropTableQuery;
 import org.mariotaku.querybuilder.query.SQLDropViewQuery;
 import org.mariotaku.querybuilder.query.SQLInsertIntoQuery;

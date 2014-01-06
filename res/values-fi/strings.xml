@@ -334,12 +334,6 @@
   <string name="action_accepting_follow_request">hyväksytään seurauspyyntöä</string>
   <string name="action_denying_follow_request">hylätään seurauspyyntöä</string>
   <string name="status_is_duplicate">Twiittisi on kaksoiskappale.</string>
-  <string name="data_profiling_summary">Twittnuker osallistuu UC Davisin oppilaiden tutkimukseen. Aiheena on käyttäjän käyttäytymisen ennustaminen ja sisällön siirtäminen etukäteen välimuistiin.\n\nHaluamme kerätä seuraavia asioita:\nKerätty tieto:\n1. Käyttäjän Twitter ID\n2. Käyttäjän aikajana (ennustus perustuu käyttäjän kiinnostuksen kohteisiin ja sosiaaliseen kanssakäymiseen)\n3. Käyttäjän napsauttamat twiitit (ennustus perustuu käyttäjän kiinnostuksen kohteisiin ja sosiaaliseen kanssakäymiseen)\n4. Karkea arvio sijainnista (joka ennakoi hyvin käyttöaikoja)\n\nTwittnuker lataa kerätyn tiedon vain silloin, kun WiFi-yhteys on käytössä ja laitteesi on latauksessa. Tällöin tilastointi ei kasvata verkkokustannuksia tai vähennä akun kestoa.</string>
-  <string name="data_profiling">Käyttötilasto</string>
-  <string name="enable_data_profiling">Ota raportointi käyttöön</string>
-  <string name="data_profiling_notification_ticker">Tilastointi hyväksytty</string>
-  <string name="data_profiling_notification_title">Käyttötilasto</string>
-  <string name="data_profiling_notification_desc">Ota käyttöön tai poista tilastointi käytöstä</string>
   <string name="silent_notifications">Hiljaiset ilmoitukset</string>
   <string name="silent_notifications_summary">Ota merkkiääni/värinä pois käytöstä</string>
   <string name="disable_background_service">Ota taustapalvelu pois käytöstä</string>
@@ -512,7 +506,6 @@
   <string name="report_user">Ilmianna <xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">Ilmiannetaanko käyttäjä <xliff:g id="name">%s</xliff:g> roskapostittamisesta? Tulet myös estämään tämän käyttäjän.</string>
   <string name="twidere_test">Twittnukern testi</string>
-  <string name="donate_via_paypal">Lahjoita PayPalilla</string>
   <string name="pay_via_paypal">Maksa suoraan PayPalilla</string>
   <string name="pay_via_paypal_summary">Valitse, jos näet viestin: \"This recipient is not eligible to receive funds\"</string>
   <string name="donate_via_alipay">Lahjoita Alipaylla</string>

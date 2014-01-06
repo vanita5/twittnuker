@@ -330,12 +330,6 @@
   <string name="action_saving_search">s\'està desant la cerca</string>
   <string name="action_deleting_search">s\'està esborrant la cerca</string>
   <string name="status_is_duplicate">La vostra piulada està duplicada.</string>
-  <string name="data_profiling_summary">Twittnuker va participar en un projecte iniciat pels estudiants de la UC Davis per predir els comportaments socials dels usuaris de continguts pre-carregats.\n\nHeus aquí les dades que volíem recopilar i per què:\nDades obtingudes:\n1. Nom d\'usuari de Twitter.\n2. La cronologia de l\'usuari (predita basada en els interessos de l\'usuari i la seva interacció social)\n3. Els clics del l\'usuari a una piulada (predits basat en els interessos de l\'usuari i la seva interacció social).\n4. Localització no exacta (que és un indicador de la hora d\'accés de l\'usuari a Twitter)\n\nTwittnuker carregarà les dades obtingudes només en una xarxa Wi-Fi i quan tingueu el vostre dispositiu connectat al carregador, així que no us costarà us de dades extra o us descarregarà la bateria.</string>
-  <string name="data_profiling">Estadístiques d\'ús</string>
-  <string name="enable_data_profiling">Activa els informes</string>
-  <string name="data_profiling_notification_ticker">S\'ha optat a les estadístiques</string>
-  <string name="data_profiling_notification_title">Estadístiques d\'ús</string>
-  <string name="data_profiling_notification_desc">Activa o desactiva les estadístiques d\'ús</string>
   <string name="silent_notifications">Notificacions silencioses</string>
   <string name="silent_notifications_summary">Desactiva el to i la vibració de les notificacions</string>
   <string name="disable_background_service">Desactivar el servei en segon pla</string>
@@ -506,7 +500,6 @@
   <string name="report_user">Informa d\'abús l\'usuari <xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">Voleu reportar l\'usuari <xliff:g id="name">%s</xliff:g> per abús? Automàticament, també el bloquejareu.</string>
   <string name="twidere_test">Prova Twittnuker </string>
-  <string name="donate_via_paypal">Fes una donació mitjançant PayPal</string>
   <string name="pay_via_paypal">Fes una donació mitjançant PayPal directament</string>
   <string name="pay_via_paypal_summary">Si veieu «El destinatari no pot rebre transferències»</string>
   <string name="donate_via_alipay">Fes una donació mitjançant Alipay</string>

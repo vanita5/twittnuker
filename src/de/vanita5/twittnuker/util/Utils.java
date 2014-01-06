@@ -147,7 +147,7 @@ import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UsersListFragment;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
 import de.vanita5.twittnuker.model.Account;
-import de.vanita5.twittnuker.model.Account.AccountWithCredentials;;
+import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.CursorStatusIndices;
 import de.vanita5.twittnuker.model.DirectMessageCursorIndices;

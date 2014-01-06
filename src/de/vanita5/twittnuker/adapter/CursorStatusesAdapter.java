@@ -55,7 +55,7 @@ import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
-import de.vanita5.twittnuker.view.iface.ICardItemView.OnOverflowIconClickListener;;
+import de.vanita5.twittnuker.view.iface.ICardItemView.OnOverflowIconClickListener;
 
 public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatusesAdapter<Cursor>, OnClickListener,
 		OnOverflowIconClickListener {

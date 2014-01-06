@@ -336,12 +336,6 @@
   <string name="action_accepting_follow_request">aceitando solicitação de seguidor</string>
   <string name="action_denying_follow_request">recusando solicitação de seguidor</string>
   <string name="status_is_duplicate">Seu tweet está duplicado.</string>
-  <string name="data_profiling_summary">Twittnuker participa de uma pesquisa sobre comportamento social de usuários pela UC Davis.\n\nOs dados que nós coletamos e porque:\nDados coletados:\n1. Twitter ID\n2. Timeline do usuário (predição baseada nos interesses e interações)\n3. Cliques do usuário num tweet (predição baseada nos interesses e interações sociais)\n4. Localização genérica (um bom indicador de quando o usuário irá acessar o Twitter)\n\nO Twittnuker vai enviar estes dados apenas quando seu aparelho estiver com o Wi-Fi  ligado e o carregador conectado, assim não afetará seu pacote de dados nem drenar sua bateria.</string>
-  <string name="data_profiling">Estatísticas de Uso</string>
-  <string name="enable_data_profiling">Permitir Relatórios</string>
-  <string name="data_profiling_notification_ticker">Adesão de Estatísticas</string>
-  <string name="data_profiling_notification_title">Estatísticas de Uso</string>
-  <string name="data_profiling_notification_desc">Ativar ou Desativar Estatísticas de Uso</string>
   <string name="silent_notifications">Notificações silenciosas</string>
   <string name="silent_notifications_summary">Desativar toque/vibração em notificações</string>
   <string name="disable_background_service">Desativar serviço em segundo plano</string>
@@ -497,7 +491,6 @@
   <string name="signing_in_error_browser_sign_in_hint">Erro ao fazer login, talvez você precise usar um navegador para isso. (Isso vai ignorar as configurações da API durante o login)</string>
   <string name="report_user">Denunciar <xliff:g id="name">%s</xliff:g></string>
   <string name="twidere_test">Teste do Twittnuker</string>
-  <string name="donate_via_paypal">Doar via PayPal</string>
   <string name="donate_via_alipay">Doar via Alipay</string>
   <string name="staggered_home_timeline">Timeline Escalonada</string>
   <string name="unread_count">Contagem de não-lidos</string>

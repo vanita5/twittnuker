@@ -334,12 +334,6 @@
   <string name="action_accepting_follow_request">accepteer volg verzoek</string>
   <string name="action_denying_follow_request">weiger volg verzoek</string>
   <string name="status_is_duplicate">Jouw tweet is dubbel.</string>
-  <string name="data_profiling_summary">Twittnuker nam deel aan een onderzoek naar het voorspellen van sociaal gedrag van de gebruiker voor een pre-caching inhoud gestart door studenten in UC Davis.\n\nHier zijn de gegevens die we wilden verzamelen en waarom:\nVerzamelde gegevens:\n1. Gebruikers twitter ID\n2. Gebruikers thuis tijdlijn (voorspelling op basis van gebruikers interesses en sociale interactie)\n3. Klik van de gebruiker op een tweet (voorspelling op basis van gebruikers interesses en sociale interactie)\n4. Grof locatie (dat een goede voorspeller is wanneer de gebruiker toegang verkrijgt tot twitter)\n\nTwittnuker zal alleen verzamelde gegevens uploaden als Wifi beschikbaar is en je apparaat is aangesloten op de lader, zodat het niet extra bandbreedte kost of afvoer van je batterij.</string>
-  <string name="data_profiling">Gebruiksstatistieken</string>
-  <string name="enable_data_profiling">Rapporteren inschakelen</string>
-  <string name="data_profiling_notification_ticker">Statistieken aangemeld</string>
-  <string name="data_profiling_notification_title">Gebruiksstatistieken</string>
-  <string name="data_profiling_notification_desc">Schakel gebruikers statistieken in of uit</string>
   <string name="silent_notifications">Stille notificaties</string>
   <string name="silent_notifications_summary">Schakel beltoon/vibratie uit voor meldingen</string>
   <string name="disable_background_service">Schakel achtergrond service uit</string>
@@ -512,7 +506,6 @@
   <string name="report_user">Rapporteer <xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">Rapporteer <xliff:g id="name">%s</xliff:g> voor spam? Je zult deze gebruiker ook blokkeren.</string>
   <string name="twidere_test">Twittnuker test</string>
-  <string name="donate_via_paypal">Doneren via PayPal</string>
   <string name="pay_via_paypal">Betaal via PayPal direct</string>
   <string name="pay_via_paypal_summary">Als je ziet \"Deze ontvanger is niet in aanmerking om geld te ontvangen\"</string>
   <string name="donate_via_alipay">Doneer via Alipay</string>

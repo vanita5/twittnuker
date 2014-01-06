@@ -334,12 +334,6 @@
   <string name="action_accepting_follow_request">팔로우 요청 수락하는 중</string>
   <string name="action_denying_follow_request">팔로우 요청 거부하는 중</string>
   <string name="status_is_duplicate">이미 올린 트윗입니다.</string>
-  <string name="data_profiling_summary">Twittnuker 는 캘리포니아 대학 데비스 캠퍼스에서 SNS 상의 행동 조사에 협력하고 있습니다.\n\n필요한 데이터와 그 이유는 다음과 같습니다.\n수집 데이터:\n1. 사용자 트위터 ID\n2. 사용자 타임라인(사용자와 소셜 동향을 조사하는 목적).\n3. 유저 트윗 상의 탭(사용자와 소셜 동향을 조사하는 목적).\n4. 대략적인 위치 정보(언제 사용자가 트위터에 접속하는가 조사하기 위해)\n\nTwittnuker는 와이파이에 접속되고 충전하고 있을 때만 데이터를 보내므로 쓸데없는 통신을 하거나 배터리를 소비하지 않습니다.</string>
-  <string name="data_profiling">사용 통계</string>
-  <string name="enable_data_profiling">보고 사용</string>
-  <string name="data_profiling_notification_ticker">통계에 참여합니다.</string>
-  <string name="data_profiling_notification_title">사용 통계</string>
-  <string name="data_profiling_notification_desc">사용 통계 켬/끔</string>
   <string name="silent_notifications">조용한 알림</string>
   <string name="silent_notifications_summary">알림시 소리/진동 해제</string>
   <string name="disable_background_service">백그라운드 서비스 사용 안함</string>
@@ -512,7 +506,6 @@
   <string name="report_user"><xliff:g id="name">%s</xliff:g>님을 스팸 신고하기</string>
   <string name="report_user_confirm_message"><xliff:g id="name">%s</xliff:g>님을 스팸 신고하겠습니까? 이 사용자를 차단하게 됩니다.</string>
   <string name="twidere_test">Twittnuker 테스트</string>
-  <string name="donate_via_paypal">페이팔로 후원하기</string>
   <string name="pay_via_paypal">페이팔로 직접 지불</string>
   <string name="pay_via_paypal_summary">\"This recipient is not eligible to receive funds\"라고 표시되면 이쪽으로 기부하여 주십시오.</string>
   <string name="donate_via_alipay">Alplay로 기부</string>
