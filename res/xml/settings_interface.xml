@@ -46,7 +46,7 @@
         android:title="@string/tab_display_option"/>
 
 	<CheckBoxPreference
-	    android:defaultValue="false"
+	    android:defaultValue="true"
 	    android:key="long_click_to_open_menu"
 	    android:title="@string/long_click_to_open_menu" />
     <CheckBoxPreference

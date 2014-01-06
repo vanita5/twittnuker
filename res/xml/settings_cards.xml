@@ -21,7 +21,7 @@
 		app:progressTextSuffix="sp"/>
 
 	<CheckBoxPreference
-		android:defaultValue="true"
+		android:defaultValue="false"
 		android:key="name_first"
 		android:order="22"
 		android:title="@string/name_first"/>
