@@ -151,13 +151,10 @@
   <string name="auto_refresh">Auto refresh</string>
   <string name="refresh_interval">Intervallo di aggiornamento</string>
   <string name="content_to_refresh">Contenuti da aggiornare</string>
-  <string name="content_to_notify">Contenuti da notificare</string>
   <string name="notifications_type">Tipo di notifiche</string>
   <string name="sound">Suono</string>
   <string name="vibration">Vibrazione</string>
-  <string name="light">Illumina Led</string>
   <string name="notifications">Notifiche</string>
-  <string name="screen_name">Username</string>
   <string name="refresh_on_start">Aggiorna all\'avvio</string>
   <string name="refresh_on_start_summary">Aggiorna timeline e menzioni all\'avvio.</string>
   <string name="list_timeline">Elenco timeline</string>
@@ -269,6 +266,12 @@
   <string name="notification_mention">Sei stato menzionato da <xliff:g id="user">%s</xliff:g>.</string>
   <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> ti ha inviato un messaggio diretto.</string>
   <string name="status_is_duplicate">Tweet doppio.</string>
+  <string name="data_profiling_summary">Twittnuker ha preso parte a una ricerca iniziata dagli studenti in UC Davis sulla predizione dei comportamenti sociali dell\'utente, per pre-caricare i contenuti.\n\nDi seguito elenchiamo i dati che vorremmo raccogliere e perchè:\nDati raccolti:\n1. ID twitter dell\'utente\n2. Timeline utente (predizione basata sugli interessi dell\'utente e sulle interazioni sociali)\n3. L\'utente preme su un tweet (predizione basata sugli interessi dell\'utente e sulle interazioni sociali)4. Localizzazione generica (serve a prevedere quando l\'utente accederà a twitter)\n\nTwittnuker eseguirà l\'upload dei dati solo quando il dispositivo è connesso con WiFi e all\'alimentazione, di modo da non comportare consumi di banda e di batteria.</string>
+  <string name="data_profiling">Statistiche di utilizzo</string>
+  <string name="enable_data_profiling">Abilita reporting</string>
+  <string name="data_profiling_notification_ticker">Statistiche attivate</string>
+  <string name="data_profiling_notification_title">Statistiche di utilizzo</string>
+  <string name="data_profiling_notification_desc">Abilita o disabilita statistiche di utilizzo</string>
   <string name="silent_notifications">Notifiche silenziose</string>
   <string name="silent_notifications_summary">Disattiva suoneria/vibrazione per le notifiche</string>
   <string name="disable_background_service">Disabilita servizio in backround</string>
@@ -298,7 +301,6 @@
   <string name="permission_description_preferences">Leggi le impostazioni</string>
   <string name="permissions_request">Richiesta di permessi</string>
   <string name="permissions_request_message">L\'estensione sta richiedendo i permessi seguenti</string>
-  <string name="accept">Accetta</string>
   <string name="no_thanks">No, grazie</string>
   <string name="revoke_permissions">Revoca permessi</string>
   <string name="fast_scroll_thumb">Scroll veloce</string>
@@ -314,7 +316,6 @@
   <string name="preload_wifi_only">Precarica solo se in Wi-Fi</string>
   <string name="disable_tab_swipe">Disabilita swipe delle tab</string>
   <string name="sign_in_method_introduction_title">Come funziona?</string>
-  <string name="sign_in_method_introduction">Molti clients come twicca aprono una finestra che richiede nome utente e password, per poi riportarti al client. Alcune volte questo può causare inconvenienti.\nTwittnuker usa dei passaggi semplificati per accedere, senza necessità di aprire il browser. Non preoccuparti per la password, Twittnuker non la salva, è sicuro al massimo!</string>
   <string name="edit_draft">Modifica bozza</string>
   <string name="profile_image">Immagine del profilo</string>
   <string name="my_profile_image">La mia immagine del profilo</string>
@@ -360,4 +361,5 @@
   <string name="add_to_list">Aggiungi alla lista</string>
   <string name="account_delete_confirm_title">Elimina account</string>
   <string name="account_delete_confirm_message">Questo account verrà eliminato da Twittnuker.</string>
+  <string name="accept">Accetta</string>
 </resources>

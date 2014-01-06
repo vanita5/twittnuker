@@ -33,14 +33,13 @@
 	<string name="error_occurred">An error occurred, please try again.</string>
 	<string name="error_already_logged_in">You are already logged in.</string>
 	<string name="no_account_selected">No account selected.</string>
-    <string name="empty_account_selection_disallowed">Please select at least one account.</string>
+	<string name="empty_account_selection_disallowed">Please select at least one account.</string>
 	<string name="error_unknown_error">Error: Unknown error, this is probably a bug.</string>
 	<string name="error_message">Error: <xliff:g id="message">%s</xliff:g></string>
 	<string name="error_message_with_action">Error while <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
 	<string name="error_message_rate_limit">Twitter\'s rate limit exceeded, please retry <xliff:g id="time">%s</xliff:g></string>
 	<string name="error_message_rate_limit_with_action">Twitter\'s rate limit exceeded while <xliff:g id="action">%1$s</xliff:g>, please retry <xliff:g id="time">%2$s</xliff:g></string>
 	<string name="select_account">Select account</string>
-	<string name="select_accounts">Select accounts</string>
 	<string name="username">Username</string>
 	<string name="password">Password</string>
 	<string name="label_tweetstore_provider">Twittnuker database provider</string>
@@ -69,7 +68,7 @@
 	<string name="open_source_license">Open source license</string>
 	<string name="api">API</string>
 	<string name="default_api_settings">Default API settings</string>
-    <string name="default_api_settings_summary">These settings only applies to new logged accounts</string>
+	<string name="default_api_settings_summary">These settings only applies to new logged accounts</string>
 	<string name="consumer_key">Consumer key</string>
 	<string name="consumer_secret">Consumer secret</string>
 	<string name="ignore_ssl_error">Ignore SSL Error</string>
@@ -187,7 +186,7 @@
 	<string name="type_to_compose">Type to compose</string>
 	<string name="users_lists">User\'s lists</string>
 	<string name="lists_following_user">Lists following this user</string>
-    <string name="lists_following_me">Lists following me</string>
+	<string name="lists_following_me">Lists following me</string>
 	<string name="item_3_minutes">3 minutes</string>
 	<string name="item_5_minutes">5 minutes</string>
 	<string name="item_10_minutes">10 minutes</string>
@@ -299,7 +298,6 @@
 	<string name="both">Both</string>
 	<string name="browser_sign_in">Browser sign in</string>
 	<string name="stop_auto_refresh_when_battery_low">Stop auto refresh when battery is low</string>
-    <string name="stop_auto_refresh_when_battery_low_summary">Disables auto refresh on low battery</string>
     <string name="notification_status">New tweet by <xliff:g id="user">%s</xliff:g></string>
 	<string name="notification_status_multiple">New Tweet by <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="count">%2$d</xliff:g> others</string>
 	<string name="notification_mention"><xliff:g id="user">%s</xliff:g> mentioned you.</string>
@@ -334,15 +332,9 @@
 	<string name="action_unsubscribing_from_list">unsubscribing from list</string>
 	<string name="action_saving_search">saving search</string>
 	<string name="action_deleting_search">deleting search</string>
-    <string name="action_accepting_follow_request">accepting follow request</string>
-    <string name="action_denying_follow_request">denying follow request</string>
+	<string name="action_accepting_follow_request">accepting follow request</string>
+	<string name="action_denying_follow_request">denying follow request</string>
 	<string name="status_is_duplicate">Your tweet is a duplicate.</string>
-	<string name="data_profiling_summary">Twittnuker took part in a research on predicting user\'s social behavior to pre-caching content started by students in UC Davis.\n\nHere are the data we wanted to collect and why:\nCollected data:\n1. User\'s twitter ID\n2. User\'s home timeline (prediction based on user\'s interest and social interaction)\n3. User\'s click on a tweet (prediction based on user\'s interest and social interaction)\n4. Coarse location (which is good predictor when user will access twitter)\n\nTwittnuker will upload collected data only when Wifi available and your device connected to charger, so It will not cost you extra bandwidth fee or drain your battery power.</string>
-	<string name="data_profiling">Usage Statistics</string>
-	<string name="enable_data_profiling">Enable Reporting</string>
-	<string name="data_profiling_notification_ticker">Statistics Opted-In</string>
-	<string name="data_profiling_notification_title">Usage Statistics</string>
-	<string name="data_profiling_notification_desc">Enable or Disable Usage Statistics</string>
 	<string name="silent_notifications">Silent notifications</string>
 	<string name="silent_notifications_summary">Disable ringtone/vibrate for notifications</string>
 	<string name="disable_background_service">Disable background service</string>
@@ -372,7 +364,7 @@
 	<string name="permission_description_preferences">Read settings</string>
 	<string name="permissions_request">Permissions request</string>
 	<string name="permissions_request_message">Extension is requesting following permissions</string>
-    <string name="accept_permission_request">Accept</string>
+	<string name="accept_permission_request">Accept</string>
 	<string name="no_thanks">No, thanks</string>
 	<string name="revoke_permissions">Revoke permissions</string>
 	<string name="fast_scroll_thumb">Fast scroll thumb</string>
@@ -415,7 +407,6 @@
 	<string name="search_name_deleted">Search \"<xliff:g id="name">%s</xliff:g>\" deleted.</string>
 	<string name="import_from">Import from…</string>
 	<string name="link_to_quoted_status">Link to quoted tweet</string>
-	<string name="link_to_quoted_status_summary">Adds a link to the original Tweet on quotes</string>
 	<string name="followed_user">Followed <xliff:g id="user">%s</xliff:g>.</string>
 	<string name="sent_follow_request_to_user">Sent follow request to <xliff:g id="user">%s</xliff:g>.</string>
 	<string name="unfollowed_user">Unfollowed <xliff:g id="user">%s</xliff:g>.</string>
@@ -482,12 +473,12 @@
 	<string name="users_statuses">User\'s tweets</string>
 	<string name="card_animation">Card animation</string>
 	<string name="name_first">Display name first</string>
-    <string name="next">Next</string>
+	<string name="next">Next</string>
 	<string name="settings_wizard">Settings wizard</string>
 	<string name="wizard_page_welcome_title">Welcome</string>
 	<string name="wizard_page_welcome_text">Thanks for choosing Twittnuker.\nWould you like to config it now?</string>
 	<string name="wizard_page_welcome_yes">Yes</string>
-    <string name="wizard_page_welcome_not_now">Not now</string>
+	<string name="wizard_page_welcome_not_now">Not now</string>
 	<string name="wizard_page_welcome_import_settings">Import settings</string>
 	<string name="wizard_page_theme_text">Pick a theme you like.</string>
 	<string name="wizard_page_tabs_text">Add some tabs to Twittnuker.\nKeep track of people or things you care about.</string>
@@ -516,16 +507,12 @@
 	<string name="report_user">Report <xliff:g id="name">%s</xliff:g></string>
 	<string name="report_user_confirm_message">Report <xliff:g id="name">%s</xliff:g> for spam? You\'ll also block this user.</string>
 	<string name="twidere_test">Twittnuker test</string>
-	<string name="donate_twidere_via_paypal">Donate Twidere via PayPal</string>
-	<string name="donate_twidere_via_paypal_summary">Donate to the original Twidere Project via PayPal</string>
 	<string name="pay_via_paypal">Pay via PayPal directly</string>
 	<string name="pay_via_paypal_summary">When you see &quot;This recipient is not eligible to receive funds&quot;</string>
 	<string name="donate_via_alipay">Donate via Alipay</string>
 	<string name="staggered_home_timeline">Staggered Home Timeline</string>
 	<string name="unread_count">Unread count</string>
-	<string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
 	<string name="developed_by">Developed by</string>
-	<string name="twidere_developed_by">Based on Twidere by</string>
 	<string name="project_account">Project account</string>
 	<string name="donators">Donators</string>
 	<string name="translators">Translators</string>
@@ -552,7 +539,7 @@
 	<string name="wizard_hint_compose_select_account">Click this icon to select account when writing a tweet.</string>
 	<string name="wizard_hint_quote_format">Set your favorite quote format in &quot;Settings&quot; - &quot;Content &amp; Storage&quot;</string>
 	<string name="wizard_hint_filters">You can hide unwanted tweet from timeline and notifications by using &quot;Filters&quot;.</string>
-    <string name="view_replies">View Replies</string>
+	<string name="view_replies">View Replies</string>
 	<string name="compact_cards">Compact cards</string>
 	<string name="compact_cards_summary">Display more cards on screen</string>
 	<string name="dashclock_home_unread_count_name">Twittnuker home unread count</string>
@@ -577,23 +564,10 @@
 	<string name="sending_direct_message">Sending direct message</string>
 	<string name="tab_display_option">Tab display option</string>
 	<string name="livewp_daydream_enabled_message">Here\'s a little present for you, find it in your system settings :)</string>
-    <string name="multi_select">Multi select</string>
-    <string name="long_click_to_open_menu">Long click to open menu</string>
-    <string name="swipe_back">Swipe to close</string>
-    <string name="center">Center</string>
-	<string name="contact">Contact</string>
-	<string name="mail">Mail</string>
-	<string name="mail_summary">Send mail to twittnuker@vanita5.de to report bugs or request features</string>
-	<string name="streaming">Streaming</string>
-	<string name="stream_enabled">Enable Streaming</string>
-	<string name="stream_enabled_summary">Stream Timeline when connected to a WiFi network</string>
-	<string name="stream_notification">Streaming Notification</string>
-	<string name="stream_notification_summary">Shows a static notification when connected to the stream</string>
-	<string name="streaming_service_running">Streaming...</string>
-	<string name="request_permission">Permission request to access Twittnuker</string>
-	<string name="stream_on_mobile">Mobile Streaming</string>
-	<string name="stream_on_mobile_summary">Stream on mobile network. This is NOT recommended!</string>	
-	<string name="love">Love</string>
+	<string name="center">Center</string>
+	<string name="multi_select">Multi select</string>
+	<string name="long_click_to_open_menu">Long click to open menu</string>
+	<string name="swipe_back">Swipe to close</string>
     <string name="tab_display_option_icon">Icon</string>
     <string name="tab_display_option_label">Label</string>
     <string name="tab_display_option_icon_and_label">Icon and label</string>
@@ -613,4 +587,28 @@
     <string name="nicknames">Nicknames</string>
     <string name="user_colors">User colors</string>
     <string name="import_export">Import/Export</string>
+
+    <!-- Twittnuker -->
+    <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
+    <string name="link_to_quoted_status_summary">Adds a link to the original Tweet on quotes</string>
+    <string name="stop_auto_refresh_when_battery_low_summary">Disables auto refresh on low battery</string>
+
+    <string name="donate_twidere_via_paypal">Donate Twidere via PayPal</string>
+    <string name="donate_twidere_via_paypal_summary">Donate to the original Twidere Project via PayPal</string>
+
+    <string name="contact">Contact</string>
+    <string name="mail">Mail</string>
+    <string name="mail_summary">Send mail to twittnuker@vanita5.de to report bugs or request features</string>
+    <string name="twidere_developed_by">Based on Twidere by</string>
+
+    <string name="streaming">Streaming</string>
+    <string name="stream_enabled">Enable Streaming</string>
+    <string name="stream_enabled_summary">Stream Timeline when connected to a WiFi network</string>
+    <string name="stream_notification">Streaming Notification</string>
+    <string name="stream_notification_summary">Shows a static notification when connected to the stream</string>
+    <string name="streaming_service_running">Streaming...</string><string name="stream_on_mobile">Mobile Streaming</string>
+    <string name="stream_on_mobile_summary">Stream on mobile network. This is NOT recommended!</string>
+    <string name="request_permission">Permission request to access Twittnuker</string>
+
+    <string name="love">Love</string>
 </resources>

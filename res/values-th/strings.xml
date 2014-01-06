@@ -146,13 +146,10 @@
   <string name="auto_refresh">โหลดใหม่อัตโนมัติ</string>
   <string name="refresh_interval">ความถี่การโหลด</string>
   <string name="content_to_refresh">เนื้อหาที่จะโหลดใหม่</string>
-  <string name="content_to_notify">เนื้อหาที่จะแจ้งเตือน</string>
   <string name="notifications_type">รูปแบบการแจ้งเตือน</string>
   <string name="sound">เสียง</string>
   <string name="vibration">การสั่น</string>
-  <string name="light">สว่าง</string>
   <string name="notifications">การแจ้งเตือน</string>
-  <string name="screen_name">ชื่อผู้ใช้</string>
   <string name="refresh_on_start">โหลดใหม่เมื่อเริ่ม</string>
   <string name="refresh_on_start_summary">โหลดไทม์ไลน์และเม็นชั่นเมื่อเริ่มทำงาน</string>
   <string name="list_timeline">ไทม์ไลน์ของรายการ</string>

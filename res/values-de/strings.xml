@@ -52,7 +52,6 @@
     <string name="unfavorite">Favorit löschen</string>
     <string name="reply">Antworten</string>
     <string name="share">Teilen</string>
-    <string name="share_via_twidere">Twittnuker</string>
     <string name="view_image">Bild</string>
     <string name="view_map">Karte</string>
     <string name="view_status">Tweet</string>
@@ -66,7 +65,6 @@
     <string name="open_source_license">Open Source Lizenz</string>
     <string name="api">API</string>
     <string name="default_api_settings">Standard API Einstellungen</string>
-    <string name="default_api_settings_summary">Diese Einstellungen gelten nur für neu eingeloggte Accounts</string>
     <string name="consumer_key">Benutzerschlüssel</string>
     <string name="consumer_secret">Benutzergeheimnis</string>
     <string name="ignore_ssl_error">Ignoriere SSL Fehler</string>
@@ -296,11 +294,10 @@
     <string name="both">Beide</string>
     <string name="browser_sign_in">Browseranmeldung</string>
     <string name="stop_auto_refresh_when_battery_low">Energiesparen</string>
-    <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
     <string name="notification_status">Neuer Tweet von <xliff:g id="user">%s</xliff:g></string>
     <string name="notification_status_multiple">Neuer Tweet von <xliff:g id="user">%1$s</xliff:g> und <xliff:g id="count">%2$d</xliff:g> weitere</string>
     <string name="notification_mention"><xliff:g id="user">%s</xliff:g> erwähnte dich.</string>
-    <string name="notification_mention_multiple"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="count">%2$d</xliff:g> andere erwähnten dich.</string>
+    <string name="notification_mention_multiple"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="count">%2$d</xliff:g> andere haben dich erwähnt.</string>
     <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> hat dir eine Direktnachricht geschickt.</string>
     <string name="notification_direct_message_multiple_messages"><xliff:g id="user">%1$s</xliff:g>  hat dir <xliff:g id="messages_count">%2$d</xliff:g> Direktnachrichten gesendet.</string>
     <string name="notification_direct_message_multiple_users"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="users_count">%2$d</xliff:g> andere haben dir <xliff:g id="messages_count">%3$d</xliff:g> Direktnachrichten gesendet.</string>
@@ -406,8 +403,7 @@
     <string name="search_name_deleted">Suche \"<xliff:g id="name">%s</xliff:g>\" gelöscht.</string>
     <string name="import_from">Importiere aus…</string>
     <string name="link_to_quoted_status">Zitierten Tweet verlinken</string>
-    <string name="link_to_quoted_status_summary">Fügt beim zitieren den Link zum originalen Tweet hinzu</string>
-    <string name="followed_user">Follow <xliff:g id="user">%s</xliff:g>.</string>
+    <string name="followed_user">Folge <xliff:g id="user">%s</xliff:g>.</string>
     <string name="sent_follow_request_to_user">Folgen Anfrage an <xliff:g id="user">%s</xliff:g> senden.</string>
     <string name="unfollowed_user">Entfolge <xliff:g id="user">%s</xliff:g>.</string>
     <string name="blocked_user"><xliff:g id="user">%s</xliff:g> blockiert.</string>
@@ -436,8 +432,8 @@
     <string name="original_status">Original-Tweet</string>
     <string name="compose_quit_action">Verhalten beim Abbruch</string>
     <string name="ask">Nachfragen</string>
-    <string name="no_close_after_status_updated">\"Neuer Tweet\" nach Senden offen lassen</string>
-    <string name="no_close_after_status_updated_summary"></string>
+    <string name="no_close_after_status_updated">Eingabemaske nach Senden offen lassen</string>
+    <string name="no_close_after_status_updated_summary">Das lässt die Eingabemaske nach dem Senden eines Tweets geöffnet</string>
     <string name="status_saved_to_draft">Tweet zu den Entwürfen hinzugefügt.</string>
     <string name="default_account">Standard</string>
     <string name="daily_statuses_count"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> Tweet(s) pro Tag)</string>
@@ -513,9 +509,7 @@
     <string name="donate_via_alipay">Mit Alipay spenden</string>
     <string name="staggered_home_timeline">Gestaffelte Timeline (Multi Column)</string>
     <string name="unread_count">Anzahl ungelesene</string>
-    <string name="unread_count_summary">Zeigt die Anzahl an ungelesenen Tweets oder Nachrichten im Tab an</string>
     <string name="developed_by">Entwickelt von</string>
-    <string name="twidere_developed_by">Basiert auf Twidere von</string>
     <string name="project_account">Project Account</string>
     <string name="donators">Spender</string>
     <string name="translators">Übersetzer</string>
@@ -528,7 +522,7 @@
     <string name="cards">Tweets</string>
     <string name="no_tab_hint">Kein Tab</string>
     <string name="delete_user"><xliff:g id="name">%s</xliff:g> löschen</string>
-    <string name="delete_users">Benutzer löschen</string>
+    <string name="delete_users">Benutzer entfernen</string>
     <string name="delete_user_confirm_message"><xliff:g id="name">%s</xliff:g> löschen? Das kann nicht rückgängig gemacht werden.</string>
     <string name="toggle">An/Aus</string>
     <string name="general">Allgemein</string>
@@ -568,6 +562,34 @@
     <string name="tab_display_option">Tab Anzeigeoptionen</string>
     <string name="livewp_daydream_enabled_message">Here\'s a little present for you, find it in your system settings :)</string>
     <string name="center">Mitte</string>
+    <string name="multi_select">Mehrfachauswahl</string>
+    <string name="long_click_to_open_menu">Langer Klick um das Menü zu öffnen</string>
+    <string name="swipe_back">Zum schließen wischen</string>
+    <string name="tab_display_option_icon">Symbol</string>
+    <string name="tab_display_option_label">Label</string>
+    <string name="tab_display_option_icon_and_label">Icon und Label</string>
+    <string name="highlight_and_underline">Hervorheben und unterstreichen</string>
+    <string name="twip_api_version_notice_message">TWIP kann keine Rest Bade URL bearbeiten, die nicht mit \"/1.1/\" endet.\n\nSie müssen evtl. \"/1.1/\" an die Rest Base URL anhängen, um Probleme beim hochladen von Bildern zu vermeiden.</string>
+    <string name="accept">Akzeptieren</string>
+    <string name="deny">Ablehnen</string>
+    <string name="import_settings">Einstellungen importieren</string>
+    <string name="export_settings">Einstellungen exportieren</string>
+    <string name="export_settings_type_dialog_title">Einstellungen exportieren…</string>
+    <string name="import_settings_type_dialog_title">Einstellungen importieren…</string>
+    <string name="nicknames">Nicknames</string>
+    <string name="user_colors">Benutzer-Farbschema</string>
+
+    #Twittnuker
+    <string name="default_api_settings_summary">Diese Einstellungen gelten nur für neu eingeloggte Accounts</string>
+    <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
+    <string name="unread_count_summary">Zeigt die Anzahl an ungelesenen Tweets oder Nachrichten im Tab an</string>
+    <string name="link_to_quoted_status_summary">Fügt beim zitieren den Link zum originalen Tweet hinzu</string>
+
+    <string name="twidere_developed_by">Basiert auf Twidere von</string>
+    <string name="back">Zurück</string>
+    <string name="theme_font_family">Theme Font Family</string>
+    <string name="translation_destination">Sprache zum Übersetzen</string>
+
     <string name="mail">Mail</string>
     <string name="mail_summary">Kontaktiere twittnuker@vanita5.de wegen Bugs und Feature Requests</string>
     <string name="streaming">Streaming</string>
@@ -578,25 +600,8 @@
     <string name="streaming_service_running">Streaming...</string>
     <string name="stream_on_mobile">Mobile Streaming</string>
     <string name="stream_on_mobile_summary">Über das Mobilfunknetz streamen. Das ist NICHT empfohlen!</string>
-    <string name="multi_select">Mehrfachauswahl</string>
-    <string name="long_click_to_open_menu">Langer Klick um das Menü zu öffnen</string>
-    <string name="back">Zurück</string>
-    <string name="theme_font_family">Theme Font Family</string>
-    <string name="translation_destination">Sprache zum Übersetzen</string>
-    <string name="swipe_back">Zum schließen wischen</string>
-    <string name="tab_display_option_icon">Symbol</string>
-    <string name="tab_display_option_label">Label</string>
-    <string name="tab_display_option_icon_and_label">Icon und Label</string>
-    <string name="highlight_and_underline">Hervorheben und unterstreichen</string>
-    <string name="twip_api_version_notice_message">TWIP kann keine Rest Bade URL bearbeiten, die nicht mit \"/1.1/\" endet.\n\nSie müssen evtl. \"/1.1/\" an die Rest Base URL anhängen, um Probleme beim hochladen von Bildern zu vermeiden.</string>
-    <string name="accept">Akzeptieren</string>
-    <string name="deny">Deny</string>
+
     <string name="accepted_users_follow_request"><xliff:g id="user">%s</xliff:g>\'s Folgeanfrage angenommen.</string>
     <string name="denied_users_follow_request"><xliff:g id="user">%s</xliff:g>\'s Folgeanfrage abgelehnt.</string>
-    <string name="import_settings">Import Settings</string>
-    <string name="export_settings">Export Settings</string>
-    <string name="export_settings_type_dialog_title">Export Settings…</string>
-    <string name="import_settings_type_dialog_title">Import Settings…</string>
-    <string name="nicknames">Nicknames</string>
-    <string name="user_colors">Benutzer-Farbschema</string>
+
 </resources>
