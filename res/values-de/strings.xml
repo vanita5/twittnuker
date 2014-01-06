@@ -228,7 +228,7 @@
     <string name="content_and_storage">Inhalt &amp; Speicher</string>
     <string name="image_uploader">Bilderdienst</string>
     <string name="image_uploader_default">Standard (Twitter)</string>
-    <string name="home_refresh">Home Timeline aktualisieren</string>
+    <string name="home_refresh">Zu aktualisierende Timelines</string>
     <string name="error_message_image_upload_failed">Bild-Upload schlug fehl.</string>
     <string name="error_message_image_uploader_not_found">Bilderdienst nicht gefunden, möglicherweise wurde er deinstalliert.</string>
     <string name="image_upload_format">Tweet-Format mit Bild</string>
@@ -370,10 +370,10 @@
     <string name="phishing_link_warning_summary">Warnung beim Öffnen eines möglichen Phishing Links in Direktnachrichten.</string>
     <string name="phishing_link_warning_message_1">Du öffnest gerade einen Link in einer Direktnachricht, der dich möglicherweise zu einer Phishing Seite leiten könnte.\n\nÜberprüfe die Webadresse zweimal, bevor du persönliche Daten eingibst.</string>
     <string name="phishing_link_warning_message_2">Willst du wirklich fortfahren?</string>
-    <string name="image_preload_options">Bildvorabladen Optionen</string>
+    <string name="image_preload_options">Bilder vorladen</string>
     <string name="profile_images">Profil Bild</string>
     <string name="preview_images">Vorschaubilder</string>
-    <string name="preload_wifi_only">Vorausladen nur mit WLAN</string>
+    <string name="preload_wifi_only">Vorladen nur mit WLAN</string>
     <string name="disable_tab_swipe">Deaktiviere wischen für Reiter</string>
     <string name="sign_in_method_introduction_title">Wie funktioniert das?</string>
     <string name="sign_in_method_introduction">Die meisten Anwendungen öffnen einen externen Browser, um dort nach Benutzernamen und Passwort zu fragen. Dies ist manchmal sehr umständlich.\n\nTwittnuker öffnet keinen externen Browser, sondern verwendet einfacherere Methoden, um sich anzumelden. Twidere speichert niemals das Passwort, es ist daher völlig sicher!</string>
@@ -432,7 +432,7 @@
     <string name="original_status">Original-Tweet</string>
     <string name="compose_quit_action">Verhalten beim Abbruch</string>
     <string name="ask">Nachfragen</string>
-    <string name="no_close_after_status_updated">Eingabemaske nach Senden offen lassen</string>
+    <string name="no_close_after_status_updated">Eingabemaske offen lassen</string>
     <string name="no_close_after_status_updated_summary">Das lässt die Eingabemaske nach dem Senden eines Tweets geöffnet</string>
     <string name="status_saved_to_draft">Tweet zu den Entwürfen hinzugefügt.</string>
     <string name="default_account">Standard</string>
@@ -462,7 +462,7 @@
     <string name="nickname_only_summary">Ersetze Username mit Nickname wenn verfügbar</string>
     <string name="input_text">Text eingeben</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
-    <string name="lists_following_user_with_name">Folgen <xliff:g id="name">%s</xliff:g></string>
+    <string name="lists_following_user_with_name">Listen mit <xliff:g id="name">%s</xliff:g></string>
     <string name="highlight">Hervorheben</string>
     <string name="underline">Unterstreichen</string>
     <string name="link_highlight_option">Link hervorheben</string>
@@ -510,7 +510,7 @@
     <string name="staggered_home_timeline">Gestaffelte Timeline (Multi Column)</string>
     <string name="unread_count">Anzahl ungelesene</string>
     <string name="developed_by">Entwickelt von</string>
-    <string name="project_account">Project Account</string>
+    <string name="project_account">Projekt Account</string>
     <string name="donators">Spender</string>
     <string name="translators">Übersetzer</string>
     <string name="translate">Übersetzen</string>
