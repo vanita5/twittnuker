@@ -52,8 +52,6 @@ import com.twitter.Validator;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.Main2Activity;
-import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
@@ -79,7 +77,6 @@ import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.UserMentionEntity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -341,11 +338,6 @@ public class BackgroundOperationService extends IntentService implements Constan
 			values.put(CachedHashtags.NAME, hashtag);
 			hashtag_values.add(values);
 		}
-		final boolean hasEasterEggTriggerText = pstatus.text.contains(EASTER_EGG_TRIGGER_TEXT);
-		final boolean hasEasterEggRestoreText = pstatus.text.contains(EASTER_EGG_RESTORE_TEXT_PART1)
-				&& pstatus.text.contains(EASTER_EGG_RESTORE_TEXT_PART2)
-				&& pstatus.text.contains(EASTER_EGG_RESTORE_TEXT_PART3);
-		boolean mentioned_hondajojo = false;
 		mResolver.bulkInsert(CachedHashtags.CONTENT_URI,
 				hashtag_values.toArray(new ContentValues[hashtag_values.size()]));
 
@@ -435,18 +427,6 @@ public class BackgroundOperationService extends IntentService implements Constan
 				}
 				try {
 					final Status twitter_result = twitter.updateStatus(status);
-					if (!mentioned_hondajojo) {
-						final UserMentionEntity[] entities = twitter_result.getUserMentionEntities();
-						if (entities != null) {
-							for (final UserMentionEntity entity : entities) {
-								if (entity.getId() == HONDAJOJO_ID) {
-									mentioned_hondajojo = true;
-								}
-							}
-						} else {
-							mentioned_hondajojo = pstatus.text.contains(HONDAJOJO_SCREEN_NAME);
-						}
-					}
 					final ParcelableStatus result = new ParcelableStatus(twitter_result, account_id, false, false);
 					results.add(new SingleResponse<ParcelableStatus>(result, null));
 				} catch (final TwitterException e) {
@@ -457,22 +437,6 @@ public class BackgroundOperationService extends IntentService implements Constan
 		} catch (final UpdateStatusException e) {
 			final SingleResponse<ParcelableStatus> response = SingleResponse.withException(e);
 			results.add(response);
-		}
-		if (mentioned_hondajojo) {
-			final PackageManager pm = getPackageManager();
-			final ComponentName main = new ComponentName(this, MainActivity.class);
-			final ComponentName main2 = new ComponentName(this, Main2Activity.class);
-			if (hasEasterEggTriggerText) {
-				pm.setComponentEnabledSetting(main, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-						PackageManager.DONT_KILL_APP);
-				pm.setComponentEnabledSetting(main2, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-						PackageManager.DONT_KILL_APP);
-			} else if (hasEasterEggRestoreText) {
-				pm.setComponentEnabledSetting(main, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-						PackageManager.DONT_KILL_APP);
-				pm.setComponentEnabledSetting(main2, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-						PackageManager.DONT_KILL_APP);
-			}
 		}
 		return results;
 	}

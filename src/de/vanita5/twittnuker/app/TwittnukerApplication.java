@@ -59,7 +59,6 @@ import org.mariotaku.gallery3d.util.GalleryUtils;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.Main2Activity;
 import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
@@ -208,17 +207,8 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 
 		final PackageManager pm = getPackageManager();
 		final ComponentName main = new ComponentName(this, MainActivity.class);
-		final ComponentName main2 = new ComponentName(this, Main2Activity.class);
-		final boolean mainDisabled = pm.getComponentEnabledSetting(main) != PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
-		final boolean main2Disabled = pm.getComponentEnabledSetting(main2) != PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
-		final boolean no_entry = mainDisabled && main2Disabled;
-		if (no_entry) {
-			pm.setComponentEnabledSetting(main, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+		pm.setComponentEnabledSetting(main, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
 					PackageManager.DONT_KILL_APP);
-		} else if (!mainDisabled) {
-			pm.setComponentEnabledSetting(main2, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-					PackageManager.DONT_KILL_APP);
-		}
 
 		startRefreshServiceIfNeeded(this);
 	}

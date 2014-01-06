@@ -149,12 +149,12 @@ public interface Constants extends TwittnukerConstants {
 	public static final String TWIDERE_PREVIEW_TEXT_HTML = "Twittnuker is an open source twitter client for Android, see <a href='https://github.com/vanita5/twittnuker'>https://github.com/vanita5/twittnuker<a/>";
 	public static final String TWIDERE_PREVIEW_SOURCE = "Twittnuker";
 
-	public static final int HONDAJOJO_ID = 514378421;
-	public static final String HONDAJOJO_SCREEN_NAME = "@HondaJOJO";
-	public static final String EASTER_EGG_TRIGGER_TEXT = "\u718A\u5B69\u5B50";
-	public static final String EASTER_EGG_RESTORE_TEXT_PART1 = "\u5927\u738B";
-	public static final String EASTER_EGG_RESTORE_TEXT_PART2 = "\u5C0F\u7684";
-	public static final String EASTER_EGG_RESTORE_TEXT_PART3 = "\u77E5\u9519";
+//	public static final int HONDAJOJO_ID = 514378421;
+//	public static final String HONDAJOJO_SCREEN_NAME = "@HondaJOJO";
+//	public static final String EASTER_EGG_TRIGGER_TEXT = "\u718A\u5B69\u5B50";
+//	public static final String EASTER_EGG_RESTORE_TEXT_PART1 = "\u5927\u738B";
+//	public static final String EASTER_EGG_RESTORE_TEXT_PART2 = "\u5C0F\u7684";
+//	public static final String EASTER_EGG_RESTORE_TEXT_PART3 = "\u77E5\u9519";
 
 	public static final float DEFAULT_PULL_TO_REFRESH_SCROLL_DISTANCE = 0.3f;
 
