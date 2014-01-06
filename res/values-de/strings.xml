@@ -485,7 +485,7 @@
     <string name="wizard_page_finished_text">Twittnuker ist jetzt fertig eingerichtet.</string>
     <string name="invalid_tab">Ungültiger Tab</string>
     <string name="send_crash_report">Absturzbericht senden</string>
-    <string name="add_to_filter">Zum Filter hinzufügen</string>
+    <string name="add_to_filter">Filtern</string>
     <string name="user_filter_name">Benutzer: <xliff:g id="name">%s</xliff:g></string>
     <string name="keyword_filter_name">Keyword: <xliff:g id="name">%s</xliff:g></string>
     <string name="source_filter_name">Quelle: <xliff:g id="name">%s</xliff:g></string>
