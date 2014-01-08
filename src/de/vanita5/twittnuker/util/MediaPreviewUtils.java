@@ -58,6 +58,7 @@ public class MediaPreviewUtils {
 	private static final String STRING_PATTERN_IMGUR_DOMAIN = "imgur\\.com|i\\.imgur\\.com";
 	private static final String STRING_PATTERN_PHOTOZOU_DOMAIN = "photozou\\.jp";
 	private static final String STRING_PATTERN_GOOGLE_IMAGES_DOMAIN = "(lh|gp|s)(\\d+)?\\.(ggpht|googleusercontent)\\.com";
+    private static final String STRING_PATTERN_PUUSH = "puu\\.sh";
 
 	private static final String STRING_PATTERN_IMAGES_NO_SCHEME = "[^:\\/\\/].+?\\." + AVAILABLE_IMAGE_SHUFFIX;
 	private static final String STRING_PATTERN_TWITTER_IMAGES_NO_SCHEME = STRING_PATTERN_TWITTER_IMAGES_DOMAIN
@@ -86,6 +87,8 @@ public class MediaPreviewUtils {
 	private static final String STRING_PATTERN_GOOGLE_PROXY_IMAGES_NO_SCHEME = "("
 			+ STRING_PATTERN_GOOGLE_IMAGES_DOMAIN + ")" + "\\/proxy\\/([\\w\\d\\-\\_]+)="
 			+ GOOGLE_IMAGES_AVAILABLE_SIZES;
+    private static final String STRING_PATTERN_PUUSH_NO_SCHEME = "(" + STRING_PATTERN_PUUSH + ")"
+            + "\\/([\\d\\w]+)\\/?(\\." + AVAILABLE_IMAGE_SHUFFIX + ")?";
 
 	private static final String STRING_PATTERN_IMAGES = AVAILABLE_URL_SCHEME_PREFIX + STRING_PATTERN_IMAGES_NO_SCHEME;
 	private static final String STRING_PATTERN_TWITTER_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
@@ -109,6 +112,8 @@ public class MediaPreviewUtils {
 			+ STRING_PATTERN_GOOGLE_IMAGES_NO_SCHEME;
 	private static final String STRING_PATTERN_GOOGLE_PROXY_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
 			+ STRING_PATTERN_GOOGLE_PROXY_IMAGES_NO_SCHEME;
+    private static final String STRING_PATTERN_PUUSH_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
+            + STRING_PATTERN_PUUSH_NO_SCHEME;
 
 	public static final Pattern PATTERN_ALL_AVAILABLE_IMAGES = Pattern.compile(AVAILABLE_URL_SCHEME_PREFIX + "("
 			+ STRING_PATTERN_IMAGES_NO_SCHEME + "|" + STRING_PATTERN_TWITTER_IMAGES_NO_SCHEME + "|"
@@ -116,6 +121,7 @@ public class MediaPreviewUtils {
 			+ STRING_PATTERN_SINA_WEIBO_IMAGES_NO_SCHEME + "|" + STRING_PATTERN_LOCKERZ_NO_SCHEME + "|"
 			+ STRING_PATTERN_PLIXI_NO_SCHEME + "|" + STRING_PATTERN_TWITPIC_NO_SCHEME + "|"
 			+ STRING_PATTERN_IMGLY_NO_SCHEME + "|" + STRING_PATTERN_YFROG_NO_SCHEME + "|"
+            + STRING_PATTERN_PUUSH_NO_SCHEME + "|"
 			+ STRING_PATTERN_TWITGOO_NO_SCHEME + "|" + STRING_PATTERN_MOBYPICTURE_NO_SCHEME + "|"
 			+ STRING_PATTERN_IMGUR_NO_SCHEME + "|" + STRING_PATTERN_PHOTOZOU_NO_SCHEME + ")", Pattern.CASE_INSENSITIVE);
 
@@ -149,6 +155,9 @@ public class MediaPreviewUtils {
 	public static final Pattern PATTERN_YFROG = Pattern.compile(STRING_PATTERN_YFROG, Pattern.CASE_INSENSITIVE);
 	public static final int YFROG_GROUP_ID = 2;
 
+    public static final Pattern PATTERN_PUUSH = Pattern.compile(STRING_PATTERN_PUUSH_IMAGES, Pattern.CASE_INSENSITIVE);
+    public static final int PUUSH_GROUP_ID = 3;
+
 	public static final Pattern PATTERN_TWITGOO = Pattern.compile(STRING_PATTERN_TWITGOO, Pattern.CASE_INSENSITIVE);
 	public static final int TWITGOO_GROUP_ID = 2;
 
@@ -175,7 +184,7 @@ public class MediaPreviewUtils {
 	private static final Pattern[] SUPPORTED_PATTERNS = { PATTERN_TWITTER_IMAGES, PATTERN_INSTAGRAM,
 			PATTERN_GOOGLE_IMAGES, PATTERN_GOOGLE_PROXY_IMAGES, PATTERN_SINA_WEIBO_IMAGES, PATTERN_TWITPIC,
 			PATTERN_IMGUR, PATTERN_IMGLY, PATTERN_YFROG, PATTERN_LOCKERZ, PATTERN_PLIXI, PATTERN_TWITGOO,
-			PATTERN_MOBYPICTURE, PATTERN_PHOTOZOU };
+			PATTERN_MOBYPICTURE, PATTERN_PHOTOZOU, PATTERN_PUUSH };
 
 	public static PreviewMedia getAllAvailableImage(final String link, final boolean use_full) {
 		if (link == null) return null;
@@ -212,6 +221,8 @@ public class MediaPreviewUtils {
 		if (m.matches()) return getMobyPictureImage(matcherGroup(m, MOBYPICTURE_GROUP_ID), link, use_full);
 		m = PATTERN_PHOTOZOU.matcher(link);
 		if (m.matches()) return getPhotozouImage(matcherGroup(m, PHOTOZOU_GROUP_ID), link, use_full);
+        m = PATTERN_PUUSH.matcher(link);
+        if (m.matches()) return getPuushImage(matcherGroup(m, PUUSH_GROUP_ID), link);
 		return null;
 	}
 
@@ -361,6 +372,11 @@ public class MediaPreviewUtils {
 		if (isEmpty(id)) return null;
 		final String preview = String.format("http://yfrog.com/%s:%s", id, use_full ? "medium" : "iphone");
 		return PreviewMedia.newImage(preview, orig);
-
 	}
+
+    private static PreviewMedia getPuushImage(final String id, final String orig) {
+        if (isEmpty(id)) return null;
+        final String preview = String.format("http://puu.sh/%s", id);
+        return PreviewMedia.newImage(preview, orig);
+    }
 }
