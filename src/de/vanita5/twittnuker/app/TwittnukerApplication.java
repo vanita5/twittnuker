@@ -80,8 +80,9 @@ import java.io.File;
 import java.util.Date;
 import java.util.Locale;
 
-@ReportsCrashes(formKey = "", sharedPreferencesMode = Context.MODE_PRIVATE,
-	sharedPreferencesName = Constants.SHARED_PREFERENCES_NAME)
+@ReportsCrashes(formUri = "http://www.bugsense.com/api/acra?api_key=741d7d6c",
+        formKey = "", sharedPreferencesMode = Context.MODE_PRIVATE,
+	    sharedPreferencesName = Constants.SHARED_PREFERENCES_NAME)
 public class TwittnukerApplication extends Application implements Constants, OnSharedPreferenceChangeListener {
 
 	private Handler mHandler;
