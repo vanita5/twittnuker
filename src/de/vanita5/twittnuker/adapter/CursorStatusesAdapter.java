@@ -109,12 +109,18 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 
 		if (!showGap) {
 
+            final TwidereLinkify linkify = getLinkify();
+
 			// Clear images in prder to prevent images in recycled view shown.
 			holder.profile_image.setImageDrawable(null);
 			holder.my_profile_image.setImageDrawable(null);
 			holder.image_preview.setImageDrawable(null);
+            linkify.setHasExtraMediaLink(false);
+            linkify.setCustomMediaUrl(null);
 
-			final TwidereLinkify linkify = getLinkify();
+            String customMediaLink = null;
+            boolean hasCustomMedia = false;
+
 			final boolean showAccountColor = isShowAccountColor();
 
 			final long accountId = cursor.getLong(mIndices.account_id);
@@ -169,6 +175,10 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 			} else {
 				holder.text.setText(text);
 			}
+            if (linkify.hasExtraMediaLink() && linkify.getCustomMediaUrl() != null) {
+                hasCustomMedia = true;
+                customMediaLink = linkify.getCustomMediaUrl();
+            }
 			holder.setUserType(isVerified, isProtected);
 			holder.setDisplayNameFirst(isDisplayNameFirst());
 			holder.setNicknameOnly(isNicknameOnly());
@@ -183,7 +193,7 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 				holder.screen_name.setMovementMethod(null);
 			}
 			holder.time.setTime(timestamp);
-			holder.setStatusType(!mFavoritesHighlightDisabled && isFavorite, hasLocation, hasMedia, possiblySensitive);
+			holder.setStatusType(!mFavoritesHighlightDisabled && isFavorite, hasLocation, hasMedia || hasCustomMedia, possiblySensitive);
 
 			holder.setIsReplyRetweet(isReply, isRetweet);
 			if (isRetweet) {
@@ -202,17 +212,20 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 				holder.profile_image.setVisibility(View.GONE);
 				holder.my_profile_image.setVisibility(View.GONE);
 			}
-            final boolean hasPreview = mDisplayImagePreview && hasMedia;
+            final boolean hasPreview = mDisplayImagePreview && (hasMedia || hasCustomMedia);
             holder.image_preview_container.setVisibility(hasPreview ? View.VISIBLE : View.GONE);
-            if (hasPreview && mediaLink != null) {
+            if (hasPreview && (mediaLink != null || customMediaLink != null)) {
 				if (possiblySensitive && !mDisplaySensitiveContents) {
 					holder.image_preview.setImageDrawable(null);
 					holder.image_preview.setBackgroundResource(R.drawable.image_preview_nsfw);
 					holder.image_preview_progress.setVisibility(View.GONE);
-				} else if (!mediaLink.equals(mImageLoadingHandler.getLoadingUri(holder.image_preview))) {
+				} else if (mediaLink != null && !mediaLink.equals(mImageLoadingHandler.getLoadingUri(holder.image_preview))) {
 					holder.image_preview.setBackgroundResource(0);
 					mImageLoader.displayPreviewImage(holder.image_preview, mediaLink, mImageLoadingHandler);
-				}
+				} else if (customMediaLink != null && !customMediaLink.equals(mImageLoadingHandler.getLoadingUri(holder.image_preview))) {
+                    holder.image_preview.setBackgroundResource(0);
+                    mImageLoader.displayPreviewImage(holder.image_preview, customMediaLink, mImageLoadingHandler);
+                }
 				holder.image_preview.setTag(position);
 			}
 		}

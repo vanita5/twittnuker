@@ -106,6 +106,10 @@ public class ParcelableStatus implements Parcelable, JSONParcelable, Comparable<
 			user_screen_name, in_reply_to_name, in_reply_to_screen_name, source, user_profile_image_url, media_link,
 			text_unescaped;
 
+    /*Variables for custom status media*/
+    private boolean hasCustomMedia;
+    private String customMediaUrl;
+
 	public final ParcelableLocation location;
 
 	public final ParcelableUserMention[] mentions;
@@ -434,4 +438,20 @@ public class ParcelableStatus implements Parcelable, JSONParcelable, Comparable<
 	private static long getTime(final Date date) {
 		return date != null ? date.getTime() : 0;
 	}
+
+    public boolean hasCustomMedia() {
+        return hasCustomMedia;
+    }
+
+    public void setHasCustomMedia(boolean hasCustomMedia) {
+        this.hasCustomMedia = hasCustomMedia;
+    }
+
+    public String getCustomMediaUrl() {
+        return customMediaUrl;
+    }
+
+    public void setCustomMediaUrl(String customMediaUrl) {
+        this.customMediaUrl = customMediaUrl;
+    }
 }

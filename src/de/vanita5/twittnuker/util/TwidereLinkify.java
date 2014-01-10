@@ -63,6 +63,10 @@ import java.util.regex.Pattern;
 
 public final class TwidereLinkify implements Constants {
 
+    //Set flag for media urls not recognized by Twitter
+    private boolean hasExtraMediaLink = false;
+    private String customMediaUrl;
+
 	public static final int LINK_TYPE_MENTION = 1;
 	public static final int LINK_TYPE_HASHTAG = 2;
 	public static final int LINK_TYPE_LINK_WITH_IMAGE_EXTENSION = 3;
@@ -289,6 +293,8 @@ public final class TwidereLinkify implements Constants {
 						applyLink(spec.url, spec.original, start, end, string, account_id,
 								LINK_TYPE_LINK_WITH_IMAGE_EXTENSION, sensitive, listener, highlightOption,
 								highlightColor);
+                        setHasExtraMediaLink(true);
+                        setCustomMediaUrl(span.getURL());
 					}
 				}
 				break;
@@ -381,4 +387,20 @@ public final class TwidereLinkify implements Constants {
 	public interface OnLinkClickListener {
 		public void onLinkClick(String link, String orig, long account_id, int type, boolean sensitive);
 	}
+
+    public boolean hasExtraMediaLink() {
+        return hasExtraMediaLink;
+    }
+
+    public void setHasExtraMediaLink(boolean hasExtraMediaLink) {
+        this.hasExtraMediaLink = hasExtraMediaLink;
+    }
+
+    public String getCustomMediaUrl() {
+        return customMediaUrl;
+    }
+
+    public void setCustomMediaUrl(String customMediaUrl) {
+        this.customMediaUrl = customMediaUrl;
+    }
 }

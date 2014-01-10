@@ -172,10 +172,12 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 			final int highlightOption = getLinkHighlightOption();
 			final boolean mShowAccountColor = isShowAccountColor();
 
-			// Clear images in prder to prevent images in recycled view shown.
+			// Clear images and custom preview url in order to prevent images in recycled view shown.
 			holder.profile_image.setImageDrawable(null);
 			holder.my_profile_image.setImageDrawable(null);
 			holder.image_preview.setImageDrawable(null);
+            linkify.setHasExtraMediaLink(false);
+            linkify.setCustomMediaUrl(null);
 
 			holder.setAccountColorEnabled(mShowAccountColor);
 
@@ -186,6 +188,10 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 			} else {
 				holder.text.setText(status.text_unescaped);
 			}
+            if (linkify.hasExtraMediaLink() && linkify.getCustomMediaUrl() != null) {
+                status.setHasCustomMedia(true);
+                status.setCustomMediaUrl(linkify.getCustomMediaUrl());
+            }
 
 			if (mShowAccountColor) {
 				holder.setAccountColor(getAccountColor(mContext, status.account_id));
@@ -217,7 +223,7 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 			}
 			holder.time.setTime(status.timestamp);
 			holder.setStatusType(!mFavoritesHighlightDisabled && status.is_favorite, isValidLocation(status.location),
-					status.has_media, status.is_possibly_sensitive);
+					status.has_media || status.hasCustomMedia(), status.is_possibly_sensitive);
 			holder.setIsReplyRetweet(status.in_reply_to_status_id > 0, status.is_retweet);
 			if (status.is_retweet) {
 				holder.setRetweetedBy(status.retweet_count, status.retweeted_by_id, status.retweeted_by_name,
@@ -234,17 +240,20 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 				holder.profile_image.setVisibility(View.GONE);
 				holder.my_profile_image.setVisibility(View.GONE);
 			}
-			final boolean hasPreview = mDisplayImagePreview && status.has_media && status.media_link != null;
+			final boolean hasPreview = mDisplayImagePreview && ((status.has_media && status.media_link != null) || status.hasCustomMedia());
 			holder.image_preview_container.setVisibility(hasPreview ? View.VISIBLE : View.GONE);
 			if (hasPreview) {
 				if (status.is_possibly_sensitive && !mDisplaySensitiveContents) {
 					holder.image_preview.setImageDrawable(null);
 					holder.image_preview.setBackgroundResource(R.drawable.image_preview_nsfw);
 					holder.image_preview_progress.setVisibility(View.GONE);
-				} else if (!status.media_link.equals(mImageLoadingHandler.getLoadingUri(holder.image_preview))) {
+				} else if (status.media_link != null && !status.media_link.equals(mImageLoadingHandler.getLoadingUri(holder.image_preview))) {
 					holder.image_preview.setBackgroundResource(0);
 					loader.displayPreviewImage(holder.image_preview, status.media_link, mImageLoadingHandler);
-				}
+				} else if (status.getCustomMediaUrl() != null && !status.getCustomMediaUrl().equals(mImageLoadingHandler.getLoadingUri(holder.image_preview))) {
+                    holder.image_preview.setBackgroundResource(0);
+                    loader.displayPreviewImage(holder.image_preview, status.getCustomMediaUrl(), mImageLoadingHandler);
+                }
 				holder.image_preview.setTag(position);
 			}
 		}
