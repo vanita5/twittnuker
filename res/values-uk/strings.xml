@@ -241,7 +241,6 @@
   <string name="error_message_status_too_long">Твіт надто довгий.</string>
   <string name="error_message_no_content">Нема вмісту</string>
   <string name="error_message_tweet_shorten_failed">Помилка скорочувача посилань.</string>
-  <string name="error_message_tweet_shortener_not_found">Скорочувач посилань не знайдено, можливо, він вилучений.</string>
   <string name="multimedia_contents">Мультимедійний матеріал</string>
   <string name="show_absolute_time">Показувати абсолютний час</string>
   <string name="show_absolute_time_summary">Показувати абсолютний час у твітах</string>

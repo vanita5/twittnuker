@@ -241,7 +241,6 @@
   <string name="error_message_status_too_long">Tweet te lang.</string>
   <string name="error_message_no_content">Geen inhoud</string>
   <string name="error_message_tweet_shorten_failed">Tweet inkorten mislukt.</string>
-  <string name="error_message_tweet_shortener_not_found">Tweet verkorter niet gevonden, misschien was het verwijderd.</string>
   <string name="multimedia_contents">Multimedia inhoud</string>
   <string name="show_absolute_time">Laat absolute tijd zien</string>
   <string name="show_absolute_time_summary">Laat absolute tijd in tweets zien</string>

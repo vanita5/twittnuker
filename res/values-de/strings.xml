@@ -238,7 +238,6 @@
     <string name="error_message_status_too_long">Der Tweet ist zu lang.</string>
     <string name="error_message_no_content">Kein Inhalt</string>
     <string name="error_message_tweet_shorten_failed">Tweet-Verkürzung schlug fehl.</string>
-    <string name="error_message_tweet_shortener_not_found">Tweet-Verkürzungsdienst nicht gefunden. Vielleicht wurde er deinstalliert.</string>
     <string name="multimedia_contents">Multimedia Inhalt</string>
     <string name="show_absolute_time">Zeit anzeigen</string>
     <string name="show_absolute_time_summary">Zeitpunkt der Veröffentlichung von Tweets anzeigen statt vergangener Zeitspanne</string>

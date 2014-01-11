@@ -241,7 +241,6 @@
   <string name="error_message_status_too_long">Tweet demasiado largo.</string>
   <string name="error_message_no_content">No hay contenido</string>
   <string name="error_message_tweet_shorten_failed">Error al acortar el tweet.</string>
-  <string name="error_message_tweet_shortener_not_found">El acortador de tweets no se ha encontrado, quizás se ha desinstalado.</string>
   <string name="multimedia_contents">Contenido multimedia</string>
   <string name="show_absolute_time">Mostrar tiempo absoluto</string>
   <string name="show_absolute_time_summary">Mostrar tiempo absoluto en los tuits</string>

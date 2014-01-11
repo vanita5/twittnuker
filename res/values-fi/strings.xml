@@ -241,7 +241,6 @@
   <string name="error_message_status_too_long">Twiitti on liian pitkä.</string>
   <string name="error_message_no_content">Ei sisältöä</string>
   <string name="error_message_tweet_shorten_failed">Twiitin lyhennys epäonnistui.</string>
-  <string name="error_message_tweet_shortener_not_found">Twiitinlyhentäjää ei ole. Se on mahdollisesti poistettu.</string>
   <string name="multimedia_contents">Multimediasisältö</string>
   <string name="show_absolute_time">Näytä absoluuttinen aika</string>
   <string name="show_absolute_time_summary">Näytä twiiteissä absoluuttinen aika</string>

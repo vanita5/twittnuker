@@ -241,7 +241,6 @@
   <string name="error_message_status_too_long">ツイートのテキストが長過ぎます。</string>
   <string name="error_message_no_content">コンテンツなし</string>
   <string name="error_message_tweet_shorten_failed">ツイートを短縮できません。</string>
-  <string name="error_message_tweet_shortener_not_found">ツイート短縮サービスが見つかりません。</string>
   <string name="multimedia_contents">マルティメディア・コンテンツ</string>
   <string name="show_absolute_time">絶対時間を表示</string>
   <string name="show_absolute_time_summary">ツイートの時間を絶対時間で表示します。</string>

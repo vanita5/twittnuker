@@ -45,7 +45,7 @@ public class TweetShortenerPreference extends DialogPreference implements Consta
 
 	private final PackageManager mPackageManager;
 
-	private TweetShortenerSpec[] mAvailableTweetShorteners;
+	private String[] mAvailableTweetShorteners;
 
 	public TweetShortenerPreference(final Context context) {
 		this(context, null);
@@ -64,9 +64,9 @@ public class TweetShortenerPreference extends DialogPreference implements Consta
 	public void onClick(final DialogInterface dialog, final int which) {
 		final SharedPreferences.Editor editor = getEditor();
 		if (editor == null) return;
-		final TweetShortenerSpec spec = mAvailableTweetShorteners[which];
+		final String spec = mAvailableTweetShorteners[which];
 		if (spec != null) {
-			editor.putString(KEY_TWEET_SHORTENER, spec.cls);
+			editor.putString(KEY_TWEET_SHORTENER, spec);
 			editor.commit();
 		}
 		dialog.dismiss();
@@ -78,15 +78,9 @@ public class TweetShortenerPreference extends DialogPreference implements Consta
 		mPreferences = getSharedPreferences();
 		if (mPreferences == null) return;
 		final String component = mPreferences.getString(KEY_TWEET_SHORTENER, null);
-		final ArrayList<TweetShortenerSpec> specs = new ArrayList<TweetShortenerSpec>();
-		specs.add(new TweetShortenerSpec(getContext().getString(R.string.tweet_shortener_default), null));
-		final Intent query_intent = new Intent(INTENT_ACTION_EXTENSION_SHORTEN_TWEET);
-		final List<ResolveInfo> result = mPackageManager.queryIntentServices(query_intent, 0);
-		for (final ResolveInfo info : result) {
-			specs.add(new TweetShortenerSpec(info.loadLabel(mPackageManager).toString(), info.serviceInfo.packageName
-					+ "/" + info.serviceInfo.name));
-		}
-		mAvailableTweetShorteners = specs.toArray(new TweetShortenerSpec[specs.size()]);
+		final ArrayList<String> specs = new ArrayList<String>();
+		specs.add(getContext().getString(R.string.tweet_shortener_default));
+		mAvailableTweetShorteners = specs.toArray(new String[specs.size()]);
 		builder.setSingleChoiceItems(mAvailableTweetShorteners, getIndex(component), TweetShortenerPreference.this);
 		builder.setNegativeButton(android.R.string.cancel, null);
 	}
@@ -96,39 +90,10 @@ public class TweetShortenerPreference extends DialogPreference implements Consta
 		if (cls == null) return 0;
 		final int count = mAvailableTweetShorteners.length;
 		for (int i = 0; i < count; i++) {
-			final TweetShortenerSpec spec = mAvailableTweetShorteners[i];
-			if (cls.equals(spec.cls)) return i;
+			final String spec = mAvailableTweetShorteners[i];
+			if (cls.equals(spec)) return i;
 		}
 		return -1;
-	}
-
-	static class TweetShortenerSpec implements CharSequence {
-		private final String name, cls;
-
-		TweetShortenerSpec(final String name, final String cls) {
-			this.name = name;
-			this.cls = cls;
-		}
-
-		@Override
-		public char charAt(final int index) {
-			return name.charAt(index);
-		}
-
-		@Override
-		public int length() {
-			return name.length();
-		}
-
-		@Override
-		public CharSequence subSequence(final int start, final int end) {
-			return name.subSequence(start, end);
-		}
-
-		@Override
-		public String toString() {
-			return name;
-		}
 	}
 
 }

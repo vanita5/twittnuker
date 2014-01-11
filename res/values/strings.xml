@@ -242,7 +242,7 @@
 	<string name="error_message_status_too_long">Tweet too long.</string>
 	<string name="error_message_no_content">No content</string>
 	<string name="error_message_tweet_shorten_failed">Tweet shorten failed.</string>
-	<string name="error_message_tweet_shortener_not_found">Tweet shortener not found, maybe it was uninstalled.</string>
+	<string name="error_message_tweet_shortener_not_found">Tweet shortener setting not found. This should never happen!</string>
 	<string name="multimedia_contents">Multimedia content</string>
 	<string name="show_absolute_time">Show absolute time</string>
 	<string name="show_absolute_time_summary">Show absolute time in tweets</string>

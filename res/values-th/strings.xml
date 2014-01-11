@@ -207,7 +207,6 @@
   <string name="tweet_shortener_default">ไม่มี (ยกเลิกการส่ง)</string>
   <string name="error_message_status_too_long">ทวีตยาวเกินไป</string>
   <string name="error_message_tweet_shorten_failed">การย่อทวีตล้มเหลว</string>
-  <string name="error_message_tweet_shortener_not_found">ไม่พบตัวย่อทวีต อาจจะถูกถอนการติดตั้งออกไปแล้ว</string>
   <string name="multimedia_contents">เนื้อหามัลติมีเดีย</string>
   <string name="show_absolute_time">แสดงเวลาจริง</string>
   <string name="show_absolute_time_summary">แสดงเวลาจริงในทวีต</string>

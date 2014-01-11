@@ -241,7 +241,6 @@
   <string name="error_message_status_too_long">Tweet muito longo.</string>
   <string name="error_message_no_content">Nenhum conteúdo</string>
   <string name="error_message_tweet_shorten_failed">Falha ao encurtar URL.</string>
-  <string name="error_message_tweet_shortener_not_found">Encurtador de URL não encontrado, talvez tenha sido desinstalado.</string>
   <string name="multimedia_contents">Conteúdo multimídia</string>
   <string name="show_absolute_time">Mostrar hora absoluta</string>
   <string name="show_absolute_time_summary">Mostrar hora real nos tweets</string>

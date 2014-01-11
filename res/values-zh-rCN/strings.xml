@@ -241,7 +241,6 @@
   <string name="error_message_status_too_long">推文太长</string>
   <string name="error_message_no_content">没有内容</string>
   <string name="error_message_tweet_shorten_failed">推文缩短失败</string>
-  <string name="error_message_tweet_shortener_not_found">未找到推文缩短扩展，它可能已经被删除</string>
   <string name="multimedia_contents">多媒体内容</string>
   <string name="show_absolute_time">显示绝对时间</string>
   <string name="show_absolute_time_summary">在推文等列表里显示绝对时间</string>

@@ -241,7 +241,6 @@
   <string name="error_message_status_too_long">Tweet çok uzun.</string>
   <string name="error_message_no_content">İçerik yok</string>
   <string name="error_message_tweet_shorten_failed">Tweet kısaltılamadı.</string>
-  <string name="error_message_tweet_shortener_not_found">Tweet kısaltıcı bulunamadı, belki kaldırılmıştır.</string>
   <string name="multimedia_contents">Multimedya içeriği</string>
   <string name="show_absolute_time">Tam saati göster</string>
   <string name="show_absolute_time_summary">Tweetlerdeki tam zamanı gösterir</string>

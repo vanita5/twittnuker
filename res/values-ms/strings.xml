@@ -28,7 +28,6 @@
   <string name="tweet_shortener_default">Tiada (batalkan penghantaran)</string>
   <string name="error_message_status_too_long">Tweet terlalu panjang.</string>
   <string name="error_message_tweet_shorten_failed">Singkatan tweet gagal.</string>
-  <string name="error_message_tweet_shortener_not_found">Penyingkat tweet tidak ditemui, mungkin telah dibuang.</string>
   <string name="show_absolute_time">Tunjukkan masa mutlak</string>
   <string name="show_absolute_time_summary">Tunjukkan masa mutlak di tweet</string>
   <string name="user_mentions">Sebutan pengguna</string>

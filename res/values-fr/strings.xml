@@ -241,7 +241,6 @@
   <string name="error_message_status_too_long">Tweet trop long.</string>
   <string name="error_message_no_content">Aucun contenu</string>
   <string name="error_message_tweet_shorten_failed">Le raccourcissement du tweet a échoué.</string>
-  <string name="error_message_tweet_shortener_not_found">Le raccourcisseur de tweet est introuvable, il a peut-être été désinstallé.</string>
   <string name="multimedia_contents">Contenu multimédia</string>
   <string name="show_absolute_time">Afficher le temps absolu</string>
   <string name="show_absolute_time_summary">Afficher le temps absolu dans les tweets</string>

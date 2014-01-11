@@ -238,7 +238,6 @@
   <string name="error_message_status_too_long">Твит слишком длинный.</string>
   <string name="error_message_no_content">Нет содержимого</string>
   <string name="error_message_tweet_shorten_failed">Не удалось укоротить твит.</string>
-  <string name="error_message_tweet_shortener_not_found">Сокращатель ссылок не найден, возможно он был удален.</string>
   <string name="multimedia_contents">Мультимедиа контент</string>
   <string name="show_absolute_time">Показывать абсолютное время</string>
   <string name="show_absolute_time_summary">Показывать абсолютное время в твитах</string>

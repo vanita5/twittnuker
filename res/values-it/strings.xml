@@ -213,7 +213,6 @@
   <string name="error_message_status_too_long">Tweet troppo lungo.</string>
   <string name="error_message_no_content">Nessun contenuto</string>
   <string name="error_message_tweet_shorten_failed">Abbreviazione del tweet non riuscita.</string>
-  <string name="error_message_tweet_shortener_not_found">Tweet shortener non trovato, forse è stato disinstallato.</string>
   <string name="multimedia_contents">Contenuti multimediali</string>
   <string name="show_absolute_time">Visualizza il tempo assoluto</string>
   <string name="show_absolute_time_summary">Visualizza il tempo assoluto nei tweets</string>

@@ -67,7 +67,6 @@ import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ImageUploaderInterface;
 import de.vanita5.twittnuker.util.ListUtils;
 import de.vanita5.twittnuker.util.MessagesManager;
-import de.vanita5.twittnuker.util.TweetShortenerInterface;
 import de.vanita5.twittnuker.util.TwitterErrorCodes;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream;
@@ -99,7 +98,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 	private MessagesManager mMessagesManager;
 
 	private ImageUploaderInterface mUploader;
-	private TweetShortenerInterface mShortener;
+	private String mShortener;
 
 	private boolean mUseUploader, mUseShortener;
 	private boolean mLargeProfileImage;
@@ -123,9 +122,10 @@ public class BackgroundOperationService extends IntentService implements Constan
 		final String uploader_component = mPreferences.getString(KEY_IMAGE_UPLOADER, null);
 		final String shortener_component = mPreferences.getString(KEY_TWEET_SHORTENER, null);
 		mUseUploader = !isEmpty(uploader_component);
-		mUseShortener = !isEmpty(shortener_component);
+//		mUseShortener = !isEmpty(shortener_component);
+		mUseShortener = false; //FIXME
 		mUploader = mUseUploader ? ImageUploaderInterface.getInstance(app, uploader_component) : null;
-		mShortener = mUseShortener ? TweetShortenerInterface.getInstance(app, shortener_component) : null;
+		mShortener = mUseShortener ? shortener_component : null;
 	}
 
 	@Override
@@ -347,7 +347,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 
 		try {
 			if (mUseUploader && mUploader == null) throw new ImageUploaderNotFoundException(this);
-			if (mUseShortener && mShortener == null) throw new TweetShortenerNotFoundException(this);
+			if (mUseShortener && mShortener == null) throw new TweetShortenerNotFoundException(this); //This should never happen
 
             final String imagePath = getImagePathFromUri(this, pstatus.media_uri);
             final File imageFile = imagePath != null ? new File(imagePath) : null;
@@ -370,16 +370,9 @@ public class BackgroundOperationService extends IntentService implements Constan
 
 			final boolean should_shorten = mValidator.getTweetLength(unshortened_content) > Validator.MAX_TWEET_LENGTH;
 			final String screen_name = getAccountScreenName(this, pstatus.account_ids[0]);
-			final String shortened_content;
-			try {
-				if (mShortener != null) {
-					mShortener.waitForService();
-				}
-				shortened_content = should_shorten && mUseShortener ? mShortener.shorten(unshortened_content,
-						screen_name, pstatus.in_reply_to_status_id) : null;
-			} catch (final Exception e) {
-				throw new TweetShortenException(this);
-			}
+//			final String shortened_content;
+			final String shortened_content = ""; //FIXME
+			//TODO Shortener logic
 
 			if (should_shorten) {
 				if (!mUseShortener)

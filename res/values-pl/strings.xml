@@ -235,7 +235,6 @@
   <string name="error_message_status_too_long">Ćwierk za długi.</string>
   <string name="error_message_no_content">Brak zawartości</string>
   <string name="error_message_tweet_shorten_failed">Skracanie ćwierka nie powiodło się.</string>
-  <string name="error_message_tweet_shortener_not_found">Skracacz ćwierków nie znaleziony, może jest odinstalowany.</string>
   <string name="multimedia_contents">Zawartość multimedialna</string>
   <string name="show_absolute_time">Pokazuj czas bezwględny</string>
   <string name="show_absolute_time_summary">Pokazuj czas bezwględny w ćwierkach</string>

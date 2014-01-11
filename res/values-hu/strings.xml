@@ -214,7 +214,6 @@
   <string name="tweet_shortener_default">Egyik sem (Küldés megszakítása)</string>
   <string name="error_message_status_too_long">Tweet túl hosszú.</string>
   <string name="error_message_tweet_shorten_failed">Tweet rövidítés sikertelen.</string>
-  <string name="error_message_tweet_shortener_not_found">Tweet rövidítő nem található, talán el lett távolítva.</string>
   <string name="user_mentions">Felhasználó említései</string>
   <string name="dual_pane_layout">Két paneles nézet</string>
   <string name="landscape">Fekvő</string>

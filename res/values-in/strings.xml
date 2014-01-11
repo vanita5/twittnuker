@@ -240,7 +240,6 @@
   <string name="error_message_status_too_long">Kicauan terlalu panjang.</string>
   <string name="error_message_no_content">Tidak ada konten</string>
   <string name="error_message_tweet_shorten_failed">Penyingkat kicauan gagal.</string>
-  <string name="error_message_tweet_shortener_not_found">Pemendek kicauan tidak ditemukan, mungkin tidak dipasang.</string>
   <string name="multimedia_contents">Isi multimedia</string>
   <string name="show_absolute_time">Tampilkan waktu absolut</string>
   <string name="show_absolute_time_summary">Tampilkan waktu absulut di tweet</string>

@@ -239,7 +239,6 @@
   <string name="error_message_status_too_long">Piulada massa llarga.</string>
   <string name="error_message_no_content">Sense contingut</string>
   <string name="error_message_tweet_shorten_failed">Ha fallat l\'escurçador de piulades.</string>
-  <string name="error_message_tweet_shortener_not_found">No s\'ha trobat l\'escurçador de piulades; potser s\'ha desinstal·lat.</string>
   <string name="multimedia_contents">Contingut multimèdia</string>
   <string name="show_absolute_time">Mostra l\'hora absoluta</string>
   <string name="show_absolute_time_summary">Mostra data i hora absolutes a les piulades</string>
