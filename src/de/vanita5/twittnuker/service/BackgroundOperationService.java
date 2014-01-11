@@ -344,9 +344,6 @@ public class BackgroundOperationService extends IntentService implements Constan
 		if (pstatus.account_ids.length == 0) return Collections.emptyList();
 
 		try {
-			if (mUseUploader && mUploader == null) throw new ImageUploaderNotFoundException(this); //This should never happen
-			if (mUseShortener && mShortener == null) throw new TweetShortenerNotFoundException(this);
-
             final String imagePath = getImagePathFromUri(this, pstatus.media_uri);
             final File imageFile = imagePath != null ? new File(imagePath) : null;
 
@@ -437,14 +434,6 @@ public class BackgroundOperationService extends IntentService implements Constan
 		return notification;
 	}
 
-	static class ImageUploaderNotFoundException extends UpdateStatusException {
-		private static final long serialVersionUID = 1041685850011544106L;
-
-		public ImageUploaderNotFoundException(final Context context) {
-			super(context, R.string.error_message_image_uploader_not_found);
-		}
-	}
-
 	static class ImageUploadException extends UpdateStatusException {
 		private static final long serialVersionUID = 8596614696393917525L;
 
@@ -458,14 +447,6 @@ public class BackgroundOperationService extends IntentService implements Constan
 
 		public StatusTooLongException(final Context context) {
 			super(context, R.string.error_message_status_too_long);
-		}
-	}
-
-	static class TweetShortenerNotFoundException extends UpdateStatusException {
-		private static final long serialVersionUID = -7262474256595304566L;
-
-		public TweetShortenerNotFoundException(final Context context) {
-			super(context, R.string.error_message_tweet_shortener_not_found);
 		}
 	}
 
