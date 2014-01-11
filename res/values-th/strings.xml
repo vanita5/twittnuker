@@ -200,7 +200,6 @@
   <string name="image_uploader_default">ปริยาย (ทวิตเตอร์)</string>
   <string name="home_refresh">โหลดใหม่ในหน้าหลัก</string>
   <string name="error_message_image_upload_failed">การอัพโหลดรูปผิดพลาด</string>
-  <string name="error_message_image_uploader_not_found">ไม่พบค่าโฮสต์เก็บภาพ  มันอาจจะถูกถอนการติดตั้งไปแล้ว</string>
   <string name="image_upload_format">รูปแบบทวีตพร้อมรูปภาพ</string>
   <string name="image_upload_format_summary">\"[LINK]\" = ลิงค์รูป\n\"[TEXT]\" = เนื้อหาทวีต\n(Extension เท่านั้น)</string>
   <string name="tweet_shortener">ตัวย่อทวีต</string>

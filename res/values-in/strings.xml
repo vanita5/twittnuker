@@ -232,7 +232,6 @@
   <string name="image_uploader_default">Standar (Twitter)</string>
   <string name="home_refresh">Segarkan pada timeline</string>
   <string name="error_message_image_upload_failed">Pengunggahan gambar gagal.</string>
-  <string name="error_message_image_uploader_not_found">Penggunggah gambar tidak ditemukan, mungkin belum terinstal.</string>
   <string name="image_upload_format">Tweet format dengan gambar</string>
   <string name="image_upload_format_summary">\"[LINK]\" = Tautan gambar\n\"[TEXT]\" = Isi tweet\n(Ekstensi saja)</string>
   <string name="tweet_shortener">Penyingkat tweet</string>

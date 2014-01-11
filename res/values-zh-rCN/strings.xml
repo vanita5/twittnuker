@@ -233,7 +233,6 @@
   <string name="image_uploader_default">默认（Twitter）</string>
   <string name="home_refresh">在主页时间线刷新</string>
   <string name="error_message_image_upload_failed">图像上传失败</string>
-  <string name="error_message_image_uploader_not_found">未找到图片上传扩展，它可能已经被卸载了</string>
   <string name="image_upload_format">上传图片的推文格式</string>
   <string name="image_upload_format_summary">\"[LINK]\" = 图像链接\n\"[TEXT]\" = 推文内容\n（仅第三方有效。）</string>
   <string name="tweet_shortener">推文缩短服务</string>

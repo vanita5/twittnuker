@@ -233,7 +233,6 @@
   <string name="image_uploader_default">Standaard (Twitter)</string>
   <string name="home_refresh">Vernieuw in thuis tijdlijn</string>
   <string name="error_message_image_upload_failed">Foto upload mislukt.</string>
-  <string name="error_message_image_uploader_not_found">Foto uploader niet gevonden, misschien was het verwijderd.</string>
   <string name="image_upload_format">Tweet formaat met foto</string>
   <string name="image_upload_format_summary">\"[LINK]\" = Afbeelding link\n\"[TEXT]\" = Tweet inhoud\n(Alleen uitbreiding)</string>
   <string name="tweet_shortener">Tweet verkorter</string>

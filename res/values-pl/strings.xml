@@ -227,7 +227,6 @@
   <string name="image_uploader_default">Domyślne (Twitter)</string>
   <string name="home_refresh">Odśwież w strumieniu głównym</string>
   <string name="error_message_image_upload_failed">Wysyłanie obrazu nie powiodło się.</string>
-  <string name="error_message_image_uploader_not_found">Program do ładowania obrazów nie znaleziony, może został odinstalowany.</string>
   <string name="image_upload_format">Format ćwierka z obrazem</string>
   <string name="image_upload_format_summary">\"[LINK]\" = Image link\n\"[TEXT]\" = Zawartość ćwierka\n(tylko rozszerzenie)</string>
   <string name="tweet_shortener">Skracanie ćwierka</string>

@@ -34,13 +34,11 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -64,7 +62,6 @@ import de.vanita5.twittnuker.provider.TweetStore.Drafts;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
-import de.vanita5.twittnuker.util.ImageUploaderInterface;
 import de.vanita5.twittnuker.util.ListUtils;
 import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.TwitterErrorCodes;
@@ -97,7 +94,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 	private AsyncTwitterWrapper mTwitter;
 	private MessagesManager mMessagesManager;
 
-	private ImageUploaderInterface mUploader;
+	private String mUploader;
 	private String mShortener;
 
 	private boolean mUseUploader, mUseShortener;
@@ -121,10 +118,11 @@ public class BackgroundOperationService extends IntentService implements Constan
 		mMessagesManager = app.getMessagesManager();
 		final String uploader_component = mPreferences.getString(KEY_IMAGE_UPLOADER, null);
 		final String shortener_component = mPreferences.getString(KEY_TWEET_SHORTENER, null);
-		mUseUploader = !isEmpty(uploader_component);
+//		mUseUploader = !isEmpty(uploader_component);
+		mUseUploader = false; //FIXME
 //		mUseShortener = !isEmpty(shortener_component);
 		mUseShortener = false; //FIXME
-		mUploader = mUseUploader ? ImageUploaderInterface.getInstance(app, uploader_component) : null;
+		mUploader = mUseUploader ? uploader_component : null;
 		mShortener = mUseShortener ? shortener_component : null;
 	}
 
@@ -346,22 +344,15 @@ public class BackgroundOperationService extends IntentService implements Constan
 		if (pstatus.account_ids.length == 0) return Collections.emptyList();
 
 		try {
-			if (mUseUploader && mUploader == null) throw new ImageUploaderNotFoundException(this);
-			if (mUseShortener && mShortener == null) throw new TweetShortenerNotFoundException(this); //This should never happen
+			if (mUseUploader && mUploader == null) throw new ImageUploaderNotFoundException(this); //This should never happen
+			if (mUseShortener && mShortener == null) throw new TweetShortenerNotFoundException(this);
 
             final String imagePath = getImagePathFromUri(this, pstatus.media_uri);
             final File imageFile = imagePath != null ? new File(imagePath) : null;
 
-            final Uri uploadResultUri;
-			try {
-				if (mUploader != null) {
-					mUploader.waitForService();
-				}
-                uploadResultUri = imageFile != null && imageFile.exists() && mUploader != null ? mUploader.upload(
-                        Uri.fromFile(imageFile), pstatus.text) : null;
-			} catch (final Exception e) {
-				throw new ImageUploadException(this);
-			}
+            final Uri uploadResultUri = null; //FIXME
+			//TODO Image hoster upload logic
+
             if (mUseUploader && imageFile != null && imageFile.exists() && uploadResultUri == null)
 				throw new ImageUploadException(this);
 

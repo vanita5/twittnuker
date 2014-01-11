@@ -233,7 +233,6 @@
   <string name="image_uploader_default">기본 (Twitter)</string>
   <string name="home_refresh">타임라인에서 새로고침</string>
   <string name="error_message_image_upload_failed">이미지 업로드 실패.</string>
-  <string name="error_message_image_uploader_not_found">이미지 업로더를 찾을 수 없습니다. 아마도 삭제되었을겁니다.</string>
   <string name="image_upload_format">이미지를 올릴 때 양식</string>
   <string name="image_upload_format_summary">\"[LINK]\" = 이미지 주소\n\"[TEXT]\" = 트윗할 내용\n(플러그인에서만)</string>
   <string name="tweet_shortener">트윗 축약 서비스</string>

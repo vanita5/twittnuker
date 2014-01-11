@@ -230,7 +230,6 @@
     <string name="image_uploader_default">Standard (Twitter)</string>
     <string name="home_refresh">Zu aktualisierende Timelines</string>
     <string name="error_message_image_upload_failed">Bild-Upload schlug fehl.</string>
-    <string name="error_message_image_uploader_not_found">Bilderdienst nicht gefunden, möglicherweise wurde er deinstalliert.</string>
     <string name="image_upload_format">Tweet-Format mit Bild</string>
     <string name="image_upload_format_summary">\"[LINK]\" = Bild link\n\"[TEXT]\" = Text inhalt\n(Nur mit Erweiterung)</string>
     <string name="tweet_shortener">Tweet-Verkürzungsdienst</string>

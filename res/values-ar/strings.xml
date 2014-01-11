@@ -235,7 +235,6 @@
   <string name="image_uploader_default">افتراضي (Twitter)</string>
   <string name="home_refresh">التحديث في الخط الزمني الرئيسي</string>
   <string name="error_message_image_upload_failed">فشل في رفع الصورة.</string>
-  <string name="error_message_image_uploader_not_found">لم يتم العثور على مركز رفع الصور،ربما تم إلغاء تثبيته.</string>
   <string name="image_upload_format">شكل تغيردة ذات صورة</string>
   <string name="tweet_shortener">مقصِّر التغريدة</string>
   <string name="tweet_shortener_default">لايوجد (ألغي الارسال)</string>

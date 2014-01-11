@@ -233,7 +233,6 @@
   <string name="image_uploader_default">Predeterminado (Twitter)</string>
   <string name="home_refresh">Actualizar en la línea de tiempo</string>
   <string name="error_message_image_upload_failed">Error al subir la imagen.</string>
-  <string name="error_message_image_uploader_not_found">No se ha encontrado la aplicación para subir imágenes, quizás se ha desinstalado.</string>
   <string name="image_upload_format">Formato de tuit con imagen</string>
   <string name="image_upload_format_summary">\"[LINK]\" = Enlace de la imagen\n\"[TEXT]\" = Contenido del tuit\n(Sólo con extensión)</string>
   <string name="tweet_shortener">Acortador de Tuits</string>

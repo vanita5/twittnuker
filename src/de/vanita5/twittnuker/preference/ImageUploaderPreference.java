@@ -43,7 +43,7 @@ public class ImageUploaderPreference extends DialogPreference implements Constan
 
 	private SharedPreferences mPreferences;
 	private final PackageManager mPackageManager;
-	private ImageUploaderSpec[] mAvailableImageUploaders;
+	private String[] mAvailableImageUploaders;
 
 	public ImageUploaderPreference(final Context context) {
 		this(context, null);
@@ -62,9 +62,9 @@ public class ImageUploaderPreference extends DialogPreference implements Constan
 	public void onClick(final DialogInterface dialog, final int which) {
 		final SharedPreferences.Editor editor = getEditor();
 		if (editor == null) return;
-		final ImageUploaderSpec spec = mAvailableImageUploaders[which];
+		final String spec = mAvailableImageUploaders[which];
 		if (spec != null) {
-			editor.putString(KEY_IMAGE_UPLOADER, spec.cls);
+			editor.putString(KEY_IMAGE_UPLOADER, spec);
 			editor.commit();
 		}
 		dialog.dismiss();
@@ -76,15 +76,9 @@ public class ImageUploaderPreference extends DialogPreference implements Constan
 		super.onPrepareDialogBuilder(builder);
 		if (mPreferences == null) return;
 		final String component = mPreferences.getString(KEY_IMAGE_UPLOADER, null);
-		final ArrayList<ImageUploaderSpec> specs = new ArrayList<ImageUploaderSpec>();
-		specs.add(new ImageUploaderSpec(getContext().getString(R.string.image_uploader_default), null));
-		final Intent query_intent = new Intent(INTENT_ACTION_EXTENSION_UPLOAD_IMAGE);
-		final List<ResolveInfo> result = mPackageManager.queryIntentServices(query_intent, 0);
-		for (final ResolveInfo info : result) {
-			specs.add(new ImageUploaderSpec(info.loadLabel(mPackageManager).toString(), info.serviceInfo.packageName
-					+ "/" + info.serviceInfo.name));
-		}
-		mAvailableImageUploaders = specs.toArray(new ImageUploaderSpec[specs.size()]);
+		final ArrayList<String> specs = new ArrayList<String>();
+		specs.add(getContext().getString(R.string.image_uploader_default));
+		mAvailableImageUploaders = specs.toArray(new String[specs.size()]);
 		builder.setSingleChoiceItems(mAvailableImageUploaders, getIndex(component), ImageUploaderPreference.this);
 		builder.setNegativeButton(android.R.string.cancel, null);
 	}
@@ -94,39 +88,10 @@ public class ImageUploaderPreference extends DialogPreference implements Constan
 		if (cls == null) return 0;
 		final int count = mAvailableImageUploaders.length;
 		for (int i = 0; i < count; i++) {
-			final ImageUploaderSpec spec = mAvailableImageUploaders[i];
-			if (cls.equals(spec.cls)) return i;
+			final String spec = mAvailableImageUploaders[i];
+			if (cls.equals(spec)) return i;
 		}
 		return -1;
-	}
-
-	static class ImageUploaderSpec implements CharSequence {
-		private final String name, cls;
-
-		ImageUploaderSpec(final String name, final String cls) {
-			this.name = name;
-			this.cls = cls;
-		}
-
-		@Override
-		public char charAt(final int index) {
-			return name.charAt(index);
-		}
-
-		@Override
-		public int length() {
-			return name.length();
-		}
-
-		@Override
-		public CharSequence subSequence(final int start, final int end) {
-			return name.subSequence(start, end);
-		}
-
-		@Override
-		public String toString() {
-			return name;
-		}
 	}
 
 }

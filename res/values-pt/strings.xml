@@ -233,7 +233,6 @@
   <string name="image_uploader_default">Padrão (Twitter)</string>
   <string name="home_refresh">Atualizar na timeline</string>
   <string name="error_message_image_upload_failed">Falha no envio da imagem.</string>
-  <string name="error_message_image_uploader_not_found">App de envio de imagem não encontrado, talvez ele tenha sido desinstalado.</string>
   <string name="image_upload_format">Formato de tweet com imagem</string>
   <string name="image_upload_format_summary">\"[LINK]\" = Link da imagem\n\"[TEXT]\" = Conteúdo\n(Extensão apenas)</string>
   <string name="tweet_shortener">Encurtador de tweets</string>

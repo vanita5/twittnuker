@@ -233,7 +233,6 @@
   <string name="image_uploader_default">Varsayılan (Twitter)</string>
   <string name="home_refresh">Zaman akışında yenile</string>
   <string name="error_message_image_upload_failed">Resim yüklenemedi.</string>
-  <string name="error_message_image_uploader_not_found">Resim yükleyici bulunamadı, belki kaldırılmıştır.</string>
   <string name="image_upload_format">Resim ile tweet şekli</string>
   <string name="image_upload_format_summary">\"[LINK]\" = Resim kısayolu\n\"[TEXT]\" = Tweet içeriği\n(yalnızca Eklenti)</string>
   <string name="tweet_shortener">Tweet kısaltıcı</string>
