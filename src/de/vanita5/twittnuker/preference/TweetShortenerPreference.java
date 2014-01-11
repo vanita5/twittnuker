@@ -43,8 +43,6 @@ public class TweetShortenerPreference extends DialogPreference implements Consta
 
 	private SharedPreferences mPreferences;
 
-	private final PackageManager mPackageManager;
-
 	private String[] mAvailableTweetShorteners;
 
 	public TweetShortenerPreference(final Context context) {
@@ -57,7 +55,6 @@ public class TweetShortenerPreference extends DialogPreference implements Consta
 
 	public TweetShortenerPreference(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
-		mPackageManager = context.getPackageManager();
 	}
 
 	@Override
@@ -79,6 +76,7 @@ public class TweetShortenerPreference extends DialogPreference implements Consta
 		if (mPreferences == null) return;
 		final String component = mPreferences.getString(KEY_TWEET_SHORTENER, null);
 		final ArrayList<String> specs = new ArrayList<String>();
+		//Available tweet shortening services
 		specs.add(getContext().getString(R.string.tweet_shortener_default));
 		mAvailableTweetShorteners = specs.toArray(new String[specs.size()]);
 		builder.setSingleChoiceItems(mAvailableTweetShorteners, getIndex(component), TweetShortenerPreference.this);

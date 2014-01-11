@@ -42,7 +42,6 @@ import java.util.List;
 public class ImageUploaderPreference extends DialogPreference implements Constants, OnClickListener {
 
 	private SharedPreferences mPreferences;
-	private final PackageManager mPackageManager;
 	private String[] mAvailableImageUploaders;
 
 	public ImageUploaderPreference(final Context context) {
@@ -55,7 +54,6 @@ public class ImageUploaderPreference extends DialogPreference implements Constan
 
 	public ImageUploaderPreference(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
-		mPackageManager = context.getPackageManager();
 	}
 
 	@Override

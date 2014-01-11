@@ -13,4 +13,7 @@
     <string name="font_family_light">Light</string>
     <string name="font_family_thin">Thin</string>
 
+    <!--Twittnuker-->
+    <string name="tweet_shortener_hototin">Hotot.in</string>
+
 </resources>
