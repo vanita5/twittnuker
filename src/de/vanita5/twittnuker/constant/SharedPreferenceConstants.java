@@ -78,9 +78,9 @@ public interface SharedPreferenceConstants {
 	public static final String VALUE_THEME_NAME_DARK = "dark";
 	public static final String VALUE_THEME_NAME_LIGHT = "light";
 
-	public static final String DEFAULT_THEME = VALUE_THEME_NAME_TWIDERE;
+	public static final String DEFAULT_THEME = VALUE_THEME_NAME_LIGHT;
 	public static final String DEFAULT_THEME_BACKGROUND = VALUE_THEME_BACKGROUND_DEFAULT;
-	public static final String DEFAULT_THEME_FONT_FAMILY = VALUE_THEME_FONT_FAMILY_REGULAR;
+	public static final String DEFAULT_THEME_FONT_FAMILY = VALUE_THEME_FONT_FAMILY_LIGHT;
 
 	public static final String DEFAULT_QUOTE_FORMAT = "RT @" + FORMAT_PATTERN_NAME + ": " + FORMAT_PATTERN_TEXT;
 	public static final String DEFAULT_SHARE_FORMAT = FORMAT_PATTERN_TITLE + " - " + FORMAT_PATTERN_TEXT;
@@ -104,7 +104,7 @@ public interface SharedPreferenceConstants {
 	public static final boolean DEFAULT_DIRECT_MESSAGES_NOTIFICATION = true;
 
 	public static final int DEFAULT_DATABASE_ITEM_LIMIT = 100;
-	public static final int DEFAULT_LOAD_ITEM_LIMIT = 20;
+	public static final int DEFAULT_LOAD_ITEM_LIMIT = 100;
 	public static final boolean DEFAULT_HARDWARE_ACCELERATION = true;
 	public static final boolean DEFAULT_SEPARATE_RETWEET_ACTION = true;
 
@@ -126,7 +126,7 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_THEME_FONT_FAMILY = "theme_font_family";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_DISPLAY_PROFILE_IMAGE = "display_profile_image";
-	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_DISPLAY_IMAGE_PREVIEW = "display_image_preview";
 	@Preference(type = BOOLEAN)
 	public static final String KEY_BOTTOM_COMPOSE_BUTTON = "bottom_compose_button";
@@ -243,9 +243,9 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_NOTIFICATION_TYPE_HOME = "notification_type_home";
 	public static final String KEY_NOTIFICATION_TYPE_MENTIONS = "notification_type_mentions";
 	public static final String KEY_NOTIFICATION_TYPE_DIRECT_MESSAGES = "notification_type_direct_messages";
-	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_COMPACT_CARDS = "compact_cards";
-	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_LONG_CLICK_TO_OPEN_MENU = "long_click_to_open_menu";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_STREAMING_ENABLED = "stream_enabled";
