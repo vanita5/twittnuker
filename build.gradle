@@ -11,9 +11,9 @@ buildscript {
 apply plugin: 'android'
 
 // check for updates every build
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
+//configurations.all {
+//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+//}
 
 repositories {
     mavenCentral()
