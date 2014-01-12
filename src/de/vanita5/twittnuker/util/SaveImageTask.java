@@ -118,7 +118,7 @@ public class SaveImageTask extends AsyncTask<Void, Void, File> implements Consta
 			}
 			return save_file;
 		} catch (final IOException e) {
-			Log.w(LOGTAG, "Failed to save file", e);
+			if (Utils.isDebugBuild()) Log.w(LOGTAG, "Failed to save file", e);
 			return null;
 		}
 	}

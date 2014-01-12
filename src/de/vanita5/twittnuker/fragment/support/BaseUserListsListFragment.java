@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -202,7 +203,7 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 					try {
 						startActivity(item.getIntent());
 					} catch (final ActivityNotFoundException e) {
-						Log.w(LOGTAG, e);
+						if (Utils.isDebugBuild()) Log.w(LOGTAG, e);
 						return false;
 					}
 				}

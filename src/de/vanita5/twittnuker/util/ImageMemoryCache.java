@@ -59,7 +59,7 @@ public class ImageMemoryCache implements MemoryCacheAware<String, Bitmap> {
 			mSoftCache.clear();
 			System.gc();
 		} catch (final Exception e) {
-			Log.e(LOGTAG, "Unknown exception", e);
+			if (Utils.isDebugBuild()) Log.e(LOGTAG, "Unknown exception", e);
 		}
 	}
 
@@ -89,7 +89,7 @@ public class ImageMemoryCache implements MemoryCacheAware<String, Bitmap> {
 				}
 			}
 		} catch (final Exception e) {
-			Log.e(LOGTAG, "Unknown exception", e);
+			if (Utils.isDebugBuild()) Log.e(LOGTAG, "Unknown exception", e);
 		}
 		// Could not locate the bitmap in any of the caches, so we return
 		// null.
@@ -109,7 +109,7 @@ public class ImageMemoryCache implements MemoryCacheAware<String, Bitmap> {
 		try {
 			return mHardCache.put(key, bitmap) != null;
 		} catch (final Exception e) {
-			Log.e(LOGTAG, "Unknown exception", e);
+			if (Utils.isDebugBuild()) Log.e(LOGTAG, "Unknown exception", e);
 		}
 		return false;
 	}

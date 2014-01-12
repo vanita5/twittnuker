@@ -69,6 +69,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileTask;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ProfileImageBannerLayout;
 import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
@@ -139,7 +140,9 @@ public class UserProfileEditorActivity extends BaseSupportActivity implements On
 						mTask = new UpdateProfileBannerImageTaskInternal(UserProfileEditorActivity.this,
 								mAsyncTaskManager, mAccountId, uri, true);
 					} catch (final Exception e) {
-						Log.w(LOGTAG, e);
+						if (Utils.isDebugBuild()) {
+							Log.w(LOGTAG, e);
+						}
 					}
 					break;
 				}
@@ -176,7 +179,7 @@ public class UserProfileEditorActivity extends BaseSupportActivity implements On
 						mTask = new UpdateProfileImageTaskInternal(UserProfileEditorActivity.this, mAsyncTaskManager,
 								mAccountId, uri, true);
 					} catch (final Exception e) {
-						Log.w(LOGTAG, e);
+						if (Utils.isDebugBuild()) Log.w(LOGTAG, e);
 					}
 					break;
 				}

@@ -81,7 +81,7 @@ public class Exif {
 			if (!read(is, buf, 2)) return 0;
 			length = pack(buf, 0, 2, false);
 			if (length < 2) {
-				Log.e(TAG, "Invalid length");
+				if (Utils.isDebugBuild()) Log.e(TAG, "Invalid length");
 				return 0;
 			}
 			length -= 2;
@@ -113,7 +113,7 @@ public class Exif {
 			// Identify the byte order.
 			int tag = pack(jpeg, offset, 4, false);
 			if (tag != 0x49492A00 && tag != 0x4D4D002A) {
-				Log.e(TAG, "Invalid byte order");
+				if (Utils.isDebugBuild()) Log.e(TAG, "Invalid byte order");
 				return 0;
 			}
 			final boolean littleEndian = tag == 0x49492A00;
@@ -145,7 +145,7 @@ public class Exif {
 						case 8:
 							return 270;
 					}
-					Log.i(TAG, "Unsupported orientation");
+					if (Utils.isDebugBuild()) Log.i(TAG, "Unsupported orientation");
 					return 0;
 				}
 				offset += 12;
@@ -153,7 +153,7 @@ public class Exif {
 			}
 		}
 
-		Log.i(TAG, "Orientation not found");
+		if (Utils.isDebugBuild()) Log.i(TAG, "Orientation not found");
 		return 0;
 	}
 

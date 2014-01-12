@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.loader.ExtensionsListLoader;
 import de.vanita5.twittnuker.loader.ExtensionsListLoader.ExtensionInfo;
 import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.util.PermissionsManager;
+import de.vanita5.twittnuker.util.Utils;
 
 import java.util.List;
 
@@ -159,7 +160,7 @@ public class ExtensionsListFragment extends BaseListFragment implements Constant
 		try {
 			startActivity(intent);
 		} catch (final Exception e) {
-			Log.w(LOGTAG, e);
+			if (Utils.isDebugBuild()) Log.w(LOGTAG, e);
 			return false;
 		}
 		return true;

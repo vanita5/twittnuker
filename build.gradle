@@ -10,8 +10,8 @@ buildscript {
 
 apply plugin: 'android'
 
+// check for updates every build
 configurations.all {
-    // check for updates every build
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:library:0.9.3'
     compile 'com.mobeta.android.dslv:drag-sort-listview:0.6.1'
     compile 'com.jeremyfeinstein.slidingmenu:slidingmenu:1.3-SNAPSHOT'
     compile 'com.google.android.gms:play-services:4.0.30'

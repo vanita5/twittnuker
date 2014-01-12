@@ -121,6 +121,7 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ColorLabelLinearLayout;
 import de.vanita5.twittnuker.view.ProfileImageBannerLayout;
 import de.vanita5.twittnuker.view.ProfileImageView;
@@ -719,7 +720,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 					try {
 						startActivity(item.getIntent());
 					} catch (final ActivityNotFoundException e) {
-						Log.w(LOGTAG, e);
+						if (Utils.isDebugBuild()) Log.w(LOGTAG, e);
 						return false;
 					}
 				}

@@ -85,6 +85,7 @@ import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 
 import twitter4j.Twitter;
@@ -353,7 +354,7 @@ public class UserListDetailsFragment extends BaseSupportListFragment implements 
 					try {
 						startActivity(item.getIntent());
 					} catch (final ActivityNotFoundException e) {
-						Log.w(LOGTAG, e);
+						if (Utils.isDebugBuild()) Log.w(LOGTAG, e);
 						return false;
 					}
 				}

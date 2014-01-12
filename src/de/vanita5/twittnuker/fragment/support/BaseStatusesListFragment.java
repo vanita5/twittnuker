@@ -339,7 +339,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 					try {
 						startActivity(item.getIntent());
 					} catch (final ActivityNotFoundException e) {
-						Log.w(LOGTAG, e);
+						if (Utils.isDebugBuild()) Log.w(LOGTAG, e);
 						return false;
 					}
 				}

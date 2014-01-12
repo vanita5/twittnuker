@@ -1121,7 +1121,9 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 
 		@Override
 		public void onException(Exception ex) {
-			Log.w(LOGTAG, ex);
+			if (Utils.isDebugBuild()) {
+				Log.w(LOGTAG, ex);
+			}
 		}
 
 		@Override

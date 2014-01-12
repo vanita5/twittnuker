@@ -55,7 +55,7 @@ public final class ServiceUtils implements Constants {
 				return new ServiceToken(cw);
 			}
 		}
-		Log.e(LOGTAG, "Failed to bind to service");
+		if (Utils.isDebugBuild()) Log.e(LOGTAG, "Failed to bind to service");
 		return null;
 	}
 

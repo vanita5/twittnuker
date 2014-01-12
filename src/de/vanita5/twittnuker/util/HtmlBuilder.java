@@ -64,7 +64,7 @@ public class HtmlBuilder {
 		if (start < 0 || end < 0 || start > end || end > string_length) {
 			final String message = String.format(Locale.US, "text:%s, length:%d, start:%d, end:%d", orig, string_length, start, end);
 			if (throw_exceptions) throw new StringIndexOutOfBoundsException(message);
-			Log.e(LOGTAG, message);
+			if (Utils.isDebugBuild()) Log.e(LOGTAG, message);
 			return false;
 		}
 		if (hasLink(start, end)) {
@@ -72,7 +72,7 @@ public class HtmlBuilder {
 					"link already added in this range! text:%s, link:%s, display:%s, start:%d, end:%d", orig, link,
 					display, start, end);
 			if (throw_exceptions) throw new IllegalArgumentException(message);
-			Log.e(LOGTAG, message);
+			if (Utils.isDebugBuild()) Log.e(LOGTAG, message);
 			return false;
 		}
 		return links.add(new LinkSpec(link, display, start, end, display_is_html));

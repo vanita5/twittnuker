@@ -44,6 +44,7 @@ import java.nio.charset.Charset;
 
 import de.vanita5.twittnuker.task.HototinAsyncTask;
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.util.Utils;
 
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
 import static de.vanita5.twittnuker.util.Utils.getAccountProfileImage;
@@ -110,16 +111,16 @@ public class TweetShortenerUtils implements Constants {
 			return result;
 
 		} catch (UnsupportedEncodingException e) {
-			Log.e(LOG_TAG, e.getMessage());
+			if (Utils.isDebugBuild()) Log.e(LOG_TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (ClientProtocolException e) {
-			Log.e(LOG_TAG, e.getMessage());
+			if (Utils.isDebugBuild()) Log.e(LOG_TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.e(LOG_TAG, e.getMessage());
+			if (Utils.isDebugBuild()) Log.e(LOG_TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (JSONException e) {
-			Log.e(LOG_TAG, e.getMessage());
+			if (Utils.isDebugBuild()) Log.e(LOG_TAG, e.getMessage());
 			e.printStackTrace();
 		}
 		return null;

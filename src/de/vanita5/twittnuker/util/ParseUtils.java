@@ -55,7 +55,7 @@ public final class ParseUtils implements Constants {
 				} else if (value instanceof String) {
 					json.put(key, args.getString(key));
 				} else {
-                    Log.w(LOGTAG, "Unknown type " + value.getClass().getSimpleName() + " in arguments key " + key);
+					if (Utils.isDebugBuild()) Log.w(LOGTAG, "Unknown type " + value.getClass().getSimpleName() + " in arguments key " + key);
 				}
 			} catch (final JSONException e) {
 				e.printStackTrace();
@@ -91,7 +91,7 @@ public final class ParseUtils implements Constants {
 					} else if (value instanceof String) {
 						bundle.putString(key, json.optString(key));
 					} else {
-						Log.w(LOGTAG, "Unknown type " + value.getClass().getSimpleName() + " in arguments key " + key);
+						if (Utils.isDebugBuild()) Log.w(LOGTAG, "Unknown type " + value.getClass().getSimpleName() + " in arguments key " + key);
 					}
 				}
 			} catch (final JSONException e) {

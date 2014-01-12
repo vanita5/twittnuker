@@ -310,7 +310,9 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 						startActivity(intent);
 					}
 				} catch (final ActivityNotFoundException e) {
-					Log.w(LOGTAG, e);
+					if (Utils.isDebugBuild()) {
+						Log.w(LOGTAG, e);
+					}
 					return false;
 				}
 			}

@@ -36,6 +36,7 @@ import android.widget.ImageView;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.dialog.ColorPickerDialog;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ColorPickerView;
 
 public class ColorPickerPreference extends Preference implements DialogInterface.OnClickListener, Constants {
@@ -98,7 +99,7 @@ public class ColorPickerPreference extends Preference implements DialogInterface
 				try {
 					setDefaultValue(Color.parseColor(defaultValue));
 				} catch (final IllegalArgumentException e) {
-					Log.e("ColorPickerPreference", "Wrong color: " + defaultValue);
+					if (Utils.isDebugBuild()) Log.e("ColorPickerPreference", "Wrong color: " + defaultValue);
 					setDefaultValue(Color.WHITE);
 				}
 			} else {
