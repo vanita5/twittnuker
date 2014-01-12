@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.service;
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.makeDirectMessageContentValues;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.makeDirectMessageDraftContentValues;
-import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
 import static de.vanita5.twittnuker.util.Utils.getImagePathFromUri;
 import static de.vanita5.twittnuker.util.Utils.getImageUploadStatus;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
@@ -69,6 +68,7 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener;
 
+import de.vanita5.twittnuker.util.shortener.TweetShortenerUtils;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
@@ -120,8 +120,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		final String shortener_component = mPreferences.getString(KEY_TWEET_SHORTENER, null);
 //		mUseUploader = !isEmpty(uploader_component);
 		mUseUploader = false; //FIXME
-//		mUseShortener = !isEmpty(shortener_component);
-		mUseShortener = false; //FIXME
+		mUseShortener = !isEmpty(shortener_component);
 		mUploader = mUseUploader ? uploader_component : null;
 		mShortener = mUseShortener ? shortener_component : null;
 	}
@@ -186,7 +185,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 	}
 
 	private Notification buildNotification(final String title, final String message, final int icon,
-			final Intent content_intent, final Intent delete_intent) {
+			final Intent content_intent, final Intent delete_intent, boolean showProgress) {
 		final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 		builder.setTicker(message);
 		builder.setContentTitle(title);
@@ -194,6 +193,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		builder.setAutoCancel(true);
 		builder.setWhen(System.currentTimeMillis());
 		builder.setSmallIcon(icon);
+		if(showProgress) builder.setProgress(0, 0, true);
 		if (delete_intent != null) {
 			builder.setDeleteIntent(PendingIntent.getBroadcast(this, 0, delete_intent,
 					PendingIntent.FLAG_UPDATE_CURRENT));
@@ -277,7 +277,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 				}
 			}
 			if (result.isEmpty()) {
-				saveDrafts(item, failed_account_ids);
+				saveDrafts(item, failed_account_ids, true);
 				showErrorMessage(R.string.action_updating_status, getString(R.string.no_account_selected), false);
 			} else if (failed) {
 				// If the status is a duplicate, there's no need to save it to
@@ -285,8 +285,10 @@ public class BackgroundOperationService extends IntentService implements Constan
 				if (exception instanceof TwitterException
 						&& ((TwitterException) exception).getErrorCode() == TwitterErrorCodes.STATUS_IS_DUPLICATE) {
 					showErrorMessage(getString(R.string.status_is_duplicate), false);
+				} else if (exception instanceof  HototinShortenException) {
+					saveDrafts(item, failed_account_ids, false);
 				} else {
-					saveDrafts(item, failed_account_ids);
+					saveDrafts(item, failed_account_ids, true);
 					showErrorMessage(R.string.action_updating_status, exception, true);
 				}
 			} else {
@@ -305,15 +307,17 @@ public class BackgroundOperationService extends IntentService implements Constan
 		stopForeground(true);
 	}
 
-	private void saveDrafts(final ParcelableStatusUpdate status, final List<Long> account_ids) {
+	private void saveDrafts(final ParcelableStatusUpdate status, final List<Long> account_ids, boolean showNotification) {
 		final ContentValues values = ContentValuesCreator.makeStatusDraftContentValues(status,
 				ArrayUtils.fromList(account_ids));
 		mResolver.insert(Drafts.CONTENT_URI, values);
 		final String title = getString(R.string.status_not_updated);
-		final String message = getString(R.string.status_not_updated_summary);
-		final Intent intent = new Intent(INTENT_ACTION_DRAFTS);
-		final Notification notification = buildNotification(title, message, R.drawable.ic_stat_twitter, intent, null);
-		mNotificationManager.notify(NOTIFICATION_ID_DRAFTS, notification);
+		if (showNotification) {
+			final String message = getString(R.string.status_not_updated_summary);
+			final Intent intent = new Intent(INTENT_ACTION_DRAFTS);
+			final Notification notification = buildNotification(title, message, R.drawable.ic_stat_twidere, intent, null, false);
+			mNotificationManager.notify(NOTIFICATION_ID_DRAFTS, notification);
+		}
 	}
 
 	private SingleResponse<ParcelableDirectMessage> sendDirectMessage(final long accountId, final long recipientId,
@@ -357,10 +361,16 @@ public class BackgroundOperationService extends IntentService implements Constan
                     uploadResultUri.toString(), pstatus.text) : pstatus.text;
 
 			final boolean should_shorten = mValidator.getTweetLength(unshortened_content) > Validator.MAX_TWEET_LENGTH;
-			final String screen_name = getAccountScreenName(this, pstatus.account_ids[0]);
-//			final String shortened_content;
-			final String shortened_content = ""; //FIXME
-			//TODO Shortener logic
+			String shortened_content = "";
+
+			if (should_shorten && mUseShortener) {
+				if (mShortener.equals(SERVICE_SHORTENER_HOTOTIN)) {
+					shortened_content = postHototIn(pstatus);
+					if (shortened_content == null) throw new HototinShortenException(this);
+				} else {
+					throw new IllegalArgumentException("BackgroundOperationService.java#updateStatus()");
+				}
+			}
 
 			if (should_shorten) {
 				if (!mUseShortener)
@@ -434,6 +444,30 @@ public class BackgroundOperationService extends IntentService implements Constan
 		return notification;
 	}
 
+	private String postHototIn(ParcelableStatusUpdate pstatus) {
+
+		final Notification notification = buildNotification(getString(R.string.shortening),
+				getString(R.string.shortening_hototin), R.drawable.ic_stat_twidere, null, null, true);
+		mNotificationManager.notify(NOTIFICATION_ID_SHORTENING, notification);
+
+		String shortenedText;
+		try {
+			shortenedText = TweetShortenerUtils.shortWithHototin(
+					BackgroundOperationService.this, pstatus.text, pstatus.account_ids);
+		} finally {
+			mNotificationManager.cancel(NOTIFICATION_ID_SHORTENING);
+		}
+
+		if (shortenedText == null || shortenedText.isEmpty()) {
+			final Intent intent = new Intent(INTENT_ACTION_DRAFTS);
+			final Notification errorNotification = buildNotification(getString(R.string.shortening),
+					getString(R.string. error_hototin), R.drawable.ic_stat_twidere, intent, null, false);
+			mNotificationManager.notify(NOTIFICATION_ID_SHORTENING, errorNotification);
+			return null;
+		}
+		return shortenedText;
+	}
+
 	static class ImageUploadException extends UpdateStatusException {
 		private static final long serialVersionUID = 8596614696393917525L;
 
@@ -455,6 +489,14 @@ public class BackgroundOperationService extends IntentService implements Constan
 
 		public TweetShortenException(final Context context) {
 			super(context, R.string.error_message_tweet_shorten_failed);
+		}
+	}
+
+	static class HototinShortenException extends UpdateStatusException {
+		private static final long serialVersionUID = 3075823455536740034L;
+
+		public HototinShortenException(final Context context) {
+			super(context, R.string.error_hototin);
 		}
 	}
 

@@ -1305,6 +1305,28 @@ public final class Utils implements Constants {
 		}
 	}
 
+	/**
+	 * Get profile image url by account id
+	 * @param context
+	 * @param accountId
+	 * @return profile image url
+	 */
+	public static String getAccountProfileImage(final Context context, final long accountId) {
+		if (context == null) return null;
+		final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
+				new String[] { Accounts.PROFILE_IMAGE_URL }, Accounts.ACCOUNT_ID + " = " + accountId, null, null);
+		if (cur == null) return null;
+		try {
+			if (cur.getCount() > 0 && cur.moveToFirst()) {
+				final String url = cur.getString(0);
+				return url;
+			}
+			return null;
+		} finally {
+			cur.close();
+		}
+	}
+
 	public static String[] getAccountScreenNames(final Context context) {
 		return getAccountScreenNames(context, false);
 	}

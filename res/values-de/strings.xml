@@ -602,4 +602,7 @@
     <string name="accepted_users_follow_request"><xliff:g id="user">%s</xliff:g>\'s Folgeanfrage angenommen.</string>
     <string name="denied_users_follow_request"><xliff:g id="user">%s</xliff:g>\'s Folgeanfrage abgelehnt.</string>
 
+    <string name="shortening">Tweet kürzen</string>
+    <string name="error_hototin">...but I failed :(\nDer Tweet wurde zu den Entwürfen hinzugefügt.</string>
+    <string name="action_shortening">kürze Tweet</string>
 </resources>

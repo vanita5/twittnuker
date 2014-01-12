@@ -609,4 +609,8 @@
     <string name="request_permission">Permission request to access Twittnuker</string>
 
     <string name="love">Love</string>
+
+    <string name="shortening">Shortening</string>
+    <string name="error_hototin">...but I failed :(\nYour Tweet has not been send and saved to draft.</string>
+    <string name="action_shortening">shortening tweet</string>
 </resources>

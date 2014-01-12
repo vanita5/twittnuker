@@ -26,10 +26,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
@@ -37,13 +34,12 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TweetShortenerPreference extends DialogPreference implements Constants, OnClickListener {
 
 	private SharedPreferences mPreferences;
 
-	private String[] mAvailableTweetShorteners;
+	private TweetShortenerSpec[] mAvailableTweetShorteners;
 
 	public TweetShortenerPreference(final Context context) {
 		this(context, null);
@@ -61,9 +57,9 @@ public class TweetShortenerPreference extends DialogPreference implements Consta
 	public void onClick(final DialogInterface dialog, final int which) {
 		final SharedPreferences.Editor editor = getEditor();
 		if (editor == null) return;
-		final String spec = mAvailableTweetShorteners[which];
+		final TweetShortenerSpec spec = mAvailableTweetShorteners[which];
 		if (spec != null) {
-			editor.putString(KEY_TWEET_SHORTENER, spec);
+			editor.putString(KEY_TWEET_SHORTENER, spec.service);
 			editor.commit();
 		}
 		dialog.dismiss();
@@ -75,23 +71,54 @@ public class TweetShortenerPreference extends DialogPreference implements Consta
 		mPreferences = getSharedPreferences();
 		if (mPreferences == null) return;
 		final String component = mPreferences.getString(KEY_TWEET_SHORTENER, null);
-		final ArrayList<String> specs = new ArrayList<String>();
+		final ArrayList<TweetShortenerSpec> specs = new ArrayList<TweetShortenerSpec>();
 		//Available tweet shortening services
-		specs.add(getContext().getString(R.string.tweet_shortener_default));
-		mAvailableTweetShorteners = specs.toArray(new String[specs.size()]);
+		specs.add(new TweetShortenerSpec(getContext().getString(R.string.tweet_shortener_default), null));
+		specs.add(new TweetShortenerSpec(getContext().getString(R.string.tweet_shortener_hototin), SERVICE_SHORTENER_HOTOTIN));
+		mAvailableTweetShorteners = specs.toArray(new TweetShortenerSpec[specs.size()]);
 		builder.setSingleChoiceItems(mAvailableTweetShorteners, getIndex(component), TweetShortenerPreference.this);
 		builder.setNegativeButton(android.R.string.cancel, null);
 	}
 
-	private int getIndex(final String cls) {
+	private int getIndex(final String service) {
 		if (mAvailableTweetShorteners == null) return -1;
-		if (cls == null) return 0;
+		if (service == null) return 0;
 		final int count = mAvailableTweetShorteners.length;
 		for (int i = 0; i < count; i++) {
-			final String spec = mAvailableTweetShorteners[i];
-			if (cls.equals(spec)) return i;
+			final TweetShortenerSpec spec = mAvailableTweetShorteners[i];
+			if (service.equals(spec.service)) return i;
 		}
 		return -1;
+	}
+
+	public static class TweetShortenerSpec implements CharSequence {
+
+		private final String name, service;
+
+		TweetShortenerSpec(final String name, final String service) {
+			this.name = name;
+			this.service = service;
+		}
+
+		@Override
+		public int length() {
+			return name.length();
+		}
+
+		@Override
+		public char charAt(int i) {
+			return name.charAt(i);
+		}
+
+		@Override
+		public CharSequence subSequence(int i, int i2) {
+			return name.subSequence(i, i2);
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 
 }

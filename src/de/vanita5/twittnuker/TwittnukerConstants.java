@@ -55,6 +55,8 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final String SCHEME_CONTENT = "content";
 	public static final String SCHEME_TWITTNUKER = "twittnuker";
 
+	public static final String SERVICE_SHORTENER_HOTOTIN = "hototin";
+
 	public static final String PROTOCOL_HTTP = SCHEME_HTTP + "://";
 	public static final String PROTOCOL_HTTPS = SCHEME_HTTPS + "://";
 	public static final String PROTOCOL_CONTENT = SCHEME_CONTENT + "://";
@@ -171,6 +173,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final int NOTIFICATION_ID_STREAMING = 6;
 	public static final int NOTIFICATION_ID_UPDATE_STATUS = 101;
 	public static final int NOTIFICATION_ID_SEND_DIRECT_MESSAGE = 102;
+	public static final int NOTIFICATION_ID_SHORTENING = 103;
 
 	public static final String ICON_SPECIAL_TYPE_CUSTOMIZE = "_customize";
 
