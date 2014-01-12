@@ -36,6 +36,8 @@ import android.net.Uri;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 
+import static de.vanita5.twittnuker.util.shortener.TweetShortenerUtils.expandHototin;
+
 
 public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 
@@ -87,6 +89,10 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 			}
 			case TwidereLinkify.LINK_TYPE_STATUS: {
 				openStatus(activity, account_id, ParseUtils.parseLong(link));
+				break;
+			}
+			case TwidereLinkify.LINK_TYPE_HOTOTIN: {
+				expandHototin(activity, link);
 				break;
 			}
 		}

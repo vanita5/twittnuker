@@ -19,6 +19,7 @@
 
 package de.vanita5.twittnuker.util.shortener;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -41,10 +42,13 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
+import de.vanita5.twittnuker.task.HototinAsyncTask;
+import de.vanita5.twittnuker.Constants;
+
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
 import static de.vanita5.twittnuker.util.Utils.getAccountProfileImage;
 
-public class TweetShortenerUtils {
+public class TweetShortenerUtils implements Constants {
 
 	private static final String DEFAULT_AVATAR_URL = "https://twimg0-a.akamaihd.net/sticky/default_profile_images/default_profile_3_bigger.png";
 
@@ -119,5 +123,10 @@ public class TweetShortenerUtils {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static void expandHototin(final Activity activity, final String url) {
+		if (activity == null || url == null) return;
+		final HototinAsyncTask task = new HototinAsyncTask(activity, url);
 	}
 }

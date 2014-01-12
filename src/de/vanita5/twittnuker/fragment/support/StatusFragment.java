@@ -69,6 +69,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -192,6 +193,16 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 				if (status_id > 0 && status_id == getStatusId()) {
 					getStatus(true);
 				}
+			} else if (BROADCAST_HOTOTIN_EXPANDED.equals(action)) {
+				final String expanded_status = intent.getStringExtra(EXTRA_HOTOTIN_EXPANDED_TEXT);
+				Spanned expanded_text = Html.fromHtml(expanded_status);
+
+				mTextView.setText(expanded_text);
+
+				final TwidereLinkify linkify = new TwidereLinkify(
+						new OnLinkClickHandler(getActivity(), getMultiSelectManager()));
+				linkify.setLinkTextColor(ThemeUtils.getUserLinkTextColor(getActivity()));
+				linkify.applyAllLinks(mTextView, mStatus.account_id, mStatus.is_possibly_sensitive);
 			}
 		}
 	};
@@ -637,6 +648,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		filter.addAction(BROADCAST_FRIENDSHIP_CHANGED);
 		filter.addAction(BROADCAST_FAVORITE_CHANGED);
 		filter.addAction(BROADCAST_RETWEET_CHANGED);
+		filter.addAction(BROADCAST_HOTOTIN_EXPANDED);
 		registerReceiver(mStatusReceiver, filter);
 		updateUserColor();
 		final int text_size = mPreferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(getActivity()));

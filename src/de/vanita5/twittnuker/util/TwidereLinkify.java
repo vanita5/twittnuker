@@ -76,9 +76,11 @@ public final class TwidereLinkify implements Constants {
 	public static final int LINK_TYPE_CASHTAG = 7;
 	public static final int LINK_TYPE_USER_ID = 8;
 	public static final int LINK_TYPE_STATUS = 9;
+	public static final int LINK_TYPE_HOTOTIN = 10;
 
 	public static final int[] ALL_LINK_TYPES = new int[] { LINK_TYPE_LINK, LINK_TYPE_MENTION, LINK_TYPE_HASHTAG,
-			LINK_TYPE_STATUS, LINK_TYPE_LINK_WITH_IMAGE_EXTENSION, LINK_TYPE_ALL_AVAILABLE_IMAGE, LINK_TYPE_CASHTAG };
+			LINK_TYPE_STATUS, LINK_TYPE_LINK_WITH_IMAGE_EXTENSION, LINK_TYPE_ALL_AVAILABLE_IMAGE, LINK_TYPE_CASHTAG,
+			LINK_TYPE_HOTOTIN };
 
 	public static final String AVAILABLE_URL_SCHEME_PREFIX = "(https?:\\/\\/)?";
 
@@ -104,6 +106,9 @@ public final class TwidereLinkify implements Constants {
 			+ STRING_PATTERN_TWITTER_LIST_NO_SCHEME;
 	public static final Pattern PATTERN_TWITTER_LIST = Pattern.compile(STRING_PATTERN_TWITTER_LIST,
 			Pattern.CASE_INSENSITIVE);
+
+	public static final String STRING_PATTERN_HOTOTIN = AVAILABLE_URL_SCHEME_PREFIX + "((hotot\\.in)\\/([\\w\\d]+))";
+	public static final Pattern PATTERN_HOTOTIN = Pattern.compile(STRING_PATTERN_HOTOTIN, Pattern.CASE_INSENSITIVE);
 
 	public static final int GROUP_ID_TWITTER_LIST_SCREEN_NAME = 4;
 	public static final int GROUP_ID_TWITTER_LIST_LIST_NAME = 5;
@@ -317,6 +322,19 @@ public final class TwidereLinkify implements Constants {
 			case LINK_TYPE_CASHTAG: {
 				addCashtagLinks(string, account_id, listener, highlightOption, highlightColor);
 				break;
+			}
+			case LINK_TYPE_HOTOTIN: {
+				final URLSpan[] spans = string.getSpans(0, string.length(), URLSpan.class);
+				for (final URLSpan span : spans) {
+					final int start = string.getSpanStart(span);
+					final int end = string.getSpanEnd(span);
+					final String url = span.getURL();
+					if (PATTERN_HOTOTIN.matcher(url).matches()) {
+						string.removeSpan(span);
+						applyLink(url, start, end, string, account_id, LINK_TYPE_HOTOTIN, sensitive, listener,
+								highlightOption, highlightColor);
+					}
+				}
 			}
 			default: {
 				return;

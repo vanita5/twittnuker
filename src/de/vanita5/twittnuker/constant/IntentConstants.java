@@ -111,6 +111,7 @@ public interface IntentConstants {
 	public static final String BROADCAST_HOME_ACTIVITY_ONDESTROY = INTENT_PACKAGE_PREFIX + "HOME_ACTIVITY_ONDESTROY";
 	public static final String BROADCAST_UNREAD_COUNT_UPDATED = INTENT_PACKAGE_PREFIX + "UNREAD_COUNT_UPDATED";
 	public static final String BROADCAST_DATABASE_READY = INTENT_PACKAGE_PREFIX + "DATABASE_READY";
+	public static final String BROADCAST_HOTOTIN_EXPANDED = INTENT_PACKAGE_PREFIX + "HOTOTIN_EXPANDED";
 
 	public static final String EXTRA_LATITUDE = "latitude";
 	public static final String EXTRA_LONGITUDE = "longitude";
@@ -203,4 +204,6 @@ public interface IntentConstants {
 	public static final String EXTRA_PATH = "path";
 	public static final String EXTRA_ACTION = "action";
 	public static final String EXTRA_FLAGS = "flags";
+	public static final String EXTRA_HOTOTIN_EXPANDED_TEXT = "expanded_text";
+
 }
