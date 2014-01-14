@@ -54,6 +54,8 @@ public class HototinAsyncTask implements Constants {
 		final String finalUrl = HOTOT_URL + url.replace("http://hotot.in/", "") + ".json";
 
 		Thread thread = new Thread() {
+
+            @Override
 			public void run() {
 				try {
 					HttpClient httpClient = HttpClientFactory.getThreadSafeClient();

@@ -113,7 +113,7 @@ public class TwidereCommands {
 		}
 	}
 
-	private final static class Utils {
+	private static final class Utils {
 
 		private static boolean isQueryCommandTrue(final Context context, final String action) {
 			final Cursor cur = sendQueryCommand(context, action);

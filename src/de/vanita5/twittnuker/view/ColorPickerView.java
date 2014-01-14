@@ -56,16 +56,16 @@ import de.vanita5.twittnuker.graphic.AlphaPatternDrawable;
  */
 public class ColorPickerView extends View {
 
-	private final static int PANEL_SAT_VAL = 0;
+	private static final int PANEL_SAT_VAL = 0;
 
-	private final static int PANEL_HUE = 1;
+	private static final int PANEL_HUE = 1;
 
-	private final static int PANEL_ALPHA = 2;
+	private static final int PANEL_ALPHA = 2;
 
 	/**
 	 * The width in pixels of the border surrounding all color panels.
 	 */
-	private final static float BORDER_WIDTH_PX = 1;
+    private static final float BORDER_WIDTH_PX = 1;
 
 	/**
 	 * The width in dp of the hue panel.
@@ -705,7 +705,7 @@ public class ColorPickerView extends View {
 		RECTANGLE_TRACKER_OFFSET *= mDensity;
 		HUE_PANEL_WIDTH *= mDensity;
 		ALPHA_PANEL_HEIGHT *= mDensity;
-		PANEL_SPACING = PANEL_SPACING * mDensity;
+        PANEL_SPACING *= mDensity;
 
 		mDrawingOffset = calculateRequiredOffset();
 
@@ -790,7 +790,7 @@ public class ColorPickerView extends View {
 		} else if (x > rect.right) {
 			x = width;
 		} else {
-			x = x - (int) rect.left;
+            x -= (int) rect.left;
 		}
 
 		return 0xff - x * 0xff / width;
@@ -808,7 +808,7 @@ public class ColorPickerView extends View {
 		} else if (y > rect.bottom) {
 			y = height;
 		} else {
-			y = y - rect.top;
+            y -= rect.top;
 		}
 
 		return 360f - y * 360f / height;
@@ -827,7 +827,7 @@ public class ColorPickerView extends View {
 		} else if (x > rect.right) {
 			x = width;
 		} else {
-			x = x - rect.left;
+            x -= rect.left;
 		}
 
 		if (y < rect.top) {
@@ -835,7 +835,7 @@ public class ColorPickerView extends View {
 		} else if (y > rect.bottom) {
 			y = height;
 		} else {
-			y = y - rect.top;
+            y -= rect.top;
 		}
 
 		result[0] = 1.f / width * x;

@@ -226,7 +226,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 		setListShown(true);
 		setRefreshComplete();
 		setProgressBarIndeterminateVisibility(false);
-		setData(data);
+        mData = data;
 		mFirstVisibleItem = -1;
 		mReadPositions.clear();
 		final int first_visible_position = mListView.getFirstVisiblePosition();

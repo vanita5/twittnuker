@@ -138,8 +138,7 @@ public class SeekBarDialogPreference extends DialogPreference {
 				// note: this does not persist the progress value. that is only
 				// ever done in setProgress()
 				final String progressStr = String.valueOf(progress + mMinProgress);
-				mProgressText.setText(mProgressTextSuffix == null ? progressStr : progressStr
-						.concat(mProgressTextSuffix.toString()));
+				mProgressText.setText(mProgressTextSuffix == null ? progressStr : progressStr + mProgressTextSuffix.toString());
 			}
 
 			@Override
@@ -199,9 +198,9 @@ public class SeekBarDialogPreference extends DialogPreference {
 		// set the state's value with the class member that holds current
 		// setting value
 		final SavedState myState = new SavedState(superState);
-		myState.minProgress = getMinProgress();
-		myState.maxProgress = getMaxProgress();
-		myState.progress = getProgress();
+		myState.minProgress = mMinProgress;
+		myState.maxProgress = mMaxProgress;
+		myState.progress = mProgress;
 
 		return myState;
 	}

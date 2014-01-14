@@ -215,7 +215,7 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
 				throw new TwitterException("Please check your APN settings, make sure not to use WAP APNs.", e);
 			} catch (final OutOfMemoryError e) {
 				// I don't know why OOM thown, but it should be catched.
-				System.gc();
+				//System.gc();
 				throw new TwitterException("Unknown error", e);
 			}
 			final int statusCode = res.getStatusCode();
@@ -231,7 +231,7 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
 		client.getConnectionManager().shutdown();
 	}
 
-	final static class TrustAllSSLSocketFactory extends SSLSocketFactory {
+	static final class TrustAllSSLSocketFactory extends SSLSocketFactory {
 		final SSLContext sslContext = SSLContext.getInstance(TLS);
 
 		TrustAllSSLSocketFactory(final KeyStore truststore) throws NoSuchAlgorithmException, KeyManagementException,

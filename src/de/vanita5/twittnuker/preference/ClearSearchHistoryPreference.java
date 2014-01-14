@@ -23,15 +23,13 @@
 package de.vanita5.twittnuker.preference;
 
 import android.content.Context;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.provider.SearchRecentSuggestions;
 import android.util.AttributeSet;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.provider.RecentSearchProvider;
 
 
-public class ClearSearchHistoryPreference extends AsyncTaskPreference implements Constants, OnPreferenceClickListener {
+public class ClearSearchHistoryPreference extends AsyncTaskPreference {
 
 	public ClearSearchHistoryPreference(final Context context) {
 		this(context, null);

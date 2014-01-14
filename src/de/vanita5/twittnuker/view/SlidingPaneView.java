@@ -303,10 +303,10 @@ public class SlidingPaneView extends ViewGroup {
 		final SavedState ss = new SavedState(superState);
 		ss.mIsRightPaneShown = isRightPaneOpened();
 		ss.mIsShadowVisible = isShadowVisible();
-		ss.mShadowWidth = getShadowWidth();
-		ss.mFlingDuration = getFlingDuration();
-		ss.mFadeType = getFadeType();
-		ss.mFadeValue = getFadeValue();
+		ss.mShadowWidth = mShadowWidth;
+		ss.mFlingDuration = mFlingDuration;
+		ss.mFadeType = mFadeType;
+		ss.mFadeValue = mFadeMax;
 		return ss;
 	}
 

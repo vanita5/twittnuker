@@ -40,7 +40,6 @@ import android.widget.ListView;
 
 import org.mariotaku.menucomponent.widget.PopupMenu;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ExtensionsAdapter;
 import de.vanita5.twittnuker.loader.ExtensionsListLoader;
@@ -51,8 +50,8 @@ import de.vanita5.twittnuker.util.Utils;
 
 import java.util.List;
 
-public class ExtensionsListFragment extends BaseListFragment implements Constants,
-		LoaderCallbacks<List<ExtensionInfo>>, OnItemClickListener, OnItemLongClickListener, OnMenuItemClickListener,
+public class ExtensionsListFragment extends BaseListFragment implements
+        LoaderCallbacks<List<ExtensionInfo>>, OnItemClickListener, OnItemLongClickListener, OnMenuItemClickListener,
 		Panes.Right {
 
 	private ExtensionsAdapter mAdapter;

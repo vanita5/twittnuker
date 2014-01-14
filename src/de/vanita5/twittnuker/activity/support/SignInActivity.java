@@ -539,7 +539,7 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 		mSetColorButton.setEnabled(false);
 	}
 
-	public static abstract class AbstractSignInTask extends AsyncTask<Void, Void, SigninResponse> {
+	public abstract static class AbstractSignInTask extends AsyncTask<Void, Void, SigninResponse> {
 
 		protected final Configuration conf;
 		protected final SignInActivity callback;

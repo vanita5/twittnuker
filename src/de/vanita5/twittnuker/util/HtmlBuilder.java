@@ -79,7 +79,7 @@ public class HtmlBuilder {
 	}
 
 	public String build() {
-		if (links.size() == 0) return escapeSource(ArrayUtils.mergeArrayToString(array));
+		if (links.isEmpty()) return escapeSource(ArrayUtils.mergeArrayToString(array));
 		Collections.sort(links);
 		final StringBuilder builder = new StringBuilder();
 		final int links_size = links.size();

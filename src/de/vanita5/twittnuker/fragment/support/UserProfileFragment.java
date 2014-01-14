@@ -159,7 +159,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 
 	private long mAccountId;
 	private Relationship mFriendship;
-	private ParcelableUser mUser = null;
+	private ParcelableUser mUser;
 	private Locale mLocale;
 
 	private View mListContainer, mErrorRetryContainer;

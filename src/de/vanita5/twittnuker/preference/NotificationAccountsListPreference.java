@@ -26,12 +26,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
 
-import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.fragment.AccountNotificationSettingsFragment;
 import de.vanita5.twittnuker.model.Account;
 
 
-public class NotificationAccountsListPreference extends AccountsListPreference implements TwittnukerConstants {
+public class NotificationAccountsListPreference extends AccountsListPreference {
 
 	public NotificationAccountsListPreference(final Context context) {
 		super(context);

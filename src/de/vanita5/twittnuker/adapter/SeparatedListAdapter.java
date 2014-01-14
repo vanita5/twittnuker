@@ -39,7 +39,7 @@ public class SeparatedListAdapter<T extends Adapter> extends BaseAdapter {
 
 	private final Map<String, T> mSections = new LinkedHashMap<String, T>();
 	private final ArrayAdapter<String> mHeaders;
-	private final static int TYPE_SECTION_HEADER = 0;
+	private static final int TYPE_SECTION_HEADER = 0;
 
 	public SeparatedListAdapter(final Context context) {
 		mHeaders = new ArrayAdapter<String>(context, R.layout.section_header);

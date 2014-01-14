@@ -30,7 +30,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.loader.CursorSupportUsersLoader;
@@ -43,7 +42,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserList;
 
-public class UserListMembersFragment extends CursorSupportUsersListFragment implements OnMenuItemClickListener {
+public class UserListMembersFragment extends CursorSupportUsersListFragment {
 
 	private ParcelableUserList mUserList;
 

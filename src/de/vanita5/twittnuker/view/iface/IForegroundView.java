@@ -75,7 +75,7 @@ public interface IForegroundView {
 
         private int mForegroundGravity = Gravity.FILL;
         private boolean mForegroundInPadding = true;
-        private boolean mForegroundBoundsChanged = false;
+        private boolean mForegroundBoundsChanged;
 
         public ForegroundViewHelper(final View view, final Context context, final AttributeSet attrs, final int defStyle) {
             mView = view;

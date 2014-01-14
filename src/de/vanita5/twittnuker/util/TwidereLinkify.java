@@ -64,7 +64,7 @@ import java.util.regex.Pattern;
 public final class TwidereLinkify implements Constants {
 
     //Set flag for media urls not recognized by Twitter
-    private boolean hasExtraMediaLink = false;
+    private boolean hasExtraMediaLink;
     private String customMediaUrl;
 
 	public static final int LINK_TYPE_MENTION = 1;

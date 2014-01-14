@@ -25,8 +25,8 @@ package de.vanita5.twittnuker.provider;
 import android.content.SearchRecentSuggestionsProvider;
 
 public class RecentSearchProvider extends SearchRecentSuggestionsProvider {
-	public final static String AUTHORITY = "de.vanita5.twittnuker.provider.SearchRecentSuggestions";
-	public final static int MODE = DATABASE_MODE_QUERIES;
+	public static final String AUTHORITY = "de.vanita5.twittnuker.provider.SearchRecentSuggestions";
+	public static final int MODE = DATABASE_MODE_QUERIES;
 
 	public RecentSearchProvider() {
 		setupSuggestions(AUTHORITY, MODE);

@@ -38,11 +38,7 @@ import de.vanita5.twittnuker.util.MultiSelectManager;
 
 public class BaseSupportFragment extends Fragment implements Constants {
 
-	public BaseSupportFragment() {
-
-	}
-
-	public TwittnukerApplication getApplication() {
+    public TwittnukerApplication getApplication() {
 		final Activity activity = getActivity();
 		if (activity != null) return (TwittnukerApplication) activity.getApplication();
 		return null;

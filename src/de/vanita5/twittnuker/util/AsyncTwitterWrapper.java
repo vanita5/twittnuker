@@ -2257,7 +2257,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				final List<Trends> messages = response.list;
 				final ArrayList<String> hashtags = new ArrayList<String>();
 				final ArrayList<ContentValues> hashtag_values = new ArrayList<ContentValues>();
-				if (messages != null && messages.size() > 0) {
+				if (messages != null && !messages.isEmpty()) {
 					final ContentValues[] values_array = makeTrendsContentValues(messages);
 					for (final ContentValues values : values_array) {
 						final String hashtag = values.getAsString(CachedTrends.NAME).replaceFirst("#", "");

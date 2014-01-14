@@ -353,7 +353,7 @@ public class NyanDrawingHelper {
 			}
 		}
 
-		private static abstract class Star implements StarAnimFrames {
+		private abstract static class Star implements StarAnimFrames {
 
 			private final int mMaxColumn, mMaxRow;
 			private int mCurrentFrame, mCurrentColumn, mCurrentRow;

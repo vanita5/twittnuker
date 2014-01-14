@@ -128,6 +128,6 @@ public class TweetShortenerUtils implements Constants {
 
 	public static void expandHototin(final Activity activity, final String url) {
 		if (activity == null || url == null) return;
-		final HototinAsyncTask task = new HototinAsyncTask(activity, url);
+		new HototinAsyncTask(activity, url);
 	}
 }

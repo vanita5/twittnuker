@@ -44,13 +44,13 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, JSONP
 		}
 	};
 
-	public final static int ACTION_FAVORITE = Activity.Action.ACTION_FAVORITE;
-	public final static int ACTION_FOLLOW = Activity.Action.ACTION_FOLLOW;
-	public final static int ACTION_MENTION = Activity.Action.ACTION_MENTION;
-	public final static int ACTION_REPLY = Activity.Action.ACTION_REPLY;
-	public final static int ACTION_RETWEET = Activity.Action.ACTION_RETWEET;
-	public final static int ACTION_LIST_MEMBER_ADDED = Activity.Action.ACTION_LIST_MEMBER_ADDED;
-	public final static int ACTION_LIST_CREATED = Activity.Action.ACTION_LIST_CREATED;
+	public static final int ACTION_FAVORITE = Activity.Action.ACTION_FAVORITE;
+	public static final int ACTION_FOLLOW = Activity.Action.ACTION_FOLLOW;
+	public static final int ACTION_MENTION = Activity.Action.ACTION_MENTION;
+	public static final int ACTION_REPLY = Activity.Action.ACTION_REPLY;
+	public static final int ACTION_RETWEET = Activity.Action.ACTION_RETWEET;
+	public static final int ACTION_LIST_MEMBER_ADDED = Activity.Action.ACTION_LIST_MEMBER_ADDED;
+	public static final int ACTION_LIST_CREATED = Activity.Action.ACTION_LIST_CREATED;
 
 	public final long account_id, activity_timestamp, max_position, min_position;
 	public final int action;

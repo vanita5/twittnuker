@@ -67,7 +67,7 @@ public class HostsFileParser {
 			while ((line = reader.readLine()) != null) {
 				final String trimmed = line.trim();
 				// Skip if this line is empty or commented out
-				if (trimmed.length() == 0 || trimmed.startsWith("#")) {
+				if (trimmed.isEmpty() || trimmed.startsWith("#")) {
 					continue;
 				}
 				final String[] segments = trimmed.replaceAll("(\\s|\t)+", " ").split("\\s");

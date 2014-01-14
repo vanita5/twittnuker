@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.preference;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
@@ -35,7 +34,7 @@ import de.vanita5.twittnuker.R;
 
 import java.util.ArrayList;
 
-public class TweetShortenerPreference extends DialogPreference implements Constants, OnClickListener {
+public class TweetShortenerPreference extends DialogPreference implements Constants {
 
 	private SharedPreferences mPreferences;
 

@@ -31,7 +31,7 @@ public class HttpClientFactory {
 
 	private static DefaultHttpClient client;
 
-	public synchronized static DefaultHttpClient getThreadSafeClient() {
+	public static synchronized DefaultHttpClient getThreadSafeClient() {
 		if (client != null) {
 			return client;
 		}

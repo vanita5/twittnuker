@@ -36,11 +36,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
 public class BaseSupportDialogFragment extends DialogFragment implements Constants {
 
-	public BaseSupportDialogFragment() {
-
-	}
-
-	public TwittnukerApplication getApplication() {
+    public TwittnukerApplication getApplication() {
 		final Activity activity = getActivity();
 		if (activity != null) return (TwittnukerApplication) activity.getApplication();
 		return null;

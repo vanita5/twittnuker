@@ -182,7 +182,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		startActivityForResult(intent, REQUEST_IMPORT_SETTINGS);
 	}
 
-	public static abstract class BaseWizardPageFragment extends BasePreferenceFragment implements
+	public abstract static class BaseWizardPageFragment extends BasePreferenceFragment implements
 			OnPreferenceClickListener {
 
 		public void gotoFinishPage() {
@@ -404,7 +404,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		}
 	}
 
-	public static class WizardPageThemeFragment extends BaseWizardPageFragment implements OnPreferenceClickListener {
+	public static class WizardPageThemeFragment extends BaseWizardPageFragment {
 
 		@Override
 		protected int getHeaderSummary() {
@@ -422,7 +422,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		}
 	}
 
-	public static class WizardPageWelcomeFragment extends BaseWizardPageFragment implements OnPreferenceClickListener {
+	public static class WizardPageWelcomeFragment extends BaseWizardPageFragment {
 
 		public void applyInitialSettings() {
 			final Activity a = getActivity();
@@ -480,7 +480,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		}
 	}
 
-	static abstract class AbsInitialSettingsTask extends AsyncTask<Void, Void, Boolean> {
+	abstract static class AbsInitialSettingsTask extends AsyncTask<Void, Void, Boolean> {
 
 		private static final String FRAGMENT_TAG = "initial_settings_dialog";
 

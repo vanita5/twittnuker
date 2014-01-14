@@ -115,7 +115,7 @@ public class SwipebackActivityUtils implements TwittnukerConstants {
 
 	public static class SwipebackScreenshotManager {
 
-		private final static String DIR_NAME_SWIPEBACK_CACHE = "swipeback_cache";
+		private static final String DIR_NAME_SWIPEBACK_CACHE = "swipeback_cache";
 		private static final CompressFormat COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
 		private static final CompressFormat COMPRESS_FORMAT_TRANSPARENT = Bitmap.CompressFormat.PNG;
 		private final File mCacheDir;

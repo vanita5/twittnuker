@@ -202,8 +202,8 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	private boolean mBottomComposeButton;
 
     private int mTabDisplayOption;
-	private boolean mStreaming = false;
-	protected boolean hasStreamLoaded = false;
+	private boolean mStreaming;
+	protected boolean hasStreamLoaded;
 	
 	protected TwitterStream twitterStream;
 
@@ -809,7 +809,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	}
 
 	private boolean isTabsChanged(final List<SupportTabSpec> tabs) {
-		if (mCustomTabs.size() == 0 && tabs == null) return false;
+		if (mCustomTabs.isEmpty() && tabs == null) return false;
 		if (mCustomTabs.size() != tabs.size()) return true;
 		for (int i = 0, size = mCustomTabs.size(); i < size; i++) {
 			if (!mCustomTabs.get(i).equals(tabs.get(i))) return true;
@@ -942,7 +942,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		final View decorView = w.getDecorView();
 		decorView.getWindowVisibleDisplayFrame(mRect);
 		final int statusBarHeight = mRect.top;
-		final LeftDrawerFrameLayout ld = getLeftDrawerContainer();
+		final LeftDrawerFrameLayout ld = mLeftDrawerContainer;
 		if (ld == null) return;
 		final int scrollX = -Math.round(percentOpen * ld.getMeasuredWidth());
 		ld.setPercentOpen(percentOpen);

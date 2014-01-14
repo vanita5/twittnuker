@@ -139,7 +139,7 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 
 	@Override
 	public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-		final ParcelableUsersAdapter adapter = getListAdapter();
+		final ParcelableUsersAdapter adapter = mAdapter;
 		final ParcelableUser user = adapter.findItem(id);
 		if (user == null) return false;
 		setItemSelected(user, position, !mMultiSelectManager.isSelected(user));

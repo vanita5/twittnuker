@@ -25,11 +25,7 @@ package de.vanita5.twittnuker.preference;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
@@ -37,9 +33,8 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class ImageUploaderPreference extends DialogPreference implements Constants, OnClickListener {
+public class ImageUploaderPreference extends DialogPreference implements Constants {
 
 	private SharedPreferences mPreferences;
 	private String[] mAvailableImageUploaders;

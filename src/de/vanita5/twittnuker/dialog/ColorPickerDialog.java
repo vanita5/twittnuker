@@ -51,7 +51,7 @@ import de.vanita5.twittnuker.view.ForegroundColorView;
 public final class ColorPickerDialog extends AlertDialog implements OnItemClickListener, OnColorChangedListener,
         Constants {
 
-    private final static int[] COLORS = { HOLO_RED_DARK, HOLO_RED_LIGHT, HOLO_ORANGE_DARK, HOLO_ORANGE_LIGHT,
+    private static final int[] COLORS = { HOLO_RED_DARK, HOLO_RED_LIGHT, HOLO_ORANGE_DARK, HOLO_ORANGE_LIGHT,
             HOLO_GREEN_LIGHT, HOLO_GREEN_DARK, HOLO_BLUE_LIGHT, HOLO_BLUE_DARK, HOLO_PURPLE_DARK, HOLO_PURPLE_LIGHT,
             Color.WHITE };
 

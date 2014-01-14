@@ -97,7 +97,7 @@ public final class ColorAnalyser {
 		}
 
 		resized.recycle();
-		if (colors.size() == 0) return def;
+		if (colors.isEmpty()) return def;
 		return colors.get(Collections.max(colors.keySet()));
 	}
 }
