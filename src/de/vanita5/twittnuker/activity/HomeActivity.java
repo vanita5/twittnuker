@@ -644,7 +644,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 						final Notification.Builder builder = new Notification.Builder(this);
 						builder.setOngoing(true);
 						builder.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
-						builder.setSmallIcon(R.drawable.ic_stat_twidere);
+						builder.setSmallIcon(R.drawable.ic_stat_twittnuker);
 						builder.setContentTitle(getString(R.string.app_name));
 						builder.setContentText(getString(R.string.streaming_service_running));
 						builder.setTicker(getString(R.string.streaming_service_running));

@@ -315,7 +315,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		if (showNotification) {
 			final String message = getString(R.string.status_not_updated_summary);
 			final Intent intent = new Intent(INTENT_ACTION_DRAFTS);
-			final Notification notification = buildNotification(title, message, R.drawable.ic_stat_twidere, intent, null, false);
+			final Notification notification = buildNotification(title, message, R.drawable.ic_stat_twittnuker, intent, null, false);
 			mNotificationManager.notify(NOTIFICATION_ID_DRAFTS, notification);
 		}
 	}
@@ -447,7 +447,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 	private String postHototIn(ParcelableStatusUpdate pstatus) {
 
 		final Notification notification = buildNotification(getString(R.string.shortening),
-				getString(R.string.shortening_hototin), R.drawable.ic_stat_twidere, null, null, true);
+				getString(R.string.shortening_hototin), R.drawable.ic_stat_twittnuker, null, null, true);
 		mNotificationManager.notify(NOTIFICATION_ID_SHORTENING, notification);
 
 		String shortenedText;
@@ -461,7 +461,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		if (shortenedText == null || shortenedText.isEmpty()) {
 			final Intent intent = new Intent(INTENT_ACTION_DRAFTS);
 			final Notification errorNotification = buildNotification(getString(R.string.shortening),
-					getString(R.string. error_hototin), R.drawable.ic_stat_twidere, intent, null, false);
+					getString(R.string. error_hototin), R.drawable.ic_stat_twittnuker, intent, null, false);
 			mNotificationManager.notify(NOTIFICATION_ID_SHORTENING, errorNotification);
 			return null;
 		}

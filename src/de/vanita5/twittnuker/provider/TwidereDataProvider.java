@@ -1068,7 +1068,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 						displayStatusesNotification(notifiedCount, pref, pref.getHomeTimelineNotificationType(),
 								NOTIFICATION_ID_HOME_TIMELINE, getStatusesForAccounts(items, accountId),
 								R.string.notification_status, R.string.notification_status_multiple,
-								R.drawable.ic_stat_twitter);
+								R.drawable.ic_stat_twittnuker);
 					}
 				}
 				notifyUnreadCountChanged(NOTIFICATION_ID_HOME_TIMELINE);
