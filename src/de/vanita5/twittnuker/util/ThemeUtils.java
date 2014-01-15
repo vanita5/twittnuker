@@ -237,7 +237,7 @@ public class ThemeUtils implements Constants {
 	public static int getNoDisplayThemeResource(final Context context) {
 		if (context == null) return R.style.Theme_Twidere_Dark_NoDisplay;
 		final SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final String theme = pref.getString(KEY_THEME, VALUE_THEME_NAME_TWIDERE);
+		final String theme = pref.getString(KEY_THEME, VALUE_THEME_NAME_LIGHT);
 		if (VALUE_THEME_NAME_DARK.equals(theme)) return R.style.Theme_Twidere_Dark_NoDisplay;
 		return R.style.Theme_Twidere_Light_NoDisplay;
 	}
@@ -349,9 +349,9 @@ public class ThemeUtils implements Constants {
 	}
 
 	public static String getThemeNameOption(final Context context) {
-		if (context == null) return VALUE_THEME_NAME_TWIDERE;
+		if (context == null) return VALUE_THEME_NAME_LIGHT;
 		final SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		return pref != null ? pref.getString(KEY_THEME, VALUE_THEME_NAME_TWIDERE) : VALUE_THEME_NAME_TWIDERE;
+		return pref != null ? pref.getString(KEY_THEME, VALUE_THEME_NAME_LIGHT) : VALUE_THEME_NAME_LIGHT;
 	}
 
 	public static int getThemeResource(final Context context) {
