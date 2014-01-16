@@ -581,7 +581,7 @@ public final class Utils implements Constants {
 		final SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		adapter.setDisplayProfileImage(pref.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true));
 		adapter.setDisplayNameFirst(pref.getBoolean(KEY_NAME_FIRST, true));
-		adapter.setLinkHighlightOption(pref.getString(KEY_LINK_HIGHLIGHT_OPTION, VALUE_LINK_HIGHLIGHT_OPTION_NONE));
+		adapter.setLinkHighlightOption(pref.getString(KEY_LINK_HIGHLIGHT_OPTION, VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT));
         adapter.setLinkHighlightColor(ThemeUtils.getUserLinkTextColor(context));
 		adapter.setNicknameOnly(pref.getBoolean(KEY_NICKNAME_ONLY, false));
 		adapter.setTextSize(pref.getInt(KEY_TEXT_SIZE, getDefaultTextSize(context)));
@@ -1696,7 +1696,7 @@ public final class Utils implements Constants {
 	public static String getLinkHighlightOption(final Context context) {
 		if (context == null) return null;
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		return prefs.getString(KEY_LINK_HIGHLIGHT_OPTION, VALUE_LINK_HIGHLIGHT_OPTION_NONE);
+		return prefs.getString(KEY_LINK_HIGHLIGHT_OPTION, VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT);
 	}
 
 	public static int getLinkHighlightOptionInt(final Context context) {
@@ -1710,7 +1710,7 @@ public final class Utils implements Constants {
 			return VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
 		else if (VALUE_LINK_HIGHLIGHT_OPTION_UNDERLINE.equals(option))
 			return VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE;
-		return VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE;
+		return VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
 	}
 
 	public static String getLocalizedNumber(final Locale locale, final Number number) {
