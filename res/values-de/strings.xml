@@ -34,9 +34,9 @@
     <string name="empty_account_selection_disallowed">Bitte wähle mind. einen Account aus.</string>
     <string name="error_unknown_error">Fehler: Unbekannter Fehler, es ist wohl ein Bug.</string>
     <string name="error_message">Fehler <xliff:g id="message">%s</xliff:g></string>
-    <string name="error_message_with_action">Fehler bei <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
+    <string name="error_message_with_action">Fehler beim <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
     <string name="error_message_rate_limit">Tweetrate überschritten, bitte probiere es nochmals in <xliff:g id="time">%s</xliff:g></string>
-    <string name="error_message_rate_limit_with_action">Tweetrate überschritten bei <xliff:g id="action">%1$s</xliff:g>, bitte probiere es nochmals in <xliff:g id="time">%2$s</xliff:g></string>
+    <string name="error_message_rate_limit_with_action">Tweetrate überschritten beim <xliff:g id="action">%1$s</xliff:g>, bitte probiere es nochmals in <xliff:g id="time">%2$s</xliff:g></string>
     <string name="select_account">Account auswählen</string>
     <string name="username">Benutzername</string>
     <string name="password">Passwort</string>
@@ -299,35 +299,35 @@
     <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> hat dir eine Direktnachricht geschickt.</string>
     <string name="notification_direct_message_multiple_messages"><xliff:g id="user">%1$s</xliff:g>  hat dir <xliff:g id="messages_count">%2$d</xliff:g> Direktnachrichten gesendet.</string>
     <string name="notification_direct_message_multiple_users"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="users_count">%2$d</xliff:g> andere haben dir <xliff:g id="messages_count">%3$d</xliff:g> Direktnachrichten gesendet.</string>
-    <string name="action_getting_status">lade Tweet</string>
-    <string name="action_updating_status">Sende Tweet</string>
-    <string name="action_sending_direct_message">Sende Direktnachricht</string>
-    <string name="action_refreshing_home_timeline">Aktualisiere meine Timeline</string>
-    <string name="action_refreshing_mentions">Aktualisiere Erwähnungen</string>
-    <string name="action_refreshing_direct_messages">Aktualisiere Direktnachrichten</string>
-    <string name="action_favoriting">favorisiere</string>
-    <string name="action_unfavoriting">Favorisierung rückgängig machen</string>
-    <string name="action_deleting">lösche</string>
-    <string name="action_updating_profile">Aktualisiere Profil</string>
-    <string name="action_updating_profile_image">Profilbild wird aktualisiert</string>
-    <string name="action_updating_profile_banner_image">Aktualisiere Profiltitelbild</string>
-    <string name="action_removing_profile_banner_image">Lösche Profiltitelbild</string>
-    <string name="action_updating_details">aktualisiere Details</string>
-    <string name="action_blocking">blocken</string>
-    <string name="action_unblocking">entblocken</string>
-    <string name="action_following">folgen</string>
-    <string name="action_unfollowing">entfolgen</string>
-    <string name="action_creating_list">Erstelle Liste</string>
-    <string name="action_adding_member">Mitglied hinzufügen</string>
-    <string name="action_signing_in">anmelden</string>
-    <string name="action_retweeting">Retweet</string>
-    <string name="action_reporting_for_spam">als Spam melden</string>
-    <string name="action_subscribing_to_list">Abonniere Liste</string>
-    <string name="action_unsubscribing_from_list">Kündige Listen-Abonnement</string>
-    <string name="action_saving_search">Speichere Suche</string>
-    <string name="action_deleting_search">lösche Suche</string>
-    <string name="action_accepting_follow_request">aktzeptiere Folgeanfrage</string>
-    <string name="action_denying_follow_request">lehne Folgeabfrage ab</string>
+    <string name="action_getting_status">laden von Tweets</string>
+    <string name="action_updating_status">senden von Tweets</string>
+    <string name="action_sending_direct_message">senden der Direktnachricht</string>
+    <string name="action_refreshing_home_timeline">aktualisieren der Timeline</string>
+    <string name="action_refreshing_mentions">aktualisieren der Erwähnungen</string>
+    <string name="action_refreshing_direct_messages">aktualisieren der Direktnachrichten</string>
+    <string name="action_favoriting">favorisieren</string>
+    <string name="action_unfavoriting">rückgängig machen des Favorits</string>
+    <string name="action_deleting">löschen</string>
+    <string name="action_updating_profile">aktualisieren des Profils</string>
+    <string name="action_updating_profile_image">aktualisieren des Profilbilds</string>
+    <string name="action_updating_profile_banner_image">aktualisieren des Profiltitelbilds</string>
+    <string name="action_removing_profile_banner_image">löschen des Profiltitelbild</string>
+    <string name="action_updating_details">aktualisieren der Details</string>
+    <string name="action_blocking">Blocken</string>
+    <string name="action_unblocking">Entblocken</string>
+    <string name="action_following">Folgen</string>
+    <string name="action_unfollowing">Entfolgen</string>
+    <string name="action_creating_list">erstellen der Liste</string>
+    <string name="action_adding_member">hinzufügen des Benutzers</string>
+    <string name="action_signing_in">Anmelden</string>
+    <string name="action_retweeting">Retweeten</string>
+    <string name="action_reporting_for_spam">melden als Spam</string>
+    <string name="action_subscribing_to_list">abonnieren der Liste</string>
+    <string name="action_unsubscribing_from_list">kündigen des Listen-Abonnements</string>
+    <string name="action_saving_search">speichern der Suche</string>
+    <string name="action_deleting_search">löschen der Suche</string>
+    <string name="action_accepting_follow_request">aktzeptieren der Folgeanfrage</string>
+    <string name="action_denying_follow_request">ablehnen der Folgeanfrage</string>
     <string name="status_is_duplicate">Dein Tweet ist ein Duplikat.</string>
     <string name="silent_notifications">Ruhemodus</string>
     <string name="silent_notifications_summary">Ton/Vibration für Benachrichtigungen ausschalten</string>
