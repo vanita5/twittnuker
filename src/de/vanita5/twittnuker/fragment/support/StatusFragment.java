@@ -204,6 +204,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 						new OnLinkClickHandler(getActivity(), getMultiSelectManager()));
 				linkify.setLinkTextColor(ThemeUtils.getUserLinkTextColor(getActivity()));
 				linkify.applyAllLinks(mTextView, mStatus.account_id, mStatus.is_possibly_sensitive);
+				setProgressBarIndeterminateVisibility(false);
 			}
 		}
 	};

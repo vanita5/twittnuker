@@ -92,6 +92,7 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_HOTOTIN: {
+				activity.setProgressBarIndeterminateVisibility(true);
 				expandHototin(activity, link);
 				break;
 			}
