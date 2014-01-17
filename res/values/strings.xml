@@ -585,6 +585,7 @@
     <string name="nicknames">Nicknames</string>
     <string name="user_colors">User colors</string>
     <string name="import_export">Import/Export</string>
+    <string name="theme_background_alpha">Theme background alpha</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 
+import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 
 import de.vanita5.twittnuker.R;
@@ -39,7 +39,7 @@ public class SwipeBackActivityHelper implements TwittnukerConstants {
 
 	public void onActivtyCreate() {
 		final Window w = mActivity.getWindow();
-		w.setBackgroundDrawable(new ColorDrawable(0));
+		w.setBackgroundDrawable(new EmptyDrawable());
 		mSwipeBackLayout = (SwipeBackLayout) LayoutInflater.from(mActivity).inflate(R.layout.swipeback_layout, null);
 	}
 	

@@ -138,15 +138,15 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
 				throw new TwitterException(e);
 			}
 			final String host = url_orig.getHost(), authority = url_orig.getAuthority();
-			final String resolved_host = resolver != null ? resolver.resolve(host) : null;
-			final String resolved_url = !isEmpty(resolved_host) ? urlString.replace("://" + host, "://"
-                    + resolved_host) : urlString;
+			final String resolvedHost = resolver != null ? resolver.resolve(host) : null;
+			final String resolvedUrl = !isEmpty(resolvedHost) ? urlString.replace("://" + host, "://"
+                    + resolvedHost) : urlString;
 
             final RequestMethod method = req.getMethod();
             if (method == RequestMethod.GET) {
-				commonsRequest = new HttpGet(resolved_url);
+				commonsRequest = new HttpGet(resolvedUrl);
 			} else if (method == RequestMethod.POST) {
-				final HttpPost post = new HttpPost(resolved_url);
+				final HttpPost post = new HttpPost(resolvedUrl);
 				// parameter has a file?
 				boolean hasFile = false;
 				final HttpParameter[] params = req.getParameters();
@@ -185,11 +185,11 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
 				post.getParams().setBooleanParameter(CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
 				commonsRequest = post;
 			} else if (method == RequestMethod.DELETE) {
-				commonsRequest = new HttpDelete(resolved_url);
+				commonsRequest = new HttpDelete(resolvedUrl);
 			} else if (method == RequestMethod.HEAD) {
-				commonsRequest = new HttpHead(resolved_url);
+				commonsRequest = new HttpHead(resolvedUrl);
 			} else if (method == RequestMethod.PUT) {
-				commonsRequest = new HttpPut(resolved_url);
+				commonsRequest = new HttpPut(resolvedUrl);
 			} else
 				throw new TwitterException("Unsupported request method " + method);
 			final Map<String, String> headers = req.getRequestHeaders();
@@ -201,7 +201,7 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
             if (authorizationHeader != null) {
 				commonsRequest.addHeader("Authorization", authorizationHeader);
 			}
-			if (!isEmpty(resolved_host) && !resolved_host.equals(host)) {
+            if (resolvedHost != null && !resolvedHost.isEmpty() && !resolvedHost.equals(host)) {
 				commonsRequest.addHeader("Host", authority);
 			}
 

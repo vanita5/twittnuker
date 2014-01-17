@@ -67,6 +67,7 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
@@ -715,6 +716,11 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		}
 	}
 
+    @Override
+    protected boolean shouldSetWindowBackground() {
+        return false;
+    }
+
 	private LeftDrawerFrameLayout getLeftDrawerContainer() {
 		return mLeftDrawerContainer;
 	}
@@ -875,7 +881,8 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		mSlidingMenu.setBehindCanvasTransformer(new ListenerCanvasTransformer(this));
         final Window window = getWindow();
 		if (isTransparentBackground) {
-			ViewAccessor.setBackground(mSlidingMenu.getContent(), null);
+            final Drawable windowBackground = ThemeUtils.getWindowBackground(this, getCurrentThemeResourceId());
+            ViewAccessor.setBackground(mSlidingMenu.getContent(), windowBackground);
             window.setBackgroundDrawable(new EmptyDrawable());
         } else {
             window.setBackgroundDrawable(null);

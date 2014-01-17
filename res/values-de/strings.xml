@@ -576,8 +576,9 @@
     <string name="import_settings_type_dialog_title">Einstellungen importieren…</string>
     <string name="nicknames">Nicknames</string>
     <string name="user_colors">Benutzer-Farbschema</string>
+    <string name="theme_background_alpha">Theme Hintergrund Transparenz</string>
 
-    #Twittnuker
+    <!-- Twittnuker -->
     <string name="default_api_settings_summary">Diese Einstellungen gelten nur für neu eingeloggte Accounts</string>
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
     <string name="unread_count_summary">Zeigt die Anzahl an ungelesenen Tweets oder Nachrichten im Tab an</string>

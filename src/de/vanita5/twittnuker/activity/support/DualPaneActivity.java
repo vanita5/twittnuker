@@ -27,7 +27,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.BackStackEntryTrojan;
 import android.support.v4.app.Fragment;
@@ -43,6 +43,7 @@ import android.view.animation.AnimationUtils;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.Panes;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.SlidingPaneView;
 
 @SuppressLint("Registered")
@@ -186,11 +187,8 @@ public class DualPaneActivity extends BaseSupportActivity implements OnBackStack
 		return R.layout.base;
 	}
 
-	protected int getPaneBackground() {
-		final TypedArray a = obtainStyledAttributes(new int[] { android.R.attr.windowBackground });
-		final int background = a.getResourceId(0, 0);
-		a.recycle();
-		return background;
+    protected Drawable getPaneBackground() {
+        return ThemeUtils.getWindowBackground(this, getCurrentThemeResourceId());
 	}
 
 	@Override

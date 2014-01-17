@@ -65,10 +65,12 @@ public class ThemeUtils implements Constants {
 		throw new AssertionError();
 	}
 
+    @Deprecated
 	public static void applyActionBarBackground(final ActionBar actionBar, final Context context) {
 		applyActionBarBackground(actionBar, context, true);
 	}
 
+    @Deprecated
 	public static void applyActionBarBackground(final ActionBar actionBar, final Context context,
 			final boolean applyAlpha) {
 		if (actionBar == null || context == null) return;
@@ -76,6 +78,13 @@ public class ThemeUtils implements Constants {
 		actionBar.setSplitBackgroundDrawable(getActionBarSplitBackground(context, applyAlpha));
 		actionBar.setStackedBackgroundDrawable(getActionBarStackedBackground(context, applyAlpha));
 	}
+
+    public static void applyActionBarBackground(final ActionBar actionBar, final Context context, final int themeRes) {
+        if (actionBar == null || context == null) return;
+        actionBar.setBackgroundDrawable(getActionBarBackground(context, themeRes));
+        actionBar.setSplitBackgroundDrawable(getActionBarSplitBackground(context, themeRes));
+        actionBar.setStackedBackgroundDrawable(getActionBarStackedBackground(context, themeRes));
+    }
 
 	public static void applyBackground(final View view) {
 		if (view == null) return;
@@ -101,7 +110,13 @@ public class ThemeUtils implements Constants {
 		d.setAlpha(getThemeAlpha(getThemeResource(context)));
 	}
 
-	public static Drawable getActionBarBackground(final Context context, final boolean applyAlpha) {
+    public static void applyThemeBackgroundAlphaToDrawable(final Context context, final Drawable d) {
+        if (context == null || d == null) return;
+        d.setAlpha(getUserThemeBackgroundAlpha(context));
+    }
+
+    @Deprecated
+    public static Drawable getActionBarBackground(final Context context, final boolean applyAlpha) {
 		final TypedArray a = context.obtainStyledAttributes(null, new int[] { android.R.attr.background },
 				android.R.attr.actionBarStyle, 0);
 		final Drawable d = a.getDrawable(0);
@@ -109,7 +124,15 @@ public class ThemeUtils implements Constants {
 		return applyActionBarDrawable(context, d, applyAlpha);
 	}
 
-	public static Context getActionBarContext(final Context context) {
+    public static Drawable getActionBarBackground(final Context context, final int themeRes) {
+        final TypedArray a = context.obtainStyledAttributes(null, new int[] { android.R.attr.background },
+                android.R.attr.actionBarStyle, themeRes);
+        final Drawable d = a.getDrawable(0);
+        a.recycle();
+        return applyActionBarDrawable(context, d, isTransparentBackground(themeRes));
+    }
+
+    public static Context getActionBarContext(final Context context) {
         final TypedArray a = context.obtainStyledAttributes(new int[] { android.R.attr.actionBarWidgetTheme });
 		final int resId = a.getResourceId(0, 0);
 		a.recycle();
@@ -117,6 +140,7 @@ public class ThemeUtils implements Constants {
 		return new ContextThemeWrapper(context, resId);
 	}
 
+    @Deprecated
 	public static Drawable getActionBarSplitBackground(final Context context, final boolean applyAlpha) {
         final TypedArray a = context.obtainStyledAttributes(null, new int[] { android.R.attr.backgroundSplit },
 				android.R.attr.actionBarStyle, 0);
@@ -125,14 +149,30 @@ public class ThemeUtils implements Constants {
 		return applyActionBarDrawable(context, d, applyAlpha);
 	}
 
-	public static Drawable getActionBarStackedBackground(final Context context, final boolean applyAlpha) {
+    public static Drawable getActionBarSplitBackground(final Context context, final int themeRes) {
+        final TypedArray a = context.obtainStyledAttributes(null, new int[] { android.R.attr.backgroundSplit },
+                android.R.attr.actionBarStyle, themeRes);
+        final Drawable d = a.getDrawable(0);
+        a.recycle();
+        return applyActionBarDrawable(context, d, isTransparentBackground(themeRes));
+    }
+
+    @Deprecated
+    public static Drawable getActionBarStackedBackground(final Context context, final boolean applyAlpha) {
         final TypedArray a = context.obtainStyledAttributes(null, new int[] { android.R.attr.backgroundStacked },
 				android.R.attr.actionBarStyle, 0);
 		final Drawable d = a.getDrawable(0);
 		a.recycle();
 		return applyActionBarDrawable(context, d, applyAlpha);
-
 	}
+
+    public static Drawable getActionBarStackedBackground(final Context context, final int themeRes) {
+        final TypedArray a = context.obtainStyledAttributes(null, new int[] { android.R.attr.backgroundStacked },
+                android.R.attr.actionBarStyle, themeRes);
+        final Drawable d = a.getDrawable(0);
+        a.recycle();
+        return applyActionBarDrawable(context, d, isTransparentBackground(themeRes));
+    }
 
 	public static int getActionIconColor(final Context context) {
 		return getActionIconColor(getThemeResource(context));
@@ -414,6 +454,12 @@ public class ThemeUtils implements Constants {
         return Color.HSVToColor(hsv);
     }
 
+    public static int getUserThemeBackgroundAlpha(final Context context) {
+        if (context == null) return DEFAULT_THEME_BACKGROUND_ALPHA;
+        final SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return pref.getInt(KEY_THEME_BACKGROUND_ALPHA, DEFAULT_THEME_BACKGROUND_ALPHA);
+    }
+
 	public static int getUserThemeColor(final Context context) {
 		if (context == null) return Color.TRANSPARENT;
         final Resources res = getResources(context);
@@ -439,6 +485,9 @@ public class ThemeUtils implements Constants {
         final TypedArray a = context.obtainStyledAttributes(new int[] { android.R.attr.windowBackground });
 		final Drawable d = a.getDrawable(0);
 		a.recycle();
+        if (isTransparentBackground(context)) {
+            applyThemeBackgroundAlphaToDrawable(context, d);
+        }
 		return d;
 	}
 
@@ -447,6 +496,9 @@ public class ThemeUtils implements Constants {
 				themeRes);
 		final Drawable d = a.getDrawable(0);
 		a.recycle();
+        if (isTransparentBackground(themeRes)) {
+            applyThemeBackgroundAlphaToDrawable(context, d);
+        }
 		return d;
 	}
 

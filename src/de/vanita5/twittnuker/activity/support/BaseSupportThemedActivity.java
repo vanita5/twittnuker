@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.util.Utils;
 
 public abstract class BaseSupportThemedActivity extends FragmentActivity implements IThemedActivity {
 
-	private int mCurrentThemeResource, mCurrentThemeColor;
+	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha;
 
 	private String mCurrentThemeFontFamily;
 
@@ -66,6 +66,11 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
     @Override
     public Resources getResources() {
         return getThemedResources();
+    }
+
+    @Override
+    public int getThemeBackgroundAlpha() {
+        return ThemeUtils.isTransparentBackground(this) ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xff;
     }
 
     @Override
@@ -109,7 +114,8 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 
 	protected boolean isThemeChanged() {
 		return getThemeResourceId() != mCurrentThemeResource || getThemeColor() != mCurrentThemeColor
-				|| !CompareUtils.objectEquals(getThemeFontFamily(), mCurrentThemeFontFamily);
+                || !CompareUtils.objectEquals(getThemeFontFamily(), mCurrentThemeFontFamily)
+                || getThemeBackgroundAlpha() != mCurrentThemeBackgroundAlpha;
 	}
 
 	@Override
@@ -139,14 +145,22 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 		restartActivity(this);
 	}
 
+    protected boolean shouldSetWindowBackground() {
+        return true;
+    }
+
 	private final void setActionBarBackground() {
-		ThemeUtils.applyActionBarBackground(getActionBar(), this);
+        ThemeUtils.applyActionBarBackground(getActionBar(), this, mCurrentThemeResource);
 	}
 
 	private final void setTheme() {
 		mCurrentThemeResource = getThemeResourceId();
 		mCurrentThemeColor = getThemeColor();
 		mCurrentThemeFontFamily = getThemeFontFamily();
+        mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		setTheme(mCurrentThemeResource);
+        if (shouldSetWindowBackground() && ThemeUtils.isTransparentBackground(mCurrentThemeResource)) {
+            getWindow().setBackgroundDrawable(ThemeUtils.getWindowBackground(this));
+        }
 	}
 }

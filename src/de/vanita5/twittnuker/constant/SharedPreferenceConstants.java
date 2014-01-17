@@ -81,6 +81,7 @@ public interface SharedPreferenceConstants {
 	public static final String DEFAULT_THEME = VALUE_THEME_NAME_LIGHT;
 	public static final String DEFAULT_THEME_BACKGROUND = VALUE_THEME_BACKGROUND_DEFAULT;
 	public static final String DEFAULT_THEME_FONT_FAMILY = VALUE_THEME_FONT_FAMILY_LIGHT;
+    public static final int DEFAULT_THEME_BACKGROUND_ALPHA = 160;
 
 	public static final String DEFAULT_QUOTE_FORMAT = "RT @" + FORMAT_PATTERN_NAME + ": " + FORMAT_PATTERN_TEXT;
 	public static final String DEFAULT_SHARE_FORMAT = FORMAT_PATTERN_TITLE + " - " + FORMAT_PATTERN_TEXT;
@@ -118,6 +119,8 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_THEME = "theme";
 	@Preference(type = STRING, hasDefault = true, defaultString = DEFAULT_THEME_BACKGROUND)
 	public static final String KEY_THEME_BACKGROUND = "theme_background";
+    @Preference(type = INT, hasDefault = true, defaultInt = DEFAULT_THEME_BACKGROUND_ALPHA)
+    public static final String KEY_THEME_BACKGROUND_ALPHA = "theme_background_alpha";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_THEME_DARK_ACTIONBAR = "theme_dark_actionbar";
 	@Preference(type = INT)
@@ -193,6 +196,7 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_QUICK_SEND = "quick_send";
 	@Preference(type = STRING, exportable = false)
 	public static final String KEY_COMPOSE_ACCOUNTS = "compose_accounts";
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_TCP_DNS_QUERY = "tcp_dns_query";
 	public static final String KEY_DNS_SERVER = "dns_server";
 	public static final String KEY_SEPARATE_RETWEET_ACTION = "separate_retweet_action";
@@ -255,6 +259,8 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_STREAMING_ON_MOBILE = "stream_on_mobile";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_SWIPE_BACK = "swipe_back";
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+    public static final String KEY_SWIPE_FILL_GAP_FROM_BOTTOM = "fill_gap_from_bottom";
 
 	@Preference(type = STRING)
 	public static final String KEY_TRANSLATION_DESTINATION = "translation_destination";
