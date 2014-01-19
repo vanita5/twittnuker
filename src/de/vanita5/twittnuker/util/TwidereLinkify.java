@@ -38,6 +38,7 @@ import android.text.style.URLSpan;
 import android.widget.TextView;
 
 import com.twitter.Extractor;
+import com.twitter.Extractor.Entity;
 import com.twitter.Regex;
 
 import de.vanita5.twittnuker.Constants;
@@ -185,18 +186,14 @@ public final class TwidereLinkify implements Constants {
 	private final boolean addCashtagLinks(final Spannable spannable, final long account_id,
 			final OnLinkClickListener listener, final int highlightOption, final int highlightColor) {
 		boolean hasMatches = false;
-		final Matcher matcher = Regex.VALID_CASHTAG.matcher(spannable);
+        for (Entity entity : mExtractor.extractCashtagsWithIndices(spannable.toString())) {
+            final int start = entity.getStart();
+            final int end = entity.getEnd();
 
-		while (matcher.find()) {
-			final int start = matcherStart(matcher, Regex.VALID_CASHTAG_GROUP_CASHTAG_FULL);
-			final int end = matcherEnd(matcher, Regex.VALID_CASHTAG_GROUP_CASHTAG_FULL);
-			final String url = matcherGroup(matcher, Regex.VALID_CASHTAG_GROUP_TAG);
-
-			applyLink(url, start, end, spannable, account_id, LINK_TYPE_HASHTAG, false, listener, highlightOption,
+            applyLink(entity.getValue(), start, end, spannable, account_id, LINK_TYPE_HASHTAG, false, listener, highlightOption,
 					highlightColor);
 			hasMatches = true;
 		}
-
 		return hasMatches;
 	}
 
@@ -204,17 +201,14 @@ public final class TwidereLinkify implements Constants {
 			final OnLinkClickListener listener, final int highlightOption, final int highlightColor) {
 		boolean hasMatches = false;
 		final Matcher matcher = Regex.VALID_HASHTAG.matcher(spannable);
+        for (Entity entity : mExtractor.extractHashtagsWithIndices(spannable.toString())) {
+            final int start = entity.getStart();
+            final int end = entity.getEnd();
 
-		while (matcher.find()) {
-			final int start = matcherStart(matcher, Regex.VALID_HASHTAG_GROUP_HASHTAG_FULL);
-			final int end = matcherEnd(matcher, Regex.VALID_HASHTAG_GROUP_HASHTAG_FULL);
-			final String url = matcherGroup(matcher, Regex.VALID_HASHTAG_GROUP_HASHTAG_FULL);
-
-			applyLink(url, start, end, spannable, account_id, LINK_TYPE_HASHTAG, false, listener, highlightOption,
+            applyLink(entity.getValue(), start, end, spannable, account_id, LINK_TYPE_HASHTAG, false, listener, highlightOption,
 					highlightColor);
 			hasMatches = true;
 		}
-
 		return hasMatches;
 	}
 
@@ -272,15 +266,15 @@ public final class TwidereLinkify implements Constants {
 					applyLink(span.getURL(), start, end, string, account_id, LINK_TYPE_LINK, sensitive, listener,
 							highlightOption, highlightColor);
 				}
-				for (final Extractor.Entity entity : mExtractor.extractURLsWithIndices(ParseUtils.parseString(string))) {
-					final int start = entity.getStart(), end = entity.getEnd();
-					if (entity.getType() != Extractor.Entity.Type.URL
-							|| string.getSpans(start, end, URLSpan.class).length > 0) {
-						continue;
-					}
-					applyLink(entity.getValue(), start, end, string, account_id, LINK_TYPE_LINK, sensitive, listener,
-							highlightOption, highlightColor);
-				}
+//				for (final Extractor.Entity entity : mExtractor.extractURLsWithIndices(ParseUtils.parseString(string))) {
+//					final int start = entity.getStart(), end = entity.getEnd();
+//					if (entity.getType() != Extractor.Entity.Type.URL
+//							|| string.getSpans(start, end, URLSpan.class).length > 0) {
+//						continue;
+//					}
+//					applyLink(entity.getValue(), start, end, string, account_id, LINK_TYPE_LINK, sensitive, listener,
+//							highlightOption, highlightColor);
+//				}
 				break;
 			}
 			case LINK_TYPE_ALL_AVAILABLE_IMAGE: {

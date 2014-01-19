@@ -49,6 +49,7 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -156,7 +157,7 @@ public class AddStatusFilterDialogFragment extends BaseSupportDialogFragment imp
 				}
 			}
 		}
-		final Set<String> hashtags = mExtractor.extractHashtags(status.text_plain);
+		final Collection<String> hashtags = mExtractor.extractHashtags(status.text_plain);
 		if (hashtags != null) {
 			for (final String hashtag : hashtags) {
 				list.add(new FilterItemInfo(FilterItemInfo.FILTER_TYPE_KEYWORD, hashtag));
