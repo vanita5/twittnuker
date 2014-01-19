@@ -8,6 +8,7 @@ import android.view.View;
 import com.etsy.android.grid.StaggeredGridView;
 import org.mariotaku.refreshnow.widget.OnRefreshListener;
 import org.mariotaku.refreshnow.widget.RefreshMode;
+import org.mariotaku.refreshnow.widget.RefreshNowConfig;
 import org.mariotaku.refreshnow.widget.iface.IRefreshNowView;
 
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
@@ -58,7 +59,12 @@ public class RefreshNowStaggeredGridView extends StaggeredGridView implements IR
 		return mHelper.isRefreshing();
 	}
 
-	@Override
+    @Override
+    public void setConfig(RefreshNowConfig refreshNowConfig) {
+        //FIXME remove this. implemented later.
+    }
+
+    @Override
 	public boolean onTouchEvent(final MotionEvent ev) {
 		mHelper.beforeOnTouchEvent(ev);
 		return super.onTouchEvent(ev);

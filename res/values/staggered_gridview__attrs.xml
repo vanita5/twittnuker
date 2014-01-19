@@ -3,6 +3,12 @@
 
 	<declare-styleable name="StaggeredGridView">
 		<attr name="itemMargin" format="dimension"/>
+        <attr name="column_count_portrait" format="integer" />
+        <attr name="column_count_landscape" format="integer" />
+        <attr name="grid_paddingLeft" format="dimension" />
+        <attr name="grid_paddingRight" format="dimension" />
+        <attr name="grid_paddingTop" format="dimension" />
+        <attr name="grid_paddingBottom" format="dimension" />
 	</declare-styleable>
 
 </resources>

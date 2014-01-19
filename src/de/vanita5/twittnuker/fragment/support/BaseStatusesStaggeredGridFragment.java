@@ -102,7 +102,6 @@ abstract class BaseStatusesStaggeredGridFragment<Data> extends BasePullToRefresh
 	private int mFirstVisibleItem;
 	private int mSelectedPosition;
 
-	private final Set<Integer> mReadPositions = Collections.synchronizedSet(new HashSet<Integer>());
 	private final Map<Long, Set<Long>> mUnreadCountsToRemove = Collections
 			.synchronizedMap(new HashMap<Long, Set<Long>>());
 	private final List<Integer> mReadPositions = new NoDuplicatesCopyOnWriteArrayList<Integer>();

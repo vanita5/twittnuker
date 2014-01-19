@@ -32,6 +32,7 @@ import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
 import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
+import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
 
 import java.util.ArrayList;
 import java.util.List;
