@@ -23,7 +23,6 @@ repositories {
 }
 
 dependencies {
-    compile 'com.etsy.android.grid:library:1.0.3'
     compile fileTree(dir: 'libs', include: '*.jar')
     compile 'ch.acra:acra:4.5.0'
     compile 'com.android.support:support-v13:19.0.1'
@@ -36,6 +35,8 @@ dependencies {
     compile 'org.apache.httpcomponents:httpmime:4.2.1'
     compile 'org.mariotaku:menucomponent:0.1-SNAPSHOT'
     compile 'org.mariotaku:refreshnow:0.1-SNAPSHOT'
+    compile 'com.etsy.android.grid:library:1.0.3'
+    compile 'com.twitter:twitter-text:1.6.1'
 }
 
 android {
