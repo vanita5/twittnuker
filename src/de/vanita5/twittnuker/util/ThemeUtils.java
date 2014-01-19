@@ -44,6 +44,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.mariotaku.refreshnow.widget.RefreshNowProgressIndicator;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
@@ -110,6 +112,15 @@ public class ThemeUtils implements Constants {
     public static void applyThemeBackgroundAlphaToDrawable(final Context context, final Drawable d) {
         if (context == null || d == null) return;
         d.setAlpha(getUserThemeBackgroundAlpha(context));
+    }
+
+    public static RefreshNowProgressIndicator.Config buildRefreshIndicatorConfig(final Context context) {
+        final RefreshNowProgressIndicator.Config.Builder builder = new RefreshNowProgressIndicator.Config.Builder(
+                context);
+        final int themeColor = getUserThemeColor(context);
+        builder.progressColor(themeColor);
+        builder.indeterminateColor(themeColor);
+        return builder.build();
     }
 
     @Deprecated

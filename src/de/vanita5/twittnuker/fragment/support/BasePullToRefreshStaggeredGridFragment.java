@@ -38,7 +38,9 @@ import org.mariotaku.refreshnow.widget.OnRefreshListener;
 import org.mariotaku.refreshnow.widget.RefreshMode;
 import org.mariotaku.refreshnow.widget.RefreshNowProgressIndicator;
 
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.RefreshNowStaggeredGridView;
 
 public abstract class BasePullToRefreshStaggeredGridFragment extends BaseSupportStaggeredGridFragment implements
@@ -127,7 +129,8 @@ public abstract class BasePullToRefreshStaggeredGridFragment extends BaseSupport
 				ViewGroup.LayoutParams.MATCH_PARENT));
 
 		final RefreshNowProgressIndicator indicator = new RefreshNowProgressIndicator(context);
-		indicator.setProgressColor(ThemeUtils.getUserThemeColor(context));
+        final RefreshNowProgressIndicator.Config config = ThemeUtils.buildRefreshIndicatorConfig(context);
+        indicator.setConfig(config);
 		final int indicatorHeight = Math.round(3 * getResources().getDisplayMetrics().density);
 		lframe.addView(indicator, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, indicatorHeight,
 				Gravity.TOP));
