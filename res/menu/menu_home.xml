@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item
+        android:id="@id/progress"
+        android:actionLayout="@layout/action_item_home_progress_smartbar"
+        android:showAsAction="always"
+        android:title="@string/progress"/>
 	<item
 		android:id="@id/actions"
-        android:actionViewClass="de.vanita5.twittnuker.view.HomeActionsActionView"
-		android:icon="@drawable/ic_menu_tweet"
+        android:icon="@drawable/ic_menu_status_compose"
 		android:showAsAction="always"
 		android:title="@string/compose"/>
 

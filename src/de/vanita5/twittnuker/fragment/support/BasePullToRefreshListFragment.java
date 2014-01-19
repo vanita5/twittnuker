@@ -41,19 +41,16 @@ import android.widget.TextView;
 
 import org.mariotaku.refreshnow.widget.OnRefreshListener;
 import org.mariotaku.refreshnow.widget.RefreshMode;
+import org.mariotaku.refreshnow.widget.RefreshNowConfig;
 import org.mariotaku.refreshnow.widget.RefreshNowListView;
 import org.mariotaku.refreshnow.widget.RefreshNowProgressIndicator;
+import org.mariotaku.refreshnow.widget.RefreshNowProgressIndicator.IndicatorConfig;
 
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 public abstract class BasePullToRefreshListFragment extends BaseSupportListFragment implements
 		IBasePullToRefreshFragment, OnTouchListener {
-
-	@Override
-	public boolean canOverScroll() {
-		return false;
-	}
 
 	@Override
 	public RefreshNowListView getListView() {
@@ -64,11 +61,6 @@ public abstract class BasePullToRefreshListFragment extends BaseSupportListFragm
 	public RefreshMode getRefreshMode() {
 		if (getView() == null) return RefreshMode.NONE;
 		return getListView().getRefreshMode();
-	}
-
-	@Override
-	public boolean isOverScrolling() {
-		return false;
 	}
 
 	@Override
@@ -124,6 +116,7 @@ public abstract class BasePullToRefreshListFragment extends BaseSupportListFragm
 
 		final RefreshNowListView lv = new RefreshNowListView(getActivity());
 		lv.setId(android.R.id.list);
+        lv.setOverScrollMode(View.OVER_SCROLL_NEVER);
 		lv.setDrawSelectorOnTop(false);
 		lv.setOnRefreshListener(this);
 		lv.setOnTouchListener(this);
@@ -131,7 +124,7 @@ public abstract class BasePullToRefreshListFragment extends BaseSupportListFragm
 				ViewGroup.LayoutParams.MATCH_PARENT));
 
 		final RefreshNowProgressIndicator indicator = new RefreshNowProgressIndicator(context);
-        final RefreshNowProgressIndicator.Config config = ThemeUtils.buildRefreshIndicatorConfig(context);
+        final IndicatorConfig config = ThemeUtils.buildRefreshIndicatorConfig(context);
         indicator.setConfig(config);
 		final int indicatorHeight = Math.round(3 * getResources().getDisplayMetrics().density);
 		lframe.addView(indicator, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, indicatorHeight,
@@ -174,6 +167,12 @@ public abstract class BasePullToRefreshListFragment extends BaseSupportListFragm
 		}
 		return false;
 	}
+
+    @Override
+    public void setConfig(final RefreshNowConfig config) {
+        if (getView() == null) return;
+        getListView().setConfig(config);
+    }
 
 	@Override
 	public void setOnRefreshListener(final OnRefreshListener listener) {

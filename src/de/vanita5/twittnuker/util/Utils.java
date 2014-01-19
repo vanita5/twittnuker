@@ -2301,6 +2301,10 @@ public final class Utils implements Constants {
 		return refreshIds != null && refreshIds.length > 0;
 	}
 
+    public static boolean hasStaggeredTimeline() {
+        return false;
+    }
+
     public static int inferStatusBarHeight(final Activity activity) {
         final Window w = activity.getWindow();
         final View decorView = w.getDecorView();

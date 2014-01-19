@@ -37,6 +37,7 @@ dependencies {
     compile 'org.mariotaku:refreshnow:0.1-SNAPSHOT'
     compile 'com.etsy.android.grid:library:1.0.3'
     compile 'com.twitter:twitter-text:1.6.1'
+    compile 'com.github.castorflex.smoothprogressbar:library:0.3.1'
 }
 
 android {

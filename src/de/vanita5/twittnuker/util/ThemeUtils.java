@@ -44,7 +44,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.mariotaku.refreshnow.widget.RefreshNowProgressIndicator;
+import org.mariotaku.refreshnow.widget.RefreshNowProgressIndicator.IndicatorConfig;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -114,9 +114,8 @@ public class ThemeUtils implements Constants {
         d.setAlpha(getUserThemeBackgroundAlpha(context));
     }
 
-    public static RefreshNowProgressIndicator.Config buildRefreshIndicatorConfig(final Context context) {
-        final RefreshNowProgressIndicator.Config.Builder builder = new RefreshNowProgressIndicator.Config.Builder(
-                context);
+    public static IndicatorConfig buildRefreshIndicatorConfig(final Context context) {
+        final IndicatorConfig.Builder builder = new IndicatorConfig.Builder(context);
         final int themeColor = getUserThemeColor(context);
         builder.progressColor(themeColor);
         builder.indeterminateColor(themeColor);
