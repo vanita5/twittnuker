@@ -58,10 +58,12 @@ Major Twidere Updates may/will be merged into Twittnuker.
 * [twitter-text-java](https://github.com/twitter/twitter-text-java), Copyright 2011 Twitter, Inc.
 * [Twitter4J](https://github.com/yusuke/twitter4j), Copyright 2007-2013 Yusuke Yamamoto
 * [dnsjava](http://www.xbill.org/dnsjava/), Copyright 1999-2005, Brian Wellington
-* [TagSoup](http://ccil.org/~cowan/XML/tagsoup/), Copyright 2004 John Cowan
 * [HttpMime](http://hc.apache.org/httpcomponents-client-ga/httpmime/), Copyright 1999-2013 The Apache Software Foundation
 * [ACRA](http://github.com/ACRA/acra), Copyright 2013 Kevin Gaudin
 * [drag-sort-listview](https://github.com/bauerca/drag-sort-listview), Copyright 2012 Carl Bauer
+* [Android-MenuComponent](https://github.com/mariotaku/Android-MenuComponent), Copyright 2013 Mariotaku Lee
+* [RefreshNow](https://github.com/mariotaku/RefreshNow), Copyright 2014 Mariotaku Lee
+* [AndroidStaggeredGrid](https://github.com/etsy/AndroidStaggeredGrid), Copyright (c) 2013 Etsy
 
 
 ## License ##
