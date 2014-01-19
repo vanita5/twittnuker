@@ -78,9 +78,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-abstract class BaseStatusesStaggeredGridFragment<Data> extends BasePullToRefreshStaggeredGridFragment implements LoaderCallbacks<Data>,
-		OnItemLongClickListener, OnMenuItemClickListener, Panes.Left, MultiSelectManager.Callback,
-		MenuButtonClickListener {
+abstract class BaseStatusesStaggeredGridFragment<Data> extends BasePullToRefreshStaggeredGridFragment implements
+        LoaderCallbacks<Data>, OnItemLongClickListener, OnMenuItemClickListener, Panes.Left,
+        MultiSelectManager.Callback, MenuButtonClickListener {
 
 	private AsyncTaskManager mAsyncTaskManager;
 	private SharedPreferences mPreferences;

@@ -186,12 +186,12 @@ public final class TwidereLinkify implements Constants {
 	private final boolean addCashtagLinks(final Spannable spannable, final long account_id,
 			final OnLinkClickListener listener, final int highlightOption, final int highlightColor) {
 		boolean hasMatches = false;
-        for (Entity entity : mExtractor.extractCashtagsWithIndices(spannable.toString())) {
+        for (final Entity entity : mExtractor.extractCashtagsWithIndices(spannable.toString())) {
             final int start = entity.getStart();
             final int end = entity.getEnd();
 
-            applyLink(entity.getValue(), start, end, spannable, account_id, LINK_TYPE_HASHTAG, false, listener, highlightOption,
-					highlightColor);
+            applyLink(entity.getValue(), start, end, spannable, account_id, LINK_TYPE_HASHTAG, false, listener,
+                    highlightOption, highlightColor);
 			hasMatches = true;
 		}
 		return hasMatches;
@@ -201,12 +201,12 @@ public final class TwidereLinkify implements Constants {
 			final OnLinkClickListener listener, final int highlightOption, final int highlightColor) {
 		boolean hasMatches = false;
 		final Matcher matcher = Regex.VALID_HASHTAG.matcher(spannable);
-        for (Entity entity : mExtractor.extractHashtagsWithIndices(spannable.toString())) {
+        for (final Entity entity : mExtractor.extractHashtagsWithIndices(spannable.toString())) {
             final int start = entity.getStart();
             final int end = entity.getEnd();
 
-            applyLink(entity.getValue(), start, end, spannable, account_id, LINK_TYPE_HASHTAG, false, listener, highlightOption,
-					highlightColor);
+            applyLink(entity.getValue(), start, end, spannable, account_id, LINK_TYPE_HASHTAG, false, listener,
+                    highlightOption, highlightColor);
 			hasMatches = true;
 		}
 		return hasMatches;
