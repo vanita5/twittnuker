@@ -87,6 +87,8 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
                 if (cacheDir != null && !cacheDir.exists()) {
                     cacheDir.mkdirs();
                 }
+			} else {
+				return Result.nullInstance();
             }
 			try {
 				// from SD cache

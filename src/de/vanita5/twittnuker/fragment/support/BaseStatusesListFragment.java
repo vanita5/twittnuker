@@ -230,8 +230,8 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 		mFirstVisibleItem = -1;
 		mReadPositions.clear();
         final int listVisiblePosition, savedChildIndex;
-        final boolean fillGapFromBottom = mPreferences.getBoolean(KEY_SWIPE_FILL_GAP_FROM_BOTTOM, false);
-        if (fillGapFromBottom) {
+		final boolean rememberPosition = mPreferences.getBoolean(KEY_REMEMBER_POSITION, true);
+		if (rememberPosition) {
             listVisiblePosition = mListView.getLastVisiblePosition();
             final int childCount = mListView.getChildCount();
             savedChildIndex = childCount - 1;
@@ -250,7 +250,6 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
         final long lastViewedId = mAdapter.getStatusId(listVisiblePosition);
 		mAdapter.setData(data);
 		mAdapter.setShowAccountColor(shouldShowAccountColor());
-        final boolean rememberPosition = mPreferences.getBoolean(KEY_REMEMBER_POSITION, true);
         final int currFirstVisiblePosition = mListView.getFirstVisiblePosition();
         final long currViewedId = mAdapter.getStatusId(currFirstVisiblePosition);
         final long statusId;
@@ -362,6 +361,12 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 	}
 
 	@Override
+	public void onRefreshFromEnd() {
+		if (mLoadMoreAutomatically) return;
+		loadMoreStatuses();
+	}
+
+	@Override
 	public void onResume() {
 		super.onResume();
 		mListView.setFastScrollEnabled(mPreferences.getBoolean(KEY_FAST_SCROLL_THUMB, false));
@@ -457,12 +462,6 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 	protected abstract void loadMoreStatuses();
 
 	protected abstract IStatusesAdapter<Data> newAdapterInstance();
-
-	@Override
-	protected void onPullUp() {
-		if (mLoadMoreAutomatically) return;
-		loadMoreStatuses();
-	}
 
 	@Override
 	protected void onReachedBottom() {

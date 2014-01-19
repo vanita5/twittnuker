@@ -43,6 +43,8 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 
 import org.mariotaku.menucomponent.widget.PopupMenu;
+import org.mariotaku.refreshnow.widget.RefreshMode;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
@@ -142,7 +144,7 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 		mAdapter.setMenuButtonClickListener(this);
 		getLoaderManager().initLoader(0, getArguments(), this);
 		setListShown(false);
-		setPullToRefreshEnabled(false);
+		setRefreshMode(RefreshMode.NONE);
 	}
 
 	@Override
@@ -214,7 +216,14 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 	}
 
 	@Override
-	public void onRefreshStarted() {
+	public void onRefreshFromEnd() {
+		if (mLoadMoreAutomatically) return;
+		loadMoreUserLists();
+	}
+
+	@Override
+	public void onRefreshFromStart() {
+		if (isRefreshing()) return;
 		getLoaderManager().restartLoader(0, getArguments(), this);
 	}
 
@@ -235,12 +244,6 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 			mPopupMenu.dismiss();
 		}
 		super.onStop();
-	}
-
-	@Override
-	protected void onPullUp() {
-		if (mLoadMoreAutomatically) return;
-		loadMoreUserLists();
 	}
 
 	@Override

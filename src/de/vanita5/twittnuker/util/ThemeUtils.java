@@ -49,9 +49,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.theme.TwidereContextWrapper;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
-import de.vanita5.twittnuker.view.CardItemLinearLayout;
-import de.vanita5.twittnuker.view.ForegroundImageView;
-import de.vanita5.twittnuker.view.ShortTimeView;
 import de.vanita5.twittnuker.view.iface.ICardItemView;
 
 public class ThemeUtils implements Constants {
@@ -641,7 +638,6 @@ public class ThemeUtils implements Constants {
 		final TextView actionBarTitleView = (TextView) view.findViewById(R.id.actionbar_title);
 		final View actionBarSplitView = view.findViewById(R.id.actionbar_split);
 		final View statusContentView = view.findViewById(R.id.theme_preview_status_content);
-		final View statusListPane = view.findViewById(R.id.theme_preview_list_pane);
 
 		final int defaultTextSize = getDefaultTextSize(context);
 		final int textColorPrimary = getTextColorPrimary(theme);
@@ -654,42 +650,6 @@ public class ThemeUtils implements Constants {
 		ViewAccessor.setBackground(actionBarSplitView, getActionBarSplitBackground(theme, true));
 
 		actionBarTitleView.setTextAppearance(theme, titleTextAppearance);
-		if (statusListPane != null) {
-			final CardItemLinearLayout statusListItemContent = (CardItemLinearLayout) statusListPane
-					.findViewById(R.id.content);
-
-			final ForegroundImageView profileImageView = (ForegroundImageView) statusListItemContent
-					.findViewById(R.id.profile_image);
-			final TextView nameView = (TextView) statusListItemContent.findViewById(R.id.name);
-			final TextView screenNameView = (TextView) statusListItemContent.findViewById(R.id.screen_name);
-			final TextView textView = (TextView) statusListItemContent.findViewById(R.id.text);
-			final ShortTimeView timeSourceView = (ShortTimeView) statusListItemContent.findViewById(R.id.time);
-			final TextView replyRetweetView = (TextView) statusListItemContent.findViewById(R.id.reply_retweet_status);
-
-			statusListItemContent.setItemSelector(null);
-			statusListItemContent.setItemBackground(getCardItemBackground(theme));
-
-			replyRetweetView.setVisibility(View.GONE);
-
-			nameView.setTextColor(textColorPrimary);
-			screenNameView.setTextColor(textColorSecondary);
-			textView.setTextColor(textColorPrimary);
-			timeSourceView.setTextColor(textColorSecondary);
-
-			nameView.setTextSize(defaultTextSize);
-			textView.setTextSize(defaultTextSize);
-			screenNameView.setTextSize(defaultTextSize * 0.75f);
-			timeSourceView.setTextSize(defaultTextSize * 0.65f);
-			textView.setTextIsSelectable(false);
-
-			profileImageView.setImageResource(R.drawable.ic_launcher);
-			profileImageView.setForeground(null);
-			nameView.setText(TWIDERE_PREVIEW_NAME);
-			screenNameView.setText("@" + TWIDERE_PREVIEW_SCREEN_NAME);
-			textView.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
-
-			timeSourceView.setTime(System.currentTimeMillis());
-		}
 		if (statusContentView != null) {
 			ViewAccessor.setBackground(statusContentView, getWindowBackground(theme));
 	

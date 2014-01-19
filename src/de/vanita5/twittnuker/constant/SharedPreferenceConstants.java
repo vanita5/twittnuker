@@ -259,8 +259,6 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_STREAMING_ON_MOBILE = "stream_on_mobile";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_SWIPE_BACK = "swipe_back";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
-    public static final String KEY_SWIPE_FILL_GAP_FROM_BOTTOM = "fill_gap_from_bottom";
 
 	@Preference(type = STRING)
 	public static final String KEY_TRANSLATION_DESTINATION = "translation_destination";

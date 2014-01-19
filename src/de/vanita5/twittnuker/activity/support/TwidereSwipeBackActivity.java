@@ -23,20 +23,15 @@
 package de.vanita5.twittnuker.activity.support;
 
 import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.View;
 
-import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 import me.imid.swipebacklayout.lib.SwipeBackLayout.OnSwipeBackScrollListener;
 
-
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,29 +78,7 @@ public class TwidereSwipeBackActivity extends BaseSupportThemedSwipeBackActivity
 
 	@Override
 	public void onSwipeBackScroll(final float percent) {
-		final SwipeBackLayout swipeBack = getSwipeBackLayout();
-		for (final Fragment f : mAttachedFragments) {
-			if (f.getActivity() == null || !(f instanceof IBasePullToRefreshFragment)) {
-				continue;
-			}
-			final PullToRefreshLayout pullRefreshLayout = ((IBasePullToRefreshFragment) f).getPullToRefreshLayout();
-			final View headerView = pullRefreshLayout.getHeaderView();
-			final int trackingEdge = swipeBack.getTrackingEdge();
-			final Drawable shadow = swipeBack.getShadow(trackingEdge);
-			if (trackingEdge == SwipeBackLayout.EDGE_BOTTOM) {
-				final int h = shadow != null ? shadow.getIntrinsicHeight() : 0;
-				headerView.setX(0);
-				headerView.setY(-percent * (swipeBack.getHeight() + h));
-			} else if (trackingEdge == SwipeBackLayout.EDGE_RIGHT) {
-				final int w = shadow != null ? shadow.getIntrinsicWidth() : 0;
-				headerView.setX(-percent * (swipeBack.getWidth() + w));
-				headerView.setY(0);
-			} else {
-				final int w = shadow != null ? shadow.getIntrinsicWidth() : 0;
-				headerView.setX(percent * (swipeBack.getWidth() + w));
-				headerView.setY(0);
-			}
-		}
+
 	}
 
 	@Override

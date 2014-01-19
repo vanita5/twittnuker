@@ -26,10 +26,8 @@ import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 import static de.vanita5.twittnuker.util.CustomTabUtils.getAddedTabPosition;
 import static de.vanita5.twittnuker.util.CustomTabUtils.getHomeTabs;
 import static de.vanita5.twittnuker.util.Utils.cleanDatabasesByItemLimit;
-import static de.vanita5.twittnuker.util.Utils.createFragmentForIntent;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
-import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
 import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
 import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
@@ -38,6 +36,7 @@ import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 import de.vanita5.twittnuker.util.Utils;
 import twitter4j.DirectMessage;
 import twitter4j.StallWarning;
@@ -49,7 +48,6 @@ import twitter4j.TwitterStreamFactory;
 import twitter4j.User;
 import twitter4j.UserList;
 import twitter4j.UserStreamListener;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import android.app.ActionBar;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -76,7 +74,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentManagerTrojan;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.util.SparseArray;
@@ -98,7 +95,6 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
 import com.readystatesoftware.viewbadger.BadgeView;
 
-import de.vanita5.twittnuker.activity.support.DualPaneActivity;
 import de.vanita5.twittnuker.activity.support.SignInActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -131,7 +127,7 @@ import de.vanita5.twittnuker.view.LeftDrawerFrameLayout;
 import de.vanita5.twittnuker.view.TabPageIndicator;
 import de.vanita5.twittnuker.R;
 
-public class HomeActivity extends DualPaneActivity implements OnClickListener, OnPageChangeListener,
+public class HomeActivity extends BaseSupportActivity implements OnClickListener, OnPageChangeListener,
 		SupportFragmentCallback, SlidingMenu.OnOpenedListener, SlidingMenu.OnClosedListener, OnLongClickListener {
 
 	private final BroadcastReceiver mStateReceiver = new BroadcastReceiver() {
@@ -249,20 +245,20 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		super.onBackPressed();
 	}
 
-	@Override
-	public void onBackStackChanged() {
-		super.onBackStackChanged();
-		if (!isDualPaneMode()) return;
-		final FragmentManager fm = getSupportFragmentManager();
-		setPagingEnabled(!isLeftPaneUsed());
-		final int count = fm.getBackStackEntryCount();
-		if (count == 0) {
-			showLeftPane();
-		}
-		updateActionsButton();
-		updateActionsButtonStyle();
-		updateSlidingMenuTouchMode();
-	}
+//	@Override
+//	public void onBackStackChanged() {
+//		super.onBackStackChanged();
+//		if (!isDualPaneMode()) return;
+//		final FragmentManager fm = getSupportFragmentManager();
+//		setPagingEnabled(!isLeftPaneUsed());
+//		final int count = fm.getBackStackEntryCount();
+//		if (count == 0) {
+//			showLeftPane();
+//		}
+//		updateActionsButton();
+//		updateActionsButtonStyle();
+//		updateSlidingMenuTouchMode();
+//	}
 
 	@Override
 	public void onClick(final View v) {
@@ -373,10 +369,6 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 					mSlidingMenu.showMenu();
 					return true;
 				}
-				if (isDualPaneMode() && !FragmentManagerTrojan.isStateSaved(fm)) {
-					fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-					updateActionsButton();
-				}
 				return true;
 			}
 			case MENU_SEARCH: {
@@ -480,21 +472,6 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	}
 
 	@Override
-	protected int getDualPaneLayoutRes() {
-		return R.layout.home_dual_pane;
-	}
-
-	@Override
-	protected int getMainViewId() {
-		return R.id.main_pager;
-	}
-
-	@Override
-	protected int getNormalLayoutRes() {
-		return R.layout.home;
-	}
-
-	@Override
 	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
 		switch (requestCode) {
 			case REQUEST_SWIPEBACK_ACTIVITY: {
@@ -537,6 +514,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 			finish();
 			return;
 		}
+		setContentView(R.layout.home);
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONCREATE));
 		final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
         mTabDisplayOption = getTabDisplayOptionInt(this);
@@ -550,7 +528,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		mIndicator = (TabPageIndicator) view.findViewById(android.R.id.tabs);
 		mActionsButton = (HomeActionsActionView) view.findViewById(R.id.actions_button);
 		ThemeUtils.applyBackground(mIndicator);
-		mPagerAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), mIndicator);
+		mPagerAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), mIndicator, 1);
 		mViewPager.setAdapter(mPagerAdapter);
 		mViewPager.setOffscreenPageLimit(3);
 		mIndicator.setViewPager(mViewPager);
@@ -726,11 +704,14 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 	}
 
 	private View getPullToRefreshHeaderView(final Fragment f) {
-		if (f.getActivity() == null || !(f instanceof IBasePullToRefreshFragment)) return null;
-		final IBasePullToRefreshFragment ptrf = (IBasePullToRefreshFragment) f;
-		final PullToRefreshLayout l = ptrf.getPullToRefreshLayout();
-		if (l == null) return null;
-		return l.getHeaderView();
+		return null;
+		// if (f.getActivity() == null || !(f instanceof
+		// IBasePullToRefreshFragment)) return null;
+		// final IBasePullToRefreshFragment ptrf = (IBasePullToRefreshFragment)
+		// f;
+		// final PullToRefreshLayout l = ptrf.getPullToRefreshLayout();
+		// if (l == null) return null;
+		// return l.getHeaderView();
 	}
 
 	private int handleIntent(final Intent intent, final boolean firstCreate) {
@@ -767,11 +748,7 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 		final Intent extraIntent = intent.getParcelableExtra(EXTRA_EXTRA_INTENT);
 		if (extraIntent != null && firstCreate) {
 			extraIntent.setExtrasClassLoader(getClassLoader());
-			if (isTwidereLink(extraIntent.getData()) && isDualPaneMode()) {
-				showFragment(createFragmentForIntent(this, extraIntent), true);
-			} else {
-				SwipebackActivityUtils.startSwipebackActivity(this, extraIntent);
-			}
+			SwipebackActivityUtils.startSwipebackActivity(this, extraIntent);
 		}
 		return initialTab;
 	}
@@ -821,10 +798,6 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 			if (!mCustomTabs.get(i).equals(tabs.get(i))) return true;
 		}
 		return false;
-	}
-
-	private boolean isTwidereLink(final Uri data) {
-		return data != null && SCHEME_TWITTNUKER.equals(data.getScheme());
 	}
 
 	private void openAccountsDrawer() {
@@ -886,9 +859,6 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
             window.setBackgroundDrawable(new EmptyDrawable());
         } else {
             window.setBackgroundDrawable(null);
-		}
-		if (isDualPaneMode()) {
-			mSlidingMenu.addIgnoredView(getSlidingPane().getRightPaneContainer());
 		}
 	}
 
@@ -957,14 +927,12 @@ public class HomeActivity extends DualPaneActivity implements OnClickListener, O
 			final Fragment f = mAttachedFragments.valueAt(i);
 			setPullToRefreshLayoutScroll(wm, f, scrollX, statusBarHeight, horizontalScroll);
 		}
-		setPullToRefreshLayoutScroll(wm, getLeftPaneFragment(), scrollX, statusBarHeight, horizontalScroll);
-		setPullToRefreshLayoutScroll(wm, getRightPaneFragment(), scrollX, statusBarHeight, horizontalScroll);
 	}
 
 	private void updateSlidingMenuTouchMode() {
 		if (mViewPager == null || mSlidingMenu == null) return;
 		final int position = mViewPager.getCurrentItem();
-		final int mode = !mViewPager.isEnabled() || position == 0 && !isLeftPaneUsed() ? SlidingMenu.TOUCHMODE_FULLSCREEN
+		final int mode = !mViewPager.isEnabled() || position == 0 ? SlidingMenu.TOUCHMODE_FULLSCREEN
 				: SlidingMenu.TOUCHMODE_MARGIN;
 		mSlidingMenu.setTouchModeAbove(mode);
 	}

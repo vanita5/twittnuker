@@ -22,21 +22,12 @@
 
 package de.vanita5.twittnuker.fragment.iface;
 
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
+import org.mariotaku.refreshnow.widget.OnRefreshListener;
+import org.mariotaku.refreshnow.widget.iface.IRefreshNowView;
 
-public interface IBasePullToRefreshFragment {
+public interface IBasePullToRefreshFragment extends IRefreshNowView, OnRefreshListener {
 
-	public PullToRefreshLayout getPullToRefreshLayout();
+	public void onRefreshFromEnd();
 
-	public boolean isRefreshing();
-
-	public void onRefreshStarted();
-
-	public void setPullToRefreshEnabled(boolean enabled);
-
-	public void setRefreshComplete();
-
-	public void setRefreshing(boolean refreshing);
-
-	boolean isPullToRefreshEnabled();
+	public void onRefreshFromStart();
 }
