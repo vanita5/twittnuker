@@ -5,27 +5,28 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.huewu.pla.lib.MultiColumnListView;
-
+import com.etsy.android.grid.StaggeredGridView;
 import org.mariotaku.refreshnow.widget.OnRefreshListener;
 import org.mariotaku.refreshnow.widget.RefreshMode;
 import org.mariotaku.refreshnow.widget.iface.IRefreshNowView;
 
-public class RefreshNowMultiColumnListView extends MultiColumnListView implements IRefreshNowView {
+import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
-	private final Helper mHelper;
+public class RefreshNowStaggeredGridView extends StaggeredGridView implements IRefreshNowView {
 
-	public RefreshNowMultiColumnListView(final Context context) {
+	private final IColorLabelView.Helper mHelper;
+
+	public RefreshNowStaggeredGridView(final Context context) {
 		this(context, null);
 	}
 
-	public RefreshNowMultiColumnListView(final Context context, final AttributeSet attrs) {
+	public RefreshNowStaggeredGridView(final Context context, final AttributeSet attrs) {
 		this(context, attrs, android.R.attr.listViewStyle);
 	}
 
-	public RefreshNowMultiColumnListView(final Context context, final AttributeSet attrs, final int defStyle) {
+	public RefreshNowStaggeredGridView(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
-		mHelper = new Helper(this, context, attrs, defStyle);
+		mHelper = new IColorLabelView.Helper(this, context, attrs, defStyle);
 	}
 
 	@Override
@@ -39,6 +40,12 @@ public class RefreshNowMultiColumnListView extends MultiColumnListView implement
 			final View lastVisibleChild = getChildAt(childCount - 1);
 			return firstVisibleChild.getTop() < 0 || lastVisibleChild.getBottom() > getBottom();
 		}
+	}
+
+	@Override
+	public boolean isOverScrolling() {
+		if (!canOverScroll()) return false;
+		return getScrollY() != 0;
 	}
 
 	@Override
@@ -80,12 +87,6 @@ public class RefreshNowMultiColumnListView extends MultiColumnListView implement
 	@Override
 	public void setRefreshMode(final RefreshMode mode) {
 		mHelper.setRefreshMode(mode);
-	}
-
-	@Override
-	protected void onOverScrolled(final int scrollX, final int scrollY, final boolean clampedX, final boolean clampedY) {
-		super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
-		mHelper.afterOnOverScrolled(scrollX, scrollY, clampedX, clampedY);
 	}
 
 	@Override

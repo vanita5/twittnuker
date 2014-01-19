@@ -40,7 +40,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -56,7 +55,7 @@ import java.util.Arrays;
 
 public class RefreshService extends Service implements Constants {
 
-	private SharedPreferences mPreferences;
+	private SharedPreferencesWrapper mPreferences;
 
 	private AlarmManager mAlarmManager;
 	private AsyncTwitterWrapper mTwitterWrapper;
@@ -139,7 +138,7 @@ public class RefreshService extends Service implements Constants {
 		mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
 		mTwitterWrapper = app.getTwitterWrapper();
-		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+		mPreferences = SharedPreferencesWrapper.getInstance(app, SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mPendingRefreshHomeTimelineIntent = PendingIntent.getBroadcast(this, 0, new Intent(
 				BROADCAST_REFRESH_HOME_TIMELINE), 0);
 		mPendingRefreshMentionsIntent = PendingIntent.getBroadcast(this, 0, new Intent(BROADCAST_REFRESH_MENTIONS), 0);

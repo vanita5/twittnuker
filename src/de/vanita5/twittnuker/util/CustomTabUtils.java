@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.fragment.support.ActivitiesByFriendsFragment;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.HomeTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.MentionsFragment;
-import de.vanita5.twittnuker.fragment.support.MultiColumnHomeTimelineFragment;
+import de.vanita5.twittnuker.fragment.support.StaggeredHomeTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.SearchStatusesFragment;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserFavoritesFragment;
@@ -94,9 +94,6 @@ public class CustomTabUtils implements Constants {
 		CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_ACTIVITIES_BY_FRIENDS, new CustomTabConfiguration(
 				ActivitiesByFriendsFragment.class, R.string.activities_by_friends, R.drawable.ic_tab_accounts,
 				CustomTabConfiguration.ACCOUNT_REQUIRED, CustomTabConfiguration.FIELD_TYPE_NONE, 9));
-		CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_STAGGERED_HOME_TIMELINE, new CustomTabConfiguration(
-				MultiColumnHomeTimelineFragment.class, R.string.staggered_home_timeline, R.drawable.ic_tab_staggered,
-				CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 10, false));
 
 		CUSTOM_TABS_ICON_NAME_MAP.put("accounts", R.drawable.ic_tab_accounts);
 		CUSTOM_TABS_ICON_NAME_MAP.put("fire", R.drawable.ic_tab_fire);
@@ -117,7 +114,6 @@ public class CustomTabUtils implements Constants {
 		CUSTOM_TABS_ICON_NAME_MAP.put("trends", R.drawable.ic_tab_trends);
 		CUSTOM_TABS_ICON_NAME_MAP.put("twidere", R.drawable.ic_tab_twidere);
 		CUSTOM_TABS_ICON_NAME_MAP.put("twitter", R.drawable.ic_tab_twitter);
-		// CUSTOM_TABS_ICON_NAME_MAP.put(ICON_SPECIAL_TYPE_CUSTOMIZE, -1);
 	}
 
 	public static String findTabIconKey(final int iconRes) {

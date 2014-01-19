@@ -45,6 +45,7 @@ import org.mariotaku.refreshnow.widget.RefreshNowListView;
 import org.mariotaku.refreshnow.widget.RefreshNowProgressIndicator;
 
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
 public abstract class BasePullToRefreshListFragment extends BaseSupportListFragment implements
 		IBasePullToRefreshFragment, OnTouchListener {
@@ -63,6 +64,11 @@ public abstract class BasePullToRefreshListFragment extends BaseSupportListFragm
 	public RefreshMode getRefreshMode() {
 		if (getView() == null) return RefreshMode.NONE;
 		return getListView().getRefreshMode();
+	}
+
+	@Override
+	public boolean isOverScrolling() {
+		return false;
 	}
 
 	@Override
@@ -125,10 +131,10 @@ public abstract class BasePullToRefreshListFragment extends BaseSupportListFragm
 				ViewGroup.LayoutParams.MATCH_PARENT));
 
 		final RefreshNowProgressIndicator indicator = new RefreshNowProgressIndicator(context);
-		lframe.addView(
-				indicator,
-				new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Math.round(3 * getResources()
-						.getDisplayMetrics().density), Gravity.TOP));
+		indicator.setProgressColor(ThemeUtils.getUserThemeColor(context));
+		final int indicatorHeight = Math.round(3 * getResources().getDisplayMetrics().density);
+		lframe.addView(indicator, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, indicatorHeight,
+				Gravity.TOP));
 
 		lv.setRefreshIndicatorView(indicator);
 

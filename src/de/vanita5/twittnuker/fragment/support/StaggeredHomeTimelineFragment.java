@@ -32,7 +32,7 @@ import android.net.Uri;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
-public class MultiColumnHomeTimelineFragment extends CursorStatusesMultiColumnListFragment {
+public class StaggeredHomeTimelineFragment extends CursorStatusesStaggeredGridFragment {
 
 	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
 
@@ -49,11 +49,11 @@ public class MultiColumnHomeTimelineFragment extends CursorStatusesMultiColumnLi
 	};
 
 	@Override
-	public int getStatuses(final long[] account_ids, final long[] max_ids, final long[] since_ids) {
+	public int getStatuses(final long[] accountIds, final long[] maxIds, final long[] sinceIds) {
 		final AsyncTwitterWrapper twitter = getTwitterWrapper();
 		if (twitter == null) return 0;
-		if (max_ids == null) return twitter.refreshAll();
-		return twitter.getHomeTimelineAsync(account_ids, max_ids, since_ids);
+		if (maxIds == null) return twitter.refreshAll(accountIds);
+		return twitter.getHomeTimelineAsync(accountIds, maxIds, sinceIds);
 	}
 
 	@Override
@@ -62,8 +62,6 @@ public class MultiColumnHomeTimelineFragment extends CursorStatusesMultiColumnLi
 		final IntentFilter filter = new IntentFilter(BROADCAST_HOME_TIMELINE_REFRESHED);
 		filter.addAction(BROADCAST_TASK_STATE_CHANGED);
 		registerReceiver(mStatusReceiver, filter);
-		final AsyncTwitterWrapper twitter = getTwitterWrapper();
-		setRefreshing(twitter != null && twitter.isHomeTimelineRefreshing());
 	}
 
 	@Override
@@ -84,7 +82,7 @@ public class MultiColumnHomeTimelineFragment extends CursorStatusesMultiColumnLi
 
 	@Override
 	protected String getPositionKey() {
-		return "staggered_home_timeline";
+		return "home_timeline" + getTabPosition();
 	}
 
 	@Override
@@ -96,7 +94,7 @@ public class MultiColumnHomeTimelineFragment extends CursorStatusesMultiColumnLi
 	@Override
 	protected void updateRefreshState() {
 		final AsyncTwitterWrapper twitter = getTwitterWrapper();
-		if (twitter == null || !getUserVisibleHint()) return;
+		if (twitter == null || !getUserVisibleHint() || getActivity() == null) return;
 		setRefreshing(twitter.isHomeTimelineRefreshing());
 	}
 
