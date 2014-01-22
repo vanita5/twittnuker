@@ -27,6 +27,7 @@ import android.content.Context;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 import static de.vanita5.twittnuker.util.Utils.isOfficialTwitterInstance;
+import static de.vanita5.twittnuker.util.Utils.shouldForceUsingPrivateAPIs;
 
 import twitter4j.Paging;
 import twitter4j.Status;
@@ -49,7 +50,8 @@ public class StatusRepliesLoader extends UserMentionsLoader {
 
 	@Override
 	public List<Status> getStatuses(final Twitter twitter, final Paging paging) throws TwitterException {
-        if (isOfficialTwitterInstance(getContext(), twitter)) {
+		final Context context = getContext();
+		if (shouldForceUsingPrivateAPIs(context) || isOfficialTwitterInstance(context, twitter)) {
             final List<Status> statuses = twitter.showConversation(mInReplyToStatusId, paging);
             final List<Status> result = new ArrayList<Status>();
             for (final Status status : statuses) {

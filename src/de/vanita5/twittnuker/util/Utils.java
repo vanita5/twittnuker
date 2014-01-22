@@ -2315,8 +2315,8 @@ public final class Utils implements Constants {
 
 	public static void initAccountColor(final Context context) {
 		if (context == null) return;
-		final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI, new String[] {
-				Accounts.ACCOUNT_ID, Accounts.COLOR }, null, null, null);
+		final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI, new String[]{
+				Accounts.ACCOUNT_ID, Accounts.COLOR}, null, null, null);
 		if (cur == null) return;
 		final int id_idx = cur.getColumnIndex(Accounts.ACCOUNT_ID), color_idx = cur.getColumnIndex(Accounts.COLOR);
 		cur.moveToFirst();
@@ -2489,19 +2489,6 @@ public final class Utils implements Constants {
 				Context.MODE_PRIVATE);
 		final Calendar now = Calendar.getInstance();
 		return prefs.getBoolean("silent_notifications_at_" + now.get(Calendar.HOUR_OF_DAY), false);
-	}
-
-	public static boolean isOfficialConsumerKeySecret(final Context context) {
-		if (context == null) return false;
-		final SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final String[] key_secrets = context.getResources().getStringArray(R.array.values_official_consumer_key_secret);
-		final String consumer_key = getNonEmptyString(pref, KEY_CONSUMER_KEY, null);
-		final String consumer_secret = getNonEmptyString(pref, KEY_CONSUMER_SECRET, null);
-		for (final String key_secret : key_secrets) {
-			final String[] pair = key_secret.split(";");
-			if (pair[0].equals(consumer_key) && pair[1].equals(consumer_secret)) return true;
-		}
-		return false;
 	}
 
 	public static boolean isOfficialConsumerKeySecret(final Context context, final String consumerKey,
@@ -3269,6 +3256,12 @@ public final class Utils implements Constants {
 		if (context == null) return false;
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		return prefs.getBoolean(KEY_FILTERS_FOR_RTS, true);
+	}
+
+	public static boolean shouldForceUsingPrivateAPIs(final Context context) {
+		if (context == null) return false;
+		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+		return prefs.getBoolean(KEY_FORCE_USING_PRIVATE_APIS, false);
 	}
 
 	public static boolean shouldStopAutoRefreshOnBatteryLow(final Context context) {

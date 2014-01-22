@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.model;
 
 import static de.vanita5.twittnuker.util.Utils.isOfficialConsumerKeySecret;
+import static de.vanita5.twittnuker.util.Utils.shouldForceUsingPrivateAPIs;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -31,7 +32,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 
 import java.util.ArrayList;
@@ -157,7 +157,8 @@ public class Account implements Parcelable {
 				} else {
 					final String consumerKey = cur.getString(indices.consumer_key);
 					final String consumerSecret = cur.getString(indices.consumer_secret);
-					if (Utils.isOfficialConsumerKeySecret(context, consumerKey, consumerSecret)) {
+					if (shouldForceUsingPrivateAPIs(context)
+							|| isOfficialConsumerKeySecret(context, consumerKey, consumerSecret)) {
 						accounts.add(new Account(cur, indices));
 					}
 				}

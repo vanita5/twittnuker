@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.activity;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -111,7 +112,13 @@ public class SettingsActivity extends BasePreferenceActivity {
 
 	@Override
 	protected boolean isValidFragment(final String fragmentName) {
-		return true;
+		final Class<?> cls;
+		try {
+			cls = Class.forName(fragmentName);
+		} catch (final ClassNotFoundException e) {
+			return false;
+		}
+		return Fragment.class.isAssignableFrom(cls);
 	}
 
 	@Override

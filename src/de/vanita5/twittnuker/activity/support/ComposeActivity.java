@@ -126,6 +126,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
@@ -155,7 +156,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	private AsyncTwitterWrapper mTwitterWrapper;
 	private LocationManager mLocationManager;
-	private SharedPreferences mPreferences;
+	private SharedPreferencesWrapper mPreferences;
 
 	private ParcelableLocation mRecentLocation;
 	private ContentResolver mResolver;
@@ -381,7 +382,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			return;
 		final String option = mPreferences.getString(KEY_COMPOSE_QUIT_ACTION, VALUE_COMPOSE_QUIT_ACTION_ASK);
 		final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
-		final boolean textChanged = !isEmpty(text) && !text.equals(mOriginalText);
+		final boolean textChanged = text != null && !text.isEmpty() && !text.equals(mOriginalText);
 		final boolean isEditingDraft = INTENT_ACTION_EDIT_DRAFT.equals(getIntent().getAction());
 		if (VALUE_COMPOSE_QUIT_ACTION_DISCARD.equals(option)) {
 			mTask = new DiscardTweetTask(this).execute();
@@ -553,7 +554,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		// requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
 		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+		mPreferences = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mTwitterWrapper = getTwittnukerApplication().getTwitterWrapper();
 		mResolver = getContentResolver();
 		mImageLoader = getTwittnukerApplication().getImageLoaderWrapper();
