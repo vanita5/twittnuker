@@ -121,9 +121,8 @@ public class ThemeUtils implements Constants {
         final int themeColor = getUserThemeColor(context);
         builder.progressColor(themeColor);
         builder.indeterminateColor(themeColor);
-        //FIXME These methods are missing. However, this has to be fixed, as soon, as they are available!
-        //builder.progressStrokeWidth(width);
-        //builder.indeterminateStrokeWidth(width);
+        builder.progressStrokeWidth(width);
+        builder.indeterminateStrokeWidth(width);
         return builder.build();
     }
 
