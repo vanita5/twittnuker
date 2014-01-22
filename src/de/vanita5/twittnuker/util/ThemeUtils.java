@@ -29,8 +29,8 @@ import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -121,8 +121,9 @@ public class ThemeUtils implements Constants {
         final int themeColor = getUserThemeColor(context);
         builder.progressColor(themeColor);
         builder.indeterminateColor(themeColor);
-        builder.progressStrokeWidth(width);
-        builder.indeterminateStrokeWidth(width);
+        //FIXME These methods are missing. However, this has to be fixed, as soon, as they are available!
+        //builder.progressStrokeWidth(width);
+        //builder.indeterminateStrokeWidth(width);
         return builder.build();
     }
 
@@ -341,7 +342,7 @@ public class ThemeUtils implements Constants {
 	}
 
 	public static int getTextColorSecondary(final Context context) {
-        final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.textColorSecondary});
+		final TypedArray a = context.obtainStyledAttributes(new int[] { android.R.attr.textColorSecondary });
 		try {
 		    return a.getColor(0, Color.TRANSPARENT);
 		} finally {
@@ -503,7 +504,7 @@ public class ThemeUtils implements Constants {
 	}
 
 	public static Drawable getWindowBackground(final Context context, final int themeRes) {
-        final TypedArray a = context.obtainStyledAttributes(null, new int[]{android.R.attr.windowBackground}, 0,
+		final TypedArray a = context.obtainStyledAttributes(null, new int[] { android.R.attr.windowBackground }, 0,
 				themeRes);
 		final Drawable d = a.getDrawable(0);
 		a.recycle();

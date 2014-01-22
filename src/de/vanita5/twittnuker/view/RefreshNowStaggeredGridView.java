@@ -6,35 +6,33 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.etsy.android.grid.StaggeredGridView;
+
 import org.mariotaku.refreshnow.widget.OnRefreshListener;
 import org.mariotaku.refreshnow.widget.RefreshMode;
 import org.mariotaku.refreshnow.widget.RefreshNowConfig;
 import org.mariotaku.refreshnow.widget.iface.IRefreshNowView;
 
-import de.vanita5.twittnuker.view.iface.IColorLabelView;
-
 public class RefreshNowStaggeredGridView extends StaggeredGridView implements IRefreshNowView {
 
-	private final IColorLabelView.Helper mHelper;
+	private final Helper mHelper;
 
 	public RefreshNowStaggeredGridView(final Context context) {
 		this(context, null);
 	}
 
 	public RefreshNowStaggeredGridView(final Context context, final AttributeSet attrs) {
-		this(context, attrs, android.R.attr.listViewStyle);
+		this(context, attrs, 0);
 	}
 
 	public RefreshNowStaggeredGridView(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
-		mHelper = new IColorLabelView.Helper(this, context, attrs, defStyle);
+		mHelper = new Helper(this, context, attrs, defStyle);
 	}
 
 	@Override
     public RefreshMode getRefreshMode() {
         return mHelper.getRefreshMode();
 	}
-
 
     @Override
     public boolean isRefreshing() {

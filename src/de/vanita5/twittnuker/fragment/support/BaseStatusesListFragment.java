@@ -226,7 +226,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 		setListShown(true);
 		setRefreshComplete();
 		setProgressBarIndeterminateVisibility(false);
-        mData = data;
+		setData(data);
 		mFirstVisibleItem = -1;
 		mReadPositions.clear();
         final int listVisiblePosition, savedChildIndex;
@@ -372,8 +372,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 		mListView.setFastScrollEnabled(mPreferences.getBoolean(KEY_FAST_SCROLL_THUMB, false));
 		configBaseCardAdapter(getActivity(), mAdapter);
 		final boolean display_image_preview = mPreferences.getBoolean(KEY_DISPLAY_IMAGE_PREVIEW, false);
-		final boolean display_sensitive_contents = mPreferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS,
-				false);
+		final boolean display_sensitive_contents = mPreferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, false);
 		final boolean indicate_my_status = mPreferences.getBoolean(KEY_INDICATE_MY_STATUS, true);
 		mAdapter.setDisplayImagePreview(display_image_preview);
 		mAdapter.setDisplaySensitiveContents(display_sensitive_contents);
@@ -543,7 +542,6 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 		final boolean longclickToOpenMenu = mPreferences.getBoolean(KEY_LONG_CLICK_TO_OPEN_MENU, false);
 		final Menu menu = mPopupMenu.getMenu();
 		setMenuForStatus(getActivity(), menu, status);
-		final MenuItem retweet_submenu = menu.findItem(R.id.retweet_submenu);
 		Utils.setMenuItemAvailability(menu, R.id.retweet_submenu, !separateRetweetAction);
 		Utils.setMenuItemAvailability(menu, R.id.direct_quote, separateRetweetAction);
 		Utils.setMenuItemAvailability(menu, MENU_MULTI_SELECT, longclickToOpenMenu);

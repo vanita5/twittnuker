@@ -105,6 +105,11 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 		return mGLRootView;
 	}
 
+	@Override
+	public int getThemeResourceId() {
+		return ThemeUtils.getViewerThemeResource(this);
+	}
+
 	public ThreadPool getThreadPool() {
 		if (mThreadPool != null) return mThreadPool;
 		return mThreadPool = new ThreadPool();
@@ -314,11 +319,6 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 	}
 
 	@Override
-	public int getThemeResourceId() {
-        return ThemeUtils.getViewerThemeResource(this);
-	}
-
-	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.image_viewer_gl);
@@ -338,6 +338,10 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 		if (savedInstanceState == null) {
 			loadImage();
 		}
+		mMenuBar.setOnMenuItemClickListener(this);
+		mMenuBar.inflate(R.menu.menu_image_viewer);
+		mMenuBar.setIsBottomBar(true);
+		mMenuBar.show();
 		setSwipeListener(this);
 	}
 
