@@ -46,7 +46,8 @@ public class PositionManager implements Constants {
 		if (TextUtils.isEmpty(key)) return false;
 		final SharedPreferences.Editor editor = mPreferences.edit();
 		editor.putLong(key, status_id);
-		return editor.commit();
+		editor.apply();
+        return true;
 	}
 
 }
