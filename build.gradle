@@ -38,11 +38,12 @@ dependencies {
     compile 'com.etsy.android.grid:library:1.0.3'
     compile 'com.twitter:twitter-text:1.6.1'
     compile 'com.github.castorflex.smoothprogressbar:library:0.3.1'
+    compile 'com.atermenji.android:iconicdroid:SNAPSHOT-1'
 }
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.0"
+    buildToolsVersion "19.0.1"
 
     sourceSets {
         main {
