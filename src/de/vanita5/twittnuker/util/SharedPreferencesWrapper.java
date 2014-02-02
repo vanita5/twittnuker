@@ -24,6 +24,10 @@ package de.vanita5.twittnuker.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+
+import java.util.Map;
+import java.util.Set;
 
 public class SharedPreferencesWrapper {
 
@@ -33,9 +37,17 @@ public class SharedPreferencesWrapper {
 		mPreferences = preferences;
 	}
 
+    public boolean contains(final String key) {
+        return mPreferences.contains(key);
+    }
+
 	public SharedPreferences.Editor edit() {
 		return mPreferences.edit();
 	}
+
+    public Map<String, ?> getAll() {
+        return mPreferences.getAll();
+    }
 
 	public boolean getBoolean(final String key, final boolean defValue) {
 		try {
@@ -45,6 +57,15 @@ public class SharedPreferencesWrapper {
 			return defValue;
 		}
 	}
+
+    public float getFloat(final String key, final float defValue) {
+        try {
+            return mPreferences.getFloat(key, defValue);
+        } catch (final ClassCastException e) {
+            mPreferences.edit().remove(key).apply();
+            return defValue;
+        }
+    }
 
 	public int getInt(final String key, final int defValue) {
 		try {
@@ -76,6 +97,23 @@ public class SharedPreferencesWrapper {
 			return defValue;
 		}
 	}
+
+    public Set<String> getStringSet(final String key, final Set<String> defValue) {
+        try {
+            return mPreferences.getStringSet(key, defValue);
+        } catch (final ClassCastException e) {
+            mPreferences.edit().remove(key).apply();
+            return defValue;
+        }
+    }
+
+    public void registerOnSharedPreferenceChangeListener(final OnSharedPreferenceChangeListener listener) {
+        mPreferences.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public void unregisterOnSharedPreferenceChangeListener(final OnSharedPreferenceChangeListener listener) {
+        mPreferences.unregisterOnSharedPreferenceChangeListener(listener);
+    }
 
 	public static SharedPreferencesWrapper getInstance(final Context context, final String name, final int mode) {
 		final SharedPreferences prefs = context.getSharedPreferences(name, mode);

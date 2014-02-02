@@ -39,6 +39,8 @@ public @interface Preference {
 
 	long defaultLong() default 0;
 
+    int defaultResource() default 0;
+
 	String defaultString() default "";
 
 	boolean exportable() default true;

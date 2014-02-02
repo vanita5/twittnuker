@@ -51,7 +51,7 @@ public class AutoAdjustHeightImageView extends ImageView {
 		final Bitmap b = d instanceof BitmapDrawable ? ((BitmapDrawable) d).getBitmap() : null;
 
 		if (b != null) {
-			final int height = (int) Math.floor((float) width * (float) b.getHeight() / b.getWidth());
+            final int height = Math.round((float) width * (float) b.getHeight() / b.getWidth());
 			setMeasuredDimension(width, height);
 		} else {
 			setMeasuredDimension(width, width);

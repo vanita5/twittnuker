@@ -140,6 +140,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			final String action = intent.getAction();
 			if (BROADCAST_TASK_STATE_CHANGED.equals(action)) {
 				updateActionsButton();
+                updateSmartBar();
 			} else if (BROADCAST_UNREAD_COUNT_UPDATED.equals(action)) {
 				updateUnreadCount();
 			} else if (WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION.equals(action)) {
@@ -299,6 +300,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         final MenuItem itemProgress = menu.findItem(MENU_PROGRESS);
         mSmartBarProgress = (ProgressBar) itemProgress.getActionView().findViewById(android.R.id.progress);
 		updateActionsButton();
+        updateSmartBar();
 		return true;
 	}
 
@@ -388,6 +390,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		}
 		updateSlidingMenuTouchMode();
 		updateActionsButton();
+        updateSmartBar();
 	}
 
 	@Override
@@ -574,6 +577,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		setupSlidingMenu();
 		initUnreadCount();
 		updateActionsButton();
+        updateSmartBar();
 		updateSlidingMenuTouchMode();
 
 		if (savedInstanceState == null) {
@@ -610,6 +614,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		invalidateOptionsMenu();
 		updateActionsButtonStyle();
 		updateActionsButton();
+        updateSmartBar();
 		updateSlidingMenuTouchMode();
 		
 		if(!hasStreamLoaded || hasStreamingChanged()) {
@@ -931,10 +936,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         if (mSmartBarProgress != null) {
             mSmartBarProgress.setVisibility(hasActivatedTask ? View.VISIBLE : View.INVISIBLE);
         }
-        final boolean useBottomActionItems = SmartBarUtils.hasSmartBar() && isBottomComposeButton();
-        if (useBottomActionItems) {
-            invalidateOptionsMenu();
-        }
 	}
 
 	private void updateActionsButtonStyle() {
@@ -972,6 +973,13 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 				: SlidingMenu.TOUCHMODE_MARGIN;
 		mSlidingMenu.setTouchModeAbove(mode);
 	}
+
+    private void updateSmartBar() {
+        final boolean useBottomActionItems = SmartBarUtils.hasSmartBar() && isBottomComposeButton();
+        if (useBottomActionItems) {
+            invalidateOptionsMenu();
+        }
+    }
 
 	private static void updatePullToRefreshY(final WindowManager wm, final View view, final int y) {
 		if (view == null || wm == null || view.getWindowToken() == null) return;

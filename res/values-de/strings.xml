@@ -581,6 +581,8 @@
     <string name="hidden_settings_warning_message">Spiele NIEMALS an diesen Einstellungen herum, ohne zu wissen, was sie tun, oder sie werden:\n * Deine Katze töten\n * Alle Atombomben in Nord Korea in die Luft jagen\n * Turn ALL Mahou Shoujo into Majo\n * Das Universum zerstören</string>
     <string name="force_using_private_apis">Aktiviere unoffizielle APIs</string>
     <string name="status_text_limit">Tweet Text Limit</string>
+    <string name="load_more_from_top">Mehr Tweets von oben nachladen</string>
+    <string name="load_more_from_top_summary">Sinnvoll, wenn du die Timeline von unten nach oben liest</string>
 
     <!-- Twittnuker -->
     <string name="default_api_settings_summary">Diese Einstellungen gelten nur für neu eingeloggte Accounts</string>
