@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.content.TwidereContextThemeWrapper;
 import de.vanita5.twittnuker.content.TwidereContextWrapper;
+import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.iface.ICardItemView;
 
@@ -196,10 +197,13 @@ public class ThemeUtils implements Constants {
 			case R.style.Theme_Twidere_Light_SolidBackground:
 			case R.style.Theme_Twidere_Light_Transparent:
 			case R.style.Theme_Twidere_Light_Compose:
+            case R.style.Theme_Twidere_Light_Dialog:
 			case R.style.Theme_Twidere_Colored:
 			case R.style.Theme_Twidere_Colored_SolidBackground:
 			case R.style.Theme_Twidere_Colored_Transparent:
 			case R.style.Theme_Twidere_Colored_Compose:
+            case R.style.Theme_Twidere_ActionBar_Colored_Light:
+            case R.style.Theme_Twidere_Settings_Light:
 				return 0x99333333;
 		}
 		return 0xCCFFFFFF;
@@ -310,6 +314,12 @@ public class ThemeUtils implements Constants {
 			a.recycle();
 		}
 	}
+
+    public static Context getSettingsContextForActionIcons(final Context baseContext) {
+        final int themeRes = ThemeUtils.isDarkTheme(baseContext) ? R.style.Theme_Twidere_Settings_Dark
+                : R.style.Theme_Twidere_Settings_Light;
+        return new TwidereContextWrapper(baseContext, baseContext.getResources(), themeRes);
+    }
 
     public static int getSettingsThemeResource(final Context context) {
         return getSettingsThemeResource(getThemeNameOption(context), getDarkActionBarOption(context));
@@ -546,6 +556,8 @@ public class ThemeUtils implements Constants {
 	}
 
 	public static boolean isDarkTheme(final Context context) {
+        if (context instanceof ITwidereContextWrapper)
+            return isDarkTheme(((ITwidereContextWrapper) context).getThemeResourceId());
 		return isDarkTheme(getThemeResource(context));
 	}
 

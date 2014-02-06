@@ -30,10 +30,11 @@ import android.preference.PreferenceActivity;
 import android.support.v4.app.NavUtils;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.theme.TwidereResourceHelper;
 
-public abstract class BasePreferenceActivity extends PreferenceActivity implements Constants {
+public abstract class BasePreferenceActivity extends PreferenceActivity implements Constants, IThemedActivity {
 
 	private final TwidereResourceHelper mResourceHelper = new TwidereResourceHelper();
     private int mCurrentThemeResource;
@@ -45,14 +46,46 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
 	}
 
 	@Override
+    public int getCurrentThemeResourceId() {
+        return mCurrentThemeResource;
+    }
+
+    @Override
+    public Resources getDefaultResources() {
+        return super.getResources();
+    }
+
+    @Override
 	public Resources getResources() {
+        return getThemedResources();
+    }
+
+    @Override
+    public int getThemeBackgroundAlpha() {
+        return 0;
+    }
+
+    @Override
+    public int getThemeColor() {
+        return 0;
+    }
+
+    @Override
+    public Resources getThemedResources() {
 		return mResourceHelper.getResources(this, super.getResources());
 	}
 
+    @Override
+    public String getThemeFontFamily() {
+        return VALUE_THEME_FONT_FAMILY_REGULAR;
+    }
+
+    @Override
     public int getThemeResourceId() {
         return ThemeUtils.getSettingsThemeResource(this);
     }
 
+    @Override
 	public void navigateUpFromSameTask() {
 		NavUtils.navigateUpFromSameTask(this);
 		overrideCloseAnimationIfNeeded();
@@ -70,6 +103,7 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
         return getThemeResourceId() != mCurrentThemeResource;
     }
 
+    @Override
 	public boolean shouldOverrideActivityAnimation() {
 		return true;
 	}

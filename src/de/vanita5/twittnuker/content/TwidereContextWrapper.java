@@ -26,20 +26,27 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
 
+import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
 import de.vanita5.twittnuker.content.res.TwidereResources;
 
-public class TwidereContextWrapper extends ContextWrapper {
+public class TwidereContextWrapper extends ContextWrapper implements ITwidereContextWrapper {
 
     private final Resources mResources;
 	private Resources mTwidereResources;
+    private final int mThemeResourceId;
 
 	public TwidereContextWrapper(final Context base) {
-		this(base, null);
+        this(base, null, getThemeResource(base));
 	}
 
     public TwidereContextWrapper(final Context base, final Resources res) {
+        this(base, res, getThemeResource(base));
+    }
+
+    public TwidereContextWrapper(final Context base, final Resources res, final int theme) {
         super(base);
         mResources = res;
+        mThemeResourceId = theme;
     }
 
     @Override
@@ -47,6 +54,18 @@ public class TwidereContextWrapper extends ContextWrapper {
 		if (mTwidereResources != null) return mTwidereResources;
 		if (mResources != null) return mTwidereResources = new TwidereResources(this, mResources);
 		return mTwidereResources = new TwidereResources(this, super.getResources());
+    }
+
+    @Override
+    public int getThemeResourceId() {
+        return mThemeResourceId;
+    }
+
+    private static int getThemeResource(final Context base) {
+        if (base instanceof ITwidereContextWrapper)
+            return ((ITwidereContextWrapper) base).getThemeResourceId();
+        else
+            return 0;
     }
 
 }

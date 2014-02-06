@@ -57,7 +57,6 @@ import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.content.TwidereContextWrapper;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -247,7 +246,6 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 		super.onCreate(savedInstanceState);
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mImageLoader = TwittnukerApplication.getInstance(this).getImageLoaderWrapper();
-		final Context context = new TwidereContextWrapper(this, getResources());
 		final Intent intent = getIntent();
 		final String type = mTabType = intent.getStringExtra(EXTRA_TYPE);
 		if (type == null) {
@@ -257,10 +255,10 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 		mTabId = intent.getLongExtra(EXTRA_ID, -1);
 		setTitle(isEditMode() ? R.string.edit_tab : R.string.add_tab);
 		setContentView(R.layout.custom_tab_editor);
-		mTabTypeName.setText(getTabTypeName(context, type));
-		mTabIconsAdapter = new CustomTabIconsAdapter(context);
+        mTabTypeName.setText(getTabTypeName(this, type));
+        mTabIconsAdapter = new CustomTabIconsAdapter(this);
 		mTabIconsAdapter.setData(getIconMap());
-		mAccountsAdapter = new AccountsSpinnerAdapter(context);
+		mAccountsAdapter = new AccountsSpinnerAdapter(this);
 		mAccountSpinner.setAdapter(mAccountsAdapter);
 		mTabIconSpinner.setAdapter(mTabIconsAdapter);
 		final String icon_key;

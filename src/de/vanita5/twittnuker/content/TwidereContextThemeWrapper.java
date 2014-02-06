@@ -26,9 +26,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.view.ContextThemeWrapper;
 
+import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
 import de.vanita5.twittnuker.util.theme.TwidereAccentHelper;
 
-public class TwidereContextThemeWrapper extends ContextThemeWrapper {
+public class TwidereContextThemeWrapper extends ContextThemeWrapper implements ITwidereContextWrapper {
 
 	private final TwidereAccentHelper mAccentHelper;
 
@@ -38,7 +39,7 @@ public class TwidereContextThemeWrapper extends ContextThemeWrapper {
     private final boolean mIsActionBarContext;
 
 	public TwidereContextThemeWrapper(final Context base, final int themeResource, final int accentColor) {
-        this(base,themeResource,accentColor,false);
+        this(base, themeResource, accentColor, false);
     }
 
     public TwidereContextThemeWrapper(final Context base, final int themeResource, final int accentColor,
@@ -46,7 +47,7 @@ public class TwidereContextThemeWrapper extends ContextThemeWrapper {
 		super(base, themeResource);
 		mThemeResourceId = themeResource;
 		mAccentColor = accentColor;
-		mAccentHelper = new TwidereAccentHelper(accentColor, themeResource);
+        mAccentHelper = new TwidereAccentHelper(accentColor);
         mIsActionBarContext = isActionBarContext;
 	}
 
@@ -59,6 +60,7 @@ public class TwidereContextThemeWrapper extends ContextThemeWrapper {
 		return mAccentHelper.getResources(this, super.getResources());
 	}
 
+    @Override
 	public int getThemeResourceId() {
 		return mThemeResourceId;
 	}

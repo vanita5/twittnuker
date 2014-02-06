@@ -26,7 +26,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import de.vanita5.twittnuker.Constants;
@@ -35,7 +34,6 @@ import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.theme.AccentThemeFixer;
 
 
 @SuppressLint("Registered")
@@ -44,14 +42,6 @@ public class BaseSupportActivity extends BaseSupportThemedActivity implements Co
 	private boolean mInstanceStateSaved, mIsVisible, mIsOnTop;
 	private SharedPreferences mPreferences;
 	private boolean mCompactCards;
-    private MenuInflater mMenuInflater;
-
-
-    @Override
-    public MenuInflater getMenuInflater() {
-        if (mMenuInflater != null) return mMenuInflater;
-        return mMenuInflater = new MenuInflater(AccentThemeFixer.getThemedContext(this));
-    }
 
 	public MessagesManager getMessagesManager() {
 		return getTwittnukerApplication() != null ? getTwittnukerApplication().getMessagesManager() : null;

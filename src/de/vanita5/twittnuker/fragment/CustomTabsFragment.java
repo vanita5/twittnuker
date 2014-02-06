@@ -41,7 +41,6 @@ import android.content.Loader;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -66,7 +65,6 @@ import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
-import de.vanita5.twittnuker.content.TwidereContextWrapper;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
 import de.vanita5.twittnuker.model.Panes;
@@ -110,8 +108,7 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
 		mResolver = getContentResolver();
-		final Context context = new TwidereContextWrapper(getActivity(), getResources());
-		mAdapter = new CustomTabsAdapter(context);
+        mAdapter = new CustomTabsAdapter(ThemeUtils.getSettingsContextForActionIcons(getActivity()));
 		setListAdapter(mAdapter);
 		setEmptyText(getString(R.string.no_tab_hint));
 		mListView = (DragSortListView) getListView();
@@ -334,13 +331,9 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
             final Drawable icon = getTabIconDrawable(mContext, getTabIconObject(iconKey));
             holder.icon.setVisibility(View.VISIBLE);
             if (icon != null) {
-//                icon.mutate();
-//                icon.setColorFilter(mActionIconColor, PorterDuff.Mode.MULTIPLY);
                 holder.icon.setImageDrawable(icon);
 			} else {
-                final Drawable fallback = context.getResources().getDrawable(R.drawable.ic_tab_list);
-                fallback.mutate();
-                fallback.setColorFilter(mActionIconColor, PorterDuff.Mode.MULTIPLY);
+                final Drawable fallback = context.getResources().getDrawable(R.drawable.ic_iconic_action_list);
                 holder.icon.setImageDrawable(fallback);
 			}
 		}

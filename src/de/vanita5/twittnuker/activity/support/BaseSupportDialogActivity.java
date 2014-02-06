@@ -29,16 +29,18 @@ import android.os.Bundle;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.theme.TwidereResourceHelper;
 
 
 @SuppressLint("Registered")
 public class BaseSupportDialogActivity extends BaseSupportThemedActivity implements Constants {
 
+    private final TwidereResourceHelper mResourceHelper = new TwidereResourceHelper();
 	private boolean mInstanceStateSaved;
 
 	@Override
     public Resources getResources() {
-        return getDefaultResources();
+        return mResourceHelper.getResources(this, getDefaultResources());
 	}
 
 	@Override

@@ -24,7 +24,9 @@ package de.vanita5.twittnuker.activity.iface;
 
 import android.content.res.Resources;
 
-public interface IThemedActivity {
+import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
+
+public interface IThemedActivity extends ITwidereContextWrapper {
 
 	public int getCurrentThemeResourceId();
 
@@ -39,8 +41,6 @@ public interface IThemedActivity {
     public Resources getThemedResources();
 
 	public String getThemeFontFamily();
-
-    public int getThemeResourceId();
 
 	public void overrideCloseAnimationIfNeeded();
 

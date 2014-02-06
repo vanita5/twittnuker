@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.DataExportActivity;
 import de.vanita5.twittnuker.activity.support.DataImportActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.holder.ViewHolder;
 
 import java.util.List;
@@ -51,7 +52,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 
 	public HeaderAdapter getHeaderAdapter() {
 		if (mAdapter != null) return mAdapter;
-		return mAdapter = new HeaderAdapter(this);
+        return mAdapter = new HeaderAdapter(ThemeUtils.getSettingsContextForActionIcons(this));
 	}
 
 	@Override
@@ -127,7 +128,6 @@ public class SettingsActivity extends BasePreferenceActivity {
 		super.onCreate(savedInstanceState);
 		setIntent(getIntent().addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
 		final ActionBar actionBar = getActionBar();
-		actionBar.setIcon(R.drawable.ic_iconic_action_twittnuker);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		if (savedInstanceState != null) {
 			invalidateHeaders();
