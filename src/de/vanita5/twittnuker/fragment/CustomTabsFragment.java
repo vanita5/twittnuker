@@ -66,6 +66,7 @@ import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
+import de.vanita5.twittnuker.content.TwidereContextWrapper;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
 import de.vanita5.twittnuker.model.Panes;
@@ -109,7 +110,7 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
 		mResolver = getContentResolver();
-		final Context context = getActivity();
+		final Context context = new TwidereContextWrapper(getActivity(), getResources());
 		mAdapter = new CustomTabsAdapter(context);
 		setListAdapter(mAdapter);
 		setEmptyText(getString(R.string.no_tab_hint));
@@ -241,8 +242,6 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 			final List<Entry<String, CustomTabConfiguration>> tabs = new ArrayList<Entry<String, CustomTabConfiguration>>(
 					map.entrySet());
 			Collections.sort(tabs, CustomTabConfigurationComparator.SINGLETON);
-			final boolean isLightActionBar = ThemeUtils.isLightActionBar(getActivity());
-			final int actionIconColor = ThemeUtils.getActionIconColor(getActivity());
 			for (final Entry<String, CustomTabConfiguration> entry : tabs) {
 				final String type = entry.getKey();
 				final CustomTabConfiguration conf = entry.getValue();
@@ -263,10 +262,6 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 				subItem.setVisible(!shouldDisable);
 				subItem.setEnabled(!shouldDisable);
 				final Drawable icon = res.getDrawable(conf.getDefaultIcon());
-				if (icon != null && isLightActionBar) {
-					icon.mutate();
-					icon.setColorFilter(actionIconColor, PorterDuff.Mode.SRC_ATOP);
-				}
 				subItem.setIcon(icon);
 				subItem.setIntent(intent);
 			}
@@ -339,8 +334,8 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
             final Drawable icon = getTabIconDrawable(mContext, getTabIconObject(iconKey));
             holder.icon.setVisibility(View.VISIBLE);
             if (icon != null) {
-                icon.mutate();
-                icon.setColorFilter(mActionIconColor, PorterDuff.Mode.MULTIPLY);
+//                icon.mutate();
+//                icon.setColorFilter(mActionIconColor, PorterDuff.Mode.MULTIPLY);
                 holder.icon.setImageDrawable(icon);
 			} else {
                 final Drawable fallback = context.getResources().getDrawable(R.drawable.ic_tab_list);

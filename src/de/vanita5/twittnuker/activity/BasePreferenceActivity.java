@@ -24,21 +24,29 @@ package de.vanita5.twittnuker.activity;
 
 import static de.vanita5.twittnuker.util.Utils.restartActivity;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.NavUtils;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.theme.TwidereResourceHelper;
 
 public abstract class BasePreferenceActivity extends PreferenceActivity implements Constants {
 
+	private final TwidereResourceHelper mResourceHelper = new TwidereResourceHelper();
     private int mCurrentThemeResource;
 
 	@Override
 	public void finish() {
 		super.finish();
 		overrideCloseAnimationIfNeeded();
+	}
+
+	@Override
+	public Resources getResources() {
+		return mResourceHelper.getResources(this, super.getResources());
 	}
 
     public int getThemeResourceId() {

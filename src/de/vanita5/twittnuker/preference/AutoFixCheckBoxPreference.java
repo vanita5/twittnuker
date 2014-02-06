@@ -23,28 +23,34 @@
 package de.vanita5.twittnuker.preference;
 
 import android.content.Context;
-import android.preference.Preference;
+import android.content.SharedPreferences;
+import android.preference.CheckBoxPreference;
 import android.util.AttributeSet;
 
-import de.vanita5.twittnuker.util.SmartBarUtils;
+public class AutoFixCheckBoxPreference extends CheckBoxPreference {
 
-public class LeftsideComposeButtonPreference extends AutoFixCheckBoxPreference {
+	public AutoFixCheckBoxPreference(final Context context) {
+		super(context);
+	}
 
-    public LeftsideComposeButtonPreference(final Context context) {
-        super(context);
-    }
+	public AutoFixCheckBoxPreference(final Context context, final AttributeSet attrs) {
+		super(context, attrs);
+	}
 
-    public LeftsideComposeButtonPreference(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-    }
+	public AutoFixCheckBoxPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+		super(context, attrs, defStyle);
+	}
 
-    public LeftsideComposeButtonPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-        super(context, attrs, defStyle);
-    }
-
-    @Override
-    public void onDependencyChanged(final Preference dependency, final boolean disableDependent) {
-        super.onDependencyChanged(dependency, disableDependent || SmartBarUtils.hasSmartBar());
-    }
+	@Override
+	protected void onSetInitialValue(final boolean restoreValue, final Object defaultValue) {
+		try {
+			super.onSetInitialValue(restoreValue, defaultValue);
+		} catch (final ClassCastException e) {
+			final SharedPreferences prefs = getSharedPreferences();
+			if (prefs != null) {
+				prefs.edit().remove(getKey()).apply();
+			}
+		}
+	}
 
 }

@@ -11,9 +11,9 @@ buildscript {
 apply plugin: 'android'
 
 //check for updates every build
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
+//configurations.all {
+//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+//}
 
 repositories {
     mavenCentral()
@@ -38,7 +38,7 @@ dependencies {
     compile 'com.etsy.android.grid:library:1.0.3'
     compile 'com.twitter:twitter-text:1.6.1'
     compile 'com.github.castorflex.smoothprogressbar:library:0.3.1'
-    compile 'com.atermenji.android:iconicdroid:SNAPSHOT-1'
+    compile 'com.atermenji.android:iconicdroid:SNAPSHOT-2'
 }
 
 android {

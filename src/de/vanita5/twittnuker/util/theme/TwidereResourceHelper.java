@@ -20,31 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.preference;
+package de.vanita5.twittnuker.util.theme;
 
 import android.content.Context;
-import android.preference.Preference;
-import android.util.AttributeSet;
+import android.content.res.Resources;
 
-import de.vanita5.twittnuker.util.SmartBarUtils;
+import de.vanita5.twittnuker.content.res.TwidereResources;
 
-public class LeftsideComposeButtonPreference extends AutoFixCheckBoxPreference {
+public class TwidereResourceHelper {
 
-    public LeftsideComposeButtonPreference(final Context context) {
-        super(context);
-    }
+	private Resources mResources;
 
-    public LeftsideComposeButtonPreference(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public LeftsideComposeButtonPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-        super(context, attrs, defStyle);
-    }
-
-    @Override
-    public void onDependencyChanged(final Preference dependency, final boolean disableDependent) {
-        super.onDependencyChanged(dependency, disableDependent || SmartBarUtils.hasSmartBar());
-    }
+	public Resources getResources(final Context c, final Resources resources) {
+		if (mResources != null) return mResources;
+		return mResources = new TwidereResources(c, resources);
+	}
 
 }

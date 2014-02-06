@@ -273,7 +273,7 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_SWIPE_BACK = "swipe_back";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_FORCE_USING_PRIVATE_APIS = "force_using_private_apis";
-	@Preference(type = INT, hasDefault = true, defaultInt = 140)
+	@Preference(type = STRING, hasDefault = true, defaultString = "140")
 	public static final String KEY_STATUS_TEXT_LIMIT = "status_text_limit";
 
 	@Preference(type = STRING)
