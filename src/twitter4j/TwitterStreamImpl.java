@@ -545,7 +545,7 @@ class TwitterStreamImpl extends TwitterBaseImpl implements TwitterStream {
 						}
 						// connection established successfully
 						timeToSleep = NO_WAIT;
-						logger.info("Receiving status stream.");
+						logger.info("Receiving fragment_status stream.");
 						setStatus("[Receiving stream]");
 						while (!closed) {
 							try {

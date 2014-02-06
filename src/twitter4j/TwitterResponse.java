@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 /**
  * Super interface of Twitter Response data interfaces which indicates that rate
- * limit status is avaialble.
+ * limit fragment_status is avaialble.
  * 
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @see twitter4j.DirectMessage
@@ -46,9 +46,9 @@ public interface TwitterResponse extends Serializable {
 	int getAccessLevel();
 
 	/**
-	 * Returns the current rate limit status if available.
+	 * Returns the current rate limit fragment_status if available.
 	 * 
-	 * @return current rate limit status
+	 * @return current rate limit fragment_status
 	 * @since Twitter4J 2.1.0
 	 */
 	RateLimitStatus getRateLimitStatus();

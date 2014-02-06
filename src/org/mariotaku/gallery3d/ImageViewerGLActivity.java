@@ -33,6 +33,7 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -84,7 +85,7 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 	private GLRootView mGLRootView;
 	private ProgressBar mProgress;
 	private ImageView mImageViewer;
-    private MenuBar mMenuBar;
+	private MenuBar mMenuBar;
 
 	private PhotoView mPhotoView;
 
@@ -137,7 +138,7 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 		mGLRootView = (GLRootView) findViewById(R.id.gl_root_view);
 		mImageViewer = (ImageView) findViewById(R.id.image_viewer);
 		mProgress = (ProgressBar) findViewById(R.id.progress);
-        mMenuBar = (MenuBar) findViewById(R.id.menu_bar);
+		mMenuBar = (MenuBar) findViewById(R.id.menu_bar);
 	}
 
 	@Override
@@ -151,7 +152,7 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_image_viewer_action_bar, menu);
+		getMenuInflater().inflate(R.menu.menu_image_viewer_action_bar, menu);
 		return true;
 	}
 
@@ -189,7 +190,7 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 
 	@Override
 	public void onLoadFinished(final Loader<GLImageLoader.Result> loader, final GLImageLoader.Result data) {
-        if (data != null && (data.decoder != null || data.bitmap != null)) {
+		if (data != null && (data.decoder != null || data.bitmap != null)) {
 			if (data.decoder != null) {
 				mGLRootView.setVisibility(View.VISIBLE);
 				mImageViewer.setVisibility(View.GONE);
@@ -214,24 +215,24 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 	}
 
 	@Override
-    public boolean onMenuItemClick(final MenuItem item) {
+	public boolean onMenuItemClick(final MenuItem item) {
 		switch (item.getItemId()) {
-            case MENU_SAVE: {
-                if (mImageFile != null) {
+			case MENU_SAVE: {
+				if (mImageFile != null) {
 					new SaveImageTask(this, mImageFile).execute();
 				}
 				break;
 			}
 			case MENU_OPEN_IN_BROWSER: {
-                final Intent intent = getIntent();
-                intent.setExtrasClassLoader(getClassLoader());
-                final Uri uri = intent.getData();
-                final Uri orig = intent.getParcelableExtra(EXTRA_URI_ORIG);
-                final Uri uriPreferred = orig != null ? orig : uri;
-                if (uriPreferred == null) return false;
-                final String scheme = uriPreferred.getScheme();
+				final Intent intent = getIntent();
+				intent.setExtrasClassLoader(getClassLoader());
+				final Uri uri = intent.getData();
+				final Uri orig = intent.getParcelableExtra(EXTRA_URI_ORIG);
+				final Uri uriPreferred = orig != null ? orig : uri;
+				if (uriPreferred == null) return false;
+				final String scheme = uriPreferred.getScheme();
 				if ("http".equals(scheme) || "https".equals(scheme)) {
-                    final Intent open_intent = new Intent(Intent.ACTION_VIEW, uriPreferred);
+					final Intent open_intent = new Intent(Intent.ACTION_VIEW, uriPreferred);
 					open_intent.addCategory(Intent.CATEGORY_BROWSABLE);
 					try {
 						startActivity(open_intent);
@@ -241,38 +242,38 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 				}
 				break;
 			}
-            default: {
-                final Intent intent = item.getIntent();
-                if (intent != null) {
-                    try {
-                        startActivity(intent);
-                    } catch (final ActivityNotFoundException e) {
-                        // Ignore.
-                    }
-                    return true;
-                }
-                return false;
-            }
-        }
-        return true;
-    }
+			default: {
+				final Intent intent = item.getIntent();
+				if (intent != null) {
+					try {
+						startActivity(intent);
+					} catch (final ActivityNotFoundException e) {
+						// Ignore.
+					}
+					return true;
+				}
+				return false;
+			}
+		}
+		return true;
+	}
 
-    @Override
-    public void onMenuVisibilityChanged(final boolean isVisible) {
-    }
+	@Override
+	public void onMenuVisibilityChanged(final boolean isVisible) {
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case MENU_HOME: {
-                onBackPressed();
-                break;
-            }
-            case MENU_REFRESH: {
-                loadImage();
-                break;
-            }
-        }
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item) {
+		switch (item.getItemId()) {
+			case MENU_HOME: {
+				onBackPressed();
+				break;
+			}
+			case MENU_REFRESH: {
+				loadImage();
+				break;
+			}
+		}
 		return true;
 	}
 
@@ -284,7 +285,7 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 	@Override
 	public boolean onPrepareOptionsMenu(final Menu menu) {
 		final LoaderManager lm = getSupportLoaderManager();
-        Utils.setMenuItemAvailability(menu, MENU_REFRESH, !lm.hasRunningLoaders());
+		Utils.setMenuItemAvailability(menu, MENU_REFRESH, !lm.hasRunningLoaders());
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -328,10 +329,10 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 		mHandler = new MyHandler(this);
 		mPhotoView = new PhotoView(this);
 		mPhotoView.setListener(this);
-        final int bgColor = ThemeUtils.getColorBackgroundCacheHint(this);
-        final int r = Color.red(bgColor), g = Color.green(bgColor), b = Color.blue(bgColor);
-        final float[] rootBg = { r / 255f, g / 255f, b / 255f, 1 };
-        mRootPane.setBackgroundColor(rootBg);
+		final int bgColor = ThemeUtils.getColorBackgroundCacheHint(this);
+		final int r = Color.red(bgColor), g = Color.green(bgColor), b = Color.blue(bgColor);
+		final float[] rootBg = { r / 255f, g / 255f, b / 255f, 1 };
+		mRootPane.setBackgroundColor(rootBg);
 		mRootPane.addComponent(mPhotoView);
 		mAdapter = new PhotoViewAdapter(mPhotoView);
 		mPhotoView.setModel(mAdapter);
@@ -433,12 +434,28 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 	private void hideBars() {
 		if (!mShowBars || isSwiping()) return;
 		mShowBars = false;
-        mActionBar.hide();
-        mMenuBar.setVisibility(View.GONE);
-        final TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0,
-                Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1);
-        anim.setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime));
-        mMenuBar.startAnimation(anim);
+		mActionBar.hide();
+		final TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0,
+				Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1);
+		anim.setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime));
+		anim.setAnimationListener(new AnimationListener() {
+
+			@Override
+			public void onAnimationStart(Animation animation) {
+
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				mMenuBar.setVisibility(View.GONE);
+			}
+		});
+		mMenuBar.startAnimation(anim);
 		mHandler.removeMessages(MSG_HIDE_BARS);
 	}
 
@@ -462,12 +479,12 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 	private void showBars() {
 		if (mShowBars) return;
 		mShowBars = true;
-        mActionBar.show();
-        mMenuBar.setVisibility(View.VISIBLE);
-        final TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0,
-                Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1, Animation.RELATIVE_TO_SELF, 0);
-        anim.setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime));
-        mMenuBar.startAnimation(anim);
+		mActionBar.show();
+		mMenuBar.setVisibility(View.VISIBLE);
+		final TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0,
+				Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1, Animation.RELATIVE_TO_SELF, 0);
+		anim.setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime));
+		mMenuBar.startAnimation(anim);
 	}
 
 	private void toggleBars() {

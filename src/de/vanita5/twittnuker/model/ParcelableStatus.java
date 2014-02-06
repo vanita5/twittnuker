@@ -106,7 +106,7 @@ public class ParcelableStatus implements Parcelable, JSONParcelable, Comparable<
 			user_screen_name, in_reply_to_name, in_reply_to_screen_name, source, user_profile_image_url, media_link,
 			text_unescaped;
 
-    /*Variables for custom status media*/
+    /*Variables for custom fragment_status media*/
     private boolean hasCustomMedia;
     private String customMediaUrl;
 

@@ -32,6 +32,7 @@ import android.support.v4.app.NavUtils;
 import com.negusoft.holoaccent.AccentHelper;
 
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.util.theme.AccentThemeFixer;
 import de.vanita5.twittnuker.util.theme.TwidereAccentHelper;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
@@ -120,6 +121,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
+        AccentThemeFixer.fixWindow(this);
 		if (Utils.isDebugBuild()) {
 			StrictModeUtils.detectAllVmPolicy();
 			StrictModeUtils.detectAllThreadPolicy();
@@ -130,6 +132,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 		}
 		setTheme();
 		super.onCreate(savedInstanceState);
+        AccentThemeFixer.fixActionBar(getActionBar(), this);
 		setActionBarBackground();
 	}
 

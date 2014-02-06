@@ -25,14 +25,14 @@ public interface RateLimitStatusListener {
 	 * Called when the account or IP address is hitting the rate limit.<br>
 	 * onRateLimitStatus will be also called before this event.
 	 * 
-	 * @param event rate limit status event.
+	 * @param event rate limit fragment_status event.
 	 */
 	public void onRateLimitReached(RateLimitStatusEvent event);
 
 	/**
-	 * Called when the response contains rate limit status.
+	 * Called when the response contains rate limit fragment_status.
 	 * 
-	 * @param event rate limit status event.
+	 * @param event rate limit fragment_status event.
 	 */
 	public void onRateLimitStatus(RateLimitStatusEvent event);
 }

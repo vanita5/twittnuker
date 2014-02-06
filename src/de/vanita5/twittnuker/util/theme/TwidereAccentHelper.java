@@ -29,9 +29,10 @@ import android.view.Window;
 import com.negusoft.holoaccent.AccentHelper;
 import com.negusoft.holoaccent.dialog.DividerPainter;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.content.res.TwidereAccentResources;
 
-public class TwidereAccentHelper extends AccentHelper {
+public class TwidereAccentHelper extends AccentHelper implements Constants {
 
     private DividerPainter mDividerPainter;
     private final int mAccentColor;
@@ -47,7 +48,8 @@ public class TwidereAccentHelper extends AccentHelper {
 	@Override
 	public Resources getResources(final Context c, final Resources resources) {
 		if (mResources != null) return mResources;
-		return mResources = new TwidereAccentResources(c, super.getResources(c, resources), mAccentColor, mThemeResources);
+        return mResources = new TwidereAccentResources(c, super.getResources(c, resources), mAccentColor,
+                mThemeResources);
 	}
 
     @Override

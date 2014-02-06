@@ -190,7 +190,7 @@ public final class StatusUpdate implements Serializable {
 
 	@Override
 	public String toString() {
-		return "StatusUpdate{" + "status='" + status + '\'' + ", inReplyToStatusId=" + inReplyToStatusId
+		return "StatusUpdate{" + "fragment_status='" + status + '\'' + ", inReplyToStatusId=" + inReplyToStatusId
 				+ ", location=" + location + ", placeId='" + placeId + '\'' + ", displayCoordinates="
 				+ displayCoordinates + ", possiblySensitive=" + possiblySensitive + ", mediaName='" + mediaName + '\''
 				+ ", mediaBody=" + mediaBody + ", mediaFile=" + mediaFile + '}';
@@ -212,7 +212,7 @@ public final class StatusUpdate implements Serializable {
 
 	/* package */HttpParameter[] asHttpParameterArray(final HttpParameter includeEntities) {
 		final ArrayList<HttpParameter> params = new ArrayList<HttpParameter>();
-		appendParameter("status", status, params);
+		appendParameter("fragment_status", status, params);
 		if (-1 != inReplyToStatusId) {
 			appendParameter("in_reply_to_status_id", inReplyToStatusId, params);
 		}

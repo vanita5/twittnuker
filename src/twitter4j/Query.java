@@ -139,7 +139,7 @@ public final class Query {
 	}
 
 	/**
-	 * Returns tweets with status ids less than the given id.
+	 * Returns tweets with fragment_status ids less than the given id.
 	 * 
 	 * @return maxId
 	 * @since Twitter4J 2.1.1
@@ -261,7 +261,7 @@ public final class Query {
 	}
 
 	/**
-	 * If specified, returns tweets with status ids less than the given id.
+	 * If specified, returns tweets with fragment_status ids less than the given id.
 	 * 
 	 * @param maxId maxId
 	 * @return this instance
@@ -363,7 +363,7 @@ public final class Query {
 	}
 
 	/**
-	 * If specified, returns tweets with status ids less than the given id.
+	 * If specified, returns tweets with fragment_status ids less than the given id.
 	 * 
 	 * @param maxId maxId
 	 * @since Twitter4J 2.1.1
@@ -426,9 +426,9 @@ public final class Query {
 	}
 
 	/**
-	 * returns tweets with status ids greater than the given id.
+	 * returns tweets with fragment_status ids greater than the given id.
 	 * 
-	 * @param sinceId returns tweets with status ids greater than the given id
+	 * @param sinceId returns tweets with fragment_status ids greater than the given id
 	 */
 	public void setSinceId(final long sinceId) {
 		this.sinceId = sinceId;
@@ -459,9 +459,9 @@ public final class Query {
 	}
 
 	/**
-	 * returns tweets with status ids greater than the given id.
+	 * returns tweets with fragment_status ids greater than the given id.
 	 * 
-	 * @param sinceId returns tweets with status ids greater than the given id
+	 * @param sinceId returns tweets with fragment_status ids greater than the given id
 	 * @return the instance
 	 * @since Twitter4J 2.1.0
 	 */

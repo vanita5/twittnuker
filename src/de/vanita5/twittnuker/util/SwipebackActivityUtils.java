@@ -102,7 +102,7 @@ public class SwipebackActivityUtils implements TwittnukerConstants {
 		final Bitmap b = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
 		final Rect frame = new Rect();
 		view.getWindowVisibleDisplayFrame(frame);
-		// Remove window background behind status bar.
+		// Remove window background behind fragment_status bar.
 		final Canvas c = new Canvas(b);
 		view.draw(c);
 		final Paint paint = new Paint();

@@ -19,7 +19,7 @@ package twitter4j;
 import java.util.EventObject;
 
 /**
- * A data interface representing Twitter REST API's rate limit status
+ * A data interface representing Twitter REST API's rate limit fragment_status
  * 
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @see <a href="https://dev.twitter.com/docs/rate-limiting">Rate Limiting |

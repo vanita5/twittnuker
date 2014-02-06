@@ -127,7 +127,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 		super.onCreate(savedInstanceState);
 		setIntent(getIntent().addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
 		final ActionBar actionBar = getActionBar();
-		actionBar.setIcon(R.drawable.ic_iconic_action_twidere);
+		actionBar.setIcon(R.drawable.ic_iconic_action_twittnuker);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		if (savedInstanceState != null) {
 			invalidateHeaders();

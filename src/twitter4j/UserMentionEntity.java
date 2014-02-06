@@ -33,23 +33,23 @@ public interface UserMentionEntity extends Serializable {
 	int getEnd();
 
 	/**
-	 * Returns the user id mentioned in the status.
+	 * Returns the user id mentioned in the fragment_status.
 	 * 
-	 * @return the user id mentioned in the status
+	 * @return the user id mentioned in the fragment_status
 	 */
 	long getId();
 
 	/**
-	 * Returns the name mentioned in the status.
+	 * Returns the name mentioned in the fragment_status.
 	 * 
-	 * @return the name mentioned in the status
+	 * @return the name mentioned in the fragment_status
 	 */
 	String getName();
 
 	/**
-	 * Returns the screen name mentioned in the status.
+	 * Returns the screen name mentioned in the fragment_status.
 	 * 
-	 * @return the screen name mentioned in the status
+	 * @return the screen name mentioned in the fragment_status
 	 */
 	String getScreenName();
 

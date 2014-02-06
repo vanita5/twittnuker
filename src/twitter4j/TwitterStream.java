@@ -128,7 +128,7 @@ public interface TwitterStream extends OAuthSupport, TwitterBase {
 	StatusStream getFilterStream(FilterQuery query) throws TwitterException;
 
 	/**
-	 * Returns a status stream of all public statuses. Available only to
+	 * Returns a fragment_status stream of all public statuses. Available only to
 	 * approved parties and requires a signed agreement to access. Please do not
 	 * contact us about access to the firehose. If your service warrants access
 	 * to it, we'll contact you.
@@ -148,7 +148,7 @@ public interface TwitterStream extends OAuthSupport, TwitterBase {
 	StatusStream getFirehoseStream(int count) throws TwitterException;
 
 	/**
-	 * Returns a status stream of all public statuses containing links.
+	 * Returns a fragment_status stream of all public statuses containing links.
 	 * Available only to approved parties and requires a signed agreement to
 	 * access. Please do not contact us about access to the links stream. If
 	 * your service warrants access to it, we'll contact you.
@@ -322,7 +322,7 @@ public interface TwitterStream extends OAuthSupport, TwitterBase {
 	 * Open no more than 25 new connections per second and exponentially
 	 * back-off on errors.
 	 * 
-	 * @param withFollowings whether to receive status updates from people
+	 * @param withFollowings whether to receive fragment_status updates from people
 	 *            following
 	 * @param follow an array of users to include in the stream
 	 * @see <a

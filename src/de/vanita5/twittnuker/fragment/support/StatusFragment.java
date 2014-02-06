@@ -547,13 +547,13 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-		final View view = inflater.inflate(R.layout.status, null, false);
+		final View view = inflater.inflate(R.layout.fragment_status, null, false);
 		mMainContent = view.findViewById(R.id.content);
 		mStatusLoadProgress = (ProgressBar) view.findViewById(R.id.status_load_progress);
 		mMenuBar = (MenuBar) view.findViewById(R.id.menu_bar);
 		mStatusContainer = (ExtendedFrameLayout) view.findViewById(R.id.status_container);
 		mStatusContainer.addView(super.onCreateView(inflater, container, savedInstanceState));
-		mHeaderView = inflater.inflate(R.layout.status_header, null, false);
+		mHeaderView = inflater.inflate(R.layout.header_status, null, false);
 		mImagePreviewContainer = mHeaderView.findViewById(R.id.image_preview);
 		mLocationContainer = mHeaderView.findViewById(R.id.location_container);
 		mLocationView = (TextView) mHeaderView.findViewById(R.id.location_view);
@@ -787,7 +787,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	}
 
 	// @Override
-	// protected void setItemSelected(final ParcelableStatus status, final int
+	// protected void setItemSelected(final ParcelableStatus fragment_status, final int
 	// position, final boolean selected) {
 	// final MultiSelectManager manager = getMultiSelectManager();
 	// final Object only_item = manager.getCount() == 1 ?
@@ -802,7 +802,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	// manager.unselectItem(mStatus);
 	// }
 	// }
-	// super.setItemSelected(status, position, selected);
+	// super.setItemSelected(fragment_status, position, selected);
 	// }
 
 	@Override

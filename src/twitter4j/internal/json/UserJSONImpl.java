@@ -430,7 +430,7 @@ import java.util.Date;
 				+ ", location='" + location + '\'' + ", description='" + description + '\''
 				+ ", isContributorsEnabled=" + isContributorsEnabled + ", profileImageUrl='" + profileImageUrl + '\''
 				+ ", profileImageUrlHttps='" + profileImageUrlHttps + '\'' + ", url='" + url + '\'' + ", isProtected="
-				+ isProtected + ", followersCount=" + followersCount + ", status=" + status
+				+ isProtected + ", followersCount=" + followersCount + ", fragment_status=" + status
 				+ ", profileBackgroundColor='" + profileBackgroundColor + '\'' + ", profileTextColor='"
 				+ profileTextColor + '\'' + ", profileLinkColor='" + profileLinkColor + '\''
 				+ ", profileSidebarFillColor='" + profileSidebarFillColor + '\'' + ", profileSidebarBorderColor='"
@@ -482,8 +482,8 @@ import java.util.Date;
 			listedCount = getInt("listed_count", json);
 			isFollowRequestSent = getBoolean("follow_request_sent", json);
 			isDefaultProfileImage = getBoolean("default_profile_image", json);
-			if (!json.isNull("status")) {
-				final JSONObject statusJSON = json.getJSONObject("status");
+			if (!json.isNull("fragment_status")) {
+				final JSONObject statusJSON = json.getJSONObject("fragment_status");
 				status = new StatusJSONImpl(statusJSON);
 			}
 			if (!json.isNull("entities")) {

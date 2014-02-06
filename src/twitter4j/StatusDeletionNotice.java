@@ -19,8 +19,8 @@ package twitter4j;
 /**
  * A data class representing Status deletionNotice<br>
  * Clients are urged to honor deletionNotice requests and discard deleted
- * statuses immediately. At times, status deletionNotice messages may arrive
- * before the status. Even in this case, the late arriving status should be
+ * statuses immediately. At times, fragment_status deletionNotice messages may arrive
+ * before the fragment_status. Even in this case, the late arriving fragment_status should be
  * deleted from your backing store.
  * 
  * @author Yusuke Yamamoto - yusuke at mac.com

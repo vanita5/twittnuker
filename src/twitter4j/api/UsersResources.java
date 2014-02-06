@@ -143,7 +143,7 @@ public interface UsersResources {
 
 	/**
 	 * Access the users in a given category of the Twitter suggested user list
-	 * and return their most recent status if they are not a protected user. <br>
+	 * and return their most recent fragment_status if they are not a protected user. <br>
 	 * This method has not been finalized and the interface is subject to change
 	 * in incompatible ways. <br>
 	 * This method calls
@@ -193,7 +193,7 @@ public interface UsersResources {
 	/**
 	 * Return up to 100 users worth of extended information, specified by either
 	 * ID, screen name, or combination of the two. The author's most recent
-	 * status (if the authenticating user has permission) will be returned
+	 * fragment_status (if the authenticating user has permission) will be returned
 	 * inline. <br>
 	 * This method calls http://api.twitter.com/1.1/users/lookup.json
 	 * 
@@ -209,7 +209,7 @@ public interface UsersResources {
 	/**
 	 * Return up to 100 users worth of extended information, specified by either
 	 * ID, screen name, or combination of the two. The author's most recent
-	 * status (if the authenticating user has permission) will be returned
+	 * fragment_status (if the authenticating user has permission) will be returned
 	 * inline. <br>
 	 * This method calls http://api.twitter.com/1.1/users/lookup.json
 	 * 
@@ -244,7 +244,7 @@ public interface UsersResources {
 
 	/**
 	 * Returns extended information of a given user, specified by ID or screen
-	 * name as per the required id parameter. The author's most recent status
+	 * name as per the required id parameter. The author's most recent fragment_status
 	 * will be returned inline. <br>
 	 * This method calls http://api.twitter.com/1.1/users/show.json
 	 * 
@@ -259,7 +259,7 @@ public interface UsersResources {
 
 	/**
 	 * Returns extended information of a given user, specified by ID or screen
-	 * name as per the required id parameter. The author's most recent status
+	 * name as per the required id parameter. The author's most recent fragment_status
 	 * will be returned inline. <br>
 	 * This method calls http://api.twitter.com/1.1/users/show.json
 	 * 
@@ -553,7 +553,7 @@ public interface UsersResources {
 
 	/**
 	 * Returns an HTTP 200 OK response code and a representation of the
-	 * requesting user if authentication was successful; returns a 401 status
+	 * requesting user if authentication was successful; returns a 401 fragment_status
 	 * code and an error message if not. Use this method to test if supplied
 	 * user credentials are valid. <br>
 	 * This method calls

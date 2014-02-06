@@ -29,7 +29,7 @@ import android.webkit.WebView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient;
-import de.vanita5.twittnuker.view.WebSettingsAccessor;
+import de.vanita5.twittnuker.util.accessor.WebSettingsAccessor;
 
 
 @SuppressLint("SetJavaScriptEnabled")

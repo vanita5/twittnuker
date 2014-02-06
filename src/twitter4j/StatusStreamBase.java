@@ -150,7 +150,7 @@ abstract class StatusStreamBase implements StatusStream {
 		if (!streamAlive) throw new IllegalStateException("Stream already closed.");
 		try {
 			final String line = br.readLine();
-			if (null == line) // invalidate this status stream
+			if (null == line) // invalidate this fragment_status stream
 				throw new IOException("the end of the stream has been reached");
 			dispatcher.invokeLater(new StreamEvent(line) {
 				@Override

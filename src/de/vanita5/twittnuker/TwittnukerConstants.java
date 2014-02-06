@@ -69,7 +69,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final String AUTHORITY_USER_FOLLOWERS = "user_followers";
 	public static final String AUTHORITY_USER_FRIENDS = "user_friends";
 	public static final String AUTHORITY_USER_BLOCKS = "user_blocks";
-	public static final String AUTHORITY_STATUS = "status";
+	public static final String AUTHORITY_STATUS = "fragment_status";
 	public static final String AUTHORITY_STATUSES = "statuses";
 	public static final String AUTHORITY_DIRECT_MESSAGES_CONVERSATION = "direct_messages_conversation";
 	public static final String AUTHORITY_SEARCH = "search";

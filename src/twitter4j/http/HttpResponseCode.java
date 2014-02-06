@@ -31,7 +31,7 @@ public interface HttpResponseCode {
 	int NOT_MODIFIED = 304;
 	/**
 	 * Bad Request: The request was invalid. An accompanying error message will
-	 * explain why. This is the status code will be returned during rate
+	 * explain why. This is the fragment_status code will be returned during rate
 	 * limiting.
 	 **/
 	int BAD_REQUEST = 400;

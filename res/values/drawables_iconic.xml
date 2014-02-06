@@ -23,7 +23,7 @@
 
 <resources>
 
-    <item name="ic_iconic_action_twidere" type="drawable"/>
+    <item name="ic_iconic_action_twittnuker" type="drawable"/>
     <item name="ic_iconic_action_camera" type="drawable"/>
     <item name="ic_iconic_action_gallery" type="drawable"/>
     <item name="ic_iconic_action_save" type="drawable"/>
@@ -58,6 +58,9 @@
     <item name="ic_iconic_action_message" type="drawable"/>
     <item name="ic_iconic_action_home" type="drawable"/>
     <item name="ic_iconic_action_mention" type="drawable"/>
+    <item name="ic_iconic_twittnuker" type="drawable"/>
+
+    <!-- Twittnuker -->
     <item name="ic_iconic_action_heart" type="drawable"/>
 
 </resources>

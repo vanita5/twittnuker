@@ -28,10 +28,12 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.view.MenuInflater;
 
 import com.negusoft.holoaccent.AccentHelper;
 
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.util.theme.AccentThemeFixer;
 import de.vanita5.twittnuker.util.theme.TwidereAccentHelper;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
@@ -41,10 +43,9 @@ import de.vanita5.twittnuker.util.Utils;
 public abstract class BaseThemedActivity extends Activity implements IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha;
-
 	private String mCurrentThemeFontFamily;
-
     private AccentHelper mAccentHelper;
+    private MenuInflater mMenuInflater;
 
 	@Override
 	public void finish() {
@@ -60,6 +61,12 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     @Override
     public Resources getDefaultResources() {
         return super.getResources();
+    }
+
+    @Override
+    public MenuInflater getMenuInflater() {
+        if (mMenuInflater != null) return mMenuInflater;
+        return mMenuInflater = new MenuInflater(AccentThemeFixer.getThemedContext(this));
     }
 
     @Override
@@ -128,6 +135,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 		}
 		setTheme();
 		super.onCreate(savedInstanceState);
+        AccentThemeFixer.fixActionBar(getActionBar(), this);
 		setActionBarBackground();
 	}
 
