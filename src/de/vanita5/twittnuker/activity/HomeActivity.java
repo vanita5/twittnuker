@@ -617,17 +617,12 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         updateSmartBar();
 		updateSlidingMenuTouchMode();
 		
-		if(!hasStreamLoaded || hasStreamingChanged()) {
+		if(!hasStreamLoaded && mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
 			hasStreamLoaded = false;
 			connectToStream();
 		} else {
 			closeStream();
 		}
-	}
-	
-	private boolean hasStreamingChanged() {
-		final boolean streaming = mPreferences.getBoolean(KEY_STREAMING_ENABLED, false);
-		return mStreaming != streaming;
 	}
 	
 	public void connectToStream() {
