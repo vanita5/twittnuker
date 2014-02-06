@@ -620,6 +620,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		if(!hasStreamLoaded || hasStreamingChanged()) {
 			hasStreamLoaded = false;
 			connectToStream();
+		} else {
+			closeStream();
 		}
 	}
 	
@@ -661,7 +663,14 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		if (twitterStream != null) {
 			NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 			notificationManager.cancel(NOTIFICATION_ID_STREAMING);
-			twitterStream.shutdown();
+			new AsyncTask<Void, Void, Void>() {
+
+				@Override
+				protected Void doInBackground(Void... voids) {
+					twitterStream.shutdown();
+					return null;
+				}
+			}.execute();
 		}
 	}
 	
