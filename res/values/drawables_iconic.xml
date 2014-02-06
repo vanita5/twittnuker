@@ -58,5 +58,6 @@
     <item name="ic_iconic_action_message" type="drawable"/>
     <item name="ic_iconic_action_home" type="drawable"/>
     <item name="ic_iconic_action_mention" type="drawable"/>
+    <item name="ic_iconic_action_heart" type="drawable"/>
 
 </resources>
