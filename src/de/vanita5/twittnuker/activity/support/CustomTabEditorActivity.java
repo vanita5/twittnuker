@@ -53,11 +53,11 @@ import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.graphic.DropShadowDrawable;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.content.TwidereContextWrapper;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -247,6 +247,7 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 		super.onCreate(savedInstanceState);
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mImageLoader = TwittnukerApplication.getInstance(this).getImageLoaderWrapper();
+		final Context context = new TwidereContextWrapper(this, getResources());
 		final Intent intent = getIntent();
 		final String type = mTabType = intent.getStringExtra(EXTRA_TYPE);
 		if (type == null) {
@@ -256,10 +257,10 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 		mTabId = intent.getLongExtra(EXTRA_ID, -1);
 		setTitle(isEditMode() ? R.string.edit_tab : R.string.add_tab);
 		setContentView(R.layout.custom_tab_editor);
-		mTabTypeName.setText(getTabTypeName(this, type));
-		mTabIconsAdapter = new CustomTabIconsAdapter(this);
+		mTabTypeName.setText(getTabTypeName(context, type));
+		mTabIconsAdapter = new CustomTabIconsAdapter(context);
 		mTabIconsAdapter.setData(getIconMap());
-		mAccountsAdapter = new AccountsSpinnerAdapter(this);
+		mAccountsAdapter = new AccountsSpinnerAdapter(context);
 		mAccountSpinner.setAdapter(mAccountsAdapter);
 		mTabIconSpinner.setAdapter(mTabIconsAdapter);
 		final String icon_key;
@@ -455,7 +456,7 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 			final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
 			final int value = item.getValue();
 			if (value > 0) {
-				icon.setImageDrawable(new DropShadowDrawable(mResources, mResources.getDrawable(value), 2, 0x80000000));
+				icon.setImageDrawable(mResources.getDrawable(value));
 			} else {
 				icon.setImageDrawable(null);
 			}

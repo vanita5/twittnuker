@@ -20,38 +20,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.theme;
+package de.vanita5.twittnuker.content;
 
 import android.content.Context;
-import android.view.Window;
+import android.content.ContextWrapper;
+import android.content.res.Resources;
 
-import com.negusoft.holoaccent.AccentHelper;
-import com.negusoft.holoaccent.dialog.DividerPainter;
+import de.vanita5.twittnuker.content.res.TwidereResources;
 
-public class TwidereAccentHelper extends AccentHelper {
+public class TwidereContextWrapper extends ContextWrapper {
 
-    private DividerPainter mDividerPainter;
-    private final int mAccentColor;
+    private final Resources mResources;
+	private Resources mTwidereResources;
 
-    public TwidereAccentHelper() {
-        mAccentColor = 0;
-    }
+	public TwidereContextWrapper(final Context base) {
+		this(base, null);
+	}
 
-    public TwidereAccentHelper(final int color) {
-        super(color);
-        mAccentColor = color;
+    public TwidereContextWrapper(final Context base, final Resources res) {
+        super(base);
+        mResources = res;
     }
 
     @Override
-    public void prepareDialog(final Context c, final Window window) {
-        if (mDividerPainter == null) {
-            if (mAccentColor != 0) {
-                mDividerPainter = new DividerPainter(mAccentColor);
-            } else {
-                mDividerPainter = new DividerPainter(c);
-            }
-        }
-        mDividerPainter.paint(window);
+    public Resources getResources() {
+		if (mTwidereResources != null) return mTwidereResources;
+		if (mResources != null) return mTwidereResources = new TwidereResources(this, mResources);
+		return mTwidereResources = new TwidereResources(this, super.getResources());
     }
 
 }

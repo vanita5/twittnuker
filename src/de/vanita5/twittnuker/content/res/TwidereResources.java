@@ -20,31 +20,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.preference;
+package de.vanita5.twittnuker.content.res;
 
 import android.content.Context;
-import android.preference.Preference;
-import android.util.AttributeSet;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 
-import de.vanita5.twittnuker.util.SmartBarUtils;
+import de.vanita5.twittnuker.content.res.iface.IThemedResources;
 
-public class LeftsideComposeButtonPreference extends AutoFixCheckBoxPreference {
+public class TwidereResources extends Resources implements IThemedResources {
 
-    public LeftsideComposeButtonPreference(final Context context) {
-        super(context);
-    }
+	private final Helper mHelper;
 
-    public LeftsideComposeButtonPreference(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-    }
+	public TwidereResources(final Context context, final Resources res) {
+		super(res.getAssets(), res.getDisplayMetrics(), res.getConfiguration());
+		mHelper = new Helper(this, context);
+	}
 
-    public LeftsideComposeButtonPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-        super(context, attrs, defStyle);
-    }
+	@Override
+	public void addDrawableInterceptor(final DrawableInterceptor interceptor) {
+		mHelper.addDrawableInterceptor(interceptor);
+	}
 
-    @Override
-    public void onDependencyChanged(final Preference dependency, final boolean disableDependent) {
-        super.onDependencyChanged(dependency, disableDependent || SmartBarUtils.hasSmartBar());
-    }
+	@Override
+	public Drawable getDrawable(final int id) throws Resources.NotFoundException {
+		final Drawable d = mHelper.getDrawable(id);
+		if (d != null) return d;
+		return super.getDrawable(id);
+	}
 
 }

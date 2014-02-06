@@ -32,7 +32,7 @@ import android.support.v4.app.NavUtils;
 import com.negusoft.holoaccent.AccentHelper;
 
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.theme.TwidereAccentHelper;
+import de.vanita5.twittnuker.util.theme.TwidereAccentHelper;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -78,7 +78,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     @Override
     public final Resources getThemedResources() {
         if (mAccentHelper == null) {
-            mAccentHelper = new TwidereAccentHelper(ThemeUtils.getUserThemeColor(this));
+			mAccentHelper = new TwidereAccentHelper(ThemeUtils.getUserThemeColor(this), getThemeResourceId());
         }
         return mAccentHelper.getResources(this, super.getResources());
     }

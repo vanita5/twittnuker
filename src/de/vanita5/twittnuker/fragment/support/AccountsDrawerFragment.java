@@ -45,7 +45,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +64,7 @@ import de.vanita5.twittnuker.adapter.AccountsDrawerAdapter;
 import de.vanita5.twittnuker.adapter.AccountsDrawerAdapter.GroupItem;
 import de.vanita5.twittnuker.adapter.AccountsDrawerAdapter.OnAccountActivateStateChangeListener;
 import de.vanita5.twittnuker.adapter.AccountsDrawerAdapter.OptionItem;
+import de.vanita5.twittnuker.content.TwidereContextThemeWrapper;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
@@ -255,7 +255,10 @@ public class AccountsDrawerFragment extends BaseSupportFragment implements Loade
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-		final Context theme = new ContextThemeWrapper(getActivity(), ThemeUtils.getDrawerThemeResource(getActivity()));
+		final Context context = getActivity();
+		final int themeResource = ThemeUtils.getDrawerThemeResource(context);
+		final int accentColor = ThemeUtils.getUserThemeColor(context);
+		final Context theme = new TwidereContextThemeWrapper(context, themeResource, accentColor);
 		final View view = LayoutInflater.from(theme).inflate(R.layout.accounts_drawer, container, false);
 		mListView = (ExpandableListView) view.findViewById(android.R.id.list);
 		return view;

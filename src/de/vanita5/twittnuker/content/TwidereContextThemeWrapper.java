@@ -20,31 +20,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.preference;
+package de.vanita5.twittnuker.content;
 
 import android.content.Context;
-import android.preference.Preference;
-import android.util.AttributeSet;
+import android.content.res.Resources;
+import android.view.ContextThemeWrapper;
 
-import de.vanita5.twittnuker.util.SmartBarUtils;
+import de.vanita5.twittnuker.util.theme.TwidereAccentHelper;
 
-public class LeftsideComposeButtonPreference extends AutoFixCheckBoxPreference {
+public class TwidereContextThemeWrapper extends ContextThemeWrapper {
 
-    public LeftsideComposeButtonPreference(final Context context) {
-        super(context);
-    }
+	private final TwidereAccentHelper mAccentHelper;
 
-    public LeftsideComposeButtonPreference(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-    }
+	private final int mThemeResourceId;
+	private final int mAccentColor;
 
-    public LeftsideComposeButtonPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-        super(context, attrs, defStyle);
-    }
+	public TwidereContextThemeWrapper(final Context base, final int themeResource, final int accentColor) {
+		super(base, themeResource);
+		mThemeResourceId = themeResource;
+		mAccentColor = accentColor;
+		mAccentHelper = new TwidereAccentHelper(accentColor, themeResource);
+	}
 
-    @Override
-    public void onDependencyChanged(final Preference dependency, final boolean disableDependent) {
-        super.onDependencyChanged(dependency, disableDependent || SmartBarUtils.hasSmartBar());
-    }
+	public int getAccentColor() {
+		return mAccentColor;
+	}
+
+	@Override
+	public Resources getResources() {
+		return mAccentHelper.getResources(this, super.getResources());
+	}
+
+	public int getThemeResourceId() {
+		return mThemeResourceId;
+	}
 
 }
