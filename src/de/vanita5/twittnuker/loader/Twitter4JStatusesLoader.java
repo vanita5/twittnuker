@@ -31,7 +31,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 
 import org.mariotaku.jsonserializer.JSONFileIO;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
@@ -54,7 +53,6 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
 	private final Context mContext;
 	private final long mAccountId;
 	private final long mMaxId, mSinceId;
-	private final boolean mHiResProfileImage;
 	private final SQLiteDatabase mDatabase;
 	private final Handler mHandler;
 	private final Object[] mSavedStatusesFileArgs;
@@ -67,7 +65,6 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
 		mAccountId = account_id;
 		mMaxId = max_id;
 		mSinceId = since_id;
-		mHiResProfileImage = context.getResources().getBoolean(R.bool.hires_profile_image);
 		mDatabase = TwittnukerApplication.getInstance(context).getSQLiteDatabase();
 		mHandler = new Handler();
 		mSavedStatusesFileArgs = saved_statuses_args;
@@ -113,8 +110,7 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
         for (final Status status : statuses) {
             final long id = status.getId();
             final boolean deleted = deleteStatus(data, id);
-            data.add(new ParcelableStatus(status, mAccountId, minStatusId == id && insertGap && !deleted,
-                    mHiResProfileImage));
+			data.add(new ParcelableStatus(status, mAccountId, minStatusId == id && insertGap && !deleted));
         }
         Collections.sort(data);
         final ParcelableStatus[] array = data.toArray(new ParcelableStatus[data.size()]);

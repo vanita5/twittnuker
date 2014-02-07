@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.Utils.getBiggerTwitterProfileImage;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +40,6 @@ public class AccountsSpinnerAdapter extends ArrayAdapter<Account> {
 
 	private final ImageLoaderWrapper mImageLoader;
 	private final boolean mDisplayProfileImage;
-	private final boolean mDisplayHiResProfileImage;
 
 	public AccountsSpinnerAdapter(final Context context) {
 		super(context, R.layout.two_line_list_item_small);
@@ -51,7 +48,6 @@ public class AccountsSpinnerAdapter extends ArrayAdapter<Account> {
 		mDisplayProfileImage = context.getSharedPreferences(DirectMessagesConversationFragment.SHARED_PREFERENCES_NAME,
 				Context.MODE_PRIVATE).getBoolean(
 				DirectMessagesConversationFragment.KEY_DISPLAY_PROFILE_IMAGE, true);
-		mDisplayHiResProfileImage = context.getResources().getBoolean(R.bool.hires_profile_image);
 	}
 
 	public AccountsSpinnerAdapter(final Context context, final Collection<Account> accounts) {
@@ -83,11 +79,7 @@ public class AccountsSpinnerAdapter extends ArrayAdapter<Account> {
 			text1.setText(item.name);
 			text2.setText(String.format("@%s", item.screen_name));
 			if (mDisplayProfileImage) {
-				if (mDisplayHiResProfileImage) {
-					mImageLoader.displayProfileImage(icon, getBiggerTwitterProfileImage(item.profile_image_url));
-				} else {
-					mImageLoader.displayProfileImage(icon, item.profile_image_url);
-				}
+				mImageLoader.displayProfileImage(icon, item.profile_image_url);
 			} else {
 				icon.setImageResource(R.drawable.ic_profile_image_default);
 			}

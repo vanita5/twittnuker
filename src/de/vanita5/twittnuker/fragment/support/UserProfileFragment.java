@@ -546,7 +546,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 
 	@Override
 	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-		inflater.inflate(R.menu.menu_user_user_list, menu);
+		inflater.inflate(R.menu.menu_user_list, menu);
 	}
 
 	@Override

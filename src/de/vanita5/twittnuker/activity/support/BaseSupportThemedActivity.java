@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.activity.support;
 import static de.vanita5.twittnuker.util.Utils.restartActivity;
 
 import android.content.res.Resources;
+import android.content.res.Resources.Theme;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
@@ -48,6 +49,8 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 
     private AccentHelper mAccentHelper;
 
+	private Theme mTheme;
+
 	@Override
 	public void finish() {
 		super.finish();
@@ -68,6 +71,19 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
     public Resources getResources() {
         return getThemedResources();
     }
+
+	@Override
+	public Theme getTheme() {
+		if (mTheme == null) {
+			mTheme = getResources().newTheme();
+			mTheme.setTo(super.getTheme());
+			final int getThemeResourceId = getThemeResourceId();
+			if (getThemeResourceId != 0) {
+				mTheme.applyStyle(getThemeResourceId, true);
+			}
+		}
+		return mTheme;
+	}
 
     @Override
     public int getThemeBackgroundAlpha() {
@@ -121,7 +137,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-        AccentThemeFixer.fixWindow(this);
+//        AccentThemeFixer.fixWindow(this);
 		if (Utils.isDebugBuild()) {
 			StrictModeUtils.detectAllVmPolicy();
 			StrictModeUtils.detectAllThreadPolicy();
@@ -132,7 +148,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 		}
 		setTheme();
 		super.onCreate(savedInstanceState);
-        AccentThemeFixer.fixActionBar(getActionBar(), this);
+//        AccentThemeFixer.fixActionBar(getActionBar(), this);
 		setActionBarBackground();
 	}
 

@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.model;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.formatStatusText;
-import static de.vanita5.twittnuker.util.Utils.getBiggerTwitterProfileImage;
 import static de.vanita5.twittnuker.util.Utils.getInReplyToName;
 import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsBoolean;
 import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsInteger;
@@ -268,8 +267,7 @@ public class ParcelableStatus implements Parcelable, JSONParcelable, Comparable<
 		}
 	}
 
-	public ParcelableStatus(final Status orig, final long account_id, final boolean is_gap,
-			final boolean large_profile_image) {
+	public ParcelableStatus(final Status orig, final long account_id, final boolean is_gap) {
 		this.is_gap = is_gap;
 		this.account_id = account_id;
 		id = orig.getId();
@@ -285,10 +283,7 @@ public class ParcelableStatus implements Parcelable, JSONParcelable, Comparable<
 		user_id = user != null ? user.getId() : -1;
 		user_name = user != null ? user.getName() : null;
 		user_screen_name = user != null ? user.getScreenName() : null;
-		final String profile_image_url_orig = user != null ? ParseUtils.parseString(user.getProfileImageUrlHttps())
-				: null;
-		user_profile_image_url = large_profile_image ? getBiggerTwitterProfileImage(profile_image_url_orig)
-				: profile_image_url_orig;
+		user_profile_image_url = user != null ? ParseUtils.parseString(user.getProfileImageUrlHttps()) : null;
 		user_is_protected = user != null ? user.isProtected() : false;
 		user_is_verified = user != null ? user.isVerified() : false;
 		user_is_following = user != null ? user.isFollowing() : false;

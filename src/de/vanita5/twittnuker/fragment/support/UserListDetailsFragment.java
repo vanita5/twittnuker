@@ -261,7 +261,7 @@ public class UserListDetailsFragment extends BaseSupportListFragment implements 
 
 	@Override
 	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-		inflater.inflate(R.menu.menu_user_user_list, menu);
+		inflater.inflate(R.menu.menu_user_list, menu);
 	}
 
 	@Override
@@ -561,7 +561,6 @@ public class UserListDetailsFragment extends BaseSupportListFragment implements 
 		private final long mAccountId, mUserId;
 		private final int mListId;
 		private final String mScreenName, mListName;
-		private final boolean mHiresProfileImage;
 
 		private ParcelableUserListLoader(final Context context, final boolean omitIntentExtra, final Bundle extras,
 				final long accountId, final int listId, final String listName, final long userId,
@@ -574,7 +573,6 @@ public class UserListDetailsFragment extends BaseSupportListFragment implements 
 			mListId = listId;
 			mScreenName = screenName;
 			mListName = listName;
-			mHiresProfileImage = context.getResources().getBoolean(R.bool.hires_profile_image);
 		}
 
 		@Override
@@ -595,8 +593,7 @@ public class UserListDetailsFragment extends BaseSupportListFragment implements 
 					list = twitter.showUserList(mListName, mScreenName);
 				} else
 					return SingleResponse.nullInstance();
-				return new SingleResponse<ParcelableUserList>(new ParcelableUserList(list, mAccountId,
-						mHiresProfileImage), null);
+				return new SingleResponse<ParcelableUserList>(new ParcelableUserList(list, mAccountId), null);
 			} catch (final TwitterException e) {
 				return new SingleResponse<ParcelableUserList>(null, e);
 			}

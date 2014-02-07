@@ -98,7 +98,6 @@ public class BackgroundOperationService extends IntentService implements Constan
 	private String mShortener;
 
 	private boolean mUseUploader, mUseShortener;
-	private boolean mLargeProfileImage;
 
 	public BackgroundOperationService() {
 		super("background_operation");
@@ -108,7 +107,6 @@ public class BackgroundOperationService extends IntentService implements Constan
 	public void onCreate() {
 		super.onCreate();
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
-		mLargeProfileImage = getResources().getBoolean(R.bool.hires_profile_image);
 		mHandler = new Handler();
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mResolver = getContentResolver();
@@ -325,7 +323,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		final Twitter twitter = getTwitterInstance(this, accountId, true, true);
 		try {
 			final ParcelableDirectMessage directMessage = new ParcelableDirectMessage(twitter.sendDirectMessage(
-					recipientId, text), accountId, true, mLargeProfileImage);
+					recipientId, text), accountId, true);
 			return SingleResponse.withData(directMessage);
 		} catch (final TwitterException e) {
 			return SingleResponse.withException(e);
@@ -418,7 +416,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 				}
 				try {
 					final Status twitter_result = twitter.updateStatus(status);
-					final ParcelableStatus result = new ParcelableStatus(twitter_result, account_id, false, false);
+					final ParcelableStatus result = new ParcelableStatus(twitter_result, account_id, false);
 					results.add(new SingleResponse<ParcelableStatus>(result, null));
 				} catch (final TwitterException e) {
 					final SingleResponse<ParcelableStatus> response = SingleResponse.withException(e);

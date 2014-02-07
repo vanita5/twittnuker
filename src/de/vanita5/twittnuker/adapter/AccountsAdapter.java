@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.Utils.getBiggerTwitterProfileImage;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -44,7 +42,6 @@ public class AccountsAdapter extends SimpleCursorAdapter implements Constants {
 	private final ImageLoaderWrapper mImageLoader;
 	private final SharedPreferences mPreferences;
 
-	private final boolean mDisplayHiResProfileImage;
 	private int mUserColorIdx, mProfileImageIdx, mScreenNameIdx, mAccountIdIdx;
 	private long mDefaultAccountId;
 
@@ -57,7 +54,6 @@ public class AccountsAdapter extends SimpleCursorAdapter implements Constants {
 		final TwittnukerApplication application = TwittnukerApplication.getInstance(context);
 		mImageLoader = application.getImageLoaderWrapper();
 		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mDisplayHiResProfileImage = context.getResources().getBoolean(R.bool.hires_profile_image);
 	}
 
 	@Override
@@ -68,12 +64,7 @@ public class AccountsAdapter extends SimpleCursorAdapter implements Constants {
 		holder.setAccountColor(color);
 		holder.setIsDefault(mDefaultAccountId != -1 && mDefaultAccountId == cursor.getLong(mAccountIdIdx));
 		if (mDisplayProfileImage) {
-			final String profile_image_url = cursor.getString(mProfileImageIdx);
-			if (mDisplayHiResProfileImage) {
-				mImageLoader.displayProfileImage(holder.profile_image, getBiggerTwitterProfileImage(profile_image_url));
-			} else {
-				mImageLoader.displayProfileImage(holder.profile_image, profile_image_url);
-			}
+			mImageLoader.displayProfileImage(holder.profile_image, cursor.getString(mProfileImageIdx));
 		} else {
 			holder.profile_image.setImageResource(R.drawable.ic_profile_image_default);
 		}

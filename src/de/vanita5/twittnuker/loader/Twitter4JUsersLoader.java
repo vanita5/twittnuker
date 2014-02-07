@@ -26,7 +26,6 @@ import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 
 import android.content.Context;
 
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import twitter4j.Twitter;
@@ -39,7 +38,6 @@ import java.util.List;
 public abstract class Twitter4JUsersLoader extends ParcelableUsersLoader {
 
 	private final long mAccountId;
-	private final boolean mHiResProfileImage;
 
 	private final Context mContext;
 
@@ -47,7 +45,6 @@ public abstract class Twitter4JUsersLoader extends ParcelableUsersLoader {
 		super(context, data);
 		mContext = context;
 		mAccountId = account_id;
-		mHiResProfileImage = context.getResources().getBoolean(R.bool.hires_profile_image);
 	}
 
 	@Override
@@ -66,7 +63,7 @@ public abstract class Twitter4JUsersLoader extends ParcelableUsersLoader {
 			if (hasId(user.getId())) {
 				continue;
 			}
-			data.add(new ParcelableUser(user, mAccountId, pos, mHiResProfileImage));
+			data.add(new ParcelableUser(user, mAccountId, pos));
 			pos++;
 		}
 		Collections.sort(data);

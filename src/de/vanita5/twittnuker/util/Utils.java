@@ -1020,11 +1020,10 @@ public final class Utils implements Constants {
 		final String where = Statuses.ACCOUNT_ID + " = " + account_id + " AND " + Statuses.STATUS_ID + " = "
 				+ status.getId();
 		final ContentResolver resolver = context.getContentResolver();
-		final boolean large_profile_image = context.getResources().getBoolean(R.bool.hires_profile_image);
 		resolver.delete(CachedStatuses.CONTENT_URI, where, null);
 		resolver.insert(CachedStatuses.CONTENT_URI,
-				ContentValuesCreator.makeStatusContentValues(status, account_id, large_profile_image));
-		return new ParcelableStatus(status, account_id, false, large_profile_image);
+				ContentValuesCreator.makeStatusContentValues(status, account_id));
+		return new ParcelableStatus(status, account_id, false);
 	}
 
 	public static ParcelableStatus findStatusInDatabases(final Context context, final long account_id,
@@ -1446,6 +1445,13 @@ public final class Utils implements Constants {
 			if (cacheDir.isDirectory() || cacheDir.mkdirs()) return cacheDir;
 		}
 		return new File(context.getCacheDir(), cacheDirName);
+	}
+
+	public static String getReasonablySmallTwitterProfileImage(final String url) {
+		if (url == null) return null;
+		if (PATTERN_TWITTER_PROFILE_IMAGES.matcher(url).matches())
+		return replaceLast(url, "_" + TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES, "_reasonably_small");
+		return url;
 	}
 
 	public static String getBiggerTwitterProfileImage(final String url) {
@@ -3526,7 +3532,7 @@ public final class Utils implements Constants {
 		}
 	}
 
-	public static ContentValues makeStatusContentValues(final Status orig, final long account_id, final boolean large_profile_image) {
+	public static ContentValues makeStatusContentValues(final Status orig, final long account_id) {
 		if (orig == null || orig.getId() <= 0) return null;
 		final ContentValues values = new ContentValues();
 		values.put(Statuses.ACCOUNT_ID, account_id);
@@ -3555,7 +3561,7 @@ public final class Utils implements Constants {
 			values.put(Statuses.USER_SCREEN_NAME, screen_name);
 			values.put(Statuses.IS_PROTECTED, user.isProtected());
 			values.put(Statuses.IS_VERIFIED, user.isVerified());
-			values.put(Statuses.USER_PROFILE_IMAGE_URL, large_profile_image ? getBiggerTwitterProfileImage(profile_image_url) : profile_image_url);
+			values.put(Statuses.USER_PROFILE_IMAGE_URL, profile_image_url);
 			values.put(CachedUsers.IS_FOLLOWING, user != null ? user.isFollowing() : false);
 		}
 		if (status.getCreatedAt() != null) {
@@ -3584,7 +3590,7 @@ public final class Utils implements Constants {
 		return values;
 	}
 
-	public static ContentValues makeDirectMessageContentValues(final DirectMessage message, final long account_id, final boolean is_outgoing, final boolean large_profile_image) {
+	public static ContentValues makeDirectMessageContentValues(final DirectMessage message, final long account_id, final boolean is_outgoing) {
 		if (message == null || message.getId() <= 0) return null;
 		final ContentValues values = new ContentValues();
 		final User sender = message.getSender(), recipient = message.getRecipient();
@@ -3603,8 +3609,8 @@ public final class Utils implements Constants {
 		values.put(DirectMessages.SENDER_SCREEN_NAME, sender.getScreenName());
 		values.put(DirectMessages.RECIPIENT_NAME, recipient.getName());
 		values.put(DirectMessages.RECIPIENT_SCREEN_NAME, recipient.getScreenName());
-		values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL, large_profile_image ? getBiggerTwitterProfileImage(sender_profile_image_url) : sender_profile_image_url);
-		values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, large_profile_image ? getBiggerTwitterProfileImage(recipient_profile_image_url) : recipient_profile_image_url);
+		values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL, sender_profile_image_url);
+		values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, recipient_profile_image_url);
 		return values;
 	}
 

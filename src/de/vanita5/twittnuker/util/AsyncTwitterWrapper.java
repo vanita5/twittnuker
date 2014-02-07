@@ -101,8 +101,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 	private final MessagesManager mMessagesManager;
 	private final ContentResolver mResolver;
 
-	private final boolean mLargeProfileImage;
-
 	private int mGetHomeTimelineTaskId, mGetMentionsTaskId;
 	private int mGetReceivedDirectMessagesTaskId, mGetSentDirectMessagesTaskId;
 	private int mGetLocalTrendsTaskId;
@@ -114,7 +112,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		mMessagesManager = app.getMessagesManager();
 		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mResolver = context.getContentResolver();
-		mLargeProfileImage = context.getResources().getBoolean(R.bool.hires_profile_image);
 	}
 
 	public int acceptFriendshipAsync(final long accountId, final long userId) {
@@ -605,7 +602,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                     userIds[i] = users[i].id;
                 }
                 final ParcelableUserList list = new ParcelableUserList(twitter.addUserListMembers(listId, userIds),
-                        accountId, false);
+						accountId);
                 return SingleResponse.newInstance(list, null);
             } catch (final TwitterException e) {
                 return SingleResponse.newInstance(null, e);
@@ -750,7 +747,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 for (final Uri uri : TweetStore.STATUSES_URIS) {
                     mResolver.update(uri, values, where.toString(), null);
                 }
-                return SingleResponse.withData(new ParcelableStatus(status, account_id, false, mLargeProfileImage));
+				return SingleResponse.withData(new ParcelableStatus(status, account_id, false));
             } catch (final TwitterException e) {
                 return SingleResponse.withException(e);
             }
@@ -937,7 +934,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
             try {
                 final ParcelableUserList list = new ParcelableUserList(twitter.createUserListSubscription(list_id),
-                        account_id, false);
+						account_id);
                 return new SingleResponse<ParcelableUserList>(list, null);
             } catch (final TwitterException e) {
                 return SingleResponse.withException(e);
@@ -1029,7 +1026,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                     userIds[i] = users[i].id;
                 }
                 final ParcelableUserList list = new ParcelableUserList(twitter.deleteUserListMembers(mUserListId,
-                        userIds), mAccountId, false);
+						userIds), mAccountId);
                 return SingleResponse.newInstance(list, null);
             } catch (final TwitterException e) {
                 return SingleResponse.newInstance(null, e);
@@ -1241,8 +1238,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 					for (final Uri uri : TweetStore.STATUSES_URIS) {
 						mResolver.update(uri, values, where.toString(), null);
 					}
-					return new SingleResponse<ParcelableStatus>(new ParcelableStatus(status, account_id, false,
-							mLargeProfileImage), null);
+					return new SingleResponse<ParcelableStatus>(new ParcelableStatus(status, account_id, false), null);
 				} catch (final TwitterException e) {
 					return SingleResponse.withException(e);
 				}
@@ -1423,7 +1419,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			if (twitter != null) {
 				try {
 					final ParcelableUserList list = new ParcelableUserList(
-							twitter.destroyUserListSubscription(list_id), account_id, false);
+							twitter.destroyUserListSubscription(list_id), account_id);
 					return SingleResponse.newInstance(list, null);
 				} catch (final TwitterException e) {
 					return SingleResponse.newInstance(null, e);
@@ -1469,7 +1465,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				try {
 					if (list_id > 0) {
 						final ParcelableUserList list = new ParcelableUserList(twitter.destroyUserList(list_id),
-								account_id, false);
+								account_id);
 						return new SingleResponse<ParcelableUserList>(list, null);
 					}
 				} catch (final TwitterException e) {
@@ -2017,8 +2013,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		protected void onPostExecute(final SingleResponse<DirectMessage> result) {
 			super.onPostExecute(result);
 			if (result.data != null && result.data.getId() > 0) {
-				final ContentValues values = makeDirectMessageContentValues(result.data, account_id, true,
-						mLargeProfileImage);
+				final ContentValues values = makeDirectMessageContentValues(result.data, account_id, true);
 				final String delete_where = DirectMessages.ACCOUNT_ID + " = " + account_id + " AND "
 						+ DirectMessages.MESSAGE_ID + " = " + result.data.getId();
 				mResolver.delete(DirectMessages.Outbox.CONTENT_URI, delete_where, null);
@@ -2059,8 +2054,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 					for (int i = 0, j = messages.size(); i < j; i++) {
 						final DirectMessage message = messages.get(i);
 						message_ids[i] = message.getId();
-						values_array[i] = makeDirectMessageContentValues(message, account_id, isOutgoing(),
-								mLargeProfileImage);
+						values_array[i] = makeDirectMessageContentValues(message, account_id, isOutgoing());
 					}
 
 					// Delete all rows conflicting before new data inserted.
@@ -2191,7 +2185,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				final long[] statusIds = new long[statuses.size()];
 				for (int i = 0, j = statuses.size(); i < j; i++) {
 					final twitter4j.Status status = statuses.get(i);
-					values[i] = makeStatusContentValues(status, account_id, mLargeProfileImage);
+					values[i] = makeStatusContentValues(status, account_id);
 					statusIds[i] = status.getId();
 				}
 
@@ -2319,7 +2313,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			if (twitter != null) {
 				try {
 					final UserList list = twitter.updateUserList(list_id, name, is_public, description);
-					return new SingleResponse<ParcelableUserList>(new ParcelableUserList(list, account_id, false), null);
+					return new SingleResponse<ParcelableUserList>(new ParcelableUserList(list, account_id), null);
 				} catch (final TwitterException e) {
 					return SingleResponse.withException(e);
 				}

@@ -251,21 +251,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		super.onBackPressed();
 	}
 
-//	@Override
-//	public void onBackStackChanged() {
-//		super.onBackStackChanged();
-//		if (!isDualPaneMode()) return;
-//		final FragmentManager fm = getSupportFragmentManager();
-//		setPagingEnabled(!isLeftPaneUsed());
-//		final int count = fm.getBackStackEntryCount();
-//		if (count == 0) {
-//			showLeftPane();
-//		}
-//		updateActionsButton();
-//		updateActionsButtonStyle();
-//		updateSlidingMenuTouchMode();
-//	}
-
 	@Override
 	public void onClick(final View v) {
 		switch (v.getId()) {
@@ -1081,11 +1066,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		private final long account_id;
 		private final String screen_name;
 		private final ContentResolver resolver;
-		private final boolean large_profile_image;
-		
+
 		public UserStreamListenerImpl(final Context context, final long account_id) {
 			this.account_id = account_id;
-			large_profile_image = context.getResources().getBoolean(R.bool.hires_profile_image);
 			resolver = context.getContentResolver();
 			screen_name = Utils.getAccountScreenName(context, account_id);
 		}
@@ -1117,7 +1100,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
 		@Override
 		public void onStatus(Status status) {
-			final ContentValues values = Utils.makeStatusContentValues(status, account_id, large_profile_image);
+			final ContentValues values = Utils.makeStatusContentValues(status, account_id);
 			if (values != null) {
 				final String where = Statuses.ACCOUNT_ID + " = " + account_id + " AND " + Statuses.STATUS_ID + " = " + status.getId();
 				resolver.delete(Statuses.CONTENT_URI, where, null);
@@ -1175,13 +1158,13 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			final User recipient = directMessage.getRecipient();
 			
 			if(sender.getId() == account_id) {
-				final ContentValues values = Utils.makeDirectMessageContentValues(directMessage, account_id, true, large_profile_image);
+				final ContentValues values = Utils.makeDirectMessageContentValues(directMessage, account_id, true);
 				if(values != null) {
 					resolver.insert(DirectMessages.Outbox.CONTENT_URI, values);
 				}
 			}
 			if(recipient.getId() == account_id) {
-				final ContentValues values = Utils.makeDirectMessageContentValues(directMessage, account_id, false, large_profile_image);
+				final ContentValues values = Utils.makeDirectMessageContentValues(directMessage, account_id, false);
 				final Uri.Builder builder = DirectMessages.Inbox.CONTENT_URI.buildUpon();
 				builder.appendQueryParameter(TwittnukerApplication.QUERY_PARAM_NOTIFY, "true");
 				if(values != null) {

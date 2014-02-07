@@ -130,7 +130,7 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
-import de.vanita5.twittnuker.view.ComposeTextCountView;
+import de.vanita5.twittnuker.view.SendButton;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 import de.vanita5.twittnuker.adapter.BaseArrayAdapter;
@@ -190,7 +190,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	private long mInReplyToStatusId;
 	private String mOriginalText;
 
-	private View mSendView, mBottomSendView;
+	private SendButton mSendView, mBottomSendView;
 
 	@Override
 	public void afterTextChanged(final Editable s) {
@@ -431,8 +431,8 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		mAccountSelector = (Gallery) findViewById(R.id.account_selector);
 		final View composeActionBar = findViewById(R.id.compose_actionbar);
 		final View composeBottomBar = findViewById(R.id.compose_bottombar);
-		mSendView = composeActionBar.findViewById(R.id.send);
-		mBottomSendView = composeBottomBar.findViewById(R.id.send);
+		mSendView = (SendButton) composeActionBar.findViewById(R.id.send);
+		mBottomSendView = (SendButton) composeBottomBar.findViewById(R.id.send);
 		ViewAccessor.setBackground(findViewById(R.id.compose_content), getWindowContentOverlayForCompose(this));
         ViewAccessor.setBackground(composeActionBar, getActionBarBackground(this, getCurrentThemeResourceId()));
 	}
@@ -558,7 +558,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		mTwitterWrapper = getTwittnukerApplication().getTwitterWrapper();
 		mResolver = getContentResolver();
 		mImageLoader = getTwittnukerApplication().getImageLoaderWrapper();
-		setContentView(R.layout.activity_compose);
+		setContentView(getLayoutInflater().inflate(R.layout.activity_compose, null));
 		setProgressBarIndeterminateVisibility(false);
 		setFinishOnTouchOutside(false);
 		mAccountIds = getAccountIds(this);
@@ -1100,7 +1100,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		final boolean bottomSendButton = mPreferences.getBoolean(KEY_BOTTOM_SEND_BUTTON, false);
 		final View sendItemView = bottomSendButton ? mBottomSendView : mSendView;
 		if (sendItemView != null && mEditText != null) {
-			final ComposeTextCountView sendTextCountView = (ComposeTextCountView) sendItemView.findViewById(R.id.send_text_count);
+			final SendButton sendTextCountView = (SendButton) sendItemView.findViewById(R.id.send);
 			sendItemView.setOnClickListener(this);
 			final String text_orig = mEditText != null ? parseString(mEditText.getText()) : null;
 			final String text = hasMedia() && text_orig != null ? mImageUploaderUsed ? getImageUploadStatus(this, FAKE_IMAGE_LINK,

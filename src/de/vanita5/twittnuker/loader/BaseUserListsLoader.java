@@ -27,7 +27,6 @@ import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 
@@ -43,7 +42,6 @@ import java.util.List;
 public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<ParcelableUserList>> {
 
 	protected final NoDuplicatesArrayList<ParcelableUserList> mData = new NoDuplicatesArrayList<ParcelableUserList>();
-	protected final boolean mHiResProfileImage;
 	protected final long mAccountId;
 	private final long mCursor;
 
@@ -57,7 +55,6 @@ public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<Parcelabl
 		}
 		mCursor = cursor;
 		mAccountId = account_id;
-		mHiResProfileImage = context.getResources().getBoolean(R.bool.hires_profile_image);
 	}
 
 	public long getCursor() {
@@ -90,14 +87,12 @@ public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<Parcelabl
 				mPrevCursor = ((CursorSupport) list_loaded).getPreviousCursor();
 				for (int i = 0; i < list_size; i++) {
 					final UserList list = list_loaded.get(i);
-					mData.add(new ParcelableUserList(list, mAccountId, (mCursor + 1) * 20 + i, mHiResProfileImage,
-							isFollowing(list)));
+					mData.add(new ParcelableUserList(list, mAccountId, (mCursor + 1) * 20 + i, isFollowing(list)));
 				}
 			} else {
 				for (int i = 0; i < list_size; i++) {
 					final UserList list = list_loaded.get(i);
-					mData.add(new ParcelableUserList(list_loaded.get(i), mAccountId, i, mHiResProfileImage,
-							isFollowing(list)));
+					mData.add(new ParcelableUserList(list_loaded.get(i), mAccountId, i, isFollowing(list)));
 				}
 			}
 		}
