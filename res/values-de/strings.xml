@@ -596,6 +596,8 @@
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
     <string name="unread_count_summary">Zeigt die Anzahl an ungelesenen Tweets oder Nachrichten im Tab an</string>
     <string name="link_to_quoted_status_summary">Fügt beim zitieren den Link zum originalen Tweet hinzu</string>
+    <string name="delete_tweet">Tweet löschen</string>
+    <string name="delete_tweet_confirm_message">Diesen Tweet löschen?</string>
 
     <string name="twidere_developed_by">Basiert auf Twidere von</string>
     <string name="translation_destination">Sprache zum Übersetzen</string>

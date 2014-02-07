@@ -53,8 +53,11 @@ import android.widget.ListView;
 
 import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.support.StatusMenuDialogFragment;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
 import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.task.AsyncTask;
@@ -336,11 +339,21 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 				break;
 			}
 			case MENU_DELETE: {
-				twitter.destroyStatusAsync(status.account_id, status.id);
+				DestroyStatusDialogFragment.show(getFragmentManager(), status);
 				break;
 			}
 			case MENU_ADD_TO_FILTER: {
 				AddStatusFilterDialogFragment.show(getFragmentManager(), status);
+				break;
+			}
+			case MENU_TRANSLATE: {
+				final AccountWithCredentials account = Account.getAccountWithCredentials(getActivity(),
+						status.account_id);
+				if (AccountWithCredentials.isOfficialCredentials(getActivity(), account)) {
+										StatusTranslateDialogFragment.show(getFragmentManager(), status);
+				} else {
+
+				}
 				break;
 			}
 			case MENU_MULTI_SELECT: {
@@ -534,10 +547,18 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 		if (twitter != null) {
 			TwitterWrapper.removeUnreadCounts(getActivity(), getTabPosition(), status.account_id, status.id);
 		}
+		if (true) { //?
+			final StatusMenuDialogFragment df = new StatusMenuDialogFragment();
+			final Bundle args = new Bundle();
+			args.putParcelable(EXTRA_STATUS, status);
+			df.setArguments(args);
+			df.show(getChildFragmentManager(), "status_menu");
+			return;
+		}
 		if (mPopupMenu != null && mPopupMenu.isShowing()) {
 			mPopupMenu.dismiss();
 		}
-		final int activated_color = ThemeUtils.getUserThemeColor(getActivity());
+		final int activatedColor = ThemeUtils.getUserThemeColor(getActivity());
 		mPopupMenu = PopupMenu.getInstance(getActivity(), view);
 		mPopupMenu.inflate(R.menu.action_status);
 		final boolean separateRetweetAction = mPreferences.getBoolean(KEY_SEPARATE_RETWEET_ACTION,
@@ -548,16 +569,16 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 		Utils.setMenuItemAvailability(menu, R.id.retweet_submenu, !separateRetweetAction);
 		Utils.setMenuItemAvailability(menu, R.id.direct_quote, separateRetweetAction);
 		Utils.setMenuItemAvailability(menu, MENU_MULTI_SELECT, longclickToOpenMenu);
-		final MenuItem direct_retweet = menu.findItem(R.id.direct_retweet);
-		if (direct_retweet != null) {
-			final Drawable icon = direct_retweet.getIcon().mutate();
-			direct_retweet.setVisible(separateRetweetAction && (!status.user_is_protected || isMyRetweet(status)));
+		final MenuItem directRetweet = menu.findItem(R.id.direct_retweet);
+		if (directRetweet != null) {
+			final Drawable icon = directRetweet.getIcon().mutate();
+			directRetweet.setVisible(separateRetweetAction && (!status.user_is_protected || isMyRetweet(status)));
 			if (isMyRetweet(status)) {
-				icon.setColorFilter(activated_color, PorterDuff.Mode.SRC_ATOP);
-				direct_retweet.setTitle(R.string.cancel_retweet);
+				icon.setColorFilter(activatedColor, PorterDuff.Mode.SRC_ATOP);
+				directRetweet.setTitle(R.string.cancel_retweet);
 			} else {
 				icon.clearColorFilter();
-				direct_retweet.setTitle(R.string.retweet);
+				directRetweet.setTitle(R.string.retweet);
 			}
 		}
 		mPopupMenu.setOnMenuItemClickListener(this);

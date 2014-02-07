@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 
 import java.text.Collator;
 import java.util.Comparator;
@@ -454,9 +455,9 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 			final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
 			final int value = item.getValue();
 			if (value > 0) {
-				icon.setImageDrawable(mResources.getDrawable(value));
+				ViewAccessor.setBackground(icon, mResources.getDrawable(value));
 			} else {
-				icon.setImageDrawable(null);
+				ViewAccessor.setBackground(icon, null);
 			}
 		}
 

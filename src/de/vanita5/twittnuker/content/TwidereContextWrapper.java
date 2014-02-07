@@ -28,14 +28,14 @@ import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 
 import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
-import de.vanita5.twittnuker.content.res.TwidereResources;
+import de.vanita5.twittnuker.util.theme.TwidereResourceHelper;
 
 public class TwidereContextWrapper extends ContextWrapper implements ITwidereContextWrapper {
 
     private final Resources mResources;
-	private Resources mTwidereResources;
     private final int mThemeResourceId;
 	private Theme mTheme;
+	private final TwidereResourceHelper mResourceHelper;
 
 	public TwidereContextWrapper(final Context base) {
         this(base, null, getThemeResource(base));
@@ -53,13 +53,13 @@ public class TwidereContextWrapper extends ContextWrapper implements ITwidereCon
         super(base);
         mResources = res;
         mThemeResourceId = theme;
+		mResourceHelper = new TwidereResourceHelper(theme);
     }
 
     @Override
     public Resources getResources() {
-		if (mTwidereResources != null) return mTwidereResources;
-		if (mResources != null) return mTwidereResources = new TwidereResources(this, mResources);
-		return mTwidereResources = new TwidereResources(this, super.getResources());
+		if (mResources == null) return mResourceHelper.getResources(this, super.getResources());
+		return mResourceHelper.getResources(this, mResources);
     }
 
 	@Override

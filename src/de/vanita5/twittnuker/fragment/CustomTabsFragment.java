@@ -64,6 +64,7 @@ import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
@@ -71,6 +72,7 @@ import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.provider.TweetStore.Tabs;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
 import java.util.ArrayList;
@@ -108,7 +110,14 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
 		mResolver = getContentResolver();
-        mAdapter = new CustomTabsAdapter(ThemeUtils.getSettingsContextForActionIcons(getActivity()));
+		final Activity activity = getActivity();
+		final int themeRes;
+		if (activity instanceof IThemedActivity) {
+			themeRes = ((IThemedActivity) activity).getThemeResourceId();
+		} else {
+			themeRes = ThemeUtils.getSettingsThemeResource(activity);
+		}
+		mAdapter = new CustomTabsAdapter(ThemeUtils.getContextForActionIcons(activity, themeRes));
 		setListAdapter(mAdapter);
 		setEmptyText(getString(R.string.no_tab_hint));
 		mListView = (DragSortListView) getListView();
@@ -298,16 +307,10 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 
 	public static class CustomTabsAdapter extends SimpleDragSortCursorAdapter implements OnClickListener {
 
-		private final Context mContext;
-
 		private CursorIndices mIndices;
-
-        private final int mActionIconColor;
 
 		public CustomTabsAdapter(final Context context) {
 			super(context, R.layout.list_item_custom_tab, null, new String[0], new int[0], 0);
-			mContext = context;
-            mActionIconColor = ThemeUtils.isDarkTheme(context) ? 0xffffffff : 0xc0333333;
 		}
 
 		@Override
@@ -328,13 +331,12 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
                 holder.text1.setPaintFlags(holder.text1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 holder.text2.setText(R.string.invalid_tab);
             }
-            final Drawable icon = getTabIconDrawable(mContext, getTabIconObject(iconKey));
+			final Drawable icon = getTabIconDrawable(context, getTabIconObject(iconKey));
             holder.icon.setVisibility(View.VISIBLE);
             if (icon != null) {
-                holder.icon.setImageDrawable(icon);
+				ViewAccessor.setBackground(holder.icon, icon);
 			} else {
-                final Drawable fallback = context.getResources().getDrawable(R.drawable.ic_iconic_action_list);
-                holder.icon.setImageDrawable(fallback);
+				holder.icon.setBackgroundResource(R.drawable.ic_iconic_action_list);
 			}
 		}
 

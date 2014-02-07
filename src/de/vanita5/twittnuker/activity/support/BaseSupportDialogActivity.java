@@ -35,11 +35,14 @@ import de.vanita5.twittnuker.util.theme.TwidereResourceHelper;
 @SuppressLint("Registered")
 public class BaseSupportDialogActivity extends BaseSupportThemedActivity implements Constants {
 
-    private final TwidereResourceHelper mResourceHelper = new TwidereResourceHelper();
+	private TwidereResourceHelper mResourceHelper;
 	private boolean mInstanceStateSaved;
 
 	@Override
     public Resources getResources() {
+		if (mResourceHelper == null) {
+			mResourceHelper = new TwidereResourceHelper(getThemeResourceId());
+		}
         return mResourceHelper.getResources(this, getDefaultResources());
 	}
 

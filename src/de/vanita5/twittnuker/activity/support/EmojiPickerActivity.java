@@ -20,29 +20,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.activity.iface;
+package de.vanita5.twittnuker.activity.support;
 
-import android.content.res.Resources;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.view.Window;
 
-import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
+import de.vanita5.twittnuker.fragment.support.CharactersGridFragment;
 
-public interface IThemedActivity extends ITwidereContextWrapper {
+public class EmojiPickerActivity extends BaseSupportDialogActivity {
 
-	public Resources getAccentResources();
+	@Override
+	protected void onCreate(final Bundle savedInstanceState) {
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		super.onCreate(savedInstanceState);
+		final FragmentManager fm = getSupportFragmentManager();
+		final FragmentTransaction ft = fm.beginTransaction();
+		ft.replace(android.R.id.content, new CharactersGridFragment());
+		ft.commit();
+	}
 
-	public int getCurrentThemeResourceId();
-
-	public void navigateUpFromSameTask();
-	
-	public Resources getDefaultResources();
-
-    public int getThemeBackgroundAlpha();
-
-    public int getThemeColor();
-
-	public String getThemeFontFamily();
-
-	public void overrideCloseAnimationIfNeeded();
-
-	public boolean shouldOverrideActivityAnimation();
 }
