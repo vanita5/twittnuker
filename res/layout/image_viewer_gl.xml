@@ -17,7 +17,7 @@
 		android:layout_gravity="center"
 		android:layout_margin="32dp"/>
 
-    <org.mariotaku.twidere.view.ActionBarSplitThemedContainer
+    <de.vanita5.twittnuker.view.ActionBarSplitThemedContainer
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
     	android:layout_gravity="bottom"
