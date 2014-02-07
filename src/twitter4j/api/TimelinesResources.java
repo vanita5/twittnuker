@@ -70,7 +70,7 @@ public interface TimelinesResources {
 	ResponseList<Status> getHomeTimeline(Paging paging) throws TwitterException;
 
 	/**
-	 * Returns the 20 most recent mentions (fragment_status containing @username) for the
+	 * Returns the 20 most recent mentions (status containing @username) for the
 	 * authenticating user. <br>
 	 * This method calls http://api.twitter.com/1.1/statuses/mentions_timeline
 	 * 
@@ -84,7 +84,7 @@ public interface TimelinesResources {
 	ResponseList<Status> getMentionsTimeline() throws TwitterException;
 
 	/**
-	 * Returns the 20 most recent mentions (fragment_status containing @username) for the
+	 * Returns the 20 most recent mentions (status containing @username) for the
 	 * authenticating user. <br>
 	 * This method calls http://api.twitter.com/1.1/statuses/mentions_timeline
 	 * 

@@ -131,7 +131,7 @@ public interface TweetStore {
 		public static final String CONSUMER_SECRET = "consumer_secret";
 
 		/**
-		 * User's profile image URL of the fragment_status. <br>
+		 * User's profile image URL of the status. <br>
 		 * Type: TEXT
 		 */
 		public static final String PROFILE_IMAGE_URL = "profile_image_url";
@@ -239,13 +239,13 @@ public interface TweetStore {
 		public static final String FAVORITES_COUNT = "favorites_count";
 
 		/**
-		 * User's screen name of the fragment_status.<br>
+		 * User's screen name of the status.<br>
 		 * Type: TEXT
 		 */
 		public static final String SCREEN_NAME = "screen_name";
 
 		/**
-		 * User's profile image URL of the fragment_status.<br>
+		 * User's profile image URL of the status.<br>
 		 * Type: TEXT NOT NULL
 		 */
 		public static final String PROFILE_IMAGE_URL = "profile_image_url";
@@ -420,7 +420,7 @@ public interface TweetStore {
 		public static final String TEXT = "text";
 
 		/**
-		 * Account IDs of unsent fragment_status.<br>
+		 * Account IDs of unsent status.<br>
 		 * Type: TEXT
 		 */
 		public static final String ACCOUNT_IDS = "account_ids";
@@ -588,7 +588,7 @@ public interface TweetStore {
 
 		public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
 		/**
-		 * Account ID of the fragment_status.<br>
+		 * Account ID of the status.<br>
 		 * Type: TEXT
 		 */
 		public static final String ACCOUNT_ID = "account_id";
@@ -608,44 +608,44 @@ public interface TweetStore {
 		public static final String TEXT_UNESCAPED = "text_unescaped";
 
 		/**
-		 * User name of the fragment_status.<br>
+		 * User name of the status.<br>
 		 * Type: TEXT
 		 */
 		public static final String USER_NAME = "name";
 
 		/**
-		 * User's screen name of the fragment_status.<br>
+		 * User's screen name of the status.<br>
 		 * Type: TEXT
 		 */
 		public static final String USER_SCREEN_NAME = "screen_name";
 
 		/**
-		 * User's profile image URL of the fragment_status.<br>
+		 * User's profile image URL of the status.<br>
 		 * Type: TEXT NOT NULL
 		 */
 		public static final String USER_PROFILE_IMAGE_URL = "profile_image_url";
 
 		/**
-		 * Unique id of the fragment_status.<br>
+		 * Unique id of the status.<br>
 		 * Type: INTEGER UNIQUE(long)
 		 */
 		public static final String STATUS_ID = "status_id";
 
 		/**
-		 * Retweet count of the fragment_status.<br>
+		 * Retweet count of the status.<br>
 		 * Type: INTEGER (long)
 		 */
 		public static final String RETWEET_COUNT = "retweet_count";
 
 		/**
-		 * Set to an non-zero integer if the fragment_status is a retweet, set to
-		 * negative value if the fragment_status is retweeted by user.<br>
+		 * Set to an non-zero integer if the status is a retweet, set to
+		 * negative value if the status is retweeted by user.<br>
 		 * Type: INTEGER
 		 */
 		public static final String IS_RETWEET = "is_retweet";
 
 		/**
-		 * Set to 1 if the fragment_status is a favorite.<br>
+		 * Set to 1 if the status is a favorite.<br>
 		 * Type: INTEGER (boolean)
 		 */
 		public static final String IS_FAVORITE = "is_favorite";
@@ -653,7 +653,7 @@ public interface TweetStore {
 		public static final String IS_POSSIBLY_SENSITIVE = "is_possibly_sensitive";
 
 		/**
-		 * Set to 1 if the fragment_status is a gap.<br>
+		 * Set to 1 if the status is a gap.<br>
 		 * Type: INTEGER (boolean)
 		 */
 		public static final String IS_GAP = "is_gap";
@@ -661,7 +661,7 @@ public interface TweetStore {
 		public static final String LOCATION = "location";
 
 		/**
-		 * User's ID of the fragment_status.<br>
+		 * User's ID of the status.<br>
 		 * Type: INTEGER (long)
 		 */
 		public static final String USER_ID = "user_id";
@@ -691,7 +691,7 @@ public interface TweetStore {
 		public static final String RETWEETED_BY_USER_SCREEN_NAME = "retweeted_by_user_screen_name";
 
 		/**
-		 * Timestamp of the fragment_status.<br>
+		 * Timestamp of the status.<br>
 		 * Type: INTEGER (long)
 		 */
 		public static final String STATUS_TIMESTAMP = "status_timestamp";

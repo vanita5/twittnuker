@@ -125,10 +125,10 @@ public interface User extends Comparable<User>, TwitterResponse, Serializable {
 	String getScreenName();
 
 	/**
-	 * Returns the current fragment_status of the user<br>
+	 * Returns the current status of the user<br>
 	 * This can be null if the instance if from Status.getUser().
 	 * 
-	 * @return current fragment_status of the user
+	 * @return current status of the user
 	 * @since Twitter4J 2.1.1
 	 */
 	Status getStatus();
@@ -181,9 +181,9 @@ public interface User extends Comparable<User>, TwitterResponse, Serializable {
 	boolean isProfileUseBackgroundImage();
 
 	/**
-	 * Test if the user fragment_status is protected
+	 * Test if the user status is protected
 	 * 
-	 * @return true if the user fragment_status is protected
+	 * @return true if the user status is protected
 	 */
 	boolean isProtected();
 

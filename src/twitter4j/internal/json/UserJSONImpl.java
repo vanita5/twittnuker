@@ -482,8 +482,8 @@ import java.util.Date;
 			listedCount = getInt("listed_count", json);
 			isFollowRequestSent = getBoolean("follow_request_sent", json);
 			isDefaultProfileImage = getBoolean("default_profile_image", json);
-			if (!json.isNull("fragment_status")) {
-				final JSONObject statusJSON = json.getJSONObject("fragment_status");
+			if (!json.isNull("status")) {
+				final JSONObject statusJSON = json.getJSONObject("status");
 				status = new StatusJSONImpl(statusJSON);
 			}
 			if (!json.isNull("entities")) {

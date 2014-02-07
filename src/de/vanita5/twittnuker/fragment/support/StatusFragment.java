@@ -787,7 +787,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	}
 
 	// @Override
-	// protected void setItemSelected(final ParcelableStatus fragment_status, final int
+	// protected void setItemSelected(final ParcelableStatus status, final int
 	// position, final boolean selected) {
 	// final MultiSelectManager manager = getMultiSelectManager();
 	// final Object only_item = manager.getCount() == 1 ?
@@ -802,7 +802,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	// manager.unselectItem(mStatus);
 	// }
 	// }
-	// super.setItemSelected(fragment_status, position, selected);
+	// super.setItemSelected(status, position, selected);
 	// }
 
 	@Override

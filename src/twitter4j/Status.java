@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * A data interface representing one single fragment_status of a user.
+ * A data interface representing one single status of a user.
  * 
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
@@ -28,7 +28,7 @@ public interface Status extends Comparable<Status>, TwitterResponse, EntitySuppo
 
 	/**
 	 * Returns an array of contributors, or null if no contributor is associated
-	 * with this fragment_status.
+	 * with this status.
 	 * 
 	 * @since Twitter4J 2.2.3
 	 */
@@ -52,9 +52,9 @@ public interface Status extends Comparable<Status>, TwitterResponse, EntitySuppo
 	GeoLocation getGeoLocation();
 
 	/**
-	 * returns the fragment_status id of the tweet
+	 * returns the status id of the tweet
 	 * 
-	 * @return the fragment_status id
+	 * @return the status id
 	 */
 	long getId();
 
@@ -123,7 +123,7 @@ public interface Status extends Comparable<Status>, TwitterResponse, EntitySuppo
 	String getText();
 
 	/**
-	 * Return the user associated with the fragment_status.<br>
+	 * Return the user associated with the status.<br>
 	 * This can be null if the instance if from User.getStatus().
 	 * 
 	 * @return the user
@@ -131,7 +131,7 @@ public interface Status extends Comparable<Status>, TwitterResponse, EntitySuppo
 	User getUser();
 
 	/**
-	 * Test if the fragment_status is favorited
+	 * Test if the status is favorited
 	 * 
 	 * @return true if favorited
 	 * @since Twitter4J 1.0.4
@@ -155,7 +155,7 @@ public interface Status extends Comparable<Status>, TwitterResponse, EntitySuppo
 	boolean isRetweetedByMe();
 
 	/**
-	 * Test if the fragment_status is truncated
+	 * Test if the status is truncated
 	 * 
 	 * @return true if truncated
 	 * @since Twitter4J 1.0.4

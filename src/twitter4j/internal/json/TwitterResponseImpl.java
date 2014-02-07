@@ -23,7 +23,7 @@ import twitter4j.internal.util.InternalParseUtil;
 
 /**
  * Super interface of Twitter Response data interfaces which indicates that rate
- * limit fragment_status is available.
+ * limit status is available.
  * 
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @see twitter4j.DirectMessage

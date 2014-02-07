@@ -45,7 +45,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 /**
- * A data class representing one single fragment_status of a user.
+ * A data class representing one single status of a user.
  * 
  * @author Yusuke Yamamoto - yusuke at mac.com
  */

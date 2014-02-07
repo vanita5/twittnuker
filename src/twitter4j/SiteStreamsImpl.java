@@ -92,10 +92,10 @@ class SiteStreamsImpl extends StatusStreamBase {
 	@Override
 	protected void onDelete(final JSONObject json, final StreamListener[] listeners) throws JSONException {
 		final JSONObject deletionNotice = json.getJSONObject("delete");
-		if (deletionNotice.has("fragment_status")) {
+		if (deletionNotice.has("status")) {
 			for (final StreamListener listener : listeners) {
 				((SiteStreamsListener) listener).onDeletionNotice(forUser.get(), new StatusDeletionNoticeImpl(
-						deletionNotice.getJSONObject("fragment_status")));
+						deletionNotice.getJSONObject("status")));
 			}
 		} else {
 			final JSONObject directMessage = deletionNotice.getJSONObject("direct_message");

@@ -145,7 +145,7 @@ public interface IntentConstants {
 	public static final String EXTRA_SUCCEED = "succeed";
 	public static final String EXTRA_IDS = "ids";
 	public static final String EXTRA_IS_SHARE = "is_share";
-	public static final String EXTRA_STATUS = "fragment_status";
+	public static final String EXTRA_STATUS = "status";
 	public static final String EXTRA_STATUSES = "statuses";
 	public static final String EXTRA_DRAFT = "draft";
 	public static final String EXTRA_FAVORITED = "favorited";

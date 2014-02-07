@@ -33,7 +33,7 @@ import java.util.Locale;
 /**
  * An exception class that will be thrown when TwitterAPI calls are failed.<br>
  * In case the Twitter server returned HTTP error code, you can get the HTTP
- * fragment_status code using getStatusCode() method.
+ * status code using getStatusCode() method.
  * 
  * @author Yusuke Yamamoto - yusuke at mac.com
  */

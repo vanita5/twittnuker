@@ -27,7 +27,7 @@ public interface StatusStream {
 	void close() throws IOException;
 
 	/**
-	 * Reads next fragment_status from this stream.
+	 * Reads next status from this stream.
 	 * 
 	 * @param listener a StatusListener implementation
 	 * @throws TwitterException when the end of the stream has been reached.

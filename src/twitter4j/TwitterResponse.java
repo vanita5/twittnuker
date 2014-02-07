@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 /**
  * Super interface of Twitter Response data interfaces which indicates that rate
- * limit fragment_status is avaialble.
+ * limit status is avaialble.
  * 
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @see twitter4j.DirectMessage

@@ -26,11 +26,11 @@ import twitter4j.TwitterException;
  */
 public interface FavoritesResources {
 	/**
-	 * Favorites the fragment_status specified in the ID parameter as the authenticating
-	 * user. Returns the favorite fragment_status when successful. <br>
+	 * Favorites the status specified in the ID parameter as the authenticating
+	 * user. Returns the favorite status when successful. <br>
 	 * This method calls http://api.twitter.com/1.1/favorites/create/[id].json
 	 * 
-	 * @param id the ID of the fragment_status to favorite
+	 * @param id the ID of the status to favorite
 	 * @return Status
 	 * @throws TwitterException when Twitter service or network is unavailable
 	 * @see <a
@@ -40,12 +40,12 @@ public interface FavoritesResources {
 	Status createFavorite(long id) throws TwitterException;
 
 	/**
-	 * Un-favorites the fragment_status specified in the ID parameter as the
-	 * authenticating user. Returns the un-favorited fragment_status in the requested
+	 * Un-favorites the status specified in the ID parameter as the
+	 * authenticating user. Returns the un-favorited status in the requested
 	 * format when successful. <br>
 	 * This method calls http://api.twitter.com/1.1/favorites/destroy/[id].json
 	 * 
-	 * @param id the ID of the fragment_status to un-favorite
+	 * @param id the ID of the status to un-favorite
 	 * @return Status
 	 * @throws TwitterException when Twitter service or network is unavailable
 	 * @see <a

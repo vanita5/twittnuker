@@ -30,13 +30,13 @@ import twitter4j.TwitterException;
  */
 public interface TweetResources {
 	/**
-	 * Destroys the fragment_status specified by the required ID parameter.<br>
+	 * Destroys the status specified by the required ID parameter.<br>
 	 * Usage note: The authenticating user must be the author of the specified
-	 * fragment_status. <br>
+	 * status. <br>
 	 * This method calls http://api.twitter.com/1.1/statuses/destroy
 	 * 
-	 * @param statusId The ID of the fragment_status to destroy.
-	 * @return the deleted fragment_status
+	 * @param statusId The ID of the status to destroy.
+	 * @return the deleted status
 	 * @throws TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/statuses/destroy/:id">POST
@@ -91,7 +91,7 @@ public interface TweetResources {
 	 * Returns up to 100 of the first retweets of a given tweet. <br>
 	 * This method calls http://api.twitter.com/1.1/statuses/retweets
 	 * 
-	 * @param statusId The numerical ID of the desired fragment_status.
+	 * @param statusId The numerical ID of the desired status.
 	 * @param count Specifies the number of records to retrieve. Must be less
 	 *            than or equal to 100.
 	 * @return the retweets of a given tweet
@@ -108,8 +108,8 @@ public interface TweetResources {
 	 * embedded. <br>
 	 * This method calls http://api.twitter.com/1.1/statuses/retweet
 	 * 
-	 * @param statusId The ID of the fragment_status to retweet.
-	 * @return the retweeted fragment_status
+	 * @param statusId The ID of the status to retweet.
+	 * @return the retweeted status
 	 * @throws TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/statuses/retweet/:id">POST
@@ -119,12 +119,12 @@ public interface TweetResources {
 	Status retweetStatus(long statusId) throws TwitterException;
 
 	/**
-	 * Returns a single fragment_status, specified by the id parameter below. The
-	 * fragment_status's author will be returned inline. <br>
+	 * Returns a single status, specified by the id parameter below. The
+	 * status's author will be returned inline. <br>
 	 * This method calls http://api.twitter.com/1.1/statuses/show
 	 * 
-	 * @param id the numerical ID of the fragment_status you're trying to retrieve
-	 * @return a single fragment_status
+	 * @param id the numerical ID of the status you're trying to retrieve
+	 * @return a single status
 	 * @throws twitter4j.TwitterException when Twitter service or network is
 	 *             unavailable
 	 * @see <a
@@ -135,15 +135,15 @@ public interface TweetResources {
 	Status showStatus(long id) throws TwitterException;
 
 	/**
-	 * Updates the authenticating user's fragment_status. A fragment_status update with text
+	 * Updates the authenticating user's status. A status update with text
 	 * identical to the authenticating user's text identical to the
-	 * authenticating user's current fragment_status will be ignored to prevent
+	 * authenticating user's current status will be ignored to prevent
 	 * duplicates. <br>
 	 * This method calls http://api.twitter.com/1.1/statuses/update or<br>
 	 * This method calls https://upload.twitter.com/1/statuses/update_with_media
 	 * 
-	 * @param latestStatus the latest fragment_status to be updated.
-	 * @return the latest fragment_status
+	 * @param latestStatus the latest status to be updated.
+	 * @return the latest status
 	 * @throws TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/statuses/update">POST
@@ -153,14 +153,14 @@ public interface TweetResources {
 	Status updateStatus(StatusUpdate latestStatus) throws TwitterException;
 
 	/**
-	 * Updates the authenticating user's fragment_status. A fragment_status update with text
+	 * Updates the authenticating user's status. A status update with text
 	 * identical to the authenticating user's text identical to the
-	 * authenticating user's current fragment_status will be ignored to prevent
+	 * authenticating user's current status will be ignored to prevent
 	 * duplicates. <br>
 	 * This method calls http://api.twitter.com/1.1/statuses/update
 	 * 
-	 * @param status the text of your fragment_status update
-	 * @return the latest fragment_status
+	 * @param status the text of your status update
+	 * @return the latest status
 	 * @throws TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/statuses/update">POST

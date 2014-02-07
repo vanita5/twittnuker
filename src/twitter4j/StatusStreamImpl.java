@@ -75,9 +75,9 @@ class StatusStreamImpl extends StatusStreamBase {
 			JSONException {
 		for (final StreamListener listener : listeners) {
 			final JSONObject deletionNotice = json.getJSONObject("delete");
-			if (deletionNotice.has("fragment_status")) {
+			if (deletionNotice.has("status")) {
 				((StatusListener) listener).onDeletionNotice(new StatusDeletionNoticeImpl(deletionNotice
-						.getJSONObject("fragment_status")));
+						.getJSONObject("status")));
 			} else {
 				final JSONObject directMessage = deletionNotice.getJSONObject("direct_message");
 				((UserStreamListener) listener).onDeletionNotice(InternalParseUtil.getLong("id", directMessage),

@@ -1501,7 +1501,7 @@ public final class Gallery extends AbsSpinner implements GestureDetector.OnGestu
 
 		private void endFling(final boolean scrollIntoSlots) {
 			/*
-			 * Force the scroller's fragment_status to finished (without setting its
+			 * Force the scroller's status to finished (without setting its
 			 * position to the end)
 			 */
 			mScroller.forceFinished(true);

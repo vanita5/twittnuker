@@ -99,7 +99,7 @@ public interface PlacesGeoResources {
 	/**
 	 * Search for places (cities and neighborhoods) that can be attached to a
 	 * statuses/update. Given a latitude and a longitude, return a list of all
-	 * the valid places that can be used as a place_id when updating a fragment_status.
+	 * the valid places that can be used as a place_id when updating a status.
 	 * Conceptually, a query can be made from the user's location, retrieve a
 	 * list of places, have the user validate the location he or she is at, and
 	 * then send the ID of this location up with a call to statuses/update.<br>
@@ -125,7 +125,7 @@ public interface PlacesGeoResources {
 	 * Search for places that can be attached to a statuses/update. Given a
 	 * latitude and a longitude pair, an IP address, or a name, this request
 	 * will return a list of all the valid places that can be used as the
-	 * place_id when updating a fragment_status. <br>
+	 * place_id when updating a status. <br>
 	 * Conceptually, a query can be made from the user's location, retrieve a
 	 * list of places, have the user validate the location he or she is at, and
 	 * then send the ID of this location with a call to statuses/update. <br>

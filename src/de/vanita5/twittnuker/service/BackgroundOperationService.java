@@ -280,7 +280,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 				saveDrafts(item, failed_account_ids, true);
 				showErrorMessage(R.string.action_updating_status, getString(R.string.no_account_selected), false);
 			} else if (failed) {
-				// If the fragment_status is a duplicate, there's no need to save it to
+				// If the status is a duplicate, there's no need to save it to
 				// drafts.
 				if (exception instanceof TwitterException
 						&& ((TwitterException) exception).getErrorCode() == TwitterErrorCodes.STATUS_IS_DUPLICATE) {

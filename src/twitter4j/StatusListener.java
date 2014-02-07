@@ -24,8 +24,8 @@ public interface StatusListener extends StreamListener {
 	/**
 	 * Called upon deletionNotice notices. Clients are urged to honor
 	 * deletionNotice requests and discard deleted statuses immediately. At
-	 * times, fragment_status deletionNotice messages may arrive before the fragment_status. Even
-	 * in this case, the late arriving fragment_status should be deleted from your
+	 * times, status deletionNotice messages may arrive before the status. Even
+	 * in this case, the late arriving status should be deleted from your
 	 * backing store.
 	 * 
 	 * @param statusDeletionNotice the deletionNotice notice
@@ -45,7 +45,7 @@ public interface StatusListener extends StreamListener {
 	 * data.
 	 * 
 	 * @param userId user id
-	 * @param upToStatusId up to fragment_status id
+	 * @param upToStatusId up to status id
 	 * @since Twitter4J 2.1.9
 	 */
 	void onScrubGeo(long userId, long upToStatusId);

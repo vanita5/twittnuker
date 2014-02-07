@@ -296,7 +296,7 @@ public final class DataObjectFactory {
 				case DELETE:
 					return registerJSONObject(
 							statusDeletionNoticeConstructor.newInstance(json.getJSONObject("delete").getJSONObject(
-									"fragment_status")), json);
+									"status")), json);
 				case LIMIT:
 					// TODO: Perhaps there should be a TrackLimitationNotice
 					// object?

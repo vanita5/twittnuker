@@ -681,7 +681,7 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
 	}
 
 	/**
-	 * Update the fragment_status of the list based on the empty parameter. If empty is
+	 * Update the status of the list based on the empty parameter. If empty is
 	 * true and we have an empty view, display it. In all the other cases, make
 	 * sure that the listview is VISIBLE and that the empty view is GONE (if
 	 * it's not null).

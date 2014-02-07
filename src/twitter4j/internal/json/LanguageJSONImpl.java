@@ -59,7 +59,7 @@ public class LanguageJSONImpl implements HelpResources.Language {
 		try {
 			name = json.getString("name");
 			code = json.getString("code");
-			status = json.getString("fragment_status");
+			status = json.getString("status");
 
 		} catch (final JSONException jsone) {
 			throw new TwitterException(jsone.getMessage() + ":" + json.toString(), jsone);
