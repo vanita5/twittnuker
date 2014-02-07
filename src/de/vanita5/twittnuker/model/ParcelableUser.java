@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.model;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.formatExpandedUserDescription;
 import static de.vanita5.twittnuker.util.Utils.formatUserDescription;
-import static de.vanita5.twittnuker.util.Utils.getBiggerTwitterProfileImage;
 
 import android.content.ContentValues;
 import android.database.Cursor;

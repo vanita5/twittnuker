@@ -441,18 +441,18 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 		anim.setAnimationListener(new AnimationListener() {
 
 			@Override
-			public void onAnimationStart(Animation animation) {
-
-			}
-
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-
-			}
-
-			@Override
-			public void onAnimationEnd(Animation animation) {
+			public void onAnimationEnd(final Animation animation) {
 				mMenuBar.setVisibility(View.GONE);
+			}
+
+			@Override
+			public void onAnimationRepeat(final Animation animation) {
+
+			}
+
+			@Override
+			public void onAnimationStart(final Animation animation) {
+
 			}
 		});
 		mMenuBar.startAnimation(anim);

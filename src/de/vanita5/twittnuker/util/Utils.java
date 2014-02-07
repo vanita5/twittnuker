@@ -1021,8 +1021,7 @@ public final class Utils implements Constants {
 				+ status.getId();
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.delete(CachedStatuses.CONTENT_URI, where, null);
-		resolver.insert(CachedStatuses.CONTENT_URI,
-				ContentValuesCreator.makeStatusContentValues(status, account_id));
+		resolver.insert(CachedStatuses.CONTENT_URI, ContentValuesCreator.makeStatusContentValues(status, account_id));
 		return new ParcelableStatus(status, account_id, false);
 	}
 
@@ -1209,8 +1208,8 @@ public final class Utils implements Constants {
 	public static long getAccountId(final Context context, final String screen_name) {
 		if (context == null || isEmpty(screen_name)) return -1;
 		final Cursor cur = ContentResolverUtils
-				.query(context.getContentResolver(), Accounts.CONTENT_URI, new String[] { Accounts.ACCOUNT_ID },
-						Accounts.SCREEN_NAME + " = ?", new String[] { screen_name }, null);
+				.query(context.getContentResolver(), Accounts.CONTENT_URI, new String[]{Accounts.ACCOUNT_ID},
+						Accounts.SCREEN_NAME + " = ?", new String[]{screen_name}, null);
 		if (cur == null) return -1;
 		try {
 			if (cur.getCount() > 0 && cur.moveToFirst()) return cur.getLong(0);
@@ -1445,13 +1444,6 @@ public final class Utils implements Constants {
 			if (cacheDir.isDirectory() || cacheDir.mkdirs()) return cacheDir;
 		}
 		return new File(context.getCacheDir(), cacheDirName);
-	}
-
-	public static String getReasonablySmallTwitterProfileImage(final String url) {
-		if (url == null) return null;
-		if (PATTERN_TWITTER_PROFILE_IMAGES.matcher(url).matches())
-		return replaceLast(url, "_" + TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES, "_reasonably_small");
-		return url;
 	}
 
 	public static String getBiggerTwitterProfileImage(final String url) {
@@ -1909,6 +1901,13 @@ public final class Utils implements Constants {
 			quote_format = DEFAULT_QUOTE_FORMAT;
 		}
 		return quote_format.replace(FORMAT_PATTERN_NAME, screen_name).replace(FORMAT_PATTERN_TEXT, text);
+	}
+
+	public static String getReasonablySmallTwitterProfileImage(final String url) {
+		if (url == null) return null;
+		if (PATTERN_TWITTER_PROFILE_IMAGES.matcher(url).matches())
+			return replaceLast(url, "_" + TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES, "_reasonably_small");
+		return url;
 	}
 
 	public static HttpResponse getRedirectedHttpResponse(final HttpClientWrapper client, final String url)

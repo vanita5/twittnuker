@@ -31,7 +31,6 @@ import android.support.v4.content.AsyncTaskLoader;
 import org.mariotaku.jsonserializer.JSONFileIO;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 

@@ -30,11 +30,9 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.Button;
 
-import com.twitter.Validator;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.view.themed.ThemedTextView;
+import de.vanita5.twittnuker.util.TwidereValidator;
 
 
 import java.util.Locale;
@@ -43,6 +41,7 @@ public class SendButton extends Button {
 
 	private final int mTextColor;
 	private final Locale mLocale;
+	private final TwidereValidator mValidator;
 
 	public SendButton(final Context context) {
 		this(context, null);
@@ -54,6 +53,7 @@ public class SendButton extends Button {
 
 	public SendButton(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
+		mValidator = new TwidereValidator(context);
         if (isInEditMode()) {
             mTextColor = 0;
             mLocale = Locale.getDefault();
@@ -69,14 +69,15 @@ public class SendButton extends Button {
 	}
 
 	public void setTextCount(final int count) {
-		setText(getLocalizedNumber(mLocale, Validator.MAX_TWEET_LENGTH - count));
-		final boolean exceeded_limit = count < Validator.MAX_TWEET_LENGTH;
-		final boolean near_limit = count >= Validator.MAX_TWEET_LENGTH - 10;
-		final float hue = exceeded_limit ? near_limit ? 5 * (Validator.MAX_TWEET_LENGTH - count) : 50 : 0;
+		final int maxLength = mValidator.getMaxTweetLength();
+		setText(getLocalizedNumber(mLocale, maxLength - count));
+		final boolean exceeded_limit = count < maxLength;
+		final boolean near_limit = count >= maxLength - 10;
+		final float hue = exceeded_limit ? near_limit ? 5 * (maxLength - count) : 50 : 0;
 		final float[] textColorHsv = new float[3];
 		Color.colorToHSV(mTextColor, textColorHsv);
 		final float[] errorColorHsv = { hue, 1.0f, 0.75f + textColorHsv[2] / 4 };
-		setTextColor(count >= Validator.MAX_TWEET_LENGTH - 10 ? Color.HSVToColor(errorColorHsv) : mTextColor);
+		setTextColor(count >= maxLength - 10 ? Color.HSVToColor(errorColorHsv) : mTextColor);
 	}
 
 }

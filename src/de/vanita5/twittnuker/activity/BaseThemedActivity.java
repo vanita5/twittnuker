@@ -33,7 +33,6 @@ import android.support.v4.app.NavUtils;
 import com.negusoft.holoaccent.AccentHelper;
 
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.util.theme.AccentThemeFixer;
 import de.vanita5.twittnuker.util.theme.TwidereAccentHelper;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;

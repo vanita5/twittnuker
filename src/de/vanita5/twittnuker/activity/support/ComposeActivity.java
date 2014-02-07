@@ -101,7 +101,6 @@ import com.scvngr.levelup.views.gallery.AdapterView.OnItemClickListener;
 import com.scvngr.levelup.views.gallery.AdapterView.OnItemLongClickListener;
 import com.scvngr.levelup.views.gallery.Gallery;
 import com.twitter.Extractor;
-import com.twitter.Validator;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
@@ -128,6 +127,7 @@ import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.SendButton;
@@ -151,7 +151,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	private static final String EXTRA_ORIGINAL_TEXT = "original_text";
 
-    private final Validator mValidator = new Validator();
+	private TwidereValidator mValidator;
     private final Extractor mExtractor = new Extractor();
 
 	private AsyncTwitterWrapper mTwitterWrapper;
@@ -558,6 +558,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		mTwitterWrapper = getTwittnukerApplication().getTwitterWrapper();
 		mResolver = getContentResolver();
 		mImageLoader = getTwittnukerApplication().getImageLoaderWrapper();
+		mValidator = new TwidereValidator(this);
 		setContentView(getLayoutInflater().inflate(R.layout.activity_compose, null));
 		setProgressBarIndeterminateVisibility(false);
 		setFinishOnTouchOutside(false);
@@ -1043,11 +1044,11 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			return;
 		final boolean hasMedia = hasMedia();
 		final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
-		final int tweetLength = mValidator.getTweetLength(text);
-		if (!mTweetShortenerUsed && tweetLength > Validator.MAX_TWEET_LENGTH) {
+		final int tweetLength = mValidator.getTweetLength(text), maxLength = mValidator.getMaxTweetLength();
+		if (!mTweetShortenerUsed && tweetLength > maxLength) {
 			mEditText.setError(getString(R.string.error_message_status_too_long));
 			final int text_length = mEditText.length();
-			mEditText.setSelection(text_length - (tweetLength - Validator.MAX_TWEET_LENGTH), text_length);
+			mEditText.setSelection(text_length - (tweetLength - maxLength), text_length);
 			return;
 		} else if (!hasMedia && (isEmpty(text) || noReplyContent(text))) {
 			mEditText.setError(getString(R.string.error_message_no_content));

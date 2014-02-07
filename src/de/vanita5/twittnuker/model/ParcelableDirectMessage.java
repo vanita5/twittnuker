@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.model;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.formatDirectMessageText;
-import static de.vanita5.twittnuker.util.Utils.getBiggerTwitterProfileImage;
 import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsBoolean;
 import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsLong;
 

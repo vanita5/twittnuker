@@ -33,7 +33,6 @@ import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
