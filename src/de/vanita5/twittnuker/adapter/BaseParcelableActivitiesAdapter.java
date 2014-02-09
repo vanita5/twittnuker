@@ -46,7 +46,6 @@ import java.util.List;
 public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<ParcelableActivity> implements
 		IBaseCardAdapter {
 
-	private final Context mContext;
 	private final MultiSelectManager mMultiSelectManager;
 	private final ImageLoaderWrapper mImageLoader;
 
@@ -61,7 +60,6 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 
 	public BaseParcelableActivitiesAdapter(final Context context, final boolean compactCards) {
 		super(context, getItemResource(compactCards));
-		mContext = context;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mMultiSelectManager = app.getMultiSelectManager();
 		mImageLoader = app.getImageLoaderWrapper();
@@ -166,10 +164,6 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 		}
 	}
 
-	protected Context getContext() {
-		return mContext;
-	}
-
 	@Override
 	public ImageLoaderWrapper getImageLoader() {
 		return mImageLoader;
@@ -177,13 +171,14 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 
 	protected String getName(final ParcelableStatus status) {
 		if (status == null) return null;
-		return getDisplayName(mContext, status.user_id, status.user_name, status.user_screen_name,
+		return getDisplayName(getContext(), status.user_id, status.user_name, status.user_screen_name,
 				isDisplayNameFirst(), isNicknameOnly());
 	}
 
 	protected String getName(final ParcelableUser user) {
 		if (user == null) return null;
-		return getDisplayName(mContext, user.id, user.name, user.screen_name, isDisplayNameFirst(), isNicknameOnly());
+		return getDisplayName(getContext(), user.id, user.name, user.screen_name, isDisplayNameFirst(),
+				isNicknameOnly());
 	}
 
 	protected void setProfileImage(final ImageView view, final ParcelableStatus status) {
@@ -216,7 +211,7 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 		if (urls.length > holder.activity_profile_images.length) {
 			final int moreNumber = urls.length - holder.activity_profile_images.length;
 			holder.activity_profile_image_more_number.setVisibility(View.VISIBLE);
-			holder.activity_profile_image_more_number.setText(mContext.getString(R.string.and_more, moreNumber));
+			holder.activity_profile_image_more_number.setText(getContext().getString(R.string.and_more, moreNumber));
 		} else {
 			holder.activity_profile_image_more_number.setVisibility(View.GONE);
 		}

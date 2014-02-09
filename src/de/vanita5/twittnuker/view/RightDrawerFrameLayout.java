@@ -34,22 +34,21 @@ import android.widget.FrameLayout;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 
-
-public class LeftDrawerFrameLayout extends FrameLayout {
+public class RightDrawerFrameLayout extends FrameLayout {
 
 	private final Paint mClipPaint = new Paint();
 	private float mScrollScale, mPercentOpen;
 	private boolean mClipEnabled;
 
-	public LeftDrawerFrameLayout(final Context context) {
+	public RightDrawerFrameLayout(final Context context) {
 		this(context, null);
 	}
 
-	public LeftDrawerFrameLayout(final Context context, final AttributeSet attrs) {
+	public RightDrawerFrameLayout(final Context context, final AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
-	public LeftDrawerFrameLayout(final Context context, final AttributeSet attrs, final int defStyle) {
+	public RightDrawerFrameLayout(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
 		final Drawable bg = ThemeUtils.getWindowBackground(context, ThemeUtils.getDrawerThemeResource(context));
 		ViewAccessor.setBackground(this, bg);

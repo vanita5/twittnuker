@@ -27,16 +27,21 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
 
 public class BaseSupportFragment extends Fragment implements Constants {
+
+	private LayoutInflater mLayoutInflater;
 
     public TwittnukerApplication getApplication() {
 		final Activity activity = getActivity();
@@ -48,6 +53,12 @@ public class BaseSupportFragment extends Fragment implements Constants {
 		final Activity activity = getActivity();
 		if (activity != null) return activity.getContentResolver();
 		return null;
+	}
+
+	@Override
+	public LayoutInflater getLayoutInflater(final Bundle savedInstanceState) {
+		if (mLayoutInflater != null) return mLayoutInflater;
+		return mLayoutInflater = ThemeUtils.getThemedLayoutInflaterForActionIcons(getActivity());
 	}
 
 	public MultiSelectManager getMultiSelectManager() {

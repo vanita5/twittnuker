@@ -67,6 +67,9 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 
 	private boolean mReachedBottom, mNotReachedBottomBefore;
 
+	private LayoutInflater mLayoutInflater;
+
+
 	public final TwittnukerApplication getApplication() {
 		return TwittnukerApplication.getInstance(getActivity());
 	}
@@ -75,6 +78,12 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 		final Activity activity = getActivity();
 		if (activity != null) return activity.getContentResolver();
 		return null;
+	}
+
+	@Override
+	public LayoutInflater getLayoutInflater(final Bundle savedInstanceState) {
+		if (mLayoutInflater != null) return mLayoutInflater;
+		return mLayoutInflater = ThemeUtils.getThemedLayoutInflaterForActionIcons(getActivity());
 	}
 
 	public final MultiSelectManager getMultiSelectManager() {

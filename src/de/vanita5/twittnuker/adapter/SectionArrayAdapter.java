@@ -20,10 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package de.vanita5.twittnuker.adapter;
 
-public interface MapInterface {
+import android.content.Context;
 
-	public void center();
+import java.util.Collection;
+
+public class SectionArrayAdapter<T> extends ArrayAdapter<T> {
+
+	public SectionArrayAdapter(final Context context, final int layoutRes) {
+		super(context, layoutRes);
+	}
+
+	public SectionArrayAdapter(final Context context, final int layoutRes, final Collection<? extends T> collection) {
+		super(context, layoutRes, collection);
+	}
 
 }

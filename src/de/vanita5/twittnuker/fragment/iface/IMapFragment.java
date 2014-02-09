@@ -20,25 +20,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.activity.support;
+package de.vanita5.twittnuker.fragment.iface;
 
-import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.view.Window;
+public interface IMapFragment {
 
-import de.vanita5.twittnuker.fragment.support.CharactersGridFragment;
-
-public class EmojiPickerActivity extends BaseSupportDialogActivity {
-
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		super.onCreate(savedInstanceState);
-		final FragmentManager fm = getSupportFragmentManager();
-		final FragmentTransaction ft = fm.beginTransaction();
-		ft.replace(android.R.id.content, new CharactersGridFragment());
-		ft.commit();
-	}
+	public void center();
 
 }

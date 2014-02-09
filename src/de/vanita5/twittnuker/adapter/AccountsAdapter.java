@@ -25,10 +25,10 @@ package de.vanita5.twittnuker.adapter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;

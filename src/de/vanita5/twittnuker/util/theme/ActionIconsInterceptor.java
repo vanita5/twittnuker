@@ -73,9 +73,6 @@ public class ActionIconsInterceptor implements DrawableInterceptor {
 
 		sIconMap.put(R.drawable.ic_iconic_action_heart, new IconSpec(TwidereIcon.HEART, 0.75f));
 		sIconMap.put(R.drawable.ic_iconic_action_checked, new IconSpec(TwidereIcon.CHECKED, 0.75f));
-
-        /** Twittnuker **/
-        sIconMap.put(R.drawable.ic_iconic_action_love, new IconSpec(TwidereIcon.LOVE, 0.75f));
     }
 
     private static int MENU_ICON_SIZE_DP = 32;

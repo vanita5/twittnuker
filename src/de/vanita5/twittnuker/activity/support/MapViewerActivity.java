@@ -33,16 +33,16 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.fragment.iface.IMapFragment;
 import de.vanita5.twittnuker.fragment.support.NativeMapFragment;
 import de.vanita5.twittnuker.fragment.support.WebMapFragment;
-import de.vanita5.twittnuker.util.MapInterface;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class MapViewerActivity extends TwidereSwipeBackActivity {
 
     @Override
     public int getThemeResourceId() {
-        return ThemeUtils.getThemeResource(this);
+		return ThemeUtils.getViewerThemeResource(this);
     }
 
 	@Override
@@ -60,10 +60,10 @@ public class MapViewerActivity extends TwidereSwipeBackActivity {
 			}
 			case MENU_CENTER: {
 				final Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
-				if (!(fragment instanceof MapInterface)) {
+				if (!(fragment instanceof IMapFragment)) {
 					break;
 				}
-				((MapInterface) fragment).center();
+				((IMapFragment) fragment).center();
 				break;
 			}
 		}

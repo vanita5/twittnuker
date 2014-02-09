@@ -28,6 +28,7 @@ import android.os.Bundle;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.StrictModeUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 
 public class MainActivity extends Activity implements Constants {
@@ -43,6 +44,16 @@ public class MainActivity extends Activity implements Constants {
 		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 		startActivity(intent);
 		finish();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		final int themeResource = ThemeUtils.getThemeResource(this);
+		final int accentColor = ThemeUtils.isColoredActionBar(themeResource) ? ThemeUtils.getUserThemeColor(this) : 0;
+		final int backgroundAlpha = ThemeUtils.isTransparentBackground(themeResource) ? ThemeUtils
+				.getUserThemeBackgroundAlpha(this) : 0xFF;
+		ThemeUtils.notifyStatusBarColorChanged(this, themeResource, accentColor, backgroundAlpha);
 	}
 
 }

@@ -36,8 +36,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
@@ -54,6 +52,7 @@ import android.widget.ListView;
 import com.etsy.android.grid.StaggeredGridView;
 
 import org.mariotaku.menucomponent.widget.PopupMenu;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
@@ -65,7 +64,6 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.PositionManager;
-import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.collection.NoDuplicatesCopyOnWriteArrayList;
@@ -303,12 +301,10 @@ abstract class BaseStatusesStaggeredGridFragment<Data> extends BasePullToRefresh
 				}
 				break;
 			}
-			case R.id.direct_retweet:
 			case MENU_RETWEET: {
 				retweet(status, twitter);
 				break;
 			}
-			case R.id.direct_quote:
 			case MENU_QUOTE: {
 				final Intent intent = new Intent(INTENT_ACTION_QUOTE);
 				final Bundle bundle = new Bundle();
@@ -538,29 +534,12 @@ abstract class BaseStatusesStaggeredGridFragment<Data> extends BasePullToRefresh
 		if (mPopupMenu != null && mPopupMenu.isShowing()) {
 			mPopupMenu.dismiss();
 		}
-		final int activated_color = ThemeUtils.getUserThemeColor(getActivity());
 		mPopupMenu = PopupMenu.getInstance(getActivity(), view);
 		mPopupMenu.inflate(R.menu.action_status);
-		final boolean separateRetweetAction = mPreferences.getBoolean(KEY_SEPARATE_RETWEET_ACTION,
-				DEFAULT_SEPARATE_RETWEET_ACTION);
 		final boolean longclickToOpenMenu = mPreferences.getBoolean(KEY_LONG_CLICK_TO_OPEN_MENU, false);
 		final Menu menu = mPopupMenu.getMenu();
 		setMenuForStatus(getActivity(), menu, status);
-		Utils.setMenuItemAvailability(menu, R.id.retweet_submenu, !separateRetweetAction);
-		Utils.setMenuItemAvailability(menu, R.id.direct_quote, separateRetweetAction);
 		Utils.setMenuItemAvailability(menu, MENU_MULTI_SELECT, longclickToOpenMenu);
-		final MenuItem direct_retweet = menu.findItem(R.id.direct_retweet);
-		if (direct_retweet != null) {
-			final Drawable icon = direct_retweet.getIcon().mutate();
-			direct_retweet.setVisible(separateRetweetAction && (!status.user_is_protected || isMyRetweet(status)));
-			if (isMyRetweet(status)) {
-				icon.setColorFilter(activated_color, PorterDuff.Mode.SRC_ATOP);
-				direct_retweet.setTitle(R.string.cancel_retweet);
-			} else {
-				icon.clearColorFilter();
-				direct_retweet.setTitle(R.string.retweet);
-			}
-		}
 		mPopupMenu.setOnMenuItemClickListener(this);
 		mPopupMenu.show();
 	}

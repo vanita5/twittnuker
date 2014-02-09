@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.fragment;
 
 import static android.text.TextUtils.isEmpty;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -33,10 +32,8 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnShowListener;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -54,7 +51,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.FileSelectorActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.HostsFileParser;
@@ -69,8 +65,6 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
 	private ListView mListView;
 	private HostMappingAdapter mAdapter;
 	private SharedPreferences mPreferences;
-
-	private DialogFragment mDialogFragment;
 
 	@Override
 	public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
@@ -111,22 +105,6 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
 	}
 
 	@Override
-	public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
-		switch (requestCode) {
-			case REQUEST_PICK_FILE: {
-				if (resultCode == Activity.RESULT_OK) {
-					final Uri uri = intent != null ? intent.getData() : null;
-					if (uri != null) {
-						new ImportHostsTask(this, uri.getPath()).execute();
-					}
-				}
-				break;
-			}
-		}
-		super.onActivityResult(requestCode, resultCode, intent);
-	}
-
-	@Override
 	public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
 		new MenuInflater(getActivity()).inflate(R.menu.action_multi_select_items, menu);
 		return true;
@@ -152,14 +130,8 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 			case MENU_ADD:
-				mDialogFragment = (DialogFragment) Fragment.instantiate(getActivity(),
-						AddMappingDialogFragment.class.getName());
-				mDialogFragment.show(getFragmentManager(), "add_mapping");
-				break;
-			case MENU_IMPORT_FROM:
-				final Intent intent = new Intent(INTENT_ACTION_PICK_FILE);
-				intent.setClass(getActivity(), FileSelectorActivity.class);
-				startActivityForResult(intent, REQUEST_PICK_FILE);
+				final DialogFragment df = new AddMappingDialogFragment();
+				df.show(getFragmentManager(), "add_mapping");
 				break;
 		}
 		return super.onOptionsItemSelected(item);
