@@ -205,7 +205,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private boolean mBottomComposeButton;
 
     private int mTabDisplayOption;
-	private boolean mStreaming;
 	protected boolean hasStreamLoaded;
 	
 	protected TwitterStream twitterStream;
@@ -528,8 +527,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		mActionBar = getActionBar();
 		mActionBar.setCustomView(R.layout.home_tabs);
 		
-		mStreaming = mPreferences.getBoolean(KEY_STREAMING_ENABLED, false);
-
 		final View view = mActionBar.getCustomView();
 		mIndicator = (TabPageIndicator) view.findViewById(android.R.id.tabs);
 		mActionsButton = (HomeActionsActionView) view.findViewById(R.id.actions_button);
@@ -602,10 +599,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         updateSmartBar();
 		updateSlidingMenuTouchMode();
 		
-		if(!hasStreamLoaded && mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
-			hasStreamLoaded = false;
+		if(!isStreaming() && mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
 			connectToStream();
-		} else {
+		} else if(!mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
 			closeStream();
 		}
 	}
@@ -655,7 +651,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 	
 	public boolean isStreaming() {
-		if(twitterStream != null) { //TODO check this
+		if(twitterStream != null && hasStreamLoaded) {
 			return true;
 		}
 		return false;
