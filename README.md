@@ -1,16 +1,25 @@
 #Twittnuker - Android 4.0+ Twitter Client#
 
-Twittnuker is a [free](https://www.gnu.org/philosophy/free-sw.html) Twitter App for Android 4.0+ Smartphones, based on the [Twidere Project](https://github.com/mariotaku/twidere) (Version 0.2.9.9) with various improvements.
+Twittnuker is a [free](https://www.gnu.org/philosophy/free-sw.html) Twitter Client for Android 4.0+ Smartphones, based on the [Twidere Project](https://github.com/mariotaku/twidere) (Version 0.2.9.10) with various improvements.
 
-Major Twidere Updates may/will be merged into Twittnuker.
+Twidere updates will almost always be merged, so you can expect the latest features and bug fixes from Twidere in this fork, too!
 
 
-## Features ##
+## Features (Twittnuker only) ##
+
+* Streaming
+* Additional image preview for various image hosters (If you are missing your favorite hoster, contact me!)
+* Tweet shortening via Hotot.in (more services may follow)
+* Hotot.in link expand (view Tweets shortened with hotot.in in full length!)
+* Love Button (Retweet + Favorite in one action)
+
+
+### Features (via Twidere) ###
 
 * Pure & Clean Holo design works for both ICS and pre-ICS devices
 * Four themes (Light theme with colored ActionBar, Dark theme, Light theme, Light theme with dark ActionBar), theme color will change if you're using CM9+/AOKP
 * Dual pane layout for Tablets
-* Image preview (disabled by default in order to reduce network usage)
+* Image preview
 * Built in image viewer and map viewer
 * Custom tabs
 * Profile banner (header) image support
@@ -28,25 +37,20 @@ Major Twidere Updates may/will be merged into Twittnuker.
 * Free, open source, NO ads, forever!
 
 
-#### FUTURE RELEASES: ####
-* Streaming API
-* REAL Push Notifications in realtime
-* Various Image Hoster to choose from
-* Various Tweet shortener to choose from
-* Optimization for slow/restricted internet connections
-* In App Browser
-* UI Improvements
-* Video Upload
-* ...
+#### FUTURE RELEASES ####
+* Push Notifications (It's a long road...)
+* Video Upload/Preview
+* Release on Google's Play Store
+* ...more to come!
+
+Do you have more ideas on how to improve the app? Please let me know!
 
 
 ## Credits ##
 
 ### Open source projects ###
 
-* [Twidere](https://github.com/mariotaku/twidere), Copyright 2012-2013 Mariotaku Lee
-* [ActionBar-PullToRefresh](https://github.com/chrisbanes/ActionBar-PullToRefresh), Copyright 2013 Chris Banes
-* [Android-PullToRefresh](https://github.com/chrisbanes/Android-PullToRefresh), Copyright 2013 Chris Banes
+* [Twidere](https://github.com/mariotaku/twidere), Copyright 2012-2014 Mariotaku Lee
 * [Android-ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator/), Copyright 2012 Jake Wharton
 * [Android ViewBadger](https://github.com/jgilfelt/android-viewbadger), Copyright (c) 2012 readyState Software Ltd.
 * [Universal Image Loader for Android](https://github.com/nostra13/Android-Universal-Image-Loader), Copyright 2011-2013 Sergey Tarasevich
@@ -63,7 +67,12 @@ Major Twidere Updates may/will be merged into Twittnuker.
 * [drag-sort-listview](https://github.com/bauerca/drag-sort-listview), Copyright 2012 Carl Bauer
 * [Android-MenuComponent](https://github.com/mariotaku/Android-MenuComponent), Copyright 2013 Mariotaku Lee
 * [RefreshNow](https://github.com/mariotaku/RefreshNow), Copyright 2014 Mariotaku Lee
-* [AndroidStaggeredGrid](https://github.com/etsy/AndroidStaggeredGrid), Copyright (c) 2013 Etsy
+* [AndroidStaggeredGrid](https://github.com/etsy/AndroidStaggeredGrid), Copyright 2013 Etsy
+* [cwac-merge](https://github.com/commonsguy/cwac-merge), Copyright 2013 CommonsWare
+* [cwac-sacklist](https://github.com/commonsguy/cwac-sacklist), Copyright 2013 CommonsWare
+* [SlidingMenu](https://github.com/mariotaku/SlidingMenu) ([Original](https://github.com/jfeinstein10/SlidingMenu)), Copyright 2012 Jeremy Feinstein
+* [holoaccent](https://github.com/negusoft/holoaccent), Copyright 2013 NEGU Soft
+* [IconicDroid](https://github.com/mariotaku/IconicDroid) ([Original](https://github.com/atermenji/IconicDroid)), Copyright 2013 Artur Termenji
 
 
 ## License ##
