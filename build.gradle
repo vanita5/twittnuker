@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.android.tools.build:gradle:0.8.+'
     }
 }
 
@@ -31,7 +31,7 @@ dependencies {
     compile 'com.android.support:support-v13:19.0.1'
     compile 'com.google.android.apps.dashclock:dashclock-api:2.0.0'
     compile 'com.google.android.gms:play-services:4.1.32'
-    compile 'com.jeremyfeinstein.slidingmenu:slidingmenu:1.3-SNAPSHOT'
+    compile 'com.jeremyfeinstein.slidingmenu:slidingmenu:1.3-SNAPSHOT-2'
     compile 'com.mobeta.android.dslv:drag-sort-listview:0.6.1'
     compile 'com.negusoft:holoaccent:0.9'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.1'

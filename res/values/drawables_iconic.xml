@@ -75,6 +75,7 @@
     <item name="ic_iconic_action_block" type="drawable"/>
     <item name="ic_iconic_action_warning" type="drawable"/>
     <item name="ic_iconic_action_heart" type="drawable"/>
+    <item name="ic_iconic_action_drafts" type="drawable"/>
     <item name="ic_iconic_twittnuker" type="drawable"/>
 
     <!-- Twittnuker -->
