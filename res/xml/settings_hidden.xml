@@ -37,4 +37,10 @@
         android:key="status_text_limit"
         android:title="@string/status_text_limit"/>
 
+    <Preference android:title="@string/settings_wizard">
+        <intent
+            android:targetClass="de.vanita5.twittnuker.activity.SettingsWizardActivity"
+        	android:targetPackage="de.vanita5.twittnuker"/>
+    </Preference>
+
 </PreferenceScreen>
