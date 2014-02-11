@@ -48,7 +48,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.HomeActivity;
+import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;

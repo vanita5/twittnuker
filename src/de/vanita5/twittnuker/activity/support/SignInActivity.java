@@ -60,7 +60,6 @@ import de.keyboardsurfer.android.widget.crouton.CroutonLifecycleCallback;
 import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;

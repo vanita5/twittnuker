@@ -28,8 +28,6 @@ import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
 
 public interface IThemedActivity extends ITwidereContextWrapper {
 
-	public Resources getAccentResources();
-
 	public int getCurrentThemeResourceId();
 
 	public void navigateUpFromSameTask();
@@ -39,6 +37,8 @@ public interface IThemedActivity extends ITwidereContextWrapper {
     public int getThemeBackgroundAlpha();
 
     public int getThemeColor();
+
+	public Resources getThemedResources();
 
 	public String getThemeFontFamily();
 

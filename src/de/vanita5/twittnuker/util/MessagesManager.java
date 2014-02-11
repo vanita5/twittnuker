@@ -27,7 +27,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.HomeActivity;
+import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 
 

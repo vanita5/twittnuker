@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.activity;
+package de.vanita5.twittnuker.activity.support;
 
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 import static de.vanita5.twittnuker.util.CustomTabUtils.getAddedTabPosition;
@@ -38,8 +38,9 @@ import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
+import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.view.RightDrawerFrameLayout;
 import twitter4j.DirectMessage;
 import twitter4j.StallWarning;
 import twitter4j.Status;
@@ -79,13 +80,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -95,11 +93,11 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.jeremyfeinstein.slidingmenu.lib.CustomViewBehind;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
 import com.readystatesoftware.viewbadger.BadgeView;
 
-import de.vanita5.twittnuker.activity.support.SignInActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
@@ -176,29 +174,31 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private final ContentObserver mAccountChangeObserver = new AccountChangeObserver(this, mHandler);
 
 	private final ArrayList<SupportTabSpec> mCustomTabs = new ArrayList<SupportTabSpec>();
-	private final SparseArray<Fragment> mAttachedFragments = new SparseArray<Fragment>();
 
+	private final SparseArray<Fragment> mAttachedFragments = new SparseArray<Fragment>();
 	private Account mSelectedAccountToSearch;
 
 	private SharedPreferences mPreferences;
 
 	private AsyncTwitterWrapper mTwitterWrapper;
 
+	private NotificationManager mNotificationManager;
+
 	private MultiSelectEventHandler mMultiSelectHandler;
+
 	private ActionBar mActionBar;
 	private SupportTabsAdapter mPagerAdapter;
-	private ExtendedViewPager mViewPager;
 
+	private ExtendedViewPager mViewPager;
 	private TabPageIndicator mIndicator;
 	private HomeSlidingMenu mSlidingMenu;
-
 	private View mEmptyTabHint;
     private ProgressBar mSmartBarProgress;
     private HomeActionsActionView mActionsButton, mBottomActionsButton;
-
 	private LeftDrawerFrameLayout mLeftDrawerContainer;
-	private Fragment mCurrentVisibleFragment;
+	private RightDrawerFrameLayout mRightDrawerContainer;
 
+	private Fragment mCurrentVisibleFragment;
 	private UpdateUnreadCountTask mUpdateUnreadCountTask;
 
 	private boolean mBottomComposeButton;
@@ -220,6 +220,10 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
 	public SlidingMenu getSlidingMenu() {
 		return mSlidingMenu;
+	}
+
+	public ViewPager getViewPager() {
+		return mViewPager;
 	}
 
 	public void notifyAccountsChanged() {
@@ -459,8 +463,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	public void updateUnreadCount() {
 		if (mIndicator == null || mUpdateUnreadCountTask != null
 				&& mUpdateUnreadCountTask.getStatus() == AsyncTask.Status.RUNNING) return;
-		mUpdateUnreadCountTask = new UpdateUnreadCountTask(mIndicator, mPreferences.getBoolean(
-				KEY_UNREAD_COUNT, true));
+		mUpdateUnreadCountTask = new UpdateUnreadCountTask(mIndicator, mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
 		mUpdateUnreadCountTask.execute();
 	}
 
@@ -499,6 +502,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		}
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mTwitterWrapper = getTwitterWrapper();
+		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mMultiSelectHandler = new MultiSelectEventHandler(this);
 		mMultiSelectHandler.dispatchOnCreate();
 		final Resources res = getResources();
@@ -706,10 +710,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         return false;
     }
 
-	private LeftDrawerFrameLayout getLeftDrawerContainer() {
-		return mLeftDrawerContainer;
-	}
-
 	private int handleIntent(final Intent intent, final boolean firstCreate) {
 		// use packge's class loader to prevent BadParcelException
 		intent.setExtrasClassLoader(getClassLoader());
@@ -749,21 +749,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		return initialTab;
 	}
 	
-	private boolean isBottomComposeButton() {
-		final SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-		return preferences != null && preferences.getBoolean(KEY_BOTTOM_COMPOSE_BUTTON, false);
-	}
-	
-	private void setUiOptions(final Window window) {
-		if (SmartBarUtils.hasSmartBar()) {
-			if (mBottomComposeButton) {
-				window.setUiOptions(ActivityInfo.UIOPTION_SPLIT_ACTION_BAR_WHEN_NARROW);
-			} else {
-				window.setUiOptions(0);
-			}
-		}
-	}
-
 	private boolean hasActivatedTask() {
 		if (mTwitterWrapper == null) return false;
 		return mTwitterWrapper.hasActivatedTask();
@@ -787,8 +772,13 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		}
 	}
 
+	private boolean isBottomComposeButton() {
+		final SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+		return preferences != null && preferences.getBoolean(KEY_BOTTOM_COMPOSE_BUTTON, false);
+	}
+
 	private boolean isTabsChanged(final List<SupportTabSpec> tabs) {
-		if (mCustomTabs.isEmpty() && tabs == null) return false;
+		if (mCustomTabs.size() == 0 && tabs == null) return false;
 		if (mCustomTabs.size() != tabs.size()) return true;
 		for (int i = 0, size = mCustomTabs.size(); i < size; i++) {
 			if (!mCustomTabs.get(i).equals(tabs.get(i))) return true;
@@ -802,8 +792,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
 	private boolean openSettingsWizard() {
-		if (mPreferences == null || mPreferences.getBoolean(KEY_SETTINGS_WIZARD_COMPLETED, false))
-			return false;
+		if (mPreferences == null || mPreferences.getBoolean(KEY_SETTINGS_WIZARD_COMPLETED, false)) return false;
 		startActivity(new Intent(this, SettingsWizardActivity.class));
 		return true;
 	}
@@ -818,12 +807,23 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		}
 	}
 
+	private void setUiOptions(final Window window) {
+		if (SmartBarUtils.hasSmartBar()) {
+			if (mBottomComposeButton) {
+				window.setUiOptions(ActivityInfo.UIOPTION_SPLIT_ACTION_BAR_WHEN_NARROW);
+			} else {
+				window.setUiOptions(0);
+			}
+		}
+	}
+
 	private void setupSlidingMenu() {
 		if (mSlidingMenu == null) return;
 		final int marginThreshold = getResources().getDimensionPixelSize(R.dimen.default_sliding_menu_margin_threshold);
 		mSlidingMenu.setMode(SlidingMenu.LEFT_RIGHT);
 		mSlidingMenu.setShadowWidthRes(R.dimen.default_sliding_menu_shadow_width);
-		mSlidingMenu.setShadowDrawable(R.drawable.shadow_holo);
+		mSlidingMenu.setShadowDrawable(R.drawable.drawer_shadow_left);
+		mSlidingMenu.setSecondaryShadowDrawable(R.drawable.drawer_shadow_right);
 		mSlidingMenu.setBehindWidthRes(R.dimen.left_drawer_width);
 		mSlidingMenu.setTouchmodeMarginThreshold(marginThreshold);
 		mSlidingMenu.setFadeDegree(0.5f);
@@ -833,9 +833,13 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		mSlidingMenu.setOnOpenedListener(this);
 		mSlidingMenu.setOnClosedListener(this);
 		mLeftDrawerContainer = (LeftDrawerFrameLayout) mSlidingMenu.getMenu().findViewById(R.id.left_drawer_container);
+		mRightDrawerContainer = (RightDrawerFrameLayout) mSlidingMenu.getSecondaryMenu().findViewById(
+				R.id.right_drawer_container);
 		final boolean isTransparentBackground = ThemeUtils.isTransparentBackground(this);
 		mLeftDrawerContainer.setClipEnabled(isTransparentBackground);
 		mLeftDrawerContainer.setScrollScale(mSlidingMenu.getBehindScrollScale());
+		mRightDrawerContainer.setClipEnabled(isTransparentBackground);
+		mRightDrawerContainer.setScrollScale(mSlidingMenu.getBehindScrollScale());
 		mSlidingMenu.setBehindCanvasTransformer(new ListenerCanvasTransformer(this));
         final Window window = getWindow();
 		if (isTransparentBackground) {
@@ -913,9 +917,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
 	private void updateDrawerPercentOpen(final float percentOpen, final boolean horizontalScroll) {
-		final LeftDrawerFrameLayout ld = mLeftDrawerContainer;
-		if (ld == null) return;
-		ld.setPercentOpen(percentOpen);
+		if (mLeftDrawerContainer == null || mRightDrawerContainer == null) return;
+		mLeftDrawerContainer.setPercentOpen(percentOpen);
+		mRightDrawerContainer.setPercentOpen(percentOpen);
 	}
 
 	private void updateSlidingMenuTouchMode() {
@@ -958,47 +962,42 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private static class HomeSlidingMenu extends SlidingMenu {
 
 		private final HomeActivity mActivity;
-		private final GestureDetector mGestureDetector;
 
 		public HomeSlidingMenu(final HomeActivity activity) {
 			super(activity);
 			mActivity = activity;
-			mGestureDetector = new GestureDetector(activity, new GestureListener(activity));
 		}
 
-		@Override
-		public boolean onInterceptTouchEvent(final MotionEvent ev) {
-			final int actionMasked = ev.getActionMasked();
-			if (mGestureDetector.onTouchEvent(ev) && actionMasked == MotionEvent.ACTION_MOVE) {
-				setSlidingEnabled(isSecondaryMenuShowing() || isMenuShowing());
-			} else {
-				setSlidingEnabled(true);
+		protected CustomViewBehind newCustomViewBehind(final Context context) {
+			return new MyCustomViewBehind(context, this);
 			}
-			// setTouchModeAbove(mode);
-			return super.onInterceptTouchEvent(ev);
+
+		private ViewPager getViewPager() {
+			return mActivity.getViewPager();
 		}
 
-		private static class GestureListener extends SimpleOnGestureListener {
+		private static class MyCustomViewBehind extends CustomViewBehind {
 
-			private final HomeActivity mActivity;
+			private final HomeSlidingMenu mSlidingMenu;
 
-			public GestureListener(final HomeActivity activity) {
-				mActivity = activity;
+			public MyCustomViewBehind(final Context context, final HomeSlidingMenu slidingMenu) {
+				super(context);
+				mSlidingMenu = slidingMenu;
 			}
 
 			@Override
-			public boolean onDown(final MotionEvent e) {
-				return true;
-			}
-
-			@Override
-			public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX,
-									final float distanceY) {
-				final ViewPager viewPager = mActivity.mViewPager;
+			public boolean menuClosedSlideAllowed(final float dx) {
+				final ViewPager viewPager = mSlidingMenu.getViewPager();
 				if (viewPager == null) return false;
-				return viewPager.canScrollHorizontally(Math.round(distanceX));
+				final boolean canScrollHorizontally = viewPager.canScrollHorizontally(Math.round(-dx));
+				final int mode = getMode();
+				if (mode == SlidingMenu.LEFT)
+					return dx > 0 && !canScrollHorizontally;
+				else if (mode == SlidingMenu.RIGHT)
+					return dx < 0 && !canScrollHorizontally;
+				else if (mode == SlidingMenu.LEFT_RIGHT) return !canScrollHorizontally;
+				return false;
 			}
-
 		}
 
 	}

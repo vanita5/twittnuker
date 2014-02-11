@@ -207,7 +207,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
     @Override
     public Resources getResources() {
-		return getAccentResources();
+		return getThemedResources();
     }
 
 	@Override

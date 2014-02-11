@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;

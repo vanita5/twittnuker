@@ -35,6 +35,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -48,6 +49,7 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.DataImportActivity;
+import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.adapter.TabsAdapter;
 import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseFragment;
@@ -65,6 +67,8 @@ import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.theme.TwidereResourceHelper;
 import de.vanita5.twittnuker.view.LinePageIndicator;
 
 import java.io.File;
@@ -87,6 +91,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 	private TabsAdapter mAdapter;
 
 	private AbsInitialSettingsTask mTask;
+	private TwidereResourceHelper mResourceHelper;
 
 	public void applyInitialSettings() {
 		if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING) return;
@@ -107,6 +112,14 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		intent.putExtra(EXTRA_OPEN_ACCOUNTS_DRAWER, true);
 		startActivity(intent);
 		finish();
+	}
+
+	@Override
+	public Resources getResources() {
+		if (mResourceHelper == null) {
+			mResourceHelper = new TwidereResourceHelper(ThemeUtils.getSettingsWizardThemeResource(this));
+		}
+		return mResourceHelper.getResources(this, super.getResources());
 	}
 
 	public void gotoFinishPage() {

@@ -62,7 +62,7 @@ import com.commonsware.cwac.merge.MergeAdapter;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.FiltersActivity;
-import de.vanita5.twittnuker.activity.HomeActivity;
+import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.DraftsActivity;

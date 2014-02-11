@@ -30,7 +30,7 @@ import com.google.android.apps.dashclock.api.ExtensionData;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.activity.HomeActivity;
+import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
 import de.vanita5.twittnuker.util.UnreadCountUtils;
 

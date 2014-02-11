@@ -42,7 +42,7 @@ import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.HomeActivity;
+import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.adapter.CursorStatusesAdapter;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
