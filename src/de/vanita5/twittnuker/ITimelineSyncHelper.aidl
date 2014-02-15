@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mariotaku.twidere;
+package de.vanita5.twittnuker;
 
-import org.mariotaku.twidere.model.Account;
+import de.vanita5.twittnuker.model.Account;
 
 interface ITimelineSyncHelper {
 

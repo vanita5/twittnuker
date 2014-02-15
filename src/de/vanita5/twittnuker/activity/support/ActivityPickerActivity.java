@@ -31,11 +31,15 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import java.util.List;
 
-public class ActivityPickerActivity extends BaseSupportDialogActivity implements LoaderCallbacks<List<ResolveInfo>> {
+public class ActivityPickerActivity extends BaseSupportDialogActivity implements LoaderCallbacks<List<ResolveInfo>>,
+		OnItemClickListener {
 
 	private ResolveInfoListAdapter mAdapter;
 
@@ -51,8 +55,18 @@ public class ActivityPickerActivity extends BaseSupportDialogActivity implements
 	public Loader<List<ResolveInfo>> onCreateLoader(final int id, final Bundle args) {
 		final Intent intent = getIntent();
 		final Intent extraIntent = intent.getParcelableExtra(EXTRA_INTENT);
+
 		final String[] blacklist = intent.getStringArrayExtra(EXTRA_BLACKLIST);
-		return new IntentActivitiesLoader(this, extraIntent, blacklist);
+		return new IntentActivitiesLoader(this, extraIntent, blacklist, 0);
+	}
+
+	@Override
+	public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
+		final Intent intent = getIntent(), data = new Intent();
+		data.putExtra(EXTRA_DATA, mAdapter.getItem(position));
+		data.putExtra(EXTRA_INTENT, intent.getParcelableExtra(EXTRA_INTENT));
+		setResult(RESULT_OK, data);
+		finish();
 	}
 
 	@Override
@@ -74,6 +88,7 @@ public class ActivityPickerActivity extends BaseSupportDialogActivity implements
 		setContentView(R.layout.activity_activity_picker);
 		mAdapter = new ResolveInfoListAdapter(this);
 		mListView.setAdapter(mAdapter);
+		mListView.setOnItemClickListener(this);
 		getSupportLoaderManager().initLoader(0, null, this);
 	}
 

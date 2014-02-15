@@ -208,7 +208,7 @@ public interface IntentConstants {
 	public static final String EXTRA_ACTION = "action";
 	public static final String EXTRA_FLAGS = "flags";
 	public static final String EXTRA_INTENT = "intent";
-	public static final String EXTRA_BLACKLIST = "component_names";
+	public static final String EXTRA_BLACKLIST = "blacklist";
 
 	/* Twittnuker */
 	public static final String EXTRA_HOTOTIN_EXPANDED_TEXT = "expanded_text";
