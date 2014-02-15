@@ -970,29 +970,15 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		}
 
 		@Override
-		public boolean dispatchTouchEvent(MotionEvent ev) {
+		public boolean dispatchTouchEvent(final MotionEvent ev) {
 			switch (ev.getActionMasked()) {
 				case MotionEvent.ACTION_DOWN: {
-					boolean isTouchingMargin = isTouchingMargin(ev);
+					final boolean isTouchingMargin = isTouchingMargin(ev);
 					setTouchModeAbove(isTouchingMargin ? TOUCHMODE_MARGIN : TOUCHMODE_FULLSCREEN);
 					break;
 				}
 			}
 			return super.dispatchTouchEvent(ev);
-		}
-
-		private boolean isTouchingMargin(MotionEvent e) {
-			final float x = e.getX(), marginThreshold = getTouchmodeMarginThreshold();
-			final View content = getContent();
-			final int mode = getMode(), left = content.getLeft(), right = content.getRight();
-			if (mode == SlidingMenu.LEFT) {
-				return (x >= left && x <= marginThreshold + left);
-			} else if (mode == SlidingMenu.RIGHT) {
-				return (x <= right && x >= right - marginThreshold);
-			} else if (mode == SlidingMenu.LEFT_RIGHT) {
-				return (x >= left && x <= marginThreshold + left) || (x <= right && x >= right - marginThreshold);
-			}
-			return false;
 		}
 
 		@Override
@@ -1002,6 +988,19 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
 		private ViewPager getViewPager() {
 			return mActivity.getViewPager();
+		}
+
+		private boolean isTouchingMargin(final MotionEvent e) {
+			final float x = e.getX(), marginThreshold = getTouchmodeMarginThreshold();
+			final View content = getContent();
+			final int mode = getMode(), left = content.getLeft(), right = content.getRight();
+			if (mode == SlidingMenu.LEFT)
+				return x >= left && x <= marginThreshold + left;
+			else if (mode == SlidingMenu.RIGHT)
+				return x <= right && x >= right - marginThreshold;
+			else if (mode == SlidingMenu.LEFT_RIGHT)
+				return x >= left && x <= marginThreshold + left || x <= right && x >= right - marginThreshold;
+			return false;
 		}
 
 		private static class MyCustomViewBehind extends CustomViewBehind {
