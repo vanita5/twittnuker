@@ -29,7 +29,7 @@ import android.support.v4.content.Loader;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 
-import de.vanita5.twittnuker.loader.UserSearchLoader;
+import de.vanita5.twittnuker.loader.support.UserSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 

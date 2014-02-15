@@ -36,7 +36,7 @@ import org.mariotaku.refreshnow.widget.RefreshNowConfig;
 
 import de.vanita5.twittnuker.adapter.BaseParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAboutMeAdapter;
-import de.vanita5.twittnuker.loader.ActivitiesAboutMeLoader;
+import de.vanita5.twittnuker.loader.support.ActivitiesAboutMeLoader;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;

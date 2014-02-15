@@ -29,8 +29,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.loader.IDsUsersLoader;
-import de.vanita5.twittnuker.loader.IncomingFriendshipsLoader;
+import de.vanita5.twittnuker.loader.support.IDsUsersLoader;
+import de.vanita5.twittnuker.loader.support.IncomingFriendshipsLoader;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;

@@ -670,7 +670,7 @@ public final class Utils implements Constants {
 				if (!args.containsKey(EXTRA_USER_ID)) {
 					args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
 				}
-				if (isEmpty(param_screen_name) && isEmpty(param_user_id)) return null;
+				if (!args.containsKey(EXTRA_SCREEN_NAME) && !args.containsKey(EXTRA_USER_ID)) return null;
 				break;
 			}
 			case LINK_ID_USER_FOLLOWERS: {

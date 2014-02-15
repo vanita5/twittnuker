@@ -47,7 +47,7 @@ import android.widget.ListView;
 import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
-import de.vanita5.twittnuker.loader.DummyParcelableUsersLoader;
+import de.vanita5.twittnuker.loader.support.DummyParcelableUsersLoader;
 import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.MultiSelectManager;

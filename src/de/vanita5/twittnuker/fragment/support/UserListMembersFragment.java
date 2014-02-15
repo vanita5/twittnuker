@@ -32,8 +32,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.loader.CursorSupportUsersLoader;
-import de.vanita5.twittnuker.loader.UserListMembersLoader;
+import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
+import de.vanita5.twittnuker.loader.support.UserListMembersLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.task.AsyncTask;

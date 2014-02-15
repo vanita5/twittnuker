@@ -29,7 +29,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.loader.StatusRepliesLoader;
+import de.vanita5.twittnuker.loader.support.StatusRepliesLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 import java.util.List;

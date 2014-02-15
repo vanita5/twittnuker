@@ -33,7 +33,7 @@ import android.os.Bundle;
 import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
-import de.vanita5.twittnuker.loader.UserFavoritesLoader;
+import de.vanita5.twittnuker.loader.support.UserFavoritesLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 

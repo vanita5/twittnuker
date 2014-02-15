@@ -25,8 +25,8 @@ package de.vanita5.twittnuker.fragment.support;
 import android.content.Context;
 import android.os.Bundle;
 
-import de.vanita5.twittnuker.loader.CursorSupportUsersLoader;
-import de.vanita5.twittnuker.loader.UserFriendsLoader;
+import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
+import de.vanita5.twittnuker.loader.support.UserFriendsLoader;
 
 
 public class UserFriendsFragment extends CursorSupportUsersListFragment {

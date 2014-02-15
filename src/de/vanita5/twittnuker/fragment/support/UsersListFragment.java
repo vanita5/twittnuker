@@ -26,7 +26,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.loader.IntentExtrasUsersLoader;
+import de.vanita5.twittnuker.loader.support.IntentExtrasUsersLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 

@@ -35,7 +35,7 @@ import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
-import de.vanita5.twittnuker.loader.DummyParcelableStatusesLoader;
+import de.vanita5.twittnuker.loader.support.DummyParcelableStatusesLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.ArrayUtils;
 

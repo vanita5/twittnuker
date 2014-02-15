@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 public interface TwittnukerConstants extends SharedPreferenceConstants, IntentConstants {
 
 	public static final String APP_NAME = "Twittnuker";
+	public static final String APP_PACKAGE_NAME = "de.vanita5.twittnuker";
 	public static final String APP_PROJECT_URL = "https://github.com/vanita5/twittnuker";
 	public static final String APP_PROJECT_EMAIL = "twittnuker@vanita5.de";
 

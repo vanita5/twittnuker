@@ -81,6 +81,7 @@ import java.util.Date;
 import java.util.Locale;
 
 @ReportsCrashes(formUri = "http://www.bugsense.com/api/acra?api_key=741d7d6c",
+		mailTo = Constants.APP_PROJECT_EMAIL,
         formKey = "", sharedPreferencesMode = Context.MODE_PRIVATE,
 	    sharedPreferencesName = Constants.SHARED_PREFERENCES_NAME)
 public class TwittnukerApplication extends Application implements Constants, OnSharedPreferenceChangeListener {

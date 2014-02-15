@@ -37,7 +37,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import de.vanita5.twittnuker.loader.SavedSearchesLoader;
+import de.vanita5.twittnuker.loader.support.SavedSearchesLoader;
 import de.vanita5.twittnuker.model.Panes;
 
 

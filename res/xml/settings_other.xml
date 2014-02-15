@@ -22,4 +22,23 @@
 		android:summary="@string/no_close_after_status_updated_summary"
 		android:title="@string/no_close_after_status_updated"/>
 
+    <de.vanita5.twittnuker.preference.ComponentStatePreference
+    	android:name="de.vanita5.twittnuker.activity.TwitterLinkHandlerActivity"
+    	android:key="twitter_link_handler"
+    	android:title="@string/twitter_link_handler"/>
+    <de.vanita5.twittnuker.preference.ComponentStatePreference
+    	android:name="de.vanita5.twittnuker.activity.AssistLauncherActivity"
+    	android:key="compose_now"
+    	android:summary="@string/compose_now_summary"
+    	android:title="@string/compose_now"/>
+
+    <de.vanita5.twittnuker.preference.AutoInvalidateListPreference
+    	android:defaultValue="compose"
+    	android:dependency="compose_now"
+    	android:entries="@array/entries_compose_now_action"
+    	android:entryValues="@array/values_compose_now_action"
+    	android:key="compose_now_action"
+    	android:summary="%s"
+    	android:title="@string/compose_now_action"/>
+
 </PreferenceScreen>

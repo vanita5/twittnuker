@@ -27,7 +27,6 @@ import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,6 +34,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.viewpagerindicator.CirclePageIndicator;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
@@ -53,7 +54,7 @@ public class SearchFragment extends BaseSupportFragment implements Panes.Left, O
 	private ExtendedViewPager mViewPager;
 
 	private SupportTabsAdapter mAdapter;
-	private PagerTabStrip mPagerTitleStrip;
+	private CirclePageIndicator mPagerIndicator;
 
 	private Fragment mCurrentVisibleFragment;
 
@@ -78,8 +79,7 @@ public class SearchFragment extends BaseSupportFragment implements Panes.Left, O
 		mViewPager.setOnPageChangeListener(this);
 		mViewPager.setOffscreenPageLimit(2);
 		final int themeColor = ThemeUtils.getUserThemeColor(getActivity());
-		mPagerTitleStrip.setTextColor(themeColor);
-		mPagerTitleStrip.setTabIndicatorColor(themeColor);
+		mPagerIndicator.setViewPager(mViewPager);
 		if (savedInstanceState == null && args != null && args.containsKey(EXTRA_QUERY)) {
 			final String query = args.getString(EXTRA_QUERY);
 			final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),
@@ -150,7 +150,7 @@ public class SearchFragment extends BaseSupportFragment implements Panes.Left, O
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		mViewPager = (ExtendedViewPager) view.findViewById(R.id.search_pager);
-		mPagerTitleStrip = (PagerTabStrip) view.findViewById(R.id.search_pager_indicator);
+		mPagerIndicator = (CirclePageIndicator) view.findViewById(R.id.search_pager_indicator);
 	}
 
 	@Override

@@ -37,7 +37,7 @@ import android.view.MenuItem;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
-import de.vanita5.twittnuker.loader.UserListsLoader;
+import de.vanita5.twittnuker.loader.support.UserListsLoader;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 
 import java.util.List;

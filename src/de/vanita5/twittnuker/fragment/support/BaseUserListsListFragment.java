@@ -48,7 +48,7 @@ import org.mariotaku.refreshnow.widget.RefreshMode;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
-import de.vanita5.twittnuker.loader.BaseUserListsLoader;
+import de.vanita5.twittnuker.loader.support.BaseUserListsLoader;
 import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;

@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.loader.UserListMembershipsLoader;
+import de.vanita5.twittnuker.loader.support.UserListMembershipsLoader;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 
 
