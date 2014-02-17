@@ -114,7 +114,7 @@
                 android:resource="@xml/searchable" />
             <meta-data
                 android:name="android.app.default_searchable"
-                android:value=".activity.HomeActivity" />
+                android:value=".activity.support.HomeActivity" />
         </activity>
         <activity
             android:name=".activity.support.ComposeActivity"
@@ -147,7 +147,7 @@
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.HomeActivity" />
+                android:value=".activity.support.HomeActivity" />
         </activity>
         <activity
             android:name=".activity.support.SignInActivity"
@@ -187,7 +187,7 @@
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.HomeActivity" />
+                android:value=".activity.support.HomeActivity" />
         </activity>
         <activity
             android:name=".activity.FiltersActivity"
@@ -201,7 +201,7 @@
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.HomeActivity" />
+                android:value=".activity.support.HomeActivity" />
         </activity>
         <activity
             android:name=".activity.support.APIEditorActivity"
@@ -243,7 +243,7 @@
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.HomeActivity" />
+                android:value=".activity.support.HomeActivity" />
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -333,7 +333,7 @@
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.HomeActivity" />
+                android:value=".activity.support.HomeActivity" />
         </activity>
         <activity
             android:name="org.mariotaku.gallery3d.ImageViewerGLActivity"
