@@ -1485,7 +1485,7 @@ public final class Utils implements Constants {
 			return HOLO_BLUE_LIGHT;
 		else if (is_favorite)
 			return HOLO_ORANGE_LIGHT;
-		else if (is_retweet) return HOLO_GREEN_LIGHT;
+//		else if (is_retweet) return HOLO_GREEN_LIGHT;
 		return Color.TRANSPARENT;
 	}
 

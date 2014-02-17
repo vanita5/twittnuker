@@ -211,7 +211,7 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_COMPOSE_ACCOUNTS = "compose_accounts";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_TCP_DNS_QUERY = "tcp_dns_query";
-	@Preference(type = STRING, hasDefault = true, defaultString = "8.8.8.8")
+	@Preference(type = STRING, hasDefault = false)
 	public static final String KEY_DNS_SERVER = "dns_server";
 	public static final String KEY_CONNECTION_TIMEOUT = "connection_timeout";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)

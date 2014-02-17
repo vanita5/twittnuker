@@ -50,7 +50,7 @@
 		android:order="26"
 		android:title="@string/link_highlight_option"/>
 
-    <org.mariotaku.twidere.preference.AutoInvalidateListPreference
+    <de.vanita5.twittnuker.preference.AutoInvalidateListPreference
     	android:defaultValue="background"
     	android:entries="@array/entries_card_highlight_option"
     	android:entryValues="@array/values_card_highlight_option"

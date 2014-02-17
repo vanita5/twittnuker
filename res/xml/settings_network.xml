@@ -31,7 +31,6 @@
 			android:title="@string/tcp_dns_query"/>
 
 		<de.vanita5.twittnuker.preference.SummaryEditTextPreference
-			android:defaultValue="8.8.8.8"
 			android:dialogTitle="@string/dns_server"
 			android:inputType="textVisiblePassword"
 			android:key="dns_server"

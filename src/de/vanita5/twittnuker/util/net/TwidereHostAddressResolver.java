@@ -53,8 +53,6 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 
 	private static final String RESOLVER_LOGTAG = "TwidereHostAddressResolver";
 
-	private static final String DEFAULT_DNS_SERVER_ADDRESS = "8.8.8.8";
-
 	private final SharedPreferences mHostMapping, mPreferences;
 	private final HostsFileParser mHosts = new HostsFileParser();
 	private final HostCache mHostCache = new HostCache(512);
@@ -70,8 +68,8 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 	public TwidereHostAddressResolver(final Context context, final boolean local_only) {
 		mHostMapping = context.getSharedPreferences(HOST_MAPPING_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final String address = mPreferences.getString(KEY_DNS_SERVER, DEFAULT_DNS_SERVER_ADDRESS);
-		mDnsAddress = isValidIpAddress(address) ? address : DEFAULT_DNS_SERVER_ADDRESS;
+		final String address = mPreferences.getString(KEY_DNS_SERVER, "");
+		mDnsAddress = isValidIpAddress(address) ? address : "";
 		mLocalMappingOnly = local_only;
 	}
 

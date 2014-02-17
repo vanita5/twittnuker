@@ -591,6 +591,8 @@
     <string name="status_text_limit">Tweet Text Limit</string>
     <string name="load_more_from_top">Mehr Tweets von oben nachladen</string>
     <string name="load_more_from_top_summary">Sinnvoll, wenn du die Timeline von unten nach oben liest</string>
+    <string name="open_with_account">Mit Account öffnen</string>
+    <string name="card_highlight_option">Tweets hervorheben</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
