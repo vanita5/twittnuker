@@ -111,6 +111,7 @@ public interface Constants extends TwittnukerConstants {
 	public static final int MENU_IMPORT_SETTINGS = R.id.import_settings;
 	public static final int MENU_EXPORT_SETTINGS = R.id.export_settings;
     public static final int MENU_PROGRESS = R.id.progress;
+	public static final int MENU_OPEN_WITH_ACCOUNT = R.id.open_with_account;
 
 	public static final int LINK_ID_STATUS = 1;
 	public static final int LINK_ID_USER = 2;

@@ -73,7 +73,6 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.model.PreviewMedia;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.model.UnreadItem;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
@@ -1141,9 +1140,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				mImagePreloader.preloadImage(v.getAsString(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL));
 			}
 			if (mPreferences.getBoolean(KEY_PRELOAD_PREVIEW_IMAGES, false)) {
-				final String text_html = v.getAsString(Statuses.TEXT_HTML);
-				for (final PreviewMedia spec : MediaPreviewUtils.getImagesInStatus(text_html, false)) {
-					mImagePreloader.preloadImage(spec.url);
+				final String textHtml = v.getAsString(Statuses.TEXT_HTML);
+				for (final String link : MediaPreviewUtils.getSupportedLinksInStatus(textHtml)) {
+					mImagePreloader.preloadImage(link);
 				}
 			}
 		}

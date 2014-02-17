@@ -49,7 +49,7 @@ public class AccountsAdapter extends SimpleCursorAdapter implements Constants {
 	private int mChoiceMode;
 
 	public AccountsAdapter(final Context context) {
-		super(context, R.layout.account_list_item, null, new String[] { Accounts.NAME },
+		super(context, R.layout.list_item_account, null, new String[] { Accounts.NAME },
 				new int[] { android.R.id.text1 }, 0);
 		final TwittnukerApplication application = TwittnukerApplication.getInstance(context);
 		mImageLoader = application.getImageLoaderWrapper();

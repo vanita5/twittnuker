@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.fragment.support;
 import static de.vanita5.twittnuker.model.ParcelableLocation.isValidLocation;
 import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
-import static de.vanita5.twittnuker.util.Utils.getStatusBackground;
+import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
 import static de.vanita5.twittnuker.util.Utils.getStatusTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 
@@ -146,7 +146,7 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 
 		final boolean is_my_status = status.account_id == status.user_id;
 		mHolder.setUserColor(getUserColor(getActivity(), status.user_id, true));
-		mHolder.setHighlightColor(getStatusBackground(false, status.is_favorite, status.is_retweet));
+		mHolder.setHighlightColor(getCardHighlightColor(false, status.is_favorite, status.is_retweet));
 
 		mHolder.setIsMyStatus(is_my_status && !prefs.getBoolean(KEY_INDICATE_MY_STATUS, true));
 

@@ -11,15 +11,16 @@ buildscript {
 apply plugin: 'android'
 
 //check for updates every build
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
+//configurations.all {
+//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+//}
 
 repositories {
     mavenCentral()
     maven {
         url 'https://github.com/vanita5/mvn-repo/raw/master/'
     }
+    //com.commonsware
     maven {
         url "https://repo.commonsware.com.s3.amazonaws.com"
     }
@@ -41,7 +42,6 @@ dependencies {
     compile 'com.etsy.android.grid:library:1.0.3'
     compile 'com.twitter:twitter-text:1.6.1'
     compile 'com.github.castorflex.smoothprogressbar:library:0.3.1'
-    compile 'com.atermenji.android:iconicdroid:SNAPSHOT-2'
     compile 'com.commonsware.cwac:merge:1.0.1'
     compile 'com.commonsware.cwac:sacklist:1.0.0'
     compile 'com.actionbarsherlock:viewpagerindicator:2.4.1'

@@ -27,7 +27,8 @@ import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.findStatusInDatabases;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
-import static de.vanita5.twittnuker.util.Utils.getStatusBackground;
+import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
+import static de.vanita5.twittnuker.util.Utils.getCardHighlightOptionInt;
 import static de.vanita5.twittnuker.util.Utils.isFiltered;
 import static de.vanita5.twittnuker.util.Utils.openImage;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
@@ -75,7 +76,7 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 			mAnimationEnabled;
 	private boolean mFilterIgnoreUser, mFilterIgnoreSource, mFilterIgnoreTextHtml, mFilterIgnoreTextPlain,
 			mFilterRetweetedById;
-	private int mMaxAnimationPosition;
+	private int mMaxAnimationPosition, mCardHighlightOption;
 
 	private CursorStatusIndices mIndices;
 
@@ -106,6 +107,7 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 		holder.setShowAsGap(showGap);
 		holder.position = position;
         holder.setDisplayProfileImage(isDisplayProfileImage());
+		holder.setCardHighlightOption(mCardHighlightOption);
 
 		if (!showGap) {
 
@@ -156,7 +158,7 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 			final boolean isMyStatus = accountId == userId;
 
 			holder.setUserColor(getUserColor(mContext, userId));
-			holder.setHighlightColor(getStatusBackground(!mMentionsHighlightDisabled && isMention,
+			holder.setHighlightColor(getCardHighlightColor(!mMentionsHighlightDisabled && isMention,
 					!mFavoritesHighlightDisabled && isFavorite, isRetweet));
 
 			holder.setAccountColorEnabled(showAccountColor);
@@ -364,6 +366,14 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 	public void setAnimationEnabled(final boolean anim) {
 		if (mAnimationEnabled == anim) return;
 		mAnimationEnabled = anim;
+	}
+
+	@Override
+	public void setCardHighlightOption(final String option) {
+		final int option_int = getCardHighlightOptionInt(option);
+		if (option_int == mCardHighlightOption) return;
+		mCardHighlightOption = option_int;
+		notifyDataSetChanged();
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<Parcelabl
 	private final ImageLoaderWrapper mProfileImageLoader;
 
 	public SimpleParcelableUserListsAdapter(final Context context) {
-		super(context, R.layout.two_line_list_item);
+		super(context, R.layout.list_item_two_line);
 		mContext = context;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mProfileImageLoader = app.getImageLoaderWrapper();

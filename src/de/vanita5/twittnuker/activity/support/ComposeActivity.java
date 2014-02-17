@@ -42,12 +42,12 @@ import static de.vanita5.twittnuker.util.Utils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getImageUploadStatus;
 import static de.vanita5.twittnuker.util.Utils.getQuoteStatus;
 import static de.vanita5.twittnuker.util.Utils.getShareStatus;
-import static de.vanita5.twittnuker.util.Utils.getStatusBackground;
 import static de.vanita5.twittnuker.util.Utils.getStatusTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.openImageDirectly;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
+import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
 
 import java.util.ArrayList;
 
@@ -465,11 +465,6 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			return;
 		final boolean selected = !view.isActivated();
 		final Account account = mAccountSelectorAdapter.getItem(position);
-		final long[] prevSelectedIds = mAccountSelectorAdapter.getSelectedAccountIds();
-		if (prevSelectedIds.length == 1 && prevSelectedIds[0] == account.account_id) {
-			Toast.makeText(this, R.string.empty_account_selection_disallowed, Toast.LENGTH_SHORT).show();
-			return;
-		}
 		mAccountSelectorAdapter.setAccountSelected(account.account_id, selected);
 		mSendAccountIds = mAccountSelectorAdapter.getSelectedAccountIds();
 		updateAccountSelection();
@@ -1211,7 +1206,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 			final boolean is_my_status = status.account_id == status.user_id;
 			mHolder.setUserColor(getUserColor(getActivity(), status.user_id, true));
-			mHolder.setHighlightColor(getStatusBackground(false, status.is_favorite, status.is_retweet));
+			mHolder.setHighlightColor(getCardHighlightColor(false, status.is_favorite, status.is_retweet));
 
 			mHolder.setIsMyStatus(is_my_status && !prefs.getBoolean(KEY_INDICATE_MY_STATUS, true));
 

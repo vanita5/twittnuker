@@ -425,7 +425,7 @@ public class AccountsDrawerFragment extends BaseSupportListFragment implements L
 		private OnAccountActivateStateChangeListener mOnAccountActivateStateChangeListener;
 
 		public DrawerAccountsAdapter(final Context context) {
-			super(context, R.layout.accounts_drawer_item_child_accounts, null, new String[0], new int[0], 0);
+			super(context, R.layout.list_item_drawer_accounts, null, new String[0], new int[0], 0);
 			final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 			mImageLoader = app.getImageLoaderWrapper();
 		}

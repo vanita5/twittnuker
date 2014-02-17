@@ -39,6 +39,7 @@ import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.isSameAccount;
 import static de.vanita5.twittnuker.util.Utils.openImage;
 import static de.vanita5.twittnuker.util.Utils.openMap;
+import static de.vanita5.twittnuker.util.Utils.openStatus;
 import static de.vanita5.twittnuker.util.Utils.openStatusReplies;
 import static de.vanita5.twittnuker.util.Utils.openStatusRetweeters;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
@@ -98,6 +99,7 @@ import org.mariotaku.menucomponent.widget.MenuBar;
 import org.mariotaku.refreshnow.widget.RefreshMode;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.adapter.MediaPreviewAdapter;
@@ -468,16 +470,25 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	}
 
 	@Override
-	public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+	public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
 		switch (requestCode) {
 			case REQUEST_SET_COLOR: {
                 if (mStatus == null) return;
                 if (resultCode == Activity.RESULT_OK) {
-                    if (intent == null) return;
-					final int color = intent.getIntExtra(EXTRA_COLOR, Color.TRANSPARENT);
+					if (data == null) return;
+					final int color = data.getIntExtra(EXTRA_COLOR, Color.TRANSPARENT);
 					setUserColor(getActivity(), mStatus.user_id, color);
                 } else if (resultCode == ColorPickerDialogActivity.RESULT_CLEARED) {
                     clearUserColor(getActivity(), mStatus.user_id);
+				}
+				break;
+			}
+			case REQUEST_SELECT_ACCOUNT: {
+				if (mStatus == null) return;
+				if (resultCode == Activity.RESULT_OK) {
+					if (data == null || !data.hasExtra(EXTRA_ID)) return;
+					final long accountId = data.getLongExtra(EXTRA_ID, -1);
+					openStatus(getActivity(), accountId, mStatus.id);
 				}
 				break;
 			}
@@ -760,6 +771,13 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 				} else {
 
 				}
+				break;
+			}
+			case MENU_OPEN_WITH_ACCOUNT: {
+				final Intent intent = new Intent(INTENT_ACTION_SELECT_ACCOUNT);
+				intent.setClass(getActivity(), AccountSelectorActivity.class);
+				intent.putExtra(EXTRA_SINGLE_SELECTION, true);
+				startActivityForResult(intent, REQUEST_SELECT_ACCOUNT);
 				break;
 			}
 			default: {

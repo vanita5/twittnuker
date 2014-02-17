@@ -95,7 +95,7 @@
 					android:onClick="onClick"
 					android:padding="@dimen/element_spacing_default">
 
-					<include layout="@layout/two_line_list_item_small"/>
+					<include layout="@layout/list_item_two_line_small"/>
 				</FrameLayout>
 			</LinearLayout>
 		</LinearLayout>
