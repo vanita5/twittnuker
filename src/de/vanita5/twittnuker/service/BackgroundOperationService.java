@@ -354,7 +354,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 			//TODO Image hoster upload logic
 
             if (mUseUploader && imageFile != null && imageFile.exists() && uploadResultUri == null)
-				throw new ImageUploadException(this);
+				throw new UploadException(this);
 
             final String unshortenedContent = mUseUploader && uploadResultUri != null ? getImageUploadStatus(this,
                     uploadResultUri.toString(), pstatus.text) : pstatus.text;
@@ -374,7 +374,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 			if (shouldShorten) {
 				if (!mUseShortener)
 					throw new StatusTooLongException(this);
-				else if (unshortenedContent == null) throw new TweetShortenException(this);
+				else if (unshortenedContent == null) throw new ShortenException(this);
 			}
             if (!mUseUploader && imageFile != null && imageFile.exists()) {
                 Utils.downscaleImageIfNeeded(imageFile, 95);
@@ -467,10 +467,10 @@ public class BackgroundOperationService extends IntentService implements Constan
 		return shortenedText;
 	}
 
-	static class ImageUploadException extends UpdateStatusException {
+	static class UploadException extends UpdateStatusException {
 		private static final long serialVersionUID = 8596614696393917525L;
 
-		public ImageUploadException(final Context context) {
+		public UploadException(final Context context) {
 			super(context, R.string.error_message_image_upload_failed);
 		}
 	}
@@ -483,10 +483,10 @@ public class BackgroundOperationService extends IntentService implements Constan
 		}
 	}
 
-	static class TweetShortenException extends UpdateStatusException {
+	static class ShortenException extends UpdateStatusException {
 		private static final long serialVersionUID = 3075877185536740034L;
 
-		public TweetShortenException(final Context context) {
+		public ShortenException(final Context context) {
 			super(context, R.string.error_message_tweet_shorten_failed);
 		}
 	}

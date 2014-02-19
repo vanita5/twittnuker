@@ -41,6 +41,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView.ScaleType;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
@@ -56,6 +57,7 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.iface.ICardItemView.OnOverflowIconClickListener;
 
 import java.util.List;
+import java.util.Locale;
 
 public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus> implements
 		IStatusesAdapter<List<ParcelableStatus>>, OnClickListener, OnOverflowIconClickListener {
@@ -72,6 +74,7 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 	private boolean mFilterIgnoreUser, mFilterIgnoreSource, mFilterIgnoreTextHtml, mFilterIgnoreTextPlain,
 			mFilterRetweetedById;
 	private int mMaxAnimationPosition, mCardHighlightOption;
+	private ScaleType mImagePreviewScaleType;
 
 	public ParcelableStatusesAdapter(final Context context) {
 		this(context, Utils.isCompactCards(context));
@@ -251,6 +254,9 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 			final boolean hasPreview = mDisplayImagePreview && ((status.has_media && status.media_link != null) || status.hasCustomMedia());
 			holder.image_preview_container.setVisibility(hasPreview ? View.VISIBLE : View.GONE);
 			if (hasPreview) {
+				if (mImagePreviewScaleType != null) {
+					holder.image_preview.setScaleType(mImagePreviewScaleType);
+				}
 				if (status.is_possibly_sensitive && !mDisplaySensitiveContents) {
 					holder.image_preview.setImageDrawable(null);
 					holder.image_preview.setBackgroundResource(R.drawable.image_preview_nsfw);
@@ -383,6 +389,15 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 		mFilterIgnoreSource = source;
 		mFilterRetweetedById = retweeted_by_id;
 		rebuildFilterInfo();
+	}
+
+	@Override
+	public void setImagePreviewScaleType(final String scaleTypeString) {
+		final ScaleType scaleType = ScaleType.valueOf(scaleTypeString.toUpperCase(Locale.US));
+		if (!scaleType.equals(mImagePreviewScaleType)) {
+			mImagePreviewScaleType = scaleType;
+			notifyDataSetChanged();
+		}
 	}
 
 	@Override

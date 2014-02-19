@@ -34,20 +34,20 @@ import de.vanita5.twittnuker.R;
 
 import java.util.ArrayList;
 
-public class ImageUploaderPreference extends DialogPreference implements Constants {
+public class MediaUploaderPreference extends DialogPreference implements Constants {
 
 	private SharedPreferences mPreferences;
 	private String[] mAvailableImageUploaders;
 
-	public ImageUploaderPreference(final Context context) {
+	public MediaUploaderPreference(final Context context) {
 		this(context, null);
 	}
 
-	public ImageUploaderPreference(final Context context, final AttributeSet attrs) {
+	public MediaUploaderPreference(final Context context, final AttributeSet attrs) {
 		this(context, attrs, android.R.attr.preferenceStyle);
 	}
 
-	public ImageUploaderPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+	public MediaUploaderPreference(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
@@ -72,7 +72,7 @@ public class ImageUploaderPreference extends DialogPreference implements Constan
 		final ArrayList<String> specs = new ArrayList<String>();
 		specs.add(getContext().getString(R.string.image_uploader_default));
 		mAvailableImageUploaders = specs.toArray(new String[specs.size()]);
-		builder.setSingleChoiceItems(mAvailableImageUploaders, getIndex(component), ImageUploaderPreference.this);
+		builder.setSingleChoiceItems(mAvailableImageUploaders, getIndex(component), MediaUploaderPreference.this);
 		builder.setNegativeButton(android.R.string.cancel, null);
 	}
 

@@ -23,6 +23,8 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.app.ActionBar;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.app.Fragment;
@@ -45,7 +47,6 @@ import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.provider.RecentSearchProvider;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.ExtendedViewPager;
 
 public class SearchFragment extends BaseSupportFragment implements Panes.Left, OnPageChangeListener,
@@ -71,21 +72,25 @@ public class SearchFragment extends BaseSupportFragment implements Panes.Left, O
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
 		final Bundle args = getArguments();
-		mAdapter = new SupportTabsAdapter(getActivity(), getChildFragmentManager(), null, 1);
+		final FragmentActivity activity = getActivity();
+		mAdapter = new SupportTabsAdapter(activity, getChildFragmentManager(), null, 1);
 		mAdapter.addTab(SearchStatusesFragment.class, args, getString(R.string.statuses),
 				R.drawable.ic_iconic_action_twitter, 0);
         mAdapter.addTab(SearchUsersFragment.class, args, getString(R.string.users), R.drawable.ic_iconic_action_user, 1);
 		mViewPager.setAdapter(mAdapter);
 		mViewPager.setOnPageChangeListener(this);
 		mViewPager.setOffscreenPageLimit(2);
-		final int themeColor = ThemeUtils.getUserThemeColor(getActivity());
+		final TypedArray a = activity.obtainStyledAttributes(new int[]{android.R.attr.colorForeground});
+		final int foregroundColor = a.getColor(0, Color.GRAY);
+		a.recycle();
+		mPagerIndicator.setFillColor(foregroundColor);
+		mPagerIndicator.setStrokeColor(foregroundColor);
 		mPagerIndicator.setViewPager(mViewPager);
 		if (savedInstanceState == null && args != null && args.containsKey(EXTRA_QUERY)) {
 			final String query = args.getString(EXTRA_QUERY);
 			final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),
 					RecentSearchProvider.AUTHORITY, RecentSearchProvider.MODE);
 			suggestions.saveRecentQuery(query, null);
-			final FragmentActivity activity = getActivity();
 			if (activity instanceof LinkHandlerActivity) {
 				final ActionBar ab = activity.getActionBar();
 				if (ab != null) {

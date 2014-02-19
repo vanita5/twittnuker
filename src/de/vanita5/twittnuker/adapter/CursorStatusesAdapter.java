@@ -42,11 +42,13 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView.ScaleType;
+
+import java.util.Locale;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.model.CursorStatusIndices;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
@@ -78,7 +80,9 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 			mFilterRetweetedById;
 	private int mMaxAnimationPosition, mCardHighlightOption;
 
-	private CursorStatusIndices mIndices;
+	private ParcelableStatus.CursorIndices mIndices;
+
+	private ScaleType mImagePreviewScaleType;
 
 	public CursorStatusesAdapter(final Context context) {
 		this(context, Utils.isCompactCards(context));
@@ -217,6 +221,9 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
             final boolean hasPreview = mDisplayImagePreview && (hasMedia || hasCustomMedia);
             holder.image_preview_container.setVisibility(hasPreview ? View.VISIBLE : View.GONE);
             if (hasPreview && (mediaLink != null || customMediaLink != null)) {
+				if (mImagePreviewScaleType != null) {
+					holder.image_preview.setScaleType(mImagePreviewScaleType);
+				}
 				if (possiblySensitive && !mDisplaySensitiveContents) {
 					holder.image_preview.setImageDrawable(null);
 					holder.image_preview.setBackgroundResource(R.drawable.image_preview_nsfw);
@@ -429,6 +436,15 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 	}
 
 	@Override
+	public void setImagePreviewScaleType(final String scaleTypeString) {
+		final ScaleType scaleType = ScaleType.valueOf(scaleTypeString.toUpperCase(Locale.US));
+		if (!scaleType.equals(mImagePreviewScaleType)) {
+			mImagePreviewScaleType = scaleType;
+			notifyDataSetChanged();
+		}
+	}
+
+	@Override
 	public void setIndicateMyStatusDisabled(final boolean disable) {
 		if (mIndicateMyStatusDisabled == disable) return;
 		mIndicateMyStatusDisabled = disable;
@@ -454,12 +470,12 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 
 	@Override
 	public Cursor swapCursor(final Cursor cursor) {
-		mIndices = cursor != null ? new CursorStatusIndices(cursor) : null;
+		mIndices = cursor != null ? new ParcelableStatus.CursorIndices(cursor) : null;
         rebuildFilterInfo(cursor, mIndices);
 		return super.swapCursor(cursor);
 	}
 
-    private void rebuildFilterInfo(final Cursor c, final CursorStatusIndices i) {
+	private void rebuildFilterInfo(final Cursor c, final ParcelableStatus.CursorIndices i) {
         if (i != null && c != null && moveCursorToLast(c)) {
 			final long userId = mFilterIgnoreUser ? -1 : c.getLong(mIndices.user_id);
 			final String textPlain = mFilterIgnoreTextPlain ? null : c.getString(mIndices.text_plain);

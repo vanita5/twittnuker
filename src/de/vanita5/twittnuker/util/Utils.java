@@ -148,8 +148,6 @@ import de.vanita5.twittnuker.graphic.PaddingDrawable;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
 import de.vanita5.twittnuker.model.AccountPreferences;
-import de.vanita5.twittnuker.model.CursorStatusIndices;
-import de.vanita5.twittnuker.model.DirectMessageCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -1001,7 +999,7 @@ public final class Utils implements Constants {
 			}
 			if (cur.getCount() > 0) {
 				cur.moveToFirst();
-				message = new ParcelableDirectMessage(cur, new DirectMessageCursorIndices(cur));
+				message = new ParcelableDirectMessage(cur, new ParcelableDirectMessage.CursorIndices(cur));
 			}
 			cur.close();
 		}
@@ -1039,7 +1037,7 @@ public final class Utils implements Constants {
 			}
 			if (cur.getCount() > 0) {
 				cur.moveToFirst();
-				status = new ParcelableStatus(cur, new CursorStatusIndices(cur));
+				status = new ParcelableStatus(cur, new ParcelableStatus.CursorIndices(cur));
 			}
 			cur.close();
 		}

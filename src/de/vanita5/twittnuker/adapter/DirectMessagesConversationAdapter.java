@@ -38,7 +38,6 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IDirectMessagesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.model.DirectMessageCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
@@ -56,7 +55,7 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 	private boolean mAnimationEnabled = true;
 	private int mMaxAnimationPosition;
 
-	private DirectMessageCursorIndices mIndices;
+	private ParcelableDirectMessage.CursorIndices mIndices;
 
 	public DirectMessagesConversationAdapter(final Context context) {
 		super(context, R.layout.card_item_message_conversation, null, new String[0], new int[0], 0);
@@ -188,7 +187,7 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 	@Override
 	public Cursor swapCursor(final Cursor cursor) {
 		if (cursor != null) {
-			mIndices = new DirectMessageCursorIndices(cursor);
+			mIndices = new ParcelableDirectMessage.CursorIndices(cursor);
 		} else {
 			mIndices = null;
 		}

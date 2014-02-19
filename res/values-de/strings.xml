@@ -228,13 +228,15 @@
     <string name="network">Netzwerk</string>
     <string name="content_and_storage">Inhalt &amp; Speicher</string>
     <string name="image_uploader">Bilderdienst</string>
+    <string name="media_uploader">Mediendienst</string>
     <string name="image_uploader_default">Standard (Twitter)</string>
     <string name="home_refresh">Zu aktualisierende Timelines</string>
     <string name="error_message_image_upload_failed">Bild-Upload schlug fehl.</string>
     <string name="image_upload_format">Tweet-Format mit Bild</string>
     <string name="image_upload_format_summary">\"[LINK]\" = Bild link\n\"[TEXT]\" = Text inhalt\n(Nur mit Erweiterung)</string>
     <string name="tweet_shortener">Tweet-Verkürzungsdienst</string>
-    <string name="tweet_shortener_default">Nicht kürzen (Senden abbrechen)</string>
+    <string name="status_shortener">Tweet-Verkürzungsdienst</string>
+    <string name="status_shortener_default">Nicht kürzen (Senden abbrechen)</string>
     <string name="error_message_status_too_long">Der Tweet ist zu lang.</string>
     <string name="error_message_no_content">Kein Inhalt</string>
     <string name="error_message_tweet_shorten_failed">Tweet-Verkürzung schlug fehl.</string>
@@ -593,6 +595,12 @@
     <string name="load_more_from_top_summary">Sinnvoll, wenn du die Timeline von unten nach oben liest</string>
     <string name="open_with_account">Mit Account öffnen</string>
     <string name="card_highlight_option">Tweets hervorheben</string>
+    <string name="card_highlight_option_highlight">Highlight</string>
+    <string name="card_highlight_option_line">Linie</string>
+    <string name="timeline_sync_service">Timeline Sync Service</string>
+    <string name="image_preview_scale_type">Bildvorschau Skalierung</string>
+    <string name="image_preview_scale_type_crop">Bildschirm füllen</string>
+    <string name="image_preview_scale_type_fit_center">Mittig ausrichten</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

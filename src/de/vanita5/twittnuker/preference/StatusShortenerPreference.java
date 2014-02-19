@@ -34,21 +34,21 @@ import de.vanita5.twittnuker.R;
 
 import java.util.ArrayList;
 
-public class TweetShortenerPreference extends DialogPreference implements Constants {
+public class StatusShortenerPreference extends DialogPreference implements Constants {
 
 	private SharedPreferences mPreferences;
 
 	private TweetShortenerSpec[] mAvailableTweetShorteners;
 
-	public TweetShortenerPreference(final Context context) {
+	public StatusShortenerPreference(final Context context) {
 		this(context, null);
 	}
 
-	public TweetShortenerPreference(final Context context, final AttributeSet attrs) {
+	public StatusShortenerPreference(final Context context, final AttributeSet attrs) {
 		this(context, attrs, android.R.attr.preferenceStyle);
 	}
 
-	public TweetShortenerPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+	public StatusShortenerPreference(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
@@ -72,10 +72,10 @@ public class TweetShortenerPreference extends DialogPreference implements Consta
 		final String component = mPreferences.getString(KEY_TWEET_SHORTENER, null);
 		final ArrayList<TweetShortenerSpec> specs = new ArrayList<TweetShortenerSpec>();
 		//Available tweet shortening services
-		specs.add(new TweetShortenerSpec(getContext().getString(R.string.tweet_shortener_default), null));
+		specs.add(new TweetShortenerSpec(getContext().getString(R.string.status_shortener_default), null));
 		specs.add(new TweetShortenerSpec(getContext().getString(R.string.tweet_shortener_hototin), SERVICE_SHORTENER_HOTOTIN));
 		mAvailableTweetShorteners = specs.toArray(new TweetShortenerSpec[specs.size()]);
-		builder.setSingleChoiceItems(mAvailableTweetShorteners, getIndex(component), TweetShortenerPreference.this);
+		builder.setSingleChoiceItems(mAvailableTweetShorteners, getIndex(component), StatusShortenerPreference.this);
 		builder.setNegativeButton(android.R.string.cancel, null);
 	}
 

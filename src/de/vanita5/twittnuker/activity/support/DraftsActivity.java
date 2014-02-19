@@ -50,7 +50,6 @@ import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
-import de.vanita5.twittnuker.model.CursorDraftIndices;
 import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
@@ -86,7 +85,7 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 				if (c == null || c.isClosed()) return false;
 				final SparseBooleanArray checked = mListView.getCheckedItemPositions();
 				final List<DraftItem> list = new ArrayList<DraftItem>();
-				final CursorDraftIndices indices = new CursorDraftIndices(c);
+				final DraftItem.CursorIndices indices = new DraftItem.CursorIndices(c);
 				for (int i = 0, j = checked.size(); i < j; i++) {
 					if (checked.valueAt(i) && c.moveToPosition(checked.keyAt(i))) {
 						list.add(new DraftItem(c, indices));
@@ -135,7 +134,7 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 	public void onItemClick(final AdapterView<?> view, final View child, final int position, final long id) {
 		final Cursor c = mAdapter.getCursor();
 		if (c == null || c.isClosed() || !c.moveToPosition(position)) return;
-		final DraftItem item = new DraftItem(c, new CursorDraftIndices(c));
+		final DraftItem item = new DraftItem(c, new DraftItem.CursorIndices(c));
 		if (item.action_type == Drafts.ACTION_UPDATE_STATUS || item.action_type <= 0) {
 			editDraft(item);
 		}

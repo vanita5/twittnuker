@@ -342,6 +342,7 @@
             android:icon="@drawable/ic_iconic_twittnuker"
             android:label="@string/view_image"
             android:launchMode="singleTop"
+            android:process=":image_viewer"
             android:theme="@style/Theme.Blank">
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.VIEW_IMAGE" />

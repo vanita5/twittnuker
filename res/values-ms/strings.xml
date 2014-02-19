@@ -24,7 +24,7 @@
   <string name="image_uploader_default">Lalai (Twitter)</string>
   <string name="error_message_image_upload_failed">Gagal memuat naik imej.</string>
   <string name="tweet_shortener">Penyingkat tweet</string>
-  <string name="tweet_shortener_default">Tiada (batalkan penghantaran)</string>
+  <string name="status_shortener_default">Tiada (batalkan penghantaran)</string>
   <string name="error_message_status_too_long">Tweet terlalu panjang.</string>
   <string name="error_message_tweet_shorten_failed">Singkatan tweet gagal.</string>
   <string name="show_absolute_time">Tunjukkan masa mutlak</string>

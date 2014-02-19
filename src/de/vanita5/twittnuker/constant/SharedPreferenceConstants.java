@@ -27,7 +27,7 @@ import static de.vanita5.twittnuker.annotation.Preference.Type.INT;
 import static de.vanita5.twittnuker.annotation.Preference.Type.LONG;
 import static de.vanita5.twittnuker.annotation.Preference.Type.STRING;
 
-import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.annotation.Preference;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 
@@ -38,7 +38,8 @@ public interface SharedPreferenceConstants {
 	public static final String FORMAT_PATTERN_NAME = "[NAME]";
 	public static final String FORMAT_PATTERN_LINK = "[LINK]";
 
-	public static final String VALUE_LINK_HIGHLIGHT_OPTION_NONE = "none";
+	public static final String VALUE_NONE = "none";
+	public static final String VALUE_LINK_HIGHLIGHT_OPTION_NONE = VALUE_NONE;
 	public static final String VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT = "highlight";
 	public static final String VALUE_LINK_HIGHLIGHT_OPTION_UNDERLINE = "underline";
 	public static final String VALUE_LINK_HIGHLIGHT_OPTION_BOTH = "both";
@@ -82,7 +83,7 @@ public interface SharedPreferenceConstants {
 	public static final String VALUE_COMPOSE_NOW_ACTION_TAKE_PHOTO = "take_photo";
 	public static final String VALUE_COMPOSE_NOW_ACTION_PICK_IMAGE = "pick_image";
 
-	public static final String VALUE_CARD_HIGHLIGHT_OPTION_NONE = "none";
+	public static final String VALUE_CARD_HIGHLIGHT_OPTION_NONE = VALUE_NONE;
 	public static final String VALUE_CARD_HIGHLIGHT_OPTION_BACKGROUND = "background";
 	public static final String VALUE_CARD_HIGHLIGHT_OPTION_LINE = "line";
 
@@ -252,9 +253,9 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_SIGNING_OAUTH_BASE_URL = "signing_oauth_base_url";
 	@Preference(type = INT, hasDefault = true, defaultInt = Accounts.AUTH_TYPE_OAUTH)
 	public static final String KEY_AUTH_TYPE = "auth_type";
-	@Preference(type = STRING, hasDefault = true, defaultString = Constants.TWITTER_CONSUMER_KEY_2)
+	@Preference(type = STRING, hasDefault = true, defaultString = TwittnukerConstants.TWITTER_CONSUMER_KEY_2)
 	public static final String KEY_CONSUMER_KEY = "consumer_key";
-	@Preference(type = STRING, hasDefault = true, defaultString = Constants.TWITTER_CONSUMER_SECRET_2)
+	@Preference(type = STRING, hasDefault = true, defaultString = TwittnukerConstants.TWITTER_CONSUMER_SECRET_2)
 	public static final String KEY_CONSUMER_SECRET = "consumer_secret";
 	public static final String KEY_FILTERS_IN_HOME_TIMELINE = "filters_in_home_timeline";
 	public static final String KEY_FILTERS_IN_MENTIONS = "filters_in_mentions";
@@ -288,6 +289,8 @@ public interface SharedPreferenceConstants {
 	@Preference(type = STRING, hasDefault = true, defaultString = VALUE_COMPOSE_NOW_ACTION_COMPOSE)
 	public static final String KEY_COMPOSE_NOW_ACTION = "compose_now_action";
 	public static final String KEY_FALLBACK_TWITTER_LINK_HANDLER = "fallback_twitter_link_handler";
+	@Preference(type = STRING, hasDefault = true, defaultString = "CENTER_CROP")
+	public static final String KEY_IMAGE_PREVIEW_SCALE_TYPE = "image_preview_scale_type";
 
 	@Preference(type = STRING)
 	public static final String KEY_TRANSLATION_DESTINATION = "translation_destination";

@@ -34,7 +34,7 @@ import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.model.CursorDraftIndices;
+import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
@@ -48,7 +48,7 @@ public class DraftsAdapter extends SimpleCursorAdapter {
 	private final ImageLoadingHandler mImageLoadingHandler;
 
 	private float mTextSize;
-	private CursorDraftIndices mIndices;
+	private DraftItem.CursorIndices mIndices;
 
 	public DraftsAdapter(final Context context) {
 		super(context, R.layout.card_item_draft, null, new String[0], new int[0], 0);
@@ -110,7 +110,7 @@ public class DraftsAdapter extends SimpleCursorAdapter {
 	public Cursor swapCursor(final Cursor c) {
 		final Cursor old = super.swapCursor(c);
 		if (c != null) {
-			mIndices = new CursorDraftIndices(c);
+			mIndices = new DraftItem.CursorIndices(c);
 		}
 		return old;
 	}
