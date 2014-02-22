@@ -16,6 +16,8 @@
 
 package twitter4j.conf;
 
+import java.util.Properties;
+
 import twitter4j.auth.AuthorizationConfiguration;
 import twitter4j.http.HttpClientConfiguration;
 import twitter4j.http.HttpClientWrapperConfiguration;
@@ -69,5 +71,11 @@ public interface Configuration extends HttpClientConfiguration, HttpClientWrappe
 	boolean isProxyConfigured();
 
 	boolean isSSLEnabled();
+
+	String getMediaProvider();
+
+	String getMediaProviderAPIKey();
+
+	Properties getMediaProviderParameters();
 
 }

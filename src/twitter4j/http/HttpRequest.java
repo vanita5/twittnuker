@@ -67,6 +67,29 @@ public final class HttpRequest {
 		this.requestHeaders = requestHeaders;
 	}
 
+	/**
+	 * @param method         Specifies the HTTP method
+	 * @param url            the request to request
+	 * @param parameters     parameters
+	 * @param authorization  Authentication implementation. Currently BasicAuthentication, OAuthAuthentication and NullAuthentication are supported.
+	 * @param requestHeaders
+	 */
+	public HttpRequest(RequestMethod method, String url, HttpParameter[] parameters
+			, Authorization authorization, Map<String, String> requestHeaders) {
+		this.method = method;
+		if (method != RequestMethod.POST && parameters != null && parameters.length != 0) {
+			this.url = url + "?" + HttpParameter.encodeParameters(parameters);
+			this.parameters = NULL_PARAMETERS;
+			this.signUrl = null;
+		} else {
+			this.url = url;
+			this.parameters = parameters;
+			this.signUrl = null;
+		}
+		this.authorization = authorization;
+		this.requestHeaders = requestHeaders;
+	}
+
 	@Override
 	public boolean equals(final Object o) {
 		if (this == o) return true;

@@ -187,6 +187,14 @@ public final class HttpClientWrapper {
 		return request(new HttpRequest(PUT, url, signUrl, parameters, authorization, requestHeaders));
 	}
 
+	public HttpResponse post(String url, HttpParameter[] parameters, Map<String, String> requestHeaders) throws TwitterException {
+		Map<String, String> headers = new HashMap<String, String>(this.requestHeaders);
+		if (requestHeaders != null)
+			headers.putAll(requestHeaders);
+
+		return request(new HttpRequest(POST, url, parameters, null, headers));
+	}
+
 	public void setHttpResponseListener(final HttpResponseListener listener) {
 		httpResponseListener = listener;
 	}

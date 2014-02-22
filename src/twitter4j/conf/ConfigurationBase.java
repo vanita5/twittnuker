@@ -28,10 +28,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Configuration base class with default settings.
- * 
+ *
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
 class ConfigurationBase implements TwitterConstants, Configuration {
@@ -52,6 +53,10 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 	private int httpProxyPort;
 	private int httpConnectionTimeout;
 	private int httpReadTimeout;
+
+	private Properties mediaProviderParameters;
+	private String mediaProvider;
+	private String mediaProviderAPIKey;
 
 	private String httpClientImplementation;
 
@@ -136,6 +141,10 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 		setRestBaseURL(DEFAULT_REST_BASE_URL);
 		setSigningRestBaseURL(DEFAULT_SIGNING_REST_BASE_URL);
 		setIncludeRTsEnbled(true);
+
+		setMediaProvider("TWITTER");
+		setMediaProviderAPIKey(null);
+		setMediaProviderParameters(null);
 	}
 
 	@Override
@@ -181,6 +190,8 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 		if (includeRTsEnabled != other.includeRTsEnabled) return false;
 		if (includeTwitterClientHeader != other.includeTwitterClientHeader) return false;
 		if (maxTotalConnections != other.maxTotalConnections) return false;
+		if (mediaProvider != null ? !mediaProvider.equals(other.mediaProvider) : other.mediaProvider != null)
+			return false;
 		if (oAuthAccessToken == null) {
 			if (other.oAuthAccessToken != null) return false;
 		} else if (!oAuthAccessToken.equals(other.oAuthAccessToken)) return false;
@@ -205,6 +216,8 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 		if (oAuthConsumerSecret == null) {
 			if (other.oAuthConsumerSecret != null) return false;
 		} else if (!oAuthConsumerSecret.equals(other.oAuthConsumerSecret)) return false;
+		if (mediaProviderAPIKey != null ? !mediaProviderAPIKey.equals(other.mediaProviderAPIKey) : other.mediaProviderAPIKey != null)
+			return false;
 		if (oAuthRequestTokenURL == null) {
 			if (other.oAuthRequestTokenURL != null) return false;
 		} else if (!oAuthRequestTokenURL.equals(other.oAuthRequestTokenURL)) return false;
@@ -233,6 +246,8 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 		if (signingOAuthRequestTokenURL == null) {
 			if (other.signingOAuthRequestTokenURL != null) return false;
 		} else if (!signingOAuthRequestTokenURL.equals(other.signingOAuthRequestTokenURL)) return false;
+		if (mediaProviderParameters != null ? !mediaProviderParameters.equals(other.mediaProviderParameters) : other.mediaProviderParameters != null)
+			return false;
 		if (signingRestBaseURL == null) {
 			if (other.signingRestBaseURL != null) return false;
 		} else if (!signingRestBaseURL.equals(other.signingRestBaseURL)) return false;
@@ -412,6 +427,33 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 	}
 
 	@Override
+	public Properties getMediaProviderParameters() {
+		return this.mediaProviderParameters;
+	}
+
+	protected final void setMediaProviderParameters(Properties props) {
+		this.mediaProviderParameters = props;
+	}
+
+	@Override
+	public String getMediaProvider() {
+		return this.mediaProvider;
+	}
+
+	protected final void setMediaProvider(String mediaProvider) {
+		this.mediaProvider = mediaProvider;
+	}
+
+	@Override
+	public String getMediaProviderAPIKey() {
+		return this.mediaProviderAPIKey;
+	}
+
+	protected final void setMediaProviderAPIKey(String mediaProviderAPIKey) {
+		this.mediaProviderAPIKey = mediaProviderAPIKey;
+	}
+
+	@Override
 	public final String getUser() {
 		return user;
 	}
@@ -453,8 +495,11 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 		result = prime * result + (oAuthAuthorizationURL == null ? 0 : oAuthAuthorizationURL.hashCode());
 		result = prime * result + (oAuthBaseURL == null ? 0 : oAuthBaseURL.hashCode());
 		result = prime * result + (oAuthConsumerKey == null ? 0 : oAuthConsumerKey.hashCode());
+		result = prime * result + (mediaProviderParameters != null ? mediaProviderParameters.hashCode() : 0);
+		result = prime * result + (mediaProvider != null ? mediaProvider.hashCode() : 0);
 		result = prime * result + (oAuthConsumerSecret == null ? 0 : oAuthConsumerSecret.hashCode());
 		result = prime * result + (oAuthRequestTokenURL == null ? 0 : oAuthRequestTokenURL.hashCode());
+		result = prime * result + (mediaProviderAPIKey != null ? mediaProviderAPIKey.hashCode() : 0);
 		result = prime * result + (password == null ? 0 : password.hashCode());
 		result = prime * result + (prettyDebug ? 1231 : 1237);
 		result = prime * result + (requestHeaders == null ? 0 : requestHeaders.hashCode());
@@ -548,6 +593,8 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 				+ ", signingOAuthAuthenticationURL=" + signingOAuthAuthenticationURL + ", oAuthBaseURL=" + oAuthBaseURL
 				+ ", signingOAuthBaseURL=" + signingOAuthBaseURL + ", signingRestBaseURL=" + signingRestBaseURL
 				+ ", restBaseURL=" + restBaseURL + ", includeRTsEnabled=" + includeRTsEnabled
+				+ ", mediaProviderParameters=" + mediaProviderParameters
+				+ ", mediaProvider='" + mediaProvider + ", mediaProviderAPIKey='" + mediaProviderAPIKey
 				+ ", includeEntitiesEnabled=" + includeEntitiesEnabled + ", includeTwitterClientHeader="
 				+ includeTwitterClientHeader + ", clientVersion=" + clientVersion + ", clientURL=" + clientURL
 				+ ", clientName=" + clientName + ", hostAddressResolver=" + hostAddressResolver + "}";
