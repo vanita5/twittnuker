@@ -626,4 +626,6 @@
     <string name="shortening">Tweet kürzen</string>
     <string name="error_hototin">...but I failed :(\nDer Tweet wurde zu den Entwürfen hinzugefügt.</string>
     <string name="action_shortening">kürze Tweet</string>
+
+    <string name="uploading_image">Lade hoch...</string>
 </resources>

@@ -240,6 +240,18 @@ public final class ConfigurationBuilder {
 		return this;
 	}
 
+	public ConfigurationBuilder setMediaProvider(final String mediaProvider) {
+		checkNotBuilt();
+		configuration.setMediaProvider(mediaProvider);
+		return this;
+	}
+
+	public ConfigurationBuilder setMediaProviderAPIKey(final String mediaProviderAPIKey) {
+		checkNotBuilt();
+		configuration.setMediaProviderAPIKey(mediaProviderAPIKey);
+		return this;
+	}
+
 	public ConfigurationBuilder setUseSSL(final boolean useSSL) {
 		checkNotBuilt();
 		configuration.setUseSSL(useSSL);

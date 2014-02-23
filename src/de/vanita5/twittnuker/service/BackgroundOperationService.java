@@ -38,7 +38,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
@@ -73,9 +72,14 @@ import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.conf.Configuration;
+import twitter4j.media.ImageUpload;
+import twitter4j.media.ImageUploadFactory;
+import twitter4j.media.MediaProvider;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -117,8 +121,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		mMessagesManager = app.getMessagesManager();
 		final String uploader_component = mPreferences.getString(KEY_IMAGE_UPLOADER, null);
 		final String shortener_component = mPreferences.getString(KEY_TWEET_SHORTENER, null);
-//		mUseUploader = !isEmpty(uploader_component);
-		mUseUploader = false; //FIXME
+		mUseUploader = !isEmpty(uploader_component);
 		mUseShortener = !isEmpty(shortener_component);
 		mUploader = mUseUploader ? uploader_component : null;
 		mShortener = mUseShortener ? shortener_component : null;
@@ -350,14 +353,14 @@ public class BackgroundOperationService extends IntentService implements Constan
             final String imagePath = getImagePathFromUri(this, pstatus.media_uri);
             final File imageFile = imagePath != null ? new File(imagePath) : null;
 
-            final Uri uploadResultUri = null; //FIXME
-			//TODO Image hoster upload logic
+			String uploadResultUrl = null;
 
-            if (mUseUploader && imageFile != null && imageFile.exists() && uploadResultUri == null)
-				throw new UploadException(this);
+			if (mUseUploader && imageFile != null && imageFile.exists()) {
+				uploadResultUrl = uploadMedia(imageFile, pstatus.account_ids, pstatus.text);
+			}
 
-            final String unshortenedContent = mUseUploader && uploadResultUri != null ? getImageUploadStatus(this,
-                    uploadResultUri.toString(), pstatus.text) : pstatus.text;
+            final String unshortenedContent = mUseUploader && uploadResultUrl != null ? getImageUploadStatus(this,
+					uploadResultUrl.toString(), pstatus.text) : pstatus.text;
 
 			final boolean shouldShorten = mValidator.getTweetLength(unshortenedContent) > mValidator.getMaxTweetLength();
 			String shortenedContent = "";
@@ -443,6 +446,16 @@ public class BackgroundOperationService extends IntentService implements Constan
 		return notification;
 	}
 
+	private Notification updateUploadStatusNotification(final int progress) {
+		mBuilder.setContentTitle(getString(R.string.uploading_image));
+		mBuilder.setContentText((progress < 100 ? progress : 100) + "%");
+		mBuilder.setSmallIcon(R.drawable.ic_stat_send);
+		mBuilder.setProgress(100, progress, progress >= 100 || progress <= 0);
+		final Notification notification = mBuilder.build();
+		mNotificationManager.notify(NOTIFICATION_ID_UPLOAD_MEDIA, notification);
+		return notification;
+	}
+
 	private String postHototIn(ParcelableStatusUpdate pstatus) {
 
 		final Notification notification = buildNotification(getString(R.string.shortening),
@@ -465,6 +478,59 @@ public class BackgroundOperationService extends IntentService implements Constan
 			return null;
 		}
 		return shortenedText;
+	}
+
+	private String uploadMedia(File file, long[] accountIds, String message) throws UploadException {
+
+		String url = null;
+		Configuration conf = null;
+
+		long accountId = -1;
+		if(accountIds != null && accountIds.length > 0) {
+			accountId = accountIds[0];
+		}
+
+		ContentLengthInputStream is = null;
+		startForeground(NOTIFICATION_ID_UPLOAD_MEDIA, updateUploadStatusNotification(0));
+		try {
+			is = new ContentLengthInputStream(file);
+			is.setReadListener(new ReadListener() {
+
+				int percent;
+
+				@Override
+				public void onRead(final long length, final long position) {
+					final int percent = length > 0 ? (int) (position * 100 / length) : 0;
+					if (this.percent != percent) {
+						mNotificationManager.notify(NOTIFICATION_ID_UPLOAD_MEDIA,
+								updateUploadStatusNotification(percent));
+					}
+					this.percent = percent;
+				}
+			});
+
+			if (mUploader.equals(SERVICE_UPLOADER_TWITPIC)) {
+				Twitter twitter = getTwitterInstance(this, accountId, MediaProvider.TWITPIC.toString(), TWITPIC_API_KEY);
+
+				if (twitter == null) throw new UploadException(this);
+				conf = twitter.getConfiguration();
+
+				ImageUpload imageUploader = new ImageUploadFactory(conf).getInstance(MediaProvider.TWITPIC);
+				try {
+					url = imageUploader.upload(file.getName(), is, message);
+				} catch (TwitterException e) {
+					throw new UploadException(this);
+				}
+			}
+			is.close();
+		} catch (FileNotFoundException e) {
+			throw new UploadException(this);
+		} catch (IOException e) {
+			throw new UploadException(this);
+		}
+
+		if (isEmpty(url)) throw new UploadException(this);
+		return url;
 	}
 
 	static class UploadException extends UpdateStatusException {

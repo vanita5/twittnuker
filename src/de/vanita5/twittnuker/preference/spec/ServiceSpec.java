@@ -20,24 +20,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package twitter4j.media;
+package de.vanita5.twittnuker.preference.spec;
 
-/**
- * @author Yusuke Yamamoto - yusuke at mac.com
- * @since Twitter4J 2.1.8
- */
-public enum MediaProvider {
+public class ServiceSpec implements CharSequence {
 
-	IMG_LY("imgly"), PLIXI("plixi"), LOCKERZ("lockerz"), TWIPPLE("twipple"), TWITGOO("twitgoo"), TWITPIC("twitpic"), YFROG("yfrog"), MOBYPICTURE("mobypicture"), POSTEROUS("posterous");
+	public final String name, service;
 
-	private final String text;
+	public ServiceSpec(final String name, final String service) {
+		this.name = name;
+		this.service = service;
+	}
 
-	private MediaProvider(final String text) {
-		this.text = text;
+	@Override
+	public int length() {
+		return name.length();
+	}
+
+	@Override
+	public char charAt(int i) {
+		return name.charAt(i);
+	}
+
+	@Override
+	public CharSequence subSequence(int i, int i2) {
+		return name.subSequence(i, i2);
 	}
 
 	@Override
 	public String toString() {
-		return text;
+		return name;
 	}
 }

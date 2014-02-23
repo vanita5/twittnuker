@@ -2166,7 +2166,18 @@ public final class Utils implements Constants {
 	}
 
 	public static Twitter getTwitterInstance(final Context context, final long account_id,
+			final String mediaProvider, final String mediaProviderKey) {
+		return getTwitterInstance(context, account_id, false, false, true, mediaProvider, mediaProviderKey);
+	}
+
+	public static Twitter getTwitterInstance(final Context context, final long account_id,
 			final boolean include_entities, final boolean include_retweets, final boolean use_apache_httpclient) {
+		return getTwitterInstance(context, account_id, include_entities, include_retweets, use_apache_httpclient, null, null);
+	}
+
+	public static Twitter getTwitterInstance(final Context context, final long account_id,
+			final boolean include_entities, final boolean include_retweets, final boolean use_apache_httpclient,
+			final String mediaProvider, final String mediaProviderAPIKey) {
 		if (context == null) return null;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -2221,6 +2232,12 @@ public final class Utils implements Constants {
 				if (!isEmpty(signing_oauth_base_url)) {
 					cb.setSigningOAuthBaseURL(signing_oauth_base_url);
 				}
+				if (!isEmpty(mediaProvider)) {
+					cb.setMediaProvider(mediaProvider);
+				}
+				if (!isEmpty(mediaProviderAPIKey)) {
+					cb.setMediaProviderAPIKey(mediaProviderAPIKey);
+				}
 				cb.setIncludeEntitiesEnabled(include_entities);
 				cb.setIncludeRTsEnabled(include_retweets);
 				switch (c.getInt(c.getColumnIndexOrThrow(Accounts.AUTH_TYPE))) {
@@ -2239,6 +2256,8 @@ public final class Utils implements Constants {
 						final String token = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN));
 						final String tokenSecret = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN_SECRET));
 						if (isEmpty(token) || isEmpty(tokenSecret)) return null;
+						cb.setOAuthAccessToken(token);
+						cb.setOAuthAccessTokenSecret(tokenSecret);
 						return new TwitterFactory(cb.build()).getInstance(new AccessToken(token, tokenSecret));
 					}
 					case Accounts.AUTH_TYPE_BASIC: {
