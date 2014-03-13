@@ -119,7 +119,6 @@
         <activity
             android:name=".activity.support.ComposeActivity"
             android:excludeFromRecents="true"
-            android:icon="@drawable/ic_iconic_twittnuker"
             android:label="@string/compose"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Blank.Dialog"
@@ -151,7 +150,6 @@
         </activity>
         <activity
             android:name=".activity.support.SignInActivity"
-            android:icon="@drawable/ic_iconic_twittnuker"
             android:label="@string/sign_in"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -162,7 +160,6 @@
         </activity>
         <activity
             android:name=".activity.support.BrowserSignInActivity"
-            android:icon="@drawable/ic_iconic_twittnuker"
             android:label="@string/browser_sign_in"
             android:theme="@style/Theme.Blank.Dialog"
             android:windowSoftInputMode="adjustResize">
@@ -174,7 +171,6 @@
         </activity>
         <activity
             android:name=".activity.SettingsActivity"
-            android:icon="@drawable/ic_iconic_twittnuker"
             android:label="@string/settings"
             android:theme="@style/Theme.Blank"
             android:windowSoftInputMode="adjustResize">
@@ -220,7 +216,6 @@
         </activity>
         <activity
             android:name=".activity.support.BrowserActivity"
-            android:icon="@drawable/ic_iconic_twittnuker"
             android:exported="false"
             android:label="@string/browser">
             <intent-filter>
@@ -239,7 +234,6 @@
             android:theme="@style/Theme.Twidere.Light.NoDisplay" />
         <activity
             android:name=".activity.support.LinkHandlerActivity"
-            android:icon="@drawable/ic_iconic_action_twittnuker"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -321,7 +315,6 @@
         </activity>
         <activity
             android:name=".activity.support.DraftsActivity"
-            android:icon="@drawable/ic_iconic_twittnuker"
             android:exported="false"
             android:label="@string/drafts"
             android:launchMode="singleTop">
@@ -339,7 +332,6 @@
             android:name="org.mariotaku.gallery3d.ImageViewerGLActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:icon="@drawable/ic_iconic_twittnuker"
             android:label="@string/view_image"
             android:launchMode="singleTop"
             android:process=":image_viewer"
@@ -387,7 +379,6 @@
         <activity
             android:name=".activity.support.UserProfileEditorActivity"
             android:exported="false"
-            android:icon="@drawable/ic_iconic_twittnuker"
             android:label="@string/edit_profile"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -398,7 +389,6 @@
         </activity>
         <activity
             android:name=".activity.CustomTabsActivity"
-            android:icon="@drawable/ic_iconic_twittnuker"
             android:label="@string/tabs"
             android:theme="@style/Theme.Blank" />
         <activity
@@ -503,7 +493,6 @@
    		</activity>
         <activity
             android:name=".activity.TestActivity"
-            android:icon="@drawable/ic_iconic_twittnuker"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Twidere.Settings.Light"
             android:windowSoftInputMode="adjustResize" />

@@ -154,7 +154,7 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 		}
 		mEditText.addTextChangedListener(this);
 
-		final List<Account> accounts = Account.getAccounts(getActivity(), false);
+        final List<Account> accounts = Account.getAccountsList(getActivity(), false);
 		mAccountSpinner.setAdapter(new AccountsSpinnerAdapter(getActivity(), accounts));
 		mAccountSpinner.setOnItemSelectedListener(this);
 

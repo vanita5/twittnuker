@@ -31,7 +31,7 @@ package de.vanita5.twittnuker;
 public interface Constants extends TwittnukerConstants {
 
 	public static final String DATABASES_NAME = "twittnuker.sqlite";
-	public static final int DATABASES_VERSION = 1;
+	public static final int DATABASES_VERSION = 2;
 
 	public static final String GOOGLE_MAPS_API_KEY_RELEASE = "0kjPwJOe_zwYjzGc9uYak7vhm_Sf3eob-2L3Xzw";
 	public static final String GOOGLE_MAPS_API_KEY_DEBUG = "0kjPwJOe_zwY9p6kT-kygu4mxwysyOOpfkaXqTA";

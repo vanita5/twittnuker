@@ -59,7 +59,7 @@ public class StatusShortenerPreference extends DialogPreference implements Const
 		if (editor == null) return;
 		final ServiceSpec spec = mAvailableTweetShorteners[which];
 		if (spec != null) {
-			editor.putString(KEY_TWEET_SHORTENER, spec.service);
+			editor.putString(KEY_STATUS_SHORTENER, spec.service);
 			editor.commit();
 		}
 		dialog.dismiss();
@@ -70,7 +70,7 @@ public class StatusShortenerPreference extends DialogPreference implements Const
 		super.onPrepareDialogBuilder(builder);
 		mPreferences = getSharedPreferences();
 		if (mPreferences == null) return;
-		final String component = mPreferences.getString(KEY_TWEET_SHORTENER, null);
+		final String component = mPreferences.getString(KEY_STATUS_SHORTENER, null);
 		final ArrayList<ServiceSpec> specs = new ArrayList<ServiceSpec>();
 		//Available tweet shortening services
 		specs.add(new ServiceSpec(getContext().getString(R.string.status_shortener_default), null));

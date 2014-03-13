@@ -30,7 +30,6 @@ public class NoDuplicatesArrayList<E> extends ArrayList<E> {
 	private static final long serialVersionUID = -7277301117508689125L;
 
 	public NoDuplicatesArrayList() {
-		super();
 	}
 
 	public NoDuplicatesArrayList(final int capacity) {
@@ -38,7 +37,7 @@ public class NoDuplicatesArrayList<E> extends ArrayList<E> {
 	}
 
 	public NoDuplicatesArrayList(final java.util.Collection<? extends E> collection) {
-		super(collection);
+		addAll(collection);
 	}
 
 	@Override

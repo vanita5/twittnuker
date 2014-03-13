@@ -601,6 +601,11 @@
     <string name="image_preview_scale_type">Bildvorschau Skalierung</string>
     <string name="image_preview_scale_type_crop">Bildschirm füllen</string>
     <string name="image_preview_scale_type_fit_center">Mittig ausrichten</string>
+    <string name="quote_protected_status_warning_message">Der Account des Benutzers ist geschützt und er möchte vielleicht nicht, dass der Tweet öffentlich geteilt wird.</string>
+    <string name="send_anyway">Trotzdem senden</string>
+    <string name="my_following_only">Nur Freunde</string>
+    <string name="my_following_only_summary">Zeigt nur Notifications von Benutzern an, denen du folgst</string>
+
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

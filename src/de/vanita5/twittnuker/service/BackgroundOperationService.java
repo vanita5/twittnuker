@@ -48,6 +48,7 @@ import com.twitter.Extractor;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -94,7 +95,6 @@ public class BackgroundOperationService extends IntentService implements Constan
 	private SharedPreferences mPreferences;
 	private ContentResolver mResolver;
 	private NotificationManager mNotificationManager;
-	private Builder mBuilder;
 	private AsyncTwitterWrapper mTwitter;
 	private MessagesManager mMessagesManager;
 
@@ -117,10 +117,9 @@ public class BackgroundOperationService extends IntentService implements Constan
 		mResolver = getContentResolver();
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mTwitter = app.getTwitterWrapper();
-		mBuilder = new NotificationCompat.Builder(this);
 		mMessagesManager = app.getMessagesManager();
 		final String uploader_component = mPreferences.getString(KEY_IMAGE_UPLOADER, null);
-		final String shortener_component = mPreferences.getString(KEY_TWEET_SHORTENER, null);
+		final String shortener_component = mPreferences.getString(KEY_STATUS_SHORTENER, null);
 		mUseUploader = !isEmpty(uploader_component);
 		mUseShortener = !isEmpty(shortener_component);
 		mUploader = mUseUploader ? uploader_component : null;
@@ -228,6 +227,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		builder.setTicker(title);
 		builder.setContentTitle(title);
 		builder.setContentText(text);
+        builder.setOngoing(true);
 		final Notification notification = builder.build();
 		startForeground(NOTIFICATION_ID_SEND_DIRECT_MESSAGE, notification);
 		final SingleResponse<ParcelableDirectMessage> result = sendDirectMessage(accountId, recipientId, text);
@@ -243,10 +243,12 @@ public class BackgroundOperationService extends IntentService implements Constan
 			mResolver.insert(Drafts.CONTENT_URI, values);
 			showErrorMessage(R.string.action_sending_direct_message, result.exception, true);
 		}
-		stopForeground(true);
+        stopForeground(false);
+        mNotificationManager.cancel(NOTIFICATION_ID_SEND_DIRECT_MESSAGE);
 	}
 
 	private void handleUpdateStatusIntent(final Intent intent) {
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 		final ParcelableStatusUpdate status = intent.getParcelableExtra(EXTRA_STATUS);
 		final Parcelable[] status_parcelables = intent.getParcelableArrayExtra(EXTRA_STATUSES);
 		final ParcelableStatusUpdate[] statuses;
@@ -260,13 +262,14 @@ public class BackgroundOperationService extends IntentService implements Constan
 			statuses[0] = status;
 		} else
 			return;
-		startForeground(NOTIFICATION_ID_UPDATE_STATUS, updateUpdateStatusNotificaion(0, null));
+        startForeground(NOTIFICATION_ID_UPDATE_STATUS, updateUpdateStatusNotification(this, builder, 0, null));
 		for (final ParcelableStatusUpdate item : statuses) {
-			updateUpdateStatusNotificaion(0, item);
-			final List<SingleResponse<ParcelableStatus>> result = updateStatus(item);
+            mNotificationManager.notify(NOTIFICATION_ID_UPDATE_STATUS,
+                    updateUpdateStatusNotification(this, builder, 0, item));
+            final List<SingleResponse<ParcelableStatus>> result = updateStatus(builder, item);
 			boolean failed = false;
 			Exception exception = null;
-			final List<Long> failed_account_ids = ListUtils.fromArray(item.account_ids);
+            final List<Long> failed_account_ids = ListUtils.fromArray(Account.getAccountIds(item.accounts));
 
 			for (final SingleResponse<ParcelableStatus> response : result) {
 				if (response.data == null) {
@@ -306,7 +309,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 				mTwitter.refreshAll();
 			}
 		}
-		stopForeground(true);
+        stopForeground(false);
+        mNotificationManager.cancel(NOTIFICATION_ID_UPDATE_STATUS);
 	}
 
 	private void saveDrafts(final ParcelableStatusUpdate status, final List<Long> account_ids, boolean showNotification) {
@@ -334,9 +338,10 @@ public class BackgroundOperationService extends IntentService implements Constan
 		}
 	}
 
-	private List<SingleResponse<ParcelableStatus>> updateStatus(final ParcelableStatusUpdate pstatus) {
+    private List<SingleResponse<ParcelableStatus>> updateStatus(final Builder builder,
+                                                                final ParcelableStatusUpdate statusUpdate) {
 		final ArrayList<ContentValues> hashtag_values = new ArrayList<ContentValues>();
-		final Collection<String> hashtags = extractor.extractHashtags(pstatus.text);
+		final Collection<String> hashtags = extractor.extractHashtags(statusUpdate.text);
 		for (final String hashtag : hashtags) {
 			final ContentValues values = new ContentValues();
 			values.put(CachedHashtags.NAME, hashtag);
@@ -347,27 +352,27 @@ public class BackgroundOperationService extends IntentService implements Constan
 
 		final List<SingleResponse<ParcelableStatus>> results = new ArrayList<SingleResponse<ParcelableStatus>>();
 
-		if (pstatus.account_ids.length == 0) return Collections.emptyList();
+		if (statusUpdate.accounts.length == 0) return Collections.emptyList();
 
 		try {
-            final String imagePath = getImagePathFromUri(this, pstatus.media_uri);
+            final String imagePath = getImagePathFromUri(this, statusUpdate.media_uri);
             final File imageFile = imagePath != null ? new File(imagePath) : null;
 
 			String uploadResultUrl = null;
 
 			if (mUseUploader && imageFile != null && imageFile.exists()) {
-				uploadResultUrl = uploadMedia(imageFile, pstatus.account_ids, pstatus.text);
+				uploadResultUrl = uploadMedia(imageFile, statusUpdate.accounts, statusUpdate.text);
 			}
 
             final String unshortenedContent = mUseUploader && uploadResultUrl != null ? getImageUploadStatus(this,
-					uploadResultUrl.toString(), pstatus.text) : pstatus.text;
+					uploadResultUrl.toString(), statusUpdate.text) : statusUpdate.text;
 
 			final boolean shouldShorten = mValidator.getTweetLength(unshortenedContent) > mValidator.getMaxTweetLength();
 			String shortenedContent = "";
 
 			if (shouldShorten && mUseShortener) {
 				if (mShortener.equals(SERVICE_SHORTENER_HOTOTIN)) {
-					shortenedContent = postHototIn(pstatus);
+					shortenedContent = postHototIn(statusUpdate);
 					if (shortenedContent == null) throw new HototinShortenException(this);
 				} else {
 					throw new IllegalArgumentException("BackgroundOperationService.java#updateStatus()");
@@ -382,45 +387,33 @@ public class BackgroundOperationService extends IntentService implements Constan
             if (!mUseUploader && imageFile != null && imageFile.exists()) {
                 Utils.downscaleImageIfNeeded(imageFile, 95);
 			}
-			for (final long account_id : pstatus.account_ids) {
+            for (final Account account : statusUpdate.accounts) {
 				final StatusUpdate status = new StatusUpdate(shouldShorten && mUseShortener ? shortenedContent
 						: unshortenedContent);
-				status.setInReplyToStatusId(pstatus.in_reply_to_status_id);
-				if (pstatus.location != null) {
-					status.setLocation(ParcelableLocation.toGeoLocation(pstatus.location));
+				status.setInReplyToStatusId(statusUpdate.in_reply_to_status_id);
+				if (statusUpdate.location != null) {
+					status.setLocation(ParcelableLocation.toGeoLocation(statusUpdate.location));
 				}
                 if (!mUseUploader && imageFile != null && imageFile.exists()) {
 					try {
                         final ContentLengthInputStream is = new ContentLengthInputStream(imageFile);
-						is.setReadListener(new ReadListener() {
-
-							int percent;
-
-							@Override
-							public void onRead(final long length, final long position) {
-								final int percent = length > 0 ? (int) (position * 100 / length) : 0;
-								if (this.percent != percent) {
-									mNotificationManager.notify(NOTIFICATION_ID_UPDATE_STATUS,
-											updateUpdateStatusNotificaion(percent, pstatus));
-								}
-								this.percent = percent;
-							}
-						});
+                        is.setReadListener(new StatusMediaUploadListener(this, mNotificationManager, builder,
+                                statusUpdate));
                         status.setMedia(imageFile.getName(), is);
 					} catch (final FileNotFoundException e) {
                         status.setMedia(imageFile);
 					}
 				}
-				status.setPossiblySensitive(pstatus.is_possibly_sensitive);
+				status.setPossiblySensitive(statusUpdate.is_possibly_sensitive);
 
-				final Twitter twitter = getTwitterInstance(this, account_id, true, true);
+                final Twitter twitter = getTwitterInstance(this, account.account_id, true, true);
 				if (twitter == null) {
 					results.add(new SingleResponse<ParcelableStatus>(null, new NullPointerException()));
 					continue;
 				}
 				try {
 					final Status twitter_result = twitter.updateStatus(status);
-					final ParcelableStatus result = new ParcelableStatus(twitter_result, account_id, false);
+                    final ParcelableStatus result = new ParcelableStatus(twitter_result, account.account_id, false);
 					results.add(new SingleResponse<ParcelableStatus>(result, null));
 				} catch (final TwitterException e) {
 					final SingleResponse<ParcelableStatus> response = SingleResponse.withException(e);
@@ -434,24 +427,24 @@ public class BackgroundOperationService extends IntentService implements Constan
 		return results;
 	}
 
-	private Notification updateUpdateStatusNotificaion(final int progress, final ParcelableStatusUpdate status) {
-		mBuilder.setContentTitle(getString(R.string.updating_status_notification));
+    private static Notification updateUpdateStatusNotification(final Context context,
+                final NotificationCompat.Builder builder, final int progress, final ParcelableStatusUpdate status) {
+        builder.setContentTitle(context.getString(R.string.updating_status_notification));
 		if (status != null) {
-			mBuilder.setContentText(status.text);
+			builder.setContentText(status.text);
 		}
-		mBuilder.setSmallIcon(R.drawable.ic_stat_send);
-		mBuilder.setProgress(100, progress, progress >= 100 || progress <= 0);
-		final Notification notification = mBuilder.build();
-		mNotificationManager.notify(NOTIFICATION_ID_UPDATE_STATUS, notification);
-		return notification;
+        builder.setSmallIcon(R.drawable.ic_stat_send);
+        builder.setProgress(100, progress, progress >= 100 || progress <= 0);
+        builder.setOngoing(true);
+        return builder.build();
 	}
 
-	private Notification updateUploadStatusNotification(final int progress) {
-		mBuilder.setContentTitle(getString(R.string.uploading_image));
-		mBuilder.setContentText((progress < 100 ? progress : 100) + "%");
-		mBuilder.setSmallIcon(R.drawable.ic_stat_send);
-		mBuilder.setProgress(100, progress, progress >= 100 || progress <= 0);
-		final Notification notification = mBuilder.build();
+	private Notification updateUploadStatusNotification(final NotificationCompat.Builder builder, final int progress) {
+		builder.setContentTitle(getString(R.string.uploading_image));
+		builder.setContentText((progress < 100 ? progress : 100) + "%");
+		builder.setSmallIcon(R.drawable.ic_stat_send);
+		builder.setProgress(100, progress, progress >= 100 || progress <= 0);
+		final Notification notification = builder.build();
 		mNotificationManager.notify(NOTIFICATION_ID_UPLOAD_MEDIA, notification);
 		return notification;
 	}
@@ -465,7 +458,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		String shortenedText;
 		try {
 			shortenedText = TweetShortenerUtils.shortWithHototin(
-					BackgroundOperationService.this, pstatus.text, pstatus.account_ids);
+					BackgroundOperationService.this, pstatus.text, pstatus.accounts);
 		} finally {
 			mNotificationManager.cancel(NOTIFICATION_ID_SHORTENING);
 		}
@@ -480,18 +473,18 @@ public class BackgroundOperationService extends IntentService implements Constan
 		return shortenedText;
 	}
 
-	private String uploadMedia(File file, long[] accountIds, String message) throws UploadException {
-
+	private String uploadMedia(File file, Account[] accounts, String message) throws UploadException {
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 		String url = null;
 		Configuration conf = null;
 
 		long accountId = -1;
-		if(accountIds != null && accountIds.length > 0) {
-			accountId = accountIds[0];
+		if(accounts != null && accounts.length > 0) {
+			accountId = accounts[0].account_id;
 		}
 
 		ContentLengthInputStream is = null;
-		startForeground(NOTIFICATION_ID_UPLOAD_MEDIA, updateUploadStatusNotification(0));
+		startForeground(NOTIFICATION_ID_UPLOAD_MEDIA, updateUploadStatusNotification(builder, 0));
 		try {
 			is = new ContentLengthInputStream(file);
 			is.setReadListener(new ReadListener() {
@@ -503,7 +496,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 					final int percent = length > 0 ? (int) (position * 100 / length) : 0;
 					if (this.percent != percent) {
 						mNotificationManager.notify(NOTIFICATION_ID_UPLOAD_MEDIA,
-								updateUploadStatusNotification(percent));
+								updateUploadStatusNotification(builder, percent));
 					}
 					this.percent = percent;
 				}
@@ -540,6 +533,34 @@ public class BackgroundOperationService extends IntentService implements Constan
 			super(context, R.string.error_message_image_upload_failed);
 		}
 	}
+
+    static class StatusMediaUploadListener implements ReadListener {
+        private final Context context;
+        private final NotificationManager manager;
+
+        int percent;
+
+        private final Builder builder;
+        private final ParcelableStatusUpdate statusUpdate;
+
+        StatusMediaUploadListener(final Context context, final NotificationManager manager,
+                final NotificationCompat.Builder builder, final ParcelableStatusUpdate statusUpdate) {
+            this.context = context;
+            this.manager = manager;
+            this.builder = builder;
+            this.statusUpdate = statusUpdate;
+        }
+
+        @Override
+        public void onRead(final long length, final long position) {
+            final int percent = length > 0 ? (int) (position * 100 / length) : 0;
+            if (this.percent != percent) {
+                manager.notify(NOTIFICATION_ID_UPDATE_STATUS,
+                        updateUpdateStatusNotification(context, builder, percent, statusUpdate));
+                }
+            this.percent = percent;
+        }
+    }
 
 	static class StatusTooLongException extends UpdateStatusException {
 		private static final long serialVersionUID = -6469920130856384219L;

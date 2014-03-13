@@ -24,6 +24,7 @@
 <resources>
 
     <item name="ic_iconic_action_twittnuker" type="drawable"/>
+    <item name="ic_iconic_action_twittnuker_square" type="drawable"/>
     <item name="ic_iconic_action_open_source" type="drawable"/>
     <item name="ic_iconic_action_camera" type="drawable"/>
     <item name="ic_iconic_action_gallery" type="drawable"/>
@@ -78,6 +79,7 @@
     <item name="ic_iconic_action_drafts" type="drawable"/>
     <item name="ic_iconic_action_import" type="drawable"/>
     <item name="ic_iconic_action_export" type="drawable"/>
+    <item name="ic_iconic_action_storage" type="drawable"/>
     <item name="ic_iconic_twittnuker" type="drawable"/>
 
 </resources>

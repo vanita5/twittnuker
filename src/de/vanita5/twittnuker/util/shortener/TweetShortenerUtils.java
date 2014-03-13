@@ -42,6 +42,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
+import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.task.HototinAsyncTask;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.Utils;
@@ -64,17 +65,17 @@ public class TweetShortenerUtils implements Constants {
 	 * Shorten long tweets with hotot.in
 	 * @param context
 	 * @param text
-	 * @param account_ids
+	 * @param accounts
 	 * @return shortened tweet
 	 */
-	public static String shortWithHototin(final Context context, final String text, final long[] account_ids) {
+	public static String shortWithHototin(final Context context, final String text, final Account[] accounts) {
 
 		String screen_name = null;
 		String avatar_url = null;
 
-		if(account_ids != null && account_ids.length > 0) {
-			screen_name = getAccountScreenName(context, account_ids[0]);
-			avatar_url = getAccountProfileImage(context, account_ids[0]);
+		if(accounts != null && accounts.length > 0) {
+			screen_name = getAccountScreenName(context, accounts[0].account_id);
+			avatar_url = getAccountProfileImage(context, accounts[0].account_id);
 			avatar_url = avatar_url != null && !avatar_url.isEmpty() ? avatar_url : DEFAULT_AVATAR_URL;
 		}
 

@@ -40,7 +40,6 @@ dependencies {
     compile 'org.mariotaku:menucomponent:0.1-SNAPSHOT'
     compile 'org.mariotaku:refreshnow:0.1.1-SNAPSHOT'
     compile 'com.etsy.android.grid:library:1.0.3'
-    compile 'com.twitter:twitter-text:1.6.1'
     compile 'com.github.castorflex.smoothprogressbar:library:0.3.1'
     compile 'com.commonsware.cwac:merge:1.0.1'
     compile 'com.commonsware.cwac:sacklist:1.0.0'

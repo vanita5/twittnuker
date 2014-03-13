@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.PreviewMedia;
 import de.vanita5.twittnuker.text.TwidereURLSpan;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -248,15 +249,16 @@ public final class TwidereLinkify implements Constants {
 					applyLink(span.getURL(), start, end, string, account_id, LINK_TYPE_LINK, sensitive, listener,
 							highlightOption, highlightColor);
 				}
-//				for (final Extractor.Entity entity : mExtractor.extractURLsWithIndices(ParseUtils.parseString(string))) {
-//					final int start = entity.getStart(), end = entity.getEnd();
-//					if (entity.getType() != Extractor.Entity.Type.URL
-//							|| string.getSpans(start, end, URLSpan.class).length > 0) {
-//						continue;
-//					}
-//					applyLink(entity.getValue(), start, end, string, account_id, LINK_TYPE_LINK, sensitive, listener,
-//							highlightOption, highlightColor);
-//				}
+                final List<Entity> urls = mExtractor.extractURLsWithIndices(ParseUtils.parseString(string));
+                for (final Extractor.Entity entity : urls) {
+                    final int start = entity.getStart(), end = entity.getEnd();
+                    if (entity.getType() != Extractor.Entity.Type.URL
+                            || string.getSpans(start, end, URLSpan.class).length > 0) {
+                        continue;
+                    }
+                    applyLink(entity.getValue(), start, end, string, account_id, LINK_TYPE_LINK, sensitive, listener,
+                            highlightOption, highlightColor);
+                }
 				break;
 			}
 			case LINK_TYPE_STATUS: {

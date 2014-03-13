@@ -54,6 +54,7 @@ import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -383,13 +384,13 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 	}
 
 	public int updateStatusAsync(final long[] accountIds, final String text, final ParcelableLocation location,
-			final Uri media_uri, final int media_type, final long in_reply_to_status_id,
+			final Uri media_uri, final int mediaType, final long in_reply_to_status_id,
 			final boolean is_possibly_sensitive) {
 		final ParcelableStatusUpdate.Builder builder = new ParcelableStatusUpdate.Builder();
-		builder.accountIds(accountIds);
+        builder.accounts(Account.getAccounts(mContext, accountIds));
 		builder.text(text);
 		builder.location(location);
-		builder.media(media_uri, media_type);
+		builder.media(media_uri, mediaType);
 		builder.inReplyToStatusId(in_reply_to_status_id);
 		builder.isPossiblySensitive(is_possibly_sensitive);
 		return updateStatusesAsync(builder.build());

@@ -29,7 +29,7 @@ import com.atermenji.android.iconicdroid.icon.Icon;
 import com.atermenji.android.iconicdroid.util.TypefaceManager.IconicTypeface;
 
 public enum TwidereIcon implements Icon {
-	TWITTNUKER(0xF000), OPEN_SOURCE(0xF001), TWITTER(0xF002), TRANSLATE(0xF003),
+	TWITTNUKER(0xF000), OPEN_SOURCE(0xF001), TWITTER(0xF002), TRANSLATE(0xF003), TWITTNUKER_SQUARE(0xF010),
 
 	ADD(0xF020), EDIT(0xF021), SAVE(0xF022), DELETE(0xF023), OK(0xF024), CANCEL(0xF025), REFRESH(0xF026), MORE(0xF027), COPY(
 			0xF028), CUT(0xF029), PASTE(0xF02A), SELECT_ALL(0xF02B), STAR(0xF02C), SEND(0xF02D), SHARE(0xF02E), NEW_MESSAGE(

@@ -205,7 +205,7 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_HOME_REFRESH_TRENDS = "home_refresh_trends";
 	public static final String KEY_IMAGE_UPLOAD_FORMAT = "image_upload_format";
 	@Preference(type = STRING, hasDefault = true, defaultString = "none")
-	public static final String KEY_TWEET_SHORTENER = "tweet_shortener";
+	public static final String KEY_STATUS_SHORTENER = "tweet_shortener";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_SHOW_ABSOLUTE_TIME = "show_absolute_time";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
@@ -272,6 +272,8 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_NOTIFICATION_TYPE_HOME = "notification_type_home";
 	public static final String KEY_NOTIFICATION_TYPE_MENTIONS = "notification_type_mentions";
 	public static final String KEY_NOTIFICATION_TYPE_DIRECT_MESSAGES = "notification_type_direct_messages";
+    public static final String KEY_MY_FOLLOWING_ONLY = "my_following_only";
+
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_COMPACT_CARDS = "compact_cards";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)

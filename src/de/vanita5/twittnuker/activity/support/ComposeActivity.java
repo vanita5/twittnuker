@@ -141,6 +141,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.TreeSet;
 
 public class ComposeActivity extends BaseSupportDialogActivity implements TextWatcher, LocationListener, OnMenuItemClickListener,
 		OnClickListener, OnEditorActionListener, OnItemClickListener, OnItemLongClickListener, OnLongClickListener {
@@ -184,7 +185,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	private int mMediaType;
 
 	private Uri mMediaUri, mTempPhotoUri;
-	private boolean mImageUploaderUsed, mTweetShortenerUsed;
+	private boolean mImageUploaderUsed, mStatusShortenerUsed;
 	private ParcelableStatus mInReplyToStatus;
 
 	private ParcelableUser mMentionUser;
@@ -414,7 +415,12 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			break;
 		}
 		case R.id.send: {
-			updateStatus();
+            if (isQuotingProtectedStatus()) {
+                new RetweetProtectedStatusWarnFragment().show(getSupportFragmentManager(),
+                        "retweet_protected_status_warning_message");
+            } else {
+                updateStatus();
+            }
 			break;
 		}
 		}
@@ -555,7 +561,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	public void saveToDrafts() {
 		final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
 		final ParcelableStatusUpdate.Builder builder = new ParcelableStatusUpdate.Builder();
-		builder.accountIds(mSendAccountIds);
+        builder.accounts(Account.getAccounts(this, mAccountIds));
 		builder.text(text);
 		builder.inReplyToStatusId(mInReplyToStatusId);
 		builder.location(mRecentLocation);
@@ -688,10 +694,8 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	@Override
 	protected void onStart() {
 		super.onStart();
-		final String uploader_component = mPreferences.getString(KEY_IMAGE_UPLOADER, null);
-		final String shortener_component = mPreferences.getString(KEY_TWEET_SHORTENER, null);
-		mImageUploaderUsed = !isEmpty(uploader_component);
-		mTweetShortenerUsed = !isEmpty(shortener_component);
+		mImageUploaderUsed = !isEmpty(mPreferences.getString(KEY_IMAGE_UPLOADER, null));
+		mStatusShortenerUsed = !isEmpty(mPreferences.getString(KEY_STATUS_SHORTENER, null));
 		setMenu();
 		updateTextCount();
 		final int text_size = mPreferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(this));
@@ -843,7 +847,8 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
         if (!isEmpty(status.retweeted_by_screen_name)) {
             mEditText.append("@" + status.retweeted_by_screen_name + " ");
         }
-        final Collection<String> mentions = mExtractor.extractMentionedScreennames(status.text_plain);
+        final Collection<String> mentions = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        mentions.addAll(mExtractor.extractMentionedScreennames(status.text_plain));
         for (final String mention : mentions) {
             if (mention.equalsIgnoreCase(status.user_screen_name) || mention.equalsIgnoreCase(myScreenName)
                     || mention.equalsIgnoreCase(status.retweeted_by_screen_name)) {
@@ -877,6 +882,12 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		final String path = mMediaUri != null ? mMediaUri.getPath() : null;
 		return path != null && new File(path).exists();
 	}
+
+    private boolean isQuotingProtectedStatus() {
+        if (INTENT_ACTION_QUOTE.equals(getIntent().getAction()) && mInReplyToStatus != null)
+            return mInReplyToStatus.user_is_protected && mInReplyToStatus.account_id != mInReplyToStatus.user_id;
+        return false;
+    }
 
 	private boolean isSingleAccount() {
 		return mAccountIds != null && mAccountIds.length == 1;
@@ -1071,7 +1082,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		final boolean hasMedia = hasMedia();
 		final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
 		final int tweetLength = mValidator.getTweetLength(text), maxLength = mValidator.getMaxTweetLength();
-		if (!mTweetShortenerUsed && tweetLength > maxLength) {
+		if (!mStatusShortenerUsed && tweetLength > maxLength) {
 			mEditText.setError(getString(R.string.error_message_status_too_long));
 			final int text_length = mEditText.length();
 			mEditText.setSelection(text_length - (tweetLength - maxLength), text_length);
@@ -1133,6 +1144,34 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			textCountView.setTextCount(validatedCount);
 		}
 	}
+
+    public static class RetweetProtectedStatusWarnFragment extends BaseSupportDialogFragment implements
+            DialogInterface.OnClickListener {
+
+        @Override
+        public void onClick(final DialogInterface dialog, final int which) {
+            final Activity activity = getActivity();
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE: {
+                    if (activity instanceof ComposeActivity) {
+                        ((ComposeActivity) activity).updateStatus();
+                    }
+                    break;
+                }
+            }
+
+        }
+
+        @Override
+        public Dialog onCreateDialog(final Bundle savedInstanceState) {
+            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+            builder.setMessage(R.string.quote_protected_status_warning_message);
+            builder.setPositiveButton(R.string.send_anyway, this);
+            builder.setNegativeButton(android.R.string.cancel, null);
+            return builder.create();
+        }
+    }
 
 	public static class UnsavedTweetDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
 
@@ -1257,7 +1296,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		private final LongSparseArray<Boolean> mAccountSelectStates = new LongSparseArray<Boolean>();
 
 		public AccountSelectorAdapter(final Context context) {
-			super(context, R.layout.gallery_item_compose_account, Account.getAccounts(context, false));
+            super(context, R.layout.gallery_item_compose_account, Account.getAccountsList(context, false));
 		}
 
 		public void clearAccountSelection() {
