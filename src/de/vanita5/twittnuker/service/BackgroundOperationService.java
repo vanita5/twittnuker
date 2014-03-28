@@ -54,6 +54,7 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TweetStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
@@ -118,10 +119,10 @@ public class BackgroundOperationService extends IntentService implements Constan
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mTwitter = app.getTwitterWrapper();
 		mMessagesManager = app.getMessagesManager();
-		final String uploader_component = mPreferences.getString(KEY_IMAGE_UPLOADER, null);
+		final String uploader_component = mPreferences.getString(KEY_MEDIA_UPLOADER, null);
 		final String shortener_component = mPreferences.getString(KEY_STATUS_SHORTENER, null);
-		mUseUploader = !isEmpty(uploader_component);
-		mUseShortener = !isEmpty(shortener_component);
+        mUseUploader = !ServicePickerPreference.isNoneValue(uploader_component);
+		mUseShortener = !ServicePickerPreference.isNoneValue(shortener_component);
 		mUploader = mUseUploader ? uploader_component : null;
 		mShortener = mUseShortener ? shortener_component : null;
 	}

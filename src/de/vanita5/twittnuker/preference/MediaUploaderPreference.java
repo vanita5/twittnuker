@@ -59,7 +59,7 @@ public class MediaUploaderPreference extends DialogPreference implements Constan
 		if (editor == null) return;
 		final ServiceSpec spec = mAvailableImageUploaders[which];
 		if (spec != null) {
-			editor.putString(KEY_IMAGE_UPLOADER, spec.service);
+			editor.putString(KEY_MEDIA_UPLOADER, spec.service);
 			editor.commit();
 		}
 		dialog.dismiss();
@@ -70,7 +70,7 @@ public class MediaUploaderPreference extends DialogPreference implements Constan
 		super.onPrepareDialogBuilder(builder);
 		mPreferences = getSharedPreferences();
 		if (mPreferences == null) return;
-		final String component = mPreferences.getString(KEY_IMAGE_UPLOADER, null);
+		final String component = mPreferences.getString(KEY_MEDIA_UPLOADER, null);
 		final ArrayList<ServiceSpec> specs = new ArrayList<ServiceSpec>();
 		//Available image services
 		specs.add(new ServiceSpec(getContext().getString(R.string.image_uploader_default), null));

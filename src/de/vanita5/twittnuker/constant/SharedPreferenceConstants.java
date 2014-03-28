@@ -199,7 +199,7 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_NOTIFICATION_LIGHT_COLOR = "notification_light_color";
 	public static final String KEY_SHARE_FORMAT = "share_format";
 	@Preference(type = STRING, hasDefault = true, defaultString = "none")
-	public static final String KEY_IMAGE_UPLOADER = "image_uploader";
+	public static final String KEY_MEDIA_UPLOADER = "media_uploader";
 	public static final String KEY_HOME_REFRESH_MENTIONS = "home_refresh_mentions";
 	public static final String KEY_HOME_REFRESH_DIRECT_MESSAGES = "home_refresh_direct_messages";
 	public static final String KEY_HOME_REFRESH_TRENDS = "home_refresh_trends";

@@ -119,6 +119,7 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TweetStore.CacheFiles;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
 import de.vanita5.twittnuker.task.AsyncTask;
@@ -694,8 +695,8 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	@Override
 	protected void onStart() {
 		super.onStart();
-		mImageUploaderUsed = !isEmpty(mPreferences.getString(KEY_IMAGE_UPLOADER, null));
-		mStatusShortenerUsed = !isEmpty(mPreferences.getString(KEY_STATUS_SHORTENER, null));
+        mImageUploaderUsed = !ServicePickerPreference.isNoneValue(mPreferences.getString(KEY_MEDIA_UPLOADER, null));
+		mStatusShortenerUsed = !ServicePickerPreference.isNoneValue(mPreferences.getString(KEY_STATUS_SHORTENER, null));
 		setMenu();
 		updateTextCount();
 		final int text_size = mPreferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(this));
