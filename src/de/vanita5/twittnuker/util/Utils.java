@@ -1540,27 +1540,27 @@ public final class Utils implements Constants {
 		return context.getResources().getInteger(R.integer.default_text_size);
 	}
 
-	public static Twitter getDefaultTwitterInstance(final Context context, final boolean include_entities) {
+	public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities) {
 		if (context == null) return null;
-		return getDefaultTwitterInstance(context, include_entities, true, true);
+		return getDefaultTwitterInstance(context, includeEntities, true, true);
 	}
 
-	public static Twitter getDefaultTwitterInstance(final Context context, final boolean include_entities,
-			final boolean include_retweets) {
+	public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities,
+			final boolean includeRetweets) {
 		if (context == null) return null;
-		return getDefaultTwitterInstance(context, include_entities, include_retweets, true);
+		return getDefaultTwitterInstance(context, includeEntities, includeRetweets, !MIUIDetector.isMIUI());
 	}
 
-	public static Twitter getDefaultTwitterInstance(final Context context, final boolean include_entities,
-			final boolean include_retweets, final boolean use_httpclient) {
+	public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities,
+			final boolean includeRetweets, final boolean useHttpclient) {
 		if (context == null) return null;
-		return getTwitterInstance(context, getDefaultAccountId(context), include_entities, include_retweets,
-				use_httpclient);
+		return getTwitterInstance(context, getDefaultAccountId(context), includeEntities, includeRetweets,
+				useHttpclient);
 	}
 
-	public static String getDisplayName(final Context context, final long user_id, final String name,
-			final String screen_name) {
-		return getDisplayName(context, user_id, name, screen_name, false);
+	public static String getDisplayName(final Context context, final long userId, final String name,
+			final String screenName) {
+		return getDisplayName(context, userId, name, screenName, false);
 	}
 
 	public static String getDisplayName(final Context context, final long user_id, final String name,
@@ -2155,14 +2155,14 @@ public final class Utils implements Constants {
 		return msg;
 	}
 
-	public static Twitter getTwitterInstance(final Context context, final long account_id,
-			final boolean include_entities) {
-		return getTwitterInstance(context, account_id, include_entities, true, true);
+	public static Twitter getTwitterInstance(final Context context, final long accountId,
+			final boolean includeEntities) {
+		return getTwitterInstance(context, accountId, includeEntities, true, !MIUIDetector.isMIUI());
 	}
 
-	public static Twitter getTwitterInstance(final Context context, final long account_id,
-			final boolean include_entities, final boolean include_retweets) {
-		return getTwitterInstance(context, account_id, include_entities, include_retweets, true);
+	public static Twitter getTwitterInstance(final Context context, final long accountId,
+			final boolean includeEntities, final boolean includeRetweets) {
+		return getTwitterInstance(context, accountId, includeEntities, includeRetweets, !MIUIDetector.isMIUI());
 	}
 
 	public static Twitter getTwitterInstance(final Context context, final long account_id,
@@ -2182,9 +2182,9 @@ public final class Utils implements Constants {
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final int connection_timeout = prefs.getInt(KEY_CONNECTION_TIMEOUT, 10) * 1000;
-		final boolean enable_gzip_compressing = prefs.getBoolean(KEY_GZIP_COMPRESSING, true);
-		final boolean ignore_ssl_error = prefs.getBoolean(KEY_IGNORE_SSL_ERROR, false);
-		final boolean enable_proxy = prefs.getBoolean(KEY_ENABLE_PROXY, false);
+        final boolean enableGzip = prefs.getBoolean(KEY_GZIP_COMPRESSING, true);
+        final boolean ignoreSSLError = prefs.getBoolean(KEY_IGNORE_SSL_ERROR, false);
+        final boolean enableProxy = prefs.getBoolean(KEY_ENABLE_PROXY, false);
 		// Here I use old consumer key/secret because it's default key for older
 		// versions
 		final String pref_consumer_key = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
@@ -2204,9 +2204,9 @@ public final class Utils implements Constants {
 				}
 				cb.setHttpConnectionTimeout(connection_timeout);
 				setUserAgent(context, cb);
-				cb.setGZIPEnabled(enable_gzip_compressing);
-				cb.setIgnoreSSLError(ignore_ssl_error);
-				if (enable_proxy) {
+                cb.setGZIPEnabled(enableGzip);
+                cb.setIgnoreSSLError(ignoreSSLError);
+                if (enableProxy) {
 					final String proxy_host = prefs.getString(KEY_PROXY_HOST, null);
 					final int proxy_port = ParseUtils.parseInt(prefs.getString(KEY_PROXY_PORT, "-1"));
 					if (!isEmpty(proxy_host) && proxy_port > 0) {
@@ -3545,7 +3545,6 @@ public final class Utils implements Constants {
 	}
 
 	private static void parseEntities(final HtmlBuilder builder, final EntitySupport entities) {
-		final URLEntity[] urls = entities.getURLEntities();
 		// Format media.
 		final MediaEntity[] medias = entities.getMediaEntities();
 		if (medias != null) {
@@ -3557,6 +3556,7 @@ public final class Utils implements Constants {
 				}
 			}
 		}
+        final URLEntity[] urls = entities.getURLEntities();
 		if (urls != null) {
 			for (final URLEntity url : urls) {
 				final URL expanded_url = url.getExpandedURL();
@@ -3566,88 +3566,6 @@ public final class Utils implements Constants {
 				}
 			}
 		}
-	}
-
-	public static ContentValues makeStatusContentValues(final Status orig, final long account_id) {
-		if (orig == null || orig.getId() <= 0) return null;
-		final ContentValues values = new ContentValues();
-		values.put(Statuses.ACCOUNT_ID, account_id);
-		values.put(Statuses.STATUS_ID, orig.getId());
-		values.put(Statuses.MY_RETWEET_ID, orig.getCurrentUserRetweet());
-		final boolean is_retweet = orig.isRetweet();
-		final Status status;
-		final Status retweeted_status = is_retweet ? orig.getRetweetedStatus() : null;
-		if (retweeted_status != null) {
-			final User retweet_user = orig.getUser();
-			values.put(Statuses.RETWEET_ID, retweeted_status.getId());
-			values.put(Statuses.RETWEETED_BY_USER_ID, retweet_user.getId());
-			values.put(Statuses.RETWEETED_BY_USER_NAME, retweet_user.getName());
-			values.put(Statuses.RETWEETED_BY_USER_SCREEN_NAME, retweet_user.getScreenName());
-			status = retweeted_status;
-		} else {
-			status = orig;
-		}
-		final User user = status.getUser();
-		if (user != null) {
-			final long user_id = user.getId();
-			final String profile_image_url = ParseUtils.parseString(user.getProfileImageUrlHttps());
-			final String name = user.getName(), screen_name = user.getScreenName();
-			values.put(Statuses.USER_ID, user_id);
-			values.put(Statuses.USER_NAME, name);
-			values.put(Statuses.USER_SCREEN_NAME, screen_name);
-			values.put(Statuses.IS_PROTECTED, user.isProtected());
-			values.put(Statuses.IS_VERIFIED, user.isVerified());
-			values.put(Statuses.USER_PROFILE_IMAGE_URL, profile_image_url);
-			values.put(CachedUsers.IS_FOLLOWING, user != null ? user.isFollowing() : false);
-		}
-		if (status.getCreatedAt() != null) {
-			values.put(Statuses.STATUS_TIMESTAMP, status.getCreatedAt().getTime());
-		}
-		final String text_html = formatStatusText(status);
-		values.put(Statuses.TEXT_HTML, text_html);
-		values.put(Statuses.TEXT_PLAIN, status.getText());
-		values.put(Statuses.TEXT_UNESCAPED, toPlainText(text_html));
-		values.put(Statuses.RETWEET_COUNT, status.getRetweetCount());
-		values.put(Statuses.IN_REPLY_TO_STATUS_ID, status.getInReplyToStatusId());
-		values.put(Statuses.IN_REPLY_TO_USER_ID, status.getInReplyToUserId());
-		values.put(Statuses.IN_REPLY_TO_USER_NAME, getInReplyToName(status));
-		values.put(Statuses.IN_REPLY_TO_USER_SCREEN_NAME, status.getInReplyToScreenName());
-		values.put(Statuses.SOURCE, status.getSource());
-		values.put(Statuses.IS_POSSIBLY_SENSITIVE, status.isPossiblySensitive());
-		final GeoLocation location = status.getGeoLocation();
-		if (location != null) {
-			values.put(Statuses.LOCATION, location.getLatitude() + "," + location.getLongitude());
-		}
-		values.put(Statuses.IS_RETWEET, is_retweet);
-		values.put(Statuses.IS_FAVORITE, status.isFavorited());
-		values.put(Statuses.MEDIA_LINK, MediaPreviewUtils.getSupportedFirstLink(status));
-		final JSONArray json = JSONSerializer.toJSONArray(ParcelableUserMention.fromUserMentionEntities(status.getUserMentionEntities()));
-		values.put(Statuses.MENTIONS, json.toString());
-		return values;
-	}
-
-	public static ContentValues makeDirectMessageContentValues(final DirectMessage message, final long account_id, final boolean is_outgoing) {
-		if (message == null || message.getId() <= 0) return null;
-		final ContentValues values = new ContentValues();
-		final User sender = message.getSender(), recipient = message.getRecipient();
-		if (sender == null || recipient == null) return null;
-		final String sender_profile_image_url = parseString(sender.getProfileImageUrlHttps());
-		final String recipient_profile_image_url = parseString(recipient.getProfileImageUrlHttps());
-		values.put(DirectMessages.ACCOUNT_ID, account_id);
-		values.put(DirectMessages.MESSAGE_ID, message.getId());
-		values.put(DirectMessages.MESSAGE_TIMESTAMP, message.getCreatedAt().getTime());
-		values.put(DirectMessages.SENDER_ID, sender.getId());
-		values.put(DirectMessages.RECIPIENT_ID, recipient.getId());
-		values.put(DirectMessages.TEXT_HTML, formatDirectMessageText(message));
-		values.put(DirectMessages.TEXT_PLAIN, message.getText());
-		values.put(DirectMessages.IS_OUTGOING, is_outgoing);
-		values.put(DirectMessages.SENDER_NAME, sender.getName());
-		values.put(DirectMessages.SENDER_SCREEN_NAME, sender.getScreenName());
-		values.put(DirectMessages.RECIPIENT_NAME, recipient.getName());
-		values.put(DirectMessages.RECIPIENT_SCREEN_NAME, recipient.getScreenName());
-		values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL, sender_profile_image_url);
-		values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, recipient_profile_image_url);
-		return values;
 	}
 
 	public static String parseString(final Object object) {

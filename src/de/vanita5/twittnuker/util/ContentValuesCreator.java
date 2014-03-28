@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -271,11 +272,14 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		}
 		values.put(Statuses.IS_RETWEET, is_retweet);
 		values.put(Statuses.IS_FAVORITE, status.isFavorited());
-		values.put(Statuses.MEDIA_LINK, MediaPreviewUtils.getSupportedFirstLink(status));
-		final JSONArray json = JSONSerializer.toJSONArray(ParcelableUserMention.fromUserMentionEntities(status
-				.getUserMentionEntities()));
-		if (json != null) {
-			values.put(Statuses.MENTIONS, json.toString());
+        final ParcelableMedia[] medias = ParcelableMedia.fromEntities(status);
+        if (medias != null) {
+            values.put(Statuses.MEDIAS, ParseUtils.parseString(JSONSerializer.toJSONArray(medias)));
+            values.put(Statuses.FIRST_MEDIA, medias[0].url);
+        }
+        final JSONArray mentions = JSONSerializer.toJSONArray(ParcelableUserMention.fromStatus(status));
+        if (mentions != null) {
+            values.put(Statuses.MENTIONS, mentions.toString());
 		}
 		return values;
 	}

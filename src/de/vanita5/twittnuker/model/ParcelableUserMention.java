@@ -32,6 +32,7 @@ import org.mariotaku.jsonserializer.JSONParcel;
 import org.mariotaku.jsonserializer.JSONParcelable;
 import org.mariotaku.jsonserializer.JSONSerializer;
 
+import twitter4j.Status;
 import twitter4j.UserMentionEntity;
 
 public class ParcelableUserMention implements Parcelable, JSONParcelable {
@@ -130,6 +131,10 @@ public class ParcelableUserMention implements Parcelable, JSONParcelable {
 			return null;
 		}
 	}
+
+    public static ParcelableUserMention[] fromStatus(final Status status) {
+        return fromUserMentionEntities(status.getUserMentionEntities());
+    }
 
 	public static ParcelableUserMention[] fromUserMentionEntities(final UserMentionEntity[] entities) {
 		if (entities == null) return null;

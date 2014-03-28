@@ -87,6 +87,7 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -126,7 +127,6 @@ import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ColorLabelLinearLayout;
 import de.vanita5.twittnuker.view.ExtendedFrameLayout;
-import de.vanita5.twittnuker.view.ProfileImageBannerLayout;
 import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
@@ -154,7 +154,6 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 			mFriendsContainer;
 	private Button mRetryButton;
 	private ColorLabelLinearLayout mProfileNameContainer;
-	private ProfileImageBannerLayout mProfileImageBannerLayout;
 	private ListView mListView;
 	private View mHeaderView;
 
@@ -174,7 +173,6 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
     private View mMainContent;
     private ProgressBar mDetailsLoadProgress;
     private MenuBar mMenuBar;
-    private ExtendedFrameLayout mDetailsContainer;
 
 	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
 
@@ -212,11 +210,13 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 
 		@Override
 		public Loader<SingleResponse<ParcelableUser>> onCreateLoader(final int id, final Bundle args) {
-            mMainContent.setVisibility(View.GONE);
-			mErrorRetryContainer.setVisibility(View.GONE);
-            mDetailsLoadProgress.setVisibility(View.VISIBLE);
-			mErrorMessageView.setText(null);
-			mErrorMessageView.setVisibility(View.GONE);
+            if (mUser == null) {
+                mMainContent.setVisibility(View.GONE);
+                mErrorRetryContainer.setVisibility(View.GONE);
+                mDetailsLoadProgress.setVisibility(View.VISIBLE);
+                mErrorMessageView.setText(null);
+                mErrorMessageView.setVisibility(View.GONE);
+            }
 			setProgressBarIndeterminateVisibility(true);
             final ParcelableUser user = mUser;
             final boolean omitIntentExtra = args.getBoolean(EXTRA_OMIT_INTENT_EXTRA, true);
@@ -237,12 +237,18 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 				final SingleResponse<ParcelableUser> data) {
 			if (getActivity() == null) return;
 			if (data.data != null && data.data.id > 0) {
-				displayUser(data.data);
+                final ParcelableUser user = data.data;
+                displayUser(user);
                 mMainContent.setVisibility(View.VISIBLE);
 				mErrorRetryContainer.setVisibility(View.GONE);
                 mDetailsLoadProgress.setVisibility(View.GONE);
-				if (data.data.is_cache) {
-					//getLoaderManager().restartLoader(LOADER_ID_USER, null, this);
+                if (user.is_cache) {
+                    final Bundle args = new Bundle();
+                    args.putLong(EXTRA_ACCOUNT_ID, user.account_id);
+                    args.putLong(EXTRA_USER_ID, user.id);
+                    args.putString(EXTRA_SCREEN_NAME, user.screen_name);
+                    args.putBoolean(EXTRA_OMIT_INTENT_EXTRA, true);
+                    getLoaderManager().restartLoader(LOADER_ID_USER, args, this);
 				}
             } else if (mUser != null && mUser.is_cache) {
                 mMainContent.setVisibility(View.VISIBLE);
@@ -342,7 +348,8 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 		mFollowersCount.setText(getLocalizedNumber(mLocale, user.followers_count));
 		mFriendsCount.setText(getLocalizedNumber(mLocale, user.friends_count));
 		if (mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true)) {
-			mProfileImageLoader.displayProfileImage(mProfileImageView, user.profile_image_url);
+            mProfileImageLoader.displayProfileImage(mProfileImageView,
+                    getOriginalTwitterProfileImage(user.profile_image_url));
 			final int def_width = getResources().getDisplayMetrics().widthPixels;
 			final int width = mBannerWidth > 0 ? mBannerWidth : def_width;
 			mProfileBannerView.setImageBitmap(null);
@@ -437,7 +444,6 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 		mFollowersContainer.setOnClickListener(this);
 		mFriendsContainer.setOnClickListener(this);
 		mRetryButton.setOnClickListener(this);
-		mProfileImageBannerLayout.setOnSizeChangedListener(this);
 		setListAdapter(null);
 		mListView = getListView();
 		mListView.addHeaderView(mHeaderView, null, false);
@@ -501,12 +507,13 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 				getUserInfo(true);
 				break;
 			}
-			case ProfileImageBannerLayout.VIEW_ID_PROFILE_IMAGE: {
+            case R.id.profile_image: {
 				final String profile_image_url_string = getOriginalTwitterProfileImage(mUser.profile_image_url);
                 openImage(activity, profile_image_url_string, false);
 				break;
 			}
-			case ProfileImageBannerLayout.VIEW_ID_PROFILE_BANNER: {
+            case R.id.profile_banner:
+            case R.id.profile_banner_space: {
 				final String profile_banner_url = mUser.profile_banner_url;
 				if (profile_banner_url == null) return;
 				openImage(getActivity(), profile_banner_url + "/ipad_retina", false);
@@ -578,36 +585,10 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_details_page, null, false);
-        mMainContent = view.findViewById(R.id.content);
-        mDetailsLoadProgress = (ProgressBar) view.findViewById(R.id.details_load_progress);
-        mMenuBar = (MenuBar) view.findViewById(R.id.menu_bar);
-        mDetailsContainer = (ExtendedFrameLayout) view.findViewById(R.id.details_container);
-        mDetailsContainer.addView(super.onCreateView(inflater, container, savedInstanceState));
+        final ExtendedFrameLayout detailsContainer = (ExtendedFrameLayout) view.findViewById(R.id.details_container);
+        inflater.inflate(R.layout.header_user_profile_banner, detailsContainer, true);
+        detailsContainer.addView(super.onCreateView(inflater, container, savedInstanceState));
         mHeaderView = inflater.inflate(R.layout.header_user_profile, null, false);
-		mNameView = (TextView) mHeaderView.findViewById(R.id.name);
-		mScreenNameView = (TextView) mHeaderView.findViewById(R.id.screen_name);
-		mDescriptionView = (TextView) mHeaderView.findViewById(R.id.description);
-		mLocationView = (TextView) mHeaderView.findViewById(R.id.location);
-		mURLView = (TextView) mHeaderView.findViewById(R.id.url);
-		mCreatedAtView = (TextView) mHeaderView.findViewById(R.id.created_at);
-		mTweetsContainer = mHeaderView.findViewById(R.id.tweets_container);
-		mTweetCount = (TextView) mHeaderView.findViewById(R.id.statuses_count);
-		mFollowersContainer = mHeaderView.findViewById(R.id.followers_container);
-		mFollowersCount = (TextView) mHeaderView.findViewById(R.id.followers_count);
-		mFriendsContainer = mHeaderView.findViewById(R.id.friends_container);
-		mFriendsCount = (TextView) mHeaderView.findViewById(R.id.friends_count);
-		mProfileNameContainer = (ColorLabelLinearLayout) mHeaderView.findViewById(R.id.profile_name_container);
-		mProfileImageBannerLayout = (ProfileImageBannerLayout) mHeaderView.findViewById(R.id.profile_image_banner);
-		mProfileImageView = mProfileImageBannerLayout.getProfileImageView();
-		mProfileBannerView = mProfileImageBannerLayout.getProfileBannerImageView();
-		mDescriptionContainer = mHeaderView.findViewById(R.id.description_container);
-		mLocationContainer = mHeaderView.findViewById(R.id.location_container);
-		mURLContainer = mHeaderView.findViewById(R.id.url_container);
-        mErrorRetryContainer = view.findViewById(R.id.error_retry_container);
-        mRetryButton = (Button) view.findViewById(R.id.retry);
-        mErrorMessageView = (TextView) view.findViewById(R.id.error_message);
-		final View cardView = mHeaderView.findViewById(R.id.card);
-		ThemeUtils.applyThemeAlphaToDrawable(cardView.getContext(), cardView.getBackground());
 		return view;
 	}
 
@@ -791,6 +772,15 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 		super.onSaveInstanceState(outState);
 	}
 
+    @Override
+    public void onScroll(final AbsListView view, final int firstVisibleItem, final int visibleItemCount,
+                         final int totalItemCount) {
+        super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+        final float factor = -mHeaderView.getTop() / (mHeaderView.getWidth() * 0.5f);
+        //		Log.d(LOGTAG, String.format("onScroll %f", factor));
+        mProfileBannerView.setAlpha(1.0f - factor);
+    }
+
 	@Override
 	public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
 		if (mUser == null || !ParseUtils.parseString(mUser.id).equals(key)) return;
@@ -819,6 +809,42 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 		unregisterReceiver(mStatusReceiver);
 		super.onStop();
 	}
+
+    @Override
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        final Context context = view.getContext();
+        super.onViewCreated(view, savedInstanceState);
+        mMainContent = view.findViewById(R.id.content);
+        mDetailsLoadProgress = (ProgressBar) view.findViewById(R.id.details_load_progress);
+        mMenuBar = (MenuBar) view.findViewById(R.id.menu_bar);
+        mErrorRetryContainer = view.findViewById(R.id.error_retry_container);
+        mRetryButton = (Button) view.findViewById(R.id.retry);
+        mErrorMessageView = (TextView) view.findViewById(R.id.error_message);
+        mProfileBannerView = (ImageView) view.findViewById(R.id.profile_banner);
+        mNameView = (TextView) mHeaderView.findViewById(R.id.name);
+        mScreenNameView = (TextView) mHeaderView.findViewById(R.id.screen_name);
+        mDescriptionView = (TextView) mHeaderView.findViewById(R.id.description);
+        mLocationView = (TextView) mHeaderView.findViewById(R.id.location);
+        mURLView = (TextView) mHeaderView.findViewById(R.id.url);
+        mCreatedAtView = (TextView) mHeaderView.findViewById(R.id.created_at);
+        mTweetsContainer = mHeaderView.findViewById(R.id.tweets_container);
+        mTweetCount = (TextView) mHeaderView.findViewById(R.id.statuses_count);
+        mFollowersContainer = mHeaderView.findViewById(R.id.followers_container);
+        mFollowersCount = (TextView) mHeaderView.findViewById(R.id.followers_count);
+        mFriendsContainer = mHeaderView.findViewById(R.id.friends_container);
+        mFriendsCount = (TextView) mHeaderView.findViewById(R.id.friends_count);
+        mProfileNameContainer = (ColorLabelLinearLayout) mHeaderView.findViewById(R.id.profile_name_container);
+        mProfileImageView = (ProfileImageView) mHeaderView.findViewById(R.id.profile_image);
+        mDescriptionContainer = mHeaderView.findViewById(R.id.description_container);
+        mLocationContainer = mHeaderView.findViewById(R.id.location_container);
+        mURLContainer = mHeaderView.findViewById(R.id.url_container);
+        final View cardView = mHeaderView.findViewById(R.id.card);
+        ThemeUtils.applyThemeAlphaToDrawable(context, cardView.getBackground());
+        // final View profileBottomLayer =
+        // mHeaderView.findViewById(R.id.profile_layer_bottom);
+        // ViewAccessor.setBackground(profileBottomLayer,
+        // ThemeUtils.getWindowBackground(cotnext));
+    }
 
 	private void getFriendship() {
         final ParcelableUser user = mUser;
@@ -854,14 +880,44 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
         setMenuItemAvailability(menu, MENU_EDIT, isMyself);
         final MenuItem followItem = menu.findItem(MENU_FOLLOW);
         followItem.setVisible(!isMyself);
-        followItem.setEnabled(!creatingFriendship && !destroyingFriendship && !isMyself && relationship != null);
-        if (relationship != null) {
-            followItem.setTitle(null);
-            followItem.setIcon(null);
-        } else {
+        final boolean shouldShowFollowItem = !creatingFriendship && !destroyingFriendship && !isMyself
+                && relationship != null;
+        followItem.setEnabled(shouldShowFollowItem);
+        if (shouldShowFollowItem) {
             followItem.setTitle(isFollowing ? R.string.unfollow : R.string.follow);
             followItem.setIcon(isFollowing ? R.drawable.ic_iconic_action_cancel : R.drawable.ic_iconic_action_add);
+        } else {
+            followItem.setTitle(null);
+            followItem.setIcon(null);
         }
+        if (user.id != user.account_id) {
+            setMenuItemAvailability(menu, MENU_BLOCK, mFriendship != null);
+            final MenuItem blockItem = menu.findItem(MENU_BLOCK);
+            if (mFriendship != null && blockItem != null) {
+                final Drawable blockIcon = blockItem.getIcon();
+                if (mFriendship.isSourceBlockingTarget()) {
+                    blockItem.setTitle(R.string.unblock);
+                    blockIcon.mutate().setColorFilter(ThemeUtils.getUserThemeColor(getActivity()),
+                    PorterDuff.Mode.MULTIPLY);
+                } else {
+                    blockItem.setTitle(R.string.block);
+                    blockIcon.clearColorFilter();
+                }
+            }
+            final boolean is_following_me = mFriendship != null && mFriendship.isTargetFollowingSource();
+            setMenuItemAvailability(menu, MENU_SEND_DIRECT_MESSAGE, is_following_me);
+        } else {
+            setMenuItemAvailability(menu, MENU_MENTION, false);
+            setMenuItemAvailability(menu, MENU_SEND_DIRECT_MESSAGE, false);
+            setMenuItemAvailability(menu, MENU_BLOCK, false);
+            setMenuItemAvailability(menu, MENU_REPORT_SPAM, false);
+        }
+        final Intent intent = new Intent(INTENT_ACTION_EXTENSION_OPEN_USER);
+        final Bundle extras = new Bundle();
+        extras.putParcelable(EXTRA_USER, mUser);
+        intent.putExtras(extras);
+        menu.removeGroup(MENU_GROUP_USER_EXTENSION);
+        addIntentToMenu(getActivity(), menu, intent, MENU_GROUP_USER_EXTENSION);
     }
 
     private boolean shouldUseNativeMenu() {

@@ -29,6 +29,7 @@ import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -103,6 +104,10 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
         if (activity == null || manager.isActive()) return;
 		final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		activity.startActivity(intent);
+        try {
+            activity.startActivity(intent);
+        } catch (final ActivityNotFoundException e) {
+            // TODO
+        }
 	}
 }

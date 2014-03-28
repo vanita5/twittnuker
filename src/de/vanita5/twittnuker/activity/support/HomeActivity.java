@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
+import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.RightDrawerFrameLayout;
 import twitter4j.DirectMessage;
@@ -830,8 +831,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		final int marginThreshold = getResources().getDimensionPixelSize(R.dimen.default_sliding_menu_margin_threshold);
 		mSlidingMenu.setMode(SlidingMenu.LEFT_RIGHT);
 		mSlidingMenu.setShadowWidthRes(R.dimen.default_sliding_menu_shadow_width);
-		mSlidingMenu.setShadowDrawable(R.drawable.drawer_shadow_left);
-		mSlidingMenu.setSecondaryShadowDrawable(R.drawable.drawer_shadow_right);
+		mSlidingMenu.setShadowDrawable(R.drawable.shadow_left);
+		mSlidingMenu.setSecondaryShadowDrawable(R.drawable.shadow_bottom);
 		mSlidingMenu.setBehindWidthRes(R.dimen.left_drawer_width);
 		mSlidingMenu.setTouchmodeMarginThreshold(marginThreshold);
 		mSlidingMenu.setFadeDegree(0.5f);
@@ -1139,7 +1140,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
 		@Override
 		public void onStatus(Status status) {
-			final ContentValues values = Utils.makeStatusContentValues(status, account_id);
+			final ContentValues values = ContentValuesCreator.makeStatusContentValues(status, account_id);
 			if (values != null) {
 				final String where = Statuses.ACCOUNT_ID + " = " + account_id + " AND " + Statuses.STATUS_ID + " = " + status.getId();
 				resolver.delete(Statuses.CONTENT_URI, where, null);
@@ -1197,13 +1198,13 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			final User recipient = directMessage.getRecipient();
 			
 			if(sender.getId() == account_id) {
-				final ContentValues values = Utils.makeDirectMessageContentValues(directMessage, account_id, true);
+				final ContentValues values = ContentValuesCreator.makeDirectMessageContentValues(directMessage, account_id, true);
 				if(values != null) {
 					resolver.insert(DirectMessages.Outbox.CONTENT_URI, values);
 				}
 			}
 			if(recipient.getId() == account_id) {
-				final ContentValues values = Utils.makeDirectMessageContentValues(directMessage, account_id, false);
+				final ContentValues values = ContentValuesCreator.makeDirectMessageContentValues(directMessage, account_id, false);
 				final Uri.Builder builder = DirectMessages.Inbox.CONTENT_URI.buildUpon();
 				builder.appendQueryParameter(TwittnukerApplication.QUERY_PARAM_NOTIFY, "true");
 				if(values != null) {

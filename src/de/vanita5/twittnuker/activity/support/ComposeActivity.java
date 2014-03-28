@@ -1245,6 +1245,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			final String retweeted_by_screen_name = status.retweeted_by_screen_name;
 
 			final boolean is_my_status = status.account_id == status.user_id;
+            final boolean hasMedia = status.medias != null && status.medias.length > 0;
 			mHolder.setUserColor(getUserColor(getActivity(), status.user_id, true));
 			mHolder.setHighlightColor(getCardHighlightColor(false, status.is_favorite, status.is_retweet));
 
@@ -1253,8 +1254,8 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			mHolder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0,
 					getUserTypeIconRes(status.user_is_verified, status.user_is_protected), 0);
 			mHolder.time.setTime(status.timestamp);
-			final int type_icon = getStatusTypeIconRes(status.is_favorite, isValidLocation(status.location), status.has_media,
-					status.is_possibly_sensitive);
+            final int type_icon = getStatusTypeIconRes(status.is_favorite, isValidLocation(status.location), hasMedia,
+                    status.is_possibly_sensitive);
 			mHolder.time.setCompoundDrawablesWithIntrinsicBounds(0, 0, type_icon, 0);
 			mHolder.reply_retweet_status.setVisibility(status.in_reply_to_status_id != -1 || status.is_retweet ? View.VISIBLE : View.GONE);
 			if (status.is_retweet && !TextUtils.isEmpty(retweeted_by_name) && !TextUtils.isEmpty(retweeted_by_screen_name)) {

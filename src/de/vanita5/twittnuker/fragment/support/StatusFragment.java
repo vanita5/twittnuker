@@ -110,6 +110,7 @@ import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
 import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableLocation;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.PreviewMedia;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -888,7 +889,14 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		mLoadImagesIndicator.setVisibility(View.GONE);
 		mGalleryContainer.setVisibility(View.VISIBLE);
 		mImagePreviewAdapter.clear();
-		final List<String> images = MediaPreviewUtils.getSupportedLinksInStatus(mStatus.text_html);
+        // final List<String> images =
+        // MediaPreviewUtils.getSupportedLinksInStatus(mStatus.text_html);
+        final List<String> images = new ArrayList<String>();
+        if (mStatus.medias != null) {
+            for (final ParcelableMedia media : mStatus.medias) {
+                images.add(media.url);
+            }
+        }
 		mImagePreviewAdapter.addAll(images, mStatus.is_possibly_sensitive);
 		updateImageSelectButton(mImagePreviewGallery.getSelectedItemPosition());
 	}
