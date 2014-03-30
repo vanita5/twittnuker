@@ -28,6 +28,8 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -36,6 +38,11 @@ import de.vanita5.twittnuker.preference.spec.ServiceSpec;
 import java.util.ArrayList;
 
 public class StatusShortenerPreference extends DialogPreference implements Constants {
+
+    private final ServiceSpec DEFAULT_NO_SERVICE = new ServiceSpec(getContext().getString(R.string.status_shortener_default), null);
+    private final ServiceSpec HOTOTIN_SERVICE = new ServiceSpec(getContext().getString(R.string.tweet_shortener_hototin), SERVICE_SHORTENER_HOTOTIN);
+
+    private final ServiceSpec[] AVAILABLE_SERVICES = { DEFAULT_NO_SERVICE, HOTOTIN_SERVICE };
 
 	private SharedPreferences mPreferences;
 
@@ -53,7 +60,15 @@ public class StatusShortenerPreference extends DialogPreference implements Const
 		super(context, attrs, defStyle);
 	}
 
-	@Override
+    @Override
+    protected View onCreateView(ViewGroup parent) {
+        mPreferences = getSharedPreferences();
+        final String component = mPreferences.getString(KEY_STATUS_SHORTENER, null);
+        setSummary(getServiceName(component));
+        return super.onCreateView(parent);
+    }
+
+    @Override
 	public void onClick(final DialogInterface dialog, final int which) {
 		final SharedPreferences.Editor editor = getEditor();
 		if (editor == null) return;
@@ -62,19 +77,19 @@ public class StatusShortenerPreference extends DialogPreference implements Const
 			editor.putString(KEY_STATUS_SHORTENER, spec.service);
 			editor.commit();
 		}
+        setSummary(spec.name);
 		dialog.dismiss();
 	}
 
 	@Override
 	public void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
 		super.onPrepareDialogBuilder(builder);
-		mPreferences = getSharedPreferences();
 		if (mPreferences == null) return;
 		final String component = mPreferences.getString(KEY_STATUS_SHORTENER, null);
 		final ArrayList<ServiceSpec> specs = new ArrayList<ServiceSpec>();
-		//Available tweet shortening services
-		specs.add(new ServiceSpec(getContext().getString(R.string.status_shortener_default), null));
-		specs.add(new ServiceSpec(getContext().getString(R.string.tweet_shortener_hototin), SERVICE_SHORTENER_HOTOTIN));
+        for (ServiceSpec spec : AVAILABLE_SERVICES) {
+            specs.add(spec);
+        }
 		mAvailableTweetShorteners = specs.toArray(new ServiceSpec[specs.size()]);
 		builder.setSingleChoiceItems(mAvailableTweetShorteners, getIndex(component), StatusShortenerPreference.this);
 		builder.setNegativeButton(android.R.string.cancel, null);
@@ -90,5 +105,15 @@ public class StatusShortenerPreference extends DialogPreference implements Const
 		}
 		return -1;
 	}
+
+    private String getServiceName(String service) {
+        if (service == null) return getContext().getString(R.string.status_shortener_default);
+        for (ServiceSpec spec : AVAILABLE_SERVICES) {
+            if (service.equals(spec.service)) {
+                return spec.name;
+            }
+        }
+        return "";
+    }
 
 }
