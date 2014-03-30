@@ -402,7 +402,7 @@
     <string name="search_name_saved">Suche \"<xliff:g id="name">%s</xliff:g>\" gespeichert.</string>
     <string name="search_deleted">Suche gelöscht.</string>
     <string name="search_name_deleted">Suche \"<xliff:g id="name">%s</xliff:g>\" gelöscht.</string>
-    <string name="import_from">Importiere aus…</string>
+    <string name="import_from">Importiere aus&#8230;</string>
     <string name="link_to_quoted_status">Zitierten Tweet verlinken</string>
     <string name="followed_user">Folge <xliff:g id="user">%s</xliff:g>.</string>
     <string name="sent_follow_request_to_user">Follower-Anfrage an <xliff:g id="user">%s</xliff:g> senden.</string>
@@ -498,8 +498,8 @@
     <string name="delete_user_list_confirm_message">Lösche Liste <xliff:g id="name">%s</xliff:g>? Das kann nicht rückgängig gemacht werden.</string>
     <string name="unsubscribe_from_user_list">Aus Liste <xliff:g id="name">%s</xliff:g> austragen</string>
     <string name="unsubscribe_from_user_list_confirm_message">Aus Liste <xliff:g id="name">%s</xliff:g> wirklich austragen? Du kannst Dich jederzeit wieder eintragen.</string>
-    <string name="destroy_saved_search">Lösche gepeicherte Suche \"<xliff:g id="name">%s</xliff:g>\"</string>
-    <string name="destroy_saved_search_confirm_message">Lösche gespeicherte Suche \"<xliff:g id="name">%s</xliff:g>\"? Du kannst diese Suche in Kürze erneut speichern.</string>
+    <string name="destroy_status">Tweet löschen</string>
+    <string name="destroy_status_confirm_message">Diesen Tweet löschen?</string>
     <string name="signing_in_error_browser_sign_in_hint">Fehler bei der Anmeldung, bitte melde Dich im Browser an.</string>
     <string name="report_user"><xliff:g id="name">%s</xliff:g> melden</string>
     <string name="report_user_confirm_message"><xliff:g id="name">%s</xliff:g> wegen Spam melden? Dadurch wird der Benutzer auch geblockt.</string>
@@ -579,8 +579,8 @@
     <string name="denied_users_follow_request"><xliff:g id="user">%s</xliff:g>\'s Folgeanfrage abgelehnt.</string>
     <string name="import_settings">Einstellungen importieren</string>
     <string name="export_settings">Einstellungen exportieren</string>
-    <string name="export_settings_type_dialog_title">Einstellungen exportieren…</string>
-    <string name="import_settings_type_dialog_title">Einstellungen importieren…</string>
+    <string name="export_settings_type_dialog_title">Einstellungen exportieren&#8230;</string>
+    <string name="import_settings_type_dialog_title">Einstellungen importieren&#8230;</string>
     <string name="nicknames">Nicknames</string>
     <string name="user_colors">Benutzer-Farbschema</string>
     <string name="import_export">Importieren/Exportieren</string>
@@ -605,14 +605,13 @@
     <string name="send_anyway">Trotzdem senden</string>
     <string name="my_following_only">Nur Freunde</string>
     <string name="my_following_only_summary">Zeigt nur Notifications von Benutzern an, denen du folgst</string>
+    <string name="new_direct_message">Neue Direktnachricht</string>
 
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
     <string name="unread_count_summary">Zeigt die Anzahl an ungelesenen Tweets oder Nachrichten im Tab an</string>
     <string name="link_to_quoted_status_summary">Fügt beim zitieren den Link zum originalen Tweet hinzu</string>
-    <string name="destroy_status">Tweet löschen</string>
-    <string name="destroy_status_confirm_message">Diesen Tweet löschen?</string>
 
     <string name="twidere_developed_by">Basiert auf Twidere von</string>
     <string name="translation_destination">Sprache zum Übersetzen</string>
