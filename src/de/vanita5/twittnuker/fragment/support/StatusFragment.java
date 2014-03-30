@@ -84,16 +84,11 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.scvngr.levelup.views.gallery.AdapterView;
-import com.scvngr.levelup.views.gallery.AdapterView.OnItemClickListener;
-import com.scvngr.levelup.views.gallery.AdapterView.OnItemSelectedListener;
-import com.scvngr.levelup.views.gallery.Gallery;
 
 import org.mariotaku.menucomponent.widget.MenuBar;
 import org.mariotaku.refreshnow.widget.RefreshMode;
@@ -102,7 +97,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
-import de.vanita5.twittnuker.adapter.MediaPreviewAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -120,6 +114,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
+import de.vanita5.twittnuker.util.MediaPreviewUtils.OnMediaClickListener;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SmartBarUtils;
@@ -139,7 +134,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class StatusFragment extends ParcelableStatusesListFragment implements OnClickListener, Panes.Right,
-		OnItemClickListener, OnItemSelectedListener, OnSharedPreferenceChangeListener {
+            OnMediaClickListener, OnSharedPreferenceChangeListener {
 
 	private static final int LOADER_ID_STATUS = 1;
 	private static final int LOADER_ID_FOLLOW = 2;
@@ -162,18 +157,15 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	private ImageView mProfileImageView, mMapView;
 	private Button mFollowButton;
     private Button mRetryButton;
-	private View mMainContent, mFollowIndicator, mImagePreviewContainer, mGalleryContainer, mLocationContainer,
-			mLocationBackgroundView;
+    private View mMainContent, mFollowIndicator, mImagePreviewContainer, mLocationContainer, mLocationBackgroundView;
 	private ColorLabelRelativeLayout mProfileView;
 	private MenuBar mMenuBar;
     private ProgressBar mDetailsLoadProgress, mFollowInfoProgress;
-	private Gallery mImagePreviewGallery;
-	private ImageButton mPrevImage, mNextImage;
+    private LinearLayout mImagePreviewGrid;
 	private View mHeaderView;
 	private View mLoadImagesIndicator;
     private ExtendedFrameLayout mDetailsContainer;
 	private ListView mListView;
-	private MediaPreviewAdapter mImagePreviewAdapter;
 
 	private LoadConversationTask mConversationTask;
 
@@ -455,7 +447,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		mImageLoader = application.getImageLoaderWrapper();
 		mTwitterWrapper = getTwitterWrapper();
 		mLoadMoreAutomatically = mPreferences.getBoolean(KEY_LOAD_MORE_AUTOMATICALLY, false);
-		mImagePreviewAdapter = new MediaPreviewAdapter(getActivity());
 		mLoadImagesIndicator.setOnClickListener(this);
 		mInReplyToView.setOnClickListener(this);
 		mRepliesView.setOnClickListener(this);
@@ -468,11 +459,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		mMenuBar.setIsBottomBar(true);
 		mMenuBar.setOnMenuItemClickListener(mMenuItemClickListener);
 		getStatus(false);
-		mImagePreviewGallery.setAdapter(mImagePreviewAdapter);
-		mImagePreviewGallery.setOnItemClickListener(this);
-		mImagePreviewGallery.setOnItemSelectedListener(this);
-		mPrevImage.setOnClickListener(this);
-		mNextImage.setOnClickListener(this);
 	}
 
 	@Override
@@ -536,18 +522,20 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 						: mStatus.id);
 				break;
 			}
-			case R.id.prev_image: {
-				final int count = mImagePreviewAdapter.getCount(), pos = mImagePreviewGallery.getSelectedItemPosition();
-				if (count == 0 || pos == 0) return;
-				mImagePreviewGallery.setSelection(pos - 1, true);
-				break;
-			}
-			case R.id.next_image: {
-				final int count = mImagePreviewAdapter.getCount(), pos = mImagePreviewGallery.getSelectedItemPosition();
-				if (count == 0 || pos == count - 1) return;
-				mImagePreviewGallery.setSelection(pos + 1, true);
-				break;
-			}
+            // case R.id.prev_image: {
+            // final int count = mImagePreviewAdapter.getCount(), pos =
+            // mImagePreviewGallery.getSelectedItemPosition();
+            // if (count == 0 || pos == 0) return;
+            // mImagePreviewGallery.setSelection(pos - 1, true);
+            // break;
+            // }
+            // case R.id.next_image: {
+            // final int count = mImagePreviewAdapter.getCount(), pos =
+            // mImagePreviewGallery.getSelectedItemPosition();
+            // if (count == 0 || pos == count - 1) return;
+            // mImagePreviewGallery.setSelection(pos + 1, true);
+            // break;
+            // }
 		}
 
 	}
@@ -584,10 +572,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		mFollowIndicator = mHeaderView.findViewById(R.id.follow_indicator);
 		mFollowInfoProgress = (ProgressBar) mHeaderView.findViewById(R.id.follow_info_progress);
 		mProfileView = (ColorLabelRelativeLayout) mHeaderView.findViewById(R.id.profile);
-		mImagePreviewGallery = (Gallery) mHeaderView.findViewById(R.id.preview_gallery);
-		mGalleryContainer = mHeaderView.findViewById(R.id.gallery_container);
-		mPrevImage = (ImageButton) mHeaderView.findViewById(R.id.prev_image);
-		mNextImage = (ImageButton) mHeaderView.findViewById(R.id.next_image);
+        mImagePreviewGrid = (LinearLayout) mHeaderView.findViewById(R.id.image_grid);
 		mLoadImagesIndicator = mHeaderView.findViewById(R.id.load_images);
         mRetryButton = (Button) view.findViewById(R.id.retry);
 		final View cardView = mHeaderView.findViewById(R.id.card);
@@ -609,24 +594,14 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	}
 
 	@Override
-	public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-		final String image = mImagePreviewAdapter.getItem(position);
-		if (mStatus == null || image == null) return;
-		openImage(getActivity(), image, mStatus.is_possibly_sensitive);
+    public void onMediaClick(final View view, final ParcelableMedia media) {
+        final ParcelableStatus status = mStatus;
+        if (status == null) return;
+        openImage(getActivity(), media.url, mStatus.is_possibly_sensitive);
 	}
 
 	@Override
 	public void onItemsCleared() {
-
-	}
-
-	@Override
-	public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
-		updateImageSelectButton(position);
-	}
-
-	@Override
-	public void onNothingSelected(final AdapterView<?> parent) {
 
 	}
 
@@ -859,7 +834,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	}
 
 	private void clearPreviewImages() {
-		mImagePreviewAdapter.clear();
+        mImagePreviewGrid.removeAllViews();
 	}
 
 	private void getStatus(final boolean omit_intent_extra) {
@@ -881,24 +856,18 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 	private void hidePreviewImages() {
 		mLoadImagesIndicator.setVisibility(View.VISIBLE);
-		mGalleryContainer.setVisibility(View.GONE);
+        mImagePreviewGrid.setVisibility(View.GONE);
 	}
 
 	private void loadPreviewImages() {
 		if (mStatus == null) return;
 		mLoadImagesIndicator.setVisibility(View.GONE);
-		mGalleryContainer.setVisibility(View.VISIBLE);
-		mImagePreviewAdapter.clear();
-        // final List<String> images =
-        // MediaPreviewUtils.getSupportedLinksInStatus(mStatus.text_html);
-        final List<String> images = new ArrayList<String>();
+        mImagePreviewGrid.setVisibility(View.VISIBLE);
+        mImagePreviewGrid.removeAllViews();
         if (mStatus.medias != null) {
-            for (final ParcelableMedia media : mStatus.medias) {
-                images.add(media.url);
-            }
+            final int maxColumns = getResources().getInteger(R.integer.grid_column_image_preview);
+            MediaPreviewUtils.addToLinearLayout(mImagePreviewGrid, mImageLoader, mStatus.medias, maxColumns, this);
         }
-		mImagePreviewAdapter.addAll(images, mStatus.is_possibly_sensitive);
-		updateImageSelectButton(mImagePreviewGallery.getSelectedItemPosition());
 	}
 
 	private boolean shouldUseNativeMenu() {
@@ -957,23 +926,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		final boolean enable = has_converstion && load_not_finished;
 		mInReplyToView.setVisibility(enable ? View.VISIBLE : View.GONE);
 		mInReplyToView.setClickable(enable);
-	}
-
-	private void updateImageSelectButton(final int position) {
-		final int count = mImagePreviewAdapter.getCount();
-		if (count <= 1) {
-			mPrevImage.setVisibility(View.GONE);
-			mNextImage.setVisibility(View.GONE);
-		} else if (position == 0) {
-			mPrevImage.setVisibility(View.GONE);
-			mNextImage.setVisibility(View.VISIBLE);
-		} else if (position == count - 1) {
-			mPrevImage.setVisibility(View.VISIBLE);
-			mNextImage.setVisibility(View.GONE);
-		} else {
-			mPrevImage.setVisibility(View.VISIBLE);
-			mNextImage.setVisibility(View.VISIBLE);
-		}
 	}
 
 	private void updateUserColor() {
@@ -1077,7 +1029,8 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 		@Override
 		public View getView(final int position, final View convertView, final ViewGroup parent) {
-			final View view = convertView != null ? convertView : mInflater.inflate(R.layout.image_preview_item, null);
+            final View view = convertView != null ? convertView : mInflater.inflate(
+                    R.layout.gallery_item_image_preview, null);
 			final ImageView image = (ImageView) view.findViewById(R.id.image);
 			final PreviewMedia spec = getItem(position);
 			mImageLoader.displayPreviewImage(image, spec != null ? spec.url : null);
