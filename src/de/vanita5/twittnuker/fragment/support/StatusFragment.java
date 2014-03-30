@@ -593,16 +593,16 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		super.onDestroyView();
 	}
 
+    @Override
+    public void onItemsCleared() {
+
+    }
+
 	@Override
     public void onMediaClick(final View view, final ParcelableMedia media) {
         final ParcelableStatus status = mStatus;
         if (status == null) return;
         openImage(getActivity(), media.url, mStatus.is_possibly_sensitive);
-	}
-
-	@Override
-	public void onItemsCleared() {
-
 	}
 
 	@Override

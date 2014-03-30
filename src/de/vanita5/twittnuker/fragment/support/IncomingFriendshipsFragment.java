@@ -24,15 +24,10 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.loader.support.IDsUsersLoader;
 import de.vanita5.twittnuker.loader.support.IncomingFriendshipsLoader;
-import de.vanita5.twittnuker.model.Account;
-import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
@@ -68,12 +63,8 @@ public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment 
 	}
 
 	@Override
-	protected void onPrepareItemMenu(final Menu menu) {
-	    final AccountWithCredentials account = Account.getAccountWithCredentials(getActivity(), getAccountId());
-	    if (AccountWithCredentials.isOfficialCredentials(getActivity(), account)) {
-			final MenuInflater inflater = new MenuInflater(getActivity());
-			inflater.inflate(R.menu.action_incoming_friendship, menu);
-		}
+    protected UserMenuDialogFragment createMenuDialog() {
+        return new IncomingFriendshipsMenuDialogFragment();
 	}
 
 }

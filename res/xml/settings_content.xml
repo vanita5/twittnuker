@@ -8,7 +8,7 @@
 		android:key="category_multimedia_contents"
 		android:title="@string/multimedia_contents">
 		<de.vanita5.twittnuker.preference.MediaUploaderPreference
-            android:defaultValue="none"
+            android:defaultValue=""
         	android:key="media_uploader"
         	android:summary="%s"
 			android:title="@string/image_uploader"/>
@@ -34,7 +34,7 @@
 		android:key="category_content"
 		android:title="@string/content">
 		<de.vanita5.twittnuker.preference.StatusShortenerPreference
-            android:defaultValue="none"
+            android:defaultValue=""
         	android:key="status_shortener"
         	android:summary="%s"
         	android:title="@string/status_shortener"/>
@@ -75,7 +75,7 @@
 			app:min="10"/>
 
         <de.vanita5.twittnuker.preference.TimelineSyncPreference
-        	android:defaultValue="none"
+        	android:defaultValue=""
         	android:key="timeline_sync_service"
         	android:summary="%s"
         	android:title="@string/timeline_sync_service"/>

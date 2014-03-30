@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.activity.support;
+package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -31,6 +31,7 @@ import android.view.MenuInflater;
 import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.support.MenuDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.Utils;
 

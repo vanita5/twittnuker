@@ -48,7 +48,6 @@ import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.StatusMenuDialogFragment;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.model.Account;

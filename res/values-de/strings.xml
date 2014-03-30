@@ -98,7 +98,7 @@
     <string name="sources">Quellen</string>
     <string name="content">Inhalt</string>
     <string name="customize">Anpassen</string>
-    <string name="set_nickname">Spitznamen eingeben</string>
+    <string name="set_nickname">Spitzname</string>
     <string name="set_color">Farbschema</string>
     <string name="clear">Löschen</string>
     <string name="pick_color">Wähle Farbe</string>
@@ -156,7 +156,7 @@
     <string name="block">Blockieren</string>
     <string name="unblock">Blockierung aufheben</string>
     <string name="report_for_spam">Spam melden</string>
-    <string name="mute_user">Benutzer stummschalten</string>
+    <string name="mute_user">Stummschalten</string>
     <string name="user_muted">Benutzer zur Filterliste hinzugefügt. Tweets dieses Benutzers erscheinen nicht in der Zeitleiste oder bei Erwähnungen.</string>
     <string name="users_muted">Benutzer zur Filterliste hinzugefügt. Tweets dieser Benutzer erscheinen nicht in der Zeitleiste oder bei Erwähnungen.</string>
     <string name="inbox">Eingang</string>
@@ -406,7 +406,7 @@
     <string name="link_to_quoted_status">Zitierten Tweet verlinken</string>
     <string name="followed_user">Folge <xliff:g id="user">%s</xliff:g>.</string>
     <string name="sent_follow_request_to_user">Follower-Anfrage an <xliff:g id="user">%s</xliff:g> senden.</string>
-    <string name="unfollowed_user">Entfolge <xliff:g id="user">%s</xliff:g>.</string>
+    <string name="unfollowed_user"><xliff:g id="user">%s</xliff:g> entfolgt</string>
     <string name="blocked_user"><xliff:g id="user">%s</xliff:g> blockiert.</string>
     <string name="unblocked_user"><xliff:g id="user">%s</xliff:g> nicht mehr blockiert.</string>
     <string name="profile_updated">Profil aktualisiert.</string>
@@ -444,7 +444,7 @@
     <string name="select_user_list">Wähle Benutzer-Liste aus</string>
     <string name="select_user">Benutzer wählen</string>
     <string name="created_by">Erstellt von <xliff:g id="created_by">%s</xliff:g></string>
-    <string name="add_to_list">Zur Liste hinzufügen</string>
+    <string name="add_to_list">Zu Liste hinzufügen</string>
     <string name="account_delete_confirm_title">Account löschen</string>
     <string name="account_delete_confirm_message">Dieser Account wird von Twittnuker gelöscht.</string>
     <string name="theme">Theme</string>
@@ -559,7 +559,7 @@
     <string name="preparing_database_toast">Bereite Datenbank vor, bitte hab etwas Geduld.</string>
     <string name="action_name_saved_at_time"><xliff:g id="action">%1$s</xliff:g>, gespeichert um <xliff:g id="time">%2$s</xliff:g></string>
     <string name="update_status">Tweet senden</string>
-    <string name="sending_direct_message">Direktnachricht senden</string>
+    <string name="sending_direct_message">Direktnachricht</string>
     <string name="tab_display_option">Tab Anzeigeoptionen</string>
     <string name="livewp_daydream_enabled_message">Here\'s a little present for you, find it in your system settings :)</string>
     <string name="center">Mitte</string>
