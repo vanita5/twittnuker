@@ -53,7 +53,7 @@
     <string name="unfavorite">取消收藏</string>
     <string name="reply">回复</string>
     <string name="share">分享</string>
-    <string name="share_via_twidere">通过 Twittnuker 分享</string>
+    <string name="share_via_twittnuker">通过 Twittnuker 分享</string>
     <string name="view_image">图像</string>
     <string name="view_map">地图</string>
     <string name="view_status">推文</string>

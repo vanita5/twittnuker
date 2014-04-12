@@ -53,7 +53,7 @@
     <string name="unfavorite">เลิกถูกใจ</string>
     <string name="reply">ตอบ</string>
     <string name="share">แบ่งปัน</string>
-    <string name="share_via_twidere">แบ่งปันผ่าน Twittnuker</string>
+    <string name="share_via_twittnuker">แบ่งปันผ่าน Twittnuker</string>
     <string name="view_image">รูปภาพ</string>
     <string name="view_map">แผนที่</string>
     <string name="view_status">อ่านทวีต</string>
@@ -316,11 +316,6 @@
     <string name="action_accepting_follow_request">กำลังตอบรับคำขอติดตาม</string>
     <string name="action_denying_follow_request">กำลังปฏิเสธคำขอติดตาม</string>
     <string name="status_is_duplicate">คุณทวีตข้อความซ้ำกัน</string>
-    <string name="data_profiling_summary">Twittnuker เข้าร่วมเป็นส่วนหนึ่งของการวิจัยเกี่ยวกับการคาดเดาพฤติกรรมทางสังคมของผู้ใช้เพื่อแคชข้อมูลล่วงหน้า โดยนักศึกษาในมหาวิทยาลัย UC Davis\n\nเหล่านี้คือข้อมูลและเหตุผลที่เราต้องการตรวจเก็บ:\nข้อมูลที่ตรวจเก็บ:\n1. ID ทวิตเตอร์ของผู้ใช้\n2. ไทม์ไลน์โฮมของผู้ใช้ (การคาดเดาข้อมูลมีพื้นฐานจากความสนใจและพฤติกรรมทางสังคมของผู้ใช้)\n3. ทวีตที่ผู้ใช้เปิดดู (การคาดเดาข้อมูลมีพื้นฐานจากความสนใจและพฤติกรรมทางสังคมของผู้ใช้)\n4. ตำแหน่งที่อยู่ของผู้ใช้อย่างคร่าวๆ (สำหรับใช้คาดเดาว่าเมื่อไหร่ผู้ใช้จะะเข้าใช้ทวิตเตอร์)\n\nTwittnuker จะส่งข้อมูลที่ตรวจเก็บได้ผ่านทาง Wifi และเมื่ออุกกรณ์ของผู้ใช้นั้นกำลังชาร์จแบตเตอรี่อยู่เท่านั้น ดังนั้นจึงวางใจได้ว่าจะไม่ทำให้มีการใช้ปริมาณแพ็คเกจข้อมูลเพิ่มเติมใดๆ รวมถึงไม่เปลืองแบตผู้ใช้ด้วยเช่นกัน</string>
-    <string name="data_profiling">สถิติการใช้งาน</string>
-    <string name="enable_data_profiling">เปิดการรายงาน</string>
-    <string name="data_profiling_notification_title">สถิติการใช้งาน</string>
-    <string name="data_profiling_notification_desc">เปิดหรือปิดการติดตามสถิติการใช้งาน</string>
     <string name="silent_notifications">การเตือนแบบเงียบ</string>
     <string name="silent_notifications_summary">ปิดเสียงเตือนและการสั่นสำหรับการแจ้งเตือน</string>
     <string name="disable_background_service">ปิดการทำงานเซอร์วิสที่ทำงานอยู่เบื้องหลัง</string>

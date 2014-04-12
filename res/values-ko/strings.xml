@@ -53,7 +53,7 @@
     <string name="unfavorite">관심글 해제</string>
     <string name="reply">답변</string>
     <string name="share">공유</string>
-    <string name="share_via_twidere">Twittnuker를 통해 공유</string>
+    <string name="share_via_twittnuker">Twittnuker를 통해 공유</string>
     <string name="view_image">이미지</string>
     <string name="view_map">지도</string>
     <string name="view_status">트윗 보기</string>
@@ -233,7 +233,6 @@
     <string name="image_uploader_default">기본 (Twitter)</string>
     <string name="home_refresh">타임라인에서 새로고침</string>
     <string name="error_message_image_upload_failed">이미지 올리기 실패.</string>
-    <string name="error_message_image_uploader_not_found">이미지 업로더를 찾을 수 없습니다. 아마도 삭제되었을겁니다.</string>
     <string name="image_upload_format">이미지 올릴 때 양식</string>
     <string name="image_upload_format_summary">\"[LINK]\" = 이미지 주소\n\"[TEXT]\" = 트윗할 내용\n(플러그인에서만)</string>
     <string name="tweet_shortener">트윗 축약 서비스</string>
@@ -241,7 +240,6 @@
     <string name="error_message_status_too_long">트윗이 너무 깁니다. </string>
     <string name="error_message_no_content">내용 없음</string>
     <string name="error_message_tweet_shorten_failed">트윗 축약 실패.</string>
-    <string name="error_message_tweet_shortener_not_found">트윗 축약 서비스를 찾을 수 없습니다. 아마도 삭제 되었을겁니다.</string>
     <string name="multimedia_contents">멀티미디어 콘텐츠</string>
     <string name="show_absolute_time">절대시간 표시</string>
     <string name="show_absolute_time_summary">트윗에 절대시간 표시</string>
@@ -504,7 +502,6 @@
     <string name="report_user"><xliff:g id="name">%s</xliff:g>님을 스팸 신고하기</string>
     <string name="report_user_confirm_message"><xliff:g id="name">%s</xliff:g>님을 스팸 신고하겠습니까? 이 사용자를 차단하게 됩니다.</string>
     <string name="twidere_test">Twittnuker 테스트</string>
-    <string name="donate_via_paypal">페이팔로 후원하기</string>
     <string name="pay_via_paypal">페이팔로 직접 지불</string>
     <string name="pay_via_paypal_summary">\"This recipient is not eligible to receive funds\"라고 표시되면 이쪽으로 기부하여 주십시오.</string>
     <string name="donate_via_alipay">Alplay로 기부</string>

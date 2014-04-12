@@ -52,7 +52,7 @@
     <string name="unfavorite">Togli dai preferiti</string>
     <string name="reply">Rispondi</string>
     <string name="share">Condividi</string>
-    <string name="share_via_twidere">Condividi tramite Twittnuker</string>
+    <string name="share_via_twittnuker">Condividi tramite Twittnuker</string>
     <string name="view_image">Immagine</string>
     <string name="view_map">Mappa</string>
     <string name="view_status">Vedi Tweet</string>
@@ -500,7 +500,6 @@
     <string name="report_user">Segnala <xliff:g id="name">%s</xliff:g></string>
     <string name="report_user_confirm_message">Segnalare <xliff:g id="name">%s</xliff:g> per spam? Bloccherai anche questo utente.</string>
     <string name="twidere_test">Twittnuker test</string>
-    <string name="donate_via_paypal">Donazione via PayPal</string>
     <string name="pay_via_paypal">Paga direttamente con PayPal</string>
     <string name="pay_via_paypal_summary">Quando vedi \"Questo destinatario non può ricevere fondi\"</string>
     <string name="donate_via_alipay">Dona via Alipay</string>

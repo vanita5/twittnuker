@@ -53,7 +53,7 @@
     <string name="unfavorite">お気に入りから削除</string>
     <string name="reply">返信</string>
     <string name="share">共有</string>
-    <string name="share_via_twidere">Twittnukerで共有</string>
+    <string name="share_via_twittnuker">Twittnukerで共有</string>
     <string name="view_image">画像</string>
     <string name="view_map">地図</string>
     <string name="view_status">ツイート</string>
