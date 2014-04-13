@@ -39,7 +39,7 @@ dependencies {
     compile 'org.apache.httpcomponents:httpmime:4.2.1'
     compile 'org.mariotaku:menucomponent:0.2-SNAPSHOT'
     compile 'org.mariotaku:refreshnow:0.1.2-SNAPSHOT'
-    compile 'com.etsy.android.grid:library:1.0.3'
+    compile 'com.etsy.android.grid:library:1.0.4'
     compile 'com.github.castorflex.smoothprogressbar:library:0.3.1'
     compile 'com.commonsware.cwac:merge:1.0.1'
     compile 'com.commonsware.cwac:sacklist:1.0.0'
