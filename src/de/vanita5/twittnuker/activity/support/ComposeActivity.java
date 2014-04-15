@@ -97,7 +97,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.example.android.listviewdragginganimation.DraggableArrayAdapter;
+import org.mariotaku.dynamicgridview.DraggableArrayAdapter;
 import com.scvngr.levelup.views.gallery.AdapterView;
 import com.scvngr.levelup.views.gallery.AdapterView.OnItemClickListener;
 import com.scvngr.levelup.views.gallery.AdapterView.OnItemLongClickListener;
@@ -128,6 +128,7 @@ import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -205,10 +206,6 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	private final Rect mWindowDecorHitRect = new Rect();
 
-	public void addMedia(final ParcelableMediaUpdate media) {
-		mMediaPreviewAdapter.add(media);
-	}
-
 	@Override
 	public void afterTextChanged(final Editable s) {
 
@@ -217,19 +214,6 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	@Override
 	public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
 
-	}
-
-	public void clearMedia() {
-		mMediaPreviewAdapter.clear();
-	}
-
-	public ParcelableMediaUpdate[] getMedias() {
-		final List<ParcelableMediaUpdate> list = getMediasList();
-		return list.toArray(new ParcelableMediaUpdate[list.size()]);
-		}
-
-	public List<ParcelableMediaUpdate> getMediasList() {
-		return mMediaPreviewAdapter.getAsList();
 	}
 
     @Override
@@ -570,12 +554,13 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	public void removeAllMedia(final List<ParcelableMediaUpdate> list) {
 		mMediaPreviewAdapter.removeAll(list);
+		updateMediasPreview();
 	}
 
 	public void saveToDrafts() {
 		final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
 		final ParcelableStatusUpdate.Builder builder = new ParcelableStatusUpdate.Builder();
-        builder.accounts(Account.getAccounts(this, mAccountIds));
+		builder.accounts(Account.getAccounts(this, mSendAccountIds));
 		builder.text(text);
 		builder.inReplyToStatusId(mInReplyToStatusId);
 		builder.location(mRecentLocation);
@@ -710,6 +695,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
         mBottomMenuBar.setMaxItemsShown(maxItemsShown);
         setMenu();
         updateAccountSelection();
+		updateMediasPreview();
     }
 
 	@Override
@@ -738,8 +724,19 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		mTitleView.setText(title);
 	}
 
+	private void addMedia(final ParcelableMediaUpdate media) {
+		mMediaPreviewAdapter.add(media);
+		updateMediasPreview();
+	}
+
 	private void addMedias(final List<ParcelableMediaUpdate> medias) {
 		mMediaPreviewAdapter.addAll(medias);
+		updateMediasPreview();
+	}
+
+	private void clearMedia() {
+		mMediaPreviewAdapter.clear();
+		updateMediasPreview();
 	}
 
 	private Uri createTempImageUri() {
@@ -773,6 +770,15 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			Crouton.showText(this, R.string.cannot_get_location, CroutonStyle.ALERT);
 		}
 		return provider != null;
+	}
+
+	private ParcelableMediaUpdate[] getMedias() {
+		final List<ParcelableMediaUpdate> list = getMediasList();
+		return list.toArray(new ParcelableMediaUpdate[list.size()]);
+	}
+
+	private List<ParcelableMediaUpdate> getMediasList() {
+		return mMediaPreviewAdapter.getAsList();
 	}
 
 	private boolean handleDefaultIntent(final Intent intent) {
@@ -931,7 +937,6 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	private void setCommonMenu(final Menu menu) {
 		final boolean hasMedia = hasMedia();
-		final int activatedColor = getUserThemeColor(this);
 //		final MenuItem itemAddImageSubmenu = menu.findItem(R.id.add_image_submenu);
 //		if (itemAddImageSubmenu != null) {
 //			final Drawable iconAddImage = itemAddImageSubmenu.getIcon();
@@ -944,17 +949,12 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 //		}
 		final MenuItem itemAttachLocation = menu.findItem(MENU_ADD_LOCATION);
 		if (itemAttachLocation != null) {
-			final Drawable iconAttachLocation = itemAttachLocation.getIcon().mutate();
-			final boolean attach_location = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
-			if (attach_location && getLocation()) {
-				iconAttachLocation.setColorFilter(activatedColor, Mode.SRC_ATOP);
-				itemAttachLocation.setTitle(R.string.remove_location);
+			final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
+			if (attachLocation && getLocation()) {
 				itemAttachLocation.setChecked(true);
 			} else {
 				setProgressVisibility(false);
 				mPreferences.edit().putBoolean(KEY_ATTACH_LOCATION, false).commit();
-				iconAttachLocation.clearColorFilter();
-				itemAttachLocation.setTitle(R.string.add_location);
 				itemAttachLocation.setChecked(false);
 			}
 		}
@@ -962,27 +962,13 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		if (viewItem != null) {
 			viewItem.setVisible(mInReplyToStatus != null);
 		}
-		for (int i = 0, j = menu.size(); i < j; i++) {
-			final MenuItem item = menu.getItem(i);
-			if (item.getGroupId() == MENU_GROUP_IMAGE_EXTENSION) {
-				item.setVisible(hasMedia);
-				item.setEnabled(hasMedia);
-			}
-		}
+		menu.setGroupEnabled(MENU_GROUP_IMAGE_EXTENSION, hasMedia);
+		menu.setGroupVisible(MENU_GROUP_IMAGE_EXTENSION, hasMedia);
 		final MenuItem itemToggleSensitive = menu.findItem(MENU_TOGGLE_SENSITIVE);
 		if (itemToggleSensitive != null) {
 			itemToggleSensitive.setVisible(hasMedia);
-			itemToggleSensitive.setChecked(mIsPossiblySensitive);
-			if (hasMedia) {
-				final Drawable iconToggleSensitive = itemToggleSensitive.getIcon().mutate();
-				if (mIsPossiblySensitive) {
-					itemToggleSensitive.setTitle(R.string.remove_sensitive_mark);
-					iconToggleSensitive.setColorFilter(activatedColor, Mode.SRC_ATOP);
-				} else {
-					itemToggleSensitive.setTitle(R.string.mark_as_sensitive);
-					iconToggleSensitive.clearColorFilter();
-				}
-			}
+			itemToggleSensitive.setEnabled(hasMedia);
+			itemToggleSensitive.setChecked(hasMedia && mIsPossiblySensitive);
 		}
 	}
 
@@ -1059,6 +1045,13 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			mAccountSelectorAdapter.setAccountSelected(accountId, true);
 		}
 		mColorIndicator.drawEnd(getAccountColors(this, mSendAccountIds));
+	}
+
+	private void updateMediasPreview() {
+		final int count = mMediaPreviewAdapter.getCount();
+		final Resources res = getResources();
+		final int maxColumns = res.getInteger(R.integer.grid_column_image_preview);
+		mMediasPreviewGrid.setNumColumns(MathUtils.clamp(count, maxColumns, 1));
 	}
 
 	private void updateStatus() {
@@ -1448,7 +1441,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		private final ImageLoaderWrapper mImageLoader;
 
 		public MediaPreviewAdapter(final Context context) {
-			super(context, R.layout.grid_item_image_preview);
+			super(context, R.layout.grid_item_media_editor);
 			mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
 		}
 
@@ -1456,7 +1449,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		public View getView(final int position, final View convertView, final ViewGroup parent) {
 			final View view = super.getView(position, convertView, parent);
 			final ParcelableMediaUpdate media = getItem(position);
-			final ImageView image = (ImageView) view.findViewById(R.id.image_preview_item);
+			final ImageView image = (ImageView) view.findViewById(R.id.image);
 			mImageLoader.displayPreviewImage(image, media.uri);
 			return view;
 		}

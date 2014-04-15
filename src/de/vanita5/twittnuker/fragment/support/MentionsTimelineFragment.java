@@ -33,7 +33,7 @@ import android.os.Bundle;
 import de.vanita5.twittnuker.provider.TweetStore.Mentions;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
-public class MentionsFragment extends CursorStatusesListFragment {
+public class MentionsTimelineFragment extends CursorStatusesListFragment {
 
 	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
 

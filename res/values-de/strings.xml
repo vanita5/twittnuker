@@ -344,9 +344,9 @@
     <string name="edit_profile">Profil bearbeiten</string>
     <string name="display_sensitive_contents">Zeige kritische Inhalte</string>
     <string name="display_sensitive_contents_summary">Kritische Inhalte ohne Warnung anzeigen</string>
-    <string name="sensitive_content_warning">Dieser Tweet könnte heikelen Inhalt haben, fortfahren?</string>
-    <string name="mark_as_sensitive">Als heikel markieren</string>
-    <string name="remove_sensitive_mark">Markieren als heikel entfernen</string>
+    <string name="sensitive_content_warning">Dieser Tweet könnte heiklen Inhalt haben. Fortfahren?</string>
+    <string name="mark_as_sensitive">#NSFW</string>
+    <string name="remove_sensitive_mark">Nicht als #NSFW markieren</string>
     <string name="none">Nichts</string>
     <string name="large">Groß</string>
     <string name="small">Klein</string>
@@ -612,6 +612,13 @@
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
     <string name="unread_count_summary">Zeigt die Anzahl an ungelesenen Tweets oder Nachrichten im Tab an</string>
     <string name="link_to_quoted_status_summary">Fügt beim zitieren den Link zum originalen Tweet hinzu</string>
+
+    <string name="plain_list_style">(D) Plain list style</string>
+    <string name="want_old_icon_back">(D) Want old icon back?</string>
+    <string name="icon_restored_message">(D) Icon restored!</string>
+    <string name="add">(D) Hinzufügen</string>
+    <string name="N_medias_quantity_one">(D) <xliff:g id="items">%d</xliff:g> media</string>
+    <string name="N_medias_quantity_other">(D) <xliff:g id="items">%d</xliff:g> medias</string>
 
     <string name="twidere_developed_by">Basiert auf Twidere von</string>
     <string name="translation_destination">Sprache zum Übersetzen</string>

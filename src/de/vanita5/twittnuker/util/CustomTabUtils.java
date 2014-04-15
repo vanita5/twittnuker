@@ -42,7 +42,7 @@ import de.vanita5.twittnuker.fragment.support.ActivitiesByFriendsFragment;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.HomeTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.InvalidTabFragment;
-import de.vanita5.twittnuker.fragment.support.MentionsFragment;
+import de.vanita5.twittnuker.fragment.support.MentionsTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.StaggeredHomeTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.SearchStatusesFragment;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment;
@@ -69,7 +69,7 @@ public class CustomTabUtils implements Constants {
 				HomeTimelineFragment.class, R.string.home, R.drawable.ic_iconic_action_home,
 				CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 0, false));
 		CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_MENTIONS_TIMELINE, new CustomTabConfiguration(
-				MentionsFragment.class, R.string.mentions, R.drawable.ic_iconic_action_mention,
+				MentionsTimelineFragment.class, R.string.mentions, R.drawable.ic_iconic_action_mention,
 				CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 1, false));
 		CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_DIRECT_MESSAGES, new CustomTabConfiguration(
 				DirectMessagesFragment.class, R.string.direct_messages, R.drawable.ic_iconic_action_message,
