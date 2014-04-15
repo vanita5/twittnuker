@@ -35,6 +35,7 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.DraftItem;
+import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
@@ -61,14 +62,14 @@ public class DraftsAdapter extends SimpleCursorAdapter {
 		final DraftViewHolder holder = (DraftViewHolder) view.getTag();
 		final long[] accountIds = ArrayUtils.parseLongArray(cursor.getString(mIndices.account_ids), ',');
 		final String text = cursor.getString(mIndices.text);
-		final String mediaUri = cursor.getString(mIndices.media_uri);
+		final ParcelableMediaUpdate[] medias = ParcelableMediaUpdate.fromJSONString(cursor.getString(mIndices.medias));
 		final long timestamp = cursor.getLong(mIndices.timestamp);
 		final int actionType = cursor.getInt(mIndices.action_type);
 		final String actionName = getActionName(context, actionType);
 		if (actionType == Drafts.ACTION_UPDATE_STATUS) {
+			final String mediaUri = medias != null && medias.length > 0 ? medias[0].uri : null;
 			holder.image_preview_container.setVisibility(TextUtils.isEmpty(mediaUri) ? View.GONE : View.VISIBLE);
-			if (!TextUtils.isEmpty(mediaUri)
-					&& !mediaUri.equals(mImageLoadingHandler.getLoadingUri(holder.image_preview))) {
+			if (mediaUri != null && !mediaUri.equals(mImageLoadingHandler.getLoadingUri(holder.image_preview))) {
 				mImageLoader.displayPreviewImage(holder.image_preview, mediaUri, mImageLoadingHandler);
 			}
 		} else {

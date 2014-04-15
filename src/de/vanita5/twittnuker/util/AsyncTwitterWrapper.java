@@ -57,6 +57,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableLocation;
+import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -377,22 +378,21 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		return mAsyncTaskManager.add(task, true);
 	}
 
-	public int updateProfileImage(final long accountId, final Uri image_uri, final boolean delete_image) {
+	public int updateProfileImage(final long accountId, final Uri imageUri, final boolean deleteImage) {
 		final UpdateProfileImageTask task = new UpdateProfileImageTask(mContext, mAsyncTaskManager, accountId,
-				image_uri, delete_image);
+				imageUri, deleteImage);
 		return mAsyncTaskManager.add(task, true);
 	}
 
 	public int updateStatusAsync(final long[] accountIds, final String text, final ParcelableLocation location,
-			final Uri media_uri, final int mediaType, final long in_reply_to_status_id,
-			final boolean is_possibly_sensitive) {
+								 final ParcelableMediaUpdate[] medias, final long inReplyToStatusId, final boolean isPossiblySensitive) {
 		final ParcelableStatusUpdate.Builder builder = new ParcelableStatusUpdate.Builder();
         builder.accounts(Account.getAccounts(mContext, accountIds));
 		builder.text(text);
 		builder.location(location);
-		builder.media(media_uri, mediaType);
-		builder.inReplyToStatusId(in_reply_to_status_id);
-		builder.isPossiblySensitive(is_possibly_sensitive);
+		builder.medias(medias);
+		builder.inReplyToStatusId(inReplyToStatusId);
+		builder.isPossiblySensitive(isPossiblySensitive);
 		return updateStatusesAsync(builder.build());
 	}
 

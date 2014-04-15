@@ -27,9 +27,9 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
-import de.vanita5.twittnuker.view.iface.IExtendedViewGroup;
+import de.vanita5.twittnuker.view.iface.IExtendedView;
 
-public class ExtendedRelativeLayout extends RelativeLayout implements IExtendedViewGroup {
+public class ExtendedRelativeLayout extends RelativeLayout implements IExtendedView {
 
 	private TouchInterceptor mTouchInterceptor;
 	private OnSizeChangedListener mOnSizeChangedListener;

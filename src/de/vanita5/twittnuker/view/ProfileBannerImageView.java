@@ -32,6 +32,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -44,10 +45,12 @@ public class ProfileBannerImageView extends ForegroundImageView implements IExte
 	private static final int[] COLORS_REVERSED = new int[] { 0x00FFFFFF, 0xFFFFFFFF };
 	private static final float[] POSITIONS = new float[] { 0.0f, 1.0f };
 	private static final PorterDuffXfermode DST_IN = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
-	private final Paint mPaint = new Paint();
 
-	private LinearGradient mShader;
 	private OnSizeChangedListener mOnSizeChangedListener;
+	private TouchInterceptor mTouchInterceptor;
+
+	private final Paint mPaint = new Paint();
+	private LinearGradient mShader;
 
 	public ProfileBannerImageView(final Context context) {
 		this(context, null);
@@ -67,8 +70,22 @@ public class ProfileBannerImageView extends ForegroundImageView implements IExte
 	}
 
 	@Override
+	public final boolean onTouchEvent(final MotionEvent event) {
+		if (mTouchInterceptor != null) {
+			final boolean ret = mTouchInterceptor.onTouchEvent(this, event);
+			if (ret) return true;
+		}
+		return super.onTouchEvent(event);
+	}
+
+	@Override
 	public final void setOnSizeChangedListener(final OnSizeChangedListener listener) {
 		mOnSizeChangedListener = listener;
+	}
+
+	@Override
+	public final void setTouchInterceptor(final TouchInterceptor listener) {
+		mTouchInterceptor = listener;
 	}
 
 	@Override

@@ -23,8 +23,10 @@
 package de.vanita5.twittnuker.adapter;
 
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.isCompactCards;
+import static de.vanita5.twittnuker.util.Utils.isPlainListStyle;
 
 import android.content.Context;
 import android.view.View;
@@ -53,13 +55,15 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 	private int mMaxAnimationPosition;
 
 	private MenuButtonClickListener mListener;
+	private final boolean mPlainList;
 
 	public BaseParcelableActivitiesAdapter(final Context context) {
-		this(context, isCompactCards(context));
+		this(context, isCompactCards(context), isPlainListStyle(context));
 	}
 
-	public BaseParcelableActivitiesAdapter(final Context context, final boolean compactCards) {
+	public BaseParcelableActivitiesAdapter(final Context context, final boolean compactCards, final boolean plainList) {
 		super(context, getItemResource(compactCards));
+		mPlainList = plainList;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mMultiSelectManager = app.getMultiSelectManager();
 		mImageLoader = app.getImageLoaderWrapper();
@@ -81,11 +85,21 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 		final ActivityViewHolder holder = tag instanceof ActivityViewHolder ? (ActivityViewHolder) tag
 				: new ActivityViewHolder(view);
 		if (!(tag instanceof ActivityViewHolder)) {
+			if (mPlainList) {
+				((View) holder.content).setPadding(0, 0, 0, 0);
+				holder.content.setItemBackground(null);
+			}
 			view.setTag(holder);
 		}
+		final boolean showAccountColor = isShowAccountColor();
+
 		holder.setTextSize(getTextSize());
 		holder.my_profile_image.setVisibility(View.GONE);
 		final ParcelableActivity item = getItem(position);
+		holder.setAccountColorEnabled(showAccountColor);
+		if (showAccountColor) {
+			holder.setAccountColor(getAccountColor(getContext(), item.account_id));
+		}
 		if (mShowAbsoluteTime) {
 			holder.time.setTime(item.activity_timestamp);
 		} else {

@@ -38,10 +38,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
+import android.widget.Toast;
 
 import com.twitter.Extractor;
 
@@ -51,6 +53,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
+import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -299,10 +302,12 @@ public class BackgroundOperationService extends IntentService implements Constan
 				}
 			} else {
 				showOkMessage(R.string.status_updated, false);
-				if (item.media_uri != null) {
-					final String path = getImagePathFromUri(this, item.media_uri);
-					if (path != null) {
-						new File(path).delete();
+				if (item.medias != null) {
+					for (final ParcelableMediaUpdate media : item.medias) {
+						final String path = getImagePathFromUri(this, Uri.parse(media.uri));
+						if (path != null) {
+							new File(path).delete();
+						}
 					}
 				}
 			}
@@ -339,6 +344,10 @@ public class BackgroundOperationService extends IntentService implements Constan
 		}
 	}
 
+	private void showToast(final int resId, final int duration) {
+		mHandler.post(new ToastRunnable(this, resId, duration));
+	}
+
     private List<SingleResponse<ParcelableStatus>> updateStatus(final Builder builder,
                                                                 final ParcelableStatusUpdate statusUpdate) {
 		final ArrayList<ContentValues> hashtag_values = new ArrayList<ContentValues>();
@@ -348,6 +357,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 			values.put(CachedHashtags.NAME, hashtag);
 			hashtag_values.add(values);
 		}
+		boolean notReplyToOther = false;
 		mResolver.bulkInsert(CachedHashtags.CONTENT_URI,
 				hashtag_values.toArray(new ContentValues[hashtag_values.size()]));
 
@@ -356,7 +366,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 		if (statusUpdate.accounts.length == 0) return Collections.emptyList();
 
 		try {
-            final String imagePath = getImagePathFromUri(this, statusUpdate.media_uri);
+			final boolean hasMedia = statusUpdate.medias != null && statusUpdate.medias.length > 0;
+			final String imagePath = hasMedia ? getImagePathFromUri(this, Uri.parse(statusUpdate.medias[0].uri)) : null;
             final File imageFile = imagePath != null ? new File(imagePath) : null;
 
 			String uploadResultUrl = null;
@@ -366,7 +377,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 			}
 
             final String unshortenedContent = mUseUploader && uploadResultUrl != null ? getImageUploadStatus(this,
-					uploadResultUrl.toString(), statusUpdate.text) : statusUpdate.text;
+					new String[] { uploadResultUrl.toString() }, statusUpdate.text) : statusUpdate.text;
 
 			final boolean shouldShorten = mValidator.getTweetLength(unshortenedContent) > mValidator.getMaxTweetLength();
 			String shortenedContent = "";
@@ -414,6 +425,12 @@ public class BackgroundOperationService extends IntentService implements Constan
 				}
 				try {
 					final Status twitter_result = twitter.updateStatus(status);
+					if (!notReplyToOther) {
+						final long inReplyToUserId = twitter_result.getInReplyToUserId();
+						if (inReplyToUserId <= 0) {
+							notReplyToOther = true;
+						}
+					}
                     final ParcelableStatus result = new ParcelableStatus(twitter_result, account.account_id, false);
 					results.add(new SingleResponse<ParcelableStatus>(result, null));
 				} catch (final TwitterException e) {
@@ -593,5 +610,24 @@ public class BackgroundOperationService extends IntentService implements Constan
 		public UpdateStatusException(final Context context, final int message) {
 			super(context.getString(message));
 		}
+	}
+
+	private static class ToastRunnable implements Runnable {
+		private final Context context;
+		private final int resId;
+		private final int duration;
+
+		public ToastRunnable(final Context context, final int resId, final int duration) {
+			this.context = context;
+			this.resId = resId;
+			this.duration = duration;
+		}
+
+		@Override
+		public void run() {
+			Toast.makeText(context, resId, duration).show();
+
+		}
+
 	}
 }

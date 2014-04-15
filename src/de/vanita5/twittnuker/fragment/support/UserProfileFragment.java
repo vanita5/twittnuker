@@ -85,8 +85,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -138,7 +140,7 @@ import java.util.Locale;
 
 public class UserProfileFragment extends BaseSupportListFragment implements OnClickListener, OnItemClickListener,
 		OnItemLongClickListener, OnMenuItemClickListener, OnLinkClickListener, Panes.Right, OnSizeChangedListener,
-		OnSharedPreferenceChangeListener {
+		OnSharedPreferenceChangeListener, OnTouchListener {
 
 	private static final int LOADER_ID_USER = 1;
 	private static final int LOADER_ID_FRIENDSHIP = 2;
@@ -159,6 +161,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
     private View mErrorRetryContainer;
     private View mFollowingYouIndicator;
     private View mMainContent;
+	private View mProfileBannerSpace;
     private ProgressBar mDetailsLoadProgress;
     private MenuBar mMenuBar;
 
@@ -459,6 +462,8 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
         mMenuBar.setIsBottomBar(true);
         mMenuBar.setOnMenuItemClickListener(this);
 
+		mProfileBannerSpace.setOnTouchListener(this);
+
 		setListAdapter(mAdapter);
 		getUserInfo(account_id, user_id, screen_name, false);
 	}
@@ -649,6 +654,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
         super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
         final float factor = -mHeaderView.getTop() / (mHeaderView.getWidth() * 0.5f);
         mProfileBannerView.setAlpha(1.0f - factor);
+		mProfileBannerView.setTranslationY(mHeaderView.getTop() / 2);
     }
 
     @Override
@@ -680,6 +686,11 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
         super.onStop();
     }
 
+	@Override
+	public boolean onTouch(final View v, final MotionEvent event) {
+		return mProfileBannerView.dispatchTouchEvent(event);
+	}
+
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         final Context context = view.getContext();
@@ -709,12 +720,9 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
         mLocationContainer = mHeaderView.findViewById(R.id.location_container);
         mURLContainer = mHeaderView.findViewById(R.id.url_container);
         mFollowingYouIndicator = mHeaderView.findViewById(R.id.following_you_indicator);
+		mProfileBannerSpace = mHeaderView.findViewById(R.id.profile_banner_space);
         final View cardView = mHeaderView.findViewById(R.id.card);
         ThemeUtils.applyThemeAlphaToDrawable(context, cardView.getBackground());
-        // final View profileBottomLayer =
-        // mHeaderView.findViewById(R.id.profile_layer_bottom);
-        // ViewAccessor.setBackground(profileBottomLayer,
-        // ThemeUtils.getWindowBackground(cotnext));
     }
 
     private void getFriendship() {

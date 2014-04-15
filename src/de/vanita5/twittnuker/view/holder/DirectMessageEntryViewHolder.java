@@ -31,14 +31,14 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShortTimeView;
-import de.vanita5.twittnuker.view.iface.IColorLabelView;
+import de.vanita5.twittnuker.view.iface.ICardItemView;
 
 public class DirectMessageEntryViewHolder extends CardViewHolder {
 
 	public final ImageView profile_image;
 	public final TextView name, screen_name, text;
 	public final ShortTimeView time;
-	private final IColorLabelView content;
+	public final ICardItemView content;
 	private float text_size;
 	private boolean account_color_enabled;
 	private final boolean is_rtl;
@@ -46,7 +46,7 @@ public class DirectMessageEntryViewHolder extends CardViewHolder {
 	public DirectMessageEntryViewHolder(final View view) {
 		super(view);
 		final Context context = view.getContext();
-		content = (IColorLabelView) findViewById(R.id.content);
+		content = (ICardItemView) findViewById(R.id.content);
 		profile_image = (ImageView) findViewById(R.id.profile_image);
 		name = (TextView) findViewById(R.id.name);
 		screen_name = (TextView) findViewById(R.id.screen_name);

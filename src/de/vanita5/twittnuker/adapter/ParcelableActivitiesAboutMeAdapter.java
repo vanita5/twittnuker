@@ -46,7 +46,6 @@ import de.vanita5.twittnuker.view.holder.ActivityViewHolder;
 
 public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivitiesAdapter {
 
-	private final Context mContext;
 	private final ImageLoadingHandler mImageLoadingHandler;
 
 	private boolean mGapDisallowed;
@@ -55,9 +54,8 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 	private boolean mDisplayImagePreview;
 	private boolean mDisplaySensitiveContents;
 
-	public ParcelableActivitiesAboutMeAdapter(final Context context) {
-		super(context);
-		mContext = context;
+	public ParcelableActivitiesAboutMeAdapter(final Context context, final boolean compactCards, final boolean plainList) {
+		super(context, compactCards, plainList);
 		mImageLoadingHandler = new ImageLoadingHandler();
 	}
 
@@ -205,6 +203,7 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 
 		final boolean showGap = status.is_gap && !mGapDisallowed && position != getCount() - 1;
 		final boolean displayProfileImage = isDisplayProfileImage();
+		final Context context = getContext();
 
 		holder.setShowAsGap(showGap);
 		holder.name.setVisibility(View.VISIBLE);
@@ -237,12 +236,12 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 			}
 
 			if (showAccountColor) {
-				holder.setAccountColor(getAccountColor(mContext, status.account_id));
+				holder.setAccountColor(getAccountColor(context, status.account_id));
 			}
 
 			final boolean isMyStatus = status.account_id == status.user_id;
             final boolean hasMedia = status.first_media != null;
-			holder.setUserColor(getUserColor(mContext, status.user_id));
+			holder.setUserColor(getUserColor(context, status.user_id));
 			holder.setHighlightColor(getCardHighlightColor(false, !mFavoritesHighlightDisabled && status.is_favorite,
 					status.is_retweet));
 			holder.setTextSize(getTextSize());
@@ -252,8 +251,8 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 			holder.setUserType(status.user_is_verified, status.user_is_protected);
 			holder.setDisplayNameFirst(isDisplayNameFirst());
 			holder.setNicknameOnly(isNicknameOnly());
-			final String nick = getUserNickname(mContext, status.user_id);
-			holder.name.setText(TextUtils.isEmpty(nick) ? status.user_name : isNicknameOnly() ? nick : mContext
+			final String nick = getUserNickname(context, status.user_id);
+			holder.name.setText(TextUtils.isEmpty(nick) ? status.user_name : isNicknameOnly() ? nick : context
 					.getString(R.string.name_with_nickname, status.user_name, nick));
 			holder.screen_name.setText("@" + status.user_screen_name);
 			if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {

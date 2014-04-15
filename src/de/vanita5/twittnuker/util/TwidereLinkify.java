@@ -42,7 +42,6 @@ import com.twitter.Extractor.Entity;
 import com.twitter.Regex;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.model.PreviewMedia;
 import de.vanita5.twittnuker.text.TwidereURLSpan;
 
 import java.util.List;

@@ -27,10 +27,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
-import de.vanita5.twittnuker.view.iface.IExtendedViewGroup;
+import de.vanita5.twittnuker.view.iface.IExtendedView;
 
 
-public class ExtendedLinearLayout extends LinearLayout implements IExtendedViewGroup {
+public class ExtendedLinearLayout extends LinearLayout implements IExtendedView {
 
 	private TouchInterceptor mTouchInterceptor;
 	private OnSizeChangedListener mOnSizeChangedListener;

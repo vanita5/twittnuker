@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class ArrayAdapter<T> extends BaseAdapter {
 
@@ -39,7 +40,7 @@ public class ArrayAdapter<T> extends BaseAdapter {
 	private final int mLayoutRes;
 	private int mDropDownLayoutRes;
 
-	private final ArrayList<T> mData = new ArrayList<T>();
+	protected final ArrayList<T> mData = new ArrayList<T>();
 	private final Context mContext;
 
 	public ArrayAdapter(final Context context, final int layoutRes) {
@@ -85,6 +86,10 @@ public class ArrayAdapter<T> extends BaseAdapter {
 		return -1;
 	}
 
+	public List<T> getAsList() {
+		return Collections.unmodifiableList(mData);
+	}
+
 	public Context getContext() {
 		return mContext;
 	}
@@ -119,6 +124,11 @@ public class ArrayAdapter<T> extends BaseAdapter {
 		final boolean ret = mData.remove(position) != null;
 		notifyDataSetChanged();
 		return ret;
+	}
+
+	public void removeAll(final List<T> collection) {
+		mData.removeAll(collection);
+		notifyDataSetChanged();
 	}
 
 	public void setDropDownViewResource(final int layoutRes) {

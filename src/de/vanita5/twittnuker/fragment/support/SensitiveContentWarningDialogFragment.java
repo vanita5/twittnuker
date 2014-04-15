@@ -28,7 +28,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -36,7 +35,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class SensitiveContentWarningDialogFragment extends BaseSupportDialogFragment implements OnClickListener {
+public class SensitiveContentWarningDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
 
 	@Override
 	public void onClick(final DialogInterface dialog, final int which) {

@@ -33,8 +33,10 @@ import android.support.v4.content.Loader;
 import android.widget.ListView;
 
 import de.vanita5.twittnuker.adapter.BaseParcelableActivitiesAdapter;
+import de.vanita5.twittnuker.loader.support.Twitter4JActivitiesLoader;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.util.Utils;
 
 import java.io.IOException;
 import java.util.List;
@@ -47,7 +49,8 @@ public abstract class BaseActivitiesListFragment extends BasePullToRefreshListFr
 
 	private List<ParcelableActivity> mData;
 
-	public abstract BaseParcelableActivitiesAdapter createListAdapter(Context context);
+	public abstract BaseParcelableActivitiesAdapter createListAdapter(Context context, boolean compactCards,
+																	  boolean plainListStyle);
 
 	@Override
 	public BaseParcelableActivitiesAdapter getListAdapter() {
@@ -57,11 +60,15 @@ public abstract class BaseActivitiesListFragment extends BasePullToRefreshListFr
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		mAdapter = createListAdapter(getActivity());
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+		final boolean plainListStyle = mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false);
+		final boolean compactCards = mPreferences.getBoolean(KEY_COMPACT_CARDS, false);
+		mAdapter = createListAdapter(getActivity(), compactCards, plainListStyle);
 		setListAdapter(mAdapter);
 		final ListView lv = getListView();
-		lv.setDivider(null);
+		if (!plainListStyle) {
+			lv.setDivider(null);
+		}
 		lv.setSelector(android.R.color.transparent);
 		getLoaderManager().initLoader(0, getArguments(), this);
 		setListShown(false);
@@ -79,6 +86,10 @@ public abstract class BaseActivitiesListFragment extends BasePullToRefreshListFr
 		setRefreshComplete();
 		mData = data;
 		mAdapter.setData(data);
+		if (loader instanceof Twitter4JActivitiesLoader) {
+			final boolean multipleAccounts = ((Twitter4JActivitiesLoader) loader).getAccountIds().length > 1;
+			mAdapter.setShowAccountColor(multipleAccounts);
+		}
 		setRefreshComplete();
 		setListShown(true);
 	}
@@ -103,6 +114,12 @@ public abstract class BaseActivitiesListFragment extends BasePullToRefreshListFr
 		mAdapter.setDisplayProfileImage(display_profile_image);
 		mAdapter.setTextSize(text_size);
 		mAdapter.setShowAbsoluteTime(show_absolute_time);
+	}
+
+	protected final long[] getAccountIds() {
+		final Bundle args = getArguments();
+		if (args != null && args.containsKey(EXTRA_ACCOUNT_ID)) return new long[] { args.getLong(EXTRA_ACCOUNT_ID) };
+		return Utils.getActivatedAccountIds(getActivity());
 	}
 
 	protected final List<ParcelableActivity> getData() {

@@ -52,7 +52,7 @@ public class ListMenuOverflowButton extends ImageView {
 		mHighlightColor = isInEditMode() ? 0 : ThemeUtils.getUserThemeColor(context);
 		mRect = new Rect();
 		final TypedArray a = context.obtainStyledAttributes(attrs, new int[] { android.R.attr.src });
-		if (a.getDrawable(0) == null) {
+		if (!a.hasValue(0)) {
 			setImageDrawable(ThemeUtils.getListMenuOverflowButtonDrawable(context));
 		}
 		a.recycle();
