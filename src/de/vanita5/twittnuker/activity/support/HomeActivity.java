@@ -650,14 +650,22 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	
 	public void closeStream() {
 		if (twitterStream != null) {
-			NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-			notificationManager.cancel(NOTIFICATION_ID_STREAMING);
 			new AsyncTask<Void, Void, Void>() {
 
 				@Override
 				protected Void doInBackground(Void... voids) {
+					twitterStream.cleanUp();
 					twitterStream.shutdown();
+					twitterStream = null;
 					return null;
+				}
+
+				@Override
+				protected void onPostExecute(Void aVoid) {
+					NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+					notificationManager.cancel(NOTIFICATION_ID_STREAMING);
+					hasStreamLoaded = false;
+					super.onPostExecute(aVoid);
 				}
 			}.execute();
 		}
