@@ -94,7 +94,7 @@
             android:summary="For the screenshots provided">
             <intent
                 android:action="android.intent.action.VIEW"
-            	android:data="twidere://user_list_members?list_id=112765631&amp;user_id=2238101485&amp;finish_only=true"/>
+            	android:data="twittnuker://user_list_members?list_id=112765631&amp;user_id=2238101485&amp;finish_only=true"/>
         </Preference>
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/contact">
