@@ -220,8 +220,8 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 			final boolean isMyStatus = status.account_id == status.user_id;
             final boolean hasMedia = status.first_media != null;
 			holder.setUserColor(getUserColor(mContext, status.user_id));
-			holder.setHighlightColor(getCardHighlightColor(!mMentionsHighlightDisabled && isMention,
-					!mFavoritesHighlightDisabled && status.is_favorite, status.is_retweet));
+			holder.setHighlightColor(getCardHighlightColor(status, !mMentionsHighlightDisabled && isMention,
+					!mFavoritesHighlightDisabled));
 			holder.setTextSize(getTextSize());
 
 			holder.setIsMyStatus(isMyStatus && !mIndicateMyStatusDisabled);

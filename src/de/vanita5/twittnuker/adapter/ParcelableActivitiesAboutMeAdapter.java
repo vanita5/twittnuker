@@ -243,8 +243,7 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 			final boolean isMyStatus = status.account_id == status.user_id;
             final boolean hasMedia = status.first_media != null;
 			holder.setUserColor(getUserColor(context, status.user_id));
-			holder.setHighlightColor(getCardHighlightColor(false, !mFavoritesHighlightDisabled && status.is_favorite,
-					status.is_retweet));
+			holder.setHighlightColor(getCardHighlightColor(status, false, !mFavoritesHighlightDisabled));
 			holder.setTextSize(getTextSize());
 
 			holder.setIsMyStatus(isMyStatus && !mIndicateMyStatusDisabled);

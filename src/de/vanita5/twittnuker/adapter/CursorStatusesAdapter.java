@@ -164,9 +164,12 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 			final boolean isMention = ParcelableUserMention.hasMention(cursor.getString(mIndices.mentions), accountId);
 			final boolean isMyStatus = accountId == userId;
 
+			final boolean isMyRetweet = isRetweet && (cursor.getLong(mIndices.retweeted_by_user_id) == cursor.getLong(mIndices.account_id)
+					|| cursor.getLong(mIndices.my_retweet_id) > 0);
+
 			holder.setUserColor(getUserColor(mContext, userId));
 			holder.setHighlightColor(getCardHighlightColor(!mMentionsHighlightDisabled && isMention,
-					!mFavoritesHighlightDisabled && isFavorite, isRetweet));
+					!mFavoritesHighlightDisabled && isFavorite, isMyRetweet));
 
 			holder.setAccountColorEnabled(showAccountColor);
 

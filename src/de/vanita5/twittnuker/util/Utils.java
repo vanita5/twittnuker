@@ -115,6 +115,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.CameraCropActivity;
 import de.vanita5.twittnuker.activity.support.MapViewerActivity;
+import de.vanita5.twittnuker.adapter.CursorStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -1469,14 +1470,23 @@ public final class Utils implements Constants {
 		return def;
 	}
 
+	public static int getCardHighlightColor(ParcelableStatus status, boolean isMention) {
+		return getCardHighlightColor(isMention, status.is_favorite, status.is_retweet && isMyRetweet(status));
+	}
+
+	public static int getCardHighlightColor(ParcelableStatus status, boolean isMention, boolean favoritesHighlightEnabled) {
+		return getCardHighlightColor(isMention, favoritesHighlightEnabled && status.is_favorite, status.is_retweet && isMyRetweet(status));
+	}
+
 	public static int getCardHighlightColor(final boolean is_mention, final boolean is_favorite,
 											final boolean is_retweet) {
-		//TODO only highlight own retweets
-		if (is_mention)
+		if (is_mention) {
 			return HOLO_BLUE_LIGHT;
-		else if (is_favorite)
+		} else if (is_favorite) {
 			return HOLO_ORANGE_LIGHT;
-//		else if (is_retweet) return HOLO_GREEN_LIGHT;
+		} else if (is_retweet) {
+			return HOLO_GREEN_LIGHT;
+		}
 		return Color.TRANSPARENT;
 	}
 
