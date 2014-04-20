@@ -82,6 +82,7 @@ public class MediaPreviewUtils {
     private static final String STRING_PATTERN_PR0GRAMM_DOMAIN = "img\\.pr0gramm\\.com";
     private static final String STRING_PATTERN_ABLOAD_DOMAIN = "abload\\.de";
     private static final String STRING_PATTERN_TUMBLR_DOMAIN = "media\\.tumblr\\.com";
+	private static final String STRING_PATTERN_POMFSE_DOMAIN = "a\\.pomf\\.se";
 
 
 
@@ -120,6 +121,8 @@ public class MediaPreviewUtils {
             + "\\/(img|thumb)\\/([\\w\\d\\-\\_]+\\." + AVAILABLE_IMAGE_SHUFFIX + ")";
     private static final String STRING_PATTERN_TUMBLR_NO_SCHEME = "([\\d]+)\\." + "(" + STRING_PATTERN_TUMBLR_DOMAIN + ")"
             + "\\/([\\d\\w\\-\\_\\/]+\\." + AVAILABLE_IMAGE_SHUFFIX + ")";
+	private static final String STRING_PATTERN_POMFSE_NO_SCHEME = "(" + STRING_PATTERN_POMFSE_DOMAIN + ")"
+			+ "\\/([\\d\\w]+\\." + AVAILABLE_IMAGE_SHUFFIX + ")";
 
 
 	private static final String STRING_PATTERN_IMAGES = AVAILABLE_URL_SCHEME_PREFIX + STRING_PATTERN_IMAGES_NO_SCHEME;
@@ -152,6 +155,8 @@ public class MediaPreviewUtils {
             + STRING_PATTERN_ABLOAD_NO_SCHEME;
     private static final String STRING_PATTERN_TUMBLR_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
             + STRING_PATTERN_TUMBLR_NO_SCHEME;
+	private static final String STRING_PATTERN_POMFSE_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
+			+ STRING_PATTERN_POMFSE_NO_SCHEME;
 
 
 
@@ -164,7 +169,8 @@ public class MediaPreviewUtils {
             + STRING_PATTERN_PUUSH_NO_SCHEME + "|" + STRING_PATTERN_PR0GRAMM_NO_SCHEME + "|"
 			+ STRING_PATTERN_TWITGOO_NO_SCHEME + "|" + STRING_PATTERN_MOBYPICTURE_NO_SCHEME + "|"
 			+ STRING_PATTERN_IMGUR_NO_SCHEME + "|" + STRING_PATTERN_PHOTOZOU_NO_SCHEME
-            + STRING_PATTERN_ABLOAD_NO_SCHEME + "|" + STRING_PATTERN_TUMBLR_NO_SCHEME + ")", Pattern.CASE_INSENSITIVE);
+            + STRING_PATTERN_ABLOAD_NO_SCHEME + "|" + STRING_PATTERN_TUMBLR_NO_SCHEME + "|"
+			+ STRING_PATTERN_POMFSE_NO_SCHEME + ")", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern PATTERN_PREVIEW_AVAILABLE_IMAGES_MATCH_ONLY = Pattern.compile(
 			AVAILABLE_URL_SCHEME_PREFIX + "(" + STRING_PATTERN_IMAGES_NO_SCHEME + "|"
@@ -176,7 +182,7 @@ public class MediaPreviewUtils {
 					+ STRING_PATTERN_MOBYPICTURE_DOMAIN + "|" + STRING_PATTERN_IMGUR_DOMAIN + "|"
 					+ STRING_PATTERN_PHOTOZOU_DOMAIN + "|" + STRING_PATTERN_PUUSH_DOMAIN + "|"
                     + STRING_PATTERN_PR0GRAMM_DOMAIN + "|" + STRING_PATTERN_ABLOAD_DOMAIN + "|"
-                    + STRING_PATTERN_TUMBLR_DOMAIN + ")", Pattern.CASE_INSENSITIVE);
+                    + STRING_PATTERN_TUMBLR_DOMAIN + "|" + STRING_PATTERN_POMFSE_DOMAIN + ")", Pattern.CASE_INSENSITIVE);
 
 
 
@@ -215,6 +221,9 @@ public class MediaPreviewUtils {
     public static final int TUMBLR_GROUP_SUB = 2;
     public static final int TUMBLR_GROUP_ID = 4;
 
+	public static final Pattern PATTERN_POMFSE = Pattern.compile(STRING_PATTERN_POMFSE_IMAGES, Pattern.CASE_INSENSITIVE);
+	public static final int POMFSE_GROUP_ID = 3;
+
 	public static final Pattern PATTERN_TWITGOO = Pattern.compile(STRING_PATTERN_TWITGOO, Pattern.CASE_INSENSITIVE);
 	public static final int TWITGOO_GROUP_ID = 2;
 
@@ -244,7 +253,7 @@ public class MediaPreviewUtils {
 			PATTERN_GOOGLE_IMAGES, PATTERN_GOOGLE_PROXY_IMAGES, PATTERN_SINA_WEIBO_IMAGES, PATTERN_TWITPIC,
 			PATTERN_IMGUR, PATTERN_IMGLY, PATTERN_YFROG, PATTERN_LOCKERZ, PATTERN_PLIXI, PATTERN_TWITGOO,
 			PATTERN_MOBYPICTURE, PATTERN_PHOTOZOU, PATTERN_PUUSH, PATTERN_PR0GRAMM, PATTERN_ABLOAD,
-            PATTERN_TUMBLR };
+            PATTERN_TUMBLR, PATTERN_POMFSE };
 
 	private static final String URL_PHOTOZOU_PHOTO_INFO = "https://api.photozou.jp/rest/photo_info.json";
 
@@ -344,6 +353,8 @@ public class MediaPreviewUtils {
         if (m.matches()) return getAbloadImage(matcherGroup(m, ABLOAD_GROUP_ID), link);
         m = PATTERN_TUMBLR.matcher(link);
         if (m.matches()) return getTumblrImage(matcherGroup(m, TUMBLR_GROUP_SUB), matcherGroup(m, TUMBLR_GROUP_ID), link);
+		m = PATTERN_POMFSE.matcher(link);
+		if (m.matches()) return getPomfseImage(matcherGroup(m, POMFSE_GROUP_ID), link);
 		return null;
 	}
 
@@ -540,6 +551,12 @@ public class MediaPreviewUtils {
         final String preview = String.format("http://%s.media.tumblr.com/%s", sub, id);
         return ParcelableMedia.newImage(preview, orig);
     }
+
+	private static ParcelableMedia getPomfseImage(final String id, final String orig) {
+		if (isEmpty(id)) return null;
+		final String preview = String.format("http://a.pomf.se/%s", id);
+		return ParcelableMedia.newImage(preview, orig);
+	}
 
     public interface OnMediaClickListener {
         void onMediaClick(View view, ParcelableMedia media);
