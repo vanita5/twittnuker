@@ -1234,6 +1234,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	}
 
 	private static int clearUnreadCount(final List<UnreadItem> set, final long[] accountIds) {
+		if (accountIds == null) return 0;
 		int count = 0;
 		for (final UnreadItem item : set.toArray(new UnreadItem[set.size()])) {
             if (item != null && ArrayUtils.contains(accountIds, item.account_id) && set.remove(item)) {

@@ -59,9 +59,9 @@ public class ParcelableUserList implements Parcelable, JSONParcelable, Comparabl
 		}
 	};
 
-	public final int id, members_count, subscribers_count;
+	public final int members_count, subscribers_count;
 
-	public final long account_id, user_id, position;
+	public final long account_id, id, user_id, position;
 
 	public final boolean is_public, is_following;
 
@@ -70,7 +70,7 @@ public class ParcelableUserList implements Parcelable, JSONParcelable, Comparabl
 	public ParcelableUserList(final JSONParcel in) {
 		position = in.readLong("position");
 		account_id = in.readLong("account_id");
-		id = in.readInt("list_id");
+		id = in.readLong("list_id");
 		is_public = in.readBoolean("is_public");
 		is_following = in.readBoolean("is_following");
 		name = in.readString("name");
@@ -86,7 +86,7 @@ public class ParcelableUserList implements Parcelable, JSONParcelable, Comparabl
 	public ParcelableUserList(final Parcel in) {
 		position = in.readLong();
 		account_id = in.readLong();
-		id = in.readInt();
+		id = in.readLong();
 		is_public = in.readInt() == 1;
 		is_following = in.readInt() == 1;
 		name = in.readString();
@@ -140,11 +140,11 @@ public class ParcelableUserList implements Parcelable, JSONParcelable, Comparabl
 	}
 
 	@Override
-	public boolean equals(final Object obj) {
+	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (!(obj instanceof ParcelableUserList)) return false;
-		final ParcelableUserList other = (ParcelableUserList) obj;
+		ParcelableUserList other = (ParcelableUserList) obj;
 		if (account_id != other.account_id) return false;
 		if (id != other.id) return false;
 		return true;
@@ -154,24 +154,25 @@ public class ParcelableUserList implements Parcelable, JSONParcelable, Comparabl
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (account_id ^ account_id >>> 32);
-		result = prime * result + id;
+		result = prime * result + (int) (account_id ^ (account_id >>> 32));
+		result = prime * result + (int) (id ^ (id >>> 32));
 		return result;
 	}
 
 	@Override
 	public String toString() {
-		return "ParcelableUserList{list_id=" + id + ", account_id=" + account_id + ", user_id=" + user_id
-				+ ", position=" + position + ", is_public=" + is_public + ", is_following=" + is_following
-				+ ", description=" + description + ", name=" + name + ", user_screen_name=" + user_screen_name
-				+ ", user_name=" + user_name + ", user_profile_image_url_string=" + user_profile_image_url + "}";
+		return "ParcelableUserList{members_count=" + members_count + ", subscribers_count=" + subscribers_count
+				+ ", account_id=" + account_id + ", id=" + id + ", user_id=" + user_id + ", position=" + position
+				+ ", is_public=" + is_public + ", is_following=" + is_following + ", description=" + description
+				+ ", name=" + name + ", user_screen_name=" + user_screen_name + ", user_name=" + user_name
+				+ ", user_profile_image_url=" + user_profile_image_url + "}";
 	}
 
 	@Override
 	public void writeToParcel(final JSONParcel out) {
 		out.writeLong("position", position);
 		out.writeLong("account_id", account_id);
-		out.writeInt("list_id", id);
+		out.writeLong("list_id", id);
 		out.writeBoolean("is_public", is_public);
 		out.writeBoolean("is_following", is_following);
 		out.writeString("name", name);
@@ -188,7 +189,7 @@ public class ParcelableUserList implements Parcelable, JSONParcelable, Comparabl
 	public void writeToParcel(final Parcel out, final int flags) {
 		out.writeLong(position);
 		out.writeLong(account_id);
-		out.writeInt(id);
+		out.writeLong(id);
 		out.writeInt(is_public ? 1 : 0);
 		out.writeInt(is_following ? 1 : 0);
 		out.writeString(name);

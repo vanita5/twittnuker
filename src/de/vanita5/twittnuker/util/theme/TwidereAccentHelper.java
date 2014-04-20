@@ -40,7 +40,7 @@ public class TwidereAccentHelper extends AccentHelper implements Constants {
 	private TwidereAccentResources mResources;
 
 	public TwidereAccentHelper(final int overrideThemeRes, final int color) {
-        super(color);
+        super(color, color, 0);
 		mOverrideThemeRes = overrideThemeRes;
         mAccentColor = color;
     }

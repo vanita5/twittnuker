@@ -463,19 +463,35 @@
         		<category android:name="android.intent.category.DEFAULT"/>
         	</intent-filter>
         </activity>
-    	<activity
-    		android:name=".activity.TwitterLinkHandlerActivity"
-    		android:theme="@style/Theme.Launcher">
-    		<intent-filter>
-    			<data
-    				android:host="twitter.com"
-    				android:scheme="http"/>
-    			<data
-    				android:host="twitter.com"
-    				android:scheme="https"/>
+        <activity
+            android:name=".activity.TwitterLinkHandlerActivity"
+            android:excludeFromRecents="true"
+            android:taskAffinity=":twittnuker_twitter_link_handler"
+            android:theme="@style/Theme.Launcher">
+            <intent-filter>
+                <data
+                    android:host="twitter.com"
+                    android:scheme="http"/>
+                <data
+                    android:host="twitter.com"
+                    android:scheme="https"/>
+                <data
+                    android:host="www.twitter.com"
+                    android:scheme="http"/>
+                <data
+                    android:host="www.twitter.com"
+                    android:scheme="https"/>
+                <data
+                    android:host="mobile.twitter.com"
+                    android:scheme="http"/>
+                <data
+                    android:host="mobile.twitter.com"
+                    android:scheme="https"/>
 
     			<action android:name="android.intent.action.VIEW"/>
+
     			<category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
     		</intent-filter>
     	</activity>
     	<activity

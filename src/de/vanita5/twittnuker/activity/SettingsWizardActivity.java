@@ -195,7 +195,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		startActivityForResult(intent, REQUEST_IMPORT_SETTINGS);
 	}
 
-	public abstract static class BaseWizardPageFragment extends BasePreferenceFragment implements
+	public static abstract class BaseWizardPageFragment extends BasePreferenceFragment implements
 			OnPreferenceClickListener {
 
 		public void gotoFinishPage() {
@@ -417,7 +417,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		}
 	}
 
-	public static class WizardPageThemeFragment extends BaseWizardPageFragment {
+	public static class WizardPageThemeFragment extends BaseWizardPageFragment implements OnPreferenceClickListener {
 
 		@Override
 		protected int getHeaderSummary() {
@@ -435,7 +435,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		}
 	}
 
-	public static class WizardPageWelcomeFragment extends BaseWizardPageFragment {
+	public static class WizardPageWelcomeFragment extends BaseWizardPageFragment implements OnPreferenceClickListener {
 
 		public void applyInitialSettings() {
 			final Activity a = getActivity();
@@ -498,7 +498,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		private static final String FRAGMENT_TAG = "initial_settings_dialog";
 
 		private static final String[] DEFAULT_TAB_TYPES = { TAB_TYPE_HOME_TIMELINE, TAB_TYPE_MENTIONS_TIMELINE,
-				TAB_TYPE_DIRECT_MESSAGES, TAB_TYPE_TRENDS_SUGGESTIONS };
+				TAB_TYPE_TRENDS_SUGGESTIONS, TAB_TYPE_DIRECT_MESSAGES };
 
 		private final SettingsWizardActivity mActivity;
 
