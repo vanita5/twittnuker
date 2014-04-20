@@ -38,10 +38,13 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
-
 public class BaseSupportFragment extends Fragment implements Constants {
 
 	private LayoutInflater mLayoutInflater;
+
+	public BaseSupportFragment() {
+
+	}
 
     public TwittnukerApplication getApplication() {
 		final Activity activity = getActivity();

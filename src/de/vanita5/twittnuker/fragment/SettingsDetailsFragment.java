@@ -27,7 +27,6 @@ import android.preference.PreferenceScreen;
 
 import de.vanita5.twittnuker.util.Utils;
 
-
 public class SettingsDetailsFragment extends BasePreferenceFragment {
 
 	@Override

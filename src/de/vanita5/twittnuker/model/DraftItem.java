@@ -140,5 +140,7 @@ public class DraftItem implements Parcelable {
 			action_type = cursor.getColumnIndex(Drafts.ACTION_TYPE);
 			action_extras = cursor.getColumnIndex(Drafts.ACTION_EXTRAS);
 		}
+
 	}
+
 }

@@ -38,7 +38,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.iface.IExtendedView;
 
-
 public class ProfileBannerImageView extends ForegroundImageView implements IExtendedView, Constants {
 
 	private static final int[] COLORS = new int[] { 0xFFFFFFFF, 0x00FFFFFF };

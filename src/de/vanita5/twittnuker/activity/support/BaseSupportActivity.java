@@ -35,7 +35,6 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
-
 @SuppressLint("Registered")
 public class BaseSupportActivity extends BaseSupportThemedActivity implements Constants {
 
@@ -156,4 +155,5 @@ public class BaseSupportActivity extends BaseSupportThemedActivity implements Co
 		return mCompactCards != mPreferences.getBoolean(KEY_COMPACT_CARDS, false)
 				|| mPlainListStyle != mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false);
 	}
+
 }

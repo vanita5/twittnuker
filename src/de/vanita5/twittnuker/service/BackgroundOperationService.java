@@ -122,12 +122,12 @@ public class BackgroundOperationService extends IntentService implements Constan
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mTwitter = app.getTwitterWrapper();
 		mMessagesManager = app.getMessagesManager();
-		final String uploader_component = mPreferences.getString(KEY_MEDIA_UPLOADER, null);
-		final String shortener_component = mPreferences.getString(KEY_STATUS_SHORTENER, null);
-        mUseUploader = !ServicePickerPreference.isNoneValue(uploader_component);
-		mUseShortener = !ServicePickerPreference.isNoneValue(shortener_component);
-		mUploader = mUseUploader ? uploader_component : null;
-		mShortener = mUseShortener ? shortener_component : null;
+		final String uploaderComponent = mPreferences.getString(KEY_MEDIA_UPLOADER, null);
+		final String shortenerComponent = mPreferences.getString(KEY_STATUS_SHORTENER, null);
+        mUseUploader = !ServicePickerPreference.isNoneValue(uploaderComponent);
+		mUseShortener = !ServicePickerPreference.isNoneValue(shortenerComponent);
+		mUploader = mUseUploader ? uploaderComponent : null;
+		mShortener = mUseShortener ? shortenerComponent : null;
 	}
 
 	@Override

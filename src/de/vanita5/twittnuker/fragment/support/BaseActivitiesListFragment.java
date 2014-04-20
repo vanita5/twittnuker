@@ -138,4 +138,5 @@ public abstract class BaseActivitiesListFragment extends BasePullToRefreshListFr
 	}
 
 	protected abstract Object[] getSavedActivitiesFileArgs();
+
 }

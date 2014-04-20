@@ -32,7 +32,6 @@ import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.fragment.SettingsDetailsFragment;
 
-
 public class SecretCodeBroadcastReceiver extends BroadcastReceiver implements IntentConstants {
 
 	@Override

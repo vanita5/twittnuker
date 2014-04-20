@@ -33,7 +33,6 @@ import android.util.AttributeSet;
 import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
 import de.vanita5.twittnuker.view.themed.ThemedMultiAutoCompleteTextView;
 
-
 public class StatusComposeEditText extends ThemedMultiAutoCompleteTextView implements InputType {
 
 	private UserHashtagAutoCompleteAdapter mAdapter;

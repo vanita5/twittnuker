@@ -241,12 +241,12 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		}
 		final User user = status.getUser();
 		if (user != null) {
-			final long user_id = user.getId();
+			final long userId = user.getId();
 			final String profileImageUrl = ParseUtils.parseString(user.getProfileImageUrlHttps());
-			final String name = user.getName(), screen_name = user.getScreenName();
-			values.put(Statuses.USER_ID, user_id);
+			final String name = user.getName(), screenName = user.getScreenName();
+			values.put(Statuses.USER_ID, userId);
 			values.put(Statuses.USER_NAME, name);
-			values.put(Statuses.USER_SCREEN_NAME, screen_name);
+			values.put(Statuses.USER_SCREEN_NAME, screenName);
 			values.put(Statuses.IS_PROTECTED, user.isProtected());
 			values.put(Statuses.IS_VERIFIED, user.isVerified());
 			values.put(Statuses.USER_PROFILE_IMAGE_URL, profileImageUrl);

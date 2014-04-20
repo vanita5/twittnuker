@@ -33,7 +33,6 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 
-
 public class TwidereCommands {
 
 	public static final String AUTHORITY = "twittnuker.command";

@@ -60,13 +60,12 @@ public class DataExportActivity extends BaseSupportActivity implements FileSelec
 	@Override
 	public void onCancelled() {
 		if (!isFinishing()) {
-
+			finish();
 		}
 	}
 
 	@Override
 	public void onDismissed() {
-		finish();
 	}
 
 	@Override

@@ -34,7 +34,6 @@ import android.graphics.drawable.Drawable;
 
 import de.vanita5.twittnuker.util.Utils;
 
-
 public final class DropShadowDrawable extends BitmapDrawable {
 
 	private final Bitmap dropShadow, dropShadowMask;

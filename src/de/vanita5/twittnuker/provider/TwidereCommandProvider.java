@@ -36,7 +36,6 @@ import de.vanita5.twittnuker.provider.TwidereCommands.Refresh;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.PermissionsManager;
 
-
 public class TwidereCommandProvider extends ContentProvider implements Constants {
 
 	private static final UriMatcher COMMAND_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);

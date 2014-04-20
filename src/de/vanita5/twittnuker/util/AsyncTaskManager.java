@@ -27,7 +27,6 @@ import android.os.Handler;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
 
-
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 

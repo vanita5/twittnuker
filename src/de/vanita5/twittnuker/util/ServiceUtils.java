@@ -31,7 +31,6 @@ import android.util.Log;
 
 import de.vanita5.twittnuker.Constants;
 
-
 import java.util.HashMap;
 
 public final class ServiceUtils implements Constants {

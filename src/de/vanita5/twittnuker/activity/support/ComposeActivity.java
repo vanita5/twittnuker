@@ -59,9 +59,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -937,7 +935,8 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	private void setCommonMenu(final Menu menu) {
 		final boolean hasMedia = hasMedia();
-//		final MenuItem itemAddImageSubmenu = menu.findItem(R.id.add_image_submenu);
+		// final MenuItem itemAddImageSubmenu =
+		// menu.findItem(R.id.add_image_submenu);
 //		if (itemAddImageSubmenu != null) {
 //			final Drawable iconAddImage = itemAddImageSubmenu.getIcon();
 //			iconAddImage.mutate();

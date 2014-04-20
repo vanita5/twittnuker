@@ -28,7 +28,6 @@ import android.os.Bundle;
 import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.loader.support.UserBlocksLoader;
 
-
 public class UserBlocksListFragment extends CursorSupportUsersListFragment {
 
 	@Override

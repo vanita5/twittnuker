@@ -32,7 +32,6 @@ import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.activity.NyanActivity;
 
-
 public class AppVersionPreference extends Preference {
 
 	public Handler mHandler = new Handler();

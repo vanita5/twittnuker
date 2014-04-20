@@ -27,7 +27,6 @@ import android.support.v4.content.Loader;
 import de.vanita5.twittnuker.loader.support.UserListMembershipsLoader;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 
-
 import java.util.List;
 
 public class UserListMembershipsListFragment extends BaseUserListsListFragment {

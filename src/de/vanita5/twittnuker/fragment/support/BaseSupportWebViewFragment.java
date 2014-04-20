@@ -31,7 +31,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient;
 import de.vanita5.twittnuker.util.accessor.WebSettingsAccessor;
 
-
 @SuppressLint("SetJavaScriptEnabled")
 public class BaseSupportWebViewFragment extends SupportWebViewFragment implements Constants {
 

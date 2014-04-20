@@ -39,7 +39,6 @@ import de.vanita5.twittnuker.view.TabPageIndicator;
 import de.vanita5.twittnuker.view.TabPageIndicator.TabListener;
 import de.vanita5.twittnuker.view.TabPageIndicator.TabProvider;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -100,13 +99,13 @@ public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter im
 	}
 
 	@Override
-	public float getPageWidth(final int position) {
-		return 1.0f / mColumns;
+	public CharSequence getPageTitle(final int position) {
+		return mTabs.get(position).name;
 	}
 
 	@Override
-	public CharSequence getPageTitle(final int position) {
-		return mTabs.get(position).name;
+	public float getPageWidth(final int position) {
+		return 1.0f / mColumns;
 	}
 
 	public SupportTabSpec getTab(final int position) {

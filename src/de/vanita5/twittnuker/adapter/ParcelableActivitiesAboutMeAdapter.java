@@ -160,6 +160,7 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 						holder.text.setText(status.text_unescaped);
 					}
 				}
+
 				if (sources.length == 1) {
 					holder.name.setText(context.getString(R.string.activity_about_me_retweet, sourceName));
 				} else {

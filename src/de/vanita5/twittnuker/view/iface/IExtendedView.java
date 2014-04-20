@@ -44,5 +44,4 @@ public interface IExtendedView {
 		boolean onTouchEvent(View view, MotionEvent event);
 
 	}
-
 }

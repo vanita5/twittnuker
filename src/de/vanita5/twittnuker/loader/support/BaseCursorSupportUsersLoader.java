@@ -27,7 +27,6 @@ import android.content.SharedPreferences;
 
 import de.vanita5.twittnuker.model.ParcelableUser;
 
-
 import twitter4j.CursorSupport;
 
 import java.util.List;

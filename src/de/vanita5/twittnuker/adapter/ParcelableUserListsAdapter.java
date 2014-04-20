@@ -59,7 +59,6 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 
 	private boolean mAnimationEnabled;
 	private int mMaxAnimationPosition;
-
 	private final boolean mPlainList;
 
 	public ParcelableUserListsAdapter(final Context context) {

@@ -162,5 +162,6 @@ public interface IColorLabelView {
 				canvas.drawRect(left, colorTop, left + width, colorBottom, mPaint);
 			}
 		}
+
 	}
 }

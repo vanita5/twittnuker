@@ -68,9 +68,9 @@ public class AccountsAdapter extends SimpleCursorAdapter implements Constants {
 		} else {
 			holder.profile_image.setImageResource(R.drawable.ic_profile_image_default);
 		}
-		final boolean is_multiple_choice = mChoiceMode == ListView.CHOICE_MODE_MULTIPLE
+		final boolean isMultipleChoice = mChoiceMode == ListView.CHOICE_MODE_MULTIPLE
 				|| mChoiceMode == ListView.CHOICE_MODE_MULTIPLE_MODAL;
-		holder.checkbox.setVisibility(is_multiple_choice ? View.VISIBLE : View.GONE);
+		holder.checkbox.setVisibility(isMultipleChoice ? View.VISIBLE : View.GONE);
 		super.bindView(view, context, cursor);
 	}
 

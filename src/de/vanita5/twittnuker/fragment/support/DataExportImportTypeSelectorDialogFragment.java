@@ -35,9 +35,9 @@ import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
@@ -203,6 +203,5 @@ public final class DataExportImportTypeSelectorDialogFragment extends BaseSuppor
 		}
 
 	}
-
 
 }

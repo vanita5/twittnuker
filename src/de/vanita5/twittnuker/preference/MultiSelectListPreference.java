@@ -25,12 +25,14 @@ package de.vanita5.twittnuker.preference;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.SharedPreferences;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
-abstract class MultiSelectListPreference extends DialogPreference implements OnMultiChoiceClickListener {
+abstract class MultiSelectListPreference extends DialogPreference implements OnMultiChoiceClickListener,
+		OnClickListener {
 
 	private final boolean[] mValues, mDefaultValues;
 	private SharedPreferences mPreferences;

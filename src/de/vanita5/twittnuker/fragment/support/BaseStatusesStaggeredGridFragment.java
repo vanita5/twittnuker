@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.fragment.support;
 
 import static de.vanita5.twittnuker.util.Utils.clearListViewChoices;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 import static de.vanita5.twittnuker.util.Utils.openStatus;
 import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
@@ -94,7 +93,6 @@ abstract class BaseStatusesStaggeredGridFragment<Data> extends BasePullToRefresh
 	private int mListScrollOffset;
 
 	private MultiSelectManager mMultiSelectManager;
-
 	private PositionManager mPositionManager;
 
 	private int mFirstVisibleItem;

@@ -26,7 +26,6 @@ import android.content.Context;
 
 import de.vanita5.twittnuker.model.ParcelableUserList;
 
-
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;

@@ -34,7 +34,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.fragment.iface.IMapFragment;
 
-
 public class NativeMapFragment extends SupportMapFragment implements Constants, IMapFragment {
 
 	private GoogleMap mMapView;

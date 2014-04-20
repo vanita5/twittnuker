@@ -29,7 +29,6 @@ import android.view.View;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 
-
 public class TwidereURLSpan extends URLSpan implements Constants {
 
 	private final int type, highlightStyle, highlightColor;

@@ -36,7 +36,6 @@ import android.util.AttributeSet;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.view.themed.ThemedTextView;
 
-
 public class ShortTimeView extends ThemedTextView implements Constants, OnSharedPreferenceChangeListener {
 
 	private static final long TICKER_DURATION = 5000L;

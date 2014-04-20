@@ -78,10 +78,6 @@ public class StatusViewHolder extends CardViewHolder {
 		density = context.getResources().getDisplayMetrics().density;
 	}
 
-    public void setDisplayProfileImage(final boolean display) {
-        display_profile_image = display;
-    }
-
 	public void setAccountColor(final int color) {
 		content.drawEnd(account_color_enabled && !show_as_gap ? color : Color.TRANSPARENT);
 	}
@@ -99,6 +95,10 @@ public class StatusViewHolder extends CardViewHolder {
 
 	public void setDisplayNameFirst(final boolean name_first) {
 		this.name_first = name_first;
+	}
+
+	public void setDisplayProfileImage(final boolean display) {
+		display_profile_image = display;
 	}
 
 	public void setHighlightColor(final int color) {

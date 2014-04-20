@@ -39,7 +39,6 @@ import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 
 import static de.vanita5.twittnuker.util.shortener.TweetShortenerUtils.expandHototin;
 
-
 public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 
 	protected final Activity activity;

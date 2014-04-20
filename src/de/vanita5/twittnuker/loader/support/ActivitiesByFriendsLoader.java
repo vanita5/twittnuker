@@ -26,7 +26,6 @@ import android.content.Context;
 
 import de.vanita5.twittnuker.model.ParcelableActivity;
 
-
 import twitter4j.Activity;
 import twitter4j.Paging;
 import twitter4j.Twitter;

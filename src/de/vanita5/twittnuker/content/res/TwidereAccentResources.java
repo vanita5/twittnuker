@@ -46,7 +46,7 @@ public class TwidereAccentResources extends AccentResources implements IThemedRe
 	}
 
 	@Override
-	public Drawable getDrawable(final int id) throws Resources.NotFoundException {
+	public Drawable getDrawable(final int id) throws NotFoundException {
 		final Drawable d = mHelper.getDrawable(id);
 		if (d != null) return d;
 		return super.getDrawable(id);

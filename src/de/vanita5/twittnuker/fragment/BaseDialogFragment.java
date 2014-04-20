@@ -32,7 +32,6 @@ import android.content.SharedPreferences;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 
-
 public class BaseDialogFragment extends DialogFragment implements Constants {
 
     public TwittnukerApplication getApplication() {

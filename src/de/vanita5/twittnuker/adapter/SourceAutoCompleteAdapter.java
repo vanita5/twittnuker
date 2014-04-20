@@ -34,7 +34,6 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TweetStore.CachedStatuses;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 
-
 public class SourceAutoCompleteAdapter extends SimpleCursorAdapter implements Constants {
 
 	private static final String[] COLUMNS = new String[] { CachedStatuses._ID, CachedStatuses.SOURCE };

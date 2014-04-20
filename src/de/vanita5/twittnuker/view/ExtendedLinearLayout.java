@@ -29,7 +29,6 @@ import android.widget.LinearLayout;
 
 import de.vanita5.twittnuker.view.iface.IExtendedView;
 
-
 public class ExtendedLinearLayout extends LinearLayout implements IExtendedView {
 
 	private TouchInterceptor mTouchInterceptor;

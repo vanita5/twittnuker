@@ -168,7 +168,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 	private ListActionAdapter mAdapter;
 
 	private Relationship mFriendship;
-	private ParcelableUser mUser;
+	private ParcelableUser mUser = null;
 	private Locale mLocale;
 
 	private boolean mGetUserInfoLoaderInitialized, mGetFriendShipLoaderInitialized;
@@ -629,6 +629,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 	@Override
 	public boolean onMenuItemClick(final MenuItem item) {
         return handleMenuItemClick(item);
+
     }
 
     @Override

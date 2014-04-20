@@ -136,6 +136,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 			StrictModeUtils.detectAllVmPolicy();
 			StrictModeUtils.detectAllThreadPolicy();
 		}
+
 		if (shouldOverrideActivityAnimation()) {
 			ThemeUtils.overrideActivityOpenAnimation(this);
 		}

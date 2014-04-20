@@ -32,8 +32,9 @@ public class ContentLengthInputStream extends InputStream {
 
 	private final InputStream stream;
 	private final long length;
-	private long pos;
 	private ReadListener readListener;
+
+	private long pos;
 
 	public ContentLengthInputStream(final File file) throws FileNotFoundException {
 		this(new FileInputStream(file), file.length());
@@ -93,14 +94,14 @@ public class ContentLengthInputStream extends InputStream {
 		stream.reset();
 	}
 	
+	public void setReadListener(final ReadListener readListener) {
+		this.readListener = readListener;
+	}
+
 	@Override
 	public long skip(final long byteCount) throws IOException {
 		pos += byteCount;
 		return stream.skip(byteCount);
-	}
-
-	public void setReadListener(final ReadListener readListener) {
-		this.readListener = readListener;
 	}
 
 	public interface ReadListener {

@@ -250,6 +250,7 @@ public class ThemeUtils implements Constants {
 	}
 
 	public static Drawable getCardItemBackground(final Context context) {
+
         final TypedArray a = context.obtainStyledAttributes(new int[] { R.attr.cardItemBackground });
 		final Drawable d = a.getDrawable(0);
 		a.recycle();
@@ -615,6 +616,7 @@ public class ThemeUtils implements Constants {
 		if (tf != null) return tf;
 		return Typeface.create(Typeface.DEFAULT, fontStyle);
 	}
+
 	public static int getViewerThemeResource(final Context context) {
 		final boolean isTransparent = VALUE_THEME_BACKGROUND_TRANSPARENT.equals(getThemeBackgroundOption(context));
 		return isTransparent ? R.style.Theme_Twidere_Viewer_Transparent : R.style.Theme_Twidere_Viewer;
@@ -691,6 +693,7 @@ public class ThemeUtils implements Constants {
 	}
 
 	public static boolean isFloatingWindow(final Context context) {
+
         final TypedArray a = context.obtainStyledAttributes(new int[] { android.R.attr.windowIsFloating });
 		final boolean b = a.getBoolean(0, false);
 		a.recycle();
@@ -780,6 +783,7 @@ public class ThemeUtils implements Constants {
 	}
 
 	public static void overrideActivityOpenAnimation(final Activity activity) {
+
         TypedArray a = activity.obtainStyledAttributes(new int[] { android.R.attr.windowAnimationStyle });
         final int windowAnimationStyleResId = a.getResourceId(0, 0);
         a.recycle();

@@ -34,7 +34,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 
-
 import java.util.Locale;
 
 public class StatusTextCountView extends TextView {

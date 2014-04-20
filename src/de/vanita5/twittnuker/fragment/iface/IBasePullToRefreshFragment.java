@@ -30,4 +30,5 @@ public interface IBasePullToRefreshFragment extends IRefreshNowView, OnRefreshLi
 	public void onRefreshFromEnd();
 
 	public void onRefreshFromStart();
+
 }

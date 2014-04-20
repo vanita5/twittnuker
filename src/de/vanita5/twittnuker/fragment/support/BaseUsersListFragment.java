@@ -65,9 +65,9 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 	private boolean mLoadMoreAutomatically;
 	private ListView mListView;
 	private long mAccountId;
+
 	private final List<ParcelableUser> mData = Collections
 			.synchronizedList(new NoDuplicatesArrayList<ParcelableUser>());
-
 	private ParcelableUser mSelectedUser;
 
 	public long getAccountId() {
@@ -136,7 +136,7 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 
 	@Override
 	public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-		final ParcelableUsersAdapter adapter = mAdapter;
+		final ParcelableUsersAdapter adapter = getListAdapter();
 		final ParcelableUser user = adapter.findItem(id);
 		if (user == null) return false;
 		setItemSelected(user, position, !mMultiSelectManager.isSelected(user));

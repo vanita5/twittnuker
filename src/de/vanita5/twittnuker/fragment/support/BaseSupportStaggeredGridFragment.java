@@ -33,6 +33,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 
 import com.etsy.android.grid.StaggeredGridView;
 
@@ -46,9 +47,8 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.Utils;
 
-
 public class BaseSupportStaggeredGridFragment extends StaggeredGridFragment implements IBaseFragment, Constants,
-		AbsListView.OnScrollListener, RefreshScrollTopInterface {
+		OnScrollListener, RefreshScrollTopInterface {
 
 	private boolean mActivityFirstCreated;
 	private boolean mIsInstanceStateSaved;

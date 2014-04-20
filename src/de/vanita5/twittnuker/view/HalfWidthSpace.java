@@ -44,4 +44,5 @@ public class HalfWidthSpace extends View {
         setMeasuredDimension(width, height);
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
     }
+
 }

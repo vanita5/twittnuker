@@ -30,7 +30,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;

@@ -29,7 +29,6 @@ import android.util.AttributeSet;
 import de.vanita5.twittnuker.fragment.AccountRefreshSettingsFragment;
 import de.vanita5.twittnuker.model.Account;
 
-
 public class AutoRefreshAccountsListPreference extends AccountsListPreference {
 
 	public AutoRefreshAccountsListPreference(final Context context) {

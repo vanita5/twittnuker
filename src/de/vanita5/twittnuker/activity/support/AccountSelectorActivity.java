@@ -145,7 +145,6 @@ public class AccountSelectorActivity extends BaseSupportDialogActivity implement
 		mSelectAccountDivider.setVisibility(isSingleSelection ? View.GONE : View.VISIBLE);
 		mSelectAccountButtons.setVisibility(isSingleSelection ? View.GONE : View.VISIBLE);
 		mListView.setAdapter(mAdapter);
-
 		getLoaderManager().initLoader(0, null, this);
 
 	}

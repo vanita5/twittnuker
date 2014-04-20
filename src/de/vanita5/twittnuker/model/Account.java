@@ -31,7 +31,6 @@ import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.mariotaku.querybuilder.Columns;
 import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.Where;
@@ -246,7 +245,6 @@ public class Account implements Parcelable {
 			final String consumerKey = account.consumer_key, consumerSecret = account.consumer_secret;
 			return isOAuth && isOfficialConsumerKeySecret(context, consumerKey, consumerSecret);
 		}
-
 	}
 
 	public static final class Indices {

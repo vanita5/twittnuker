@@ -28,6 +28,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -46,7 +47,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.RefreshNowStaggeredGridView;
 
 public abstract class BasePullToRefreshStaggeredGridFragment extends BaseSupportStaggeredGridFragment implements
-		IBasePullToRefreshFragment, View.OnTouchListener {
+		IBasePullToRefreshFragment, OnTouchListener {
 
 	@Override
 	public RefreshNowStaggeredGridView getListView() {

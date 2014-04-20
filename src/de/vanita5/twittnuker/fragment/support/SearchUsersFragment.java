@@ -32,7 +32,6 @@ import android.widget.AbsListView.OnScrollListener;
 import de.vanita5.twittnuker.loader.support.UserSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
-
 import java.util.List;
 
 public class SearchUsersFragment extends BaseUsersListFragment {

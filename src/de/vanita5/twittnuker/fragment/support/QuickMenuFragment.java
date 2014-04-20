@@ -78,6 +78,8 @@ public class QuickMenuFragment extends BaseSupportFragment {
 	public void onLoaderReset(Loader<Cursor> loader) {
 		mTrendsAdapter.swapCursor(null);
 		}
+
+
 	};
 
 	@Override
@@ -93,7 +95,6 @@ public class QuickMenuFragment extends BaseSupportFragment {
 		mListView.setAdapter(mAdapter);
 		getLoaderManager().initLoader(LOADER_ID_TRENDS, null, mTrendsCallback);
 	}
-
 
 	private Context getThemedContext() {
 		if (mThemedContext != null) return mThemedContext;

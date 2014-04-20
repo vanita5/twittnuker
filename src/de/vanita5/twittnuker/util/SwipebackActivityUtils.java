@@ -117,7 +117,6 @@ public class SwipebackActivityUtils implements TwittnukerConstants {
 		paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
 		c.drawRect(frame.left, 0, frame.right, frame.top, paint);
 		return b;
-
 	   }
 
 	public static class SwipebackScreenshotManager {

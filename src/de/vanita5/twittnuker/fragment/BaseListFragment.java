@@ -43,7 +43,6 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.Utils;
 
-
 public class BaseListFragment extends ListFragment implements Constants, OnScrollListener, RefreshScrollTopInterface {
 
 	private boolean mActivityFirstCreated;

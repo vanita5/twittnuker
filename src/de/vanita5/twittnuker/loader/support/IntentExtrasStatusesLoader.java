@@ -27,7 +27,6 @@ import android.os.Bundle;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
-
 import java.util.Collections;
 import java.util.List;
 

@@ -29,7 +29,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 
-
 import java.util.Collections;
 import java.util.List;
 

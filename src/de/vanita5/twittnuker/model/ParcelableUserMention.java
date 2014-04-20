@@ -161,4 +161,5 @@ public class ParcelableUserMention implements Parcelable, JSONParcelable {
 		}
 		return false;
 	}
+
 }

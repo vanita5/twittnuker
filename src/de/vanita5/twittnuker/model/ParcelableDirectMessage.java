@@ -57,7 +57,6 @@ public class ParcelableDirectMessage implements Parcelable, Serializable, Compar
 			return new ParcelableDirectMessage[size];
 		}
 	};
-
 	public static final Comparator<ParcelableDirectMessage> MESSAGE_ID_COMPARATOR = new Comparator<ParcelableDirectMessage>() {
 
 		@Override

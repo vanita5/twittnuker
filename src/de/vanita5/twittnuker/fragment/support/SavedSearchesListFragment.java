@@ -40,7 +40,6 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.loader.support.SavedSearchesLoader;
 import de.vanita5.twittnuker.model.Panes;
 
-
 import twitter4j.ResponseList;
 import twitter4j.SavedSearch;
 

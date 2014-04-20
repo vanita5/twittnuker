@@ -65,6 +65,7 @@ public class SetUserNicknameDialogFragment extends BaseSupportDialogFragment imp
                 break;
             }
         }
+
     }
 
 	@Override

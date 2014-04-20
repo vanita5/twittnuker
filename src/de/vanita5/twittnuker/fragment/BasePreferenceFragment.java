@@ -27,7 +27,6 @@ import android.preference.PreferenceFragment;
 
 import de.vanita5.twittnuker.Constants;
 
-
 public class BasePreferenceFragment extends PreferenceFragment implements Constants {
 
 	@Override

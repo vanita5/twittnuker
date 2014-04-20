@@ -26,7 +26,6 @@ import android.support.v4.app.Fragment;
 
 import de.vanita5.twittnuker.Constants;
 
-
 import java.util.Comparator;
 import java.util.Map.Entry;
 

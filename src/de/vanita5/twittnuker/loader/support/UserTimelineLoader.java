@@ -30,7 +30,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
-
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;

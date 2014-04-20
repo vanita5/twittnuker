@@ -374,4 +374,5 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 		}
 
 	}
+
 }

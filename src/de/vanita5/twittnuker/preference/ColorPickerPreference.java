@@ -119,6 +119,7 @@ public class ColorPickerPreference extends Preference implements DialogInterface
 		setPreviewColor();
 	}
 
+	@Override
     protected void onClick() {
         if (mDialog != null && mDialog.isShowing()) return;
         mDialog = new ColorPickerDialog(getContext(), getValue(), mAlphaSliderEnabled);

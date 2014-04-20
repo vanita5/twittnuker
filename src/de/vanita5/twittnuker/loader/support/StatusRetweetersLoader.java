@@ -24,9 +24,7 @@ package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
 
-import de.vanita5.twittnuker.loader.support.IDsUsersLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
-
 
 import twitter4j.CursorPaging;
 import twitter4j.IDs;

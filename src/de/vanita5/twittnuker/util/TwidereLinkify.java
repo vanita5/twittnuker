@@ -23,8 +23,6 @@
 package de.vanita5.twittnuker.util;
 
 import static de.vanita5.twittnuker.util.MediaPreviewUtils.AVAILABLE_IMAGE_SHUFFIX;
-import static de.vanita5.twittnuker.util.MediaPreviewUtils.PATTERN_ALL_AVAILABLE_IMAGES;
-import static de.vanita5.twittnuker.util.MediaPreviewUtils.PATTERN_IMAGES;
 import static de.vanita5.twittnuker.util.Utils.matcherEnd;
 import static de.vanita5.twittnuker.util.Utils.matcherGroup;
 import static de.vanita5.twittnuker.util.Utils.matcherStart;
@@ -172,12 +170,12 @@ public final class TwidereLinkify implements Constants {
 				VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE, mHighlightColor);
 	}
 
-    public void setLinkTextColor(final int color) {
-        mHighlightColor = color;
-    }
-
 	public void setHighlightOption(final int style) {
 		mHighlightOption = style;
+	}
+
+	public void setLinkTextColor(final int color) {
+		mHighlightColor = color;
 	}
 
 	private final boolean addCashtagLinks(final Spannable spannable, final long account_id,
@@ -186,7 +184,6 @@ public final class TwidereLinkify implements Constants {
         for (final Entity entity : mExtractor.extractCashtagsWithIndices(spannable.toString())) {
             final int start = entity.getStart();
             final int end = entity.getEnd();
-
 			applyLink(entity.getValue(), start, end, spannable, account_id, LINK_TYPE_CASHTAG, false, listener,
                     highlightOption, highlightColor);
 			hasMatches = true;
@@ -200,7 +197,6 @@ public final class TwidereLinkify implements Constants {
         for (final Entity entity : mExtractor.extractHashtagsWithIndices(spannable.toString())) {
             final int start = entity.getStart();
             final int end = entity.getEnd();
-
             applyLink(entity.getValue(), start, end, spannable, account_id, LINK_TYPE_HASHTAG, false, listener,
                     highlightOption, highlightColor);
 			hasMatches = true;
@@ -248,7 +244,7 @@ public final class TwidereLinkify implements Constants {
 					applyLink(span.getURL(), start, end, string, account_id, LINK_TYPE_LINK, sensitive, listener,
 							highlightOption, highlightColor);
 				}
-                final List<Entity> urls = mExtractor.extractURLsWithIndices(ParseUtils.parseString(string));
+				final List<Extractor.Entity> urls = mExtractor.extractURLsWithIndices(ParseUtils.parseString(string));
                 for (final Extractor.Entity entity : urls) {
                     final int start = entity.getStart(), end = entity.getEnd();
                     if (entity.getType() != Extractor.Entity.Type.URL

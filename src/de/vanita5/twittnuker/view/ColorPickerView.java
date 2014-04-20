@@ -1,23 +1,17 @@
 /*
- * Twittnuker - Twitter client for Android
+ * Copyright (C) 2010 Daniel Nilsson
  *
- * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package de.vanita5.twittnuker.view;
@@ -45,7 +39,6 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import de.vanita5.twittnuker.graphic.AlphaPatternDrawable;
-
 
 /**
  * Displays a color picker to the user and allow them to select a color. A
@@ -243,10 +236,8 @@ public class ColorPickerView extends View {
 
 	@Override
 	public boolean onTrackballEvent(final MotionEvent event) {
-
         final float x = event.getX(), y = event.getY();
         boolean update = false;
-
 		if (event.getAction() == MotionEvent.ACTION_MOVE) {
 			switch (mLastTouchedPanel) {
                 case PANEL_SAT_VAL: {
@@ -280,7 +271,6 @@ public class ColorPickerView extends View {
 					break;
                 }
                 case PANEL_ALPHA: {
-
 					if (!mShowAlphaPanel || mAlphaRect == null) {
 						update = false;
 					} else {
@@ -309,10 +299,10 @@ public class ColorPickerView extends View {
             if (mOnColorChangedListener != null) {
                 mOnColorChangedListener.onColorChanged(color);
 			}
-
 			invalidate();
 			return true;
 		}
+
 		return super.onTrackballEvent(event);
 	}
 
@@ -705,7 +695,7 @@ public class ColorPickerView extends View {
 		RECTANGLE_TRACKER_OFFSET *= mDensity;
 		HUE_PANEL_WIDTH *= mDensity;
 		ALPHA_PANEL_HEIGHT *= mDensity;
-        PANEL_SPACING *= mDensity;
+		PANEL_SPACING = PANEL_SPACING * mDensity;
 
 		mDrawingOffset = calculateRequiredOffset();
 
@@ -790,7 +780,7 @@ public class ColorPickerView extends View {
 		} else if (x > rect.right) {
 			x = width;
 		} else {
-            x -= (int) rect.left;
+			x = x - (int) rect.left;
 		}
 
 		return 0xff - x * 0xff / width;
@@ -808,7 +798,7 @@ public class ColorPickerView extends View {
 		} else if (y > rect.bottom) {
 			y = height;
 		} else {
-            y -= rect.top;
+			y = y - rect.top;
 		}
 
 		return 360f - y * 360f / height;
@@ -827,7 +817,7 @@ public class ColorPickerView extends View {
 		} else if (x > rect.right) {
 			x = width;
 		} else {
-            x -= rect.left;
+			x = x - rect.left;
 		}
 
 		if (y < rect.top) {
@@ -835,7 +825,7 @@ public class ColorPickerView extends View {
 		} else if (y > rect.bottom) {
 			y = height;
 		} else {
-            y -= rect.top;
+			y = y - rect.top;
 		}
 
 		result[0] = 1.f / width * x;
@@ -955,5 +945,4 @@ public class ColorPickerView extends View {
 
 		public void onColorChanged(int color);
 	}
-
 }

@@ -33,7 +33,6 @@ import static de.vanita5.twittnuker.util.TwidereLinkify.TWITTER_PROFILE_IMAGES_A
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -100,10 +99,8 @@ import de.keyboardsurfer.android.widget.crouton.CroutonConfiguration;
 import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 
 import org.apache.http.NameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.mariotaku.gallery3d.ImageViewerGLActivity;
-import org.mariotaku.jsonserializer.JSONSerializer;
 import org.mariotaku.querybuilder.AllColumns;
 import org.mariotaku.querybuilder.Columns;
 import org.mariotaku.querybuilder.Columns.Column;
@@ -153,7 +150,6 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.provider.TweetStore;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.CacheFiles;
@@ -179,7 +175,6 @@ import de.vanita5.twittnuker.util.net.HttpClientImpl;
 
 import twitter4j.DirectMessage;
 import twitter4j.EntitySupport;
-import twitter4j.GeoLocation;
 import twitter4j.MediaEntity;
 import twitter4j.RateLimitStatus;
 import twitter4j.Status;
@@ -625,10 +620,10 @@ public final class Utils implements Constants {
 			}
 			case LINK_ID_USER: {
 				fragment = new UserProfileFragment();
-				final String param_screen_name = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
+				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
-					args.putString(EXTRA_SCREEN_NAME, param_screen_name);
+					args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				}
 				if (!args.containsKey(EXTRA_USER_ID)) {
 					args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
@@ -637,10 +632,10 @@ public final class Utils implements Constants {
 			}
 			case LINK_ID_USER_LIST_MEMBERSHIPS: {
 				fragment = new UserListMembershipsListFragment();
-				final String param_screen_name = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
+				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
-					args.putString(EXTRA_SCREEN_NAME, param_screen_name);
+					args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				}
 				if (!args.containsKey(EXTRA_USER_ID)) {
 					args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
@@ -649,54 +644,54 @@ public final class Utils implements Constants {
 			}
 			case LINK_ID_USER_TIMELINE: {
 				fragment = new UserTimelineFragment();
-				final String param_screen_name = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
+				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
-					args.putString(EXTRA_SCREEN_NAME, param_screen_name);
+					args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				}
 				if (!args.containsKey(EXTRA_USER_ID)) {
 					args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
 				}
-				if (isEmpty(param_screen_name) && isEmpty(param_user_id)) return null;
+				if (isEmpty(paramScreenName) && isEmpty(param_user_id)) return null;
 				break;
 			}
 			case LINK_ID_USER_FAVORITES: {
 				fragment = new UserFavoritesFragment();
-				final String param_screen_name = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
+				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
+				final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
-					args.putString(EXTRA_SCREEN_NAME, param_screen_name);
+					args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				}
 				if (!args.containsKey(EXTRA_USER_ID)) {
-					args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
+					args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(paramUserId));
 				}
 				if (!args.containsKey(EXTRA_SCREEN_NAME) && !args.containsKey(EXTRA_USER_ID)) return null;
 				break;
 			}
 			case LINK_ID_USER_FOLLOWERS: {
 				fragment = new UserFollowersFragment();
-				final String param_screen_name = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
+				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
-					args.putString(EXTRA_SCREEN_NAME, param_screen_name);
+					args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				}
 				if (!args.containsKey(EXTRA_USER_ID)) {
 					args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
 				}
-				if (isEmpty(param_screen_name) && isEmpty(param_user_id)) return null;
+				if (isEmpty(paramScreenName) && isEmpty(param_user_id)) return null;
 				break;
 			}
 			case LINK_ID_USER_FRIENDS: {
 				fragment = new UserFriendsFragment();
-				final String param_screen_name = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
+				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
-					args.putString(EXTRA_SCREEN_NAME, param_screen_name);
+					args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				}
 				if (!args.containsKey(EXTRA_USER_ID)) {
 					args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
 				}
-				if (isEmpty(param_screen_name) && isEmpty(param_user_id)) return null;
+				if (isEmpty(paramScreenName) && isEmpty(param_user_id)) return null;
 				break;
 			}
 			case LINK_ID_USER_BLOCKS: {
@@ -717,75 +712,71 @@ public final class Utils implements Constants {
 			}
 			case LINK_ID_USER_LIST: {
 				fragment = new UserListDetailsFragment();
-				final String param_screen_name = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
+				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				final String param_list_id = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
-				final String param_list_name = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
+				final String paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
 				if (isEmpty(param_list_id)
-						&& (isEmpty(param_list_name) || isEmpty(param_screen_name) && isEmpty(param_user_id)))
-					return null;
+						&& (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(param_user_id))) return null;
 				args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(param_list_id));
 				args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
-				args.putString(EXTRA_SCREEN_NAME, param_screen_name);
-				args.putString(EXTRA_LIST_NAME, param_list_name);
+				args.putString(EXTRA_SCREEN_NAME, paramScreenName);
+				args.putString(EXTRA_LIST_NAME, paramListName);
 				break;
 			}
 			case LINK_ID_USER_LISTS: {
 				fragment = new UserListsListFragment();
-				final String param_screen_name = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
+				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
-					args.putString(EXTRA_SCREEN_NAME, param_screen_name);
+					args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				}
 				if (!args.containsKey(EXTRA_USER_ID)) {
 					args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
 				}
-				if (isEmpty(param_screen_name) && isEmpty(param_user_id)) return null;
+				if (isEmpty(paramScreenName) && isEmpty(param_user_id)) return null;
 				break;
 			}
 			case LINK_ID_USER_LIST_TIMELINE: {
 				fragment = new UserListTimelineFragment();
-				final String param_screen_name = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
+				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				final String param_list_id = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
-				final String param_list_name = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
+				final String paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
 				if (isEmpty(param_list_id)
-						&& (isEmpty(param_list_name) || isEmpty(param_screen_name) && isEmpty(param_user_id)))
-					return null;
+						&& (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(param_user_id))) return null;
 				args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(param_list_id));
 				args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
-				args.putString(EXTRA_SCREEN_NAME, param_screen_name);
-				args.putString(EXTRA_LIST_NAME, param_list_name);
+				args.putString(EXTRA_SCREEN_NAME, paramScreenName);
+				args.putString(EXTRA_LIST_NAME, paramListName);
 				break;
 			}
 			case LINK_ID_USER_LIST_MEMBERS: {
 				fragment = new UserListMembersFragment();
-				final String param_screen_name = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
+				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				final String param_list_id = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
-				final String param_list_name = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
+				final String paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
 				if (isEmpty(param_list_id)
-						&& (isEmpty(param_list_name) || isEmpty(param_screen_name) && isEmpty(param_user_id)))
-					return null;
+						&& (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(param_user_id))) return null;
 				args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(param_list_id));
 				args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
-				args.putString(EXTRA_SCREEN_NAME, param_screen_name);
-				args.putString(EXTRA_LIST_NAME, param_list_name);
+				args.putString(EXTRA_SCREEN_NAME, paramScreenName);
+				args.putString(EXTRA_LIST_NAME, paramListName);
 				break;
 			}
 			case LINK_ID_LIST_SUBSCRIBERS: {
 				fragment = new UserListSubscribersFragment();
-				final String param_screen_name = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
+				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				final String param_list_id = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
-				final String param_list_name = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
+				final String paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
 				if (isEmpty(param_list_id)
-						&& (isEmpty(param_list_name) || isEmpty(param_screen_name) && isEmpty(param_user_id)))
-					return null;
+						&& (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(param_user_id))) return null;
 				args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(param_list_id));
 				args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
-				args.putString(EXTRA_SCREEN_NAME, param_screen_name);
-				args.putString(EXTRA_LIST_NAME, param_list_name);
+				args.putString(EXTRA_SCREEN_NAME, paramScreenName);
+				args.putString(EXTRA_LIST_NAME, paramListName);
 				break;
 			}
 			case LINK_ID_SAVED_SEARCHES: {
@@ -794,9 +785,9 @@ public final class Utils implements Constants {
 			}
 			case LINK_ID_USER_MENTIONS: {
 				fragment = new UserMentionsFragment();
-				final String param_screen_name = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-				if (!args.containsKey(EXTRA_SCREEN_NAME) && !isEmpty(param_screen_name)) {
-					args.putString(EXTRA_SCREEN_NAME, param_screen_name);
+				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
+				if (!args.containsKey(EXTRA_SCREEN_NAME) && !isEmpty(paramScreenName)) {
+					args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				}
 				if (isEmpty(args.getString(EXTRA_SCREEN_NAME))) return null;
 				break;
@@ -2162,18 +2153,18 @@ public final class Utils implements Constants {
 		return getTwitterInstance(context, accountId, includeEntities, includeRetweets, !MIUIDetector.isMIUI());
 	}
 
-	public static Twitter getTwitterInstance(final Context context, final long account_id,
+	public static Twitter getTwitterInstance(final Context context, final long accountId,
 			final String mediaProvider, final String mediaProviderKey) {
-		return getTwitterInstance(context, account_id, false, false, true, mediaProvider, mediaProviderKey);
+		return getTwitterInstance(context, accountId, false, false, true, mediaProvider, mediaProviderKey);
 	}
 
-	public static Twitter getTwitterInstance(final Context context, final long account_id,
-			final boolean include_entities, final boolean include_retweets, final boolean use_apache_httpclient) {
-		return getTwitterInstance(context, account_id, include_entities, include_retweets, use_apache_httpclient, null, null);
+	public static Twitter getTwitterInstance(final Context context, final long accountId,
+			final boolean includeEntities, final boolean includeRetweets, final boolean useApacheHttpclient) {
+		return getTwitterInstance(context, accountId, includeEntities, includeRetweets, useApacheHttpclient, null, null);
 	}
 
-	public static Twitter getTwitterInstance(final Context context, final long account_id,
-			final boolean include_entities, final boolean include_retweets, final boolean use_apache_httpclient,
+	public static Twitter getTwitterInstance(final Context context, final long accountId,
+			final boolean includeEntities, final boolean includeRetweets, final boolean useApacheHttpclient,
 			final String mediaProvider, final String mediaProviderAPIKey) {
 		if (context == null) return null;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
@@ -2187,7 +2178,7 @@ public final class Utils implements Constants {
 		final String pref_consumer_key = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
 		final String pref_consumer_secret = prefs.getString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
 		final StringBuilder where = new StringBuilder();
-		where.append(Accounts.ACCOUNT_ID + " = " + account_id);
+		where.append(Accounts.ACCOUNT_ID + " = " + accountId);
 		final Cursor c = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
 				Accounts.COLUMNS, where.toString(), null, null);
 		if (c == null) return null;
@@ -2196,7 +2187,7 @@ public final class Utils implements Constants {
 				c.moveToFirst();
 				final ConfigurationBuilder cb = new ConfigurationBuilder();
 				cb.setHostAddressResolver(app.getHostAddressResolver());
-				if (use_apache_httpclient) {
+				if (useApacheHttpclient) {
 					cb.setHttpClientImplementation(HttpClientImpl.class);
 				}
 				cb.setHttpConnectionTimeout(connection_timeout);
@@ -2235,8 +2226,8 @@ public final class Utils implements Constants {
 				if (!isEmpty(mediaProviderAPIKey)) {
 					cb.setMediaProviderAPIKey(mediaProviderAPIKey);
 				}
-				cb.setIncludeEntitiesEnabled(include_entities);
-				cb.setIncludeRTsEnabled(include_retweets);
+				cb.setIncludeEntitiesEnabled(includeEntities);
+				cb.setIncludeRTsEnabled(includeRetweets);
 				switch (c.getInt(c.getColumnIndexOrThrow(Accounts.AUTH_TYPE))) {
 					case Accounts.AUTH_TYPE_OAUTH:
 					case Accounts.AUTH_TYPE_XAUTH: {
@@ -2546,7 +2537,6 @@ public final class Utils implements Constants {
 		if (context == null) return false;
 		final ConnectivityManager conn = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		final NetworkInfo networkInfo = conn.getActiveNetworkInfo();
-
 		return networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI
 				&& networkInfo.isConnected();
 	}

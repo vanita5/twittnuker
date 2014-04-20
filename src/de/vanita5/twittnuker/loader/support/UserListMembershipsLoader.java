@@ -24,9 +24,7 @@ package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
 
-import de.vanita5.twittnuker.loader.support.BaseUserListsLoader;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-
 
 import twitter4j.PagableResponseList;
 import twitter4j.Twitter;

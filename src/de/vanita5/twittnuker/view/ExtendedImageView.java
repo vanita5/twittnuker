@@ -29,7 +29,6 @@ import android.widget.ImageView;
 
 import de.vanita5.twittnuker.view.iface.IExtendedView;
 
-
 public class ExtendedImageView extends ImageView implements IExtendedView {
 
 	private OnSizeChangedListener mOnSizeChangedListener;

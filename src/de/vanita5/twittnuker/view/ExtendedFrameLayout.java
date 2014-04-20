@@ -29,7 +29,6 @@ import android.widget.FrameLayout;
 
 import de.vanita5.twittnuker.view.iface.IExtendedView;
 
-
 public class ExtendedFrameLayout extends FrameLayout implements IExtendedView {
 
 	private TouchInterceptor mTouchInterceptor;

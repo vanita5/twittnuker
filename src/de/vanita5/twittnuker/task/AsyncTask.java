@@ -126,7 +126,7 @@ public abstract class AsyncTask<Param, Progress, Result> {
 	}
 
 	protected final void publishProgress(final Progress... progress) {
-		if (mCancelled) return;
+		if (isCancelled()) return;
 		mHandler.post(new OnProgressUpdateRunnable(progress));
 	}
 

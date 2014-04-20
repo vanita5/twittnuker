@@ -101,13 +101,18 @@ public class SearchFragment extends BaseSupportFragment implements Panes.Left, O
 	}
 
 	@Override
+	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+		inflater.inflate(R.menu.menu_search, menu);
+	}
+
+	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_search, container, false);
 	}
 	
 	@Override
-	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-		inflater.inflate(R.menu.menu_search, menu);
+	public void onDetachFragment(final Fragment fragment) {
+
 	}
 	
 	@Override
@@ -125,11 +130,6 @@ public class SearchFragment extends BaseSupportFragment implements Panes.Left, O
 		}
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public void onDetachFragment(final Fragment fragment) {
-
 	}
 
 	@Override

@@ -39,7 +39,6 @@ import android.os.Bundle;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.ParseUtils;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

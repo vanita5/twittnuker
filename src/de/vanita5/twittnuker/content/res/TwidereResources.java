@@ -43,7 +43,7 @@ public class TwidereResources extends Resources implements IThemedResources {
 	}
 
 	@Override
-	public Drawable getDrawable(final int id) throws Resources.NotFoundException {
+	public Drawable getDrawable(final int id) throws NotFoundException {
 		final Drawable d = mHelper.getDrawable(id);
 		if (d != null) return d;
 		return super.getDrawable(id);

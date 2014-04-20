@@ -78,10 +78,10 @@ import java.util.List;
 
 public class SettingsWizardActivity extends Activity implements Constants {
 
-	public static final String WIZARD_KEY_NEXT_PAGE = "next_page";
-	public static final String WIZARD_KEY_USE_DEFAULTS = "use_defaults";
-	public static final String WIZARD_KEY_EDIT_CUSTOM_TABS = "edit_custom_tabs";
-	public static final String WIZARD_KEY_IMPORT_SETTINGS = "import_settings";
+	public static final String WIZARD_PREFERENCE_KEY_NEXT_PAGE = "next_page";
+	public static final String WIZARD_PREFERENCE_KEY_USE_DEFAULTS = "use_defaults";
+	public static final String WIZARD_PREFERENCE_KEY_EDIT_CUSTOM_TABS = "edit_custom_tabs";
+	public static final String WIZARD_PREFERENCE_KEY_IMPORT_SETTINGS = "import_settings";
 
 	private static final int REQUEST_IMPORT_SETTINGS = 201;
 
@@ -234,7 +234,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 			if (nextPageTitle != 0) {
 				final Preference nextPage = new WizardPageNavPreference(context);
 				nextPage.setOrder(999);
-				nextPage.setKey(WIZARD_KEY_NEXT_PAGE);
+				nextPage.setKey(WIZARD_PREFERENCE_KEY_NEXT_PAGE);
 				nextPage.setTitle(nextPageTitle);
 				nextPage.setOnPreferenceClickListener(this);
 				screen.addPreference(nextPage);
@@ -243,7 +243,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 
 		@Override
 		public boolean onPreferenceClick(final Preference preference) {
-			if (WIZARD_KEY_NEXT_PAGE.equals(preference.getKey())) {
+			if (WIZARD_PREFERENCE_KEY_NEXT_PAGE.equals(preference.getKey())) {
 				gotoNextPage();
 			}
 			return true;
@@ -337,8 +337,8 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		@Override
 		public void onActivityCreated(final Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
-			findPreference(WIZARD_KEY_EDIT_CUSTOM_TABS).setOnPreferenceClickListener(this);
-			findPreference(WIZARD_KEY_USE_DEFAULTS).setOnPreferenceClickListener(this);
+			findPreference(WIZARD_PREFERENCE_KEY_EDIT_CUSTOM_TABS).setOnPreferenceClickListener(this);
+			findPreference(WIZARD_PREFERENCE_KEY_USE_DEFAULTS).setOnPreferenceClickListener(this);
 		}
 
 		@Override
@@ -358,9 +358,9 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		@Override
 		public boolean onPreferenceClick(final Preference preference) {
 			final String key = preference.getKey();
-			if (WIZARD_KEY_EDIT_CUSTOM_TABS.equals(key)) {
+			if (WIZARD_PREFERENCE_KEY_EDIT_CUSTOM_TABS.equals(key)) {
 				startActivityForResult(new Intent(getActivity(), CustomTabsActivity.class), REQUEST_CUSTOM_TABS);
-			} else if (WIZARD_KEY_USE_DEFAULTS.equals(key)) {
+			} else if (WIZARD_PREFERENCE_KEY_USE_DEFAULTS.equals(key)) {
 				applyInitialTabSettings();
 			}
 			return true;
@@ -447,19 +447,19 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		@Override
 		public void onActivityCreated(final Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
-			findPreference(WIZARD_KEY_NEXT_PAGE).setOnPreferenceClickListener(this);
-			findPreference(WIZARD_KEY_USE_DEFAULTS).setOnPreferenceClickListener(this);
-			findPreference(WIZARD_KEY_IMPORT_SETTINGS).setOnPreferenceClickListener(this);
+			findPreference(WIZARD_PREFERENCE_KEY_NEXT_PAGE).setOnPreferenceClickListener(this);
+			findPreference(WIZARD_PREFERENCE_KEY_USE_DEFAULTS).setOnPreferenceClickListener(this);
+			findPreference(WIZARD_PREFERENCE_KEY_IMPORT_SETTINGS).setOnPreferenceClickListener(this);
 		}
 
 		@Override
 		public boolean onPreferenceClick(final Preference preference) {
 			final String key = preference.getKey();
-			if (WIZARD_KEY_NEXT_PAGE.equals(key)) {
+			if (WIZARD_PREFERENCE_KEY_NEXT_PAGE.equals(key)) {
 				gotoNextPage();
-			} else if (WIZARD_KEY_USE_DEFAULTS.equals(key)) {
+			} else if (WIZARD_PREFERENCE_KEY_USE_DEFAULTS.equals(key)) {
 				applyInitialSettings();
-			} else if (WIZARD_KEY_IMPORT_SETTINGS.equals(key)) {
+			} else if (WIZARD_PREFERENCE_KEY_IMPORT_SETTINGS.equals(key)) {
 				openImportSettingsDialog();
 			}
 			return true;
@@ -493,7 +493,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		}
 	}
 
-	abstract static class AbsInitialSettingsTask extends AsyncTask<Void, Void, Boolean> {
+	static abstract class AbsInitialSettingsTask extends AsyncTask<Void, Void, Boolean> {
 
 		private static final String FRAGMENT_TAG = "initial_settings_dialog";
 

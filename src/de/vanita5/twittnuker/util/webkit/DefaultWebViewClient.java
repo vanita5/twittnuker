@@ -39,7 +39,6 @@ import android.webkit.WebViewClient;
 import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 import de.vanita5.twittnuker.fragment.BaseWebViewFragment;
 
-
 public class DefaultWebViewClient extends WebViewClient {
 
 	private final Activity mActivity;

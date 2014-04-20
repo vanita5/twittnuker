@@ -127,8 +127,4 @@ public class ActivitiesByFriendsFragment extends BaseActivitiesListFragment {
 		return new String[] { AUTHORITY_ACTIVITIES_BY_FRIENDS };
 	}
 
-	@Override
-	public void setConfig(RefreshNowConfig refreshNowConfig) {
-
-	}
 }

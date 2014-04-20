@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
@@ -37,7 +38,7 @@ import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
 import java.util.List;
 
-public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserList> {
+public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserList> implements IBaseAdapter {
 
 	private final Context mContext;
 	private final ImageLoaderWrapper mProfileImageLoader;

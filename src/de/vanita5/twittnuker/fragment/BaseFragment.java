@@ -35,8 +35,11 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 
-
 public class BaseFragment extends Fragment implements Constants {
+
+	public BaseFragment() {
+
+	}
 
     public TwittnukerApplication getApplication() {
 		final Activity activity = getActivity();

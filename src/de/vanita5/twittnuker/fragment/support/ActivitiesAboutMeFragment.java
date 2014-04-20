@@ -122,8 +122,4 @@ public class ActivitiesAboutMeFragment extends BaseActivitiesListFragment {
 		return new String[] { AUTHORITY_ACTIVITIES_ABOUT_ME };
 	}
 
-	@Override
-	public void setConfig(RefreshNowConfig refreshNowConfig) {
-
-	}
 }

@@ -34,7 +34,6 @@ import android.widget.FrameLayout;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 
-
 public class LeftDrawerFrameLayout extends FrameLayout {
 
 	private final Paint mClipPaint = new Paint();

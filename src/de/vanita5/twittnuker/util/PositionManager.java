@@ -28,7 +28,6 @@ import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
 
-
 public class PositionManager implements Constants {
 
 	private final SharedPreferences mPreferences;

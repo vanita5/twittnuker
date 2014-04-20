@@ -104,6 +104,7 @@ public final class ColorPickerDialogFragment extends BaseSupportDialogFragment i
         public void onColorCleared();
 
         public void onColorSelected(int color);
+
     }
 
 }

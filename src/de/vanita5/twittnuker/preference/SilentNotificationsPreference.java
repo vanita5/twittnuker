@@ -28,7 +28,6 @@ import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.Constants;
 
-
 public final class SilentNotificationsPreference extends MultiSelectListPreference implements Constants {
 
 	public SilentNotificationsPreference(final Context context) {

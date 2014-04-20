@@ -38,4 +38,5 @@ public class BrowserFragment extends BaseWebViewFragment {
 		final WebView view = getWebView();
 		view.loadUrl(ParseUtils.parseString(uri, "about:blank"));
 	}
+
 }

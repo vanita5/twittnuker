@@ -34,7 +34,6 @@ import android.webkit.WebView;
 import de.vanita5.twittnuker.fragment.iface.IMapFragment;
 import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient;
 
-
 public class WebMapFragment extends BaseSupportWebViewFragment implements IMapFragment {
 
 	private static final String MAPVIEW_URI = "file:///android_asset/mapview.html";

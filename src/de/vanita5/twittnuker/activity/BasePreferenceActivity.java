@@ -117,13 +117,13 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
 		}
 	}
 
-    protected final boolean isThemeChanged() {
-        return getThemeResourceId() != mCurrentThemeResource;
-    }
-
     @Override
 	public boolean shouldOverrideActivityAnimation() {
 		return true;
+	}
+
+	protected final boolean isThemeChanged() {
+		return getThemeResourceId() != mCurrentThemeResource;
 	}
 
 	@Override
@@ -152,7 +152,8 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
 	}
 
 	private final void setActionBarBackground() {
-//    ThemeUtils.applyActionBarBackground(getActionBar(), this, mCurrentThemeResource);
+		// ThemeUtils.applyActionBarBackground(getActionBar(), this,
+		// mCurrentThemeResource);
 	}
 
 }

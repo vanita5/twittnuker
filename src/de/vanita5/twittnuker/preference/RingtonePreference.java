@@ -75,7 +75,7 @@ public class RingtonePreference extends AutoInvalidateListPreference {
 	protected void onPrepareDialogBuilder(final Builder builder) {
 		loadRingtones(getContext());
 		setSelectedItem(ArrayUtils.indexOf(mValues, getPersistedString(null)));
-		builder.setSingleChoiceItems(getEntries(), mSelectedItem, new OnClickListener() {
+		builder.setSingleChoiceItems(getEntries(), getSelectedItem(), new OnClickListener() {
 			@Override
 			public void onClick(final DialogInterface dialog, final int which) {
 				setSelectedItem(which);

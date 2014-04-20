@@ -26,7 +26,6 @@ import android.content.Context;
 
 import de.vanita5.twittnuker.model.ParcelableUser;
 
-
 import java.util.Collections;
 import java.util.List;
 

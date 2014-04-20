@@ -35,7 +35,6 @@ import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.loader.support.TweetSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
-
 import java.util.List;
 
 public class SearchStatusesFragment extends ParcelableStatusesListFragment {

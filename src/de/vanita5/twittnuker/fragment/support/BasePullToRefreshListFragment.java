@@ -85,6 +85,7 @@ public abstract class BasePullToRefreshListFragment extends BaseSupportListFragm
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		final Context context = getActivity();
+
 		final FrameLayout root = new FrameLayout(context);
 
 		// ------------------------------------------------------------------
@@ -210,6 +211,7 @@ public abstract class BasePullToRefreshListFragment extends BaseSupportListFragm
 	}
 
 	protected void onListTouched() {
+
 	}
 
 }

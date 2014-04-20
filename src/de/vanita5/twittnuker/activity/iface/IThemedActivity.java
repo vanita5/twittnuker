@@ -29,8 +29,6 @@ import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
 public interface IThemedActivity extends ITwidereContextWrapper {
 
 	public int getCurrentThemeResourceId();
-
-	public void navigateUpFromSameTask();
 	
 	public Resources getDefaultResources();
 
@@ -41,6 +39,8 @@ public interface IThemedActivity extends ITwidereContextWrapper {
 	public Resources getThemedResources();
 
 	public String getThemeFontFamily();
+
+	public void navigateUpFromSameTask();
 
 	public void overrideCloseAnimationIfNeeded();
 

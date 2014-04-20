@@ -32,7 +32,6 @@ import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-
 public class ProfileImageBannerLayout extends ExtendedFrameLayout {
 
 	public static final int VIEW_ID_PROFILE_IMAGE = 0x10000001;

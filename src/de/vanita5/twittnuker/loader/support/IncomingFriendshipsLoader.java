@@ -26,7 +26,6 @@ import android.content.Context;
 
 import de.vanita5.twittnuker.model.ParcelableUser;
 
-
 import twitter4j.CursorPaging;
 import twitter4j.IDs;
 import twitter4j.Twitter;
