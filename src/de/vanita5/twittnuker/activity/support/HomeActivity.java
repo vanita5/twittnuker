@@ -209,7 +209,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
     private int mTabDisplayOption;
 	protected boolean hasStreamLoaded;
 	
-	protected TwitterStream twitterStream;
+	protected TwitterStream twitterStream = null;
 
 	public void closeAccountsDrawer() {
 		if (mSlidingMenu == null) return;
@@ -621,28 +621,27 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	
 	public void connectToStream() {
 		if(mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
-			if(twitterStream != null) {
-				SupplicantState supplicantState;
-				WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-				WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-				supplicantState = wifiInfo.getSupplicantState();
-				
-				if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
-						|| SupplicantState.COMPLETED.equals(supplicantState)) {
-					hasStreamLoaded = true;
-					twitterStream.user(); //Initialize stream
-					if (mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, false)) {
-						NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-						final Intent intent = new Intent(this, HomeActivity.class);
-						final Notification.Builder builder = new Notification.Builder(this);
-						builder.setOngoing(true);
-						builder.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
-						builder.setSmallIcon(R.drawable.ic_stat_twittnuker);
-						builder.setContentTitle(getString(R.string.app_name));
-						builder.setContentText(getString(R.string.streaming_service_running));
-						builder.setTicker(getString(R.string.streaming_service_running));
-						notificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
-					}
+			SupplicantState supplicantState;
+			WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+			WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+			supplicantState = wifiInfo.getSupplicantState();
+
+			if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
+					|| SupplicantState.COMPLETED.equals(supplicantState)) {
+				initTwitterStream();
+				hasStreamLoaded = true;
+				twitterStream.user(); //Initialize stream
+				if (mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, false)) {
+					NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+					final Intent intent = new Intent(this, HomeActivity.class);
+					final Notification.Builder builder = new Notification.Builder(this);
+					builder.setOngoing(true);
+					builder.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
+					builder.setSmallIcon(R.drawable.ic_stat_twittnuker);
+					builder.setContentTitle(getString(R.string.app_name));
+					builder.setContentText(getString(R.string.streaming_service_running));
+					builder.setTicker(getString(R.string.streaming_service_running));
+					notificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
 				}
 			}
 		}
@@ -697,6 +696,12 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		updateUnreadCount();
 		
 		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
+			connectToStream();
+		}
+	}
+
+	private void initTwitterStream() {
+		if (twitterStream == null) {
 			Twitter twitter = Utils.getDefaultTwitterInstance(getApplicationContext(), true);
 			twitterStream = new TwitterStreamFactory().getInstance(twitter.getAuthorization());
 			twitterStream.addListener(new UserStreamListenerImpl(getApplicationContext(), mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1)));
