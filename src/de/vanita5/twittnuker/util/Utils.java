@@ -1471,11 +1471,11 @@ public final class Utils implements Constants {
 	}
 
 	public static int getCardHighlightColor(ParcelableStatus status, boolean isMention) {
-		return getCardHighlightColor(isMention, status.is_favorite, status.is_retweet && isMyRetweet(status));
+		return getCardHighlightColor(isMention, status.is_favorite, isMyRetweet(status));
 	}
 
 	public static int getCardHighlightColor(ParcelableStatus status, boolean isMention, boolean favoritesHighlightEnabled) {
-		return getCardHighlightColor(isMention, favoritesHighlightEnabled && status.is_favorite, status.is_retweet && isMyRetweet(status));
+		return getCardHighlightColor(isMention, favoritesHighlightEnabled && status.is_favorite, isMyRetweet(status));
 	}
 
 	public static int getCardHighlightColor(final boolean is_mention, final boolean is_favorite,
@@ -1484,7 +1484,8 @@ public final class Utils implements Constants {
 			return HOLO_BLUE_LIGHT;
 		} else if (is_favorite) {
 			return HOLO_ORANGE_LIGHT;
-		} else if (is_retweet) {
+		}
+		else if (is_retweet) {
 			return HOLO_GREEN_LIGHT;
 		}
 		return Color.TRANSPARENT;
