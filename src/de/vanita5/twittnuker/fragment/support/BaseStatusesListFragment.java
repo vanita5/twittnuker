@@ -273,6 +273,12 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 			mListView.setSelectionFromTop(position, mListScrollOffset);
 			mListScrollOffset = 0;
 		}
+
+		//Autoscroll on Streaming
+		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)
+				&& mPreferences.getBoolean(KEY_STREAMING_AUTOSCROLL, false)) {
+			scrollToStart();
+		}
 	}
 
 	@Override

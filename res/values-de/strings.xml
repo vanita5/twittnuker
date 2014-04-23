@@ -633,6 +633,8 @@
     <string name="streaming_service_running">Streaming...</string>
     <string name="stream_on_mobile">Mobile Streaming</string>
     <string name="stream_on_mobile_summary">Über das Mobilfunknetz streamen. Das ist NICHT empfohlen!</string>
+    <string name="stream_autoscroll">Autoscroll</string>
+    <string name="stream_autoscroll_summary">Immer oben in der Timeline bleiben</string>
 
     <string name="shortening">Tweet kürzen</string>
     <string name="error_hototin">...but I failed :(\nDer Tweet wurde zu den Entwürfen hinzugefügt.</string>

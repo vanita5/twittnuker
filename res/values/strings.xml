@@ -641,6 +641,8 @@
     <string name="stream_notification_summary">Shows a static notification when connected to the stream</string>
     <string name="streaming_service_running">Streaming...</string><string name="stream_on_mobile">Mobile Streaming</string>
     <string name="stream_on_mobile_summary">Stream on mobile network. This is NOT recommended!</string>
+    <string name="stream_autoscroll">Autoscroll</string>
+    <string name="stream_autoscroll_summary">Always stay at the top of the timeline</string>
     <string name="request_permission">Permission request to access Twittnuker</string>
 
     <string name="love">Love</string>

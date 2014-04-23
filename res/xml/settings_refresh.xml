@@ -25,6 +25,14 @@
 			android:key="stream_notification"
 			android:summary="@string/stream_notification_summary"
 			android:title="@string/stream_notification"/>
+
+        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+            android:dependency="stream_enabled"
+            android:defaultValue="false"
+            android:key="stream_autoscroll"
+            android:summary="@string/stream_autoscroll_summary"
+            android:title="@string/stream_autoscroll"/>
+
 	    
 	    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference 
 	        android:dependency="stream_enabled"
