@@ -312,4 +312,12 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_API_LAST_CHANGE = "api_last_change";
 	@Preference(type = LONG, exportable = false)
 	public static final String KEY_DEFAULT_ACCOUNT_ID = "default_account_id";
+
+	//GCM Push
+	@Preference(type = STRING)
+	public static final String KEY_GOOGLE_ACCOUNT = "key_google_account";
+	@Preference(type = STRING)
+	public static final String KEY_REGID = "KEY_REGID";
+	@Preference(type = INT)
+	public static final String KEY_APP_VERSION = "KEY_APP_VERSION";
 }

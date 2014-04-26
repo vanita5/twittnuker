@@ -1,0 +1,6 @@
+* Register device on GCM in settings (-> see MainActivity in GCM Client Test project)
+* Make backend server URL variable (Settings)
+* New sender id for Twittnuker in GCMConfig
+* improve gcm intent detection in BOS
+* Unregister (in GCMHelper) WITH regid!
+* Handle Retrofit Exceptions by HTTP Status Code (GCM Helper)
