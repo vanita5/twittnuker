@@ -42,7 +42,7 @@ public final class WizardPageNavPreference extends Preference {
 
 	public WizardPageNavPreference(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
-		setLayoutResource(R.layout.wizard_page_nav_item);
+		setLayoutResource(R.layout.settings_layout_wizard_page_nav);
 	}
 
 	@Override

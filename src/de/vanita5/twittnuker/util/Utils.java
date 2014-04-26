@@ -417,7 +417,7 @@ public final class Utils implements Constants {
 	}
 
 	public static String buildStatusFilterWhereClause(final String table, final String selection,
-			final boolean enable_in_rts) {
+			final boolean enableInRts) {
 		if (table == null) return null;
 		final StringBuilder builder = new StringBuilder();
 		if (selection != null) {
@@ -428,7 +428,7 @@ public final class Utils implements Constants {
 		builder.append("SELECT DISTINCT " + table + "." + Statuses._ID + " FROM " + table);
 		builder.append(" WHERE " + table + "." + Statuses.USER_ID + " IN ( SELECT " + Filters.Users.TABLE_NAME + "."
 				+ Filters.Users.USER_ID + " FROM " + Filters.Users.TABLE_NAME + " )");
-		if (enable_in_rts) {
+		if (enableInRts) {
 			builder.append(" OR " + table + "." + Statuses.RETWEETED_BY_USER_ID + " IN ( SELECT "
 					+ Filters.Users.TABLE_NAME + "." + Filters.Users.USER_ID + " FROM " + Filters.Users.TABLE_NAME
 					+ " )");
@@ -1555,7 +1555,7 @@ public final class Utils implements Constants {
 	public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities,
 			final boolean includeRetweets) {
 		if (context == null) return null;
-		return getDefaultTwitterInstance(context, includeEntities, includeRetweets, !MIUIDetector.isMIUI());
+		return getDefaultTwitterInstance(context, includeEntities, includeRetweets, !MIUIUtils.isMIUI());
 	}
 
 	public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities,
@@ -2160,12 +2160,12 @@ public final class Utils implements Constants {
 
 	public static Twitter getTwitterInstance(final Context context, final long accountId,
 			final boolean includeEntities) {
-		return getTwitterInstance(context, accountId, includeEntities, true, !MIUIDetector.isMIUI());
+		return getTwitterInstance(context, accountId, includeEntities, true, !MIUIUtils.isMIUI());
 	}
 
 	public static Twitter getTwitterInstance(final Context context, final long accountId,
 			final boolean includeEntities, final boolean includeRetweets) {
-		return getTwitterInstance(context, accountId, includeEntities, includeRetweets, !MIUIDetector.isMIUI());
+		return getTwitterInstance(context, accountId, includeEntities, includeRetweets, !MIUIUtils.isMIUI());
 	}
 
 	public static Twitter getTwitterInstance(final Context context, final long accountId,

@@ -120,12 +120,12 @@ import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.text.method.StatusContentMovementMethod;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
+import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
 import de.vanita5.twittnuker.util.MediaPreviewUtils.OnMediaClickListener;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.SmartBarUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
@@ -911,7 +911,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 	private boolean shouldUseNativeMenu() {
 		final boolean isInLinkHandler = getActivity() instanceof LinkHandlerActivity;
-		return isInLinkHandler && SmartBarUtils.hasSmartBar();
+		return isInLinkHandler && FlymeUtils.hasSmartBar();
 	}
 
 	private void showConversation() {

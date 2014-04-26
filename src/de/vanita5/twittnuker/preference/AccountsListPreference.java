@@ -83,6 +83,9 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 			setupPreference(preference, account);
 			addPreference(preference);
 		}
+		final Preference preference = new Preference(getContext());
+		preference.setLayoutResource(R.layout.settings_layout_click_to_config);
+		addPreference(preference);
 	}
 
 	@Override

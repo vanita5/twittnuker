@@ -159,7 +159,7 @@
     <string name="mute_user">Stummschalten</string>
     <string name="user_muted">Benutzer zur Filterliste hinzugefügt. Tweets dieses Benutzers erscheinen nicht in der Zeitleiste oder bei Erwähnungen.</string>
     <string name="users_muted">Benutzer zur Filterliste hinzugefügt. Tweets dieser Benutzer erscheinen nicht in der Zeitleiste oder bei Erwähnungen.</string>
-    <string name="inbox">Eingang</string>
+    <string name="inbox">Direktnachrichten</string>
     <string name="load_images">Bilder laden</string>
     <string name="other_settings">Weitere Einstellungen</string>
     <string name="auto_refresh">Automatisch aktualisieren</string>
@@ -612,6 +612,7 @@
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
     <string name="unread_count_summary">Zeigt die Anzahl an ungelesenen Tweets oder Nachrichten im Tab an</string>
     <string name="link_to_quoted_status_summary">Fügt beim zitieren den Link zum originalen Tweet hinzu</string>
+    <string name="click_item_to_config">(D) Click an item to config</string>
 
     <string name="plain_list_style">(D) Plain list style</string>
     <string name="want_old_icon_back">(D) Want old icon back?</string>

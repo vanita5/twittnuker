@@ -45,8 +45,8 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
+import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
-import de.vanita5.twittnuker.util.SmartBarUtils;
 
 public class LinkHandlerActivity extends TwidereSwipeBackActivity implements OnClickListener, OnLongClickListener {
 
@@ -165,7 +165,7 @@ public class LinkHandlerActivity extends TwidereSwipeBackActivity implements OnC
 	}
 
 	private void setUiOptions(final Window window, final Uri data) {
-		if (SmartBarUtils.hasSmartBar()) {
+		if (FlymeUtils.hasSmartBar()) {
 			window.setUiOptions(ActivityInfo.UIOPTION_SPLIT_ACTION_BAR_WHEN_NARROW);
 		} else {
 			window.setUiOptions(0);

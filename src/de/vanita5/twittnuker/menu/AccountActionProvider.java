@@ -23,16 +23,18 @@
 package de.vanita5.twittnuker.menu;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.ActionProvider;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.Account;
 
-public class AccountActionProvider extends ActionProvider {
+public class AccountActionProvider extends ActionProvider implements TwittnukerConstants {
 
-	private static final int MENU_GROUP = 201;
+	public static final int MENU_GROUP = 201;
 
 	private final Context mContext;
 
@@ -58,7 +60,11 @@ public class AccountActionProvider extends ActionProvider {
 	public void onPrepareSubMenu(final SubMenu subMenu) {
 		subMenu.removeGroup(MENU_GROUP);
 		for (final Account account : mAccounts) {
-			final MenuItem item = subMenu.add(MENU_GROUP, (int) account.account_id, 0, account.name);
+			final int accountHash = System.identityHashCode(account.account_id);
+			final MenuItem item = subMenu.add(MENU_GROUP, accountHash, 0, account.name);
+			final Intent intent = new Intent();
+			intent.putExtra(EXTRA_ACCOUNT, account);
+			item.setIntent(intent);
 		}
 		subMenu.setGroupCheckable(MENU_GROUP, true, true);
 	}

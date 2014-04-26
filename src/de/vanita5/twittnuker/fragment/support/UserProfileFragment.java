@@ -120,9 +120,9 @@ import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.SmartBarUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
@@ -917,7 +917,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 
     private boolean shouldUseNativeMenu() {
         final boolean isInLinkHandler = getActivity() instanceof LinkHandlerActivity;
-        return isInLinkHandler && SmartBarUtils.hasSmartBar();
+        return isInLinkHandler && FlymeUtils.hasSmartBar();
     }
 
 	final class FavoritesAction extends ListAction {

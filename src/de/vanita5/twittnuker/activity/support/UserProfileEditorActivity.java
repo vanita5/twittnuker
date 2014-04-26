@@ -29,6 +29,8 @@ import static de.vanita5.twittnuker.util.Utils.isMyAccount;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -60,6 +62,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.task.AsyncTask.Status;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
@@ -561,6 +564,22 @@ public class UserProfileEditorActivity extends BaseSupportActivity implements On
 		public UpdateProfileTaskInternal(final Context context, final AsyncTaskManager manager, final long account_id,
 				final String name, final String url, final String location, final String description) {
 			super(context, manager, account_id, name, url, location, description);
+		}
+
+		@Override
+		protected SingleResponse<ParcelableUser> doInBackground(final Void... params) {
+			final SingleResponse<ParcelableUser> result = super.doInBackground(params);
+			if (result.data != null && isMyAccount(getContext(), result.data.id)) {
+				final ContentResolver resolver = getContentResolver();
+				final ContentValues values = new ContentValues();
+				values.put(Accounts.NAME, result.data.name);
+				values.put(Accounts.SCREEN_NAME, result.data.screen_name);
+				values.put(Accounts.PROFILE_IMAGE_URL, result.data.profile_image_url);
+				values.put(Accounts.PROFILE_BANNER_URL, result.data.profile_banner_url);
+				final String where = Accounts.ACCOUNT_ID + " = " + result.data.id;
+				resolver.update(Accounts.CONTENT_URI, values, where, null);
+			}
+			return result;
 		}
 
 		@Override

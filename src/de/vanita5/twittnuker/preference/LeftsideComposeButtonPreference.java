@@ -26,7 +26,7 @@ import android.content.Context;
 import android.preference.Preference;
 import android.util.AttributeSet;
 
-import de.vanita5.twittnuker.util.SmartBarUtils;
+import de.vanita5.twittnuker.util.FlymeUtils;
 
 public class LeftsideComposeButtonPreference extends AutoFixCheckBoxPreference {
 
@@ -44,7 +44,7 @@ public class LeftsideComposeButtonPreference extends AutoFixCheckBoxPreference {
 
     @Override
     public void onDependencyChanged(final Preference dependency, final boolean disableDependent) {
-        super.onDependencyChanged(dependency, disableDependent || SmartBarUtils.hasSmartBar());
+        super.onDependencyChanged(dependency, disableDependent || FlymeUtils.hasSmartBar());
     }
 
 }
