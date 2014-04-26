@@ -1,9 +1,13 @@
 #Twittnuker - Android 4.0+ Twitter Client#
 
-Twittnuker is a [free](https://www.gnu.org/philosophy/free-sw.html) Twitter Client for Android 4.0+ Smartphones, based on the [Twidere Project](https://github.com/mariotaku/twidere) (Version 0.2.9.10) with various improvements.
+Twittnuker is a [free](https://www.gnu.org/philosophy/free-sw.html) Twitter Client for Android 4.0+ Smartphones, based on the [Twidere Project](https://github.com/mariotaku/twidere) (Version 0.2.9.12) with various improvements.
 
 Twidere updates will almost always be merged, so you can expect the latest features and bug fixes from Twidere in this fork, too!
 
+<a href="https://play.google.com/store/apps/details?id=de.vanita5.twittnuker">
+  <img alt="Get it on Google Play"
+       src="https://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
+</a>
 
 ## Features (Twittnuker only) ##
 
@@ -11,6 +15,7 @@ Twidere updates will almost always be merged, so you can expect the latest featu
 * Additional image preview for various image hosters (If you are missing your favorite hoster, contact me!)
 * Tweet shortening via Hotot.in (more services may follow)
 * Hotot.in link expand (view Tweets shortened with hotot.in in full length!)
+* TwitPic Upload (more to follow)
 * Love Button (Retweet + Favorite in one action)
 
 
@@ -40,7 +45,6 @@ Twidere updates will almost always be merged, so you can expect the latest featu
 #### FUTURE RELEASES ####
 * Push Notifications (It's a long road...)
 * Video Upload/Preview
-* Release on Google's Play Store
 * ...more to come!
 
 Do you have more ideas on how to improve the app? Please let me know!
@@ -99,3 +103,5 @@ Do you have more ideas on how to improve the app? Please let me know!
      * You should have received a copy of the GNU General Public License
      * along with this program.  If not, see <http://www.gnu.org/licenses/>.
      */
+     
+<a href="https://www.gnu.org/licenses/gpl-3.0.en.html"><img src="https://www.gnu.org/graphics/gplv3-127x51.png"><br/>GNU General Public License</a>
