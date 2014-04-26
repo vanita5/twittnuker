@@ -35,8 +35,8 @@
     <string name="error_unknown_error">Fehler: Unbekannter Fehler, es ist wohl ein Bug.</string>
     <string name="error_message">Fehler <xliff:g id="message">%s</xliff:g></string>
     <string name="error_message_with_action">Fehler beim <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
-    <string name="error_message_rate_limit">Tweetrate überschritten, bitte probiere es nochmals in <xliff:g id="time">%s</xliff:g></string>
-    <string name="error_message_rate_limit_with_action">Tweetrate überschritten beim <xliff:g id="action">%1$s</xliff:g>, bitte probiere es nochmals in <xliff:g id="time">%2$s</xliff:g></string>
+    <string name="error_message_rate_limit">Tweetrate überschritten, bitte probiere es <xliff:g id="time">%s</xliff:g> nochmal</string>
+    <string name="error_message_rate_limit_with_action">Tweetrate überschritten beim <xliff:g id="action">%1$s</xliff:g>, bitte probiere es <xliff:g id="time">%2$s</xliff:g> nochmal.</string>
     <string name="select_account">Account auswählen</string>
     <string name="username">Benutzername</string>
     <string name="password">Passwort</string>
