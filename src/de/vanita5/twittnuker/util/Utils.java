@@ -72,6 +72,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.LongSparseArray;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.text.format.Time;
@@ -86,6 +87,7 @@ import android.view.Window;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.webkit.MimeTypeMap;
+import android.webkit.URLUtil;
 import android.widget.AbsListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -115,7 +117,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.CameraCropActivity;
 import de.vanita5.twittnuker.activity.support.MapViewerActivity;
-import de.vanita5.twittnuker.adapter.CursorStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -172,8 +173,9 @@ import de.vanita5.twittnuker.provider.TweetStore.Tabs;
 import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
-import de.vanita5.twittnuker.util.net.HttpClientImpl;
 
+import de.vanita5.twittnuker.util.net.ApacheHttpClientFactory;
+import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import twitter4j.DirectMessage;
 import twitter4j.EntitySupport;
 import twitter4j.MediaEntity;
@@ -193,7 +195,7 @@ import twitter4j.auth.TwipOModeAuthorization;
 import twitter4j.auth.XAuthAuthorization;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
-import twitter4j.http.HostAddressResolver;
+import twitter4j.http.HostAddressResolverFactory;
 import twitter4j.http.HttpClientWrapper;
 import twitter4j.http.HttpResponse;
 
@@ -226,9 +228,10 @@ public final class Utils implements Constants {
 	private static final String UA_TEMPLATE = "Mozilla/5.0 (Linux; Android %s; %s Build/%s) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.111 Safari/537.36";
 
 	public static final Pattern PATTERN_XML_RESOURCE_IDENTIFIER = Pattern.compile("res\\/xml\\/([\\w_]+)\\.xml");
-	public static final Pattern PATTERN_RESOURCE_IDENTIFIER = Pattern.compile("@([\\w_]+)\\/([\\w_]+)");
 
+	public static final Pattern PATTERN_RESOURCE_IDENTIFIER = Pattern.compile("@([\\w_]+)\\/([\\w_]+)");
 	private static final UriMatcher CONTENT_PROVIDER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
+
 	private static final UriMatcher LINK_HANDLER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Accounts.CONTENT_PATH, TABLE_ID_ACCOUNTS);
@@ -1626,7 +1629,7 @@ public final class Utils implements Constants {
 	}
 
 	public static HttpClientWrapper getHttpClient(final int timeout_millis, final boolean ignore_ssl_error,
-			final Proxy proxy, final HostAddressResolver resolver, final String user_agent,
+			final Proxy proxy, final HostAddressResolverFactory resolverFactory, final String user_agent,
 			final boolean twitter_client_header) {
 		final ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setHttpConnectionTimeout(timeout_millis);
@@ -1639,9 +1642,9 @@ public final class Utils implements Constants {
 				cb.setHttpProxyPort(((InetSocketAddress) address).getPort());
 			}
 		}
-		cb.setHostAddressResolver(resolver);
+		cb.setHostAddressResolverFactory(resolverFactory);
 		if (user_agent != null) {
-			cb.setUserAgent(user_agent);
+			cb.setHttpUserAgent(user_agent);
 		}
 		// cb.setHttpClientImplementation(HttpClientImpl.class);
 		return new HttpClientWrapper(cb.build());
@@ -1652,9 +1655,10 @@ public final class Utils implements Constants {
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final int timeout_millis = prefs.getInt(KEY_CONNECTION_TIMEOUT, 10000) * 1000;
 		final Proxy proxy = getProxy(context);
-		final String user_agent = generateBrowserUserAgent();
-		final HostAddressResolver resolver = TwittnukerApplication.getInstance(context).getHostAddressResolver();
-		return getHttpClient(timeout_millis, true, proxy, resolver, user_agent, false);
+		final String userAgent = generateBrowserUserAgent();
+		final HostAddressResolverFactory resolverFactory = new TwidereHostResolverFactory(
+				TwittnukerApplication.getInstance(context));
+		return getHttpClient(timeout_millis, true, proxy, resolverFactory, userAgent, false);
 	}
 
 	public static String getImageMimeType(final File image) {
@@ -2197,9 +2201,9 @@ public final class Utils implements Constants {
 			if (c.getCount() > 0) {
 				c.moveToFirst();
 				final ConfigurationBuilder cb = new ConfigurationBuilder();
-				cb.setHostAddressResolver(app.getHostAddressResolver());
+				cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(app));
 				if (useApacheHttpclient) {
-					cb.setHttpClientImplementation(HttpClientImpl.class);
+					cb.setHttpClientFactory(new ApacheHttpClientFactory());
 				}
 				cb.setHttpConnectionTimeout(connection_timeout);
 				setUserAgent(context, cb);
@@ -2606,13 +2610,9 @@ public final class Utils implements Constants {
 		return o.outHeight > 0 && o.outWidth > 0;
 	}
 
-	public static boolean isValidUrl(final CharSequence url) {
-		try {
-			new URL(ParseUtils.parseString(url));
-		} catch (final Exception e) {
-			return false;
-		}
-		return true;
+	public static boolean isValidUrl(final CharSequence text) {
+		if (TextUtils.isEmpty(text)) return false;
+		return URLUtil.isValidUrl(text.toString());
 	}
 
 	public static final int matcherEnd(final Matcher matcher, final int group) {
@@ -3282,7 +3282,7 @@ public final class Utils implements Constants {
 			cb.setClientVersion(pi.versionName);
 			cb.setClientName(APP_NAME);
 			cb.setClientURL(APP_PROJECT_URL);
-			cb.setUserAgent(APP_NAME + " " + APP_PROJECT_URL + " / " + version_name
+			cb.setHttpUserAgent(APP_NAME + " " + APP_PROJECT_URL + " / " + version_name
 					+ (gzip_compressing ? " (gzip)" : ""));
 		} catch (final PackageManager.NameNotFoundException e) {
 

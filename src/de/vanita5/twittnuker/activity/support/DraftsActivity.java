@@ -24,13 +24,20 @@ package de.vanita5.twittnuker.activity.support;
 
 import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -50,11 +57,17 @@ import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
+import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.DraftItem;
+import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
+import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,9 +88,11 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 	public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
 		switch (item.getItemId()) {
 			case MENU_DELETE: {
-				// TODO confim dialog and image removal
-				final Where where = Where.in(new Column(Drafts._ID), new RawItemArray(mListView.getCheckedItemIds()));
-				mResolver.delete(Drafts.CONTENT_URI, where.getSQL(), null);
+				final DeleteDraftsConfirmDialogFragment f = new DeleteDraftsConfirmDialogFragment();
+				final Bundle args = new Bundle();
+				args.putLongArray(EXTRA_IDS, mListView.getCheckedItemIds());
+				f.setArguments(args);
+				f.show(getSupportFragmentManager(), "delete_drafts_confirm");
 				break;
 			}
 			case MENU_SEND: {
@@ -247,5 +262,82 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 		if (mListView == null || mode == null) return;
 		final int count = mListView.getCheckedItemCount();
 		mode.setTitle(getResources().getQuantityString(R.plurals.Nitems_selected, count, count));
+	}
+
+	public static class DeleteDraftsConfirmDialogFragment extends BaseSupportDialogFragment implements OnClickListener {
+
+		@Override
+		public void onClick(final DialogInterface dialog, final int which) {
+			switch (which) {
+				case DialogInterface.BUTTON_POSITIVE: {
+					final Bundle args = getArguments();
+					if (args == null) return;
+					final DeleteDraftsTask task = new DeleteDraftsTask(getActivity(), args.getLongArray(EXTRA_IDS));
+					task.execute();
+					break;
+				}
+			}
+		}
+
+		@Override
+		public Dialog onCreateDialog(final Bundle savedInstanceState) {
+			final Context context = ThemeUtils.getDialogThemedContext(getActivity());
+			final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+			builder.setMessage(R.string.delete_drafts_confirm);
+			builder.setPositiveButton(android.R.string.ok, this);
+			builder.setNegativeButton(android.R.string.cancel, null);
+			return builder.create();
+		}
+
+	}
+
+	private static class DeleteDraftsTask extends AsyncTask<Void, Void, Integer> {
+
+		private static final String FRAGMENT_TAG_DELETING_DRAFTS = "deleting_drafts";
+		private final FragmentActivity mActivity;
+		private final long[] mIds;
+
+		private DeleteDraftsTask(final FragmentActivity activity, final long[] ids) {
+			mActivity = activity;
+			mIds = ids;
+		}
+
+		@Override
+		protected Integer doInBackground(final Void... params) {
+			final ContentResolver resolver = mActivity.getContentResolver();
+			final Where where = Where.in(new Column(Drafts._ID), new RawItemArray(mIds));
+			final String[] projection = { Drafts.MEDIAS };
+			final Cursor c = resolver.query(Drafts.CONTENT_URI, projection, where.getSQL(), null, null);
+			final int idxMedias = c.getColumnIndex(Drafts.MEDIAS);
+			c.moveToFirst();
+			while (!c.isAfterLast()) {
+				for (final ParcelableMediaUpdate media : ParcelableMediaUpdate.fromJSONString(c.getString(idxMedias))) {
+					final Uri uri = Uri.parse(media.uri);
+					if ("file".equals(uri.getScheme()) && uri.getPath() != null) {
+						new File(uri.getPath()).delete();
+					}
+				}
+				c.moveToNext();
+			}
+			c.close();
+			return resolver.delete(Drafts.CONTENT_URI, where.getSQL(), null);
+		}
+
+		@Override
+		protected void onPostExecute(final Integer result) {
+			super.onPostExecute(result);
+			final Fragment f = mActivity.getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DELETING_DRAFTS);
+			if (f instanceof DialogFragment) {
+				((DialogFragment) f).dismiss();
+			}
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			final SupportProgressDialogFragment f = SupportProgressDialogFragment.show(mActivity,
+					FRAGMENT_TAG_DELETING_DRAFTS);
+			f.setCancelable(false);
+		}
 	}
 }

@@ -24,12 +24,12 @@ package de.vanita5.twittnuker.model;
 
 import android.support.v4.app.Fragment;
 
-import de.vanita5.twittnuker.Constants;
-
 import java.util.Comparator;
 import java.util.Map.Entry;
 
-public final class CustomTabConfiguration implements Constants {
+import de.vanita5.twittnuker.TwittnukerConstants;
+
+public final class CustomTabConfiguration {
 
 	public static final int FIELD_TYPE_NONE = 0;
 	public static final int FIELD_TYPE_USER = 1;
@@ -44,26 +44,26 @@ public final class CustomTabConfiguration implements Constants {
 	private final Class<? extends Fragment> cls;
 	private final String secondaryFieldTextKey;
 	private final boolean singleTab;
+	private final ExtraConfiguration[] extraConfigurations;
 
 	public CustomTabConfiguration(final Class<? extends Fragment> cls, final int title, final int icon,
-			final int accountRequirement, final int secondaryFieldType, final int sortPosition) {
-		this(cls, title, icon, accountRequirement, secondaryFieldType, 0, EXTRA_TEXT, sortPosition, false);
+								  final int accountRequirement, final int secondaryFieldType, final int sortPosition,
+								  final boolean singleTab, final ExtraConfiguration... extraConfigurations) {
+		this(cls, title, icon, accountRequirement, secondaryFieldType, 0, TwittnukerConstants.EXTRA_TEXT, sortPosition,
+				singleTab, extraConfigurations);
 	}
 
 	public CustomTabConfiguration(final Class<? extends Fragment> cls, final int title, final int icon,
-			final int accountRequirement, final int secondaryFieldType, final int sortPosition, final boolean singleTab) {
-		this(cls, title, icon, accountRequirement, secondaryFieldType, 0, EXTRA_TEXT, sortPosition, singleTab);
+								  final int accountRequirement, final int secondaryFieldType, final int sortPosition,
+								  final ExtraConfiguration... extraConfigurations) {
+		this(cls, title, icon, accountRequirement, secondaryFieldType, 0, TwittnukerConstants.EXTRA_TEXT, sortPosition,
+				false, extraConfigurations);
 	}
 
 	public CustomTabConfiguration(final Class<? extends Fragment> cls, final int title, final int icon,
 			final int accountRequirement, final int secondaryFieldType, final int secondaryFieldTitle,
-			final String secondaryFieldTextKey, final int sortPosition) {
-		this(cls, title, icon, accountRequirement, secondaryFieldType, 0, secondaryFieldTextKey, sortPosition, false);
-	}
-
-	public CustomTabConfiguration(final Class<? extends Fragment> cls, final int title, final int icon,
-			final int accountRequirement, final int secondaryFieldType, final int secondaryFieldTitle,
-			final String secondaryFieldTextKey, final int sortPosition, final boolean singleTab) {
+			final String secondaryFieldTextKey, final int sortPosition, final boolean singleTab,
+			final ExtraConfiguration... extraConfigurations) {
 		this.cls = cls;
 		this.title = title;
 		this.icon = icon;
@@ -73,6 +73,14 @@ public final class CustomTabConfiguration implements Constants {
 		this.secondaryFieldTitle = secondaryFieldTitle;
 		this.secondaryFieldTextKey = secondaryFieldTextKey;
 		this.singleTab = singleTab;
+		this.extraConfigurations = extraConfigurations;
+	}
+
+	public CustomTabConfiguration(final Class<? extends Fragment> cls, final int title, final int icon,
+									final int accountRequirement, final int secondaryFieldType, final int secondaryFieldTitle,
+									final String secondaryFieldTextKey, final int sortPosition, final ExtraConfiguration... extraConfigurations) {
+		this(cls, title, icon, accountRequirement, secondaryFieldType, 0, secondaryFieldTextKey, sortPosition, false,
+				extraConfigurations);
 	}
 
 	public int getAccountRequirement() {
@@ -85,6 +93,10 @@ public final class CustomTabConfiguration implements Constants {
 
 	public int getDefaultTitle() {
 		return title;
+	}
+
+	public ExtraConfiguration[] getExtraConfigurations() {
+		return extraConfigurations;
 	}
 
 	public Class<? extends Fragment> getFragmentClass() {
@@ -129,6 +141,44 @@ public final class CustomTabConfiguration implements Constants {
 			return lhs.getValue().getSortPosition() - rhs.getValue().getSortPosition();
 		}
 
+	}
+
+	public static class ExtraConfiguration {
+		private final String key;
+		private final int titleRes;
+		private final Type type;
+		private final Object defaultValue;
+
+		public ExtraConfiguration(final String key, final int titleRes, final Type type, final Object defaultValue) {
+			this.key = key;
+			this.titleRes = titleRes;
+			this.type = type;
+			this.defaultValue = defaultValue;
+		}
+
+		public boolean defaultBoolean() {
+			return (Boolean) defaultValue;
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		public int getTitleRes() {
+			return titleRes;
+		}
+
+		public Type getType() {
+			return type;
+		}
+
+		public static ExtraConfiguration newBoolean(final String key, final int titleRes, final boolean def) {
+			return new ExtraConfiguration(key, titleRes, Type.BOOLEAN, def);
+		}
+
+		public static enum Type {
+			BOOLEAN
+		}
 	}
 
 }

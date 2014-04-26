@@ -48,6 +48,8 @@ public abstract class ParcelableStatusesListFragment extends BaseStatusesListFra
 	protected SharedPreferences mPreferences;
 
 	private boolean mStatusesRestored;
+	private boolean mIsFirstCreated;
+
 	private final BroadcastReceiver mStateReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -113,6 +115,7 @@ public abstract class ParcelableStatusesListFragment extends BaseStatusesListFra
 		}
 		super.onActivityCreated(savedInstanceState);
 		mPreferences = getSharedPreferences();
+		mIsFirstCreated = savedInstanceState == null;
 	}
 
 	@Override
@@ -123,6 +126,14 @@ public abstract class ParcelableStatusesListFragment extends BaseStatusesListFra
 			return new DummyParcelableStatusesLoader(getActivity(), data);
 		final Loader<List<ParcelableStatus>> loader = newLoaderInstance(getActivity(), args);
 		return loader != null ? loader : new DummyParcelableStatusesLoader(getActivity());
+	}
+
+	@Override
+	public void onLoadFinished(final Loader<List<ParcelableStatus>> loader, final List<ParcelableStatus> data) {
+		super.onLoadFinished(loader, data);
+		if (mIsFirstCreated && mPreferences.getBoolean(KEY_REFRESH_ON_START, false)) {
+			onRefreshFromStart();
+		}
 	}
 
 	@Override
@@ -201,7 +212,7 @@ public abstract class ParcelableStatusesListFragment extends BaseStatusesListFra
 	}
 
 	@Override
-	protected ParcelableStatusesAdapter newAdapterInstance(boolean compact, boolean plain) {
+	protected ParcelableStatusesAdapter newAdapterInstance(final boolean compact, final boolean plain) {
 		return new ParcelableStatusesAdapter(getActivity(), compact, plain);
 	}
 

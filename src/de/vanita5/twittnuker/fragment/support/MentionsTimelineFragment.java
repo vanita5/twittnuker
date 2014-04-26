@@ -30,6 +30,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
+import org.mariotaku.querybuilder.Where;
+
 import de.vanita5.twittnuker.provider.TweetStore.Mentions;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
@@ -95,6 +97,14 @@ public class MentionsTimelineFragment extends CursorStatusesListFragment {
 	protected boolean isFiltersEnabled() {
 		final SharedPreferences pref = getSharedPreferences();
 		return pref != null && pref.getBoolean(KEY_FILTERS_IN_MENTIONS, true);
+	}
+
+	@Override
+	protected Where processWhere(final Where where) {
+		final Bundle extras = getExtraConfiguration();
+		if (extras.getBoolean(EXTRA_MY_FOLLOWING_ONLY))
+			return Where.and(where, Where.equals(Mentions.IS_FOLLOWING, 1));
+		return where;
 	}
 
 	@Override

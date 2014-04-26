@@ -57,6 +57,7 @@ import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.ListView;
 
 import com.mobeta.android.dslv.DragSortListView;
+import com.mobeta.android.dslv.DragSortListView.DropListener;
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
 import org.mariotaku.menucomponent.widget.PopupMenu;
@@ -82,7 +83,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 public class CustomTabsFragment extends BaseListFragment implements LoaderCallbacks<Cursor>, Panes.Right,
-		MultiChoiceModeListener {
+		MultiChoiceModeListener, DropListener {
 
 	private ContentResolver mResolver;
 
@@ -91,6 +92,13 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 	private PopupMenu mPopupMenu;
 
 	private CustomTabsAdapter mAdapter;
+
+	@Override
+	public void drop(final int from, final int to) {
+		mAdapter.drop(from, to);
+		mListView.moveCheckState(from, to);
+		saveTabPositions();
+	}
 
 	@Override
 	public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
@@ -123,6 +131,7 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 		mListView = (DragSortListView) getListView();
 		mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		mListView.setMultiChoiceModeListener(this);
+		mListView.setDropListener(this);
 		getLoaderManager().initLoader(0, null, this);
 		setListShown(false);
 	}
@@ -137,6 +146,7 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 					values.put(Tabs.ICON, data.getStringExtra(EXTRA_ICON));
 					values.put(Tabs.TYPE, data.getStringExtra(EXTRA_TYPE));
 					values.put(Tabs.ARGUMENTS, data.getStringExtra(EXTRA_ARGUMENTS));
+					values.put(Tabs.EXTRAS, data.getStringExtra(EXTRA_EXTRAS));
 					values.put(Tabs.POSITION, mAdapter.getCount());
 					mResolver.insert(Tabs.CONTENT_URI, values);
 				}
@@ -147,6 +157,7 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 					final ContentValues values = new ContentValues();
 					values.put(Tabs.NAME, data.getStringExtra(EXTRA_NAME));
 					values.put(Tabs.ICON, data.getStringExtra(EXTRA_ICON));
+					values.put(Tabs.EXTRAS, data.getStringExtra(EXTRA_EXTRAS));
 					final String where = Where.equals(Tabs._ID, data.getLongExtra(EXTRA_ID, -1)).getSQL();
 					mResolver.update(Tabs.CONTENT_URI, values, where, null);
 				}
@@ -203,6 +214,7 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 		intent.putExtra(EXTRA_TYPE, c.getString(c.getColumnIndex(Tabs.TYPE)));
 		intent.putExtra(EXTRA_NAME, c.getString(c.getColumnIndex(Tabs.NAME)));
 		intent.putExtra(EXTRA_ICON, c.getString(c.getColumnIndex(Tabs.ICON)));
+		intent.putExtra(EXTRA_EXTRAS, c.getString(c.getColumnIndex(Tabs.EXTRAS)));
 		startActivityForResult(intent, REQUEST_EDIT_TAB);
 	}
 
@@ -279,7 +291,6 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 		if (mPopupMenu != null) {
 			mPopupMenu.dismiss();
 		}
-		saveTabPositions();
 		super.onStop();
 	}
 

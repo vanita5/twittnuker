@@ -34,8 +34,6 @@ public interface Configuration extends HttpClientConfiguration, HttpClientWrappe
 
 	String getClientVersion();
 
-	String getHttpClientImplementation();
-
 	String getOAuthAccessTokenURL();
 
 	String getOAuthAuthenticationURL();
@@ -60,20 +58,17 @@ public interface Configuration extends HttpClientConfiguration, HttpClientWrappe
 
 	String getSigningRestBaseURL();
 
-	String getUserAgent();
-
 	boolean isDebugEnabled();
 
 	boolean isIncludeEntitiesEnabled();
 
 	boolean isIncludeRTsEnabled();
 
-	boolean isProxyConfigured();
-
-	boolean isSSLEnabled();
+	boolean isTwitterClientHeaderIncluded();
 
 	String getMediaProvider();
 
+	//Twittnuker specific
 	String getMediaProviderAPIKey();
 
 	Properties getMediaProviderParameters();

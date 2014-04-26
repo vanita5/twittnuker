@@ -29,7 +29,9 @@ import static de.vanita5.twittnuker.util.CompareUtils.objectEquals;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-public class SupportTabSpec implements Comparable<SupportTabSpec> {
+import de.vanita5.twittnuker.TwittnukerConstants;
+
+public class SupportTabSpec implements Comparable<SupportTabSpec>, TwittnukerConstants {
 
 	public final String name;
 	public final Object icon;

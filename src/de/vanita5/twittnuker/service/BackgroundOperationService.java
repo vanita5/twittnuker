@@ -548,8 +548,13 @@ public class BackgroundOperationService extends IntentService implements Constan
 		private static final long serialVersionUID = 8596614696393917525L;
 
 		public UploadException(final Context context) {
-			super(context, R.string.error_message_image_upload_failed);
+			super(context.getString(R.string.error_message_image_upload_failed));
 		}
+
+		public UploadException(final String message) {
+			super(message);
+		}
+
 	}
 
     static class StatusMediaUploadListener implements ReadListener {
@@ -584,7 +589,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		private static final long serialVersionUID = -6469920130856384219L;
 
 		public StatusTooLongException(final Context context) {
-			super(context, R.string.error_message_status_too_long);
+			super(context.getString(R.string.error_message_status_too_long));
 		}
 	}
 
@@ -592,7 +597,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		private static final long serialVersionUID = 3075877185536740034L;
 
 		public ShortenException(final Context context) {
-			super(context, R.string.error_message_tweet_shorten_failed);
+			super(context.getString(R.string.error_message_tweet_shorten_failed));
 		}
 	}
 
@@ -600,15 +605,15 @@ public class BackgroundOperationService extends IntentService implements Constan
 		private static final long serialVersionUID = 3075823455536740034L;
 
 		public HototinShortenException(final Context context) {
-			super(context, R.string.error_hototin);
+			super(context.getString(R.string.error_hototin));
 		}
 	}
 
 	static class UpdateStatusException extends Exception {
 		private static final long serialVersionUID = -1267218921727097910L;
 
-		public UpdateStatusException(final Context context, final int message) {
-			super(context.getString(message));
+		public UpdateStatusException(final String message) {
+			super(message);
 		}
 	}
 

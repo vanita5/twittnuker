@@ -38,6 +38,7 @@ import android.os.Bundle;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.PermissionsManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,14 +117,16 @@ public class ExtensionsListLoader extends AsyncTaskLoader<List<ExtensionsListLoa
 	}
 
 	public static class ExtensionInfo implements Comparable<ExtensionInfo> {
-		public final int permissions;
+		public final String[] permissions;
 		public final String label, description;
 		public final String pname, settings;
 		public final Drawable icon;
 
 		ExtensionInfo(final ApplicationInfo info, final PackageManager pm) {
 			final Bundle meta = info.metaData;
-			permissions = meta.getInt(METADATA_KEY_PERMISSIONS, PERMISSION_INVALID);
+			final String permissionString = meta.getString(METADATA_KEY_PERMISSIONS);
+			permissions = permissionString != null ? permissionString
+					.split(PermissionsManager.SEPARATOR_PERMISSION_REGEX) : null;
 			settings = meta.getString(METADATA_KEY_SETTINGS);
 			icon = info.loadIcon(pm);
 			pname = info.packageName;

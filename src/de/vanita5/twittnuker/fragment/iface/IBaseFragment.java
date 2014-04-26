@@ -22,6 +22,10 @@
 
 package de.vanita5.twittnuker.fragment.iface;
 
+import android.os.Bundle;
+
 public interface IBaseFragment {
+	Bundle getExtraConfiguration();
+
 	int getTabPosition();
 }

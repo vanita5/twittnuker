@@ -37,7 +37,8 @@ import de.vanita5.twittnuker.view.holder.ActivityViewHolder;
 
 public class ParcelableActivitiesByFriendsAdapter extends BaseParcelableActivitiesAdapter {
 
-	public ParcelableActivitiesByFriendsAdapter(final Context context, final boolean compactCards, final boolean plainList) {
+	public ParcelableActivitiesByFriendsAdapter(final Context context, final boolean compactCards,
+												final boolean plainList) {
 		super(context, compactCards, plainList);
 	}
 

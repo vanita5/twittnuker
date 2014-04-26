@@ -1,48 +1,27 @@
-/*
- * Twittnuker - Twitter client for Android
- *
- * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
- *
- * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.ImageView;
 
 import de.vanita5.twittnuker.view.iface.IExtendedView;
+import de.vanita5.twittnuker.view.themed.ThemedTextView;
 
-public class ExtendedImageView extends ImageView implements IExtendedView {
+public class StatusTextView extends ThemedTextView implements IExtendedView {
 
-	private OnSizeChangedListener mOnSizeChangedListener;
 	private TouchInterceptor mTouchInterceptor;
+	private OnSizeChangedListener mOnSizeChangedListener;
+	private OnSelectionChangeListener mOnSelectionChangeListener;
 
-	public ExtendedImageView(final Context context) {
+	public StatusTextView(final Context context) {
 		super(context);
 	}
 
-	public ExtendedImageView(final Context context, final AttributeSet attrs) {
+	public StatusTextView(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public ExtendedImageView(final Context context, final AttributeSet attrs, final int defStyle) {
+	public StatusTextView(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
@@ -64,6 +43,10 @@ public class ExtendedImageView extends ImageView implements IExtendedView {
 		return super.onTouchEvent(event);
 	}
 
+	public void setOnSelectionChangeListener(final OnSelectionChangeListener l) {
+		mOnSelectionChangeListener = l;
+	}
+
 	@Override
 	public final void setOnSizeChangedListener(final OnSizeChangedListener listener) {
 		mOnSizeChangedListener = listener;
@@ -75,11 +58,23 @@ public class ExtendedImageView extends ImageView implements IExtendedView {
 	}
 
 	@Override
+	protected void onSelectionChanged(final int selStart, final int selEnd) {
+		super.onSelectionChanged(selStart, selEnd);
+		if (mOnSelectionChangeListener != null) {
+			mOnSelectionChangeListener.onSelectionChanged(selStart, selEnd);
+		}
+	}
+
+	@Override
 	protected final void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
 		if (mOnSizeChangedListener != null) {
 			mOnSizeChangedListener.onSizeChanged(this, w, h, oldw, oldh);
 		}
+	}
+
+	public interface OnSelectionChangeListener {
+		void onSelectionChanged(int selStart, int selEnd);
 	}
 
 }

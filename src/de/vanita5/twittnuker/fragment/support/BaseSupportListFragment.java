@@ -67,6 +67,8 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 
 	private LayoutInflater mLayoutInflater;
 
+	private boolean mStoppedPreviously;
+
 	public final TwittnukerApplication getApplication() {
 		return TwittnukerApplication.getInstance(getActivity());
 	}
@@ -75,6 +77,16 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 		final Activity activity = getActivity();
 		if (activity != null) return activity.getContentResolver();
 		return null;
+	}
+
+	@Override
+	public Bundle getExtraConfiguration() {
+		final Bundle args = getArguments();
+		final Bundle extras = new Bundle();
+		if (args != null && args.containsKey(EXTRA_EXTRAS)) {
+			extras.putAll(args.getBundle(EXTRA_EXTRAS));
+		}
+		return extras;
 	}
 
 	@Override
@@ -127,6 +139,7 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		mNotReachedBottomBefore = true;
+		mStoppedPreviously = false;
 		mIsInstanceStateSaved = savedInstanceState != null;
 		final ListView lv = getListView();
 		lv.setOnScrollListener(this);
@@ -203,6 +216,12 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 	}
 
 	@Override
+	public void onDestroy() {
+		mStoppedPreviously = false;
+		super.onDestroy();
+	}
+
+	@Override
 	public void onDetach() {
 		super.onDetach();
 		final Activity activity = getActivity();
@@ -216,6 +235,11 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 	}
 
 	public void onPostStart() {
+
+	}
+
+	public void onRestart() {
+
 	}
 
 	@Override
@@ -246,6 +270,16 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 	public void onStart() {
 		super.onStart();
 		onPostStart();
+		if (mStoppedPreviously) {
+			onRestart();
+		}
+		mStoppedPreviously = false;
+	}
+
+	@Override
+	public void onStop() {
+		mStoppedPreviously = true;
+		super.onStop();
 	}
 
 	public void registerReceiver(final BroadcastReceiver receiver, final IntentFilter filter) {

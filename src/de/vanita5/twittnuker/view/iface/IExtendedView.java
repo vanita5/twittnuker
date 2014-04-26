@@ -37,7 +37,7 @@ public interface IExtendedView {
 
 	public static interface TouchInterceptor {
 
-		void dispatchTouchEvent(View view, MotionEvent event);
+		boolean dispatchTouchEvent(View view, MotionEvent event);
 
 		boolean onInterceptTouchEvent(View view, MotionEvent event);
 
