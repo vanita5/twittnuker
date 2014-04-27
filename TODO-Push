@@ -1,4 +1,3 @@
-* Register device on GCM in settings (-> see MainActivity in GCM Client Test project)
 * Make backend server URL variable (Settings)
 * improve gcm intent detection in BOS
 * Unregister (in GCMHelper) WITH regid!

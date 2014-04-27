@@ -3,18 +3,23 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:title="@string/notifications">
 
-	<de.vanita5.twittnuker.preference.NotificationContentPreference
-		android:key="content_to_notify"
-		android:title="@string/content_to_notify"/>
-	
-	<de.vanita5.twittnuker.preference.RingtonePreference
-		android:key="notification_ringtone"
-		android:title="@string/notification_ringtone"/>
+    <PreferenceCategory
+        android:key="cat_general"
+        android:title="@string/general">
 
-	<de.vanita5.twittnuker.preference.ColorPickerPreference
-		android:defaultValue="@android:color/holo_blue_dark"
-		android:key="notification_light_color"
-		android:title="@string/notification_light_color"/>
+        <de.vanita5.twittnuker.preference.NotificationContentPreference
+            android:key="content_to_notify"
+            android:title="@string/content_to_notify"/>
+
+        <de.vanita5.twittnuker.preference.RingtonePreference
+            android:key="notification_ringtone"
+            android:title="@string/notification_ringtone"/>
+
+        <de.vanita5.twittnuker.preference.ColorPickerPreference
+            android:defaultValue="@android:color/holo_blue_dark"
+            android:key="notification_light_color"
+            android:title="@string/notification_light_color"/>
+    </PreferenceCategory>
 
 	<PreferenceCategory
 		android:key="cat_notifications_type"
