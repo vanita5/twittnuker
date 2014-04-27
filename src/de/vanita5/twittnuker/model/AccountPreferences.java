@@ -120,6 +120,10 @@ public class AccountPreferences implements Constants {
 		return mPreferences.getBoolean(KEY_NOTIFICATION, DEFAULT_NOTIFICATION);
 	}
 
+	public boolean isPushEnabled() {
+		return mPreferences.getBoolean(KEY_ENABLE_PUSH, false);
+	}
+
     public static AccountPreferences getAccountPreferences(final AccountPreferences[] prefs, final long accountId) {
         for (final AccountPreferences pref : prefs) {
             if (pref.getAccountId() == accountId) return pref;

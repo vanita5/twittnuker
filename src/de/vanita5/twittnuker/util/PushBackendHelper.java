@@ -27,7 +27,7 @@ public class PushBackendHelper implements TwittnukerConstants {
 				.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final String url = wrapper.getString(KEY_PUSH_API_URL, "");
 		final String port = wrapper.getString(KEY_PUSH_API_PORT, "");
-		return url + ":" + port;
+		return (url.startsWith("http") ? url : "http://" + url) + ":" + port;
 	}
 
 	public static PushBackendServer getRESTAdapter(final Context context) {

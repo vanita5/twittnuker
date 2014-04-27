@@ -1,4 +1,5 @@
-* Implement settings with registration
+* When and where will the settings be transfered? (onStart(), too?)
+-> For now we won't transfer any settings. The server sends all possible notifications and we decide locally if we show them or not.
 
 * Unregister (in GCMHelper) WITH regid!
 * Make backend server URL variable (Settings)

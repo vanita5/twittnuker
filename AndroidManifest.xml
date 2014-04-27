@@ -656,7 +656,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="de.vanita5.twittnuker.gcm.GCMReceiver"
+            android:name="de.vanita5.twittnuker.receiver.GCMReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND" >

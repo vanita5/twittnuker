@@ -45,11 +45,19 @@ public class GCMHelper implements TwittnukerConstants {
 	}
 
 	private static void storeRegistrationId(final Context context, final String regid) {
-		final SharedPreferencesWrapper preferencesWrapper = SharedPreferencesWrapper.
-				getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+		final SharedPreferencesWrapper preferencesWrapper = SharedPreferencesWrapper
+				.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		preferencesWrapper.edit()
 				.putString(KEY_REGID, regid)
 				.putInt(KEY_APP_VERSION, getAppVersion(context))
+				.commit();
+	}
+
+	private static void setPushRegistered(final Context context, final boolean success) {
+		final SharedPreferencesWrapper preferencesWrapper = SharedPreferencesWrapper
+				.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+		preferencesWrapper.edit()
+				.putBoolean(KEY_PUSH_REGISTERED, success)
 				.commit();
 	}
 
@@ -173,34 +181,35 @@ public class GCMHelper implements TwittnukerConstants {
 					final String regid = gcm.register(GCMConfig.SENDER_ID);
 
 					if (sendRegistrationIdToBackend(context, regid)) {
-						msg = "Device successfully registered!";
+						msg = "Successfully registered for Push!";
 						// Persist the regID - no need to register again.
 						storeRegistrationId(context, regid);
+						setPushRegistered(context, true);
 					} else {
+						setPushRegistered(context, false);
 						if (regid == null || regid.isEmpty()) {
 							msg = "Could not register at GCM Service";
 						} else {
-							msg = "Got registration Id, but could not register at backend";
+							msg = "Could not connect to the backend server.";
 						}
 					}
 				} catch (IOException ex) {
 					// If there is an error, don't just keep trying to register.
 					// Require the user to click a button again, or perform
 					// exponential back-off.
-					msg = "Error :" + ex.getMessage();
-					if (Utils.isDebugBuild()) Log.e("GCMHelper", msg);
+					//TODO
+					if (Utils.isDebugBuild()) Log.e("GCMHelper", ex.getMessage());
+					setPushRegistered(context, false);
 				} catch (RetrofitError e) {
 					//TODO RetrofitError Handling by HTTP Error
-					msg = "Could not connect to the backend server";
+					msg = "Could not connect to the backend server.\nCheck your settings!";
+					setPushRegistered(context, false);
 				}
 				return null;
 			}
 
 			@Override
 			protected void onPostExecute(Void aVoid) {
-				//TODO Unlock settings or something?
-				//Maybe this whole thing should happen in a dialog, because
-				//there will be settings unlocked after successfully registering.
 				Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
 			}
 		}.execute();
@@ -222,21 +231,21 @@ public class GCMHelper implements TwittnukerConstants {
 					}
 
 					if (sendUnregisterRequestToBackend(context, regid)) {
-						msg = "Device successfully unregistered!";
+						msg = "Successfully unregistered from Push!";
 						storeRegistrationId(context, "");
+						setPushRegistered(context, false);
 					} else {
-						msg = "Could not connect to backend Server";
+						msg = "Could not connect to backend server";
 					}
 				} catch (RetrofitError e) {
 					//TODO handle http error code
-					msg = "Could not connect to backend server";
+					msg = "Could not connect to the backend server.\nCheck your settings!";
 				}
 				return null;
 			}
 
 			@Override
 			protected void onPostExecute(Void aVoid) {
-				//TODO Maybe this should also not happen in the background?
 				Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
 			}
 		}.execute();

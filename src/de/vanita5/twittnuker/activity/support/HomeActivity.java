@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
+import de.vanita5.twittnuker.gcm.GCMHelper;
+import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.HotKeyHandler;
@@ -206,7 +208,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private Fragment mCurrentVisibleFragment;
 	private UpdateUnreadCountTask mUpdateUnreadCountTask;
 
-	private boolean mBottomComposeButton;
+	private boolean mBottomComposeButton, mPushEnabled;
 
     private int mTabDisplayOption;
 	protected boolean hasStreamLoaded;
@@ -553,6 +555,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		mActionsButton = (HomeActionsActionView) view.findViewById(R.id.actions_button);
 		ThemeUtils.applyBackground(mIndicator);
 		mPagerAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), mIndicator, 1);
+		mPushEnabled = isPushEnabled();
 		mViewPager.setAdapter(mPagerAdapter);
 		mViewPager.setOffscreenPageLimit(3);
 		mIndicator.setViewPager(mViewPager);
@@ -710,7 +713,15 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		}
 		updateUnreadCount();
 
-		if(!isStreaming() && mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
+		if (mPushEnabled != isPushEnabled() || mPushEnabled && !isPushRegistered()) {
+			mPushEnabled = isPushEnabled();
+			if (mPushEnabled) {
+				GCMHelper.registerIfNotAlreadyDone(this);
+			} else {
+				GCMHelper.unregisterGCM(this);
+			}
+		}
+		if (!isStreaming() && mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
 			connectToStream();
 		} else if(!mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
 			closeStream();
@@ -815,6 +826,27 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private boolean isBottomComposeButton() {
 		final SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		return preferences != null && preferences.getBoolean(KEY_BOTTOM_COMPOSE_BUTTON, false);
+	}
+
+	private boolean isPushRegistered() {
+		final SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+		return preferences != null && preferences.getBoolean(KEY_PUSH_REGISTERED, false);
+	}
+
+	/**
+	 * Returns true if at least one account has Push enabled
+	 * @return
+	 */
+	private boolean isPushEnabled() {
+		final long[] accountIds = getAccountIds(this);
+		final AccountPreferences[] accountPrefs = AccountPreferences.getAccountPreferences(this, accountIds);
+
+		for (final AccountPreferences pref : accountPrefs) {
+			if (pref.isPushEnabled()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private boolean isTabsChanged(final List<SupportTabSpec> tabs) {

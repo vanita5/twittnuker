@@ -30,23 +30,6 @@
         <de.vanita5.twittnuker.preference.PushNotificationContentPreference
             android:key="content_to_notify_push"
             android:title="@string/content_to_notify"/>
-
-        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
-            android:dependency="enable_push_notifications"
-            android:dialogTitle="@string/push_api_url"
-            android:key="push_api_url"
-            android:singleLine="true"
-            android:summary="@string/push_api_url_summary"
-            android:title="@string/push_api_url"/>
-
-        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
-            android:dependency="enable_push_notifications"
-            android:dialogTitle="@string/push_api_port"
-            android:key="push_api_port"
-            android:inputType="number"
-            android:singleLine="true"
-            android:summary="@string/push_api_port_summary"
-            android:title="@string/push_api_port"/>
     </PreferenceCategory>
 
     <PreferenceCategory
