@@ -694,9 +694,11 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			restart();
 		}
 		updateUnreadCount();
-		
-		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
+
+		if(!isStreaming() && mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
 			connectToStream();
+		} else if(!mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
+			closeStream();
 		}
 	}
 
