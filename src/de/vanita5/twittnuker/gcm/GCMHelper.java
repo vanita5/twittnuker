@@ -101,7 +101,8 @@ public class GCMHelper implements TwittnukerConstants {
 
 	public static void registerIfNotAlreadyDone(final Context context) {
 		if (!isPlayServicesAvailable(context)) {
-			Toast.makeText(context, "Play Services not available on this device!", Toast.LENGTH_LONG).show();
+			//do nothing
+			if (Utils.isDebugBuild()) Toast.makeText(context, "Play Services not available on this device!", Toast.LENGTH_LONG).show();
 			return;
 		}
 
