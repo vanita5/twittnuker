@@ -19,13 +19,19 @@ public class PushBackendHelper implements TwittnukerConstants {
 
 	public static final String TAG = "PushBackendHelper";
 
-	//TODO replace
-	public static final String API_URL = "http://192.168.2.113:5050";
 	public static final String SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.email";
 	public static final String AUTHORITY = "de.vanita5.twittnuker.gcm.backend.AUTHORITY";
 
-	public static PushBackendServer getRESTAdapter() {
-		RestAdapter restAdapter = new RestAdapter.Builder().setServer(API_URL).build();
+	public static String getApiURL(final Context context) {
+		final SharedPreferencesWrapper wrapper = SharedPreferencesWrapper
+				.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+		final String url = wrapper.getString(KEY_PUSH_API_URL, "");
+		final String port = wrapper.getString(KEY_PUSH_API_PORT, "");
+		return url + ":" + port;
+	}
+
+	public static PushBackendServer getRESTAdapter(final Context context) {
+		RestAdapter restAdapter = new RestAdapter.Builder().setServer(getApiURL(context)).build();
 		return restAdapter.create(PushBackendServer.class);
 	}
 

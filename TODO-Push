@@ -1,6 +1,8 @@
+* Implement settings with registration
+
+* Unregister (in GCMHelper) WITH regid!
 * Make backend server URL variable (Settings)
 * improve gcm intent detection in BOS
-* Unregister (in GCMHelper) WITH regid!
 * Handle Retrofit Exceptions by HTTP Status Code (GCM Helper)
 * Update Public API access IP in Google Developer Console (-> APIs & Auth -> Credentials)
 

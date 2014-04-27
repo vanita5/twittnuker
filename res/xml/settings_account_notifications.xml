@@ -7,18 +7,55 @@
         android:key="cat_general"
         android:title="@string/general">
 
-        <de.vanita5.twittnuker.preference.NotificationContentPreference
-            android:key="content_to_notify"
-            android:title="@string/content_to_notify"/>
-
-        <de.vanita5.twittnuker.preference.RingtonePreference
-            android:key="notification_ringtone"
-            android:title="@string/notification_ringtone"/>
-
         <de.vanita5.twittnuker.preference.ColorPickerPreference
             android:defaultValue="@android:color/holo_blue_dark"
             android:key="notification_light_color"
             android:title="@string/notification_light_color"/>
+
+        <de.vanita5.twittnuker.preference.RingtonePreference
+            android:key="notification_ringtone"
+            android:title="@string/notification_ringtone"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="cat_push"
+        android:title="@string/push_notifications">
+
+        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_push_notifications"
+            android:title="@string/enable_push_notifications"
+            android:summary="@string/enable_push_notifications_summary"/>
+
+        <de.vanita5.twittnuker.preference.PushNotificationContentPreference
+            android:key="content_to_notify_push"
+            android:title="@string/content_to_notify"/>
+
+        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
+            android:dependency="enable_push_notifications"
+            android:dialogTitle="@string/push_api_url"
+            android:key="push_api_url"
+            android:singleLine="true"
+            android:summary="@string/push_api_url_summary"
+            android:title="@string/push_api_url"/>
+
+        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
+            android:dependency="enable_push_notifications"
+            android:dialogTitle="@string/push_api_port"
+            android:key="push_api_port"
+            android:inputType="number"
+            android:singleLine="true"
+            android:summary="@string/push_api_port_summary"
+            android:title="@string/push_api_port"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="cat_standard"
+        android:title="@string/standard_notifications">
+
+        <de.vanita5.twittnuker.preference.NotificationContentPreference
+            android:key="content_to_notify"
+            android:title="@string/content_to_notify"/>
     </PreferenceCategory>
 
 	<PreferenceCategory

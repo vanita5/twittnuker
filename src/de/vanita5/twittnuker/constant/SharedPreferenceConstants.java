@@ -116,6 +116,7 @@ public interface SharedPreferenceConstants {
 	public static final boolean DEFAULT_HOME_TIMELINE_NOTIFICATION = false;
 	public static final boolean DEFAULT_MENTIONS_NOTIFICATION = true;
 	public static final boolean DEFAULT_DIRECT_MESSAGES_NOTIFICATION = true;
+	public static final boolean DEFAULT_NEW_FOLLOWERS_NOTIFICATION = true;
 
 	public static final int DEFAULT_DATABASE_ITEM_LIMIT = 100;
 	public static final int DEFAULT_LOAD_ITEM_LIMIT = 100;
@@ -195,6 +196,12 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_MENTIONS_NOTIFICATION = "mentions_notification";
 	@Preference(type = BOOLEAN)
 	public static final String KEY_DIRECT_MESSAGES_NOTIFICATION = "direct_messages_notification";
+	@Preference(type = BOOLEAN)
+	public static final String KEY_MENTIONS_NOTIFICATION_PUSH = "mentions_notification_push";
+	@Preference(type = BOOLEAN)
+	public static final String KEY_DIRECT_MESSAGES_NOTIFICATION_PUSH = "direct_messages_notification_push";
+	@Preference(type = BOOLEAN)
+	public static final String KEY_NEW_FOLLOWERS_NOTIFICATION_PUSH = "followers_notification_push";
 	@Preference(type = INT)
 	public static final String KEY_LOCAL_TRENDS_WOEID = "local_trends_woeid";
 	public static final String KEY_NOTIFICATION_RINGTONE = "notification_ringtone";
@@ -320,4 +327,11 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_REGID = "KEY_REGID";
 	@Preference(type = INT)
 	public static final String KEY_APP_VERSION = "KEY_APP_VERSION";
+	@Preference(type = BOOLEAN)
+	public static final String KEY_ENABLE_PUSH = "enable_push_notifications";
+	@Preference(type = STRING)
+	public static final String KEY_PUSH_API_URL = "push_api_url";
+	@Preference(type = STRING)
+	public static final String KEY_PUSH_API_PORT = "push_api_port";
+
 }

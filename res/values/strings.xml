@@ -647,6 +647,14 @@
     <string name="love">Love</string>
     <string name="load_conversations_automatically">Load conversations automatically</string>
     <string name="load_conversations_automatically_summary">Loads a conversation automatically in the status view</string>
+    <string name="standard_notifications">Standard Notifications</string>
+    <string name="push_notifications">Push Notificatons</string>
+    <string name="enable_push_notifications">Enable Push Notificatons</string>
+    <string name="enable_push_notifications_summary">Use your own backend server for Push Notifications</string>
+    <string name="push_api_url">Push API URL</string>
+    <string name="push_api_port">Push API Port</string>
+    <string name="push_api_url_summary">The URL/IP to your backend server</string>
+    <string name="push_api_port_summary">The port your backend server listens on</string>
 
     <string name="shortening">Shortening</string>
     <string name="error_hototin">...but I failed :(\nYour Tweet has not been send and saved to draft.</string>

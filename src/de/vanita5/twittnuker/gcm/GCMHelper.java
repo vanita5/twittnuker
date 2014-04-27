@@ -309,7 +309,7 @@ public class GCMHelper implements TwittnukerConstants {
 		if (token == null) return false;
 
 		// token should be good. Transmit
-		final PushBackendServer server = PushBackendHelper.getRESTAdapter();
+		final PushBackendServer server = PushBackendHelper.getRESTAdapter(context);
 		final PushBackendServer.Regid item = new PushBackendServer.Regid();
 		item.regid = regid;
 
@@ -327,7 +327,7 @@ public class GCMHelper implements TwittnukerConstants {
 			return false;
 		}
 
-		final PushBackendServer server = PushBackendHelper.getRESTAdapter();
+		final PushBackendServer server = PushBackendHelper.getRESTAdapter(context);
 		final PushBackendServer.Regid item = new PushBackendServer.Regid();
 		item.regid = regid;
 
@@ -343,7 +343,7 @@ public class GCMHelper implements TwittnukerConstants {
 			return null;
 		}
 
-		final PushBackendServer server = PushBackendHelper.getRESTAdapter();
+		final PushBackendServer server = PushBackendHelper.getRESTAdapter(context);
 
 		//Create new AccountMSG with only an accountId.
 		//The other fields have default values server-side
@@ -362,7 +362,7 @@ public class GCMHelper implements TwittnukerConstants {
 			return false;
 		}
 
-		final PushBackendServer server = PushBackendHelper.getRESTAdapter();
+		final PushBackendServer server = PushBackendHelper.getRESTAdapter(context);
 
 		//account to remove
 		final PushBackendServer.AccountMSG account = new PushBackendServer.AccountMSG(accountId);
