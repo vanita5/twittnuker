@@ -565,6 +565,9 @@
             android:label="@string/label_refresh_service"
             android:settingsActivity=".activity.SettingsActivity" />
         <service
+            android:name=".service.PushService"
+            android:label="@string/label_refresh_service"/>
+        <service
             android:name=".service.BackgroundOperationService"
             android:label="@string/label_background_operation_service" />
         <service

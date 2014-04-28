@@ -29,6 +29,7 @@ import static de.vanita5.twittnuker.util.Utils.cleanDatabasesByItemLimit;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
+import static de.vanita5.twittnuker.util.Utils.isPushEnabled;
 import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
@@ -555,7 +556,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		mActionsButton = (HomeActionsActionView) view.findViewById(R.id.actions_button);
 		ThemeUtils.applyBackground(mIndicator);
 		mPagerAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), mIndicator, 1);
-		mPushEnabled = isPushEnabled();
+		mPushEnabled = isPushEnabled(this);
 		mViewPager.setAdapter(mPagerAdapter);
 		mViewPager.setOffscreenPageLimit(3);
 		mIndicator.setViewPager(mViewPager);
@@ -713,8 +714,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		}
 		updateUnreadCount();
 
-		if (mPushEnabled != isPushEnabled() || mPushEnabled && !isPushRegistered()) {
-			mPushEnabled = isPushEnabled();
+		if (mPushEnabled != isPushEnabled(this) || mPushEnabled && !isPushRegistered()) {
+			mPushEnabled = isPushEnabled(this);
 			if (mPushEnabled) {
 				GCMHelper.registerIfNotAlreadyDone(this);
 			} else {
@@ -831,22 +832,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private boolean isPushRegistered() {
 		final SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		return preferences != null && preferences.getBoolean(KEY_PUSH_REGISTERED, false);
-	}
-
-	/**
-	 * Returns true if at least one account has Push enabled
-	 * @return
-	 */
-	private boolean isPushEnabled() {
-		final long[] accountIds = getAccountIds(this);
-		final AccountPreferences[] accountPrefs = AccountPreferences.getAccountPreferences(this, accountIds);
-
-		for (final AccountPreferences pref : accountPrefs) {
-			if (pref.isPushEnabled()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private boolean isTabsChanged(final List<SupportTabSpec> tabs) {

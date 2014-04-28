@@ -153,6 +153,7 @@ import de.vanita5.twittnuker.fragment.support.UserMentionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserProfileFragment;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UsersListFragment;
+import de.vanita5.twittnuker.gcm.GCMHelper;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
@@ -3701,7 +3702,8 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static void startRefreshServiceIfNeeded(final Context context) {
 		final Intent refreshServiceIntent = new Intent(context, RefreshService.class);
-		if (isNetworkAvailable(context) && hasAutoRefreshAccounts(context)) {
+		if (isNetworkAvailable(context) && hasAutoRefreshAccounts(context)
+				&& !isPushEnabled(context)) {
 			if (isDebugBuild()) {
 				Log.d(LOGTAG, "Start background refresh service");
 			}
@@ -3709,6 +3711,22 @@ public final class Utils implements Constants, TwitterConstants {
 		} else {
 			context.stopService(refreshServiceIntent);
 		}
+	}
+
+	/**
+	 * Returns true if at least one account has Push enabled
+	 * @return
+	 */
+	public static boolean isPushEnabled(final Context context) {
+		final long[] accountIds = getAccountIds(context);
+		final AccountPreferences[] accountPrefs = AccountPreferences.getAccountPreferences(context, accountIds);
+
+		for (final AccountPreferences pref : accountPrefs) {
+			if (pref.isPushEnabled()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static void startStatusShareChooser(final Context context, final ParcelableStatus status) {

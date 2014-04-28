@@ -169,6 +169,21 @@ public class AccountPreferences implements Constants {
 		return enabledIds;
 	}
 
+	public static AccountPreferences[] getPushEnabledPreferences(final Context context, final long[] accountIds) {
+		if (context == null || accountIds == null) return null;
+		final AccountPreferences[] temp = new AccountPreferences[accountIds.length];
+		int i = 0;
+		for (final long accountId : accountIds) {
+			final AccountPreferences preference = new AccountPreferences(context, accountId);
+			if (preference.isPushEnabled()) {
+				temp[i++] = preference;
+			}
+		}
+		final AccountPreferences[] enabledIds = new AccountPreferences[i];
+		System.arraycopy(temp, 0, enabledIds, 0, i);
+		return enabledIds;
+	}
+
 	public static boolean isNotificationHasLight(final int flags) {
 		return (flags & VALUE_NOTIFICATION_FLAG_LIGHT) != 0;
 	}

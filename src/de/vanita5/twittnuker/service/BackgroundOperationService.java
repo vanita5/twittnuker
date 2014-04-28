@@ -193,43 +193,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 			handleUpdateStatusIntent(intent);
 		} else if (INTENT_ACTION_SEND_DIRECT_MESSAGE.equals(action)) {
 			handleSendDirectMessageIntent(intent);
-		} else {
-			//TODO improve gcm intent detection (need to debug when ready)
-			final Bundle extras = intent.getExtras();
-
-			if (!extras.isEmpty()) {
-				GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-				String messageType = gcm.getMessageType(intent);
-				/*
-				 * Filter messages based on message type. Since it is likely that
-				 * GCM will be extended in the future with new message types, just
-				 * ignore any message types you're not interested in, or that you
-				 * don't recognize.
-				 */
-				if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-					//TODO improve building of notifications!
-					if (Utils.isDebugBuild()) Log.i("accounts", "Received: " + extras.toString());
-					buildPushNotification(extras.getString("fromuser"), null, extras.getString("msg"));
-				}
-			}
-			// Release the wake lock provided by the WakefulBroadcastReceiver.
-			GCMReceiver.completeWakefulIntent(intent);
 		}
-	}
-
-	private void buildPushNotification(String from, String category, String message) {
-		//TODO I think we can do this more precisely, by sending the user
-		//directly to the right tab and/or to the tweet/direct message
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-				new Intent(this, HomeActivity.class), 0);
-
-		final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-		builder.setSmallIcon(R.drawable.ic_stat_twittnuker); //TODO evaluate profile images
-		builder.setContentTitle(from);
-		builder.setStyle(new NotificationCompat.BigTextStyle().bigText(message));
-		builder.setContentText(message);
-		builder.setContentIntent(contentIntent);
-		mNotificationManager.notify(NOTIFICATION_ID_PUSH, builder.build());
 	}
 
 	private Notification buildNotification(final String title, final String message, final int icon,
