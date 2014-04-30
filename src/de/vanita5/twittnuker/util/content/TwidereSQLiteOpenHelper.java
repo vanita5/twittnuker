@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.provider.TweetStore.Mentions;
+import de.vanita5.twittnuker.provider.TweetStore.PushNotifications;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.provider.TweetStore.Tabs;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder.ConversationsEntryQueryBuilder;
@@ -82,6 +83,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 		db.execSQL(createTable(CachedTrends.Local.TABLE_NAME, CachedTrends.Local.COLUMNS, CachedTrends.Local.TYPES,
 				true));
 		db.execSQL(createTable(Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, true));
+		db.execSQL(createTable(PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES, true));
 		db.execSQL(createDirectMessagesView().getSQL());
 		db.execSQL(createDirectMessageConversationEntriesView().getSQL());
 		db.setTransactionSuccessful();
@@ -152,6 +154,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 				true, null);
 		safeUpgrade(db, CachedTrends.Local.TABLE_NAME, CachedTrends.Local.COLUMNS, CachedTrends.Local.TYPES, true, null);
 		safeUpgrade(db, Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, false, null);
+		safeUpgrade(db, PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES, false, null);
 		db.execSQL(createDirectMessagesView().getSQL());
 		db.execSQL(createDirectMessageConversationEntriesView().getSQL());
 	}
