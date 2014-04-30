@@ -130,7 +130,7 @@ public class PushService extends IntentService implements Constants {
 
 		//TODO NotificationType for Follower Notifications
 		int defaults = 0;
-		if (isNotificationAudible()) {
+		if (!isNotificationsSilent(this)) {
 			if (AccountPreferences.isNotificationHasRingtone(notificationType)) {
 				final Uri ringtone = pref.getNotificationRingtone();
 				builder.setSound(ringtone, Notification.STREAM_DEFAULT);
