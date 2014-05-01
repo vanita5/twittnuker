@@ -673,6 +673,12 @@
                 <category android:name="com.nononsenseapps.linksgcm" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name="de.vanita5.twittnuker.receiver.ClearNotificationReceiver">
+            <intent-filter>
+                <action android:name="de.vanita5.twittnuker.PUSHNOTIFICATION_CLEARED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

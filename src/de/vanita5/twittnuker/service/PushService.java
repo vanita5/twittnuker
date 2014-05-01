@@ -27,10 +27,12 @@ import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.PushNotificationContent;
 import de.vanita5.twittnuker.provider.TweetStore.PushNotifications;
+import de.vanita5.twittnuker.receiver.ClearNotificationReceiver;
 import de.vanita5.twittnuker.receiver.GCMReceiver;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.Utils;
 
+import static de.vanita5.twittnuker.util.Utils.getAccountId;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
 
@@ -105,28 +107,27 @@ public class PushService extends IntentService implements Constants {
 	private void buildNotification(final PushNotificationContent notification, final AccountPreferences pref) {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 		final int notificationType = pref.getMentionsNotificationType();
+		List<PushNotificationContent> pendingNotifications = getCachedPushNotifications(notification.getAccountId());
 
 		builder.setContentTitle("@" + notification.getFromUser()); //TODO Should be modified if there already is a notification
 		builder.setContentText(notification.getMessage()); //TODO Update if there are multiple messages
 		builder.setTicker(notification.getMessage());
 		builder.setSmallIcon(R.drawable.ic_stat_twittnuker);
+		builder.setDeleteIntent(getDeleteIntent(notification.getAccountId()));
 		builder.setAutoCancel(true);
 
-		//TODO This looks interesting. We should delete all notification stuff by this intent
-		//setDeleteIntent(PendingIntent intent)
-
-		//TODO Get the notification count from somewhere...
-		int notificationCount = 1;
+		final int notificationCount = pendingNotifications.size();
 		builder.setContentInfo(String.valueOf(notificationCount));
 
 		if (notificationCount > 1) {
 			NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 			inboxStyle.setBigContentTitle(notificationCount + "new interactions");
 
-			//TODO for every notification:
-			final String nameEscaped = HtmlEscapeHelper.escape("@" + notification.getFromUser());
-			final String textEscaped = HtmlEscapeHelper.escape(notification.getMessage());
-			inboxStyle.addLine(Html.fromHtml(String.format("<b>%s</b>: %s", nameEscaped, textEscaped)));
+			for (PushNotificationContent pendingNotification : pendingNotifications) {
+				final String nameEscaped = HtmlEscapeHelper.escape("@" + pendingNotification.getFromUser());
+				final String textEscaped = HtmlEscapeHelper.escape(pendingNotification.getMessage());
+				inboxStyle.addLine(Html.fromHtml(String.format("<b>%s</b>: %s", nameEscaped, textEscaped)));
+			}
 
 			//TODO add summary? Test
 
@@ -178,6 +179,13 @@ public class PushService extends IntentService implements Constants {
 	private NotificationManager getNotificationManager() {
 		if (mNotificationManager != null) return mNotificationManager;
 		return mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+	}
+
+	private PendingIntent getDeleteIntent(final long accountId) {
+		Intent intent = new Intent(this, ClearNotificationReceiver.class);
+		intent.setAction(INTENT_ACTION_PUSH_NOTIFICATION_CLEARED);
+		intent.putExtra(EXTRA_USER_ID, accountId);
+		return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 	}
 
 	private void cachePushNotification(final PushNotificationContent notification) {
