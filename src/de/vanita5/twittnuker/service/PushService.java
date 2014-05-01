@@ -32,8 +32,9 @@ import de.vanita5.twittnuker.receiver.GCMReceiver;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.Utils;
 
-import static de.vanita5.twittnuker.util.Utils.getAccountId;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
+import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;
+import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
 import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
 
 public class PushService extends IntentService implements Constants {
@@ -63,7 +64,6 @@ public class PushService extends IntentService implements Constants {
 
 		if (!extras.isEmpty()) {
 			GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-
 			final String messageType = gcm.getMessageType(intent);
 
 			if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
@@ -74,8 +74,6 @@ public class PushService extends IntentService implements Constants {
 					accountId = Long.parseLong(extras.getString("account"));
 				} catch (NumberFormatException e) {
 					//This should never happen
-					//Either a wrong intent has been processed or the backend server
-					//sends wrong messages!
 					Log.e(TAG, e.getMessage());
 					return;
 				}
@@ -97,10 +95,8 @@ public class PushService extends IntentService implements Constants {
 					//There is no such account with Push enabled...
 					//TODO maybe we should remove the account/unregister?
 				}
-				//buildPushNotification(extras.getString("fromuser"), null, extras.getString("msg"));
 			}
 		}
-		// Release the wake lock provided by the WakefulBroadcastReceiver.
 		GCMReceiver.completeWakefulIntent(intent);
 	}
 
@@ -109,34 +105,34 @@ public class PushService extends IntentService implements Constants {
 		final int notificationType = pref.getMentionsNotificationType();
 		List<PushNotificationContent> pendingNotifications = getCachedPushNotifications(notification.getAccountId());
 
-		builder.setContentTitle("@" + notification.getFromUser()); //TODO Should be modified if there already is a notification
-		builder.setContentText(notification.getMessage()); //TODO Update if there are multiple messages
+		builder.setContentTitle("@" + notification.getFromUser());
+		builder.setContentText(notification.getMessage());
 		builder.setTicker(notification.getMessage());
 		builder.setSmallIcon(R.drawable.ic_stat_twittnuker);
+		//TODO setLargeIcon
 		builder.setDeleteIntent(getDeleteIntent(notification.getAccountId()));
 		builder.setAutoCancel(true);
 
 		final int notificationCount = pendingNotifications.size();
 		builder.setContentInfo(String.valueOf(notificationCount));
+		builder.setWhen(System.currentTimeMillis());
 
 		if (notificationCount > 1) {
 			NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-			inboxStyle.setBigContentTitle(notificationCount + " new interactions");
+			inboxStyle.setBigContentTitle(notificationCount + " neue Interaktionen");
 
 			for (PushNotificationContent pendingNotification : pendingNotifications) {
 				final String nameEscaped = HtmlEscapeHelper.escape("@" + pendingNotification.getFromUser());
 				final String textEscaped = HtmlEscapeHelper.escape(pendingNotification.getMessage());
 				inboxStyle.addLine(Html.fromHtml(String.format("<b>%s</b>: %s", nameEscaped, textEscaped)));
 			}
-
-			//TODO add summary
-
+			inboxStyle.setSummaryText("@" + getAccountScreenName(this, notification.getAccountId()));
+			builder.setNumber(notificationCount);
 			builder.setStyle(inboxStyle);
 		} else {
 			//TODO Add big style? We need a status for this!
 		}
 
-		//TODO NotificationType for Follower Notifications
 		int defaults = 0;
 		if (!isNotificationsSilent(this)) {
 			if (AccountPreferences.isNotificationHasRingtone(notificationType)) {
@@ -160,7 +156,8 @@ public class PushService extends IntentService implements Constants {
 		result.addCategory(Intent.CATEGORY_LAUNCHER);
 		result.putExtra(EXTRA_TAB_TYPE, TAB_TYPE_MENTIONS_TIMELINE);
 		if (notificationCount == 1) {
-			//TODO Go directly to the mention (see TwidereDataProvider)? We need a status for this
+			//TODO Go directly to the mention (see TwidereDataProvider)? We need a ParcelableStatus for this...
+			//Load the status?
 		}
 
 		//TaskStackBuilder: This ensures that navigating backward from the Activity leads out of your application
@@ -172,8 +169,8 @@ public class PushService extends IntentService implements Constants {
 		builder.setContentIntent(resultIntent);
 
 		mNotificationManager = getNotificationManager();
-		//TODO make notification id uniqe for every account!
-		mNotificationManager.notify(NOTIFICATION_ID_PUSH, builder.build());
+		mNotificationManager.notify(getAccountNotificationId(NOTIFICATION_ID_PUSH,
+				notification.getAccountId()), builder.build());
 	}
 
 	private NotificationManager getNotificationManager() {
