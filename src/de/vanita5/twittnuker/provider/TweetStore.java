@@ -746,7 +746,7 @@ public interface TweetStore {
 				TYPE_TEXT, TYPE_TEXT_NOT_NULL, TYPE_INT };
 
 		//TODO Is this the right sort order?
-		public static final String DEFAULT_SORT_ORDER = TIMESTAMP + " ASC";
+		public static final String DEFAULT_SORT_ORDER = TIMESTAMP + " DESC";
 	}
 
 	public static interface Tabs extends BaseColumns {

@@ -121,7 +121,7 @@ public class PushService extends IntentService implements Constants {
 
 		if (notificationCount > 1) {
 			NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-			inboxStyle.setBigContentTitle(notificationCount + "new interactions");
+			inboxStyle.setBigContentTitle(notificationCount + " new interactions");
 
 			for (PushNotificationContent pendingNotification : pendingNotifications) {
 				final String nameEscaped = HtmlEscapeHelper.escape("@" + pendingNotification.getFromUser());
@@ -129,7 +129,7 @@ public class PushService extends IntentService implements Constants {
 				inboxStyle.addLine(Html.fromHtml(String.format("<b>%s</b>: %s", nameEscaped, textEscaped)));
 			}
 
-			//TODO add summary? Test
+			//TODO add summary
 
 			builder.setStyle(inboxStyle);
 		} else {
