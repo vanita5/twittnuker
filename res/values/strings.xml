@@ -656,6 +656,12 @@
     <string name="push_api_url_summary">The URL/IP to your backend server</string>
     <string name="push_api_port_summary">The port your backend server listens on</string>
     <string name="label_push_service">Push Service</string>
+    <string name="push_new_interactions">new interactions</string>
+    <string name="push_new_favorite">favorited</string>
+    <string name="push_new_favorite_single">Favorited</string>
+    <string name="push_new_retweet">retweeted</string>
+    <string name="push_new_retweet_single">Retweeted</string>
+    <string name="push_new_follower">is now following you.</string>
 
     <string name="shortening">Shortening</string>
     <string name="error_hototin">...but I failed :(\nYour Tweet has not been send and saved to draft.</string>
