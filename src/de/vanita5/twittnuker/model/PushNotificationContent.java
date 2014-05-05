@@ -11,6 +11,8 @@ public class PushNotificationContent {
 	public static final String PUSH_NOTIFICATION_TYPE_FOLLOWER = "type_new_follower";
 	public static final String PUSH_NOTIFICATION_TYPE_FAVORITE = "type_favorite";
 
+	public static final String PUSH_NOTIFICATION_TYPE_ERROR_420 = "type_error_420";
+
 	private long accountId;
 	private long timestamp;
 

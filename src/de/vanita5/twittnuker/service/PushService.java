@@ -133,6 +133,8 @@ public class PushService extends IntentService implements Constants {
 		} else if (PushNotificationContent.PUSH_NOTIFICATION_TYPE_FOLLOWER.equals(type)) {
 			contentText = "@" + notification.getFromUser() + " " + getString(R.string.push_new_follower);
 			ticker = contentText;
+		} else if (PushNotificationContent.PUSH_NOTIFICATION_TYPE_ERROR_420.equals(type)) {
+			buildErrorNotification(420, pref);
 		}
 		if (contentText == null && ticker == null) return;
 		buildNotification(notification, pref, notificationType, notificationCount,
@@ -156,6 +158,41 @@ public class PushService extends IntentService implements Constants {
 					nameEscaped));
 		}
 		return null;
+	}
+
+	private void buildErrorNotification(final int type, final AccountPreferences pref) {
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+		builder.setContentTitle("Error!");
+		switch (type) {
+			case 420:
+				builder.setContentText("Your account has been logging in too often.\nThe stream has been disconnected by Twitter, so you won't receive Push Notifications for some time.");
+				builder.setTicker("Error: Push has been halted...");
+				break;
+			default:
+				break;
+		}
+		builder.setSmallIcon(R.drawable.ic_stat_twittnuker);
+		builder.setAutoCancel(true);
+		builder.setWhen(System.currentTimeMillis());
+		int defaults = 0;
+		if (!isNotificationsSilent(this)) {
+			if (AccountPreferences.isNotificationHasRingtone(pref.getMentionsNotificationType())) { //TODO Settings for error messages
+				final Uri ringtone = pref.getNotificationRingtone();
+				builder.setSound(ringtone, Notification.STREAM_DEFAULT);
+			}
+			if (AccountPreferences.isNotificationHasVibration(pref.getMentionsNotificationType())) {
+				defaults |= Notification.DEFAULT_VIBRATE;
+			} else {
+				defaults &= ~Notification.DEFAULT_VIBRATE;
+			}
+			if (AccountPreferences.isNotificationHasLight(pref.getMentionsNotificationType())) {
+				final int color = pref.getNotificationLightColor();
+				builder.setLights(color, 1000, 2000);
+			}
+			builder.setDefaults(defaults);
+		}
+		mNotificationManager = getNotificationManager();
+		mNotificationManager.notify(NOTIFICATION_ID_PUSH_ERROR, builder.build());
 	}
 
 	private void buildNotification(final PushNotificationContent notification, final AccountPreferences pref,

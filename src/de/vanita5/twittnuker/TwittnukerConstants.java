@@ -184,6 +184,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final int NOTIFICATION_ID_SEND_DIRECT_MESSAGE = 102;
 	public static final int NOTIFICATION_ID_SHORTENING = 103;
 	public static final int NOTIFICATION_ID_UPLOAD_MEDIA = 104;
+	public static final int NOTIFICATION_ID_PUSH_ERROR = 299;
 	public static final int NOTIFICATION_ID_PUSH = 301;
 
 	public static final String ICON_SPECIAL_TYPE_CUSTOMIZE = "_customize";
