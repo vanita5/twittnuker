@@ -85,6 +85,7 @@ public class PermissionsManager implements Constants {
 	}
 
 	public boolean checkSignature(final String pname) {
+		if (mContext.getPackageName().equals(pname)) return true;
 		return mPackageManager.checkSignatures(pname, mContext.getPackageName()) == PackageManager.SIGNATURE_MATCH;
 	}
 

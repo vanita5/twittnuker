@@ -103,6 +103,8 @@ public interface Status extends Comparable<Status>, TwitterResponse, EntitySuppo
 	 */
 	long getRetweetCount();
 
+	long getFavoriteCount();
+
 	/**
 	 * @since Twitter4J 2.1.0
 	 */

@@ -273,6 +273,9 @@
                     android:host="status_retweeters"
                     android:scheme="twittnuker" />
                 <data
+                	android:host="status_favoriters"
+                	android:scheme="twittnuker"/>
+                <data
                     android:host="status_replies"
                     android:scheme="twittnuker" />
                 <data

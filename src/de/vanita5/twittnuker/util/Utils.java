@@ -55,6 +55,7 @@ import android.graphics.Matrix;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
@@ -74,10 +75,13 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.LongSparseArray;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.text.format.Time;
+import android.text.style.CharacterStyle;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -128,6 +132,7 @@ import de.vanita5.twittnuker.fragment.support.IncomingFriendshipsFragment;
 import de.vanita5.twittnuker.fragment.support.SavedSearchesListFragment;
 import de.vanita5.twittnuker.fragment.support.SearchFragment;
 import de.vanita5.twittnuker.fragment.support.SensitiveContentWarningDialogFragment;
+import de.vanita5.twittnuker.fragment.support.StatusFavoritersListFragment;
 import de.vanita5.twittnuker.fragment.support.StatusFragment;
 import de.vanita5.twittnuker.fragment.support.StatusRepliesListFragment;
 import de.vanita5.twittnuker.fragment.support.StatusRetweetersListFragment;
@@ -177,9 +182,9 @@ import de.vanita5.twittnuker.provider.TweetStore.Tabs;
 import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
-
 import de.vanita5.twittnuker.util.net.ApacheHttpClientFactory;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
+
 import twitter4j.DirectMessage;
 import twitter4j.EntitySupport;
 import twitter4j.MediaEntity;
@@ -220,10 +225,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -318,6 +321,7 @@ public final class Utils implements Constants {
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USERS, null, LINK_ID_USERS);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_STATUSES, null, LINK_ID_STATUSES);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_STATUS_RETWEETERS, null, LINK_ID_STATUS_RETWEETERS);
+		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_STATUS_FAVORITERS, null, LINK_ID_STATUS_FAVORITERS);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_STATUS_REPLIES, null, LINK_ID_STATUS_REPLIES);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_SEARCH, null, LINK_ID_SEARCH);
 
@@ -863,6 +867,14 @@ public final class Utils implements Constants {
 				}
 				break;
 			}
+			case LINK_ID_STATUS_FAVORITERS: {
+				fragment = new StatusFavoritersListFragment();
+				if (!args.containsKey(EXTRA_STATUS_ID)) {
+					final String param_status_id = uri.getQueryParameter(QUERY_PARAM_STATUS_ID);
+					args.putLong(EXTRA_STATUS_ID, ParseUtils.parseLong(param_status_id));
+				}
+				break;
+			}
 			case LINK_ID_STATUS_REPLIES: {
 				fragment = new StatusRepliesListFragment();
 				if (!args.containsKey(EXTRA_STATUS_ID)) {
@@ -1250,8 +1262,8 @@ public final class Utils implements Constants {
 	public static long getAccountId(final Context context, final String screen_name) {
 		if (context == null || isEmpty(screen_name)) return -1;
 		final Cursor cur = ContentResolverUtils
-				.query(context.getContentResolver(), Accounts.CONTENT_URI, new String[]{Accounts.ACCOUNT_ID},
-						Accounts.SCREEN_NAME + " = ?", new String[]{screen_name}, null);
+				.query(context.getContentResolver(), Accounts.CONTENT_URI, new String[] { Accounts.ACCOUNT_ID },
+						Accounts.SCREEN_NAME + " = ?", new String[] { screen_name }, null);
 		if (cur == null) return -1;
 		try {
 			if (cur.getCount() > 0 && cur.moveToFirst()) return cur.getLong(0);
@@ -1771,19 +1783,26 @@ public final class Utils implements Constants {
 		return orig.getInReplyToScreenName();
 	}
 
-	public static String getKeywordBoldedText(final String orig, final String... keywords) {
+	public static CharSequence getKeywordBoldedText(final CharSequence orig, final String... keywords) {
+		return getKeywordHighlightedText(orig, new StyleSpan(Typeface.BOLD), keywords);
+	}
+
+	public static CharSequence getKeywordHighlightedText(final CharSequence orig, final CharacterStyle style,
+			final String... keywords) {
 		if (keywords == null || keywords.length == 0 || orig == null) return orig;
-		final Set<String> keywordsSet = new HashSet<String>();
-		for (final String keyword : keywords) {
-			keywordsSet.add(keyword);
+		final SpannableStringBuilder sb = SpannableStringBuilder.valueOf(orig);
+		final StringBuilder patternBuilder = new StringBuilder();
+		for (int i = 0, j = keywords.length; i < j; i++) {
+			if (i != 0) {
+				patternBuilder.append('|');
+			}
+			patternBuilder.append(Pattern.quote(keywords[i]));
 		}
-		String result = orig;
-		for (final String keyword : keywordsSet) {
-			final String regex = String.format("(?i)(%s)", Pattern.quote(HtmlEscapeHelper.escape(keyword)));
-			result = result.replaceAll(regex, "<b>$1</b>");
+		final Matcher m = Pattern.compile(patternBuilder.toString(), Pattern.CASE_INSENSITIVE).matcher(orig);
+		while (m.find()) {
+			sb.setSpan(style, m.start(), m.end(), SpannableStringBuilder.SPAN_INCLUSIVE_INCLUSIVE);
 		}
-		result.toString();
-		return result;
+		return sb;
 	}
 
 	public static String getLinkHighlightOption(final Context context) {
@@ -2327,9 +2346,11 @@ public final class Utils implements Constants {
 					}
 					case Accounts.AUTH_TYPE_BASIC: {
 						final String screenName = c.getString(c.getColumnIndexOrThrow(Accounts.SCREEN_NAME));
+						final String username = c.getString(c.getColumnIndexOrThrow(Accounts.BASIC_AUTH_USERNAME));
+						final String loginName = username != null ? username : screenName;
 						final String password = c.getString(c.getColumnIndexOrThrow(Accounts.BASIC_AUTH_PASSWORD));
-						if (isEmpty(screenName) || isEmpty(password)) return null;
-						return new TwitterFactory(cb.build()).getInstance(new BasicAuthorization(screenName, password));
+						if (isEmpty(loginName) || isEmpty(password)) return null;
+						return new TwitterFactory(cb.build()).getInstance(new BasicAuthorization(loginName, password));
 					}
 					case Accounts.AUTH_TYPE_TWIP_O_MODE: {
 						return new TwitterFactory(cb.build()).getInstance(new TwipOModeAuthorization());
@@ -2414,8 +2435,8 @@ public final class Utils implements Constants {
 
 	public static void initAccountColor(final Context context) {
 		if (context == null) return;
-		final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI, new String[]{
-				Accounts.ACCOUNT_ID, Accounts.COLOR}, null, null, null);
+		final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI, new String[] {
+				Accounts.ACCOUNT_ID, Accounts.COLOR }, null, null, null);
 		if (cur == null) return;
 		final int id_idx = cur.getColumnIndex(Accounts.ACCOUNT_ID), color_idx = cur.getColumnIndex(Accounts.COLOR);
 		cur.moveToFirst();
@@ -2837,6 +2858,17 @@ public final class Utils implements Constants {
 		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
 	}
 
+	public static void openStatusFavoriters(final Activity activity, final long accountId, final long statusId) {
+		if (activity == null) return;
+		final Uri.Builder builder = new Uri.Builder();
+		builder.scheme(SCHEME_TWITTNUKER);
+		builder.authority(AUTHORITY_STATUS_FAVORITERS);
+		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
+		builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(statusId));
+		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
+		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+	}
+
 	public static void openStatusReplies(final Activity activity, final long accountId, final long statusId,
 			final String screenName) {
 		if (activity == null) return;
@@ -2850,23 +2882,23 @@ public final class Utils implements Constants {
 		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
 	}
 
-	public static void openStatusRetweeters(final Activity activity, final long account_id, final long status_id) {
+	public static void openStatusRetweeters(final Activity activity, final long accountId, final long statusId) {
 		if (activity == null) return;
 		final Uri.Builder builder = new Uri.Builder();
 		builder.scheme(SCHEME_TWITTNUKER);
 		builder.authority(AUTHORITY_STATUS_RETWEETERS);
-		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(account_id));
-		builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status_id));
+		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
+		builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(statusId));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
 		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
 	}
 
-	public static void openTweetSearch(final Activity activity, final long account_id, final String query) {
+	public static void openTweetSearch(final Activity activity, final long accountId, final String query) {
 		if (activity == null) return;
 		final Uri.Builder builder = new Uri.Builder();
 		builder.scheme(SCHEME_TWITTNUKER);
 		builder.authority(AUTHORITY_SEARCH);
-		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(account_id));
+		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
 		builder.appendQueryParameter(QUERY_PARAM_TYPE, QUERY_PARAM_VALUE_TWEETS);
 		if (query != null) {
 			builder.appendQueryParameter(QUERY_PARAM_QUERY, query);
@@ -3631,20 +3663,20 @@ public final class Utils implements Constants {
 		final MediaEntity[] medias = entities.getMediaEntities();
 		if (medias != null) {
 			for (final MediaEntity media : medias) {
-				final URL media_url = media.getMediaURL();
-				if (media_url != null) {
-					builder.addLink(ParseUtils.parseString(media_url), media.getDisplayURL(), media.getStart(),
-							media.getEnd());
+				final int start = media.getStart(), end = media.getEnd();
+				final URL mediaUrl = media.getMediaURL();
+				if (mediaUrl != null && start >= 0 && end >= 0) {
+					builder.addLink(ParseUtils.parseString(mediaUrl), media.getDisplayURL(), start, end);
 				}
 			}
 		}
         final URLEntity[] urls = entities.getURLEntities();
 		if (urls != null) {
 			for (final URLEntity url : urls) {
-				final URL expanded_url = url.getExpandedURL();
-				if (expanded_url != null) {
-					builder.addLink(ParseUtils.parseString(expanded_url), url.getDisplayURL(), url.getStart(),
-							url.getEnd());
+				final int start = url.getStart(), end = url.getEnd();
+				final URL expandedUrl = url.getExpandedURL();
+				if (expandedUrl != null && start >= 0 && end >= 0) {
+					builder.addLink(ParseUtils.parseString(expandedUrl), url.getDisplayURL(), start, end);
 				}
 			}
 		}

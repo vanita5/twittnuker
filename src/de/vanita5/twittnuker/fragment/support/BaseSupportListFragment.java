@@ -34,6 +34,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -43,6 +44,7 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -201,6 +203,7 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 		final ListView lv = new ListView(getActivity());
 		lv.setId(android.R.id.list);
 		lv.setDrawSelectorOnTop(false);
+		lv.setOnScrollListener(this);
 		lframe.addView(lv, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT));
 
@@ -245,6 +248,8 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 	@Override
 	public void onScroll(final AbsListView view, final int firstVisibleItem, final int visibleItemCount,
 			final int totalItemCount) {
+		final ListAdapter adapter = getListAdapter();
+		if (adapter == null) return;
 		final boolean reached = firstVisibleItem + visibleItemCount >= totalItemCount
 				&& totalItemCount >= visibleItemCount;
 
@@ -254,7 +259,7 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 				mNotReachedBottomBefore = false;
 				return;
 			}
-			if (mReachedBottom && getListAdapter().getCount() > visibleItemCount) {
+			if (mReachedBottom && adapter.getCount() > visibleItemCount) {
 				onReachedBottom();
 			}
 		}
@@ -263,7 +268,15 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 
 	@Override
 	public void onScrollStateChanged(final AbsListView view, final int scrollState) {
-
+		final FragmentActivity a = getActivity();
+		if (a instanceof HomeActivity) {
+			final HomeActivity home = (HomeActivity) a;
+			if (scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
+				home.showControls();
+			} else {
+				home.hideControls();
+			}
+		}
 	}
 
 	@Override
