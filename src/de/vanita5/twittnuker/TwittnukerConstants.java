@@ -199,9 +199,11 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final String SERVICE_COMMAND_GET_SENT_DIRECT_MESSAGES = "get_sent_direct_messages";
 	public static final String SERVICE_COMMAND_GET_RECEIVED_DIRECT_MESSAGES = "get_received_direct_messages";
 
-	public static final String METADATA_KEY_PERMISSIONS = "de.vanita5.twittnuker.extension.permissions";
-	public static final String METADATA_KEY_SETTINGS = "de.vanita5.twittnuker.extension.settings";
 	public static final String METADATA_KEY_EXTENSION = "de.vanita5.twittnuker.extension";
+	public static final String METADATA_KEY_EXTENSION_PERMISSIONS = "de.vanita5.twittnuker.extension.permissions";
+	public static final String METADATA_KEY_EXTENSION_SETTINGS = "de.vanita5.twittnuker.extension.settings";
+	public static final String METADATA_KEY_EXTENSION_ICON = "de.vanita5.twittnuker.extension.icon";
+	public static final String METADATA_KEY_EXTENSION_USE_JSON = "de.vanita5.twittnuker.extension.use_json";
 
 	public static final char SEPARATOR_PERMISSION = '|';
 	public static final String SEPARATOR_PERMISSION_REGEX = "\\" + SEPARATOR_PERMISSION;

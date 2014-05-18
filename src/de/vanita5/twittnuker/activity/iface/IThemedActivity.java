@@ -42,6 +42,8 @@ public interface IThemedActivity extends ITwidereContextWrapper {
 
 	public void navigateUpFromSameTask();
 
+	public boolean isDarkDrawerEnabled();
+
 	public void overrideCloseAnimationIfNeeded();
 
 	public boolean shouldOverrideActivityAnimation();

@@ -95,6 +95,7 @@ public class MultiSelectManager implements Constants {
 		for (final Callback callback : mCallbacks) {
 			callback.onItemsCleared();
 		}
+		mAccountId = -1;
 	}
 
 	private void onItemSelected(final Object object) {

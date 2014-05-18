@@ -613,6 +613,7 @@
     <string name="unread_count_summary">Zeigt die Anzahl an ungelesenen Tweets oder Nachrichten im Tab an</string>
     <string name="link_to_quoted_status_summary">Fügt beim zitieren den Link zum originalen Tweet hinzu</string>
     <string name="click_item_to_config">(D) Click an item to config</string>
+    <string name="dark_drawer">(D) Dark drawer</string>
 
     <string name="plain_list_style">(D) Plain list style</string>
     <string name="want_old_icon_back">(D) Want old icon back?</string>

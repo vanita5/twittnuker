@@ -73,6 +73,8 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
 
 	private final BaseSupportActivity mActivity;
 
+	private AccountActionProvider mAccountActionProvider;
+
 	public MultiSelectEventHandler(final BaseSupportActivity activity) {
 		mActivity = activity;
 	}
@@ -184,13 +186,19 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
 			if (intent == null || !intent.hasExtra(EXTRA_ACCOUNT)) return false;
 			final Account account = intent.getParcelableExtra(EXTRA_ACCOUNT);
 			mMultiSelectManager.setAccountId(account.account_id);
+			if (mAccountActionProvider != null) {
+				mAccountActionProvider.setAccountId(account.account_id);
+			}
+			mode.invalidate();
 		}
 		return true;
 	}
+	public static final int MENU_GROUP = 201;
 
 	@Override
 	public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
 		new MenuInflater(mActivity).inflate(R.menu.action_multi_select_contents, menu);
+		mAccountActionProvider = (AccountActionProvider) menu.findItem(MENU_SELECT_ACCOUNT).getActionProvider();
 		return true;
 	}
 
@@ -199,6 +207,7 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
 		if (mMultiSelectManager.getCount() != 0) {
 			mMultiSelectManager.clearSelectedItems();
 		}
+		mAccountActionProvider = null;
 		mActionMode = null;
 	}
 
@@ -220,11 +229,6 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
 	@Override
 	public boolean onPrepareActionMode(final ActionMode mode, final Menu menu) {
 		updateSelectedCount(mode);
-		final int accountHash = System.identityHashCode(mMultiSelectManager.getAccountId());
-		final MenuItem itemAccount = menu.findItem(accountHash);
-		if (itemAccount != null) {
-			itemAccount.setChecked(true);
-		}
 		return true;
 	}
 

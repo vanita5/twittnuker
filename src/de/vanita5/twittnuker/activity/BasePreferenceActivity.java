@@ -103,6 +103,11 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
         return ThemeUtils.getSettingsThemeResource(this);
     }
 
+	@Override
+	public boolean isDarkDrawerEnabled() {
+		return false;
+	}
+
     @Override
 	public void navigateUpFromSameTask() {
 		NavUtils.navigateUpFromSameTask(this);
