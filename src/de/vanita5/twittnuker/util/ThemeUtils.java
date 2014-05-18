@@ -289,10 +289,6 @@ public class ThemeUtils implements Constants {
 		return R.style.Theme_Twidere_Colored_Compose;
 	}
 
-	public static Context getContextForActionIcons(final Context baseContext, final int baseThemeRes) {
-		return new TwidereContextWrapper(baseContext, getThemeResActionIcons(baseThemeRes));
-	}
-
 	public static boolean getDarkActionBarOption(final Context context) {
 		if (context == null) return true;
 		final SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -314,13 +310,6 @@ public class ThemeUtils implements Constants {
 
 	public static int getDrawerThemeResource(final Context context) {
 		return getDrawerThemeResource(getThemeResource(context));
-	}
-
-	public static boolean isDarkDrawerEnabled(final Context context) {
-		final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME,
-				Context.MODE_PRIVATE);
-		if (prefs == null) return false;
-		return prefs.getBoolean(KEY_DARK_DRAWER, true);
 	}
 
 	public static int getDrawerThemeResource(final int themeRes) {
@@ -465,6 +454,22 @@ public class ThemeUtils implements Constants {
     public static Context getThemedContext(final Context context, final Resources res) {
         return new TwidereContextWrapper(context, res);
     }
+
+	public static Context getThemedContextForActionIcons(final Context context) {
+		final int themeRes, accentColor;
+		if (context instanceof IThemedActivity) {
+			themeRes = ((IThemedActivity) context).getThemeResourceId();
+			accentColor = ((IThemedActivity) context).getThemeColor();
+		} else {
+			themeRes = getSettingsThemeResource(context);
+			accentColor = getUserThemeColor(context);
+		}
+		return new TwidereContextThemeWrapper(context, getThemeResActionIcons(themeRes), accentColor);
+	}
+
+	public static Context getThemedContextForActionIcons(final Context baseContext, final int baseThemeRes) {
+		return new TwidereContextWrapper(baseContext, getThemeResActionIcons(baseThemeRes));
+	}
 
 	public static Context getThemedContextForActionIcons(final Context baseContext, final int baseThemeRes,
 														 final int accentColor) {
@@ -680,6 +685,13 @@ public class ThemeUtils implements Constants {
 				return true;
 		}
 		return false;
+	}
+
+	public static boolean isDarkDrawerEnabled(final Context context) {
+		final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME,
+				Context.MODE_PRIVATE);
+		if (prefs == null) return false;
+		return prefs.getBoolean(KEY_DARK_DRAWER, true);
 	}
 
 	public static boolean isDarkTheme(final Context context) {

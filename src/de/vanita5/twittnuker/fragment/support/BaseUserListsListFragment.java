@@ -22,30 +22,24 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.addIntentToMenu;
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
-import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
-
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
-import org.mariotaku.menucomponent.widget.PopupMenu;
 import org.mariotaku.refreshnow.widget.RefreshMode;
 
-import de.vanita5.twittnuker.R;
+import java.util.ArrayList;
+import java.util.List;
+
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.loader.support.BaseUserListsLoader;
@@ -55,8 +49,8 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.Utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
 
 abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment implements
 		LoaderCallbacks<List<ParcelableUserList>>, Panes.Left, OnMenuItemClickListener, MenuButtonClickListener {
@@ -65,7 +59,6 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 
 	private SharedPreferences mPreferences;
 	private ListView mListView;
-	private PopupMenu mPopupMenu;
 
 	private long mAccountId, mUserId;
 	private String mScreenName;
@@ -238,12 +231,8 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 	public void onScrollStateChanged(final AbsListView view, final int scrollState) {
 	}
 
-	@Override
-	public void onStop() {
-		if (mPopupMenu != null) {
-			mPopupMenu.dismiss();
-		}
-		super.onStop();
+	protected UserListMenuDialogFragment createMenuDialog() {
+		return new UserListMenuDialogFragment();
 	}
 
 	@Override
@@ -252,25 +241,14 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 		loadMoreUserLists();
 	}
 
-	private void showMenu(final View view, final ParcelableUserList user_list) {
-		mSelectedUserList = user_list;
-		if (view == null || user_list == null) return;
-		if (mPopupMenu != null && mPopupMenu.isShowing()) {
-			mPopupMenu.dismiss();
-		}
-		mPopupMenu = PopupMenu.getInstance(getActivity(), view);
-		mPopupMenu.inflate(R.menu.action_user_list);
-		final Menu menu = mPopupMenu.getMenu();
-        final boolean isMyList = user_list.user_id == user_list.account_id;
-        setMenuItemAvailability(menu, MENU_ADD, isMyList);
-        setMenuItemAvailability(menu, MENU_DELETE_SUBMENU, isMyList);
-		final Intent extensions_intent = new Intent(INTENT_ACTION_EXTENSION_OPEN_USER_LIST);
-		final Bundle extensions_extras = new Bundle();
-		extensions_extras.putParcelable(EXTRA_USER_LIST, mSelectedUserList);
-		extensions_intent.putExtras(extensions_extras);
-		addIntentToMenu(getActivity(), menu, extensions_intent);
-		mPopupMenu.setOnMenuItemClickListener(this);
-		mPopupMenu.show();
+	private void showMenu(final View view, final ParcelableUserList userList) {
+		mSelectedUserList = userList;
+		if (view == null || userList == null) return;
+		final UserListMenuDialogFragment df = createMenuDialog();
+		final Bundle args = new Bundle();
+		args.putParcelable(EXTRA_USER_LIST, userList);
+		df.setArguments(args);
+		df.show(getChildFragmentManager(), "user_list_menu");
 	}
 
 }
