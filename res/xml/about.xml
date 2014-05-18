@@ -77,24 +77,31 @@
 	<PreferenceCategory android:title="@string/special_thanks_to">
 		<Preference
             android:title="deus_ki"
-			android:summary="For some logos">
+			android:summary="for some logos">
 			<intent
 				android:action="android.intent.action.VIEW"
 				android:data="twittnuker://user?user_id=1716619506&amp;finish_only=true"/>
 		</Preference>
         <Preference
             android:title="pixeldesu"
-            android:summary="For the awesome Twittnuker website">
+            android:summary="for the awesome Twittnuker website">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="twittnuker://user?user_id=206201810&amp;finish_only=true"/>
         </Preference>
         <Preference
             android:title="nilsding and therealkings86"
-            android:summary="For the screenshots provided">
+            android:summary="for the screenshots provided">
             <intent
                 android:action="android.intent.action.VIEW"
             	android:data="twittnuker://user_list_members?list_id=112765631&amp;user_id=2238101485&amp;finish_only=true"/>
+        </Preference>
+        <Preference
+            android:title="Noumi Ryoko (WedyDQ10)"
+            android:summary="for the Japanese translation">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="twittnuker://user?user_id=210818534&amp;finish_only=true"/>
         </Preference>
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/contact">
