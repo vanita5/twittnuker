@@ -30,7 +30,7 @@
     <string name="home">ホーム</string>
     <string name="mentions">つながり</string>
     <string name="error_occurred">エラーが発生しました。もう一度お試しください。</string>
-    <string name="error_already_logged_in">あなたは既に���インインしています。</string>
+    <string name="error_already_logged_in">あなたは既にサインインしています。</string>
     <string name="no_account_selected">アカウントが選択されていません。</string>
     <string name="empty_account_selection_disallowed">最低でもひとつのアカウントを選んでください。</string>
     <string name="error_unknown_error">エラー：詳細不明、バグかもしれません&#8230;</string>
@@ -613,4 +613,49 @@
     <string name="send_anyway">送信する</string>
     <string name="my_following_only">フォロー中のみ</string>
     <string name="my_following_only_summary">フォローしているユーザーからの通知だけを表示するようにします。</string>
+    <!-- Updated original strings -->
+    <string name="new_direct_message">新規メッセージ</string>
+    <string name="plain_list_style">プレーンリスト表示</string>
+    <string name="want_old_icon_back">以前のアイコンにしますか?</string>
+    <string name="icon_restored_message">元に戻しました!</string>
+    <string name="add">追加</string>
+    <string name="N_medias_quantity_one"><xliff:g id="items">%d</xliff:g>個のメディア</string>
+    <string name="N_medias_quantity_other"><xliff:g id="items">%d</xliff:g>個のメディア</string>
+    <string name="delete_drafts_confirm">選択した下書きを削除しますか?</string>
+    <string name="extra_configurations">追加設定</string>
+    <string name="click_item_to_config">アイテムをタップすると設定します</string>
+
+    <!-- Twittnuker -->
+    <string name="unread_count_summary">タブに未読ツイート/メッセージ数を表示します。</string>
+    <string name="link_to_quoted_status_summary">引用ツイートに元のツイートへのリンクを表示します。</string>
+    <string name="stop_auto_refresh_when_battery_low_summary">電池残量が不足しているときに自動更新を停止します。</string>
+
+    <string name="donate_twidere_via_paypal">PayPalでTwidereに寄付</string>
+    <string name="donate_twidere_via_paypal_summary">このアプリのベースとなったTwidereプロジェクトにPayPalで寄付しましょう。</string>
+
+    <string name="contact">お問い合わせ</string>
+    <string name="mail">メール</string>
+    <string name="mail_summary">バグ報告や機能のリクエストがあれば、twittnuker@vanita5.deにメールしてください。</string>
+    <string name="twidere_developed_by">ベースとなったTwidereの開発者</string>
+
+    <string name="streaming">ストリーミング</string>
+    <string name="stream_enabled">ストリーミングを有効化</string>
+    <string name="stream_enabled_summary">Wi-Fi接続時にタイムラインでストリーミングを有効化します。</string>
+    <string name="stream_notification">通知ストリーミング</string>
+    <string name="stream_notification_summary">ストリーミング有効時に通知もストリーミングするようにします。</string>
+    <string name="streaming_service_running">ストリーミング開始...</string>
+    <string name="stream_on_mobile">モバイルストリーミング</string>
+    <string name="stream_on_mobile_summary">モバイルデータ通信でストリーミングを有効にします。おすすめしません!</string>
+    <string name="stream_autoscroll">自動スクロール</string>
+    <string name="stream_autoscroll_summary">常にタイムラインの一番上を表示します。</string>
+    <string name="request_permission">Twittnukerにアクセスする権限の要求</string>
+
+    <string name="love">Love</string>
+
+    <string name="shortening">短縮中</string>
+    <string name="error_hototin">...失敗しましたorz\nツイートを送信せず下書きに保存しました。</string>
+    <string name="action_shortening">ツイートの短縮</string>
+
+    <string name="uploading_image">アップロード中...</string>
+    
 </resources>
