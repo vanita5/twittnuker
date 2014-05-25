@@ -64,7 +64,7 @@ public class TweetSearchLoader extends Twitter4JStatusesLoader {
 	}
 
 	protected String processQuery(final String query) {
-		return String.format("%s exclude:retweets", query);
+		return String.format("%s", query);
 	}
 
 	@Override

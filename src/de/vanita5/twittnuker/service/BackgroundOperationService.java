@@ -38,6 +38,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -407,13 +408,16 @@ public class BackgroundOperationService extends IntentService implements Constan
 					status.setLocation(ParcelableLocation.toGeoLocation(statusUpdate.location));
 				}
                 if (!mUseUploader && imageFile != null && imageFile.exists()) {
+					final BitmapFactory.Options o = new BitmapFactory.Options();
+					o.inJustDecodeBounds = true;
+					BitmapFactory.decodeFile(imagePath, o);
 					try {
                         final ContentLengthInputStream is = new ContentLengthInputStream(imageFile);
                         is.setReadListener(new StatusMediaUploadListener(this, mNotificationManager, builder,
                                 statusUpdate));
-                        status.setMedia(imageFile.getName(), is);
+						status.setMedia(imageFile.getName(), is, o.outMimeType);
 					} catch (final FileNotFoundException e) {
-                        status.setMedia(imageFile);
+						status.setMedia(imageFile, o.outMimeType);
 					}
 				}
 				status.setPossiblySensitive(statusUpdate.is_possibly_sensitive);

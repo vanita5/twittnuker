@@ -23,30 +23,19 @@
 package de.vanita5.twittnuker.util.net;
 
 import org.apache.http.Consts;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntityHC4;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntityHC4;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 
 import twitter4j.http.HttpParameter;
 
-public class HttpParameterFormEntity extends UrlEncodedFormEntityHC4 {
+public class HttpParameterFormEntity extends StringEntityHC4 {
+
+	public static final ContentType CONTENT_TYPE = ContentType.APPLICATION_FORM_URLENCODED.withCharset(Consts.UTF_8);
 
 	public HttpParameterFormEntity(final HttpParameter[] params) throws UnsupportedEncodingException {
-		super(generateKeyValuePairs(params), Consts.UTF_8);
-	}
-
-	private static List<NameValuePair> generateKeyValuePairs(final HttpParameter[] params) {
-		final List<NameValuePair> result = new ArrayList<NameValuePair>();
-		for (final HttpParameter param : params) {
-			if (!param.isFile()) {
-				result.add(new BasicNameValuePair(param.getName(), param.getValue()));
-			}
-		}
-		return result;
+		super(HttpParameter.encodeParameters(params), CONTENT_TYPE);
 	}
 
 }

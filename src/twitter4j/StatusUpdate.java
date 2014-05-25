@@ -40,6 +40,7 @@ public final class StatusUpdate implements Serializable {
 	private String mediaName;
 	private transient InputStream mediaBody;
 	private File mediaFile;
+	private String overrideContentType;
 
 	public StatusUpdate(final String status) {
 		this.status = status;
@@ -51,22 +52,32 @@ public final class StatusUpdate implements Serializable {
 	}
 
 	@Override
-	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		final StatusUpdate that = (StatusUpdate) o;
-
-		if (displayCoordinates != that.displayCoordinates) return false;
-		if (inReplyToStatusId != that.inReplyToStatusId) return false;
-		if (possiblySensitive != that.possiblySensitive) return false;
-		if (location != null ? !location.equals(that.location) : that.location != null) return false;
-		if (mediaBody != null ? !mediaBody.equals(that.mediaBody) : that.mediaBody != null) return false;
-		if (mediaFile != null ? !mediaFile.equals(that.mediaFile) : that.mediaFile != null) return false;
-		if (mediaName != null ? !mediaName.equals(that.mediaName) : that.mediaName != null) return false;
-		if (placeId != null ? !placeId.equals(that.placeId) : that.placeId != null) return false;
-		if (status != null ? !status.equals(that.status) : that.status != null) return false;
-
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof StatusUpdate)) return false;
+		StatusUpdate other = (StatusUpdate) obj;
+		if (displayCoordinates != other.displayCoordinates) return false;
+		if (inReplyToStatusId != other.inReplyToStatusId) return false;
+		if (location == null) {
+			if (other.location != null) return false;
+		} else if (!location.equals(other.location)) return false;
+		if (mediaFile == null) {
+			if (other.mediaFile != null) return false;
+		} else if (!mediaFile.equals(other.mediaFile)) return false;
+		if (mediaName == null) {
+			if (other.mediaName != null) return false;
+		} else if (!mediaName.equals(other.mediaName)) return false;
+		if (overrideContentType == null) {
+			if (other.overrideContentType != null) return false;
+		} else if (!overrideContentType.equals(other.overrideContentType)) return false;
+		if (placeId == null) {
+			if (other.placeId != null) return false;
+		} else if (!placeId.equals(other.placeId)) return false;
+		if (possiblySensitive != other.possiblySensitive) return false;
+		if (status == null) {
+			if (other.status != null) return false;
+		} else if (!status.equals(other.status)) return false;
 		return true;
 	}
 
@@ -88,15 +99,17 @@ public final class StatusUpdate implements Serializable {
 
 	@Override
 	public int hashCode() {
-		int result = status != null ? status.hashCode() : 0;
-		result = 31 * result + (int) (inReplyToStatusId ^ inReplyToStatusId >>> 32);
-		result = 31 * result + (location != null ? location.hashCode() : 0);
-		result = 31 * result + (placeId != null ? placeId.hashCode() : 0);
-		result = 31 * result + (displayCoordinates ? 1 : 0);
-		result = 31 * result + (possiblySensitive ? 1 : 0);
-		result = 31 * result + (mediaName != null ? mediaName.hashCode() : 0);
-		result = 31 * result + (mediaBody != null ? mediaBody.hashCode() : 0);
-		result = 31 * result + (mediaFile != null ? mediaFile.hashCode() : 0);
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (displayCoordinates ? 1231 : 1237);
+		result = prime * result + (int) (inReplyToStatusId ^ (inReplyToStatusId >>> 32));
+		result = prime * result + ((location == null) ? 0 : location.hashCode());
+		result = prime * result + ((mediaFile == null) ? 0 : mediaFile.hashCode());
+		result = prime * result + ((mediaName == null) ? 0 : mediaName.hashCode());
+		result = prime * result + ((overrideContentType == null) ? 0 : overrideContentType.hashCode());
+		result = prime * result + ((placeId == null) ? 0 : placeId.hashCode());
+		result = prime * result + (possiblySensitive ? 1231 : 1237);
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
 		return result;
 	}
 
@@ -124,16 +137,16 @@ public final class StatusUpdate implements Serializable {
 	/**
 	 * @since Twitter4J 2.2.5
 	 */
-	public StatusUpdate media(final File file) {
-		setMedia(file);
+	public StatusUpdate media(final File file, String type) {
+		setMedia(file, type);
 		return this;
 	}
 
 	/**
 	 * @since Twitter4J 2.2.5
 	 */
-	public StatusUpdate media(final String name, final InputStream body) {
-		setMedia(name, body);
+	public StatusUpdate media(final String name, final InputStream body, String type) {
+		setMedia(name, body, type);
 		return this;
 	}
 
@@ -165,16 +178,18 @@ public final class StatusUpdate implements Serializable {
 	/**
 	 * @since Twitter4J 2.2.5
 	 */
-	public void setMedia(final File file) {
+	public void setMedia(final File file, String type) {
 		mediaFile = file;
+		overrideContentType = type;
 	}
 
 	/**
 	 * @since Twitter4J 2.2.5
 	 */
-	public void setMedia(final String name, final InputStream body) {
+	public void setMedia(final String name, final InputStream body, String type) {
 		mediaName = name;
 		mediaBody = body;
+		overrideContentType = type;
 	}
 
 	public void setPlaceId(final String placeId) {
@@ -190,10 +205,10 @@ public final class StatusUpdate implements Serializable {
 
 	@Override
 	public String toString() {
-		return "StatusUpdate{" + "status='" + status + '\'' + ", inReplyToStatusId=" + inReplyToStatusId
-				+ ", location=" + location + ", placeId='" + placeId + '\'' + ", displayCoordinates="
-				+ displayCoordinates + ", possiblySensitive=" + possiblySensitive + ", mediaName='" + mediaName + '\''
-				+ ", mediaBody=" + mediaBody + ", mediaFile=" + mediaFile + '}';
+		return "StatusUpdate{status=" + status + ", inReplyToStatusId=" + inReplyToStatusId + ", location=" + location
+				+ ", placeId=" + placeId + ", displayCoordinates=" + displayCoordinates + ", possiblySensitive="
+				+ possiblySensitive + ", mediaName=" + mediaName + ", mediaFile=" + mediaFile
+				+ ", overrideContentType=" + overrideContentType + "}";
 	}
 
 	private void appendParameter(final String name, final double value, final List<HttpParameter> params) {
@@ -226,10 +241,10 @@ public final class StatusUpdate implements Serializable {
 		}
 		params.add(includeEntities);
 		if (null != mediaFile) {
-			params.add(new HttpParameter("media[]", mediaFile));
+			params.add(new HttpParameter("media[]", mediaFile, overrideContentType));
 			params.add(new HttpParameter("possibly_sensitive", possiblySensitive));
 		} else if (mediaName != null && mediaBody != null) {
-			params.add(new HttpParameter("media[]", mediaName, mediaBody));
+			params.add(new HttpParameter("media[]", mediaName, mediaBody, overrideContentType));
 			params.add(new HttpParameter("possibly_sensitive", possiblySensitive));
 		}
 

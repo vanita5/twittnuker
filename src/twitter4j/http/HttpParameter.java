@@ -34,6 +34,7 @@ public final class HttpParameter implements Comparable<HttpParameter> {
 	private String fileName = null;
 	private File file = null;
 	private InputStream fileBody = null;
+	private String overrideContentType;
 
 	private static final String JPEG = "image/jpeg";
 
@@ -54,9 +55,13 @@ public final class HttpParameter implements Comparable<HttpParameter> {
 	}
 
 	public HttpParameter(final String name, final File file) {
+		this(name, file, null);
+	}
+
+	public HttpParameter(final String name, final File file, String overrideContentType) {
 		this.name = name;
 		this.file = file;
-		fileName = file != null ? file.getName() : null;
+		this.overrideContentType = overrideContentType;
 	}
 
 	public HttpParameter(final String name, final int value) {
@@ -75,9 +80,15 @@ public final class HttpParameter implements Comparable<HttpParameter> {
 	}
 
 	public HttpParameter(final String name, final String fileName, final InputStream fileBody) {
+		this(name, fileName, fileBody, null);
+	}
+
+	public HttpParameter(final String name, final String fileName, final InputStream fileBody,
+			String overrideContentType) {
 		this.name = name;
 		this.fileName = fileName;
 		this.fileBody = fileBody;
+		this.overrideContentType = overrideContentType;
 	}
 
 	@Override
@@ -111,8 +122,9 @@ public final class HttpParameter implements Comparable<HttpParameter> {
 	 */
 	public String getContentType() {
 		if (!isFile()) throw new IllegalStateException("not a file");
+		if (overrideContentType != null) return overrideContentType;
 		String contentType;
-		String extensions = fileName;
+		String extensions = getFileName();
 		final int index = extensions.lastIndexOf(".");
 		if (-1 == index) {
 			// no extension
@@ -151,7 +163,7 @@ public final class HttpParameter implements Comparable<HttpParameter> {
 	}
 
 	public String getFileName() {
-		return fileName;
+		return file != null ? file.getName() : fileName;
 	}
 
 	public String getName() {
@@ -176,7 +188,7 @@ public final class HttpParameter implements Comparable<HttpParameter> {
 	}
 
 	public boolean isFile() {
-		return fileName != null;
+		return fileBody != null || file != null;
 	}
 
 	@Override
@@ -264,6 +276,15 @@ public final class HttpParameter implements Comparable<HttpParameter> {
 	public static HttpParameter[] getParameterArray(final String name1, final String value1, final String name2,
 			final String value2) {
 		return new HttpParameter[] { new HttpParameter(name1, value1), new HttpParameter(name2, value2) };
+	}
+
+	public static HttpParameter[] merge(final HttpParameter[] params, final HttpParameter... extraParams) {
+		if (params == null) return extraParams;
+		if (extraParams == null) return params;
+		final HttpParameter[] merged = new HttpParameter[params.length + extraParams.length];
+		System.arraycopy(params, 0, merged, 0, params.length);
+		System.arraycopy(extraParams, 0, merged, params.length, extraParams.length);
+		return merged;
 	}
 
 	/* package */
