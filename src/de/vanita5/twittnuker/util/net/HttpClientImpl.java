@@ -19,18 +19,18 @@ package de.vanita5.twittnuker.util.net;
 import static android.text.TextUtils.isEmpty;
 
 import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.HttpDeleteHC4;
+import org.apache.http.client.methods.HttpGetHC4;
+import org.apache.http.client.methods.HttpHeadHC4;
+import org.apache.http.client.methods.HttpPostHC4;
+import org.apache.http.client.methods.HttpPutHC4;
+import org.apache.http.client.methods.HttpRequestBaseHC4;
 import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
@@ -40,10 +40,12 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.TextUtils;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.ssl.ApacheTrustAllSSLSocketFactoryHC4;
 
 import twitter4j.TwitterException;
@@ -58,6 +60,7 @@ import twitter4j.internal.logging.Logger;
 import twitter4j.internal.util.InternalStringUtil;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -71,7 +74,7 @@ import java.util.Map;
 public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCode {
 	private static final Logger logger = Logger.getLogger(HttpClientImpl.class);
 	private final HttpClientConfiguration conf;
-	private final HttpClient client;
+	private final CloseableHttpClient client;
 
 	public HttpClientImpl(final HttpClientConfiguration conf) {
 		this.conf = conf;
@@ -108,7 +111,7 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
 	@Override
 	public twitter4j.http.HttpResponse request(final twitter4j.http.HttpRequest req) throws TwitterException {
 		try {
-			HttpRequestBase commonsRequest;
+			HttpRequestBaseHC4 commonsRequest;
 
 			final HostAddressResolver resolver = FactoryUtils.getHostAddressResolver(conf);
 			final String urlString = req.getURL();
@@ -125,45 +128,20 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
 
             final RequestMethod method = req.getMethod();
             if (method == RequestMethod.GET) {
-				commonsRequest = new HttpGet(resolvedUrl);
+				commonsRequest = new HttpGetHC4(resolvedUrl);
 			} else if (method == RequestMethod.POST) {
-				final HttpPost post = new HttpPost(resolvedUrl);
-				// parameter has a file?
-				final HttpParameter[] params = req.getParameters();
-				if (params != null) {
-					if (HttpParameter.containsFile(params)) {
-						final MultipartEntityBuilder me = MultipartEntityBuilder.create();
-						for (final HttpParameter param : params) {
-							if (param.isFile()) {
-								final ContentType contentType = ContentType.create(param.getContentType());
-								final ContentBody body;
-								if (param.getFile() != null) {
-									body = new FileBody(param.getFile(), ContentType.create(param.getContentType()));
-								} else {
-									body = new InputStreamBody(param.getFileBody(), contentType, param.getFileName());
-								}
-								me.addPart(param.getName(), body);
-							} else {
-								final ContentType contentType = ContentType.TEXT_PLAIN.withCharset(Consts.UTF_8);
-								final ContentBody body = new StringBody(param.getValue(), contentType);
-                                me.addPart(param.getName(), body);
-							}
-						}
-						post.setEntity(me.build());
-					} else {
-						if (params.length > 0) {
-							post.setEntity(new UrlEncodedFormEntity(params));
-						}
-					}
-				}
+				final HttpPostHC4 post = new HttpPostHC4(resolvedUrl);
+				post.setEntity(getAsEntity(req.getParameters()));
 				post.getParams().setBooleanParameter(CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
 				commonsRequest = post;
 			} else if (method == RequestMethod.DELETE) {
-				commonsRequest = new HttpDelete(resolvedUrl);
+				commonsRequest = new HttpDeleteHC4(resolvedUrl);
 			} else if (method == RequestMethod.HEAD) {
-				commonsRequest = new HttpHead(resolvedUrl);
+				commonsRequest = new HttpHeadHC4(resolvedUrl);
 			} else if (method == RequestMethod.PUT) {
-				commonsRequest = new HttpPut(resolvedUrl);
+				final HttpPutHC4 put = new HttpPutHC4(resolvedUrl);
+				put.setEntity(getAsEntity(req.getParameters()));
+				commonsRequest = put;
 			} else
 				throw new TwitterException("Unsupported request method " + method);
 			final Map<String, String> headers = req.getRequestHeaders();
@@ -202,6 +180,29 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
 
 	@Override
 	public void shutdown() {
-		client.getConnectionManager().shutdown();
+		Utils.closeSilently(client);
+	}
+
+	private static HttpEntity getAsEntity(final HttpParameter[] params) throws UnsupportedEncodingException {
+		if (params == null) return null;
+		if (!HttpParameter.containsFile(params)) return new HttpParameterFormEntity(params);
+		final MultipartEntityBuilder me = MultipartEntityBuilder.create();
+		for (final HttpParameter param : params) {
+			if (param.isFile()) {
+				final ContentType contentType = ContentType.create(param.getContentType());
+				final ContentBody body;
+				if (param.getFile() != null) {
+					body = new FileBody(param.getFile(), ContentType.create(param.getContentType()));
+				} else {
+					body = new InputStreamBody(param.getFileBody(), contentType, param.getFileName());
+				}
+				me.addPart(param.getName(), body);
+			} else {
+				final ContentType contentType = ContentType.TEXT_PLAIN.withCharset(Consts.UTF_8);
+				final ContentBody body = new StringBody(param.getValue(), contentType);
+				me.addPart(param.getName(), body);
+			}
+		}
+		return me.build();
 	}
 }
