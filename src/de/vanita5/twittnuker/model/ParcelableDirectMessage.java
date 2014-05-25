@@ -73,11 +73,16 @@ public class ParcelableDirectMessage implements Parcelable, Serializable, Compar
 	public final long sender_id, recipient_id;
 
 	public final boolean is_outgoing;
+
 	public final String text_html, text_plain, text_unescaped;
 
 	public final String sender_name, recipient_name, sender_screen_name, recipient_screen_name;
 
 	public final String sender_profile_image_url, recipient_profile_image_url;
+
+	public final String first_media;
+
+	public final ParcelableMedia[] medias;
 
 	public ParcelableDirectMessage(final ContentValues values) {
 		text_plain = values.getAsString(DirectMessages.TEXT_PLAIN);
@@ -95,27 +100,30 @@ public class ParcelableDirectMessage implements Parcelable, Serializable, Compar
 		id = getAsLong(values, DirectMessages.MESSAGE_ID, -1);
 		is_outgoing = getAsBoolean(values, DirectMessages.IS_OUTGOING, false);
 		account_id = getAsLong(values, DirectMessages.ACCOUNT_ID, -1);
+		medias = ParcelableMedia.fromJSONString(values.getAsString(DirectMessages.MEDIAS));
+		first_media = values.getAsString(DirectMessages.FIRST_MEDIA);
 	}
 
-	public ParcelableDirectMessage(final Cursor cursor, final CursorIndices indices) {
-		account_id = indices.account_id != -1 ? cursor.getLong(indices.account_id) : -1;
-		is_outgoing = indices.is_outgoing != -1 ? cursor.getShort(indices.is_outgoing) == 1 : null;
-		id = indices.message_id != -1 ? cursor.getLong(indices.message_id) : -1;
-		timestamp = indices.message_timestamp != -1 ? cursor.getLong(indices.message_timestamp) : -1;
-		sender_id = indices.sender_id != -1 ? cursor.getLong(indices.sender_id) : -1;
-		recipient_id = indices.recipient_id != -1 ? cursor.getLong(indices.recipient_id) : -1;
-		text_html = indices.text != -1 ? cursor.getString(indices.text) : null;
-		text_plain = indices.text_plain != -1 ? cursor.getString(indices.text_plain) : null;
+	public ParcelableDirectMessage(final Cursor c, final CursorIndices idx) {
+		account_id = idx.account_id != -1 ? c.getLong(idx.account_id) : -1;
+		is_outgoing = idx.is_outgoing != -1 ? c.getShort(idx.is_outgoing) == 1 : null;
+		id = idx.message_id != -1 ? c.getLong(idx.message_id) : -1;
+		timestamp = idx.message_timestamp != -1 ? c.getLong(idx.message_timestamp) : -1;
+		sender_id = idx.sender_id != -1 ? c.getLong(idx.sender_id) : -1;
+		recipient_id = idx.recipient_id != -1 ? c.getLong(idx.recipient_id) : -1;
+		text_html = idx.text != -1 ? c.getString(idx.text) : null;
+		text_plain = idx.text_plain != -1 ? c.getString(idx.text_plain) : null;
 		text_unescaped = toPlainText(text_html);
-		sender_name = indices.sender_name != -1 ? cursor.getString(indices.sender_name) : null;
-		recipient_name = indices.recipient_name != -1 ? cursor.getString(indices.recipient_name) : null;
-		sender_screen_name = indices.sender_screen_name != -1 ? cursor.getString(indices.sender_screen_name) : null;
-		recipient_screen_name = indices.recipient_screen_name != -1 ? cursor.getString(indices.recipient_screen_name)
+		sender_name = idx.sender_name != -1 ? c.getString(idx.sender_name) : null;
+		recipient_name = idx.recipient_name != -1 ? c.getString(idx.recipient_name) : null;
+		sender_screen_name = idx.sender_screen_name != -1 ? c.getString(idx.sender_screen_name) : null;
+		recipient_screen_name = idx.recipient_screen_name != -1 ? c.getString(idx.recipient_screen_name) : null;
+		sender_profile_image_url = idx.sender_profile_image_url != -1 ? c.getString(idx.sender_profile_image_url)
 				: null;
-		sender_profile_image_url = indices.sender_profile_image_url != -1 ? cursor
-				.getString(indices.sender_profile_image_url) : null;
-		recipient_profile_image_url = indices.recipient_profile_image_url != -1 ? cursor
-				.getString(indices.recipient_profile_image_url) : null;
+		recipient_profile_image_url = idx.recipient_profile_image_url != -1 ? c
+				.getString(idx.recipient_profile_image_url) : null;
+		medias = ParcelableMedia.fromJSONString(idx.medias != -1 ? c.getString(idx.medias) : null);
+		first_media = idx.first_media != -1 ? c.getString(idx.first_media) : null;
 	}
 
 	public ParcelableDirectMessage(final DirectMessage message, final long account_id, final boolean is_outgoing) {
@@ -139,6 +147,8 @@ public class ParcelableDirectMessage implements Parcelable, Serializable, Compar
 		sender_profile_image_url = sender_profile_image_url_string;
 		recipient_profile_image_url = recipient_profile_image_url_string;
 		text_unescaped = toPlainText(text_html);
+		medias = ParcelableMedia.fromEntities(message);
+		first_media = medias != null && medias.length > 0 ? medias[0].url : null;
 	}
 
 	public ParcelableDirectMessage(final Parcel in) {
@@ -157,6 +167,8 @@ public class ParcelableDirectMessage implements Parcelable, Serializable, Compar
 		sender_profile_image_url = in.readString();
 		recipient_profile_image_url = in.readString();
 		text_unescaped = in.readString();
+		medias = in.createTypedArray(ParcelableMedia.CREATOR);
+		first_media = medias != null && medias.length > 0 ? medias[0].url : null;
 	}
 
 	@Override
@@ -221,6 +233,7 @@ public class ParcelableDirectMessage implements Parcelable, Serializable, Compar
 		out.writeString(sender_profile_image_url);
 		out.writeString(recipient_profile_image_url);
 		out.writeString(text_unescaped);
+		out.writeTypedArray(medias, flags);
 	}
 
 	private static long getTime(final Date date) {
@@ -231,7 +244,7 @@ public class ParcelableDirectMessage implements Parcelable, Serializable, Compar
 
 		public final int account_id, message_id, message_timestamp, sender_name, sender_screen_name, text, text_plain,
 		recipient_name, recipient_screen_name, sender_profile_image_url, is_outgoing,
-		recipient_profile_image_url, sender_id, recipient_id;
+		recipient_profile_image_url, sender_id, recipient_id, medias, first_media;
 
 		public CursorIndices(final Cursor cursor) {
 			account_id = cursor.getColumnIndex(DirectMessages.ACCOUNT_ID);
@@ -248,6 +261,8 @@ public class ParcelableDirectMessage implements Parcelable, Serializable, Compar
 			recipient_screen_name = cursor.getColumnIndex(DirectMessages.RECIPIENT_SCREEN_NAME);
 			sender_profile_image_url = cursor.getColumnIndex(DirectMessages.SENDER_PROFILE_IMAGE_URL);
 			recipient_profile_image_url = cursor.getColumnIndex(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL);
+			medias = cursor.getColumnIndex(DirectMessages.MEDIAS);
+			first_media = cursor.getColumnIndex(DirectMessages.FIRST_MEDIA);
 		}
 	}
 }

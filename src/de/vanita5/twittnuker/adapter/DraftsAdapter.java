@@ -54,7 +54,7 @@ public class DraftsAdapter extends SimpleCursorAdapter {
 	public DraftsAdapter(final Context context) {
 		super(context, R.layout.card_item_draft, null, new String[0], new int[0], 0);
 		mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
-		mImageLoadingHandler = new ImageLoadingHandler();
+		mImageLoadingHandler = new ImageLoadingHandler(R.id.image_preview_progress);
 	}
 
 	@Override

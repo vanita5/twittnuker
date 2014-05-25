@@ -34,28 +34,35 @@ import android.text.Html;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView.ScaleType;
+
+import java.util.Locale;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IDirectMessagesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.view.holder.DirectMessageConversationViewHolder;
 
 public class DirectMessagesConversationAdapter extends BaseCursorAdapter implements IDirectMessagesAdapter,
 		OnClickListener {
+	private ScaleType mImagePreviewScaleType;
 
 	private final ImageLoaderWrapper mImageLoader;
 	private final Context mContext;
 	private final MultiSelectManager mMultiSelectManager;
-
 	private MenuButtonClickListener mListener;
+	private final ImageLoadingHandler mImageLoadingHandler;
 
 	private boolean mAnimationEnabled = true;
-	private int mMaxAnimationPosition;
 
+	private int mMaxAnimationPosition;
 	private ParcelableDirectMessage.CursorIndices mIndices;
+
+	private boolean mDisplayImagePreview;
 
 	public DirectMessagesConversationAdapter(final Context context) {
 		super(context, R.layout.card_item_message_conversation, null, new String[0], new int[0], 0);
@@ -63,6 +70,8 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mMultiSelectManager = app.getMultiSelectManager();
 		mImageLoader = app.getImageLoaderWrapper();
+		mImageLoadingHandler = new ImageLoadingHandler(R.id.incoming_image_preview_progress,
+				R.id.outgoing_image_preview_progress);
 		configBaseCardAdapter(context, this);
 	}
 
@@ -70,6 +79,9 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 	public void bindView(final View view, final Context context, final Cursor cursor) {
 		final int position = cursor.getPosition();
 		final DirectMessageConversationViewHolder holder = (DirectMessageConversationViewHolder) view.getTag();
+
+		final String firstMedia = cursor.getString(mIndices.first_media);
+
 		final boolean displayProfileImage = isDisplayProfileImage();
 		final long accountId = cursor.getLong(mIndices.account_id);
 		final long timestamp = cursor.getLong(mIndices.message_timestamp);
@@ -107,6 +119,35 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 		}
 		holder.incoming_item_menu.setTag(position);
 		holder.outgoing_item_menu.setTag(position);
+
+		if (mDisplayImagePreview && firstMedia != null) {
+			holder.outgoing_image_preview_container.setVisibility(View.VISIBLE);
+			holder.incoming_image_preview_container.setVisibility(View.VISIBLE);
+			if (is_outgoing) {
+				if (mImagePreviewScaleType != null) {
+					holder.outgoing_image_preview.setScaleType(mImagePreviewScaleType);
+				}
+				if (!firstMedia.equals(mImageLoadingHandler.getLoadingUri(holder.outgoing_image_preview))) {
+					holder.outgoing_image_preview.setBackgroundResource(0);
+					mImageLoader.displayPreviewImageForDM(holder.outgoing_image_preview, firstMedia, accountId,
+							mImageLoadingHandler);
+				}
+				holder.outgoing_image_preview.setTag(position);
+			} else {
+				if (mImagePreviewScaleType != null) {
+					holder.incoming_image_preview.setScaleType(mImagePreviewScaleType);
+				}
+				if (!firstMedia.equals(mImageLoadingHandler.getLoadingUri(holder.incoming_image_preview))) {
+					holder.incoming_image_preview.setBackgroundResource(0);
+					mImageLoader.displayPreviewImageForDM(holder.incoming_image_preview, firstMedia, accountId,
+							mImageLoadingHandler);
+				}
+				holder.incoming_image_preview.setTag(position);
+			}
+		} else {
+			holder.outgoing_image_preview_container.setVisibility(View.GONE);
+			holder.incoming_image_preview_container.setVisibility(View.GONE);
+		}
 		super.bindView(view, context, cursor);
 	}
 
@@ -170,8 +211,18 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 
 	@Override
 	public void setAnimationEnabled(final boolean anim) {
-		if (mAnimationEnabled == anim) return;
 		mAnimationEnabled = anim;
+	}
+
+	@Override
+	public void setDisplayImagePreview(final boolean display) {
+		mDisplayImagePreview = display;
+	}
+
+	@Override
+	public void setImagePreviewScaleType(final String scaleTypeString) {
+		final ScaleType scaleType = ScaleType.valueOf(scaleTypeString.toUpperCase(Locale.US));
+		mImagePreviewScaleType = scaleType;
 	}
 
 	@Override

@@ -23,7 +23,9 @@
 package de.vanita5.twittnuker.view.holder;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
@@ -35,6 +37,11 @@ public class DirectMessageConversationViewHolder extends CardViewHolder {
 			outgoing_profile_image_container;
 	public final TextView incoming_text, incoming_time, outgoing_text, outgoing_time;
 	public final View incoming_item_menu, outgoing_item_menu;
+
+	public final ImageView incoming_image_preview, outgoing_image_preview;
+	public final ViewGroup incoming_image_preview_container, outgoing_image_preview_container;
+	public final ProgressBar incoming_image_preview_progress, outgoing_image_preview_progress;
+
 	private float text_size;
 
 	public DirectMessageConversationViewHolder(final View view) {
@@ -51,6 +58,12 @@ public class DirectMessageConversationViewHolder extends CardViewHolder {
 		outgoing_time = (TextView) findViewById(R.id.outgoing_time);
 		incoming_item_menu = findViewById(R.id.incoming_item_menu);
 		outgoing_item_menu = findViewById(R.id.outgoing_item_menu);
+		outgoing_image_preview = (ImageView) findViewById(R.id.outgoing_image_preview);
+		outgoing_image_preview_progress = (ProgressBar) findViewById(R.id.outgoing_image_preview_progress);
+		outgoing_image_preview_container = (ViewGroup) findViewById(R.id.outgoing_image_preview_container);
+		incoming_image_preview = (ImageView) findViewById(R.id.incoming_image_preview);
+		incoming_image_preview_progress = (ProgressBar) findViewById(R.id.incoming_image_preview_progress);
+		incoming_image_preview_container = (ViewGroup) findViewById(R.id.incoming_image_preview_container);
 	}
 
 	public void setTextSize(final float text_size) {

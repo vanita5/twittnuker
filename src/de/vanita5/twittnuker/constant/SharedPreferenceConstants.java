@@ -253,6 +253,8 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_SIGNING_REST_BASE_URL = "signing_rest_base_url";
 	@Preference(type = STRING, hasDefault = true, defaultString = "https://api.twitter.com/oauth/")
 	public static final String KEY_SIGNING_OAUTH_BASE_URL = "signing_oauth_base_url";
+	@Preference(type = STRING, hasDefault = false)
+	public static final String KEY_JTAPI_HOSTNAME = "jtapi_hostname";
 	@Preference(type = INT, hasDefault = true, defaultInt = Accounts.AUTH_TYPE_OAUTH)
 	public static final String KEY_AUTH_TYPE = "auth_type";
 	@Preference(type = STRING, hasDefault = true, defaultString = TwittnukerConstants.TWITTER_CONSUMER_KEY_2)

@@ -74,6 +74,7 @@ import de.vanita5.twittnuker.util.io.ContentLengthInputStream;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener;
 
 import de.vanita5.twittnuker.util.shortener.TweetShortenerUtils;
+import twitter4j.MediaUploadResponse;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
@@ -397,32 +398,67 @@ public class BackgroundOperationService extends IntentService implements Constan
 					throw new StatusTooLongException(this);
 				else if (unshortenedContent == null) throw new ShortenException(this);
 			}
-            if (!mUseUploader && imageFile != null && imageFile.exists()) {
-                Utils.downscaleImageIfNeeded(imageFile, 95);
+			if (!mUseUploader && statusUpdate.medias != null) {
+				for (final ParcelableMediaUpdate media : statusUpdate.medias) {
+					final String path = getImagePathFromUri(this, Uri.parse(media.uri));
+					final File file = path != null ? new File(path) : null;
+					if (file != null && file.exists()) {
+						Utils.downscaleImageIfNeeded(file, 95);
+					}
+				}
 			}
             for (final Account account : statusUpdate.accounts) {
+				final Twitter twitter = getTwitterInstance(this, account.account_id, true, true);
 				final StatusUpdate status = new StatusUpdate(shouldShorten && mUseShortener ? shortenedContent
 						: unshortenedContent);
 				status.setInReplyToStatusId(statusUpdate.in_reply_to_status_id);
 				if (statusUpdate.location != null) {
 					status.setLocation(ParcelableLocation.toGeoLocation(statusUpdate.location));
 				}
-                if (!mUseUploader && imageFile != null && imageFile.exists()) {
+                if (!mUseUploader && hasMedia) {
 					final BitmapFactory.Options o = new BitmapFactory.Options();
 					o.inJustDecodeBounds = true;
-					BitmapFactory.decodeFile(imagePath, o);
-					try {
-                        final ContentLengthInputStream is = new ContentLengthInputStream(imageFile);
-                        is.setReadListener(new StatusMediaUploadListener(this, mNotificationManager, builder,
-                                statusUpdate));
-						status.setMedia(imageFile.getName(), is, o.outMimeType);
-					} catch (final FileNotFoundException e) {
-						status.setMedia(imageFile, o.outMimeType);
+					if (statusUpdate.medias.length == 1) {
+						final ParcelableMediaUpdate media = statusUpdate.medias[0];
+						final String path = getImagePathFromUri(this, Uri.parse(media.uri));
+						try {
+							if (path == null) throw new FileNotFoundException();
+							BitmapFactory.decodeFile(path, o);
+							final File file = new File(path);
+							final ContentLengthInputStream is = new ContentLengthInputStream(file);
+							is.setReadListener(new StatusMediaUploadListener(this, mNotificationManager, builder,
+									statusUpdate));
+							status.setMedia(file.getName(), is, o.outMimeType);
+						} catch (final FileNotFoundException e) {
+						}
+					} else {
+						final long[] mediaIds = new long[statusUpdate.medias.length];
+						try {
+							for (int i = 0, j = mediaIds.length; i < j; i++) {
+								final ParcelableMediaUpdate media = statusUpdate.medias[i];
+								final String path = getImagePathFromUri(this, Uri.parse(media.uri));
+								if (path == null) throw new FileNotFoundException();
+								BitmapFactory.decodeFile(path, o);
+								final File file = new File(path);
+								final ContentLengthInputStream is = new ContentLengthInputStream(file);
+								is.setReadListener(new StatusMediaUploadListener(this, mNotificationManager, builder,
+										statusUpdate));
+								final MediaUploadResponse uploadResp = twitter.uploadMedia(file.getName(), is,
+										o.outMimeType);
+								mediaIds[i] = uploadResp.getId();
+							}
+						} catch (final FileNotFoundException e) {
+
+						} catch (final TwitterException e) {
+							final SingleResponse<ParcelableStatus> response = SingleResponse.withException(e);
+							results.add(response);
+							continue;
+						}
+						status.mediaIds(mediaIds);
 					}
 				}
 				status.setPossiblySensitive(statusUpdate.is_possibly_sensitive);
 
-                final Twitter twitter = getTwitterInstance(this, account.account_id, true, true);
 				if (twitter == null) {
 					results.add(new SingleResponse<ParcelableStatus>(null, new NullPointerException()));
 					continue;

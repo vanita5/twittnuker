@@ -814,8 +814,17 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 			replyIntent.putExtra(EXTRA_NOTIFICATION_ACCOUNT, accountId);
 			replyIntent.putExtra(EXTRA_STATUS, firstItem);
 			replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			final Uri.Builder viewProfileBuilder = new Uri.Builder();
+			viewProfileBuilder.scheme(SCHEME_TWITTNUKER);
+			viewProfileBuilder.authority(AUTHORITY_USER);
+			viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(firstItem.account_id));
+			viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(firstItem.user_id));
+			final Intent viewProfileIntent = new Intent(Intent.ACTION_VIEW, viewProfileBuilder.build());
+			viewProfileIntent.setPackage(APP_PACKAGE_NAME);
 			notifBuilder.addAction(R.drawable.ic_action_reply, context.getString(R.string.reply),
 					PendingIntent.getActivity(context, 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+			notifBuilder.addAction(R.drawable.ic_action_profile, context.getString(R.string.view_user_profile),
+					PendingIntent.getActivity(context, 0, viewProfileIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 			final NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle(notifBuilder);
 			bigTextStyle.bigText(stripMentionText(firstItem.text_unescaped,
 					getAccountScreenName(context, firstItem.account_id)));

@@ -61,6 +61,7 @@ import java.util.Date;
 	private UserMentionEntity[] userMentionEntities;
 	private URLEntity[] urlEntities;
 	private HashtagEntity[] hashtagEntities;
+	private MediaEntity[] mediaEntities;
 
 	private User sender;
 
@@ -104,12 +105,9 @@ import java.util.Date;
 		return id;
 	}
 
-	/**
-	 * This will always return null in Direct Messages.
-	 */
 	@Override
 	public MediaEntity[] getMediaEntities() {
-		return null;
+		return mediaEntities;
 	}
 
 	@Override
@@ -232,6 +230,14 @@ import java.util.Date;
 					hashtagEntities = new HashtagEntity[len];
 					for (int i = 0; i < len; i++) {
 						hashtagEntities[i] = new HashtagEntityJSONImpl(hashtagsArray.getJSONObject(i));
+					}
+				}
+				if (!entities.isNull("media")) {
+					final JSONArray mediaArray = entities.getJSONArray("media");
+					len = mediaArray.length();
+					mediaEntities = new MediaEntity[len];
+					for (int i = 0; i < len; i++) {
+						mediaEntities[i] = new MediaEntityJSONImpl(mediaArray.getJSONObject(i));
 					}
 				}
 			} catch (final JSONException jsone) {

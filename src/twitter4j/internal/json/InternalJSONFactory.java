@@ -27,6 +27,7 @@ import twitter4j.DirectMessage;
 import twitter4j.Friendship;
 import twitter4j.IDs;
 import twitter4j.Location;
+import twitter4j.MediaUploadResponse;
 import twitter4j.OEmbed;
 import twitter4j.PagableResponseList;
 import twitter4j.Place;
@@ -82,6 +83,8 @@ public interface InternalJSONFactory {
 	ResponseList<HelpResources.Language> createLanguageList(HttpResponse res) throws TwitterException;
 
 	ResponseList<Location> createLocationList(HttpResponse res) throws TwitterException;
+
+	MediaUploadResponse createMediaUploadResponse(HttpResponse res) throws TwitterException;
 
 	OEmbed createOEmbed(HttpResponse httpResponse) throws TwitterException;
 

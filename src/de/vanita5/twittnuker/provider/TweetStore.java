@@ -141,6 +141,7 @@ public interface TweetStore {
 		public static final String PROFILE_IMAGE_URL = "profile_image_url";
 
 		public static final String PROFILE_BANNER_URL = "profile_banner_url";
+		public static final String JTAPI_HOSTNAME = "jtapi_hostname";
 
 		public static final String[] COLUMNS_NO_CREDENTIALS = new String[] { _ID, NAME, SCREEN_NAME, ACCOUNT_ID,
 				PROFILE_IMAGE_URL, PROFILE_BANNER_URL, COLOR, IS_ACTIVATED };
@@ -148,11 +149,11 @@ public interface TweetStore {
 		public static final String[] COLUMNS = new String[] { _ID, NAME, SCREEN_NAME, ACCOUNT_ID, AUTH_TYPE,
 				BASIC_AUTH_USERNAME, BASIC_AUTH_PASSWORD, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, CONSUMER_KEY,
 				CONSUMER_SECRET, REST_BASE_URL, SIGNING_REST_BASE_URL, OAUTH_BASE_URL, SIGNING_OAUTH_BASE_URL,
-				PROFILE_IMAGE_URL, PROFILE_BANNER_URL, COLOR, IS_ACTIVATED };
+				JTAPI_HOSTNAME, PROFILE_IMAGE_URL, PROFILE_BANNER_URL, COLOR, IS_ACTIVATED };
 
 		public static final String[] TYPES = new String[] { TYPE_PRIMARY_KEY, TYPE_TEXT_NOT_NULL, TYPE_TEXT_NOT_NULL,
 				TYPE_INT_UNIQUE, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
-				TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_BOOLEAN };
+				TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_BOOLEAN };
 
 	}
 
@@ -305,6 +306,7 @@ public interface TweetStore {
 
 		public static final String TEXT_HTML = "text_html";
 		public static final String TEXT_PLAIN = "text_plain";
+		public static final String TEXT_UNESCAPED = "text_unescaped";
 		public static final String SENDER_NAME = "sender_name";
 		public static final String RECIPIENT_NAME = "recipient_name";
 		public static final String SENDER_SCREEN_NAME = "sender_screen_name";
@@ -312,12 +314,17 @@ public interface TweetStore {
 		public static final String SENDER_PROFILE_IMAGE_URL = "sender_profile_image_url";
 		public static final String RECIPIENT_PROFILE_IMAGE_URL = "recipient_profile_image_url";
 
+		public static final String MEDIAS = "medias";
+
+		public static final String FIRST_MEDIA = "first_media";
+
 		public static final String[] COLUMNS = new String[] { _ID, ACCOUNT_ID, MESSAGE_ID, MESSAGE_TIMESTAMP,
-				SENDER_ID, RECIPIENT_ID, IS_OUTGOING, TEXT_HTML, TEXT_PLAIN, SENDER_NAME, RECIPIENT_NAME,
-				SENDER_SCREEN_NAME, RECIPIENT_SCREEN_NAME, SENDER_PROFILE_IMAGE_URL, RECIPIENT_PROFILE_IMAGE_URL };
+				SENDER_ID, RECIPIENT_ID, IS_OUTGOING, TEXT_HTML, TEXT_PLAIN, TEXT_UNESCAPED, SENDER_NAME,
+				RECIPIENT_NAME, SENDER_SCREEN_NAME, RECIPIENT_SCREEN_NAME, SENDER_PROFILE_IMAGE_URL,
+				RECIPIENT_PROFILE_IMAGE_URL, MEDIAS, FIRST_MEDIA };
 		public static final String[] TYPES = new String[] { TYPE_PRIMARY_KEY, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT,
 				TYPE_INT, TYPE_BOOLEAN, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
-				TYPE_TEXT };
+				TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT };
 
 		public static final String DEFAULT_SORT_ORDER = MESSAGE_ID + " DESC";
 

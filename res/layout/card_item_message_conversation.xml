@@ -43,6 +43,27 @@
 				android:orientation="vertical"
 				android:padding="@dimen/element_spacing_normal">
 
+                <de.vanita5.twittnuker.view.ImagePreviewContainer
+                    android:id="@+id/incoming_image_preview_container"
+                	android:layout_width="match_parent"
+                	android:layout_height="wrap_content"
+                	android:visibility="gone">
+
+                	<de.vanita5.twittnuker.view.HighlightImageView
+                		android:id="@+id/incoming_image_preview"
+                		android:layout_width="match_parent"
+                		android:layout_height="match_parent"
+                		android:scaleType="fitCenter"/>
+
+                	<ProgressBar
+                		android:id="@+id/incoming_image_preview_progress"
+                		style="?android:attr/progressBarStyleHorizontal"
+                		android:layout_width="match_parent"
+                		android:layout_height="wrap_content"
+                		android:layout_gravity="center"
+                		android:layout_margin="@dimen/element_spacing_large"/>
+                </de.vanita5.twittnuker.view.ImagePreviewContainer>
+
 				<de.vanita5.twittnuker.view.HandleSpanClickTextView
 					android:id="@+id/incoming_text"
 					android:layout_width="wrap_content"
@@ -105,6 +126,27 @@
 				android:minHeight="@dimen/icon_size_card_list_item"
 				android:orientation="vertical"
 				android:padding="@dimen/element_spacing_normal">
+
+                <de.vanita5.twittnuker.view.ImagePreviewContainer
+                	android:id="@+id/outgoing_image_preview_container"
+                	android:layout_width="match_parent"
+                	android:layout_height="wrap_content"
+                	android:visibility="gone">
+
+                	<de.vanita5.twittnuker.view.HighlightImageView
+                		android:id="@+id/outgoing_image_preview"
+                		android:layout_width="match_parent"
+                		android:layout_height="match_parent"
+                		android:scaleType="fitCenter"/>
+
+                	<ProgressBar
+                		android:id="@+id/outgoing_image_preview_progress"
+                		style="?android:attr/progressBarStyleHorizontal"
+                    	android:layout_width="match_parent"
+                		android:layout_height="wrap_content"
+                		android:layout_gravity="center"
+                		android:layout_margin="@dimen/element_spacing_large"/>
+                </de.vanita5.twittnuker.view.ImagePreviewContainer>
 
 				<de.vanita5.twittnuker.view.HandleSpanClickTextView
 					android:id="@+id/outgoing_text"

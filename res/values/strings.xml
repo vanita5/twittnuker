@@ -628,6 +628,7 @@
     <string name="click_item_to_config">Click an item to config</string>
     <string name="dark_drawer">Dark drawer</string>
     <string name="retweets_of_me">Retweets of me</string>
+    <string name="jtapi_hostname">JTAPI hostname</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

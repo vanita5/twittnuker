@@ -34,6 +34,7 @@ import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.imageloader.AccountExtra;
 
 public class ImageLoaderWrapper implements Constants {
 
@@ -80,6 +81,18 @@ public class ImageLoaderWrapper implements Constants {
 
 	public void displayPreviewImage(final ImageView view, final String url, final ImageLoadingHandler loadingHandler) {
 		mImageLoader.displayImage(url, view, mImageDisplayOptions, loadingHandler, loadingHandler);
+	}
+
+	public void displayPreviewImageForDM(final ImageView view, final String url, final long accountId,
+										 final ImageLoadingHandler loadingHandler) {
+		if (url != null && !url.contains("://ton.twitter.com/1.1/ton/data/dm")) {
+			displayPreviewImage(view, url, loadingHandler);
+			return;
+		}
+		final DisplayImageOptions.Builder b = new DisplayImageOptions.Builder();
+		b.cloneFrom(mImageDisplayOptions);
+		b.extraForDownloader(new AccountExtra(accountId));
+		mImageLoader.displayImage(url, view, b.build(), loadingHandler, loadingHandler);
 	}
 
 	public void displayProfileBanner(final ImageView view, final String base_url, final int width) {

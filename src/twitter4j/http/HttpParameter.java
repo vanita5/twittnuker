@@ -34,7 +34,7 @@ public final class HttpParameter implements Comparable<HttpParameter> {
 	private String fileName = null;
 	private File file = null;
 	private InputStream fileBody = null;
-	private String overrideContentType;
+	private String overrideFileType;
 
 	private static final String JPEG = "image/jpeg";
 
@@ -58,10 +58,10 @@ public final class HttpParameter implements Comparable<HttpParameter> {
 		this(name, file, null);
 	}
 
-	public HttpParameter(final String name, final File file, String overrideContentType) {
+	public HttpParameter(final String name, final File file, final String overrideContentType) {
 		this.name = name;
 		this.file = file;
-		this.overrideContentType = overrideContentType;
+		overrideFileType = overrideContentType;
 	}
 
 	public HttpParameter(final String name, final int value) {
@@ -84,11 +84,11 @@ public final class HttpParameter implements Comparable<HttpParameter> {
 	}
 
 	public HttpParameter(final String name, final String fileName, final InputStream fileBody,
-			String overrideContentType) {
+			final String overrideFileType) {
 		this.name = name;
 		this.fileName = fileName;
 		this.fileBody = fileBody;
-		this.overrideContentType = overrideContentType;
+		this.overrideFileType = overrideFileType;
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public final class HttpParameter implements Comparable<HttpParameter> {
 	 */
 	public String getContentType() {
 		if (!isFile()) throw new IllegalStateException("not a file");
-		if (overrideContentType != null) return overrideContentType;
+		if (overrideFileType != null) return overrideFileType;
 		String contentType;
 		String extensions = getFileName();
 		final int index = extensions.lastIndexOf(".");

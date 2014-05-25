@@ -17,6 +17,7 @@
 package twitter4j;
 
 import twitter4j.http.HttpParameter;
+import twitter4j.internal.util.InternalStringUtil;
 
 import java.io.File;
 import java.io.InputStream;
@@ -41,6 +42,7 @@ public final class StatusUpdate implements Serializable {
 	private transient InputStream mediaBody;
 	private File mediaFile;
 	private String overrideContentType;
+	private long[] mediaIds;
 
 	public StatusUpdate(final String status) {
 		this.status = status;
@@ -52,11 +54,11 @@ public final class StatusUpdate implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (!(obj instanceof StatusUpdate)) return false;
-		StatusUpdate other = (StatusUpdate) obj;
+		final StatusUpdate other = (StatusUpdate) obj;
 		if (displayCoordinates != other.displayCoordinates) return false;
 		if (inReplyToStatusId != other.inReplyToStatusId) return false;
 		if (location == null) {
@@ -89,6 +91,10 @@ public final class StatusUpdate implements Serializable {
 		return location;
 	}
 
+	public long[] getMediaIds() {
+		return mediaIds;
+	}
+
 	public String getPlaceId() {
 		return placeId;
 	}
@@ -102,14 +108,14 @@ public final class StatusUpdate implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (displayCoordinates ? 1231 : 1237);
-		result = prime * result + (int) (inReplyToStatusId ^ (inReplyToStatusId >>> 32));
-		result = prime * result + ((location == null) ? 0 : location.hashCode());
-		result = prime * result + ((mediaFile == null) ? 0 : mediaFile.hashCode());
-		result = prime * result + ((mediaName == null) ? 0 : mediaName.hashCode());
-		result = prime * result + ((overrideContentType == null) ? 0 : overrideContentType.hashCode());
-		result = prime * result + ((placeId == null) ? 0 : placeId.hashCode());
+		result = prime * result + (int) (inReplyToStatusId ^ inReplyToStatusId >>> 32);
+		result = prime * result + (location == null ? 0 : location.hashCode());
+		result = prime * result + (mediaFile == null ? 0 : mediaFile.hashCode());
+		result = prime * result + (mediaName == null ? 0 : mediaName.hashCode());
+		result = prime * result + (overrideContentType == null ? 0 : overrideContentType.hashCode());
+		result = prime * result + (placeId == null ? 0 : placeId.hashCode());
 		result = prime * result + (possiblySensitive ? 1231 : 1237);
-		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + (status == null ? 0 : status.hashCode());
 		return result;
 	}
 
@@ -137,7 +143,7 @@ public final class StatusUpdate implements Serializable {
 	/**
 	 * @since Twitter4J 2.2.5
 	 */
-	public StatusUpdate media(final File file, String type) {
+	public StatusUpdate media(final File file, final String type) {
 		setMedia(file, type);
 		return this;
 	}
@@ -145,8 +151,13 @@ public final class StatusUpdate implements Serializable {
 	/**
 	 * @since Twitter4J 2.2.5
 	 */
-	public StatusUpdate media(final String name, final InputStream body, String type) {
+	public StatusUpdate media(final String name, final InputStream body, final String type) {
 		setMedia(name, body, type);
+		return this;
+	}
+
+	public StatusUpdate mediaIds(final long... mediaIds) {
+		setMediaIds(mediaIds);
 		return this;
 	}
 
@@ -178,7 +189,7 @@ public final class StatusUpdate implements Serializable {
 	/**
 	 * @since Twitter4J 2.2.5
 	 */
-	public void setMedia(final File file, String type) {
+	public void setMedia(final File file, final String type) {
 		mediaFile = file;
 		overrideContentType = type;
 	}
@@ -186,10 +197,14 @@ public final class StatusUpdate implements Serializable {
 	/**
 	 * @since Twitter4J 2.2.5
 	 */
-	public void setMedia(final String name, final InputStream body, String type) {
+	public void setMedia(final String name, final InputStream body, final String type) {
 		mediaName = name;
 		mediaBody = body;
 		overrideContentType = type;
+	}
+
+	public void setMediaIds(final long... mediaIds) {
+		this.mediaIds = mediaIds;
 	}
 
 	public void setPlaceId(final String placeId) {
@@ -246,6 +261,8 @@ public final class StatusUpdate implements Serializable {
 		} else if (mediaName != null && mediaBody != null) {
 			params.add(new HttpParameter("media[]", mediaName, mediaBody, overrideContentType));
 			params.add(new HttpParameter("possibly_sensitive", possiblySensitive));
+		} else if (mediaIds != null) {
+			params.add(new HttpParameter("media_ids", InternalStringUtil.join(mediaIds)));
 		}
 
 		final HttpParameter[] paramArray = new HttpParameter[params.size()];

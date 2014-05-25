@@ -31,6 +31,7 @@ import twitter4j.GeoLocation;
 import twitter4j.HashtagEntity;
 import twitter4j.IDs;
 import twitter4j.Location;
+import twitter4j.MediaUploadResponse;
 import twitter4j.OEmbed;
 import twitter4j.PagableResponseList;
 import twitter4j.Place;
@@ -138,6 +139,11 @@ public class InternalJSONFactoryImpl implements InternalJSONFactory {
 	@Override
 	public ResponseList<Location> createLocationList(final HttpResponse res) throws TwitterException {
 		return LocationJSONImpl.createLocationList(res, conf);
+	}
+
+	@Override
+	public MediaUploadResponse createMediaUploadResponse(final HttpResponse res) throws TwitterException {
+		return new MediaUploadResponseJSONImpl(res);
 	}
 
 	@Override

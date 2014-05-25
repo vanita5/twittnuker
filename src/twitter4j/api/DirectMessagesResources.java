@@ -30,7 +30,7 @@ public interface DirectMessagesResources {
 	 * authenticating user must be the recipient of the specified direct
 	 * message. <br>
 	 * This method calls http://api.twitter.com/1.1/direct_messages/destroy
-	 * 
+	 *
 	 * @param id the ID of the direct message to destroy
 	 * @return the deleted direct message
 	 * @throws TwitterException when Twitter service or network is unavailable
@@ -44,7 +44,7 @@ public interface DirectMessagesResources {
 	/**
 	 * Returns a list of the direct messages sent to the authenticating user. <br>
 	 * This method calls http://api.twitter.com/1.1/direct_messages
-	 * 
+	 *
 	 * @return List
 	 * @throws TwitterException when Twitter service or network is unavailable
 	 * @see <a
@@ -56,7 +56,7 @@ public interface DirectMessagesResources {
 	/**
 	 * Returns a list of the direct messages sent to the authenticating user. <br>
 	 * This method calls http://api.twitter.com/1.1/direct_messages
-	 * 
+	 *
 	 * @param paging controls pagination. Supports since_id, max_id, count and
 	 *            page parameters.
 	 * @return List
@@ -70,7 +70,7 @@ public interface DirectMessagesResources {
 	/**
 	 * Returns a list of the direct messages sent by the authenticating user. <br>
 	 * This method calls http://api.twitter.com/1.1/direct_messages/sent
-	 * 
+	 *
 	 * @return List
 	 * @throws TwitterException when Twitter service or network is unavailable
 	 * @see <a
@@ -82,7 +82,7 @@ public interface DirectMessagesResources {
 	/**
 	 * Returns a list of the direct messages sent by the authenticating user. <br>
 	 * This method calls http://api.twitter.com/1.1/direct_messages/sent
-	 * 
+	 *
 	 * @param paging controls pagination. Supports since_id, max_id, count and
 	 *            page parameters.
 	 * @return List
@@ -99,7 +99,7 @@ public interface DirectMessagesResources {
 	 * user. Requires both the user and text parameters below. The text will be
 	 * trimmed if the length of the text is exceeding 140 characters. <br>
 	 * This method calls http://api.twitter.com/1.1/direct_messages/new
-	 * 
+	 *
 	 * @param userId the screen name of the user to whom send the direct message
 	 * @param text The text of your direct message.
 	 * @return DirectMessage
@@ -109,14 +109,14 @@ public interface DirectMessagesResources {
 	 *      direct_messages/new | Twitter Developers</a>
 	 * @since Twitter4j 2.1.0
 	 */
-	DirectMessage sendDirectMessage(long userId, String text) throws TwitterException;
+	DirectMessage sendDirectMessage(long userId, String text, long mediaId) throws TwitterException;
 
 	/**
 	 * Sends a new direct message to the specified user from the authenticating
 	 * user. Requires both the user and text parameters below. The text will be
 	 * trimmed if the length of the text is exceeding 140 characters. <br>
 	 * This method calls http://api.twitter.com/1.1/direct_messages/new
-	 * 
+	 *
 	 * @param screenName the screen name of the user to whom send the direct
 	 *            message
 	 * @param text The text of your direct message.
@@ -126,7 +126,7 @@ public interface DirectMessagesResources {
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/direct_messages/new">POST
 	 *      direct_messages/new | Twitter Developers</a>
 	 */
-	DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException;
+	DirectMessage sendDirectMessage(String screenName, String text, long mediaId) throws TwitterException;
 
 	/**
 	 * Returns a single direct message, specified by an id parameter. <br>
@@ -134,7 +134,7 @@ public interface DirectMessagesResources {
 	 * in incompatible ways. <br>
 	 * This method calls
 	 * http://api.twitter.com/1.1/direct_messages/show/:id.json
-	 * 
+	 *
 	 * @param id message id
 	 * @return DirectMessage
 	 * @throws TwitterException when Twitter service or network is unavailable
@@ -144,4 +144,8 @@ public interface DirectMessagesResources {
 	 * @since Twitter4J 2.1.9
 	 */
 	DirectMessage showDirectMessage(long id) throws TwitterException;
+
+	DirectMessage sendDirectMessage(long userId, String text) throws TwitterException;
+
+	DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException;
 }

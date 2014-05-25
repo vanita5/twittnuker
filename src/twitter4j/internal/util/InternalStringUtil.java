@@ -28,9 +28,9 @@ public class InternalStringUtil {
 		throw new AssertionError();
 	}
 
-	public static String join(final int[] follows) {
-		final StringBuffer buf = new StringBuffer(11 * follows.length);
-		for (final int follow : follows) {
+	public static String join(final int[] array) {
+		final StringBuffer buf = new StringBuffer(11 * array.length);
+		for (final int follow : array) {
 			if (0 != buf.length()) {
 				buf.append(",");
 			}
@@ -41,9 +41,9 @@ public class InternalStringUtil {
 
 	// for JDK1.4 compatibility
 
-	public static String join(final long[] follows) {
-		final StringBuffer buf = new StringBuffer(11 * follows.length);
-		for (final long follow : follows) {
+	public static String join(final long[] array) {
+		final StringBuffer buf = new StringBuffer(11 * array.length);
+		for (final long follow : array) {
 			if (0 != buf.length()) {
 				buf.append(",");
 			}
@@ -52,9 +52,9 @@ public class InternalStringUtil {
 		return buf.toString();
 	}
 
-	public static String join(final String[] track) {
-		final StringBuffer buf = new StringBuffer(11 * track.length);
-		for (final String str : track) {
+	public static String join(final String[] array) {
+		final StringBuffer buf = new StringBuffer(11 * array.length);
+		for (final String str : array) {
 			if (0 != buf.length()) {
 				buf.append(",");
 			}

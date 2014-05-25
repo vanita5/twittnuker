@@ -20,14 +20,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface;
+package de.vanita5.twittnuker.util.imageloader;
 
-import de.vanita5.twittnuker.model.ParcelableDirectMessage;
+public class AccountExtra {
 
-public interface IDirectMessagesAdapter extends IBaseCardAdapter {
+	public final long account_id;
 
-	public ParcelableDirectMessage findItem(long id);
+	public AccountExtra(final long account_id) {
+		this.account_id = account_id;
+	}
 
-	public void setDisplayImagePreview(boolean display);
-	public void setImagePreviewScaleType(String scaleType);
 }

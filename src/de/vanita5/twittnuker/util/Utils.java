@@ -192,6 +192,7 @@ import twitter4j.MediaEntity;
 import twitter4j.RateLimitStatus;
 import twitter4j.Status;
 import twitter4j.Twitter;
+import twitter4j.TwitterConstants;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.URLEntity;
@@ -233,7 +234,7 @@ import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLException;
 
-public final class Utils implements Constants {
+public final class Utils implements Constants, TwitterConstants {
 
 	private static final String UA_TEMPLATE = "Mozilla/5.0 (Linux; Android %s; %s Build/%s) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.111 Safari/537.36";
 
@@ -2029,14 +2030,14 @@ public final class Utils implements Constants {
 		return url;
 	}
 
-	public static HttpResponse getRedirectedHttpResponse(final HttpClientWrapper client, final String url)
-			throws TwitterException {
+	public static HttpResponse getRedirectedHttpResponse(final HttpClientWrapper client, final String url,
+														 String signUrl, Authorization auth) throws TwitterException {
 		if (url == null) return null;
 		final ArrayList<String> urls = new ArrayList<String>();
 		urls.add(url);
 		HttpResponse resp;
 		try {
-			resp = client.get(url, url);
+			resp = client.get(url, signUrl, auth);
 		} catch (final TwitterException te) {
 			if (isRedirected(te.getStatusCode())) {
 				resp = te.getHttpResponse();
@@ -2212,6 +2213,75 @@ public final class Utils implements Constants {
 		return date.getTime();
 	}
 
+	public static Authorization getTwitterAuthorization(final Context context, final long accountId) {
+
+		final String where = Where.equals(new Column(Accounts.ACCOUNT_ID), accountId).getSQL();
+		final Cursor c = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
+				Accounts.COLUMNS, where.toString(), null, null);
+		if (c == null) return null;
+		try {
+			if (!c.moveToFirst()) return null;
+
+			switch (c.getInt(c.getColumnIndexOrThrow(Accounts.AUTH_TYPE))) {
+				case Accounts.AUTH_TYPE_OAUTH:
+				case Accounts.AUTH_TYPE_XAUTH: {
+					final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
+							Context.MODE_PRIVATE);
+					final String pref_consumer_key = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
+					final String pref_consumer_secret = prefs.getString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
+					final ConfigurationBuilder cb = new ConfigurationBuilder();
+					final String rest_base_url = c.getString(c.getColumnIndex(Accounts.REST_BASE_URL));
+					final String signing_rest_base_url = c.getString(c.getColumnIndex(Accounts.SIGNING_REST_BASE_URL));
+					final String oauth_base_url = c.getString(c.getColumnIndex(Accounts.OAUTH_BASE_URL));
+					final String signing_oauth_base_url = c
+							.getString(c.getColumnIndex(Accounts.SIGNING_OAUTH_BASE_URL));
+					final String consumer_key = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_KEY)));
+					final String consumer_secret = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_SECRET)));
+					if (!isEmpty(rest_base_url)) {
+						cb.setRestBaseURL(rest_base_url);
+					}
+					if (!isEmpty(signing_rest_base_url)) {
+						cb.setSigningRestBaseURL(signing_rest_base_url);
+					}
+					if (!isEmpty(oauth_base_url)) {
+						cb.setOAuthBaseURL(oauth_base_url);
+					}
+					if (!isEmpty(signing_oauth_base_url)) {
+						cb.setSigningOAuthBaseURL(signing_oauth_base_url);
+					}
+					if (!isEmpty(consumer_key) && !isEmpty(consumer_secret)) {
+						cb.setOAuthConsumerKey(consumer_key);
+						cb.setOAuthConsumerSecret(consumer_secret);
+					} else if (!isEmpty(pref_consumer_key) && !isEmpty(pref_consumer_secret)) {
+						cb.setOAuthConsumerKey(pref_consumer_key);
+						cb.setOAuthConsumerSecret(pref_consumer_secret);
+					} else {
+						cb.setOAuthConsumerKey(TWITTER_CONSUMER_KEY_2);
+						cb.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET_2);
+					}
+					OAuthAuthorization auth = new OAuthAuthorization(cb.build());
+					final String token = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN));
+					final String tokenSecret = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN_SECRET));
+					auth.setOAuthAccessToken(new AccessToken(token, tokenSecret));
+					return auth;
+				}
+				case Accounts.AUTH_TYPE_BASIC: {
+					final String screenName = c.getString(c.getColumnIndexOrThrow(Accounts.SCREEN_NAME));
+					final String username = c.getString(c.getColumnIndexOrThrow(Accounts.BASIC_AUTH_USERNAME));
+					final String loginName = username != null ? username : screenName;
+					final String password = c.getString(c.getColumnIndexOrThrow(Accounts.BASIC_AUTH_PASSWORD));
+					if (isEmpty(loginName) || isEmpty(password)) return null;
+					return new BasicAuthorization(loginName, password);
+				}
+				default: {
+					return null;
+				}
+			}
+		} finally {
+			c.close();
+		}
+	}
+
 	public static String getTwitterErrorMessage(final Context context, final CharSequence action,
 			final TwitterException te) {
 		if (context == null) return null;
@@ -2271,7 +2341,7 @@ public final class Utils implements Constants {
 	}
 
 	public static Twitter getTwitterInstance(final Context context, final long accountId,
-			final boolean includeEntities, final boolean includeRetweets, final boolean useApacheHttpclient,
+			final boolean includeEntities, final boolean includeRetweets, final boolean apacheHttp,
 			final String mediaProvider, final String mediaProviderAPIKey) {
 		if (context == null) return null;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
@@ -2284,92 +2354,93 @@ public final class Utils implements Constants {
 		// versions
 		final String pref_consumer_key = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
 		final String pref_consumer_secret = prefs.getString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
-		final StringBuilder where = new StringBuilder();
-		where.append(Accounts.ACCOUNT_ID + " = " + accountId);
+		final String where = Where.equals(new Column(Accounts.ACCOUNT_ID), accountId).getSQL();
 		final Cursor c = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
 				Accounts.COLUMNS, where.toString(), null, null);
 		if (c == null) return null;
 		try {
-			if (c.getCount() > 0) {
-				c.moveToFirst();
-				final ConfigurationBuilder cb = new ConfigurationBuilder();
-				cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(app));
-				if (useApacheHttpclient) {
-					cb.setHttpClientFactory(new ApacheHttpClientFactory());
-				}
-				cb.setHttpConnectionTimeout(connection_timeout);
-				setUserAgent(context, cb);
-                cb.setGZIPEnabled(enableGzip);
-                cb.setIgnoreSSLError(ignoreSSLError);
-                if (enableProxy) {
-					final String proxy_host = prefs.getString(KEY_PROXY_HOST, null);
-					final int proxy_port = ParseUtils.parseInt(prefs.getString(KEY_PROXY_PORT, "-1"));
-					if (!isEmpty(proxy_host) && proxy_port > 0) {
-						cb.setHttpProxyHost(proxy_host);
-						cb.setHttpProxyPort(proxy_port);
-					}
-				}
-				final String rest_base_url = c.getString(c.getColumnIndex(Accounts.REST_BASE_URL));
-				final String signing_rest_base_url = c.getString(c.getColumnIndex(Accounts.SIGNING_REST_BASE_URL));
-				final String oauth_base_url = c.getString(c.getColumnIndex(Accounts.OAUTH_BASE_URL));
-				final String signing_oauth_base_url = c.getString(c.getColumnIndex(Accounts.SIGNING_OAUTH_BASE_URL));
-				final String consumer_key = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_KEY)));
-				final String consumer_secret = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_SECRET)));
-				if (!isEmpty(rest_base_url)) {
-					cb.setRestBaseURL(rest_base_url);
-				}
-				if (!isEmpty(signing_rest_base_url)) {
-					cb.setSigningRestBaseURL(signing_rest_base_url);
-				}
-				if (!isEmpty(oauth_base_url)) {
-					cb.setOAuthBaseURL(oauth_base_url);
-				}
-				if (!isEmpty(signing_oauth_base_url)) {
-					cb.setSigningOAuthBaseURL(signing_oauth_base_url);
-				}
-				if (!isEmpty(mediaProvider)) {
-					cb.setMediaProvider(mediaProvider);
-				}
-				if (!isEmpty(mediaProviderAPIKey)) {
-					cb.setMediaProviderAPIKey(mediaProviderAPIKey);
-				}
-				cb.setIncludeEntitiesEnabled(includeEntities);
-				cb.setIncludeRTsEnabled(includeRetweets);
-				switch (c.getInt(c.getColumnIndexOrThrow(Accounts.AUTH_TYPE))) {
-					case Accounts.AUTH_TYPE_OAUTH:
-					case Accounts.AUTH_TYPE_XAUTH: {
-						if (!isEmpty(consumer_key) && !isEmpty(consumer_secret)) {
-							cb.setOAuthConsumerKey(consumer_key);
-							cb.setOAuthConsumerSecret(consumer_secret);
-						} else if (!isEmpty(pref_consumer_key) && !isEmpty(pref_consumer_secret)) {
-							cb.setOAuthConsumerKey(pref_consumer_key);
-							cb.setOAuthConsumerSecret(pref_consumer_secret);
-						} else {
-							cb.setOAuthConsumerKey(TWITTER_CONSUMER_KEY_2);
-							cb.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET_2);
-						}
-						final String token = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN));
-						final String tokenSecret = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN_SECRET));
-						if (isEmpty(token) || isEmpty(tokenSecret)) return null;
-						cb.setOAuthAccessToken(token);
-						cb.setOAuthAccessTokenSecret(tokenSecret);
-						return new TwitterFactory(cb.build()).getInstance(new AccessToken(token, tokenSecret));
-					}
-					case Accounts.AUTH_TYPE_BASIC: {
-						final String screenName = c.getString(c.getColumnIndexOrThrow(Accounts.SCREEN_NAME));
-						final String username = c.getString(c.getColumnIndexOrThrow(Accounts.BASIC_AUTH_USERNAME));
-						final String loginName = username != null ? username : screenName;
-						final String password = c.getString(c.getColumnIndexOrThrow(Accounts.BASIC_AUTH_PASSWORD));
-						if (isEmpty(loginName) || isEmpty(password)) return null;
-						return new TwitterFactory(cb.build()).getInstance(new BasicAuthorization(loginName, password));
-					}
-					case Accounts.AUTH_TYPE_TWIP_O_MODE: {
-						return new TwitterFactory(cb.build()).getInstance(new TwipOModeAuthorization());
-					}
-					default:
+			if (!c.moveToFirst()) return null;
+			final ConfigurationBuilder cb = new ConfigurationBuilder();
+			cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(app));
+			if (apacheHttp) {
+				cb.setHttpClientFactory(new ApacheHttpClientFactory());
+			}
+			cb.setHttpConnectionTimeout(connection_timeout);
+			setUserAgent(context, cb);
+			cb.setGZIPEnabled(enableGzip);
+			cb.setIgnoreSSLError(ignoreSSLError);
+			if (enableProxy) {
+				final String proxy_host = prefs.getString(KEY_PROXY_HOST, null);
+				final int proxy_port = ParseUtils.parseInt(prefs.getString(KEY_PROXY_PORT, "-1"));
+				if (!isEmpty(proxy_host) && proxy_port > 0) {
+					cb.setHttpProxyHost(proxy_host);
+					cb.setHttpProxyPort(proxy_port);
 				}
 			}
-			return null;
+			final String rest_base_url = c.getString(c.getColumnIndex(Accounts.REST_BASE_URL));
+			final String signing_rest_base_url = c.getString(c.getColumnIndex(Accounts.SIGNING_REST_BASE_URL));
+			final String oauth_base_url = c.getString(c.getColumnIndex(Accounts.OAUTH_BASE_URL));
+			final String signing_oauth_base_url = c.getString(c.getColumnIndex(Accounts.SIGNING_OAUTH_BASE_URL));
+			final String consumer_key = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_KEY)));
+			final String consumer_secret = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_SECRET)));
+			if (!isEmpty(rest_base_url)) {
+				cb.setRestBaseURL(rest_base_url);
+			}
+			if (!isEmpty(signing_rest_base_url)) {
+				cb.setSigningRestBaseURL(signing_rest_base_url);
+			}
+			if (!isEmpty(oauth_base_url)) {
+				cb.setOAuthBaseURL(oauth_base_url);
+			}
+			if (!isEmpty(signing_oauth_base_url)) {
+				cb.setSigningOAuthBaseURL(signing_oauth_base_url);
+			}
+			if (!isEmpty(mediaProvider)) {
+				cb.setMediaProvider(mediaProvider);
+			}
+			if (!isEmpty(mediaProviderAPIKey)) {
+				cb.setMediaProviderAPIKey(mediaProviderAPIKey);
+			}
+			cb.setIncludeEntitiesEnabled(includeEntities);
+			cb.setIncludeRTsEnabled(includeRetweets);
+			switch (c.getInt(c.getColumnIndexOrThrow(Accounts.AUTH_TYPE))) {
+				case Accounts.AUTH_TYPE_OAUTH:
+				case Accounts.AUTH_TYPE_XAUTH: {
+					if (!isEmpty(consumer_key) && !isEmpty(consumer_secret)) {
+						cb.setOAuthConsumerKey(consumer_key);
+						cb.setOAuthConsumerSecret(consumer_secret);
+					} else if (!isEmpty(pref_consumer_key) && !isEmpty(pref_consumer_secret)) {
+						cb.setOAuthConsumerKey(pref_consumer_key);
+						cb.setOAuthConsumerSecret(pref_consumer_secret);
+					} else {
+						cb.setOAuthConsumerKey(TWITTER_CONSUMER_KEY_2);
+						cb.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET_2);
+					}
+					final String jtapi_hostname = trim(c.getString(c.getColumnIndex(Accounts.JTAPI_HOSTNAME)));
+					if (!isEmpty(jtapi_hostname)) {
+						cb.setUploadBaseURL(String.format("https://upload.%s/1.1/", jtapi_hostname));
+						cb.setSigningUploadBaseURL(DEFAULT_SIGNING_UPLOAD_BASE_URL);
+					}
+					final String token = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN));
+					final String tokenSecret = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN_SECRET));
+					if (isEmpty(token) || isEmpty(tokenSecret)) return null;
+					return new TwitterFactory(cb.build()).getInstance(new AccessToken(token, tokenSecret));
+				}
+				case Accounts.AUTH_TYPE_BASIC: {
+					final String screenName = c.getString(c.getColumnIndexOrThrow(Accounts.SCREEN_NAME));
+					final String username = c.getString(c.getColumnIndexOrThrow(Accounts.BASIC_AUTH_USERNAME));
+					final String loginName = username != null ? username : screenName;
+					final String password = c.getString(c.getColumnIndexOrThrow(Accounts.BASIC_AUTH_PASSWORD));
+					if (isEmpty(loginName) || isEmpty(password)) return null;
+					return new TwitterFactory(cb.build()).getInstance(new BasicAuthorization(loginName, password));
+				}
+				case Accounts.AUTH_TYPE_TWIP_O_MODE: {
+					return new TwitterFactory(cb.build()).getInstance(new TwipOModeAuthorization());
+				}
+				default: {
+					return null;
+				}
+			}
 		} finally {
 			c.close();
 		}

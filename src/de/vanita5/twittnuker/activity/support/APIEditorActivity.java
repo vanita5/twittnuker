@@ -57,6 +57,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 
 	private EditText mEditRestBaseURL, mEditSigningRESTBaseURL, mEditOAuthBaseURL, mEditSigningOAuthBaseURL;
 	private EditText mEditConsumerKey, mEditConsumerSecret;
+	private EditText mEditJTAPIHostname;
 	private RadioGroup mEditAuthType;
 	private RadioButton mButtonOAuth, mButtonxAuth, mButtonBasic, mButtonTwipOMode;
 	private TextView mAdvancedAPIConfigLabel;
@@ -65,6 +66,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 
 	private String mRestBaseURL, mSigningRestBaseURL, mOAuthBaseURL, mSigningOAuthBaseURL;
 	private String mConsumerKey, mConsumerSecret;
+	private String mJTAPIHostname;
 	private int mAuthType;
 
 	@Override
@@ -96,6 +98,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 		final SharedPreferences pref = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final String consumer_key = getNonEmptyString(pref, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
 		final String consumer_secret = getNonEmptyString(pref, KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
+		final String jtapi_hostname = getNonEmptyString(pref, KEY_JTAPI_HOSTNAME,null);
 
 		switch (v.getId()) {
 			case R.id.save: {
@@ -122,6 +125,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 							.findViewById(R.id.signing_oauth_base_url);
 					mEditConsumerKey = (EditText) mAdvancedAPIConfigContainer.findViewById(R.id.consumer_key);
 					mEditConsumerSecret = (EditText) mAdvancedAPIConfigContainer.findViewById(R.id.consumer_secret);
+					mEditJTAPIHostname = (EditText) mAdvancedAPIConfigContainer.findViewById(R.id.jtapi_hostname);
 
 					mEditSigningRESTBaseURL.setText(isEmpty(mSigningRestBaseURL) ? DEFAULT_SIGNING_REST_BASE_URL
 							: mSigningRestBaseURL);
@@ -130,6 +134,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 							: mSigningOAuthBaseURL);
 					mEditConsumerKey.setText(isEmpty(mConsumerKey) ? consumer_key : mConsumerKey);
 					mEditConsumerSecret.setText(isEmpty(mConsumerSecret) ? consumer_secret : mConsumerSecret);
+					mEditJTAPIHostname.setText(isEmpty(mJTAPIHostname) ? jtapi_hostname : mJTAPIHostname);
 				} else if (inflated_view != null) {
 					final boolean is_visible = inflated_view.getVisibility() == View.VISIBLE;
 					final int compound_res = is_visible ? R.drawable.expander_close_holo
@@ -165,6 +170,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 		outState.putString(Accounts.SIGNING_OAUTH_BASE_URL, mSigningOAuthBaseURL);
 		outState.putString(Accounts.CONSUMER_KEY, mConsumerKey);
 		outState.putString(Accounts.CONSUMER_SECRET, mConsumerSecret);
+		outState.putString(Accounts.JTAPI_HOSTNAME, mJTAPIHostname);
 		outState.putInt(Accounts.AUTH_TYPE, mAuthType);
 		super.onSaveInstanceState(outState);
 	}
@@ -179,6 +185,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
                 DEFAULT_SIGNING_REST_BASE_URL);
         final String signingOAuthBaseUrl = getNonEmptyString(pref, KEY_SIGNING_OAUTH_BASE_URL,
                 DEFAULT_SIGNING_OAUTH_BASE_URL);
+		final String jtapiHostname = getNonEmptyString(pref, KEY_SIGNING_OAUTH_BASE_URL, null);
         final int authType = pref.getInt(KEY_AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
         final Intent intent = new Intent();
         intent.putExtra(Accounts.REST_BASE_URL, isEmpty(mRestBaseURL) ? restBaseUrl : mRestBaseURL);
@@ -189,6 +196,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
                 : mSigningOAuthBaseURL);
         intent.putExtra(Accounts.CONSUMER_KEY, isEmpty(mConsumerKey) ? consumerKey : mConsumerKey);
         intent.putExtra(Accounts.CONSUMER_SECRET, isEmpty(mConsumerSecret) ? consumerSecret : mConsumerSecret);
+		intent.putExtra(Accounts.JTAPI_HOSTNAME, isEmpty(mJTAPIHostname) ? jtapiHostname : mJTAPIHostname);
         intent.putExtra(Accounts.AUTH_TYPE, mAuthType != 0 ? mAuthType : authType);
         setResult(RESULT_OK, intent);
         finish();
@@ -205,6 +213,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 			mSigningOAuthBaseURL = savedInstanceState.getString(Accounts.SIGNING_OAUTH_BASE_URL);
 			mConsumerKey = trim(savedInstanceState.getString(Accounts.CONSUMER_KEY));
 			mConsumerSecret = trim(savedInstanceState.getString(Accounts.CONSUMER_SECRET));
+			mJTAPIHostname = trim(savedInstanceState.getString(Accounts.JTAPI_HOSTNAME));
 			mAuthType = savedInstanceState.getInt(Accounts.AUTH_TYPE);
 		} else {
 			final Intent intent = getIntent();
@@ -214,6 +223,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 			mSigningOAuthBaseURL = intent.getStringExtra(Accounts.SIGNING_OAUTH_BASE_URL);
 			mConsumerKey = trim(intent.getStringExtra(Accounts.CONSUMER_KEY));
 			mConsumerSecret = trim(intent.getStringExtra(Accounts.CONSUMER_SECRET));
+			mJTAPIHostname = trim(intent.getStringExtra(Accounts.JTAPI_HOSTNAME));
 			mAuthType = intent.getIntExtra(Accounts.AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
 		}
 
@@ -270,6 +280,9 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 		}
 		if (mEditConsumerSecret != null) {
 			mConsumerSecret = parseString(mEditConsumerSecret.getText());
+		}
+		if (mEditJTAPIHostname != null) {
+			mJTAPIHostname = parseString(mEditJTAPIHostname.getText());
 		}
 	}
 

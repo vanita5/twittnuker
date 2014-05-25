@@ -52,6 +52,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 
 	private EditText mEditRestBaseURL, mEditSigningRESTBaseURL, mEditOAuthBaseURL, mEditSigningOAuthBaseURL;
 	private EditText mEditConsumerKey, mEditConsumerSecret;
+	private EditText mEditJTAPIHostname;
 	private RadioGroup mEditAuthType;
 	private RadioButton mButtonOAuth, mButtonxAuth, mButtonBasic, mButtonTwipOMode;
 	private TextView mAdvancedAPIConfigLabel;
@@ -59,6 +60,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 
 	private String mRestBaseURL, mSigningRestBaseURL, mOAuthBaseURL, mSigningOAuthBaseURL;
 	private String mConsumerKey, mConsumerSecret;
+	private String mJTAPIHostname;
 	private int mAuthType;
 
 	public DefaultAPIPreference(final Context context, final AttributeSet attrs) {
@@ -107,6 +109,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 			mEditSigningOAuthBaseURL = (EditText) mAdvancedAPIConfigContainer.findViewById(R.id.signing_oauth_base_url);
 			mEditConsumerKey = (EditText) mAdvancedAPIConfigContainer.findViewById(R.id.consumer_key);
 			mEditConsumerSecret = (EditText) mAdvancedAPIConfigContainer.findViewById(R.id.consumer_secret);
+			mEditJTAPIHostname = (EditText) mAdvancedAPIConfigContainer.findViewById(R.id.jtapi_hostname);
 
 			mEditSigningRESTBaseURL.setText(isEmpty(mSigningRestBaseURL) ? DEFAULT_SIGNING_REST_BASE_URL
 					: mSigningRestBaseURL);
@@ -115,6 +118,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 					: mSigningOAuthBaseURL);
 			mEditConsumerKey.setText(isEmpty(mConsumerKey) ? TWITTER_CONSUMER_KEY_2 : mConsumerKey);
 			mEditConsumerSecret.setText(isEmpty(mConsumerSecret) ? TWITTER_CONSUMER_SECRET_2 : mConsumerSecret);
+			mEditJTAPIHostname.setText(mJTAPIHostname);
 		} else if (inflatedView != null) {
 			final boolean is_visible = inflatedView.getVisibility() == View.VISIBLE;
 			final int compound_res = is_visible ? R.drawable.expander_close_holo : R.drawable.expander_open_holo;
@@ -130,10 +134,9 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 		mConsumerSecret = getNonEmptyString(pref, KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
 		mRestBaseURL = getNonEmptyString(pref, KEY_REST_BASE_URL, DEFAULT_REST_BASE_URL);
 		mOAuthBaseURL = getNonEmptyString(pref, KEY_OAUTH_BASE_URL, DEFAULT_OAUTH_BASE_URL);
-		mSigningRestBaseURL = getNonEmptyString(pref, KEY_SIGNING_REST_BASE_URL,
-				DEFAULT_SIGNING_REST_BASE_URL);
-		mSigningOAuthBaseURL = getNonEmptyString(pref, KEY_SIGNING_OAUTH_BASE_URL,
-				DEFAULT_SIGNING_OAUTH_BASE_URL);
+		mSigningRestBaseURL = getNonEmptyString(pref, KEY_SIGNING_REST_BASE_URL, DEFAULT_SIGNING_REST_BASE_URL);
+		mSigningOAuthBaseURL = getNonEmptyString(pref, KEY_SIGNING_OAUTH_BASE_URL, DEFAULT_SIGNING_OAUTH_BASE_URL);
+		mJTAPIHostname = getNonEmptyString(pref, KEY_JTAPI_HOSTNAME, null);
 		mAuthType = pref.getInt(KEY_AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
 
 		mEditRestBaseURL.setText(isEmpty(mRestBaseURL) ? DEFAULT_REST_BASE_URL : mRestBaseURL);
@@ -180,8 +183,8 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 		editor.putString(KEY_OAUTH_BASE_URL, isEmpty(mOAuthBaseURL) ? null : mOAuthBaseURL);
 		editor.putString(KEY_SIGNING_REST_BASE_URL, isEmpty(mSigningRestBaseURL) ? null
 				: mSigningRestBaseURL);
-		editor.putString(KEY_SIGNING_OAUTH_BASE_URL, isEmpty(mSigningOAuthBaseURL) ? null
-				: mSigningOAuthBaseURL);
+		editor.putString(KEY_SIGNING_OAUTH_BASE_URL, isEmpty(mSigningOAuthBaseURL) ? null : mSigningOAuthBaseURL);
+		editor.putString(KEY_JTAPI_HOSTNAME, mJTAPIHostname);
 		editor.putInt(KEY_AUTH_TYPE, mAuthType);
 		editor.apply();
 	}
@@ -196,6 +199,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 		mSigningOAuthBaseURL = savedInstanceState.getString(Accounts.SIGNING_OAUTH_BASE_URL);
 		mConsumerKey = trim(savedInstanceState.getString(Accounts.CONSUMER_KEY));
 		mConsumerSecret = trim(savedInstanceState.getString(Accounts.CONSUMER_SECRET));
+		mJTAPIHostname = trim(savedInstanceState.getString(Accounts.JTAPI_HOSTNAME));
 		mAuthType = savedInstanceState.getInt(Accounts.AUTH_TYPE);
 	}
 
@@ -210,6 +214,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 		outState.putString(Accounts.SIGNING_OAUTH_BASE_URL, mSigningOAuthBaseURL);
 		outState.putString(Accounts.CONSUMER_KEY, mConsumerKey);
 		outState.putString(Accounts.CONSUMER_SECRET, mConsumerSecret);
+		outState.putString(Accounts.JTAPI_HOSTNAME, mJTAPIHostname);
 		outState.putInt(Accounts.AUTH_TYPE, mAuthType);
 		return outState;
 	}
@@ -232,6 +237,9 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 		}
 		if (mEditConsumerSecret != null) {
 			mConsumerSecret = parseString(mEditConsumerSecret.getText());
+		}
+		if (mEditJTAPIHostname != null) {
+			mJTAPIHostname = parseString(mEditJTAPIHostname.getText());
 		}
 	}
 }

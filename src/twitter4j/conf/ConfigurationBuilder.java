@@ -69,6 +69,8 @@ public final class ConfigurationBuilder {
 		configuration.setRestBaseURL(conf.getRestBaseURL());
 		configuration.setSigningOAuthBaseURL(conf.getSigningOAuthBaseURL());
 		configuration.setSigningRestBaseURL(conf.getSigningRestBaseURL());
+		configuration.setUploadBaseURL(conf.getUploadBaseURL());
+		configuration.setSigningUploadBaseURL(conf.getSigningUploadBaseURL());
 		configuration.setUser(conf.getUser());
 		configuration.setUseSSL(conf.isSSLEnabled());
 
@@ -273,6 +275,18 @@ public final class ConfigurationBuilder {
 	public ConfigurationBuilder setSigningRestBaseURL(final String signingRestBaseURL) {
 		checkNotBuilt();
 		configuration.setSigningRestBaseURL(signingRestBaseURL);
+		return this;
+	}
+
+	public ConfigurationBuilder setSigningUploadBaseURL(final String signingUploadBaseURL) {
+		checkNotBuilt();
+		configuration.setSigningUploadBaseURL(signingUploadBaseURL);
+		return this;
+	}
+
+	public ConfigurationBuilder setUploadBaseURL(final String uploadBaseURL) {
+		checkNotBuilt();
+		configuration.setUploadBaseURL(uploadBaseURL);
 		return this;
 	}
 

@@ -85,21 +85,14 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 	}
 
 	public static ContentValues makeAccountContentValuesOAuth(final Configuration conf, final AccessToken accessToken,
-			final User user, final int authType, final int color) {
-		if (user == null || user.getId() <= 0) return null;
+															  final User user, final int authType, final int color, String jtapiHostname) {
+		if (user == null || user.getId() <= 0 || accessToken == null || user.getId() != accessToken.getUserId())
+			return null;
 		final ContentValues values = new ContentValues();
-		switch (authType) {
-			case Accounts.AUTH_TYPE_OAUTH:
-			case Accounts.AUTH_TYPE_XAUTH: {
-				if (accessToken == null) return null;
-				if (user.getId() != accessToken.getUserId()) return null;
-				values.put(Accounts.OAUTH_TOKEN, accessToken.getToken());
-				values.put(Accounts.OAUTH_TOKEN_SECRET, accessToken.getTokenSecret());
-				values.put(Accounts.CONSUMER_KEY, conf.getOAuthConsumerKey());
-				values.put(Accounts.CONSUMER_SECRET, conf.getOAuthConsumerSecret());
-				break;
-			}
-		}
+		values.put(Accounts.OAUTH_TOKEN, accessToken.getToken());
+		values.put(Accounts.OAUTH_TOKEN_SECRET, accessToken.getTokenSecret());
+		values.put(Accounts.CONSUMER_KEY, conf.getOAuthConsumerKey());
+		values.put(Accounts.CONSUMER_SECRET, conf.getOAuthConsumerSecret());
 		values.put(Accounts.AUTH_TYPE, authType);
 		values.put(Accounts.ACCOUNT_ID, user.getId());
 		values.put(Accounts.SCREEN_NAME, user.getScreenName());
@@ -112,6 +105,8 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Accounts.SIGNING_REST_BASE_URL, conf.getSigningRestBaseURL());
 		values.put(Accounts.OAUTH_BASE_URL, conf.getOAuthBaseURL());
 		values.put(Accounts.SIGNING_OAUTH_BASE_URL, conf.getSigningOAuthBaseURL());
+		values.put(Accounts.SIGNING_OAUTH_BASE_URL, conf.getSigningOAuthBaseURL());
+		values.put(Accounts.JTAPI_HOSTNAME, jtapiHostname);
 		return values;
 	}
 
@@ -176,8 +171,10 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(DirectMessages.MESSAGE_TIMESTAMP, message.getCreatedAt().getTime());
 		values.put(DirectMessages.SENDER_ID, sender.getId());
 		values.put(DirectMessages.RECIPIENT_ID, recipient.getId());
-		values.put(DirectMessages.TEXT_HTML, Utils.formatDirectMessageText(message));
+		final String text_html = Utils.formatDirectMessageText(message);
+		values.put(DirectMessages.TEXT_HTML, text_html);
 		values.put(DirectMessages.TEXT_PLAIN, message.getText());
+		values.put(DirectMessages.TEXT_UNESCAPED, toPlainText(text_html));
 		values.put(DirectMessages.IS_OUTGOING, is_outgoing);
 		values.put(DirectMessages.SENDER_NAME, sender.getName());
 		values.put(DirectMessages.SENDER_SCREEN_NAME, sender.getScreenName());
@@ -185,6 +182,11 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(DirectMessages.RECIPIENT_SCREEN_NAME, recipient.getScreenName());
 		values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL, sender_profile_image_url);
 		values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, recipient_profile_image_url);
+		final ParcelableMedia[] medias = ParcelableMedia.fromEntities(message);
+		if (medias != null) {
+			values.put(DirectMessages.MEDIAS, JSONSerializer.toJSONArrayString(medias));
+			values.put(DirectMessages.FIRST_MEDIA, medias[0].url);
+		}
 		return values;
 	}
 
@@ -205,6 +207,10 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(DirectMessages.RECIPIENT_SCREEN_NAME, message.recipient_screen_name);
 		values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL, message.sender_profile_image_url);
 		values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, message.recipient_profile_image_url);
+		if (message.medias != null) {
+			values.put(Statuses.MEDIAS, JSONSerializer.toJSONArrayString(message.medias));
+			values.put(Statuses.FIRST_MEDIA, message.medias[0].url);
+		}
 		return values;
 	}
 
@@ -306,12 +312,12 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Statuses.IS_FAVORITE, status.isFavorited());
         final ParcelableMedia[] medias = ParcelableMedia.fromEntities(status);
         if (medias != null) {
-            values.put(Statuses.MEDIAS, ParseUtils.parseString(JSONSerializer.toJSONArray(medias)));
+			values.put(Statuses.MEDIAS, JSONSerializer.toJSONArrayString(medias));
             values.put(Statuses.FIRST_MEDIA, medias[0].url);
         }
-        final JSONArray mentions = JSONSerializer.toJSONArray(ParcelableUserMention.fromStatus(status));
+		final ParcelableUserMention[] mentions = ParcelableUserMention.fromStatus(status);
         if (mentions != null) {
-            values.put(Statuses.MENTIONS, mentions.toString());
+			values.put(Statuses.MENTIONS, JSONSerializer.toJSONArrayString(mentions));
 		}
 		return values;
 	}

@@ -79,8 +79,10 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 
 	private String signingOAuthBaseURL;
 	private String signingRestBaseURL;
+	private String signingUploadBaseURL;
 
 	private String restBaseURL;
+	private String uploadBaseURL;
 
 	private boolean includeRTsEnabled;
 
@@ -137,6 +139,9 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 
 		setRestBaseURL(DEFAULT_REST_BASE_URL);
 		setSigningRestBaseURL(DEFAULT_SIGNING_REST_BASE_URL);
+
+		setUploadBaseURL(DEFAULT_UPLOAD_BASE_URL);
+		setSigningUploadBaseURL(DEFAULT_SIGNING_UPLOAD_BASE_URL);
 		setIncludeRTsEnbled(true);
 
 		setMediaProvider("TWITTER");
@@ -429,6 +434,16 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 	}
 
 	@Override
+	public String getSigningUploadBaseURL() {
+		return signingUploadBaseURL != null ? signingUploadBaseURL : uploadBaseURL;
+	}
+
+	@Override
+	public String getUploadBaseURL() {
+		return uploadBaseURL;
+	}
+
+	@Override
 	public Properties getMediaProviderParameters() {
 		return this.mediaProviderParameters;
 	}
@@ -566,23 +581,25 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 				+ prettyDebug + ", gzipEnabled=" + gzipEnabled + ", httpProxyHost=" + httpProxyHost
 				+ ", httpProxyUser=" + httpProxyUser + ", httpProxyPassword=" + httpProxyPassword + ", httpProxyPort="
 				+ httpProxyPort + ", httpConnectionTimeout=" + httpConnectionTimeout + ", httpReadTimeout="
-				+ httpReadTimeout + ", httpRetryCount="
-				+ httpRetryCount + ", httpRetryIntervalSeconds=" + httpRetryIntervalSeconds + ", maxTotalConnections="
-				+ maxTotalConnections + ", defaultMaxPerRoute=" + defaultMaxPerRoute + ", oAuthConsumerKey="
-				+ oAuthConsumerKey + ", oAuthConsumerSecret=" + oAuthConsumerSecret + ", oAuthAccessToken="
-				+ oAuthAccessToken + ", oAuthAccessTokenSecret=" + oAuthAccessTokenSecret + ", oAuthRequestTokenURL="
-				+ oAuthRequestTokenURL + ", oAuthAuthorizationURL=" + oAuthAuthorizationURL + ", oAuthAccessTokenURL="
-				+ oAuthAccessTokenURL + ", oAuthAuthenticationURL=" + oAuthAuthenticationURL
-				+ ", signingOAuthRequestTokenURL=" + signingOAuthRequestTokenURL + ", signingOAuthAuthorizationURL="
-				+ signingOAuthAuthorizationURL + ", signingOAuthAccessTokenURL=" + signingOAuthAccessTokenURL
-				+ ", signingOAuthAuthenticationURL=" + signingOAuthAuthenticationURL + ", oAuthBaseURL=" + oAuthBaseURL
-				+ ", signingOAuthBaseURL=" + signingOAuthBaseURL + ", signingRestBaseURL=" + signingRestBaseURL
-				+ ", restBaseURL=" + restBaseURL + ", includeRTsEnabled=" + includeRTsEnabled
+				+ httpReadTimeout + ", httpRetryCount=" + httpRetryCount + ", httpRetryIntervalSeconds="
+				+ httpRetryIntervalSeconds + ", maxTotalConnections=" + maxTotalConnections + ", defaultMaxPerRoute="
+				+ defaultMaxPerRoute + ", oAuthConsumerKey=" + oAuthConsumerKey + ", oAuthConsumerSecret="
+				+ oAuthConsumerSecret + ", oAuthAccessToken=" + oAuthAccessToken + ", oAuthAccessTokenSecret="
+				+ oAuthAccessTokenSecret + ", oAuthRequestTokenURL=" + oAuthRequestTokenURL
+				+ ", oAuthAuthorizationURL=" + oAuthAuthorizationURL + ", oAuthAccessTokenURL=" + oAuthAccessTokenURL
+				+ ", oAuthAuthenticationURL=" + oAuthAuthenticationURL + ", signingOAuthRequestTokenURL="
+				+ signingOAuthRequestTokenURL + ", signingOAuthAuthorizationURL=" + signingOAuthAuthorizationURL
+				+ ", signingOAuthAccessTokenURL=" + signingOAuthAccessTokenURL + ", signingOAuthAuthenticationURL="
+				+ signingOAuthAuthenticationURL + ", oAuthBaseURL=" + oAuthBaseURL + ", signingOAuthBaseURL="
+				+ signingOAuthBaseURL + ", signingRestBaseURL=" + signingRestBaseURL + ", restBaseURL=" + restBaseURL
+				+ ", includeRTsEnabled=" + includeRTsEnabled + ", includeEntitiesEnabled=" + includeEntitiesEnabled
 				+ ", mediaProviderParameters=" + mediaProviderParameters
 				+ ", mediaProvider='" + mediaProvider + ", mediaProviderAPIKey='" + mediaProviderAPIKey
-				+ ", includeEntitiesEnabled=" + includeEntitiesEnabled + ", includeTwitterClientHeader="
-				+ includeTwitterClientHeader + ", clientVersion=" + clientVersion + ", clientURL=" + clientURL
-				+ ", clientName=" + clientName + "}";
+				+ ", includeEntitiesEnabled=" + includeEntitiesEnabled
+				+ ", includeTwitterClientHeader=" + includeTwitterClientHeader + ", clientVersion=" + clientVersion
+				+ ", clientURL=" + clientURL + ", clientName=" + clientName + ", httpClientFactory="
+				+ httpClientFactory + ", hostAddressResolverFactory=" + hostAddressResolverFactory
+				+ ", requestHeaders=" + requestHeaders + "}";
 	}
 
 	protected void cacheInstance() {
@@ -762,6 +779,22 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 		fixRestBaseURL();
 	}
 
+	protected void setSigningUploadBaseURL(String signingUploadBaseURL) {
+		if (isNullOrEmpty(signingUploadBaseURL)) {
+			signingUploadBaseURL = DEFAULT_SIGNING_UPLOAD_BASE_URL;
+		}
+		this.signingUploadBaseURL = fixURLSlash(signingUploadBaseURL);
+		fixUploadBaseURL();
+	}
+
+	protected void setUploadBaseURL(String uploadBaseURL) {
+		if (isNullOrEmpty(uploadBaseURL)) {
+			uploadBaseURL = DEFAULT_UPLOAD_BASE_URL;
+		}
+		this.uploadBaseURL = fixURLSlash(uploadBaseURL);
+		fixUploadBaseURL();
+	}
+
 	protected final void setUser(final String user) {
 		this.user = user;
 	}
@@ -823,6 +856,16 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 		}
 		if (restBaseURL != null && restBaseURL.equals(fixURL(DEFAULT_USE_SSL, signingRestBaseURL))) {
 			signingRestBaseURL = fixURL(useSSL, signingRestBaseURL);
+		}
+		initRequestHeaders();
+	}
+
+	private void fixUploadBaseURL() {
+		if (DEFAULT_UPLOAD_BASE_URL.equals(fixURL(DEFAULT_USE_SSL, uploadBaseURL))) {
+			uploadBaseURL = fixURL(useSSL, uploadBaseURL);
+		}
+		if (uploadBaseURL != null && uploadBaseURL.equals(fixURL(DEFAULT_USE_SSL, uploadBaseURL))) {
+			uploadBaseURL = fixURL(useSSL, uploadBaseURL);
 		}
 		initRequestHeaders();
 	}

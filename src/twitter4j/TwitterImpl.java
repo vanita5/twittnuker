@@ -1233,11 +1233,31 @@ final class TwitterImpl extends TwitterBaseImpl implements Twitter {
 	}
 
 	@Override
+	public DirectMessage sendDirectMessage(final long userId, final String text, final long mediaId)
+			throws TwitterException {
+		ensureAuthorizationEnabled();
+		return factory.createDirectMessage(post(conf.getRestBaseURL() + ENDPOINT_DIRECT_MESSAGES_NEW,
+				conf.getSigningRestBaseURL() + ENDPOINT_DIRECT_MESSAGES_NEW, new HttpParameter("user_id", userId),
+				new HttpParameter("text", text), new HttpParameter("media_id", mediaId), INCLUDE_ENTITIES));
+	}
+
+	@Override
 	public DirectMessage sendDirectMessage(final String screenName, final String text) throws TwitterException {
 		ensureAuthorizationEnabled();
 		return factory.createDirectMessage(post(conf.getRestBaseURL() + ENDPOINT_DIRECT_MESSAGES_NEW,
 				conf.getSigningRestBaseURL() + ENDPOINT_DIRECT_MESSAGES_NEW, new HttpParameter("screen_name",
 						screenName), new HttpParameter("text", text), INCLUDE_ENTITIES));
+	}
+
+	@Override
+	public DirectMessage sendDirectMessage(final String screenName, final String text, final long mediaId)
+			throws TwitterException {
+		ensureAuthorizationEnabled();
+		return factory.createDirectMessage(post(conf.getRestBaseURL() + ENDPOINT_DIRECT_MESSAGES_NEW,
+				conf.getSigningRestBaseURL() + ENDPOINT_DIRECT_MESSAGES_NEW, new HttpParameter("screen_name",
+						screenName), new HttpParameter("text", text), new HttpParameter("media_id", mediaId),
+				INCLUDE_ENTITIES));
+
 	}
 
 	@Override
@@ -1542,6 +1562,22 @@ final class TwitterImpl extends TwitterBaseImpl implements Twitter {
 		}
 		return factory.createAUserList(post(conf.getRestBaseURL() + ENDPOINT_LISTS_UPDATE, conf.getSigningRestBaseURL()
 				+ ENDPOINT_LISTS_UPDATE, httpParams.toArray(new HttpParameter[httpParams.size()])));
+	}
+
+	@Override
+	public MediaUploadResponse uploadMedia(final File file) throws TwitterException {
+		final String url = conf.getUploadBaseURL() + ENDPOINT_MEDIA_UPLOAD;
+		final String signUrl = conf.getSigningUploadBaseURL() + ENDPOINT_MEDIA_UPLOAD;
+		return factory.createMediaUploadResponse(post(url, signUrl, new HttpParameter("media", file)));
+	}
+
+	@Override
+	public MediaUploadResponse uploadMedia(final String fileName, final InputStream fileBody, String fileType)
+			throws TwitterException {
+		final String url = conf.getUploadBaseURL() + ENDPOINT_MEDIA_UPLOAD;
+		final String signUrl = conf.getSigningUploadBaseURL() + ENDPOINT_MEDIA_UPLOAD;
+		return factory.createMediaUploadResponse(post(url, signUrl, new HttpParameter("media", fileName, fileBody,
+				fileType)));
 	}
 
 	@Override
