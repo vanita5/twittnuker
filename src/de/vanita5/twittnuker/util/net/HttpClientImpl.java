@@ -18,32 +18,33 @@ package de.vanita5.twittnuker.util.net;
 
 import static android.text.TextUtils.isEmpty;
 
+import org.apache.http.Consts;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.params.CoreProtocolPNames;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.util.TextUtils;
+import de.vanita5.twittnuker.util.net.ssl.ApacheTrustAllSSLSocketFactoryHC4;
 
 import twitter4j.TwitterException;
 import twitter4j.auth.Authorization;
@@ -57,23 +58,9 @@ import twitter4j.internal.logging.Logger;
 import twitter4j.internal.util.InternalStringUtil;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
-import java.security.GeneralSecurityException;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.X509Certificate;
 import java.util.Map;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 /**
  * HttpClient implementation for Apache HttpClient 4.0.x
@@ -86,37 +73,36 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
 	private final HttpClientConfiguration conf;
 	private final HttpClient client;
 
-	private static final SSLSocketFactory TRUST_ALL_SSL_SOCKET_FACTORY = TrustAllSSLSocketFactory.getInstance();
-
 	public HttpClientImpl(final HttpClientConfiguration conf) {
 		this.conf = conf;
-		final SchemeRegistry registry = new SchemeRegistry();
-		final SSLSocketFactory factory = conf.isSSLErrorIgnored() ? TRUST_ALL_SSL_SOCKET_FACTORY : SSLSocketFactory
-				.getSocketFactory();
-		registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-		registry.register(new Scheme("https", factory, 443));
-		final HttpParams params = new BasicHttpParams();
-		final ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(params, registry);
-		final DefaultHttpClient client = new DefaultHttpClient(cm, params);
-        final HttpParams clientParams = client.getParams();
-        HttpConnectionParams.setConnectionTimeout(clientParams, conf.getHttpConnectionTimeout());
-        HttpConnectionParams.setSoTimeout(clientParams, conf.getHttpReadTimeout());
-
-		if (conf.getHttpProxyHost() != null && !conf.getHttpProxyHost().equals("")) {
+		final HttpClientBuilder clientBuilder = HttpClients.custom();
+		final LayeredConnectionSocketFactory factory;
+		if (conf.isSSLErrorIgnored()) {
+			factory = ApacheTrustAllSSLSocketFactoryHC4.getSocketFactory();
+		} else {
+			factory = SSLConnectionSocketFactory.getSocketFactory();
+		}
+		clientBuilder.setSSLSocketFactory(factory);
+		final RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
+		requestConfigBuilder.setConnectionRequestTimeout(conf.getHttpConnectionTimeout());
+		requestConfigBuilder.setConnectTimeout(conf.getHttpConnectionTimeout());
+		requestConfigBuilder.setSocketTimeout(conf.getHttpReadTimeout());
+		clientBuilder.setDefaultRequestConfig(requestConfigBuilder.build());
+		if (conf.isProxyConfigured()) {
 			final HttpHost proxy = new HttpHost(conf.getHttpProxyHost(), conf.getHttpProxyPort());
-			client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-
-			if (conf.getHttpProxyUser() != null && !conf.getHttpProxyUser().equals("")) {
+			clientBuilder.setProxy(proxy);
+			if (!TextUtils.isEmpty(conf.getHttpProxyUser())) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Proxy AuthUser: " + conf.getHttpProxyUser());
 					logger.debug("Proxy AuthPassword: " + InternalStringUtil.maskString(conf.getHttpProxyPassword()));
 				}
-				client.getCredentialsProvider().setCredentials(
-						new AuthScope(conf.getHttpProxyHost(), conf.getHttpProxyPort()),
+				final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+				credentialsProvider.setCredentials(new AuthScope(conf.getHttpProxyHost(), conf.getHttpProxyPort()),
 						new UsernamePasswordCredentials(conf.getHttpProxyUser(), conf.getHttpProxyPassword()));
+				clientBuilder.setDefaultCredentialsProvider(credentialsProvider);
 			}
 		}
-		this.client = client;
+		client = clientBuilder.build();
 	}
 
 	@Override
@@ -134,8 +120,8 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
 			}
 			final String host = urlOrig.getHost(), authority = urlOrig.getAuthority();
 			final String resolvedHost = resolver != null ? resolver.resolve(host) : null;
-			final String resolvedUrl = !isEmpty(resolvedHost) ? urlString.replace("://" + host, "://"
-                    + resolvedHost) : urlString;
+			final String resolvedUrl = !isEmpty(resolvedHost) ? urlString.replace("://" + host, "://" + resolvedHost)
+					: urlString;
 
             final RequestMethod method = req.getMethod();
             if (method == RequestMethod.GET) {
@@ -146,24 +132,24 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
 				final HttpParameter[] params = req.getParameters();
 				if (params != null) {
 					if (HttpParameter.containsFile(params)) {
-						final MultipartEntity me = new MultipartEntity();
+						final MultipartEntityBuilder me = MultipartEntityBuilder.create();
 						for (final HttpParameter param : params) {
 							if (param.isFile()) {
+								final ContentType contentType = ContentType.create(param.getContentType());
 								final ContentBody body;
 								if (param.getFile() != null) {
-									body = new FileBody(param.getFile(), param.getContentType());
+									body = new FileBody(param.getFile(), ContentType.create(param.getContentType()));
 								} else {
-									body = new InputStreamBody(param.getFileBody(), param.getContentType(),
-											param.getFileName());
+									body = new InputStreamBody(param.getFileBody(), contentType, param.getFileName());
 								}
 								me.addPart(param.getName(), body);
 							} else {
-                                final ContentBody body = new StringBody(param.getValue(), "text/plain; charset=UTF-8",
-                                        Charset.forName("UTF-8"));
+								final ContentType contentType = ContentType.TEXT_PLAIN.withCharset(Consts.UTF_8);
+								final ContentBody body = new StringBody(param.getValue(), contentType);
                                 me.addPart(param.getName(), body);
 							}
 						}
-						post.setEntity(me);
+						post.setEntity(me.build());
 					} else {
 						if (params.length > 0) {
 							post.setEntity(new UrlEncodedFormEntity(params));
@@ -203,7 +189,7 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
 				throw new TwitterException("Please check your APN settings, make sure not to use WAP APNs.", e);
 			} catch (final OutOfMemoryError e) {
 				// I don't know why OOM thown, but it should be catched.
-				//System.gc();
+				System.gc();
 				throw new TwitterException("Unknown error", e);
 			}
 			final int statusCode = res.getStatusCode();
@@ -217,57 +203,5 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
 	@Override
 	public void shutdown() {
 		client.getConnectionManager().shutdown();
-	}
-
-	static final class TrustAllSSLSocketFactory extends SSLSocketFactory {
-		final SSLContext sslContext = SSLContext.getInstance(TLS);
-
-		TrustAllSSLSocketFactory(final KeyStore truststore) throws NoSuchAlgorithmException, KeyManagementException,
-				KeyStoreException, UnrecoverableKeyException {
-			super(truststore);
-
-			final TrustManager tm = new X509TrustManager() {
-				@Override
-				public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
-				}
-
-				@Override
-				public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
-				}
-
-				@Override
-				public X509Certificate[] getAcceptedIssuers() {
-					return new X509Certificate[0];
-				}
-			};
-
-			sslContext.init(null, new TrustManager[] { tm }, null);
-		}
-
-		@Override
-		public Socket createSocket() throws IOException {
-			return sslContext.getSocketFactory().createSocket();
-		}
-
-		@Override
-		public Socket createSocket(final Socket socket, final String host, final int port, final boolean autoClose)
-				throws IOException, UnknownHostException {
-			return sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
-		}
-
-		public static SSLSocketFactory getInstance() {
-			try {
-				final KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-				trustStore.load(null, null);
-				final SSLSocketFactory factory = new TrustAllSSLSocketFactory(trustStore);
-				factory.setHostnameVerifier(ALLOW_ALL_HOSTNAME_VERIFIER);
-				return factory;
-			} catch (final GeneralSecurityException e) {
-				logger.error("Exception while creating SSLSocketFactory instance", e);
-			} catch (final IOException e) {
-				logger.error("Exception while creating SSLSocketFactory instance", e);
-			}
-			return null;
-		}
 	}
 }

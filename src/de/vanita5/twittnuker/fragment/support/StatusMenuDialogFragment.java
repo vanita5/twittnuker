@@ -43,7 +43,7 @@ public class StatusMenuDialogFragment extends MenuDialogFragment {
 		final SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final Bundle args = getArguments();
 		final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
-		setMenuForStatus(getActivity(), menu, status);
+		setMenuForStatus(getThemedContext(), menu, status);
 		final boolean longclickToOpenMenu = prefs.getBoolean(KEY_LONG_CLICK_TO_OPEN_MENU, false);
 		Utils.setMenuItemAvailability(menu, MENU_MULTI_SELECT, longclickToOpenMenu);
 	}

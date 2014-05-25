@@ -65,12 +65,14 @@ public class AccountActionProvider extends ActionProvider implements TwittnukerC
 			intent.putExtra(EXTRA_ACCOUNT, account);
 			item.setIntent(intent);
 		}
-		subMenu.setGroupCheckable(MENU_GROUP, true, false);
+		subMenu.setGroupCheckable(MENU_GROUP, true, true);
 		for (int i = 0, j = subMenu.size(); i < j; i++) {
 			final MenuItem item = subMenu.getItem(i);
 			final Intent intent = item.getIntent();
 			final Account account = intent.getParcelableExtra(EXTRA_ACCOUNT);
-			item.setChecked(account.account_id == mAccountId);
+			if (account.account_id == mAccountId) {
+				item.setChecked(true);
+			}
 		}
 	}
 

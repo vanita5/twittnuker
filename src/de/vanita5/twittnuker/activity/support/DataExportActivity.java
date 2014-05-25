@@ -58,14 +58,17 @@ public class DataExportActivity extends BaseSupportActivity implements FileSelec
 	}
 
 	@Override
-	public void onCancelled() {
+	public void onCancelled(final DialogFragment df) {
 		if (!isFinishing()) {
 			finish();
 		}
 	}
 
 	@Override
-	public void onDismissed() {
+	public void onDismissed(final DialogFragment df) {
+		if (df instanceof DataExportImportTypeSelectorDialogFragment) {
+			finish();
+		}
 	}
 
 	@Override

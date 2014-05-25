@@ -124,7 +124,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 		return qb.build();
 	}
 
-	private void handleVersionChange(final SQLiteDatabase db, int oldVersion, int newVersion) {
+	private void handleVersionChange(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
 		final HashMap<String, String> accountsAlias = new HashMap<String, String>();
 		final HashMap<String, String> filtersAlias = new HashMap<String, String>();
 		accountsAlias.put(Accounts.SCREEN_NAME, "username");

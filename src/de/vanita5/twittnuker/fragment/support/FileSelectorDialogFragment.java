@@ -47,7 +47,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
-import de.vanita5.twittnuker.fragment.iface.IDialogFragmentCallback;
+import de.vanita5.twittnuker.fragment.iface.ISupportDialogFragmentCallback;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
@@ -76,7 +76,7 @@ public class FileSelectorDialogFragment extends BaseSupportDialogFragment implem
 		super.onCancel(dialog);
 		final FragmentActivity a = getActivity();
 		if (a instanceof Callback) {
-			((Callback) a).onCancelled();
+			((Callback) a).onCancelled(this);
 		}
 	}
 
@@ -128,7 +128,7 @@ public class FileSelectorDialogFragment extends BaseSupportDialogFragment implem
 		super.onDismiss(dialog);
 		final FragmentActivity a = getActivity();
 		if (a instanceof Callback) {
-			((Callback) a).onDismissed();
+			((Callback) a).onDismissed(this);
 		}
 	}
 
@@ -185,7 +185,7 @@ public class FileSelectorDialogFragment extends BaseSupportDialogFragment implem
 		dialog.setTitle(title);
 	}
 
-	public static interface Callback extends IDialogFragmentCallback {
+	public static interface Callback extends ISupportDialogFragmentCallback {
 
 		void onFilePicked(File file);
 	}

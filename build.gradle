@@ -36,7 +36,8 @@ dependencies {
     compile 'com.mobeta.android.dslv:drag-sort-listview:0.6.1'
     compile 'com.negusoft:holoaccent:0.9.1-MARIOTAKU'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.1'
-    compile 'org.apache.httpcomponents:httpmime:4.2.1'
+    compile 'org.apache.httpcomponents:httpmime:4.3.3'
+    compile 'org.apache.httpcomponents:httpclient-android:4.3.3'
     compile 'org.mariotaku:menucomponent:0.2-SNAPSHOT'
     compile 'org.mariotaku:refreshnow:0.1.2-SNAPSHOT'
     compile 'com.etsy.android.grid:library:1.0.4'
@@ -69,7 +70,9 @@ android {
     //Workaround
     //https://code.google.com/p/android/issues/detail?id=61573
     packagingOptions {
+        exclude 'META-INF/NOTICE'
         exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
     }
 }

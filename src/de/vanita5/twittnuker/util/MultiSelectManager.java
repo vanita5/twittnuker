@@ -50,6 +50,10 @@ public class MultiSelectManager implements Constants {
 		return mSelectedItems.size();
 	}
 
+	public long getFirstSelectAccountId() {
+		return getFirstSelectAccountId(mSelectedItems);
+	}
+
 	public List<Object> getSelectedItems() {
 		return mSelectedItems;
 	}

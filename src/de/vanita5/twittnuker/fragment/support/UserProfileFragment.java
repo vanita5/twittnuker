@@ -67,6 +67,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -321,6 +322,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 		mUser = null;
 		mAdapter.clear();
 		if (user == null || user.id <= 0 || getActivity() == null) return;
+		final Resources res = getResources();
 		final LoaderManager lm = getLoaderManager();
 		lm.destroyLoader(LOADER_ID_USER);
 		lm.destroyLoader(LOADER_ID_FRIENDSHIP);
@@ -346,17 +348,18 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 				: View.GONE);
 		mURLView.setText(isEmpty(user.url_expanded) ? user.url : user.url_expanded);
 		mURLView.setMovementMethod(null);
-		final String created_at = formatToLongTimeString(getActivity(), user.created_at);
-		final double total_created_days = (System.currentTimeMillis() - user.created_at) / 1000 / 60 / 60 / 24;
-		final long daily_tweets = Math.round(user.statuses_count / Math.max(1, total_created_days));
-		mCreatedAtView.setText(getString(R.string.daily_statuses_count, created_at, daily_tweets));
+		final String createdAt = formatToLongTimeString(getActivity(), user.created_at);
+		final float daysSinceCreated = (System.currentTimeMillis() - user.created_at) / 1000 / 60 / 60 / 24;
+		final int dailyTweets = Math.round(user.statuses_count / Math.max(1, daysSinceCreated));
+		mCreatedAtView.setText(res.getQuantityString(R.plurals.created_at_with_N_tweets_per_day, dailyTweets,
+				createdAt, dailyTweets));
 		mTweetCount.setText(getLocalizedNumber(mLocale, user.statuses_count));
 		mFollowersCount.setText(getLocalizedNumber(mLocale, user.followers_count));
 		mFriendsCount.setText(getLocalizedNumber(mLocale, user.friends_count));
 		if (mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true)) {
             mProfileImageLoader.displayProfileImage(mProfileImageView,
                     getOriginalTwitterProfileImage(user.profile_image_url));
-			final int def_width = getResources().getDisplayMetrics().widthPixels;
+			final int def_width = res.getDisplayMetrics().widthPixels;
 			final int width = mBannerWidth > 0 ? mBannerWidth : def_width;
 			mProfileBannerView.setImageBitmap(null);
 			mProfileImageLoader.displayProfileBanner(mProfileBannerView, user.profile_banner_url, width);

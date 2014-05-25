@@ -127,6 +127,7 @@ import de.vanita5.twittnuker.activity.support.MapViewerActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesConversationFragment;
 import de.vanita5.twittnuker.fragment.support.IncomingFriendshipsFragment;
 import de.vanita5.twittnuker.fragment.support.SavedSearchesListFragment;
@@ -386,9 +387,16 @@ public final class Utils implements Constants {
 			final MenuItem item = menu.add(groupId, Menu.NONE, Menu.NONE, info.loadLabel(pm));
 			item.setIntent(intent);
 			final Drawable metaDataDrawable = getMetadataDrawable(pm, info.activityInfo, METADATA_KEY_EXTENSION_ICON);
+			int actionIconColor;
+			if (context instanceof ITwidereContextWrapper) {
+				final int themeResId = ((ITwidereContextWrapper) context).getThemeResourceId();
+				actionIconColor = ThemeUtils.getActionIconColor(themeResId);
+			} else {
+				actionIconColor = ThemeUtils.getActionIconColor(context);
+			}
 			if (metaDataDrawable != null) {
 				metaDataDrawable.mutate();
-				metaDataDrawable.setColorFilter(ThemeUtils.getActionIconColor(context), PorterDuff.Mode.MULTIPLY);
+				metaDataDrawable.setColorFilter(actionIconColor, PorterDuff.Mode.MULTIPLY);
 				item.setIcon(metaDataDrawable);
 			} else {
 				final Drawable icon = info.loadIcon(pm);
@@ -2210,13 +2218,13 @@ public final class Utils implements Constants {
 		if (te == null) return context.getString(R.string.error_unknown_error);
 		if (te.exceededRateLimitation()) {
 			final RateLimitStatus status = te.getRateLimitStatus();
-			final long sec_until_reset = status.getSecondsUntilReset() * 1000;
-			final String next_reset_time = ParseUtils.parseString(getRelativeTimeSpanString(System.currentTimeMillis()
-					+ sec_until_reset));
-			if (isEmpty(action)) return context.getString(R.string.error_message_rate_limit, next_reset_time.trim());
-			return context.getString(R.string.error_message_rate_limit_with_action, action, next_reset_time.trim());
+			final long secUntilReset = status.getSecondsUntilReset() * 1000;
+			final String nextResetTime = ParseUtils.parseString(getRelativeTimeSpanString(System.currentTimeMillis()
+					+ secUntilReset));
+			if (isEmpty(action)) return context.getString(R.string.error_message_rate_limit, nextResetTime.trim());
+			return context.getString(R.string.error_message_rate_limit_with_action, action, nextResetTime.trim());
 		} else if (te.getErrorCode() > 0) {
-			final String msg = TwitterErrorCodes.getErrorMessage(context, te.getErrorCode());
+			final String msg = StatusCodeMessageUtils.getTwitterErrorMessage(context, te.getErrorCode());
 			return getErrorMessage(context, action, msg != null ? msg : trimLineBreak(te.getMessage()));
 		} else if (te.getCause() instanceof SSLException) {
 			final String msg = te.getCause().getMessage();
@@ -2234,9 +2242,12 @@ public final class Utils implements Constants {
 
 	public static String getTwitterErrorMessage(final Context context, final TwitterException te) {
 		if (te == null) return null;
-		final String msg = TwitterErrorCodes.getErrorMessage(context, te.getErrorCode());
-		if (isEmpty(msg)) return te.getMessage();
-		return msg;
+		if (StatusCodeMessageUtils.containsTwitterError(te.getErrorCode()))
+			return StatusCodeMessageUtils.getTwitterErrorMessage(context, te.getErrorCode());
+		else if (StatusCodeMessageUtils.containsHttpStatus(te.getStatusCode()))
+			return StatusCodeMessageUtils.getHttpStatusMessage(context, te.getStatusCode());
+		else
+			return te.getMessage();
 	}
 
 	public static Twitter getTwitterInstance(final Context context, final long accountId,
@@ -3521,8 +3532,9 @@ public final class Utils implements Constants {
 							.currentTimeMillis() + sec_until_reset));
 					message = context.getString(R.string.error_message_rate_limit_with_action, action,
 							next_reset_time.trim());
-				} else if (te.getErrorCode() > 0) {
-					final String msg = TwitterErrorCodes.getErrorMessage(context, te.getErrorCode());
+				} else if (isErrorCodeMessageSupported(te)) {
+					final String msg = StatusCodeMessageUtils
+							.getMessage(context, te.getStatusCode(), te.getErrorCode());
 					message = context.getString(R.string.error_message_with_action, action, msg != null ? msg
 							: trimLineBreak(te.getMessage()));
 				} else if (te.getCause() instanceof SSLException) {
@@ -3644,6 +3656,12 @@ public final class Utils implements Constants {
 			return null;
 		final Drawable d = pm.getDrawable(info.packageName, info.metaData.getInt(key), info.applicationInfo);
 		return d;
+	}
+
+	private static boolean isErrorCodeMessageSupported(final TwitterException te) {
+		if (te == null) return false;
+		return StatusCodeMessageUtils.containsHttpStatus(te.getStatusCode())
+				|| StatusCodeMessageUtils.containsTwitterError(te.getErrorCode());
 	}
 
 	private static boolean isExtensionUseJSON(final ResolveInfo info) {

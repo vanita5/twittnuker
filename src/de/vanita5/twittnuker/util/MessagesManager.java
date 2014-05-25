@@ -67,8 +67,8 @@ public final class MessagesManager implements Constants {
 		}
 	}
 
-	public void showErrorMessage(final int action_res, final Exception e, final boolean long_message) {
-		final String action = mContext.getString(action_res);
+	public void showErrorMessage(final int actionRes, final Exception e, final boolean long_message) {
+		final String action = mContext.getString(actionRes);
 		final Activity best = getBestActivity();
 		if (best != null) {
 			Utils.showErrorMessage(best, action, e, long_message);

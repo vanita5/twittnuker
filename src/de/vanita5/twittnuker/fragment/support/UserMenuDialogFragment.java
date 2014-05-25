@@ -25,7 +25,7 @@ public class UserMenuDialogFragment extends MenuDialogFragment {
         final Bundle extensionsExtras = new Bundle();
         extensionsExtras.putParcelable(EXTRA_USER, user);
         extensionsIntent.putExtras(extensionsExtras);
-        addIntentToMenu(getActivity(), menu, extensionsIntent);
+		addIntentToMenu(getThemedContext(), menu, extensionsIntent);
         final boolean longclickToOpenMenu = prefs.getBoolean(KEY_LONG_CLICK_TO_OPEN_MENU, false);
         Utils.setMenuItemAvailability(menu, MENU_MULTI_SELECT, longclickToOpenMenu);
     }

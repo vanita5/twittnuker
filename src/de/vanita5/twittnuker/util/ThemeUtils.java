@@ -341,6 +341,37 @@ public class ThemeUtils implements Constants {
 		return d;
 	}
 
+	public static int getMenuIconColor(final Context context) {
+		return getMenuIconColor(getThemeResource(context));
+	}
+
+	public static int getMenuIconColor(final int themeRes) {
+		switch (themeRes) {
+			case R.style.Theme_Twidere_Light:
+			case R.style.Theme_Twidere_Light_SolidBackground:
+			case R.style.Theme_Twidere_Light_Transparent:
+			case R.style.Theme_Twidere_Light_Compose:
+			case R.style.Theme_Twidere_Light_Dialog:
+			case R.style.Theme_Twidere_Colored:
+			case R.style.Theme_Twidere_Colored_SolidBackground:
+			case R.style.Theme_Twidere_Colored_Transparent:
+			case R.style.Theme_Twidere_Colored_Compose:
+			case R.style.Theme_Twidere_ActionBar_Colored_Light:
+			case R.style.Theme_Twidere_Settings_Light:
+			case R.style.Theme_Twidere_Light_DarkActionBar_DarkIcon:
+			case R.style.Theme_Twidere_Light_DarkActionBar_SolidBackground_DarkIcon:
+			case R.style.Theme_Twidere_Light_DarkActionBar_Transparent_DarkIcon:
+			case R.style.Theme_Twidere_Light_DarkActionBar_Compose_DarkIcon:
+			case R.style.Theme_Twidere_Colored_DarkActionBar_DarkIcon:
+			case R.style.Theme_Twidere_Colored_DarkActionBar_SolidBackground_DarkIcon:
+			case R.style.Theme_Twidere_Colored_DarkActionBar_Transparent_DarkIcon:
+			case R.style.Theme_Twidere_Colored_DarkActionBar_Compose_DarkIcon:
+			case R.style.Theme_Twidere_Settings_Light_DarkActionBar_DarkIcon:
+				return 0x99333333;
+		}
+		return 0xCCFFFFFF;
+	}
+
 	public static int getNoDisplayThemeResource(final Context context) {
 		if (context == null) return R.style.Theme_Twidere_Dark_NoDisplay;
 		final SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);

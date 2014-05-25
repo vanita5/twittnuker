@@ -48,7 +48,6 @@ import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
-import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MultiSelectManager;
@@ -210,8 +209,7 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 				if (mHighlightKeywords == null || mHighlightKeywords.length == 0) {
 					holder.text.setText(status.text_unescaped);
 				} else {
-					holder.text.setText(Utils.getKeywordBoldedText(HtmlEscapeHelper.escape(status.text_unescaped),
-							mHighlightKeywords));
+					holder.text.setText(Utils.getKeywordBoldedText(status.text_unescaped, mHighlightKeywords));
 				}
 			}
             if (linkify.hasExtraMediaLink() && linkify.getCustomMediaUrl() != null) {

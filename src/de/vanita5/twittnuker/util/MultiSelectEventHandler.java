@@ -75,6 +75,8 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
 
 	private AccountActionProvider mAccountActionProvider;
 
+	public static final int MENU_GROUP = 201;
+
 	public MultiSelectEventHandler(final BaseSupportActivity activity) {
 		mActivity = activity;
 	}
@@ -140,23 +142,23 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
 			}
 			case MENU_MUTE_USER: {
 				final ContentResolver resolver = mActivity.getContentResolver();
-				final ArrayList<ContentValues> values_list = new ArrayList<ContentValues>();
+				final ArrayList<ContentValues> valuesList = new ArrayList<ContentValues>();
 				final Set<Long> userIds = new HashSet<Long>();
 				for (final Object object : selectedItems) {
 					if (object instanceof ParcelableStatus) {
 						final ParcelableStatus status = (ParcelableStatus) object;
 						userIds.add(status.user_id);
-						values_list.add(makeFilterdUserContentValues(status));
+						valuesList.add(makeFilterdUserContentValues(status));
 					} else if (object instanceof ParcelableUser) {
 						final ParcelableUser user = (ParcelableUser) object;
 						userIds.add(user.id);
-						values_list.add(makeFilterdUserContentValues(user));
+						valuesList.add(makeFilterdUserContentValues(user));
 					} else {
 						continue;
 					}
 				}
 				bulkDelete(resolver, Filters.Users.CONTENT_URI, Filters.Users.USER_ID, userIds, null, false);
-				bulkInsert(resolver, Filters.Users.CONTENT_URI, values_list);
+				bulkInsert(resolver, Filters.Users.CONTENT_URI, valuesList);
 				Crouton.showText(mActivity, R.string.users_muted, CroutonStyle.INFO);
 				mode.finish();
 				mActivity.sendBroadcast(new Intent(BROADCAST_MULTI_MUTESTATE_CHANGED));
@@ -193,12 +195,12 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
 		}
 		return true;
 	}
-	public static final int MENU_GROUP = 201;
 
 	@Override
 	public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
 		new MenuInflater(mActivity).inflate(R.menu.action_multi_select_contents, menu);
 		mAccountActionProvider = (AccountActionProvider) menu.findItem(MENU_SELECT_ACCOUNT).getActionProvider();
+		mAccountActionProvider.setAccountId(mMultiSelectManager.getFirstSelectAccountId());
 		return true;
 	}
 

@@ -1,5 +1,6 @@
 package de.vanita5.twittnuker.fragment.support;
 
+import android.content.Context;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -12,9 +13,10 @@ public class IncomingFriendshipsMenuDialogFragment extends UserMenuDialogFragmen
 
     @Override
     protected void onPrepareItemMenu(final Menu menu, final ParcelableUser user) {
-        final AccountWithCredentials account = Account.getAccountWithCredentials(getActivity(), user.account_id);
-        if (AccountWithCredentials.isOfficialCredentials(getActivity(), account)) {
-            final MenuInflater inflater = new MenuInflater(getActivity());
+		final Context context = getThemedContext();
+		final AccountWithCredentials account = Account.getAccountWithCredentials(context, user.account_id);
+		if (AccountWithCredentials.isOfficialCredentials(context, account)) {
+			final MenuInflater inflater = new MenuInflater(context);
             inflater.inflate(R.menu.action_incoming_friendship, menu);
         }
     }

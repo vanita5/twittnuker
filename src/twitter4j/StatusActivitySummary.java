@@ -2,6 +2,8 @@ package twitter4j;
 
 public interface StatusActivitySummary extends TwitterResponse {
 
+	public long getDescendentReplyCount();
+
 	public IDs getFavoriters();
 
 	public long getFavoritersCount();
@@ -13,7 +15,5 @@ public interface StatusActivitySummary extends TwitterResponse {
 	public IDs getRetweeters();
 
 	public long getRetweetersCount();
-
-	public long getDescendentReplyCount();
 
 }

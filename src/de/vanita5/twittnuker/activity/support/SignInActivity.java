@@ -23,7 +23,9 @@
 package de.vanita5.twittnuker.activity.support;
 
 import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.ContentValuesCreator.*;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeAccountContentValuesBasic;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeAccountContentValuesOAuth;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeAccountContentValuesTWIP;
 import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
 import static de.vanita5.twittnuker.util.Utils.isUserLoggedIn;
@@ -763,20 +765,6 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 			this(already_logged_in, succeed, exception, null, null, null, null, null, 0, 0);
 		}
 
-		public SigninResponse(final Configuration conf, final String basic_username, final String basic_password,
-				final User user, final int color) {
-			this(false, true, null, conf, basic_username, basic_password, null, user, Accounts.AUTH_TYPE_BASIC, 0);
-		}
-
-		public SigninResponse(final Configuration conf, final AccessToken access_token, final User user,
-				final int auth_type, final int color) {
-			this(false, true, null, conf, null, null, access_token, user, auth_type, 0);
-		}
-
-		public SigninResponse(final Configuration conf, final User user, final int color) {
-			this(false, true, null, conf, null, null, null, user, Accounts.AUTH_TYPE_TWIP_O_MODE, 0);
-		}
-
 		public SigninResponse(final boolean already_logged_in, final boolean succeed, final Exception exception,
 				final Configuration conf, final String basic_username, final String basic_password,
 				final AccessToken access_token, final User user, final int auth_type, final int color) {
@@ -790,6 +778,20 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 			this.user = user;
 			this.auth_type = auth_type;
 			this.color = color;
+		}
+
+		public SigninResponse(final Configuration conf, final AccessToken access_token, final User user,
+							  final int auth_type, final int color) {
+			this(false, true, null, conf, null, null, access_token, user, auth_type, 0);
+		}
+
+		public SigninResponse(final Configuration conf, final String basic_username, final String basic_password,
+							  final User user, final int color) {
+			this(false, true, null, conf, basic_username, basic_password, null, user, Accounts.AUTH_TYPE_BASIC, 0);
+		}
+
+		public SigninResponse(final Configuration conf, final User user, final int color) {
+			this(false, true, null, conf, null, null, null, user, Accounts.AUTH_TYPE_TWIP_O_MODE, 0);
 		}
 	}
 }

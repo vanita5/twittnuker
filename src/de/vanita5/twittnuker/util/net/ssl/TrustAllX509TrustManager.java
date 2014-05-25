@@ -20,28 +20,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.activity;
+package de.vanita5.twittnuker.util.net.ssl;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.content.Intent.ShortcutIconResource;
-import android.os.Bundle;
+import java.security.cert.X509Certificate;
 
-import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
+import javax.net.ssl.X509TrustManager;
 
-public class CreateComposeShortcutActivity extends Activity implements Constants {
+public final class TrustAllX509TrustManager implements X509TrustManager {
+	@Override
+	public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
+	}
 
 	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		final Intent intent = new Intent();
-		final Intent launch_intent = new Intent(INTENT_ACTION_COMPOSE);
-		final ShortcutIconResource icon = Intent.ShortcutIconResource.fromContext(this, R.drawable.ic_launcher);
-		intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, launch_intent);
-		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-		intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.compose));
-		setResult(RESULT_OK, intent);
-		finish();
+	public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
+	}
+
+	@Override
+	public X509Certificate[] getAcceptedIssuers() {
+		return new X509Certificate[0];
 	}
 }

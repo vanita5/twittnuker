@@ -28,6 +28,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
@@ -70,11 +71,9 @@ public class ImageValidator {
 		return checkHeadTailValidity(file, PNG_HEAD, PNG_TAIL);
 	}
 
-	private static boolean checkHeadTailValidity(final String file, final byte[] head, final byte[] tail) {
-		if (file == null) return false;
-		RandomAccessFile raf = null;
+	private static boolean checkHeadTailValidity(final RandomAccessFile raf, final byte[] head, final byte[] tail) {
+		if (raf == null) return false;
 		try {
-			raf = new RandomAccessFile(file, "r");
 			final long length = raf.length();
 			// The file has 0-length, so it can't be a PNG file.
 			if (length == 0) return false;
@@ -93,5 +92,13 @@ public class ImageValidator {
 			closeSilently(raf);
 		}
 		return true;
+	}
+
+	private static boolean checkHeadTailValidity(final String file, final byte[] head, final byte[] tail) {
+		try {
+			return checkHeadTailValidity(new RandomAccessFile(file, "r"), head, tail);
+		} catch (final FileNotFoundException e) {
+			return false;
+		}
 	}
 }

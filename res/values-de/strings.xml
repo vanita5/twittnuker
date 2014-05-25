@@ -439,7 +439,8 @@
     <string name="no_close_after_status_updated_summary">Das lässt die Eingabemaske nach dem Senden eines Tweets geöffnet</string>
     <string name="status_saved_to_draft">Tweet zu den Entwürfen hinzugefügt.</string>
     <string name="default_account">Standard</string>
-    <string name="daily_statuses_count"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> Tweet(s) pro Tag)</string>
+    <string name="created_at_with_N_tweets_per_day_quantity_one"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> Tweet pro Tag)</string>
+    <string name="created_at_with_N_tweets_per_day_quantity_other"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> Tweets pro Tag)</string>
     <string name="empty_content">Leerer Inhalt</string>
     <string name="fast_image_loading">Schnelleres Bilder laden</string>
     <string name="fast_image_loading_summary">Aktivieren um Bilder schneller zu laden, deaktiveren falls einige Bilder nicht angezeigt werden können.</string>
