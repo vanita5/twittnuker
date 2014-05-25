@@ -611,7 +611,13 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_LINK: {
-				final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+				final Uri uri = Uri.parse(link);
+				final Intent intent;
+				if (uri.getScheme() != null) {
+					intent = new Intent(Intent.ACTION_VIEW, uri);
+				} else {
+					intent = new Intent(Intent.ACTION_VIEW, uri.buildUpon().scheme("http").build());
+				}
 				startActivity(intent);
 				break;
 			}
