@@ -74,8 +74,8 @@ import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticityTokenEx
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.WrongUserPassException;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.net.ApacheHttpClientFactory;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
+import de.vanita5.twittnuker.util.net.TwidereHttpClientFactory;
 import de.vanita5.twittnuker.view.ColorPickerView;
 
 import twitter4j.Twitter;
@@ -405,7 +405,7 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 		final boolean ignore_ssl_error = mPreferences.getBoolean(KEY_IGNORE_SSL_ERROR, false);
 		final boolean enable_proxy = mPreferences.getBoolean(KEY_ENABLE_PROXY, false);
 		cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(mApplication));
-		cb.setHttpClientFactory(new ApacheHttpClientFactory());
+		cb.setHttpClientFactory(new TwidereHttpClientFactory(mApplication));
 		setUserAgent(this, cb);
 		if (!isEmpty(mRestBaseURL)) {
 			cb.setRestBaseURL(mRestBaseURL);

@@ -41,6 +41,7 @@ import java.util.List;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.FlymeUtils;
+import de.vanita5.twittnuker.util.HotKeyHandler;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.RightDrawerFrameLayout;
 import twitter4j.DirectMessage;
@@ -188,6 +189,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private NotificationManager mNotificationManager;
 
 	private MultiSelectEventHandler mMultiSelectHandler;
+	private HotKeyHandler mHotKeyHandler;
 
 	private ActionBar mActionBar;
 	private SupportTabsAdapter mPagerAdapter;
@@ -315,6 +317,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 					return true;
 				}
 				break;
+			}
+			default: {
+				if (mHotKeyHandler.handleKey(keyCode, event)) return true;
 			}
 		}
 		return super.onKeyUp(keyCode, event);
@@ -517,6 +522,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		mTwitterWrapper = getTwitterWrapper();
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mMultiSelectHandler = new MultiSelectEventHandler(this);
+		mHotKeyHandler = new HotKeyHandler(this);
 		mMultiSelectHandler.dispatchOnCreate();
 		final Resources res = getResources();
 		final boolean displayIcon = res.getBoolean(R.bool.home_display_icon);

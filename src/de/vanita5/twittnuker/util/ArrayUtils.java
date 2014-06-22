@@ -86,6 +86,14 @@ public final class ArrayUtils {
 		return array;
 	}
 
+	public static int indexOf(final int[] array, final int value) {
+		final int length = array.length;
+		for (int i = 0; i < length; i++) {
+			if (array[i] == value) return i;
+		}
+		return -1;
+	}
+
 	public static int indexOf(final long[] array, final long value) {
 		final int length = array.length;
 		for (int i = 0; i < length; i++) {

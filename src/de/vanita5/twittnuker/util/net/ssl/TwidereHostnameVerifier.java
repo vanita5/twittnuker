@@ -20,15 +20,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface;
+package de.vanita5.twittnuker.util.net.ssl;
 
-import de.vanita5.twittnuker.model.ParcelableDirectMessage;
+import android.content.Context;
 
-public interface IDirectMessagesAdapter extends IBaseCardAdapter {
+import java.security.cert.X509Certificate;
 
-	public ParcelableDirectMessage findItem(long id);
+import javax.net.ssl.SSLException;
 
-	public void setDisplayImagePreview(boolean display);
+public class TwidereHostnameVerifier extends AbstractCheckSignatureVerifier {
 
-	public void setImagePreviewScaleType(String scaleType);
+	private final Context context;
+	private final boolean ignoreSSLErrors;
+
+	public TwidereHostnameVerifier(final Context context, final boolean ignoreSSLErrors) {
+		this.context = context;
+		this.ignoreSSLErrors = ignoreSSLErrors;
+	}
+
+	@Override
+	public void verify(final String host, final String[] cns, final String[] subjectAlts, final X509Certificate cert)
+			throws SSLException {
+		if (host.endsWith(".appspot.com")) return;
+		if (!verify(host, cns, subjectAlts, false)) throw new SSLException(String.format("Unable to verify %s", host));
+	}
+
 }

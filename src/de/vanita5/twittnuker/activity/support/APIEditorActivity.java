@@ -98,7 +98,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 		final SharedPreferences pref = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final String consumer_key = getNonEmptyString(pref, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
 		final String consumer_secret = getNonEmptyString(pref, KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
-		final String jtapi_hostname = getNonEmptyString(pref, KEY_JTAPI_HOSTNAME,null);
+		final String jtapi_hostname = getNonEmptyString(pref, KEY_JTAPI_HOSTNAME, null);
 
 		switch (v.getId()) {
 			case R.id.save: {

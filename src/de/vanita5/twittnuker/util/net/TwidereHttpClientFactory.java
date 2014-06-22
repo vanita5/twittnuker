@@ -20,15 +20,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface;
+package de.vanita5.twittnuker.util.net;
 
-import de.vanita5.twittnuker.model.ParcelableDirectMessage;
+import android.content.Context;
 
-public interface IDirectMessagesAdapter extends IBaseCardAdapter {
+import twitter4j.http.HttpClient;
+import twitter4j.http.HttpClientConfiguration;
+import twitter4j.http.HttpClientFactory;
 
-	public ParcelableDirectMessage findItem(long id);
+public class TwidereHttpClientFactory implements HttpClientFactory {
 
-	public void setDisplayImagePreview(boolean display);
+	private final Context context;
 
-	public void setImagePreviewScaleType(String scaleType);
+	public TwidereHttpClientFactory(final Context context) {
+		this.context = context;
+	}
+
+	@Override
+	public HttpClient getInstance(final HttpClientConfiguration conf) {
+		return new TwidereHttpClientImpl(context, conf);
+	}
+
 }

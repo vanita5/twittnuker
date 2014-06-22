@@ -427,39 +427,6 @@ final class TwitterImpl extends TwitterBaseImpl implements Twitter {
 	}
 
 	@Override
-	public IDs getMutesUsersIDs() throws TwitterException {
-		ensureAuthorizationEnabled();
-		final String url = conf.getRestBaseURL() + ENDPOINT_MUTES_USERS_IDS;
-		final String signUrl = conf.getSigningRestBaseURL() + ENDPOINT_MUTES_USERS_IDS;
-		return factory.createIDs(get(url, signUrl));
-	}
-
-	@Override
-	public IDs getMutesUsersIDs(final CursorPaging paging) throws TwitterException {
-		ensureAuthorizationEnabled();
-		final String url = conf.getRestBaseURL() + ENDPOINT_MUTES_USERS_IDS;
-		final String signUrl = conf.getSigningRestBaseURL() + ENDPOINT_MUTES_USERS_IDS;
-		return factory.createIDs(get(url, signUrl, paging.asPostParameterArray()));
-	}
-
-	@Override
-	public PagableResponseList<User> getMutesUsersList() throws TwitterException {
-		ensureAuthorizationEnabled();
-		final String url = conf.getRestBaseURL() + ENDPOINT_MUTES_USERS_LIST;
-		final String signUrl = conf.getSigningRestBaseURL() + ENDPOINT_MUTES_USERS_LIST;
-		return factory.createPagableUserList(get(url, signUrl, INCLUDE_ENTITIES));
-	}
-
-	@Override
-	public PagableResponseList<User> getMutesUsersList(final CursorPaging paging) throws TwitterException {
-		ensureAuthorizationEnabled();
-		final String url = conf.getRestBaseURL() + ENDPOINT_MUTES_USERS_LIST;
-		final String signUrl = conf.getSigningRestBaseURL() + ENDPOINT_MUTES_USERS_LIST;
-		final HttpParameter[] params = mergeParameters(paging.asPostParameterArray(), INCLUDE_ENTITIES);
-		return factory.createPagableUserList(get(url, signUrl, params));
-	}
-
-	@Override
 	public IDs getBlocksIDs() throws TwitterException {
 		ensureAuthorizationEnabled();
 		final String url = conf.getRestBaseURL() + ENDPOINT_BLOCKS_IDS;
@@ -775,6 +742,39 @@ final class TwitterImpl extends TwitterBaseImpl implements Twitter {
 			paramsList.addAll(paging.asPostParameterList());
 		}
 		return factory.createStatusList(get(url, signUrl, paramsList.toArray(new HttpParameter[paramsList.size()])));
+	}
+
+	@Override
+	public IDs getMutesUsersIDs() throws TwitterException {
+		ensureAuthorizationEnabled();
+		final String url = conf.getRestBaseURL() + ENDPOINT_MUTES_USERS_IDS;
+		final String signUrl = conf.getSigningRestBaseURL() + ENDPOINT_MUTES_USERS_IDS;
+		return factory.createIDs(get(url, signUrl));
+	}
+
+	@Override
+	public IDs getMutesUsersIDs(final CursorPaging paging) throws TwitterException {
+		ensureAuthorizationEnabled();
+		final String url = conf.getRestBaseURL() + ENDPOINT_MUTES_USERS_IDS;
+		final String signUrl = conf.getSigningRestBaseURL() + ENDPOINT_MUTES_USERS_IDS;
+		return factory.createIDs(get(url, signUrl, paging.asPostParameterArray()));
+	}
+
+	@Override
+	public PagableResponseList<User> getMutesUsersList() throws TwitterException {
+		ensureAuthorizationEnabled();
+		final String url = conf.getRestBaseURL() + ENDPOINT_MUTES_USERS_LIST;
+		final String signUrl = conf.getSigningRestBaseURL() + ENDPOINT_MUTES_USERS_LIST;
+		return factory.createPagableUserList(get(url, signUrl, INCLUDE_ENTITIES));
+	}
+
+	@Override
+	public PagableResponseList<User> getMutesUsersList(final CursorPaging paging) throws TwitterException {
+		ensureAuthorizationEnabled();
+		final String url = conf.getRestBaseURL() + ENDPOINT_MUTES_USERS_LIST;
+		final String signUrl = conf.getSigningRestBaseURL() + ENDPOINT_MUTES_USERS_LIST;
+		final HttpParameter[] params = mergeParameters(paging.asPostParameterArray(), INCLUDE_ENTITIES);
+		return factory.createPagableUserList(get(url, signUrl, params));
 	}
 
 	@Override

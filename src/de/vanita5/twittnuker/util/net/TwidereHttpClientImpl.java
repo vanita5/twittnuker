@@ -18,8 +18,11 @@ package de.vanita5.twittnuker.util.net;
 
 import static android.text.TextUtils.isEmpty;
 
+import android.content.Context;
+
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -31,8 +34,8 @@ import org.apache.http.client.methods.HttpHeadHC4;
 import org.apache.http.client.methods.HttpPostHC4;
 import org.apache.http.client.methods.HttpPutHC4;
 import org.apache.http.client.methods.HttpRequestBaseHC4;
+import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ContentBody;
@@ -44,9 +47,13 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.BasicHttpContextHC4;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.TextUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.net.ssl.ApacheTrustAllSSLSocketFactoryHC4;
+import de.vanita5.twittnuker.util.net.ssl.HostResolvedSSLConnectionSocketFactory;
+import de.vanita5.twittnuker.util.net.ssl.TwidereSSLSocketFactory;
 
 import twitter4j.TwitterException;
 import twitter4j.auth.Authorization;
@@ -71,25 +78,22 @@ import java.util.Map;
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.1.2
  */
-public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCode {
-	private static final Logger logger = Logger.getLogger(HttpClientImpl.class);
+public class TwidereHttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCode {
+	private static final Logger logger = Logger.getLogger(TwidereHttpClientImpl.class);
 	private final HttpClientConfiguration conf;
 	private final CloseableHttpClient client;
 
-	public HttpClientImpl(final HttpClientConfiguration conf) {
+	public TwidereHttpClientImpl(final Context context, final HttpClientConfiguration conf) {
 		this.conf = conf;
 		final HttpClientBuilder clientBuilder = HttpClients.custom();
-		final LayeredConnectionSocketFactory factory;
-		if (conf.isSSLErrorIgnored()) {
-			factory = ApacheTrustAllSSLSocketFactoryHC4.getSocketFactory();
-		} else {
-			factory = SSLConnectionSocketFactory.getSocketFactory();
-		}
+		final LayeredConnectionSocketFactory factory = TwidereSSLSocketFactory.getSocketFactory(context,
+				conf.isSSLErrorIgnored());
 		clientBuilder.setSSLSocketFactory(factory);
 		final RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
 		requestConfigBuilder.setConnectionRequestTimeout(conf.getHttpConnectionTimeout());
 		requestConfigBuilder.setConnectTimeout(conf.getHttpConnectionTimeout());
 		requestConfigBuilder.setSocketTimeout(conf.getHttpReadTimeout());
+		requestConfigBuilder.setRedirectsEnabled(false);
 		clientBuilder.setDefaultRequestConfig(requestConfigBuilder.build());
 		if (conf.isProxyConfigured()) {
 			final HttpHost proxy = new HttpHost(conf.getHttpProxyHost(), conf.getHttpProxyPort());
@@ -144,6 +148,8 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
 				commonsRequest = put;
 			} else
 				throw new TwitterException("Unsupported request method " + method);
+			final HttpParams httpParams = commonsRequest.getParams();
+			HttpClientParams.setRedirecting(httpParams, false);
 			final Map<String, String> headers = req.getRequestHeaders();
 			for (final String headerName : headers.keySet()) {
 				commonsRequest.addHeader(headerName, headers.get(headerName));
@@ -151,15 +157,17 @@ public class HttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCo
             final Authorization authorization = req.getAuthorization();
             final String authorizationHeader = authorization != null ? authorization.getAuthorizationHeader(req) : null;
             if (authorizationHeader != null) {
-				commonsRequest.addHeader("Authorization", authorizationHeader);
+				commonsRequest.addHeader(HttpHeaders.AUTHORIZATION, authorizationHeader);
 			}
             if (resolvedHost != null && !resolvedHost.isEmpty() && !resolvedHost.equals(host)) {
-				commonsRequest.addHeader("Host", authority);
+				commonsRequest.addHeader(HttpHeaders.HOST, authority);
 			}
 
 			final ApacheHttpClientHttpResponseImpl res;
 			try {
-				res = new ApacheHttpClientHttpResponseImpl(client.execute(commonsRequest), conf);
+				final HttpContext httpContext = new BasicHttpContextHC4();
+				httpContext.setAttribute(HostResolvedSSLConnectionSocketFactory.HTTP_CONTEXT_KEY_ORIGINAL_HOST, host);
+				res = new ApacheHttpClientHttpResponseImpl(client.execute(commonsRequest, httpContext), conf);
 			} catch (final IllegalStateException e) {
 				throw new TwitterException("Please check your API settings.", e);
 			} catch (final NullPointerException e) {

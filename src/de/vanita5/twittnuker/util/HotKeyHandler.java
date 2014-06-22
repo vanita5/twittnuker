@@ -20,15 +20,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface;
+package de.vanita5.twittnuker.util;
 
-import de.vanita5.twittnuker.model.ParcelableDirectMessage;
+import android.content.Context;
+import android.content.Intent;
+import android.view.KeyEvent;
 
-public interface IDirectMessagesAdapter extends IBaseCardAdapter {
+import de.vanita5.twittnuker.Constants;
 
-	public ParcelableDirectMessage findItem(long id);
+public class HotKeyHandler implements Constants {
 
-	public void setDisplayImagePreview(boolean display);
+	private final Context mContext;
 
-	public void setImagePreviewScaleType(String scaleType);
+	public HotKeyHandler(final Context context) {
+		mContext = context;
+	}
+
+	public boolean handleKey(final int keyCode, final KeyEvent event) {
+		switch (keyCode) {
+			case KeyEvent.KEYCODE_N: {
+				mContext.startActivity(new Intent(INTENT_ACTION_COMPOSE));
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

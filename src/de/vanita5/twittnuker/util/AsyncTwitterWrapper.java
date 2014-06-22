@@ -1113,8 +1113,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
-
-
 	class DestroyBlockTask extends ManagedAsyncTask<Void, Void, SingleResponse<User>> {
 
 		private final long mAccountId;
@@ -1122,8 +1120,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 		public DestroyBlockTask(final long accountId, final long userId) {
 			super(mContext, mAsyncTaskManager);
-			this.mAccountId = accountId;
-			this.mUserId = userId;
+			mAccountId = accountId;
+			mUserId = userId;
 		}
 
         @Override

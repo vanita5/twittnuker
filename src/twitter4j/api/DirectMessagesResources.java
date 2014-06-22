@@ -94,6 +94,8 @@ public interface DirectMessagesResources {
 	 */
 	ResponseList<DirectMessage> getSentDirectMessages(Paging paging) throws TwitterException;
 
+	DirectMessage sendDirectMessage(long userId, String text) throws TwitterException;
+
 	/**
 	 * Sends a new direct message to the specified user from the authenticating
 	 * user. Requires both the user and text parameters below. The text will be
@@ -110,6 +112,8 @@ public interface DirectMessagesResources {
 	 * @since Twitter4j 2.1.0
 	 */
 	DirectMessage sendDirectMessage(long userId, String text, long mediaId) throws TwitterException;
+
+	DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException;
 
 	/**
 	 * Sends a new direct message to the specified user from the authenticating
@@ -144,8 +148,4 @@ public interface DirectMessagesResources {
 	 * @since Twitter4J 2.1.9
 	 */
 	DirectMessage showDirectMessage(long id) throws TwitterException;
-
-	DirectMessage sendDirectMessage(long userId, String text) throws TwitterException;
-
-	DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException;
 }

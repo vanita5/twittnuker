@@ -179,12 +179,10 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 				.getString(idx.in_reply_to_user_screen_name) : null;
 		source = idx.source != -1 ? c.getString(idx.source) : null;
 		location = idx.location != -1 ? new ParcelableLocation(c.getString(idx.location)) : null;
-		user_profile_image_url = idx.user_profile_image_url != -1 ? c.getString(idx.user_profile_image_url)
-				: null;
+		user_profile_image_url = idx.user_profile_image_url != -1 ? c.getString(idx.user_profile_image_url) : null;
 		text_unescaped = idx.text_unescaped != -1 ? c.getString(idx.text_unescaped) : null;
 		my_retweet_id = idx.my_retweet_id != -1 ? c.getLong(idx.my_retweet_id) : -1;
-		is_possibly_sensitive = idx.is_possibly_sensitive != -1 ? c.getInt(idx.is_possibly_sensitive) == 1
-				: false;
+		is_possibly_sensitive = idx.is_possibly_sensitive != -1 ? c.getInt(idx.is_possibly_sensitive) == 1 : false;
 		user_is_following = idx.is_following != -1 ? c.getInt(idx.is_following) == 1 : false;
 		mentions = idx.mentions != -1 ? ParcelableUserMention.fromJSONString(c.getString(idx.mentions)) : null;
 		first_media = idx.first_media != -1 ? c.getString(idx.first_media) : null;

@@ -85,7 +85,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 	}
 
 	public static ContentValues makeAccountContentValuesOAuth(final Configuration conf, final AccessToken accessToken,
-															  final User user, final int authType, final int color, String jtapiHostname) {
+															  final User user, final int authType, final int color, final String jtapiHostname) {
 		if (user == null || user.getId() <= 0 || accessToken == null || user.getId() != accessToken.getUserId())
 			return null;
 		final ContentValues values = new ContentValues();

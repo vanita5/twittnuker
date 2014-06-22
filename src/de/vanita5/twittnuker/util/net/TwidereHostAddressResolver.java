@@ -27,11 +27,12 @@ import static android.text.TextUtils.isEmpty;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.util.Patterns;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.HostsFileParser;
 import de.vanita5.twittnuker.util.Utils;
+
+import org.apache.http.conn.util.InetAddressUtilsHC4;
 import org.xbill.DNS.AAAARecord;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.CNAMERecord;
@@ -79,8 +80,7 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 	@Override
 	public String resolve(final String host) throws IOException {
 		if (host == null) return null;
-		if (Patterns.IP_ADDRESS.matcher(host).matches() || !mPreferences.getBoolean(KEY_IGNORE_SSL_ERROR, false))
-			return null;
+		if (isValidIpAddress(host)) return null;
 		// First, I'll try to load address cached.
 		if (mHostCache.containsKey(host)) {
 			if (Utils.isDebugBuild()) {
@@ -187,7 +187,8 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 	}
 
 	static boolean isValidIpAddress(final String address) {
-		return !isEmpty(address);
+		if (isEmpty(address)) return false;
+		return InetAddressUtilsHC4.isIPv4Address(address) || InetAddressUtilsHC4.isIPv6Address(address);
 	}
 
 	private static class HostCache extends LinkedHashMap<String, String> {

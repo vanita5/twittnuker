@@ -258,7 +258,7 @@ public class MediaPreviewUtils {
 	private static final String URL_PHOTOZOU_PHOTO_INFO = "https://api.photozou.jp/rest/photo_info.json";
 
     public static void addToLinearLayout(final LinearLayout container, final ImageLoaderWrapper loader,
-                                         final List<ParcelableMedia> medias, final int maxColumnCount, final OnMediaClickListener listener) {
+										 final List<ParcelableMedia> medias, final int maxColumnCount, final OnMediaClickListener mediaClickListener) {
         if (container.getOrientation() != LinearLayout.VERTICAL) throw new IllegalArgumentException();
         final Context context = container.getContext();
         final ImageLoadingHandler loadingHandler = new ImageLoadingHandler();
@@ -269,7 +269,7 @@ public class MediaPreviewUtils {
         final int bestColumnCount = imageCountSqrt % 1 == 0 ? (int) imageCountSqrt : maxColumnCount;
         final int firstColumn = imageCount % bestColumnCount, fullRowCount = imageCount / bestColumnCount;
         final int rowCount = fullRowCount + (firstColumn > 0 ? 1 : 0);
-        final View.OnClickListener clickListener = new ImageGridClickListener(listener);
+		final View.OnClickListener clickListener = new ImageGridClickListener(mediaClickListener);
         container.setMotionEventSplittingEnabled(false);
         for (int currentRow = 0; currentRow < rowCount; currentRow++) {
             final LinearLayout rowContainer = new LinearLayout(context);
@@ -282,7 +282,7 @@ public class MediaPreviewUtils {
                 final ParcelableMedia media = iterator.next();
                 final View item = inflater.inflate(R.layout.grid_item_image_preview, rowContainer, false);
                 item.setTag(media);
-                if (listener != null) {
+				if (mediaClickListener != null) {
                     item.setOnClickListener(clickListener);
                 }
                 final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) item.getLayoutParams();
