@@ -59,6 +59,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final String SERVICE_SHORTENER_HOTOTIN = "hototin";
 
 	public static final String SERVICE_UPLOADER_TWITPIC = "twitpic";
+	public static final String SERVICE_UPLOADER_TWIPPLE = "twipple";
 
 	public static final String PROTOCOL_HTTP = SCHEME_HTTP + "://";
 	public static final String PROTOCOL_HTTPS = SCHEME_HTTPS + "://";

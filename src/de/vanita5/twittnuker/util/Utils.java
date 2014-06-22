@@ -2421,6 +2421,8 @@ public final class Utils implements Constants, TwitterConstants {
 					final String token = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN));
 					final String tokenSecret = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN_SECRET));
 					if (isEmpty(token) || isEmpty(tokenSecret)) return null;
+					cb.setOAuthAccessToken(token);
+					cb.setOAuthAccessTokenSecret(tokenSecret);
 					return new TwitterFactory(cb.build()).getInstance(new AccessToken(token, tokenSecret));
 				}
 				case Accounts.AUTH_TYPE_BASIC: {
