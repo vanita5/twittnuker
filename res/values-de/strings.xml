@@ -257,7 +257,7 @@
     <string name="Nitems_selected_quantity_other"><xliff:g id="items">%d</xliff:g> Elemente ausgewählt</string>
     <string name="view">Ansicht</string>
     <string name="custom_host_mapping">Individuelles Host-Mapping</string>
-    <string name="custom_host_mapping_summary">Host-Mapping wie /ect/hosts, ohne zusätzlich erforderliche Rechte.</string>
+    <string name="custom_host_mapping_summary">Host-Mapping wie /etc/hosts, ohne zusätzlich erforderliche Rechte.</string>
     <string name="host">Host (Bsp.: 127.0.0.1)</string>
     <string name="address">Adresse</string>
     <string name="add_host_mapping">Füge host mapping hinzu</string>
@@ -615,14 +615,14 @@
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
     <string name="unread_count_summary">Zeigt die Anzahl an ungelesenen Tweets oder Nachrichten im Tab an</string>
     <string name="link_to_quoted_status_summary">Fügt beim zitieren den Link zum originalen Tweet hinzu</string>
-    <string name="click_item_to_config">(D) Click an item to config</string>
-    <string name="dark_drawer">(D) Dark drawer</string>
-    <string name="retweets_of_me">(D) Retweets of me</string>
-    <string name="twitter_muted_users">(D) Muted users</string>
+    <string name="click_item_to_config">Account zum konfigurieren auswählen</string>
+    <string name="dark_drawer">Dunkles Sliding Menu</string>
+    <string name="retweets_of_me">Retweets von mir</string>
+    <string name="twitter_muted_users">Gemutete Benutzer</string>
 
-    <string name="plain_list_style">(D) Plain list style</string>
+    <string name="plain_list_style">Flache Liste</string>
     <string name="want_old_icon_back">(D) Want old icon back?</string>
-    <string name="icon_restored_message">(D) Icon restored!</string>
+    <string name="icon_restored_message">Icon zurückgesetzt!</string>
     <string name="add">(D) Hinzufügen</string>
     <string name="N_medias_quantity_one">(D) <xliff:g id="items">%d</xliff:g> media</string>
     <string name="N_medias_quantity_other">(D) <xliff:g id="items">%d</xliff:g> medias</string>
