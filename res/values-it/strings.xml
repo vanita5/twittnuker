@@ -158,8 +158,8 @@
     <string name="unblock">Sblocca</string>
     <string name="report_for_spam">Segnala spam</string>
     <string name="mute_user">Muta utente</string>
-    <string name="user_muted">Utenti aggiunti all\'elenco dei filtri. Non si vedranno tweets da questi utenti nella timeline o tra le menzioni.</string>
-    <string name="users_muted">Utenti aggiunti all\'elenco dei filtri. Non si vedranno tweets da questi utenti nella timeline o tra le menzioni.</string>
+    <string name="message_user_muted">Utenti aggiunti all\'elenco dei filtri. Non si vedranno tweets da questi utenti nella timeline o tra le menzioni.</string>
+    <string name="message_users_muted">Utenti aggiunti all\'elenco dei filtri. Non si vedranno tweets da questi utenti nella timeline o tra le menzioni.</string>
     <string name="inbox">Inbox</string>
     <string name="load_images">Carica immagini</string>
     <string name="other_settings">Altre impostazioni</string>

@@ -159,8 +159,8 @@
     <string name="unblock">Desbloqueja</string>
     <string name="report_for_spam">Informa d\'abús</string>
     <string name="mute_user">Silencia l\'usuari</string>
-    <string name="user_muted">S\'ha afegit aquest usuari al filtre. No veureu piulades d\'aquest usuari a la vostra cronologia ni a la vostra llista de mencions.</string>
-    <string name="users_muted">S\'han afegit usuaris al filtre. No veureu piulades d\'aquests usuaris a la vostra cronologia ni a la vostra llista de mencions.</string>
+    <string name="message_user_muted">S\'ha afegit aquest usuari al filtre. No veureu piulades d\'aquest usuari a la vostra cronologia ni a la vostra llista de mencions.</string>
+    <string name="message_users_muted">S\'han afegit usuaris al filtre. No veureu piulades d\'aquests usuaris a la vostra cronologia ni a la vostra llista de mencions.</string>
     <string name="inbox">Safata d\'entrada</string>
     <string name="load_images">Carrega les imatges</string>
     <string name="other_settings">Altres paràmetres</string>

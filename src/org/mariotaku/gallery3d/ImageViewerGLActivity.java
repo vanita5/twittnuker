@@ -146,8 +146,9 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 		mProgress.setVisibility(View.VISIBLE);
 		mProgress.setIndeterminate(true);
 		invalidateOptionsMenu();
-		final Uri uri = args != null ? (Uri) args.getParcelable(EXTRA_URI) : null;
-		return new GLImageLoader(this, this, uri);
+		final Uri uri = args.getParcelable(EXTRA_URI);
+		final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+		return new GLImageLoader(this, this, accountId, uri);
 	}
 
 	@Override
@@ -461,13 +462,16 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 
 	private void loadImage() {
 		getSupportLoaderManager().destroyLoader(0);
-		final Uri uri = getIntent().getData();
+		final Intent intent = getIntent();
+		final Uri uri = intent.getData();
+		final long accountId = intent.getLongExtra(EXTRA_ACCOUNT_ID, -1);
 		if (uri == null) {
 			finish();
 			return;
 		}
 		final Bundle args = new Bundle();
 		args.putParcelable(EXTRA_URI, uri);
+		args.putLong(EXTRA_ACCOUNT_ID, accountId);
 		if (!mLoaderInitialized) {
 			getSupportLoaderManager().initLoader(0, args, this);
 			mLoaderInitialized = true;

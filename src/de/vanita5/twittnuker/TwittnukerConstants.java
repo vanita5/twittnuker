@@ -95,6 +95,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final String AUTHORITY_STATUS_FAVORITERS = "status_favoriters";
 	public static final String AUTHORITY_STATUS_REPLIES = "status_replies";
 	public static final String AUTHORITY_RETWEETS_OF_ME = "retweets_of_me";
+	public static final String AUTHORITY_MUTES_USERS = "mutes_users";
 
 	public static final String QUERY_PARAM_ACCOUNT_ID = "account_id";
 	public static final String QUERY_PARAM_ACCOUNT_IDS = "account_ids";

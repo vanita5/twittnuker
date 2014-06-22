@@ -159,8 +159,8 @@
   <string name="unblock">Blokkering opheffen</string>
   <string name="report_for_spam">Rapporteer spam</string>
   <string name="mute_user">Demp gebruiker</string>
-  <string name="user_muted">Gebruiker toegevoegd aan filter lijst. Je zult geen tweets van deze gebruiker in je tijdlijn/vermeldingen zien.</string>
-  <string name="users_muted">Gebruiker toegevoegd aan filter lijst. Je zult geen tweets van deze gebruiker in je tijdlijn/vermeldingen zien.</string>
+  <string name="message_user_muted">Gebruiker toegevoegd aan filter lijst. Je zult geen tweets van deze gebruiker in je tijdlijn/vermeldingen zien.</string>
+  <string name="message_users_muted">Gebruiker toegevoegd aan filter lijst. Je zult geen tweets van deze gebruiker in je tijdlijn/vermeldingen zien.</string>
   <string name="inbox">Inbox</string>
   <string name="load_images">Afbeeldingen laden</string>
   <string name="other_settings">Andere instellingen</string>

@@ -159,8 +159,8 @@
     <string name="unblock">차단 해제</string>
     <string name="report_for_spam">스팸으로 신고</string>
     <string name="mute_user">숨기기</string>
-    <string name="user_muted">이 사용자 필터 리스트에 추가했습니다. 당신의 홈 타임라인/멘션 리스트에서 이 유저의 트윗이 보이지 않게 됩니다.</string>
-    <string name="users_muted">이 사용자들을 필터 리스트에 추가했습니다. 당신의 홈 타임라인/멘션 리스트에서 이 유저의 트윗이 보이지 않게 됩니다.</string>
+    <string name="message_user_muted">이 사용자 필터 리스트에 추가했습니다. 당신의 홈 타임라인/멘션 리스트에서 이 유저의 트윗이 보이지 않게 됩니다.</string>
+    <string name="message_users_muted">이 사용자들을 필터 리스트에 추가했습니다. 당신의 홈 타임라인/멘션 리스트에서 이 유저의 트윗이 보이지 않게 됩니다.</string>
     <string name="inbox">받음</string>
     <string name="load_images">이미지 불러오기</string>
     <string name="other_settings">기타 설정</string>

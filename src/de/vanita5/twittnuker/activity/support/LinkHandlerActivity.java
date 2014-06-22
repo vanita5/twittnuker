@@ -206,6 +206,10 @@ public class LinkHandlerActivity extends TwidereSwipeBackActivity implements OnC
 				setTitle(R.string.blocked_users);
 				break;
 			}
+			case LINK_ID_MUTES_USERS: {
+				setTitle(R.string.muted_users);
+				break;
+			}
 			case LINK_ID_DIRECT_MESSAGES_CONVERSATION: {
 				setTitle(R.string.direct_messages);
 				break;

@@ -42,6 +42,7 @@ import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.isMyAccount;
 import static de.vanita5.twittnuker.util.Utils.openImage;
 import static de.vanita5.twittnuker.util.Utils.openIncomingFriendships;
+import static de.vanita5.twittnuker.util.Utils.openMutesUsers;
 import static de.vanita5.twittnuker.util.Utils.openSavedSearches;
 import static de.vanita5.twittnuker.util.Utils.openStatus;
 import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
@@ -168,7 +169,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 
 	private ListActionAdapter mAdapter;
 
-	private Relationship mFriendship;
+	private Relationship mRelationship;
 	private ParcelableUser mUser = null;
 	private Locale mLocale;
 
@@ -288,10 +289,10 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 		@Override
 		public void onLoadFinished(final Loader<SingleResponse<Relationship>> loader,
 				final SingleResponse<Relationship> data) {
-			mFriendship = null;
+			mRelationship = null;
             final ParcelableUser user = mUser;
             if (user == null) return;
-			final Relationship relationship = mFriendship = data.data;
+			final Relationship relationship = mRelationship = data.data;
 			invalidateOptionsMenu();
             setMenu(mMenuBar.getMenu());
             mMenuBar.show();
@@ -318,7 +319,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 	};
 
 	public void displayUser(final ParcelableUser user) {
-		mFriendship = null;
+		mRelationship = null;
 		mUser = null;
 		mAdapter.clear();
 		if (user == null || user.id <= 0 || getActivity() == null) return;
@@ -387,6 +388,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 				mAdapter.add(new IncomingFriendshipsAction(12));
 			}
 			mAdapter.add(new UserBlocksAction(13));
+			mAdapter.add(new MutesUsersAction(14));
 		}
 		mAdapter.notifyDataSetChanged();
 		if (!user.is_cache) {
@@ -521,14 +523,14 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 			}
             case R.id.profile_image: {
 				final String profile_image_url_string = getOriginalTwitterProfileImage(mUser.profile_image_url);
-                openImage(activity, profile_image_url_string, false);
+				openImage(activity, user.account_id, profile_image_url_string, false);
 				break;
 			}
             case R.id.profile_banner:
             case R.id.profile_banner_space: {
 				final String profile_banner_url = mUser.profile_banner_url;
 				if (profile_banner_url == null) return;
-				openImage(getActivity(), profile_banner_url + "/ipad_retina", false);
+				openImage(getActivity(), user.account_id, profile_banner_url + "/ipad_retina", false);
 				break;
 			}
 			case R.id.tweets_container: {
@@ -574,7 +576,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 	@Override
 	public void onDestroyView() {
 		mUser = null;
-		mFriendship = null;
+		mRelationship = null;
 		final LoaderManager lm = getLoaderManager();
 		lm.destroyLoader(LOADER_ID_USER);
 		lm.destroyLoader(LOADER_ID_FRIENDSHIP);
@@ -761,12 +763,12 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
     private boolean handleMenuItemClick(final MenuItem item) {
 		final AsyncTwitterWrapper twitter = getTwitterWrapper();
         final ParcelableUser user = mUser;
-        final Relationship relationship = mFriendship;
+        final Relationship relationship = mRelationship;
         if (user == null || twitter == null) return false;
 		switch (item.getItemId()) {
 			case MENU_BLOCK: {
-				if (mFriendship != null) {
-					if (mFriendship.isSourceBlockingTarget()) {
+				if (mRelationship != null) {
+					if (mRelationship.isSourceBlockingTarget()) {
                         twitter.destroyBlockAsync(user.account_id, user.id);
 					} else {
                         CreateUserBlockDialogFragment.show(getFragmentManager(), user);
@@ -782,7 +784,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 				final ContentResolver resolver = getContentResolver();
                 resolver.delete(Filters.Users.CONTENT_URI, Where.equals(Filters.Users.USER_ID, user.id).getSQL(), null);
                 resolver.insert(Filters.Users.CONTENT_URI, makeFilterdUserContentValues(user));
-				showInfoMessage(getActivity(), R.string.user_muted, false);
+				showInfoMessage(getActivity(), R.string.message_user_muted, false);
 				break;
 			}
 			case MENU_MENTION: {
@@ -875,7 +877,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
     private void setMenu(final Menu menu) {
         final AsyncTwitterWrapper twitter = getTwitterWrapper();
         final ParcelableUser user = mUser;
-        final Relationship relationship = mFriendship;
+        final Relationship relationship = mRelationship;
         if (twitter == null || user == null) return;
         final boolean isMyself = user.account_id == user.id;
         final boolean isFollowing = relationship != null && relationship.isSourceFollowingTarget();
@@ -896,12 +898,13 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
             followItem.setTitle(null);
             followItem.setIcon(null);
         }
-        if (user.id != user.account_id) {
-            setMenuItemAvailability(menu, MENU_BLOCK, mFriendship != null);
+		if (user.id != user.account_id && relationship != null) {
+			setMenuItemAvailability(menu, MENU_SEND_DIRECT_MESSAGE, relationship.canSourceDMTarget());
+			setMenuItemAvailability(menu, MENU_BLOCK, true);
             final MenuItem blockItem = menu.findItem(MENU_BLOCK);
-            if (mFriendship != null && blockItem != null) {
+			if (blockItem != null) {
                 final Drawable blockIcon = blockItem.getIcon();
-                if (mFriendship.isSourceBlockingTarget()) {
+				if (relationship.isSourceBlockingTarget()) {
                     blockItem.setTitle(R.string.unblock);
                     blockIcon.mutate().setColorFilter(ThemeUtils.getUserThemeColor(getActivity()),
                     PorterDuff.Mode.MULTIPLY);
@@ -910,10 +913,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
                     blockIcon.clearColorFilter();
                 }
             }
-            final boolean is_following_me = mFriendship != null && mFriendship.isTargetFollowingSource();
-            setMenuItemAvailability(menu, MENU_SEND_DIRECT_MESSAGE, is_following_me);
         } else {
-            setMenuItemAvailability(menu, MENU_MENTION, false);
             setMenuItemAvailability(menu, MENU_SEND_DIRECT_MESSAGE, false);
             setMenuItemAvailability(menu, MENU_BLOCK, false);
             setMenuItemAvailability(menu, MENU_REPORT_SPAM, false);
@@ -1024,6 +1024,26 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
             final ParcelableUser user = mUser;
             if (user == null) return;
             openSavedSearches(getActivity(), user.account_id);
+		}
+
+	}
+
+	final class MutesUsersAction extends ListAction {
+
+		public MutesUsersAction(final int order) {
+			super(order);
+		}
+
+		@Override
+		public String getName() {
+			return getString(R.string.muted_users);
+		}
+
+		@Override
+		public void onClick() {
+			final ParcelableUser user = mUser;
+			if (user == null) return;
+			openMutesUsers(getActivity(), user.account_id);
 		}
 
 	}

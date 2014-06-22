@@ -159,8 +159,8 @@
     <string name="unblock">เลิกบล็อค</string>
     <string name="report_for_spam">รายงานสแปม</string>
     <string name="mute_user">ปิดทวีตจากผู้ใช้นี้</string>
-    <string name="user_muted">เพิ่มผู้ใช้นี้ลงในรายการฟิลเตอร์แล้ว คุณจะไม่เห็นทวีตใดๆจากผู้ใช้นี้ในหน้าหลักและหน้าเมนชั่น</string>
-    <string name="users_muted">เพิ่มผู้ใช้เหล่านี้ลงในรายการฟิลเตอร์แล้ว คุณจะไม่เห็นทวีตใดๆจากผู้ใช้เหล่านี้ในหน้าหลักและหน้าเมนชั่น.</string>
+    <string name="message_user_muted">เพิ่มผู้ใช้นี้ลงในรายการฟิลเตอร์แล้ว คุณจะไม่เห็นทวีตใดๆจากผู้ใช้นี้ในหน้าหลักและหน้าเมนชั่น</string>
+    <string name="message_users_muted">เพิ่มผู้ใช้เหล่านี้ลงในรายการฟิลเตอร์แล้ว คุณจะไม่เห็นทวีตใดๆจากผู้ใช้เหล่านี้ในหน้าหลักและหน้าเมนชั่น.</string>
     <string name="inbox">กล่องขาเข้า</string>
     <string name="load_images">โหลดภาพ</string>
     <string name="other_settings">การตั้งค่าอื่นๆ</string>

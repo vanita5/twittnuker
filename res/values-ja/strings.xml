@@ -159,8 +159,8 @@
     <string name="unblock">ブロックを解除</string>
     <string name="report_for_spam">スパム報告</string>
     <string name="mute_user">非表示にする</string>
-    <string name="user_muted">このユーザーをフィルターリストに追加します。ホーム / つながり でこのユーザーのツイートを非表示にします。</string>
-    <string name="users_muted">複数のユーザーをフィルターリストに追加します。ホーム / つながり でこのユーザーのツイートを非表示にします。</string>
+    <string name="message_user_muted">このユーザーをフィルターリストに追加します。ホーム / つながり でこのユーザーのツイートを非表示にします。</string>
+    <string name="message_users_muted">複数のユーザーをフィルターリストに追加します。ホーム / つながり でこのユーザーのツイートを非表示にします。</string>
     <string name="inbox">受信箱</string>
     <string name="load_images">画像を読み込む</string>
     <string name="other_settings">その他の設定</string>

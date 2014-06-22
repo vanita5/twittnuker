@@ -159,8 +159,8 @@
     <string name="unblock">Разблокировать</string>
     <string name="report_for_spam">Сообщить о спаме</string>
     <string name="mute_user">Приглушить пользователя</string>
-    <string name="user_muted">Пользователь добавлен в фильтры. Теперь вы не увидите его твитов в ленте/упоминаниях.</string>
-    <string name="users_muted">Пользователи добавлены в фильтр. Теперь вы не увидите его твитов в ленте/упоминаниях.</string>
+    <string name="message_user_muted">Пользователь добавлен в фильтры. Теперь вы не увидите его твитов в ленте/упоминаниях.</string>
+    <string name="message_users_muted">Пользователи добавлены в фильтр. Теперь вы не увидите его твитов в ленте/упоминаниях.</string>
     <string name="inbox">Входящие</string>
     <string name="load_images">Загрузить изображения</string>
     <string name="other_settings">Другие настройки</string>

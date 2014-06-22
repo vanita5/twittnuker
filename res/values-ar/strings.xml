@@ -161,8 +161,8 @@
     <string name="unblock">رفع الحجب</string>
     <string name="report_for_spam">بلغ على أنه بريد مزعج ورسائل احتيال</string>
     <string name="mute_user">كتم المستخدم</string>
-    <string name="user_muted">أضيف الحساب لقائمة الكتم لن تظهر لديك تغريدات هذا المستخدم في الخط الزمني الرئيسي / الإشارات.</string>
-    <string name="users_muted">أضيف الحساب لقائمة الكتم لن تظهر لديك تغريدات هذا المستخدم في الخط الزمني الرئيسي / الإشارات.</string>
+    <string name="message_user_muted">أضيف الحساب لقائمة الكتم لن تظهر لديك تغريدات هذا المستخدم في الخط الزمني الرئيسي / الإشارات.</string>
+    <string name="message_users_muted">أضيف الحساب لقائمة الكتم لن تظهر لديك تغريدات هذا المستخدم في الخط الزمني الرئيسي / الإشارات.</string>
     <string name="inbox">الصندوق الوارد</string>
     <string name="load_images">تحميل الصور</string>
     <string name="other_settings">إعدادات أخرى</string>

@@ -161,8 +161,9 @@
 	<string name="unblock">Unblock</string>
 	<string name="report_for_spam">Report spam</string>
 	<string name="mute_user">Mute user</string>
-	<string name="user_muted">Added this user to filter list. You will not see tweets from this user in your home timeline/mentions list.</string>
-	<string name="users_muted">Added users to filter list. You will not see tweets from these users in your home timeline/mentions list.</string>
+    <string name="muted_users">Muted users</string>
+	<string name="message_user_muted">Added this user to filter list. You will not see tweets from this user in your home timeline/mentions list.</string>
+	<string name="message_users_muted">Added users to filter list. You will not see tweets from these users in your home timeline/mentions list.</string>
 	<string name="inbox">Inbox</string>
 	<string name="load_images">Load images</string>
 	<string name="other_settings">Other settings</string>

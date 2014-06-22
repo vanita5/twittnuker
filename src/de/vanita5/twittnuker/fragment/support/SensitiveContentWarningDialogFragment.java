@@ -45,7 +45,8 @@ public class SensitiveContentWarningDialogFragment extends BaseSupportDialogFrag
 				final Bundle args = getArguments();
 				if (args == null || context == null) return;
 				final Uri uri = args.getParcelable(EXTRA_URI);
-				openImageDirectly(context, ParseUtils.parseString(uri));
+				final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+				openImageDirectly(context, accountId, ParseUtils.parseString(uri));
 				break;
 			}
 		}

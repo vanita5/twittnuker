@@ -1,5 +1,5 @@
 /*
- *			Twittnuker - Twitter client for Android
+ * 				Twidere - Twitter client for Android
  *
  *  Copyright (C) 2012-2013 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
@@ -39,6 +39,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.Exif;
 import de.vanita5.twittnuker.util.ImageValidator;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.imageloader.AccountExtra;
 
 import org.mariotaku.gallery3d.util.BitmapUtils;
 import org.mariotaku.gallery3d.util.GalleryUtils;
@@ -58,10 +59,12 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
 	private final DiscCacheAware mDiscCache;
 
 	private final float mFallbackSize;
+	private final long mAccountId;
 
-	public GLImageLoader(final Context context, final DownloadListener listener, final Uri uri) {
+	public GLImageLoader(final Context context, final DownloadListener listener, final long accountId, final Uri uri) {
 		super(context);
 		mHandler = new Handler();
+		mAccountId = accountId;
 		mUri = uri;
 		mListener = listener;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
@@ -87,14 +90,13 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
                 if (cacheDir != null && !cacheDir.exists()) {
                     cacheDir.mkdirs();
                 }
-			} else {
+			} else
 				return Result.nullInstance();
-            }
 			try {
 				// from SD cache
                 if (ImageValidator.checkImageValidity(cacheFile)) return decodeImageInternal(cacheFile);
 
-				final InputStream is = mDownloader.getStream(url, null);
+				final InputStream is = mDownloader.getStream(url, new AccountExtra(mAccountId));
 				if (is == null) return Result.nullInstance();
 				final long length = is.available();
 				mHandler.post(new DownloadStartRunnable(this, mListener, length));

@@ -48,6 +48,11 @@ public interface TwitterConstants {
 	public static final String ENDPOINT_BLOCKS_LIST = "blocks/list.json";
 	public static final String ENDPOINT_BLOCKS_IDS = "blocks/ids.json";
 
+	public static final String ENDPOINT_MUTES_USERS_CREATE = "mutes/users/create.json";
+	public static final String ENDPOINT_MUTES_USERS_DESTROY = "mutes/users/destroy.json";
+	public static final String ENDPOINT_MUTES_USERS_LIST = "mutes/users/list.json";
+	public static final String ENDPOINT_MUTES_USERS_IDS = "mutes/users/ids.json";
+
 	public static final String ENDPOINT_DIRECT_MESSAGES = "direct_messages.json";
 	public static final String ENDPOINT_DIRECT_MESSAGES_DESTROY = "direct_messages/destroy.json";
 	public static final String ENDPOINT_DIRECT_MESSAGES_NEW = "direct_messages/new.json";

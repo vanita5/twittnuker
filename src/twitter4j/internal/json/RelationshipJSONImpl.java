@@ -41,9 +41,6 @@ import twitter4j.http.HttpResponse;
  */
 /* package */class RelationshipJSONImpl extends TwitterResponseImpl implements Relationship {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2816753598969317818L;
 	private final long targetUserId;
 	private final String targetUserScreenName;
@@ -53,6 +50,10 @@ import twitter4j.http.HttpResponse;
 	private final boolean sourceFollowedByTarget;
 	private final long sourceUserId;
 	private final String sourceUserScreenName;
+	private final boolean sourceCanDM;
+	private final boolean sourceCanMediaTag;
+	private final boolean sourceMutingTarget;
+	private final boolean sourceMarkedTargetAsSpam;
 
 	/* package */RelationshipJSONImpl(final HttpResponse res, final Configuration conf) throws TwitterException {
 		this(res, res.asJSONObject());
@@ -72,6 +73,10 @@ import twitter4j.http.HttpResponse;
 			sourceFollowingTarget = getBoolean("following", sourceJson);
 			sourceFollowedByTarget = getBoolean("followed_by", sourceJson);
 			sourceNotificationsEnabled = getBoolean("notifications_enabled", sourceJson);
+			sourceCanDM = getBoolean("can_dm", sourceJson);
+			sourceCanMediaTag = getBoolean("can_media_tag", sourceJson);
+			sourceMutingTarget = getBoolean("muting", sourceJson);
+			sourceMarkedTargetAsSpam = getBoolean("marked_spam", sourceJson);
 		} catch (final JSONException jsone) {
 			throw new TwitterException(jsone.getMessage() + ":" + json.toString(), jsone);
 		}
@@ -82,17 +87,37 @@ import twitter4j.http.HttpResponse;
 	}
 
 	@Override
-	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (!(o instanceof Relationship)) return false;
+	public boolean canSourceDMTarget() {
+		return sourceCanDM;
+	}
 
-		final Relationship that = (Relationship) o;
+	@Override
+	public boolean canSourceMediaTagTarget() {
+		return sourceCanMediaTag;
+	}
 
-		if (sourceUserId != that.getSourceUserId()) return false;
-		if (targetUserId != that.getTargetUserId()) return false;
-		if (!sourceUserScreenName.equals(that.getSourceUserScreenName())) return false;
-		if (!targetUserScreenName.equals(that.getTargetUserScreenName())) return false;
-
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof RelationshipJSONImpl)) return false;
+		final RelationshipJSONImpl other = (RelationshipJSONImpl) obj;
+		if (sourceBlockingTarget != other.sourceBlockingTarget) return false;
+		if (sourceCanDM != other.sourceCanDM) return false;
+		if (sourceCanMediaTag != other.sourceCanMediaTag) return false;
+		if (sourceFollowedByTarget != other.sourceFollowedByTarget) return false;
+		if (sourceFollowingTarget != other.sourceFollowingTarget) return false;
+		if (sourceMarkedTargetAsSpam != other.sourceMarkedTargetAsSpam) return false;
+		if (sourceMutingTarget != other.sourceMutingTarget) return false;
+		if (sourceNotificationsEnabled != other.sourceNotificationsEnabled) return false;
+		if (sourceUserId != other.sourceUserId) return false;
+		if (sourceUserScreenName == null) {
+			if (other.sourceUserScreenName != null) return false;
+		} else if (!sourceUserScreenName.equals(other.sourceUserScreenName)) return false;
+		if (targetUserId != other.targetUserId) return false;
+		if (targetUserScreenName == null) {
+			if (other.targetUserScreenName != null) return false;
+		} else if (!targetUserScreenName.equals(other.targetUserScreenName)) return false;
 		return true;
 	}
 
@@ -130,14 +155,20 @@ import twitter4j.http.HttpResponse;
 
 	@Override
 	public int hashCode() {
-		int result = (int) (targetUserId ^ targetUserId >>> 32);
-		result = 31 * result + (targetUserScreenName != null ? targetUserScreenName.hashCode() : 0);
-		result = 31 * result + (sourceBlockingTarget ? 1 : 0);
-		result = 31 * result + (sourceNotificationsEnabled ? 1 : 0);
-		result = 31 * result + (sourceFollowingTarget ? 1 : 0);
-		result = 31 * result + (sourceFollowedByTarget ? 1 : 0);
-		result = 31 * result + (int) (sourceUserId ^ sourceUserId >>> 32);
-		result = 31 * result + (sourceUserScreenName != null ? sourceUserScreenName.hashCode() : 0);
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (sourceBlockingTarget ? 1231 : 1237);
+		result = prime * result + (sourceCanDM ? 1231 : 1237);
+		result = prime * result + (sourceCanMediaTag ? 1231 : 1237);
+		result = prime * result + (sourceFollowedByTarget ? 1231 : 1237);
+		result = prime * result + (sourceFollowingTarget ? 1231 : 1237);
+		result = prime * result + (sourceMarkedTargetAsSpam ? 1231 : 1237);
+		result = prime * result + (sourceMutingTarget ? 1231 : 1237);
+		result = prime * result + (sourceNotificationsEnabled ? 1231 : 1237);
+		result = prime * result + (int) (sourceUserId ^ sourceUserId >>> 32);
+		result = prime * result + (sourceUserScreenName == null ? 0 : sourceUserScreenName.hashCode());
+		result = prime * result + (int) (targetUserId ^ targetUserId >>> 32);
+		result = prime * result + (targetUserScreenName == null ? 0 : targetUserScreenName.hashCode());
 		return result;
 	}
 
@@ -163,6 +194,16 @@ import twitter4j.http.HttpResponse;
 	@Override
 	public boolean isSourceFollowingTarget() {
 		return sourceFollowingTarget;
+	}
+
+	@Override
+	public boolean isSourceMarkedTargetAsSpam() {
+		return sourceMarkedTargetAsSpam;
+	}
+
+	@Override
+	public boolean isSourceMutingTarget() {
+		return sourceMutingTarget;
 	}
 
 	/**
@@ -191,11 +232,13 @@ import twitter4j.http.HttpResponse;
 
 	@Override
 	public String toString() {
-		return "RelationshipJSONImpl{" + "sourceUserId=" + sourceUserId + ", targetUserId=" + targetUserId
-				+ ", sourceUserScreenName='" + sourceUserScreenName + '\'' + ", targetUserScreenName='"
-				+ targetUserScreenName + '\'' + ", sourceFollowingTarget=" + sourceFollowingTarget
-				+ ", sourceFollowedByTarget=" + sourceFollowedByTarget + ", sourceNotificationsEnabled="
-				+ sourceNotificationsEnabled + '}';
+		return "RelationshipJSONImpl{targetUserId=" + targetUserId + ", targetUserScreenName=" + targetUserScreenName
+				+ ", sourceBlockingTarget=" + sourceBlockingTarget + ", sourceNotificationsEnabled="
+				+ sourceNotificationsEnabled + ", sourceFollowingTarget=" + sourceFollowingTarget
+				+ ", sourceFollowedByTarget=" + sourceFollowedByTarget + ", sourceUserId=" + sourceUserId
+				+ ", sourceUserScreenName=" + sourceUserScreenName + ", sourceCanDM=" + sourceCanDM
+				+ ", sourceCanMediaTag=" + sourceCanMediaTag + ", sourceMutingTarget=" + sourceMutingTarget
+				+ ", sourceMarkedTargetAsSpam=" + sourceMarkedTargetAsSpam + "}";
 	}
 
 	/* package */

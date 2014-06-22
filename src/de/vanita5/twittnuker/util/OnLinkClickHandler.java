@@ -65,7 +65,7 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 			}
 			case TwidereLinkify.LINK_TYPE_LINK: {
 				if (MediaPreviewUtils.isLinkSupported(link)) {
-					openImage(activity, link, sensitive);
+					openImage(activity, account_id, link, sensitive);
 				} else {
 					openLink(link);
 				}

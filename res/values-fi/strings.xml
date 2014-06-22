@@ -159,8 +159,8 @@
     <string name="unblock">Älä estä</string>
     <string name="report_for_spam">Ilmoita roskapostista</string>
     <string name="mute_user">Vaienna käyttäjä</string>
-    <string name="user_muted">Käyttäjä lisättiin suodatusluetteloon. Et näe tämän käyttäjän twiittejä omalla aikajanallasi tai maininnoissasi.</string>
-    <string name="users_muted">Käyttäjät lisättiin suodatusluetteloon. Et näe näiden käyttäjien twiittejä omalla aikajanallasi tai maininnoissasi.</string>
+    <string name="message_user_muted">Käyttäjä lisättiin suodatusluetteloon. Et näe tämän käyttäjän twiittejä omalla aikajanallasi tai maininnoissasi.</string>
+    <string name="message_users_muted">Käyttäjät lisättiin suodatusluetteloon. Et näe näiden käyttäjien twiittejä omalla aikajanallasi tai maininnoissasi.</string>
     <string name="inbox">Saapuneet</string>
     <string name="load_images">Lataa kuvat</string>
     <string name="other_settings">Muut asetukset</string>

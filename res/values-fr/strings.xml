@@ -159,8 +159,8 @@
     <string name="unblock">Débloquer</string>
     <string name="report_for_spam">Signaler comme spam</string>
     <string name="mute_user">Masquer utilisateur</string>
-    <string name="user_muted">Utilisateur ajouté au filtre. Les tweets de cet utilisateur n’apparaîtront plus dans votre fil d\'actualité et mentions.</string>
-    <string name="users_muted">Utilisateurs ajoutés au filtre. Les tweets de ces utilisateurs n’apparaîtront plus dans votre fil d\'actualité et mentions.</string>
+    <string name="message_user_muted">Utilisateur ajouté au filtre. Les tweets de cet utilisateur n’apparaîtront plus dans votre fil d\'actualité et mentions.</string>
+    <string name="message_users_muted">Utilisateurs ajoutés au filtre. Les tweets de ces utilisateurs n’apparaîtront plus dans votre fil d\'actualité et mentions.</string>
     <string name="inbox">Boîte de réception</string>
     <string name="load_images">Charger les images</string>
     <string name="other_settings">Autres paramètres</string>

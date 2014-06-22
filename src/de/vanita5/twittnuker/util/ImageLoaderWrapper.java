@@ -83,12 +83,8 @@ public class ImageLoaderWrapper implements Constants {
 		mImageLoader.displayImage(url, view, mImageDisplayOptions, loadingHandler, loadingHandler);
 	}
 
-	public void displayPreviewImageForDM(final ImageView view, final String url, final long accountId,
+	public void displayPreviewImageWithCredentials(final ImageView view, final String url, final long accountId,
 										 final ImageLoadingHandler loadingHandler) {
-		if (url != null && !url.contains("://ton.twitter.com/1.1/ton/data/dm")) {
-			displayPreviewImage(view, url, loadingHandler);
-			return;
-		}
 		final DisplayImageOptions.Builder b = new DisplayImageOptions.Builder();
 		b.cloneFrom(mImageDisplayOptions);
 		b.extraForDownloader(new AccountExtra(accountId));

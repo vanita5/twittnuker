@@ -159,8 +159,8 @@
     <string name="unblock">Desbloquear</string>
     <string name="report_for_spam">Reportar por spam</string>
     <string name="mute_user">Silenciar usuario</string>
-    <string name="user_muted">Usuario añadido a a lista de filtros. No verás tweets de este usuario en tu línea de tiempo ni en tu lista de menciones.</string>
-    <string name="users_muted">Usuarios añadidos a la lista de filtros. No verás tuits de estos usuarios en tu línea de tiempo ni en tu lista de menciones.</string>
+    <string name="message_user_muted">Usuario añadido a a lista de filtros. No verás tweets de este usuario en tu línea de tiempo ni en tu lista de menciones.</string>
+    <string name="message_users_muted">Usuarios añadidos a la lista de filtros. No verás tuits de estos usuarios en tu línea de tiempo ni en tu lista de menciones.</string>
     <string name="inbox">Mensaje</string>
     <string name="load_images">Cargar imagenes</string>
     <string name="other_settings">Otras configuraciones</string>

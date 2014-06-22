@@ -140,6 +140,7 @@ public interface Constants extends TwittnukerConstants {
 	public static final int LINK_ID_STATUS_REPLIES = 26;
 	public static final int LINK_ID_STATUS_FAVORITERS = 27;
 	public static final int LINK_ID_SEARCH = 28;
+	public static final int LINK_ID_MUTES_USERS = 41;
 
 	public static final String DIR_NAME_IMAGE_CACHE = "image_cache";
 	public static final String DIR_NAME_FULL_IMAGE_CACHE = "full_image_cache";

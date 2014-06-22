@@ -309,7 +309,7 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 			case R.id.image_preview: {
 				final ParcelableStatus status = getStatus(position);
 				if (status == null || status.first_media == null) return;
-                openImage(mContext, status.first_media, status.is_possibly_sensitive);
+				openImage(mContext, status.account_id, status.first_media, status.is_possibly_sensitive);
 				break;
 			}
 			case R.id.my_profile_image:

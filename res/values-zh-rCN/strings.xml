@@ -159,8 +159,8 @@
     <string name="unblock">取消阻止</string>
     <string name="report_for_spam">报告垃圾信息</string>
     <string name="mute_user">过滤用户</string>
-    <string name="user_muted">你过滤了这个用户，你将不会在主页/提及中看到这个用户的推文</string>
-    <string name="users_muted">你过滤了这些用户，你将不会在主页/提及中看到这些用户的推文</string>
+    <string name="message_user_muted">你过滤了这个用户，你将不会在主页/提及中看到这个用户的推文</string>
+    <string name="message_users_muted">你过滤了这些用户，你将不会在主页/提及中看到这些用户的推文</string>
     <string name="inbox">收件箱</string>
     <string name="load_images">载入图片</string>
     <string name="other_settings">其他设定</string>

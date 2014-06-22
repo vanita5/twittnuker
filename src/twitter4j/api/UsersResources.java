@@ -62,6 +62,10 @@ public interface UsersResources {
 	 */
 	User createBlock(String screenName) throws TwitterException;
 
+	User createMute(long userId) throws TwitterException;
+
+	User createMute(String screenName) throws TwitterException;
+
 	/**
 	 * Un-blocks the user specified in the ID parameter as the authenticating
 	 * user. Returns the un-blocked user in the requested format when
@@ -84,7 +88,7 @@ public interface UsersResources {
 	 * successful. <br>
 	 * This method calls http://api.twitter.com/1.1/blocks/destroy/[id].json
 	 * 
-	 * @param screen_name the screen_name of the user to block
+	 * @param screenName the screen name of the user to block
 	 * @return the unblocked user
 	 * @throws TwitterException when Twitter service or network is unavailable
 	 * @see <a
@@ -92,7 +96,11 @@ public interface UsersResources {
 	 *      blocks/destroy | Twitter Developers</a>
 	 * @since Twitter4J 2.0.1
 	 */
-	User destroyBlock(String screen_name) throws TwitterException;
+	User destroyBlock(String screenName) throws TwitterException;
+
+	User destroyMute(long userId) throws TwitterException;
+
+	User destroyMute(String screenName) throws TwitterException;
 
 	/**
 	 * Returns the current trend, geo, language, timezone and sleep time
@@ -158,6 +166,14 @@ public interface UsersResources {
 	 * @since Twitter4J 2.1.9
 	 */
 	ResponseList<User> getMemberSuggestions(String categorySlug) throws TwitterException;
+
+	IDs getMutesUsersIDs() throws TwitterException;
+
+	IDs getMutesUsersIDs(CursorPaging paging) throws TwitterException;
+
+	PagableResponseList<User> getMutesUsersList() throws TwitterException;
+
+	PagableResponseList<User> getMutesUsersList(CursorPaging paging) throws TwitterException;
 
 	/**
 	 * Access to Twitter's suggested user list. This returns the list of

@@ -638,7 +638,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
     public void onMediaClick(final View view, final ParcelableMedia media) {
         final ParcelableStatus status = mStatus;
         if (status == null) return;
-		openImageDirectly(getActivity(), media.url);
+		openImageDirectly(getActivity(), status.account_id, media.url);
 	}
 
 	@Override

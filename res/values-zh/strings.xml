@@ -159,8 +159,8 @@
     <string name="unblock">取消封鎖</string>
     <string name="report_for_spam">報告垃圾信息</string>
     <string name="mute_user">過濾用戶</string>
-    <string name="user_muted">您過濾了這個用戶，你將不會在主頁/提及中看到這個用戶的推文</string>
-    <string name="users_muted">您過濾了這些用戶，你將不會在主頁/提及中看到這些用戶的推文</string>
+    <string name="message_user_muted">您過濾了這個用戶，你將不會在主頁/提及中看到這個用戶的推文</string>
+    <string name="message_users_muted">您過濾了這些用戶，你將不會在主頁/提及中看到這些用戶的推文</string>
     <string name="inbox">收件箱</string>
     <string name="load_images">載入圖片</string>
     <string name="other_settings">其他設定</string>

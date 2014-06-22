@@ -316,6 +316,9 @@
                 <data
                     android:host="search"
                     android:scheme="twittnuker" />
+                <data
+                	android:host="mutes_users"
+                	android:scheme="twittnuker"/>
             </intent-filter>
         </activity>
         <activity

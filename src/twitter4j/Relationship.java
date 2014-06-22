@@ -26,6 +26,10 @@ package twitter4j;
  * @since Twitter4J 2.1.0
  */
 public interface Relationship extends TwitterResponse {
+	boolean canSourceDMTarget();
+
+	boolean canSourceMediaTagTarget();
+
 	/**
 	 * Returns the source user id
 	 * 
@@ -74,6 +78,10 @@ public interface Relationship extends TwitterResponse {
 	 * @return true if source user is following target user
 	 */
 	boolean isSourceFollowingTarget();
+
+	boolean isSourceMarkedTargetAsSpam();
+
+	boolean isSourceMutingTarget();
 
 	/**
 	 * Checks if the source user has enabled notifications for updates of the

@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.adapter;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.findDirectMessageInDatabases;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
+import static de.vanita5.twittnuker.util.Utils.openImage;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 
 import android.app.Activity;
@@ -61,8 +62,6 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 
 	private int mMaxAnimationPosition;
 	private ParcelableDirectMessage.CursorIndices mIndices;
-
-	private boolean mDisplayImagePreview;
 
 	public DirectMessagesConversationAdapter(final Context context) {
 		super(context, R.layout.card_item_message_conversation, null, new String[0], new int[0], 0);
@@ -120,33 +119,33 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 		holder.incoming_item_menu.setTag(position);
 		holder.outgoing_item_menu.setTag(position);
 
-		if (mDisplayImagePreview && firstMedia != null) {
-			holder.outgoing_image_preview_container.setVisibility(View.VISIBLE);
-			holder.incoming_image_preview_container.setVisibility(View.VISIBLE);
-			if (is_outgoing) {
-				if (mImagePreviewScaleType != null) {
-					holder.outgoing_image_preview.setScaleType(mImagePreviewScaleType);
-				}
-				if (!firstMedia.equals(mImageLoadingHandler.getLoadingUri(holder.outgoing_image_preview))) {
-					holder.outgoing_image_preview.setBackgroundResource(0);
-					mImageLoader.displayPreviewImageForDM(holder.outgoing_image_preview, firstMedia, accountId,
-							mImageLoadingHandler);
-				}
-				holder.outgoing_image_preview.setTag(position);
-			} else {
-				if (mImagePreviewScaleType != null) {
-					holder.incoming_image_preview.setScaleType(mImagePreviewScaleType);
-				}
-				if (!firstMedia.equals(mImageLoadingHandler.getLoadingUri(holder.incoming_image_preview))) {
-					holder.incoming_image_preview.setBackgroundResource(0);
-					mImageLoader.displayPreviewImageForDM(holder.incoming_image_preview, firstMedia, accountId,
-							mImageLoadingHandler);
-				}
-				holder.incoming_image_preview.setTag(position);
-			}
-		} else {
+		if (firstMedia == null) {
 			holder.outgoing_image_preview_container.setVisibility(View.GONE);
 			holder.incoming_image_preview_container.setVisibility(View.GONE);
+		} else if (is_outgoing) {
+			holder.outgoing_image_preview_container.setVisibility(View.VISIBLE);
+			holder.incoming_image_preview_container.setVisibility(View.GONE);
+			if (mImagePreviewScaleType != null) {
+				holder.outgoing_image_preview.setScaleType(mImagePreviewScaleType);
+			}
+			if (!firstMedia.equals(mImageLoadingHandler.getLoadingUri(holder.outgoing_image_preview))) {
+				holder.outgoing_image_preview.setBackgroundResource(0);
+				mImageLoader.displayPreviewImageWithCredentials(holder.outgoing_image_preview, firstMedia, accountId,
+						mImageLoadingHandler);
+			}
+			holder.outgoing_image_preview.setTag(position);
+		} else {
+			holder.outgoing_image_preview_container.setVisibility(View.GONE);
+			holder.incoming_image_preview_container.setVisibility(View.VISIBLE);
+			if (mImagePreviewScaleType != null) {
+				holder.incoming_image_preview.setScaleType(mImagePreviewScaleType);
+			}
+			if (!firstMedia.equals(mImageLoadingHandler.getLoadingUri(holder.incoming_image_preview))) {
+				holder.incoming_image_preview.setBackgroundResource(0);
+				mImageLoader.displayPreviewImageWithCredentials(holder.incoming_image_preview, firstMedia, accountId,
+						mImageLoadingHandler);
+			}
+			holder.incoming_image_preview.setTag(position);
 		}
 		super.bindView(view, context, cursor);
 	}
@@ -178,6 +177,8 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 			holder.outgoing_profile_image.setOnClickListener(this);
 			holder.incoming_item_menu.setOnClickListener(this);
 			holder.outgoing_item_menu.setOnClickListener(this);
+			holder.incoming_image_preview.setOnClickListener(this);
+			holder.outgoing_image_preview.setOnClickListener(this);
 			view.setTag(holder);
 		}
 		return view;
@@ -206,6 +207,13 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 				mListener.onMenuButtonClick(view, position, getItemId(position));
 				break;
 			}
+			case R.id.incoming_image_preview:
+			case R.id.outgoing_image_preview: {
+				if (position == -1) return;
+				final ParcelableDirectMessage message = getDirectMessage(position);
+				if (message == null || message.first_media == null) return;
+				openImage(mContext, message.account_id, message.first_media, false);
+			}
 		}
 	}
 
@@ -216,7 +224,7 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 
 	@Override
 	public void setDisplayImagePreview(final boolean display) {
-		mDisplayImagePreview = display;
+		// Images in DM are always enabled
 	}
 
 	@Override
