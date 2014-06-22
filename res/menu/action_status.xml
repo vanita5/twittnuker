@@ -18,7 +18,7 @@
 		android:icon="@drawable/ic_iconic_action_star"
 		android:title="@string/favorite"/>
 	<item 
-	    android:id="@+id/direct_love"
+	    android:id="@+id/love"
         android:icon="@drawable/ic_iconic_action_heart"
 	    android:title="@string/love"/>
 	<item

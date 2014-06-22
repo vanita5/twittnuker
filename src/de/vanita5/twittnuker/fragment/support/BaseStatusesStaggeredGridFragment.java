@@ -311,7 +311,6 @@ abstract class BaseStatusesStaggeredGridFragment<Data> extends BasePullToRefresh
 				startActivity(intent);
 				break;
 			}
-			case R.id.direct_love:
 			case MENU_LOVE: {
 				retweet(status, twitter);
 				favorite(status, twitter);

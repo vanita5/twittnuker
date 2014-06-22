@@ -3423,6 +3423,16 @@ public final class Utils implements Constants, TwitterConstants {
 				favorite.setTitle(R.string.favorite);
 			}
 		}
+		final MenuItem love = menu.findItem(MENU_LOVE);
+		if (love != null) {
+			final Drawable icon = love.getIcon().mutate();
+			love.setVisible(!status.user_is_protected || isMyRetweet);
+			if (isMyRetweet && status.is_favorite) {
+				icon.setColorFilter(activatedColor, Mode.SRC_ATOP);
+			} else {
+				icon.clearColorFilter();
+			}
+		}
 		final MenuItem translate = menu.findItem(MENU_TRANSLATE);
 		if (translate != null) {
 			final AccountWithCredentials account = Account.getAccountWithCredentials(context, status.account_id);
