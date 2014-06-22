@@ -207,7 +207,7 @@ public class LinkHandlerActivity extends TwidereSwipeBackActivity implements OnC
 				break;
 			}
 			case LINK_ID_MUTES_USERS: {
-				setTitle(R.string.muted_users);
+				setTitle(R.string.twitter_muted_users);
 				break;
 			}
 			case LINK_ID_DIRECT_MESSAGES_CONVERSATION: {

@@ -156,7 +156,7 @@
     <string name="block">Zablokuj</string>
     <string name="unblock">Odblokuj</string>
     <string name="report_for_spam">Zgłoś spam</string>
-    <string name="mute_user">Wycisz użytkownika</string>
+    <string name="twitter_mute_user">Wycisz użytkownika</string>
     <string name="message_user_muted">Dodano tego użytkownika do listy filtrów. Nie zobaczysz ćwierków od tego użytkownika w strumieniu głównym i/lub liście wzmianek.</string>
     <string name="message_users_muted">Dodano użytkowników do listy filtrów. Nie zobaczysz ćwierków od tych użytkowników w strumieniu głównym i/lub liście wzmianek.</string>
     <string name="inbox">Odebrane</string>

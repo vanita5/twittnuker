@@ -158,7 +158,7 @@
   <string name="block">Blokkeren</string>
   <string name="unblock">Blokkering opheffen</string>
   <string name="report_for_spam">Rapporteer spam</string>
-  <string name="mute_user">Demp gebruiker</string>
+  <string name="twitter_mute_user">Demp gebruiker</string>
   <string name="message_user_muted">Gebruiker toegevoegd aan filter lijst. Je zult geen tweets van deze gebruiker in je tijdlijn/vermeldingen zien.</string>
   <string name="message_users_muted">Gebruiker toegevoegd aan filter lijst. Je zult geen tweets van deze gebruiker in je tijdlijn/vermeldingen zien.</string>
   <string name="inbox">Inbox</string>

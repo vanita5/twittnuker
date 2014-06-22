@@ -156,7 +156,7 @@
   <string name="block">Blokkol</string>
   <string name="unblock">Engedélyez</string>
   <string name="report_for_spam">Spam jelentése</string>
-  <string name="mute_user">Felhasználó némítása</string>
+  <string name="twitter_mute_user">Felhasználó némítása</string>
   <string name="inbox">Beérkezett üzenetek</string>
   <string name="load_images">Képek betöltése</string>
   <string name="other_settings">Egyéb beállítások</string>

@@ -158,7 +158,7 @@
     <string name="block">Bloquear</string>
     <string name="unblock">Desbloquear</string>
     <string name="report_for_spam">Denunciar como spam</string>
-    <string name="mute_user">Silenciar</string>
+    <string name="twitter_mute_user">Silenciar</string>
     <string name="message_user_muted">Adicionar este usuário a lista de filtros. Você não verá tweets deste usuário em sua timeline/lista de menções.</string>
     <string name="message_users_muted">Adicionar este usuário a lista de filtros. Você não verá tweets deste usuário em sua timeline/lista de menções.</string>
     <string name="inbox">Caixa de entrada</string>

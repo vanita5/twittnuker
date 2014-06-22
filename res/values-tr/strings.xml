@@ -158,7 +158,7 @@
   <string name="block">Engelle</string>
   <string name="unblock">Engeli kaldır</string>
   <string name="report_for_spam">Spam bildir</string>
-  <string name="mute_user">Kullanıcıyı görme</string>
+  <string name="twitter_mute_user">Kullanıcıyı görme</string>
   <string name="message_user_muted">Bu kullanıcı filtre listesine eklendi. Bu kullanıcıdan gelen tweetleri zaman akışınızda  /bahsedenler listenizde görmeyeceksiniz.</string>
   <string name="message_users_muted">Kullanıcılar filtre listesine eklendi. Bu kullanıcılardan gelen tweetleri zaman akışınızda  /bahsedenler listenizde görmeyeceksiniz.</string>
   <string name="inbox">Gelen kutusu</string>

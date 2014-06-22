@@ -780,7 +780,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
                 ReportSpamDialogFragment.show(getFragmentManager(), user);
 				break;
 			}
-			case MENU_MUTE_USER: {
+			case MENU_ADD_TO_FILTER: {
 				final ContentResolver resolver = getContentResolver();
                 resolver.delete(Filters.Users.CONTENT_URI, Where.equals(Filters.Users.USER_ID, user.id).getSQL(), null);
                 resolver.insert(Filters.Users.CONTENT_URI, makeFilterdUserContentValues(user));
@@ -879,6 +879,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
         final ParcelableUser user = mUser;
         final Relationship relationship = mRelationship;
         if (twitter == null || user == null) return;
+		final int activatedColor = ThemeUtils.getUserThemeColor(getActivity());
         final boolean isMyself = user.account_id == user.id;
         final boolean isFollowing = relationship != null && relationship.isSourceFollowingTarget();
         final boolean isProtected = user.is_protected;
@@ -906,8 +907,8 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
                 final Drawable blockIcon = blockItem.getIcon();
 				if (relationship.isSourceBlockingTarget()) {
                     blockItem.setTitle(R.string.unblock);
-                    blockIcon.mutate().setColorFilter(ThemeUtils.getUserThemeColor(getActivity()),
-                    PorterDuff.Mode.MULTIPLY);
+					blockIcon.mutate();
+					blockIcon.setColorFilter(activatedColor, PorterDuff.Mode.SRC_ATOP);
                 } else {
                     blockItem.setTitle(R.string.block);
                     blockIcon.clearColorFilter();
@@ -931,7 +932,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
         return isInLinkHandler && FlymeUtils.hasSmartBar();
     }
 
-	final class FavoritesAction extends ListAction {
+	private final class FavoritesAction extends ListAction {
 
 		public FavoritesAction(final int order) {
 			super(order);
@@ -953,6 +954,148 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
             final ParcelableUser user = mUser;
             if (user == null) return;
             openUserFavorites(getActivity(), user.account_id, user.id, user.screen_name);
+		}
+
+	}
+
+	private final class IncomingFriendshipsAction extends ListAction {
+
+		public IncomingFriendshipsAction(final int order) {
+			super(order);
+		}
+
+		@Override
+		public String getName() {
+			return getString(R.string.incoming_friendships);
+		}
+
+		@Override
+		public void onClick() {
+            final ParcelableUser user = mUser;
+            if (user == null) return;
+            openIncomingFriendships(getActivity(), user.account_id);
+		}
+
+	}
+
+	private final class MutesUsersAction extends ListAction {
+
+		public MutesUsersAction(final int order) {
+			super(order);
+		}
+
+		@Override
+		public String getName() {
+			return getString(R.string.twitter_muted_users);
+		}
+
+		@Override
+		public void onClick() {
+            final ParcelableUser user = mUser;
+            if (user == null) return;
+			openMutesUsers(getActivity(), user.account_id);
+		}
+
+	}
+
+	private final class SavedSearchesAction extends ListAction {
+
+		public SavedSearchesAction(final int order) {
+			super(order);
+		}
+
+		@Override
+		public String getName() {
+			return getString(R.string.saved_searches);
+		}
+
+		@Override
+		public void onClick() {
+			final ParcelableUser user = mUser;
+			if (user == null) return;
+			openSavedSearches(getActivity(), user.account_id);
+		}
+
+	}
+
+	private final class UserBlocksAction extends ListAction {
+
+		public UserBlocksAction(final int order) {
+			super(order);
+		}
+
+		@Override
+		public String getName() {
+			return getString(R.string.blocked_users);
+		}
+
+		@Override
+		public void onClick() {
+            final ParcelableUser user = mUser;
+            if (user == null) return;
+            openUserBlocks(getActivity(), user.account_id);
+		}
+
+	}
+
+	private final class UserListMembershipsAction extends ListAction {
+		public UserListMembershipsAction(final int order) {
+			super(order);
+		}
+
+		@Override
+		public String getName() {
+			if (mUser == null) return getString(R.string.lists_following_user);
+			final String display_name = getDisplayName(getActivity(), mUser.id, mUser.name, mUser.screen_name);
+			return getString(R.string.lists_following_user_with_name, display_name);
+		}
+
+		@Override
+		public void onClick() {
+            final ParcelableUser user = mUser;
+            if (user == null) return;
+            openUserListMemberships(getActivity(), user.account_id, user.id, user.screen_name);
+		}
+	}
+
+	private final class UserListsAction extends ListAction {
+
+		public UserListsAction(final int order) {
+			super(order);
+		}
+
+		@Override
+		public String getName() {
+			if (mUser == null) return getString(R.string.users_lists);
+			final String display_name = getDisplayName(getActivity(), mUser.id, mUser.name, mUser.screen_name);
+			return getString(R.string.users_lists_with_name, display_name);
+		}
+
+		@Override
+		public void onClick() {
+            final ParcelableUser user = mUser;
+            if (user == null) return;
+            openUserLists(getActivity(), user.account_id, user.id, user.screen_name);
+		}
+
+	}
+
+	private final class UserMentionsAction extends ListAction {
+
+		public UserMentionsAction(final int order) {
+			super(order);
+		}
+
+		@Override
+		public String getName() {
+			return getString(R.string.user_mentions);
+		}
+
+		@Override
+		public void onClick() {
+            final ParcelableUser user = mUser;
+            if (user == null) return;
+            openUserMentions(getActivity(), user.account_id, user.screen_name);
 		}
 
 	}
@@ -986,148 +1129,6 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 		protected void onStartLoading() {
 			forceLoad();
 		}
-	}
-
-	final class IncomingFriendshipsAction extends ListAction {
-
-		public IncomingFriendshipsAction(final int order) {
-			super(order);
-		}
-
-		@Override
-		public String getName() {
-			return getString(R.string.incoming_friendships);
-		}
-
-		@Override
-		public void onClick() {
-            final ParcelableUser user = mUser;
-            if (user == null) return;
-            openIncomingFriendships(getActivity(), user.account_id);
-		}
-
-	}
-
-	final class SavedSearchesAction extends ListAction {
-
-		public SavedSearchesAction(final int order) {
-			super(order);
-		}
-
-		@Override
-		public String getName() {
-			return getString(R.string.saved_searches);
-		}
-
-		@Override
-		public void onClick() {
-            final ParcelableUser user = mUser;
-            if (user == null) return;
-            openSavedSearches(getActivity(), user.account_id);
-		}
-
-	}
-
-	final class MutesUsersAction extends ListAction {
-
-		public MutesUsersAction(final int order) {
-			super(order);
-		}
-
-		@Override
-		public String getName() {
-			return getString(R.string.muted_users);
-		}
-
-		@Override
-		public void onClick() {
-			final ParcelableUser user = mUser;
-			if (user == null) return;
-			openMutesUsers(getActivity(), user.account_id);
-		}
-
-	}
-
-	final class UserBlocksAction extends ListAction {
-
-		public UserBlocksAction(final int order) {
-			super(order);
-		}
-
-		@Override
-		public String getName() {
-			return getString(R.string.blocked_users);
-		}
-
-		@Override
-		public void onClick() {
-            final ParcelableUser user = mUser;
-            if (user == null) return;
-            openUserBlocks(getActivity(), user.account_id);
-		}
-
-	}
-
-	final class UserListMembershipsAction extends ListAction {
-		public UserListMembershipsAction(final int order) {
-			super(order);
-		}
-
-		@Override
-		public String getName() {
-			if (mUser == null) return getString(R.string.lists_following_user);
-			final String display_name = getDisplayName(getActivity(), mUser.id, mUser.name, mUser.screen_name);
-			return getString(R.string.lists_following_user_with_name, display_name);
-		}
-
-		@Override
-		public void onClick() {
-            final ParcelableUser user = mUser;
-            if (user == null) return;
-            openUserListMemberships(getActivity(), user.account_id, user.id, user.screen_name);
-		}
-	}
-
-	final class UserListsAction extends ListAction {
-
-		public UserListsAction(final int order) {
-			super(order);
-		}
-
-		@Override
-		public String getName() {
-			if (mUser == null) return getString(R.string.users_lists);
-			final String display_name = getDisplayName(getActivity(), mUser.id, mUser.name, mUser.screen_name);
-			return getString(R.string.users_lists_with_name, display_name);
-		}
-
-		@Override
-		public void onClick() {
-            final ParcelableUser user = mUser;
-            if (user == null) return;
-            openUserLists(getActivity(), user.account_id, user.id, user.screen_name);
-		}
-
-	}
-
-	final class UserMentionsAction extends ListAction {
-
-		public UserMentionsAction(final int order) {
-			super(order);
-		}
-
-		@Override
-		public String getName() {
-			return getString(R.string.user_mentions);
-		}
-
-		@Override
-		public void onClick() {
-            final ParcelableUser user = mUser;
-            if (user == null) return;
-            openUserMentions(getActivity(), user.account_id, user.screen_name);
-		}
-
 	}
 
 }

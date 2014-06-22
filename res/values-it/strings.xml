@@ -157,7 +157,7 @@
     <string name="block">Blocca</string>
     <string name="unblock">Sblocca</string>
     <string name="report_for_spam">Segnala spam</string>
-    <string name="mute_user">Muta utente</string>
+    <string name="twitter_mute_user">Muta utente</string>
     <string name="message_user_muted">Utenti aggiunti all\'elenco dei filtri. Non si vedranno tweets da questi utenti nella timeline o tra le menzioni.</string>
     <string name="message_users_muted">Utenti aggiunti all\'elenco dei filtri. Non si vedranno tweets da questi utenti nella timeline o tra le menzioni.</string>
     <string name="inbox">Inbox</string>

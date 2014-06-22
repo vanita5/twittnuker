@@ -1113,23 +1113,25 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
+
+
 	class DestroyBlockTask extends ManagedAsyncTask<Void, Void, SingleResponse<User>> {
 
-		private final long account_id;
-		private final long user_id;
+		private final long mAccountId;
+		private final long mUserId;
 
-		public DestroyBlockTask(final long account_id, final long user_id) {
+		public DestroyBlockTask(final long accountId, final long userId) {
 			super(mContext, mAsyncTaskManager);
-			this.account_id = account_id;
-			this.user_id = user_id;
+			this.mAccountId = accountId;
+			this.mUserId = userId;
 		}
 
         @Override
         protected SingleResponse<User> doInBackground(final Void... params) {
-            final Twitter twitter = getTwitterInstance(mContext, account_id, false);
+			final Twitter twitter = getTwitterInstance(mContext, mAccountId, false);
             if (twitter == null) return SingleResponse.nullInstance();
             try {
-                final User user = twitter.destroyBlock(user_id);
+				final User user = twitter.destroyBlock(mUserId);
                 return SingleResponse.newInstance(user, null);
             } catch (final TwitterException e) {
                 return SingleResponse.newInstance(null, e);
@@ -1146,7 +1148,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				mMessagesManager.showErrorMessage(R.string.action_unblocking, result.exception, true);
 			}
 			final Intent intent = new Intent(BROADCAST_BLOCKSTATE_CHANGED);
-			intent.putExtra(EXTRA_USER_ID, user_id);
+			intent.putExtra(EXTRA_USER_ID, mUserId);
             intent.putExtra(EXTRA_SUCCEED, result.data != null);
 			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);

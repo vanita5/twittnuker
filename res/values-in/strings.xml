@@ -158,7 +158,7 @@
     <string name="block">Blok</string>
     <string name="unblock">Hilangkan Blokir</string>
     <string name="report_for_spam">Laporkan sebagai spam</string>
-    <string name="mute_user">Bisukan pengguna</string>
+    <string name="twitter_mute_user">Bisukan pengguna</string>
     <string name="message_user_muted">Pengguna telah ditambah ke daftar saringan. Anda tidak akan melihat tweet-nya di timeline/mention.</string>
     <string name="message_users_muted">Menambahkan para pengguna ini ke daftar filter. Anda tidak akan lagi melihat tweet dari pengguna ini di linimasa home/daftar mention anda.</string>
     <string name="inbox">Kotak masuk</string>

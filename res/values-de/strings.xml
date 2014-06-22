@@ -158,7 +158,7 @@
     <string name="block">Blockieren</string>
     <string name="unblock">Blockierung aufheben</string>
     <string name="report_for_spam">Spam melden</string>
-    <string name="mute_user">Stummschalten</string>
+    <string name="twitter_mute_user">Stummschalten</string>
     <string name="message_user_muted">Benutzer zur Filterliste hinzugefügt. Tweets dieses Benutzers erscheinen nicht in der Zeitleiste oder bei Erwähnungen.</string>
     <string name="message_users_muted">Benutzer zur Filterliste hinzugefügt. Tweets dieser Benutzer erscheinen nicht in der Zeitleiste oder bei Erwähnungen.</string>
     <string name="inbox">Direktnachrichten</string>
@@ -618,7 +618,7 @@
     <string name="click_item_to_config">(D) Click an item to config</string>
     <string name="dark_drawer">(D) Dark drawer</string>
     <string name="retweets_of_me">(D) Retweets of me</string>
-    <string name="muted_users">(D) Muted users</string>
+    <string name="twitter_muted_users">(D) Muted users</string>
 
     <string name="plain_list_style">(D) Plain list style</string>
     <string name="want_old_icon_back">(D) Want old icon back?</string>

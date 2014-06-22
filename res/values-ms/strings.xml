@@ -18,7 +18,7 @@
   <string name="load_more_automatically_summary">Memuatkan lebih kandungan (e.g. gambar, peta, status) secara automatik</string>
   <string name="quote_format_summary">\"[TEKS]\" = teks Tweet\n\"[NAMA] = nama pengguna Twitter</string>
   <string name="overwrite_confirm">Fail telah wujud, tindihkan?</string>
-  <string name="mute_user">Bisukan pengguna</string>
+  <string name="twitter_mute_user">Bisukan pengguna</string>
   <string name="message_user_muted">Pengguna ditambah ke dalam senarai tapis. Anda tidak akan melihat tweet dari pengguna ini di dalam senarai garis masa/sebutan anda.</string>
   <string name="load_images">Memuatkan gambar</string>
   <string name="image_uploader_default">Lalai (Twitter)</string>

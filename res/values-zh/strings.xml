@@ -158,7 +158,7 @@
     <string name="block">封鎖</string>
     <string name="unblock">取消封鎖</string>
     <string name="report_for_spam">報告垃圾信息</string>
-    <string name="mute_user">過濾用戶</string>
+    <string name="twitter_mute_user">過濾用戶</string>
     <string name="message_user_muted">您過濾了這個用戶，你將不會在主頁/提及中看到這個用戶的推文</string>
     <string name="message_users_muted">您過濾了這些用戶，你將不會在主頁/提及中看到這些用戶的推文</string>
     <string name="inbox">收件箱</string>

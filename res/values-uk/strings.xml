@@ -158,7 +158,7 @@
   <string name="block">Блокувати</string>
   <string name="unblock">Розблокувати</string>
   <string name="report_for_spam">Звіт про спам</string>
-  <string name="mute_user">Приглушити користувача</string>
+  <string name="twitter_mute_user">Приглушити користувача</string>
   <string name="message_user_muted">Користувач доданий в фільтри. Тепер ви не побачите його твітів в стрічці/згадках.</string>
   <string name="message_users_muted">Користувачі додані в фільтр. Тепер ви не побачите їхніх твітів в стрічці / згадках.</string>
   <string name="inbox">Вхідні</string>
