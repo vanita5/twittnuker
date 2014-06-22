@@ -83,6 +83,7 @@ public class MediaPreviewUtils {
     private static final String STRING_PATTERN_ABLOAD_DOMAIN = "abload\\.de";
     private static final String STRING_PATTERN_TUMBLR_DOMAIN = "media\\.tumblr\\.com";
 	private static final String STRING_PATTERN_POMFSE_DOMAIN = "a\\.pomf\\.se";
+	private static final String STRING_PATTERN_TWIPPLE_DOMAIN = "p\\.twipple\\.jp";
 
 
 
@@ -123,6 +124,8 @@ public class MediaPreviewUtils {
             + "\\/([\\d\\w\\-\\_\\/]+\\." + AVAILABLE_IMAGE_SHUFFIX + ")";
 	private static final String STRING_PATTERN_POMFSE_NO_SCHEME = "(" + STRING_PATTERN_POMFSE_DOMAIN + ")"
 			+ "\\/([\\d\\w]+\\." + AVAILABLE_IMAGE_SHUFFIX + ")";
+	private static final String STRING_PATTERN_TWIPPLE_NO_SCHEME = "(" + STRING_PATTERN_TWIPPLE_DOMAIN + ")"
+			+ "\\/([\\d\\w]+)";
 
 
 	private static final String STRING_PATTERN_IMAGES = AVAILABLE_URL_SCHEME_PREFIX + STRING_PATTERN_IMAGES_NO_SCHEME;
@@ -157,6 +160,8 @@ public class MediaPreviewUtils {
             + STRING_PATTERN_TUMBLR_NO_SCHEME;
 	private static final String STRING_PATTERN_POMFSE_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
 			+ STRING_PATTERN_POMFSE_NO_SCHEME;
+	private static final String STRING_PATTERN_TWIPPLE_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
+			+ STRING_PATTERN_TWIPPLE_NO_SCHEME;
 
 
 
@@ -170,7 +175,7 @@ public class MediaPreviewUtils {
 			+ STRING_PATTERN_TWITGOO_NO_SCHEME + "|" + STRING_PATTERN_MOBYPICTURE_NO_SCHEME + "|"
 			+ STRING_PATTERN_IMGUR_NO_SCHEME + "|" + STRING_PATTERN_PHOTOZOU_NO_SCHEME
             + STRING_PATTERN_ABLOAD_NO_SCHEME + "|" + STRING_PATTERN_TUMBLR_NO_SCHEME + "|"
-			+ STRING_PATTERN_POMFSE_NO_SCHEME + ")", Pattern.CASE_INSENSITIVE);
+			+ STRING_PATTERN_POMFSE_NO_SCHEME + "|" + STRING_PATTERN_TWIPPLE_NO_SCHEME + ")", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern PATTERN_PREVIEW_AVAILABLE_IMAGES_MATCH_ONLY = Pattern.compile(
 			AVAILABLE_URL_SCHEME_PREFIX + "(" + STRING_PATTERN_IMAGES_NO_SCHEME + "|"
@@ -182,7 +187,8 @@ public class MediaPreviewUtils {
 					+ STRING_PATTERN_MOBYPICTURE_DOMAIN + "|" + STRING_PATTERN_IMGUR_DOMAIN + "|"
 					+ STRING_PATTERN_PHOTOZOU_DOMAIN + "|" + STRING_PATTERN_PUUSH_DOMAIN + "|"
                     + STRING_PATTERN_PR0GRAMM_DOMAIN + "|" + STRING_PATTERN_ABLOAD_DOMAIN + "|"
-                    + STRING_PATTERN_TUMBLR_DOMAIN + "|" + STRING_PATTERN_POMFSE_DOMAIN + ")", Pattern.CASE_INSENSITIVE);
+                    + STRING_PATTERN_TUMBLR_DOMAIN + "|" + STRING_PATTERN_POMFSE_DOMAIN + "|"
+					+ STRING_PATTERN_TWIPPLE_DOMAIN + ")", Pattern.CASE_INSENSITIVE);
 
 
 
@@ -224,6 +230,9 @@ public class MediaPreviewUtils {
 	public static final Pattern PATTERN_POMFSE = Pattern.compile(STRING_PATTERN_POMFSE_IMAGES, Pattern.CASE_INSENSITIVE);
 	public static final int POMFSE_GROUP_ID = 3;
 
+	public static final Pattern PATTERN_TWIPPLE = Pattern.compile(STRING_PATTERN_TWIPPLE_IMAGES, Pattern.CASE_INSENSITIVE);
+	public static final int TWIPPLE_GROUP_ID = 3;
+
 	public static final Pattern PATTERN_TWITGOO = Pattern.compile(STRING_PATTERN_TWITGOO, Pattern.CASE_INSENSITIVE);
 	public static final int TWITGOO_GROUP_ID = 2;
 
@@ -253,7 +262,7 @@ public class MediaPreviewUtils {
 			PATTERN_GOOGLE_IMAGES, PATTERN_GOOGLE_PROXY_IMAGES, PATTERN_SINA_WEIBO_IMAGES, PATTERN_TWITPIC,
 			PATTERN_IMGUR, PATTERN_IMGLY, PATTERN_YFROG, PATTERN_LOCKERZ, PATTERN_PLIXI, PATTERN_TWITGOO,
 			PATTERN_MOBYPICTURE, PATTERN_PHOTOZOU, PATTERN_PUUSH, PATTERN_PR0GRAMM, PATTERN_ABLOAD,
-            PATTERN_TUMBLR, PATTERN_POMFSE };
+            PATTERN_TUMBLR, PATTERN_POMFSE, PATTERN_TWIPPLE };
 
 	private static final String URL_PHOTOZOU_PHOTO_INFO = "https://api.photozou.jp/rest/photo_info.json";
 
@@ -324,8 +333,6 @@ public class MediaPreviewUtils {
 		if (m.matches())
 			return getGoogleProxyImage(matcherGroup(m, GOOGLE_PROXY_IMAGES_GROUP_SERVER),
 					matcherGroup(m, GOOGLE_PROXY_IMAGES_GROUP_ID), fullImage);
-		m = PATTERN_SINA_WEIBO_IMAGES.matcher(link);
-		if (m.matches()) return getSinaWeiboImage(link, fullImage);
 		m = PATTERN_TWITPIC.matcher(link);
 		if (m.matches()) return getTwitpicImage(matcherGroup(m, TWITPIC_GROUP_ID), link, fullImage);
 		m = PATTERN_IMGUR.matcher(link);
@@ -334,6 +341,17 @@ public class MediaPreviewUtils {
 		if (m.matches()) return getImglyImage(matcherGroup(m, IMGLY_GROUP_ID), link, fullImage);
 		m = PATTERN_YFROG.matcher(link);
 		if (m.matches()) return getYfrogImage(matcherGroup(m, YFROG_GROUP_ID), link, fullImage);
+		m = PATTERN_PUUSH.matcher(link);
+		if (m.matches()) return getPuushImage(matcherGroup(m, PUUSH_GROUP_ID), link);
+		m = PATTERN_PR0GRAMM.matcher(link);
+		if (m.matches()) return getPr0grammImage(matcherGroup(m, PR0GRAMM_GROUP_ID), matcherGroup(m, PR0GRAMM_GROUP_DATE),
+				matcherGroup(m, PR0GRAMM_GROUP_EXTENSION), link);
+		m = PATTERN_TWIPPLE.matcher(link);
+		if (m.matches()) return getTwippleImage(matcherGroup(m, TWIPPLE_GROUP_ID), link);
+		m = PATTERN_TUMBLR.matcher(link);
+		if (m.matches()) return getTumblrImage(matcherGroup(m, TUMBLR_GROUP_SUB), matcherGroup(m, TUMBLR_GROUP_ID), link);
+		m = PATTERN_POMFSE.matcher(link);
+		if (m.matches()) return getPomfseImage(matcherGroup(m, POMFSE_GROUP_ID), link);
 		m = PATTERN_LOCKERZ.matcher(link);
 		if (m.matches()) return getLockerzAndPlixiImage(link, fullImage);
 		m = PATTERN_PLIXI.matcher(link);
@@ -344,17 +362,10 @@ public class MediaPreviewUtils {
 		if (m.matches()) return getMobyPictureImage(matcherGroup(m, MOBYPICTURE_GROUP_ID), link, fullImage);
 		m = PATTERN_PHOTOZOU.matcher(link);
 		if (m.matches()) return getPhotozouImage(client, matcherGroup(m, PHOTOZOU_GROUP_ID), link, fullImage);
-        m = PATTERN_PUUSH.matcher(link);
-        if (m.matches()) return getPuushImage(matcherGroup(m, PUUSH_GROUP_ID), link);
-        m = PATTERN_PR0GRAMM.matcher(link);
-        if (m.matches()) return getPr0grammImage(matcherGroup(m, PR0GRAMM_GROUP_ID), matcherGroup(m, PR0GRAMM_GROUP_DATE),
-                matcherGroup(m, PR0GRAMM_GROUP_EXTENSION), link);
         m = PATTERN_ABLOAD.matcher(link);
         if (m.matches()) return getAbloadImage(matcherGroup(m, ABLOAD_GROUP_ID), link);
-        m = PATTERN_TUMBLR.matcher(link);
-        if (m.matches()) return getTumblrImage(matcherGroup(m, TUMBLR_GROUP_SUB), matcherGroup(m, TUMBLR_GROUP_ID), link);
-		m = PATTERN_POMFSE.matcher(link);
-		if (m.matches()) return getPomfseImage(matcherGroup(m, POMFSE_GROUP_ID), link);
+		m = PATTERN_SINA_WEIBO_IMAGES.matcher(link);
+		if (m.matches()) return getSinaWeiboImage(link, fullImage);
 		return null;
 	}
 
@@ -555,6 +566,22 @@ public class MediaPreviewUtils {
 	private static ParcelableMedia getPomfseImage(final String id, final String orig) {
 		if (isEmpty(id)) return null;
 		final String preview = String.format("http://a.pomf.se/%s", id);
+		return ParcelableMedia.newImage(preview, orig);
+	}
+
+	/**
+	 * http://p.twipple.jp/wiki/API_Thumbnail
+	 *
+	 * We always load "large" image. The thumbnail is too small,
+	 * even for the image preview.
+	 *
+	 * @param id
+	 * @param orig
+	 * @return
+	 */
+	private static ParcelableMedia getTwippleImage(final String id, final String orig) {
+		if (isEmpty(id)) return null;
+		final String preview = String.format("http://p.twipple.jp/show/large/%s", id);
 		return ParcelableMedia.newImage(preview, orig);
 	}
 
