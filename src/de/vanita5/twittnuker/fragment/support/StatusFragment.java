@@ -156,7 +156,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 	private Locale mLocale;
 
-	private boolean mLoadMoreAutomatically;
+	private boolean mLoadMoreAutomatically, mLoadConversationsAutomatically;
 	private boolean mFollowInfoDisplayed, mLocationInfoDisplayed;
 	private boolean mStatusLoaderInitialized, mLocationLoaderInitialized;
 	private boolean mFollowInfoLoaderInitialized;
@@ -418,6 +418,8 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 			showFollowInfo(true);
 			showLocationInfo(true);
 			showConversation();
+		} else if (mLoadConversationsAutomatically) {
+			showConversation();
 		} else {
 			mFollowIndicator.setVisibility(View.GONE);
 		}
@@ -465,6 +467,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		mImageLoader = application.getImageLoaderWrapper();
 		mTwitterWrapper = getTwitterWrapper();
 		mLoadMoreAutomatically = mPreferences.getBoolean(KEY_LOAD_MORE_AUTOMATICALLY, false);
+		mLoadConversationsAutomatically = mPreferences.getBoolean(KEY_LOAD_CONVERSATIONS_AUTOMATICALLY, true);
 		mLoadImagesIndicator.setOnClickListener(this);
 		mInReplyToView.setOnClickListener(this);
 		mRepliesView.setOnClickListener(this);

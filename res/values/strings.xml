@@ -656,10 +656,11 @@
     <string name="request_permission">Permission request to access Twittnuker</string>
 
     <string name="love">Love</string>
+    <string name="load_conversations_automatically">Load conversations automatically</string>
+    <string name="load_conversations_automatically_summary">Loads a conversation automatically in the status view</string>
 
     <string name="shortening">Shortening</string>
     <string name="error_hototin">...but I failed :(\nYour Tweet has not been send and saved to draft.</string>
     <string name="action_shortening">shortening tweet</string>
-
     <string name="uploading_image">Uploading...</string>
 </resources>

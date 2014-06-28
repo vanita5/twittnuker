@@ -112,8 +112,8 @@
     <string name="leftside_compose_button_summary">Platziere die Tweet-Schaltfläche links.</string>
     <string name="bottom_send_button">Senden-Schaltfläche unten</string>
     <string name="load_item_limit">Limitierung zu ladender Elemente</string>
-    <string name="load_item_limit_summary">Element-Limitierung pro Ladevorgang festlegen.</string>
-    <string name="load_more_automatically">Lade automatisch mehr Inhalt.</string>
+    <string name="load_item_limit_summary">Element-Limitierung pro Ladevorgang festlegen</string>
+    <string name="load_more_automatically">Lade automatisch mehr Inhalt</string>
     <string name="load_more_automatically_summary">Lade weitere Inhalte (z.B. Fotos, Karten, Statusmeldungen) automatisch</string>
     <string name="quote">Zitat</string>
     <string name="add_rule">Regel hinzufügen</string>
@@ -645,9 +645,11 @@
     <string name="stream_autoscroll">Autoscroll</string>
     <string name="stream_autoscroll_summary">Immer oben in der Timeline bleiben</string>
 
+    <string name="load_conversations_automatically">Konversationen automatisch laden</string>
+    <string name="load_conversations_automatically_summary">Lädt Konversationen in der Status Ansicht automatisch</string>
+
     <string name="shortening">Tweet kürzen</string>
     <string name="error_hototin">...but I failed :(\nDer Tweet wurde zu den Entwürfen hinzugefügt.</string>
     <string name="action_shortening">kürze Tweet</string>
-
     <string name="uploading_image">Lade hoch...</string>
 </resources>

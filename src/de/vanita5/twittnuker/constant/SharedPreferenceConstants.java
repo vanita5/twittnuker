@@ -157,6 +157,8 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_IGNORE_SSL_ERROR = "ignore_ssl_error";
 	@Preference(type = BOOLEAN)
 	public static final String KEY_LOAD_MORE_AUTOMATICALLY = "load_more_automatically";
+	@Preference(type = BOOLEAN)
+	public static final String KEY_LOAD_CONVERSATIONS_AUTOMATICALLY = "load_conversations_automatically";
 	@Preference(type = STRING)
 	public static final String KEY_QUOTE_FORMAT = "quote_format";
 	@Preference(type = BOOLEAN)
