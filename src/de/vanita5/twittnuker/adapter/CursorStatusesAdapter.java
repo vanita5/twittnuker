@@ -154,6 +154,7 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 
 			// Tweet type (favorite/location/media)
 			final boolean isFavorite = cursor.getShort(mIndices.is_favorite) == 1;
+			final boolean isMyRetweet = cursor.getLong(mIndices.my_retweet_id) > 0;
 			final boolean hasLocation = !TextUtils.isEmpty(cursor.getString(mIndices.location));
 			final boolean possiblySensitive = cursor.getInt(mIndices.is_possibly_sensitive) == 1;
 			final boolean hasMedia = medias != null && medias.length > 0;
@@ -166,8 +167,6 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 			final boolean isReply = cursor.getLong(mIndices.in_reply_to_status_id) > 0;
 			final boolean isMention = ParcelableUserMention.hasMention(cursor.getString(mIndices.mentions), accountId);
 			final boolean isMyStatus = accountId == userId;
-
-			final boolean isMyRetweet = cursor.getLong(mIndices.my_retweet_id) > 0;
 
 			holder.setUserColor(getUserColor(mContext, userId));
 			holder.setHighlightColor(getCardHighlightColor(!mMentionsHighlightDisabled && isMention,
@@ -207,7 +206,7 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 				holder.screen_name.setMovementMethod(null);
 			}
 			holder.time.setTime(timestamp);
-			holder.setStatusType(!mFavoritesHighlightDisabled && isFavorite, hasLocation, hasMedia || hasCustomMedia, possiblySensitive);
+			holder.setStatusType(!mFavoritesHighlightDisabled && isFavorite, hasLocation, hasMedia || hasCustomMedia, possiblySensitive, isMyRetweet);
 
 			holder.setIsReplyRetweet(isReply, isRetweet);
 			if (isRetweet) {
