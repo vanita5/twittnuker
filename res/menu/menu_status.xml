@@ -27,6 +27,11 @@
 		android:icon="@drawable/ic_iconic_action_star"
 		android:showAsAction="always"
 		android:title="@string/favorite"/>
+    <item
+        android:id="@id/love"
+        android:icon="@drawable/ic_iconic_action_heart"
+        android:showAsAction="ifRoom"
+        android:title="@string/love"/>
 	<item
 		android:id="@+id/share_submenu"
 		android:icon="@drawable/ic_iconic_action_share"
@@ -34,11 +39,6 @@
 		android:title="@string/share">
 		<menu/>
 	</item>
-	<item 
-	    android:id="@id/love"
-	    android:icon="@drawable/ic_iconic_action_heart"
-	    android:showAsAction="ifRoom"
-	    android:title="@string/love"/>
 	<item
 		android:id="@id/copy"
 		android:icon="@drawable/ic_iconic_action_copy"
