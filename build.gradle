@@ -4,11 +4,11 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.+'
+        classpath 'com.android.tools.build:gradle:0.12.+'
     }
 }
 
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 //check for updates every build
 //configurations.all {
@@ -31,7 +31,7 @@ dependencies {
     compile 'ch.acra:acra:4.5.0'
     compile 'com.android.support:support-v13:19.0.1'
     compile 'com.google.android.apps.dashclock:dashclock-api:2.0.0'
-    compile 'com.google.android.gms:play-services:4.3.23'
+    compile 'com.google.android.gms:play-services:4.4.52'
     compile 'com.jeremyfeinstein.slidingmenu:slidingmenu:1.3-SNAPSHOT-2'
     compile 'com.mobeta.android.dslv:drag-sort-listview:0.6.1'
     compile 'com.negusoft:holoaccent:0.9.1-MARIOTAKU'
@@ -49,8 +49,8 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.1.0"
+    compileSdkVersion 20
+    buildToolsVersion "20.0.0"
 
     sourceSets {
         main {
