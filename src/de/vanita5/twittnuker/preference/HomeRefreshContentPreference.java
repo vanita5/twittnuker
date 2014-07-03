@@ -32,7 +32,7 @@ public class HomeRefreshContentPreference extends MultiSelectListPreference impl
 
 	public static final boolean DEFAULT_ENABLE_MENTIONS = true;
 	public static final boolean DEFAULT_ENABLE_DIRECT_MESSAGES = true;
-	public static final boolean DEFAULT_ENABLE_TRENDS = true;
+	public static final boolean DEFAULT_ENABLE_TRENDS = false;
 
 	public HomeRefreshContentPreference(final Context context) {
 		this(context, null);
