@@ -21,11 +21,11 @@
 				android:data="twittnuker://user?user_id=335920521&amp;finish_only=true"/>
 		</Preference>
 		<Preference
-			android:summary="@string/twidere_developer_name"
+			android:summary="@string/twidere_project_account"
 			android:title="@string/twidere_developed_by">
 			<intent
 				android:action="android.intent.action.VIEW"
-				android:data="twittnuker://user?user_id=57610574&amp;finish_only=true"/>
+				android:data="twittnuker://user?user_id=583328497&amp;finish_only=true"/>
 		</Preference>
 	</PreferenceCategory>
 	<PreferenceCategory
@@ -110,7 +110,7 @@
 	        android:title="@string/mail">
 	        <intent
 	            android:action="android.intent.action.VIEW"
-	            android:data="mailto:twittnuker@vanita5.de"/>
+	            android:data="mailto:mail@twittnuker.org"/>
 	    </Preference>
 	</PreferenceCategory>
 </PreferenceScreen>
