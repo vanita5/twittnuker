@@ -635,7 +635,7 @@
 
     <string name="contact">お問い合わせ</string>
     <string name="mail">メール</string>
-    <string name="mail_summary">バグ報告や機能のリクエストがあれば、twittnuker@vanita5.deにメールしてください。</string>
+    <string name="mail_summary">バグ報告や機能のリクエストがあれば、mail@twittnuker.orgにメールしてください。</string>
     <string name="twidere_developed_by">ベースとなったTwidereの開発者</string>
 
     <string name="streaming">ストリーミング</string>

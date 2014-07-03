@@ -517,7 +517,7 @@
 	<string name="donate_via_alipay">Donate via Alipay</string>
 	<string name="staggered_home_timeline">Staggered Home Timeline</string>
 	<string name="unread_count">Unread count</string>
-	<string name="developed_by">Developed by</string>
+	<string name="developed_by">Developer</string>
 	<string name="project_account">Project account</string>
 	<string name="donators">Donators</string>
 	<string name="translators">Translators</string>
@@ -641,8 +641,8 @@
 
     <string name="contact">Contact</string>
     <string name="mail">Mail</string>
-    <string name="mail_summary">Send mail to twittnuker@vanita5.de to report bugs or request features</string>
-    <string name="twidere_developed_by">Based on Twidere by</string>
+    <string name="mail_summary">Send mail to mail@twittnuker.org to report bugs or request features</string>
+    <string name="twidere_developed_by">Based on Twidere</string>
 
     <string name="streaming">Streaming</string>
     <string name="stream_enabled">Enable Streaming</string>

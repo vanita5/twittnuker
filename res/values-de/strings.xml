@@ -66,23 +66,23 @@
     <string name="open_source_license">Open-Source-Lizenz</string>
     <string name="api">API</string>
     <string name="default_api_settings">Standard API Einstellungen</string>
-    <string name="default_api_settings_summary">Diese Einstellungen wirken sich nur auf neu hinzugefügte Accounts aus</string>
+    <string name="default_api_settings_summary">Setzt die API Einstellungen zurück. Wirkt sich nur auf neu hinzugefügte Accounts aus</string>
     <string name="consumer_key">Benutzerschlüssel</string>
     <string name="consumer_secret">Benutzergeheimnis</string>
     <string name="ignore_ssl_error">Ignoriere SSL Fehler</string>
-    <string name="ignore_ssl_error_summary">SSL-Fehler ignorieren; zu aktivieren, falls Probleme mit dem benutzerdefinierten API-Server auftreten.</string>
+    <string name="ignore_ssl_error_summary">SSL-Fehler ignorieren. Zu aktivieren, falls Probleme mit dem benutzerdefinierten API-Server auftreten</string>
     <string name="gzip_compressing">GZip Komprimierung</string>
-    <string name="gzip_compressing_summary">API-Anfragen komprimieren: Kann den Datenverbrauch verringen, funktioniert aber nicht bei allen Servern.</string>
+    <string name="gzip_compressing_summary">API-Anfragen komprimieren: Kann den Datenverbrauch verringen, funktioniert aber nicht bei allen Servern</string>
     <string name="storage">Speicher</string>
     <string name="database_item_limit">Maximale Größe der Datenbank</string>
-    <string name="database_item_limit_summary">Anzahl der Objekte, die maximal pro Account gespeichert werden. Ein niedrigerer Wert spart Speicherplatz und erhöht die Ladegeschwindigkeit.</string>
+    <string name="database_item_limit_summary">Anzahl der Objekte, die maximal pro Account gespeichert werden. Ein niedrigerer Wert spart Speicherplatz und erhöht die Ladegeschwindigkeit</string>
     <string name="clear_cache">Cache löschen</string>
-    <string name="clear_cache_summary">Lösche Profilbild-Cache.</string>
+    <string name="clear_cache_summary">Lösche Profilbild-Cache</string>
     <string name="clear_databases">Lösche Datenbank</string>
-    <string name="clear_databases_summary">Alle Tweets, Profile und Nachrichten löschen. Deine Account-Informationen werden nicht gelöscht.</string>
+    <string name="clear_databases_summary">Alle Tweets, Profile und Nachrichten löschen. Deine Account-Informationen werden nicht gelöscht</string>
     <string name="look_and_feel">Aussehen</string>
     <string name="display_profile_image">Zeige Profilbilder</string>
-    <string name="image_load_summary">Deaktivierung um die Scroll-Geschwindigkeit zu erhöhen und den Datenverbrauch zu verringern.</string>
+    <string name="image_load_summary">Deaktivieren um die Scroll-Geschwindigkeit zu erhöhen und den Datenverbrauch zu verringern</string>
     <string name="in_reply_to">Als Antwort auf <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by"><xliff:g id="user_name">%s</xliff:g> retweetete das</string>
     <string name="retweeted_by_with_count"><xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> weitere haben das retweetet</string>
@@ -106,11 +106,11 @@
     <string name="pick_color">Wähle Farbe</string>
     <string name="follow">Folgen</string>
     <string name="unfollow">Entfolgen</string>
-    <string name="bottom_compose_button">Tweet-Schaltfläche unten</string>
-    <string name="bottom_compose_button_summary">Tweet-Schaltfläche am unteren Bildschirmrand (bei großen Bildschirmen empfehlenswert).</string>
-    <string name="leftside_compose_button">Tweet-Button auf der linken Seite</string>
-    <string name="leftside_compose_button_summary">Platziere die Tweet-Schaltfläche links.</string>
-    <string name="bottom_send_button">Senden-Schaltfläche unten</string>
+    <string name="bottom_compose_button">Tweet Button unten</string>
+    <string name="bottom_compose_button_summary">Tweet Button am unteren Bildschirmrand (bei großen Bildschirmen empfehlenswert)</string>
+    <string name="leftside_compose_button">Tweet Button auf der linken Seite</string>
+    <string name="leftside_compose_button_summary">Platziert den Tweet Button links</string>
+    <string name="bottom_send_button">Senden Button unten</string>
     <string name="load_item_limit">Limitierung zu ladender Elemente</string>
     <string name="load_item_limit_summary">Element-Limitierung pro Ladevorgang festlegen</string>
     <string name="load_more_automatically">Lade automatisch mehr Inhalt</string>
@@ -152,7 +152,7 @@
     <string name="file_saved_to">Datei gespeichert als <xliff:g id="filename">%s</xliff:g> .</string>
     <string name="proxy">Proxy</string>
     <string name="http_proxy">HTTP Proxy</string>
-    <string name="http_proxy_summary">HTTP Proxy für alle Netzwerkanfragen verwenden.</string>
+    <string name="http_proxy_summary">HTTP Proxy für alle Netzwerkanfragen verwenden</string>
     <string name="proxy_host">Proxy Host</string>
     <string name="proxy_port">Proxy Port</string>
     <string name="block">Blockieren</string>
@@ -176,9 +176,9 @@
     <string name="notifications">Benachrichtigungen</string>
     <string name="screen_name">Benutzername</string>
     <string name="refresh_on_start">Beim Start aktualisieren</string>
-    <string name="refresh_on_start_summary">Timeline und Erwähnungen beim Start aktualisieren.</string>
+    <string name="refresh_on_start_summary">Timeline und Erwähnungen beim Start aktualisieren</string>
     <string name="refresh_after_status_updated">Aktualisiere nach dem Senden</string>
-    <string name="refresh_after_status_updated_summary">Timeline nach dem senden aktualisieren.</string>
+    <string name="refresh_after_status_updated_summary">Timeline nach dem Senden aktualisieren</string>
     <string name="list_timeline">Zeitleiste anzeigen</string>
     <string name="list_members">Mitglieder anzeigen</string>
     <string name="list_subscribers">Abonnenten anzeigen</string>
@@ -199,7 +199,7 @@
     <string name="user_list">Liste</string>
     <string name="user_lists">Listen</string>
     <string name="trends_location">Standort für Trends</string>
-    <string name="trends_location_summary">Standort für lokale Trends auswählen.</string>
+    <string name="trends_location_summary">Standort für lokale Trends auswählen</string>
     <string name="trends">Trends</string>
     <string name="accounts">Accounts</string>
     <string name="account">Account</string>
@@ -235,7 +235,7 @@
     <string name="home_refresh">Zu aktualisierende Timelines</string>
     <string name="error_message_image_upload_failed">Bild-Upload schlug fehl.</string>
     <string name="image_upload_format">Tweet-Format mit Bild</string>
-    <string name="image_upload_format_summary">\"[LINK]\" = Bild link\n\"[TEXT]\" = Text inhalt\n(Nur mit Erweiterung)</string>
+    <string name="image_upload_format_summary">\"[LINK]\" = Bild link\n\"[TEXT]\" = Text inhalt\n(Nur bei Third Party Services)</string>
     <string name="tweet_shortener">Tweet-Verkürzungsdienst</string>
     <string name="status_shortener">Tweet-Verkürzungsdienst</string>
     <string name="status_shortener_default">Nicht kürzen (Senden abbrechen)</string>
@@ -250,19 +250,19 @@
     <string name="landscape">Querformat</string>
     <string name="portrait">Hochformat</string>
     <string name="quick_send">\"Enter\" zum Senden</string>
-    <string name="quick_send_summary">Tweet mit \"Enter\" abschicken.</string>
+    <string name="quick_send_summary">Tweet mit \"Enter\" abschicken</string>
     <string name="unsaved_status">Tweet noch nicht gesendet oder gespeichert.</string>
     <string name="discard">Verwerfen</string>
     <string name="Nitems_selected_quantity_one">1 Element ausgewählt</string>
     <string name="Nitems_selected_quantity_other"><xliff:g id="items">%d</xliff:g> Elemente ausgewählt</string>
     <string name="view">Ansicht</string>
     <string name="custom_host_mapping">Individuelles Host-Mapping</string>
-    <string name="custom_host_mapping_summary">Host-Mapping wie /etc/hosts, ohne zusätzlich erforderliche Rechte.</string>
+    <string name="custom_host_mapping_summary">Host-Mapping wie /etc/hosts, ohne zusätzlich erforderliche Rechte</string>
     <string name="host">Host (Bsp.: 127.0.0.1)</string>
     <string name="address">Adresse</string>
     <string name="add_host_mapping">Füge host mapping hinzu</string>
     <string name="tcp_dns_query">TCP DNS-Abfrage</string>
-    <string name="tcp_dns_query_summary">Benutze TCP für DNS Anfragen, um DNS Cache Poisoning zu vermeiden.</string>
+    <string name="tcp_dns_query_summary">Benutze TCP für DNS Anfragen, um DNS Cache Poisoning zu vermeiden</string>
     <string name="dns_server">DNS-Server</string>
     <string name="dns_server_summary">DNS Server für API-Requests setzen.</string>
     <string name="activities_about_me">Meine Aktivitäten</string>
@@ -366,15 +366,15 @@
     <string name="accept_permission_request">Aktzeptieren</string>
     <string name="no_thanks">Nein, danke</string>
     <string name="revoke_permissions">Berechtigungen entziehen</string>
-    <string name="fast_scroll_thumb">Schnelldurchlauf Vorschaubild</string>
-    <string name="indicate_my_status">Kennzeichne meinen Tweet</string>
+    <string name="fast_scroll_thumb">Schnelles scrollen</string>
+    <string name="indicate_my_status">Kennzeichne meine Tweets</string>
     <string name="default_ringtone">Standard Klingelton</string>
     <string name="phishing_link_warning">Warnung vor Phishing Links</string>
-    <string name="phishing_link_warning_summary">Warnung beim Öffnen eines möglichen Phishing Links in Direktnachrichten.</string>
+    <string name="phishing_link_warning_summary">Warnung beim Öffnen eines möglichen Phishing Links in Direktnachrichten</string>
     <string name="phishing_link_warning_message_1">Du öffnest gerade einen Link in einer Direktnachricht, der dich möglicherweise zu einer Phishing Seite leiten könnte.\n\nÜberprüfe die Webadresse zweimal, bevor du persönliche Daten eingibst.</string>
     <string name="phishing_link_warning_message_2">Willst du wirklich fortfahren?</string>
     <string name="image_preload_options">Bilder vorladen</string>
-    <string name="profile_images">Profil Bild</string>
+    <string name="profile_images">Profilbilder</string>
     <string name="preview_images">Vorschaubilder</string>
     <string name="preload_wifi_only">Vorladen nur mit WLAN</string>
     <string name="disable_tab_swipe">Deaktiviere wischen für Reiter</string>
@@ -431,19 +431,19 @@
     <string name="subscribe">Abonnieren</string>
     <string name="unsubscribe">Abbestellen</string>
     <string name="background_toast_notification">Hintergrundbenachrichtigung</string>
-    <string name="background_toast_notification_summary">Benachrichtigung einblenden, wenn die App in den Hintergrund geht</string>
+    <string name="background_toast_notification_summary">Benachrichtigungen einblenden, wenn die App in den Hintergrund geht</string>
     <string name="original_status">Original-Tweet</string>
     <string name="compose_quit_action">Verhalten beim Abbruch</string>
     <string name="ask">Nachfragen</string>
     <string name="no_close_after_status_updated">Eingabemaske offen lassen</string>
-    <string name="no_close_after_status_updated_summary">Das lässt die Eingabemaske nach dem Senden eines Tweets geöffnet</string>
+    <string name="no_close_after_status_updated_summary">Lässt die Eingabemaske nach dem Senden eines Tweets geöffnet</string>
     <string name="status_saved_to_draft">Tweet zu den Entwürfen hinzugefügt.</string>
     <string name="default_account">Standard</string>
     <string name="created_at_with_N_tweets_per_day_quantity_one"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> Tweet pro Tag)</string>
     <string name="created_at_with_N_tweets_per_day_quantity_other"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> Tweets pro Tag)</string>
     <string name="empty_content">Leerer Inhalt</string>
     <string name="fast_image_loading">Schnelleres Bilder laden</string>
-    <string name="fast_image_loading_summary">Aktivieren um Bilder schneller zu laden, deaktiveren falls einige Bilder nicht angezeigt werden können.</string>
+    <string name="fast_image_loading_summary">Aktivieren um Bilder schneller zu laden, deaktiveren falls einige Bilder nicht angezeigt werden können</string>
     <string name="select_user_list">Wähle Benutzer-Liste aus</string>
     <string name="select_user">Benutzer wählen</string>
     <string name="created_by">Erstellt von <xliff:g id="created_by">%s</xliff:g></string>
@@ -513,7 +513,7 @@
     <string name="donate_via_alipay">Mit Alipay spenden</string>
     <string name="staggered_home_timeline">Gestaffelte Timeline (Multi Column)</string>
     <string name="unread_count">Anzahl ungelesene</string>
-    <string name="developed_by">Entwickelt von</string>
+    <string name="developed_by">Developer</string>
     <string name="project_account">Projekt Account</string>
     <string name="donators">Spender</string>
     <string name="translators">Übersetzer</string>
@@ -563,11 +563,11 @@
     <string name="action_name_saved_at_time"><xliff:g id="action">%1$s</xliff:g>, gespeichert um <xliff:g id="time">%2$s</xliff:g></string>
     <string name="update_status">Tweet senden</string>
     <string name="sending_direct_message">Direktnachricht</string>
-    <string name="tab_display_option">Tab Anzeigeoptionen</string>
+    <string name="tab_display_option">Tab Anzeige</string>
     <string name="livewp_daydream_enabled_message">Here\'s a little present for you, find it in your system settings :)</string>
     <string name="center">Mitte</string>
     <string name="multi_select">Mehrfachauswahl</string>
-    <string name="long_click_to_open_menu">Langer Klick um das Menü zu öffnen</string>
+    <string name="long_click_to_open_menu">Lang halten um das Menü zu öffnen</string>
     <string name="swipe_back">Zum Schließen wischen</string>
     <string name="tab_display_option_icon">Symbol</string>
     <string name="tab_display_option_label">Label</string>
@@ -623,17 +623,17 @@
     <string name="plain_list_style">Flache Liste</string>
     <string name="want_old_icon_back">(D) Want old icon back?</string>
     <string name="icon_restored_message">Icon zurückgesetzt!</string>
-    <string name="add">(D) Hinzufügen</string>
     <string name="N_medias_quantity_one">(D) <xliff:g id="items">%d</xliff:g> media</string>
     <string name="N_medias_quantity_other">(D) <xliff:g id="items">%d</xliff:g> medias</string>
     <string name="delete_drafts_confirm">Ausgewählte Entwürfe löschen?</string>
     <string name="extra_configurations">Extra Einstellungen</string>
 
-    <string name="twidere_developed_by">Basiert auf Twidere von</string>
+    <string name="twidere_developed_by">Basiert auf Twidere</string>
     <string name="translation_destination">Sprache zum Übersetzen</string>
 
+    <string name="contact">Kontakt</string>
     <string name="mail">Mail</string>
-    <string name="mail_summary">Kontaktiere twittnuker@vanita5.de wegen Bugs und Feature Requests</string>
+    <string name="mail_summary">Kontaktiere mail@twittnuker.org wegen Bugs und Feature Requests</string>
     <string name="streaming">Streaming</string>
     <string name="stream_enabled">Streaming aktivieren</string>
     <string name="stream_enabled_summary">Bei aktiver Verbindung mit einem WLAN wird die Timeline gestreamt</string>
