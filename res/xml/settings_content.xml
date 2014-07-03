@@ -81,6 +81,7 @@
 			app:min="10"/>
 
         <de.vanita5.twittnuker.preference.TimelineSyncPreference
+            android:enabled="false"
         	android:defaultValue=""
         	android:key="timeline_sync_service"
         	android:summary="%s"
