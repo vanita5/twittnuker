@@ -74,7 +74,7 @@ public abstract class CursorStatusesListFragment extends BaseStatusesListFragmen
 		final Context context = getActivity();
 		final Uri uri = getContentUri();
 		final String table = getTableNameByUri(uri);
-		final String sortOrder = Statuses.SORT_ORDER_STATUS_ID_DESC;
+		final String sortOrder = Statuses.DEFAULT_SORT_ORDER;
 		final long account_id = getAccountId();
 		final long[] accountIds = account_id > 0 ? new long[] { account_id } : getActivatedAccountIds(context);
 		final boolean no_account_selected = accountIds.length == 0;

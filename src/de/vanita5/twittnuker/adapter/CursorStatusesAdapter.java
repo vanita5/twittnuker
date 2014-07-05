@@ -137,6 +137,7 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 			final long accountId = cursor.getLong(mIndices.account_id);
 			final long userId = cursor.getLong(mIndices.user_id);
 			final long timestamp = cursor.getLong(mIndices.status_timestamp);
+			final long retweetTimestamp = cursor.getLong(mIndices.retweet_timestamp);
 			final long retweetCount = cursor.getLong(mIndices.retweet_count);
 			final long retweetedByUserId = cursor.getLong(mIndices.retweeted_by_user_id);
 			final long inReplyToUserId = cursor.getLong(mIndices.in_reply_to_user_id);
@@ -169,6 +170,11 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 			final boolean isMyStatus = accountId == userId;
 
 			holder.setUserColor(getUserColor(mContext, userId));
+			if (isRetweet) {
+				holder.setUserColor(getUserColor(mContext, userId), getUserColor(mContext, retweetedByUserId));
+			} else {
+				holder.setUserColor(getUserColor(mContext, userId));
+			}
 			holder.setHighlightColor(getCardHighlightColor(!mMentionsHighlightDisabled && isMention,
 					!mFavoritesHighlightDisabled && isFavorite, isMyRetweet));
 
@@ -205,7 +211,7 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 				holder.name.setMovementMethod(null);
 				holder.screen_name.setMovementMethod(null);
 			}
-			holder.time.setTime(timestamp);
+			holder.time.setTime(retweetTimestamp > 0 ? retweetTimestamp : timestamp);
 			holder.setStatusType(!mFavoritesHighlightDisabled && isFavorite, hasLocation, hasMedia || hasCustomMedia, possiblySensitive, isMyRetweet);
 
 			holder.setIsReplyRetweet(isReply, isRetweet);
@@ -290,8 +296,12 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 	@Override
 	public long getLastStatusId() {
 		final Cursor c = getCursor();
+		try {
 		if (c == null || c.isClosed() || !c.moveToLast()) return -1;
 		return c.getLong(mIndices.status_id);
+		} catch (final IllegalStateException e) {
+			return -1;
+		}
 	}
 
 	@Override

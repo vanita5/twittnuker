@@ -31,21 +31,16 @@ import android.support.v4.app.NavUtils;
 
 import com.negusoft.holoaccent.AccentHelper;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.theme.TwidereAccentHelper;
-import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 
-
-public abstract class BaseSupportThemedActivity extends FragmentActivity implements IThemedActivity {
+public abstract class BaseSupportThemedActivity extends FragmentActivity implements Constants, IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha;
-
-	private String mCurrentThemeFontFamily;
-
-	private boolean mCurrentIsDarkDrawerEnabled;
 
     private AccentHelper mAccentHelper;
 
@@ -115,15 +110,13 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 	}
 
 	@Override
-	public boolean shouldOverrideActivityAnimation() {
-		return true;
+	public final void restart() {
+		restartActivity(this);
 	}
 
-	protected boolean isThemeChanged() {
-		return getThemeResourceId() != mCurrentThemeResource || getThemeColor() != mCurrentThemeColor
-                || !CompareUtils.objectEquals(getThemeFontFamily(), mCurrentThemeFontFamily)
-				|| getThemeBackgroundAlpha() != mCurrentThemeBackgroundAlpha
-				|| isDarkDrawerEnabled() != mCurrentIsDarkDrawerEnabled;
+	@Override
+	public boolean shouldOverrideActivityAnimation() {
+		return true;
 	}
 
 	@Override
@@ -132,7 +125,6 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 			StrictModeUtils.detectAllVmPolicy();
 			StrictModeUtils.detectAllThreadPolicy();
 		}
-
 		if (shouldOverrideActivityAnimation()) {
 			ThemeUtils.overrideActivityOpenAnimation(this);
 		}
@@ -144,17 +136,9 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (isThemeChanged()) {
-			restart();
-		} else {
 			ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentThemeColor,
 					mCurrentThemeBackgroundAlpha);
 		}
-	}
-
-	protected final void restart() {
-		restartActivity(this);
-	}
 
     protected boolean shouldSetWindowBackground() {
         return true;
@@ -167,9 +151,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 	private final void setTheme() {
 		mCurrentThemeResource = getThemeResourceId();
 		mCurrentThemeColor = getThemeColor();
-		mCurrentThemeFontFamily = getThemeFontFamily();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
-		mCurrentIsDarkDrawerEnabled = isDarkDrawerEnabled();
 		ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentThemeColor,
 				mCurrentThemeBackgroundAlpha);
 		setTheme(mCurrentThemeResource);

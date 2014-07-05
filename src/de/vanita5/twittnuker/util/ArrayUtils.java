@@ -177,6 +177,14 @@ public final class ArrayUtils {
 		return array;
 	}
 
+	public static int[] subArray(final int[] array, final int start, final int end) {
+		final int length = end - start;
+		if (length < 0) throw new IllegalArgumentException();
+		final int[] result = new int[length];
+		System.arraycopy(array, start, result, 0, length);
+		return result;
+	}
+
 	public static long[] subArray(final long[] array, final int start, final int end) {
 		final int length = end - start;
 		if (length < 0) throw new IllegalArgumentException();

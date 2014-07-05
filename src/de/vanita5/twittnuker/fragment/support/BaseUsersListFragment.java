@@ -31,6 +31,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -292,7 +293,8 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 
 	private void showMenu(final View view, final ParcelableUser user) {
 		mSelectedUser = user;
-		if (view == null || user == null) return;
+		final FragmentActivity activity = getActivity();
+		if (activity == null || activity.isFinishing() || view == null || user == null) return;
         final UserMenuDialogFragment df = createMenuDialog();
         final Bundle args = new Bundle();
         args.putParcelable(EXTRA_USER, user);

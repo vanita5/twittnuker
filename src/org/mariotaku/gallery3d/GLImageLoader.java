@@ -31,7 +31,7 @@ import android.os.Handler;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.DisplayMetrics;
 
-import com.nostra13.universalimageloader.cache.disc.DiscCacheAware;
+import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
 
 import de.vanita5.twittnuker.Constants;
@@ -56,7 +56,7 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
 	private final Handler mHandler;
 	private final DownloadListener mListener;
 	private final ImageDownloader mDownloader;
-	private final DiscCacheAware mDiscCache;
+	private final DiskCache mDiskCache;
 
 	private final float mFallbackSize;
 	private final long mAccountId;
@@ -69,7 +69,7 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
 		mListener = listener;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mDownloader = app.getFullImageDownloader();
-		mDiscCache = app.getFullDiscCache();
+		mDiskCache = app.getFullDiskCache();
 		final Resources res = context.getResources();
 		final DisplayMetrics dm = res.getDisplayMetrics();
 		mFallbackSize = Math.max(dm.heightPixels, dm.widthPixels);
@@ -84,7 +84,7 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
 		if ("http".equals(scheme) || "https".equals(scheme)) {
 			final String url = ParseUtils.parseString(mUri.toString());
 			if (url == null) return Result.nullInstance();
-            final File cacheFile = mDiscCache.get(url);
+			final File cacheFile = mDiskCache.get(url);
             if (cacheFile != null) {
                 final File cacheDir = cacheFile.getParentFile();
                 if (cacheDir != null && !cacheDir.exists()) {

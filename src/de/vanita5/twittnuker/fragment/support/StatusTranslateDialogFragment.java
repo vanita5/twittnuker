@@ -117,8 +117,8 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 							   final SingleResponse<TranslationResult> data) {
 		final Bundle args = getArguments();
 		final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
-		if (status != null && data.data != null) {
-			displayTranslatedStatus(status, data.data);
+		if (status != null && data.getData() != null) {
+			displayTranslatedStatus(status, data.getData());
 			mStatusContainer.setVisibility(View.VISIBLE);
 			mProgressContainer.setVisibility(View.GONE);
 		} else {
@@ -126,7 +126,7 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 			mProgressContainer.setVisibility(View.VISIBLE);
 			mProgressBar.setVisibility(View.GONE);
 			mMessageView.setVisibility(View.VISIBLE);
-			mMessageView.setText(Utils.getErrorMessage(getActivity(), data.exception));
+			mMessageView.setText(Utils.getErrorMessage(getActivity(), data.getException()));
 		}
 	}
 
@@ -212,7 +212,7 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 			final Context context = getContext();
 			final Twitter twitter = Utils.getTwitterInstance(context, mAccountId, false);
 			final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-			if (twitter == null) return SingleResponse.nullInstance();
+			if (twitter == null) return SingleResponse.getInstance();
 			try {
 				final String prefDest = prefs.getString(KEY_TRANSLATION_DESTINATION, null);
 				final String dest;
@@ -224,9 +224,9 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 				} else {
 					dest = prefDest;
 				}
-				return SingleResponse.withData(twitter.showTranslation(mStatusId, dest));
+				return SingleResponse.getInstance(twitter.showTranslation(mStatusId, dest));
 			} catch (final TwitterException e) {
-				return SingleResponse.withException(e);
+				return SingleResponse.getInstance(e);
 			}
 		}
 

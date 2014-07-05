@@ -239,8 +239,8 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 		public void onLoadFinished(final Loader<SingleResponse<ParcelableUser>> loader,
 				final SingleResponse<ParcelableUser> data) {
 			if (getActivity() == null) return;
-			if (data.data != null && data.data.id > 0) {
-                final ParcelableUser user = data.data;
+			if (data.getData() != null && data.getData().id > 0) {
+				final ParcelableUser user = data.getData();
                 displayUser(user);
                 mMainContent.setVisibility(View.VISIBLE);
 				mErrorRetryContainer.setVisibility(View.GONE);
@@ -259,8 +259,8 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
                 mDetailsLoadProgress.setVisibility(View.GONE);
 				displayUser(mUser);
 			} else {
-				if (data.exception != null) {
-					mErrorMessageView.setText(getErrorMessage(getActivity(), data.exception));
+				if (data.hasException()) {
+					mErrorMessageView.setText(getErrorMessage(getActivity(), data.getException()));
 					mErrorMessageView.setVisibility(View.VISIBLE);
 				}
                 mMainContent.setVisibility(View.GONE);
@@ -291,8 +291,8 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 				final SingleResponse<Relationship> data) {
 			mRelationship = null;
             final ParcelableUser user = mUser;
+			final Relationship relationship = mRelationship = data.getData();
             if (user == null) return;
-			final Relationship relationship = mRelationship = data.data;
 			invalidateOptionsMenu();
             setMenu(mMenuBar.getMenu());
             mMenuBar.show();
@@ -305,7 +305,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 				resolver.delete(CachedUsers.CONTENT_URI, where, null);
 				// I bet you don't want to see blocked user in your auto
 				// complete list.
-				if (!data.data.isSourceBlockingTarget()) {
+				if (!data.getData().isSourceBlockingTarget()) {
                     final ContentValues cachedValues = ParcelableUser.makeCachedUserContentValues(user);
                     if (cachedValues != null) {
                         resolver.insert(CachedUsers.CONTENT_URI, cachedValues);

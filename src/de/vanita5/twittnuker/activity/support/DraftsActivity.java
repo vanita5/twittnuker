@@ -252,7 +252,8 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 					continue;
 				}
 				final long accountId = item.account_ids[0];
-				twitter.sendDirectMessageAsync(accountId, recipientId, item.text);
+				final String imageUri = item.medias != null && item.medias.length > 0 ? item.medias[0].uri : null;
+				twitter.sendDirectMessageAsync(accountId, recipientId, item.text, imageUri);
 			}
 		}
 		return true;

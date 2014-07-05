@@ -35,7 +35,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final String APP_NAME = "Twittnuker";
 	public static final String APP_PACKAGE_NAME = "de.vanita5.twittnuker";
 	public static final String APP_PROJECT_URL = "https://github.com/vanita5/twittnuker";
-	public static final String APP_PROJECT_EMAIL = "twittnuker@vanita5.de";
+	public static final String APP_PROJECT_EMAIL = "mail@twittnuker.org";
 
 	public static final String LOGTAG = APP_NAME;
 
@@ -81,6 +81,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final String AUTHORITY_USER_LIST = "user_list";
 	public static final String AUTHORITY_USER_LIST_TIMELINE = "user_list_timeline";
 	public static final String AUTHORITY_USER_LIST_MEMBERS = "user_list_members";
+	public static final String AUTHORITY_USER_LIST_SUBSCRIBERS = "user_list_subscribers";
 	public static final String AUTHORITY_USER_LIST_MEMBERSHIPS = "user_list_memberships";
 	public static final String AUTHORITY_USER_LISTS = "user_lists";
 	public static final String AUTHORITY_USERS_RETWEETED_STATUS = "users_retweeted_status";
@@ -142,6 +143,8 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final int REQUEST_SELECT_USER = 16;
 	public static final int REQUEST_SELECT_USER_LIST = 17;
 	public static final int REQUEST_PICK_ACTIVITY = 18;
+	public static final int REQUEST_SETTINGS = 19;
+	public static final int REQUEST_OPEN_DOCUMENT = 20;
 	public static final int REQUEST_SWIPEBACK_ACTIVITY = 101;
 
 	public static final int TABLE_ID_ACCOUNTS = 1;

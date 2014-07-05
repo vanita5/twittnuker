@@ -25,6 +25,9 @@ package de.vanita5.twittnuker.fragment.support;
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.Utils.buildDirectMessageConversationUri;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
+import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
+import static de.vanita5.twittnuker.util.Utils.getOldestMessageIdsFromDatabase;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 
 import android.app.Activity;
@@ -34,6 +37,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -55,6 +59,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -62,8 +67,10 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import org.mariotaku.menucomponent.widget.PopupMenu;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.activity.support.ImagePickerActivity;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.DirectMessagesConversationAdapter;
@@ -75,6 +82,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TweetStore;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.Conversation;
+import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -87,9 +95,9 @@ import de.vanita5.twittnuker.view.StatusTextCountView;
 import java.util.List;
 import java.util.Locale;
 
-public class DirectMessagesConversationFragment extends BaseSupportListFragment implements LoaderCallbacks<Cursor>,
-		OnMenuItemClickListener, TextWatcher, OnClickListener, Panes.Right, OnItemSelectedListener,
-		OnEditorActionListener, MenuButtonClickListener {
+public class DirectMessagesConversationFragment extends BasePullToRefreshListFragment implements
+		LoaderCallbacks<Cursor>, OnMenuItemClickListener, TextWatcher, OnClickListener, Panes.Right,
+		OnItemSelectedListener, OnEditorActionListener, MenuButtonClickListener {
 
 	private TwidereValidator mValidator;
 	private AsyncTwitterWrapper mTwitterWrapper;
@@ -98,7 +106,8 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 	private ListView mListView;
 	private EditText mEditText;
 	private StatusTextCountView mTextCountView;
-	private View mSendView;
+	private View mSendButton;
+	private ImageView mAddImageButton;
 	private View mConversationContainer, mRecipientSelectorContainer, mRecipientSelector;
 	private Spinner mAccountSpinner;
 
@@ -107,6 +116,9 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 	private ParcelableDirectMessage mSelectedDirectMessage;
 	private long mAccountId, mRecipientId;
 	private boolean mLoaderInitialized;
+	private boolean mLoadMoreAutomatically;
+	private String mImageUri;
+
 	private Locale mLocale;
 
 	private DirectMessagesConversationAdapter mAdapter;
@@ -156,18 +168,20 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 		}
 		mEditText.addTextChangedListener(this);
 
-        final List<Account> accounts = Account.getAccountsList(getActivity(), false);
+		final List<Account> accounts = Account.getAccountsList(getActivity(), false);
 		mAccountSpinner.setAdapter(new AccountsSpinnerAdapter(getActivity(), accounts));
 		mAccountSpinner.setOnItemSelectedListener(this);
 
-		mSendView.setOnClickListener(this);
-		mSendView.setEnabled(false);
+		mSendButton.setOnClickListener(this);
+		mAddImageButton.setOnClickListener(this);
+		mSendButton.setEnabled(false);
 		mRecipientSelector.setOnClickListener(this);
 		if (savedInstanceState != null) {
 			final long accountId = savedInstanceState.getLong(EXTRA_ACCOUNT_ID, -1);
 			final long recipientId = savedInstanceState.getLong(EXTRA_RECIPIENT_ID, -1);
 			showConversation(accountId, recipientId);
 			mEditText.setText(savedInstanceState.getString(EXTRA_TEXT));
+			mImageUri = savedInstanceState.getString(EXTRA_IMAGE_URI);
 		} else {
 			final Bundle args = getArguments();
 			final long accountId = args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
@@ -193,6 +207,14 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 				}
 				break;
 			}
+			case REQUEST_PICK_IMAGE: {
+				if (resultCode != Activity.RESULT_OK || data.getDataString() == null) {
+					break;
+				}
+				mImageUri = data.getDataString();
+				updateAddImageButton();
+				break;
+			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -212,8 +234,12 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 				startActivityForResult(intent, REQUEST_SELECT_USER);
 				break;
 			}
+			case R.id.add_image: {
+				final Intent intent = new Intent(getActivity(), ImagePickerActivity.class);
+				startActivityForResult(intent, REQUEST_PICK_IMAGE);
+				break;
+			}
 		}
-
 	}
 
 	@Override
@@ -224,7 +250,8 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 		final boolean isValid = accountId > 0 && recipientId > 0;
 		mConversationContainer.setVisibility(isValid ? View.VISIBLE : View.GONE);
 		mRecipientSelectorContainer.setVisibility(isValid ? View.GONE : View.VISIBLE);
-		if (!isValid) return new CursorLoader(getActivity(), TweetStore.CONTENT_URI_NULL, cols, null, null, null);
+		if (!isValid)
+			return new CursorLoader(getActivity(), TweetStore.CONTENT_URI_NULL, cols, null, null, null);
 		final Uri uri = buildDirectMessageConversationUri(accountId, recipientId, null);
 		return new CursorLoader(getActivity(), uri, cols, null, null, Conversation.DEFAULT_SORT_ORDER);
 	}
@@ -315,6 +342,34 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 	}
 
 	@Override
+	public void onRefreshFromEnd() {
+		new AsyncTask<Void, Void, long[][]>() {
+
+			@Override
+			protected long[][] doInBackground(final Void... params) {
+				final long[][] result = new long[2][];
+				result[0] = getActivatedAccountIds(getActivity());
+				result[1] = getNewestMessageIdsFromDatabase(getActivity(), DirectMessages.Inbox.CONTENT_URI);
+				return result;
+			}
+
+			@Override
+			protected void onPostExecute(final long[][] result) {
+				final AsyncTwitterWrapper twitter = getTwitterWrapper();
+				if (twitter == null) return;
+				twitter.getReceivedDirectMessagesAsync(result[0], null, result[1]);
+				twitter.getSentDirectMessagesAsync(result[0], null, null);
+			}
+
+		}.execute();
+	}
+
+	@Override
+	public void onRefreshFromStart() {
+		loadMoreMessages();
+	}
+
+	@Override
 	public void onResume() {
 		super.onResume();
 		configBaseCardAdapter(getActivity(), mAdapter);
@@ -324,14 +379,19 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 		mAdapter.setDisplayImagePreview(displayImagePreview);
 		mAdapter.setImagePreviewScaleType(previewScaleType);
 		mAdapter.notifyDataSetChanged();
+		mLoadMoreAutomatically = mPreferences.getBoolean(KEY_LOAD_MORE_AUTOMATICALLY, false);
+		updateAddImageButton();
 	}
 
 	@Override
 	public void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putCharSequence(EXTRA_TEXT, mEditText != null ? mEditText.getText() : null);
+		if (mEditText != null) {
+			outState.putCharSequence(EXTRA_TEXT, mEditText.getText());
+		}
 		outState.putLong(EXTRA_ACCOUNT_ID, mAccountId);
 		outState.putLong(EXTRA_RECIPIENT_ID, mRecipientId);
+		outState.putString(EXTRA_IMAGE_URI, mImageUri);
 	}
 
 	@Override
@@ -354,8 +414,8 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 	@Override
 	public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
 		updateTextCount();
-		if (mSendView == null || s == null) return;
-		mSendView.setEnabled(mValidator.isValidTweet(s.toString()));
+		if (mSendButton == null || s == null) return;
+		mSendButton.setEnabled(mValidator.isValidTweet(s.toString()));
 	}
 
 	@Override
@@ -368,7 +428,8 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 		mAccountSpinner = (Spinner) view.findViewById(R.id.account_selector);
 		mEditText = (EditText) inputSendContainer.findViewById(R.id.edit_text);
 		mTextCountView = (StatusTextCountView) inputSendContainer.findViewById(R.id.text_count);
-		mSendView = inputSendContainer.findViewById(R.id.send);
+		mSendButton = inputSendContainer.findViewById(R.id.send);
+		mAddImageButton = (ImageView) inputSendContainer.findViewById(R.id.add_image);
 		mRecipientSelector = view.findViewById(R.id.recipient_selector);
 	}
 
@@ -394,11 +455,43 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 		}
 	}
 
+	@Override
+	protected void onReachedTop() {
+		if (!mLoadMoreAutomatically) return;
+		loadMoreMessages();
+	}
+
 	protected void updateRefreshState() {
 		final AsyncTwitterWrapper twitter = getTwitterWrapper();
 		if (twitter == null || !getUserVisibleHint()) return;
-		setProgressBarIndeterminateVisibility(twitter.isReceivedDirectMessagesRefreshing()
-				|| twitter.isSentDirectMessagesRefreshing());
+		final boolean refreshing = twitter.isReceivedDirectMessagesRefreshing()
+				|| twitter.isSentDirectMessagesRefreshing();
+		setProgressBarIndeterminateVisibility(refreshing);
+		setRefreshing(refreshing);
+	}
+
+	private void loadMoreMessages() {
+		if (isRefreshing()) return;
+		new AsyncTask<Void, Void, long[][]>() {
+
+			@Override
+			protected long[][] doInBackground(final Void... params) {
+				final long[][] result = new long[3][];
+				result[0] = getActivatedAccountIds(getActivity());
+				result[1] = getOldestMessageIdsFromDatabase(getActivity(), DirectMessages.Inbox.CONTENT_URI);
+				result[2] = getOldestMessageIdsFromDatabase(getActivity(), DirectMessages.Outbox.CONTENT_URI);
+				return result;
+			}
+
+			@Override
+			protected void onPostExecute(final long[][] result) {
+				final AsyncTwitterWrapper twitter = getTwitterWrapper();
+				if (twitter == null) return;
+				twitter.getReceivedDirectMessagesAsync(result[0], result[1], null);
+				twitter.getSentDirectMessagesAsync(result[0], result[2], null);
+			}
+
+		}.execute();
 	}
 
 	private void sendDirectMessage() {
@@ -406,8 +499,10 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 		if (isEmpty(text) || mAccountId <= 0 || mRecipientId <= 0) return;
 		final String message = text.toString();
 		if (mValidator.isValidTweet(message)) {
-			mTwitterWrapper.sendDirectMessageAsync(mAccountId, mRecipientId, message);
+			mTwitterWrapper.sendDirectMessageAsync(mAccountId, mRecipientId, message, mImageUri);
 			text.clear();
+			mImageUri = null;
+			updateAddImageButton();
 		}
 	}
 
@@ -425,6 +520,15 @@ public class DirectMessagesConversationFragment extends BaseSupportListFragment 
 		}
 		mPopupMenu.setOnMenuItemClickListener(this);
 		mPopupMenu.show();
+	}
+
+	private void updateAddImageButton() {
+		final int color = ThemeUtils.getThemeColor(getActivity());
+		if (mImageUri != null) {
+			mAddImageButton.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+		} else {
+			mAddImageButton.clearColorFilter();
+		}
 	}
 
 	private void updateTextCount() {

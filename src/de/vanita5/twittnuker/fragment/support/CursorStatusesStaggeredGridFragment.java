@@ -72,7 +72,7 @@ public abstract class CursorStatusesStaggeredGridFragment extends BaseStatusesSt
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
 		final Uri uri = getContentUri();
 		final String table = getTableNameByUri(uri);
-		final String sort_by = Statuses.SORT_ORDER_STATUS_ID_DESC;
+		final String sort_by = Statuses.DEFAULT_SORT_ORDER;
 		final long account_id = getAccountId();
 		final long[] account_ids = account_id > 0 ? new long[] { account_id } : getActivatedAccountIds(getActivity());
 		final boolean no_account_selected = account_ids.length == 0;
@@ -213,5 +213,4 @@ public abstract class CursorStatusesStaggeredGridFragment extends BaseStatusesSt
 	protected boolean shouldShowAccountColor() {
 		return getAccountId() <= 0 && getActivatedAccountIds(getActivity()).length > 1;
 	}
-
 }

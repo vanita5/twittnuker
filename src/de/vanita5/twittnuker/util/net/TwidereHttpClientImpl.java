@@ -51,6 +51,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContextHC4;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.TextUtils;
+
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.ssl.HostResolvedSSLConnectionSocketFactory;
 import de.vanita5.twittnuker.util.net.ssl.TwidereSSLSocketFactory;
@@ -69,12 +70,11 @@ import twitter4j.internal.util.InternalStringUtil;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 /**
  * HttpClient implementation for Apache HttpClient 4.0.x
- * 
+ *
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.1.2
  */
@@ -114,24 +114,17 @@ public class TwidereHttpClientImpl implements twitter4j.http.HttpClient, HttpRes
 
 	@Override
 	public twitter4j.http.HttpResponse request(final twitter4j.http.HttpRequest req) throws TwitterException {
+		final HostAddressResolver resolver = FactoryUtils.getHostAddressResolver(conf);
+		final String urlString = req.getURL();
+		final URI urlOrig = ParseUtils.parseURI(urlString);
+		final String host = urlOrig.getHost(), authority = urlOrig.getAuthority();
 		try {
 			HttpRequestBaseHC4 commonsRequest;
-
-			final HostAddressResolver resolver = FactoryUtils.getHostAddressResolver(conf);
-			final String urlString = req.getURL();
-			final URI urlOrig;
-			try {
-				urlOrig = new URI(urlString);
-			} catch (final URISyntaxException e) {
-				throw new TwitterException(e);
-			}
-			final String host = urlOrig.getHost(), authority = urlOrig.getAuthority();
 			final String resolvedHost = resolver != null ? resolver.resolve(host) : null;
 			final String resolvedUrl = !isEmpty(resolvedHost) ? urlString.replace("://" + host, "://" + resolvedHost)
 					: urlString;
-
-            final RequestMethod method = req.getMethod();
-            if (method == RequestMethod.GET) {
+			final RequestMethod method = req.getMethod();
+			if (method == RequestMethod.GET) {
 				commonsRequest = new HttpGetHC4(resolvedUrl);
 			} else if (method == RequestMethod.POST) {
 				final HttpPostHC4 post = new HttpPostHC4(resolvedUrl);
@@ -154,12 +147,12 @@ public class TwidereHttpClientImpl implements twitter4j.http.HttpClient, HttpRes
 			for (final String headerName : headers.keySet()) {
 				commonsRequest.addHeader(headerName, headers.get(headerName));
 			}
-            final Authorization authorization = req.getAuthorization();
-            final String authorizationHeader = authorization != null ? authorization.getAuthorizationHeader(req) : null;
-            if (authorizationHeader != null) {
+			final Authorization authorization = req.getAuthorization();
+			final String authorizationHeader = authorization != null ? authorization.getAuthorizationHeader(req) : null;
+			if (authorizationHeader != null) {
 				commonsRequest.addHeader(HttpHeaders.AUTHORIZATION, authorizationHeader);
 			}
-            if (resolvedHost != null && !resolvedHost.isEmpty() && !resolvedHost.equals(host)) {
+			if (resolvedHost != null && !resolvedHost.isEmpty() && !resolvedHost.equals(host)) {
 				commonsRequest.addHeader(HttpHeaders.HOST, authority);
 			}
 
@@ -179,9 +172,15 @@ public class TwidereHttpClientImpl implements twitter4j.http.HttpClient, HttpRes
 				throw new TwitterException("Unknown error", e);
 			}
 			final int statusCode = res.getStatusCode();
-			if (statusCode < OK || statusCode > ACCEPTED) throw new TwitterException(res.asString(), req, res);
+			if (statusCode < OK || statusCode > ACCEPTED)
+				throw new TwitterException(res.asString(), req, res);
 			return res;
 		} catch (final IOException e) {
+			// TODO
+			if (resolver instanceof TwidereHostAddressResolver) {
+				final TwidereHostAddressResolver twidereResolver = (TwidereHostAddressResolver) resolver;
+				twidereResolver.removeCachedHost(host);
+			}
 			throw new TwitterException(e);
 		}
 	}

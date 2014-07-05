@@ -148,5 +148,13 @@
     	<item>@string/image_preview_scale_type_crop</item>
     	<item>@string/image_preview_scale_type_fit_center</item>
     </string-array>
+	<string-array name="entries_image_sources">
+		<item>@string/from_camera</item>
+		<item>@string/from_gallery</item>
+	</string-array>
+	<string-array name="value_image_sources">
+		<item>camera</item>
+		<item>gallery</item>
+	</string-array>
 
 </resources>

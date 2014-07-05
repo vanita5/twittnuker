@@ -40,11 +40,13 @@ public interface IThemedActivity extends ITwidereContextWrapper {
 
 	public String getThemeFontFamily();
 
-	public void navigateUpFromSameTask();
-
 	public boolean isDarkDrawerEnabled();
 
+	public void navigateUpFromSameTask();
+
 	public void overrideCloseAnimationIfNeeded();
+
+	public void restart();
 
 	public boolean shouldOverrideActivityAnimation();
 }

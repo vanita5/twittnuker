@@ -297,7 +297,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         final MenuItem itemProgress = menu.findItem(MENU_PROGRESS);
         mSmartBarProgress = (ProgressBar) itemProgress.getActionView().findViewById(android.R.id.progress);
 		updateActionsButton();
-        updateSmartBar();
 		return true;
 	}
 

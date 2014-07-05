@@ -286,8 +286,8 @@ public class UserProfileEditorActivity extends BaseSupportActivity implements On
 	@Override
 	public void onLoadFinished(final Loader<SingleResponse<ParcelableUser>> loader,
 			final SingleResponse<ParcelableUser> data) {
-		if (data.data != null && data.data.id > 0) {
-			displayUser(data.data);
+		if (data.getData() != null && data.getData().id > 0) {
+			displayUser(data.getData());
 		} else if (mUser == null) {
 			finish();
 		}
@@ -510,8 +510,8 @@ public class UserProfileEditorActivity extends BaseSupportActivity implements On
 		@Override
 		protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
 			super.onPostExecute(result);
-			if (result != null && result.data != null) {
-				displayUser(result.data);
+			if (result != null && result.getData() != null) {
+				displayUser(result.getData());
 			}
 			setUpdateState(false);
 		}
@@ -540,13 +540,13 @@ public class UserProfileEditorActivity extends BaseSupportActivity implements On
 		@Override
 		protected void onPostExecute(final SingleResponse<Boolean> result) {
 			super.onPostExecute(result);
-            if (result.data != null && result.data) {
+			if (result.getData() != null && result.getData()) {
 				getUserInfo();
 				Toast.makeText(UserProfileEditorActivity.this, R.string.profile_banner_image_updated,
 						Toast.LENGTH_SHORT).show();
 			} else {
 				showErrorMessage(UserProfileEditorActivity.this, R.string.action_removing_profile_banner_image,
-						result.exception, true);
+						result.getException(), true);
 			}
 			setUpdateState(false);
 		}
@@ -569,14 +569,14 @@ public class UserProfileEditorActivity extends BaseSupportActivity implements On
 		@Override
 		protected SingleResponse<ParcelableUser> doInBackground(final Void... params) {
 			final SingleResponse<ParcelableUser> result = super.doInBackground(params);
-			if (result.data != null && isMyAccount(getContext(), result.data.id)) {
+			if (result.getData() != null && isMyAccount(getContext(), result.getData().id)) {
 				final ContentResolver resolver = getContentResolver();
 				final ContentValues values = new ContentValues();
-				values.put(Accounts.NAME, result.data.name);
-				values.put(Accounts.SCREEN_NAME, result.data.screen_name);
-				values.put(Accounts.PROFILE_IMAGE_URL, result.data.profile_image_url);
-				values.put(Accounts.PROFILE_BANNER_URL, result.data.profile_banner_url);
-				final String where = Accounts.ACCOUNT_ID + " = " + result.data.id;
+				values.put(Accounts.NAME, result.getData().name);
+				values.put(Accounts.SCREEN_NAME, result.getData().screen_name);
+				values.put(Accounts.PROFILE_IMAGE_URL, result.getData().profile_image_url);
+				values.put(Accounts.PROFILE_BANNER_URL, result.getData().profile_banner_url);
+				final String where = Accounts.ACCOUNT_ID + " = " + result.getData().id;
 				resolver.update(Accounts.CONTENT_URI, values, where, null);
 			}
 			return result;
@@ -585,9 +585,9 @@ public class UserProfileEditorActivity extends BaseSupportActivity implements On
 		@Override
 		protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
 			super.onPostExecute(result);
-			if (result != null && result.data != null) {
+			if (result != null && result.getData() != null) {
 				mGetUserInfoCalled = true;
-				displayUser(result.data);
+				displayUser(result.getData());
 			}
 			setUpdateState(false);
 		}

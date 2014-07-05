@@ -53,11 +53,6 @@ public class HostsFileParser {
 		return new HashMap<String, String>(mHosts);
 	}
 
-	public void init() {
-		if (!mHosts.isEmpty()) return;
-		reload();
-	}
-
 	public boolean reload() {
 		BufferedReader reader = null;
 		try {
@@ -67,7 +62,7 @@ public class HostsFileParser {
 			while ((line = reader.readLine()) != null) {
 				final String trimmed = line.trim();
 				// Skip if this line is empty or commented out
-				if (trimmed.isEmpty() || trimmed.startsWith("#")) {
+				if (trimmed.length() == 0 || trimmed.startsWith("#")) {
 					continue;
 				}
 				final String[] segments = trimmed.replaceAll("(\\s|\t)+", " ").split("\\s");
@@ -87,5 +82,10 @@ public class HostsFileParser {
 				Utils.closeSilently(reader);
 			}
 		}
+	}
+
+	public void reloadIfNeeded() {
+		if (!mHosts.isEmpty()) return;
+		reload();
 	}
 }

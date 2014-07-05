@@ -114,14 +114,6 @@ public interface TweetStore {
 		 */
 		public static final String OAUTH_TOKEN_SECRET = "oauth_token_secret";
 
-		public static final String REST_BASE_URL = "rest_base_url";
-
-		public static final String SIGNING_REST_BASE_URL = "signing_rest_base_url";
-
-		public static final String OAUTH_BASE_URL = "oauth_base_url";
-
-		public static final String SIGNING_OAUTH_BASE_URL = "signing_oauth_base_url";
-
 		public static final String COLOR = "color";
 
 		/**
@@ -141,19 +133,20 @@ public interface TweetStore {
 		public static final String PROFILE_IMAGE_URL = "profile_image_url";
 
 		public static final String PROFILE_BANNER_URL = "profile_banner_url";
-		public static final String JTAPI_HOSTNAME = "jtapi_hostname";
+		public static final String API_URL_FORMAT = "api_url_format";
+		public static final String SAME_OAUTH_SIGNING_URL = "same_oauth_signing_url";
 
 		public static final String[] COLUMNS_NO_CREDENTIALS = new String[] { _ID, NAME, SCREEN_NAME, ACCOUNT_ID,
 				CONSUMER_KEY, CONSUMER_SECRET, PROFILE_IMAGE_URL, PROFILE_BANNER_URL, COLOR, IS_ACTIVATED };
 
 		public static final String[] COLUMNS = new String[] { _ID, NAME, SCREEN_NAME, ACCOUNT_ID, AUTH_TYPE,
 				BASIC_AUTH_USERNAME, BASIC_AUTH_PASSWORD, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, CONSUMER_KEY,
-				CONSUMER_SECRET, REST_BASE_URL, SIGNING_REST_BASE_URL, OAUTH_BASE_URL, SIGNING_OAUTH_BASE_URL,
-				JTAPI_HOSTNAME, PROFILE_IMAGE_URL, PROFILE_BANNER_URL, COLOR, IS_ACTIVATED };
+				CONSUMER_SECRET, API_URL_FORMAT, SAME_OAUTH_SIGNING_URL, PROFILE_IMAGE_URL, PROFILE_BANNER_URL, COLOR,
+				IS_ACTIVATED };
 
 		public static final String[] TYPES = new String[] { TYPE_PRIMARY_KEY, TYPE_TEXT_NOT_NULL, TYPE_TEXT_NOT_NULL,
 				TYPE_INT_UNIQUE, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
-				TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_BOOLEAN };
+				TYPE_BOOLEAN, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_BOOLEAN };
 
 	}
 
@@ -697,6 +690,8 @@ public interface TweetStore {
 
 		public static final String RETWEET_ID = "retweet_id";
 
+		public static final String RETWEET_TIMESTAMP = "retweet_timestamp";
+
 		public static final String RETWEETED_BY_USER_ID = "retweeted_by_user_id";
 
 		public static final String RETWEETED_BY_USER_NAME = "retweeted_by_user_name";
@@ -721,7 +716,7 @@ public interface TweetStore {
 
 		public static final String SORT_ORDER_STATUS_ID_DESC = STATUS_ID + " DESC";
 
-		public static final String DEFAULT_SORT_ORDER = SORT_ORDER_STATUS_ID_DESC;
+		public static final String DEFAULT_SORT_ORDER = SORT_ORDER_TIMESTAMP_DESC;
 
 		public static final String[] COLUMNS = new String[] { _ID, ACCOUNT_ID, STATUS_ID, USER_ID, STATUS_TIMESTAMP,
 				TEXT_HTML, TEXT_PLAIN, TEXT_UNESCAPED, USER_NAME, USER_SCREEN_NAME, USER_PROFILE_IMAGE_URL,
@@ -731,10 +726,10 @@ public interface TweetStore {
 				IS_PROTECTED, IS_VERIFIED, IS_FOLLOWING, IS_GAP, IS_POSSIBLY_SENSITIVE, MEDIAS, FIRST_MEDIA, MENTIONS };
 
 		public static final String[] TYPES = new String[] { TYPE_PRIMARY_KEY, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT,
-				TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_INT, TYPE_TEXT,
-				TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT,
-				TYPE_INT, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN,
-				TYPE_BOOLEAN, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT };
+				TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_INT, TYPE_INT,
+				TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_TEXT,
+				TYPE_TEXT, TYPE_INT, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN,
+				TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT };
 
 	}
 

@@ -305,14 +305,14 @@ public class UserListDetailsFragment extends BaseSupportListFragment implements 
 			final SingleResponse<ParcelableUserList> data) {
 		if (data == null) return;
 		if (getActivity() == null) return;
-		if (data.data != null) {
-			final ParcelableUserList list = data.data;
+		if (data.getData() != null) {
+			final ParcelableUserList list = data.getData();
 			setListShown(true);
 			displayUserList(list);
 			mErrorRetryContainer.setVisibility(View.GONE);
 		} else {
-			if (data.exception != null) {
-				mErrorMessageView.setText(data.exception.getMessage());
+			if (data.hasException()) {
+				mErrorMessageView.setText(data.getException().getMessage());
 				mErrorMessageView.setVisibility(View.VISIBLE);
 			}
 			mListContainer.setVisibility(View.GONE);
@@ -588,10 +588,10 @@ public class UserListDetailsFragment extends BaseSupportListFragment implements 
 		public SingleResponse<ParcelableUserList> loadInBackground() {
 			if (!mOmitIntentExtra && mExtras != null) {
 				final ParcelableUserList cache = mExtras.getParcelable(EXTRA_USER_LIST);
-				if (cache != null) return SingleResponse.withData(cache);
+				if (cache != null) return SingleResponse.getInstance(cache);
 			}
 			final Twitter twitter = getTwitterInstance(getContext(), mAccountId, true);
-			if (twitter == null) return SingleResponse.nullInstance();
+			if (twitter == null) return SingleResponse.getInstance();
 			try {
 				final UserList list;
 				if (mListId > 0) {
@@ -601,7 +601,7 @@ public class UserListDetailsFragment extends BaseSupportListFragment implements 
 				} else if (mScreenName != null) {
 					list = twitter.showUserList(mListName, mScreenName);
 				} else
-					return SingleResponse.nullInstance();
+					return SingleResponse.getInstance();
 				return new SingleResponse<ParcelableUserList>(new ParcelableUserList(list, mAccountId), null);
 			} catch (final TwitterException e) {
 				return new SingleResponse<ParcelableUserList>(null, e);

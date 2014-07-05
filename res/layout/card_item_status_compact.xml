@@ -119,6 +119,18 @@
 					android:layout_height="wrap_content"
 					android:layout_gravity="center"
 					android:layout_margin="@dimen/element_spacing_large"/>
+
+                <TextView
+                    android:id="@+id/image_preview_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:layout_margin="@dimen/element_spacing_normal"
+                    android:shadowColor="#000000"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowRadius="3.0"
+                    android:textColor="#ffffff"/>
 			</de.vanita5.twittnuker.view.ImagePreviewContainer>
 
 			<de.vanita5.twittnuker.view.HandleSpanClickTextView

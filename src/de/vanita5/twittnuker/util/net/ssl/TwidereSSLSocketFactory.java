@@ -35,6 +35,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.net.ssl.SSLContext;
@@ -47,7 +48,7 @@ public final class TwidereSSLSocketFactory implements LayeredConnectionSocketFac
 	private final HostResolvedSSLConnectionSocketFactory delegated;
 
 	private TwidereSSLSocketFactory(final Context context, final boolean ignoreSSLErrors)
-			throws KeyManagementException, NoSuchAlgorithmException {
+			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 		this.context = context;
 		this.ignoreSSLErrors = ignoreSSLErrors;
 		final TrustManager[] tm = { new TrustAllX509TrustManager() };

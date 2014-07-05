@@ -60,9 +60,9 @@ public class UserListsListFragment extends BaseUserListsListFragment {
 	};
 
 	@Override
-	public Loader<List<ParcelableUserList>> newLoaderInstance(final long account_id, final long user_id,
-			final String screen_name) {
-		return new UserListsLoader(getActivity(), account_id, user_id, screen_name, getData());
+	public Loader<List<ParcelableUserList>> newLoaderInstance(final long accountId, final long userId,
+			final String screenName) {
+		return new UserListsLoader(getActivity(), accountId, userId, screenName, getData());
 	}
 
 	@Override
@@ -122,4 +122,5 @@ public class UserListsListFragment extends BaseUserListsListFragment {
 			adapter.remove(listsIdx);
 		}
 	}
+
 }

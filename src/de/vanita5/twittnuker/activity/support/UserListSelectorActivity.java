@@ -245,7 +245,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 		@Override
 		protected SingleResponse<List<ParcelableUserList>> doInBackground(final Void... params) {
 			final Twitter twitter = getTwitterInstance(mActivity, mAccountId, false);
-			if (twitter == null) return SingleResponse.nullInstance();
+			if (twitter == null) return SingleResponse.getInstance();
 			try {
 				final ResponseList<UserList> lists = twitter.getUserLists(mScreenName);
 				final List<ParcelableUserList> data = new ArrayList<ParcelableUserList>();
@@ -259,12 +259,12 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 						data.add(new ParcelableUserList(item, mAccountId));
 					}
 				}
-				final SingleResponse<List<ParcelableUserList>> result = SingleResponse.withData(data);
-				result.extras.putBoolean(EXTRA_IS_MY_ACCOUNT, is_my_account);
+				final SingleResponse<List<ParcelableUserList>> result = SingleResponse.getInstance(data);
+				result.getExtras().putBoolean(EXTRA_IS_MY_ACCOUNT, is_my_account);
 				return result;
 			} catch (final TwitterException e) {
 				e.printStackTrace();
-				return SingleResponse.withException(e);
+				return SingleResponse.getInstance(e);
 			}
 		}
 
@@ -274,10 +274,10 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 			if (f instanceof DialogFragment) {
 				((DialogFragment) f).dismiss();
 			}
-			if (result.data != null) {
-				mActivity.setUserListsData(result.data, result.extras.getBoolean(EXTRA_IS_MY_ACCOUNT));
-			} else if (result.exception instanceof TwitterException) {
-				final TwitterException te = (TwitterException) result.exception;
+			if (result.getData() != null) {
+				mActivity.setUserListsData(result.getData(), result.getExtras().getBoolean(EXTRA_IS_MY_ACCOUNT));
+			} else if (result.getException() instanceof TwitterException) {
+				final TwitterException te = (TwitterException) result.getException();
 				if (te.getStatusCode() == HttpResponseCode.NOT_FOUND) {
 					mActivity.searchUser(mScreenName);
 				}
@@ -307,17 +307,17 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 		@Override
 		protected SingleResponse<List<ParcelableUser>> doInBackground(final Void... params) {
 			final Twitter twitter = getTwitterInstance(mActivity, mAccountId, false);
-			if (twitter == null) return SingleResponse.nullInstance();
+			if (twitter == null) return SingleResponse.getInstance();
 			try {
 				final ResponseList<User> lists = twitter.searchUsers(mName, 1);
 				final List<ParcelableUser> data = new ArrayList<ParcelableUser>();
 				for (final User item : lists) {
 					data.add(new ParcelableUser(item, mAccountId));
 				}
-				return SingleResponse.withData(data);
+				return SingleResponse.getInstance(data);
 			} catch (final TwitterException e) {
 				e.printStackTrace();
-				return SingleResponse.withException(e);
+				return SingleResponse.getInstance(e);
 			}
 		}
 
@@ -327,8 +327,8 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 			if (f instanceof DialogFragment) {
 				((DialogFragment) f).dismiss();
 			}
-			if (result.data != null) {
-				mActivity.setUsersData(result.data);
+			if (result.getData() != null) {
+				mActivity.setUsersData(result.getData());
 			}
 		}
 

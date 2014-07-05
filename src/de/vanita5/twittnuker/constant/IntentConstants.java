@@ -53,6 +53,8 @@ public interface IntentConstants {
 	public static final String INTENT_ACTION_SELECT_USER = INTENT_PACKAGE_PREFIX + "SELECT_USER";
 	public static final String INTENT_ACTION_COMPOSE_TAKE_PHOTO = INTENT_PACKAGE_PREFIX + "COMPOSE_TAKE_PHOTO";
 	public static final String INTENT_ACTION_COMPOSE_PICK_IMAGE = INTENT_PACKAGE_PREFIX + "COMPOSE_PICK_IMAGE";
+	public static final String INTENT_ACTION_TAKE_PHOTO = INTENT_PACKAGE_PREFIX + "TAKE_PHOTO";
+	public static final String INTENT_ACTION_PICK_IMAGE = INTENT_PACKAGE_PREFIX + "PICK_IMAGE";
 
 	public static final String INTENT_ACTION_EXTENSION_EDIT_IMAGE = INTENT_PACKAGE_PREFIX + "EXTENSION_EDIT_IMAGE";
 	public static final String INTENT_ACTION_EXTENSION_UPLOAD = INTENT_PACKAGE_PREFIX + "EXTENSION_UPLOAD";
@@ -218,6 +220,7 @@ public interface IntentConstants {
 	public static final String EXTRA_MEDIAS = "medias";
 	public static final String EXTRA_EXTRAS = "extras";
 	public static final String EXTRA_MY_FOLLOWING_ONLY = "my_following_only";
+	public static final String EXTRA_RESTART_ACTIVITY = "restart_activity";
 
 	/* Twittnuker */
 	public static final String EXTRA_HOTOTIN_EXPANDED_TEXT = "expanded_text";

@@ -125,6 +125,11 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 	}
 
 	@Override
+	public final void restart() {
+		restartActivity(this);
+	}
+
+	@Override
 	public boolean shouldOverrideActivityAnimation() {
 		return true;
 	}
@@ -160,10 +165,6 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 			ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentThemeColor,
 					mCurrentThemeBackgroundAlpha);
 		}
-	}
-
-	protected final void restart() {
-		restartActivity(this);
 	}
 
 	private final void setActionBarBackground() {

@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.activity.support;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -39,8 +38,6 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 public class BaseSupportActivity extends BaseSupportThemedActivity implements Constants {
 
 	private boolean mInstanceStateSaved, mIsVisible, mIsOnTop;
-	private SharedPreferences mPreferences;
-	private boolean mCompactCards, mPlainListStyle;
 
 	public MessagesManager getMessagesManager() {
 		return getTwittnukerApplication() != null ? getTwittnukerApplication().getMessagesManager() : null;
@@ -104,9 +101,6 @@ public class BaseSupportActivity extends BaseSupportThemedActivity implements Co
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-		mCompactCards = mPreferences.getBoolean(KEY_COMPACT_CARDS, false);
-		mPlainListStyle = mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false);
 	}
 
 	@Override
@@ -118,9 +112,6 @@ public class BaseSupportActivity extends BaseSupportThemedActivity implements Co
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (isCompactCardsModeChanged()) {
-			restart();
-		}
 		mInstanceStateSaved = false;
 		mIsOnTop = true;
 	}
@@ -149,11 +140,6 @@ public class BaseSupportActivity extends BaseSupportThemedActivity implements Co
 			manager.removeMessageCallback(this);
 		}
 		super.onStop();
-	}
-
-	private boolean isCompactCardsModeChanged() {
-		return mCompactCards != mPreferences.getBoolean(KEY_COMPACT_CARDS, false)
-				|| mPlainListStyle != mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false);
 	}
 
 }

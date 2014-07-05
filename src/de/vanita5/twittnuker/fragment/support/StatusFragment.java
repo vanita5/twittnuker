@@ -77,7 +77,6 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.text.Html;
 import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
@@ -245,13 +244,13 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		@Override
 		public void onLoadFinished(final Loader<SingleResponse<ParcelableStatus>> loader,
 				final SingleResponse<ParcelableStatus> data) {
-			if (data.data == null) {
+			if (data.getData() == null) {
                 // TODO
                 mRetryButton.setVisibility(View.VISIBLE);
-				showErrorMessage(getActivity(), getString(R.string.action_getting_status), data.exception, true);
+				showErrorMessage(getActivity(), getString(R.string.action_getting_status), data.getException(), true);
 			} else {
                 mRetryButton.setVisibility(View.GONE);
-				displayStatus(data.data);
+				displayStatus(data.getData());
                 mDetailsLoadProgress.setVisibility(View.GONE);
 				mMainContent.setVisibility(View.VISIBLE);
 				mMainContent.setEnabled(true);
@@ -303,10 +302,10 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 		@Override
 		public void onLoadFinished(final Loader<SingleResponse<Boolean>> loader, final SingleResponse<Boolean> data) {
-			if (data.exception == null) {
-				mFollowIndicator.setVisibility(data.data == null || data.data ? View.GONE : View.VISIBLE);
-				if (data.data != null) {
-					mFollowButton.setVisibility(data.data ? View.GONE : View.VISIBLE);
+			if (!data.hasException()) {
+				mFollowIndicator.setVisibility(!data.hasData() || data.getData() ? View.GONE : View.VISIBLE);
+				if (data.getData() != null) {
+					mFollowButton.setVisibility(data.getData() ? View.GONE : View.VISIBLE);
 					mFollowInfoDisplayed = true;
 				}
 			}
@@ -1051,19 +1050,19 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		}
 
 		private SingleResponse<Boolean> isAllFollowing() {
-			if (status == null) return SingleResponse.nullInstance();
-			if (status.user_id == status.account_id) return SingleResponse.withData(true);
+			if (status == null) return SingleResponse.getInstance();
+			if (status.user_id == status.account_id) return SingleResponse.getInstance(true);
 			final Twitter twitter = getTwitterInstance(context, status.account_id, false);
-			if (twitter == null) return SingleResponse.nullInstance();
+			if (twitter == null) return SingleResponse.getInstance();
 			try {
 				final Relationship result = twitter.showFriendship(status.account_id, status.user_id);
 				if (!result.isSourceFollowingTarget()) {
-					SingleResponse.withData(false);
+					SingleResponse.getInstance(false);
 				}
 			} catch (final TwitterException e) {
-				return SingleResponse.withException(e);
+				return SingleResponse.getInstance(e);
 			}
-			return SingleResponse.nullInstance();
+			return SingleResponse.getInstance();
 		}
 	}
 
@@ -1158,8 +1157,8 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		protected void onPostExecute(final SingleResponse<Boolean> data) {
 			fragment.setProgressBarIndeterminateVisibility(false);
 			fragment.updateConversationInfo();
-            if (data.data == null || !data.data) {
-				showErrorMessage(context, context.getString(R.string.action_getting_status), data.exception, true);
+			if (data.getData() == null || !data.getData()) {
+				showErrorMessage(context, context.getString(R.string.action_getting_status), data.getException(), true);
 			}
 		}
 
@@ -1245,12 +1244,12 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		public SingleResponse<ParcelableStatus> loadInBackground() {
 			if (!mOmitIntentExtra && mExtras != null) {
 				final ParcelableStatus cache = mExtras.getParcelable(EXTRA_STATUS);
-				if (cache != null) return SingleResponse.withData(cache);
+				if (cache != null) return SingleResponse.getInstance(cache);
 			}
 			try {
-				return SingleResponse.withData(findStatus(getContext(), mAccountId, mStatusId));
+				return SingleResponse.getInstance(findStatus(getContext(), mAccountId, mStatusId));
 			} catch (final TwitterException e) {
-				return SingleResponse.withException(e);
+				return SingleResponse.getInstance(e);
 			}
 		}
 

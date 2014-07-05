@@ -230,7 +230,7 @@ public class LinkHandlerActivity extends TwidereSwipeBackActivity implements OnC
 				setTitle(R.string.list_members);
 				break;
 			}
-			case LINK_ID_LIST_SUBSCRIBERS: {
+			case LINK_ID_USER_LIST_SUBSCRIBERS: {
 				setTitle(R.string.list_subscribers);
 				break;
 			}

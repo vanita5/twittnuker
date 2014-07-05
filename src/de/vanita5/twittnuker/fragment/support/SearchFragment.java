@@ -23,8 +23,6 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.app.ActionBar;
-import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.app.Fragment;
@@ -47,7 +45,9 @@ import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.provider.RecentSearchProvider;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.ExtendedViewPager;
+import de.vanita5.twittnuker.view.LinePageIndicator;
 
 public class SearchFragment extends BaseSupportFragment implements Panes.Left, OnPageChangeListener,
 		RefreshScrollTopInterface, SupportFragmentCallback {
@@ -55,7 +55,7 @@ public class SearchFragment extends BaseSupportFragment implements Panes.Left, O
 	private ExtendedViewPager mViewPager;
 
 	private SupportTabsAdapter mAdapter;
-	private CirclePageIndicator mPagerIndicator;
+    private LinePageIndicator mPagerIndicator;
 
 	private Fragment mCurrentVisibleFragment;
 
@@ -80,11 +80,7 @@ public class SearchFragment extends BaseSupportFragment implements Panes.Left, O
 		mViewPager.setAdapter(mAdapter);
 		mViewPager.setOnPageChangeListener(this);
 		mViewPager.setOffscreenPageLimit(2);
-		final TypedArray a = activity.obtainStyledAttributes(new int[]{android.R.attr.colorForeground});
-		final int foregroundColor = a.getColor(0, Color.GRAY);
-		a.recycle();
-		mPagerIndicator.setFillColor(foregroundColor);
-		mPagerIndicator.setStrokeColor(foregroundColor);
+        mPagerIndicator.setSelectedColor(ThemeUtils.getThemeColor(activity));
 		mPagerIndicator.setViewPager(mViewPager);
 		if (savedInstanceState == null && args != null && args.containsKey(EXTRA_QUERY)) {
 			final String query = args.getString(EXTRA_QUERY);
@@ -155,7 +151,7 @@ public class SearchFragment extends BaseSupportFragment implements Panes.Left, O
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		mViewPager = (ExtendedViewPager) view.findViewById(R.id.search_pager);
-		mPagerIndicator = (CirclePageIndicator) view.findViewById(R.id.search_pager_indicator);
+        mPagerIndicator = (LinePageIndicator) view.findViewById(R.id.search_pager_indicator);
 	}
 
 	@Override

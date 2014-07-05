@@ -58,7 +58,7 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 	private static final String DEFAULT_DNS_SERVER_ADDRESS = "";
 
 	private final SharedPreferences mHostMapping, mPreferences;
-	private final HostsFileParser mHosts = new HostsFileParser();
+	private final HostsFileParser mSystemHosts = new HostsFileParser();
 	private final HostCache mHostCache = new HostCache(512);
 	private final boolean mLocalMappingOnly;
 	private final String mDnsAddress;
@@ -77,6 +77,10 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 		mLocalMappingOnly = local_only;
 	}
 
+	public synchronized void removeCachedHost(final String host) {
+		mHostCache.remove(host);
+	}
+
 	@Override
 	public String resolve(final String host) throws IOException {
 		if (host == null) return null;
@@ -91,36 +95,30 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 		// Then I'll try to load from custom host mapping.
 		// Stupid way to find top domain, but really fast.
 		if (mHostMapping.contains(host)) {
-			final String host_addr = mHostMapping.getString(host, null);
-			mHostCache.put(host, host_addr);
+			final String mappedAddr = mHostMapping.getString(host, null);
+			mHostCache.put(host, mappedAddr);
 			if (Utils.isDebugBuild()) {
-				Log.d(RESOLVER_LOGTAG, "Got mapped address " + host_addr + " for host " + host);
+				Log.d(RESOLVER_LOGTAG, "Got mapped address " + mappedAddr + " for host " + host);
 			}
-			return host_addr;
+			return mappedAddr;
 		}
-		mHosts.init();
-		if (mHosts.contains(host)) {
-			final String host_addr = mHosts.getAddress(host);
-			mHostCache.put(host, host_addr);
+		mSystemHosts.reloadIfNeeded();
+		if (mSystemHosts.contains(host)) {
+			final String hostAddr = mSystemHosts.getAddress(host);
+			mHostCache.put(host, hostAddr);
 			if (Utils.isDebugBuild()) {
-				Log.d(RESOLVER_LOGTAG, "Got mapped address " + host_addr + " for host " + host);
+				Log.d(RESOLVER_LOGTAG, "Got mapped address " + hostAddr + " for host " + host);
 			}
-			return host_addr;
+			return hostAddr;
 		}
-		final String[] host_segments = host.split("\\.");
-		final int host_segments_length = host_segments.length;
-		if (host_segments_length > 2) {
-			final String top_domain = host_segments[host_segments_length - 2] + "."
-					+ host_segments[host_segments_length - 1];
-			if (mHostMapping.contains(top_domain)) {
-                final String hostAddr = mHostMapping.getString(top_domain, null);
-                mHostCache.put(host, hostAddr);
+		final String customMappedHost = findHost(host);
+		if (customMappedHost != null) {
+			mHostCache.put(host, customMappedHost);
 				if (Utils.isDebugBuild()) {
-					Log.d(RESOLVER_LOGTAG, "Got mapped address (top domain) " + hostAddr + " for host " + host);
+				Log.d(RESOLVER_LOGTAG, "Got mapped address " + customMappedHost + " for host " + host);
 				}
-				return hostAddr;
+			return customMappedHost;
 			}
-		}
 		initDns();
 		// Use TCP DNS Query if enabled.
 		if (mDns != null && mPreferences.getBoolean(KEY_TCP_DNS_QUERY, false)) {
@@ -136,41 +134,42 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 			if (response == null) return host;
 			final Record[] records = response.getSectionArray(Section.ANSWER);
 			if (records == null || records.length < 1) throw new IOException("Could not find " + host);
-			String host_addr = null;
+			String hostAddr = null;
 			// Test each IP address resolved.
 			for (final Record record : records) {
 				if (record instanceof ARecord) {
-					final InetAddress ipv4_addr = ((ARecord) record).getAddress();
-					if (ipv4_addr.isReachable(300)) {
-						host_addr = ipv4_addr.getHostAddress();
+					final InetAddress ipv4Addr = ((ARecord) record).getAddress();
+					if (ipv4Addr.isReachable(300)) {
+						hostAddr = ipv4Addr.getHostAddress();
 					}
 				} else if (record instanceof AAAARecord) {
-					final InetAddress ipv6_addr = ((AAAARecord) record).getAddress();
-					if (ipv6_addr.isReachable(300)) {
-						host_addr = ipv6_addr.getHostAddress();
+					final InetAddress ipv6Addr = ((AAAARecord) record).getAddress();
+					if (ipv6Addr.isReachable(300)) {
+						hostAddr = ipv6Addr.getHostAddress();
 					}
 				}
-				if (mHostCache.put(host, host_addr) != null) {
+				if (hostAddr != null) {
+					mHostCache.put(host, hostAddr);
 					if (Utils.isDebugBuild()) {
-						Log.d(RESOLVER_LOGTAG, "Resolved address " + host_addr + " for host " + host);
+						Log.d(RESOLVER_LOGTAG, "Resolved address " + hostAddr + " for host " + host);
 					}
-					return host_addr;
+					return hostAddr;
 				}
 			}
 			// No address is reachable, but I believe the IP is correct.
 			final Record record = records[0];
 			if (record instanceof ARecord) {
-				final InetAddress ipv4_addr = ((ARecord) record).getAddress();
-				host_addr = ipv4_addr.getHostAddress();
+				final InetAddress ipv4Addr = ((ARecord) record).getAddress();
+				hostAddr = ipv4Addr.getHostAddress();
 			} else if (record instanceof AAAARecord) {
-				final InetAddress ipv6_addr = ((AAAARecord) record).getAddress();
-				host_addr = ipv6_addr.getHostAddress();
+				final InetAddress ipv6Addr = ((AAAARecord) record).getAddress();
+				hostAddr = ipv6Addr.getHostAddress();
 			} else if (record instanceof CNAMERecord) return resolve(((CNAMERecord) record).getTarget().toString());
-			mHostCache.put(host, host_addr);
+			mHostCache.put(host, hostAddr);
 			if (Utils.isDebugBuild()) {
-				Log.d(RESOLVER_LOGTAG, "Resolved address " + host_addr + " for host " + host);
+				Log.d(RESOLVER_LOGTAG, "Resolved address " + hostAddr + " for host " + host);
 			}
-			return host_addr;
+			return hostAddr;
 		}
 		if (Utils.isDebugBuild()) {
 			Log.w(RESOLVER_LOGTAG, "Resolve address " + host + " failed, using original host");
@@ -178,7 +177,14 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 		return host;
 	}
 
-	void initDns() throws IOException {
+	private String findHost(final String host) {
+		for (final String rule : mHostMapping.getAll().keySet()) {
+			if (hostMatches(host, rule)) return mHostMapping.getString(rule, null);
+		}
+		return null;
+	}
+
+	private void initDns() throws IOException {
 		if (mDns != null) return;
 		mDns = mLocalMappingOnly ? null : new SimpleResolver(mDnsAddress);
 		if (mDns != null) {
@@ -186,7 +192,13 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 		}
 	}
 
-	static boolean isValidIpAddress(final String address) {
+	private static boolean hostMatches(final String host, final String rule) {
+		if (rule == null || host == null) return false;
+		if (rule.startsWith(".")) return host.toLowerCase().endsWith(rule.toLowerCase());
+		return host.equalsIgnoreCase(rule);
+	}
+
+	private static boolean isValidIpAddress(final String address) {
 		if (isEmpty(address)) return false;
 		return InetAddressUtilsHC4.isIPv4Address(address) || InetAddressUtilsHC4.isIPv6Address(address);
 	}

@@ -185,8 +185,8 @@ import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
-
 import de.vanita5.twittnuker.util.net.TwidereHttpClientFactory;
+
 import twitter4j.DirectMessage;
 import twitter4j.EntitySupport;
 import twitter4j.MediaEntity;
@@ -243,7 +243,6 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static final Pattern PATTERN_RESOURCE_IDENTIFIER = Pattern.compile("@([\\w_]+)\\/([\\w_]+)");
 	private static final UriMatcher CONTENT_PROVIDER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
-
 	private static final UriMatcher LINK_HANDLER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Accounts.CONTENT_PATH, TABLE_ID_ACCOUNTS);
@@ -316,6 +315,7 @@ public final class Utils implements Constants, TwitterConstants {
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LIST, null, LINK_ID_USER_LIST);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LIST_TIMELINE, null, LINK_ID_USER_LIST_TIMELINE);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LIST_MEMBERS, null, LINK_ID_USER_LIST_MEMBERS);
+		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LIST_SUBSCRIBERS, null, LINK_ID_USER_LIST_SUBSCRIBERS);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LIST_MEMBERSHIPS, null, LINK_ID_USER_LIST_MEMBERSHIPS);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LISTS, null, LINK_ID_USER_LISTS);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_SAVED_SEARCHES, null, LINK_ID_SAVED_SEARCHES);
@@ -835,7 +835,7 @@ public final class Utils implements Constants, TwitterConstants {
 				args.putString(EXTRA_LIST_NAME, paramListName);
 				break;
 			}
-			case LINK_ID_LIST_SUBSCRIBERS: {
+			case LINK_ID_USER_LIST_SUBSCRIBERS: {
 				fragment = new UserListSubscribersFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
@@ -1484,6 +1484,31 @@ public final class Utils implements Constants, TwitterConstants {
 		return ids;
 	}
 
+
+
+	public static String getApiBaseUrl(final String pattern, final String domain) {
+		if (pattern == null) return null;
+		if (TextUtils.isEmpty(domain)) return pattern.replaceAll("\\[\\.?DOMAIN\\.?\\]", "");
+		return pattern.replaceAll("\\[(\\.?)DOMAIN(\\.?)\\]", String.format("$1%s$2", domain));
+	}
+
+	public static String getApiUrl(final String pattern, final String domain, final String appendPath) {
+		final String urlBase = getApiBaseUrl(pattern, domain);
+		if (urlBase == null || appendPath == null) return urlBase;
+		final StringBuilder sb = new StringBuilder(urlBase);
+		if (urlBase.endsWith("/")) {
+			sb.append(appendPath.startsWith("/") ? appendPath.substring(1) : appendPath);
+		} else {
+			if (appendPath.startsWith("/")) {
+				sb.append(appendPath);
+			} else {
+				sb.append('/');
+				sb.append(appendPath);
+			}
+		}
+		return sb.toString();
+	}
+
 	public static String getBestBannerType(final int width) {
 		if (width <= 320)
 			return "mobile";
@@ -1795,6 +1820,13 @@ public final class Utils implements Constants, TwitterConstants {
 		return orig.getInReplyToScreenName();
 	}
 
+	public static File getInternalCacheDir(final Context context, final String cacheDirName) {
+		if (context == null) throw new NullPointerException();
+		final File cacheDir = new File(context.getCacheDir(), cacheDirName);
+		if (cacheDir.isDirectory() || cacheDir.mkdirs()) return cacheDir;
+		return new File(context.getCacheDir(), cacheDirName);
+	}
+
 	public static CharSequence getKeywordBoldedText(final CharSequence orig, final String... keywords) {
 		return getKeywordHighlightedText(orig, new StyleSpan(Typeface.BOLD), keywords);
 	}
@@ -2004,10 +2036,10 @@ public final class Utils implements Constants, TwitterConstants {
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final boolean enable_proxy = prefs.getBoolean(KEY_ENABLE_PROXY, false);
 		if (!enable_proxy) return Proxy.NO_PROXY;
-		final String proxy_host = prefs.getString(KEY_PROXY_HOST, null);
-		final int proxy_port = ParseUtils.parseInt(prefs.getString(KEY_PROXY_PORT, "-1"));
-		if (!isEmpty(proxy_host) && proxy_port > 0) {
-			final SocketAddress addr = InetSocketAddress.createUnresolved(proxy_host, proxy_port);
+		final String proxyHost = prefs.getString(KEY_PROXY_HOST, null);
+		final int proxyPort = ParseUtils.parseInt(prefs.getString(KEY_PROXY_PORT, "-1"));
+		if (!isEmpty(proxyHost) && proxyPort >= 0 && proxyPort < 65535) {
+			final SocketAddress addr = InetSocketAddress.createUnresolved(proxyHost, proxyPort);
 			return new Proxy(Proxy.Type.HTTP, addr);
 		}
 		return Proxy.NO_PROXY;
@@ -2213,6 +2245,57 @@ public final class Utils implements Constants, TwitterConstants {
 		return date.getTime();
 	}
 
+	public static Authorization getTwitterAuthorization(final Context context, final AccountWithCredentials account) {
+		if (context == null || account == null) return null;
+		switch (account.auth_type) {
+			case Accounts.AUTH_TYPE_OAUTH:
+			case Accounts.AUTH_TYPE_XAUTH: {
+				final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
+						Context.MODE_PRIVATE);
+				// Here I use old consumer key/secret because it's default
+				// key for older
+				// versions
+				final String prefConsumerKey = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
+				final String prefConsumerSecret = prefs.getString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
+				final ConfigurationBuilder cb = new ConfigurationBuilder();
+				if (!isEmpty(account.api_url_format)) {
+					cb.setRestBaseURL(getApiUrl(account.api_url_format, "api", "/1.1/"));
+					cb.setOAuthBaseURL(getApiUrl(account.api_url_format, "api", "/oauth/"));
+					cb.setUploadBaseURL(getApiUrl(account.api_url_format, "upload", "/1.1/"));
+					if (!account.same_oauth_signing_url) {
+						cb.setSigningRestBaseURL(DEFAULT_SIGNING_REST_BASE_URL);
+						cb.setSigningOAuthBaseURL(DEFAULT_SIGNING_OAUTH_BASE_URL);
+						cb.setSigningUploadBaseURL(DEFAULT_SIGNING_UPLOAD_BASE_URL);
+					}
+				}
+				if (!isEmpty(account.consumer_key) && !isEmpty(account.consumer_secret)) {
+					cb.setOAuthConsumerKey(account.consumer_key);
+					cb.setOAuthConsumerSecret(account.consumer_secret);
+				} else if (!isEmpty(prefConsumerKey) && !isEmpty(prefConsumerSecret)) {
+					cb.setOAuthConsumerKey(prefConsumerKey);
+					cb.setOAuthConsumerSecret(prefConsumerSecret);
+				} else {
+					cb.setOAuthConsumerKey(TWITTER_CONSUMER_KEY_2);
+					cb.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET_2);
+				}
+				final OAuthAuthorization auth = new OAuthAuthorization(cb.build());
+				auth.setOAuthAccessToken(new AccessToken(account.oauth_token, account.oauth_token_secret));
+				return auth;
+			}
+			case Accounts.AUTH_TYPE_BASIC: {
+				final String screenName = account.screen_name;
+				final String username = account.basic_auth_username;
+				final String loginName = username != null ? username : screenName;
+				final String password = account.basic_auth_password;
+				if (isEmpty(loginName) || isEmpty(password)) return null;
+				return new BasicAuthorization(loginName, password);
+			}
+			default: {
+				return null;
+			}
+		}
+	}
+
 	public static Authorization getTwitterAuthorization(final Context context, final long accountId) {
 
 		final String where = Where.equals(new Column(Accounts.ACCOUNT_ID), accountId).getSQL();
@@ -2227,34 +2310,29 @@ public final class Utils implements Constants, TwitterConstants {
 				case Accounts.AUTH_TYPE_XAUTH: {
 					final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
 							Context.MODE_PRIVATE);
-					final String pref_consumer_key = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
-					final String pref_consumer_secret = prefs.getString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
+					final String prefConsumerKey = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
+					final String prefConsumerSecret = prefs.getString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
 					final ConfigurationBuilder cb = new ConfigurationBuilder();
-					final String rest_base_url = c.getString(c.getColumnIndex(Accounts.REST_BASE_URL));
-					final String signing_rest_base_url = c.getString(c.getColumnIndex(Accounts.SIGNING_REST_BASE_URL));
-					final String oauth_base_url = c.getString(c.getColumnIndex(Accounts.OAUTH_BASE_URL));
-					final String signing_oauth_base_url = c
-							.getString(c.getColumnIndex(Accounts.SIGNING_OAUTH_BASE_URL));
-					final String consumer_key = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_KEY)));
-					final String consumer_secret = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_SECRET)));
-					if (!isEmpty(rest_base_url)) {
-						cb.setRestBaseURL(rest_base_url);
+					final String apiUrlFormat = c.getString(c.getColumnIndex(Accounts.API_URL_FORMAT));
+					final String consumerKey = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_KEY)));
+					final String consumerSecret = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_SECRET)));
+					final boolean sameOAuthSigningUrl = c.getInt(c.getColumnIndex(Accounts.SAME_OAUTH_SIGNING_URL)) == 1;
+					if (!isEmpty(apiUrlFormat)) {
+						cb.setRestBaseURL(getApiUrl(apiUrlFormat, "api", "/1.1/"));
+						cb.setOAuthBaseURL(getApiUrl(apiUrlFormat, "api", "/oauth/"));
+						cb.setUploadBaseURL(getApiUrl(apiUrlFormat, "upload", "/1.1/"));
+						if (!sameOAuthSigningUrl) {
+							cb.setSigningRestBaseURL(DEFAULT_SIGNING_REST_BASE_URL);
+							cb.setSigningOAuthBaseURL(DEFAULT_SIGNING_OAUTH_BASE_URL);
+							cb.setSigningUploadBaseURL(DEFAULT_SIGNING_UPLOAD_BASE_URL);
 					}
-					if (!isEmpty(signing_rest_base_url)) {
-						cb.setSigningRestBaseURL(signing_rest_base_url);
 					}
-					if (!isEmpty(oauth_base_url)) {
-						cb.setOAuthBaseURL(oauth_base_url);
-					}
-					if (!isEmpty(signing_oauth_base_url)) {
-						cb.setSigningOAuthBaseURL(signing_oauth_base_url);
-					}
-					if (!isEmpty(consumer_key) && !isEmpty(consumer_secret)) {
-						cb.setOAuthConsumerKey(consumer_key);
-						cb.setOAuthConsumerSecret(consumer_secret);
-					} else if (!isEmpty(pref_consumer_key) && !isEmpty(pref_consumer_secret)) {
-						cb.setOAuthConsumerKey(pref_consumer_key);
-						cb.setOAuthConsumerSecret(pref_consumer_secret);
+					if (!isEmpty(consumerKey) && !isEmpty(consumerSecret)) {
+						cb.setOAuthConsumerKey(consumerKey);
+						cb.setOAuthConsumerSecret(consumerSecret);
+					} else if (!isEmpty(prefConsumerKey) && !isEmpty(prefConsumerSecret)) {
+						cb.setOAuthConsumerKey(prefConsumerKey);
+						cb.setOAuthConsumerSecret(prefConsumerSecret);
 					} else {
 						cb.setOAuthConsumerKey(TWITTER_CONSUMER_KEY_2);
 						cb.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET_2);
@@ -2352,8 +2430,6 @@ public final class Utils implements Constants, TwitterConstants {
         final boolean enableProxy = prefs.getBoolean(KEY_ENABLE_PROXY, false);
 		// Here I use old consumer key/secret because it's default key for older
 		// versions
-		final String pref_consumer_key = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
-		final String pref_consumer_secret = prefs.getString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
 		final String where = Where.equals(new Column(Accounts.ACCOUNT_ID), accountId).getSQL();
 		final Cursor c = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
 				Accounts.COLUMNS, where.toString(), null, null);
@@ -2377,23 +2453,21 @@ public final class Utils implements Constants, TwitterConstants {
 					cb.setHttpProxyPort(proxy_port);
 				}
 			}
-			final String rest_base_url = c.getString(c.getColumnIndex(Accounts.REST_BASE_URL));
-			final String signing_rest_base_url = c.getString(c.getColumnIndex(Accounts.SIGNING_REST_BASE_URL));
-			final String oauth_base_url = c.getString(c.getColumnIndex(Accounts.OAUTH_BASE_URL));
-			final String signing_oauth_base_url = c.getString(c.getColumnIndex(Accounts.SIGNING_OAUTH_BASE_URL));
-			final String consumer_key = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_KEY)));
-			final String consumer_secret = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_SECRET)));
-			if (!isEmpty(rest_base_url)) {
-				cb.setRestBaseURL(rest_base_url);
-			}
-			if (!isEmpty(signing_rest_base_url)) {
-				cb.setSigningRestBaseURL(signing_rest_base_url);
-			}
-			if (!isEmpty(oauth_base_url)) {
-				cb.setOAuthBaseURL(oauth_base_url);
-			}
-			if (!isEmpty(signing_oauth_base_url)) {
-				cb.setSigningOAuthBaseURL(signing_oauth_base_url);
+			final String prefConsumerKey = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
+			final String prefConsumerSecret = prefs.getString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
+			final String apiUrlFormat = c.getString(c.getColumnIndex(Accounts.API_URL_FORMAT));
+			final String consumerKey = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_KEY)));
+			final String consumerSecret = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_SECRET)));
+			final boolean sameOAuthSigningUrl = c.getInt(c.getColumnIndex(Accounts.SAME_OAUTH_SIGNING_URL)) == 1;
+			if (!isEmpty(apiUrlFormat)) {
+				cb.setRestBaseURL(getApiUrl(apiUrlFormat, "api", "/1.1/"));
+				cb.setOAuthBaseURL(getApiUrl(apiUrlFormat, "api", "/oauth/"));
+				cb.setUploadBaseURL(getApiUrl(apiUrlFormat, "upload", "/1.1/"));
+				if (!sameOAuthSigningUrl) {
+					cb.setSigningRestBaseURL(DEFAULT_SIGNING_REST_BASE_URL);
+					cb.setSigningOAuthBaseURL(DEFAULT_SIGNING_OAUTH_BASE_URL);
+					cb.setSigningUploadBaseURL(DEFAULT_SIGNING_UPLOAD_BASE_URL);
+				}
 			}
 			if (!isEmpty(mediaProvider)) {
 				cb.setMediaProvider(mediaProvider);
@@ -2406,20 +2480,15 @@ public final class Utils implements Constants, TwitterConstants {
 			switch (c.getInt(c.getColumnIndexOrThrow(Accounts.AUTH_TYPE))) {
 				case Accounts.AUTH_TYPE_OAUTH:
 				case Accounts.AUTH_TYPE_XAUTH: {
-					if (!isEmpty(consumer_key) && !isEmpty(consumer_secret)) {
-						cb.setOAuthConsumerKey(consumer_key);
-						cb.setOAuthConsumerSecret(consumer_secret);
-					} else if (!isEmpty(pref_consumer_key) && !isEmpty(pref_consumer_secret)) {
-						cb.setOAuthConsumerKey(pref_consumer_key);
-						cb.setOAuthConsumerSecret(pref_consumer_secret);
+					if (!isEmpty(consumerKey) && !isEmpty(consumerSecret)) {
+						cb.setOAuthConsumerKey(consumerKey);
+						cb.setOAuthConsumerSecret(consumerSecret);
+					} else if (!isEmpty(prefConsumerKey) && !isEmpty(prefConsumerSecret)) {
+						cb.setOAuthConsumerKey(prefConsumerKey);
+						cb.setOAuthConsumerSecret(prefConsumerSecret);
 					} else {
 						cb.setOAuthConsumerKey(TWITTER_CONSUMER_KEY_2);
 						cb.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET_2);
-					}
-					final String jtapi_hostname = trim(c.getString(c.getColumnIndex(Accounts.JTAPI_HOSTNAME)));
-					if (!isEmpty(jtapi_hostname)) {
-						cb.setUploadBaseURL(String.format("https://upload.%s/1.1/", jtapi_hostname));
-						cb.setSigningUploadBaseURL(DEFAULT_SIGNING_UPLOAD_BASE_URL);
 					}
 					final String token = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN));
 					final String tokenSecret = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN_SECRET));
@@ -3182,7 +3251,7 @@ public final class Utils implements Constants, TwitterConstants {
 		if (activity == null) return;
 			final Uri.Builder builder = new Uri.Builder();
 			builder.scheme(SCHEME_TWITTNUKER);
-			builder.authority(AUTHORITY_USER_LISTS);
+		builder.authority(AUTHORITY_USER_LIST_SUBSCRIBERS);
 			builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
 			if (listId > 0) {
 				builder.appendQueryParameter(QUERY_PARAM_LIST_ID, String.valueOf(listId));

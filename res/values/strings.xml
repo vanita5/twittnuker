@@ -18,6 +18,8 @@
 	<string name="oauth_base_url">OAuth Base URL</string>
 	<string name="signing_oauth_base_url">Signing OAuth Base URL</string>
 	<string name="signing_rest_base_url">Signing REST Base URL</string>
+    <string name="api_url_format">API URL Format</string>
+    <string name="same_oauth_signing_url">Use same url for OAuth signing</string>
 	<string name="auth_type">Auth type</string>
 	<string name="oauth">OAuth</string>
 	<string name="xauth">xAuth</string>
@@ -629,7 +631,8 @@
     <string name="click_item_to_config">Click an item to config</string>
     <string name="dark_drawer">Dark drawer</string>
     <string name="retweets_of_me">Retweets of me</string>
-    <string name="jtapi_hostname">JTAPI hostname</string>
+    <string name="from_gallery">From gallery</string>
+    <string name="from_camera">From camera</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

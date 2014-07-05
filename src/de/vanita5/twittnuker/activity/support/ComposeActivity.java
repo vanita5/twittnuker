@@ -48,6 +48,7 @@ import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -65,6 +66,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
@@ -105,6 +107,7 @@ import com.twitter.Extractor;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 
+import org.mariotaku.dynamicgridview.DraggableArrayAdapter;
 import org.mariotaku.menucomponent.widget.MenuBar;
 import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.R;
@@ -236,7 +239,9 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			break;
 		}
 		case MENU_ADD_IMAGE: {
-			pickImage();
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT || !openDocument()) {
+			    pickImage();
+			}
 			break;
 		}
 		case MENU_ADD_LOCATION: {
@@ -344,6 +349,14 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			}
 			break;
 		}
+			case REQUEST_OPEN_DOCUMENT: {
+				if (resultCode == Activity.RESULT_OK) {
+					final Uri src = intent.getData();
+					mTask = new AddMediaTask(this, src, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false)
+							.execute();
+				}
+				break;
+			}
 		case REQUEST_EDIT_IMAGE: {
 			if (resultCode == Activity.RESULT_OK) {
 				final Uri uri = intent.getData();
@@ -921,6 +934,22 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		final String action = getIntent().getAction();
 		final boolean is_reply = INTENT_ACTION_REPLY.equals(action) || INTENT_ACTION_REPLY_MULTIPLE.equals(action);
 		return is_reply && text.equals(mOriginalText);
+	}
+
+	@TargetApi(Build.VERSION_CODES.KITKAT)
+	private boolean openDocument() {
+		final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+		final String[] mimeTypes = { "image/png", "image/jpeg", "image/gif" };
+		intent.setType("image/*");
+		intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		try {
+			startActivityForResult(intent, REQUEST_OPEN_DOCUMENT);
+		} catch (final ActivityNotFoundException e) {
+			return false;
+		}
+		return true;
 	}
 
 	private void pickImage() {

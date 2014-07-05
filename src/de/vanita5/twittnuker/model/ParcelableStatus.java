@@ -94,8 +94,8 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		}
 	};
 
-	public final long retweet_id, retweeted_by_id, id, account_id, user_id, timestamp, retweet_count, favorite_count,
-			in_reply_to_status_id, in_reply_to_user_id, my_retweet_id;
+	public final long id, account_id, timestamp, user_id, retweet_id, retweeted_by_id, retweet_timestamp,
+			retweet_count, favorite_count, in_reply_to_status_id, in_reply_to_user_id, my_retweet_id;
 
     public final boolean is_gap, is_retweet, is_favorite, is_possibly_sensitive, user_is_following, user_is_protected,
     		user_is_verified;
@@ -115,9 +115,13 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
     public final ParcelableMedia[] medias;
 
 	public ParcelableStatus(final ContentValues values) {
-		account_id = getAsLong(values, Statuses.ACCOUNT_ID, -1);
 		id = getAsLong(values, Statuses.STATUS_ID, -1);
+		account_id = getAsLong(values, Statuses.ACCOUNT_ID, -1);
 		timestamp = getAsLong(values, Statuses.STATUS_TIMESTAMP, -1);
+		user_id = getAsLong(values, Statuses.USER_ID, -1);
+		retweet_id = getAsLong(values, Statuses.RETWEET_ID, -1);
+		retweet_timestamp = getAsLong(values, Statuses.RETWEET_TIMESTAMP, -1);
+		retweeted_by_id = getAsLong(values, Statuses.RETWEETED_BY_USER_ID, -1);
 		user_name = values.getAsString(Statuses.USER_NAME);
 		user_screen_name = values.getAsString(Statuses.USER_SCREEN_NAME);
 		text_html = values.getAsString(Statuses.TEXT_HTML);
@@ -136,9 +140,6 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		my_retweet_id = getAsLong(values, Statuses.MY_RETWEET_ID, -1);
 		retweeted_by_name = values.getAsString(Statuses.RETWEETED_BY_USER_NAME);
 		retweeted_by_screen_name = values.getAsString(Statuses.RETWEETED_BY_USER_SCREEN_NAME);
-		retweet_id = getAsLong(values, Statuses.RETWEET_ID, -1);
-		retweeted_by_id = getAsLong(values, Statuses.RETWEETED_BY_USER_ID, -1);
-		user_id = getAsLong(values, Statuses.USER_ID, -1);
 		source = values.getAsString(Statuses.SOURCE);
 		retweet_count = getAsInteger(values, Statuses.RETWEET_COUNT, 0);
 		favorite_count = getAsInteger(values, Statuses.FAVORITE_COUNT, 0);
@@ -151,12 +152,13 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 	}
 
 	public ParcelableStatus(final Cursor c, final CursorIndices idx) {
-		retweet_id = idx.retweet_id != -1 ? c.getLong(idx.retweet_id) : -1;
-		retweeted_by_id = idx.retweeted_by_user_id != -1 ? c.getLong(idx.retweeted_by_user_id) : -1;
 		id = idx.status_id != -1 ? c.getLong(idx.status_id) : -1;
 		account_id = idx.account_id != -1 ? c.getLong(idx.account_id) : -1;
-		user_id = idx.user_id != -1 ? c.getLong(idx.user_id) : -1;
 		timestamp = idx.status_timestamp != -1 ? c.getLong(idx.status_timestamp) : 0;
+		user_id = idx.user_id != -1 ? c.getLong(idx.user_id) : -1;
+		retweet_id = idx.retweet_id != -1 ? c.getLong(idx.retweet_id) : -1;
+		retweet_timestamp = idx.retweet_timestamp != -1 ? c.getLong(idx.retweet_timestamp) : -1;
+		retweeted_by_id = idx.retweeted_by_user_id != -1 ? c.getLong(idx.retweeted_by_user_id) : -1;
 		retweet_count = idx.retweet_count != -1 ? c.getLong(idx.retweet_count) : -1;
 		favorite_count = idx.favorite_count != -1 ? c.getLong(idx.favorite_count) : -1;
 		in_reply_to_status_id = idx.in_reply_to_status_id != -1 ? c.getLong(idx.in_reply_to_status_id) : -1;
@@ -189,12 +191,13 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 	}
 
 	public ParcelableStatus(final JSONParcel in) {
-		retweet_id = in.readLong("retweet_id");
-		retweeted_by_id = in.readLong("retweeted_by_id");
 		id = in.readLong("status_id");
 		account_id = in.readLong("account_id");
-		user_id = in.readLong("user_id");
 		timestamp = in.readLong("status_timestamp");
+		user_id = in.readLong("user_id");
+		retweet_id = in.readLong("retweet_id");
+		retweet_timestamp = in.readLong("retweet_timestamp");
+		retweeted_by_id = in.readLong("retweeted_by_id");
 		retweet_count = in.readLong("retweet_count");
 		favorite_count = in.readLong("favorite_count");
 		in_reply_to_status_id = in.readLong("in_reply_to_status_id");
@@ -225,12 +228,13 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 	}
 
 	public ParcelableStatus(final Parcel in) {
-		retweet_id = in.readLong();
-		retweeted_by_id = in.readLong();
 		id = in.readLong();
 		account_id = in.readLong();
-		user_id = in.readLong();
 		timestamp = in.readLong();
+		user_id = in.readLong();
+		retweet_id = in.readLong();
+		retweet_timestamp = in.readLong();
+		retweeted_by_id = in.readLong();
 		retweet_count = in.readLong();
 		favorite_count = in.readLong();
 		in_reply_to_status_id = in.readLong();
@@ -264,10 +268,12 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		this.is_gap = is_gap;
 		this.account_id = account_id;
 		id = orig.getId();
+		timestamp = getTime(orig.getCreatedAt());
 		is_retweet = orig.isRetweet();
 		final Status retweeted_status = orig.getRetweetedStatus();
 		final User retweet_user = retweeted_status != null ? orig.getUser() : null;
 		retweet_id = retweeted_status != null ? retweeted_status.getId() : -1;
+		retweet_timestamp = retweeted_status != null ? getTime(orig.getCreatedAt()) : -1;
 		retweeted_by_id = retweet_user != null ? retweet_user.getId() : -1;
 		retweeted_by_name = retweet_user != null ? retweet_user.getName() : null;
 		retweeted_by_screen_name = retweet_user != null ? retweet_user.getScreenName() : null;
@@ -280,7 +286,6 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		user_is_protected = user.isProtected();
 		user_is_verified = user.isVerified();
 		user_is_following = user.isFollowing();
-		timestamp = getTime(status.getCreatedAt());
 		text_html = formatStatusText(status);
         medias = ParcelableMedia.fromEntities(status);
 		text_plain = status.getText();
@@ -354,12 +359,13 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 
 	@Override
 	public void writeToParcel(final JSONParcel out) {
-		out.writeLong("retweet_id", retweet_id);
-		out.writeLong("retweeted_by_id", retweeted_by_id);
 		out.writeLong("status_id", id);
 		out.writeLong("account_id", account_id);
-		out.writeLong("user_id", user_id);
 		out.writeLong("status_timestamp", timestamp);
+		out.writeLong("user_id", user_id);
+		out.writeLong("retweet_id", retweet_id);
+		out.writeLong("retweet_timestamp", retweet_timestamp);
+		out.writeLong("retweeted_by_id", retweeted_by_id);
 		out.writeLong("retweet_count", retweet_count);
 		out.writeLong("favorite_count", favorite_count);
 		out.writeLong("in_reply_to_status_id", in_reply_to_status_id);
@@ -390,12 +396,13 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 
 	@Override
 	public void writeToParcel(final Parcel out, final int flags) {
-		out.writeLong(retweet_id);
-		out.writeLong(retweeted_by_id);
 		out.writeLong(id);
 		out.writeLong(account_id);
-		out.writeLong(user_id);
 		out.writeLong(timestamp);
+		out.writeLong(user_id);
+		out.writeLong(retweet_id);
+		out.writeLong(retweet_timestamp);
+		out.writeLong(retweeted_by_id);
 		out.writeLong(retweet_count);
 		out.writeLong(favorite_count);
 		out.writeLong(in_reply_to_status_id);
@@ -450,7 +457,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		text_plain, text_unescaped, user_profile_image_url, is_favorite, is_retweet, is_gap, location,
 		is_protected, is_verified, in_reply_to_status_id, in_reply_to_user_id, in_reply_to_user_name,
 		in_reply_to_user_screen_name, my_retweet_id, retweeted_by_user_name, retweeted_by_user_screen_name,
-		retweet_id, retweeted_by_user_id, user_id, source, retweet_count, favorite_count,
+		retweet_id, retweet_timestamp, retweeted_by_user_id, user_id, source, retweet_count, favorite_count,
 		is_possibly_sensitive, is_following, medias, first_media, mentions;
 
 		public CursorIndices(final Cursor cursor) {
@@ -476,6 +483,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 			in_reply_to_user_screen_name = cursor.getColumnIndex(Statuses.IN_REPLY_TO_USER_SCREEN_NAME);
 			my_retweet_id = cursor.getColumnIndex(Statuses.MY_RETWEET_ID);
 			retweet_id = cursor.getColumnIndex(Statuses.RETWEET_ID);
+			retweet_timestamp = cursor.getColumnIndex(Statuses.RETWEET_TIMESTAMP);
 			retweeted_by_user_id = cursor.getColumnIndex(Statuses.RETWEETED_BY_USER_ID);
 			retweeted_by_user_name = cursor.getColumnIndex(Statuses.RETWEETED_BY_USER_NAME);
 			retweeted_by_user_screen_name = cursor.getColumnIndex(Statuses.RETWEETED_BY_USER_SCREEN_NAME);
@@ -503,10 +511,11 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 					+ ", in_reply_to_user_screen_name=" + in_reply_to_user_screen_name + ", my_retweet_id="
 					+ my_retweet_id + ", retweeted_by_user_name=" + retweeted_by_user_name
 					+ ", retweeted_by_user_screen_name=" + retweeted_by_user_screen_name + ", retweet_id=" + retweet_id
-					+ ", retweeted_by_user_id=" + retweeted_by_user_id + ", user_id=" + user_id + ", source=" + source
-					+ ", retweet_count=" + retweet_count + ", favorite_count=" + favorite_count
-					+ ", is_possibly_sensitive=" + is_possibly_sensitive + ", is_following=" + is_following
-					+ ", medias=" + medias + ", first_media=" + first_media + ", mentions=" + mentions + "}";
+					+ ", retweet_timestamp=" + retweet_timestamp + ", retweeted_by_user_id=" + retweeted_by_user_id
+					+ ", user_id=" + user_id + ", source=" + source + ", retweet_count=" + retweet_count
+					+ ", favorite_count=" + favorite_count + ", is_possibly_sensitive=" + is_possibly_sensitive
+					+ ", is_following=" + is_following + ", medias=" + medias + ", first_media=" + first_media
+					+ ", mentions=" + mentions + "}";
 			}
 		}
 }

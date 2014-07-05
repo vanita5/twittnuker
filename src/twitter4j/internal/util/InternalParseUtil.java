@@ -71,7 +71,7 @@ public final class InternalParseUtil {
 			return getDate(dateStr, format);
 	}
 
-	public static Date getDate(final String name, final String format) throws TwitterException {
+	public static Date getDate(final String date, final String format) throws TwitterException {
 		SimpleDateFormat sdf = formatMap.get().get(format);
 		if (null == sdf) {
 			sdf = new SimpleDateFormat(format, Locale.ENGLISH);
@@ -79,9 +79,9 @@ public final class InternalParseUtil {
 			formatMap.get().put(format, sdf);
 		}
 		try {
-			return sdf.parse(name);
+			return sdf.parse(date);
 		} catch (final ParseException pe) {
-			throw new TwitterException("Unexpected date format(" + name + ") returned from twitter.com", pe);
+			throw new TwitterException("Unexpected date format(" + date + ") returned from twitter.com", pe);
 		}
 	}
 

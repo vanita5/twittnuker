@@ -29,23 +29,23 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
     compile 'ch.acra:acra:4.5.0'
-    compile 'com.android.support:support-v13:19.0.1'
+    compile 'com.android.support:support-v13:20.0.0'
     compile 'com.google.android.apps.dashclock:dashclock-api:2.0.0'
-    compile 'com.google.android.gms:play-services:4.4.52'
+    compile 'com.google.android.gms:play-services:5.0.77'
     compile 'com.jeremyfeinstein.slidingmenu:slidingmenu:1.3-SNAPSHOT-2'
     compile 'com.mobeta.android.dslv:drag-sort-listview:0.6.1'
-    compile 'com.negusoft:holoaccent:0.9.1-MARIOTAKU'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.1'
+    compile 'com.negusoft.holoaccent:library:+'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
     compile 'org.apache.httpcomponents:httpmime:4.3.3'
     compile 'org.apache.httpcomponents:httpclient-android:4.3.3'
     compile 'org.mariotaku:menucomponent:0.2-SNAPSHOT'
     compile 'org.mariotaku:refreshnow:0.1.2-SNAPSHOT'
-    compile 'com.etsy.android.grid:library:1.0.4'
+    compile 'com.etsy.android.grid:library:1.0.5'
     compile 'com.github.castorflex.smoothprogressbar:library:0.3.1'
     compile 'com.commonsware.cwac:merge:1.0.1'
     compile 'com.commonsware.cwac:sacklist:1.0.0'
     compile 'com.actionbarsherlock:viewpagerindicator:2.4.1'
-    compile 'com.sothree:slidinguppanel:0.1-SNAPSHOT'
+    compile 'com.sothree.slidinguppanel:library:2.0.0'
 }
 
 android {

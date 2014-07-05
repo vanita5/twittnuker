@@ -31,6 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Set;
@@ -167,10 +169,20 @@ public final class ParseUtils implements Constants {
 		return String.valueOf(object);
 	}
 
-	public static URL parseURL(final String url_string) {
-		if (url_string == null) return null;
+	public static URI parseURI(final String uriString) {
+		if (uriString == null) return null;
 		try {
-			return new URL(url_string);
+			return new URI(uriString);
+		} catch (final URISyntaxException e) {
+			// This should not happen.
+		}
+		return null;
+	}
+
+	public static URL parseURL(final String urlString) {
+		if (urlString == null) return null;
+		try {
+			return new URL(urlString);
 		} catch (final MalformedURLException e) {
 			// This should not happen.
 		}

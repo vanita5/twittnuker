@@ -27,6 +27,7 @@ import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.DataExportActivity;
 import de.vanita5.twittnuker.activity.support.DataImportActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
+import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.holder.ViewHolder;
 
@@ -53,9 +55,27 @@ public class SettingsActivity extends BasePreferenceActivity {
 
 	private static long HEADER_ID_RESTORE_ICON = 1001;
 
+	private SharedPreferences mPreferences;
+	private PackageManager mPackageManager;
+
 	private HeaderAdapter mAdapter;
 
-	private PackageManager mPackageManager;
+	private int mCurrentThemeColor, mCurrentThemeBackgroundAlpha;
+	private boolean mCompactCards, mPlainListStyle;
+
+	private String mCurrentThemeFontFamily;
+
+	private boolean mCurrentIsDarkDrawerEnabled;
+
+	@Override
+	public void finish() {
+		if (shouldNotifyThemeChange()) {
+			final Intent data = new Intent();
+			data.putExtra(EXTRA_RESTART_ACTIVITY, true);
+			setResult(RESULT_OK, data);
+		}
+		super.finish();
+	}
 
 	public HeaderAdapter getHeaderAdapter() {
 		if (mAdapter != null) return mAdapter;
@@ -158,6 +178,13 @@ public class SettingsActivity extends BasePreferenceActivity {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		mPackageManager = getPackageManager();
+		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+		mCompactCards = mPreferences.getBoolean(KEY_COMPACT_CARDS, false);
+		mPlainListStyle = mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false);
+		mCurrentThemeColor = getThemeColor();
+		mCurrentThemeFontFamily = getThemeFontFamily();
+		mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
+		mCurrentIsDarkDrawerEnabled = isDarkDrawerEnabled();
 		super.onCreate(savedInstanceState);
 		setIntent(getIntent().addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
 		final ActionBar actionBar = getActionBar();
@@ -165,6 +192,15 @@ public class SettingsActivity extends BasePreferenceActivity {
 		if (savedInstanceState != null) {
 			invalidateHeaders();
 		}
+	}
+
+	private boolean shouldNotifyThemeChange() {
+		return mCompactCards != mPreferences.getBoolean(KEY_COMPACT_CARDS, false)
+				|| mPlainListStyle != mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false)
+				|| getThemeResourceId() != getCurrentThemeResourceId() || getThemeColor() != mCurrentThemeColor
+				|| !CompareUtils.objectEquals(getThemeFontFamily(), mCurrentThemeFontFamily)
+				|| getThemeBackgroundAlpha() != mCurrentThemeBackgroundAlpha
+				|| isDarkDrawerEnabled() != mCurrentIsDarkDrawerEnabled;
 	}
 
 	private static class HeaderAdapter extends ArrayAdapter<Header> {
@@ -176,7 +212,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 		private final Resources mResources;
 
 		public HeaderAdapter(final Context context) {
-			super(context, R.layout.list_item_settings);
+			super(context, R.layout.list_item_preference_header);
 			mContext = context;
 			mResources = context.getResources();
 		}

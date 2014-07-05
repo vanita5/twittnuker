@@ -183,6 +183,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 
 	@Override
 	public void onRefreshFromStart() {
+		if (isRefreshing()) return;
 		new AsyncTask<Void, Void, long[][]>() {
 
 			@Override

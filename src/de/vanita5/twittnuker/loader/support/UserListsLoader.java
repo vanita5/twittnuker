@@ -40,11 +40,11 @@ public class UserListsLoader extends BaseUserListsLoader {
 	private final long mUserId;
 	private final String mScreenName;
 
-	public UserListsLoader(final Context context, final long account_id, final long user_id, final String screen_name,
+	public UserListsLoader(final Context context, final long accountId, final long userId, final String screenName,
 			final List<ParcelableUserList> data) {
-		super(context, user_id, 0, data);
-		mUserId = user_id;
-		mScreenName = screen_name;
+		super(context, accountId, 0, data);
+		mUserId = userId;
+		mScreenName = screenName;
 	}
 
 	@Override

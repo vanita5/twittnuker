@@ -247,16 +247,10 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_NO_CLOSE_AFTER_TWEET_SENT = "no_close_after_tweet_sent";
 	@Preference(type = BOOLEAN)
 	public static final String KEY_FAST_IMAGE_LOADING = "fast_image_loading";
-	@Preference(type = STRING, hasDefault = true, defaultString = "https://api.twitter.com/1.1/")
-	public static final String KEY_REST_BASE_URL = "rest_base_url";
-	@Preference(type = STRING, hasDefault = true, defaultString = "https://api.twitter.com/oauth/")
-	public static final String KEY_OAUTH_BASE_URL = "oauth_base_url";
-	@Preference(type = STRING, hasDefault = true, defaultString = "https://api.twitter.com/1.1/")
-	public static final String KEY_SIGNING_REST_BASE_URL = "signing_rest_base_url";
-	@Preference(type = STRING, hasDefault = true, defaultString = "https://api.twitter.com/oauth/")
-	public static final String KEY_SIGNING_OAUTH_BASE_URL = "signing_oauth_base_url";
 	@Preference(type = STRING, hasDefault = false)
-	public static final String KEY_JTAPI_HOSTNAME = "jtapi_hostname";
+	public static final String KEY_API_URL_FORMAT = "api_url_format";
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+	public static final String KEY_SAME_OAUTH_SIGNING_URL = "same_oauth_signing_url";
 	@Preference(type = INT, hasDefault = true, defaultInt = Accounts.AUTH_TYPE_OAUTH)
 	public static final String KEY_AUTH_TYPE = "auth_type";
 	@Preference(type = STRING, hasDefault = true, defaultString = TwittnukerConstants.TWITTER_CONSUMER_KEY_2)

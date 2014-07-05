@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.FiltersActivity;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
@@ -153,7 +154,15 @@ public class AccountsDrawerFragment extends BaseSupportListFragment implements L
 					final String where = Accounts.ACCOUNT_ID + " = " + mAccountsAdapter.getSelectedAccountId();
 					mResolver.update(Accounts.CONTENT_URI, values, where, null);
 				}
-				break;
+				return;
+			}
+			case REQUEST_SETTINGS: {
+				if (data == null) return;
+				final FragmentActivity activity = getActivity();
+				if (data.getBooleanExtra(EXTRA_RESTART_ACTIVITY, false) && activity instanceof IThemedActivity) {
+					((IThemedActivity) activity).restart();
+		}
+				return;
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
@@ -274,7 +283,7 @@ public class AccountsDrawerFragment extends BaseSupportListFragment implements L
 				case MENU_SETTINGS: {
 					final Intent intent = new Intent(getActivity(), SettingsActivity.class);
 					intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-					startActivity(intent);
+					startActivityForResult(intent, REQUEST_SETTINGS);
 					break;
 				}
 			}

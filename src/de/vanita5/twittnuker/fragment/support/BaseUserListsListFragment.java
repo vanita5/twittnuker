@@ -26,6 +26,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -108,7 +109,7 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 		}
 	}
 
-	public abstract Loader<List<ParcelableUserList>> newLoaderInstance(long account_id, long user_id, String screen_name);
+	public abstract Loader<List<ParcelableUserList>> newLoaderInstance(long accountId, long userId, String screen_name);
 
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
@@ -243,7 +244,8 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 
 	private void showMenu(final View view, final ParcelableUserList userList) {
 		mSelectedUserList = userList;
-		if (view == null || userList == null) return;
+		final FragmentActivity activity = getActivity();
+		if (activity == null || activity.isFinishing() || view == null || userList == null) return;
 		final UserListMenuDialogFragment df = createMenuDialog();
 		final Bundle args = new Bundle();
 		args.putParcelable(EXTRA_USER_LIST, userList);

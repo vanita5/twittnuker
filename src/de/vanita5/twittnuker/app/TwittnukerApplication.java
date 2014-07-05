@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.app;
 
 import static de.vanita5.twittnuker.util.UserColorNicknameUtils.initUserColor;
 import static de.vanita5.twittnuker.util.Utils.getBestCacheDir;
+import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
 import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
@@ -41,7 +42,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 
-import com.nostra13.universalimageloader.cache.disc.DiscCacheAware;
+import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -95,7 +96,7 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 	private AsyncTwitterWrapper mTwitterWrapper;
 	private MultiSelectManager mMultiSelectManager;
 	private TwidereImageDownloader mImageDownloader, mFullImageDownloader;
-	private DiscCacheAware mDiscCache, mFullDiscCache;
+	private DiskCache mDiskCache, mFullDiskCache;
 	private MessagesManager mCroutonsManager;
 	private SQLiteOpenHelper mSQLiteOpenHelper;
 	private SwipebackScreenshotManager mSwipebackScreenshotManager;
@@ -107,14 +108,14 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		return mAsyncTaskManager = AsyncTaskManager.getInstance();
 	}
 
-	public DiscCacheAware getDiscCache() {
-		if (mDiscCache != null) return mDiscCache;
-		return mDiscCache = getDiscCache(DIR_NAME_IMAGE_CACHE);
+	public DiskCache getDiskCache() {
+		if (mDiskCache != null) return mDiskCache;
+		return mDiskCache = getDiskCache(DIR_NAME_IMAGE_CACHE);
 	}
 
-	public DiscCacheAware getFullDiscCache() {
-		if (mFullDiscCache != null) return mFullDiscCache;
-		return mFullDiscCache = getDiscCache(DIR_NAME_FULL_IMAGE_CACHE);
+	public DiskCache getFullDiskCache() {
+		if (mFullDiskCache != null) return mFullDiskCache;
+		return mFullDiskCache = getDiskCache(DIR_NAME_FULL_IMAGE_CACHE);
 	}
 
 	public ImageDownloader getFullImageDownloader() {
@@ -144,13 +145,9 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		cb.denyCacheImageMultipleSizesInMemory();
 		cb.tasksProcessingOrder(QueueProcessingType.LIFO);
 		// cb.memoryCache(new ImageMemoryCache(40));
-		cb.discCache(getDiscCache());
+		cb.diskCache(getDiskCache());
 		cb.imageDownloader(getImageDownloader());
-		if (Utils.isDebugBuild()) {
-			cb.writeDebugLogs();
-		} else {
-			L.disableLogging();
-		}
+		L.writeDebugLogs(Utils.isDebugBuild());
 		loader.init(cb.build());
 		return mImageLoader = loader;
 	}
@@ -232,9 +229,8 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 				|| KEY_PROXY_HOST.equals(key) || KEY_PROXY_PORT.equals(key)
 				|| KEY_FAST_IMAGE_LOADING.equals(key)) {
 			reloadConnectivitySettings();
-		} else if (KEY_CONSUMER_KEY.equals(key) || KEY_CONSUMER_SECRET.equals(key) || KEY_REST_BASE_URL.equals(key)
-				|| KEY_OAUTH_BASE_URL.equals(key) || KEY_SIGNING_REST_BASE_URL.equals(key)
-			    || KEY_SIGNING_OAUTH_BASE_URL.equals(key) || KEY_AUTH_TYPE.equals(key)) {
+		} else if (KEY_CONSUMER_KEY.equals(key) || KEY_CONSUMER_SECRET.equals(key) || KEY_API_URL_FORMAT.equals(key)
+				|| KEY_AUTH_TYPE.equals(key) || KEY_SAME_OAUTH_SIGNING_URL.equals(key)) {
 			final SharedPreferences.Editor editor = preferences.edit();
 			editor.putLong(KEY_API_LAST_CHANGE, System.currentTimeMillis());
 			editor.apply();
@@ -252,9 +248,10 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		ACRA.getErrorReporter().setReportSender(new EmailIntentSender(this));
 	}
 
-    private DiscCacheAware getDiscCache(final String dirName) {
+	private DiskCache getDiskCache(final String dirName) {
         final File cacheDir = getBestCacheDir(this, dirName);
-        return new UnlimitedDiscCache(cacheDir, new URLFileNameGenerator());
+		final File fallbackCacheDir = getInternalCacheDir(this, dirName);
+		return new UnlimitedDiscCache(cacheDir, fallbackCacheDir, new URLFileNameGenerator());
 	}
 
 	private void initializeAsyncTask() {

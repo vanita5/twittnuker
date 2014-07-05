@@ -41,6 +41,8 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
+import java.io.IOException;
+
 public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<ParcelableUser>> implements Constants {
 
 	private final ContentResolver resolver;
@@ -90,13 +92,8 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
 			}
 		}
 		try {
-			final User user;
-			if (user_id != -1) {
-				user = twitter.showUser(user_id);
-			} else if (screen_name != null) {
-				user = twitter.showUser(screen_name);
-			} else
-				return new SingleResponse<ParcelableUser>(null, null);
+			final User user = tryShowUser(twitter, user_id, screen_name);
+			if (user == null) return new SingleResponse<ParcelableUser>(null, null);
 			final ContentValues values = makeCachedUserContentValues(user);
 			final String where = CachedUsers.USER_ID + " = " + user.getId() + " OR " + CachedUsers.SCREEN_NAME + " = ?";
 			resolver.delete(CachedUsers.CONTENT_URI, where, new String[] { user.getScreenName() });
@@ -110,6 +107,42 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
 	@Override
 	protected void onStartLoading() {
 		forceLoad();
+	}
+
+	private static User showUser(final Twitter twitter, final long id, final String screenName) throws TwitterException {
+		if (id != -1)
+			return twitter.showUser(id);
+		else if (screenName != null) return twitter.showUser(screenName);
+		return null;
+	}
+
+	private static User showUserAlternative(final Twitter twitter, final long id, final String screenName)
+			throws TwitterException {
+		final String searchScreenName;
+		if (screenName != null) {
+			searchScreenName = screenName;
+		} else if (id != -1) {
+			searchScreenName = twitter.showFriendship(twitter.getId(), id).getTargetUserScreenName();
+		} else
+			return null;
+		for (final User user : twitter.searchUsers(searchScreenName, 1)) {
+			if (user.getId() == id || searchScreenName.equals(user.getScreenName())) return user;
+		}
+		return null;
+	}
+
+	private static User tryShowUser(final Twitter twitter, final long id, final String screenName)
+			throws TwitterException {
+		try {
+			final User user = showUser(twitter, id, screenName);
+			if (user != null) return user;
+		} catch (final TwitterException e) {
+			if (!(e.getCause() instanceof IOException))
+				return showUserAlternative(twitter, id, screenName);
+			else
+				throw e;
+		}
+		return null;
 	}
 
 }

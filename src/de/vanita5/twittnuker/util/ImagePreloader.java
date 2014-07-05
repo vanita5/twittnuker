@@ -29,7 +29,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.text.TextUtils;
 
-import com.nostra13.universalimageloader.cache.disc.DiscCacheAware;
+import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import de.vanita5.twittnuker.Constants;
@@ -46,20 +46,20 @@ public class ImagePreloader implements Constants {
 	private final Context mContext;
 	private final SharedPreferences mPreferences;
 	private final Handler mHandler;
-	private final DiscCacheAware mDiscCache;
+	private final DiskCache mDiskCache;
 	private final ImageLoader mImageLoader;
 
 	public ImagePreloader(final Context context, final ImageLoader loader) {
 		mContext = context;
 		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mImageLoader = loader;
-		mDiscCache = loader.getDiscCache();
+		mDiskCache = loader.getDiskCache();
 		mHandler = new Handler();
 	}
 
 	public File getCachedImageFile(final String url) {
 		if (url == null) return null;
-		final File cache = mDiscCache.get(url);
+		final File cache = mDiskCache.get(url);
 		if (ImageValidator.checkImageValidity(cache))
 			return cache;
 		else {

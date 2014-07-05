@@ -26,7 +26,6 @@ import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 
 import android.content.ContentValues;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariotaku.jsonserializer.JSONSerializer;
@@ -35,6 +34,7 @@ import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -63,7 +63,7 @@ import java.util.List;
 public final class ContentValuesCreator implements TwittnukerConstants {
 
 	public static ContentValues makeAccountContentValuesBasic(final Configuration conf, final String basicUsername,
-															  final String basicPassword, final User user, final int color) {
+			final String basicPassword, final User user, final int color, final String apiUrlFormat) {
 		if (user == null || user.getId() <= 0) return null;
 		final ContentValues values = new ContentValues();
 		if (basicUsername == null || basicPassword == null) return null;
@@ -77,15 +77,13 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Accounts.PROFILE_BANNER_URL, ParseUtils.parseString(user.getProfileBannerImageUrl()));
 		values.put(Accounts.COLOR, color);
 		values.put(Accounts.IS_ACTIVATED, 1);
-		values.put(Accounts.REST_BASE_URL, conf.getRestBaseURL());
-		values.put(Accounts.SIGNING_REST_BASE_URL, conf.getSigningRestBaseURL());
-		values.put(Accounts.OAUTH_BASE_URL, conf.getOAuthBaseURL());
-		values.put(Accounts.SIGNING_OAUTH_BASE_URL, conf.getSigningOAuthBaseURL());
+		values.put(Accounts.API_URL_FORMAT, apiUrlFormat);
 		return values;
 	}
 
 	public static ContentValues makeAccountContentValuesOAuth(final Configuration conf, final AccessToken accessToken,
-															  final User user, final int authType, final int color, final String jtapiHostname) {
+			final User user, final int authType, final int color, final String apiUrlFormat,
+			final boolean sameOAuthSigningUrl) {
 		if (user == null || user.getId() <= 0 || accessToken == null || user.getId() != accessToken.getUserId())
 			return null;
 		final ContentValues values = new ContentValues();
@@ -101,16 +99,13 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Accounts.PROFILE_BANNER_URL, ParseUtils.parseString(user.getProfileBannerImageUrl()));
 		values.put(Accounts.COLOR, color);
 		values.put(Accounts.IS_ACTIVATED, 1);
-		values.put(Accounts.REST_BASE_URL, conf.getRestBaseURL());
-		values.put(Accounts.SIGNING_REST_BASE_URL, conf.getSigningRestBaseURL());
-		values.put(Accounts.OAUTH_BASE_URL, conf.getOAuthBaseURL());
-		values.put(Accounts.SIGNING_OAUTH_BASE_URL, conf.getSigningOAuthBaseURL());
-		values.put(Accounts.SIGNING_OAUTH_BASE_URL, conf.getSigningOAuthBaseURL());
-		values.put(Accounts.JTAPI_HOSTNAME, jtapiHostname);
+		values.put(Accounts.API_URL_FORMAT, apiUrlFormat);
+		values.put(Accounts.SAME_OAUTH_SIGNING_URL, sameOAuthSigningUrl);
 		return values;
 	}
 
-	public static ContentValues makeAccountContentValuesTWIP(final Configuration conf, final User user, final int color) {
+	public static ContentValues makeAccountContentValuesTWIP(final Configuration conf, final User user,
+			final int color, final String apiUrlFormat) {
 		if (user == null || user.getId() <= 0) return null;
 		final ContentValues values = new ContentValues();
 		values.put(Accounts.AUTH_TYPE, Accounts.AUTH_TYPE_TWIP_O_MODE);
@@ -121,10 +116,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Accounts.PROFILE_BANNER_URL, ParseUtils.parseString(user.getProfileBannerImageUrl()));
 		values.put(Accounts.COLOR, color);
 		values.put(Accounts.IS_ACTIVATED, 1);
-		values.put(Accounts.REST_BASE_URL, conf.getRestBaseURL());
-		values.put(Accounts.SIGNING_REST_BASE_URL, conf.getSigningRestBaseURL());
-		values.put(Accounts.OAUTH_BASE_URL, conf.getOAuthBaseURL());
-		values.put(Accounts.SIGNING_OAUTH_BASE_URL, conf.getSigningOAuthBaseURL());
+		values.put(Accounts.API_URL_FORMAT, apiUrlFormat);
 		return values;
 	}
 
@@ -215,12 +207,16 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 	}
 
 	public static ContentValues makeDirectMessageDraftContentValues(final long accountId, final long recipientId,
-			final String text) {
+			final String text, final String imageUri) {
 		final ContentValues values = new ContentValues();
 		values.put(Drafts.ACTION_TYPE, Drafts.ACTION_SEND_DIRECT_MESSAGE);
 		values.put(Drafts.TEXT, text);
 		values.put(Drafts.ACCOUNT_IDS, ArrayUtils.toString(new long[] { accountId }, ',', false));
 		values.put(Drafts.TIMESTAMP, System.currentTimeMillis());
+		if (imageUri != null) {
+			final ParcelableMediaUpdate[] medias = { new ParcelableMediaUpdate(imageUri, 0) };
+			values.put(Drafts.MEDIAS, JSONSerializer.toJSONArrayString(medias));
+		}
 		final JSONObject extras = new JSONObject();
 		try {
 			extras.put(EXTRA_RECIPIENT_ID, recipientId);
@@ -263,6 +259,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		final ContentValues values = new ContentValues();
 		values.put(Statuses.ACCOUNT_ID, account_id);
 		values.put(Statuses.STATUS_ID, orig.getId());
+		values.put(Statuses.STATUS_TIMESTAMP, orig.getCreatedAt().getTime());
 		values.put(Statuses.MY_RETWEET_ID, orig.getCurrentUserRetweet());
 		final boolean is_retweet = orig.isRetweet();
 		final Status status;
@@ -270,6 +267,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		if (retweeted_status != null) {
 			final User retweet_user = orig.getUser();
 			values.put(Statuses.RETWEET_ID, retweeted_status.getId());
+			values.put(Statuses.RETWEET_TIMESTAMP, retweeted_status.getCreatedAt().getTime());
 			values.put(Statuses.RETWEETED_BY_USER_ID, retweet_user.getId());
 			values.put(Statuses.RETWEETED_BY_USER_NAME, retweet_user.getName());
 			values.put(Statuses.RETWEETED_BY_USER_SCREEN_NAME, retweet_user.getScreenName());
@@ -289,9 +287,6 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 			values.put(Statuses.IS_VERIFIED, user.isVerified());
 			values.put(Statuses.USER_PROFILE_IMAGE_URL, profileImageUrl);
             values.put(CachedUsers.IS_FOLLOWING, user.isFollowing());
-		}
-		if (status.getCreatedAt() != null) {
-			values.put(Statuses.STATUS_TIMESTAMP, status.getCreatedAt().getTime());
 		}
 		final String text_html = Utils.formatStatusText(status);
 		values.put(Statuses.TEXT_HTML, text_html);

@@ -10,15 +10,15 @@
 		android:padding="16dp">
 
 		<TextView
-			android:id="@+id/label_rest_base_url"
+			android:id="@+id/label_api_url_format"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:singleLine="true"
-			android:text="@string/rest_base_url"
+			android:text="@string/api_url_format"
 			android:textAppearance="?android:attr/textAppearanceSmall"/>
 
 		<EditText
-			android:id="@+id/rest_base_url"
+			android:id="@+id/api_url_format"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:ems="10"
@@ -94,12 +94,8 @@
 				android:text="@string/advanced"
 				android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-			<ViewStub
-				android:id="@+id/stub_advanced_api_config"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:inflatedId="@+id/advanced_api_config"
-				android:layout="@layout/api_editor_advanced_fields"
+			<include
+				layout="@layout/api_editor_advanced_fields"
 				android:visibility="gone"/>
 		</LinearLayout>
 	</LinearLayout>

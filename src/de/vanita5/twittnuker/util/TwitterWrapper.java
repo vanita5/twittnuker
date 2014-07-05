@@ -111,7 +111,7 @@ public class TwitterWrapper implements Constants {
 				return new SingleResponse<ParcelableUser>(null, e);
 			}
 		}
-		return SingleResponse.nullInstance();
+		return SingleResponse.getInstance();
 	}
 
 	public static SingleResponse<Boolean> updateProfileBannerImage(final Context context, final long account_id,
@@ -153,7 +153,7 @@ public class TwitterWrapper implements Constants {
 				return new SingleResponse<ParcelableUser>(null, e);
 			}
 		}
-		return SingleResponse.nullInstance();
+		return SingleResponse.getInstance();
 	}
 
 	public static final class MessageListResponse extends TwitterListResponse<DirectMessage> {

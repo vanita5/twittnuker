@@ -114,6 +114,7 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
 		overrideCloseAnimationIfNeeded();
 	}
 
+	@Override
 	public void overrideCloseAnimationIfNeeded() {
 		if (shouldOverrideActivityAnimation()) {
 			ThemeUtils.overrideActivityCloseAnimation(this);
@@ -123,6 +124,11 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
 	}
 
     @Override
+	public final void restart() {
+		restartActivity(this);
+	}
+
+	@Override
 	public boolean shouldOverrideActivityAnimation() {
 		return true;
 	}
@@ -150,10 +156,6 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
 		} else {
 			ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, 0, 0xFF);
         }
-    }
-
-	protected final void restart() {
-		restartActivity(this);
 	}
 
 	private final void setActionBarBackground() {

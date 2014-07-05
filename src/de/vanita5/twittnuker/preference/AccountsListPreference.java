@@ -42,7 +42,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;

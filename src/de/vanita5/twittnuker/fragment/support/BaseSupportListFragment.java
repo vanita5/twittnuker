@@ -67,6 +67,8 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 
 	private boolean mReachedBottom, mNotReachedBottomBefore;
 
+	private boolean mReachedTop, mNotReachedTopBefore;
+
 	private LayoutInflater mLayoutInflater;
 
 	private boolean mStoppedPreviously;
@@ -159,7 +161,7 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 	 * {@link android.R.id#list android.R.id.list} and can optionally have a
 	 * sibling view id {@link android.R.id#empty android.R.id.empty} that is to
 	 * be shown when the list is empty.
-	 * 
+	 *
 	 * <p>
 	 * If you are overriding this method with your own custom content, consider
 	 * including the standard layout {@link android.R.layout#list_content} in
@@ -238,7 +240,6 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 	}
 
 	public void onPostStart() {
-
 	}
 
 	public void onRestart() {
@@ -247,14 +248,15 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 
 	@Override
 	public void onScroll(final AbsListView view, final int firstVisibleItem, final int visibleItemCount,
-			final int totalItemCount) {
+						 final int totalItemCount) {
 		final ListAdapter adapter = getListAdapter();
 		if (adapter == null) return;
-		final boolean reached = firstVisibleItem + visibleItemCount >= totalItemCount
+		final boolean reachedTop = firstVisibleItem == 0;
+		final boolean reachedBottom = firstVisibleItem + visibleItemCount >= totalItemCount
 				&& totalItemCount >= visibleItemCount;
 
-		if (mReachedBottom != reached) {
-			mReachedBottom = reached;
+		if (mReachedBottom != reachedBottom) {
+			mReachedBottom = reachedBottom;
 			if (mReachedBottom && mNotReachedBottomBefore) {
 				mNotReachedBottomBefore = false;
 				return;
@@ -263,7 +265,16 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 				onReachedBottom();
 			}
 		}
-
+		if (mReachedTop != reachedTop) {
+			mReachedTop = reachedTop;
+			if (mReachedTop && mNotReachedTopBefore) {
+				mNotReachedTopBefore = false;
+				return;
+			}
+			if (mReachedTop && adapter.getCount() > visibleItemCount) {
+				onReachedTop();
+			}
+		}
 	}
 
 	@Override
@@ -319,7 +330,7 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 
 	@Override
 	public void setSelection(final int position) {
-        if (getView() == null) return;
+		if (getView() == null) return;
 		Utils.scrollListToPosition(getListView(), position);
 	}
 
@@ -348,6 +359,10 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 	}
 
 	protected void onReachedBottom() {
+
+	}
+
+	protected void onReachedTop() {
 
 	}
 }

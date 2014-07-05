@@ -38,21 +38,31 @@ public class HtmlBuilder {
 
 	private static final String LOGTAG = "HtmlBuilder";
 
-	private final String orig;
-	private final String[] array;
-	private final int string_length;
-	private final boolean throw_exceptions, source_is_escaped, should_re_escape;
+	private final String source;
+	private final int[] codePoints;
+	private final int codePointsLength;
+	private final boolean throwExceptions, sourceIsEscaped, shouldReEscape;
 
 	private final ArrayList<LinkSpec> links = new ArrayList<LinkSpec>();
 
-	public HtmlBuilder(final String source, final boolean strict, final boolean is_escaped, final boolean re_escape) {
+	public HtmlBuilder(final String source, final boolean strict, final boolean sourceIsEscaped,
+			final boolean shouldReEscape) {
 		if (source == null) throw new NullPointerException();
-		orig = source;
-		array = ArrayUtils.toStringArray(source);
-		throw_exceptions = strict;
-		source_is_escaped = is_escaped;
-		should_re_escape = re_escape;
-		string_length = array.length;
+		this.source = source;
+		final int length = source.length();
+		final int[] codepointsTemp = new int[length];
+		int codePointsLength = 0;
+		for (int offset = 0; offset < length;) {
+			final int codepoint = source.codePointAt(offset);
+			codepointsTemp[codePointsLength++] = codepoint;
+			offset += Character.charCount(codepoint);
+	}
+		codePoints = new int[codePointsLength];
+		System.arraycopy(codepointsTemp, 0, codePoints, 0, codePointsLength);
+		throwExceptions = strict;
+		this.sourceIsEscaped = sourceIsEscaped;
+		this.shouldReEscape = shouldReEscape;
+		this.codePointsLength = codePointsLength;
 	}
 
 	public boolean addLink(final String link, final String display, final int start, final int end) {
@@ -61,54 +71,53 @@ public class HtmlBuilder {
 
 	public boolean addLink(final String link, final String display, final int start, final int end,
 			final boolean display_is_html) {
-		if (start < 0 || end < 0 || start > end || end > string_length) {
-			final String message = String.format(Locale.US, "text:%s, length:%d, start:%d, end:%d", orig, string_length, start, end);
-			if (throw_exceptions) throw new StringIndexOutOfBoundsException(message);
-			if (Utils.isDebugBuild()) Log.e(LOGTAG, message);
+		if (start < 0 || end < 0 || start > end || end > codePointsLength) {
+			final String message = String.format(Locale.US, "text:%s, length:%d, start:%d, end:%d", source,
+					codePointsLength, start, end);
+			if (throwExceptions) throw new StringIndexOutOfBoundsException(message);
 			return false;
 		}
 		if (hasLink(start, end)) {
 			final String message = String.format(Locale.US,
-					"link already added in this range! text:%s, link:%s, display:%s, start:%d, end:%d", orig, link,
+					"link already added in this range! text:%s, link:%s, display:%s, start:%d, end:%d", source, link,
 					display, start, end);
-			if (throw_exceptions) throw new IllegalArgumentException(message);
-			if (Utils.isDebugBuild()) Log.e(LOGTAG, message);
+			if (throwExceptions) throw new IllegalArgumentException(message);
 			return false;
 		}
 		return links.add(new LinkSpec(link, display, start, end, display_is_html));
 	}
 
 	public String build() {
-		if (links.isEmpty()) return escapeSource(ArrayUtils.mergeArrayToString(array));
+		if (links.isEmpty()) return escapeSource(source);
 		Collections.sort(links);
 		final StringBuilder builder = new StringBuilder();
-		final int links_size = links.size();
-		for (int i = 0; i < links_size; i++) {
+		final int linksSize = links.size();
+		for (int i = 0; i < linksSize; i++) {
 			final LinkSpec spec = links.get(i);
 			if (spec == null) {
 				continue;
 			}
 			final int start = spec.start, end = spec.end;
 			if (i == 0) {
-				if (start >= 0 && start <= string_length) {
-					builder.append(escapeSource(ArrayUtils.mergeArrayToString(ArrayUtils.subArray(array, 0, start))));
+				if (start >= 0 && start <= codePointsLength) {
+					appendSource(builder, 0, start);
 				}
 			} else if (i > 0) {
-				final int last_end = links.get(i - 1).end;
-				if (last_end >= 0 && last_end <= start && start <= string_length) {
-					builder.append(escapeSource(ArrayUtils.mergeArrayToString(ArrayUtils.subArray(array, last_end,
-							start))));
+				final int lastEnd = links.get(i - 1).end;
+				if (lastEnd >= 0 && lastEnd <= start && start <= codePointsLength) {
+					appendSource(builder, lastEnd, start);
 				}
 			}
-			builder.append("<a href=\"" + spec.link + "\">");
-			if (start >= 0 && start <= end && end <= string_length) {
+			builder.append("<a href=\"");
+			builder.append(spec.link);
+			builder.append("\">");
+			if (start >= 0 && start <= end && end <= codePointsLength) {
 				builder.append(!isEmpty(spec.display) ? spec.display_is_html ? spec.display : toHtml(spec.display)
 						: spec.link);
 			}
 			builder.append("</a>");
-			if (i == links.size() - 1 && end >= 0 && end <= string_length) {
-				builder.append(escapeSource(ArrayUtils.mergeArrayToString(ArrayUtils
-						.subArray(array, end, string_length))));
+			if (i == linksSize - 1 && end >= 0 && end <= codePointsLength) {
+				appendSource(builder, end, codePointsLength);
 			}
 		}
 		return builder.toString();
@@ -123,13 +132,34 @@ public class HtmlBuilder {
 
 	@Override
 	public String toString() {
-		return "HtmlBuilder{array=" + Arrays.toString(array) + ", string_length=" + string_length + ", strict="
-				+ throw_exceptions + ", source_is_escaped" + source_is_escaped + ", links=" + links + "}";
+		return "HtmlBuilder{orig=" + source + ", codePoints=" + Arrays.toString(codePoints) + ", string_length="
+				+ codePointsLength + ", throw_exceptions=" + throwExceptions + ", source_is_escaped=" + sourceIsEscaped
+				+ ", should_re_escape=" + shouldReEscape + ", links=" + links + "}";
 	}
 
-	private String escapeSource(final String string) {
-		final String escaped = source_is_escaped ? string : escape(string);
-		return should_re_escape ? escape(unescape(escaped)) : escaped;
+	private void appendSource(final StringBuilder builder, final int start, final int end) {
+		if (sourceIsEscaped == shouldReEscape) {
+			for (int i = start; i < end; i++) {
+				builder.appendCodePoint(codePoints[i]);
+			}
+		} else if (shouldReEscape) {
+			builder.append(escape(subString(start, end)));
+		} else {
+			builder.append(unescape(subString(start, end)));
+		}
+	}
+
+	private String escapeSource(final String source) {
+		if (sourceIsEscaped == shouldReEscape) return source;
+		return shouldReEscape ? escape(source) : unescape(source);
+	}
+
+	private String subString(final int start, final int end) {
+		final StringBuilder sb = new StringBuilder();
+		for (int i = start; i < end; i++) {
+			sb.appendCodePoint(codePoints[i]);
+		}
+		return sb.toString();
 	}
 
 	static final class LinkSpec implements Comparable<LinkSpec> {

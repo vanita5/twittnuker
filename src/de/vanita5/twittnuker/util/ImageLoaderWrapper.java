@@ -30,7 +30,7 @@ import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -45,7 +45,7 @@ public class ImageLoaderWrapper implements Constants {
 		mImageLoader = loader;
 		final DisplayImageOptions.Builder profileOptsNuilder = new DisplayImageOptions.Builder();
 		profileOptsNuilder.cacheInMemory(true);
-		profileOptsNuilder.cacheOnDisc(true);
+		profileOptsNuilder.cacheOnDisk(true);
 		profileOptsNuilder.showImageForEmptyUri(R.drawable.ic_profile_image_default);
 		profileOptsNuilder.showImageOnFail(R.drawable.ic_profile_image_default);
 		profileOptsNuilder.showImageOnLoading(R.drawable.ic_profile_image_default);
@@ -53,12 +53,12 @@ public class ImageLoaderWrapper implements Constants {
 		profileOptsNuilder.resetViewBeforeLoading(true);
 		final DisplayImageOptions.Builder imageOptsBuilder = new DisplayImageOptions.Builder();
 		imageOptsBuilder.cacheInMemory(true);
-		imageOptsBuilder.cacheOnDisc(true);
+		imageOptsBuilder.cacheOnDisk(true);
 		imageOptsBuilder.bitmapConfig(Bitmap.Config.RGB_565);
 		imageOptsBuilder.resetViewBeforeLoading(true);
 		final DisplayImageOptions.Builder bannerOptsBuilder = new DisplayImageOptions.Builder();
 		bannerOptsBuilder.cacheInMemory(true);
-		bannerOptsBuilder.cacheOnDisc(true);
+		bannerOptsBuilder.cacheOnDisk(true);
 		bannerOptsBuilder.bitmapConfig(Bitmap.Config.RGB_565);
 		bannerOptsBuilder.resetViewBeforeLoading(true);
 
@@ -68,7 +68,7 @@ public class ImageLoaderWrapper implements Constants {
 	}
 
 	public void clearFileCache() {
-		mImageLoader.clearDiscCache();
+		mImageLoader.clearDiskCache();
 	}
 
 	public void clearMemoryCache() {

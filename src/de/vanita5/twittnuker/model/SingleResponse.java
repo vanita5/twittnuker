@@ -25,9 +25,9 @@ package de.vanita5.twittnuker.model;
 import android.os.Bundle;
 
 public class SingleResponse<Data> {
-	public final Exception exception;
-	public final Data data;
-	public final Bundle extras;
+	private final Exception exception;
+	private final Data data;
+	private final Bundle extras;
 
 	public SingleResponse(final Data data, final Exception exception) {
 		this(data, exception, null);
@@ -45,41 +45,61 @@ public class SingleResponse<Data> {
 		if (obj == null) return false;
 		if (!(obj instanceof SingleResponse)) return false;
 		final SingleResponse<?> other = (SingleResponse<?>) obj;
-		if (data == null) {
-			if (other.data != null) return false;
-		} else if (!data.equals(other.data)) return false;
+		if (getData() == null) {
+			if (other.getData() != null) return false;
+		} else if (!getData().equals(other.getData())) return false;
 		if (exception == null) {
 			if (other.exception != null) return false;
 		} else if (!exception.equals(other.exception)) return false;
-		if (extras == null) {
-			if (other.extras != null) return false;
-		} else if (!extras.equals(other.extras)) return false;
+		if (getExtras() == null) {
+			if (other.getExtras() != null) return false;
+		} else if (!getExtras().equals(other.getExtras())) return false;
 		return true;
+	}
+
+	public Data getData() {
+		return data;
+	}
+
+	public Exception getException() {
+		return exception;
+	}
+
+	public Bundle getExtras() {
+		return extras;
+	}
+
+	public boolean hasData() {
+		return getData() != null;
+	}
+
+	public boolean hasException() {
+		return exception != null;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (data == null ? 0 : data.hashCode());
+		result = prime * result + (getData() == null ? 0 : getData().hashCode());
 		result = prime * result + (exception == null ? 0 : exception.hashCode());
-		result = prime * result + (extras == null ? 0 : extras.hashCode());
+		result = prime * result + (getExtras() == null ? 0 : getExtras().hashCode());
 		return result;
 	}
 
-	public static <T> SingleResponse<T> newInstance(final T data, final Exception exception) {
-		return new SingleResponse<T>(data, exception);
-	}
-
-	public static <T> SingleResponse<T> nullInstance() {
+	public static <T> SingleResponse<T> getInstance() {
 		return new SingleResponse<T>(null, null);
 	}
 
-	public static <T> SingleResponse<T> withData(final T data) {
+	public static <T> SingleResponse<T> getInstance(final Exception exception) {
+		return new SingleResponse<T>(null, exception);
+	}
+
+	public static <T> SingleResponse<T> getInstance(final T data) {
 		return new SingleResponse<T>(data, null);
 	}
 
-	public static <T> SingleResponse<T> withException(final Exception exception) {
-		return new SingleResponse<T>(null, exception);
+	public static <T> SingleResponse<T> getInstance(final T data, final Exception exception) {
+		return new SingleResponse<T>(data, exception);
 	}
 }

@@ -35,6 +35,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -210,7 +211,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 					setItemSelected(status, position, !mMultiSelectManager.isSelected(status));
 					return;
 				}
-				openStatus(getActivity(), status);
+				openStatus(getActivity(), status.account_id, status.id);
 			}
 		}
 	}
@@ -547,7 +548,8 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 	private void openMenu(final View view, final ParcelableStatus status, final int position) {
 		mSelectedStatus = status;
 		mSelectedPosition = position;
-		if (view == null || status == null) return;
+		final FragmentActivity activity = getActivity();
+		if (activity == null || activity.isFinishing() || view == null || status == null) return;
 		final AsyncTwitterWrapper twitter = getTwitterWrapper();
 		if (twitter != null) {
 			TwitterWrapper.removeUnreadCounts(getActivity(), getTabPosition(), status.account_id, status.id);
