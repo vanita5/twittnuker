@@ -468,7 +468,8 @@ public class MediaPreviewUtils {
 
 	private static ParcelableMedia getInstagramImage(final String id, final String orig, final boolean fullImage) {
 		if (isEmpty(id)) return null;
-		final String preview = String.format("https://instagram.com/p/%s/media/?size=%s", id, fullImage ? "l" : "t");
+		//always use large image, because the thumbnail is too small for image preview
+		final String preview = String.format("https://instagram.com/p/%s/media/?size=%s", id, "l" /*fullImage ? "l" : "t"*/);
 		return ParcelableMedia.newImage(preview, orig);
 	}
 
@@ -482,7 +483,8 @@ public class MediaPreviewUtils {
 
 	private static ParcelableMedia getMobyPictureImage(final String id, final String orig, final boolean fullImage) {
 		if (isEmpty(id)) return null;
-		final String preview = String.format("http://moby.to/%s:%s", id, fullImage ? "full" : "thumb");
+		//always use large image, because the thumbnail is too small for image preview
+		final String preview = String.format("http://moby.to/%s:%s", id, "full" /*fullImage ? "full" : "thumb"*/);
 		return ParcelableMedia.newImage(preview, orig);
 	}
 
