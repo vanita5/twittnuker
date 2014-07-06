@@ -1,5 +1,5 @@
 .gradle
 .idea
-twittnuker.iml
+*.iml
 local.properties
 build
