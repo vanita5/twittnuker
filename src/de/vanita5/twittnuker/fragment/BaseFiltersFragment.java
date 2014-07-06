@@ -24,19 +24,19 @@ package de.vanita5.twittnuker.fragment;
 
 import static de.vanita5.twittnuker.util.Utils.getDisplayName;
 
-import android.app.LoaderManager.LoaderCallbacks;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,9 +52,10 @@ import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.fragment.support.BaseSupportListFragment;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 
-public abstract class BaseFiltersFragment extends BaseListFragment implements LoaderCallbacks<Cursor>,
+public abstract class BaseFiltersFragment extends BaseSupportListFragment implements LoaderManager.LoaderCallbacks<Cursor>,
 		MultiChoiceModeListener {
 
 	private ListView mListView;

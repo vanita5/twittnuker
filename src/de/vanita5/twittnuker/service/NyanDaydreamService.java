@@ -22,9 +22,11 @@
 
 package de.vanita5.twittnuker.service;
 
+import android.annotation.TargetApi;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
+import android.os.Build;
 import android.service.dreams.DreamService;
 import android.view.View;
 import android.view.View.OnSystemUiVisibilityChangeListener;
@@ -33,6 +35,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.view.NyanDaydreamView;
 
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 public class NyanDaydreamService extends DreamService implements Constants, OnSharedPreferenceChangeListener,
 		OnSystemUiVisibilityChangeListener {
 

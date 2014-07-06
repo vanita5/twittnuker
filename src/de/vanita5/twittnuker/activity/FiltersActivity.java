@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.activity;
 
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeFilterdUserContentValues;
-import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
-
 import org.mariotaku.querybuilder.Where;
 
 import android.app.ActionBar;
@@ -33,7 +30,6 @@ import android.app.ActionBar.TabListener;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -44,6 +40,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -54,28 +51,32 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.SourceAutoCompleteAdapter;
-import de.vanita5.twittnuker.adapter.TabsAdapter;
 import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
-import de.vanita5.twittnuker.fragment.BaseDialogFragment;
+import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredKeywordsFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredLinksFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredSourcesFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredUsersFragment;
+import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class FiltersActivity extends BaseActivity implements TabListener, OnPageChangeListener {
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeFilterdUserContentValues;
+import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
+
+public class FiltersActivity extends BaseSupportActivity implements TabListener, OnPageChangeListener {
 
 	private static final String EXTRA_AUTO_COMPLETE_TYPE = "auto_complete_type";
 	private static final int AUTO_COMPLETE_TYPE_SOURCES = 2;
 
 	private ViewPager mViewPager;
-	private TabsAdapter mAdapter;
+	private SupportTabsAdapter mAdapter;
 
 	private ActionBar mActionBar;
 	private SharedPreferences mPreferences;
@@ -91,7 +92,7 @@ public class FiltersActivity extends BaseActivity implements TabListener, OnPage
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		setContentView(R.layout.activity_filters);
 		mActionBar = getActionBar();
-		mAdapter = new TabsAdapter(this, getFragmentManager(), null);
+		mAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), null);
 		mActionBar.setDisplayHomeAsUpEnabled(true);
 		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		addTab(FilteredUsersFragment.class, R.string.users, 0);
@@ -132,7 +133,7 @@ public class FiltersActivity extends BaseActivity implements TabListener, OnPage
 				args.putParcelable(EXTRA_URI, ((BaseFiltersFragment) f).getContentUri());
 				final AddItemFragment dialog = new AddItemFragment();
 				dialog.setArguments(args);
-				dialog.show(getFragmentManager(), "add_rule");
+				dialog.show(getSupportFragmentManager(), "add_rule");
 				return true;
 			}
 			case R.id.enable_in_home_timeline: {
@@ -221,7 +222,7 @@ public class FiltersActivity extends BaseActivity implements TabListener, OnPage
 		mAdapter.addTab(cls, null, getString(name), null, position);
 	}
 
-	public static final class AddItemFragment extends BaseDialogFragment implements OnClickListener {
+	public static final class AddItemFragment extends BaseSupportDialogFragment implements OnClickListener {
 
 		private AutoCompleteTextView mEditText;
 
@@ -244,10 +245,10 @@ public class FiltersActivity extends BaseActivity implements TabListener, OnPage
 
 		@Override
 		public Dialog onCreateDialog(final Bundle savedInstanceState) {
-            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
-            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+			final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+			final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 			buildDialog(builder);
-            final View view = LayoutInflater.from(wrapped).inflate(R.layout.auto_complete_textview, null);
+			final View view = LayoutInflater.from(wrapped).inflate(R.layout.auto_complete_textview, null);
 			builder.setView(view);
 			mEditText = (AutoCompleteTextView) view.findViewById(R.id.edit_text);
 			final Bundle args = getArguments();

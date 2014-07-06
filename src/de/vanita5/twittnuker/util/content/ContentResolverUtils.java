@@ -24,10 +24,12 @@ package de.vanita5.twittnuker.util.content;
 
 import static android.text.TextUtils.isEmpty;
 
+import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.CancellationSignal;
 
 import de.vanita5.twittnuker.util.ArrayUtils;
@@ -101,6 +103,7 @@ public class ContentResolverUtils {
 		return resolver.query(uri, projection, selection, selectionArgs, sortOrder);
 	}
 
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public static Cursor query(final ContentResolver resolver, final Uri uri, final String[] projection,
 			final String selection, final String[] selectionArgs, final String sortOrder,
 			final CancellationSignal cancellationSignal) {

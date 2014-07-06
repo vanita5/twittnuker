@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.adapter.support;
 
-import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconDrawable;
-import static de.vanita5.twittnuker.util.Utils.announceForAccessibilityCompat;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -42,6 +39,9 @@ import de.vanita5.twittnuker.view.TabPageIndicator.TabProvider;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconDrawable;
+import static de.vanita5.twittnuker.util.Utils.announceForAccessibilityCompat;
+
 public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter implements TabProvider, TabListener,
 		Constants {
 
@@ -51,6 +51,10 @@ public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter im
 	private final TabPageIndicator mIndicator;
 
 	private final int mColumns;
+
+    public SupportTabsAdapter(final Context context, final FragmentManager fm, final TabPageIndicator indicator) {
+        this(context, fm, indicator, 1);
+    }
 
 	public SupportTabsAdapter(final Context context, final FragmentManager fm, final TabPageIndicator indicator,
 			final int columns) {
