@@ -1,0 +1,5 @@
+.gradle
+.idea
+twittnuker.iml
+local.properties
+build
