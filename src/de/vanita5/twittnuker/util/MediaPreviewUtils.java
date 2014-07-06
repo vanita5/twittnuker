@@ -115,7 +115,7 @@ public class MediaPreviewUtils {
 			+ STRING_PATTERN_GOOGLE_IMAGES_DOMAIN + ")" + "\\/proxy\\/([\\w\\d\\-\\_]+)="
 			+ GOOGLE_IMAGES_AVAILABLE_SIZES;
     private static final String STRING_PATTERN_PUUSH_NO_SCHEME = "(" + STRING_PATTERN_PUUSH_DOMAIN + ")"
-            + "\\/([\\d\\w]+)\\/?(\\." + AVAILABLE_IMAGE_SHUFFIX + ")?";
+            + "\\/([\\d\\w\\/]+)\\/?(\\." + AVAILABLE_IMAGE_SHUFFIX + ")?";
     private static final String STRING_PATTERN_PR0GRAMM_NO_SCHEME = "(" + STRING_PATTERN_PR0GRAMM_DOMAIN + ")"
             + "(\\/\\d+\\/\\d+\\/)([\\d\\w]+)\\/?(\\." + AVAILABLE_IMAGE_SHUFFIX + ")?";
     private static final String STRING_PATTERN_ABLOAD_NO_SCHEME = "(" + STRING_PATTERN_ABLOAD_DOMAIN + ")"
