@@ -52,6 +52,7 @@ import org.apache.http.protocol.BasicHttpContextHC4;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.TextUtils;
 
+import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.ssl.HostResolvedSSLConnectionSocketFactory;
 import de.vanita5.twittnuker.util.net.ssl.TwidereSSLSocketFactory;

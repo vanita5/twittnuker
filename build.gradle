@@ -64,7 +64,6 @@ dependencies {
     compile 'com.negusoft.holoaccent:library:+'
     compile 'com.etsy.android.grid:library:1.0.5'
     compile 'com.sothree.slidinguppanel:library:2.0.0'
-    compile 'it.sephiroth.android.library.imagezoom:imagezoom:+'
     compile 'com.twitter:twitter-text:1.9.5'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
     compile 'org.apache.httpcomponents:httpclient-android:4.3.3'
@@ -73,7 +72,6 @@ dependencies {
     compile 'com.google.android.apps.dashclock:dashclock-api:2.0.0'
     compile 'com.commonsware.cwac:merge:1.0.1'
     compile 'com.commonsware.cwac:sacklist:1.0.0'
-    compile 'com.actionbarsherlock:viewpagerindicator:2.4.1'
     compile project(':SlidingMenu')
     compile project(':DragSortListView')
     compile project(':MenuComponent')

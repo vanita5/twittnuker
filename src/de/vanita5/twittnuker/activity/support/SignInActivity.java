@@ -74,6 +74,7 @@ import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticityTokenEx
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.WrongUserPassException;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.util.net.TwidereHttpClientFactory;
 import de.vanita5.twittnuker.view.ColorPickerView;
@@ -755,16 +756,17 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 		public final AccessToken access_token;
 		public final User user;
 		public final int auth_type, color;
-		public final String jtapi_hostname;
+		public final String api_url_format;
+		public final boolean same_oauth_signing_url;
 
 		public SigninResponse(final boolean already_logged_in, final boolean succeed, final Exception exception) {
-			this(already_logged_in, succeed, exception, null, null, null, null, null, 0, 0, null);
+			this(already_logged_in, succeed, exception, null, null, null, null, null, 0, 0, null, false);
 		}
 
 		public SigninResponse(final boolean already_logged_in, final boolean succeed, final Exception exception,
 				final Configuration conf, final String basic_username, final String basic_password,
 				final AccessToken access_token, final User user, final int auth_type, final int color,
-				final String jtapi_hostname) {
+				final String api_url_format, final boolean same_oauth_signing_url) {
 			this.already_logged_in = already_logged_in;
 			this.succeed = succeed;
 			this.exception = exception;
@@ -775,22 +777,25 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 			this.user = user;
 			this.auth_type = auth_type;
 			this.color = color;
-			this.jtapi_hostname = jtapi_hostname;
+			this.api_url_format = api_url_format;
+			this.same_oauth_signing_url = same_oauth_signing_url;
 		}
 
 		public SigninResponse(final Configuration conf, final AccessToken access_token, final User user,
-							  final int auth_type, final int color, final String jtapi_hostname) {
-			this(false, true, null, conf, null, null, access_token, user, auth_type, color, jtapi_hostname);
+				final int auth_type, final int color, final String api_url_format, final boolean same_oauth_signing_url) {
+			this(false, true, null, conf, null, null, access_token, user, auth_type, color, api_url_format,
+					same_oauth_signing_url);
 		}
 
 		public SigninResponse(final Configuration conf, final String basic_username, final String basic_password,
-							  final User user, final int color) {
+				final User user, final int color, final String api_url_format) {
 			this(false, true, null, conf, basic_username, basic_password, null, user, Accounts.AUTH_TYPE_BASIC, color,
-					null);
+					api_url_format, false);
 		}
 
-		public SigninResponse(final Configuration conf, final User user, final int color) {
-			this(false, true, null, conf, null, null, null, user, Accounts.AUTH_TYPE_TWIP_O_MODE, color, null);
+		public SigninResponse(final Configuration conf, final User user, final int color, final String api_url_format) {
+			this(false, true, null, conf, null, null, null, user, Accounts.AUTH_TYPE_TWIP_O_MODE, color,
+					api_url_format, false);
 		}
 	}
 }
