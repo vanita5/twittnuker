@@ -622,7 +622,6 @@
     <string name="want_old_icon_back">想要原本的图标？</string>
     <string name="icon_restored_message">图标已恢复！</string>
     <string name="add">添加</string>
-    <string name="N_medias_quantity_one"><xliff:g id="items">%d</xliff:g>媒体</string>
     <string name="N_medias_quantity_other"><xliff:g id="items">%d</xliff:g>媒体</string>
     <string name="delete_drafts_confirm">删除选择的草稿？</string>
     <string name="extra_configurations">额外设定</string>

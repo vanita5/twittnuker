@@ -619,7 +619,6 @@
     <string name="want_old_icon_back">以前のアイコンにしますか?</string>
     <string name="icon_restored_message">元に戻しました!</string>
     <string name="add">追加</string>
-    <string name="N_medias_quantity_one"><xliff:g id="items">%d</xliff:g>個のメディア</string>
     <string name="N_medias_quantity_other"><xliff:g id="items">%d</xliff:g>個のメディア</string>
     <string name="delete_drafts_confirm">選択した下書きを削除しますか?</string>
     <string name="extra_configurations">追加設定</string>

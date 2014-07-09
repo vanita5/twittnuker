@@ -623,7 +623,6 @@
     <string name="plain_list_style">Flache Liste</string>
     <string name="want_old_icon_back">(D) Want old icon back?</string>
     <string name="icon_restored_message">Icon zurückgesetzt!</string>
-    <string name="N_medias_quantity_one"><xliff:g id="items">%d</xliff:g> Bild</string>
     <string name="N_medias_quantity_other"><xliff:g id="items">%d</xliff:g> Bilder</string>
     <string name="delete_drafts_confirm">Ausgewählte Entwürfe löschen?</string>
     <string name="extra_configurations">Extra Einstellungen</string>
