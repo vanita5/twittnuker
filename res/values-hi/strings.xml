@@ -150,6 +150,5 @@
   <string name="add_member">सदस्य जोड़ें</string>
   <string name="is_public">सार्वजनिक</string>
   <string name="send_direct_message">DM भेजें</string>
-  <string name="extensions">एक्सटेंशन</string>
   <string name="uninstall">अनइनस्टाल</string>
 </resources>

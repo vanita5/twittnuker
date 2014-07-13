@@ -210,7 +210,6 @@
     <string name="new_user_list">Neue Liste</string>
     <string name="is_public">Öffentlich</string>
     <string name="send_direct_message">Direktnachricht senden</string>
-    <string name="extensions">Erweiterungen</string>
     <string name="uninstall">Deinstallieren</string>
     <string name="saved_searches">Gespeicherte Suchen</string>
     <string name="tabs">Tabs</string>
@@ -354,18 +353,7 @@
     <string name="small">Klein</string>
     <string name="and_more">und <xliff:g id="count">%d</xliff:g> weitere</string>
     <string name="clear_search_history">Suchbegriffe löschen</string>
-    <string name="permission_description_none">Keine Erlaubnis notwendig</string>
-    <string name="permission_description_refresh">Zeit zwischen Aktualisierungen (auch für Direct Messages)</string>
-    <string name="permission_description_read">Tweet und zwischengespeicherter Inhalt wird gelesen</string>
-    <string name="permission_description_write">In Datenbank schreiben, Status aktualisieren</string>
-    <string name="permission_description_direct_messages">Lesen/Schreiben/Senden von Direct Messages</string>
-    <string name="permission_description_accounts">Account-Informationen lesen</string>
-    <string name="permission_description_preferences">Einstellungen einlesen</string>
-    <string name="permissions_request">Bitte um Berechtigung</string>
-    <string name="permissions_request_message">Die Erweiterung benötigt die folgenden Berechtigungen</string>
-    <string name="accept_permission_request">Aktzeptieren</string>
     <string name="no_thanks">Nein, danke</string>
-    <string name="revoke_permissions">Berechtigungen entziehen</string>
     <string name="fast_scroll_thumb">Schnelles scrollen</string>
     <string name="indicate_my_status">Kennzeichne meine Tweets</string>
     <string name="default_ringtone">Standard Klingelton</string>

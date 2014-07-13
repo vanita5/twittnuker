@@ -234,98 +234,55 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	public boolean handleMenuItem(final MenuItem item) {
 		switch (item.getItemId()) {
-		case MENU_TAKE_PHOTO: {
-			takePhoto();
-			break;
-		}
-		case MENU_ADD_IMAGE: {
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT || !openDocument()) {
-			    pickImage();
+			case MENU_TAKE_PHOTO: {
+				takePhoto();
+				break;
 			}
-			break;
-		}
-		case MENU_ADD_LOCATION: {
-			final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
-			if (!attachLocation) {
-				getLocation();
-			} else {
-				mLocationManager.removeUpdates(this);
-			}
-			mPreferences.edit().putBoolean(KEY_ATTACH_LOCATION, !attachLocation).commit();
-			setMenu();
-			updateTextCount();
-			break;
-		}
-		case MENU_DRAFTS: {
-			startActivity(new Intent(INTENT_ACTION_DRAFTS));
-			break;
-		}
-		case MENU_DELETE: {
-			new DeleteImageTask(this).execute();
-			break;
-		}
-		case MENU_TOGGLE_SENSITIVE: {
-				if (!hasMedia()) return false;
-			mIsPossiblySensitive = !mIsPossiblySensitive;
-			setMenu();
-			updateTextCount();
-			break;
-		}
-		case MENU_VIEW: {
-			if (mInReplyToStatus == null) return false;
-			final DialogFragment fragment = new ViewStatusDialogFragment();
-			final Bundle args = new Bundle();
-			args.putParcelable(EXTRA_STATUS, mInReplyToStatus);
-			fragment.setArguments(args);
-			fragment.show(getSupportFragmentManager(), "view_status");
-			break;
-		}
-		default: {
-			final Intent intent = item.getIntent();
-			if (intent != null) {
-				try {
-					final String action = intent.getAction();
-					if (INTENT_ACTION_EXTENSION_COMPOSE.equals(action)) {
-						intent.putExtra(EXTRA_TEXT, ParseUtils.parseString(mEditText.getText()));
-						intent.putExtra(EXTRA_ACCOUNT_IDS, mSendAccountIds);
-						if (mSendAccountIds != null && mSendAccountIds.length > 0) {
-							final long account_id = mSendAccountIds[0];
-							intent.putExtra(EXTRA_NAME, getAccountName(this, account_id));
-							intent.putExtra(EXTRA_SCREEN_NAME, getAccountScreenName(this, account_id));
-						}
-						if (mInReplyToStatusId > 0) {
-							intent.putExtra(EXTRA_IN_REPLY_TO_ID, mInReplyToStatusId);
-						}
-						if (mInReplyToStatus != null) {
-							intent.putExtra(EXTRA_IN_REPLY_TO_NAME, mInReplyToStatus.user_name);
-							intent.putExtra(EXTRA_IN_REPLY_TO_SCREEN_NAME, mInReplyToStatus.user_screen_name);
-						}
-						startActivityForResult(intent, REQUEST_EXTENSION_COMPOSE);
-					} else if (INTENT_ACTION_EXTENSION_EDIT_IMAGE.equals(action)) {
-						// final ComponentName cmp = intent.getComponent();
-						// if (cmp == null || !hasMedia()) return false;
-						// final String name = new
-						// File(mMediaUri.getPath()).getName();
-						// final Uri data =
-						// Uri.withAppendedPath(CacheFiles.CONTENT_URI,
-						// Uri.encode(name));
-						// intent.setData(data);
-						// grantUriPermission(cmp.getPackageName(), data,
-						// Intent.FLAG_GRANT_READ_URI_PERMISSION);
-						// startActivityForResult(intent,
-						// REQUEST_EDIT_IMAGE);
-					} else {
-						startActivity(intent);
-					}
-				} catch (final ActivityNotFoundException e) {
-					if (Utils.isDebugBuild()) {
-						Log.w(LOGTAG, e);
-					}
-					return false;
+			case MENU_ADD_IMAGE: {
+				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT || !openDocument()) {
+					pickImage();
 				}
+				break;
 			}
-			break;
-		}
+			case MENU_ADD_LOCATION: {
+				final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
+				if (!attachLocation) {
+					getLocation();
+				} else {
+					mLocationManager.removeUpdates(this);
+				}
+				mPreferences.edit().putBoolean(KEY_ATTACH_LOCATION, !attachLocation).commit();
+				setMenu();
+				updateTextCount();
+				break;
+			}
+			case MENU_DRAFTS: {
+				startActivity(new Intent(INTENT_ACTION_DRAFTS));
+				break;
+			}
+			case MENU_DELETE: {
+				new DeleteImageTask(this).execute();
+				break;
+			}
+			case MENU_TOGGLE_SENSITIVE: {
+					if (!hasMedia()) return false;
+				mIsPossiblySensitive = !mIsPossiblySensitive;
+				setMenu();
+				updateTextCount();
+				break;
+			}
+			case MENU_VIEW: {
+				if (mInReplyToStatus == null) return false;
+				final DialogFragment fragment = new ViewStatusDialogFragment();
+				final Bundle args = new Bundle();
+				args.putParcelable(EXTRA_STATUS, mInReplyToStatus);
+				fragment.setArguments(args);
+				fragment.show(getSupportFragmentManager(), "view_status");
+				break;
+			}
+			default: {
+				break;
+			}
 		}
 		return true;
 	}
@@ -333,23 +290,15 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	@Override
 	public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
 		switch (requestCode) {
-		case REQUEST_TAKE_PHOTO: {
-			if (resultCode == Activity.RESULT_OK) {
-				mTask = new AddMediaTask(this, mTempPhotoUri, createTempImageUri(), ParcelableMedia.TYPE_IMAGE,
-						true).execute();
-				mTempPhotoUri = null;
+			case REQUEST_TAKE_PHOTO: {
+				if (resultCode == Activity.RESULT_OK) {
+					mTask = new AddMediaTask(this, mTempPhotoUri, createTempImageUri(), ParcelableMedia.TYPE_IMAGE,
+							true).execute();
+					mTempPhotoUri = null;
+				}
+				break;
 			}
-			break;
-		}
-		case REQUEST_PICK_IMAGE: {
-			if (resultCode == Activity.RESULT_OK) {
-				final Uri src = intent.getData();
-				mTask = new AddMediaTask(this, src, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false)
-						.execute();
-			}
-			break;
-		}
-			case REQUEST_OPEN_DOCUMENT: {
+			case REQUEST_PICK_IMAGE: {
 				if (resultCode == Activity.RESULT_OK) {
 					final Uri src = intent.getData();
 					mTask = new AddMediaTask(this, src, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false)
@@ -357,37 +306,27 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 				}
 				break;
 			}
-		case REQUEST_EDIT_IMAGE: {
-			if (resultCode == Activity.RESULT_OK) {
-				final Uri uri = intent.getData();
-				if (uri != null) {
-					//
-				} else {
+				case REQUEST_OPEN_DOCUMENT: {
+					if (resultCode == Activity.RESULT_OK) {
+						final Uri src = intent.getData();
+						mTask = new AddMediaTask(this, src, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false)
+								.execute();
+					}
 					break;
 				}
-				setMenu();
-				updateTextCount();
-			}
-			break;
-		}
-		case REQUEST_EXTENSION_COMPOSE: {
-			if (resultCode == Activity.RESULT_OK) {
-				final String text = intent.getStringExtra(EXTRA_TEXT);
-				final String append = intent.getStringExtra(EXTRA_APPEND_TEXT);
-				final Uri imageUri = intent.getParcelableExtra(EXTRA_IMAGE_URI);
-				if (text != null) {
-					mEditText.setText(text);
-				} else if (append != null) {
-					mEditText.append(append);
+			case REQUEST_EDIT_IMAGE: {
+				if (resultCode == Activity.RESULT_OK) {
+					final Uri uri = intent.getData();
+					if (uri != null) {
+						//
+					} else {
+						break;
+					}
+					setMenu();
+					updateTextCount();
 				}
-				if (imageUri != null) {
-					//
-				}
-				setMenu();
-				updateTextCount();
+				break;
 			}
-			break;
-		}
 		}
 
 	}
@@ -675,12 +614,6 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		mBottomSendView.setOnLongClickListener(this);
 		final Menu menu = mBottomMenuBar.getMenu(), actionBarMenu = mActionMenuBar.getMenu();
 		final Menu showingMenu = mBottomSendButton ? actionBarMenu : menu;
-		if (showingMenu != null) {
-			final Intent compose_extensions_intent = new Intent(INTENT_ACTION_EXTENSION_COMPOSE);
-			addIntentToMenu(this, showingMenu, compose_extensions_intent, MENU_GROUP_COMPOSE_EXTENSION);
-			final Intent image_extensions_intent = new Intent(INTENT_ACTION_EXTENSION_EDIT_IMAGE);
-			addIntentToMenu(this, showingMenu, image_extensions_intent, MENU_GROUP_IMAGE_EXTENSION);
-		}
 		final LinearLayout.LayoutParams bottomMenuContainerParams = (LinearLayout.LayoutParams) mBottomMenuContainer
 				.getLayoutParams();
 		final LinearLayout.LayoutParams accountSelectorParams = (LinearLayout.LayoutParams) mAccountSelector
@@ -991,8 +924,6 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		if (viewItem != null) {
 			viewItem.setVisible(mInReplyToStatus != null);
 		}
-		menu.setGroupEnabled(MENU_GROUP_IMAGE_EXTENSION, hasMedia);
-		menu.setGroupVisible(MENU_GROUP_IMAGE_EXTENSION, hasMedia);
 		final MenuItem itemToggleSensitive = menu.findItem(MENU_TOGGLE_SENSITIVE);
 		if (itemToggleSensitive != null) {
 			itemToggleSensitive.setVisible(hasMedia);

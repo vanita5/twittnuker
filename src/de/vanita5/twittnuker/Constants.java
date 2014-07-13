@@ -38,11 +38,6 @@ public interface Constants extends TwittnukerConstants {
 
 	public static final String TWITPIC_API_KEY = "620b9fbe7c4fec0a28175ea6b10caead";
 
-	public static final int MENU_GROUP_STATUS_EXTENSION = 10;
-	public static final int MENU_GROUP_COMPOSE_EXTENSION = 11;
-	public static final int MENU_GROUP_IMAGE_EXTENSION = 12;
-    public static final int MENU_GROUP_USER_EXTENSION = 13;
-	public static final int MENU_GROUP_USER_LIST_EXTENSION = 14;
 	public static final int MENU_GROUP_STATUS_SHARE = 20;
 
 	public static final int MENU_HOME = android.R.id.home;

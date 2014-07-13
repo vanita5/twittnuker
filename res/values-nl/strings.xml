@@ -210,7 +210,6 @@
   <string name="new_user_list">Nieuwe lijst</string>
   <string name="is_public">Openbaar</string>
   <string name="send_direct_message">Stuur DM</string>
-  <string name="extensions">Uitbreidingen</string>
   <string name="uninstall">Verwijder</string>
   <string name="saved_searches">Opgeslagen zoekopdrachten</string>
   <string name="tabs">Tabbladen</string>
@@ -352,18 +351,7 @@
   <string name="small">Klein</string>
   <string name="and_more">en <xliff:g id="count">%d</xliff:g> meer</string>
   <string name="clear_search_history">Wis zoek geschiedenis</string>
-  <string name="permission_description_none">Geen toestemming nodig</string>
-  <string name="permission_description_refresh">Vernieuw tijdlijn (inclusief berichten)</string>
-  <string name="permission_description_read">Lees tweets en sommige opgeslagen inhoud</string>
-  <string name="permission_description_write">Schrijven naar de database, update status</string>
-  <string name="permission_description_direct_messages">Lezen / schrijven / versturen van berichten</string>
-  <string name="permission_description_accounts">Lees account informatie</string>
-  <string name="permission_description_preferences">Lees instellingen</string>
-  <string name="permissions_request">Toestemmings- verzoek</string>
-  <string name="permissions_request_message">Uitbreiding vraagt ​​volgende machtigingen</string>
-  <string name="accept_permission_request">Accepteer</string>
   <string name="no_thanks">Nee, bedankt</string>
-  <string name="revoke_permissions">Machtigingen in trekken</string>
   <string name="fast_scroll_thumb">Snel schuifknop</string>
   <string name="indicate_my_status">Geef mijn tweet aan</string>
   <string name="default_ringtone">Standaard beltoon</string>

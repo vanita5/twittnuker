@@ -210,7 +210,6 @@
     <string name="new_user_list">Daftar baru</string>
     <string name="is_public">Publik</string>
     <string name="send_direct_message">Kirim DM</string>
-    <string name="extensions">Ekstensi</string>
     <string name="uninstall">Hapus</string>
     <string name="saved_searches">Pencarian yang tersimpan</string>
     <string name="tabs">Tab-tab</string>
@@ -352,18 +351,7 @@
     <string name="small">Sedikit</string>
     <string name="and_more">dan <xliff:g id="count">%d</xliff:g> lebih lagi</string>
     <string name="clear_search_history">Bersihkan riwayat pencarian</string>
-    <string name="permission_description_none">Tidak ada ijin yang diperlukan</string>
-    <string name="permission_description_refresh">Memperbaharui timeline (termasuk direct messages)</string>
-    <string name="permission_description_read">Baca kicauan dan beberapa konten chace</string>
-    <string name="permission_description_write">Menuliskan ke database, update status</string>
-    <string name="permission_description_direct_messages">Baca/Tulis/Kirim direct messages</string>
-    <string name="permission_description_accounts">Melihat informasi akun</string>
-    <string name="permission_description_preferences">Baca pengaturan</string>
-    <string name="permissions_request">Permintaan ijin</string>
-    <string name="permissions_request_message">Ekstensi meminta ijin berikut ini</string>
-    <string name="accept_permission_request">Setuju</string>
     <string name="no_thanks">Tidak, terima kasih</string>
-    <string name="revoke_permissions">Cabut ijin yang diberikan</string>
     <string name="fast_scroll_thumb">Menggulung dengan cepat</string>
     <string name="indicate_my_status">Tunjukkan kicuan saya</string>
     <string name="default_ringtone">Nada dering default</string>

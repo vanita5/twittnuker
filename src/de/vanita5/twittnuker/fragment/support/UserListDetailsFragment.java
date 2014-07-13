@@ -421,11 +421,6 @@ public class UserListDetailsFragment extends BaseSupportListFragment implements 
 				followItem.setTitle(R.string.subscribe);
 			}
 		}
-		menu.removeGroup(MENU_GROUP_USER_LIST_EXTENSION);
-		final Intent extensionsIntent = new Intent(INTENT_ACTION_EXTENSION_OPEN_USER_LIST);
-		extensionsIntent.setExtrasClassLoader(getActivity().getClassLoader());
-		extensionsIntent.putExtra(EXTRA_USER_LIST, mUserList);
-		addIntentToMenu(getActivity(), menu, extensionsIntent, MENU_GROUP_USER_LIST_EXTENSION);
 	}
 
 	public static class EditUserListDialogFragment extends BaseSupportDialogFragment implements

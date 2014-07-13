@@ -210,7 +210,6 @@
     <string name="new_user_list">새로운 리스트</string>
     <string name="is_public">공공의</string>
     <string name="send_direct_message">쪽지 보내기</string>
-    <string name="extensions">플러그인</string>
     <string name="uninstall">제거</string>
     <string name="saved_searches">저장된 검색어</string>
     <string name="tabs">탭</string>
@@ -352,18 +351,7 @@
     <string name="small">작게</string>
     <string name="and_more">등 <xliff:g id="count">%d</xliff:g>개 이상</string>
     <string name="clear_search_history">검색 기록 지우기</string>
-    <string name="permission_description_none">아무런 권한을 필요로 하지 않습니다</string>
-    <string name="permission_description_refresh">타임라인 새로고침 (쪽지 포함)</string>
-    <string name="permission_description_read">읽은 트윗과 캐쉬된 콘텐츠</string>
-    <string name="permission_description_write">데이터베이스에 기록, 상태 변경</string>
-    <string name="permission_description_direct_messages">쪽지 읽기/쓰기/보내기</string>
-    <string name="permission_description_accounts">계정 정보 읽기</string>
-    <string name="permission_description_preferences">읽기 설정</string>
-    <string name="permissions_request">권한 요청</string>
-    <string name="permissions_request_message">플러그인이 팔로우 권한을 요청합니다</string>
-    <string name="accept_permission_request">수락</string>
     <string name="no_thanks">아뇨, 괜찮습니다</string>
-    <string name="revoke_permissions">권한 취소</string>
     <string name="fast_scroll_thumb">빠른 손가락 스크롤</string>
     <string name="indicate_my_status">내 트윗 강조</string>
     <string name="default_ringtone">기본 알림 소리</string>

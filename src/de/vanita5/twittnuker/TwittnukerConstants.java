@@ -25,7 +25,7 @@ import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 
 /**
- * Public constants for both Twidere app and its extensions
+ * Public constants for Twittnuker
  * 
  * @author mariotaku
  * 
@@ -43,7 +43,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final String USER_COLOR_PREFERENCES_NAME = "user_colors";
 	public static final String HOST_MAPPING_PREFERENCES_NAME = "host_mapping";
 	public static final String SHARED_PREFERENCES_NAME = "preferences";
-	public static final String PERMISSION_PREFERENCES_NAME = "app_permissions";
 	public static final String SILENT_NOTIFICATIONS_PREFERENCE_NAME = "silent_notifications";
 	public static final String TIMELINE_POSITIONS_PREFERENCES_NAME = "timeline_positions";
 	public static final String ACCOUNT_PREFERENCES_NAME_PREFIX = "account_preferences_";
@@ -134,7 +133,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final int REQUEST_SET_COLOR = 7;
 	public static final int REQUEST_SAVE_FILE = 8;
 	public static final int REQUEST_EDIT_IMAGE = 9;
-	public static final int REQUEST_EXTENSION_COMPOSE = 10;
 	public static final int REQUEST_ADD_TAB = 11;
 	public static final int REQUEST_EDIT_TAB = 12;
 	public static final int REQUEST_PICK_FILE = 13;
@@ -170,7 +168,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final int VIRTUAL_TABLE_ID_NOTIFICATIONS = 101;
 	public static final int VIRTUAL_TABLE_ID_PREFERENCES = 102;
 	public static final int VIRTUAL_TABLE_ID_ALL_PREFERENCES = 103;
-	public static final int VIRTUAL_TABLE_ID_PERMISSIONS = 104;
 	public static final int VIRTUAL_TABLE_ID_DNS = 105;
 	public static final int VIRTUAL_TABLE_ID_CACHED_IMAGES = 106;
 	public static final int VIRTUAL_TABLE_ID_CACHE_FILES = 107;
@@ -205,23 +202,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final String SERVICE_COMMAND_GET_MENTIONS = "get_mentions";
 	public static final String SERVICE_COMMAND_GET_SENT_DIRECT_MESSAGES = "get_sent_direct_messages";
 	public static final String SERVICE_COMMAND_GET_RECEIVED_DIRECT_MESSAGES = "get_received_direct_messages";
-
-	public static final String METADATA_KEY_EXTENSION = "de.vanita5.twittnuker.extension";
-	public static final String METADATA_KEY_EXTENSION_PERMISSIONS = "de.vanita5.twittnuker.extension.permissions";
-	public static final String METADATA_KEY_EXTENSION_SETTINGS = "de.vanita5.twittnuker.extension.settings";
-	public static final String METADATA_KEY_EXTENSION_ICON = "de.vanita5.twittnuker.extension.icon";
-	public static final String METADATA_KEY_EXTENSION_USE_JSON = "de.vanita5.twittnuker.extension.use_json";
-
-	public static final char SEPARATOR_PERMISSION = '|';
-	public static final String SEPARATOR_PERMISSION_REGEX = "\\" + SEPARATOR_PERMISSION;
-
-	public static final String PERMISSION_DENIED = "denied";
-	public static final String PERMISSION_REFRESH = "refresh";
-	public static final String PERMISSION_READ = "read";
-	public static final String PERMISSION_WRITE = "write";
-	public static final String PERMISSION_DIRECT_MESSAGES = "direct_messages";
-	public static final String PERMISSION_ACCOUNTS = "accounts";
-	public static final String PERMISSION_PREFERENCES = "preferences";
 
 	public static final String TAB_TYPE_HOME_TIMELINE = "home_timeline";
 	public static final String TAB_TYPE_MENTIONS_TIMELINE = "mentions_timeline";

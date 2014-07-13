@@ -210,7 +210,6 @@
     <string name="new_user_list">Новый список</string>
     <string name="is_public">Общедоступный</string>
     <string name="send_direct_message">Послать ЛС</string>
-    <string name="extensions">Расширения</string>
     <string name="uninstall">Удалить</string>
     <string name="saved_searches">Сохраненные поиски</string>
     <string name="tabs">Вкладки</string>
@@ -353,18 +352,7 @@
     <string name="small">Маленький</string>
     <string name="and_more">и еще <xliff:g id="count">%d</xliff:g></string>
     <string name="clear_search_history">Очистить историю поиска</string>
-    <string name="permission_description_none">Разрешения не требуются</string>
-    <string name="permission_description_refresh">Обновить ленту (вкл. личн. сообщения)</string>
-    <string name="permission_description_read">Чтение твитов и некоторого закешированного содержимого</string>
-    <string name="permission_description_write">Записано в базу, обновляем статус</string>
-    <string name="permission_description_direct_messages">Просматривать/Писать/Слать личн. сообщения</string>
-    <string name="permission_description_accounts">Просмотреть информацию аккаунта</string>
-    <string name="permission_description_preferences">Читать настройки</string>
-    <string name="permissions_request">Запрос на доступ</string>
-    <string name="permissions_request_message">Расширение запрашивает правда на доступ к</string>
-    <string name="accept_permission_request">Принять</string>
     <string name="no_thanks">Нет, спасибо</string>
-    <string name="revoke_permissions">Перераспределить права</string>
     <string name="fast_scroll_thumb">Быстрая прокрутка эскизов</string>
     <string name="indicate_my_status">Отображать мой твит</string>
     <string name="default_ringtone">Рингтон по-умолчанию</string>

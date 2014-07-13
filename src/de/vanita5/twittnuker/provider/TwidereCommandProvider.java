@@ -34,7 +34,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TwidereCommands.Refresh;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.PermissionsManager;
 
 public class TwidereCommandProvider extends ContentProvider implements Constants {
 
@@ -51,7 +50,6 @@ public class TwidereCommandProvider extends ContentProvider implements Constants
 	}
 
 	private Context mContext;
-	private PermissionsManager mPermissionsManager;
 	private AsyncTwitterWrapper mTwitterWrapper;
 
 	@Override
@@ -74,7 +72,6 @@ public class TwidereCommandProvider extends ContentProvider implements Constants
 	public boolean onCreate() {
 		mContext = getContext();
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(mContext);
-		mPermissionsManager = new PermissionsManager(mContext);
 		mTwitterWrapper = app.getTwitterWrapper();
 		return true;
 	}
@@ -90,39 +87,12 @@ public class TwidereCommandProvider extends ContentProvider implements Constants
 		return 0;
 	}
 
-	private void checkInsertPermission(final int uri_code) {
-		switch (uri_code) {
-			case CODE_REFRESH_ALL:
-			case CODE_REFRESH_HOME_TIMELINE:
-			case CODE_REFRESH_MENTIONS:
-			case CODE_REFRESH_INBOX:
-			case CODE_REFRESH_OUTBOX: {
-				if (!mPermissionsManager.checkCallingPermission(PERMISSION_REFRESH))
-					throw new SecurityException("Executing this command requires level PERMISSION_REFRESH");
-			}
-		}
-	}
-
-	private void checkQueryPermission(final int uri_code) {
-		switch (uri_code) {
-			case CODE_REFRESH_ALL:
-			case CODE_REFRESH_HOME_TIMELINE:
-			case CODE_REFRESH_MENTIONS:
-			case CODE_REFRESH_INBOX:
-			case CODE_REFRESH_OUTBOX: {
-				if (!mPermissionsManager.checkCallingPermission(PERMISSION_REFRESH))
-					throw new SecurityException("Executing this command requires level PERMISSION_REFRESH");
-			}
-		}
-	}
-
 	private Cursor getEmptyCursor() {
 		return new MatrixCursor(new String[0]);
 	}
 
 	private boolean handleInsertCommand(final Uri uri, final ContentValues values) {
 		final int uri_code = COMMAND_URI_MATCHER.match(uri);
-		checkInsertPermission(uri_code);
 		try {
 			switch (uri_code) {
 				case CODE_REFRESH_ALL: {
@@ -143,7 +113,6 @@ public class TwidereCommandProvider extends ContentProvider implements Constants
 
 	private Cursor handleQueryCommand(final Uri uri) {
 		final int uri_code = COMMAND_URI_MATCHER.match(uri);
-		checkQueryPermission(uri_code);
 		try {
 			switch (uri_code) {
 				case CODE_REFRESH_HOME_TIMELINE:

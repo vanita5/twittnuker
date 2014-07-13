@@ -215,7 +215,6 @@
 	<string name="new_user_list">New list</string>
 	<string name="is_public">Public</string>
 	<string name="send_direct_message">Send DM</string>
-	<string name="extensions">Extensions</string>
 	<string name="uninstall">Uninstall</string>
 	<string name="saved_searches">Saved searches</string>
 	<string name="tabs">Tabs</string>
@@ -240,7 +239,7 @@
 	<string name="home_refresh">Refresh in home timeline</string>
 	<string name="error_message_image_upload_failed">Image upload failed.</string>
 	<string name="image_upload_format">Tweet format with image</string>
-	<string name="image_upload_format_summary">\"[LINK]\" = Image link\n\"[TEXT]\" = Tweet content\n(Extension only)</string>
+	<string name="image_upload_format_summary">\"[LINK]\" = Image link\n\"[TEXT]\" = Tweet content\n(Third party only)</string>
 	<string name="tweet_shortener">Tweet shortener</string>
     <string name="status_shortener">Tweet shortener</string>
     <string name="status_shortener_default">None (Abort sending)</string>
@@ -359,18 +358,7 @@
 	<string name="small">Small</string>
 	<string name="and_more">and <xliff:g id="count">%d</xliff:g> more</string>
 	<string name="clear_search_history">Clear search history</string>
-	<string name="permission_description_none">No permissions needed</string>
-	<string name="permission_description_refresh">Refresh timeline (including direct messages)</string>
-	<string name="permission_description_read">Read tweets and some cached content</string>
-	<string name="permission_description_write">Write to database, update status</string>
-	<string name="permission_description_direct_messages">Read/Write/Send direct messages</string>
-	<string name="permission_description_accounts">Read account information</string>
-	<string name="permission_description_preferences">Read settings</string>
-	<string name="permissions_request">Permissions request</string>
-	<string name="permissions_request_message">Application is requesting following permissions</string>
-	<string name="accept_permission_request">Accept</string>
 	<string name="no_thanks">No, thanks</string>
-	<string name="revoke_permissions">Revoke permissions</string>
 	<string name="fast_scroll_thumb">Fast scroll thumb</string>
 	<string name="indicate_my_status">Indicate my tweet</string>
 	<string name="default_ringtone">Default ringtone</string>
@@ -655,7 +643,6 @@
     <string name="stream_on_mobile_summary">Stream on mobile network. This is NOT recommended!</string>
     <string name="stream_autoscroll">Autoscroll</string>
     <string name="stream_autoscroll_summary">Always stay at the top of the timeline</string>
-    <string name="request_permission">Permission request to access Twittnuker</string>
 
     <string name="love">Love</string>
     <string name="load_conversations_automatically">Load conversations automatically</string>

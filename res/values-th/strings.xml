@@ -210,7 +210,6 @@
     <string name="new_user_list">รายการใหม่</string>
     <string name="is_public">สาธารณะ</string>
     <string name="send_direct_message">ส่งข้อความส่วนตัว</string>
-    <string name="extensions">ส่วนขยาย</string>
     <string name="uninstall">ถอนการติดตั้ง</string>
     <string name="saved_searches">คำค้นที่บันทึกไว้</string>
     <string name="tabs">แท็บ</string>
@@ -234,7 +233,7 @@
     <string name="home_refresh">โหลดใหม่ในหน้าหลัก</string>
     <string name="error_message_image_upload_failed">การอัพโหลดรูปผิดพลาด</string>
     <string name="image_upload_format">รูปแบบทวีตพร้อมรูปภาพ</string>
-    <string name="image_upload_format_summary">\"[LINK]\" = ลิงค์รูป\n\"[TEXT]\" = เนื้อหาทวีต\n(Extension เท่านั้น)</string>
+    <string name="image_upload_format_summary">\"[LINK]\" = ลิงค์รูป\n\"[TEXT]\" = เนื้อหาทวีต\n(Third party เท่านั้น)</string>
     <string name="tweet_shortener">ตัวย่อทวีต</string>
     <string name="status_shortener_default">ไม่มี (ยกเลิกการส่ง)</string>
     <string name="error_message_status_too_long">ทวีตยาวเกินไป</string>
@@ -330,11 +329,7 @@
     <string name="large">ใหญ่</string>
     <string name="small">เล็ก</string>
     <string name="clear_search_history">ล้างประวัติการค้นหา</string>
-    <string name="permission_description_none">ไม่ต้องการสิทธิ์ใดๆ เพิ่มเติม</string>
-    <string name="permission_description_refresh">รีเฟรชไทม์ไลน์ (รวมถึงข้อความด่วน)</string>
-    <string name="accept_permission_request">ยอมรับ</string>
     <string name="no_thanks">ไม่, ขอบคุณ</string>
-    <string name="revoke_permissions">เพิกถอนสิทธิ์</string>
     <string name="fast_scroll_thumb">แสดงแถบสกรอลบาร์</string>
     <string name="indicate_my_status">ทำเครื่องหมายข้อความของฉัน</string>
     <string name="default_ringtone">เสียงเตือน</string>

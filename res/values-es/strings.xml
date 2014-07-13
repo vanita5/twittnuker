@@ -210,7 +210,6 @@
     <string name="new_user_list">Lista nueva</string>
     <string name="is_public">Público</string>
     <string name="send_direct_message">Enviar MD</string>
-    <string name="extensions">Extensiones</string>
     <string name="uninstall">Desinstalar</string>
     <string name="saved_searches">Búsquedas guardadas</string>
     <string name="tabs">Pestañas</string>
@@ -354,18 +353,7 @@
     <string name="small">Pequeño</string>
     <string name="and_more">y <xliff:g id="count">%d</xliff:g> más</string>
     <string name="clear_search_history">Borrar historial de búsqueda</string>
-    <string name="permission_description_none">No se necesitan permisos</string>
-    <string name="permission_description_refresh">Actualizar línea de tiempo (incluyendo mensajes directos)</string>
-    <string name="permission_description_read">Leer tuits y algo de contenido en caché</string>
-    <string name="permission_description_write">Escribir en base de datos, actualizar estado</string>
-    <string name="permission_description_direct_messages">Leer/Escribir/Enviar mensajes directos</string>
-    <string name="permission_description_accounts">Leer información de cuenta</string>
-    <string name="permission_description_preferences">Leer configuraciones</string>
-    <string name="permissions_request">Petición de permisos</string>
-    <string name="permissions_request_message">Una extensión necesita los siguientes permisos</string>
-    <string name="accept_permission_request">Aceptar</string>
     <string name="no_thanks">No, gracias</string>
-    <string name="revoke_permissions">Quitar permisos</string>
     <string name="fast_scroll_thumb">Deslizador rápido</string>
     <string name="indicate_my_status">Indicar mi tuit</string>
     <string name="default_ringtone">Tono predeterminado</string>

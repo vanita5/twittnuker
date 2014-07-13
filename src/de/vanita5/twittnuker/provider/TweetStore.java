@@ -540,21 +540,6 @@ public interface TweetStore {
 		public static final String[] COLUMNS = new String[] { _ID, ID, COUNT };
 	}
 
-	public static interface Permissions extends BaseColumns {
-		public static final String TABLE_NAME = "permissions";
-		public static final String CONTENT_PATH = TABLE_NAME;
-
-		public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
-
-		public static final String PERMISSION = "permissions";
-
-		public static final String PACKAGE_NAME = "package_name";
-
-		public static final String[] MATRIX_COLUMNS = new String[] { PACKAGE_NAME, PERMISSION };
-
-		public static final String[] COLUMNS = new String[] { _ID, PACKAGE_NAME, PERMISSION };
-	}
-
 	public static interface Preferences extends BaseColumns {
 		public static final String TABLE_NAME = "preferences";
 		public static final String CONTENT_PATH = TABLE_NAME;

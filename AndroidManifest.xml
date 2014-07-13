@@ -455,17 +455,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.support.RequestPermissionsActivity"
-            android:icon="@drawable/ic_iconic_twittnuker"
-            android:label="@string/permissions_request"
-            android:theme="@style/Theme.Blank.Dialog">
-            <intent-filter>
-                <action android:name="de.vanita5.twittnuker.REQUEST_PERMISSIONS" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".activity.CameraCropActivity"
             android:icon="@drawable/ic_iconic_twittnuker"
             android:exported="false">

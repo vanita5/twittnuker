@@ -177,7 +177,6 @@ import de.vanita5.twittnuker.provider.TweetStore.Drafts;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.provider.TweetStore.Mentions;
 import de.vanita5.twittnuker.provider.TweetStore.Notifications;
-import de.vanita5.twittnuker.provider.TweetStore.Permissions;
 import de.vanita5.twittnuker.provider.TweetStore.Preferences;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.provider.TweetStore.Tabs;
@@ -281,8 +280,6 @@ public final class Utils implements Constants, TwitterConstants {
 				VIRTUAL_TABLE_ID_NOTIFICATIONS);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Notifications.CONTENT_PATH + "/#/#",
 				VIRTUAL_TABLE_ID_NOTIFICATIONS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Permissions.CONTENT_PATH,
-				VIRTUAL_TABLE_ID_PERMISSIONS);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, DNS.CONTENT_PATH + "/*", VIRTUAL_TABLE_ID_DNS);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, CachedImages.CONTENT_PATH,
 				VIRTUAL_TABLE_ID_CACHED_IMAGES);
@@ -365,54 +362,6 @@ public final class Utils implements Constants, TwitterConstants {
 			} else {
 				item.setIcon(icon);
 			}
-		}
-	}
-
-	public static void addIntentToMenuForExtension(final Context context, final Menu menu, final int groupId,
-					final String action, final String parelableKey, final String parelableJSONKey,
-					final TwidereParcelable parcelable) {
-		if (context == null || menu == null || action == null || parelableKey == null || parcelable == null) return;
-		final PackageManager pm = context.getPackageManager();
-		final Resources res = context.getResources();
-		final float density = res.getDisplayMetrics().density;
-		final int padding = Math.round(density * 4);
-		final Intent queryIntent = new Intent(action);
-		queryIntent.setExtrasClassLoader(context.getClassLoader());
-		final List<ResolveInfo> activities = pm.queryIntentActivities(queryIntent, PackageManager.GET_META_DATA);
-		for (final ResolveInfo info : activities) {
-			final Intent intent = new Intent(queryIntent);
-			if (isExtensionUseJSON(info)) {
-				intent.putExtra(parelableJSONKey, JSONSerializer.toJSONObjectString(parcelable));
-			} else {
-				intent.putExtra(parelableKey, parcelable);
-			}
-			intent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
-			final MenuItem item = menu.add(groupId, Menu.NONE, Menu.NONE, info.loadLabel(pm));
-			item.setIntent(intent);
-			final Drawable metaDataDrawable = getMetadataDrawable(pm, info.activityInfo, METADATA_KEY_EXTENSION_ICON);
-			int actionIconColor;
-			if (context instanceof ITwidereContextWrapper) {
-				final int themeResId = ((ITwidereContextWrapper) context).getThemeResourceId();
-				actionIconColor = ThemeUtils.getActionIconColor(themeResId);
-			} else {
-				actionIconColor = ThemeUtils.getActionIconColor(context);
-			}
-			if (metaDataDrawable != null) {
-				metaDataDrawable.mutate();
-				metaDataDrawable.setColorFilter(actionIconColor, PorterDuff.Mode.MULTIPLY);
-				item.setIcon(metaDataDrawable);
-			} else {
-				final Drawable icon = info.loadIcon(pm);
-				final int iw = icon.getIntrinsicWidth(), ih = icon.getIntrinsicHeight();
-				if (iw > 0 && ih > 0) {
-					final Drawable iconWithPadding = new PaddingDrawable(icon, padding);
-					iconWithPadding.setBounds(0, 0, iw, ih);
-					item.setIcon(iconWithPadding);
-				} else {
-					item.setIcon(icon);
-				}
-			}
-
 		}
 	}
 
@@ -3513,9 +3462,6 @@ public final class Utils implements Constants, TwitterConstants {
 			final boolean isOfficialKey = AccountWithCredentials.isOfficialCredentials(context, account);
 		    setMenuItemAvailability(menu, MENU_TRANSLATE, isOfficialKey);
 		}
-		menu.removeGroup(MENU_GROUP_STATUS_EXTENSION);
-		addIntentToMenuForExtension(context, menu, MENU_GROUP_STATUS_EXTENSION, INTENT_ACTION_EXTENSION_OPEN_STATUS,
-				EXTRA_STATUS, EXTRA_STATUS_JSON, status);
 		final MenuItem shareItem = menu.findItem(R.id.share_submenu);
 		final Menu shareSubmenu = shareItem != null && shareItem.hasSubMenu() ? shareItem.getSubMenu() : null;
 		if (shareSubmenu != null) {
@@ -3834,18 +3780,6 @@ public final class Utils implements Constants, TwitterConstants {
 		if (te == null) return false;
 		return StatusCodeMessageUtils.containsHttpStatus(te.getStatusCode())
 				|| StatusCodeMessageUtils.containsTwitterError(te.getErrorCode());
-	}
-
-	private static boolean isExtensionUseJSON(final ResolveInfo info) {
-		if (info == null || info.activityInfo == null) return true;
-		final ActivityInfo activityInfo = info.activityInfo;
-		if (activityInfo.metaData != null && activityInfo.metaData.containsKey(METADATA_KEY_EXTENSION_USE_JSON))
-			return activityInfo.metaData.getBoolean(METADATA_KEY_EXTENSION_USE_JSON);
-		final ApplicationInfo appInfo = activityInfo.applicationInfo;
-		if (appInfo == null) return true;
-		if (appInfo.metaData != null && appInfo.metaData.containsKey(METADATA_KEY_EXTENSION_USE_JSON))
-			return appInfo.metaData.getBoolean(METADATA_KEY_EXTENSION_USE_JSON);
-		return true;
 	}
 
 	private static void parseEntities(final HtmlBuilder builder, final EntitySupport entities) {

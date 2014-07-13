@@ -210,7 +210,6 @@
     <string name="new_user_list">Uusi lista</string>
     <string name="is_public">Julkinen</string>
     <string name="send_direct_message">Lähetä YV</string>
-    <string name="extensions">Laajennukset</string>
     <string name="uninstall">Poista</string>
     <string name="saved_searches">Tallennetut haut</string>
     <string name="tabs">Välilehdet</string>
@@ -354,18 +353,7 @@
     <string name="small">Pieni</string>
     <string name="and_more">ja <xliff:g id="count">%d</xliff:g> muuta</string>
     <string name="clear_search_history">Tyhjennä hakuhistoria</string>
-    <string name="permission_description_none">Oikeuksia ei tarvita</string>
-    <string name="permission_description_refresh">Päivitä aikajana (mukaanlukien yksityisviestit)</string>
-    <string name="permission_description_read">Lue twiitit ja välimuistissa olevaa sisältöä</string>
-    <string name="permission_description_write">Tallenna tietokantaan, päivitä tila</string>
-    <string name="permission_description_direct_messages">Lue/Kirjoita/Lähetä yksityisiä viestejä</string>
-    <string name="permission_description_accounts">Katso tilitietoja</string>
-    <string name="permission_description_preferences">Katso asetuksia</string>
-    <string name="permissions_request">Oikeuksien pyyntö</string>
-    <string name="permissions_request_message">Laajennus pyytää seuraavia oikeuksia</string>
-    <string name="accept_permission_request">Hyväksy</string>
     <string name="no_thanks">Ei kiitos</string>
-    <string name="revoke_permissions">Kumoa oikeudet</string>
     <string name="fast_scroll_thumb">Peukalon nopea vieritys</string>
     <string name="indicate_my_status">Osoita oma twiitti</string>
     <string name="default_ringtone">Oletus merkkiääni</string>

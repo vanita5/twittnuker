@@ -919,12 +919,6 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
             setMenuItemAvailability(menu, MENU_BLOCK, false);
             setMenuItemAvailability(menu, MENU_REPORT_SPAM, false);
         }
-        final Intent intent = new Intent(INTENT_ACTION_EXTENSION_OPEN_USER);
-        final Bundle extras = new Bundle();
-        extras.putParcelable(EXTRA_USER, user);
-        intent.putExtras(extras);
-        menu.removeGroup(MENU_GROUP_USER_EXTENSION);
-        addIntentToMenu(getActivity(), menu, intent, MENU_GROUP_USER_EXTENSION);
     }
 
     private boolean shouldUseNativeMenu() {

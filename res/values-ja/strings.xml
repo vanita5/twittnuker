@@ -211,7 +211,6 @@
     <string name="new_user_list">新しいリスト</string>
     <string name="is_public">公開</string>
     <string name="send_direct_message">DMを送信</string>
-    <string name="extensions">拡張機能</string>
     <string name="uninstall">アンインストール</string>
     <string name="saved_searches">保存した検索</string>
     <string name="tabs">タブ</string>
@@ -355,18 +354,7 @@
     <string name="small">小</string>
     <string name="and_more">他<xliff:g id="count">%d</xliff:g></string>
     <string name="clear_search_history">検索履歴を消去</string>
-    <string name="permission_description_none">権限は必要ありません</string>
-    <string name="permission_description_refresh">タイムラインの更新 (DMを含める)</string>
-    <string name="permission_description_read">ツイートとキャッシュしたコンテンツの読み込み</string>
-    <string name="permission_description_write">データベースへの書き込み、ステータスの更新</string>
-    <string name="permission_description_direct_messages">ダイレクトメッセージの読み取り、書き込みと送信</string>
-    <string name="permission_description_accounts">アカウント情報の読み込み</string>
-    <string name="permission_description_preferences">設定の読み込み</string>
-    <string name="permissions_request">権限の要求</string>
-    <string name="permissions_request_message">拡張アプリは下記にアクセスする場合があります</string>
-    <string name="accept_permission_request">許可</string>
     <string name="no_thanks">拒否</string>
-    <string name="revoke_permissions">許可を取り消す</string>
     <string name="fast_scroll_thumb">スクロールつまみ</string>
     <string name="indicate_my_status">自分のツイートを強調</string>
     <string name="default_ringtone">デフォルトの通知音</string>
@@ -647,7 +635,6 @@
     <string name="stream_on_mobile_summary">モバイルデータ通信でストリーミングを有効にします。おすすめしません!</string>
     <string name="stream_autoscroll">自動スクロール</string>
     <string name="stream_autoscroll_summary">常にタイムラインの一番上を表示します。</string>
-    <string name="request_permission">Twittnukerにアクセスする権限の要求</string>
 
     <string name="love">Love</string>
     <string name="load_conversations_automatically">会話の自動読み込み</string>

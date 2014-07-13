@@ -210,7 +210,6 @@
   <string name="new_user_list">Новий список</string>
   <string name="is_public">Публічний</string>
   <string name="send_direct_message">Надіслати ПП</string>
-  <string name="extensions">Розширення</string>
   <string name="uninstall">Видалити</string>
   <string name="saved_searches">Збережені пошуки</string>
   <string name="tabs">Вкладки</string>
@@ -352,18 +351,7 @@
   <string name="small">Малий</string>
   <string name="and_more">і <xliff:g id="count">%d</xliff:g> більше</string>
   <string name="clear_search_history">Очистити історію пошуку</string>
-  <string name="permission_description_none">Дозволи не потрібні</string>
-  <string name="permission_description_refresh">Оновити стрічку (включаючи особисті повідомленння)</string>
-  <string name="permission_description_read">Читати твіти і деякий кешований матеріал</string>
-  <string name="permission_description_write">Записувати у базу даних, оновлювати статус</string>
-  <string name="permission_description_direct_messages">Читати/писати/надсилати приватні повідомлення</string>
-  <string name="permission_description_accounts">Читати інформацію облікового запису</string>
-  <string name="permission_description_preferences">Налаштування читання</string>
-  <string name="permissions_request">Запит на дозволи</string>
-  <string name="permissions_request_message">Розширення запитує наступні дозволи</string>
-  <string name="accept_permission_request">Прийняти</string>
   <string name="no_thanks">Ні, дякую</string>
-  <string name="revoke_permissions">Перерозподілити права</string>
   <string name="fast_scroll_thumb">Швидка прокрутка пальцем</string>
   <string name="indicate_my_status">Вказати мої твіти</string>
   <string name="default_ringtone">Типова мелодія</string>

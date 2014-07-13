@@ -58,7 +58,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.ParcelFileDescriptor;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
@@ -75,7 +74,6 @@ import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.model.UnreadItem;
-import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TweetStore.Preferences;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
@@ -90,7 +88,6 @@ import de.vanita5.twittnuker.util.SQLiteDatabaseWrapper.LazyLoadCallback;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.collection.NoDuplicatesCopyOnWriteArrayList;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.PermissionsManager;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder;
 import de.vanita5.twittnuker.util.Utils;
 
@@ -119,7 +116,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
 	private ContentResolver mContentResolver;
 	private SQLiteDatabaseWrapper mDatabaseWrapper;
-	private PermissionsManager mPermissionsManager;
 	private NotificationManager mNotificationManager;
 	private SharedPreferencesWrapper mPreferences;
 	private ImagePreloader mImagePreloader;
@@ -155,7 +151,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		try {
 			final int tableId = getTableId(uri);
 			final String table = getTableNameById(tableId);
-			checkWritePermission(tableId, table);
 			switch (tableId) {
 				case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
 				case TABLE_ID_DIRECT_MESSAGES:
@@ -193,7 +188,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		try {
 			final int tableId = getTableId(uri);
 			final String table = getTableNameById(tableId);
-			checkWritePermission(tableId, table);
 			switch (tableId) {
 				case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
 				case TABLE_ID_DIRECT_MESSAGES:
@@ -247,7 +241,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		try {
 			final int tableId = getTableId(uri);
 			final String table = getTableNameById(tableId);
-			checkWritePermission(tableId, table);
 			switch (tableId) {
 				case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
 				case TABLE_ID_DIRECT_MESSAGES:
@@ -279,7 +272,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mPreferences.registerOnSharedPreferenceChangeListener(this);
 		updatePreferences();
-		mPermissionsManager = new PermissionsManager(context);
 		mImagePreloader = new ImagePreloader(context, app.getImageLoader());
 		final IntentFilter filter = new IntentFilter();
 		filter.addAction(BROADCAST_HOME_ACTIVITY_ONSTART);
@@ -319,10 +311,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		} else
 			throw new IllegalArgumentException();
 		if (mode_code == ParcelFileDescriptor.MODE_READ_ONLY) {
-			checkReadPermission(table_id, table, null);
+			//
 		} else if ((mode_code & ParcelFileDescriptor.MODE_READ_WRITE) != 0) {
-			checkReadPermission(table_id, table, null);
-			checkWritePermission(table_id, table);
+			//
 		}
 		switch (table_id) {
 			case VIRTUAL_TABLE_ID_CACHED_IMAGES: {
@@ -341,20 +332,11 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		try {
 			final int tableId = getTableId(uri);
 			final String table = getTableNameById(tableId);
-			checkReadPermission(tableId, table, projection);
 			switch (tableId) {
 				case VIRTUAL_TABLE_ID_DATABASE_READY: {
 					if (mDatabaseWrapper.isReady())
 						return new MatrixCursor(projection != null ? projection : new String[0]);
 					return null;
-				}
-				case VIRTUAL_TABLE_ID_PERMISSIONS: {
-					final MatrixCursor c = new MatrixCursor(TweetStore.Permissions.MATRIX_COLUMNS);
-					final Map<String, String> map = mPermissionsManager.getAll();
-					for (final Map.Entry<String, String> item : map.entrySet()) {
-						c.addRow(new Object[] { item.getKey(), item.getValue() });
-					}
-					return c;
 				}
 				case VIRTUAL_TABLE_ID_ALL_PREFERENCES: {
 					return getPreferencesCursor(mPreferences, null);
@@ -481,102 +463,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 			builder.setLights(color, 1000, 2000);
 		}
 		builder.setDefaults(defaults);
-	}
-
-	private boolean checkPermission(final String... permissions) {
-		return mPermissionsManager.checkCallingPermission(permissions);
-	}
-
-	private void checkReadPermission(final int id, final String table, final String[] projection) {
-		switch (id) {
-			case VIRTUAL_TABLE_ID_PREFERENCES:
-			case VIRTUAL_TABLE_ID_DNS: {
-				if (!checkPermission(PERMISSION_PREFERENCES))
-					throw new SecurityException("Access preferences requires level PERMISSION_LEVEL_PREFERENCES");
-				break;
-			}
-			case TABLE_ID_ACCOUNTS: {
-				// Reading some infomation like user_id, screen_name etc is
-				// okay, but reading columns like password requires higher
-				// permission level.
-				final String[] credentialsCols = { Accounts.BASIC_AUTH_PASSWORD, Accounts.OAUTH_TOKEN,
-						Accounts.OAUTH_TOKEN_SECRET, Accounts.CONSUMER_KEY, Accounts.CONSUMER_SECRET };
-				if (projection == null || ArrayUtils.contains(projection, credentialsCols)
-						&& !checkPermission(PERMISSION_ACCOUNTS))
-					throw new SecurityException("Access column " + ArrayUtils.toString(projection, ',', true)
-							+ " in database accounts requires level PERMISSION_LEVEL_ACCOUNTS");
-				if (!checkPermission(PERMISSION_READ))
-					throw new SecurityException("Access database " + table + " requires level PERMISSION_LEVEL_READ");
-				break;
-			}
-			case TABLE_ID_DIRECT_MESSAGES:
-			case TABLE_ID_DIRECT_MESSAGES_INBOX:
-			case TABLE_ID_DIRECT_MESSAGES_OUTBOX:
-			case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
-			case TABLE_ID_DIRECT_MESSAGES_CONVERSATION_SCREEN_NAME:
-			case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES: {
-				if (!checkPermission(PERMISSION_DIRECT_MESSAGES))
-					throw new SecurityException("Access database " + table
-							+ " requires level PERMISSION_LEVEL_DIRECT_MESSAGES");
-				break;
-			}
-			case TABLE_ID_STATUSES:
-			case TABLE_ID_MENTIONS:
-			case TABLE_ID_TABS:
-			case TABLE_ID_DRAFTS:
-			case TABLE_ID_CACHED_USERS:
-			case TABLE_ID_FILTERED_USERS:
-			case TABLE_ID_FILTERED_KEYWORDS:
-			case TABLE_ID_FILTERED_SOURCES:
-			case TABLE_ID_FILTERED_LINKS:
-			case TABLE_ID_TRENDS_LOCAL:
-			case TABLE_ID_CACHED_STATUSES:
-			case TABLE_ID_CACHED_HASHTAGS: {
-				if (!checkPermission(PERMISSION_READ))
-					throw new SecurityException("Access database " + table + " requires level PERMISSION_LEVEL_READ");
-				break;
-			}
-		}
-	}
-
-	private void checkWritePermission(final int id, final String table) {
-		switch (id) {
-			case TABLE_ID_ACCOUNTS: {
-				// Writing to accounts database is not allowed for third-party
-				// applications.
-				if (!mPermissionsManager.checkSignature(Binder.getCallingUid()))
-					throw new SecurityException(
-							"Writing to accounts database is not allowed for third-party applications");
-				break;
-			}
-			case TABLE_ID_DIRECT_MESSAGES:
-			case TABLE_ID_DIRECT_MESSAGES_INBOX:
-			case TABLE_ID_DIRECT_MESSAGES_OUTBOX:
-			case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
-			case TABLE_ID_DIRECT_MESSAGES_CONVERSATION_SCREEN_NAME:
-			case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES: {
-				if (!checkPermission(PERMISSION_DIRECT_MESSAGES))
-					throw new SecurityException("Access database " + table
-							+ " requires level PERMISSION_LEVEL_DIRECT_MESSAGES");
-				break;
-			}
-			case TABLE_ID_STATUSES:
-			case TABLE_ID_MENTIONS:
-			case TABLE_ID_TABS:
-			case TABLE_ID_DRAFTS:
-			case TABLE_ID_CACHED_USERS:
-			case TABLE_ID_FILTERED_USERS:
-			case TABLE_ID_FILTERED_KEYWORDS:
-			case TABLE_ID_FILTERED_SOURCES:
-			case TABLE_ID_FILTERED_LINKS:
-			case TABLE_ID_TRENDS_LOCAL:
-			case TABLE_ID_CACHED_STATUSES:
-			case TABLE_ID_CACHED_HASHTAGS: {
-				if (!checkPermission(PERMISSION_WRITE))
-					throw new SecurityException("Access database " + table + " requires level PERMISSION_LEVEL_WRITE");
-				break;
-			}
-		}
 	}
 
 	private void clearNotification() {

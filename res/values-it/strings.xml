@@ -209,7 +209,6 @@
     <string name="new_user_list">Nuova lista</string>
     <string name="is_public">Pubblico</string>
     <string name="send_direct_message">Invia DM</string>
-    <string name="extensions">Estensioni</string>
     <string name="uninstall">Disinstalla</string>
     <string name="saved_searches">Ricerche salvate</string>
     <string name="tabs">Tabs</string>
@@ -351,18 +350,7 @@
     <string name="small">Piccolo</string>
     <string name="and_more">e altri <xliff:g id="count">%d</xliff:g></string>
     <string name="clear_search_history">Cancella cronologia ricerche</string>
-    <string name="permission_description_none">Nessun permesso richiesto</string>
-    <string name="permission_description_refresh">Aggiorna timeline (inclusi DM)</string>
-    <string name="permission_description_read">Leggi tweets e alcuni elementi in cache</string>
-    <string name="permission_description_write">Scrittura sul database, aggiornamento degli stati</string>
-    <string name="permission_description_direct_messages">Leggi/Scrivi/Invia messaggi diretti</string>
-    <string name="permission_description_accounts">Lettura informazioni account</string>
-    <string name="permission_description_preferences">Leggi le impostazioni</string>
-    <string name="permissions_request">Richiesta di permessi</string>
-    <string name="permissions_request_message">L\'estensione sta richiedendo i permessi seguenti</string>
-    <string name="accept_permission_request">Accetta</string>
     <string name="no_thanks">No, grazie</string>
-    <string name="revoke_permissions">Revoca permessi</string>
     <string name="fast_scroll_thumb">Scroll veloce</string>
     <string name="indicate_my_status">Indica i miei tweet</string>
     <string name="default_ringtone">Suoneria predefinita</string>

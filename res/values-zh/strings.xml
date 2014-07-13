@@ -210,7 +210,6 @@
     <string name="new_user_list">建立列表</string>
     <string name="is_public">公開</string>
     <string name="send_direct_message">發送私信</string>
-    <string name="extensions">擴展</string>
     <string name="uninstall">移除</string>
     <string name="saved_searches">已儲存的搜尋</string>
     <string name="tabs">標籤頁</string>
@@ -352,18 +351,7 @@
     <string name="small">小尺寸</string>
     <string name="and_more">和其他<xliff:g id="count">%d</xliff:g>個</string>
     <string name="clear_search_history">清除搜尋歷史</string>
-    <string name="permission_description_none">沒有需要的權限</string>
-    <string name="permission_description_refresh">刷新時間軸（包括私信）</string>
-    <string name="permission_description_read">讀取推文和一些快取的內容</string>
-    <string name="permission_description_write">將推文和其他一些內容寫入到資料庫，發送推文</string>
-    <string name="permission_description_direct_messages">讀寫/發送私信</string>
-    <string name="permission_description_accounts">讀取帳號授權信息</string>
-    <string name="permission_description_preferences">讀取設定</string>
-    <string name="permissions_request">授權請求</string>
-    <string name="permissions_request_message">擴展程序正在請求以下權限</string>
-    <string name="accept_permission_request">同意</string>
     <string name="no_thanks">不用了，謝謝</string>
-    <string name="revoke_permissions">撤銷授權</string>
     <string name="fast_scroll_thumb">快速捲動條</string>
     <string name="indicate_my_status">區別我的推文</string>
     <string name="default_ringtone">預設鈴聲</string>

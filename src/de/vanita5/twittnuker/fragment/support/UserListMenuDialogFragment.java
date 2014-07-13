@@ -45,11 +45,6 @@ public class UserListMenuDialogFragment extends MenuDialogFragment {
 		final ParcelableUserList user = args.getParcelable(EXTRA_USER_LIST);
 		inflater.inflate(R.menu.action_user_list, menu);
 		onPrepareItemMenu(menu, user);
-		final Intent extensionsIntent = new Intent(INTENT_ACTION_EXTENSION_OPEN_USER_LIST);
-		final Bundle extensionsExtras = new Bundle();
-		extensionsExtras.putParcelable(EXTRA_USER_LIST, user);
-		extensionsIntent.putExtras(extensionsExtras);
-		addIntentToMenu(getThemedContext(), menu, extensionsIntent);
 		final boolean longclickToOpenMenu = prefs.getBoolean(KEY_LONG_CLICK_TO_OPEN_MENU, false);
 		Utils.setMenuItemAvailability(menu, MENU_MULTI_SELECT, longclickToOpenMenu);
 	}

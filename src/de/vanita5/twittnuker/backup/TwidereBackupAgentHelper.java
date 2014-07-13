@@ -41,6 +41,5 @@ public class TwidereBackupAgentHelper extends BackupAgentHelper implements Const
 		addHelper(PREFS_BACKUP_KEY, new SharedPreferencesBackupHelper(this, SHARED_PREFERENCES_NAME));
 		addHelper(PREFS_BACKUP_KEY, new SharedPreferencesBackupHelper(this, HOST_MAPPING_PREFERENCES_NAME));
 		addHelper(PREFS_BACKUP_KEY, new SharedPreferencesBackupHelper(this, USER_COLOR_PREFERENCES_NAME));
-		addHelper(PREFS_BACKUP_KEY, new SharedPreferencesBackupHelper(this, PERMISSION_PREFERENCES_NAME));
 	}
 }

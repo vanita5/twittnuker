@@ -40,7 +40,7 @@ public class TimelineSyncPreference extends ServicePickerPreference implements C
 
 	@Override
 	protected String getIntentAction() {
-		return INTENT_ACTION_EXTENSION_SYNC_TIMELINE;
+		return INTENT_ACTION_SYNC_TIMELINE;
 	}
 
 	@Override

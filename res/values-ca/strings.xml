@@ -210,7 +210,6 @@
     <string name="new_user_list">Nova llista</string>
     <string name="is_public">Públic</string>
     <string name="send_direct_message">Envia un missatge directe</string>
-    <string name="extensions">Extensions</string>
     <string name="uninstall">Desinstaŀla</string>
     <string name="saved_searches">Cerques desades</string>
     <string name="tabs">Pestanyes</string>
@@ -352,18 +351,7 @@
     <string name="small">Petit</string>
     <string name="and_more">i <xliff:g id="count">%d</xliff:g> més</string>
     <string name="clear_search_history">Neteja l\'historial de cerques</string>
-    <string name="permission_description_none">No calen permisos</string>
-    <string name="permission_description_refresh">Actualitza la cronologia (inclou els missatges directes)</string>
-    <string name="permission_description_read">Llegeix piulades i alguns continguts ja carregats</string>
-    <string name="permission_description_write">Escriu a la base de dades i actualitza l\'estat</string>
-    <string name="permission_description_direct_messages">Llegir/Escriure/Enviar missatges directes</string>
-    <string name="permission_description_accounts">Mostra la informació del compte</string>
-    <string name="permission_description_preferences">Llegeix els paràmetres</string>
-    <string name="permissions_request">Petició de permisos</string>
-    <string name="permissions_request_message">Una extensió necessita els permisos següents</string>
-    <string name="accept_permission_request">Accepta</string>
     <string name="no_thanks">No, gràcies</string>
-    <string name="revoke_permissions">Revoca els permisos</string>
     <string name="fast_scroll_thumb">Desplaçament ràpid amb el polze</string>
     <string name="indicate_my_status">Indica la meva piulada</string>
     <string name="default_ringtone">To per defecte</string>

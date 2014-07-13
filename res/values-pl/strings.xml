@@ -208,7 +208,6 @@
     <string name="new_user_list">Nowa lista</string>
     <string name="is_public">Publiczny</string>
     <string name="send_direct_message">Wyślij Wiadomość Prywatną</string>
-    <string name="extensions">Rozszerzenia</string>
     <string name="uninstall">Odinstaluj</string>
     <string name="saved_searches">Zapisane wyniki wyszukiwania</string>
     <string name="tabs">Karty</string>
@@ -350,18 +349,7 @@
     <string name="small">Mały</string>
     <string name="and_more">oraz <xliff:g id="count">%d</xliff:g> więcej</string>
     <string name="clear_search_history">Wyczyść historię wyszukiwania</string>
-    <string name="permission_description_none">Nie są wymagane pozwolenia</string>
-    <string name="permission_description_refresh">Odśwież strumień (razem z wiadomościami)</string>
-    <string name="permission_description_read">Czytanie ćwierków i zawartości cache</string>
-    <string name="permission_description_write">Zapisz do bazy danych, aktualizuj status</string>
-    <string name="permission_description_direct_messages">Odczytuj/Pisz/Wysyłaj wiadomości</string>
-    <string name="permission_description_accounts">Pokaż informację o koncie</string>
-    <string name="permission_description_preferences">Odczyt ustawień</string>
-    <string name="permissions_request">Żądanie pozwoleń</string>
-    <string name="permissions_request_message">Rozszerzenie wymaga następujących pozwoleń</string>
-    <string name="accept_permission_request">Akceptuj</string>
     <string name="no_thanks">Nie, dziękuję</string>
-    <string name="revoke_permissions">Odwołaj pozwolenia</string>
     <string name="fast_scroll_thumb">Szybkie przewijanie palcem</string>
     <string name="indicate_my_status">Wyróżniaj moje ćwierki</string>
     <string name="default_ringtone">Domyślny dzwonek</string>

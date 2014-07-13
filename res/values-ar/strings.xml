@@ -212,7 +212,6 @@
     <string name="new_user_list">لائحة جديدة</string>
     <string name="is_public">عام</string>
     <string name="send_direct_message">إرسال رسالة مباشرة</string>
-    <string name="extensions">الملحقات</string>
     <string name="uninstall">إلغاء التنصيب</string>
     <string name="saved_searches">عمليات البحث المحفوظة</string>
     <string name="tabs">التبويبات</string>
@@ -337,15 +336,7 @@
     <string name="small">صغير</string>
     <string name="and_more">و <xliff:g id="count">%d</xliff:g> أخرون</string>
     <string name="clear_search_history">مسح سجل البحث</string>
-    <string name="permission_description_none">لا يوجد صلاحيات مُحتاجة.</string>
-    <string name="permission_description_refresh">تحديث الخط الزمني (بما في ذلك الرسائل المباشرة)</string>
-    <string name="permission_description_accounts">الإطلاع على معلومات الحساب</string>
-    <string name="permission_description_preferences">إعدادات القراءة</string>
-    <string name="permissions_request">طلب الصلاحيات</string>
-    <string name="permissions_request_message">التمديد يطلب الصلاحيات التالية</string>
-    <string name="accept_permission_request">الموافقة</string>
     <string name="no_thanks">لا، شكرا</string>
-    <string name="revoke_permissions">إبطال الإستئذانات</string>
     <string name="fast_scroll_thumb">تنقل الإبهام السريع</string>
     <string name="indicate_my_status">الإشارة إلى تغريدتي</string>
     <string name="default_ringtone">الرنة الافتراضية</string>

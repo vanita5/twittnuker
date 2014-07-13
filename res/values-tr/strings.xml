@@ -210,7 +210,6 @@
   <string name="new_user_list">Yeni liste</string>
   <string name="is_public">Herkese açık</string>
   <string name="send_direct_message">DM gönder</string>
-  <string name="extensions">Eklentiler</string>
   <string name="uninstall">Kaldır</string>
   <string name="saved_searches">Kayıtlı aramalar</string>
   <string name="tabs">Sekmeler</string>
@@ -348,18 +347,7 @@
   <string name="small">Küçük</string>
   <string name="and_more">ve <xliff:g id="count">%d</xliff:g> daha</string>
   <string name="clear_search_history">Arama geçmişini temizle</string>
-  <string name="permission_description_none">Herhangi bir izin gerekmez</string>
-  <string name="permission_description_refresh">Zaman akışını yenile (Direkt mesajlar dahil)</string>
-  <string name="permission_description_read">Tweetleri ve önyüklenmiş bazı içerikleri oku</string>
-  <string name="permission_description_write">Veritabanına yaz, durumu güncelle</string>
-  <string name="permission_description_direct_messages">Direkt mesaj Oku/Yaz/Gönder</string>
-  <string name="permission_description_accounts">Hesap bilgisini oku</string>
-  <string name="permission_description_preferences">Ayarları oku</string>
-  <string name="permissions_request">İzin isteği</string>
-  <string name="permissions_request_message">Eklenti aşağıdaki izinleri istiyor</string>
-  <string name="accept_permission_request">Kabul et</string>
   <string name="no_thanks">Hayır, teşekkürler</string>
-  <string name="revoke_permissions">İzinleri kaldır</string>
   <string name="fast_scroll_thumb">Hızlı kaydırma butonu</string>
   <string name="indicate_my_status">Tweetimi göster</string>
   <string name="default_ringtone">Varsayılan zil sesi</string>

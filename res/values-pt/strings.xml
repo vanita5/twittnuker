@@ -210,7 +210,6 @@
     <string name="new_user_list">Nova lista</string>
     <string name="is_public">Público</string>
     <string name="send_direct_message">Enviar MD</string>
-    <string name="extensions">Extensões</string>
     <string name="uninstall">Desinstalar</string>
     <string name="saved_searches">Pesquisas salvas</string>
     <string name="tabs">Abas</string>
@@ -356,18 +355,7 @@
     <string name="small">Pequeno</string>
     <string name="and_more">e <xliff:g id="count">%d</xliff:g> mais</string>
     <string name="clear_search_history">Limpar histórico de buscas</string>
-    <string name="permission_description_none">Nenhuma permissão requerida</string>
-    <string name="permission_description_refresh">Atualizar timeline (inclusive MD)</string>
-    <string name="permission_description_read">Ler tweets e algum conteúdo armazenado</string>
-    <string name="permission_description_write">Escrever no BD, atualizar status</string>
-    <string name="permission_description_direct_messages">Ler/Escrever/Enviar mensagens diretas</string>
-    <string name="permission_description_accounts">Ler informações da conta</string>
-    <string name="permission_description_preferences">Configurações de leitura</string>
-    <string name="permissions_request">Permissões requeridas</string>
-    <string name="permissions_request_message">A extensão está pedindo as seguintes permissões</string>
-    <string name="accept_permission_request">Aceitar</string>
     <string name="no_thanks">Não, obrigado</string>
-    <string name="revoke_permissions">Remover permissões</string>
     <string name="fast_scroll_thumb">Rolagem rápida</string>
     <string name="indicate_my_status">Destacar meus tweets</string>
     <string name="default_ringtone">Toque padrão</string>
