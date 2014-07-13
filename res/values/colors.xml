@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<color name="nyan_background">#003366</color>
 	<color name="bg_color_light">#e5e5e5</color>
 	<color name="bg_color_dark">#101010</color>
     <color name="bg_color_transparent_dark">#ff000000</color>

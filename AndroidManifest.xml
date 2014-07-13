@@ -564,11 +564,6 @@
             android:launchMode="singleTop"
             android:theme="@style/Theme.Twidere.Settings.Light"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".activity.NyanActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.Nyan"
-            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <service
             android:name=".service.RefreshService"
@@ -633,33 +628,6 @@
             <meta-data
                 android:name="description"
                 android:value="@string/dashclock_messages_unread_count_description" />
-        </service>
-        <service
-            android:name=".service.NyanWallpaperService"
-            android:enabled="false"
-            android:exported="true"
-            android:icon="@drawable/nyan_sakamoto_thumbnail"
-            android:label="@string/nyan_sakamoto"
-            android:permission="android.permission.BIND_WALLPAPER"
-            android:process=":wallpaper">
-            <intent-filter android:priority="1">
-                <action android:name="android.service.wallpaper.WallpaperService" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.service.wallpaper"
-                android:resource="@xml/nyan_wallpaper" />
-        </service>
-        <service
-            android:name=".service.NyanDaydreamService"
-            android:enabled="false"
-            android:exported="true"
-            android:icon="@drawable/nyan_sakamoto_thumbnail"
-            android:label="@string/nyan_sakamoto"
-            android:process=":daydream">
-            <intent-filter android:priority="1">
-                <action android:name="android.service.dreams.DreamService" />
-            </intent-filter>
         </service>
 
         <provider

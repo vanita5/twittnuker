@@ -3,8 +3,6 @@
 
 	<integer name="default_sliding_pane_fade_max">128</integer>
 	<integer name="default_sliding_pane_fling_duration">900</integer>
-	<integer name="nyan_star_rows">8</integer>
-	<integer name="nyan_star_cols">11</integer>
 	<integer name="default_text_size">15</integer>
 	<integer name="unread_count_text_size">10</integer>
 	<integer name="default_multi_column_list_count">1</integer>
@@ -12,7 +10,6 @@
 	<integer name="max_action_buttons_bottom">4</integer>
 	<integer name="activity_anim_time">@android:integer/config_shortAnimTime</integer>
 	<integer name="theme_preview_pane_space_weight">3</integer>
-	<integer name="default_live_wallpaper_scale">1</integer>
     <integer name="max_compose_menu_buttons_bottom">2</integer>
     <integer name="max_compose_menu_buttons_top">1</integer>
     <integer name="max_compose_menu_buttons_bottom_singleaccount">4</integer>

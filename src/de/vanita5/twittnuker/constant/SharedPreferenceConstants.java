@@ -308,8 +308,6 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_TAB_DISPLAY_OPTION = "tab_display_option";
 	@Preference(type = STRING)
 	public static final String KEY_CARD_HIGHLIGHT_OPTION = "card_highlight_option";
-	@Preference(type = INT, exportable = false)
-	public static final String KEY_LIVE_WALLPAPER_SCALE = "live_wallpaper_scale";
 	@Preference(type = LONG, exportable = false)
 	public static final String KEY_API_LAST_CHANGE = "api_last_change";
 	@Preference(type = LONG, exportable = false)

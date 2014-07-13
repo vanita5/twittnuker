@@ -23,27 +23,24 @@
 package de.vanita5.twittnuker.preference;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.preference.Preference;
 import android.util.AttributeSet;
 
-import de.vanita5.twittnuker.activity.NyanActivity;
-
 public class AppVersionPreference extends Preference {
 
 	public Handler mHandler = new Handler();
 	protected int mClickCount;
 
-	private final Runnable mResetCounterRunnable = new Runnable() {
-
-		@Override
-		public void run() {
-			mClickCount = 0;
-		}
-	};
+//	private final Runnable mResetCounterRunnable = new Runnable() {
+//
+//		@Override
+//		public void run() {
+//			mClickCount = 0;
+//		}
+//	};
 
 	public AppVersionPreference(final Context context) {
 		this(context, null);
@@ -67,16 +64,17 @@ public class AppVersionPreference extends Preference {
 
 	@Override
 	protected void onClick() {
-		mHandler.removeCallbacks(mResetCounterRunnable);
-		mClickCount++;
-		if (mClickCount >= 7) {
-			final Context context = getContext();
-			if (context != null) {
-				mClickCount = 0;
-				context.startActivity(new Intent(context, NyanActivity.class));
-			}
-		}
-		mHandler.postDelayed(mResetCounterRunnable, 3000);
+//		mHandler.removeCallbacks(mResetCounterRunnable);
+//		mClickCount++;
+//		if (mClickCount >= 7) {
+//			final Context context = getContext();
+//			if (context != null) {
+//				mClickCount = 0;
+//				//Easter Egg
+//				//context.startActivity(new Intent(context, EasterEggActivity.class));
+//			}
+//		}
+//		mHandler.postDelayed(mResetCounterRunnable, 3000);
 	}
 
 }

@@ -401,10 +401,6 @@
 
 	<style name="Theme.Test" parent="android:Theme.Holo"/>
 
-	<style name="Theme.Nyan" parent="android:Theme.Holo.NoActionBar">
-		<item name="android:windowBackground">@color/nyan_background</item>
-	</style>
-
 	<style name="Theme.Twidere.Settings.Dark" parent="android:Theme.Holo">
 
 		<!-- Colors -->
