@@ -8,6 +8,14 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 19
     buildToolsVersion '20.0.0'
+
+    defaultConfig {
+        applicationId "de.vanita5.twittnuker"
+        minSdkVersion 14
+        targetSdkVersion 19
+        versionCode 7
+        versionName "0.4.0"
+    }
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
