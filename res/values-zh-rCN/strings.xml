@@ -616,5 +616,4 @@
     <string name="click_item_to_config">点击一项以设定</string>
     <string name="dark_drawer">暗色侧栏</string>
     <string name="retweets_of_me">转推我的内容</string>
-    <string name="jtapi_hostname">JTAPI域名</string>
 </resources>
