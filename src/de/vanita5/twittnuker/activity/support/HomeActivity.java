@@ -79,6 +79,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
@@ -148,7 +149,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 				updateUnreadCount();
 			} else if (WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION.equals(action)) {
 				if (!mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false) && !intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false)) {
-					closeStream();
+					closeStreamInBackground();
 				}
 			} else if (WifiManager.SUPPLICANT_STATE_CHANGED_ACTION.equals(action)) {
 				if(mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)) {
@@ -163,7 +164,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 				if (SupplicantState.COMPLETED.equals(supplicantState)) {
 					connectToStream();
 				} else {
-					closeStream();
+					closeStreamInBackground();
 				}
 			}
 		}
@@ -595,7 +596,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
 	@Override
 	protected void onDestroy() {
-		closeStream();
+		killStream();
 		// Delete unused items in databases.
 		cleanDatabasesByItemLimit(this);
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONDESTROY));
@@ -630,7 +631,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		if(!isStreaming() && mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
 			connectToStream();
 		} else if(!mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
-			closeStream();
+			closeStreamInBackground();
 		}
 	}
 	
@@ -656,33 +657,37 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 					builder.setContentTitle(getString(R.string.app_name));
 					builder.setContentText(getString(R.string.streaming_service_running));
 					builder.setTicker(getString(R.string.streaming_service_running));
+					builder.setPriority(NotificationCompat.PRIORITY_LOW);
 					notificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
 				}
 			}
 		}
 	}
 	
-	public void closeStream() {
+	public void closeStreamInBackground() {
 		if (twitterStream != null) {
 			new AsyncTask<Void, Void, Void>() {
 
 				@Override
 				protected Void doInBackground(Void... voids) {
-					twitterStream.cleanUp();
-					twitterStream.shutdown();
-					twitterStream = null;
+					killStream();
 					return null;
-				}
-
-				@Override
-				protected void onPostExecute(Void aVoid) {
-					NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-					notificationManager.cancel(NOTIFICATION_ID_STREAMING);
-					hasStreamLoaded = false;
-					super.onPostExecute(aVoid);
 				}
 			}.execute();
 		}
+	}
+
+	public void killStream() {
+		if (twitterStream != null) {
+			twitterStream.shutdown();
+			hasStreamLoaded = false;
+			killStreamingNotification();
+		}
+	}
+
+	public void killStreamingNotification() {
+		NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.cancel(NOTIFICATION_ID_STREAMING);
 	}
 	
 	public boolean isStreaming() {
@@ -713,7 +718,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		if(!isStreaming() && mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
 			connectToStream();
 		} else if(!mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
-			closeStream();
+			closeStreamInBackground();
 		}
 	}
 
