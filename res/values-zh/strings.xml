@@ -507,7 +507,7 @@
     <string name="account_options">帳號選項</string>
     <string name="show_in_timeline">在時間軸中顯示</string>
     <string name="cards">卡片</string>
-    <string name="no_tab_hint">沒有標籤頁</string>
+    <string name="no_tab">沒有標籤頁</string>
     <string name="delete_user">刪除用戶<xliff:g id="name">%s</xliff:g></string>
     <string name="delete_users">刪除用戶</string>
     <string name="delete_user_confirm_message">您確定要刪除<xliff:g id="name">%s</xliff:g>嗎？</string>

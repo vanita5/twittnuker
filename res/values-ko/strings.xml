@@ -505,7 +505,7 @@
     <string name="account_options">계정 옵션</string>
     <string name="show_in_timeline">타임라인에 표시</string>
     <string name="cards">카드</string>
-    <string name="no_tab_hint">탭 없음</string>
+    <string name="no_tab">탭 없음</string>
     <string name="delete_user"><xliff:g id="name">%s</xliff:g>님을 삭제하기</string>
     <string name="delete_users">사용자 삭제하기</string>
     <string name="delete_user_confirm_message"> <xliff:g id="name">%s</xliff:g>님을 삭제하겠습니까? 되돌릴 수 없습니다.</string>

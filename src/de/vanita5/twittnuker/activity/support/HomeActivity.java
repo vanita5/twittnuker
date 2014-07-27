@@ -198,6 +198,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private ExtendedViewPager mViewPager;
 	private TabPageIndicator mIndicator;
 	private HomeSlidingMenu mSlidingMenu;
+	private View mEmptyTab;
 	private View mEmptyTabHint;
     private ProgressBar mSmartBarProgress;
     private HomeActionsActionView mActionsButton, mBottomActionsButton;
@@ -285,6 +286,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	public void onContentChanged() {
 		super.onContentChanged();
 		mViewPager = (ExtendedViewPager) findViewById(R.id.main_pager);
+		mEmptyTab = findViewById(R.id.empty_tab);
 		mEmptyTabHint = findViewById(R.id.empty_tab_hint);
 		mBottomActionsButton = (HomeActionsActionView) findViewById(R.id.actions_button_bottom);
 		if (mSlidingMenu == null) {
@@ -571,6 +573,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		mBottomActionsButton.setOnLongClickListener(this);
 		initTabs();
 		final boolean tabsNotEmpty = mPagerAdapter.getCount() > 0;
+		mEmptyTab.setVisibility(tabsNotEmpty ? View.GONE : View.VISIBLE);
 		mEmptyTabHint.setVisibility(tabsNotEmpty ? View.GONE : View.VISIBLE);
 		mViewPager.setVisibility(tabsNotEmpty ? View.VISIBLE : View.GONE);
 		mActionBar.setDisplayShowHomeEnabled(displayIcon || !tabsNotEmpty);

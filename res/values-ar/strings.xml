@@ -466,7 +466,7 @@
     <string name="account_options">خيارات الحساب</string>
     <string name="show_in_timeline">إظهار في الخط الزمني</string>
     <string name="cards">بطاقات</string>
-    <string name="no_tab_hint">ولا تبويبة</string>
+    <string name="no_tab">ولا تبويبة</string>
     <string name="delete_user">حذف المستخدم <xliff:g id="name">%s</xliff:g></string>
     <string name="delete_users">حذف المستخدمين</string>
     <string name="delete_user_confirm_message">حذف <xliff:g id="name">%s</xliff:g> ؟ لايمكن التراجع عن هذه العملية.</string>

@@ -509,7 +509,7 @@
     <string name="account_options">Pilihan akun</string>
     <string name="show_in_timeline">Tunjukkan di linimasa</string>
     <string name="cards">Kartu</string>
-    <string name="no_tab_hint">Tidak terdapat tab</string>
+    <string name="no_tab">Tidak terdapat tab</string>
     <string name="delete_user">Hapus user <xliff:g id="name">%s</xliff:g></string>
     <string name="delete_users">Hapus beberapa user</string>
     <string name="delete_user_confirm_message">Hapus <xliff:g id="name">%s</xliff:g>? Tidak dapat dilaksanakan.</string>

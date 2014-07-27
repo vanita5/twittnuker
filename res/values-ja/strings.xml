@@ -518,7 +518,7 @@
     <string name="account_options">アカウントオプション</string>
     <string name="show_in_timeline">TLに表示</string>
     <string name="cards">カード</string>
-    <string name="no_tab_hint">タブ無し</string>
+    <string name="no_tab">タブ無し</string>
     <string name="delete_user"><xliff:g id="name">%s</xliff:g>さんを削除</string>
     <string name="delete_users">ユーザーを削除</string>
     <string name="delete_user_confirm_message"><xliff:g id="name">%s</xliff:g>さんを削除しますか? 復元は出来ません。</string>

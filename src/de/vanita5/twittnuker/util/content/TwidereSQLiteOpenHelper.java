@@ -96,19 +96,6 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 	@Override
 	public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
 		handleVersionChange(db, oldVersion, newVersion);
-		if (oldVersion <= 43 && newVersion >= 44) {
-			final ContentValues values = new ContentValues();
-			final SharedPreferences prefs = mContext
-					.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-			// Here I use old consumer key/secret because it's default key for
-			// older versions
-			final String pref_consumer_key = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
-			final String pref_consumer_secret = prefs
-					.getString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
-			values.put(Accounts.CONSUMER_KEY, trim(pref_consumer_key));
-			values.put(Accounts.CONSUMER_SECRET, trim(pref_consumer_secret));
-			db.update(Accounts.TABLE_NAME, values, null, null);
-		}
 	}
 
 	private SQLCreateViewQuery createDirectMessageConversationEntriesView() {

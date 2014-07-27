@@ -500,7 +500,7 @@
     <string name="account_options">Ustawienia konta</string>
     <string name="show_in_timeline">Pokazuj w strumieniu</string>
     <string name="cards">Ćwierki</string>
-    <string name="no_tab_hint">Brak kart</string>
+    <string name="no_tab">Brak kart</string>
     <string name="delete_user">Usuń użytkownika <xliff:g id="name">%s</xliff:g></string>
     <string name="delete_users">Usuń użytkowników</string>
     <string name="delete_user_confirm_message">Usunąć <xliff:g id="name">%s</xliff:g>? Nie będzie można cofnąć.</string>
