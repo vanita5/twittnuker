@@ -165,7 +165,7 @@ public class StreamingService extends Service implements Constants {
 			builder.setContentTitle(getString(R.string.app_name));
 			builder.setContentText(getString(R.string.streaming_service_running));
 			builder.setTicker(getString(R.string.streaming_service_running));
-			builder.setPriority(NotificationCompat.PRIORITY_LOW);
+			builder.setPriority(NotificationCompat.PRIORITY_MIN);
 			mNotificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
 		} else {
 			mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
