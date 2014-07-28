@@ -13,9 +13,9 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
-import android.net.wifi.SupplicantState;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.IBinder;
@@ -62,6 +62,7 @@ public class StreamingService extends Service implements Constants {
 	private NotificationManager mNotificationManager;
 
 	private long[] mAccountIds;
+	private boolean isStreaming = false;
 
 	private static final Uri[] STATUSES_URIS = new Uri[] { Statuses.CONTENT_URI, Mentions.CONTENT_URI };
 	private static final Uri[] MESSAGES_URIS = new Uri[] { DirectMessages.Inbox.CONTENT_URI, DirectMessages.Outbox.CONTENT_URI };
@@ -71,22 +72,19 @@ public class StreamingService extends Service implements Constants {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			final String action = intent.getAction();
-			if (WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION.equals(action)) {
-				if (!mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false) && !intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false)) {
-					clearTwitterInstances();
-				}
-			} else if (WifiManager.SUPPLICANT_STATE_CHANGED_ACTION.equals(action)) {
-				//if(mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)) return;
 
-				WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-				WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-				SupplicantState supplicantState = wifiInfo.getSupplicantState();
+			if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action)) {
+				NetworkInfo wifi = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
 
-				if (SupplicantState.COMPLETED.equals(supplicantState)) {
+				if (wifi.isConnected()) {
 					initStreaming();
 				} else {
-					clearTwitterInstances();
+					if (!mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)) {
+						clearTwitterInstances();
+					}
 				}
+			} else if (BROADCAST_REFRESH_STREAMING_SERVICE.equals(action)) {
+				initStreaming();
 			}
 		}
 	};
@@ -119,8 +117,8 @@ public class StreamingService extends Service implements Constants {
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
-		filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+		filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+		filter.addAction(BROADCAST_REFRESH_STREAMING_SERVICE);
 		registerReceiver(mStateReceiver, filter);
 
 		initStreaming();
@@ -141,35 +139,44 @@ public class StreamingService extends Service implements Constants {
 			new Thread(new ShutdownStreamTwitterRunnable(stream)).start();
 		}
 		mTwitterInstances.clear();
+		isStreaming = false;
 		mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void initStreaming() {
 		if (!mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) return;
 
-		WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-		SupplicantState supplicantState = wifiInfo.getSupplicantState();
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+		if (isStreaming) {
+			if (!(mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
+					|| wifi.isConnected())) {
+				clearTwitterInstances();
+			}
+			return;
+		}
 
 		if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
-				&& !SupplicantState.COMPLETED.equals(supplicantState)) return;
+				|| wifi.isConnected()) {
 
-		final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-		if (setTwitterInstances(prefs)) {
-			final Intent intent = new Intent(this, HomeActivity.class);
-			final Notification.Builder builder = new Notification.Builder(this);
-			builder.setOngoing(true);
-			builder.setOnlyAlertOnce(true);
-			builder.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
-			builder.setSmallIcon(R.drawable.ic_stat_twittnuker);
-			builder.setContentTitle(getString(R.string.app_name));
-			builder.setContentText(getString(R.string.streaming_service_running));
-			builder.setTicker(getString(R.string.streaming_service_running));
-			builder.setPriority(NotificationCompat.PRIORITY_MIN);
-			mNotificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
-		} else {
-			mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
+			final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+			if (setTwitterInstances(prefs)) {
+				final Intent intent = new Intent(this, HomeActivity.class);
+				final Notification.Builder builder = new Notification.Builder(this);
+				builder.setOngoing(true);
+				builder.setOnlyAlertOnce(true);
+				builder.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
+				builder.setSmallIcon(R.drawable.ic_stat_twittnuker);
+				builder.setContentTitle(getString(R.string.app_name));
+				builder.setContentText(getString(R.string.streaming_service_running));
+				builder.setTicker(getString(R.string.streaming_service_running));
+				builder.setPriority(NotificationCompat.PRIORITY_MIN);
+				mNotificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
+			} else {
+				isStreaming = false;
+				mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
+			}
 		}
 	}
 
@@ -226,6 +233,7 @@ public class StreamingService extends Service implements Constants {
 			cur.moveToNext();
 		}
 		cur.close();
+		isStreaming = true;
 		return true;
 	}
 

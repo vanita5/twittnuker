@@ -869,6 +869,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			startService(serviceIntent);
 			isStreamingServiceRunning = true;
 		}
+		sendBroadcast(new Intent(BROADCAST_REFRESH_STREAMING_SERVICE));
 	}
 
 	private void stopStreamingService() {

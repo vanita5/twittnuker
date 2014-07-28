@@ -105,6 +105,7 @@ public interface IntentConstants {
 	public static final String BROADCAST_UNREAD_COUNT_UPDATED = INTENT_PACKAGE_PREFIX + "UNREAD_COUNT_UPDATED";
 	public static final String BROADCAST_DATABASE_READY = INTENT_PACKAGE_PREFIX + "DATABASE_READY";
 	public static final String BROADCAST_HOTOTIN_EXPANDED = INTENT_PACKAGE_PREFIX + "HOTOTIN_EXPANDED";
+	public static final String BROADCAST_REFRESH_STREAMING_SERVICE = INTENT_PACKAGE_PREFIX + "REFRESH_STREAMING_SERVICE";
 
 	public static final String EXTRA_LATITUDE = "latitude";
 	public static final String EXTRA_LONGITUDE = "longitude";
