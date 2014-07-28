@@ -878,7 +878,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		data.add(status);
 		final ParcelableStatusesAdapter adapter = (ParcelableStatusesAdapter) getListAdapter();
 		adapter.setData(data);
-		if (!mLoadMoreAutomatically && mShouldScroll) {
+		if (!mLoadMoreAutomatically && !mLoadConversationsAutomatically && mShouldScroll) {
 			setSelection(0);
 		}
 	}
@@ -934,7 +934,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		final int count = adapter.getCount();
 		final ParcelableStatus status;
 		if (count == 0) {
-			mShouldScroll = !mLoadMoreAutomatically;
+			mShouldScroll = !mLoadMoreAutomatically && !mLoadConversationsAutomatically;
 			status = mStatus;
 		} else {
 			status = adapter.getStatus(adapter.getCount() - 1);
