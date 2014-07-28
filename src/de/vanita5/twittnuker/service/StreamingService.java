@@ -160,6 +160,7 @@ public class StreamingService extends Service implements Constants {
 			final Intent intent = new Intent(this, HomeActivity.class);
 			final Notification.Builder builder = new Notification.Builder(this);
 			builder.setOngoing(true);
+			builder.setOnlyAlertOnce(true);
 			builder.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
 			builder.setSmallIcon(R.drawable.ic_stat_twittnuker);
 			builder.setContentTitle(getString(R.string.app_name));
