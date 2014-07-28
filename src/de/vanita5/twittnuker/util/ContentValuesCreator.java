@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
+import static de.vanita5.twittnuker.util.Utils.getBiggerTwitterProfileImage;
 
 import android.content.ContentValues;
 
@@ -152,6 +153,11 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 
 	public static ContentValues makeDirectMessageContentValues(final DirectMessage message, final long account_id,
 															   final boolean is_outgoing) {
+		return makeDirectMessageContentValues(message, account_id, is_outgoing, false);
+	}
+
+	public static ContentValues makeDirectMessageContentValues(final DirectMessage message, final long account_id,
+															   final boolean is_outgoing, final boolean large_profile_image) {
 		if (message == null || message.getId() <= 0) return null;
 		final ContentValues values = new ContentValues();
 		final User sender = message.getSender(), recipient = message.getRecipient();
@@ -172,8 +178,11 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(DirectMessages.SENDER_SCREEN_NAME, sender.getScreenName());
 		values.put(DirectMessages.RECIPIENT_NAME, recipient.getName());
 		values.put(DirectMessages.RECIPIENT_SCREEN_NAME, recipient.getScreenName());
-		values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL, sender_profile_image_url);
-		values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, recipient_profile_image_url);
+		values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL,
+				large_profile_image ? getBiggerTwitterProfileImage(sender_profile_image_url) : sender_profile_image_url);
+		values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL,
+				large_profile_image ? getBiggerTwitterProfileImage(recipient_profile_image_url)
+						: recipient_profile_image_url);
 		final ParcelableMedia[] medias = ParcelableMedia.fromEntities(message);
 		if (medias != null) {
 			values.put(DirectMessages.MEDIAS, JSONSerializer.toJSONArrayString(medias));
@@ -255,6 +264,11 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 	}
 
 	public static ContentValues makeStatusContentValues(final Status orig, final long account_id) {
+		return makeStatusContentValues(orig, account_id, false);
+	}
+
+	public static ContentValues makeStatusContentValues(final Status orig, final long account_id,
+														final boolean large_profile_image) {
 		if (orig == null || orig.getId() <= 0) return null;
 		final ContentValues values = new ContentValues();
 		values.put(Statuses.ACCOUNT_ID, account_id);
@@ -285,7 +299,8 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 			values.put(Statuses.USER_SCREEN_NAME, screenName);
 			values.put(Statuses.IS_PROTECTED, user.isProtected());
 			values.put(Statuses.IS_VERIFIED, user.isVerified());
-			values.put(Statuses.USER_PROFILE_IMAGE_URL, profileImageUrl);
+			values.put(Statuses.USER_PROFILE_IMAGE_URL,
+					large_profile_image ? getBiggerTwitterProfileImage(profileImageUrl) : profileImageUrl);
             values.put(CachedUsers.IS_FOLLOWING, user.isFollowing());
 		}
 		final String text_html = Utils.formatStatusText(status);
