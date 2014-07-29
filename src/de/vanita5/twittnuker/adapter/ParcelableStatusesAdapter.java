@@ -22,17 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.model.ParcelableLocation.isValidLocation;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.getAccountColor;
-import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
-import static de.vanita5.twittnuker.util.Utils.getCardHighlightOptionInt;
-import static de.vanita5.twittnuker.util.Utils.isFiltered;
-import static de.vanita5.twittnuker.util.Utils.openImage;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -59,6 +48,17 @@ import de.vanita5.twittnuker.view.iface.ICardItemView.OnOverflowIconClickListene
 
 import java.util.List;
 import java.util.Locale;
+
+import static de.vanita5.twittnuker.model.ParcelableLocation.isValidLocation;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
+import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
+import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.getAccountColor;
+import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
+import static de.vanita5.twittnuker.util.Utils.getCardHighlightOptionInt;
+import static de.vanita5.twittnuker.util.Utils.isFiltered;
+import static de.vanita5.twittnuker.util.Utils.openImage;
+import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 
 public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus> implements
 		IStatusesAdapter<List<ParcelableStatus>>, OnClickListener, OnOverflowIconClickListener {

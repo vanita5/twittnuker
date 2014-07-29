@@ -22,27 +22,23 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import static de.vanita5.twittnuker.util.Utils.restartActivity;
-
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 
-import com.negusoft.holoaccent.AccentHelper;
+import com.negusoft.holoaccent.AccentResources;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.util.theme.TwidereAccentHelper;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 
-public abstract class BaseSupportThemedActivity extends FragmentActivity implements Constants, IThemedActivity {
+import static de.vanita5.twittnuker.util.Utils.restartActivity;
+
+public abstract class BaseSupportThemedActivity extends AccentFragmentActivity implements Constants, IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha;
-
-    private AccentHelper mAccentHelper;
 
 	@Override
 	public void finish() {
@@ -61,11 +57,6 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 	}
 
     @Override
-    public Resources getResources() {
-		return getThemedResources();
-	}
-
-    @Override
     public int getThemeBackgroundAlpha() {
         return ThemeUtils.isTransparentBackground(this) ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xff;
     }
@@ -73,13 +64,6 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
     @Override
     public abstract int getThemeColor();
 
-	@Override
-	public final Resources getThemedResources() {
-		if (mAccentHelper == null) {
-			mAccentHelper = new TwidereAccentHelper(getThemeResourceId(), getThemeColor());
-		}
-		return mAccentHelper.getResources(this, super.getResources());
-	}
 
 	@Override
 	public String getThemeFontFamily() {
@@ -107,6 +91,13 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 		} else {
 			ThemeUtils.overrideNormalActivityCloseAnimation(this);
 		}
+    }
+
+
+    @Override
+    public void onInitAccentResources(AccentResources resources) {
+        super.onInitAccentResources(resources);
+        ThemeUtils.initResourceInterceptors(this, resources);
 	}
 
 	@Override

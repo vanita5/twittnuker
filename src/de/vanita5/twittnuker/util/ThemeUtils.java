@@ -42,6 +42,8 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.negusoft.holoaccent.AccentResources;
+
 import org.mariotaku.refreshnow.widget.RefreshNowConfig;
 import org.mariotaku.refreshnow.widget.RefreshNowProgressIndicator.IndicatorConfig;
 
@@ -54,8 +56,12 @@ import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.content.TwidereContextThemeWrapper;
 import de.vanita5.twittnuker.content.TwidereContextWrapper;
 import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
+import de.vanita5.twittnuker.content.res.NoAccentResources;
 import de.vanita5.twittnuker.content.res.TwidereAccentResources;
 import de.vanita5.twittnuker.content.res.TwidereResources;
+import de.vanita5.twittnuker.util.theme.ActionIconsInterceptor;
+import de.vanita5.twittnuker.util.theme.ActivityIconsInterceptor;
+import de.vanita5.twittnuker.util.theme.WhiteDrawableInterceptor;
 
 public class ThemeUtils implements Constants {
 
@@ -909,4 +915,15 @@ public class ThemeUtils implements Constants {
 		return (View) constructor.newInstance(context, attrs);
 	}
 
+    public static void initResourceInterceptors(Context context, AccentResources resources) {
+        resources.addInterceptor(new ActionIconsInterceptor(context, resources.getDisplayMetrics(), 0));
+        resources.addInterceptor(new ActivityIconsInterceptor(context, resources.getDisplayMetrics(), 0));
+        resources.addInterceptor(new WhiteDrawableInterceptor(resources));
+    }
+
+    public static void initResourceInterceptors(Context context, NoAccentResources resources) {
+        resources.addInterceptor(new ActionIconsInterceptor(context, resources.getDisplayMetrics(), 0));
+        resources.addInterceptor(new ActivityIconsInterceptor(context, resources.getDisplayMetrics(), 0));
+        resources.addInterceptor(new WhiteDrawableInterceptor(resources));
+    }
 }

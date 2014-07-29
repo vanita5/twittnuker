@@ -28,9 +28,11 @@ import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 
 import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
+import de.vanita5.twittnuker.content.res.NoAccentResources;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.theme.TwidereResourceHelper;
 
-public class TwidereContextWrapper extends ContextWrapper implements ITwidereContextWrapper {
+public class TwidereContextWrapper extends ContextWrapper implements ITwidereContextWrapper, TwidereResourceHelper.OnInitListener {
 
     private final Resources mResources;
     private final int mThemeResourceId;
@@ -53,7 +55,7 @@ public class TwidereContextWrapper extends ContextWrapper implements ITwidereCon
         super(base);
         mResources = res;
         mThemeResourceId = theme;
-		mResourceHelper = new TwidereResourceHelper(theme);
+        mResourceHelper = new TwidereResourceHelper(theme, this);
     }
 
     @Override
@@ -87,4 +89,8 @@ public class TwidereContextWrapper extends ContextWrapper implements ITwidereCon
             return 0;
     }
 
+    @Override
+    public void onInitResources(NoAccentResources resources) {
+        ThemeUtils.initResourceInterceptors(this, resources);
+    }
 }

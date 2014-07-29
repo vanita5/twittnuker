@@ -27,12 +27,15 @@ import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.view.ContextThemeWrapper;
 
+import com.negusoft.holoaccent.AccentHelper;
+import com.negusoft.holoaccent.AccentResources;
+
 import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
-import de.vanita5.twittnuker.util.theme.TwidereAccentHelper;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class TwidereContextThemeWrapper extends ContextThemeWrapper implements ITwidereContextWrapper {
+public class TwidereContextThemeWrapper extends ContextThemeWrapper implements ITwidereContextWrapper, AccentHelper.OnInitListener {
 
-	private final TwidereAccentHelper mAccentHelper;
+    private final AccentHelper mAccentHelper;
 
 	private final int mThemeResourceId;
 	private final int mAccentColor;
@@ -42,7 +45,7 @@ public class TwidereContextThemeWrapper extends ContextThemeWrapper implements I
 		super(base, themeResource);
 		mThemeResourceId = themeResource;
 		mAccentColor = accentColor;
-		mAccentHelper = new TwidereAccentHelper(themeResource, accentColor);
+        mAccentHelper = new AccentHelper(accentColor, accentColor, accentColor, this);
 	}
 
 	public int getAccentColor() {
@@ -72,4 +75,8 @@ public class TwidereContextThemeWrapper extends ContextThemeWrapper implements I
 		return mThemeResourceId;
 	}
 
+    @Override
+    public void onInitResources(AccentResources accentResources) {
+        ThemeUtils.initResourceInterceptors(this, accentResources);
+    }
 }

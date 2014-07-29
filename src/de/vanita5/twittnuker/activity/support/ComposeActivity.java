@@ -215,11 +215,6 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	}
 
     @Override
-    public Resources getResources() {
-		return getThemedResources();
-    }
-
-	@Override
 	public int getThemeColor() {
 		return ThemeUtils.getUserThemeColor(this);
 	}
@@ -689,7 +684,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	 * The Location Manager manages location providers. This code searches for
 	 * the best provider of data (GPS, WiFi/cell phone tower lookup, some other
 	 * mechanism) and finds the last known location.
-	 **/
+     */
 	private boolean getLocation() {
 		final Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);

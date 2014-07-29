@@ -22,28 +22,24 @@
 
 package de.vanita5.twittnuker.activity;
 
-import static de.vanita5.twittnuker.util.Utils.restartActivity;
-
-import android.app.Activity;
-import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 
-import com.negusoft.holoaccent.AccentHelper;
+import com.negusoft.holoaccent.AccentResources;
 
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.util.theme.TwidereAccentHelper;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 
-public abstract class BaseThemedActivity extends Activity implements IThemedActivity {
+import static de.vanita5.twittnuker.util.Utils.restartActivity;
+
+public abstract class BaseThemedActivity extends AccentActivity implements IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha;
 	private String mCurrentThemeFontFamily;
-    private AccentHelper mAccentHelper;
 	private Theme mTheme;
 
 	@Override
@@ -58,16 +54,6 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 	}
 
     @Override
-    public Resources getDefaultResources() {
-        return super.getResources();
-    }
-
-    @Override
-    public Resources getResources() {
-		return getThemedResources();
-    }
-
-	@Override
 	public Theme getTheme() {
 		if (mTheme == null) {
 			mTheme = getResources().newTheme();
@@ -87,14 +73,6 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 
     @Override
     public abstract int getThemeColor();
-
-	@Override
-	public final Resources getThemedResources() {
-		if (mAccentHelper == null) {
-			mAccentHelper = new TwidereAccentHelper(getThemeResourceId(), getThemeColor());
-		}
-		return mAccentHelper.getResources(this, super.getResources());
-	}
 
 	@Override
 	public String getThemeFontFamily() {
@@ -169,6 +147,12 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 
 	private final void setActionBarBackground() {
         ThemeUtils.applyActionBarBackground(getActionBar(), this, mCurrentThemeResource);
+    }
+
+    @Override
+    public void onInitAccentResources(AccentResources resources) {
+        super.onInitAccentResources(resources);
+        ThemeUtils.initResourceInterceptors(this, resources);
 	}
 
 	private final void setTheme() {

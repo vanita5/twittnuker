@@ -29,11 +29,12 @@ import android.os.Bundle;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.content.res.NoAccentResources;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.theme.TwidereResourceHelper;
 
 @SuppressLint("Registered")
-public class BaseSupportDialogActivity extends BaseSupportThemedActivity implements Constants, IThemedActivity {
+public class BaseSupportDialogActivity extends BaseSupportThemedActivity implements Constants, IThemedActivity, TwidereResourceHelper.OnInitListener {
 
 	private TwidereResourceHelper mResourceHelper;
 	private boolean mInstanceStateSaved;
@@ -41,7 +42,7 @@ public class BaseSupportDialogActivity extends BaseSupportThemedActivity impleme
 	@Override
     public Resources getResources() {
 		if (mResourceHelper == null) {
-			mResourceHelper = new TwidereResourceHelper(getThemeResourceId());
+            mResourceHelper = new TwidereResourceHelper(getThemeResourceId(), this);
 		}
         return mResourceHelper.getResources(this, getDefaultResources());
 	}
@@ -82,4 +83,8 @@ public class BaseSupportDialogActivity extends BaseSupportThemedActivity impleme
 		super.onSaveInstanceState(outState);
 	}
 
+    @Override
+    public void onInitResources(NoAccentResources resources) {
+        ThemeUtils.initResourceInterceptors(this, resources);
+    }
 }

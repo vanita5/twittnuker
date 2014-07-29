@@ -26,13 +26,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.graphics.drawable.Drawable;
-import android.util.DisplayMetrics;
 
 import java.util.ArrayList;
-
-import de.vanita5.twittnuker.util.theme.ActionIconsInterceptor;
-import de.vanita5.twittnuker.util.theme.ActivityIconsInterceptor;
-import de.vanita5.twittnuker.util.theme.WhiteDrawableInterceptor;
 
 public interface IThemedResources {
 
@@ -52,10 +47,6 @@ public interface IThemedResources {
 
 		public Helper(final Resources res, final Context context, final int overrideThemeRes) {
 			mResources = res;
-            final DisplayMetrics dm = res.getDisplayMetrics();
-			addDrawableInterceptor(new ActionIconsInterceptor(context, dm, overrideThemeRes));
-			addDrawableInterceptor(new ActivityIconsInterceptor(context, dm, overrideThemeRes));
-            addDrawableInterceptor(new WhiteDrawableInterceptor(res));
 		}
 
 		public void addDrawableInterceptor(final DrawableInterceptor interceptor) {

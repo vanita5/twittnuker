@@ -8,14 +8,15 @@ import android.util.SparseArray;
 
 import com.atermenji.android.iconicdroid.IconicFontDrawable;
 import com.atermenji.android.iconicdroid.icon.Icon;
+import com.negusoft.holoaccent.AccentPalette;
+import com.negusoft.holoaccent.AccentResources;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.content.TwidereContextThemeWrapper;
-import de.vanita5.twittnuker.content.res.iface.IThemedResources.DrawableInterceptor;
 import de.vanita5.twittnuker.graphic.icon.TwidereIcon;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class ActivityIconsInterceptor implements DrawableInterceptor {
+public class ActivityIconsInterceptor implements AccentResources.Interceptor {
 
     private static final SparseArray<IconSpec> sIconMap = new SparseArray<IconSpec>();
 
@@ -45,7 +46,7 @@ public class ActivityIconsInterceptor implements DrawableInterceptor {
     }
 
     @Override
-	public Drawable getDrawable(final Resources res, final int resId) {
+    public Drawable getDrawable(final Resources res, final AccentPalette palette, final int resId) {
         final IconSpec spec = sIconMap.get(resId, null);
         if (spec == null) return null;
         final IconicFontDrawable drawable = new IconicFontDrawable(mContext, spec.icon);
