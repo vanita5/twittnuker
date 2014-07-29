@@ -513,7 +513,7 @@
     <string name="account_options">Opções de conta</string>
     <string name="show_in_timeline">Exibir na timeline</string>
     <string name="cards">Cartões</string>
-    <string name="no_tab_hint">Sem abas</string>
+    <string name="no_tab">Sem abas</string>
     <string name="delete_user">Apagar usuário <xliff:g id="name">%s</xliff:g></string>
     <string name="delete_users">Apagar usuários</string>
     <string name="delete_user_confirm_message">Excluir <xliff:g id="name">%s</xliff:g>? Isso não pode ser desfeito.</string>

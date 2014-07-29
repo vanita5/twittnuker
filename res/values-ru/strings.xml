@@ -502,7 +502,7 @@
     <string name="account_options">Опции аккаунта</string>
     <string name="show_in_timeline">Показывать твиты</string>
     <string name="cards">Карточки</string>
-    <string name="no_tab_hint">Нет вкладок</string>
+    <string name="no_tab">Нет вкладок</string>
     <string name="delete_user">Удалить пользователя <xliff:g id="name">%s</xliff:g></string>
     <string name="delete_users">Удалить пользователей</string>
     <string name="delete_user_confirm_message">Удалить <xliff:g id="name">%s</xliff:g>? Это не может быть отменено.</string>

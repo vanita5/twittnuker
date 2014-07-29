@@ -505,7 +505,7 @@
   <string name="account_options">Параметри профілю</string>
   <string name="show_in_timeline">Показати у часовій стрічці</string>
   <string name="cards">Картки</string>
-  <string name="no_tab_hint">Без вкладки</string>
+  <string name="no_tab">Без вкладки</string>
   <string name="delete_user">Вилучити користувача <xliff:g id="name">%s</xliff:g></string>
   <string name="delete_users">Вилучити користувачів</string>
   <string name="delete_user_confirm_message">Вилучити <xliff:g id="name">%s</xliff:g>? Це не можна відмінити.</string>

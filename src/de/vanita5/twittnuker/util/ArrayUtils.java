@@ -66,6 +66,16 @@ public final class ArrayUtils {
 		return false;
 	}
 
+	public static boolean contentMatch(long[] array1, long[] array2) {
+		if (array1 == null || array2 == null) return array1 == array2;
+		if (array1.length != array2.length) return false;
+		final int length = array1.length;
+		for (int i = 0; i < length; i++) {
+			if (!contains(array2, array1[i])) return false;
+		}
+		return true;
+	}
+
 	public static boolean contentMatch(final Object[] array1, final Object[] array2) {
 		if (array1 == null || array2 == null) return array1 == array2;
 		if (array1.length != array2.length) return false;

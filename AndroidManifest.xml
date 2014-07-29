@@ -614,6 +614,9 @@
                 android:name="description"
                 android:value="@string/dashclock_messages_unread_count_description" />
         </service>
+        <service
+            android:name=".service.StreamingService"
+            android:label="@string/label_streaming_service" />
 
         <provider
             android:name=".provider.TwidereDataProvider"
