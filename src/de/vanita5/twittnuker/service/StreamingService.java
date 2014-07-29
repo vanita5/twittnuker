@@ -162,6 +162,7 @@ public class StreamingService extends Service implements Constants {
 
 			final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 			if (setTwitterInstances(prefs)) {
+				if (!mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, false)) return;
 				final Intent intent = new Intent(this, HomeActivity.class);
 				final Notification.Builder builder = new Notification.Builder(this);
 				builder.setOngoing(true);
