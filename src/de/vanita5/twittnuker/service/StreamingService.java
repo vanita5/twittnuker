@@ -227,6 +227,8 @@ public class StreamingService extends Service implements Constants {
 				cb.setOAuthConsumerKey(default_consumer_key);
 				cb.setOAuthConsumerSecret(default_consumer_secret);
 			}
+			//enables replies=all parameter
+			cb.setUserStreamRepliesAllEnabled(true);
 			final TwitterStream stream = new TwitterStreamFactory(cb.build()).getInstance(new AccessToken(token, secret));
 			stream.addListener(new UserStreamListenerImpl(this, account_id));
 			stream.user();
