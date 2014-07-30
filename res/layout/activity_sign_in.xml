@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<ScrollView
 		android:layout_width="match_parent"
@@ -86,13 +87,14 @@
 		</RelativeLayout>
 	</ScrollView>
 
-	<ImageButton
+    <de.vanita5.twittnuker.view.ResourceImageButton
 		android:id="@+id/set_color"
 		android:layout_width="56dp"
 		android:layout_height="56dp"
 		android:layout_gravity="bottom|right"
 		android:layout_weight="0"
 		android:contentDescription="@string/set_color"
-        android:onClick="onClick"/>
+        android:onClick="onClick"
+        app:image="@drawable/ic_iconic_action_color_palette" />
 
 </merge>

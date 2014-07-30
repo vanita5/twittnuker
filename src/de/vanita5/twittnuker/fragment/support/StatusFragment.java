@@ -85,7 +85,6 @@ import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
@@ -111,6 +110,7 @@ import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
 import de.vanita5.twittnuker.model.Panes;
@@ -573,7 +573,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	}
 
 	@Override
-	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
 		if (!shouldUseNativeMenu()) return;
 		inflater.inflate(R.menu.menu_status, menu);
 	}

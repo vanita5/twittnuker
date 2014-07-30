@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/compose_actionbar"
 	style="?android:actionBarStyle"
 	android:layout_width="match_parent"
@@ -28,7 +29,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"/>
 
-			<ImageView
+            <de.vanita5.twittnuker.view.ResourceImageView
 				android:layout_width="?android:actionBarSize"
 				android:layout_height="match_parent"
 				android:layout_marginLeft="-8dp"
@@ -37,7 +38,7 @@
 				android:paddingBottom="6dp"
 				android:paddingTop="6dp"
 				android:scaleType="centerInside"
-                android:src="@drawable/ic_launcher_twittnuker_iconic"/>
+                app:image="@drawable/ic_launcher_twittnuker_iconic" />
 
 			<LinearLayout
 				android:layout_width="wrap_content"

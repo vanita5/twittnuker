@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.HotKeyHandler;
@@ -159,10 +160,10 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private Fragment mCurrentVisibleFragment;
 	private UpdateUnreadCountTask mUpdateUnreadCountTask;
 
-	private boolean mBottomComposeButton;
-
-    private int mTabDisplayOption;
+	private int mTabDisplayOption;
 	private boolean isStreamingServiceRunning = false;
+
+	private boolean mBottomComposeButton;
 
 	public void closeAccountsDrawer() {
 		if (mSlidingMenu == null) return;
@@ -244,8 +245,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(final Menu menu) {
-		getMenuInflater().inflate(R.menu.menu_home, menu);
+    public boolean onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
+        inflater.inflate(R.menu.menu_home, menu);
         final MenuItem itemProgress = menu.findItem(MENU_PROGRESS);
         mSmartBarProgress = (ProgressBar) itemProgress.getActionView().findViewById(android.R.id.progress);
 		updateActionsButton();
@@ -369,8 +370,11 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
                     title = R.string.compose;
                 }
             }
+            final ActionBar actionBar = getActionBar();
             final MenuItem actionsItem = menu.findItem(MENU_ACTIONS);
-            actionsItem.setIcon(icon);
+            if (actionBar != null) {
+                actionsItem.setIcon(actionBar.getThemedContext().getResources().getDrawable(icon));
+            }
             actionsItem.setTitle(title);
         }
 		return true;
@@ -458,7 +462,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	/** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		mBottomComposeButton = isBottomComposeButton();

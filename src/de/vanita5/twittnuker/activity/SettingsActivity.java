@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.DataExportActivity;
 import de.vanita5.twittnuker.activity.support.DataImportActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.holder.ViewHolder;
@@ -100,9 +101,9 @@ public class SettingsActivity extends BasePreferenceActivity {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(final Menu menu) {
+	public boolean onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
 		if (getIntent().getStringExtra(EXTRA_SHOW_FRAGMENT) != null) return false;
-		getMenuInflater().inflate(R.menu.menu_settings, menu);
+		inflater.inflate(R.menu.menu_settings, menu);
 		return true;
 	}
 

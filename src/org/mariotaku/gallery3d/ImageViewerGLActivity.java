@@ -38,8 +38,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import me.imid.swipebacklayout.lib.SwipeBackLayout.SwipeListener;
-
 import org.mariotaku.gallery3d.ui.GLRoot;
 import org.mariotaku.gallery3d.ui.GLRootView;
 import org.mariotaku.gallery3d.ui.GLView;
@@ -52,11 +50,14 @@ import org.mariotaku.menucomponent.widget.MenuBar;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.TwidereSwipeBackActivity;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.SaveImageTask;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.io.File;
+
+import me.imid.swipebacklayout.lib.SwipeBackLayout.SwipeListener;
 
 public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implements Constants, PhotoView.Listener,
 		GLImageLoader.DownloadListener, LoaderManager.LoaderCallbacks<GLImageLoader.Result>, OnMenuVisibilityListener,
@@ -152,8 +153,8 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(final Menu menu) {
-		getMenuInflater().inflate(R.menu.menu_image_viewer_action_bar, menu);
+    public boolean onCreateOptionsMenu(final Menu menu, TwidereMenuInflater inflater) {
+        inflater.inflate(R.menu.menu_image_viewer_action_bar, menu);
 		return true;
 	}
 

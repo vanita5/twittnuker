@@ -22,7 +22,7 @@ public class AccentActivity extends Activity {
 		return mAccentHelper.getResources(this, super.getResources());
 	}
 
-	public Resources getDefaultResources() {
+	public final Resources getDefaultResources() {
 		return super.getResources();
 	}
 

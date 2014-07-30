@@ -57,8 +57,6 @@ import de.vanita5.twittnuker.content.TwidereContextThemeWrapper;
 import de.vanita5.twittnuker.content.TwidereContextWrapper;
 import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
 import de.vanita5.twittnuker.content.res.NoAccentResources;
-import de.vanita5.twittnuker.content.res.TwidereAccentResources;
-import de.vanita5.twittnuker.content.res.TwidereResources;
 import de.vanita5.twittnuker.util.theme.ActionIconsInterceptor;
 import de.vanita5.twittnuker.util.theme.ActivityIconsInterceptor;
 import de.vanita5.twittnuker.util.theme.WhiteDrawableInterceptor;
@@ -161,10 +159,6 @@ public class ThemeUtils implements Constants {
 		return null;
 	}
 
-	public static Resources getAccentResourcesForActionIcons(final Context baseContext, final int themeRes,
-															 final int accentColor) {
-		return new TwidereAccentResources(baseContext, baseContext.getResources(), themeRes, accentColor);
-	}
 
     @Deprecated
     public static Drawable getActionBarBackground(final Context context, final boolean applyAlpha) {
@@ -242,6 +236,8 @@ public class ThemeUtils implements Constants {
 			case R.style.Theme_Twidere_Colored_Compose:
             case R.style.Theme_Twidere_ActionBar_Colored_Light:
             case R.style.Theme_Twidere_Settings_Light:
+            case R.style.Theme_Twidere_Drawer_Light:
+            case R.style.Theme_Twidere_Drawer_Light_Transparent:
 			case R.style.Theme_Twidere_Light_DarkActionBar_DarkIcon:
 			case R.style.Theme_Twidere_Light_DarkActionBar_SolidBackground_DarkIcon:
 			case R.style.Theme_Twidere_Light_DarkActionBar_Transparent_DarkIcon:
@@ -330,6 +326,21 @@ public class ThemeUtils implements Constants {
 		return R.style.Theme_Twidere_Drawer_Dark;
 	}
 
+    public static int getLightDrawerThemeResource(final Context context) {
+        return getLightDrawerThemeResource(getThemeResource(context));
+    }
+
+    public static int getLightDrawerThemeResource(final int themeRes) {
+        switch (themeRes) {
+            case R.style.Theme_Twidere_Light_Transparent:
+            case R.style.Theme_Twidere_Light_DarkActionBar_Transparent:
+            case R.style.Theme_Twidere_Colored_DarkActionBar_Transparent:
+            case R.style.Theme_Twidere_Colored_Transparent:
+                return R.style.Theme_Twidere_Drawer_Light_Transparent;
+        }
+        return R.style.Theme_Twidere_Drawer_Light;
+    }
+
     public static Drawable getImageHighlightDrawable(final Context context) {
         final Drawable d = getSelectableItemBackgroundDrawable(context);
         if (d != null) {
@@ -394,9 +405,6 @@ public class ThemeUtils implements Constants {
         return context.getResources();
     }
 
-	public static Resources getResourcesForActionIcons(final Context baseContext, final int themeRes) {
-		return new TwidereResources(baseContext, baseContext.getResources(), themeRes);
-	}
 
 	public static Drawable getSelectableItemBackgroundDrawable(final Context context) {
         final TypedArray a = context.obtainStyledAttributes(new int[] { android.R.attr.selectableItemBackground });
@@ -855,9 +863,8 @@ public class ThemeUtils implements Constants {
 	}
 
 	public static void overrideNormalActivityCloseAnimation(final Activity activity) {
-
-		final TypedArray a = activity
-				.obtainStyledAttributes(android.R.style.Animation_Activity, ANIM_CLOSE_STYLE_ATTRS);
+        final TypedArray a = activity.obtainStyledAttributes(null, ANIM_CLOSE_STYLE_ATTRS,
+                0, android.R.style.Animation_Activity);
 		final int activityCloseEnterAnimation = a.getResourceId(0, 0);
 		final int activityCloseExitAnimation = a.getResourceId(1, 0);
 		a.recycle();
@@ -925,5 +932,17 @@ public class ThemeUtils implements Constants {
         resources.addInterceptor(new ActionIconsInterceptor(context, resources.getDisplayMetrics(), 0));
         resources.addInterceptor(new ActivityIconsInterceptor(context, resources.getDisplayMetrics(), 0));
         resources.addInterceptor(new WhiteDrawableInterceptor(resources));
+    }
+
+    public static int findAttributeResourceValue(AttributeSet attrs, String name, int defaultValue) {
+        for (int i = 0, j = attrs.getAttributeCount(); i < j; i++) {
+            if (attrs.getAttributeName(i).equals(name))
+                return attrs.getAttributeResourceValue(i, defaultValue);
+        }
+        return defaultValue;
+    }
+
+    public static Resources getThemedResourcesForActionIcons(Context context, int themeRes, int accentColor) {
+        return getThemedContextForActionIcons(context, themeRes, accentColor).getResources();
     }
 }

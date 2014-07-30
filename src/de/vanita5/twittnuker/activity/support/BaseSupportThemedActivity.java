@@ -22,14 +22,16 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import android.content.res.Resources;
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.view.Menu;
 
 import com.negusoft.holoaccent.AccentResources;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -39,6 +41,7 @@ import static de.vanita5.twittnuker.util.Utils.restartActivity;
 public abstract class BaseSupportThemedActivity extends AccentFragmentActivity implements Constants, IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha;
+    private TwidereMenuInflater mMenuInflater;
 
 	@Override
 	public void finish() {
@@ -47,13 +50,28 @@ public abstract class BaseSupportThemedActivity extends AccentFragmentActivity i
 	}
 
 	@Override
-	public final int getCurrentThemeResourceId() {
-		return mCurrentThemeResource;
+    public boolean onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater) {
+        return false;
 	}
 	
 	@Override
-	public final Resources getDefaultResources() {
-		return super.getResources();
+    public final boolean onCreateOptionsMenu(Menu menu) {
+        return onCreateOptionsMenu(menu, getTwidereMenuInflater());
+    }
+
+    @Override
+    public TwidereMenuInflater getTwidereMenuInflater() {
+        if (mMenuInflater != null) return mMenuInflater;
+        final ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            return mMenuInflater = new TwidereMenuInflater(actionBar.getThemedContext());
+        }
+        return mMenuInflater = new TwidereMenuInflater(this);
+    }
+
+    @Override
+    public final int getCurrentThemeResourceId() {
+        return mCurrentThemeResource;
 	}
 
     @Override

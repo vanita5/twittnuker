@@ -13,11 +13,10 @@ import com.negusoft.holoaccent.AccentResources;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
-import de.vanita5.twittnuker.content.res.iface.IThemedResources.DrawableInterceptor;
 import de.vanita5.twittnuker.graphic.icon.TwidereIcon;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class ActionIconsInterceptor implements DrawableInterceptor , AccentResources.Interceptor {
+public class ActionIconsInterceptor implements AccentResources.Interceptor {
 
 	private static final SparseArray<Icon> sIconMap = new SparseArray<Icon>();
 
@@ -103,7 +102,8 @@ public class ActionIconsInterceptor implements DrawableInterceptor , AccentResou
     }
 
     @Override
-	public Drawable getDrawable(final Resources res, final int resId) {
+    public Drawable getDrawable(final Resources resources, final AccentPalette accentPalette,
+                                final int resId) {
 		final Icon icon = sIconMap.get(resId, null);
 		if (icon == null) return null;
 		final IconicFontDrawable drawable = new IconicFontDrawable(mContext, icon);
@@ -112,10 +112,5 @@ public class ActionIconsInterceptor implements DrawableInterceptor , AccentResou
         drawable.setIconColor(mIconColor);
         drawable.setBounds(0, 0, mIconSize, mIconSize);
         return drawable;
-    }
-
-	@Override
-	public Drawable getDrawable(Resources resources, AccentPalette accentPalette, int resId) {
-		return getDrawable(resources, resId);
 	}
 }

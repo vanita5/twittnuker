@@ -22,10 +22,15 @@
 
 package de.vanita5.twittnuker.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 
 public class BasePreferenceFragment extends PreferenceFragment implements Constants {
 
@@ -33,5 +38,19 @@ public class BasePreferenceFragment extends PreferenceFragment implements Consta
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES_NAME);
+    }
+
+    @Override
+    public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        final Activity activity = getActivity();
+        if (activity instanceof IThemedActivity) {
+            onCreateOptionsMenu(menu, ((IThemedActivity) activity).getTwidereMenuInflater());
+        } else {
+            super.onCreateOptionsMenu(menu, inflater);
+        }
+    }
+
+    public void onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater) {
+
 	}
 }

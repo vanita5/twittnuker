@@ -22,15 +22,18 @@
 
 package de.vanita5.twittnuker.activity;
 
+import android.app.ActionBar;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.NavUtils;
+import android.view.Menu;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.content.res.NoAccentResources;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.theme.TwidereResourceHelper;
 
@@ -42,6 +45,27 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
 	private TwidereResourceHelper mResourceHelper;
     private int mCurrentThemeResource;
 	private Theme mTheme;
+	private TwidereMenuInflater mMenuInflater;
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater) {
+		return false;
+	}
+
+	@Override
+	public final boolean onCreateOptionsMenu(Menu menu) {
+		return onCreateOptionsMenu(menu, getTwidereMenuInflater());
+	}
+
+	@Override
+	public TwidereMenuInflater getTwidereMenuInflater() {
+		if (mMenuInflater != null) return mMenuInflater;
+		final ActionBar actionBar = getActionBar();
+		if (actionBar != null) {
+			return mMenuInflater = new TwidereMenuInflater(actionBar.getThemedContext());
+		}
+		return mMenuInflater = new TwidereMenuInflater(this);
+	}
 
 	@Override
 	public void finish() {

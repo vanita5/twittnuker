@@ -65,6 +65,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.ColorAnalyser;
@@ -225,9 +226,9 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(final Menu menu) {
-		getMenuInflater().inflate(R.menu.menu_sign_in, menu);
-		return super.onCreateOptionsMenu(menu);
+    public boolean onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
+        inflater.inflate(R.menu.menu_sign_in, menu);
+        return true;
 	}
 
 	@Override
@@ -541,7 +542,7 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 		mSetColorButton.setEnabled(false);
 	}
 
-	public abstract static class AbstractSignInTask extends AsyncTask<Void, Void, SigninResponse> {
+    public static abstract class AbstractSignInTask extends AsyncTask<Void, Void, SigninResponse> {
 
 		protected final Configuration conf;
 		protected final SignInActivity callback;
