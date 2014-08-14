@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
+import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.gcm.GCMHelper;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.HotKeyHandler;
