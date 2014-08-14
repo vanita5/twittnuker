@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.fragment;
 
-import static android.text.TextUtils.isEmpty;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -52,12 +50,15 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.HostsFileParser;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.util.Map;
+
+import static android.text.TextUtils.isEmpty;
 
 public class HostMappingsListFragment extends BaseListFragment implements MultiChoiceModeListener,
 		OnSharedPreferenceChangeListener {
@@ -111,7 +112,7 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
 	}
 
 	@Override
-	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
 		inflater.inflate(R.menu.menu_host_mapping, menu);
 	}
 

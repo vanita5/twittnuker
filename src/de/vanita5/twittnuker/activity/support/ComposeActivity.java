@@ -31,11 +31,9 @@ import static de.vanita5.twittnuker.util.ThemeUtils.getComposeThemeResource;
 import static de.vanita5.twittnuker.util.ThemeUtils.getUserThemeColor;
 import static de.vanita5.twittnuker.util.ThemeUtils.getWindowContentOverlayForCompose;
 import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
-import static de.vanita5.twittnuker.util.Utils.addIntentToMenu;
 import static de.vanita5.twittnuker.util.Utils.copyStream;
 import static de.vanita5.twittnuker.util.Utils.getAccountColors;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getAccountName;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
 import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
 import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
@@ -60,7 +58,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -76,7 +76,6 @@ import android.support.v4.util.LongSparseArray;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -107,7 +106,6 @@ import com.twitter.Extractor;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 
-import org.mariotaku.dynamicgridview.DraggableArrayAdapter;
 import org.mariotaku.menucomponent.widget.MenuBar;
 import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.R;
@@ -134,7 +132,6 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.StatusTextCountView;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
@@ -218,11 +215,6 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	}
 
     @Override
-    public Resources getResources() {
-		return getThemedResources();
-    }
-
-	@Override
 	public int getThemeColor() {
 		return ThemeUtils.getUserThemeColor(this);
 	}
@@ -692,7 +684,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	 * The Location Manager manages location providers. This code searches for
 	 * the best provider of data (GPS, WiFi/cell phone tower lookup, some other
 	 * mechanism) and finds the last known location.
-	 **/
+     */
 	private boolean getLocation() {
 		final Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -898,25 +890,30 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	private void setCommonMenu(final Menu menu) {
 		final boolean hasMedia = hasMedia();
-		// final MenuItem itemAddImageSubmenu =
-		// menu.findItem(R.id.add_image_submenu);
-//		if (itemAddImageSubmenu != null) {
-//			final Drawable iconAddImage = itemAddImageSubmenu.getIcon();
-//			iconAddImage.mutate();
-//			if (hasMedia) {
-//				iconAddImage.setColorFilter(activatedColor, Mode.SRC_ATOP);
-//			} else {
-//				iconAddImage.clearColorFilter();
-//			}
-//		}
+		final int activatedColor = getUserThemeColor(this);
+		final MenuItem itemAddImageSubmenu = menu.findItem(R.id.add_image_submenu);
+		if (itemAddImageSubmenu != null) {
+			final Drawable iconAddImage = itemAddImageSubmenu.getIcon();
+			iconAddImage.mutate();
+			if (hasMedia) {
+				iconAddImage.setColorFilter(activatedColor, Mode.SRC_ATOP);
+			} else {
+				iconAddImage.clearColorFilter();
+			}
+		}
 		final MenuItem itemAttachLocation = menu.findItem(MENU_ADD_LOCATION);
 		if (itemAttachLocation != null) {
+			final Drawable iconAttachLocation = itemAttachLocation.getIcon().mutate();
 			final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
 			if (attachLocation && getLocation()) {
+				iconAttachLocation.setColorFilter(activatedColor, Mode.SRC_ATOP);
+				itemAttachLocation.setTitle(R.string.remove_location);
 				itemAttachLocation.setChecked(true);
 			} else {
 				setProgressVisibility(false);
 				mPreferences.edit().putBoolean(KEY_ATTACH_LOCATION, false).commit();
+				iconAttachLocation.clearColorFilter();
+				itemAttachLocation.setTitle(R.string.add_location);
 				itemAttachLocation.setChecked(false);
 			}
 		}
@@ -929,6 +926,16 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			itemToggleSensitive.setVisible(hasMedia);
 			itemToggleSensitive.setEnabled(hasMedia);
 			itemToggleSensitive.setChecked(hasMedia && mIsPossiblySensitive);
+			if (hasMedia) {
+				final Drawable iconToggleSensitive = itemToggleSensitive.getIcon().mutate();
+				if (mIsPossiblySensitive) {
+					itemToggleSensitive.setTitle(R.string.remove_sensitive_mark);
+					iconToggleSensitive.setColorFilter(activatedColor, Mode.SRC_ATOP);
+				} else {
+					itemToggleSensitive.setTitle(R.string.mark_as_sensitive);
+					iconToggleSensitive.clearColorFilter();
+				}
+			}
 		}
 	}
 

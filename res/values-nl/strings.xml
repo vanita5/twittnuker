@@ -505,7 +505,7 @@
   <string name="account_options">Account instellingen</string>
   <string name="show_in_timeline">Toon in tijdlijn</string>
   <string name="cards">Kaarten</string>
-  <string name="no_tab_hint">Geen tabblad</string>
+  <string name="no_tab">Geen tabblad</string>
   <string name="delete_user">Verwijder gebruiker <xliff:g id="name">%s</xliff:g></string>
   <string name="delete_users">Verwijder gebruikers</string>
   <string name="delete_user_confirm_message">Verwijder <xliff:g id="name">%s</xliff:g>? Dit kan niet worden hersteld.</string>

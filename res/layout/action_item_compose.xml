@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="?android:actionButtonStyle"
 	android:id="@+id/send"
-	style="?android:actionButtonStyle"
 	android:layout_width="wrap_content"
 	android:layout_height="match_parent"
     android:contentDescription="@string/send"
@@ -16,13 +17,13 @@
     	android:gravity="center"
     	android:textAppearance="?android:textAppearanceSmall"/>
 
-    <ImageView
+    <de.vanita5.twittnuker.view.ResourceImageView
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:contentDescription="@string/send"
         android:cropToPadding="false"
     	android:padding="@dimen/element_spacing_extra_small"
     	android:scaleType="centerCrop"
-    	android:src="@drawable/ic_menu_send"/>
+        app:image="@drawable/ic_iconic_action_send" />
 
 </LinearLayout>

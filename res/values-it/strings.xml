@@ -502,7 +502,7 @@
     <string name="account_options">Opzioni account</string>
     <string name="show_in_timeline">Mostra nella timeline</string>
     <string name="cards">Schede</string>
-    <string name="no_tab_hint">Nessun tab</string>
+    <string name="no_tab">Nessun tab</string>
     <string name="delete_user">Elimina utente <xliff:g id="name">%s</xliff:g></string>
     <string name="delete_users">Elimina utenti</string>
     <string name="delete_user_confirm_message">Eliminare <xliff:g id="name">%s</xliff:g>? Non è reversibile.</string>

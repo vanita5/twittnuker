@@ -84,7 +84,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
@@ -113,6 +112,7 @@ import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.ListActionAdapter;
 import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.model.ListAction;
 import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -558,7 +558,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 	}
 
     @Override
-    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
         if (!shouldUseNativeMenu()) return;
         inflater.inflate(R.menu.menu_user_profile, menu);
     }

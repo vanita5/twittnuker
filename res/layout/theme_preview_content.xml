@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<View
 		android:id="@+id/theme_preview_window_wallpaper"
@@ -31,7 +32,7 @@
 			android:gravity="center_vertical"
 			android:orientation="horizontal">
 
-			<ImageView
+            <de.vanita5.twittnuker.view.ResourceImageView
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
 				android:layout_marginBottom="4dp"
@@ -40,7 +41,7 @@
 				android:contentDescription="@string/app_name"
                 android:padding="@dimen/element_spacing_small"
 				android:scaleType="centerInside"
-                android:src="@drawable/ic_launcher_twittnuker_iconic"/>
+                app:image="@drawable/ic_launcher_twittnuker_iconic" />
 
 			<TextView
 				android:id="@+id/actionbar_title"

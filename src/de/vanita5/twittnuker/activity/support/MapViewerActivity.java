@@ -32,13 +32,15 @@ import android.view.MenuItem;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.iface.IMapFragment;
 import de.vanita5.twittnuker.fragment.support.NativeMapFragment;
 import de.vanita5.twittnuker.fragment.support.WebMapFragment;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class MapViewerActivity extends TwidereSwipeBackActivity {
+public class MapViewerActivity extends TwidereSwipeBackActivity implements Constants {
 
     @Override
     public int getThemeResourceId() {
@@ -46,8 +48,8 @@ public class MapViewerActivity extends TwidereSwipeBackActivity {
     }
 
 	@Override
-	public boolean onCreateOptionsMenu(final Menu menu) {
-		getMenuInflater().inflate(R.menu.menu_map_viewer, menu);
+	public boolean onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
+		inflater.inflate(R.menu.menu_map_viewer, menu);
 		return true;
 	}
 

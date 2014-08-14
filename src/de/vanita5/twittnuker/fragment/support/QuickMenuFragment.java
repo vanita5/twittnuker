@@ -46,6 +46,7 @@ import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment.TrendsAd
 import de.vanita5.twittnuker.provider.TweetStore.CachedTrends;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.view.ResourceImageButton;
 
 public class QuickMenuFragment extends BaseSupportFragment {
 
@@ -53,6 +54,7 @@ public class QuickMenuFragment extends BaseSupportFragment {
 	private Context mThemedContext;
 	private ListView mListView;
 	private SlidingUpPanelLayout mSlidingUpPanel;
+    private ResourceImageButton mActivitiesConfigButton;
 
 	private MergeAdapter mAdapter;
 	private TrendsAdapter mTrendsAdapter;
@@ -114,6 +116,7 @@ public class QuickMenuFragment extends BaseSupportFragment {
 		super.onViewCreated(view, savedInstanceState);
 		mListView = (ListView) view.findViewById(android.R.id.list);
 		mSlidingUpPanel = (SlidingUpPanelLayout) view.findViewById(R.id.activities_drawer);
+        mActivitiesConfigButton = (ResourceImageButton) view.findViewById(R.id.activities_config_button);
 		final View activitiesContainer = view.findViewById(R.id.activities_container);
 		ViewAccessor.setBackground(activitiesContainer, ThemeUtils.getWindowBackground(getThemedContext()));
 	}
@@ -121,8 +124,16 @@ public class QuickMenuFragment extends BaseSupportFragment {
 	private Context getThemedContext() {
 		if (mThemedContext != null) return mThemedContext;
 		final Context context = getActivity();
-		if (!ThemeUtils.isDarkDrawerEnabled(context)) return mThemedContext = context;
-		final int themeResource = ThemeUtils.getDrawerThemeResource(context);
+        final int currentThemeResource = ThemeUtils.getThemeResource(context);
+        final int themeResource;
+        if (!ThemeUtils.isDarkDrawerEnabled(context)) {
+            if (ThemeUtils.isDarkTheme(currentThemeResource)) {
+                return mThemedContext = context;
+            }
+            themeResource = ThemeUtils.getLightDrawerThemeResource(currentThemeResource);
+        } else {
+            themeResource = ThemeUtils.getDrawerThemeResource(currentThemeResource);
+        }
 		final int accentColor = ThemeUtils.getUserThemeColor(context);
 		return mThemedContext = new TwidereContextThemeWrapper(context, themeResource, accentColor);
 	}

@@ -516,7 +516,7 @@
     <string name="account_options">帐号选项</string>
     <string name="show_in_timeline">在时间线中显示</string>
     <string name="cards">卡片</string>
-    <string name="no_tab_hint">没有标签页</string>
+    <string name="no_tab">没有标签页</string>
     <string name="delete_user">删除用户<xliff:g id="name">%s</xliff:g></string>
     <string name="delete_users">删除用户</string>
     <string name="delete_user_confirm_message">删除<xliff:g id="name">%s</xliff:g>吗？这个操作不能撤销。</string>
@@ -616,5 +616,4 @@
     <string name="click_item_to_config">点击一项以设定</string>
     <string name="dark_drawer">暗色侧栏</string>
     <string name="retweets_of_me">转推我的内容</string>
-    <string name="jtapi_hostname">JTAPI域名</string>
 </resources>

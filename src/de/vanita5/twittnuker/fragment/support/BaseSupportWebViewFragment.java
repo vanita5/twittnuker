@@ -24,12 +24,18 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.accessor.WebSettingsAccessor;
+import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class BaseSupportWebViewFragment extends SupportWebViewFragment implements Constants {
@@ -43,5 +49,19 @@ public class BaseSupportWebViewFragment extends SupportWebViewFragment implement
 		settings.setBuiltInZoomControls(true);
 		settings.setJavaScriptEnabled(true);
 		WebSettingsAccessor.setAllowUniversalAccessFromFileURLs(settings, true);
+    }
+
+    @Override
+    public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        final FragmentActivity activity = getActivity();
+        if (activity instanceof IThemedActivity) {
+            onCreateOptionsMenu(menu, ((IThemedActivity) activity).getTwidereMenuInflater());
+        } else {
+            super.onCreateOptionsMenu(menu, inflater);
+        }
+    }
+
+    public void onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater) {
+
 	}
 }

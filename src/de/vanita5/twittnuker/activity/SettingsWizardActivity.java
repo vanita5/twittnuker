@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.DataImportActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.adapter.TabsAdapter;
+import de.vanita5.twittnuker.content.res.NoAccentResources;
 import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
@@ -76,7 +77,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SettingsWizardActivity extends Activity implements Constants {
+public class SettingsWizardActivity extends Activity implements Constants, TwidereResourceHelper.OnInitListener {
 
 	public static final String WIZARD_PREFERENCE_KEY_NEXT_PAGE = "next_page";
 	public static final String WIZARD_PREFERENCE_KEY_USE_DEFAULTS = "use_defaults";
@@ -117,7 +118,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 	@Override
 	public Resources getResources() {
 		if (mResourceHelper == null) {
-			mResourceHelper = new TwidereResourceHelper(ThemeUtils.getSettingsWizardThemeResource(this));
+			mResourceHelper = new TwidereResourceHelper(ThemeUtils.getSettingsWizardThemeResource(this), this);
 		}
 		return mResourceHelper.getResources(this, super.getResources());
 	}
@@ -193,6 +194,11 @@ public class SettingsWizardActivity extends Activity implements Constants {
 	private void openImportSettingsDialog() {
 		final Intent intent = new Intent(this, DataImportActivity.class);
 		startActivityForResult(intent, REQUEST_IMPORT_SETTINGS);
+	}
+
+	@Override
+	public void onInitResources(NoAccentResources resources) {
+		ThemeUtils.initResourceInterceptors(this, resources);
 	}
 
 	public static abstract class BaseWizardPageFragment extends BasePreferenceFragment implements
@@ -498,7 +504,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		private static final String FRAGMENT_TAG = "initial_settings_dialog";
 
 		private static final String[] DEFAULT_TAB_TYPES = { TAB_TYPE_HOME_TIMELINE, TAB_TYPE_MENTIONS_TIMELINE,
-				TAB_TYPE_TRENDS_SUGGESTIONS, TAB_TYPE_DIRECT_MESSAGES };
+				TAB_TYPE_DIRECT_MESSAGES, TAB_TYPE_TRENDS_SUGGESTIONS };
 
 		private final SettingsWizardActivity mActivity;
 

@@ -21,8 +21,17 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<de.vanita5.twittnuker.view.RightDrawerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+           xmlns:tools="http://schemas.android.com/tools"
+           android:id="@+id/right_drawer_container"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent">
 
-    <item android:drawable="@drawable/ic_iconic_action_gallery"/>
+    <fragment
+    	android:id="@+id/right_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="de.vanita5.twittnuker.fragment.support.QuickMenuFragment"
+    	tools:layout="@layout/fragment_quick_menu"/>
 
-</layer-list>
+</de.vanita5.twittnuker.view.RightDrawerFrameLayout>

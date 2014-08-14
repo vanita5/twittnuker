@@ -18,6 +18,8 @@
     <string name="oauth_base_url">OAuth Base URL</string>
     <string name="signing_oauth_base_url">Signing OAuth Base URL</string>
     <string name="signing_rest_base_url">Signing REST Base URL</string>
+    <string name="api_url_format">API URL形式</string>
+    <string name="same_oauth_signing_url">OAuthにも同じURLを使ってください</string>
     <string name="auth_type">認証タイプ</string>
     <string name="oauth">OAuth</string>
     <string name="xauth">xAuth</string>
@@ -48,6 +50,7 @@
     <string name="tap_to_load_more">タップして読み込む</string>
     <string name="delete">削除</string>
     <string name="retweet">リツイート</string>
+    <string name="retweets">リツイート</string>
     <string name="cancel_retweet">リツイートの取り消し</string>
     <string name="favorite">お気に入り</string>
     <string name="unfavorite">お気に入りから削除</string>
@@ -89,6 +92,7 @@
     <string name="retweeted_by_with_count"><xliff:g id="user_name">%1$s</xliff:g>さんと他<xliff:g id="retweet_count">%2$d</xliff:g>人がリツイートしました</string>
     <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g>件のリツイート</string>
     <string name="users_retweeted_this">リツイートしたユーザー</string>
+    <string name="users_favorited_this">お気に入りにしたユーザー</string>
     <string name="reply_to"><xliff:g id="user_name">%s</xliff:g>さんへの返信</string>
     <string name="quote_user"><xliff:g id="user_name">%s</xliff:g>さんのツイートを引用</string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g><xliff:g id="source">%2$s</xliff:g>から</string>
@@ -242,7 +246,7 @@
     <string name="error_message_status_too_long">ツイートのテキストが長過ぎます。</string>
     <string name="error_message_no_content">コンテンツなし</string>
     <string name="error_message_tweet_shorten_failed">ツイートを短縮できません。</string>
-    <string name="multimedia_contents">マルティメディア・コンテンツ</string>
+    <string name="multimedia_contents">マルチメディアコンテンツ</string>
     <string name="show_absolute_time">絶対時間を表示</string>
     <string name="show_absolute_time_summary">ツイートの時間を絶対時間で表示します。</string>
     <string name="user_mentions">ユーザー宛ての@ツイート</string>
@@ -428,6 +432,8 @@
     <string name="no_close_after_status_updated_summary">ツイート編集画面の動作を変更します。</string>
     <string name="status_saved_to_draft">ツイートは下書きに保存されました。</string>
     <string name="default_account">デフォルト</string>
+    <string name="created_at_with_N_tweets_per_day_quantity_one"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g>ツイート/日)</string>
+    <string name="created_at_with_N_tweets_per_day_quantity_other"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g>ツイート/日)</string>
     <string name="empty_content">コンテンツなし</string>
     <string name="fast_image_loading">高速画像読み込み</string>
     <string name="fast_image_loading_summary">有効にすると画像を高速に読み込みます。\n画像が読み込めない場合は無効にしてください。</string>
@@ -512,7 +518,7 @@
     <string name="account_options">アカウントオプション</string>
     <string name="show_in_timeline">TLに表示</string>
     <string name="cards">カード</string>
-    <string name="no_tab_hint">タブ無し</string>
+    <string name="no_tab">タブ無し</string>
     <string name="delete_user"><xliff:g id="name">%s</xliff:g>さんを削除</string>
     <string name="delete_users">ユーザーを削除</string>
     <string name="delete_user_confirm_message"><xliff:g id="name">%s</xliff:g>さんを削除しますか? 復元は出来ません。</string>
@@ -587,7 +593,7 @@
     <string name="load_more_from_top_summary">下から上に読みたい場合に便利です。</string>
     <string name="twitter_link_handler">Twitterリンクハンドラ</string>
     <string name="compose_now">Tweet Now</string>
-    <string name="compose_now_summary">ホームキーを上にスワイプしたときに出るGoogle Nowショートカットを「ツイートする」に変更します。</string>
+    <string name="compose_now_summary">ホームキーを上にスワイプしたときに出るGoogle NowショートカットをTweet Nowアクションに変更します。</string>
     <string name="compose_now_action">Tweet Nowアクション</string>
     <string name="open_with_account">アカウントを選んで開く</string>
     <string name="card_highlight_option">カードの強調オプション</string>
@@ -597,11 +603,10 @@
     <string name="image_preview_scale_type">画像プレビューの表示形式</string>
     <string name="image_preview_scale_type_crop">切り取り</string>
     <string name="image_preview_scale_type_fit_center">中央表示</string>
-    <string name="quote_protected_status_warning_message">このツイートはロックされています。\n\n非公開ユーザーのツイートを公開しないでください。</string>
+    <string name="quote_protected_status_warning_message">このツイートは非公開にされています。\n\n非公開ユーザーのツイートを公開しないでください。</string>
     <string name="send_anyway">送信する</string>
     <string name="my_following_only">フォロー中のみ</string>
     <string name="my_following_only_summary">フォローしているユーザーからの通知だけを表示するようにします。</string>
-    <!-- Updated original strings -->
     <string name="new_direct_message">新規メッセージ</string>
     <string name="plain_list_style">プレーンリスト表示</string>
     <string name="want_old_icon_back">以前のアイコンにしますか?</string>
@@ -611,6 +616,10 @@
     <string name="delete_drafts_confirm">選択した下書きを削除しますか?</string>
     <string name="extra_configurations">追加設定</string>
     <string name="click_item_to_config">アイテムをタップすると設定します</string>
+    <string name="dark_drawer">ダークドロワー</string>
+    <string name="retweets_of_me">自分のリツイート</string>
+    <string name="from_gallery">ギャラリー</string>
+    <string name="from_camera">カメラ</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">タブに未読ツイート/メッセージ数を表示します。</string>
@@ -628,10 +637,9 @@
     <string name="streaming">ストリーミング</string>
     <string name="stream_enabled">ストリーミングを有効化</string>
     <string name="stream_enabled_summary">Wi-Fi接続時にタイムラインでストリーミングを有効化します。</string>
-    <string name="stream_notification">通知ストリーミング</string>
-    <string name="stream_notification_summary">ストリーミング有効時に通知もストリーミングするようにします。</string>
-    <string name="streaming_service_running">ストリーミング開始...</string>
-    <string name="stream_on_mobile">モバイルストリーミング</string>
+    <string name="stream_notification">ストリーミングの通知</string>
+    <string name="stream_notification_summary">ストリーミングが有効な時に通知を表示するようにします。</string>
+    <string name="streaming_service_running">ストリーミング開始...</string><string name="stream_on_mobile">モバイルストリーミング</string>
     <string name="stream_on_mobile_summary">モバイルデータ通信でストリーミングを有効にします。おすすめしません!</string>
     <string name="stream_autoscroll">自動スクロール</string>
     <string name="stream_autoscroll_summary">常にタイムラインの一番上を表示します。</string>
@@ -644,5 +652,4 @@
     <string name="error_hototin">...失敗しましたorz\nツイートを送信せず下書きに保存しました。</string>
     <string name="action_shortening">ツイートの短縮</string>
     <string name="uploading_image">アップロード中...</string>
-    
 </resources>

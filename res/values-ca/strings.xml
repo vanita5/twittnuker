@@ -510,7 +510,7 @@
     <string name="account_options">Paràmetres del compte</string>
     <string name="show_in_timeline">Mostra a la cronologia</string>
     <string name="cards">Targetes</string>
-    <string name="no_tab_hint">No hi ha pestanyes</string>
+    <string name="no_tab">No hi ha pestanyes</string>
     <string name="delete_user">Esborra l\'usuari <xliff:g id="name">%s</xliff:g></string>
     <string name="delete_users">Esborra els usuaris</string>
     <string name="delete_user_confirm_message">Voleu esborrar l\'usuari <xliff:g id="name">%s</xliff:g>? Aquesta acció no es pot desfer.</string>

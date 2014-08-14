@@ -67,6 +67,7 @@ import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
 import de.vanita5.twittnuker.model.Panes;
@@ -127,7 +128,7 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 		}
 		mAdapter = new CustomTabsAdapter(ThemeUtils.getThemedContextForActionIcons(activity, themeRes));
 		setListAdapter(mAdapter);
-		setEmptyText(getString(R.string.no_tab_hint));
+		setEmptyText(getString(R.string.no_tab));
 		mListView = (DragSortListView) getListView();
 		mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		mListView.setMultiChoiceModeListener(this);
@@ -179,7 +180,7 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 	}
 
 	@Override
-	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+	public void onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
 		inflater.inflate(R.menu.menu_custom_tabs, menu);
 	}
 

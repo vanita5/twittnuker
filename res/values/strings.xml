@@ -40,7 +40,7 @@
 	<string name="error_message_with_action">Error while <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
 	<string name="error_message_rate_limit">Twitter\'s rate limit exceeded, please retry <xliff:g id="time">%s</xliff:g></string>
 	<string name="error_message_rate_limit_with_action">Twitter\'s rate limit exceeded while <xliff:g id="action">%1$s</xliff:g>, please retry <xliff:g id="time">%2$s</xliff:g></string>
-	<string name="select_account">Select Account</string>
+	<string name="select_account">Select account</string>
 	<string name="username">Username</string>
 	<string name="password">Password</string>
 	<string name="label_tweetstore_provider">Twittnuker database provider</string>
@@ -518,7 +518,7 @@
 	<string name="account_options">Account options</string>
 	<string name="show_in_timeline">Show in timeline</string>
 	<string name="cards">Cards</string>
-	<string name="no_tab_hint">No tab</string>
+	<string name="no_tab">No tab</string>
 	<string name="delete_user">Delete user <xliff:g id="name">%s</xliff:g></string>
 	<string name="delete_users">Delete users</string>
 	<string name="delete_user_confirm_message">Delete <xliff:g id="name">%s</xliff:g>? This can\'t be undone.</string>
@@ -643,6 +643,7 @@
     <string name="stream_on_mobile_summary">Stream on mobile network. This is NOT recommended!</string>
     <string name="stream_autoscroll">Autoscroll</string>
     <string name="stream_autoscroll_summary">Always stay at the top of the timeline</string>
+    <string name="label_streaming_service">Streaming service</string>
 
     <string name="love">Love</string>
     <string name="load_conversations_automatically">Load conversations automatically</string>
@@ -667,4 +668,5 @@
     <string name="error_hototin">...but I failed :(\nYour Tweet has not been send and saved to draft.</string>
     <string name="action_shortening">shortening tweet</string>
     <string name="uploading_image">Uploading...</string>
+    <string name="no_tab_hint">You can add tabs in the settings</string>
 </resources>

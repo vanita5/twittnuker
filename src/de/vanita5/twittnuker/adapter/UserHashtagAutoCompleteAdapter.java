@@ -104,7 +104,7 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 			themeRes = ThemeUtils.getThemeResource(context);
 			accentColor = ThemeUtils.getUserThemeColor(context);
 		}
-		mResources = ThemeUtils.getAccentResourcesForActionIcons(context, themeRes, accentColor);
+		mResources = ThemeUtils.getThemedResourcesForActionIcons(context, themeRes, accentColor);
 	}
 
 	public UserHashtagAutoCompleteAdapter(final EditText view) {

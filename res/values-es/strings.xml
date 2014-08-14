@@ -511,7 +511,7 @@
     <string name="account_options">Opciones de la cuenta</string>
     <string name="show_in_timeline">Mostrar en el timeline</string>
     <string name="cards">Tarjetas</string>
-    <string name="no_tab_hint">Sin pestañas</string>
+    <string name="no_tab">Sin pestañas</string>
     <string name="delete_user">Eliminar el usuario <xliff:g id="name">%s</xliff:g></string>
     <string name="delete_users">Eliminar usuarios</string>
     <string name="delete_user_confirm_message">Borrar a <xliff:g id="name">%s</xliff:g>?  No podrás restaurar!</string>

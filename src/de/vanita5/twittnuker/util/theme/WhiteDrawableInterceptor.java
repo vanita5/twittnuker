@@ -6,12 +6,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 
 import com.negusoft.holoaccent.AccentPalette;
+import com.negusoft.holoaccent.AccentResources;
 import com.negusoft.holoaccent.drawable.RectDrawable;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.content.res.iface.IThemedResources.DrawableInterceptor;
 
-public class WhiteDrawableInterceptor implements DrawableInterceptor {
+public class WhiteDrawableInterceptor implements AccentResources.Interceptor {
 
     private static final int PRESSED_ALPHA = 0xAA;
     private static final int FOCUSED_ALPHA = 0x55;
@@ -25,7 +25,7 @@ public class WhiteDrawableInterceptor implements DrawableInterceptor {
     }
 
     @Override
-	public Drawable getDrawable(final Resources res, final int resId) {
+    public Drawable getDrawable(final Resources res, final AccentPalette palette, final int resId) {
 		if (resId == R.drawable.solid_pressed_white_intercepted)
             return new ColorDrawable(mAccentPalette.getAccentColor(PRESSED_ALPHA));
         if (resId == R.drawable.solid_focused_white_intercepted)
