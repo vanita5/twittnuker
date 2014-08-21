@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TweetStore.Mentions;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
@@ -60,6 +61,8 @@ public class StreamingService extends Service implements Constants {
 
 	private SharedPreferences mPreferences;
 	private NotificationManager mNotificationManager;
+
+	private AsyncTwitterWrapper mTwitterWrapper;
 
 	private long[] mAccountIds;
 	private boolean isStreaming = false;
@@ -115,6 +118,7 @@ public class StreamingService extends Service implements Constants {
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mResolver = getContentResolver();
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		mTwitterWrapper = TwittnukerApplication.getInstance(this).getTwitterWrapper();
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
@@ -229,6 +233,7 @@ public class StreamingService extends Service implements Constants {
 			}
 			final TwitterStream stream = new TwitterStreamFactory(cb.build()).getInstance(new AccessToken(token, secret));
 			stream.addListener(new UserStreamListenerImpl(this, account_id));
+			refreshBefore(new long[]{ account_id });
 			stream.user();
 			mTwitterInstances.add(new WeakReference<TwitterStream>(stream));
 			cur.moveToNext();
@@ -236,6 +241,12 @@ public class StreamingService extends Service implements Constants {
 		cur.close();
 		isStreaming = true;
 		return true;
+	}
+
+	private void refreshBefore(final long[] mAccountId) {
+		if (mPreferences.getBoolean(KEY_REFRESH_BEFORE_STREAMING, false)) {
+			mTwitterWrapper.refreshAll(mAccountId);
+		}
 	}
 
 	static class ShutdownStreamTwitterRunnable implements Runnable {
