@@ -115,12 +115,10 @@ public class GCMHelper implements TwittnukerConstants {
 		}
 
 		final String regid = getRegistrationId(context);
-		if (regid.isEmpty()) {
+		if (regid.isEmpty() || Utils.isDebugBuild()) {
 			registerForGCM(context);
 		} else {
-			if (Utils.isDebugBuild()) {
-				Toast.makeText(context, "Already registered!", Toast.LENGTH_LONG).show();
-			}
+			Toast.makeText(context, "Already registered!", Toast.LENGTH_LONG).show();
 		}
 	}
 

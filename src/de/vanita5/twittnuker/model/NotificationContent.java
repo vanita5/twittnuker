@@ -1,17 +1,17 @@
 package de.vanita5.twittnuker.model;
 
 /**
- * This represents a single Push Notification received from the backend server.
- * BigView Notifications contain multiple PushNotificationContent Models!
+ * This represents a single (Push) Notification.
+ * BigView Notifications contain multiple NotificationContent Models!
  */
-public class PushNotificationContent {
+public class NotificationContent {
 
-	public static final String PUSH_NOTIFICATION_TYPE_MENTION = "type_mention";
-	public static final String PUSH_NOTIFICATION_TYPE_RETWEET = "type_retweet";
-	public static final String PUSH_NOTIFICATION_TYPE_FOLLOWER = "type_new_follower";
-	public static final String PUSH_NOTIFICATION_TYPE_FAVORITE = "type_favorite";
+	public static final String NOTIFICATION_TYPE_MENTION = "type_mention";
+	public static final String NOTIFICATION_TYPE_RETWEET = "type_retweet";
+	public static final String NOTIFICATION_TYPE_FOLLOWER = "type_new_follower";
+	public static final String NOTIFICATION_TYPE_FAVORITE = "type_favorite";
 
-	public static final String PUSH_NOTIFICATION_TYPE_ERROR_420 = "type_error_420";
+	public static final String NOTIFICATION_TYPE_ERROR_420 = "type_error_420";
 
 	private long accountId;
 	private long timestamp;
