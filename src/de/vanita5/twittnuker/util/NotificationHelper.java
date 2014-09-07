@@ -36,7 +36,7 @@ import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
 
 public class NotificationHelper implements Constants {
 
-	public static void cachePushNotification(final Context context, final NotificationContent notification) {
+	public void cachePushNotification(final Context context, final NotificationContent notification) {
 		final ContentResolver resolver = context.getContentResolver();
 		final ContentValues values = new ContentValues();
 		values.put(PushNotifications.ACCOUNT_ID, notification.getAccountId());

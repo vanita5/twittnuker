@@ -30,6 +30,8 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.model.AccountPreferences;
+import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TweetStore.Mentions;
@@ -37,6 +39,7 @@ import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
+import de.vanita5.twittnuker.util.NotificationHelper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
@@ -232,7 +235,7 @@ public class StreamingService extends Service implements Constants {
 				cb.setOAuthConsumerSecret(default_consumer_secret);
 			}
 			final TwitterStream stream = new TwitterStreamFactory(cb.build()).getInstance(new AccessToken(token, secret));
-			stream.addListener(new UserStreamListenerImpl(this, account_id));
+			stream.addListener(new UserStreamListenerImpl(this, mPreferences, account_id));
 			refreshBefore(new long[]{ account_id });
 			stream.user();
 			mTwitterInstances.add(new WeakReference<TwitterStream>(stream));
@@ -271,11 +274,34 @@ public class StreamingService extends Service implements Constants {
 		private final ContentResolver resolver;
 		private final boolean large_profile_image;
 
-		public UserStreamListenerImpl(final Context context, final long account_id) {
+		private NotificationHelper mNotificationHelper;
+		private SharedPreferences mPreferences;
+		private Context context;
+
+		public UserStreamListenerImpl(final Context context, final SharedPreferences preferences, final long account_id) {
+			this.context = context;
 			this.account_id = account_id;
 			large_profile_image = context.getResources().getBoolean(R.bool.hires_profile_image);
 			resolver = context.getContentResolver();
 			screen_name = Utils.getAccountScreenName(context, account_id);
+			mNotificationHelper = new NotificationHelper();
+			mPreferences = preferences;
+		}
+
+		private void createNotification(final String fromUser, final String type, final String msg) {
+			if (mPreferences.getBoolean(KEY_STREAMING_NOTIFICATIONS, false)
+					&& !mPreferences.getBoolean(KEY_ENABLE_PUSH, false)) {
+				AccountPreferences pref = new AccountPreferences(context, account_id);
+				NotificationContent notification = new NotificationContent();
+				notification.setAccountId(account_id);
+				notification.setFromUser(fromUser);
+				notification.setType(type);
+				notification.setMessage(msg);
+				notification.setTimestamp(System.currentTimeMillis());
+
+				mNotificationHelper.cachePushNotification(context, notification);
+				mNotificationHelper.buildNotificationByType(context, notification, pref);
+			}
 		}
 
 		@Override
@@ -320,12 +346,13 @@ public class StreamingService extends Service implements Constants {
 
 		@Override
 		public void onFavorite(User source, User target, Status favoritedStatus) {
-
+			createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
+					favoritedStatus.getText());
 		}
 
 		@Override
 		public void onFollow(User source, User followedUser) {
-
+			createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FOLLOWER, null);
 		}
 
 		@Override
@@ -405,7 +432,9 @@ public class StreamingService extends Service implements Constants {
 
 		@Override
 		public void onStallWarning(StallWarning warning) {
-
+			if ("420".equals(warning.getCode())) {
+				createNotification(null, NotificationContent.NOTIFICATION_TYPE_ERROR_420, null);
+			}
 		}
 
 		@Override
@@ -427,6 +456,10 @@ public class StreamingService extends Service implements Constants {
 					mention_uri_builder.appendQueryParameter(QUERY_PARAM_NOTIFY, "true");
 					final Uri mention_uri = mention_uri_builder.build();
 					resolver.insert(mention_uri, values);
+				}
+				if (rt != null && rt.getUser().getId() == account_id) {
+					createNotification(status.getUser().getScreenName(), NotificationContent.NOTIFICATION_TYPE_RETWEET,
+							rt.getText());
 				}
 			}
 		}

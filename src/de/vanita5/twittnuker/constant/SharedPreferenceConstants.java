@@ -294,6 +294,8 @@ public interface SharedPreferenceConstants {
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_STREAMING_ON_MOBILE = "stream_on_mobile";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
+	public static final String KEY_STREAMING_NOTIFICATIONS = "stream_notifications";
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_SWIPE_BACK = "swipe_back";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_FORCE_USING_PRIVATE_APIS = "force_using_private_apis";
