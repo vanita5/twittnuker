@@ -33,6 +33,13 @@
             android:summary="@string/stream_autoscroll_summary"
             android:title="@string/stream_autoscroll"/>
 
+        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+            android:dependency="stream_enabled"
+            android:defaultValue="false"
+            android:key="refresh_before_streaming"
+            android:title="@string/refresh_before_streaming"
+            android:summary="@string/refresh_before_streaming_summary"/>
+
 	    
 	    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference 
 	        android:dependency="stream_enabled"

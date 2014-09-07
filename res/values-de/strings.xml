@@ -631,6 +631,8 @@
     <string name="stream_on_mobile_summary">Über das Mobilfunknetz streamen. Das ist NICHT empfohlen!</string>
     <string name="stream_autoscroll">Autoscroll</string>
     <string name="stream_autoscroll_summary">Immer oben in der Timeline bleiben</string>
+    <string name="refresh_before_streaming">Vor dem streaming aktualisieren</string>
+    <string name="refresh_before_streaming_summary">Timeline und Erwähnungen werden aktualisiert, bevor der Stream gestartet wird</string>
 
     <string name="load_conversations_automatically">Konversationen automatisch laden</string>
     <string name="load_conversations_automatically_summary">Lädt Konversationen in der Status Ansicht automatisch</string>

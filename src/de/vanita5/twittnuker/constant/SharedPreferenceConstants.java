@@ -290,6 +290,8 @@ public interface SharedPreferenceConstants {
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_STREAMING_AUTOSCROLL = "stream_autoscroll";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+	public static final String KEY_REFRESH_BEFORE_STREAMING = "refresh_before_streaming";
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_STREAMING_ON_MOBILE = "stream_on_mobile";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_SWIPE_BACK = "swipe_back";
