@@ -346,8 +346,10 @@ public class StreamingService extends Service implements Constants {
 
 		@Override
 		public void onFavorite(User source, User target, Status favoritedStatus) {
-			createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
-					favoritedStatus.getText());
+			if (favoritedStatus.getUser().getId() == account_id) {
+				createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
+						favoritedStatus.getText());
+			}
 		}
 
 		@Override
