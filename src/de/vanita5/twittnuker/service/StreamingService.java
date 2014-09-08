@@ -284,11 +284,11 @@ public class StreamingService extends Service implements Constants {
 			large_profile_image = context.getResources().getBoolean(R.bool.hires_profile_image);
 			resolver = context.getContentResolver();
 			screen_name = Utils.getAccountScreenName(context, account_id);
-			mNotificationHelper = new NotificationHelper();
+			mNotificationHelper = new NotificationHelper(context);
 			mPreferences = preferences;
 		}
 
-		private void createNotification(final String fromUser, final String type, final String msg) {
+		private void createNotification(final String fromUser, final long fromUserId, final String type, final String msg) {
 			if (mPreferences.getBoolean(KEY_STREAMING_NOTIFICATIONS, false)
 					&& !mPreferences.getBoolean(KEY_ENABLE_PUSH, false)) {
 				AccountPreferences pref = new AccountPreferences(context, account_id);
@@ -299,8 +299,8 @@ public class StreamingService extends Service implements Constants {
 				notification.setMessage(msg);
 				notification.setTimestamp(System.currentTimeMillis());
 
-				mNotificationHelper.cachePushNotification(context, notification);
-				mNotificationHelper.buildNotificationByType(context, notification, pref);
+				mNotificationHelper.cachePushNotification(notification);
+				mNotificationHelper.buildNotificationByType(notification, fromUserId, pref);
 			}
 		}
 
@@ -347,14 +347,14 @@ public class StreamingService extends Service implements Constants {
 		@Override
 		public void onFavorite(User source, User target, Status favoritedStatus) {
 			if (favoritedStatus.getUser().getId() == account_id) {
-				createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
+				createNotification(source.getScreenName(), source.getId(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
 						favoritedStatus.getText());
 			}
 		}
 
 		@Override
 		public void onFollow(User source, User followedUser) {
-			createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FOLLOWER, null);
+			createNotification(source.getScreenName(), source.getId(), NotificationContent.NOTIFICATION_TYPE_FOLLOWER, null);
 		}
 
 		@Override
@@ -435,7 +435,7 @@ public class StreamingService extends Service implements Constants {
 		@Override
 		public void onStallWarning(StallWarning warning) {
 			if ("420".equals(warning.getCode())) {
-				createNotification(null, NotificationContent.NOTIFICATION_TYPE_ERROR_420, null);
+				createNotification(null, -1, NotificationContent.NOTIFICATION_TYPE_ERROR_420, null);
 			}
 		}
 
@@ -460,8 +460,8 @@ public class StreamingService extends Service implements Constants {
 					resolver.insert(mention_uri, values);
 				}
 				if (rt != null && rt.getUser().getId() == account_id) {
-					createNotification(status.getUser().getScreenName(), NotificationContent.NOTIFICATION_TYPE_RETWEET,
-							rt.getText());
+					createNotification(status.getUser().getScreenName(), status.getUser().getId(),
+							NotificationContent.NOTIFICATION_TYPE_RETWEET, rt.getText());
 				}
 			}
 		}

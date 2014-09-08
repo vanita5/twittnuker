@@ -33,7 +33,7 @@ public class PushService extends IntentService implements Constants {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		mNotificationHelper = new NotificationHelper();
+		mNotificationHelper = new NotificationHelper(this);
 	}
 
 	@Override
@@ -68,8 +68,8 @@ public class PushService extends IntentService implements Constants {
 						notification.setMessage(extras.getString("msg"));
 						notification.setTimestamp(System.currentTimeMillis());
 
-						mNotificationHelper.cachePushNotification(this, notification);
-						mNotificationHelper.buildNotificationByType(this, notification, pref);
+						mNotificationHelper.cachePushNotification(notification);
+						mNotificationHelper.buildNotificationByType(notification, -1, pref); //TODO user id
 						break;
 					}
 					//There is no such account with Push enabled...

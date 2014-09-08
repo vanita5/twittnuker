@@ -17,6 +17,8 @@ import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.text.Spanned;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +33,28 @@ import de.vanita5.twittnuker.provider.TweetStore.PushNotifications;
 import de.vanita5.twittnuker.receiver.ClearNotificationReceiver;
 
 import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;
+import static de.vanita5.twittnuker.util.Utils.getAccountProfileImage;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
+import static de.vanita5.twittnuker.util.Utils.getReasonablySmallTwitterProfileImage;
 import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
 
 public class NotificationHelper implements Constants {
 
-	public void cachePushNotification(final Context context, final NotificationContent notification) {
+	private Context context;
+	private TwittnukerApplication app;
+	private ImagePreloader mImagePreloader;
+
+	public NotificationHelper(final Context context) {
+		this.context = context;
+		app = TwittnukerApplication.getInstance(context);
+		final DisplayImageOptions.Builder profileOptsBuilder = new DisplayImageOptions.Builder();
+		profileOptsBuilder.cacheInMemory(true);
+		profileOptsBuilder.cacheOnDisk(true);
+		final DisplayImageOptions displayImageOptions = profileOptsBuilder.build();
+		mImagePreloader = new ImagePreloader(context, app.getImageLoader(), displayImageOptions);
+	}
+
+	public void cachePushNotification(final NotificationContent notification) {
 		final ContentResolver resolver = context.getContentResolver();
 		final ContentValues values = new ContentValues();
 		values.put(PushNotifications.ACCOUNT_ID, notification.getAccountId());
@@ -47,10 +65,11 @@ public class NotificationHelper implements Constants {
 		resolver.insert(PushNotifications.CONTENT_URI, values);
 	}
 
-	public void buildNotificationByType(final Context context, final NotificationContent notification, final AccountPreferences pref) {
+	public void buildNotificationByType(final NotificationContent notification, final long fromUserId,
+										final AccountPreferences pref) {
 		final String type = notification.getType();
 		final int notificationType = pref.getMentionsNotificationType();
-		List<NotificationContent> pendingNotifications = getCachedNotifications(context, notification.getAccountId());
+		List<NotificationContent> pendingNotifications = getCachedNotifications(notification.getAccountId());
 		final int notificationCount = pendingNotifications.size();
 
 		String contentText = null;
@@ -63,28 +82,28 @@ public class NotificationHelper implements Constants {
 			ticker = notification.getMessage();
 			smallicon = R.drawable.ic_stat_mention;
 		} else if (NotificationContent.NOTIFICATION_TYPE_RETWEET.equals(type)) {
-			contentText = context.getString(R.string.push_new_retweet_single)
+			contentText = context.getString(R.string.notification_new_retweet_single)
 					+ ": " + notification.getMessage();
 			ticker = contentText; //TODO Should we really add the message to the ticker? We could
 			smallicon = R.drawable.ic_stat_retweet;
 		} else if (NotificationContent.NOTIFICATION_TYPE_FAVORITE.equals(type)) {
-			contentText = context.getString(R.string.push_new_favorite_single)
+			contentText = context.getString(R.string.notification_new_favorite_single)
 					+ ": " + notification.getMessage();
 			ticker = contentText; //TODO Should we really add the message to the ticker?
 			smallicon = R.drawable.ic_stat_favorite;
 		} else if (NotificationContent.NOTIFICATION_TYPE_FOLLOWER.equals(type)) {
-			contentText = "@" + notification.getFromUser() + " " + context.getString(R.string.push_new_follower);
+			contentText = "@" + notification.getFromUser() + " " + context.getString(R.string.notification_new_follower);
 			ticker = contentText;
 			smallicon = R.drawable.ic_stat_follower;
 		} else if (NotificationContent.NOTIFICATION_TYPE_ERROR_420.equals(type)) {
-			buildErrorNotification(context, 420, pref);
+			buildErrorNotification(420, pref);
 		}
 		if (contentText == null && ticker == null) return;
-		buildNotification(context, notification, pref, notificationType, notificationCount,
-				pendingNotifications, contentText, ticker, null, smallicon);
+		buildNotification(notification, pref, fromUserId, notificationType, notificationCount,
+				pendingNotifications, contentText, ticker, smallicon);
 	}
 
-	private List<NotificationContent> getCachedNotifications(final Context context, final long argAccountId) {
+	private List<NotificationContent> getCachedNotifications(final long argAccountId) {
 		if (argAccountId <= 0) return null;
 		final ContentResolver resolver = context.getContentResolver();
 		final String where = PushNotifications.ACCOUNT_ID + " = " + argAccountId;
@@ -114,48 +133,45 @@ public class NotificationHelper implements Constants {
 		return results;
 	}
 
-	private void buildNotification(final Context context,
-								   final NotificationContent notification, final AccountPreferences pref,
+	private void buildNotification(final NotificationContent notification, final AccountPreferences pref,
+								   final long fromUserId,
 								   final int notificationType, final int notificationCount,
 								   List<NotificationContent> pendingNotifications, final String contentText,
-								   final String ticker, final Bitmap icon,
-								   final int smallicon) {
+								   final String ticker, final int smallicon) {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
 		builder.setContentTitle("@" + notification.getFromUser());
 		builder.setContentText(contentText);
 		builder.setTicker(ticker);
-		builder.setSmallIcon(smallicon);
-		if (icon != null) builder.setLargeIcon(icon);
-		builder.setDeleteIntent(getDeleteIntent(context, notification.getAccountId()));
+		builder.setDeleteIntent(getDeleteIntent(notification.getAccountId()));
 		builder.setAutoCancel(true);
 		builder.setWhen(notification.getTimestamp());
 
 		if (notificationCount > 1) {
+			builder.setSmallIcon(R.drawable.ic_stat_twittnuker);
 			NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-			inboxStyle.setBigContentTitle(notificationCount + " " + context.getString(R.string.push_new_interactions));
+			inboxStyle.setBigContentTitle(notificationCount + " " + context.getString(R.string.notification_new_interactions));
 
 			for (NotificationContent pendingNotification : pendingNotifications) {
-				Spanned line = getInboxLineByType(context, pendingNotification);
+				Spanned line = getInboxLineByType(pendingNotification);
 				if (line != null) inboxStyle.addLine(line);
 			}
 			inboxStyle.setSummaryText("@" + getAccountScreenName(context, notification.getAccountId()));
 			builder.setNumber(notificationCount);
 			builder.setStyle(inboxStyle);
 		} else {
-			//final Intent replyIntent = new Intent(INTENT_ACTION_REPLY);
-			//replyIntent.setExtrasClassLoader(getClassLoader());
-			//replyIntent.putExtra(EXTRA_NOTIFICATION_ID, notificationType);
-			//replyIntent.putExtra(EXTRA_NOTIFICATION_ACCOUNT, notification.getAccountId());
-			////replyIntent.putExtra(EXTRA_STATUS, firstItem); TODO
-			//replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			String imageUrl = getAccountProfileImage(context, fromUserId);
+			imageUrl = getReasonablySmallTwitterProfileImage(imageUrl);
+			final Bitmap profileImage = getProfileImageForNotification(imageUrl);
+
+			builder.setLargeIcon(profileImage);
+			builder.setSmallIcon(smallicon);
+			//TODO add actions for notification type
 			//builder.addAction(R.drawable.ic_action_reply, getString(R.string.reply),
 			//		PendingIntent.getActivity(this, 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT));
-			//final NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle(builder);
-			//bigTextStyle.bigText(stripMentionText(notification.getMessage(),
-			//		getAccountScreenName(this, notification.getAccountId())));
-			//bigTextStyle.setSummaryText("@" + getAccountScreenName(this, notification.getAccountId()));
-			//builder.setStyle(bigTextStyle);
+			final NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle(builder);
+			bigTextStyle.bigText(contentText);
+			builder.setStyle(bigTextStyle);
 		}
 
 		int defaults = 0;
@@ -193,12 +209,12 @@ public class NotificationHelper implements Constants {
 
 		builder.setContentIntent(resultIntent);
 
-		NotificationManager notificationManager = getNotificationManager(context);
+		NotificationManager notificationManager = getNotificationManager();
 		notificationManager.notify(getAccountNotificationId(NOTIFICATION_ID_PUSH,
 				notification.getAccountId()), builder.build());
 	}
 
-	private void buildErrorNotification(final Context context, final int type, final AccountPreferences pref) {
+	private void buildErrorNotification(final int type, final AccountPreferences pref) {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 		builder.setContentTitle("Error!");
 		switch (type) {
@@ -229,24 +245,24 @@ public class NotificationHelper implements Constants {
 			}
 			builder.setDefaults(defaults);
 		}
-		NotificationManager notificationManager = getNotificationManager(context);
+		NotificationManager notificationManager = getNotificationManager();
 		notificationManager.notify(NOTIFICATION_ID_PUSH_ERROR, builder.build());
 	}
 
-	private Spanned getInboxLineByType(final Context context, final NotificationContent pendingNotification) {
+	private Spanned getInboxLineByType(final NotificationContent pendingNotification) {
 		final String type = pendingNotification.getType();
 		final String nameEscaped = HtmlEscapeHelper.escape("@" + pendingNotification.getFromUser());
 		final String textEscaped = HtmlEscapeHelper.escape(pendingNotification.getMessage());
 		if (NotificationContent.NOTIFICATION_TYPE_MENTION.equals(type)) {
 			return Html.fromHtml(String.format("<b>%s</b>: %s", nameEscaped, textEscaped));
 		} else if (NotificationContent.NOTIFICATION_TYPE_RETWEET.equals(type)) {
-			return Html.fromHtml(String.format("<b>%s " + context.getString(R.string.push_new_retweet) + "</b>: %s",
+			return Html.fromHtml(String.format("<b>%s " + context.getString(R.string.notification_new_retweet) + "</b>: %s",
 					nameEscaped, textEscaped));
 		} else if (NotificationContent.NOTIFICATION_TYPE_FAVORITE.equals(type)) {
-			return Html.fromHtml(String.format("<b>%s " + context.getString(R.string.push_new_favorite) + "</b>: %s",
+			return Html.fromHtml(String.format("<b>%s " + context.getString(R.string.notification_new_favorite) + "</b>: %s",
 					nameEscaped, textEscaped));
 		} else if (NotificationContent.NOTIFICATION_TYPE_FOLLOWER.equals(type)) {
-			return Html.fromHtml(String.format("<b>%s</b> " + context.getString(R.string.push_new_follower),
+			return Html.fromHtml(String.format("<b>%s</b> " + context.getString(R.string.notification_new_follower),
 					nameEscaped));
 		}
 		return null;
@@ -259,27 +275,25 @@ public class NotificationHelper implements Constants {
 		return text;
 	}
 
-	private PendingIntent getDeleteIntent(final Context context, final long accountId) {
+	private PendingIntent getDeleteIntent(final long accountId) {
 		Intent intent = new Intent(context, ClearNotificationReceiver.class);
 		intent.setAction(INTENT_ACTION_PUSH_NOTIFICATION_CLEARED);
 		intent.putExtra(EXTRA_USER_ID, accountId);
 		return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 	}
 
-	private NotificationManager getNotificationManager(final Context context) {
+	private NotificationManager getNotificationManager() {
 		return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 	}
 
-	private Bitmap getProfileImageForNotification(final Context context, final String profileImageUrl) {
-		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-		ImagePreloader imagePreloader = new ImagePreloader(context, app.getImageLoader());
+	private Bitmap getProfileImageForNotification(final String profileImageUrl) {
 		final Resources res = context.getResources();
 		final int w = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
 		final int h = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
-		final File profileImageFile = imagePreloader.getCachedImageFile(profileImageUrl);
-		final Bitmap profile_image = profileImageFile != null && profileImageFile.isFile() ? BitmapFactory
-				.decodeFile(profileImageFile.getPath()) : null;
-		if (profile_image != null) return Bitmap.createScaledBitmap(profile_image, w, h, true);
-		else return null;
+		final File profileImageFile = mImagePreloader.getCachedImageFile(profileImageUrl);
+
+		final Bitmap profileImage = profileImageFile != null && profileImageFile.isFile() ? BitmapFactory
+					.decodeFile(profileImageFile.getPath()) : null;
+		return (profileImage != null) ? Bitmap.createScaledBitmap(profileImage, w, h, true) : null;
 	}
 }
