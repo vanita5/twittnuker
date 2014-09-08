@@ -55,29 +55,33 @@ public class NotificationHelper implements Constants {
 
 		String contentText = null;
 		String ticker = null;
-		//Bitmap icon; TODO
+		int smallicon = R.drawable.ic_stat_twittnuker;
 
 		if (NotificationContent.NOTIFICATION_TYPE_MENTION.equals(type)) {
 			contentText = stripMentionText(notification.getMessage(),
 					getAccountScreenName(context, notification.getAccountId()));
 			ticker = notification.getMessage();
+			smallicon = R.drawable.ic_stat_mention;
 		} else if (NotificationContent.NOTIFICATION_TYPE_RETWEET.equals(type)) {
 			contentText = context.getString(R.string.push_new_retweet_single)
 					+ ": " + notification.getMessage();
 			ticker = contentText; //TODO Should we really add the message to the ticker? We could
+			smallicon = R.drawable.ic_stat_retweet;
 		} else if (NotificationContent.NOTIFICATION_TYPE_FAVORITE.equals(type)) {
 			contentText = context.getString(R.string.push_new_favorite_single)
 					+ ": " + notification.getMessage();
 			ticker = contentText; //TODO Should we really add the message to the ticker?
+			smallicon = R.drawable.ic_stat_favorite;
 		} else if (NotificationContent.NOTIFICATION_TYPE_FOLLOWER.equals(type)) {
 			contentText = "@" + notification.getFromUser() + " " + context.getString(R.string.push_new_follower);
 			ticker = contentText;
+			smallicon = R.drawable.ic_stat_follower;
 		} else if (NotificationContent.NOTIFICATION_TYPE_ERROR_420.equals(type)) {
 			buildErrorNotification(context, 420, pref);
 		}
 		if (contentText == null && ticker == null) return;
 		buildNotification(context, notification, pref, notificationType, notificationCount,
-				pendingNotifications, contentText, ticker, null);
+				pendingNotifications, contentText, ticker, null, smallicon);
 	}
 
 	private List<NotificationContent> getCachedNotifications(final Context context, final long argAccountId) {
@@ -114,13 +118,14 @@ public class NotificationHelper implements Constants {
 								   final NotificationContent notification, final AccountPreferences pref,
 								   final int notificationType, final int notificationCount,
 								   List<NotificationContent> pendingNotifications, final String contentText,
-								   final String ticker, final Bitmap icon) {
+								   final String ticker, final Bitmap icon,
+								   final int smallicon) {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
 		builder.setContentTitle("@" + notification.getFromUser());
 		builder.setContentText(contentText);
 		builder.setTicker(ticker);
-		builder.setSmallIcon(R.drawable.ic_stat_twittnuker);
+		builder.setSmallIcon(smallicon);
 		if (icon != null) builder.setLargeIcon(icon);
 		builder.setDeleteIntent(getDeleteIntent(context, notification.getAccountId()));
 		builder.setAutoCancel(true);
@@ -204,7 +209,7 @@ public class NotificationHelper implements Constants {
 			default:
 				break;
 		}
-		builder.setSmallIcon(R.drawable.ic_stat_twittnuker);
+		builder.setSmallIcon(R.drawable.ic_stat_info);
 		builder.setAutoCancel(true);
 		builder.setWhen(System.currentTimeMillis());
 		int defaults = 0;
