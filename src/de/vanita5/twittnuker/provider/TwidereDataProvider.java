@@ -24,12 +24,9 @@ package de.vanita5.twittnuker.provider;
 
 import static de.vanita5.twittnuker.util.Utils.clearAccountColor;
 import static de.vanita5.twittnuker.util.Utils.clearAccountName;
-import static de.vanita5.twittnuker.util.Utils.getAccountDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;
-import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
 import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getNotificationUri;
 import static de.vanita5.twittnuker.util.Utils.getTableId;
 import static de.vanita5.twittnuker.util.Utils.getTableNameById;
@@ -48,26 +45,21 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.ParcelFileDescriptor;
 import android.support.v4.app.NotificationCompat;
-import android.text.Html;
 import android.util.Log;
 
 import org.mariotaku.jsonserializer.JSONFileIO;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
@@ -81,7 +73,6 @@ import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
-import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.ImagePreloader;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
 import de.vanita5.twittnuker.util.NotificationHelper;
@@ -103,10 +94,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class TwidereDataProvider extends ContentProvider implements Constants, OnSharedPreferenceChangeListener,
@@ -660,28 +649,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		return c;
 	}
 
-	private Bitmap getProfileImageForNotification(final String profile_image_url) {
-		final Context context = getContext();
-		final Resources res = context.getResources();
-		final int w = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
-		final int h = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
-		final File profile_image_file = mImagePreloader.getCachedImageFile(profile_image_url);
-		final Bitmap profile_image = profile_image_file != null && profile_image_file.isFile() ? BitmapFactory
-				.decodeFile(profile_image_file.getPath()) : null;
-		if (profile_image != null) return Bitmap.createScaledBitmap(profile_image, w, h, true);
-		return Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.ic_profile_image_default), w, h,
-				true);
-	}
-
-	private int getSendersCount(final List<ParcelableDirectMessage> items) {
-		if (items == null || items.isEmpty()) return 0;
-		final Set<Long> ids = new HashSet<Long>();
-		for (final ParcelableDirectMessage item : items.toArray(new ParcelableDirectMessage[items.size()])) {
-			ids.add(item.sender_id);
-		}
-		return ids.size();
-	}
-
 	private Cursor getUnreadCountsCursor() {
 		final MatrixCursor c = new MatrixCursor(TweetStore.UnreadCounts.MATRIX_COLUMNS);
 		return c;
@@ -730,15 +697,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 			c.addRow(new Object[] { -1, type, count });
 		}
 		return c;
-	}
-
-	private int getUsersCount(final List<ParcelableStatus> items) {
-		if (items == null || items.isEmpty()) return 0;
-		final Set<Long> ids = new HashSet<Long>();
-		for (final ParcelableStatus item : items.toArray(new ParcelableStatus[items.size()])) {
-			ids.add(item.user_id);
-		}
-		return ids.size();
 	}
 
 	private boolean isNotificationAudible() {

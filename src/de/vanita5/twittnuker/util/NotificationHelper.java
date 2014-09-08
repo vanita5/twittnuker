@@ -51,7 +51,7 @@ public class NotificationHelper implements Constants {
 		profileOptsBuilder.cacheInMemory(true);
 		profileOptsBuilder.cacheOnDisk(true);
 		final DisplayImageOptions displayImageOptions = profileOptsBuilder.build();
-		mImagePreloader = new ImagePreloader(context.getApplicationContext(), app.getImageLoader(), displayImageOptions);
+		mImagePreloader = new ImagePreloader(context, app.getImageLoader(), displayImageOptions);
 	}
 
 	public void cachePushNotification(final NotificationContent notification) {
@@ -294,6 +294,7 @@ public class NotificationHelper implements Constants {
 		return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 	}
 
+	//TODO Fix this method. Cache is always empty?
 	private Bitmap getProfileImageForNotification(final String profileImageUrl) {
 		final Resources res = context.getResources();
 		final int w = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
