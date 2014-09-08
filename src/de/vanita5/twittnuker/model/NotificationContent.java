@@ -10,6 +10,7 @@ public class NotificationContent {
 	public static final String NOTIFICATION_TYPE_RETWEET = "type_retweet";
 	public static final String NOTIFICATION_TYPE_FOLLOWER = "type_new_follower";
 	public static final String NOTIFICATION_TYPE_FAVORITE = "type_favorite";
+	public static final String NOTIFICATION_TYPE_DIRECT_MESSAGE = "type_direct_message";
 
 	public static final String NOTIFICATION_TYPE_ERROR_420 = "type_error_420";
 
@@ -58,5 +59,23 @@ public class NotificationContent {
 
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) return false;
+		else if (!(o instanceof NotificationContent)) return false;
+		else if (this.accountId != ((NotificationContent) o).accountId)
+			return false;
+		else if (this.fromUser != null
+			&& !this.fromUser.equals(((NotificationContent) o).fromUser))
+			return false;
+		else if (this.message != null
+			&& !this.message.equals(((NotificationContent) o).message))
+			return false;
+		else if (this.type != null
+			&& !this.type.equals(((NotificationContent) o).type))
+			return false;
+		return true;
 	}
 }

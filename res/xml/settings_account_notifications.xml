@@ -45,13 +45,6 @@
 		android:key="cat_notifications_type"
 		android:title="@string/notifications_type">
 		<de.vanita5.twittnuker.preference.NotificationTypePreference
-			android:key="notification_type_home"
-			android:title="@string/home"
-			app:dependencyKey="home_timeline_notification"
-			app:dependencyValueDefault="false"
-			app:dependencyValues="@array/dependency_values_true"
-			app:notificationType="none"/>
-		<de.vanita5.twittnuker.preference.NotificationTypePreference
 			android:key="notification_type_mentions"
 			android:title="@string/mentions"
 			app:dependencyKey="mentions_notification"

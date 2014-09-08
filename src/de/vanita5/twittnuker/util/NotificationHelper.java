@@ -51,10 +51,12 @@ public class NotificationHelper implements Constants {
 		profileOptsBuilder.cacheInMemory(true);
 		profileOptsBuilder.cacheOnDisk(true);
 		final DisplayImageOptions displayImageOptions = profileOptsBuilder.build();
-		mImagePreloader = new ImagePreloader(context, app.getImageLoader(), displayImageOptions);
+		mImagePreloader = new ImagePreloader(context.getApplicationContext(), app.getImageLoader(), displayImageOptions);
 	}
 
 	public void cachePushNotification(final NotificationContent notification) {
+		List<NotificationContent> cache = getCachedNotifications(notification.getAccountId());
+		if (cache != null && !cache.isEmpty() && cache.contains(notification)) return;
 		final ContentResolver resolver = context.getContentResolver();
 		final ContentValues values = new ContentValues();
 		values.put(PushNotifications.ACCOUNT_ID, notification.getAccountId());
@@ -95,6 +97,10 @@ public class NotificationHelper implements Constants {
 			contentText = "@" + notification.getFromUser() + " " + context.getString(R.string.notification_new_follower);
 			ticker = contentText;
 			smallicon = R.drawable.ic_stat_follower;
+		} else if (NotificationContent.NOTIFICATION_TYPE_DIRECT_MESSAGE.equals(type)) {
+			contentText = notification.getMessage();
+			ticker = contentText;
+			smallicon = R.drawable.ic_stat_direct_message;
 		} else if (NotificationContent.NOTIFICATION_TYPE_ERROR_420.equals(type)) {
 			buildErrorNotification(420, pref);
 		}
@@ -254,16 +260,18 @@ public class NotificationHelper implements Constants {
 		final String nameEscaped = HtmlEscapeHelper.escape("@" + pendingNotification.getFromUser());
 		final String textEscaped = HtmlEscapeHelper.escape(pendingNotification.getMessage());
 		if (NotificationContent.NOTIFICATION_TYPE_MENTION.equals(type)) {
-			return Html.fromHtml(String.format("<b>%s</b>: %s", nameEscaped, textEscaped));
+			return Html.fromHtml(String.format("<b>%s:</b> %s", nameEscaped, textEscaped));
 		} else if (NotificationContent.NOTIFICATION_TYPE_RETWEET.equals(type)) {
-			return Html.fromHtml(String.format("<b>%s " + context.getString(R.string.notification_new_retweet) + "</b>: %s",
+			return Html.fromHtml(String.format("<b>%s " + context.getString(R.string.notification_new_retweet) + ":</b> %s",
 					nameEscaped, textEscaped));
 		} else if (NotificationContent.NOTIFICATION_TYPE_FAVORITE.equals(type)) {
-			return Html.fromHtml(String.format("<b>%s " + context.getString(R.string.notification_new_favorite) + "</b>: %s",
+			return Html.fromHtml(String.format("<b>%s " + context.getString(R.string.notification_new_favorite) + ":</b> %s",
 					nameEscaped, textEscaped));
 		} else if (NotificationContent.NOTIFICATION_TYPE_FOLLOWER.equals(type)) {
 			return Html.fromHtml(String.format("<b>%s</b> " + context.getString(R.string.notification_new_follower),
 					nameEscaped));
+		} else if (NotificationContent.NOTIFICATION_TYPE_DIRECT_MESSAGE.equals(type)) {
+			return Html.fromHtml(String.format("<b>%s:</b>", context.getString(R.string.notification_new_direct_message)) + " " + textEscaped);
 		}
 		return null;
 	}

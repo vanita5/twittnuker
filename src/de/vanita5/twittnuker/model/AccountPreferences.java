@@ -103,11 +103,6 @@ public class AccountPreferences implements Constants {
 				DEFAULT_DIRECT_MESSAGES_NOTIFICATION);
 	}
 
-	public boolean isHomeTimelineNotificationEnabled() {
-		return mPreferences.getBoolean(KEY_HOME_TIMELINE_NOTIFICATION,
-				DEFAULT_HOME_TIMELINE_NOTIFICATION);
-	}
-
 	public boolean isMentionsNotificationEnabled() {
 		return mPreferences.getBoolean(KEY_MENTIONS_NOTIFICATION, DEFAULT_MENTIONS_NOTIFICATION);
 	}

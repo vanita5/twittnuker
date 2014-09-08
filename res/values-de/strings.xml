@@ -649,9 +649,10 @@
     <string name="notification_new_interactions">neue Interaktionen</string>
     <string name="notification_new_favorite">favorisiert</string>
     <string name="notification_new_favorite_single">Favorisiert</string>
-    <string name="notification_new_retweet">retwetted</string>
+    <string name="notification_new_retweet">retweeted</string>
     <string name="notification_new_retweet_single">Retweeted</string>
     <string name="notification_new_follower">folgt die jetzt.</string>
+    <string name="notification_new_direct_message">Direktnachricht</string>
 
     <string name="shortening">Tweet kürzen</string>
     <string name="error_hototin">...but I failed :(\nDer Tweet wurde zu den Entwürfen hinzugefügt.</string>

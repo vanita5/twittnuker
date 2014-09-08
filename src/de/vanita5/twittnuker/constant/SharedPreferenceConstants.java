@@ -113,7 +113,6 @@ public interface SharedPreferenceConstants {
 	public static final int DEFAULT_NOTIFICATION_TYPE_DIRECT_MESSAGES = VALUE_NOTIFICATION_FLAG_RINGTONE
 			| VALUE_NOTIFICATION_FLAG_VIBRATION | VALUE_NOTIFICATION_FLAG_LIGHT;
 
-	public static final boolean DEFAULT_HOME_TIMELINE_NOTIFICATION = false;
 	public static final boolean DEFAULT_MENTIONS_NOTIFICATION = true;
 	public static final boolean DEFAULT_DIRECT_MESSAGES_NOTIFICATION = true;
 	public static final boolean DEFAULT_NEW_FOLLOWERS_NOTIFICATION = true;
@@ -190,8 +189,6 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_AUTO_REFRESH_DIRECT_MESSAGES = "auto_refresh_direct_messages";
 	@Preference(type = BOOLEAN)
 	public static final String KEY_AUTO_REFRESH_TRENDS = "auto_refresh_trends";
-	@Preference(type = BOOLEAN)
-	public static final String KEY_HOME_TIMELINE_NOTIFICATION = "home_timeline_notification";
 	@Preference(type = BOOLEAN)
 	public static final String KEY_MENTIONS_NOTIFICATION = "mentions_notification";
 	@Preference(type = BOOLEAN)
