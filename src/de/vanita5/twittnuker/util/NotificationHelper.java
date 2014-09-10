@@ -295,18 +295,13 @@ public class NotificationHelper implements Constants {
 
 	//TODO Fix this method. Cache is always empty?
 	private Bitmap getProfileImageForNotification(final String profileImageUrl) {
-		try {
-			final Resources res = context.getResources();
-			final int w = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
-			final int h = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
-			final File profileImageFile = mImagePreloader.getCachedImageFile(profileImageUrl);
+		final Resources res = context.getResources();
+		final int w = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
+		final int h = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
+		final File profileImageFile = mImagePreloader.getCachedImageFile(profileImageUrl);
 
-			final Bitmap profileImage = profileImageFile != null && profileImageFile.isFile() ? BitmapFactory
-					.decodeFile(profileImageFile.getPath()) : null;
-			return (profileImage != null) ? Bitmap.createScaledBitmap(profileImage, w, h, true) : null;
-		} catch(Exception e) {
-			System.out.print(e.getMessage());
-		}
-		return null;
+		final Bitmap profileImage = profileImageFile != null && profileImageFile.isFile() ? BitmapFactory
+				.decodeFile(profileImageFile.getPath()) : null;
+		return (profileImage != null) ? Bitmap.createScaledBitmap(profileImage, w, h, true) : null;
 	}
 }
