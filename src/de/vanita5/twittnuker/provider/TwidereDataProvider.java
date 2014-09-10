@@ -25,36 +25,26 @@ package de.vanita5.twittnuker.provider;
 import static de.vanita5.twittnuker.util.Utils.clearAccountColor;
 import static de.vanita5.twittnuker.util.Utils.clearAccountName;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;
 import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getNotificationUri;
 import static de.vanita5.twittnuker.util.Utils.getTableId;
 import static de.vanita5.twittnuker.util.Utils.getTableNameById;
 import static de.vanita5.twittnuker.util.Utils.isFiltered;
-import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
 
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.ParcelFileDescriptor;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import org.mariotaku.jsonserializer.JSONFileIO;
@@ -99,8 +89,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public final class TwidereDataProvider extends ContentProvider implements Constants, OnSharedPreferenceChangeListener,
-        LazyLoadCallback {
+public final class TwidereDataProvider extends ContentProvider implements Constants, LazyLoadCallback {
 
 	private static final String UNREAD_STATUSES_FILE_NAME = "unread_statuses";
 	private static final String UNREAD_MENTIONS_FILE_NAME = "unread_mentions";
@@ -121,23 +110,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	private final List<UnreadItem> mUnreadStatuses = new NoDuplicatesCopyOnWriteArrayList<UnreadItem>();
 	private final List<UnreadItem> mUnreadMentions = new NoDuplicatesCopyOnWriteArrayList<UnreadItem>();
 	private final List<UnreadItem> mUnreadMessages = new NoDuplicatesCopyOnWriteArrayList<UnreadItem>();
-
-	private boolean mHomeActivityInBackground;
-
-	private boolean mNameFirst, mNickOnly;
-
-	private final BroadcastReceiver mHomeActivityStateReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(final Context context, final Intent intent) {
-			final String action = intent.getAction();
-			if (BROADCAST_HOME_ACTIVITY_ONSTART.equals(action)) {
-				mHomeActivityInBackground = false;
-			} else if (BROADCAST_HOME_ACTIVITY_ONSTOP.equals(action)) {
-				mHomeActivityInBackground = true;
-			}
-		}
-
-	};
 
 	@Override
 	public int bulkInsert(final Uri uri, final ContentValues[] values) {
@@ -263,13 +235,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         mDatabaseWrapper = new SQLiteDatabaseWrapper(this);
 		mHostAddressResolver = app.getHostAddressResolver();
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mPreferences.registerOnSharedPreferenceChangeListener(this);
-		updatePreferences();
 		mImagePreloader = new ImagePreloader(context, app.getImageLoader());
-		final IntentFilter filter = new IntentFilter();
-		filter.addAction(BROADCAST_HOME_ACTIVITY_ONSTART);
-		filter.addAction(BROADCAST_HOME_ACTIVITY_ONSTOP);
-		context.registerReceiver(mHomeActivityStateReceiver, filter);
 		restoreUnreadItems();
 		mNotificationHelper = new NotificationHelper(context);
 		// final GetWritableDatabaseTask task = new
@@ -284,11 +250,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         final SQLiteOpenHelper helper = app.getSQLiteOpenHelper();
         return helper.getWritableDatabase();
     }
-
-	@Override
-	public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-		updatePreferences();
-	}
 
 	@Override
 	public ParcelFileDescriptor openFile(final Uri uri, final String mode) throws FileNotFoundException {
@@ -419,51 +380,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		}
 	}
 
-	private void buildNotification(final NotificationCompat.Builder builder, final AccountPreferences accountPrefs,
-			final int notificationType, final String ticker, final String title, final String message, final long when,
-			final int icon, final Bitmap largeIcon, final Intent contentIntent, final Intent deleteIntent) {
-		final Context context = getContext();
-		builder.setTicker(ticker);
-		builder.setContentTitle(title);
-		builder.setContentText(message);
-		builder.setAutoCancel(true);
-		builder.setWhen(System.currentTimeMillis());
-		builder.setSmallIcon(icon);
-		if (largeIcon != null) {
-			builder.setLargeIcon(largeIcon);
-		}
-		if (deleteIntent != null) {
-			builder.setDeleteIntent(PendingIntent.getBroadcast(context, 0, deleteIntent,
-					PendingIntent.FLAG_UPDATE_CURRENT));
-		}
-		if (contentIntent != null) {
-			builder.setContentIntent(PendingIntent.getActivity(context, 0, contentIntent,
-					PendingIntent.FLAG_UPDATE_CURRENT));
-		}
-		int defaults = 0;
-		if (isNotificationAudible()) {
-			if (AccountPreferences.isNotificationHasRingtone(notificationType)) {
-				final Uri ringtone = accountPrefs.getNotificationRingtone();
-				builder.setSound(ringtone, Notification.STREAM_DEFAULT);
-			}
-			if (AccountPreferences.isNotificationHasVibration(notificationType)) {
-				defaults |= Notification.DEFAULT_VIBRATE;
-            } else {
-                defaults &= ~Notification.DEFAULT_VIBRATE;
-			}
-		}
-		if (AccountPreferences.isNotificationHasLight(notificationType)) {
-			final int color = accountPrefs.getNotificationLightColor();
-			builder.setLights(color, 1000, 2000);
-		}
-		builder.setDefaults(defaults);
-	}
-
 	private void clearNotification() {
 		mNewStatuses.clear();
 		mNewMentions.clear();
 		mNewMessages.clear();
-        getNotificationManager().cancelAll();
 	}
 
 	private void clearNotification(final int notificationType, final long accountId) {
@@ -491,14 +411,14 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		}
 		if (isAccountSpecific) {
 			if (accountId > 0) {
-                nm.cancel(getAccountNotificationId(notificationType, accountId));
+				//TODO delete notifications by type and accountid
 			} else {
 				for (final long id : getAccountIds(getContext())) {
-                    nm.cancel(getAccountNotificationId(notificationType, id));
+					//TODO delete notifications by type and accountid
 				}
 			}
 		} else {
-            nm.cancel(notificationType);
+			//TODO delete notifications by account id?
 		}
 	}
 
@@ -554,6 +474,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	 * @param statuses
 	 */
 	private void createNotifications(final AccountPreferences pref, final String type, final List<?> statuses) {
+		if (mPreferences.getBoolean(KEY_ENABLE_PUSH, false)) return;
 		//Sort multiple statuses by timestamp
 		Collections.sort(statuses, new Comparator<Object>() {
 			@Override
@@ -578,6 +499,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				notification.setType(type);
 				notification.setMessage(status.text_plain);
 				notification.setTimestamp(status.timestamp);
+				notification.setProfileImageUrl(status.user_profile_image_url);
 				user_id = status.user_id;
 			} else if (o instanceof ParcelableDirectMessage) {
 				ParcelableDirectMessage dm = (ParcelableDirectMessage) o;
@@ -586,6 +508,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				notification.setType(type);
 				notification.setMessage(dm.text_plain);
 				notification.setTimestamp(dm.timestamp);
+				notification.setProfileImageUrl(dm.sender_profile_image_url);
 				user_id = dm.sender_id;
 			}
 			mNotificationHelper.cachePushNotification(notification);
@@ -718,10 +641,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		return c;
 	}
 
-	private boolean isNotificationAudible() {
-		return mHomeActivityInBackground && !isNotificationsSilent(getContext());
-	}
-
 	private void notifyContentObserver(final Uri uri) {
         final ContentResolver cr = getContentResolver();
         if (uri == null || cr == null) return;
@@ -816,11 +735,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (!uri.getBooleanQueryParameter(QUERY_PARAM_NOTIFY, true)) return;
 		switch (getTableId(uri)) {
 			case TABLE_ID_STATUSES: {
-				final int notifiedCount = notifyStatusesInserted(values);
 				final List<ParcelableStatus> items = new ArrayList<ParcelableStatus>(mNewStatuses);
 				Collections.sort(items);
-				final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
-						getAccountIds(getContext()));
 				//TODO Notifications for new tweets in timeline
 				notifyUnreadCountChanged(NOTIFICATION_ID_HOME_TIMELINE);
 				break;
@@ -828,7 +744,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 			case TABLE_ID_MENTIONS: {
 				final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
 						getAccountIds(getContext()));
-                final int notifiedCount = notifyMentionsInserted(prefs, values);
                 final List<ParcelableStatus> items = new ArrayList<ParcelableStatus>(mNewMentions);
                 Collections.sort(items);
 				for (final AccountPreferences pref : prefs) {
@@ -842,7 +757,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				break;
 			}
 			case TABLE_ID_DIRECT_MESSAGES_INBOX: {
-				final int notifiedCount = notifyIncomingMessagesInserted(values);
 				final List<ParcelableDirectMessage> items = new ArrayList<ParcelableDirectMessage>(mNewMessages);
 				Collections.sort(items);
 				final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
@@ -850,8 +764,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				for (final AccountPreferences pref : prefs) {
 					if (pref.isDirectMessagesNotificationEnabled()) {
 						final long accountId = pref.getAccountId();
-						//displayMessagesNotification(notifiedCount, pref, pref.getDirectMessagesNotificationType(),
-						//		R.drawable.ic_stat_mention, getMessagesForAccounts(items, accountId));
 						createNotifications(pref, NotificationContent.NOTIFICATION_TYPE_DIRECT_MESSAGE,
 								getMessagesForAccounts(items, accountId));
 					}
@@ -956,11 +868,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         c.setNotificationUri(cr, uri);
 	}
 
-	private void updatePreferences() {
-		mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, false);
-		mNickOnly = mPreferences.getBoolean(KEY_NICKNAME_ONLY, false);
-	}
-
 	private static int clearUnreadCount(final List<UnreadItem> set, final long[] accountIds) {
 		if (accountIds == null) return 0;
 		int count = 0;
@@ -1055,13 +962,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				return true;
 		}
 		return false;
-	}
-
-	private static String stripMentionText(final String text, final String my_screen_name) {
-		if (text == null || my_screen_name == null) return text;
-		final String temp = "@" + my_screen_name + " ";
-		if (text.startsWith(temp)) return text.substring(temp.length());
-		return text;
 	}
 
 	@SuppressWarnings("unused")

@@ -166,9 +166,8 @@ public class NotificationHelper implements Constants {
 			builder.setNumber(notificationCount);
 			builder.setStyle(inboxStyle);
 		} else {
-			String imageUrl = getAccountProfileImage(context, fromUserId);
-			imageUrl = getReasonablySmallTwitterProfileImage(imageUrl);
-			final Bitmap profileImage = getProfileImageForNotification(imageUrl);
+			final Bitmap profileImage = getProfileImageForNotification(
+					getReasonablySmallTwitterProfileImage(notification.getProfileImageUrl()));
 
 			builder.setLargeIcon(profileImage);
 			builder.setSmallIcon(smallicon);
@@ -296,13 +295,18 @@ public class NotificationHelper implements Constants {
 
 	//TODO Fix this method. Cache is always empty?
 	private Bitmap getProfileImageForNotification(final String profileImageUrl) {
-		final Resources res = context.getResources();
-		final int w = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
-		final int h = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
-		final File profileImageFile = mImagePreloader.getCachedImageFile(profileImageUrl);
+		try {
+			final Resources res = context.getResources();
+			final int w = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
+			final int h = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
+			final File profileImageFile = mImagePreloader.getCachedImageFile(profileImageUrl);
 
-		final Bitmap profileImage = profileImageFile != null && profileImageFile.isFile() ? BitmapFactory
+			final Bitmap profileImage = profileImageFile != null && profileImageFile.isFile() ? BitmapFactory
 					.decodeFile(profileImageFile.getPath()) : null;
-		return (profileImage != null) ? Bitmap.createScaledBitmap(profileImage, w, h, true) : null;
+			return (profileImage != null) ? Bitmap.createScaledBitmap(profileImage, w, h, true) : null;
+		} catch(Exception e) {
+			System.out.print(e.getMessage());
+		}
+		return null;
 	}
 }

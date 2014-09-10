@@ -20,6 +20,7 @@ public class NotificationContent {
 	private String fromUser;
 	private String message;
 	private String type;
+	private String profileImageUrl;
 
 	public long getAccountId() {
 		return accountId;
@@ -61,6 +62,14 @@ public class NotificationContent {
 		this.timestamp = timestamp;
 	}
 
+	public String getProfileImageUrl() {
+		return profileImageUrl;
+	}
+
+	public void setProfileImageUrl(String profileImageUrl) {
+		this.profileImageUrl = profileImageUrl;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (o == null) return false;
@@ -75,6 +84,9 @@ public class NotificationContent {
 			return false;
 		else if (this.type != null
 			&& !this.type.equals(((NotificationContent) o).type))
+			return false;
+		else if (this.profileImageUrl != null
+			&& !this.profileImageUrl.equals(((NotificationContent) o).profileImageUrl))
 			return false;
 		return true;
 	}

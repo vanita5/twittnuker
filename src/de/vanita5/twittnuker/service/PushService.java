@@ -66,7 +66,8 @@ public class PushService extends IntentService implements Constants {
 						notification.setFromUser(extras.getString("fromuser"));
 						notification.setType(extras.getString("type"));
 						notification.setMessage(extras.getString("msg"));
-						notification.setTimestamp(System.currentTimeMillis());
+						notification.setTimestamp(System.currentTimeMillis()); //TODO replace with actual timestamp?
+						notification.setProfileImageUrl(extras.getString("image"));
 
 						mNotificationHelper.cachePushNotification(notification);
 						mNotificationHelper.buildNotificationByType(notification, -1, pref); //TODO user id
