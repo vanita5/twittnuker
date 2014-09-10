@@ -93,6 +93,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -546,7 +547,25 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		return result;
 	}
 
+	/**
+	 * Creates notifications for mentions and DMs
+	 * @param pref
+	 * @param type
+	 * @param statuses
+	 */
 	private void createNotifications(final AccountPreferences pref, final String type, final List<?> statuses) {
+		//Sort multiple statuses by timestamp
+		Collections.sort(statuses, new Comparator<Object>() {
+			@Override
+			public int compare(Object o, Object o2) {
+				if (o instanceof ParcelableStatus) {
+					return Long.compare(((ParcelableStatus) o).timestamp, ((ParcelableStatus) o2).timestamp);
+				} else if (o instanceof ParcelableDirectMessage) {
+					return Long.compare(((ParcelableDirectMessage) o).timestamp, ((ParcelableDirectMessage) o2).timestamp);
+				}
+				return 0;
+			}
+		});
 		for(int i = 0; i < statuses.size(); i++) {
 			Object o = statuses.get(i);
 			NotificationContent notification = new NotificationContent();
@@ -558,7 +577,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				notification.setFromUser(status.user_screen_name);
 				notification.setType(type);
 				notification.setMessage(status.text_plain);
-				notification.setTimestamp(System.currentTimeMillis());
+				notification.setTimestamp(status.timestamp);
 				user_id = status.user_id;
 			} else if (o instanceof ParcelableDirectMessage) {
 				ParcelableDirectMessage dm = (ParcelableDirectMessage) o;
@@ -566,7 +585,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				notification.setFromUser(dm.sender_screen_name);
 				notification.setType(type);
 				notification.setMessage(dm.text_plain);
-				notification.setTimestamp(System.currentTimeMillis());
+				notification.setTimestamp(dm.timestamp);
 				user_id = dm.sender_id;
 			}
 			mNotificationHelper.cachePushNotification(notification);
