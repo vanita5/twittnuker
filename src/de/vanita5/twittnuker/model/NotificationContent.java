@@ -85,9 +85,6 @@ public class NotificationContent {
 		else if (this.type != null
 			&& !this.type.equals(((NotificationContent) o).type))
 			return false;
-		else if (this.profileImageUrl != null
-			&& !this.profileImageUrl.equals(((NotificationContent) o).profileImageUrl))
-			return false;
 		return true;
 	}
 }
