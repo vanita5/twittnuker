@@ -651,7 +651,7 @@
     <string name="notification_new_favorite_single">Favorisiert</string>
     <string name="notification_new_retweet">retweeted</string>
     <string name="notification_new_retweet_single">Retweeted</string>
-    <string name="notification_new_follower">folgt die jetzt.</string>
+    <string name="notification_new_follower">folgt dir jetzt.</string>
     <string name="notification_new_direct_message">Direktnachricht</string>
 
     <string name="shortening">Tweet kürzen</string>
