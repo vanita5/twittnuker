@@ -10,6 +10,7 @@ import android.util.Xml;
 import android.view.ActionProvider;
 import android.view.InflateException;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -32,7 +33,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
  * it only works with an XmlPullParser returned from a compiled resource (R.
  * <em>something</em> file.)
  */
-public class TwidereMenuInflater {
+public class TwidereMenuInflater extends MenuInflater {
 	private static final String LOG_TAG = "MenuInflater";
 
 	/**
@@ -67,7 +68,7 @@ public class TwidereMenuInflater {
 	/**
 	 * Constructs a menu inflater.
 	 *
-	 * @see android.app.Activity#getMenuInflater()
+     * @see Activity#getMenuInflater()
 	 */
 	public TwidereMenuInflater(Context context) {
 		this(context, context);
@@ -77,9 +78,10 @@ public class TwidereMenuInflater {
 	 * Constructs a menu inflater.
 	 *
 	 * @hide
-	 * @see android.app.Activity#getMenuInflater()
+     * @see Activity#getMenuInflater()
 	 */
 	public TwidereMenuInflater(Context context, Object realOwner) {
+        super(context);
 		mContext = context;
 		mResources = context.getResources();
 		mRealOwner = realOwner;
@@ -96,6 +98,7 @@ public class TwidereMenuInflater {
 	 * @param menu    The Menu to inflate into. The items and submenus will be
 	 *                added to this Menu.
 	 */
+    @Override
 	public void inflate(int menuRes, Menu menu) {
 		XmlResourceParser parser = null;
 		try {

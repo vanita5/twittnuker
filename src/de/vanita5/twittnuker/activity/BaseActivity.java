@@ -42,7 +42,7 @@ public class BaseActivity extends BaseThemedActivity implements Constants {
     }
 
 	@Override
-    public int getThemeColor() {
+    public int getOverrideAccentColor() {
         return ThemeUtils.getUserThemeColor(this);
 	}
 

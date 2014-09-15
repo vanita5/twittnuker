@@ -42,6 +42,7 @@ import org.mariotaku.menucomponent.internal.menu.MenuUtils;
 
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 public abstract class MenuDialogFragment extends BaseSupportDialogFragment implements OnItemClickListener {
@@ -54,7 +55,7 @@ public abstract class MenuDialogFragment extends BaseSupportDialogFragment imple
 		final int themeRes, accentColor;
 		if (activity instanceof IThemedActivity) {
 			themeRes = ((IThemedActivity) activity).getThemeResourceId();
-			accentColor = ((IThemedActivity) activity).getThemeColor();
+			accentColor = ((IThemedActivity) activity).getOverrideAccentColor();
 		} else {
 			themeRes = ThemeUtils.getSettingsThemeResource(activity);
 			accentColor = ThemeUtils.getUserThemeColor(activity);
@@ -72,7 +73,7 @@ public abstract class MenuDialogFragment extends BaseSupportDialogFragment imple
 		listView.setOnItemClickListener(this);
 		builder.setView(listView);
 		final Menu menu = MenuUtils.createMenu(context);
-		onCreateMenu(new MenuInflater(context), menu);
+        onCreateMenu(new TwidereMenuInflater(context), menu);
 		adapter.setMenu(menu);
 		return builder.create();
 	}
@@ -89,5 +90,6 @@ public abstract class MenuDialogFragment extends BaseSupportDialogFragment imple
 		}
 	}
 
-	protected abstract void onCreateMenu(MenuInflater inflater, Menu menu);
+    protected abstract void onCreateMenu(TwidereMenuInflater inflater, Menu menu);
+
 }

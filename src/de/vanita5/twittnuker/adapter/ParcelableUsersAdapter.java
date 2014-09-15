@@ -85,7 +85,7 @@ public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> imp
 	public View getView(final int position, final View convertView, final ViewGroup parent) {
 		final View view = super.getView(position, convertView, parent);
 		final Object tag = view.getTag();
-		UserViewHolder holder = null;
+        final UserViewHolder holder;
 		if (tag instanceof UserViewHolder) {
 			holder = (UserViewHolder) tag;
 		} else {
@@ -98,8 +98,6 @@ public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> imp
 			view.setTag(holder);
 		}
 
-		// Clear images in prder to prevent images in recycled view shown.
-		holder.profile_image.setImageDrawable(null);
 		holder.position = position;
 
 		final ParcelableUser user = getItem(position);

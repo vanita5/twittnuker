@@ -34,7 +34,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.twitter.Extractor;
@@ -47,6 +46,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.menu.AccountActionProvider;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -198,7 +198,7 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
 
 	@Override
 	public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
-		new MenuInflater(mActivity).inflate(R.menu.action_multi_select_contents, menu);
+        new TwidereMenuInflater(mActivity).inflate(R.menu.action_multi_select_contents, menu);
 		mAccountActionProvider = (AccountActionProvider) menu.findItem(MENU_SELECT_ACCOUNT).getActionProvider();
 		mAccountActionProvider.setAccountId(mMultiSelectManager.getFirstSelectAccountId());
 		return true;

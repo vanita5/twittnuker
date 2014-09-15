@@ -48,8 +48,8 @@ public class BaseSupportDialogActivity extends BaseSupportThemedActivity impleme
 	}
 
 	@Override
-	public int getThemeColor() {
-		return ThemeUtils.getThemeColor(this);
+	public int getOverrideAccentColor() {
+		return ThemeUtils.getThemeColor(this, getThemeResourceId());
 	}
 
 	@Override

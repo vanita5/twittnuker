@@ -182,7 +182,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mCompactCards = mPreferences.getBoolean(KEY_COMPACT_CARDS, false);
 		mPlainListStyle = mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false);
-		mCurrentThemeColor = getThemeColor();
+		mCurrentThemeColor = getOverrideAccentColor();
 		mCurrentThemeFontFamily = getThemeFontFamily();
 		mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		mCurrentIsDarkDrawerEnabled = isDarkDrawerEnabled();
@@ -198,7 +198,8 @@ public class SettingsActivity extends BasePreferenceActivity {
 	private boolean shouldNotifyThemeChange() {
 		return mCompactCards != mPreferences.getBoolean(KEY_COMPACT_CARDS, false)
 				|| mPlainListStyle != mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false)
-				|| getThemeResourceId() != getCurrentThemeResourceId() || getThemeColor() != mCurrentThemeColor
+                || getThemeResourceId() != getCurrentThemeResourceId()
+                || ThemeUtils.getUserThemeColor(this) != mCurrentThemeColor
 				|| !CompareUtils.objectEquals(getThemeFontFamily(), mCurrentThemeFontFamily)
 				|| getThemeBackgroundAlpha() != mCurrentThemeBackgroundAlpha
 				|| isDarkDrawerEnabled() != mCurrentIsDarkDrawerEnabled;

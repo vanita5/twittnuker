@@ -103,5 +103,9 @@ public class ImageLoaderWrapper implements Constants {
 
 	public void loadProfileImage(final String url, final ImageLoadingListener listener) {
 		mImageLoader.loadImage(url, mProfileImageDisplayOptions, listener);
+    }
+
+    public void cancelDisplayTask(ImageView imageView) {
+        mImageLoader.cancelDisplayTask(imageView);
 	}
 }

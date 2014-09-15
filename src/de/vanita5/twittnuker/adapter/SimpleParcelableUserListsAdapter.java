@@ -41,13 +41,13 @@ import java.util.List;
 public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserList> implements IBaseAdapter {
 
 	private final Context mContext;
-	private final ImageLoaderWrapper mProfileImageLoader;
+    private final ImageLoaderWrapper mImageLoader;
 
 	public SimpleParcelableUserListsAdapter(final Context context) {
 		super(context, R.layout.list_item_two_line);
 		mContext = context;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-		mProfileImageLoader = app.getImageLoaderWrapper();
+        mImageLoader = app.getImageLoaderWrapper();
 		configBaseAdapter(context, this);
 	}
 
@@ -82,7 +82,9 @@ public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<Parcelabl
 		holder.text2.setText(mContext.getString(R.string.created_by, display_name));
 		holder.icon.setVisibility(isDisplayProfileImage() ? View.VISIBLE : View.GONE);
 		if (isDisplayProfileImage()) {
-			mProfileImageLoader.displayProfileImage(holder.icon, user_list.user_profile_image_url);
+            mImageLoader.displayProfileImage(holder.icon, user_list.user_profile_image_url);
+        } else {
+            mImageLoader.cancelDisplayTask(holder.icon);
 		}
 		return view;
 	}

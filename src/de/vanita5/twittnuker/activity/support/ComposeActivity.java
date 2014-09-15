@@ -215,7 +215,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	}
 
     @Override
-	public int getThemeColor() {
+	public int getOverrideAccentColor() {
 		return ThemeUtils.getUserThemeColor(this);
 	}
 
@@ -243,7 +243,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 				} else {
 					mLocationManager.removeUpdates(this);
 				}
-				mPreferences.edit().putBoolean(KEY_ATTACH_LOCATION, !attachLocation).commit();
+				mPreferences.edit().putBoolean(KEY_ATTACH_LOCATION, !attachLocation).apply();
 				setMenu();
 				updateTextCount();
 				break;

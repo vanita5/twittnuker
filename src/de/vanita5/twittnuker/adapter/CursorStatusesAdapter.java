@@ -123,9 +123,7 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
             final TwidereLinkify linkify = getLinkify();
 
 			// Clear images in prder to prevent images in recycled view shown.
-			holder.profile_image.setImageDrawable(null);
-			holder.my_profile_image.setImageDrawable(null);
-			holder.image_preview.setImageDrawable(null);
+
             linkify.setHasExtraMediaLink(false);
             linkify.setCustomMediaUrl(null);
 
@@ -228,6 +226,8 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 				holder.profile_image.setTag(position);
 				holder.my_profile_image.setTag(position);
 			} else {
+                mImageLoader.cancelDisplayTask(holder.profile_image);
+                mImageLoader.cancelDisplayTask(holder.my_profile_image);
 				holder.profile_image.setVisibility(View.GONE);
 				holder.my_profile_image.setVisibility(View.GONE);
 			}
@@ -252,7 +252,13 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 				final int count = medias.length;
 				holder.image_preview_count.setText(res.getQuantityString(R.plurals.N_medias, count, count));
 				holder.image_preview.setTag(position);
+            } else {
+                mImageLoader.cancelDisplayTask(holder.image_preview);
 			}
+        } else {
+            mImageLoader.cancelDisplayTask(holder.profile_image);
+            mImageLoader.cancelDisplayTask(holder.my_profile_image);
+            mImageLoader.cancelDisplayTask(holder.image_preview);
 		}
 	}
 
