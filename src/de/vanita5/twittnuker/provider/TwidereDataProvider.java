@@ -631,7 +631,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
 	private void displayStatusesNotification(final int notifiedCount, final AccountPreferences accountPreferences,
 			final int notificationType, final int notificationId, final List<ParcelableStatus> statuses,
-			final int titleSingle, final int titleMutiple, final int icon) {
+			final int titleSingle, final int titleMultiple, final int icon) {
         final NotificationManager nm = getNotificationManager();
 		if (notifiedCount == 0 || accountPreferences == null || statuses.isEmpty()) return;
 		final long accountId = accountPreferences.getAccountId();
@@ -668,7 +668,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		final String displayName = getDisplayName(context, firstItem.user_id, firstItem.user_name,
 				firstItem.user_screen_name, mNameFirst, mNickOnly);
 		if (usersCount > 1) {
-			title = resources.getString(titleMutiple, displayName, usersCount - 1);
+			title = resources.getString(titleMultiple, displayName, usersCount - 1);
 		} else {
 			title = resources.getString(titleSingle, displayName);
 		}

@@ -195,7 +195,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		if (account_ids == null || account_ids.length == 0) {
 			finish();
 		} else if (account_ids.length > 0 && !ArrayUtils.contains(account_ids, default_id)) {
-			mPreferences.edit().putLong(KEY_DEFAULT_ACCOUNT_ID, account_ids[0]).commit();
+			mPreferences.edit().putLong(KEY_DEFAULT_ACCOUNT_ID, account_ids[0]).apply();
 		}
 	}
 
@@ -621,7 +621,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		unregisterReceiver(mStateReceiver);
 		final ContentResolver resolver = getContentResolver();
 		resolver.unregisterContentObserver(mAccountChangeObserver);
-		mPreferences.edit().putInt(KEY_SAVED_TAB_POSITION, mViewPager.getCurrentItem()).commit();
+		mPreferences.edit().putInt(KEY_SAVED_TAB_POSITION, mViewPager.getCurrentItem()).apply();
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONSTOP));
 
 		super.onStop();
