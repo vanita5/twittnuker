@@ -86,10 +86,6 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 		final long timestamp = cursor.getLong(mIndices.message_timestamp);
 		final boolean is_outgoing = cursor.getInt(mIndices.is_outgoing) == 1;
 
-		// Clear images in prder to prevent images in recycled view shown.
-		holder.incoming_profile_image.setImageDrawable(null);
-		holder.outgoing_profile_image.setImageDrawable(null);
-
 		holder.incoming_message_container.setVisibility(is_outgoing ? View.GONE : View.VISIBLE);
 		holder.outgoing_message_container.setVisibility(is_outgoing ? View.VISIBLE : View.GONE);
 		holder.setTextSize(getTextSize());
@@ -109,6 +105,9 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 			mImageLoader.displayProfileImage(holder.outgoing_profile_image, profile_image_url_string);
 			holder.incoming_profile_image.setTag(position);
 			holder.outgoing_profile_image.setTag(position);
+        } else {
+            mImageLoader.cancelDisplayTask(holder.incoming_profile_image);
+            mImageLoader.cancelDisplayTask(holder.outgoing_profile_image);
 		}
 		if (position > mMaxAnimationPosition) {
 			if (mAnimationEnabled) {
@@ -120,9 +119,12 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 		holder.outgoing_item_menu.setTag(position);
 
 		if (firstMedia == null) {
+            mImageLoader.cancelDisplayTask(holder.incoming_image_preview);
+            mImageLoader.cancelDisplayTask(holder.outgoing_image_preview);
 			holder.outgoing_image_preview_container.setVisibility(View.GONE);
 			holder.incoming_image_preview_container.setVisibility(View.GONE);
 		} else if (is_outgoing) {
+            mImageLoader.cancelDisplayTask(holder.incoming_image_preview);
 			holder.outgoing_image_preview_container.setVisibility(View.VISIBLE);
 			holder.incoming_image_preview_container.setVisibility(View.GONE);
 			if (mImagePreviewScaleType != null) {
@@ -135,6 +137,7 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 			}
 			holder.outgoing_image_preview.setTag(position);
 		} else {
+            mImageLoader.cancelDisplayTask(holder.outgoing_image_preview);
 			holder.outgoing_image_preview_container.setVisibility(View.GONE);
 			holder.incoming_image_preview_container.setVisibility(View.VISIBLE);
 			if (mImagePreviewScaleType != null) {

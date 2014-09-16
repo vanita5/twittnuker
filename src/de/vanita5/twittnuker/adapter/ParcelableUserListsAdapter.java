@@ -51,7 +51,7 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 		OnClickListener, OnOverflowIconClickListener {
 
 	private final Context mContext;
-	private final ImageLoaderWrapper mProfileImageLoader;
+    private final ImageLoaderWrapper mImageLoader;
 	private final MultiSelectManager mMultiSelectManager;
 	private final Locale mLocale;
 
@@ -71,7 +71,7 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 		mContext = context;
 		mLocale = context.getResources().getConfiguration().locale;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-		mProfileImageLoader = app.getImageLoaderWrapper();
+        mImageLoader = app.getImageLoaderWrapper();
 		mMultiSelectManager = app.getMultiSelectManager();
 		configBaseCardAdapter(context, this);
 	}
@@ -104,8 +104,6 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 		}
 
 		holder.position = position;
-		// Clear images in prder to prevent images in recycled view shown.
-		holder.profile_image.setImageDrawable(null);
 
 		final ParcelableUserList user_list = getItem(position);
 		final String display_name = getDisplayName(mContext, user_list.user_id, user_list.user_name,
@@ -119,7 +117,9 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 		holder.subscribers_count.setText(getLocalizedNumber(mLocale, user_list.subscribers_count));
 		holder.profile_image.setVisibility(isDisplayProfileImage() ? View.VISIBLE : View.GONE);
 		if (isDisplayProfileImage()) {
-			mProfileImageLoader.displayProfileImage(holder.profile_image, user_list.user_profile_image_url);
+            mImageLoader.displayProfileImage(holder.profile_image, user_list.user_profile_image_url);
+        } else {
+            mImageLoader.cancelDisplayTask(holder.profile_image);
 		}
 		holder.profile_image.setTag(position);
 		if (position > mMaxAnimationPosition) {

@@ -58,6 +58,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -97,6 +98,8 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import org.mariotaku.dynamicgridview.DraggableArrayAdapter;
+
+import com.nostra13.universalimageloader.utils.IoUtils;
 import com.scvngr.levelup.views.gallery.AdapterView;
 import com.scvngr.levelup.views.gallery.AdapterView.OnItemClickListener;
 import com.scvngr.levelup.views.gallery.AdapterView.OnItemLongClickListener;
@@ -138,6 +141,8 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -159,6 +164,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	private static final String EXTRA_ORIGINAL_TEXT = "original_text";
 
 	private static final String EXTRA_TEMP_URI = "temp_uri";
+    private static final String EXTRA_SHARE_SCREENSHOT = "share_screenshot";
 
 	private TwidereValidator mValidator;
     private final Extractor mExtractor = new Extractor();
@@ -215,7 +221,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	}
 
     @Override
-	public int getThemeColor() {
+	public int getOverrideAccentColor() {
 		return ThemeUtils.getUserThemeColor(this);
 	}
 
@@ -243,7 +249,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 				} else {
 					mLocationManager.removeUpdates(this);
 				}
-				mPreferences.edit().putBoolean(KEY_ATTACH_LOCATION, !attachLocation).commit();
+				mPreferences.edit().putBoolean(KEY_ATTACH_LOCATION, !attachLocation).apply();
 				setMenu();
 				updateTextCount();
 				break;
@@ -604,8 +610,6 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		mBottomSendView.setOnClickListener(this);
 		mSendView.setOnLongClickListener(this);
 		mBottomSendView.setOnLongClickListener(this);
-		final Menu menu = mBottomMenuBar.getMenu(), actionBarMenu = mActionMenuBar.getMenu();
-		final Menu showingMenu = mBottomSendButton ? actionBarMenu : menu;
 		final LinearLayout.LayoutParams bottomMenuContainerParams = (LinearLayout.LayoutParams) mBottomMenuContainer
 				.getLayoutParams();
 		final LinearLayout.LayoutParams accountSelectorParams = (LinearLayout.LayoutParams) mAccountSelector
@@ -729,7 +733,17 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			new AddMediaTask(this, extraStream, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false).execute();
 		} else if (data != null) {
 			new AddMediaTask(this, data, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false).execute();
-		}
+        } else if (intent.hasExtra(EXTRA_SHARE_SCREENSHOT)) {
+            final Bitmap bitmap = intent.getParcelableExtra(EXTRA_SHARE_SCREENSHOT);
+            if (bitmap != null) {
+                try {
+                    new AddBitmapTask(this, bitmap, createTempImageUri(), ParcelableMedia.TYPE_IMAGE).execute();
+                } catch (IOException e) {
+                    // ignore
+                    bitmap.recycle();
+		        }
+            }
+        }
 		mEditText.setText(getShareStatus(this, extraSubject, extraText));
 		final int selection_end = mEditText.length();
 		mEditText.setSelection(selection_end);
@@ -1276,12 +1290,44 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	}
 
+    private static class AddBitmapTask extends AddMediaTask {
+
+        private final Bitmap mBitmap;
+
+        AddBitmapTask(ComposeActivity activity, Bitmap bitmap, Uri dst, int media_type) throws IOException {
+            super(activity, Uri.fromFile(File.createTempFile("tmp_bitmap", null)), dst, media_type,
+                    true);
+            mBitmap = bitmap;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            if (mBitmap == null || mBitmap.isRecycled()) return false;
+            FileOutputStream os = null;
+            try {
+                os = new FileOutputStream(getSrc().getPath());
+                mBitmap.compress(Bitmap.CompressFormat.PNG, 0, os);
+                mBitmap.recycle();
+            } catch (IOException e) {
+                return false;
+            } finally {
+                IoUtils.closeSilently(os);
+            }
+            return super.doInBackground(params);
+        }
+
+    }
+
 	private static class AddMediaTask extends AsyncTask<Void, Void, Boolean> {
 
 		private final ComposeActivity activity;
 		private final int media_type;
 		private final Uri src, dst;
 		private final boolean delete_src;
+
+        Uri getSrc() {
+            return src;
+        }
 
 		AddMediaTask(final ComposeActivity activity, final Uri src, final Uri dst, final int media_type,
 					 final boolean delete_src) {

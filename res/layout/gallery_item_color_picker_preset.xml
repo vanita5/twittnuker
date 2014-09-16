@@ -2,7 +2,7 @@
 <de.vanita5.twittnuker.view.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:padding="@dimen/element_spacing_extra_small">
+	android:padding="@dimen/element_spacing_xsmall">
 
     <de.vanita5.twittnuker.view.ForegroundColorView
         android:id="@+id/color"
@@ -12,6 +12,6 @@
         android:layout_alignParentTop="true"
         android:background="?android:activatedBackgroundIndicator"
         android:foreground="?android:selectableItemBackground"
-        android:padding="@dimen/element_spacing_extra_small"/>
+		android:padding="@dimen/element_spacing_xsmall"/>
 
 </de.vanita5.twittnuker.view.SquareRelativeLayout>

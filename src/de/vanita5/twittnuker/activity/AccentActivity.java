@@ -1,6 +1,7 @@
 package de.vanita5.twittnuker.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 
 import com.negusoft.holoaccent.AccentHelper;
@@ -14,8 +15,14 @@ import com.negusoft.holoaccent.AccentResources;
  */
 public class AccentActivity extends Activity {
 
-	private final AccentHelper mAccentHelper = new AccentHelper(getOverrideAccentColor(),
-			getOverrideAccentColorDark(), getOverrideAccentColorActionBar(), new MyInitListener());
+	private AccentHelper mAccentHelper;
+
+	@Override
+	protected void attachBaseContext(Context newBase) {
+		super.attachBaseContext(newBase);
+		mAccentHelper = new AccentHelper(getOverrideAccentColor(),
+				getOverrideAccentColorDark(), getOverrideAccentColorActionBar(), new MyInitListener());
+	}
 
 	@Override
 	public Resources getResources() {

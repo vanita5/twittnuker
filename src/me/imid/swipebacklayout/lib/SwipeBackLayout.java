@@ -136,7 +136,6 @@ public class SwipeBackLayout extends FrameLayout {
 
 	public SwipeBackLayout(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs);
-        setFitsSystemWindows(true);
 		mDragHelper = ViewDragHelper.create(this, new ViewDragCallback());
 
 		final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SwipeBackLayout, defStyle,
@@ -182,11 +181,11 @@ public class SwipeBackLayout extends FrameLayout {
 		setContentView(decorChild);
 		addView(decorChild, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		final FrameLayout frame = new FrameLayout(activity);
-        frame.setFitsSystemWindows(true);
 		frame.addView(backgroundChild, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		frame.addView(this);
 		decor.addView(frame);
 	}
+
 
 	@Override
 	public void computeScroll() {
@@ -496,10 +495,10 @@ public class SwipeBackLayout extends FrameLayout {
 		 * Invoke when state change
 		 * 
 		 * @param state flag to describe scroll state
+         * @param scrollPercent scroll percent of this view
 		 * @see #STATE_IDLE
 		 * @see #STATE_DRAGGING
 		 * @see #STATE_SETTLING
-		 * @param scrollPercent scroll percent of this view
 		 */
 		public void onScrollStateChange(int state, float scrollPercent);
 	}

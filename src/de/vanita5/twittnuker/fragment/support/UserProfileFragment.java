@@ -30,7 +30,6 @@ import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserNicknam
 import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
 import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
 import static de.vanita5.twittnuker.util.UserColorNicknameUtils.setUserColor;
-import static de.vanita5.twittnuker.util.Utils.addIntentToMenu;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
@@ -438,16 +437,15 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 				.registerOnSharedPreferenceChangeListener(this);
 		mLocale = getResources().getConfiguration().locale;
 		final Bundle args = getArguments();
-		long account_id = -1, user_id = -1;
-		String screen_name = null;
-		if (args != null) {
+        long accountId = -1, userId = -1;
+        String screenName = null;
 			if (savedInstanceState != null) {
 				args.putAll(savedInstanceState);
+        } else {
+            accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+            userId = args.getLong(EXTRA_USER_ID, -1);
+            screenName = args.getString(EXTRA_SCREEN_NAME);
 			}
-			account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
-			user_id = args.getLong(EXTRA_USER_ID, -1);
-			screen_name = args.getString(EXTRA_SCREEN_NAME);
-		}
 		mProfileImageLoader = getApplication().getImageLoaderWrapper();
 		mAdapter = new ListActionAdapter(getActivity());
 		mProfileImageView.setOnClickListener(this);
@@ -470,7 +468,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 		mProfileBannerSpace.setOnTouchListener(this);
 
 		setListAdapter(mAdapter);
-		getUserInfo(account_id, user_id, screen_name, false);
+        getUserInfo(accountId, userId, screenName, false);
 	}
 
 	@Override

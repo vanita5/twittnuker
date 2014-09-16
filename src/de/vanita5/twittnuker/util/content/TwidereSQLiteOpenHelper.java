@@ -22,12 +22,9 @@
 
 package de.vanita5.twittnuker.util.content;
 
-import static de.vanita5.twittnuker.util.Utils.trim;
 import static de.vanita5.twittnuker.util.content.DatabaseUpgradeHelper.safeUpgrade;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -142,8 +139,11 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 		safeUpgrade(db, CachedTrends.Local.TABLE_NAME, CachedTrends.Local.COLUMNS, CachedTrends.Local.TYPES, true, null);
 		safeUpgrade(db, Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, false, null);
 		safeUpgrade(db, PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES, false, null);
+        db.beginTransaction();
 		db.execSQL(createDirectMessagesView().getSQL());
 		db.execSQL(createDirectMessageConversationEntriesView().getSQL());
+        db.setTransactionSuccessful();
+        db.endTransaction();
 	}
 
 	private static String createTable(final String tableName, final String[] columns, final String[] types,

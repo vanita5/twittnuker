@@ -47,7 +47,6 @@ import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -170,7 +169,7 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 
 	@Override
 	public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
-		new MenuInflater(getActivity()).inflate(R.menu.action_multi_select_items, menu);
+        new TwidereMenuInflater(getActivity()).inflate(R.menu.action_multi_select_items, menu);
 		return true;
 	}
 

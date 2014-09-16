@@ -187,16 +187,12 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
         holder.setDisplayProfileImage(isDisplayProfileImage());
 		holder.setCardHighlightOption(mCardHighlightOption);
 
+        final ImageLoaderWrapper loader = getImageLoader();
 		if (!showGap) {
 			final TwidereLinkify linkify = getLinkify();
-			final ImageLoaderWrapper loader = getImageLoader();
 			final int highlightOption = getLinkHighlightOption();
 			final boolean mShowAccountColor = isShowAccountColor();
 
-			// Clear images and custom preview url in order to prevent images in recycled view shown.
-			holder.profile_image.setImageDrawable(null);
-			holder.my_profile_image.setImageDrawable(null);
-			holder.image_preview.setImageDrawable(null);
             linkify.setHasExtraMediaLink(false);
             linkify.setCustomMediaUrl(null);
 
@@ -263,6 +259,8 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 				holder.profile_image.setTag(position);
 				holder.my_profile_image.setTag(position);
 			} else {
+                loader.cancelDisplayTask(holder.profile_image);
+                loader.cancelDisplayTask(holder.my_profile_image);
 				holder.profile_image.setVisibility(View.GONE);
 				holder.my_profile_image.setVisibility(View.GONE);
 			}
@@ -287,7 +285,13 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 				final int count = status.medias.length;
 				holder.image_preview_count.setText(res.getQuantityString(R.plurals.N_medias, count, count));
 				holder.image_preview.setTag(position);
+            } else {
+                loader.cancelDisplayTask(holder.image_preview);
 			}
+        } else {
+            loader.cancelDisplayTask(holder.profile_image);
+            loader.cancelDisplayTask(holder.my_profile_image);
+            loader.cancelDisplayTask(holder.image_preview);
 		}
 		if (position > mMaxAnimationPosition) {
 			if (mAnimationEnabled) {

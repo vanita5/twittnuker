@@ -245,6 +245,7 @@ public final class Utils implements Constants, TwitterConstants {
 	public static final Pattern PATTERN_RESOURCE_IDENTIFIER = Pattern.compile("@([\\w_]+)\\/([\\w_]+)");
 	private static final UriMatcher CONTENT_PROVIDER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 	private static final UriMatcher LINK_HANDLER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
+
 	static {
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Accounts.CONTENT_PATH, TABLE_ID_ACCOUNTS);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Statuses.CONTENT_PATH, TABLE_ID_STATUSES);
@@ -330,6 +331,7 @@ public final class Utils implements Constants, TwitterConstants {
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_MUTES_USERS, null, LINK_ID_MUTES_USERS);
 
 	}
+
 	private static LongSparseArray<Integer> sAccountColors = new LongSparseArray<Integer>();
 	private static LongSparseArray<String> sAccountScreenNames = new LongSparseArray<String>();
 	private static LongSparseArray<String> sAccountNames = new LongSparseArray<String>();
@@ -500,7 +502,7 @@ public final class Utils implements Constants, TwitterConstants {
 	public static synchronized void cleanDatabasesByItemLimit(final Context context) {
 		if (context == null) return;
 		final ContentResolver resolver = context.getContentResolver();
-		final int item_limit = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).getInt(
+        final int itemLimit = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).getInt(
 				KEY_DATABASE_ITEM_LIMIT, DEFAULT_DATABASE_ITEM_LIMIT);
 
 		for (final long account_id : getAccountIds(context)) {
@@ -515,7 +517,7 @@ public final class Utils implements Constants, TwitterConstants {
 				qb.select(new Column(Statuses._ID)).from(new Tables(table));
 				qb.where(new Where(Statuses.ACCOUNT_ID + " = " + account_id));
 				qb.orderBy(new OrderBy(Statuses.STATUS_ID + " DESC"));
-				qb.limit(item_limit);
+                qb.limit(itemLimit);
 				final Where where = Where.and(Where.notIn(new Column(Statuses._ID), qb.build()), account_where);
 				resolver.delete(uri, where.getSQL(), null);
 			}
@@ -526,7 +528,7 @@ public final class Utils implements Constants, TwitterConstants {
 				qb.select(new Column(DirectMessages._ID)).from(new Tables(table));
 				qb.where(new Where(DirectMessages.ACCOUNT_ID + " = " + account_id));
 				qb.orderBy(new OrderBy(DirectMessages.MESSAGE_ID + " DESC"));
-				qb.limit(item_limit);
+                qb.limit(itemLimit);
 				final Where where = Where.and(Where.notIn(new Column(DirectMessages._ID), qb.build()), account_where);
 				resolver.delete(uri, where.getSQL(), null);
 			}
@@ -535,8 +537,11 @@ public final class Utils implements Constants, TwitterConstants {
 		for (final Uri uri : CACHE_URIS) {
 			final String table = getTableNameByUri(uri);
 			final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
-			qb.select(new Column(BaseColumns._ID)).from(new Tables(table));
-			final Where where = Where.notIn(new Column(Statuses._ID), qb.build());
+            qb.select(new Column(BaseColumns._ID));
+            qb.from(new Tables(table));
+            qb.orderBy(new OrderBy(BaseColumns._ID + " DESC"));
+            qb.limit(itemLimit * 20);
+            final Where where = Where.notIn(new Column(BaseColumns._ID), qb.build());
 			resolver.delete(uri, where.getSQL(), null);
 		}
 	}
@@ -1435,7 +1440,6 @@ public final class Utils implements Constants, TwitterConstants {
 		cur.close();
 		return ids;
 	}
-
 
 
 	public static String getApiBaseUrl(final String pattern, final String domain) {
