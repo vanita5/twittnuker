@@ -354,7 +354,9 @@ public class StreamingService extends Service implements Constants {
 
 		@Override
 		public void onFollow(User source, User followedUser) {
-			createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FOLLOWER, null);
+			if (followedUser.getId() == account_id) {
+				createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FOLLOWER, null);
+			}
 		}
 
 		@Override
