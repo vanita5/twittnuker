@@ -41,17 +41,50 @@ import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
 public class NotificationHelper implements Constants {
 
 	private Context context;
-	private TwittnukerApplication app;
 	private ImagePreloader mImagePreloader;
 
 	public NotificationHelper(final Context context) {
 		this.context = context;
-		app = TwittnukerApplication.getInstance(context);
+		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		final DisplayImageOptions.Builder profileOptsBuilder = new DisplayImageOptions.Builder();
 		profileOptsBuilder.cacheInMemory(true);
 		profileOptsBuilder.cacheOnDisk(true);
 		final DisplayImageOptions displayImageOptions = profileOptsBuilder.build();
 		mImagePreloader = new ImagePreloader(context, app.getImageLoader(), displayImageOptions);
+	}
+
+	private List<NotificationContent> getCachedNotifications(final long argAccountId) {
+		Cursor c = null;
+		List<NotificationContent> results = new ArrayList<NotificationContent>();
+		try {
+			if (argAccountId <= 0) return null;
+			final ContentResolver resolver = context.getContentResolver();
+			final String where = PushNotifications.ACCOUNT_ID + " = " + argAccountId;
+			c = resolver.query(PushNotifications.CONTENT_URI, PushNotifications.MATRIX_COLUMNS,
+					where, null, PushNotifications.DEFAULT_SORT_ORDER);
+
+			if (c == null || c.getCount() == 0) return null;
+			c.moveToFirst();
+			final int idxAccountId = c.getColumnIndex(PushNotifications.ACCOUNT_ID);
+			final int idxMessage = c.getColumnIndex(PushNotifications.MESSAGE);
+			final int idxTimestamp = c.getColumnIndex(PushNotifications.TIMESTAMP);
+			final int idxFromUser = c.getColumnIndex(PushNotifications.FROM_USER);
+			final int idxType = c.getColumnIndex(PushNotifications.NOTIFICATION_TYPE);
+
+			while(!c.isAfterLast()) {
+				NotificationContent notification = new NotificationContent();
+				notification.setAccountId(c.getLong(idxAccountId));
+				notification.setMessage(c.getString(idxMessage));
+				notification.setTimestamp(c.getLong(idxTimestamp));
+				notification.setFromUser(c.getString(idxFromUser));
+				notification.setType(c.getString(idxType));
+				results.add(notification);
+				c.moveToNext();
+			}
+		} finally {
+			if (c != null) c.close();
+		}
+		return results;
 	}
 
 	public void cachePushNotification(final NotificationContent notification) {
@@ -67,8 +100,48 @@ public class NotificationHelper implements Constants {
 		resolver.insert(PushNotifications.CONTENT_URI, values);
 	}
 
-	public void buildNotificationByType(final NotificationContent notification, final long fromUserId,
-										final AccountPreferences pref) {
+	public void deleteCachedNotifications(final long accountId, final String type) {
+		final ContentResolver resolver = context.getContentResolver();
+		final String where = PushNotifications.ACCOUNT_ID + " = " + accountId
+				+ " AND " + PushNotifications.NOTIFICATION_TYPE + " = '" + type + "'";
+		Cursor c = resolver.query(PushNotifications.CONTENT_URI, PushNotifications.MATRIX_COLUMNS,
+				where, null, PushNotifications.DEFAULT_SORT_ORDER);
+
+		// Only rebuild notifications if there are entries that will be removed
+		if (c == null) {
+			return;
+		} else if (c.getCount() == 0) {
+			c.close();
+			return;
+		} else {
+			resolver.delete(PushNotifications.CONTENT_URI, where, null);
+			rebuildNotification(accountId);
+
+		}
+	}
+
+	private void rebuildNotification(final long accountId) {
+		NotificationManager notificationManager = getNotificationManager();
+		notificationManager.cancel(getAccountNotificationId(NOTIFICATION_ID_PUSH, accountId));
+
+		List<NotificationContent> pendingNotifications = getCachedNotifications(accountId);
+		long[] accountIdArray = { accountId };
+
+		//we trigger rebuilding the notification by just calling buildNotificationByType()
+		//with the last notification from the db
+		if (pendingNotifications != null && !pendingNotifications.isEmpty()) {
+			NotificationContent notification = pendingNotifications.get(0);
+			AccountPreferences[] prefs = AccountPreferences.getAccountPreferences(context, accountIdArray);
+
+			//Should always contains just one pref
+			if (prefs.length == 1) {
+				buildNotificationByType(notification, prefs[0], true);
+			}
+		}
+	}
+
+	public void buildNotificationByType(final NotificationContent notification, final AccountPreferences pref,
+										final boolean rebuild) {
 		final String type = notification.getType();
 		final int notificationType = pref.getMentionsNotificationType();
 		List<NotificationContent> pendingNotifications = getCachedNotifications(notification.getAccountId());
@@ -105,50 +178,19 @@ public class NotificationHelper implements Constants {
 			buildErrorNotification(420, pref);
 		}
 		if (contentText == null && ticker == null) return;
-		buildNotification(notification, pref, fromUserId, notificationType, notificationCount,
-				pendingNotifications, contentText, ticker, smallicon);
-	}
-
-	private List<NotificationContent> getCachedNotifications(final long argAccountId) {
-		if (argAccountId <= 0) return null;
-		final ContentResolver resolver = context.getContentResolver();
-		final String where = PushNotifications.ACCOUNT_ID + " = " + argAccountId;
-		final Cursor c = resolver.query(PushNotifications.CONTENT_URI, PushNotifications.MATRIX_COLUMNS,
-				where, null, PushNotifications.DEFAULT_SORT_ORDER);
-
-		if (c == null || c.getCount() == 0) return null;
-		c.moveToFirst();
-		final int idxAccountId = c.getColumnIndex(PushNotifications.ACCOUNT_ID);
-		final int idxMessage = c.getColumnIndex(PushNotifications.MESSAGE);
-		final int idxTimestamp = c.getColumnIndex(PushNotifications.TIMESTAMP);
-		final int idxFromUser = c.getColumnIndex(PushNotifications.FROM_USER);
-		final int idxType = c.getColumnIndex(PushNotifications.NOTIFICATION_TYPE);
-
-		List<NotificationContent> results = new ArrayList<NotificationContent>();
-		while(!c.isAfterLast()) {
-			NotificationContent notification = new NotificationContent();
-			notification.setAccountId(c.getLong(idxAccountId));
-			notification.setMessage(c.getString(idxMessage));
-			notification.setTimestamp(c.getLong(idxTimestamp));
-			notification.setFromUser(c.getString(idxFromUser));
-			notification.setType(c.getString(idxType));
-			results.add(notification);
-			c.moveToNext();
-		}
-		c.close();
-		return results;
+		buildNotification(notification, pref, notificationType, notificationCount,
+				pendingNotifications, contentText, ticker, smallicon, rebuild);
 	}
 
 	private void buildNotification(final NotificationContent notification, final AccountPreferences pref,
-								   final long fromUserId,
 								   final int notificationType, final int notificationCount,
 								   List<NotificationContent> pendingNotifications, final String contentText,
-								   final String ticker, final int smallicon) {
+								   final String ticker, final int smallicon, final boolean rebuild) {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
 		builder.setContentTitle("@" + notification.getFromUser());
 		builder.setContentText(contentText);
-		builder.setTicker(ticker);
+		if (!rebuild) builder.setTicker(ticker);
 		builder.setDeleteIntent(getDeleteIntent(notification.getAccountId()));
 		builder.setAutoCancel(true);
 		builder.setWhen(notification.getTimestamp());

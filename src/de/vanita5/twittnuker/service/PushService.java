@@ -70,7 +70,7 @@ public class PushService extends IntentService implements Constants {
 						notification.setProfileImageUrl(extras.getString("image"));
 
 						mNotificationHelper.cachePushNotification(notification);
-						mNotificationHelper.buildNotificationByType(notification, -1, pref); //TODO user id
+						mNotificationHelper.buildNotificationByType(notification, pref, false);
 						break;
 					}
 					//There is no such account with Push enabled...

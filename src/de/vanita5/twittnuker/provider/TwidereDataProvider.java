@@ -387,8 +387,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	}
 
 	private void clearNotification(final int notificationType, final long accountId) {
-        final NotificationManager nm = getNotificationManager();
         final boolean isAccountSpecific;
+		String pushNotificationType = null;
 		switch (notificationType) {
 			case NOTIFICATION_ID_HOME_TIMELINE: {
 				mNewStatuses.clear();
@@ -398,27 +398,27 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 			case NOTIFICATION_ID_MENTIONS: {
 				mNewMentions.clear();
 				isAccountSpecific = true;
+				pushNotificationType = NotificationContent.NOTIFICATION_TYPE_MENTION;
 				break;
 			}
 			case NOTIFICATION_ID_DIRECT_MESSAGES: {
 				mNewMessages.clear();
 				isAccountSpecific = true;
+				pushNotificationType = NotificationContent.NOTIFICATION_TYPE_DIRECT_MESSAGE;
 				break;
 			}
 			default: {
 				isAccountSpecific = false;
 			}
 		}
-		if (isAccountSpecific) {
+		if (isAccountSpecific && pushNotificationType != null) {
 			if (accountId > 0) {
-				//TODO delete notifications by type and accountid
+				mNotificationHelper.deleteCachedNotifications(accountId, pushNotificationType);
 			} else {
 				for (final long id : getAccountIds(getContext())) {
-					//TODO delete notifications by type and accountid
+					mNotificationHelper.deleteCachedNotifications(id, pushNotificationType);
 				}
 			}
-		} else {
-			//TODO delete notifications by account id?
 		}
 	}
 
@@ -490,7 +490,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		for(int i = 0; i < statuses.size(); i++) {
 			Object o = statuses.get(i);
 			NotificationContent notification = new NotificationContent();
-			long user_id = -1;
 
 			if (o instanceof ParcelableStatus) {
 				ParcelableStatus status = (ParcelableStatus) o;
@@ -500,7 +499,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				notification.setMessage(status.text_plain);
 				notification.setTimestamp(status.timestamp);
 				notification.setProfileImageUrl(status.user_profile_image_url);
-				user_id = status.user_id;
 			} else if (o instanceof ParcelableDirectMessage) {
 				ParcelableDirectMessage dm = (ParcelableDirectMessage) o;
 				notification.setAccountId(dm.account_id);
@@ -509,10 +507,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				notification.setMessage(dm.text_plain);
 				notification.setTimestamp(dm.timestamp);
 				notification.setProfileImageUrl(dm.sender_profile_image_url);
-				user_id = dm.sender_id;
 			}
 			mNotificationHelper.cachePushNotification(notification);
-			if (i == statuses.size() - 1) mNotificationHelper.buildNotificationByType(notification, user_id, pref);
+			if (i == statuses.size() - 1) mNotificationHelper.buildNotificationByType(notification, pref, false);
 		}
 	}
 
@@ -735,6 +732,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (!uri.getBooleanQueryParameter(QUERY_PARAM_NOTIFY, true)) return;
 		switch (getTableId(uri)) {
 			case TABLE_ID_STATUSES: {
+				notifyStatusesInserted(values);
 				final List<ParcelableStatus> items = new ArrayList<ParcelableStatus>(mNewStatuses);
 				Collections.sort(items);
 				//TODO Notifications for new tweets in timeline
@@ -744,6 +742,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 			case TABLE_ID_MENTIONS: {
 				final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
 						getAccountIds(getContext()));
+                notifyMentionsInserted(prefs, values);
                 final List<ParcelableStatus> items = new ArrayList<ParcelableStatus>(mNewMentions);
                 Collections.sort(items);
 				for (final AccountPreferences pref : prefs) {
@@ -757,6 +756,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				break;
 			}
 			case TABLE_ID_DIRECT_MESSAGES_INBOX: {
+				notifyIncomingMessagesInserted(values);
 				final List<ParcelableDirectMessage> items = new ArrayList<ParcelableDirectMessage>(mNewMessages);
 				Collections.sort(items);
 				final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
