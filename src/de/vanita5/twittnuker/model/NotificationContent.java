@@ -22,6 +22,9 @@ public class NotificationContent {
 	private String type;
 	private String profileImageUrl;
 
+	private ParcelableStatus originalStatus;
+	private ParcelableDirectMessage originalMessage;
+
 	public long getAccountId() {
 		return accountId;
 	}
@@ -68,6 +71,22 @@ public class NotificationContent {
 
 	public void setProfileImageUrl(String profileImageUrl) {
 		this.profileImageUrl = profileImageUrl;
+	}
+
+	public ParcelableStatus getOriginalStatus() {
+		return originalStatus;
+	}
+
+	public void setOriginalStatus(ParcelableStatus originalStatus) {
+		this.originalStatus = originalStatus;
+	}
+
+	public ParcelableDirectMessage getOriginalMessage() {
+		return originalMessage;
+	}
+
+	public void setOriginalMessage(ParcelableDirectMessage originalMessage) {
+		this.originalMessage = originalMessage;
 	}
 
 	@Override

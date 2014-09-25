@@ -33,7 +33,6 @@ import de.vanita5.twittnuker.provider.TweetStore.PushNotifications;
 import de.vanita5.twittnuker.receiver.ClearNotificationReceiver;
 
 import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;
-import static de.vanita5.twittnuker.util.Utils.getAccountProfileImage;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
 import static de.vanita5.twittnuker.util.Utils.getReasonablySmallTwitterProfileImage;
 import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
@@ -147,6 +146,7 @@ public class NotificationHelper implements Constants {
 		List<NotificationContent> pendingNotifications = getCachedNotifications(notification.getAccountId());
 		final int notificationCount = pendingNotifications.size();
 
+		Intent mainActionIntent = null;
 		String contentText = null;
 		String ticker = null;
 		int smallicon = R.drawable.ic_stat_twittnuker;
@@ -156,16 +156,49 @@ public class NotificationHelper implements Constants {
 					getAccountScreenName(context, notification.getAccountId()));
 			ticker = notification.getMessage();
 			smallicon = R.drawable.ic_stat_mention;
+
+			if (notification.getOriginalStatus() != null) {
+				final Uri.Builder uriBuilder = new Uri.Builder();
+				uriBuilder.scheme(SCHEME_TWITTNUKER);
+				uriBuilder.authority(AUTHORITY_STATUS);
+				uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
+				uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getOriginalStatus().id));
+				mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
+				mainActionIntent.setExtrasClassLoader(context.getClassLoader());
+				mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
+			}
 		} else if (NotificationContent.NOTIFICATION_TYPE_RETWEET.equals(type)) {
 			contentText = context.getString(R.string.notification_new_retweet_single)
 					+ ": " + notification.getMessage();
-			ticker = contentText; //TODO Should we really add the message to the ticker? We could
+			ticker = contentText;
 			smallicon = R.drawable.ic_stat_retweet;
+
+			if (notification.getOriginalStatus() != null) {
+				final Uri.Builder uriBuilder = new Uri.Builder();
+				uriBuilder.scheme(SCHEME_TWITTNUKER);
+				uriBuilder.authority(AUTHORITY_STATUS);
+				uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
+				uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getOriginalStatus().id));
+				mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
+				mainActionIntent.setExtrasClassLoader(context.getClassLoader());
+				mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
+			}
 		} else if (NotificationContent.NOTIFICATION_TYPE_FAVORITE.equals(type)) {
 			contentText = context.getString(R.string.notification_new_favorite_single)
 					+ ": " + notification.getMessage();
-			ticker = contentText; //TODO Should we really add the message to the ticker?
+			ticker = contentText;
 			smallicon = R.drawable.ic_stat_favorite;
+
+			if (notification.getOriginalStatus() != null) {
+				final Uri.Builder uriBuilder = new Uri.Builder();
+				uriBuilder.scheme(SCHEME_TWITTNUKER);
+				uriBuilder.authority(AUTHORITY_STATUS);
+				uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
+				uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getOriginalStatus().id));
+				mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
+				mainActionIntent.setExtrasClassLoader(context.getClassLoader());
+				mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
+			}
 		} else if (NotificationContent.NOTIFICATION_TYPE_FOLLOWER.equals(type)) {
 			contentText = "@" + notification.getFromUser() + " " + context.getString(R.string.notification_new_follower);
 			ticker = contentText;
@@ -174,19 +207,37 @@ public class NotificationHelper implements Constants {
 			contentText = notification.getMessage();
 			ticker = contentText;
 			smallicon = R.drawable.ic_stat_direct_message;
+
+			if (notification.getOriginalMessage() != null) {
+				final Uri.Builder uriBuilder = new Uri.Builder();
+				uriBuilder.scheme(SCHEME_TWITTNUKER);
+				uriBuilder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
+				uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalMessage().account_id));
+				uriBuilder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(notification.getOriginalMessage().sender_id));
+				mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
+				mainActionIntent.setExtrasClassLoader(context.getClassLoader());
+			}
 		} else if (NotificationContent.NOTIFICATION_TYPE_ERROR_420.equals(type)) {
 			buildErrorNotification(420, pref);
 		}
 		if (contentText == null && ticker == null) return;
 		buildNotification(notification, pref, notificationType, notificationCount,
-				pendingNotifications, contentText, ticker, smallicon, rebuild);
+				pendingNotifications, contentText, ticker, smallicon, rebuild, mainActionIntent);
 	}
 
 	private void buildNotification(final NotificationContent notification, final AccountPreferences pref,
 								   final int notificationType, final int notificationCount,
 								   List<NotificationContent> pendingNotifications, final String contentText,
-								   final String ticker, final int smallicon, final boolean rebuild) {
+								   final String ticker, final int smallicon, final boolean rebuild,
+								   final Intent mainActionIntent) {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+
+		final Intent contentIntent = new Intent(context, HomeActivity.class);
+		contentIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		contentIntent.setAction(Intent.ACTION_MAIN);
+		contentIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+		contentIntent.putExtra(EXTRA_TAB_TYPE, TAB_TYPE_MENTIONS_TIMELINE);
+		contentIntent.putExtra(EXTRA_EXTRA_INTENT, mainActionIntent);
 
 		builder.setContentTitle("@" + notification.getFromUser());
 		builder.setContentText(contentText);
@@ -207,19 +258,23 @@ public class NotificationHelper implements Constants {
 			inboxStyle.setSummaryText("@" + getAccountScreenName(context, notification.getAccountId()));
 			builder.setNumber(notificationCount);
 			builder.setStyle(inboxStyle);
-		} else {
+		} else if (notificationCount == 1) {
 			final Bitmap profileImage = getProfileImageForNotification(
 					getReasonablySmallTwitterProfileImage(notification.getProfileImageUrl()));
 
 			builder.setLargeIcon(profileImage);
 			builder.setSmallIcon(smallicon);
 			//TODO add actions for notification type
+			//INTENT_ACTION_REPLY
 			//builder.addAction(R.drawable.ic_action_reply, getString(R.string.reply),
 			//		PendingIntent.getActivity(this, 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 			final NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle(builder);
 			bigTextStyle.bigText(contentText);
 			builder.setStyle(bigTextStyle);
 		}
+
+		builder.setContentIntent(PendingIntent.getActivity(context, 0, contentIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT));
 
 		int defaults = 0;
 		if (!isNotificationsSilent(context)) {
@@ -238,24 +293,6 @@ public class NotificationHelper implements Constants {
 			}
 			builder.setDefaults(defaults);
 		}
-
-		Intent result = new Intent(context, HomeActivity.class);
-		result.setAction(Intent.ACTION_MAIN);
-		result.addCategory(Intent.CATEGORY_LAUNCHER);
-		result.putExtra(EXTRA_TAB_TYPE, TAB_TYPE_MENTIONS_TIMELINE);
-		if (notificationCount == 1) {
-			//TODO Go directly to the mention (see TwidereDataProvider)? We need a ParcelableStatus for this...
-			//Load the status?
-		}
-
-		//TaskStackBuilder: This ensures that navigating backward from the Activity leads out of your application
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-		stackBuilder.addParentStack(HomeActivity.class);
-		stackBuilder.addNextIntent(result);
-		PendingIntent resultIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-		builder.setContentIntent(resultIntent);
-
 		NotificationManager notificationManager = getNotificationManager();
 		notificationManager.notify(getAccountNotificationId(NOTIFICATION_ID_PUSH,
 				notification.getAccountId()), builder.build());

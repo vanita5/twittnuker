@@ -499,6 +499,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				notification.setMessage(status.text_plain);
 				notification.setTimestamp(status.timestamp);
 				notification.setProfileImageUrl(status.user_profile_image_url);
+				notification.setOriginalStatus(status);
 			} else if (o instanceof ParcelableDirectMessage) {
 				ParcelableDirectMessage dm = (ParcelableDirectMessage) o;
 				notification.setAccountId(dm.account_id);
@@ -507,6 +508,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				notification.setMessage(dm.text_plain);
 				notification.setTimestamp(dm.timestamp);
 				notification.setProfileImageUrl(dm.sender_profile_image_url);
+				notification.setOriginalMessage(dm);
 			}
 			mNotificationHelper.cachePushNotification(notification);
 			if (i == statuses.size() - 1) mNotificationHelper.buildNotificationByType(notification, pref, false);
