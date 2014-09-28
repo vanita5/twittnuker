@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TweetStore.Mentions;
@@ -288,7 +289,8 @@ public class StreamingService extends Service implements Constants {
 			mPreferences = preferences;
 		}
 
-		private void createNotification(final String fromUser, final String type, final String msg) {
+		private void createNotification(final String fromUser, final String type, final String msg,
+										ParcelableStatus status, User sourceUser) {
 			if (mPreferences.getBoolean(KEY_STREAMING_NOTIFICATIONS, false)
 					&& !mPreferences.getBoolean(KEY_ENABLE_PUSH, false)) {
 				AccountPreferences pref = new AccountPreferences(context, account_id);
@@ -297,7 +299,9 @@ public class StreamingService extends Service implements Constants {
 				notification.setFromUser(fromUser);
 				notification.setType(type);
 				notification.setMessage(msg);
-				notification.setTimestamp(System.currentTimeMillis());
+				notification.setTimestamp(status != null ? status.timestamp : System.currentTimeMillis());
+				notification.setOriginalStatus(status);
+				notification.setSourceUser(sourceUser);
 
 				mNotificationHelper.cachePushNotification(notification);
 				mNotificationHelper.buildNotificationByType(notification, pref, false);
@@ -348,14 +352,16 @@ public class StreamingService extends Service implements Constants {
 		public void onFavorite(User source, User target, Status favoritedStatus) {
 			if (favoritedStatus.getUser().getId() == account_id) {
 				createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
-						favoritedStatus.getText());
+						favoritedStatus.getText(), new ParcelableStatus(favoritedStatus, account_id, false),
+						source);
 			}
 		}
 
 		@Override
 		public void onFollow(User source, User followedUser) {
 			if (followedUser.getId() == account_id) {
-				createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FOLLOWER, null);
+				createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FOLLOWER,
+						null, null, source);
 			}
 		}
 
@@ -437,7 +443,7 @@ public class StreamingService extends Service implements Constants {
 		@Override
 		public void onStallWarning(StallWarning warning) {
 			if ("420".equals(warning.getCode())) {
-				createNotification(null, NotificationContent.NOTIFICATION_TYPE_ERROR_420, null);
+				createNotification(null, NotificationContent.NOTIFICATION_TYPE_ERROR_420, null, null, null);
 			}
 		}
 
@@ -463,7 +469,8 @@ public class StreamingService extends Service implements Constants {
 				}
 				if (rt != null && rt.getUser().getId() == account_id) {
 					createNotification(status.getUser().getScreenName(),
-							NotificationContent.NOTIFICATION_TYPE_RETWEET, rt.getText());
+							NotificationContent.NOTIFICATION_TYPE_RETWEET, rt.getText(),
+							new ParcelableStatus(status, account_id, false), null);
 				}
 			}
 		}

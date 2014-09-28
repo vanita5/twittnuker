@@ -1,5 +1,7 @@
 package de.vanita5.twittnuker.model;
 
+import twitter4j.User;
+
 /**
  * This represents a single (Push) Notification.
  * BigView Notifications contain multiple NotificationContent Models!
@@ -22,6 +24,7 @@ public class NotificationContent {
 	private String type;
 	private String profileImageUrl;
 
+	private User sourceUser;
 	private ParcelableStatus originalStatus;
 	private ParcelableDirectMessage originalMessage;
 
@@ -87,6 +90,14 @@ public class NotificationContent {
 
 	public void setOriginalMessage(ParcelableDirectMessage originalMessage) {
 		this.originalMessage = originalMessage;
+	}
+
+	public User getSourceUser() {
+		return sourceUser;
+	}
+
+	public void setSourceUser(User sourceUser) {
+		this.sourceUser = sourceUser;
 	}
 
 	@Override
