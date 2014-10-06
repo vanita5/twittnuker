@@ -108,16 +108,12 @@ public class NotificationHelper implements Constants {
 				where, null, PushNotifications.DEFAULT_SORT_ORDER);
 
 		// Only rebuild notifications if there are entries that will be removed
-		if (c == null) {
-			return;
-		} else if (c.getCount() == 0) {
-			c.close();
-			return;
-		} else {
+		if (c == null) return;
+		if (c.getCount() > 0) {
 			resolver.delete(PushNotifications.CONTENT_URI, where, null);
 			rebuildNotification(accountId);
-
 		}
+		c.close();
 	}
 
 	private void rebuildNotification(final long accountId) {
