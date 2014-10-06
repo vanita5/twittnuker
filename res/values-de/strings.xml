@@ -159,8 +159,8 @@
     <string name="unblock">Blockierung aufheben</string>
     <string name="report_for_spam">Spam melden</string>
     <string name="twitter_mute_user">Stummschalten</string>
-    <string name="message_user_muted">Benutzer zur Filterliste hinzugefügt. Tweets dieses Benutzers erscheinen nicht in der Zeitleiste oder bei Erwähnungen.</string>
-    <string name="message_users_muted">Benutzer zur Filterliste hinzugefügt. Tweets dieser Benutzer erscheinen nicht in der Zeitleiste oder bei Erwähnungen.</string>
+    <string name="message_user_muted">Benutzer zur Filterliste hinzugefügt. Tweets dieses Benutzers erscheinen nicht in der Timeline oder bei Erwähnungen.</string>
+    <string name="message_users_muted">Benutzer zur Filterliste hinzugefügt. Tweets dieser Benutzer erscheinen nicht in der Timeline oder bei Erwähnungen.</string>
     <string name="inbox">Direktnachrichten</string>
     <string name="load_images">Bilder laden</string>
     <string name="other_settings">Weitere Einstellungen</string>
@@ -179,13 +179,13 @@
     <string name="refresh_on_start_summary">Timeline und Erwähnungen beim Start aktualisieren</string>
     <string name="refresh_after_status_updated">Aktualisiere nach dem Senden</string>
     <string name="refresh_after_status_updated_summary">Timeline nach dem Senden aktualisieren</string>
-    <string name="list_timeline">Zeitleiste anzeigen</string>
+    <string name="list_timeline">Liste anzeigen</string>
     <string name="list_members">Mitglieder anzeigen</string>
     <string name="list_subscribers">Abonnenten anzeigen</string>
     <string name="type_to_compose">Schreibe etwas</string>
     <string name="users_lists">Eigene Listen</string>
-    <string name="lists_following_user">Mitglied von Liste</string>
-    <string name="lists_following_me">Mitglied von Liste</string>
+    <string name="lists_following_user">Mitglied von Listen</string>
+    <string name="lists_following_me">Mitglied von Listen</string>
     <string name="item_3_minutes">3 Minuten</string>
     <string name="item_5_minutes">5 Minuten</string>
     <string name="item_10_minutes">10 Minuten</string>
@@ -221,7 +221,7 @@
     <string name="invalid_settings">Ungültige Einstellungen gefunden.</string>
     <string name="icon">Icon</string>
     <string name="pick_file">Datei auswählen</string>
-    <string name="user_timeline">Benutzer-Zeitleiste</string>
+    <string name="user_timeline">Benutzer-Timeline</string>
     <string name="notification_ringtone">Klingelton</string>
     <string name="notification_light_color">Lichtfarbe</string>
     <string name="share_format">Format zum Teilen</string>
