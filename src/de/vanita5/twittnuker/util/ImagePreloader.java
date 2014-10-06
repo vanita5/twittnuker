@@ -30,6 +30,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import de.vanita5.twittnuker.Constants;
@@ -48,10 +49,16 @@ public class ImagePreloader implements Constants {
 	private final Handler mHandler;
 	private final DiskCache mDiskCache;
 	private final ImageLoader mImageLoader;
+	private final DisplayImageOptions mDisplayImageOptions;
 
 	public ImagePreloader(final Context context, final ImageLoader loader) {
+		this(context, loader, null);
+	}
+
+	public ImagePreloader(final Context context, final ImageLoader loader, final DisplayImageOptions displayImageOptions) {
 		mContext = context;
 		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+		mDisplayImageOptions = displayImageOptions;
 		mImageLoader = loader;
 		mDiskCache = loader.getDiskCache();
 		mHandler = new Handler();
@@ -75,7 +82,7 @@ public class ImagePreloader implements Constants {
 
 			@Override
 			public void run() {
-				mImageLoader.loadImage(url, null);
+				mImageLoader.loadImage(url, mDisplayImageOptions, null);
 			}
 
 		});

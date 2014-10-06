@@ -153,6 +153,7 @@ import de.vanita5.twittnuker.fragment.support.UserMentionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserProfileFragment;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UsersListFragment;
+import de.vanita5.twittnuker.gcm.GCMHelper;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
@@ -178,6 +179,7 @@ import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.provider.TweetStore.Mentions;
 import de.vanita5.twittnuker.provider.TweetStore.Notifications;
 import de.vanita5.twittnuker.provider.TweetStore.Preferences;
+import de.vanita5.twittnuker.provider.TweetStore.PushNotifications;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.provider.TweetStore.Tabs;
 import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
@@ -271,6 +273,7 @@ public final class Utils implements Constants, TwitterConstants {
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, CachedTrends.Local.CONTENT_PATH,
 				TABLE_ID_TRENDS_LOCAL);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Tabs.CONTENT_PATH, TABLE_ID_TABS);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, PushNotifications.CONTENT_PATH, TABLE_ID_PUSH_NOTIFICATIONS);
 		CONTENT_PROVIDER_URI_MATCHER
 				.addURI(TweetStore.AUTHORITY, CachedStatuses.CONTENT_PATH, TABLE_ID_CACHED_STATUSES);
 		CONTENT_PROVIDER_URI_MATCHER
@@ -2166,6 +2169,8 @@ public final class Utils implements Constants, TwitterConstants {
 				return CachedTrends.Local.TABLE_NAME;
 			case TABLE_ID_TABS:
 				return Tabs.TABLE_NAME;
+			case TABLE_ID_PUSH_NOTIFICATIONS:
+				return PushNotifications.TABLE_NAME;
 			case TABLE_ID_CACHED_STATUSES:
 				return CachedStatuses.TABLE_NAME;
 			case TABLE_ID_CACHED_USERS:
@@ -3705,7 +3710,8 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static void startRefreshServiceIfNeeded(final Context context) {
 		final Intent refreshServiceIntent = new Intent(context, RefreshService.class);
-		if (isNetworkAvailable(context) && hasAutoRefreshAccounts(context)) {
+		if (isNetworkAvailable(context) && hasAutoRefreshAccounts(context)
+				&& !isPushEnabled(context)) {
 			if (isDebugBuild()) {
 				Log.d(LOGTAG, "Start background refresh service");
 			}
@@ -3713,6 +3719,22 @@ public final class Utils implements Constants, TwitterConstants {
 		} else {
 			context.stopService(refreshServiceIntent);
 		}
+	}
+
+	/**
+	 * Returns true if at least one account has Push enabled
+	 * @return
+	 */
+	public static boolean isPushEnabled(final Context context) {
+		final long[] accountIds = getAccountIds(context);
+		final AccountPreferences[] accountPrefs = AccountPreferences.getAccountPreferences(context, accountIds);
+
+		for (final AccountPreferences pref : accountPrefs) {
+			if (pref.isPushEnabled()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static void startStatusShareChooser(final Context context, final ParcelableStatus status) {

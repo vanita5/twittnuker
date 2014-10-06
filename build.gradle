@@ -86,6 +86,7 @@ dependencies {
     compile 'com.google.android.apps.dashclock:dashclock-api:2.0.0'
     compile 'com.commonsware.cwac:merge:1.0.1'
     compile 'com.commonsware.cwac:sacklist:1.0.0'
+    compile 'com.squareup.retrofit:retrofit:1.2.2'
     compile project(':SlidingMenu')
     compile project(':DragSortListView')
     compile project(':MenuComponent')

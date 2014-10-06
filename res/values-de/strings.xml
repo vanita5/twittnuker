@@ -636,6 +636,23 @@
 
     <string name="load_conversations_automatically">Konversationen automatisch laden</string>
     <string name="load_conversations_automatically_summary">Lädt Konversationen in der Status Ansicht automatisch</string>
+    <string name="standard_notifications">Standard Benachrichtigungen</string>
+    <string name="push_notifications">Push Benachrichtigungen</string>
+    <string name="enable_push_notifications">Push Benachrichtigungen aktivieren</string>
+    <string name="enable_push_notifications_summary">Push Notifications mit eigenem Server benutzen</string>
+    <string name="push_api_url">Push API URL</string>
+    <string name="push_api_port">Push API Port</string>
+    <string name="push_api_url_summary">Die URL/IP-Adresse des Push Servers</string>
+    <string name="push_api_port_summary">Der Port des Push Services auf dem Server</string>
+    <string name="label_push_service">Push Service</string>
+
+    <string name="notification_new_interactions">neue Interaktionen</string>
+    <string name="notification_new_favorite">favorisiert</string>
+    <string name="notification_new_favorite_single">Favorisiert</string>
+    <string name="notification_new_retweet">retweeted</string>
+    <string name="notification_new_retweet_single">Retweeted</string>
+    <string name="notification_new_follower">folgt dir jetzt.</string>
+    <string name="notification_new_direct_message">Direktnachricht</string>
 
     <string name="shortening">Tweet kürzen</string>
     <string name="error_hototin">...but I failed :(\nDer Tweet wurde zu den Entwürfen hinzugefügt.</string>

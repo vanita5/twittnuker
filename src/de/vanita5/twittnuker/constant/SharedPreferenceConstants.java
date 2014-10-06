@@ -113,9 +113,9 @@ public interface SharedPreferenceConstants {
 	public static final int DEFAULT_NOTIFICATION_TYPE_DIRECT_MESSAGES = VALUE_NOTIFICATION_FLAG_RINGTONE
 			| VALUE_NOTIFICATION_FLAG_VIBRATION | VALUE_NOTIFICATION_FLAG_LIGHT;
 
-	public static final boolean DEFAULT_HOME_TIMELINE_NOTIFICATION = false;
 	public static final boolean DEFAULT_MENTIONS_NOTIFICATION = true;
 	public static final boolean DEFAULT_DIRECT_MESSAGES_NOTIFICATION = true;
+	public static final boolean DEFAULT_NEW_FOLLOWERS_NOTIFICATION = true;
 
 	public static final int DEFAULT_DATABASE_ITEM_LIMIT = 100;
 	public static final int DEFAULT_LOAD_ITEM_LIMIT = 100;
@@ -190,11 +190,15 @@ public interface SharedPreferenceConstants {
 	@Preference(type = BOOLEAN)
 	public static final String KEY_AUTO_REFRESH_TRENDS = "auto_refresh_trends";
 	@Preference(type = BOOLEAN)
-	public static final String KEY_HOME_TIMELINE_NOTIFICATION = "home_timeline_notification";
-	@Preference(type = BOOLEAN)
 	public static final String KEY_MENTIONS_NOTIFICATION = "mentions_notification";
 	@Preference(type = BOOLEAN)
 	public static final String KEY_DIRECT_MESSAGES_NOTIFICATION = "direct_messages_notification";
+	@Preference(type = BOOLEAN)
+	public static final String KEY_MENTIONS_NOTIFICATION_PUSH = "mentions_notification_push";
+	@Preference(type = BOOLEAN)
+	public static final String KEY_DIRECT_MESSAGES_NOTIFICATION_PUSH = "direct_messages_notification_push";
+	@Preference(type = BOOLEAN)
+	public static final String KEY_NEW_FOLLOWERS_NOTIFICATION_PUSH = "followers_notification_push";
 	@Preference(type = INT)
 	public static final String KEY_LOCAL_TRENDS_WOEID = "local_trends_woeid";
 	public static final String KEY_NOTIFICATION_RINGTONE = "notification_ringtone";
@@ -287,6 +291,8 @@ public interface SharedPreferenceConstants {
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_STREAMING_ON_MOBILE = "stream_on_mobile";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
+	public static final String KEY_STREAMING_NOTIFICATIONS = "stream_notifications";
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_SWIPE_BACK = "swipe_back";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_FORCE_USING_PRIVATE_APIS = "force_using_private_apis";
@@ -314,4 +320,21 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_API_LAST_CHANGE = "api_last_change";
 	@Preference(type = LONG, exportable = false)
 	public static final String KEY_DEFAULT_ACCOUNT_ID = "default_account_id";
+
+	//GCM Push
+	@Preference(type = STRING)
+	public static final String KEY_GOOGLE_ACCOUNT = "key_google_account";
+	@Preference(type = STRING)
+	public static final String KEY_REGID = "KEY_REGID";
+	@Preference(type = INT)
+	public static final String KEY_APP_VERSION = "KEY_APP_VERSION";
+	@Preference(type = BOOLEAN)
+	public static final String KEY_ENABLE_PUSH = "enable_push_notifications";
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+	public static final String KEY_PUSH_REGISTERED = "push_registered";
+	@Preference(type = STRING)
+	public static final String KEY_PUSH_API_URL = "push_api_url";
+	@Preference(type = STRING)
+	public static final String KEY_PUSH_API_PORT = "push_api_port";
+
 }

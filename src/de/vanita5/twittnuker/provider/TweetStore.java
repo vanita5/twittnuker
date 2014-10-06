@@ -718,6 +718,37 @@ public interface TweetStore {
 
 	}
 
+	public static interface PushNotifications extends BaseColumns {
+
+		public static final String TABLE_NAME = "push_notifications";
+
+		public static final String CONTENT_PATH = TABLE_NAME;
+
+		public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
+
+		public static final String ACCOUNT_ID = "account_id";
+
+		public static final String FROM_USER = "from_user";
+
+		public static final String MESSAGE = "message";
+
+		public static final String NOTIFICATION_TYPE = "notification_type";
+
+		public static final String TIMESTAMP = "timestamp";
+
+		public static final String[] COLUMNS = new String[] { _ID, ACCOUNT_ID, FROM_USER, MESSAGE, NOTIFICATION_TYPE,
+				TIMESTAMP };
+
+		public static final String[] MATRIX_COLUMNS = new String[] { ACCOUNT_ID, FROM_USER, MESSAGE, NOTIFICATION_TYPE,
+				TIMESTAMP };
+
+		public static final String[] TYPES = new String[] { TYPE_PRIMARY_KEY, TYPE_INT, TYPE_TEXT_NOT_NULL,
+				TYPE_TEXT, TYPE_TEXT_NOT_NULL, TYPE_INT };
+
+		//TODO Is this the right sort order?
+		public static final String DEFAULT_SORT_ORDER = TIMESTAMP + " DESC";
+	}
+
 	public static interface Tabs extends BaseColumns {
 		public static final String TABLE_NAME = "tabs";
 		public static final String CONTENT_PATH = TABLE_NAME;

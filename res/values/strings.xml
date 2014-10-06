@@ -646,10 +646,29 @@
     <string name="label_streaming_service">Streaming service</string>
     <string name="refresh_before_streaming">Refresh before streaming</string>
     <string name="refresh_before_streaming_summary">Timeline and mentions will be refreshed before the streaming service starts</string>
+    <string name="stream_notifications">Notifications</string>
+    <string name="stream_notifications_summary">Push-like notifications while streaming</string>
 
     <string name="love">Love</string>
     <string name="load_conversations_automatically">Load conversations automatically</string>
     <string name="load_conversations_automatically_summary">Loads a conversation automatically in the status view</string>
+    <string name="standard_notifications">Standard Notifications</string>
+    <string name="push_notifications">Push Notificatons</string>
+    <string name="enable_push_notifications">Enable Push Notificatons</string>
+    <string name="enable_push_notifications_summary">Use your own backend server for Push Notifications</string>
+    <string name="push_api_url">Push API URL</string>
+    <string name="push_api_port">Push API Port</string>
+    <string name="push_api_url_summary">The URL/IP to your backend server</string>
+    <string name="push_api_port_summary">The port your backend server listens on</string>
+    <string name="label_push_service">Push Service</string>
+
+    <string name="notification_new_interactions">new interactions</string>
+    <string name="notification_new_favorite">favorited</string>
+    <string name="notification_new_favorite_single">Favorited</string>
+    <string name="notification_new_retweet">retweeted</string>
+    <string name="notification_new_retweet_single">Retweeted</string>
+    <string name="notification_new_follower">is now following you.</string>
+    <string name="notification_new_direct_message">Direct message</string>
 
     <string name="shortening">Shortening</string>
     <string name="error_hototin">...but I failed :(\nYour Tweet has not been send and saved to draft.</string>

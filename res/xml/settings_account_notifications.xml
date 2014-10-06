@@ -3,29 +3,47 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:title="@string/notifications">
 
-	<de.vanita5.twittnuker.preference.NotificationContentPreference
-		android:key="content_to_notify"
-		android:title="@string/content_to_notify"/>
-	
-	<de.vanita5.twittnuker.preference.RingtonePreference
-		android:key="notification_ringtone"
-		android:title="@string/notification_ringtone"/>
+    <PreferenceCategory
+        android:key="cat_general"
+        android:title="@string/general">
 
-	<de.vanita5.twittnuker.preference.ColorPickerPreference
-		android:defaultValue="@android:color/holo_blue_dark"
-		android:key="notification_light_color"
-		android:title="@string/notification_light_color"/>
+        <de.vanita5.twittnuker.preference.ColorPickerPreference
+            android:defaultValue="@android:color/holo_blue_dark"
+            android:key="notification_light_color"
+            android:title="@string/notification_light_color"/>
+
+        <de.vanita5.twittnuker.preference.RingtonePreference
+            android:key="notification_ringtone"
+            android:title="@string/notification_ringtone"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="cat_push"
+        android:title="@string/push_notifications">
+
+        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_push_notifications"
+            android:title="@string/enable_push_notifications"
+            android:summary="@string/enable_push_notifications_summary"/>
+
+        <de.vanita5.twittnuker.preference.PushNotificationContentPreference
+            android:key="content_to_notify_push"
+            android:title="@string/content_to_notify"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="cat_standard"
+        android:title="@string/standard_notifications">
+
+        <de.vanita5.twittnuker.preference.NotificationContentPreference
+            android:key="content_to_notify"
+            android:title="@string/content_to_notify"/>
+    </PreferenceCategory>
 
 	<PreferenceCategory
 		android:key="cat_notifications_type"
 		android:title="@string/notifications_type">
-		<de.vanita5.twittnuker.preference.NotificationTypePreference
-			android:key="notification_type_home"
-			android:title="@string/home"
-			app:dependencyKey="home_timeline_notification"
-			app:dependencyValueDefault="false"
-			app:dependencyValues="@array/dependency_values_true"
-			app:notificationType="none"/>
 		<de.vanita5.twittnuker.preference.NotificationTypePreference
 			android:key="notification_type_mentions"
 			android:title="@string/mentions"

@@ -44,13 +44,13 @@ public class NotificationContentPreference extends MultiSelectListPreference imp
 
 	@Override
 	protected boolean[] getDefaults() {
-		return new boolean[] { DEFAULT_HOME_TIMELINE_NOTIFICATION, DEFAULT_MENTIONS_NOTIFICATION,
+		return new boolean[] { DEFAULT_MENTIONS_NOTIFICATION,
 				DEFAULT_DIRECT_MESSAGES_NOTIFICATION };
 	}
 
 	@Override
 	protected String[] getKeys() {
-		return new String[] { KEY_HOME_TIMELINE_NOTIFICATION, KEY_MENTIONS_NOTIFICATION,
+		return new String[] { KEY_MENTIONS_NOTIFICATION,
 				KEY_DIRECT_MESSAGES_NOTIFICATION };
 	}
 

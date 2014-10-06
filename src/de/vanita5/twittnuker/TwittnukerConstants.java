@@ -161,6 +161,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final int TABLE_ID_TRENDS_LOCAL = 41;
 	public static final int TABLE_ID_DRAFTS = 51;
 	public static final int TABLE_ID_TABS = 52;
+	public static final int TABLE_ID_PUSH_NOTIFICATIONS = 60;
 	public static final int TABLE_ID_CACHED_USERS = 61;
 	public static final int TABLE_ID_CACHED_STATUSES = 62;
 	public static final int TABLE_ID_CACHED_HASHTAGS = 63;
@@ -183,6 +184,8 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final int NOTIFICATION_ID_SEND_DIRECT_MESSAGE = 102;
 	public static final int NOTIFICATION_ID_SHORTENING = 103;
 	public static final int NOTIFICATION_ID_UPLOAD_MEDIA = 104;
+	public static final int NOTIFICATION_ID_PUSH_ERROR = 299;
+	public static final int NOTIFICATION_ID_PUSH = 301;
 
 	public static final String ICON_SPECIAL_TYPE_CUSTOMIZE = "_customize";
 
