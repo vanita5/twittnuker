@@ -354,7 +354,8 @@ public class StreamingService extends Service implements Constants {
 		public void onFavorite(User source, User target, Status favoritedStatus) {
 			if (favoritedStatus.getUser().getId() == account_id) {
 				createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
-						favoritedStatus.getText(), new ParcelableStatus(favoritedStatus, account_id, false),
+						Utils.parseURLEntities(favoritedStatus.getText(), favoritedStatus.getURLEntities()),
+						new ParcelableStatus(favoritedStatus, account_id, false),
 						source);
 			}
 		}
@@ -471,7 +472,8 @@ public class StreamingService extends Service implements Constants {
 				}
 				if (rt != null && rt.getUser().getId() == account_id) {
 					createNotification(status.getUser().getScreenName(),
-							NotificationContent.NOTIFICATION_TYPE_RETWEET, rt.getText(),
+							NotificationContent.NOTIFICATION_TYPE_RETWEET,
+							Utils.parseURLEntities(rt.getText(), rt.getURLEntities()),
 							new ParcelableStatus(status, account_id, false), null);
 				}
 			}

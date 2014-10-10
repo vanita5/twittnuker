@@ -496,7 +496,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				notification.setAccountId(status.account_id);
 				notification.setFromUser(status.user_screen_name);
 				notification.setType(type);
-				notification.setMessage(status.text_plain);
+				notification.setMessage(status.text_unescaped);
 				notification.setTimestamp(status.timestamp);
 				notification.setProfileImageUrl(status.user_profile_image_url);
 				notification.setOriginalStatus(status);
@@ -505,7 +505,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				notification.setAccountId(dm.account_id);
 				notification.setFromUser(dm.sender_screen_name);
 				notification.setType(type);
-				notification.setMessage(dm.text_plain);
+				notification.setMessage(dm.text_unescaped);
 				notification.setTimestamp(dm.timestamp);
 				notification.setProfileImageUrl(dm.sender_profile_image_url);
 				notification.setOriginalMessage(dm);

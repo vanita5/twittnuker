@@ -3832,6 +3832,18 @@ public final class Utils implements Constants, TwitterConstants {
 		}
 	}
 
+	public static String parseURLEntities(String text, final URLEntity[] entities) {
+		for (URLEntity entity : entities) {
+			final int start = entity.getStart(), end = entity.getEnd();
+			final String displayUrl = entity.getDisplayURL();
+			if (displayUrl != null && !displayUrl.isEmpty() && start >= 0 && end >= 0) {
+				StringBuffer bf = new StringBuffer(text);
+				return bf.replace(start, end, displayUrl).toString();
+			}
+		}
+		return text;
+	}
+
 	public static String parseString(final Object object) {
 		if (object == null) return null;
 		return String.valueOf(object);
