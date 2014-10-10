@@ -272,7 +272,7 @@ public class NotificationHelper implements Constants {
 		}
 		if (contentText == null && ticker == null) return;
 
-		if (mainActionIntent == null && notificationCount > 1) {
+		if (mainActionIntent == null) {
 			mainActionIntent = new Intent(context, HomeActivity.class);
 			mainActionIntent.setAction(Intent.ACTION_MAIN);
 			mainActionIntent.addCategory(Intent.CATEGORY_LAUNCHER);
