@@ -1,12 +1,11 @@
 package de.vanita5.twittnuker.receiver;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.provider.TweetStore.PushNotifications;
+import de.vanita5.twittnuker.util.NotificationHelper;
 
 public class ClearNotificationReceiver extends BroadcastReceiver implements Constants {
 
@@ -14,9 +13,9 @@ public class ClearNotificationReceiver extends BroadcastReceiver implements Cons
 	public void onReceive(Context context, Intent intent) {
 		final String action = intent.getAction();
 		if (INTENT_ACTION_PUSH_NOTIFICATION_CLEARED.equals(action)) {
+			NotificationHelper notificationHelper = new NotificationHelper(context);
 			final long accountId = intent.getLongExtra(EXTRA_USER_ID, -1);
-			final ContentResolver resolver = context.getContentResolver();
-			resolver.delete(PushNotifications.CONTENT_URI, PushNotifications.ACCOUNT_ID + " = " + accountId, null);
+			notificationHelper.deleteCachedNotifications(accountId, null);
 		}
 	}
 }

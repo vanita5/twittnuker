@@ -102,8 +102,10 @@ public class NotificationHelper implements Constants {
 
 	public void deleteCachedNotifications(final long accountId, final String type) {
 		final ContentResolver resolver = context.getContentResolver();
-		final String where = PushNotifications.ACCOUNT_ID + " = " + accountId
-				+ " AND " + PushNotifications.NOTIFICATION_TYPE + " = '" + type + "'";
+		String where = PushNotifications.ACCOUNT_ID + " = " + accountId;
+		if (type != null && !type.isEmpty()) {
+			where += " AND " + PushNotifications.NOTIFICATION_TYPE + " = '" + type + "'";
+		}
 		Cursor c = resolver.query(PushNotifications.CONTENT_URI, PushNotifications.MATRIX_COLUMNS,
 				where, null, PushNotifications.DEFAULT_SORT_ORDER);
 
