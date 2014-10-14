@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.graphic.icon;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 
 import com.atermenji.android.iconicdroid.icon.Icon;
 import com.atermenji.android.iconicdroid.util.TypefaceManager.IconicTypeface;
@@ -75,7 +76,12 @@ public enum TwidereIcon implements Icon {
 		@Override
 		public Typeface getTypeface(final Context context) {
 			if (mTypeface == null) {
-				mTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/TwidereIconic.ttf");
+				try {
+					mTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/twidereiconic.ttf");
+				} catch (Exception e) {
+					Log.e("TwidereIcon", "Could not get TwidereIconic typeface because --- " + e.getMessage());
+					return null;
+				}
 			}
 			return mTypeface;
 		}
