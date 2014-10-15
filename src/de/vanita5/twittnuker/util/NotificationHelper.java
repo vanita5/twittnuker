@@ -3,7 +3,6 @@ package de.vanita5.twittnuker.util;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,14 +13,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.Builder;
 import android.text.Html;
 import android.text.Spanned;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.vanita5.twittnuker.Constants;
@@ -42,6 +44,7 @@ public class NotificationHelper implements Constants {
 
 	private Context context;
 	private ImagePreloader mImagePreloader;
+	private SharedPreferencesWrapper mSharedPreferences;
 
 	public NotificationHelper(final Context context) {
 		this.context = context;
@@ -51,6 +54,7 @@ public class NotificationHelper implements Constants {
 		profileOptsBuilder.cacheOnDisk(true);
 		final DisplayImageOptions displayImageOptions = profileOptsBuilder.build();
 		mImagePreloader = new ImagePreloader(context, app.getImageLoader(), displayImageOptions);
+		mSharedPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 	}
 
 	private List<NotificationContent> getCachedNotifications(final long argAccountId) {
@@ -284,6 +288,7 @@ public class NotificationHelper implements Constants {
 
 		buildNotification(notification, pref, notificationType, notificationCount,
 				pendingNotifications, contentText, ticker, smallicon, rebuild, builder);
+		sendPebbleNotification(ticker);
 	}
 
 	private void buildNotification(final NotificationContent notification, final AccountPreferences pref,
@@ -377,6 +382,32 @@ public class NotificationHelper implements Constants {
 		}
 		NotificationManager notificationManager = getNotificationManager();
 		notificationManager.notify(NOTIFICATION_ID_PUSH_ERROR, builder.build());
+	}
+
+	/**
+	 * Send notifications to Pebble smartwatches
+	 */
+	private void sendPebbleNotification(final String message) {
+		if (mSharedPreferences.getBoolean(KEY_PEBBLE_NOTIFICATIONS, false)
+				&& message != null && !message.isEmpty()) {
+
+			final Intent intent = new Intent("com.getpebble.action.SEND_NOTIFICATION");
+
+			final HashMap<String, String> data = new HashMap<String, String>();
+
+			//TODO I have no idea how this will look on a Pebble...
+			data.put("title", "Twittnuker");
+			data.put("body", message);
+
+			final JSONObject jsonData = new JSONObject(data);
+			final String notificationData = new JSONArray().put(jsonData).toString();
+
+			intent.putExtra("messageType", "PEBBLE_ALERT");
+			intent.putExtra("sender", "Twittnuker");
+			intent.putExtra("notificationData", notificationData);
+
+			context.getApplicationContext().sendBroadcast(intent);
+		}
 	}
 
 	private Spanned getInboxLineByType(final NotificationContent pendingNotification) {

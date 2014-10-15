@@ -18,13 +18,6 @@
 			android:key="stream_enabled"
 			android:summary="@string/stream_enabled_summary"
 			android:title="@string/stream_enabled"/>
-
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="stream_enabled"
-            android:key="stream_notifications"
-            android:summary="@string/stream_notifications_summary"
-            android:title="@string/stream_notifications"/>
 	    
 	    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
 	        android:dependency="stream_enabled"

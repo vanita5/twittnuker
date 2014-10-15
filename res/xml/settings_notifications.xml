@@ -26,6 +26,23 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="cat_notifications"
+        android:title="@string/notifications">
+
+        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+            android:defaultValue="true"
+            android:key="stream_notifications"
+            android:summary="@string/stream_notifications_summary"
+            android:title="@string/stream_notifications"/>
+
+        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+            android:defaultValue="false"
+            android:key="pebble_notifications"
+            android:summary="@string/pebble_notifications_summary"
+            android:title="@string/pebble_notifications"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="cat_push"
         android:title="@string/push_notifications">
 
