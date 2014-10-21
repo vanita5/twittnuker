@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.adapter.DraftsAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.DraftItem;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
@@ -312,10 +313,13 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 			final int idxMedias = c.getColumnIndex(Drafts.MEDIAS);
 			c.moveToFirst();
 			while (!c.isAfterLast()) {
-				for (final ParcelableMediaUpdate media : ParcelableMediaUpdate.fromJSONString(c.getString(idxMedias))) {
-					final Uri uri = Uri.parse(media.uri);
-					if ("file".equals(uri.getScheme()) && uri.getPath() != null) {
-						new File(uri.getPath()).delete();
+				ParcelableMediaUpdate[] medias = ParcelableMediaUpdate.fromJSONString(c.getString(idxMedias));
+				if (medias != null) {
+					for (final ParcelableMediaUpdate media : medias) {
+						final Uri uri = Uri.parse(media.uri);
+						if ("file".equals(uri.getScheme()) && uri.getPath() != null) {
+							new File(uri.getPath()).delete();
+						}
 					}
 				}
 				c.moveToNext();
