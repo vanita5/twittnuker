@@ -33,7 +33,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -62,7 +61,6 @@ import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ListScrollDistanceCalculator;
 import de.vanita5.twittnuker.util.ListScrollDistanceCalculator.ScrollDistanceListener;
-import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -438,7 +436,7 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
     @Override
     public void onScrollDistanceChanged(int delta, int total) {
         final FragmentActivity a = getActivity();
-        if (a instanceof HomeActivity) {
+        if (a instanceof HomeActivity && getTabPosition() >= 0) {
             final HomeActivity home = (HomeActivity) a;
             home.moveControlBarBy(delta);
         }
