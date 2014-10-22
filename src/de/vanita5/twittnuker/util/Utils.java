@@ -157,7 +157,6 @@ import de.vanita5.twittnuker.fragment.support.UserMentionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserProfileFragment;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UsersListFragment;
-import de.vanita5.twittnuker.gcm.GCMHelper;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
@@ -167,7 +166,6 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.model.TwidereParcelable;
 import de.vanita5.twittnuker.provider.TweetStore;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.CacheFiles;
@@ -563,12 +561,20 @@ public final class Utils implements Constants, TwitterConstants {
 		final ListAdapter adapter = view.getAdapter();
 		if (adapter == null) return;
 		view.clearChoices();
-		view.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
+        for (int i = 0, j = view.getChildCount(); i < j; i++) {
+            view.setItemChecked(i, false);
+        }
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+		        view.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
+            }
+        });
 		// Workaround for Android bug
 		// http://stackoverflow.com/questions/9754170/listview-selection-remains-persistent-after-exiting-choice-mode
-		final int position = view.getFirstVisiblePosition(), offset = Utils.getFirstChildOffset(view);
-		view.setAdapter(adapter);
-		Utils.scrollListToPosition(view, position, offset);
+//        final int position = view.getFirstVisiblePosition(), offset = Utils.getFirstChildOffset(view);
+//        view.setAdapter(adapter);
+//        Utils.scrollListToPosition(view, position, offset);
 	}
 
 	public static void clearListViewChoices(final StaggeredGridView view) {
@@ -1680,7 +1686,11 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static int getFirstChildOffset(final AbsListView list) {
 		if (list == null || list.getChildCount() == 0) return 0;
-		return list.getChildAt(0).getTop();
+        final View child = list.getChildAt(0);
+        final int[] location = new int[2];
+        child.getLocationOnScreen(location);
+        Log.d(LOGTAG, String.format("getFirstChildOffset %d vs %d", child.getTop(), location[1]));
+        return child.getTop();
 	}
 
 	public static HttpClientWrapper getHttpClient(final Context context, final int timeoutMillis,

@@ -31,10 +31,11 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
+import android.view.View;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.TabSpec;
-import de.vanita5.twittnuker.view.TabPageIndicator2;
+import de.vanita5.twittnuker.view.iface.PagerIndicator;
 import de.vanita5.twittnuker.view.iface.PagerIndicator.TabListener;
 import de.vanita5.twittnuker.view.iface.PagerIndicator.TabProvider;
 
@@ -46,9 +47,9 @@ public class TabsAdapter extends FragmentStatePagerAdapter implements TabProvide
 	private final ArrayList<TabSpec> mTabs = new ArrayList<TabSpec>();
 
 	private final Context mContext;
-	private final TabPageIndicator2 mIndicator;
+    private final PagerIndicator mIndicator;
 
-	public TabsAdapter(final Context context, final FragmentManager fm, final TabPageIndicator2 indicator) {
+    public TabsAdapter(final Context context, final FragmentManager fm, final PagerIndicator indicator) {
 		super(fm);
 		mContext = context;
 		mIndicator = indicator;
@@ -116,7 +117,7 @@ public class TabsAdapter extends FragmentStatePagerAdapter implements TabProvide
 	@Override
 	public void onPageSelected(final int position) {
 		if (mIndicator == null) return;
-		announceForAccessibilityCompat(mContext, mIndicator, getPageTitle(position), getClass());
+        announceForAccessibilityCompat(mContext, (View) mIndicator, getPageTitle(position), getClass());
 	}
 
 	@Override

@@ -27,6 +27,7 @@ import android.os.Environment;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Map.Entry;
@@ -39,7 +40,12 @@ public class BuildProperties {
 
 	private BuildProperties() throws IOException {
 		properties = new Properties();
-		properties.load(new FileInputStream(new File(Environment.getRootDirectory(), "build.prop")));
+        final InputStream is = new FileInputStream(new File(Environment.getRootDirectory(), "build.prop"));
+        try {
+            properties.load(is);
+        } finally {
+            Utils.closeSilently(is);
+        }
 	}
 
 	public boolean containsKey(final Object key) {

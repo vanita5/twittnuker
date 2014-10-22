@@ -23,6 +23,7 @@
 		<item name="android:windowAnimationStyle">@style/Animation.Twidere.Activity</item>
 		<item name="android:windowBackground">@color/bg_color_dark</item>
         <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
 
 		<!-- ActionBar styles -->
 		<item name="android:actionBarStyle">@style/Widget.Twidere.ActionBar.Dark</item>
@@ -54,6 +55,7 @@
 		<item name="android:windowAnimationStyle">@style/Animation.Twidere.Activity</item>
 		<item name="android:windowBackground">@color/bg_color_light</item>
         <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
 
 		<!-- ActionBar styles -->
 		<item name="android:actionBarStyle">@style/Widget.Twidere.ActionBar.Light</item>
@@ -85,6 +87,7 @@
 		<item name="android:windowAnimationStyle">@style/Animation.Twidere.Activity</item>
 		<item name="android:windowBackground">@color/bg_color_light</item>
         <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
 
 		<!-- ActionBar styles -->
 		<item name="android:actionBarStyle">@style/Widget.Twidere.ActionBar.Light.DarkActionBar</item>
@@ -337,6 +340,7 @@
 
 		<!-- Window attributes -->
 		<item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
 		<item name="android:windowAnimationStyle">@style/Animation.Twidere.Activity</item>
 		<item name="android:windowBackground">@android:color/black</item>
 
