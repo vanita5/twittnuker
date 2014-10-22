@@ -77,7 +77,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SettingsWizardActivity extends Activity implements Constants, TwidereResourceHelper.OnInitListener {
+public class SettingsWizardActivity extends Activity implements Constants {
 
 	public static final String WIZARD_PREFERENCE_KEY_NEXT_PAGE = "next_page";
 	public static final String WIZARD_PREFERENCE_KEY_USE_DEFAULTS = "use_defaults";
@@ -92,7 +92,6 @@ public class SettingsWizardActivity extends Activity implements Constants, Twide
 	private TabsAdapter mAdapter;
 
 	private AbsInitialSettingsTask mTask;
-	private TwidereResourceHelper mResourceHelper;
 
 	public void applyInitialSettings() {
 		if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING) return;
@@ -113,14 +112,6 @@ public class SettingsWizardActivity extends Activity implements Constants, Twide
 		intent.putExtra(EXTRA_OPEN_ACCOUNTS_DRAWER, true);
 		startActivity(intent);
 		finish();
-	}
-
-	@Override
-	public Resources getResources() {
-		if (mResourceHelper == null) {
-			mResourceHelper = new TwidereResourceHelper(ThemeUtils.getSettingsWizardThemeResource(this), this);
-		}
-		return mResourceHelper.getResources(this, super.getResources());
 	}
 
 	public void gotoFinishPage() {
@@ -194,11 +185,6 @@ public class SettingsWizardActivity extends Activity implements Constants, Twide
 	private void openImportSettingsDialog() {
 		final Intent intent = new Intent(this, DataImportActivity.class);
 		startActivityForResult(intent, REQUEST_IMPORT_SETTINGS);
-	}
-
-	@Override
-	public void onInitResources(NoAccentResources resources) {
-		ThemeUtils.initResourceInterceptors(this, resources);
 	}
 
 	public static abstract class BaseWizardPageFragment extends BasePreferenceFragment implements

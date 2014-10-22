@@ -45,6 +45,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -52,7 +53,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -73,6 +73,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ListFragment;
 import android.support.v4.util.LongSparseArray;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.text.SpannableStringBuilder;
@@ -89,6 +90,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.MeasureSpec;
+import android.view.ViewGroup.LayoutParams;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
@@ -102,14 +105,9 @@ import android.widget.Toast;
 
 import com.etsy.android.grid.StaggeredGridView;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.CroutonConfiguration;
-import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
-
 import org.apache.http.NameValuePair;
 import org.json.JSONException;
 import org.mariotaku.gallery3d.ImageViewerGLActivity;
-import org.mariotaku.jsonserializer.JSONSerializer;
 import org.mariotaku.querybuilder.AllColumns;
 import org.mariotaku.querybuilder.Columns;
 import org.mariotaku.querybuilder.Columns.Column;
@@ -119,6 +117,11 @@ import org.mariotaku.querybuilder.Selectable;
 import org.mariotaku.querybuilder.Tables;
 import org.mariotaku.querybuilder.Where;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
+import org.mariotaku.refreshnow.widget.RefreshNowListView;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.CroutonConfiguration;
+import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -128,6 +131,7 @@ import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesConversationFragment;
 import de.vanita5.twittnuker.fragment.support.IncomingFriendshipsFragment;
 import de.vanita5.twittnuker.fragment.support.MutesUsersListFragment;
@@ -1611,10 +1615,9 @@ public final class Utils implements Constants, TwitterConstants {
 	}
 
 	public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities,
-			final boolean includeRetweets, final boolean useHttpclient) {
+                                                    final boolean includeRetweets, final boolean apacheHttp) {
 		if (context == null) return null;
-		return getTwitterInstance(context, getDefaultAccountId(context), includeEntities, includeRetweets,
-				useHttpclient);
+        return getTwitterInstance(context, getDefaultAccountId(context), includeEntities, includeRetweets, apacheHttp);
 	}
 
 	public static String getDisplayName(final Context context, final long userId, final String name,
@@ -3863,6 +3866,35 @@ public final class Utils implements Constants, TwitterConstants {
 			twitter.destroyFavoriteAsync(status.account_id, status.id);
 		} else {
 			twitter.createFavoriteAsync(status.account_id, status.id);
+		}
+	}
+
+	public static int getActionBarHeight(Context context) {
+		final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.actionBarSize});
+		try {
+			return a.getDimensionPixelSize(0, 0);
+		} finally {
+			a.recycle();
+		}
+	}
+
+	public static void makeListFragmentFitsSystemWindows(ListFragment fragment) {
+		final FragmentActivity activity = fragment.getActivity();
+		if (!(activity instanceof SystemWindowsInsetsCallback)) return;
+		final SystemWindowsInsetsCallback callback = (SystemWindowsInsetsCallback) activity;
+		final Rect insets = new Rect();
+		if (callback.getSystemWindowsInsets(insets)) {
+			final ListView listView = fragment.getListView();
+			listView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+			listView.setClipToPadding(false);
+			if (listView instanceof RefreshNowListView) {
+				final View indicatorView = ((RefreshNowListView) listView).getRefreshIndicatorView();
+				final LayoutParams lp = indicatorView.getLayoutParams();
+				if (lp instanceof MarginLayoutParams) {
+					((MarginLayoutParams) lp).topMargin = insets.top;
+					indicatorView.setLayoutParams(lp);
+				}
+			}
 		}
 	}
 }

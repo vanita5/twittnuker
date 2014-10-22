@@ -42,6 +42,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
@@ -403,6 +404,7 @@ public class AccountsDrawerFragment extends BaseSupportListFragment implements L
 			}
 		}
 
+        @NonNull
 		@Override
 		public Dialog onCreateDialog(final Bundle savedInstanceState) {
             final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
@@ -418,32 +420,33 @@ public class AccountsDrawerFragment extends BaseSupportListFragment implements L
 
 	private static final class AccountOptionsAdapter extends OptionItemsAdapter {
 
-		private static final ArrayList<OptionItem> sOptions = new ArrayList<OptionItem>();
-		private static final ArrayList<OptionItem> sOptionsDefault = new ArrayList<OptionItem>();
-		static {
-			sOptions.add(new OptionItem(R.string.view_user_profile, R.drawable.ic_iconic_action_user, MENU_VIEW_PROFILE));
-			sOptions.add(new OptionItem(android.R.string.search_go, R.drawable.ic_iconic_action_search, MENU_SEARCH));
-			sOptions.add(new OptionItem(R.string.statuses, R.drawable.ic_iconic_action_quote, MENU_STATUSES));
-			sOptions.add(new OptionItem(R.string.favorites, R.drawable.ic_iconic_action_star, MENU_FAVORITES));
-			sOptions.add(new OptionItem(R.string.users_lists, R.drawable.ic_iconic_action_list, MENU_LISTS));
-			sOptions.add(new OptionItem(R.string.lists_following_me, R.drawable.ic_iconic_action_list,
-					MENU_LIST_MEMBERSHIPS));
-			sOptions.add(new OptionItem(R.string.set_color, R.drawable.ic_iconic_action_color_palette, MENU_SET_COLOR));
-			sOptions.add(new OptionItem(R.string.set_as_default, R.drawable.ic_iconic_action_ok, MENU_SET_AS_DEFAULT));
-			sOptions.add(new OptionItem(R.string.delete, R.drawable.ic_iconic_action_delete, MENU_DELETE));
+        private static final ArrayList<OptionItem> sOptions = new ArrayList<>();
+        private static final ArrayList<OptionItem> sOptionsDefault = new ArrayList<>();
 
-			sOptionsDefault.add(new OptionItem(R.string.view_user_profile, R.drawable.ic_iconic_action_user,
-					MENU_VIEW_PROFILE));
-			sOptionsDefault.add(new OptionItem(android.R.string.search_go, R.drawable.ic_iconic_action_search,
-					MENU_SEARCH));
-			sOptionsDefault.add(new OptionItem(R.string.statuses, R.drawable.ic_iconic_action_quote, MENU_STATUSES));
-			sOptionsDefault.add(new OptionItem(R.string.favorites, R.drawable.ic_iconic_action_star, MENU_FAVORITES));
-			sOptionsDefault.add(new OptionItem(R.string.users_lists, R.drawable.ic_iconic_action_list, MENU_LISTS));
-			sOptionsDefault.add(new OptionItem(R.string.lists_following_me, R.drawable.ic_iconic_action_list,
+		static {
+            sOptions.add(new OptionItem(R.string.view_user_profile, R.drawable.ic_action_user, MENU_VIEW_PROFILE));
+            sOptions.add(new OptionItem(android.R.string.search_go, R.drawable.ic_action_search, MENU_SEARCH));
+            sOptions.add(new OptionItem(R.string.statuses, R.drawable.ic_action_quote, MENU_STATUSES));
+            sOptions.add(new OptionItem(R.string.favorites, R.drawable.ic_action_star, MENU_FAVORITES));
+            sOptions.add(new OptionItem(R.string.users_lists, R.drawable.ic_action_list, MENU_LISTS));
+            sOptions.add(new OptionItem(R.string.lists_following_me, R.drawable.ic_action_list,
 					MENU_LIST_MEMBERSHIPS));
-			sOptionsDefault.add(new OptionItem(R.string.set_color, R.drawable.ic_iconic_action_color_palette,
+            sOptions.add(new OptionItem(R.string.set_color, R.drawable.ic_action_color_palette, MENU_SET_COLOR));
+            sOptions.add(new OptionItem(R.string.set_as_default, R.drawable.ic_action_ok, MENU_SET_AS_DEFAULT));
+            sOptions.add(new OptionItem(R.string.delete, R.drawable.ic_action_delete, MENU_DELETE));
+
+            sOptionsDefault.add(new OptionItem(R.string.view_user_profile, R.drawable.ic_action_user,
+					MENU_VIEW_PROFILE));
+            sOptionsDefault.add(new OptionItem(android.R.string.search_go, R.drawable.ic_action_search,
+					MENU_SEARCH));
+            sOptionsDefault.add(new OptionItem(R.string.statuses, R.drawable.ic_action_quote, MENU_STATUSES));
+            sOptionsDefault.add(new OptionItem(R.string.favorites, R.drawable.ic_action_star, MENU_FAVORITES));
+            sOptionsDefault.add(new OptionItem(R.string.users_lists, R.drawable.ic_action_list, MENU_LISTS));
+            sOptionsDefault.add(new OptionItem(R.string.lists_following_me, R.drawable.ic_action_list,
+					MENU_LIST_MEMBERSHIPS));
+            sOptionsDefault.add(new OptionItem(R.string.set_color, R.drawable.ic_action_color_palette,
 					MENU_SET_COLOR));
-			sOptionsDefault.add(new OptionItem(R.string.delete, R.drawable.ic_iconic_action_delete, MENU_DELETE));
+            sOptionsDefault.add(new OptionItem(R.string.delete, R.drawable.ic_action_delete, MENU_DELETE));
 		}
 
 		public AccountOptionsAdapter(final Context context) {
@@ -462,10 +465,10 @@ public class AccountsDrawerFragment extends BaseSupportListFragment implements L
 
 		public AppMenuAdapter(final Context context) {
 			super(context);
-			add(new OptionItem(R.string.add_account, R.drawable.ic_iconic_action_add, MENU_ADD_ACCOUNT));
-			add(new OptionItem(R.string.drafts, R.drawable.ic_iconic_action_drafts, MENU_DRAFTS));
-			add(new OptionItem(R.string.filters, R.drawable.ic_iconic_action_speaker_muted, MENU_FILTERS));
-			add(new OptionItem(R.string.settings, R.drawable.ic_iconic_action_preferences, MENU_SETTINGS));
+            add(new OptionItem(R.string.accounts, R.drawable.ic_action_accounts, MENU_ACCOUNTS));
+            add(new OptionItem(R.string.drafts, R.drawable.ic_action_draft, MENU_DRAFTS));
+            add(new OptionItem(R.string.filters, R.drawable.ic_action_speaker_muted, MENU_FILTERS));
+            add(new OptionItem(R.string.settings, R.drawable.ic_action_preferences, MENU_SETTINGS));
 		}
 
 	}
@@ -487,7 +490,7 @@ public class AccountsDrawerFragment extends BaseSupportListFragment implements L
 		}
 
 		@Override
-		public void bindView(final View view, final Context context, final Cursor cursor) {
+        public void bindView(@NonNull final View view, final Context context, @NonNull final Cursor cursor) {
 			super.bindView(view, context, cursor);
 			final CompoundButton toggle = (CompoundButton) view.findViewById(R.id.toggle);
 			final TextView name = (TextView) view.findViewById(R.id.name);

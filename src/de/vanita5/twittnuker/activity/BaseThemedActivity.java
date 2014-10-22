@@ -23,12 +23,12 @@
 package de.vanita5.twittnuker.activity;
 
 import android.app.ActionBar;
+import android.app.Activity;
+import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
-
-import com.negusoft.holoaccent.AccentResources;
 
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.menu.TwidereMenuInflater;
@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.util.Utils;
 
 import static de.vanita5.twittnuker.util.Utils.restartActivity;
 
-public abstract class BaseThemedActivity extends AccentActivity implements IThemedActivity {
+public abstract class BaseThemedActivity extends Activity implements IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha;
 	private String mCurrentThemeFontFamily;
@@ -70,6 +70,11 @@ public abstract class BaseThemedActivity extends AccentActivity implements IThem
 			return mMenuInflater = new TwidereMenuInflater(actionBar.getThemedContext());
 		}
 		return mMenuInflater = new TwidereMenuInflater(this);
+	}
+
+	@Override
+	public Resources getDefaultResources() {
+		return super.getResources();
 	}
 
 	@Override
@@ -172,12 +177,6 @@ public abstract class BaseThemedActivity extends AccentActivity implements IThem
 	private final void setActionBarBackground() {
         ThemeUtils.applyActionBarBackground(getActionBar(), this, mCurrentThemeResource);
     }
-
-    @Override
-    public void onInitAccentResources(AccentResources resources) {
-        super.onInitAccentResources(resources);
-        ThemeUtils.initResourceInterceptors(this, resources);
-	}
 
 	private final void setTheme() {
 		mCurrentThemeResource = getThemeResourceId();

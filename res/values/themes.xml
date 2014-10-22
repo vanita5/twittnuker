@@ -5,19 +5,16 @@
 
 	<style name="Theme.Launcher" parent="android:Theme.NoDisplay"/>
 
-	<style name="Theme.Blank" parent="android:Theme.Holo.NoActionBar">
+    <style name="Theme.Blank" parent="android:Theme.DeviceDefault.NoActionBar">
 
 		<!-- Window attributes -->
 		<item name="android:windowAnimationStyle">@style/Animation.Twidere.Activity</item>
 		<item name="android:windowBackground">@android:color/black</item>
 	</style>
 
-	<style name="Theme.Blank.Dialog" parent="android:Theme.Holo.Dialog"/>
+    <style name="Theme.Blank.Dialog" parent="android:Theme.DeviceDefault.Dialog" />
 
-	<style name="Theme.Twidere.Dark" parent="Theme.HoloAccent">
-
-		<!-- Accent Colors -->
-		<item name="accentColor">#ff0099cc</item>
+    <style name="Theme.Twidere.Dark" parent="android:Theme.DeviceDefault">
 
 		<!-- Colors -->
 		<item name="android:colorBackgroundCacheHint">@color/bg_color_dark</item>
@@ -25,6 +22,7 @@
 		<!-- Window attributes -->
 		<item name="android:windowAnimationStyle">@style/Animation.Twidere.Activity</item>
 		<item name="android:windowBackground">@color/bg_color_dark</item>
+        <item name="android:windowActionBarOverlay">true</item>
 
 		<!-- ActionBar styles -->
 		<item name="android:actionBarStyle">@style/Widget.Twidere.ActionBar.Dark</item>
@@ -47,10 +45,7 @@
 		<item name="cardItemViewStyle">@style/Widget.CardItemView</item>
 	</style>
 
-	<style name="Theme.Twidere.Light" parent="Theme.HoloAccent.Light">
-
-		<!-- Accent Colors -->
-		<item name="accentColor">#ff0099cc</item>
+    <style name="Theme.Twidere.Light" parent="android:Theme.DeviceDefault.Light">
 
 		<!-- Colors -->
 		<item name="android:colorBackgroundCacheHint">@color/bg_color_light</item>
@@ -58,6 +53,7 @@
 		<!-- Window attributes -->
 		<item name="android:windowAnimationStyle">@style/Animation.Twidere.Activity</item>
 		<item name="android:windowBackground">@color/bg_color_light</item>
+        <item name="android:windowActionBarOverlay">true</item>
 
 		<!-- ActionBar styles -->
 		<item name="android:actionBarStyle">@style/Widget.Twidere.ActionBar.Light</item>
@@ -80,10 +76,7 @@
 		<item name="cardItemViewStyle">@style/Widget.CardItemView.Light</item>
 	</style>
 
-	<style name="Theme.Twidere.Light.DarkActionBar" parent="Theme.HoloAccent.Light.DarkActionBar">
-
-		<!-- Accent Colors -->
-		<item name="accentColor">#ff0099cc</item>
+    <style name="Theme.Twidere.Light.DarkActionBar" parent="android:Theme.DeviceDefault.Light.DarkActionBar">
 
 		<!-- Colors -->
 		<item name="android:colorBackgroundCacheHint">@color/bg_color_light</item>
@@ -91,6 +84,7 @@
 		<!-- Window attributes -->
 		<item name="android:windowAnimationStyle">@style/Animation.Twidere.Activity</item>
 		<item name="android:windowBackground">@color/bg_color_light</item>
+        <item name="android:windowActionBarOverlay">true</item>
 
 		<!-- ActionBar styles -->
 		<item name="android:actionBarStyle">@style/Widget.Twidere.ActionBar.Light.DarkActionBar</item>
@@ -121,7 +115,7 @@
 		<item name="android:actionBarStyle">@style/Widget.Twidere.ActionBar.Colored</item>
         <item name="android:actionBarWidgetTheme">@style/Theme.Twidere.ActionBar.Colored.Light
         </item>
-        <item name="android:actionBarItemBackground">@drawable/list_selector_white_light</item>
+        <!--<item name="android:actionBarItemBackground">@drawable/list_selector_white_light</item>-->
 	</style>
 
 	<style name="Theme.Twidere.Colored.DarkActionBar" parent="Theme.Twidere.Light.DarkActionBar">
@@ -129,7 +123,7 @@
 		<!-- ActionBar styles -->
 		<item name="android:actionBarStyle">@style/Widget.Twidere.ActionBar.Colored.Inverse</item>
 		<item name="android:actionBarWidgetTheme">@style/Theme.Twidere.ActionBar.Colored.Dark</item>
-        <item name="android:actionBarItemBackground">@drawable/list_selector_white</item>
+        <!--<item name="android:actionBarItemBackground">@drawable/list_selector_white</item>-->
 	</style>
 
     <style name="Theme.Twidere.Colored.DarkActionBar.DarkIcon"/>
@@ -225,16 +219,14 @@
     <style name="Theme.Twidere.Light.DarkActionBar.SolidBackground.DarkIcon"/>
 
     <style name="Theme.Twidere.ActionBar.Colored.Light" parent="Theme.Twidere.Light">
-        <item name="accentColor">@color/accent_white</item>
-        <item name="android:actionBarItemBackground">@drawable/list_selector_white_light</item>
+        <!--<item name="android:actionBarItemBackground">@drawable/list_selector_white_light</item>-->
     </style>
 
     <style name="Theme.Twidere.ActionBar.Colored.Dark" parent="Theme.Twidere.Dark">
-    	<item name="accentColor">@color/accent_white</item>
-        <item name="android:actionBarItemBackground">@drawable/list_selector_white</item>
+        <!--<item name="android:actionBarItemBackground">@drawable/list_selector_white</item>-->
     </style>
 
-	<style name="Theme.Twidere.Dark.Dialog" parent="android:Theme.Holo.Dialog">
+    <style name="Theme.Twidere.Dark.Dialog" parent="android:Theme.DeviceDefault.Dialog">
 
 		<!-- Custom view styles -->
 		<item name="tabItemStyle">@style/Widget.TabPageIndicator.TabItem</item>
@@ -253,7 +245,7 @@
 		<item name="cardItemViewStyle">@style/Widget.CardItemView</item>
 	</style>
 
-	<style name="Theme.Twidere.Light.Dialog" parent="android:Theme.Holo.Light.Dialog">
+    <style name="Theme.Twidere.Light.Dialog" parent="android:Theme.DeviceDefault.Light.Dialog">
 
 		<!-- Custom view styles -->
 		<item name="tabItemStyle">@style/Widget.TabPageIndicator.TabItem</item>
@@ -341,7 +333,7 @@
 		<item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
 	</style>
 
-	<style name="Theme.Twidere.Viewer" parent="Theme.HoloAccent">
+    <style name="Theme.Twidere.Viewer" parent="android:Theme.DeviceDefault">
 
 		<!-- Window attributes -->
 		<item name="android:windowActionBarOverlay">true</item>
@@ -394,7 +386,7 @@
         <!-- Window attributes -->
     </style>
 
-	<style name="Theme.Twidere.Dark.NoDisplay" parent="android:Theme.Holo">
+    <style name="Theme.Twidere.Dark.NoDisplay" parent="android:Theme.DeviceDefault">
 		<item name="android:windowBackground">@null</item>
 		<item name="android:windowContentOverlay">@null</item>
 		<item name="android:windowIsTranslucent">true</item>
@@ -403,7 +395,7 @@
 		<item name="android:windowNoDisplay">true</item>
 	</style>
 
-	<style name="Theme.Twidere.Light.NoDisplay" parent="android:Theme.Holo.Light">
+    <style name="Theme.Twidere.Light.NoDisplay" parent="android:Theme.DeviceDefault.Light">
 		<item name="android:windowBackground">@null</item>
 		<item name="android:windowContentOverlay">@null</item>
 		<item name="android:windowIsTranslucent">true</item>
@@ -412,9 +404,9 @@
 		<item name="android:windowNoDisplay">true</item>
 	</style>
 
-	<style name="Theme.Test" parent="android:Theme.Holo"/>
+    <style name="Theme.Test" parent="android:Theme.DeviceDefault" />
 
-	<style name="Theme.Twidere.Settings.Dark" parent="android:Theme.Holo">
+	<style name="Theme.Twidere.Settings.Dark" parent="android:Theme.DeviceDefault">
 
 		<!-- Colors -->
 		<item name="android:colorBackgroundCacheHint">@color/bg_color_dark</item>
@@ -442,7 +434,7 @@
 		<item name="cardItemViewStyle">@style/Widget.CardItemView</item>
 	</style>
 
-	<style name="Theme.Twidere.Settings.Light" parent="android:Theme.Holo.Light">
+    <style name="Theme.Twidere.Settings.Light" parent="android:Theme.DeviceDefault.Light">
 
 		<!-- Colors -->
 		<item name="android:colorBackgroundCacheHint">@color/bg_color_light</item>
@@ -467,7 +459,7 @@
 		<item name="cardItemViewStyle">@style/Widget.CardItemView.Light</item>
 	</style>
 
-	<style name="Theme.Twidere.Settings.Light.DarkActionBar" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="Theme.Twidere.Settings.Light.DarkActionBar" parent="android:Theme.DeviceDefault.Light.DarkActionBar">
 
 		<!-- Colors -->
 		<item name="android:colorBackgroundCacheHint">@color/bg_color_light</item>

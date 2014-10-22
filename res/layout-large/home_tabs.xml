@@ -17,7 +17,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
 			android:layout_gravity="left"
-			class="de.vanita5.twittnuker.view.TabPageIndicator"/>
+			class="de.vanita5.twittnuker.view.TabPageIndicator2"/>
 	</LinearLayout>
 
     <de.vanita5.twittnuker.view.HomeActionsActionView

@@ -23,19 +23,12 @@
 package de.vanita5.twittnuker.content;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.view.ContextThemeWrapper;
 
-import com.negusoft.holoaccent.AccentHelper;
-import com.negusoft.holoaccent.AccentResources;
-
 import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class TwidereContextThemeWrapper extends ContextThemeWrapper implements ITwidereContextWrapper, AccentHelper.OnInitListener {
-
-    private final AccentHelper mAccentHelper;
+public class TwidereContextThemeWrapper extends ContextThemeWrapper implements ITwidereContextWrapper {
 
 	private final int mThemeResourceId;
 	private final int mAccentColor;
@@ -45,16 +38,10 @@ public class TwidereContextThemeWrapper extends ContextThemeWrapper implements I
 		super(base, themeResource);
 		mThemeResourceId = themeResource;
 		mAccentColor = accentColor;
-        mAccentHelper = new AccentHelper(accentColor, accentColor, accentColor, this);
 	}
 
 	public int getAccentColor() {
 		return mAccentColor;
-	}
-
-	@Override
-	public Resources getResources() {
-		return mAccentHelper.getResources(this, super.getResources());
 	}
 
 	@Override
@@ -74,9 +61,4 @@ public class TwidereContextThemeWrapper extends ContextThemeWrapper implements I
 	public int getThemeResourceId() {
 		return mThemeResourceId;
 	}
-
-    @Override
-    public void onInitResources(AccentResources accentResources) {
-        ThemeUtils.initResourceInterceptors(this, accentResources);
-    }
 }

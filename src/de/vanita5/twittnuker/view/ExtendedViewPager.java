@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -41,6 +42,11 @@ public class ExtendedViewPager extends ViewPager {
 	public boolean onInterceptTouchEvent(final MotionEvent event) {
 		if (!isEnabled()) return false;
 		return super.onInterceptTouchEvent(event);
+    }
+
+    @Override
+    protected boolean fitSystemWindows(Rect insets) {
+        return super.fitSystemWindows(insets);
 	}
 
 	@Override

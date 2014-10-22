@@ -4,7 +4,7 @@
 	<header android:title="@string/look_and_feel"/>
 	<header
 		android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
-		android:icon="@drawable/ic_iconic_action_color_palette"
+		android:icon="@drawable/ic_action_color_palette"
 		android:title="@string/theme">
 		<extra
 			android:name="resid"
@@ -12,7 +12,7 @@
 	</header>
 	<header
 		android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
-		android:icon="@drawable/ic_iconic_action_interface"
+		android:icon="@drawable/ic_action_interface"
 		android:title="@string/settings_interface">
 		<extra
 			android:name="resid"
@@ -20,7 +20,7 @@
 	</header>
 	<header
 		android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
-		android:icon="@drawable/ic_iconic_action_card"
+		android:icon="@drawable/ic_action_card"
 		android:title="@string/cards">
 		<extra
 			android:name="resid"
@@ -29,11 +29,11 @@
 	<header android:title="@string/settings"/>
 	<header
 		android:fragment="de.vanita5.twittnuker.fragment.CustomTabsFragment"
-		android:icon="@drawable/ic_iconic_action_tab"
+		android:icon="@drawable/ic_action_tab"
 		android:title="@string/tabs"/>
 	<header
 		android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
-		android:icon="@drawable/ic_iconic_action_server"
+		android:icon="@drawable/ic_action_server"
 		android:title="@string/network">
 		<extra
 			android:name="resid"
@@ -41,7 +41,7 @@
 	</header>
 	<header
 		android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
-        android:icon="@drawable/ic_iconic_action_twittnuker_square"
+		android:icon="@drawable/ic_action_twidere_square"
     	android:title="@string/content">
 		<extra
 			android:name="resid"
@@ -49,7 +49,7 @@
     </header>
     <header
     	android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
-    	android:icon="@drawable/ic_iconic_action_storage"
+		android:icon="@drawable/ic_action_storage"
     	android:title="@string/storage">
     	<extra
     		android:name="resid"
@@ -57,7 +57,7 @@
 	</header>
 	<header
 		android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
-		android:icon="@drawable/ic_iconic_action_refresh"
+		android:icon="@drawable/ic_action_refresh"
 		android:title="@string/refresh">
 		<extra
 			android:name="resid"
@@ -65,7 +65,7 @@
 	</header>
 	<header
 		android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
-		android:icon="@drawable/ic_iconic_action_notification"
+		android:icon="@drawable/ic_action_notification"
 		android:title="@string/notifications">
 		<extra
 			android:name="resid"
@@ -73,7 +73,7 @@
 	</header>
 	<header
 		android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
-		android:icon="@drawable/ic_iconic_action_more"
+		android:icon="@drawable/ic_action_more"
 		android:title="@string/other_settings">
 		<extra
 			android:name="resid"
@@ -82,7 +82,7 @@
 	<header android:title="@string/about"/>
 	<header
 		android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
-		android:icon="@drawable/ic_iconic_action_about"
+		android:icon="@drawable/ic_action_info"
 		android:title="@string/about">
 		<extra
 			android:name="resid"
@@ -90,7 +90,7 @@
 	</header>
 	<header
 		android:fragment="de.vanita5.twittnuker.fragment.BrowserFragment"
-		android:icon="@drawable/ic_iconic_action_open_source"
+		android:icon="@drawable/ic_action_open_source"
 		android:title="@string/open_source_license">
 		<extra
 			android:name="uri"

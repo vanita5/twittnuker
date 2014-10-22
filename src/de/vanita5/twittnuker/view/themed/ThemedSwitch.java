@@ -24,24 +24,18 @@ package de.vanita5.twittnuker.view.themed;
 
 import android.content.Context;
 import android.util.AttributeSet;
-
-import com.negusoft.holoaccent.R;
-import com.negusoft.holoaccent.widget.AccentSwitch;
+import android.widget.Switch;
 
 import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class ThemedSwitch extends AccentSwitch {
+public class ThemedSwitch extends Switch {
 
 	public ThemedSwitch(final Context context) {
 		this(context, null);
 	}
 
 	public ThemedSwitch(final Context context, final AttributeSet attrs) {
-		this(context, attrs, R.attr.accentSwitchStyle);
-	}
-
-	public ThemedSwitch(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
+        super(context, attrs);
 		if (!isInEditMode()) {
 			setLinkTextColor(ThemeUtils.getUserLinkTextColor(context));
 			setHighlightColor(ThemeUtils.getUserHighlightColor(context));

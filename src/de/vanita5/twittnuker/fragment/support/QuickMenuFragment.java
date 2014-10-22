@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.getTableNameByUri;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -35,6 +33,7 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.commonsware.cwac.merge.MergeAdapter;
@@ -46,7 +45,8 @@ import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment.TrendsAd
 import de.vanita5.twittnuker.provider.TweetStore.CachedTrends;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
-import de.vanita5.twittnuker.view.ResourceImageButton;
+
+import static de.vanita5.twittnuker.util.Utils.getTableNameByUri;
 
 public class QuickMenuFragment extends BaseSupportFragment {
 
@@ -54,7 +54,7 @@ public class QuickMenuFragment extends BaseSupportFragment {
 	private Context mThemedContext;
 	private ListView mListView;
 	private SlidingUpPanelLayout mSlidingUpPanel;
-    private ResourceImageButton mActivitiesConfigButton;
+    private ImageButton mActivitiesConfigButton;
 
 	private MergeAdapter mAdapter;
 	private TrendsAdapter mTrendsAdapter;
@@ -116,7 +116,7 @@ public class QuickMenuFragment extends BaseSupportFragment {
 		super.onViewCreated(view, savedInstanceState);
 		mListView = (ListView) view.findViewById(android.R.id.list);
 		mSlidingUpPanel = (SlidingUpPanelLayout) view.findViewById(R.id.activities_drawer);
-        mActivitiesConfigButton = (ResourceImageButton) view.findViewById(R.id.activities_config_button);
+        mActivitiesConfigButton = (ImageButton) view.findViewById(R.id.activities_config_button);
 		final View activitiesContainer = view.findViewById(R.id.activities_container);
 		ViewAccessor.setBackground(activitiesContainer, ThemeUtils.getWindowBackground(getThemedContext()));
 	}

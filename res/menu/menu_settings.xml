@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
@@ -24,17 +25,17 @@
 
     <item
         android:id="@+id/import_emport_submenu"
-        android:icon="@drawable/ic_iconic_action_save"
+		android:icon="@drawable/ic_action_save"
         android:showAsAction="always|withText"
         android:title="@string/import_export">
         <menu>
             <item
                 android:id="@id/import_settings"
-                android:icon="@drawable/ic_iconic_action_import"
+				android:icon="@drawable/ic_action_import"
                 android:title="@string/import_settings" />
             <item
                 android:id="@id/export_settings"
-                android:icon="@drawable/ic_iconic_action_export"
+				android:icon="@drawable/ic_action_export"
                 android:title="@string/export_settings" />
         </menu>
     </item>

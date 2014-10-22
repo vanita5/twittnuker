@@ -22,13 +22,12 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:gravity="bottom"
               android:orientation="horizontal">
 
-	<de.vanita5.twittnuker.view.ResourceImageView
+    <ImageView
         android:id="@+id/add_image"
         style="?android:borderlessButtonStyle"
         android:layout_width="?android:actionBarSize"
@@ -36,7 +35,7 @@
         android:layout_weight="0"
         android:contentDescription="@string/add_image"
         android:scaleType="centerInside"
-		app:image="@drawable/ic_iconic_action_gallery"/>
+        android:src="@drawable/ic_action_gallery"/>
 
     <de.vanita5.twittnuker.view.StatusComposeEditText
         android:id="@+id/edit_text"
@@ -59,12 +58,12 @@
 		android:layout_height="?android:actionBarSize"
 		android:layout_weight="0">
 
-	<de.vanita5.twittnuker.view.ResourceImageView
+        <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/send"
         android:scaleType="centerInside"
-		app:image="@drawable/ic_iconic_action_send"/>
+            android:src="@drawable/ic_action_send"/>
 
         <de.vanita5.twittnuker.view.StatusTextCountView
             android:id="@+id/text_count"

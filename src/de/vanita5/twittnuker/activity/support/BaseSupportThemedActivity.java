@@ -23,11 +23,11 @@
 package de.vanita5.twittnuker.activity.support;
 
 import android.app.ActionBar;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
-
-import com.negusoft.holoaccent.AccentResources;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.util.Utils;
 
 import static de.vanita5.twittnuker.util.Utils.restartActivity;
 
-public abstract class BaseSupportThemedActivity extends AccentFragmentActivity implements Constants, IThemedActivity {
+public abstract class BaseSupportThemedActivity extends FragmentActivity implements Constants, IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha;
     private TwidereMenuInflater mMenuInflater;
@@ -58,6 +58,11 @@ public abstract class BaseSupportThemedActivity extends AccentFragmentActivity i
     public final boolean onCreateOptionsMenu(Menu menu) {
         return onCreateOptionsMenu(menu, getTwidereMenuInflater());
     }
+
+	@Override
+	public Resources getDefaultResources() {
+		return super.getResources();
+	}
 
     @Override
     public TwidereMenuInflater getTwidereMenuInflater() {
@@ -110,13 +115,6 @@ public abstract class BaseSupportThemedActivity extends AccentFragmentActivity i
 			ThemeUtils.overrideNormalActivityCloseAnimation(this);
 		}
     }
-
-
-    @Override
-    public void onInitAccentResources(AccentResources resources) {
-        super.onInitAccentResources(resources);
-        ThemeUtils.initResourceInterceptors(this, resources);
-	}
 
 	@Override
 	public final void restart() {

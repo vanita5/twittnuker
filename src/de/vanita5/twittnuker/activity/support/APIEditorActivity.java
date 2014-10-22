@@ -22,10 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import static de.vanita5.twittnuker.util.ParseUtils.parseString;
-import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
-import static de.vanita5.twittnuker.util.Utils.trim;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -43,6 +39,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.BaseDialogFragment;
@@ -50,6 +47,10 @@ import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 import twitter4j.TwitterConstants;
+
+import static de.vanita5.twittnuker.util.ParseUtils.parseString;
+import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
+import static de.vanita5.twittnuker.util.Utils.trim;
 
 public class APIEditorActivity extends BaseSupportDialogActivity implements TwitterConstants, OnCheckedChangeListener,
 		OnClickListener {
@@ -63,6 +64,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 	private View mAdvancedAPIConfigContainer;
 	private View mAdvancedAPIConfigView;
 	private Button mSaveButton;
+    private View mAPIFormatHelpButton;
 
 	@Override
 	public void onCheckedChanged(final RadioGroup group, final int checkedId) {
@@ -92,8 +94,12 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 				mAdvancedAPIConfigView.setVisibility(isVisible ? View.GONE : View.VISIBLE);
 				break;
 			}
-		}
-	}
+            case R.id.api_url_format_help: {
+                Toast.makeText(this, R.string.api_url_format_help, Toast.LENGTH_LONG).show();
+                break;
+		    }
+	    }
+    }
 
 	@Override
 	public void onContentChanged() {
@@ -111,6 +117,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 		mEditConsumerKey = (EditText) findViewById(R.id.consumer_key);
 		mEditConsumerSecret = (EditText) findViewById(R.id.consumer_secret);
 		mSaveButton = (Button) findViewById(R.id.save);
+        mAPIFormatHelpButton = findViewById(R.id.api_url_format_help);
 	}
 
 	@Override
@@ -180,6 +187,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements Twit
 		mEditAuthType.setOnCheckedChangeListener(this);
 		mAdvancedAPIConfigLabel.setOnClickListener(this);
 		mSaveButton.setOnClickListener(this);
+        mAPIFormatHelpButton.setOnClickListener(this);
 
 		mEditAPIUrlFormat.setText(apiUrlFormat);
 		mEditSameOAuthSigningUrl.setChecked(sameOAuthSigningUrl);

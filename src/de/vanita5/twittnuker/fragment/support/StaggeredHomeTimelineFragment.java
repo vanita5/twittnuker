@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.view.View;
 
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -98,4 +99,8 @@ public class StaggeredHomeTimelineFragment extends CursorStatusesStaggeredGridFr
 		setRefreshing(twitter.isHomeTimelineRefreshing());
 	}
 
+    @Override
+    public View getRefreshIndicatorView() {
+        return getListView().getRefreshIndicatorView();
+    }
 }

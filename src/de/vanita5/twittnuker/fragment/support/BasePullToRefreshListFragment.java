@@ -22,18 +22,15 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static android.support.v4.app.ListFragmentTrojan.INTERNAL_EMPTY_ID;
-import static android.support.v4.app.ListFragmentTrojan.INTERNAL_LIST_CONTAINER_ID;
-import static android.support.v4.app.ListFragmentTrojan.INTERNAL_PROGRESS_CONTAINER_ID;
-
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -44,12 +41,15 @@ import org.mariotaku.refreshnow.widget.RefreshMode;
 import org.mariotaku.refreshnow.widget.RefreshNowConfig;
 import org.mariotaku.refreshnow.widget.RefreshNowListView;
 import org.mariotaku.refreshnow.widget.RefreshNowProgressIndicator;
-
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
+import static android.support.v4.app.ListFragmentTrojan.INTERNAL_EMPTY_ID;
+import static android.support.v4.app.ListFragmentTrojan.INTERNAL_LIST_CONTAINER_ID;
+import static android.support.v4.app.ListFragmentTrojan.INTERNAL_PROGRESS_CONTAINER_ID;
+
 public abstract class BasePullToRefreshListFragment extends BaseSupportListFragment implements
-		IBasePullToRefreshFragment, OnTouchListener {
+        IBasePullToRefreshFragment {
 
 	@Override
 	public RefreshNowListView getListView() {
@@ -75,7 +75,7 @@ public abstract class BasePullToRefreshListFragment extends BaseSupportListFragm
 	 * {@link android.R.id#list android.R.id.list} and can optionally have a
 	 * sibling view id {@link android.R.id#empty android.R.id.empty} that is to
 	 * be shown when the list is empty.
-	 * <p>
+     * <p/>
 	 * If you are overriding this method with your own custom content, consider
 	 * including the standard layout {@link android.R.layout#list_content} in
 	 * your layout file, so that you continue to retain all of the standard
@@ -120,7 +120,6 @@ public abstract class BasePullToRefreshListFragment extends BaseSupportListFragm
 		lv.setDrawSelectorOnTop(false);
 		lv.setOnRefreshListener(this);
 		lv.setConfig(ThemeUtils.buildRefreshNowConfig(context));
-		lv.setOnTouchListener(this);
 		lframe.addView(lv, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT));
 
@@ -158,17 +157,6 @@ public abstract class BasePullToRefreshListFragment extends BaseSupportListFragm
 	}
 
 	@Override
-	public final boolean onTouch(final View v, final MotionEvent event) {
-		switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN: {
-				onListTouched();
-				break;
-			}
-		}
-		return false;
-	}
-
-    @Override
     public void setConfig(final RefreshNowConfig config) {
         if (getView() == null) return;
         getListView().setConfig(config);
@@ -210,8 +198,20 @@ public abstract class BasePullToRefreshListFragment extends BaseSupportListFragm
 		return true;
 	}
 
-	protected void onListTouched() {
+    public View getRefreshIndicatorView() {
+        return getListView().getRefreshIndicatorView();
+    }
 
-	}
+    @Override
+    protected void fitSystemWindows(Rect insets) {
+        super.fitSystemWindows(insets);
+        final View indicator = getRefreshIndicatorView();
+        final LayoutParams lp = indicator.getLayoutParams();
+        if (lp instanceof MarginLayoutParams) {
+            ((MarginLayoutParams) lp).topMargin = insets.top;
+            indicator.setLayoutParams(lp);
+	       }
+    }
+
 
 }

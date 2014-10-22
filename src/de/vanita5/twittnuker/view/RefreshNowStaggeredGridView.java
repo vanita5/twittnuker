@@ -68,6 +68,11 @@ public class RefreshNowStaggeredGridView extends StaggeredGridView implements IR
 	@Override
 	public void setRefreshIndicatorView(final View view) {
 		mHelper.setRefreshIndicatorView(view);
+    }
+
+    @Override
+    public View getRefreshIndicatorView() {
+        return mHelper.getRefreshIndicatorView();
 	}
 
 	@Override

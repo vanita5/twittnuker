@@ -34,9 +34,9 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.TabSpec;
-import de.vanita5.twittnuker.view.TabPageIndicator;
-import de.vanita5.twittnuker.view.TabPageIndicator.TabListener;
-import de.vanita5.twittnuker.view.TabPageIndicator.TabProvider;
+import de.vanita5.twittnuker.view.TabPageIndicator2;
+import de.vanita5.twittnuker.view.iface.PagerIndicator.TabListener;
+import de.vanita5.twittnuker.view.iface.PagerIndicator.TabProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,9 +46,9 @@ public class TabsAdapter extends FragmentStatePagerAdapter implements TabProvide
 	private final ArrayList<TabSpec> mTabs = new ArrayList<TabSpec>();
 
 	private final Context mContext;
-	private final TabPageIndicator mIndicator;
+	private final TabPageIndicator2 mIndicator;
 
-	public TabsAdapter(final Context context, final FragmentManager fm, final TabPageIndicator indicator) {
+	public TabsAdapter(final Context context, final FragmentManager fm, final TabPageIndicator2 indicator) {
 		super(fm);
 		mContext = context;
 		mIndicator = indicator;

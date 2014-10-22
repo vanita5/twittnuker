@@ -24,20 +24,26 @@ package de.vanita5.twittnuker.activity.support;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.view.MainFrameLayout.FitSystemWindowsCallback;
 
 @SuppressLint("Registered")
-public class BaseSupportActivity extends BaseSupportThemedActivity implements Constants {
+public class BaseSupportActivity extends BaseSupportThemedActivity implements Constants,
+        FitSystemWindowsCallback, SystemWindowsInsetsCallback {
 
 	private boolean mInstanceStateSaved, mIsVisible, mIsOnTop;
+
+    private Rect mSystemWindowsInsets;
 
 	public MessagesManager getMessagesManager() {
 		return getTwittnukerApplication() != null ? getTwittnukerApplication().getMessagesManager() : null;
@@ -142,4 +148,16 @@ public class BaseSupportActivity extends BaseSupportThemedActivity implements Co
 		super.onStop();
 	}
 
+
+    @Override
+    public boolean getSystemWindowsInsets(Rect insets) {
+        if (mSystemWindowsInsets == null) return false;
+        insets.set(mSystemWindowsInsets);
+        return true;
+    }
+
+    @Override
+    public void fitSystemWindows(Rect insets) {
+        mSystemWindowsInsets = new Rect(insets);
+    }
 }

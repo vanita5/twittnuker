@@ -22,25 +22,25 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static android.support.v4.app.ListFragmentTrojan.INTERNAL_EMPTY_ID;
-import static android.support.v4.app.ListFragmentTrojan.INTERNAL_LIST_CONTAINER_ID;
-import static android.support.v4.app.ListFragmentTrojan.INTERNAL_PROGRESS_CONTAINER_ID;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -60,12 +60,21 @@ import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.ListScrollDistanceCalculator;
+import de.vanita5.twittnuker.util.ListScrollDistanceCalculator.ScrollDistanceListener;
+import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 
+import static android.support.v4.app.ListFragmentTrojan.INTERNAL_EMPTY_ID;
+import static android.support.v4.app.ListFragmentTrojan.INTERNAL_LIST_CONTAINER_ID;
+import static android.support.v4.app.ListFragmentTrojan.INTERNAL_PROGRESS_CONTAINER_ID;
+
 public class BaseSupportListFragment extends ListFragment implements IBaseFragment, Constants, OnScrollListener,
-		RefreshScrollTopInterface {
+        RefreshScrollTopInterface, ScrollDistanceListener {
+
+    private ListScrollDistanceCalculator mListScrollCounter = new ListScrollDistanceCalculator();
 
 	private boolean mIsInstanceStateSaved;
 
@@ -140,6 +149,19 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 		return args != null ? args.getInt(EXTRA_TAB_POSITION, -1) : -1;
 	}
 
+    @Override
+    public void requestFitSystemWindows() {
+        final Activity activity = getActivity();
+        final Rect insets = new Rect();
+        if (activity instanceof SystemWindowsInsetsCallback
+                && ((SystemWindowsInsetsCallback) activity).getSystemWindowsInsets(insets)) {
+            fitSystemWindows(insets);
+        }
+    }
+
+    protected void fitSystemWindows(Rect insets) {
+    }
+
 	public AsyncTwitterWrapper getTwitterWrapper() {
 		return getApplication() != null ? getApplication().getTwitterWrapper() : null;
 	}
@@ -164,6 +186,7 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 		mNotReachedBottomBefore = true;
 		mStoppedPreviously = false;
 		mIsInstanceStateSaved = savedInstanceState != null;
+        mListScrollCounter.setScrollDistanceListener(this);
 		final ListView lv = getListView();
 		lv.setOnScrollListener(this);
 	}
@@ -173,6 +196,39 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 		super.onAttach(activity);
 	}
 
+
+    private final OnTouchListener mInternalOnTouchListener = new OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN: {
+                    onListTouched();
+                    break;
+                }
+            }
+            return false;
+        }
+    };
+
+    protected void onListTouched() {
+
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        final ListView listView = getListView();
+        listView.setOnTouchListener(mInternalOnTouchListener);
+        requestFitSystemWindows();
+        if (isActionBarOverlay()) {
+            Utils.makeListFragmentFitsSystemWindows(this);
+        }
+    }
+
+    protected boolean isActionBarOverlay() {
+        return getTabPosition() >= 0;
+    }
+
 	/**
 	 * Provide default implementation to return a simple list view. Subclasses
 	 * can override to replace with their own layout. If doing so, the returned
@@ -180,8 +236,8 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 	 * {@link android.R.id#list android.R.id.list} and can optionally have a
 	 * sibling view id {@link android.R.id#empty android.R.id.empty} that is to
 	 * be shown when the list is empty.
-	 *
-	 * <p>
+     * <p/>
+     * <p/>
 	 * If you are overriding this method with your own custom content, consider
 	 * including the standard layout {@link android.R.layout#list_content} in
 	 * your layout file, so that you continue to retain all of the standard
@@ -265,9 +321,11 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 
 	}
 
+
 	@Override
 	public void onScroll(final AbsListView view, final int firstVisibleItem, final int visibleItemCount,
 						 final int totalItemCount) {
+        mListScrollCounter.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
 		final ListAdapter adapter = getListAdapter();
 		if (adapter == null) return;
 		final boolean reachedTop = firstVisibleItem == 0;
@@ -298,15 +356,7 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 
 	@Override
 	public void onScrollStateChanged(final AbsListView view, final int scrollState) {
-		final FragmentActivity a = getActivity();
-		if (a instanceof HomeActivity) {
-			final HomeActivity home = (HomeActivity) a;
-			if (scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
-				home.showControls();
-			} else {
-				home.hideControls();
-			}
-		}
+        mListScrollCounter.onScrollStateChanged(view, scrollState);
 	}
 
 	@Override
@@ -383,5 +433,14 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 
 	protected void onReachedTop() {
 
+    }
+
+    @Override
+    public void onScrollDistanceChanged(int delta, int total) {
+        final FragmentActivity a = getActivity();
+        if (a instanceof HomeActivity) {
+            final HomeActivity home = (HomeActivity) a;
+            home.moveControlBarBy(delta);
+        }
 	}
 }

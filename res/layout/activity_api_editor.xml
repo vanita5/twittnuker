@@ -9,14 +9,14 @@
 		android:layout_height="0dp"
 		android:layout_weight="1">
 
-		<include layout="@layout/api_editor_content"/>
+		<include layout="@layout/layout_api_editor"/>
 	</FrameLayout>
 
 	<View
 		android:layout_width="match_parent"
 		android:layout_height="0.2dp"
 		android:background="#40808080"/>
-
+ac
 	<Button
 		android:id="@+id/save"
 		style="?android:borderlessButtonStyle"

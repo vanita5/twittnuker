@@ -22,13 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.buildStatusFilterWhereClause;
-import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getNewestStatusIdsFromDatabase;
-import static de.vanita5.twittnuker.util.Utils.getOldestStatusIdsFromDatabase;
-import static de.vanita5.twittnuker.util.Utils.getTableNameByUri;
-import static de.vanita5.twittnuker.util.Utils.shouldEnableFiltersForRTs;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -51,6 +44,13 @@ import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
+
+import static de.vanita5.twittnuker.util.Utils.buildStatusFilterWhereClause;
+import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
+import static de.vanita5.twittnuker.util.Utils.getNewestStatusIdsFromDatabase;
+import static de.vanita5.twittnuker.util.Utils.getOldestStatusIdsFromDatabase;
+import static de.vanita5.twittnuker.util.Utils.getTableNameByUri;
+import static de.vanita5.twittnuker.util.Utils.shouldEnableFiltersForRTs;
 
 public abstract class CursorStatusesListFragment extends BaseStatusesListFragment<Cursor> {
 

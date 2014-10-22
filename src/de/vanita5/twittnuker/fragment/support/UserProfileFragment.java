@@ -22,6 +22,88 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
+import android.text.Html;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import org.mariotaku.menucomponent.widget.MenuBar;
+import org.mariotaku.querybuilder.Where;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
+import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
+import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
+import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
+import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
+import de.vanita5.twittnuker.adapter.ListActionAdapter;
+import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
+import de.vanita5.twittnuker.menu.TwidereMenuInflater;
+import de.vanita5.twittnuker.model.ListAction;
+import de.vanita5.twittnuker.model.Panes;
+import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.provider.TweetStore.Accounts;
+import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
+import de.vanita5.twittnuker.provider.TweetStore.Filters;
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.FlymeUtils;
+import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereLinkify;
+import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
+import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.view.ColorLabelLinearLayout;
+import de.vanita5.twittnuker.view.ExtendedFrameLayout;
+import de.vanita5.twittnuker.view.ProfileImageView;
+import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
+
+import java.util.Locale;
+
+import twitter4j.Relationship;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.makeFilterdUserContentValues;
 import static de.vanita5.twittnuker.util.ParseUtils.parseLong;
@@ -56,88 +138,6 @@ import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 import static de.vanita5.twittnuker.util.Utils.openUserTimeline;
 import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
 import static de.vanita5.twittnuker.util.Utils.showInfoMessage;
-
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
-import android.text.Html;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
-import org.mariotaku.menucomponent.widget.MenuBar;
-import org.mariotaku.querybuilder.Where;
-
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
-import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
-import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
-import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
-import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
-import de.vanita5.twittnuker.adapter.ListActionAdapter;
-import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
-import de.vanita5.twittnuker.model.ListAction;
-import de.vanita5.twittnuker.model.Panes;
-import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.model.SingleResponse;
-import de.vanita5.twittnuker.provider.TweetStore.Accounts;
-import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
-import de.vanita5.twittnuker.provider.TweetStore.Filters;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.FlymeUtils;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
-import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.TwidereLinkify;
-import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
-import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.ColorLabelLinearLayout;
-import de.vanita5.twittnuker.view.ExtendedFrameLayout;
-import de.vanita5.twittnuker.view.ProfileImageView;
-import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
-
-import twitter4j.Relationship;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-
-import java.util.Locale;
 
 public class UserProfileFragment extends BaseSupportListFragment implements OnClickListener, OnItemClickListener,
 		OnItemLongClickListener, OnMenuItemClickListener, OnLinkClickListener, Panes.Right, OnSizeChangedListener,
@@ -892,7 +892,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
         if (shouldShowFollowItem) {
             followItem.setTitle(isFollowing ? R.string.unfollow : isProtected ? R.string.send_follow_request
                     : R.string.follow);
-            followItem.setIcon(isFollowing ? R.drawable.ic_iconic_action_cancel : R.drawable.ic_iconic_action_add);
+            followItem.setIcon(isFollowing ? R.drawable.ic_action_cancel : R.drawable.ic_action_add);
         } else {
             followItem.setTitle(null);
             followItem.setIcon(null);

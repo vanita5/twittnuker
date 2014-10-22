@@ -32,7 +32,7 @@
 	<string name="home">Home</string>
 	<string name="mentions">Mentions</string>
 	<string name="error_occurred">An error occurred, please try again.</string>
-	<string name="error_already_logged_in">You are already logged in.</string>
+    <string name="error_already_logged_in">You have already logged in.</string>
 	<string name="no_account_selected">No account selected.</string>
 	<string name="empty_account_selection_disallowed">Please select at least one account.</string>
 	<string name="error_unknown_error">Error: Unknown error, this is probably a bug.</string>
@@ -518,7 +518,7 @@
 	<string name="account_options">Account options</string>
 	<string name="show_in_timeline">Show in timeline</string>
 	<string name="cards">Cards</string>
-	<string name="no_tab">No tab</string>
+    <string name="no_tab">No tab</string>
 	<string name="delete_user">Delete user <xliff:g id="name">%s</xliff:g></string>
 	<string name="delete_users">Delete users</string>
 	<string name="delete_user_confirm_message">Delete <xliff:g id="name">%s</xliff:g>? This can\'t be undone.</string>
@@ -612,6 +612,7 @@
     <string name="want_old_icon_back">Want old icon back?</string>
     <string name="icon_restored_message">Icon restored!</string>
     <string name="add">Add</string>
+    <string name="N_medias_quantity_one"><xliff:g id="items">%d</xliff:g> media</string>
     <string name="N_medias_quantity_other"><xliff:g id="items">%d</xliff:g> medias</string>
     <string name="delete_drafts_confirm">Delete selcted drafts?</string>
     <string name="extra_configurations">Extra configurations</string>
@@ -620,6 +621,9 @@
     <string name="retweets_of_me">Retweets of me</string>
     <string name="from_gallery">From gallery</string>
     <string name="from_camera">From camera</string>
+    <string name="excluded">Excluded</string>
+    <string name="exclude_this_host">Exclude this host</string>
+    <string name="api_url_format_help">[DOMAIN]: Twitter API domain.\nExample: https://[DOMAIN].twitter.com/ will be replaced to https://api.twitter.com/.</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

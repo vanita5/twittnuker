@@ -22,10 +22,17 @@
 
 package de.vanita5.twittnuker.fragment.iface;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 
 public interface IBaseFragment {
 	Bundle getExtraConfiguration();
 
 	int getTabPosition();
+
+	void requestFitSystemWindows();
+
+	public interface SystemWindowsInsetsCallback {
+		boolean getSystemWindowsInsets(Rect insets);
+	}
 }

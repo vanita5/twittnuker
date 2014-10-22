@@ -5,6 +5,12 @@
 	android:orientation="vertical"
 	android:padding="16dp">
 
+    <CheckBox
+        android:id="@+id/exclude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/exclude_this_host"/>
+
 	<EditText
 		android:id="@+id/host"
 		android:layout_width="match_parent"

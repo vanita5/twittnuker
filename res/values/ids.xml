@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
 
 	<item name="actions" type="id"/>
 	<item name="compose" type="id"/>
@@ -17,7 +17,7 @@
 	<item name="add" type="id"/>
 	<item name="toggle" type="id"/>
 	<item name="pick_from_gallery" type="id"/>
-	<item name="pick_from_map" type="id"/>
+	<item name="pick_from_map" type="id"/>i
 	<item name="reply" type="id"/>
 	<item name="retweet" type="id"/>
 	<item name="favorite" type="id"/>
@@ -75,5 +75,5 @@
     <item name="export_settings" type="id"/>
     <item name="progress" type="id"/>
     <item name="open_with_account" type="id"/>
-
+    <item name="accounts" type="id"/>
 </resources>

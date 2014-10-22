@@ -22,16 +22,12 @@
 
 package de.vanita5.twittnuker.preference;
 
-import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.ParseUtils.parseString;
-import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
-import static de.vanita5.twittnuker.util.Utils.trim;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.DialogPreference;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,12 +37,18 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 
 import twitter4j.TwitterConstants;
+
+import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.ParseUtils.parseString;
+import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
+import static de.vanita5.twittnuker.util.Utils.trim;
 
 public class DefaultAPIPreference extends DialogPreference implements Constants, TwitterConstants,
 		OnCheckedChangeListener, OnClickListener {
@@ -59,6 +61,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 	private TextView mAdvancedAPIConfigLabel;
 	private View mAdvancedAPIConfigContainer;
 	private View mAdvancedAPIConfigView;
+    private View mAPIFormatHelpButton;
 
 	public DefaultAPIPreference(final Context context, final AttributeSet attrs) {
 		this(context, attrs, android.R.attr.preferenceStyle);
@@ -66,7 +69,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 
 	public DefaultAPIPreference(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
-		setDialogLayoutResource(R.layout.api_editor_content);
+        setDialogLayoutResource(R.layout.layout_api_editor);
 		setPositiveButtonText(android.R.string.ok);
 	}
 
@@ -79,14 +82,23 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 
 	@Override
 	public void onClick(final View v) {
-		final boolean isVisible = mAdvancedAPIConfigView.isShown();
-		final int compoundRes = isVisible ? R.drawable.expander_close_holo : R.drawable.expander_open_holo;
-		mAdvancedAPIConfigLabel.setCompoundDrawablesWithIntrinsicBounds(compoundRes, 0, 0, 0);
-		mAdvancedAPIConfigView.setVisibility(isVisible ? View.GONE : View.VISIBLE);
-	}
+        switch (v.getId()) {
+            case R.id.advanced_api_config_label: {
+                final boolean isVisible = mAdvancedAPIConfigView.isShown();
+                final int compoundRes = isVisible ? R.drawable.expander_close_holo : R.drawable.expander_open_holo;
+                mAdvancedAPIConfigLabel.setCompoundDrawablesWithIntrinsicBounds(compoundRes, 0, 0, 0);
+                mAdvancedAPIConfigView.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+                break;
+	        }
+            case R.id.api_url_format_help: {
+                Toast.makeText(getContext(), R.string.api_url_format_help, Toast.LENGTH_LONG).show();
+                break;
+            }
+        }
+    }
 
 	@Override
-	protected void onBindDialogView(final View view) {
+    protected void onBindDialogView(@NonNull final View view) {
 		final SharedPreferences pref = getSharedPreferences();
 		final String apiUrlFormat = getNonEmptyString(pref, KEY_API_URL_FORMAT, DEFAULT_REST_BASE_URL);
 		final int authType = pref.getInt(KEY_AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
@@ -111,9 +123,11 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 		mEditSameOAuthSigningUrl = (CheckBox) view.findViewById(R.id.same_oauth_signing_url);
 		mEditConsumerKey = (EditText) view.findViewById(R.id.consumer_key);
 		mEditConsumerSecret = (EditText) view.findViewById(R.id.consumer_secret);
+        mAPIFormatHelpButton = view.findViewById(R.id.api_url_format_help);
 
 		mEditAuthType.setOnCheckedChangeListener(this);
 		mAdvancedAPIConfigLabel.setOnClickListener(this);
+        mAPIFormatHelpButton.setOnClickListener(this);
 
 		return view;
 	}

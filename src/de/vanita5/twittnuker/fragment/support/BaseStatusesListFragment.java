@@ -22,14 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.clearListViewChoices;
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.openStatus;
-import static de.vanita5.twittnuker.util.Utils.showOkMessage;
-import static de.vanita5.twittnuker.util.Utils.startStatusShareChooser;
-import static de.vanita5.twittnuker.util.Utils.retweet;
-import static de.vanita5.twittnuker.util.Utils.favorite;
-
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -49,6 +41,7 @@ import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.model.Account;
@@ -72,6 +65,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static de.vanita5.twittnuker.util.Utils.cancelRetweet;
+import static de.vanita5.twittnuker.util.Utils.clearListViewChoices;
+import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
+import static de.vanita5.twittnuker.util.Utils.openStatus;
+import static de.vanita5.twittnuker.util.Utils.showOkMessage;
+import static de.vanita5.twittnuker.util.Utils.startStatusShareChooser;
+import static de.vanita5.twittnuker.util.Utils.retweet;
+import static de.vanita5.twittnuker.util.Utils.favorite;
 
 abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragment implements LoaderCallbacks<Data>,
 		OnItemLongClickListener, OnMenuItemClickListener, Panes.Left, MultiSelectManager.Callback,
@@ -129,6 +132,11 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 	}
 
 	@Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		final Context context = getActivity();
