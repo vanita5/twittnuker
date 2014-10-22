@@ -449,7 +449,6 @@ public class NotificationHelper implements Constants {
 		return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 	}
 
-	//TODO Fix this method. Cache is always empty?
 	private Bitmap getProfileImageForNotification(final String profileImageUrl) {
 		final Resources res = context.getResources();
 		final int w = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);

@@ -474,7 +474,7 @@ public class StreamingService extends Service implements Constants {
 					createNotification(status.getUser().getScreenName(),
 							NotificationContent.NOTIFICATION_TYPE_RETWEET,
 							Utils.parseURLEntities(rt.getText(), rt.getURLEntities()),
-							new ParcelableStatus(status, account_id, false), null);
+							new ParcelableStatus(status, account_id, false), status.getUser());
 				}
 			}
 		}
