@@ -51,6 +51,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -150,14 +151,16 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
     @Override
     public void requestFitSystemWindows() {
         final Activity activity = getActivity();
+        if (!(activity instanceof SystemWindowsInsetsCallback)) return;
+        final SystemWindowsInsetsCallback callback = (SystemWindowsInsetsCallback) activity;
         final Rect insets = new Rect();
-        if (activity instanceof SystemWindowsInsetsCallback
-                && ((SystemWindowsInsetsCallback) activity).getSystemWindowsInsets(insets)) {
+        if (callback.getSystemWindowsInsets(insets)) {
             fitSystemWindows(insets);
         }
     }
 
     protected void fitSystemWindows(Rect insets) {
+        Utils.makeListFragmentFitsSystemWindows(this, insets);
     }
 
 	public AsyncTwitterWrapper getTwitterWrapper() {
@@ -218,13 +221,6 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
         final ListView listView = getListView();
         listView.setOnTouchListener(mInternalOnTouchListener);
         requestFitSystemWindows();
-        if (isActionBarOverlay()) {
-            Utils.makeListFragmentFitsSystemWindows(this);
-        }
-    }
-
-    protected boolean isActionBarOverlay() {
-        return getTabPosition() >= 0;
     }
 
 	/**
@@ -381,8 +377,12 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 
 	@Override
 	public boolean scrollToStart() {
-		if (!isAdded() || getActivity() == null) return false;
+        final Activity activity = getActivity();
+        if (!isAdded() || activity == null) return false;
 		Utils.scrollListToTop(getListView());
+        if (activity instanceof IControlBarActivity) {
+            ((IControlBarActivity) activity).setControlBarOffset(1);
+        }
 		return true;
 	}
 
@@ -436,9 +436,8 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
     @Override
     public void onScrollDistanceChanged(int delta, int total) {
         final FragmentActivity a = getActivity();
-		if (a instanceof HomeActivity && getTabPosition() >= 0 && getUserVisibleHint()) {
-            final HomeActivity home = (HomeActivity) a;
-            home.moveControlBarBy(delta);
+        if (a instanceof IControlBarActivity && getTabPosition() >= 0 && getUserVisibleHint()) {
+            ((IControlBarActivity) a).moveControlBarBy(delta);
         }
 	}
 }

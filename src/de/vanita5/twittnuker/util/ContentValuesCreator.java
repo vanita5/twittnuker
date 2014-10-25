@@ -64,7 +64,8 @@ import java.util.List;
 public final class ContentValuesCreator implements TwittnukerConstants {
 
 	public static ContentValues makeAccountContentValuesBasic(final Configuration conf, final String basicUsername,
-			final String basicPassword, final User user, final int color, final String apiUrlFormat) {
+                                                              final String basicPassword, final User user, final int color, final String apiUrlFormat,
+                                                              final boolean noVersionSuffix) {
 		if (user == null || user.getId() <= 0) return null;
 		final ContentValues values = new ContentValues();
 		if (basicUsername == null || basicPassword == null) return null;
@@ -79,12 +80,13 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Accounts.COLOR, color);
 		values.put(Accounts.IS_ACTIVATED, 1);
 		values.put(Accounts.API_URL_FORMAT, apiUrlFormat);
+        values.put(Accounts.NO_VERSION_SUFFIX, noVersionSuffix);
 		return values;
 	}
 
 	public static ContentValues makeAccountContentValuesOAuth(final Configuration conf, final AccessToken accessToken,
-			final User user, final int authType, final int color, final String apiUrlFormat,
-			final boolean sameOAuthSigningUrl) {
+			                                                  final User user, final int authType, final int color, final String apiUrlFormat,
+                                                              final boolean sameOAuthSigningUrl, final boolean noVersionSuffix) {
 		if (user == null || user.getId() <= 0 || accessToken == null || user.getId() != accessToken.getUserId())
 			return null;
 		final ContentValues values = new ContentValues();
@@ -102,11 +104,12 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Accounts.IS_ACTIVATED, 1);
 		values.put(Accounts.API_URL_FORMAT, apiUrlFormat);
 		values.put(Accounts.SAME_OAUTH_SIGNING_URL, sameOAuthSigningUrl);
+        values.put(Accounts.NO_VERSION_SUFFIX, noVersionSuffix);
 		return values;
 	}
 
 	public static ContentValues makeAccountContentValuesTWIP(final Configuration conf, final User user,
-			final int color, final String apiUrlFormat) {
+                                                             final int color, final String apiUrlFormat, final boolean noVersionSuffix) {
 		if (user == null || user.getId() <= 0) return null;
 		final ContentValues values = new ContentValues();
 		values.put(Accounts.AUTH_TYPE, Accounts.AUTH_TYPE_TWIP_O_MODE);
@@ -118,6 +121,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Accounts.COLOR, color);
 		values.put(Accounts.IS_ACTIVATED, 1);
 		values.put(Accounts.API_URL_FORMAT, apiUrlFormat);
+        values.put(Accounts.NO_VERSION_SUFFIX, noVersionSuffix);
 		return values;
 	}
 
@@ -236,7 +240,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-	public static ContentValues makeFilterdUserContentValues(final ParcelableStatus status) {
+    public static ContentValues makeFilteredUserContentValues(final ParcelableStatus status) {
 		if (status == null) return null;
 		final ContentValues values = new ContentValues();
 		values.put(Filters.Users.USER_ID, status.user_id);
@@ -245,7 +249,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-	public static ContentValues makeFilterdUserContentValues(final ParcelableUser user) {
+    public static ContentValues makeFilteredUserContentValues(final ParcelableUser user) {
 		if (user == null) return null;
 		final ContentValues values = new ContentValues();
 		values.put(Filters.Users.USER_ID, user.id);
@@ -254,7 +258,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-	public static ContentValues makeFilterdUserContentValues(final ParcelableUserMention user) {
+    public static ContentValues makeFilteredUserContentValues(final ParcelableUserMention user) {
 		if (user == null) return null;
 		final ContentValues values = new ContentValues();
 		values.put(Filters.Users.USER_ID, user.id);
@@ -275,17 +279,17 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Statuses.STATUS_ID, orig.getId());
 		values.put(Statuses.STATUS_TIMESTAMP, orig.getCreatedAt().getTime());
 		values.put(Statuses.MY_RETWEET_ID, orig.getCurrentUserRetweet());
-		final boolean is_retweet = orig.isRetweet();
+        final boolean isRetweet = orig.isRetweet();
 		final Status status;
-		final Status retweeted_status = is_retweet ? orig.getRetweetedStatus() : null;
-		if (retweeted_status != null) {
-			final User retweet_user = orig.getUser();
-			values.put(Statuses.RETWEET_ID, retweeted_status.getId());
-			values.put(Statuses.RETWEET_TIMESTAMP, retweeted_status.getCreatedAt().getTime());
-			values.put(Statuses.RETWEETED_BY_USER_ID, retweet_user.getId());
-			values.put(Statuses.RETWEETED_BY_USER_NAME, retweet_user.getName());
-			values.put(Statuses.RETWEETED_BY_USER_SCREEN_NAME, retweet_user.getScreenName());
-			status = retweeted_status;
+        final Status retweetedStatus = isRetweet ? orig.getRetweetedStatus() : null;
+        if (retweetedStatus != null) {
+            final User retweetUser = orig.getUser();
+            values.put(Statuses.RETWEET_ID, retweetedStatus.getId());
+            values.put(Statuses.RETWEET_TIMESTAMP, retweetedStatus.getCreatedAt().getTime());
+            values.put(Statuses.RETWEETED_BY_USER_ID, retweetUser.getId());
+            values.put(Statuses.RETWEETED_BY_USER_NAME, retweetUser.getName());
+            values.put(Statuses.RETWEETED_BY_USER_SCREEN_NAME, retweetUser.getScreenName());
+            status = retweetedStatus;
 		} else {
 			status = orig;
 		}
@@ -318,7 +322,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		if (location != null) {
 			values.put(Statuses.LOCATION, location.getLatitude() + "," + location.getLongitude());
 		}
-		values.put(Statuses.IS_RETWEET, is_retweet);
+        values.put(Statuses.IS_RETWEET, isRetweet);
 		values.put(Statuses.IS_FAVORITE, status.isFavorited());
         final ParcelableMedia[] medias = ParcelableMedia.fromEntities(status);
         if (medias != null) {
@@ -352,10 +356,10 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-	public static ContentValues[] makeTrendsContentValues(final List<Trends> trends_list) {
-		if (trends_list == null) return new ContentValues[0];
-		final List<ContentValues> result_list = new ArrayList<ContentValues>();
-		for (final Trends trends : trends_list) {
+    public static ContentValues[] makeTrendsContentValues(final List<Trends> trendsList) {
+        if (trendsList == null) return new ContentValues[0];
+        final List<ContentValues> resultList = new ArrayList<>();
+        for (final Trends trends : trendsList) {
 			if (trends == null) {
 				continue;
 			}
@@ -364,10 +368,10 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 				final ContentValues values = new ContentValues();
 				values.put(CachedTrends.NAME, trend.getName());
 				values.put(CachedTrends.TIMESTAMP, timestamp);
-				result_list.add(values);
+                resultList.add(values);
 			}
 		}
-		return result_list.toArray(new ContentValues[result_list.size()]);
+        return resultList.toArray(new ContentValues[resultList.size()]);
 	}
 
 }

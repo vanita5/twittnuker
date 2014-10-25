@@ -72,6 +72,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.util.LongSparseArray;
 import android.text.Editable;
@@ -110,6 +111,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 
 import org.mariotaku.menucomponent.widget.MenuBar;
+import org.mariotaku.menucomponent.widget.MenuBar.MenuBarListener;
 import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.BaseArrayAdapter;
@@ -152,7 +154,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 public class ComposeActivity extends BaseSupportDialogActivity implements TextWatcher, LocationListener,
-		OnMenuItemClickListener, OnClickListener, OnEditorActionListener, OnItemClickListener, OnItemLongClickListener,
+		MenuBarListener, OnClickListener, OnEditorActionListener, OnItemClickListener, OnItemLongClickListener,
 		OnLongClickListener {
 
 	private static final String FAKE_IMAGE_LINK = "https://www.example.com/fake_image.jpg";
@@ -221,7 +223,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	}
 
     @Override
-	public int getOverrideAccentColor() {
+	public int getThemeColor() {
 		return ThemeUtils.getUserThemeColor(this);
 	}
 
@@ -542,8 +544,8 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			return;
 		}
 		mBottomMenuBar.setIsBottomBar(true);
-		mBottomMenuBar.setOnMenuItemClickListener(this);
-		mActionMenuBar.setOnMenuItemClickListener(this);
+        mBottomMenuBar.setMenuBarListener(this);
+        mActionMenuBar.setMenuBarListener(this);
 		mEditText.setOnEditorActionListener(mPreferences.getBoolean(KEY_QUICK_SEND, false) ? this : null);
 		mEditText.addTextChangedListener(this);
 		mAccountSelectorAdapter = new AccountSelectorAdapter(this);
@@ -1093,13 +1095,18 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	private void updateTextCount() {
 		final StatusTextCountView textCountView = mBottomSendButton ? mBottomSendTextCountView : mSendTextCountView;
 		if (textCountView != null && mEditText != null) {
-			final String textOrig = mEditText != null ? parseString(mEditText.getText()) : null;
+            final String textOrig = parseString(mEditText.getText());
 			final String text = hasMedia() && textOrig != null ? mImageUploaderUsed ? getImageUploadStatus(this,
 					new String[] { FAKE_IMAGE_LINK }, textOrig) : textOrig + " " + FAKE_IMAGE_LINK : textOrig;
 			final int validatedCount = text != null ? mValidator.getTweetLength(text) : 0;
 			textCountView.setTextCount(validatedCount);
 		}
 	}
+
+    @Override
+    public void onPreShowMenu(Menu menu) {
+
+    }
 
     public static class RetweetProtectedStatusWarnFragment extends BaseSupportDialogFragment implements
             DialogInterface.OnClickListener {
@@ -1118,6 +1125,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
         }
 
+        @NonNull
         @Override
         public Dialog onCreateDialog(final Bundle savedInstanceState) {
             final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
@@ -1154,6 +1162,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 		}
 
+        @NonNull
 		@Override
 		public Dialog onCreateDialog(final Bundle savedInstanceState) {
             final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());

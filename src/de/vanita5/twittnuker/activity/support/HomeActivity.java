@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
-import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.gcm.GCMHelper;
@@ -61,7 +60,9 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -79,6 +80,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
@@ -109,14 +112,14 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UnreadCountUtils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.ExtendedViewPager;
-import de.vanita5.twittnuker.view.HomeActionsActionView;
 import de.vanita5.twittnuker.view.LeftDrawerFrameLayout;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
+import de.vanita5.twittnuker.view.iface.IHomeActionButton;
 
 public class HomeActivity extends BaseSupportActivity implements OnClickListener, OnPageChangeListener,
 		SupportFragmentCallback, SlidingMenu.OnOpenedListener, SlidingMenu.OnClosedListener,
-        OnLongClickListener, IControlBarActivity {
+        OnLongClickListener {
 
 	private final BroadcastReceiver mStateReceiver = new BroadcastReceiver() {
 
@@ -156,7 +159,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private View mEmptyTab;
 	private View mEmptyTabHint;
     private ProgressBar mSmartBarProgress;
-    private HomeActionsActionView mActionsButton;
+    private View mActionsButton;
+    private View mTabsContainer;
+    private View mActionBarOverlay;
 	private LeftDrawerFrameLayout mLeftDrawerContainer;
 	private RightDrawerFrameLayout mRightDrawerContainer;
 
@@ -189,8 +194,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
 	@Override
 	public void setControlBarOffset(float offset) {
-        mTabIndicator.setTranslationY(getControlBarHeight() * (offset - 1));
+        mTabsContainer.setTranslationY(getControlBarHeight() * (offset - 1));
         mActionsButton.setTranslationY(mActionsButton.getHeight() * (1 - offset));
+        notifyControlBarOffsetChanged();
 	}
 
 	public void notifyAccountsChanged() {
@@ -223,9 +229,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	@Override
 	public void onClick(final View v) {
 		switch (v.getId()) {
-            case R.id.actions:
-			case R.id.actions_button:
-			case R.id.actions_button_bottom: {
+            case R.id.actions_button: {
                 triggerActionsClick();
 				break;
 			}
@@ -244,8 +248,10 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		mViewPager = (ExtendedViewPager) findViewById(R.id.main_pager);
 		mEmptyTab = findViewById(R.id.empty_tab);
 		mEmptyTabHint = findViewById(R.id.empty_tab_hint);
-        mActionsButton = (HomeActionsActionView) findViewById(R.id.actions_button_bottom);
-        mTabIndicator = (TabPagerIndicator) findViewById(android.R.id.tabs);
+        mActionsButton = findViewById(R.id.actions_button);
+        mTabsContainer = findViewById(R.id.tabs_container);
+        mTabIndicator = (TabPagerIndicator) findViewById(R.id.main_tabs);
+        mActionBarOverlay = findViewById(R.id.actionbar_overlay);
 	}
 
 	@Override
@@ -291,12 +297,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	@Override
 	public boolean onLongClick(final View v) {
 		switch (v.getId()) {
-			case R.id.actions:
 			case R.id.actions_button: {
-				showMenuItemToast(v, v.getContentDescription());
-				return true;
-			}
-			case R.id.actions_button_bottom: {
 				showMenuItemToast(v, v.getContentDescription(), true);
 				return true;
 			}
@@ -440,7 +441,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	@Override
 	public float getControlBarOffset() {
 		final float totalHeight = getControlBarHeight();
-        return 1 + mTabIndicator.getTranslationY() / totalHeight;
+        return 1 + mTabsContainer.getTranslationY() / totalHeight;
 	}
 
 	@Override
@@ -565,7 +566,22 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			}
 		}
 		mPagerPosition = Float.NaN;
+        final int themeColor = getThemeColor(), contrastColor = Utils.getContrastYIQ(themeColor, 192);
+        final int themeResId = getCurrentThemeResourceId();
+        if (ThemeUtils.isColoredActionBar(themeResId)) {
+            ViewAccessor.setBackground(mTabIndicator, new ColorDrawable(themeColor));
+            mTabIndicator.setStripColor(contrastColor);
+            mTabIndicator.setIconColor(contrastColor);
+        } else {
+            ViewAccessor.setBackground(mTabIndicator, ThemeUtils.getActionBarBackground(this, themeResId));
+            mTabIndicator.setStripColor(themeColor);
+            mTabIndicator.setIconColor(ThemeUtils.isLightActionBar(themeResId) ? Color.BLACK : Color.WHITE);
 	}
+        if (mActionsButton instanceof IHomeActionButton) {
+            ((IHomeActionButton) mActionsButton).setColor(themeColor);
+        }
+        ViewAccessor.setBackground(mActionBarOverlay, ThemeUtils.getWindowContentOverlay(this));
+    }
 
 	@Override
 	protected void onDestroy() {
@@ -832,10 +848,11 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			}
 		}
 		final boolean hasActivatedTask = hasActivatedTask();
-        if (mActionsButton != null) {
-            mActionsButton.setIcon(icon);
-            mActionsButton.setTitle(title);
-            mActionsButton.setShowProgress(hasActivatedTask);
+        if (mActionsButton instanceof IHomeActionButton) {
+            final IHomeActionButton hab = (IHomeActionButton) mActionsButton;
+            hab.setIcon(icon);
+            hab.setTitle(title);
+            hab.setShowProgress(hasActivatedTask);
         }
         if (mSmartBarProgress != null) {
             mSmartBarProgress.setVisibility(hasActivatedTask ? View.VISIBLE : View.INVISIBLE);
@@ -872,10 +889,19 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         }
     }
 
-	public void moveControlBarBy(int delta) {
+    public void moveControlBarBy(float delta) {
 		final int min = -getControlBarHeight(), max = 0;
-        mTabIndicator.setTranslationY(MathUtils.clamp(mTabIndicator.getTranslationY() + delta, max, min));
-        mActionsButton.setTranslationY(MathUtils.clamp(mActionsButton.getTranslationY() - delta, mActionsButton.getHeight(), 0));
+		mTabsContainer.setTranslationY(MathUtils.clamp(mTabsContainer.getTranslationY() + delta, max, min));
+		final ViewGroup.LayoutParams ablp = mActionsButton.getLayoutParams();
+		final int totalHeight;
+		if (ablp instanceof MarginLayoutParams) {
+			final MarginLayoutParams mlp = (MarginLayoutParams) ablp;
+			totalHeight = mActionsButton.getHeight() + mlp.topMargin + mlp.bottomMargin;
+		} else {
+			totalHeight = mActionsButton.getHeight();
+		}
+		mActionsButton.setTranslationY(MathUtils.clamp(mActionsButton.getTranslationY() - delta, totalHeight, 0));
+		notifyControlBarOffsetChanged();
 	}
 
 	private void startStreamingService() {
@@ -942,9 +968,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
 		@Override
 		protected int[] doInBackground(final Void... params) {
-			final int tab_count = mIndicator.getCount();
-			final int[] result = new int[tab_count];
-			for (int i = 0, j = tab_count; i < j; i++) {
+            final int tabCount = mIndicator.getCount();
+            final int[] result = new int[tabCount];
+            for (int i = 0, j = tabCount; i < j; i++) {
 				result[i] = UnreadCountUtils.getUnreadCount(mContext, i);
 			}
 			return result;

@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeFilterdUserContentValues;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeFilteredUserContentValues;
 import static de.vanita5.twittnuker.util.Utils.getDisplayName;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
@@ -44,6 +44,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
+import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -74,11 +75,11 @@ public class AddStatusFilterDialogFragment extends BaseSupportDialogFragment imp
 			if (value instanceof ParcelableUserMention) {
 				final ParcelableUserMention mention = (ParcelableUserMention) value;
 				user_ids.add(mention.id);
-				user_values.add(makeFilterdUserContentValues(mention));
+				user_values.add(makeFilteredUserContentValues(mention));
 			} else if (value instanceof ParcelableStatus) {
 				final ParcelableStatus status = (ParcelableStatus) value;
 				user_ids.add(status.user_id);
-				user_values.add(makeFilterdUserContentValues(status));
+				user_values.add(ContentValuesCreator.makeFilteredUserContentValues(status));
 			} else if (info.type == FilterItemInfo.FILTER_TYPE_KEYWORD) {
 				if (value != null) {
 					final String keyword = ParseUtils.parseString(value);

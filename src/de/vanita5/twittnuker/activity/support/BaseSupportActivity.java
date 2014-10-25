@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
@@ -37,20 +38,23 @@ import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.MainFrameLayout.FitSystemWindowsCallback;
 
+import java.util.ArrayList;
+
 @SuppressLint("Registered")
 public class BaseSupportActivity extends BaseSupportThemedActivity implements Constants,
-        FitSystemWindowsCallback, SystemWindowsInsetsCallback {
+        FitSystemWindowsCallback, SystemWindowsInsetsCallback, IControlBarActivity {
 
 	private boolean mInstanceStateSaved, mIsVisible, mIsOnTop;
 
     private Rect mSystemWindowsInsets;
+    private ArrayList<ControlBarOffsetListener> mControlBarOffsetListeners = new ArrayList<>();
 
 	public MessagesManager getMessagesManager() {
 		return getTwittnukerApplication() != null ? getTwittnukerApplication().getMessagesManager() : null;
 	}
 
     @Override
-    public int getOverrideAccentColor() {
+    public int getThemeColor() {
 		return ThemeUtils.getUserThemeColor(this, getThemeResourceId());
     }
 
@@ -159,5 +163,43 @@ public class BaseSupportActivity extends BaseSupportThemedActivity implements Co
     @Override
     public void fitSystemWindows(Rect insets) {
         mSystemWindowsInsets = new Rect(insets);
+    }
+
+    @Override
+    public void setControlBarOffset(float offset) {
+
+    }
+
+    @Override
+    public float getControlBarOffset() {
+        return 0;
+    }
+
+    @Override
+    public int getControlBarHeight() {
+        return 0;
+    }
+
+    @Override
+    public void moveControlBarBy(float delta) {
+
+    }
+
+    @Override
+    public void notifyControlBarOffsetChanged() {
+        final float offset = getControlBarOffset();
+        for (final ControlBarOffsetListener l : mControlBarOffsetListeners) {
+            l.onControlBarOffsetChanged(this, offset);
+        }
+    }
+
+    @Override
+    public void registerControlBarOffsetListener(ControlBarOffsetListener listener) {
+        mControlBarOffsetListeners.add(listener);
+    }
+
+    @Override
+    public void unregisterControlBarOffsetListener(ControlBarOffsetListener listener) {
+        mControlBarOffsetListeners.remove(listener);
     }
 }

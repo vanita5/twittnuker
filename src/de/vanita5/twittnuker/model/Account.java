@@ -233,7 +233,7 @@ public class Account implements Parcelable {
 		public final String basic_auth_username, basic_auth_password;
 		public final String oauth_token, oauth_token_secret;
 		public final String api_url_format;
-		public final boolean same_oauth_signing_url;
+        public final boolean same_oauth_signing_url, no_version_suffix;
 
 		public AccountWithCredentials(final Cursor cursor, final Indices indices) {
 			super(cursor, indices);
@@ -246,6 +246,7 @@ public class Account implements Parcelable {
 			oauth_token_secret = cursor.getString(indices.oauth_token_secret);
 			api_url_format = cursor.getString(indices.api_url_format);
 			same_oauth_signing_url = cursor.getInt(indices.same_oauth_signing_url) == 1;
+            no_version_suffix = cursor.getInt(indices.no_version_suffix) == 1;
 		}
 
 		@Override
@@ -269,7 +270,7 @@ public class Account implements Parcelable {
 
 		public final int screen_name, name, account_id, profile_image_url, profile_banner_url, color, is_activated,
 				auth_type, consumer_key, consumer_secret, basic_auth_username, basic_auth_password, oauth_token,
-				oauth_token_secret, api_url_format, same_oauth_signing_url;
+                oauth_token_secret, api_url_format, same_oauth_signing_url, no_version_suffix;
 
 		public Indices(final Cursor cursor) {
 			screen_name = cursor.getColumnIndex(Accounts.SCREEN_NAME);
@@ -288,6 +289,7 @@ public class Account implements Parcelable {
 			oauth_token_secret = cursor.getColumnIndex(Accounts.OAUTH_TOKEN_SECRET);
 			api_url_format = cursor.getColumnIndex(Accounts.API_URL_FORMAT);
 			same_oauth_signing_url = cursor.getColumnIndex(Accounts.SAME_OAUTH_SIGNING_URL);
+            no_version_suffix = cursor.getColumnIndex(Accounts.NO_VERSION_SUFFIX);
 		}
 
 		@Override

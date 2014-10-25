@@ -66,7 +66,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.mariotaku.menucomponent.widget.MenuBar;
 import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
@@ -86,6 +85,7 @@ import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -96,6 +96,7 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ColorLabelLinearLayout;
 import de.vanita5.twittnuker.view.ExtendedFrameLayout;
 import de.vanita5.twittnuker.view.ProfileImageView;
+import de.vanita5.twittnuker.view.TwidereMenuBar;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
 import java.util.Locale;
@@ -105,7 +106,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeFilterdUserContentValues;
 import static de.vanita5.twittnuker.util.ParseUtils.parseLong;
 import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserColor;
 import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserNickname;
@@ -164,7 +164,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
     private View mMainContent;
 	private View mProfileBannerSpace;
     private ProgressBar mDetailsLoadProgress;
-    private MenuBar mMenuBar;
+    private TwidereMenuBar mMenuBar;
 
 	private ListActionAdapter mAdapter;
 
@@ -709,7 +709,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
         super.onViewCreated(view, savedInstanceState);
         mMainContent = view.findViewById(R.id.content);
         mDetailsLoadProgress = (ProgressBar) view.findViewById(R.id.details_load_progress);
-        mMenuBar = (MenuBar) view.findViewById(R.id.menu_bar);
+        mMenuBar = (TwidereMenuBar) view.findViewById(R.id.menu_bar);
         mErrorRetryContainer = view.findViewById(R.id.error_retry_container);
         mRetryButton = (Button) view.findViewById(R.id.retry);
         mErrorMessageView = (TextView) view.findViewById(R.id.error_message);
@@ -781,7 +781,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 			case MENU_ADD_TO_FILTER: {
 				final ContentResolver resolver = getContentResolver();
                 resolver.delete(Filters.Users.CONTENT_URI, Where.equals(Filters.Users.USER_ID, user.id).getSQL(), null);
-                resolver.insert(Filters.Users.CONTENT_URI, makeFilterdUserContentValues(user));
+                resolver.insert(Filters.Users.CONTENT_URI, ContentValuesCreator.makeFilteredUserContentValues(user));
 				showInfoMessage(getActivity(), R.string.message_user_muted, false);
 				break;
 			}

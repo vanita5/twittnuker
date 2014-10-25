@@ -16,6 +16,15 @@
         android:text="@string/same_oauth_signing_url"
         android:textAppearance="?android:attr/textAppearanceSmall"/>
 
+    <CheckBox
+        android:id="@+id/no_version_suffix"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/element_spacing_normal"
+        android:paddingTop="@dimen/element_spacing_normal"
+        android:text="@string/no_version_suffix"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

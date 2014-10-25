@@ -65,10 +65,10 @@ import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
+import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeFilterdUserContentValues;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 
 public class FiltersActivity extends BaseSupportActivity implements TabListener, OnPageChangeListener {
@@ -208,7 +208,7 @@ public class FiltersActivity extends BaseSupportActivity implements TabListener,
 				if (resultCode != RESULT_OK || !(filter instanceof FilteredUsersFragment) || !data.hasExtra(EXTRA_USER))
 					return;
 				final ParcelableUser user = data.getParcelableExtra(EXTRA_USER);
-				final ContentValues values = makeFilterdUserContentValues(user);
+                final ContentValues values = ContentValuesCreator.makeFilteredUserContentValues(user);
 				final ContentResolver resolver = getContentResolver();
 				resolver.delete(Filters.Users.CONTENT_URI, Where.equals(Filters.Users.USER_ID, user.id).getSQL(), null);
 				resolver.insert(Filters.Users.CONTENT_URI, values);

@@ -22,13 +22,13 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.Utils.createFragmentForIntent;
 import static de.vanita5.twittnuker.util.Utils.matchLinkId;
 
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -39,31 +39,29 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.Window;
-import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 
-public class LinkHandlerActivity extends BaseSupportActivity implements OnClickListener, OnLongClickListener {
+public class LinkHandlerActivity extends BaseSupportActivity implements OnClickListener,
+        OnLongClickListener, SystemWindowsInsetsCallback, IControlBarActivity {
 
 	private MultiSelectEventHandler mMultiSelectHandler;
 
-	private ActionBar mActionBar;
-
 	private boolean mFinishOnly;
-
-	private View mGoTopView;
-	private TextView mTitleView, mSubtitleView;
 
 	@Override
 	public void onClick(final View v) {
 		switch (v.getId()) {
 			case R.id.go_top: {
-				final Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
+                final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_fragment);
 				if (fragment instanceof RefreshScrollTopInterface) {
 					((RefreshScrollTopInterface) fragment).scrollToStart();
 				} else if (fragment instanceof ListFragment) {
@@ -78,7 +76,7 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
 	public boolean onLongClick(final View v) {
 		switch (v.getId()) {
 			case R.id.go_top: {
-				final Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
+                final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_fragment);
 				if (fragment instanceof RefreshScrollTopInterface) {
 					((RefreshScrollTopInterface) fragment).triggerRefresh();
 				}
@@ -103,11 +101,6 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void setSubtitle(final CharSequence subtitle) {
-		mSubtitleView.setVisibility(isEmpty(subtitle) ? View.GONE : View.VISIBLE);
-		mSubtitleView.setText(subtitle);
-	}
-
 	@Override
 	protected IBasePullToRefreshFragment getCurrentPullToRefreshFragment() {
 		final Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
@@ -129,16 +122,11 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setUiOptions(getWindow(), data);
 		super.onCreate(savedInstanceState);
-		mActionBar = getActionBar();
-		mActionBar.setDisplayShowTitleEnabled(true);
-		mActionBar.setDisplayShowCustomEnabled(false);
-		mActionBar.setCustomView(R.layout.link_handler_actionbar);
-		final View view = mActionBar.getCustomView();
-		mGoTopView = view.findViewById(R.id.go_top);
-		mTitleView = (TextView) view.findViewById(R.id.actionbar_title);
-		mSubtitleView = (TextView) view.findViewById(R.id.actionbar_subtitle);
-		mGoTopView.setOnClickListener(this);
-		mGoTopView.setOnLongClickListener(this);
+        final ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        setContentView(R.layout.layout_link_handler);
 		setProgressBarIndeterminateVisibility(false);
 		if (data == null || !showFragment(data)) {
 			finish();
@@ -158,9 +146,12 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
 	}
 
 	@Override
-	protected void onTitleChanged(final CharSequence title, final int color) {
-		super.onTitleChanged(title, color);
-		mTitleView.setText(title);
+    public void fitSystemWindows(Rect insets) {
+        super.fitSystemWindows(insets);
+        final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_fragment);
+        if (fragment instanceof IBaseFragment) {
+            ((IBaseFragment) fragment).requestFitSystemWindows();
+        }
 	}
 
 	private void setUiOptions(final Window window, final Uri data) {
@@ -271,7 +262,7 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
 			}
 			case LINK_ID_SEARCH: {
 				setTitle(android.R.string.search_go);
-				setSubtitle(uri.getQueryParameter(QUERY_PARAM_QUERY));
+//                setSubtitle(uri.getQueryParameter(QUERY_PARAM_QUERY));
 				break;
 			}
 			default: {
@@ -280,9 +271,29 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
 		}
 		mFinishOnly = Boolean.parseBoolean(uri.getQueryParameter(QUERY_PARAM_FINISH_ONLY));
 		final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.replace(android.R.id.content, fragment);
+        ft.replace(R.id.content_fragment, fragment);
 		ft.commit();
 		return true;
 	}
 
+    @Override
+    public void setControlBarOffset(float offset) {
+
+    }
+
+    @Override
+    public float getControlBarOffset() {
+        return 0;
+    }
+
+    @Override
+    public int getControlBarHeight() {
+        final ActionBar actionBar = getActionBar();
+        return actionBar != null ? actionBar.getHeight() : 0;
+    }
+
+    @Override
+    public void moveControlBarBy(float delta) {
+
+    }
 }

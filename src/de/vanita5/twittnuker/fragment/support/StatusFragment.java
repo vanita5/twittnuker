@@ -135,6 +135,7 @@ import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 import de.vanita5.twittnuker.view.ExtendedFrameLayout;
 
 import de.vanita5.twittnuker.view.StatusTextView;
+import de.vanita5.twittnuker.view.TwidereMenuBar;
 import twitter4j.Relationship;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -160,6 +161,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	private boolean mFollowInfoDisplayed, mLocationInfoDisplayed;
 	private boolean mStatusLoaderInitialized, mLocationLoaderInitialized;
 	private boolean mFollowInfoLoaderInitialized;
+
 	private boolean mShouldScroll;
 	private SharedPreferences mPreferences;
 	private AsyncTwitterWrapper mTwitterWrapper;
@@ -174,7 +176,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
     private Button mRetryButton;
     private View mMainContent, mFollowIndicator, mImagePreviewContainer, mLocationContainer, mLocationBackgroundView;
 	private ColorLabelRelativeLayout mProfileView;
-	private MenuBar mMenuBar;
+    private TwidereMenuBar mMenuBar;
     private ProgressBar mDetailsLoadProgress, mFollowInfoProgress;
     private LinearLayout mImagePreviewGrid;
 	private View mHeaderView;
@@ -368,7 +370,8 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		linkify.applyAllLinks(mTextView, status.account_id, status.is_possibly_sensitive);
 		mTextView.setMovementMethod(StatusContentMovementMethod.getInstance());
 		mTextView.setCustomSelectionActionModeCallback(this);
-		final String timeString = formatToLongTimeString(getActivity(), status.timestamp);
+        long timestamp = status.retweet_timestamp > 0 ? status.retweet_timestamp : status.timestamp;
+        final String timeString = formatToLongTimeString(getActivity(), timestamp);
 		final String sourceHtml = status.source;
 		if (!isEmpty(timeString) && !isEmpty(sourceHtml)) {
 			mTimeSourceView.setText(Html.fromHtml(getString(R.string.time_source, timeString, sourceHtml)));
@@ -583,7 +586,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
         final View view = inflater.inflate(R.layout.fragment_details_page, null, false);
 		mMainContent = view.findViewById(R.id.content);
         mDetailsLoadProgress = (ProgressBar) view.findViewById(R.id.details_load_progress);
-		mMenuBar = (MenuBar) view.findViewById(R.id.menu_bar);
+        mMenuBar = (TwidereMenuBar) view.findViewById(R.id.menu_bar);
         mDetailsContainer = (ExtendedFrameLayout) view.findViewById(R.id.details_container);
         mDetailsContainer.addView(super.onCreateView(inflater, container, savedInstanceState));
 		mHeaderView = inflater.inflate(R.layout.header_status, null, false);

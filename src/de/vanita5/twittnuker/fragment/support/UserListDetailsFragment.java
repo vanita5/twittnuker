@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.Utils.addIntentToMenu;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
@@ -69,8 +68,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.mariotaku.menucomponent.widget.MenuBar;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.ListActionAdapter;
@@ -88,6 +85,7 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 
+import de.vanita5.twittnuker.view.TwidereMenuBar;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserList;
@@ -109,7 +107,7 @@ public class UserListDetailsFragment extends BaseSupportListFragment implements 
 	private Button mRetryButton;
 	private ListView mListView;
 	private View mHeaderView;
-	private MenuBar mMenuBar;
+    private TwidereMenuBar mMenuBar;
 
 	private ListActionAdapter mAdapter;
 
@@ -267,7 +265,7 @@ public class UserListDetailsFragment extends BaseSupportListFragment implements 
 		mErrorRetryContainer = containerView.findViewById(R.id.error_retry_container);
 		mRetryButton = (Button) containerView.findViewById(R.id.retry);
 		mErrorMessageView = (TextView) containerView.findViewById(R.id.error_message);
-		mMenuBar = (MenuBar) containerView.findViewById(R.id.menu_bar);
+        mMenuBar = (TwidereMenuBar) containerView.findViewById(R.id.menu_bar);
 		final View cardView = mHeaderView.findViewById(R.id.card);
 		ThemeUtils.applyThemeAlphaToDrawable(cardView.getContext(), cardView.getBackground());
 		return containerView;

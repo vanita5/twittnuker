@@ -46,6 +46,7 @@ import org.mariotaku.gallery3d.ui.SynchronizedHandler;
 import org.mariotaku.gallery3d.util.GalleryUtils;
 import org.mariotaku.gallery3d.util.ThreadPool;
 import org.mariotaku.menucomponent.widget.MenuBar;
+import org.mariotaku.menucomponent.widget.MenuBar.MenuBarListener;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -61,7 +62,7 @@ import me.imid.swipebacklayout.lib.SwipeBackLayout.SwipeListener;
 
 public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implements Constants, PhotoView.Listener,
 		GLImageLoader.DownloadListener, LoaderManager.LoaderCallbacks<GLImageLoader.Result>, OnMenuVisibilityListener,
-		SwipeListener, OnMenuItemClickListener {
+        SwipeListener, MenuBarListener {
 
 	private final GLView mRootPane = new GLView() {
 		@Override
@@ -341,7 +342,7 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 		if (savedInstanceState == null) {
 			loadImage();
 		}
-		mMenuBar.setOnMenuItemClickListener(this);
+        mMenuBar.setMenuBarListener(this);
 		mMenuBar.inflate(R.menu.menu_image_viewer);
 		mMenuBar.setIsBottomBar(true);
 		mMenuBar.show();
@@ -530,6 +531,11 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 			shareIntent.putExtra(Intent.EXTRA_TEXT, uri.toString());
 		}
         Utils.addIntentToMenu(this, subMenu, shareIntent);
+    }
+
+    @Override
+    public void onPreShowMenu(Menu menu) {
+
 	}
 
 	private static class MyHandler extends SynchronizedHandler {

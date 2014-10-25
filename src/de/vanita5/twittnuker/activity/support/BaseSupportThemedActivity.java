@@ -24,9 +24,13 @@ package de.vanita5.twittnuker.activity.support;
 
 import android.app.ActionBar;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 
 import de.vanita5.twittnuker.Constants;
@@ -85,7 +89,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
     }
 
     @Override
-    public abstract int getOverrideAccentColor();
+    public abstract int getThemeColor();
 
 
 	@Override
@@ -141,10 +145,27 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 	}
 
 	@Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onTitleChanged(CharSequence title, int color) {
+        final SpannableStringBuilder builder = new SpannableStringBuilder(title);
+        super.onTitleChanged(title, color);
+        final int themeResId = getCurrentThemeResourceId();
+        final int themeColor = getThemeColor(), contrastColor = Utils.getContrastYIQ(themeColor, 192);
+        if (ThemeUtils.isColoredActionBar(themeResId)) {
+            builder.setSpan(new ForegroundColorSpan(contrastColor), 0, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        } else {
+            final int titleColor = ThemeUtils.isLightActionBar(themeResId) ? Color.BLACK : Color.WHITE;
+            builder.setSpan(new ForegroundColorSpan(titleColor), 0, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+
+    @Override
 	protected void onResume() {
 		super.onResume();
-			ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentThemeColor,
-					mCurrentThemeBackgroundAlpha);
 		}
 
     protected boolean shouldSetWindowBackground() {
@@ -157,7 +178,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 
 	private final void setTheme() {
 		mCurrentThemeResource = getThemeResourceId();
-		mCurrentThemeColor = getOverrideAccentColor();
+		mCurrentThemeColor = getThemeColor();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentThemeColor,
 				mCurrentThemeBackgroundAlpha);

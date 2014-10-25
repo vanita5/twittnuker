@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.util;
 
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeFilterdUserContentValues;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenNames;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
@@ -148,11 +147,11 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
 					if (object instanceof ParcelableStatus) {
 						final ParcelableStatus status = (ParcelableStatus) object;
 						userIds.add(status.user_id);
-						valuesList.add(makeFilterdUserContentValues(status));
+                        valuesList.add(ContentValuesCreator.makeFilteredUserContentValues(status));
 					} else if (object instanceof ParcelableUser) {
 						final ParcelableUser user = (ParcelableUser) object;
 						userIds.add(user.id);
-						valuesList.add(makeFilterdUserContentValues(user));
+                        valuesList.add(ContentValuesCreator.makeFilteredUserContentValues(user));
 					} else {
 						continue;
 					}

@@ -101,7 +101,7 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
     }
 
     @Override
-    public int getOverrideAccentColor() {
+    public int getThemeColor() {
         return 0;
     }
 

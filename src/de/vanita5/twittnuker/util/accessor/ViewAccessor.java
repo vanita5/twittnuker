@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util.accessor;
 
 import android.annotation.TargetApi;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
@@ -35,6 +36,11 @@ public final class ViewAccessor {
 			ViewCompat.setLayerType(view, ViewCompat.LAYER_TYPE_HARDWARE, null);
 		}
 	}
+
+    public static void setBackgroundTintList(final View view, final ColorStateList list) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+        ViewAccessorL.setBackgroundTintList(view, list);
+    }
 
 	@SuppressWarnings("deprecation")
 	public static void setBackground(final View view, final Drawable background) {
@@ -50,6 +56,14 @@ public final class ViewAccessor {
 		static void setBackground(final View view, final Drawable background) {
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
 			view.setBackground(background);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    static class ViewAccessorL {
+        static void setBackgroundTintList(final View view, final ColorStateList list) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+            view.setBackgroundTintList(list);
 		}
 	}
 }
