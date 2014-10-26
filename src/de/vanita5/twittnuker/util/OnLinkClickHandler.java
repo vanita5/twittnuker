@@ -53,14 +53,14 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 	public void onLinkClick(final String link, final String orig, final long account_id, final int type,
 			final boolean sensitive) {
 		
-		if (activity == null || manager.isActive()) return;
+        if (activity == null) return;
 		switch (type) {
 			case TwidereLinkify.LINK_TYPE_MENTION: {
 				openUserProfile(activity, account_id, -1, link);
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_HASHTAG: {
-				openTweetSearch(activity, account_id, link);
+                openTweetSearch(activity, account_id, "#" + link);
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_LINK: {

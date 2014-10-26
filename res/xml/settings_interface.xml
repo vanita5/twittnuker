@@ -44,9 +44,5 @@
 	    android:defaultValue="true"
 	    android:key="long_click_to_open_menu"
 	    android:title="@string/long_click_to_open_menu" />
-    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
-        android:defaultValue="true"
-        android:key="swipe_back"
-        android:title="@string/swipe_back"/>
 
 </PreferenceScreen>

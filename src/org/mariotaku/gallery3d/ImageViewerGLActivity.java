@@ -29,7 +29,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.animation.Animation;
@@ -50,7 +49,7 @@ import org.mariotaku.menucomponent.widget.MenuBar.MenuBarListener;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.TwidereSwipeBackActivity;
+import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.SaveImageTask;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -58,11 +57,9 @@ import de.vanita5.twittnuker.util.Utils;
 
 import java.io.File;
 
-import me.imid.swipebacklayout.lib.SwipeBackLayout.SwipeListener;
-
-public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implements Constants, PhotoView.Listener,
+public final class ImageViewerGLActivity extends BaseSupportActivity implements Constants, PhotoView.Listener,
 		GLImageLoader.DownloadListener, LoaderManager.LoaderCallbacks<GLImageLoader.Result>, OnMenuVisibilityListener,
-        SwipeListener, MenuBarListener {
+        MenuBarListener {
 
 	private final GLView mRootPane = new GLView() {
 		@Override
@@ -181,10 +178,6 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 		mProgress.setMax(total > 0 ? (int) (total / 1024) : 0);
 	}
 
-	@Override
-	public void onEdgeTouch(final int edgeFlag) {
-		showBars();
-	}
 
 	@Override
 	public void onLoaderReset(final Loader<GLImageLoader.Result> loader) {
@@ -302,15 +295,6 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 		mProgress.setProgress((int) (downloaded / 1024));
 	}
 
-	@Override
-	public void onScrollOverThreshold() {
-
-	}
-
-	@Override
-	public void onScrollStateChange(final int state, final float scrollPercent) {
-
-	}
 
 	@Override
 	public void onSingleTapUp(final int x, final int y) {
@@ -346,7 +330,6 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 		mMenuBar.inflate(R.menu.menu_image_viewer);
 		mMenuBar.setIsBottomBar(true);
 		mMenuBar.show();
-		setSwipeListener(this);
 	}
 
 	@Override
@@ -435,7 +418,7 @@ public final class ImageViewerGLActivity extends TwidereSwipeBackActivity implem
 	}
 
 	private void hideBars() {
-		if (!mShowBars || isSwiping()) return;
+        if (!mShowBars) return;
 		mShowBars = false;
 		mActionBar.hide();
 		final TranslateAnimation anim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0,

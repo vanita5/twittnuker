@@ -3,6 +3,7 @@ package de.vanita5.twittnuker.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -12,14 +13,15 @@ import com.jeremyfeinstein.slidingmenu.lib.CustomViewAbove;
 import com.jeremyfeinstein.slidingmenu.lib.CustomViewBehind;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 
-public class HomeSlidingMenu extends SlidingMenu {
+public class HomeSlidingMenu extends SlidingMenu implements Constants {
 
 	private final HomeActivity mActivity;
 
-	public HomeSlidingMenu(final Context activity) {
-		this(activity, null);
+    public HomeSlidingMenu(final Context context) {
+        this(context, null);
 	}
 
 	public HomeSlidingMenu(Context context, AttributeSet attrs) {
@@ -31,8 +33,9 @@ public class HomeSlidingMenu extends SlidingMenu {
 		mActivity = (HomeActivity) context;
 	}
 
+
 	@Override
-	public boolean dispatchTouchEvent(final MotionEvent ev) {
+    public boolean dispatchTouchEvent(@NonNull final MotionEvent ev) {
 		switch (ev.getActionMasked()) {
 			case MotionEvent.ACTION_DOWN: {
 				final boolean isTouchingMargin = isTouchingMargin(ev);
@@ -41,12 +44,6 @@ public class HomeSlidingMenu extends SlidingMenu {
 			}
 		}
 		return super.dispatchTouchEvent(ev);
-	}
-
-	@Override
-	protected CustomViewAbove newCustomViewAbove(final Context context) {
-		if (isInEditMode()) return super.newCustomViewAbove(context);
-		return new MyCustomViewAbove(context, this);
 	}
 
 	@Override
@@ -76,19 +73,6 @@ public class HomeSlidingMenu extends SlidingMenu {
 		else if (mode == SlidingMenu.LEFT_RIGHT)
 			return x >= left && x <= marginThreshold + left || x <= right && x >= right - marginThreshold;
 		return false;
-	}
-
-	@SuppressLint("ViewConstructor")
-	private static class MyCustomViewAbove extends CustomViewAbove {
-
-		private final HomeSlidingMenu mSlidingMenu;
-
-		public MyCustomViewAbove(final Context context, final HomeSlidingMenu slidingMenu) {
-			super(context);
-			mSlidingMenu = slidingMenu;
-
-		}
-
 	}
 
 	@SuppressLint("ViewConstructor")

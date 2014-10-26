@@ -1,27 +1,6 @@
-/*
- * Twittnuker - Twitter client for Android
- *
- * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
- *
- * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package de.vanita5.twittnuker.activity.support;
 
+import android.app.ActionBar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,21 +14,22 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.iface.IMapFragment;
-import de.vanita5.twittnuker.fragment.support.NativeMapFragment;
+import de.vanita5.twittnuker.fragment.support.GoogleMapFragment;
 import de.vanita5.twittnuker.fragment.support.WebMapFragment;
 import de.vanita5.twittnuker.menu.TwidereMenuInflater;
+import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class MapViewerActivity extends TwidereSwipeBackActivity implements Constants {
+public class GoogleMapViewerActivity extends BaseSupportActivity implements Constants {
 
-    @Override
-    public int getThemeResourceId() {
+	@Override
+	public int getThemeResourceId() {
 		return ThemeUtils.getViewerThemeResource(this);
-    }
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
-		inflater.inflate(R.menu.menu_map_viewer, menu);
+		inflater.inflate(R.menu.menu_google_maps_viewer, menu);
 		return true;
 	}
 
@@ -75,27 +55,30 @@ public class MapViewerActivity extends TwidereSwipeBackActivity implements Const
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
 		final Uri uri = getIntent().getData();
 		if (uri == null || !AUTHORITY_MAP.equals(uri.getAuthority())) {
 			finish();
 			return;
 		}
 		final Bundle bundle = new Bundle();
-		final String param_lat = uri.getQueryParameter(QUERY_PARAM_LAT);
-		final String param_lng = uri.getQueryParameter(QUERY_PARAM_LNG);
-		if (param_lat == null || param_lng == null) {
+		final double latitude = ParseUtils.parseDouble(uri.getQueryParameter(QUERY_PARAM_LAT), Double.NaN);
+		final double longitude = ParseUtils.parseDouble(uri.getQueryParameter(QUERY_PARAM_LNG), Double.NaN);
+		if (Double.isNaN(latitude) || Double.isNaN(longitude)) {
 			finish();
 			return;
 		}
 		try {
-			bundle.putDouble(EXTRA_LATITUDE, Double.valueOf(param_lat));
-			bundle.putDouble(EXTRA_LONGITUDE, Double.valueOf(param_lng));
+			bundle.putDouble(EXTRA_LATITUDE, latitude);
+			bundle.putDouble(EXTRA_LONGITUDE, longitude);
 		} catch (final NumberFormatException e) {
 			finish();
 			return;
 		}
-		final Fragment fragment = isNativeMapSupported() ? new NativeMapFragment() : new WebMapFragment();
+		final ActionBar actionBar = getActionBar();
+		if (actionBar != null) {
+			actionBar.setDisplayHomeAsUpEnabled(true);
+		}
+		final Fragment fragment = isNativeMapSupported() ? new GoogleMapFragment() : new WebMapFragment();
 		fragment.setArguments(bundle);
 		final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.replace(android.R.id.content, fragment).commit();

@@ -38,7 +38,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -607,7 +606,7 @@ public class UserProfileFragment extends BaseSupportListFragment implements OnCl
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_HASHTAG: {
-                openTweetSearch(getActivity(), user.account_id, link);
+                openTweetSearch(getActivity(), user.account_id, "#" + link);
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_LINK: {

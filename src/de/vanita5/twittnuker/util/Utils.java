@@ -126,11 +126,10 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.CameraCropActivity;
-import de.vanita5.twittnuker.activity.support.MapViewerActivity;
+import de.vanita5.twittnuker.activity.support.GoogleMapViewerActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesConversationFragment;
 import de.vanita5.twittnuker.fragment.support.IncomingFriendshipsFragment;
@@ -2873,7 +2872,7 @@ public final class Utils implements Constants, TwitterConstants {
 			builder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(recipientId));
 		}
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openImage(final Context context, final long accountId, final String uri,
@@ -2901,11 +2900,7 @@ public final class Utils implements Constants, TwitterConstants {
 		intent.setData(Uri.parse(uri));
 		intent.putExtra(EXTRA_ACCOUNT_ID, accountId);
 		intent.setClass(context, ImageViewerGLActivity.class);
-		if (context instanceof Activity) {
-			SwipebackActivityUtils.startSwipebackActivity((Activity) context, intent);
-		} else {
 			context.startActivity(intent);
-		}
 	}
 
 	public static void openIncomingFriendships(final Activity activity, final long account_id) {
@@ -2915,7 +2910,7 @@ public final class Utils implements Constants, TwitterConstants {
 		builder.authority(AUTHORITY_INCOMING_FRIENDSHIPS);
 		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(account_id));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openMap(final Context context, final double latitude, final double longitude) {
@@ -2926,12 +2921,9 @@ public final class Utils implements Constants, TwitterConstants {
 		builder.appendQueryParameter(QUERY_PARAM_LAT, String.valueOf(latitude));
 		builder.appendQueryParameter(QUERY_PARAM_LNG, String.valueOf(longitude));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		intent.setClass(context, MapViewerActivity.class);
-		if (context instanceof Activity) {
-			SwipebackActivityUtils.startSwipebackActivity((Activity) context, intent);
-		} else {
-			context.startActivity(intent);
-		}
+		//Compare with Twidere
+        intent.setClass(context, GoogleMapViewerActivity.class);
+        context.startActivity(Intent.createChooser(intent, null));
 	}
 
 	public static void openMutesUsers(final Activity activity, final long account_id) {
@@ -2941,7 +2933,7 @@ public final class Utils implements Constants, TwitterConstants {
 		builder.authority(AUTHORITY_MUTES_USERS);
 		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(account_id));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openSavedSearches(final Activity activity, final long account_id) {
@@ -2951,7 +2943,7 @@ public final class Utils implements Constants, TwitterConstants {
 		builder.authority(AUTHORITY_SAVED_SEARCHES);
 		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(account_id));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openSearch(final Activity activity, final long account_id, final String query) {
@@ -2962,7 +2954,7 @@ public final class Utils implements Constants, TwitterConstants {
 		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(account_id));
 		builder.appendQueryParameter(QUERY_PARAM_QUERY, query);
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openStatus(final Activity activity, final long accountId, final long statusId) {
@@ -2973,7 +2965,7 @@ public final class Utils implements Constants, TwitterConstants {
 		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
 		builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(statusId));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openStatus(final Activity activity, final ParcelableStatus status) {
@@ -2989,7 +2981,7 @@ public final class Utils implements Constants, TwitterConstants {
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
 		intent.setExtrasClassLoader(activity.getClassLoader());
 		intent.putExtras(extras);
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openStatuses(final Activity activity, final List<ParcelableStatus> statuses) {
@@ -3001,7 +2993,7 @@ public final class Utils implements Constants, TwitterConstants {
 		builder.authority(AUTHORITY_STATUSES);
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
 		intent.putExtras(extras);
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openStatusFavoriters(final Activity activity, final long accountId, final long statusId) {
@@ -3012,7 +3004,7 @@ public final class Utils implements Constants, TwitterConstants {
 		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
 		builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(statusId));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openStatusReplies(final Activity activity, final long accountId, final long statusId,
@@ -3025,7 +3017,7 @@ public final class Utils implements Constants, TwitterConstants {
 		builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(statusId));
 		builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openStatusRetweeters(final Activity activity, final long accountId, final long statusId) {
@@ -3036,7 +3028,7 @@ public final class Utils implements Constants, TwitterConstants {
 		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
 		builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(statusId));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openTweetSearch(final Activity activity, final long accountId, final String query) {
@@ -3050,7 +3042,7 @@ public final class Utils implements Constants, TwitterConstants {
 			builder.appendQueryParameter(QUERY_PARAM_QUERY, query);
 		}
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openUserBlocks(final Activity activity, final long account_id) {
@@ -3060,7 +3052,7 @@ public final class Utils implements Constants, TwitterConstants {
 		builder.authority(AUTHORITY_USER_BLOCKS);
 		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(account_id));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openUserFavorites(final Activity activity, final long account_id, final long user_id,
@@ -3077,7 +3069,7 @@ public final class Utils implements Constants, TwitterConstants {
 			builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screen_name);
 		}
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 
 	}
 
@@ -3095,7 +3087,7 @@ public final class Utils implements Constants, TwitterConstants {
 			builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screen_name);
 		}
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openUserFriends(final Activity activity, final long account_id, final long user_id,
@@ -3112,7 +3104,7 @@ public final class Utils implements Constants, TwitterConstants {
 			builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screen_name);
 		}
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 
 	}
 
@@ -3136,7 +3128,7 @@ public final class Utils implements Constants, TwitterConstants {
 			builder.appendQueryParameter(QUERY_PARAM_LIST_NAME, listName);
 		}
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openUserListDetails(final Activity activity, final ParcelableUserList userList) {
@@ -3154,7 +3146,7 @@ public final class Utils implements Constants, TwitterConstants {
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
 		intent.setExtrasClassLoader(activity.getClassLoader());
 		intent.putExtras(extras);
-		SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 	}
 
 	public static void openUserListMembers(final Activity activity, final long accountId, final long listId,
@@ -3177,7 +3169,7 @@ public final class Utils implements Constants, TwitterConstants {
 				builder.appendQueryParameter(QUERY_PARAM_LIST_NAME, listName);
 			}
 			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-			SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+        activity.startActivity(intent);
 		}
 
 	public static void openUserListMembers(final Activity activity, final ParcelableUserList list) {
@@ -3199,7 +3191,7 @@ public final class Utils implements Constants, TwitterConstants {
 				builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screen_name);
 			}
 			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-			SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+            activity.startActivity(intent);
 		}
 
 	public static void openUserLists(final Activity activity, final long account_id, final long user_id,
@@ -3216,7 +3208,7 @@ public final class Utils implements Constants, TwitterConstants {
 				builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screen_name);
 			}
 			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-			SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+            activity.startActivity(intent);
 		}
 
 	public static void openUserListSubscribers(final Activity activity, final long accountId, final long listId,
@@ -3239,7 +3231,7 @@ public final class Utils implements Constants, TwitterConstants {
 				builder.appendQueryParameter(QUERY_PARAM_LIST_NAME, listName);
 			}
 			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-			SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+            activity.startActivity(intent);
 		}
 
 	public static void openUserListSubscribers(final Activity activity, final ParcelableUserList list) {
@@ -3267,7 +3259,7 @@ public final class Utils implements Constants, TwitterConstants {
 				builder.appendQueryParameter(QUERY_PARAM_LIST_NAME, listName);
 			}
 			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-			SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+            activity.startActivity(intent);
 		}
 
 	public static void openUserListTimeline(final Activity activity, final ParcelableUserList list) {
@@ -3285,7 +3277,7 @@ public final class Utils implements Constants, TwitterConstants {
 				builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screen_name);
 			}
 			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-			SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+            activity.startActivity(intent);
 		}
 
 	public static void openUserProfile(final Activity activity, final long account_id, final long user_id,
@@ -3302,7 +3294,7 @@ public final class Utils implements Constants, TwitterConstants {
 				builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screen_name);
 			}
 			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-			SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+            activity.startActivity(intent);
 		}
 
 	public static void openUserProfile(final Activity activity, final ParcelableUser user) {
@@ -3322,7 +3314,7 @@ public final class Utils implements Constants, TwitterConstants {
 			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
 			intent.setExtrasClassLoader(activity.getClassLoader());
 			intent.putExtras(extras);
-			SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+            activity.startActivity(intent);
 		}
 
 	public static void openUsers(final Activity activity, final List<ParcelableUser> users) {
@@ -3334,7 +3326,7 @@ public final class Utils implements Constants, TwitterConstants {
 			builder.authority(AUTHORITY_USERS);
 			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
 			intent.putExtras(extras);
-			SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+            activity.startActivity(intent);
 		}
 
 	public static void openUserTimeline(final Activity activity, final long account_id, final long user_id,
@@ -3351,7 +3343,7 @@ public final class Utils implements Constants, TwitterConstants {
 				builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screen_name);
 			}
 			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-			SwipebackActivityUtils.startSwipebackActivity(activity, intent);
+            activity.startActivity(intent);
 
 	}
 

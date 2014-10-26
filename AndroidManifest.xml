@@ -374,20 +374,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.support.MapViewerActivity"
-            android:icon="@drawable/ic_action_twittnuker"
+            android:name=".activity.support.GoogleMapViewerActivity"
             android:exported="false"
             android:label="@string/view_map"
             android:theme="@style/Theme.Blank">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
 
                 <data
                     android:host="map"
-                    android:scheme="twittnuker" />
+                    android:scheme="twittnuker"/>
             </intent-filter>
         </activity>
         <activity
@@ -557,8 +556,19 @@
             android:name=".activity.TestActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.Twidere.Settings.Light"
-            android:windowSoftInputMode="adjustResize" />
+            android:theme="@style/Theme.Test"
+            android:windowSoftInputMode="adjustResize">
+
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+        </activity>
 
         <service
             android:name=".service.RefreshService"

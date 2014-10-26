@@ -3,7 +3,9 @@
 
     <style name="Theme"/>
 
-	<style name="Theme.Launcher" parent="android:Theme.NoDisplay"/>
+    <style name="Theme.Launcher" parent="android:Theme.NoDisplay">
+        <item name="android:windowAnimationStyle">@android:style/Animation.Activity</item>
+    </style>
 
     <style name="Theme.Blank" parent="android:Theme.DeviceDefault.NoActionBar">
 
@@ -407,7 +409,10 @@
 		<item name="android:windowNoDisplay">true</item>
 	</style>
 
-    <style name="Theme.Test" parent="android:Theme.DeviceDefault" />
+    <style name="Theme.Test" parent="android:Theme.DeviceDefault">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+    </style>
 
 	<style name="Theme.Twidere.Settings.Dark" parent="android:Theme.DeviceDefault">
 

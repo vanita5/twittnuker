@@ -68,7 +68,6 @@ import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
-import de.vanita5.twittnuker.util.SwipebackActivityUtils.SwipebackScreenshotManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
@@ -99,7 +98,6 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 	private DiskCache mDiskCache, mFullDiskCache;
 	private MessagesManager mCroutonsManager;
 	private SQLiteOpenHelper mSQLiteOpenHelper;
-	private SwipebackScreenshotManager mSwipebackScreenshotManager;
 	private HostAddressResolver mResolver;
 	private SQLiteDatabase mDatabase;
 
@@ -110,12 +108,12 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 
 	public DiskCache getDiskCache() {
 		if (mDiskCache != null) return mDiskCache;
-		return mDiskCache = getDiskCache(DIR_NAME_IMAGE_CACHE);
+        return mDiskCache = createDiskCache(DIR_NAME_IMAGE_CACHE);
 	}
 
 	public DiskCache getFullDiskCache() {
 		if (mFullDiskCache != null) return mFullDiskCache;
-		return mFullDiskCache = getDiskCache(DIR_NAME_FULL_IMAGE_CACHE);
+        return mFullDiskCache = createDiskCache(DIR_NAME_FULL_IMAGE_CACHE);
 	}
 
 	public ImageDownloader getFullImageDownloader() {
@@ -177,11 +175,6 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 	public SQLiteOpenHelper getSQLiteOpenHelper() {
 		if (mSQLiteOpenHelper != null) return mSQLiteOpenHelper;
 		return mSQLiteOpenHelper = new TwidereSQLiteOpenHelper(this, DATABASES_NAME, DATABASES_VERSION);
-	}
-
-	public SwipebackScreenshotManager getSwipebackScreenshotManager() {
-		if (mSwipebackScreenshotManager != null) return mSwipebackScreenshotManager;
-		return mSwipebackScreenshotManager = new SwipebackScreenshotManager(this);
 	}
 
 	public AsyncTwitterWrapper getTwitterWrapper() {
@@ -248,9 +241,13 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		ACRA.getErrorReporter().setReportSender(new EmailIntentSender(this));
 	}
 
-	private DiskCache getDiskCache(final String dirName) {
+    private DiskCache createDiskCache(final String dirName) {
         final File cacheDir = getBestCacheDir(this, dirName);
 		final File fallbackCacheDir = getInternalCacheDir(this, dirName);
+//        final LruDiscCache discCache = new LruDiscCache(cacheDir, new URLFileNameGenerator(), 384 *
+//                1024 * 1024);
+//        discCache.setReserveCacheDir(fallbackCacheDir);
+//        return discCache;
 		return new UnlimitedDiscCache(cacheDir, fallbackCacheDir, new URLFileNameGenerator());
 	}
 

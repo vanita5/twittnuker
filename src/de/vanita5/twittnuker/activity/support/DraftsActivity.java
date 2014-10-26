@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.activity.support;
 
 import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentResolver;
@@ -60,7 +61,6 @@ import de.vanita5.twittnuker.adapter.DraftsAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.DraftItem;
-import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
@@ -190,9 +190,11 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 		mResolver = getContentResolver();
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mTextSize = mPreferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(this));
-		setContentView(android.R.layout.list_content);
-		// setOverrideExitAniamtion(false);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+        setContentView(R.layout.activity_drafts);
+        final ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 		mAdapter = new DraftsAdapter(this);
 		mListView = (ListView) findViewById(android.R.id.list);
 		mListView.setDivider(null);
