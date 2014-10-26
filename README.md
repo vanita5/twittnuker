@@ -9,6 +9,9 @@ Twidere updates will almost always be merged, so you can expect the latest featu
        src="https://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
 </a>
 
+## [TODO] F-Droid ##
+Remove GMS, replace Push Notifications with a free alternative
+
 ## Features (Twittnuker only) ##
 
 * Streaming
