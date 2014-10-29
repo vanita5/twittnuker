@@ -557,18 +557,7 @@
             android:icon="@drawable/ic_action_twittnuker"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Test"
-            android:windowSoftInputMode="adjustResize">
-
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-
-        </activity>
+            android:windowSoftInputMode="adjustResize"/>
 
         <service
             android:name=".service.RefreshService"
