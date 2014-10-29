@@ -172,7 +172,7 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 		switch (item.getItemId()) {
 			case MENU_HOME: {
 				onBackPressed();
-				break;
+                return true;
 			}
 		}
 		return super.onOptionsItemSelected(item);

@@ -15,7 +15,8 @@
      limitations under the License.
 -->
 
-<de.vanita5.twittnuker.view.ColorLabelRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.ColorLabelRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
@@ -25,11 +26,23 @@
 	android:padding="@dimen/element_spacing_normal"
 	app:ignorePadding="true">
 
+
+    <View
+        android:id="@+id/drag_handle"
+        android:layout_width="24dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+
+        android:background="@drawable/list_drag_handle"/>
+
 	<ImageView
 		android:id="@android:id/icon"
 		android:layout_width="@dimen/icon_size_list_item"
 		android:layout_height="@dimen/icon_size_list_item"
 		android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/drag_handle"
 		android:contentDescription="@string/my_profile_image"
 		android:scaleType="fitCenter"/>
 
@@ -72,7 +85,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignBottom="@android:id/icon"
-		android:layout_alignRight="@android:id/icon"
+        android:layout_alignLeft="@android:id/icon"
 		android:background="#80000000"
 		android:singleLine="true"
 		android:text="@string/default_account"

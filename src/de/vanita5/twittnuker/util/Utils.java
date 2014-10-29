@@ -53,7 +53,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -108,6 +107,7 @@ import com.etsy.android.grid.StaggeredGridView;
 import org.apache.http.NameValuePair;
 import org.json.JSONException;
 import org.mariotaku.gallery3d.ImageViewerGLActivity;
+import org.mariotaku.menucomponent.internal.menu.MenuUtils;
 import org.mariotaku.querybuilder.AllColumns;
 import org.mariotaku.querybuilder.Columns;
 import org.mariotaku.querybuilder.Columns.Column;
@@ -186,6 +186,7 @@ import de.vanita5.twittnuker.provider.TweetStore.Tabs;
 import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
+import de.vanita5.twittnuker.util.menu.StatusMenuInfo;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.util.net.TwidereHttpClientFactory;
 
@@ -3424,7 +3425,7 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static void setMenuForStatus(final Context context, final Menu menu, final ParcelableStatus status) {
 		if (context == null || menu == null || status == null) return;
-		final int activatedColor = ThemeUtils.getUserThemeColor(context);
+        final int activatedColor = ThemeUtils.getUserAccentColor(context);
 		final boolean isMyRetweet = isMyRetweet(status);
 		final MenuItem delete = menu.findItem(MENU_DELETE);
 		if (delete != null) {
@@ -3432,46 +3433,23 @@ public final class Utils implements Constants, TwitterConstants {
 		}
 		final MenuItem retweet = menu.findItem(MENU_RETWEET);
 		if (retweet != null) {
-			final Drawable icon = retweet.getIcon().mutate();
 			retweet.setVisible(!status.user_is_protected || isMyRetweet);
-			if (isMyRetweet) {
-				icon.setColorFilter(activatedColor, Mode.SRC_ATOP);
-				retweet.setTitle(R.string.cancel_retweet);
-			} else {
-				icon.clearColorFilter();
-				retweet.setTitle(R.string.retweet);
-			}
+            MenuUtils.setMenuInfo(retweet, new StatusMenuInfo(isMyRetweet));
+            retweet.setTitle(isMyRetweet ? R.string.cancel_retweet : R.string.retweet);
 		}
-		final MenuItem itemRetweetSubmenu = menu.findItem(R.id.retweet_submenu);
-		if (itemRetweetSubmenu != null) {
-			final Drawable icon = itemRetweetSubmenu.getIcon().mutate();
-			if (isMyRetweet) {
-				icon.setColorFilter(activatedColor, Mode.SRC_ATOP);
-			} else {
-				icon.clearColorFilter();
-			}
+        final MenuItem retweetSubItem = menu.findItem(R.id.retweet_submenu);
+        if (retweetSubItem != null) {
+            MenuUtils.setMenuInfo(retweetSubItem, new StatusMenuInfo(isMyRetweet));
 		}
 		final MenuItem favorite = menu.findItem(MENU_FAVORITE);
 		if (favorite != null) {
-			final Drawable icon = favorite.getIcon().mutate();
-			if (status.is_favorite) {
-				icon.setColorFilter(activatedColor, Mode.SRC_ATOP);
-				favorite.setTitle(R.string.unfavorite);
-			} else {
-				icon.clearColorFilter();
-				favorite.setTitle(R.string.favorite);
-			}
+            MenuUtils.setMenuInfo(favorite, new StatusMenuInfo(status.is_favorite));
+            favorite.setTitle(status.is_favorite ? R.string.unfavorite : R.string.favorite);
 		}
 		final MenuItem love = menu.findItem(MENU_LOVE);
-		if (love != null) {
-			final Drawable icon = love.getIcon().mutate();
-			love.setVisible(!status.user_is_protected || isMyRetweet);
-			if (isMyRetweet && status.is_favorite) {
-				icon.setColorFilter(activatedColor, Mode.SRC_ATOP);
-			} else {
-				icon.clearColorFilter();
-			}
-		}
+	    if (love != null) {
+		    MenuUtils.setMenuInfo(love, new StatusMenuInfo(isMyRetweet));
+        }
 		final MenuItem translate = menu.findItem(MENU_TRANSLATE);
 		if (translate != null) {
 			final AccountWithCredentials account = Account.getAccountWithCredentials(context, status.account_id);

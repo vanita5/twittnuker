@@ -28,7 +28,8 @@ import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
+
+import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -37,7 +38,7 @@ import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.view.holder.AccountViewHolder;
 
-public class AccountsAdapter extends SimpleCursorAdapter implements Constants {
+public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Constants {
 
 	private final ImageLoaderWrapper mImageLoader;
 	private final SharedPreferences mPreferences;
@@ -67,7 +68,6 @@ public class AccountsAdapter extends SimpleCursorAdapter implements Constants {
 			mImageLoader.displayProfileImage(holder.profile_image, cursor.getString(mProfileImageIdx));
 		} else {
 			mImageLoader.cancelDisplayTask(holder.profile_image);
-
 			holder.profile_image.setImageResource(R.drawable.ic_profile_image_default);
 		}
 		final boolean isMultipleChoice = mChoiceMode == ListView.CHOICE_MODE_MULTIPLE
@@ -91,10 +91,9 @@ public class AccountsAdapter extends SimpleCursorAdapter implements Constants {
 
 	@Override
 	public View newView(final Context context, final Cursor cursor, final ViewGroup parent) {
-
 		final View view = super.newView(context, cursor, parent);
-		final AccountViewHolder viewholder = new AccountViewHolder(view);
-		view.setTag(viewholder);
+        final AccountViewHolder holder = new AccountViewHolder(view);
+        view.setTag(holder);
 		return view;
 	}
 

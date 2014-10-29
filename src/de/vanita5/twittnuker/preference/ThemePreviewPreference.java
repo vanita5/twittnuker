@@ -77,7 +77,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 	protected View onCreateView(final ViewGroup parent) {
 		final Context context = getContext();
 		final int themeResource = ThemeUtils.getThemeResource(context);
-		final int accentColor = ThemeUtils.getUserThemeColor(context);
+		final int accentColor = ThemeUtils.getUserAccentColor(context);
 		final Context theme = new TwidereContextThemeWrapper(context, themeResource, accentColor);
 		final LayoutInflater inflater = LayoutInflater.from(theme);
 		final View view = inflater.inflate(R.layout.theme_preview, parent, false);
@@ -163,6 +163,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		public boolean onTouchEvent(final View view, final MotionEvent event) {
 			return false;
 		}
+
 	}
 
 }

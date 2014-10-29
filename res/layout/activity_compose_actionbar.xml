@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/compose_actionbar"
 	style="?android:actionBarStyle"
 	android:layout_width="match_parent"
@@ -64,14 +63,6 @@
 		android:padding="2dp"
 		android:visibility="gone"/>
 
-	<de.vanita5.twittnuker.view.TwidereMenuBar
-		android:id="@+id/action_menu"
-		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		android:layout_weight="0"
-		android:background="@null"
-		android:max="@integer/max_compose_menu_buttons_top"/>
-	
 	<include layout="@layout/action_item_compose"/>
 
 </LinearLayout>

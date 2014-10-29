@@ -1,10 +1,13 @@
 package de.vanita5.twittnuker.view.iface;
 
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 
 public interface IHomeActionButton {
-	void setColor(int color);
+    void setButtonColor(int color);
+
+    void setIconColor(int color, PorterDuff.Mode mode);
 
 	void setIcon(Bitmap bm);
 
