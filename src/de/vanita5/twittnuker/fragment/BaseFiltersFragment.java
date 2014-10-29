@@ -37,6 +37,7 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -88,6 +89,13 @@ public abstract class BaseFiltersFragment extends BaseSupportListFragment implem
 				final Where where = Where.in(new Column(Filters._ID), new RawItemArray(mListView.getCheckedItemIds()));
 				mResolver.delete(getContentUri(), where.getSQL(), null);
 				break;
+            }
+            case MENU_INVERSE_SELECTION: {
+                final SparseBooleanArray positions = mListView.getCheckedItemPositions();
+                for (int i = 0, j = mListView.getCount(); i < j; i++) {
+                    mListView.setItemChecked(i, !positions.get(i));
+                }
+                return true;
 			}
 			default: {
 				return false;

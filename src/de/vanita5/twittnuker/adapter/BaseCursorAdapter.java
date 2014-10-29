@@ -147,9 +147,9 @@ public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapt
 	}
 
 	@Override
-	public final void setNicknameOnly(final boolean nickname_only) {
-		if (mNicknameOnly == nickname_only) return;
-		mNicknameOnly = nickname_only;
+	public final void setNicknameOnly(final boolean nicknameOnly) {
+		if (mNicknameOnly == nicknameOnly) return;
+		mNicknameOnly = nicknameOnly;
 		notifyDataSetChanged();
 	}
 
@@ -161,9 +161,9 @@ public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapt
 	}
 
 	@Override
-	public final void setTextSize(final float text_size) {
-		if (text_size == mTextSize) return;
-		mTextSize = text_size;
+	public final void setTextSize(final float textSize) {
+		if (textSize == mTextSize) return;
+		mTextSize = textSize;
 		notifyDataSetChanged();
 	}
 

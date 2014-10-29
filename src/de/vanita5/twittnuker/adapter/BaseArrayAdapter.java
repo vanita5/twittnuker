@@ -108,9 +108,12 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
 	}
 
 	@Override
-	public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
+    public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
+        if (KEY_NICKNAME_ONLY.equals(key) || KEY_DISPLAY_PROFILE_IMAGE.equals(key)
+                || KEY_DISPLAY_IMAGE_PREVIEW.equals(key) || KEY_DISPLAY_SENSITIVE_CONTENTS.equals(key)) {
 		notifyDataSetChanged();
-	}
+	    }
+    }
 
 	@Override
 	public final void setDisplayNameFirst(final boolean nameFirst) {
@@ -137,8 +140,8 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
 	}
 
 	@Override
-	public final void setNicknameOnly(final boolean nickname_only) {
-		mNicknameOnly = nickname_only;
+    public final void setNicknameOnly(final boolean nicknameOnly) {
+        mNicknameOnly = nicknameOnly;
 	}
 
 	@Override

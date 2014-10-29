@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -14,13 +15,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.mobeta.android.dslv.DragSortListView;
+import com.mobeta.android.dslv.DragSortListView.DropListener;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.SignInActivity;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
 import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
+import de.vanita5.twittnuker.util.Utils;
 
-public class AccountsManagerFragment extends BaseSupportListFragment implements LoaderCallbacks<Cursor> {
+public class AccountsManagerFragment extends BaseSupportListFragment implements LoaderCallbacks<Cursor>, DropListener {
 
 	private AccountsAdapter mAdapter;
 
@@ -46,8 +51,12 @@ public class AccountsManagerFragment extends BaseSupportListFragment implements 
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
-		mAdapter = new AccountsAdapter(getActivity());
+        final FragmentActivity activity = getActivity();
+        mAdapter = new AccountsAdapter(activity);
+        Utils.configBaseAdapter(activity, mAdapter);
 		setListAdapter(mAdapter);
+        final DragSortListView listView = (DragSortListView) getListView();
+        listView.setDropListener(this);
 		getLoaderManager().initLoader(0, null, this);
 	}
 
@@ -76,4 +85,10 @@ public class AccountsManagerFragment extends BaseSupportListFragment implements 
 	public void onLoaderReset(Loader<Cursor> loader) {
 		mAdapter.changeCursor(null);
 	}
+
+    @Override
+    public void drop(int from, int to) {
+
+    }
+
 }
