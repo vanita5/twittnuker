@@ -10,6 +10,7 @@
 	<de.vanita5.twittnuker.view.ActionBarThemedContainer
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+        style="?android:actionBarStyle"
 		android:layout="@layout/activity_compose_actionbar"/>
 
 	<LinearLayout
@@ -57,6 +58,7 @@
 		<de.vanita5.twittnuker.view.ActionBarSplitThemedContainer
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+            style="?android:actionBarSplitStyle"
 			android:layout="@layout/activity_compose_bottombar"/>
 	</LinearLayout>
 

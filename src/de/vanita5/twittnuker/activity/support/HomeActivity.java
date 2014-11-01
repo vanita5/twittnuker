@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.gcm.GCMHelper;
 import de.vanita5.twittnuker.util.FlymeUtils;
@@ -59,7 +58,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.database.ContentObserver;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -132,7 +130,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 				updateUnreadCount();
 			}
 		}
+
 	};
+
 
 	private final Handler mHandler = new Handler();
 
@@ -254,8 +254,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
 	@Override
-    public boolean onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
-        inflater.inflate(R.menu.menu_home, menu);
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home, menu);
         final MenuItem itemProgress = menu.findItem(MENU_PROGRESS);
         mSmartBarProgress = (ProgressBar) itemProgress.getActionView().findViewById(android.R.id.progress);
 		updateActionsButton();
@@ -455,7 +455,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	public void updateUnreadCount() {
         if (mTabIndicator == null || mUpdateUnreadCountTask != null
 				&& mUpdateUnreadCountTask.getStatus() == AsyncTask.Status.RUNNING) return;
-        mUpdateUnreadCountTask = new UpdateUnreadCountTask(mTabIndicator, mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
+        mUpdateUnreadCountTask = new UpdateUnreadCountTask(mTabIndicator);
 		mUpdateUnreadCountTask.execute();
 	}
 
@@ -537,6 +537,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
             mTabIndicator.setDisplayLabel(false);
             mTabIndicator.setDisplayIcon(true);
         }
+        mTabIndicator.setDisplayBadge(mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
         mActionsButton.setOnClickListener(this);
         mActionsButton.setOnLongClickListener(this);
 		setTabPosition(initialTabPosition);
@@ -961,12 +962,10 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private static class UpdateUnreadCountTask extends AsyncTask<Void, Void, int[]> {
 		private final Context mContext;
 		private final TabPagerIndicator mIndicator;
-		private final boolean mEnabled;
 
-		UpdateUnreadCountTask(final TabPagerIndicator indicator, final boolean enabled) {
+        UpdateUnreadCountTask(final TabPagerIndicator indicator) {
 			mIndicator = indicator;
 			mContext = indicator.getContext();
-			mEnabled = enabled;
 		}
 
 		@Override

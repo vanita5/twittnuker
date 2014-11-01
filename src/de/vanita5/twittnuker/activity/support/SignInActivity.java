@@ -29,7 +29,6 @@ import static de.vanita5.twittnuker.util.ContentValuesCreator.makeAccountContent
 import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
 import static de.vanita5.twittnuker.util.Utils.isUserLoggedIn;
-import static de.vanita5.twittnuker.util.Utils.setUserAgent;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.trim;
 
@@ -65,7 +64,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.ColorAnalyser;
@@ -227,8 +225,8 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 	}
 
 	@Override
-    public boolean onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
-        inflater.inflate(R.menu.menu_sign_in, menu);
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_sign_in, menu);
         return true;
 	}
 
@@ -400,7 +398,11 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 		final boolean enable_proxy = mPreferences.getBoolean(KEY_ENABLE_PROXY, false);
 		cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(mApplication));
 		cb.setHttpClientFactory(new TwidereHttpClientFactory(mApplication));
-		setUserAgent(this, cb);
+        if (Utils.isOfficialConsumerKeySecret(this, mConsumerKey, mConsumerSecret)) {
+            Utils.setMockOfficialUserAgent(this, cb);
+        } else {
+            Utils.setUserAgent(this, cb);
+        }
 		if (!isEmpty(mAPIUrlFormat)) {
             final String versionSuffix = mNoVersionSuffix ? null : "/1.1/";
             cb.setRestBaseURL(Utils.getApiUrl(mAPIUrlFormat, "api", versionSuffix));

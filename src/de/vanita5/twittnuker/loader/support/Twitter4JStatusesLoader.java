@@ -80,7 +80,7 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
             if (cached != null) {
                 data.addAll(cached);
                 Collections.sort(data);
-                return new CopyOnWriteArrayList<ParcelableStatus>(data);
+                return new CopyOnWriteArrayList<>(data);
 			}
 		}
 		final List<Status> statuses;
@@ -97,12 +97,12 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
 			if (mSinceId > 0) {
 				paging.setSinceId(mSinceId - 1);
 			}
-			statuses = new ArrayList<Status>();
+            statuses = new ArrayList<>();
 			truncated = truncateStatuses(getStatuses(getTwitter(), paging), statuses, mSinceId);
 		} catch (final TwitterException e) {
 			// mHandler.post(new ShowErrorRunnable(e));
 			e.printStackTrace();
-            return new CopyOnWriteArrayList<ParcelableStatus>(data);
+            return new CopyOnWriteArrayList<>(data);
 		}
         final long minStatusId = statuses.isEmpty() ? -1 : Collections.min(statuses).getId();
         final boolean insertGap = minStatusId > 0 && statuses.size() > 1 && !data.isEmpty() && !truncated;

@@ -28,32 +28,14 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.view.Menu;
-import android.view.MenuInflater;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 
 public class BaseFragment extends Fragment implements Constants {
-
-    @Override
-    public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        final Activity activity = getActivity();
-        if (activity instanceof IThemedActivity) {
-            onCreateOptionsMenu(menu, ((IThemedActivity) activity).getTwidereMenuInflater());
-        } else {
-            super.onCreateOptionsMenu(menu, inflater);
-        }
-    }
-
-    public void onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater) {
-
-	}
 
     public TwittnukerApplication getApplication() {
 		final Activity activity = getActivity();

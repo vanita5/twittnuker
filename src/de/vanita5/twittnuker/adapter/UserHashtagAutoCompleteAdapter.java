@@ -27,7 +27,6 @@ import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -43,7 +42,6 @@ import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TweetStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
@@ -51,7 +49,6 @@ import de.vanita5.twittnuker.provider.TweetStore.CachedValues;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +67,6 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 	private final SQLiteDatabase mDatabase;
 	private final ImageLoaderWrapper mProfileImageLoader;
 	private final SharedPreferences mPreferences, mUserNicknamePreferences;
-	private final Resources mResources;
 
 	private final EditText mEditText;
 
@@ -96,15 +92,6 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 				&& mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
 		mNicknameOnly = mPreferences != null && mPreferences.getBoolean(KEY_NICKNAME_ONLY, false);
 		mLocale = context.getResources().getConfiguration().locale;
-		final int themeRes, accentColor;
-		if (context instanceof IThemedActivity) {
-			themeRes = ((IThemedActivity) context).getThemeResourceId();
-			accentColor = ((IThemedActivity) context).getThemeColor();
-		} else {
-			themeRes = ThemeUtils.getThemeResource(context);
-			accentColor = ThemeUtils.getUserAccentColor(context);
-		}
-		mResources = ThemeUtils.getThemedResourcesForActionIcons(context, themeRes, accentColor);
 	}
 
 	public UserHashtagAutoCompleteAdapter(final EditText view) {
@@ -143,7 +130,7 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 				icon.setImageResource(R.drawable.ic_profile_image_default);
 			}
 		} else {
-			icon.setImageDrawable(mResources.getDrawable(R.drawable.ic_action_hashtag));
+            icon.setImageResource(R.drawable.ic_action_hashtag);
 		}
 		super.bindView(view, context, cursor);
 	}

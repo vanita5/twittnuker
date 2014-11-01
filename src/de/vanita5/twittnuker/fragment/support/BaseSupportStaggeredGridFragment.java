@@ -30,10 +30,7 @@ import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -42,13 +39,11 @@ import android.widget.AbsListView.OnScrollListener;
 import com.etsy.android.grid.StaggeredGridView;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.Utils;
@@ -82,20 +77,6 @@ public class BaseSupportStaggeredGridFragment extends StaggeredGridFragment impl
 		final Activity activity = getActivity();
 		if (activity != null) return activity.getContentResolver();
 		return null;
-    }
-
-    @Override
-    public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        final FragmentActivity activity = getActivity();
-        if (activity instanceof IThemedActivity) {
-            onCreateOptionsMenu(menu, ((IThemedActivity) activity).getTwidereMenuInflater());
-        } else {
-            super.onCreateOptionsMenu(menu, inflater);
-        }
-    }
-
-    public void onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater) {
-
 	}
 
 	@Override

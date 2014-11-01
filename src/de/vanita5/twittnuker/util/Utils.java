@@ -53,6 +53,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -2415,7 +2416,6 @@ public final class Utils implements Constants, TwitterConstants {
 				cb.setHttpClientFactory(new TwidereHttpClientFactory(app));
 			}
 			cb.setHttpConnectionTimeout(connection_timeout);
-			setUserAgent(context, cb);
 			cb.setGZIPEnabled(enableGzip);
 			cb.setIgnoreSSLError(ignoreSSLError);
 			if (enableProxy) {
@@ -2442,6 +2442,13 @@ public final class Utils implements Constants, TwitterConstants {
 					cb.setSigningUploadBaseURL(DEFAULT_SIGNING_UPLOAD_BASE_URL);
 				}
 			}
+			if (isOfficialConsumerKeySecret(context, consumerKey, consumerSecret)) {
+				setMockOfficialUserAgent(context, cb);
+			} else {
+				setUserAgent(context, cb);
+			}
+
+
 			if (!isEmpty(mediaProvider)) {
 				cb.setMediaProvider(mediaProvider);
 			}
@@ -2922,7 +2929,7 @@ public final class Utils implements Constants, TwitterConstants {
 		builder.appendQueryParameter(QUERY_PARAM_LAT, String.valueOf(latitude));
 		builder.appendQueryParameter(QUERY_PARAM_LNG, String.valueOf(longitude));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		//Compare with Twidere
+		//Fix class, because the activity depends on the branch (master/f-droid)
         intent.setClass(context, GoogleMapViewerActivity.class);
         context.startActivity(Intent.createChooser(intent, null));
 	}
@@ -3489,7 +3496,7 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static void setUserAgent(final Context context, final ConfigurationBuilder cb) {
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final boolean gzip_compressing = prefs.getBoolean(KEY_GZIP_COMPRESSING, true);
+        final boolean gzipCompressing = prefs.getBoolean(KEY_GZIP_COMPRESSING, true);
 		final PackageManager pm = context.getPackageManager();
 		try {
 			final PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
@@ -3498,11 +3505,29 @@ public final class Utils implements Constants, TwitterConstants {
 			cb.setClientName(APP_NAME);
 			cb.setClientURL(APP_PROJECT_URL);
 			cb.setHttpUserAgent(APP_NAME + " " + APP_PROJECT_URL + " / " + version_name
-					+ (gzip_compressing ? " (gzip)" : ""));
+                    + (gzipCompressing ? " (gzip)" : ""));
 		} catch (final PackageManager.NameNotFoundException e) {
 
 		}
 	}
+
+    /**
+     * User-Agent format of official client:
+     * TwitterAndroid/[versionName] ([versionCode]-[buildName]-[r|d)]-[buildNumber]) [deviceInfo]
+     *
+     * @param context
+     * @param cb
+     */
+    public static void setMockOfficialUserAgent(final Context context, final ConfigurationBuilder cb) {
+        cb.setClientVersion("5.32.0");
+        cb.setClientName("TwitterAndroid");
+        cb.setClientURL(null);
+        final String deviceInfo = String.format(Locale.ROOT, "%s/%s (%s;%s;%s;%s;)",
+                Build.MODEL, Build.VERSION.RELEASE, Build.MANUFACTURER, Build.MODEL, Build.BRAND,
+                Build.PRODUCT);
+        cb.setHttpUserAgent(String.format(Locale.ROOT, "TwitterAndroid/%s (%d-%c-%d) %s",
+                "5.32.0", 3030745, 'r', 692, deviceInfo));
+    }
 
 	public static boolean shouldEnableFiltersForRTs(final Context context) {
 		if (context == null) return false;
@@ -3769,10 +3794,10 @@ public final class Utils implements Constants, TwitterConstants {
 	}
 
 	public static boolean truncateStatuses(final List<twitter4j.Status> in, final List<twitter4j.Status> out,
-			final long since_id) {
+                                           final long sinceId) {
 		if (in == null) return false;
 		for (final twitter4j.Status status : in) {
-			if (since_id > 0 && status.getId() <= since_id) {
+            if (sinceId > 0 && status.getId() <= sinceId) {
 				continue;
 			}
 			out.add(status);

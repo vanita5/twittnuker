@@ -41,6 +41,7 @@ import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +56,6 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.HostsFileParser;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -112,12 +112,12 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
 
 	@Override
 	public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
-		new TwidereMenuInflater(getActivity()).inflate(R.menu.action_multi_select_items, menu);
+        mode.getMenuInflater().inflate(R.menu.action_multi_select_items, menu);
 		return true;
 	}
 
 	@Override
-    public void onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
 		inflater.inflate(R.menu.menu_host_mapping, menu);
 	}
 
@@ -265,7 +265,6 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
 		private void updateAddressField() {
 			mEditAddress.setVisibility(mCheckExclude.isChecked() ? View.GONE : View.VISIBLE);
 		}
-
 	}
 
 	static class HostMappingAdapter extends ArrayAdapter<String> {

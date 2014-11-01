@@ -32,12 +32,12 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.Loader;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
 import de.vanita5.twittnuker.loader.support.UserListsLoader;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 
 import java.util.List;
@@ -72,7 +72,7 @@ public class UserListsListFragment extends BaseUserListsListFragment {
 	}
 
 	@Override
-    public void onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
 		inflater.inflate(R.menu.menu_user_list_created, menu);
 	}
 

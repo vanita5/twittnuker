@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,6 @@ import com.commonsware.cwac.merge.MergeAdapter;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.content.TwidereContextThemeWrapper;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment.TrendsAdapter;
 import de.vanita5.twittnuker.provider.TweetStore.CachedTrends;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -134,8 +134,8 @@ public class QuickMenuFragment extends BaseSupportFragment {
         } else {
             themeResource = ThemeUtils.getDrawerThemeResource(currentThemeResource);
         }
-        final int accentColor = ThemeUtils.getUserAccentColor(context);
-		return mThemedContext = new TwidereContextThemeWrapper(context, themeResource, accentColor);
+//        final int accentColor = ThemeUtils.getUserAccentColor(context);
+        return mThemedContext = new ContextThemeWrapper(context, themeResource);
 	}
 
 }

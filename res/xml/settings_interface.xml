@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:robobunny="http://robobunny.com"
 	android:title="@string/settings_interface">
 
 	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
@@ -12,14 +11,9 @@
 		android:defaultValue="false"
 		android:key="bottom_send_button"
 		android:title="@string/bottom_send_button"/>
-	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
-		android:defaultValue="false"
-		android:key="bottom_compose_button"
-		android:summary="@string/bottom_compose_button_summary"
-		android:title="@string/bottom_compose_button"/>
+
 	<de.vanita5.twittnuker.preference.LeftsideComposeButtonPreference
 		android:defaultValue="false"
-		android:dependency="bottom_compose_button"
 		android:key="leftside_compose_button"
 		android:summary="@string/leftside_compose_button_summary"
 		android:title="@string/leftside_compose_button"/>

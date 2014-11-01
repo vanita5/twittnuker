@@ -22,9 +22,9 @@
 
 package de.vanita5.twittnuker.activity;
 
-import android.app.ActionBar;
+import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.Resources.Theme;
+import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.NavUtils;
@@ -32,10 +32,7 @@ import android.view.Menu;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.content.res.NoAccentResources;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.theme.TwidereResourceHelper;
 
 import static de.vanita5.twittnuker.util.Utils.restartActivity;
 
@@ -43,27 +40,10 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
         IThemedActivity {
 
     private int mCurrentThemeResource;
-	private Theme mTheme;
-	private TwidereMenuInflater mMenuInflater;
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater) {
-		return false;
-	}
-
-	@Override
-	public final boolean onCreateOptionsMenu(Menu menu) {
-		return onCreateOptionsMenu(menu, getTwidereMenuInflater());
-	}
-
-	@Override
-	public TwidereMenuInflater getTwidereMenuInflater() {
-		if (mMenuInflater != null) return mMenuInflater;
-		final ActionBar actionBar = getActionBar();
-		if (actionBar != null) {
-			return mMenuInflater = new TwidereMenuInflater(actionBar.getThemedContext());
-		}
-		return mMenuInflater = new TwidereMenuInflater(this);
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        return super.onMenuOpened(featureId, menu);
 	}
 
 	@Override
@@ -83,19 +63,6 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
     }
 
     @Override
-	public Theme getTheme() {
-		if (mTheme == null) {
-			mTheme = getResources().newTheme();
-			mTheme.setTo(super.getTheme());
-			final int getThemeResourceId = getThemeResourceId();
-			if (getThemeResourceId != 0) {
-				mTheme.applyStyle(getThemeResourceId, true);
-			}
-		}
-		return mTheme;
-	}
-
-    @Override
     public int getThemeBackgroundAlpha() {
         return 0;
     }
@@ -104,6 +71,7 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
     public int getThemeColor() {
         return 0;
     }
+
 
     @Override
     public String getThemeFontFamily() {
@@ -174,4 +142,5 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
 		// ThemeUtils.applyActionBarBackground(getActionBar(), this,
 		// mCurrentThemeResource);
 	}
+
 }

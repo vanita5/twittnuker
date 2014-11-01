@@ -27,43 +27,19 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class BaseSupportFragment extends Fragment implements Constants {
-
-	private LayoutInflater mLayoutInflater;
 
 	public BaseSupportFragment() {
 
 	}
-
-    @Override
-    public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        final FragmentActivity activity = getActivity();
-        if (activity instanceof IThemedActivity) {
-            onCreateOptionsMenu(menu, ((IThemedActivity) activity).getTwidereMenuInflater());
-        } else {
-            super.onCreateOptionsMenu(menu, inflater);
-        }
-    }
-
-    public void onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater) {
-
-    }
 
     public TwittnukerApplication getApplication() {
 		final Activity activity = getActivity();
@@ -75,12 +51,6 @@ public class BaseSupportFragment extends Fragment implements Constants {
 		final Activity activity = getActivity();
 		if (activity != null) return activity.getContentResolver();
 		return null;
-	}
-
-	@Override
-	public LayoutInflater getLayoutInflater(final Bundle savedInstanceState) {
-		if (mLayoutInflater != null) return mLayoutInflater;
-		return mLayoutInflater = ThemeUtils.getThemedLayoutInflaterForActionIcons(getActivity());
 	}
 
 	public MultiSelectManager getMultiSelectManager() {

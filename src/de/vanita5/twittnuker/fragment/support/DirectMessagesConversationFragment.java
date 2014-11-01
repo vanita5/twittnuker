@@ -69,7 +69,6 @@ import android.widget.TextView.OnEditorActionListener;
 import org.mariotaku.menucomponent.widget.PopupMenu;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.ImagePickerActivity;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
@@ -265,12 +264,7 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 		listContainer.addView(super.onCreateView(inflater, container, savedInstanceState), lp);
 		final ViewGroup inputSendContainer = (ViewGroup) view.findViewById(R.id.input_send_container);
 		final FragmentActivity activity = getActivity();
-		final int themeRes;
-		if (activity instanceof IThemedActivity) {
-			themeRes = ((IThemedActivity) activity).getThemeResourceId();
-		} else {
-			themeRes = ThemeUtils.getThemeResource(activity);
-		}
+        final int themeRes = ThemeUtils.getThemeResource(activity);
 		ViewAccessor.setBackground(inputSendContainer, ThemeUtils.getActionBarSplitBackground(activity, themeRes));
 		final Context actionBarContext = ThemeUtils.getActionBarContext(activity);
 		View.inflate(actionBarContext, R.layout.fragment_messages_conversation_input_send, inputSendContainer);
@@ -510,7 +504,7 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 		if (mPopupMenu != null && mPopupMenu.isShowing()) {
 			mPopupMenu.dismiss();
 		}
-		final Context context = ThemeUtils.getThemedContextForActionIcons(getActivity());
+        final Context context = getActivity();
 		mPopupMenu = PopupMenu.getInstance(context, view);
 		mPopupMenu.inflate(R.menu.action_direct_message);
 		final Menu menu = mPopupMenu.getMenu();

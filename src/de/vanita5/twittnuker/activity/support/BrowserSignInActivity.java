@@ -22,10 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
-import static de.vanita5.twittnuker.util.Utils.setUserAgent;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -43,6 +39,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import static android.text.TextUtils.isEmpty;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -50,10 +47,12 @@ import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
 import de.vanita5.twittnuker.util.ParseUtils;
-import org.xmlpull.v1.XmlPullParserException;
-
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.util.net.TwidereHttpClientFactory;
+
+import org.xmlpull.v1.XmlPullParserException;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
 import twitter4j.TwitterException;
@@ -63,6 +62,8 @@ import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.IOException;
 import java.io.StringReader;
+
+import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class BrowserSignInActivity extends BaseSupportDialogActivity implements TwitterConstants {
@@ -231,13 +232,15 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 			final boolean enable_gzip_compressing = mPreferences.getBoolean(KEY_GZIP_COMPRESSING, false);
 			final boolean ignore_ssl_error = mPreferences.getBoolean(KEY_IGNORE_SSL_ERROR, false);
 			final boolean enable_proxy = mPreferences.getBoolean(KEY_ENABLE_PROXY, false);
-			final String consumer_key = getNonEmptyString(mPreferences, KEY_CONSUMER_KEY,
-					TWITTER_CONSUMER_KEY_2);
-			final String consumer_secret = getNonEmptyString(mPreferences, KEY_CONSUMER_SECRET,
-					TWITTER_CONSUMER_SECRET_2);
+			final String consumerKey = getNonEmptyString(mPreferences, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
+			final String consumerSecret = getNonEmptyString(mPreferences, KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
 			cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(mApplication));
 			cb.setHttpClientFactory(new TwidereHttpClientFactory(mApplication));
-			setUserAgent(mActivity, cb);
+            if (Utils.isOfficialConsumerKeySecret(mActivity, consumerKey, consumerSecret)) {
+                Utils.setMockOfficialUserAgent(mActivity, cb);
+            } else {
+                Utils.setUserAgent(mActivity, cb);
+            }
 			cb.setRestBaseURL(DEFAULT_REST_BASE_URL);
 			cb.setOAuthBaseURL(DEFAULT_OAUTH_BASE_URL);
 			cb.setSigningRestBaseURL(DEFAULT_SIGNING_REST_BASE_URL);
@@ -246,8 +249,8 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 				cb.setOAuthConsumerKey(mConsumerKey);
 				cb.setOAuthConsumerSecret(mConsumerSecret);
 			} else {
-				cb.setOAuthConsumerKey(consumer_key);
-				cb.setOAuthConsumerSecret(consumer_secret);
+                cb.setOAuthConsumerKey(consumerKey);
+                cb.setOAuthConsumerSecret(consumerSecret);
 			}
 			cb.setGZIPEnabled(enable_gzip_compressing);
 			cb.setIgnoreSSLError(ignore_ssl_error);

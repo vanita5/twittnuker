@@ -23,12 +23,8 @@
 package de.vanita5.twittnuker.activity.iface;
 
 import android.content.res.Resources;
-import android.view.Menu;
 
-import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
-
-public interface IThemedActivity extends ITwidereContextWrapper {
+public interface IThemedActivity {
 
 	public int getCurrentThemeResourceId();
 	
@@ -38,9 +34,9 @@ public interface IThemedActivity extends ITwidereContextWrapper {
 
     public int getThemeColor();
 
-	public TwidereMenuInflater getTwidereMenuInflater();
-
 	public String getThemeFontFamily();
+
+    int getThemeResourceId();
 
 	public boolean isDarkDrawerEnabled();
 
@@ -49,8 +45,6 @@ public interface IThemedActivity extends ITwidereContextWrapper {
 	public void overrideCloseAnimationIfNeeded();
 
 	public void restart();
-
-	public boolean onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater);
 
 	public boolean shouldOverrideActivityAnimation();
 }

@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.Preference;
 import android.util.AttributeSet;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,7 +39,6 @@ import org.mariotaku.menucomponent.widget.MenuBar;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.content.TwidereContextThemeWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.iface.ICardItemView;
@@ -77,8 +77,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 	protected View onCreateView(final ViewGroup parent) {
 		final Context context = getContext();
 		final int themeResource = ThemeUtils.getThemeResource(context);
-		final int accentColor = ThemeUtils.getUserAccentColor(context);
-		final Context theme = new TwidereContextThemeWrapper(context, themeResource, accentColor);
+        final Context theme = new ContextThemeWrapper(context, themeResource);
 		final LayoutInflater inflater = LayoutInflater.from(theme);
 		final View view = inflater.inflate(R.layout.theme_preview, parent, false);
 		setPreviewView(theme, view.findViewById(R.id.theme_preview_content), themeResource);

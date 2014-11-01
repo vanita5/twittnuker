@@ -23,15 +23,12 @@
 package de.vanita5.twittnuker.activity.support;
 
 import android.annotation.SuppressLint;
-import android.content.res.Resources;
 import android.os.Bundle;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.content.res.NoAccentResources;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.theme.TwidereResourceHelper;
 
 @SuppressLint("Registered")
 public class BaseSupportDialogActivity extends BaseSupportThemedActivity implements Constants, IThemedActivity {

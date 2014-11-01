@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
@@ -41,7 +42,6 @@ import org.mariotaku.menucomponent.internal.menu.MenuAdapter;
 import org.mariotaku.menucomponent.internal.menu.MenuUtils;
 
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 public abstract class MenuDialogFragment extends BaseSupportDialogFragment implements OnItemClickListener {
@@ -59,7 +59,7 @@ public abstract class MenuDialogFragment extends BaseSupportDialogFragment imple
 		listView.setOnItemClickListener(this);
 		builder.setView(listView);
 		final Menu menu = MenuUtils.createMenu(context);
-        onCreateMenu(new TwidereMenuInflater(context), menu);
+        onCreateMenu(new MenuInflater(context), menu);
         final int itemColor = ThemeUtils.getThemeForegroundColor(context);
         final int highlightColor = ThemeUtils.getUserAccentColor(context);
         ThemeUtils.applyColorFilterToMenuIcon(menu, itemColor, highlightColor, Mode.SRC_ATOP);
@@ -83,6 +83,6 @@ public abstract class MenuDialogFragment extends BaseSupportDialogFragment imple
 		}
 	}
 
-    protected abstract void onCreateMenu(TwidereMenuInflater inflater, Menu menu);
+    protected abstract void onCreateMenu(MenuInflater inflater, Menu menu);
 
 }

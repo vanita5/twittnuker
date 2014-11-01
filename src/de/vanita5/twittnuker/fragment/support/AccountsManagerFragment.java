@@ -10,6 +10,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,6 @@ import com.mobeta.android.dslv.DragSortListView.DropListener;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.SignInActivity;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.util.Utils;
 
@@ -43,7 +43,7 @@ public class AccountsManagerFragment extends BaseSupportListFragment implements 
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.menu_accounts_manager, menu);
 	}
 

@@ -28,14 +28,9 @@ import android.content.ContentResolver;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
 public class BaseSupportDialogFragment extends DialogFragment implements Constants {
@@ -43,20 +38,6 @@ public class BaseSupportDialogFragment extends DialogFragment implements Constan
 	public BaseSupportDialogFragment() {
 
 	}
-
-    @Override
-    public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        final FragmentActivity activity = getActivity();
-        if (activity instanceof IThemedActivity) {
-            onCreateOptionsMenu(menu, ((IThemedActivity) activity).getTwidereMenuInflater());
-        } else {
-            super.onCreateOptionsMenu(menu, inflater);
-        }
-    }
-
-    public void onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater) {
-
-    }
 
     public TwittnukerApplication getApplication() {
 		final Activity activity = getActivity();

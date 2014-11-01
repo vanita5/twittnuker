@@ -16,7 +16,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.iface.IMapFragment;
 import de.vanita5.twittnuker.fragment.support.GoogleMapFragment;
 import de.vanita5.twittnuker.fragment.support.WebMapFragment;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
@@ -28,8 +27,8 @@ public class GoogleMapViewerActivity extends BaseSupportActivity implements Cons
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
-		inflater.inflate(R.menu.menu_google_maps_viewer, menu);
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_google_maps_viewer, menu);
 		return true;
 	}
 

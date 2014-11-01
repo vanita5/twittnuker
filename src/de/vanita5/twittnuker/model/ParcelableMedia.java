@@ -39,6 +39,7 @@ import java.util.List;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import twitter4j.EntitySupport;
+import twitter4j.ExtendedEntitySupport;
 import twitter4j.MediaEntity;
 import twitter4j.URLEntity;
 
@@ -129,8 +130,15 @@ public class ParcelableMedia implements Parcelable, JSONParcelable {
     }
 
     public static ParcelableMedia[] fromEntities(final EntitySupport entities) {
-		final List<ParcelableMedia> list = new ArrayList<ParcelableMedia>();
-        final MediaEntity[] medias = entities.getMediaEntities();
+        final List<ParcelableMedia> list = new ArrayList<>();
+        final MediaEntity[] medias;
+        if (entities instanceof ExtendedEntitySupport) {
+            final ExtendedEntitySupport extendedEntities = (ExtendedEntitySupport) entities;
+            final MediaEntity[] extendedMedias = extendedEntities.getExtendedMediaEntities();
+            medias = extendedMedias != null ? extendedMedias : entities.getMediaEntities();
+        } else {
+            medias = entities.getMediaEntities();
+        }
         if (medias != null) {
             for (final MediaEntity media : medias) {
                 final URL media_url = media.getMediaURL();

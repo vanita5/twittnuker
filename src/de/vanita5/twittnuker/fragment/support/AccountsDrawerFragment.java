@@ -41,6 +41,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -48,6 +49,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,11 +74,9 @@ import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.DraftsActivity;
-import de.vanita5.twittnuker.activity.support.SignInActivity;
 import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.content.TwidereContextThemeWrapper;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
@@ -355,10 +355,9 @@ public class AccountsDrawerFragment extends BaseSupportListFragment implements L
 		if (mThemedContext != null) return mThemedContext;
 		final Context context = getActivity();
 		if (!ThemeUtils.isDarkDrawerEnabled(context))
-			return mThemedContext = ThemeUtils.getThemedContextForActionIcons(context);
+            return mThemedContext = context;
 		final int themeResource = ThemeUtils.getDrawerThemeResource(context);
-        final int accentColor = ThemeUtils.getUserAccentColor(context);
-		return mThemedContext = new TwidereContextThemeWrapper(context, themeResource, accentColor);
+        return mThemedContext = new ContextThemeWrapper(context, themeResource);
 	}
 
 	private void updateAccountOptionsSeparatorLabel() {
@@ -491,7 +490,7 @@ public class AccountsDrawerFragment extends BaseSupportListFragment implements L
 		private OnAccountActivateStateChangeListener mOnAccountActivateStateChangeListener;
 
 		public DrawerAccountsAdapter(final Context context) {
-			super(context, R.layout.list_item_drawer_accounts, null, new String[0], new int[0], 0);
+            super(context, R.layout.list_item_drawer_account, null, new String[0], new int[0], 0);
 			final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 			mImageLoader = app.getImageLoaderWrapper();
             mActivatedColor = ThemeUtils.getUserAccentColor(context);
@@ -625,11 +624,11 @@ public class AccountsDrawerFragment extends BaseSupportListFragment implements L
 
 	private static abstract class OptionItemsAdapter extends ArrayAdapter<OptionItem> {
 
-        private final int mMenuIconColor;
+        private final int mActionIconColor;
 
 		public OptionItemsAdapter(final Context context) {
 			super(context, R.layout.list_item_menu);
-            mMenuIconColor = ThemeUtils.getThemeForegroundColor(context);
+            mActionIconColor = ThemeUtils.getThemeForegroundColor(context);
 		}
 
 		@Override
@@ -640,7 +639,7 @@ public class AccountsDrawerFragment extends BaseSupportListFragment implements L
 			final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
 			text1.setText(option.name);
             icon.setImageDrawable(icon.getResources().getDrawable(option.icon));
-            icon.setColorFilter(mMenuIconColor);
+            icon.setColorFilter(mActionIconColor, Mode.SRC_ATOP);
 			return view;
 		}
 
