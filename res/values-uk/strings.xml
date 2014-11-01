@@ -53,8 +53,7 @@
   <string name="unfavorite">Видалити з обраного</string>
   <string name="reply">Відповісти</string>
   <string name="share">Поділитися</string>
-  <string name="share_via_twittnuker">Поділитися через Twittnuker</string>
-  <string name="view_image">Зображення</string>
+    <string name="view_image">Зображення</string>
   <string name="view_map">Карта</string>
   <string name="view_status">Перегляд твіту</string>
   <string name="view_user_profile">Профіль користувача</string>

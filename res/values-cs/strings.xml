@@ -53,8 +53,7 @@
   <string name="unfavorite">Odstranit z favorizovaných</string>
   <string name="reply">Odpovědět</string>
   <string name="share">Sdílet</string>
-  <string name="share_via_twittnuker">Sdílet přez Twittnuker</string>
-  <string name="view_image">Obrázek</string>
+    <string name="view_image">Obrázek</string>
   <string name="view_map">Mapa</string>
   <string name="view_status">Prohlédnout tweet</string>
   <string name="view_user_profile">Profil uživatele</string>

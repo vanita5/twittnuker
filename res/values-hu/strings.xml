@@ -53,8 +53,7 @@
   <string name="unfavorite">Mégsem kedvenc</string>
   <string name="reply">Válasz</string>
   <string name="share">Megosztás</string>
-  <string name="share_via_twittnuker">Megosztás Twittnuker-n keresztül</string>
-  <string name="view_image">Kép</string>
+    <string name="view_image">Kép</string>
   <string name="view_map">Térkép</string>
   <string name="view_status">Tweet megjelenítése</string>
   <string name="view_user_profile">Felhasználói profil</string>

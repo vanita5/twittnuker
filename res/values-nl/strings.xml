@@ -53,8 +53,7 @@
   <string name="unfavorite">Defavoriet</string>
   <string name="reply">Antwoord</string>
   <string name="share">Delen</string>
-  <string name="share_via_twittnuker">Deel via Twittnuker</string>
-  <string name="view_image">Afbeelding</string>
+    <string name="view_image">Afbeelding</string>
   <string name="view_map">Kaart</string>
   <string name="view_status">Bekijk tweet</string>
   <string name="view_user_profile">Gebruikersprofiel</string>

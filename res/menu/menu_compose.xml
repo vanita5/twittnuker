@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- TODO add submenu? -->
 	<item
-        android:id="@+id/add_image_submenu"
+        android:id="@id/take_photo"
+        android:icon="@drawable/ic_action_camera"
+        android:showAsAction="ifRoom"
+        android:title="@string/take_photo"/>
+    <item
+        android:id="@id/add_image"
         android:icon="@drawable/ic_action_gallery"
         android:showAsAction="ifRoom"
-        android:title="@string/add_image">
+        android:title="@string/add_image"/>
+    <item
+        android:id="@+id/medias_menu"
+        android:icon="@drawable/ic_action_gallery"
+        android:showAsAction="ifRoom"
+        android:title="@string/medias"
+        android:visible="false">
         <menu>
             <item
-                android:id="@id/take_photo"
-		        android:icon="@drawable/ic_action_camera"
-                android:showAsAction="ifRoom"
+                android:id="@+id/take_photo_sub_item"
+                android:icon="@drawable/ic_action_camera"
                 android:title="@string/take_photo"/>
             <item
-                android:id="@id/add_image"
-		        android:icon="@drawable/ic_action_gallery"
-                android:showAsAction="ifRoom"
+                android:id="@+id/add_image_sub_item"
+                android:icon="@drawable/ic_action_gallery"
                 android:title="@string/add_image"/>
+            <item
+                android:id="@+id/edit_medias"
+                android:icon="@drawable/ic_action_edit"
+                android:title="@string/edit_medias"/>
+            <item
+                android:id="@id/toggle_sensitive"
+                android:checkable="true"
+                android:icon="@drawable/ic_action_warning"
+                android:title="@string/mark_as_sensitive"/>
         </menu>
     </item>
 	<item
@@ -36,10 +55,5 @@
 		android:icon="@drawable/ic_action_draft"
 		android:showAsAction="ifRoom"
 		android:title="@string/drafts"/>
-	<item
-		android:id="@id/toggle_sensitive"
-		android:checkable="true"
-		android:icon="@drawable/ic_action_warning"
-		android:title="@string/mark_as_sensitive"/>
 
 </menu>
