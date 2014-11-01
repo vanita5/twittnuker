@@ -28,6 +28,7 @@ import static de.vanita5.twittnuker.model.ParcelableLocation.isValidLocation;
 import static de.vanita5.twittnuker.util.ParseUtils.parseString;
 import static de.vanita5.twittnuker.util.ThemeUtils.getActionBarBackground;
 import static de.vanita5.twittnuker.util.ThemeUtils.getComposeThemeResource;
+import static de.vanita5.twittnuker.util.ThemeUtils.getUserAccentColor;
 import static de.vanita5.twittnuker.util.ThemeUtils.getWindowContentOverlayForCompose;
 import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.copyStream;
@@ -217,7 +218,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
     @Override
 	public int getThemeColor() {
-        return ThemeUtils.getUserAccentColor(this);
+        return getUserAccentColor(this);
 	}
 
     @Override
@@ -227,13 +228,11 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	public boolean handleMenuItem(final MenuItem item) {
 		switch (item.getItemId()) {
-            case MENU_TAKE_PHOTO:
-            case R.id.take_photo_sub_item: {
+            case MENU_TAKE_PHOTO: {
 				takePhoto();
 				break;
 			}
-            case MENU_ADD_IMAGE:
-            case R.id.add_image_sub_item: {
+            case MENU_ADD_IMAGE: {
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT || !openDocument()) {
 					pickImage();
 				}
@@ -923,15 +922,34 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	//TODO activatedColor? submenu?
 	private void setMenu() {
         if (mMenuBar == null) return;
+		final int activatedColor = getUserAccentColor(this);
+		final boolean hasMedia = hasMedia(), hasInReplyTo = mInReplyToStatus != null;
         final Menu menu = mMenuBar.getMenu();
+
+		final MenuItem itemAddImageSubmenu = menu.findItem(R.id.add_image_submenu);
+		if (itemAddImageSubmenu != null) {
+			final Drawable iconAddImage = itemAddImageSubmenu.getIcon();
+			iconAddImage.mutate();
+			if (hasMedia) {
+				iconAddImage.setColorFilter(activatedColor, Mode.SRC_ATOP);
+			} else {
+				iconAddImage.clearColorFilter();
+			}
+		}
+
         final MenuItem itemAttachLocation = menu.findItem(MENU_ADD_LOCATION);
         if (itemAttachLocation != null) {
+			final Drawable iconAttachLocation = itemAttachLocation.getIcon().mutate();
             final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
             if (attachLocation && getLocation()) {
+				iconAttachLocation.setColorFilter(activatedColor, Mode.SRC_ATOP);
+				itemAttachLocation.setTitle(R.string.remove_location);
                 itemAttachLocation.setChecked(true);
             } else {
                 setProgressVisibility(false);
                 mPreferences.edit().putBoolean(KEY_ATTACH_LOCATION, false).apply();
+				iconAttachLocation.clearColorFilter();
+				itemAttachLocation.setTitle(R.string.add_location);
                 itemAttachLocation.setChecked(false);
             }
         }
@@ -939,24 +957,32 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
         if (viewItem != null) {
             viewItem.setVisible(mInReplyToStatus != null);
         }
-        final boolean hasMedia = hasMedia(), hasInReplyTo = mInReplyToStatus != null;
 
         /*
-         * No media & Not reply: [Take photo][Add image][Attach location][Drafts]
-         * Has media & Not reply: [Take photo][Medias menu][Attach location][Drafts]
+         * No media & Not reply: [[Take photo][Add image]][Attach location][Drafts]
+         * Has media & Not reply: [[Take photo][Add image]][Medias menu][Attach location][Drafts]
          * Is reply: [Medias menu][View status][Attach location][Drafts]
          */
-        Utils.setMenuItemAvailability(menu, MENU_TAKE_PHOTO, !hasInReplyTo);
-        Utils.setMenuItemAvailability(menu, R.id.take_photo_sub_item, hasInReplyTo);
-        Utils.setMenuItemAvailability(menu, MENU_ADD_IMAGE, !hasMedia && !hasInReplyTo);
+        Utils.setMenuItemAvailability(menu, MENU_TAKE_PHOTO, true); //always
+        Utils.setMenuItemAvailability(menu, MENU_ADD_IMAGE, true); //always
         Utils.setMenuItemAvailability(menu, MENU_VIEW, hasInReplyTo);
-        Utils.setMenuItemAvailability(menu, R.id.medias_menu, hasMedia || hasInReplyTo);
+        Utils.setMenuItemAvailability(menu, R.id.medias_menu, hasMedia /*|| hasInReplyTo*/);
         Utils.setMenuItemAvailability(menu, MENU_TOGGLE_SENSITIVE, hasMedia);
         Utils.setMenuItemAvailability(menu, MENU_EDIT_MEDIAS, hasMedia);
 
         final MenuItem itemToggleSensitive = menu.findItem(MENU_TOGGLE_SENSITIVE);
         if (itemToggleSensitive != null) {
             itemToggleSensitive.setChecked(hasMedia && mIsPossiblySensitive);
+			if (hasMedia) {
+				final Drawable iconToggleSensitive = itemToggleSensitive.getIcon().mutate();
+				if (mIsPossiblySensitive) {
+					itemToggleSensitive.setTitle(R.string.remove_sensitive_mark);
+					iconToggleSensitive.setColorFilter(activatedColor, Mode.SRC_ATOP);
+				} else {
+					itemToggleSensitive.setTitle(R.string.mark_as_sensitive);
+					iconToggleSensitive.clearColorFilter();
+				}
+			}
         }
         mMenuBar.show();
 	}

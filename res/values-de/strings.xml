@@ -347,7 +347,7 @@
     <string name="display_sensitive_contents_summary">Kritische Inhalte ohne Warnung anzeigen</string>
     <string name="sensitive_content_warning">Dieser Tweet könnte heiklen Inhalt haben. Fortfahren?</string>
     <string name="mark_as_sensitive">#NSFW</string>
-    <string name="remove_sensitive_mark">Nicht als #NSFW markieren</string>
+    <string name="remove_sensitive_mark">#NSFW</string>
     <string name="none">Nichts</string>
     <string name="large">Groß</string>
     <string name="small">Klein</string>
