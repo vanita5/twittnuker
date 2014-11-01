@@ -31,10 +31,7 @@ package de.vanita5.twittnuker;
 public interface Constants extends TwittnukerConstants {
 
 	public static final String DATABASES_NAME = "twittnuker.sqlite";
-	public static final int DATABASES_VERSION = 68;
-
-	public static final String GOOGLE_MAPS_API_KEY_RELEASE = "0kjPwJOe_zwYjzGc9uYak7vhm_Sf3eob-2L3Xzw";
-	public static final String GOOGLE_MAPS_API_KEY_DEBUG = "0kjPwJOe_zwY9p6kT-kygu4mxwysyOOpfkaXqTA";
+	public static final int DATABASES_VERSION = 69;
 
 	public static final String TWITPIC_API_KEY = "620b9fbe7c4fec0a28175ea6b10caead";
 
@@ -112,6 +109,8 @@ public interface Constants extends TwittnukerConstants {
     public static final int MENU_PROGRESS = R.id.progress;
 	public static final int MENU_OPEN_WITH_ACCOUNT = R.id.open_with_account;
     public static final int MENU_ACCOUNTS = R.id.accounts;
+	public static final int MENU_INVERSE_SELECTION = R.id.inverse_selection;
+	public static final int MENU_EDIT_MEDIAS = R.id.edit_medias;
 
 	public static final int LINK_ID_STATUS = 1;
 	public static final int LINK_ID_USER = 2;

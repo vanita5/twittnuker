@@ -42,8 +42,8 @@ public class UserListMenuDialogFragment extends MenuDialogFragment {
 		final ParcelableUserList user = args.getParcelable(EXTRA_USER_LIST);
 		inflater.inflate(R.menu.action_user_list, menu);
 		onPrepareItemMenu(menu, user);
-		final boolean longclickToOpenMenu = prefs.getBoolean(KEY_LONG_CLICK_TO_OPEN_MENU, false);
-		Utils.setMenuItemAvailability(menu, MENU_MULTI_SELECT, longclickToOpenMenu);
+		final boolean longClickToOpenMenu = prefs.getBoolean(KEY_LONG_CLICK_TO_OPEN_MENU, false);
+        Utils.setMenuItemAvailability(menu, MENU_MULTI_SELECT, longClickToOpenMenu);
 	}
 
 	protected void onPrepareItemMenu(final Menu menu, final ParcelableUserList userList) {

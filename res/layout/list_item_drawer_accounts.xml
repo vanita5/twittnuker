@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<de.vanita5.twittnuker.view.ColorLabelRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.ColorLabelRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/account_content"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:background="?android:activatedBackgroundIndicator"
 	android:descendantFocusability="blocksDescendants"
 	android:padding="@dimen/element_spacing_small"
 	app:ignorePadding="true">
@@ -88,7 +88,7 @@
 		android:orientation="horizontal"
 		android:padding="@dimen/element_spacing_small">
 
-		<TextView
+        <de.vanita5.twittnuker.view.themed.ThemedTextView
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"

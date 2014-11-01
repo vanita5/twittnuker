@@ -111,11 +111,8 @@ public class SettingsActivity extends BasePreferenceActivity {
 	public void onHeaderClick(final Header header, final int position) {
 		if (header.id == HEADER_ID_RESTORE_ICON) {
 			final ComponentName main = new ComponentName(this, MainActivity.class);
-			//final ComponentName main2 = new ComponentName(this, MainHondaJOJOActivity.class);
 			mPackageManager.setComponentEnabledSetting(main, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
 					PackageManager.DONT_KILL_APP);
-			//mPackageManager.setComponentEnabledSetting(main2, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-			//		PackageManager.DONT_KILL_APP);
 			Toast.makeText(this, R.string.icon_restored_message, Toast.LENGTH_SHORT).show();
 			finish();
 			return;
@@ -182,7 +179,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mCompactCards = mPreferences.getBoolean(KEY_COMPACT_CARDS, false);
 		mPlainListStyle = mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false);
-		mCurrentThemeColor = ThemeUtils.getUserThemeColor(this);
+        mCurrentThemeColor = ThemeUtils.getUserAccentColor(this);
 		mCurrentThemeFontFamily = getThemeFontFamily();
 		mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		mCurrentIsDarkDrawerEnabled = isDarkDrawerEnabled();
@@ -201,7 +198,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 		return mCompactCards != mPreferences.getBoolean(KEY_COMPACT_CARDS, false)
 				|| mPlainListStyle != mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false)
                 || getThemeResourceId() != getCurrentThemeResourceId()
-                || ThemeUtils.getUserThemeColor(this) != mCurrentThemeColor
+                || ThemeUtils.getUserAccentColor(this) != mCurrentThemeColor
 				|| !CompareUtils.objectEquals(getThemeFontFamily(), mCurrentThemeFontFamily)
 				|| getThemeBackgroundAlpha() != mCurrentThemeBackgroundAlpha
 				|| isDarkDrawerEnabled() != mCurrentIsDarkDrawerEnabled;

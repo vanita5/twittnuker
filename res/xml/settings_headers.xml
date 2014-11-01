@@ -73,7 +73,7 @@
 	</header>
 	<header
 		android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
-		android:icon="@drawable/ic_action_more"
+        android:icon="@drawable/ic_action_more_horizontal"
 		android:title="@string/other_settings">
 		<extra
 			android:name="resid"

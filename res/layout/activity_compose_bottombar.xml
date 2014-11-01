@@ -8,34 +8,20 @@
 	android:gravity="center_vertical"
 	android:orientation="horizontal">
 
-	<com.scvngr.levelup.views.gallery.Gallery
-		android:id="@+id/account_selector"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_weight="1"/>
-
-	<View
-	    android:id="@+id/account_selector_divider"
-		android:layout_width="0.2dp"
-		android:layout_height="match_parent"
-		android:layout_margin="@dimen/element_spacing_normal"
-		android:layout_weight="0"
-		android:background="#80808080"/>
-
 	<HorizontalScrollView
 		android:id="@+id/bottom_menu_container"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
-        android:layout_weight="0"
+        android:layout_weight="1"
         android:fadeScrollbars="false">
 
         <de.vanita5.twittnuker.view.TwidereMenuBar
-            android:id="@+id/bottom_menu"
+            android:id="@+id/menu_bar"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
+            android:layout_gravity="center"
             android:background="@null"
-            android:max="@integer/max_action_buttons"/>
+            android:max="@integer/max_action_buttons_bottom"/>
     </HorizontalScrollView>
 	
 	<View

@@ -53,7 +53,6 @@
     <string name="unfavorite">관심글 해제</string>
     <string name="reply">답변</string>
     <string name="share">공유</string>
-    <string name="share_via_twittnuker">Twittnuker를 통해 공유</string>
     <string name="view_image">이미지</string>
     <string name="view_map">지도</string>
     <string name="view_status">트윗 보기</string>

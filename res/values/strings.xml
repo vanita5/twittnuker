@@ -56,7 +56,7 @@
 	<string name="unfavorite">Unfavorite</string>
 	<string name="reply">Reply</string>
 	<string name="share">Share</string>
-	<string name="share_via_twittnuker">Twittnuker</string>
+	<string name="share_via_twittnuker" translatable="false">Twittnuker</string>
 	<string name="view_image">Image</string>
 	<string name="view_map">Map</string>
 	<string name="view_status">View tweet</string>
@@ -625,6 +625,9 @@
     <string name="exclude_this_host">Exclude this host</string>
     <string name="api_url_format_help">[DOMAIN]: Twitter API domain.\nExample: https://[DOMAIN].twitter.com/ will be replaced to https://api.twitter.com/.</string>
     <string name="no_version_suffix">No version suffix</string>
+    <string name="inverse_selection">Inverse selection</string>
+    <string name="edit_medias">Edit medias</string>
+    <string name="medias">Medias</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

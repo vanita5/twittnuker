@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name" translatable="false">Twittnuker</string>
-    <string name="theme_twidere">Twidere</string>
+    <string name="theme_twidere" translatable="false">Twidere</string>
     <string name="developer_name" translatable="false">vanita5</string>
     <string name="twidere_project_account">Twidere Project</string>
     <string name="project_name">Twittnuker Project</string>
@@ -12,10 +12,10 @@
     <string name="font_family_thin" translatable="false">Thin</string>
 
     <!--Twittnuker-->
-    <string name="tweet_shortener_hototin">Hotot.in</string>
+    <string name="tweet_shortener_hototin" translatable="false">Hotot.in</string>
     <string name="shortening_hototin">I have super power to compress...</string>
 
-    <string name="image_uploader_twitpic">Twitpic</string>
-    <string name="image_uploader_twipple">Twipple</string>
+    <string name="image_uploader_twitpic" translatable="false">Twitpic</string>
+    <string name="image_uploader_twipple" translatable="false">Twipple</string>
 
 </resources>

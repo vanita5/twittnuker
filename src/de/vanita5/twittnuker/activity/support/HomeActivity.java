@@ -60,6 +60,7 @@ import android.content.pm.ActivityInfo;
 import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -538,13 +539,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         }
         mActionsButton.setOnClickListener(this);
         mActionsButton.setOnLongClickListener(this);
-		initTabs();
-		final boolean tabsNotEmpty = mPagerAdapter.getCount() > 0;
-		mEmptyTab.setVisibility(tabsNotEmpty ? View.GONE : View.VISIBLE);
-		mEmptyTabHint.setVisibility(tabsNotEmpty ? View.GONE : View.VISIBLE);
-		mViewPager.setVisibility(tabsNotEmpty ? View.VISIBLE : View.GONE);
 		setTabPosition(initialTabPosition);
 		setupSlidingMenu();
+        setupBars();
 		initUnreadCount();
 		updateActionsButton();
         updateSmartBar();
@@ -559,24 +556,34 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			}
 		}
 		mPagerPosition = Float.NaN;
-        final int themeColor = getThemeColor(), contrastColor = Utils.getContrastYIQ(themeColor, 192);
+        setupHomeTabs();
+    }
+
+    private void setupBars() {
+        final int themeColor = getThemeColor();
         final int themeResId = getCurrentThemeResourceId();
         final boolean isTransparent = ThemeUtils.isTransparentBackground(themeResId);
         final int actionBarAlpha = isTransparent ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xFF;
+        final IHomeActionButton homeActionButton = (IHomeActionButton) mActionsButton;
+        mTabIndicator.setItemContext(ThemeUtils.getActionBarContext(this));
         if (ThemeUtils.isColoredActionBar(themeResId)) {
+            final int contrastColor = Utils.getContrastYIQ(themeColor, 192);
             ViewAccessor.setBackground(mTabIndicator, new ColorDrawable(themeColor));
+            homeActionButton.setButtonColor(themeColor);
+            homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
             mTabIndicator.setStripColor(contrastColor);
             mTabIndicator.setIconColor(contrastColor);
         } else {
-            ViewAccessor.setBackground(mTabIndicator, ThemeUtils.getActionBarBackground(this, false));
+            final int backgroundColor = ThemeUtils.getThemeBackgroundColor(mTabIndicator.getItemContext());
+            final int foregroundColor = ThemeUtils.getThemeForegroundColor(mTabIndicator.getItemContext());
+            ViewAccessor.setBackground(mTabIndicator, ThemeUtils.getActionBarBackground(this, themeResId));
+            homeActionButton.setButtonColor(backgroundColor);
+            homeActionButton.setIconColor(foregroundColor, Mode.SRC_ATOP);
             mTabIndicator.setStripColor(themeColor);
-            mTabIndicator.setIconColor(ThemeUtils.isLightActionBar(themeResId) ? Color.BLACK : Color.WHITE);
-	}
+            mTabIndicator.setIconColor(foregroundColor);
+	    }
         mTabIndicator.setAlpha(actionBarAlpha / 255f);
-        if (mActionsButton instanceof IHomeActionButton) {
-            ((IHomeActionButton) mActionsButton).setColor(themeColor);
-            mActionsButton.setAlpha(actionBarAlpha / 255f);
-        }
+        mActionsButton.setAlpha(actionBarAlpha / 255f);
         ViewAccessor.setBackground(mActionBarOverlay, ThemeUtils.getWindowContentOverlay(this));
     }
 
@@ -719,12 +726,15 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		return mTwitterWrapper.hasActivatedTask();
 	}
 
-	private void initTabs() {
+    private void setupHomeTabs() {
 		final List<SupportTabSpec> tabs = getHomeTabs(this);
 		mCustomTabs.clear();
 		mCustomTabs.addAll(tabs);
 		mPagerAdapter.clear();
 		mPagerAdapter.addTabs(tabs);
+		mEmptyTab.setVisibility(tabs.isEmpty() ? View.VISIBLE : View.GONE);
+        mEmptyTabHint.setVisibility(tabs.isEmpty() ? View.VISIBLE : View.GONE);
+        mViewPager.setVisibility(tabs.isEmpty() ? View.GONE : View.VISIBLE);
 	}
 
 	private void initUnreadCount() {
