@@ -210,7 +210,8 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 				holder.screen_name.setMovementMethod(null);
 			}
 			holder.time.setTime(retweetTimestamp > 0 ? retweetTimestamp : timestamp);
-			holder.setStatusType(!mFavoritesHighlightDisabled && isFavorite, hasLocation, hasMedia || hasCustomMedia, possiblySensitive, isMyRetweet);
+			holder.setStatusType(!mFavoritesHighlightDisabled && isFavorite, hasLocation, hasMedia || hasCustomMedia,
+					possiblySensitive, isMyRetweet, isReply);
 
 			holder.setIsReplyRetweet(isReply, isRetweet);
 			if (isRetweet) {

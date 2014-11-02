@@ -156,9 +156,9 @@ public class StatusViewHolder extends CardViewHolder {
 	}
 
 	public void setStatusType(final boolean is_favorite, final boolean has_location, final boolean has_media,
-			final boolean is_possibly_sensitive, final boolean is_retweeted_by_me) {
+			final boolean is_possibly_sensitive, final boolean is_retweeted_by_me, final boolean is_reply) {
 		final int res = getStatusTypeIconRes(is_favorite, has_location, has_media, is_possibly_sensitive,
-				is_retweeted_by_me);
+				is_retweeted_by_me, is_reply);
 		time.setCompoundDrawablesWithIntrinsicBounds(0, 0, res, 0);
 	}
 

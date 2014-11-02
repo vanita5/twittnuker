@@ -2116,14 +2116,18 @@ public final class Utils implements Constants, TwitterConstants {
 		return list;
 	}
 
+	//TODO multiple indicators
 	public static int getStatusTypeIconRes(final boolean is_favorite, final boolean has_location,
-			final boolean has_media, final boolean is_possibly_sensitive, final boolean is_retweeted_by_me) {
-		if (is_favorite)
-			return R.drawable.ic_indicator_starred;
+			final boolean has_media, final boolean is_possibly_sensitive,
+			final boolean is_retweeted_by_me, final boolean is_reply) {
+		if (is_reply)
+			return R.drawable.ic_indicator_reply;
 		else if (is_possibly_sensitive && has_media)
 			return R.drawable.ic_indicator_reported_media;
 		else if (has_media)
 			return R.drawable.ic_indicator_media;
+		else if (is_favorite)
+			return R.drawable.ic_indicator_starred;
 		else if (is_retweeted_by_me)
 			return R.drawable.ic_indicator_retweet;
 		else if (has_location)
