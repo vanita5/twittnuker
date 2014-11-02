@@ -125,6 +125,15 @@ public class CustomTabUtils implements Constants {
 		CUSTOM_TABS_ICON_NAME_MAP.put("twittnuker", R.drawable.ic_action_twittnuker);
 		CUSTOM_TABS_ICON_NAME_MAP.put("twitter", R.drawable.ic_action_twitter);
 		CUSTOM_TABS_ICON_NAME_MAP.put("user", R.drawable.ic_action_user);
+
+		CUSTOM_TABS_ICON_NAME_MAP.put("comp", R.drawable.ic_action_comp);
+		CUSTOM_TABS_ICON_NAME_MAP.put("cthulhu", R.drawable.ic_action_cthulhu);
+		CUSTOM_TABS_ICON_NAME_MAP.put("harvey", R.drawable.ic_action_harvey);
+		CUSTOM_TABS_ICON_NAME_MAP.put("heart_z", R.drawable.ic_action_heart_z);
+		CUSTOM_TABS_ICON_NAME_MAP.put("metroid", R.drawable.ic_action_metroid);
+		CUSTOM_TABS_ICON_NAME_MAP.put("nyarlathorepirycx", R.drawable.ic_action_nyarlathorepirycx);
+		CUSTOM_TABS_ICON_NAME_MAP.put("pokeball", R.drawable.ic_action_pokeball);
+		CUSTOM_TABS_ICON_NAME_MAP.put("triforce", R.drawable.ic_action_triforce);
 	}
 
 	public static String findTabIconKey(final int iconRes) {
