@@ -30,7 +30,8 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
  * @author mariotaku
  * 
  */
-public interface TwittnukerConstants extends SharedPreferenceConstants, IntentConstants {
+public interface TwittnukerConstants extends SharedPreferenceConstants,
+		IntentConstants, SecretConstants {
 
 	public static final String APP_NAME = "Twittnuker";
 	public static final String APP_PACKAGE_NAME = "de.vanita5.twittnuker";
@@ -46,9 +47,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants, IntentCo
 	public static final String SILENT_NOTIFICATIONS_PREFERENCE_NAME = "silent_notifications";
 	public static final String TIMELINE_POSITIONS_PREFERENCES_NAME = "timeline_positions";
 	public static final String ACCOUNT_PREFERENCES_NAME_PREFIX = "account_preferences_";
-
-	public static final String TWITTER_CONSUMER_KEY_2 = "K4KihyAG8rUOi9ysqDc5fw";
-	public static final String TWITTER_CONSUMER_SECRET_2 = "TP9kXNAvNpdH2KcKCuH2DHAbtzzaZ04KIwzOGiOKB0";
 
 	public static final String SCHEME_HTTP = "http";
 	public static final String SCHEME_HTTPS = "https";
