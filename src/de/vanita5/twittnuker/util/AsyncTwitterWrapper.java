@@ -90,6 +90,7 @@ import twitter4j.http.HttpResponseCode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -145,6 +146,11 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		return mAsyncTaskManager.add(task, true);
 	}
 
+    public int createMuteAsync(final long accountId, final long user_id) {
+        final CreateMuteTask task = new CreateMuteTask(accountId, user_id);
+        return mAsyncTaskManager.add(task, true);
+    }
+
 	public int createFavoriteAsync(final long accountId, final long status_id) {
 		final CreateFavoriteTask task = new CreateFavoriteTask(accountId, status_id);
 		return mAsyncTaskManager.add(task, true);
@@ -190,6 +196,11 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		final DestroyBlockTask task = new DestroyBlockTask(accountId, user_id);
 		return mAsyncTaskManager.add(task, true);
 	}
+
+    public int destroyMuteAsync(final long accountId, final long user_id) {
+        final DestroyMuteTask task = new DestroyMuteTask(accountId, user_id);
+        return mAsyncTaskManager.add(task, true);
+    }
 
 	public int destroyDirectMessageAsync(final long accountId, final long message_id) {
 		final DestroyDirectMessageTask task = new DestroyDirectMessageTask(accountId, message_id);
@@ -441,7 +452,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 		@Override
 		protected void onPostExecute(final SingleResponse<Boolean> result) {
-			if (result.hasData() && result.getData()) {
+            if (Boolean.TRUE.equals(result.getData())) {
 				Utils.showOkMessage(mContext, R.string.profile_banner_image_updated, false);
 			} else {
 				Utils.showErrorMessage(mContext, R.string.action_updating_profile_banner_image, result.getException(),
@@ -449,7 +460,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			}
 			final Intent intent = new Intent(BROADCAST_PROFILE_BANNER_UPDATED);
 			intent.putExtra(EXTRA_USER_ID, mAccountId);
-			intent.putExtra(EXTRA_SUCCEED, result.hasData());
 			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
@@ -486,7 +496,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			}
 			final Intent intent = new Intent(BROADCAST_PROFILE_UPDATED);
 			intent.putExtra(EXTRA_USER_ID, account_id);
-			intent.putExtra(EXTRA_SUCCEED, result.hasData());
 			context.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
@@ -525,7 +534,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			}
 			final Intent intent = new Intent(BROADCAST_PROFILE_IMAGE_UPDATED);
 			intent.putExtra(EXTRA_USER_ID, account_id);
-			intent.putExtra(EXTRA_SUCCEED, result.hasData());
 			context.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
@@ -577,7 +585,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			}
 			final Intent intent = new Intent(BROADCAST_FRIENDSHIP_ACCEPTED);
 			intent.putExtra(EXTRA_USER_ID, mUserId);
-			intent.putExtra(EXTRA_SUCCEED, result.hasData());
 			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
@@ -635,7 +642,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			final Intent intent = new Intent(BROADCAST_USER_LIST_MEMBERS_ADDED);
 			intent.putExtra(EXTRA_USER_LIST, result.getData());
 			intent.putExtra(EXTRA_USERS, users);
-			intent.putExtra(EXTRA_SUCCEED, succeed);
 			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
@@ -689,16 +695,16 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             try {
                 final User user = twitter.createBlock(user_id);
                 for (final Uri uri : STATUSES_URIS) {
-					final String where = Statuses.ACCOUNT_ID + " = " + account_id + " AND " + Statuses.USER_ID + " = "
-							+ user_id;
-                    mResolver.delete(uri, where, null);
+                    final Where where = Where.and(Where.equals(Statuses.ACCOUNT_ID, account_id),
+                            Where.equals(Statuses.USER_ID, user_id));
+                    mResolver.delete(uri, where.getSQL(), null);
 
                 }
                 // I bet you don't want to see this user in your auto
                 // complete
                 // list.
-                final String where = CachedUsers.USER_ID + " = " + user_id;
-                mResolver.delete(CachedUsers.CONTENT_URI, where, null);
+                final Where where = Where.equals(CachedUsers.USER_ID, user_id);
+                mResolver.delete(CachedUsers.CONTENT_URI, where.getSQL(), null);
 				return SingleResponse.getInstance(user, null);
             } catch (final TwitterException e) {
 				return SingleResponse.getInstance(null, e);
@@ -711,13 +717,55 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				final String message = mContext.getString(R.string.blocked_user,
 						getUserName(mContext, result.getData()));
 				mMessagesManager.showInfoMessage(message, false);
+                final Intent intent = new Intent(BROADCAST_FRIENDSHIP_CHANGED);
+                intent.putExtra(EXTRA_USER_ID, user_id);
+                mContext.sendBroadcast(intent);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_blocking, result.getException(), true);
 			}
-			final Intent intent = new Intent(BROADCAST_BLOCKSTATE_CHANGED);
-			intent.putExtra(EXTRA_USER_ID, user_id);
-			intent.putExtra(EXTRA_SUCCEED, result.hasData());
-			mContext.sendBroadcast(intent);
+            super.onPostExecute(result);
+        }
+
+    }
+
+    class CreateMuteTask extends ManagedAsyncTask<Void, Void, SingleResponse<User>> {
+
+        private final long mAccountId, mUserId;
+
+        public CreateMuteTask(final long accountId, final long userId) {
+            super(mContext, mAsyncTaskManager);
+            this.mAccountId = accountId;
+            this.mUserId = userId;
+        }
+
+        @Override
+        protected SingleResponse<User> doInBackground(final Void... params) {
+            final Twitter twitter = getTwitterInstance(mContext, mAccountId, false);
+            if (twitter == null) return SingleResponse.getInstance();
+            try {
+                final User user = twitter.createMute(mUserId);
+                final Where where = Where.and(Where.equals(Statuses.ACCOUNT_ID, mAccountId),
+                        Where.equals(Statuses.USER_ID, mUserId));
+                mResolver.delete(Statuses.CONTENT_URI, where.getSQL(), null);
+
+                return SingleResponse.getInstance(user, null);
+            } catch (final TwitterException e) {
+                return SingleResponse.getInstance(null, e);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final SingleResponse<User> result) {
+            if (result.hasData() && result.getData().getId() > 0) {
+                final String message = mContext.getString(R.string.muted_user,
+                        getUserName(mContext, result.getData()));
+                mMessagesManager.showInfoMessage(message, false);
+                final Intent intent = new Intent(BROADCAST_FRIENDSHIP_CHANGED);
+                intent.putExtra(EXTRA_USER_ID, mUserId);
+			    mContext.sendBroadcast(intent);
+            } else {
+                mMessagesManager.showErrorMessage(R.string.action_muting, result.getException(), true);
+            }
 			super.onPostExecute(result);
 		}
 
@@ -742,16 +790,11 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 final twitter4j.Status status = twitter.createFavorite(status_id);
                 final ContentValues values = new ContentValues();
                 values.put(Statuses.IS_FAVORITE, true);
-                final StringBuilder where = new StringBuilder();
-                where.append(Statuses.ACCOUNT_ID + " = " + account_id);
-                where.append(" AND ");
-                where.append("(");
-                where.append(Statuses.STATUS_ID + " = " + status_id);
-                where.append(" OR ");
-                where.append(Statuses.RETWEET_ID + " = " + status_id);
-                where.append(")");
+                final Where where = Where.and(Where.equals(Statuses.ACCOUNT_ID, account_id),
+                        Where.or(Where.equals(Statuses.STATUS_ID, status_id),
+                                Where.equals(Statuses.RETWEET_ID, status_id)));
                 for (final Uri uri : TweetStore.STATUSES_URIS) {
-                    mResolver.update(uri, values, where.toString(), null);
+                    mResolver.update(uri, values, where.getSQL(), null);
                 }
 				return SingleResponse.getInstance(new ParcelableStatus(status, account_id, false));
             } catch (final TwitterException e) {
@@ -823,7 +866,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			}
 			final Intent intent = new Intent(BROADCAST_FRIENDSHIP_CHANGED);
 			intent.putExtra(EXTRA_USER_ID, user_id);
-			intent.putExtra(EXTRA_SUCCEED, result.hasData());
 			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
@@ -843,7 +885,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 		@Override
 		protected ListResponse<Long> doInBackground(final Void... params) {
-			final List<Long> blocked_users = new ArrayList<Long>();
+            final List<Long> blocked_users = new ArrayList<>();
 			final Twitter twitter = getTwitterInstance(mContext, account_id, false);
 			if (twitter != null) {
 				for (final long user_id : user_ids) {
@@ -855,12 +897,12 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 						blocked_users.add(user.getId());
 					} catch (final TwitterException e) {
 						deleteCaches(blocked_users);
-						return new ListResponse<Long>(null, e, null);
+                        return new ListResponse<>(null, e, null);
 					}
 				}
 			}
 			deleteCaches(blocked_users);
-			return new ListResponse<Long>(blocked_users, null, null);
+            return new ListResponse<>(blocked_users, null, null);
 		}
 
 		@Override
@@ -872,7 +914,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			}
 			final Intent intent = new Intent(BROADCAST_MULTI_BLOCKSTATE_CHANGED);
 			intent.putExtra(EXTRA_USER_ID, user_ids);
-			intent.putExtra(EXTRA_SUCCEED, result.list != null);
 			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
@@ -941,7 +982,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             try {
                 final ParcelableUserList list = new ParcelableUserList(twitter.createUserListSubscription(listId),
 						accountId);
-                return new SingleResponse<ParcelableUserList>(list, null);
+                return SingleResponse.getInstance(list);
             } catch (final TwitterException e) {
 				return SingleResponse.getInstance(e);
             }
@@ -953,13 +994,12 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			if (succeed) {
 				final String message = mContext.getString(R.string.subscribed_to_list, result.getData().name);
 				mMessagesManager.showOkMessage(message, false);
+                final Intent intent = new Intent(BROADCAST_USER_LIST_SUBSCRIBED);
+                intent.putExtra(EXTRA_USER_LIST, result.getData());
+                mContext.sendBroadcast(intent);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_subscribing_to_list, result.getException(), true);
 			}
-			final Intent intent = new Intent(BROADCAST_USER_LIST_SUBSCRIBED);
-			intent.putExtra(EXTRA_USER_LIST, result.getData());
-			intent.putExtra(EXTRA_SUCCEED, succeed);
-			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
 
@@ -994,16 +1034,16 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 		@Override
 		protected void onPostExecute(final SingleResponse<UserList> result) {
-			final boolean succeed = result.hasData() && result.getData().getId() > 0;
-			if (succeed) {
-				final String message = mContext.getString(R.string.created_list, result.getData().getName());
+            if (result.hasData()) {
+                final UserList userList = result.getData();
+                final String message = mContext.getString(R.string.created_list, userList.getName());
 				mMessagesManager.showOkMessage(message, false);
+                final Intent intent = new Intent(BROADCAST_USER_LIST_CREATED);
+                intent.putExtra(EXTRA_USER_LIST, new ParcelableUserList(userList, account_id));
+                mContext.sendBroadcast(intent);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_creating_list, result.getException(), true);
 			}
-			final Intent intent = new Intent(BROADCAST_USER_LIST_CREATED);
-			intent.putExtra(EXTRA_SUCCEED, succeed);
-			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
 
@@ -1054,14 +1094,13 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 							result.getData().name);
 				}
 				mMessagesManager.showInfoMessage(message, false);
-			} else {
-				mMessagesManager.showErrorMessage(R.string.action_deleting, result.getException(), true);
-			}
-			final Intent intent = new Intent(BROADCAST_USER_LIST_MEMBERS_DELETED);
-			intent.putExtra(EXTRA_USER_LIST, result.getData());
-			intent.putExtra(EXTRA_USERS, users);
-			intent.putExtra(EXTRA_SUCCEED, succeed);
-			mContext.sendBroadcast(intent);
+                final Intent intent = new Intent(BROADCAST_USER_LIST_MEMBERS_DELETED);
+                intent.putExtra(EXTRA_USER_LIST, result.getData());
+                intent.putExtra(EXTRA_USERS, users);
+                mContext.sendBroadcast(intent);
+            } else {
+                mMessagesManager.showErrorMessage(R.string.action_deleting, result.getException(), true);
+            }
 			super.onPostExecute(result);
 		}
 
@@ -1111,7 +1150,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			}
 			final Intent intent = new Intent(BROADCAST_FRIENDSHIP_DENIED);
 			intent.putExtra(EXTRA_USER_ID, mUserId);
-			intent.putExtra(EXTRA_SUCCEED, result.hasData());
 			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
@@ -1148,13 +1186,53 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				final String message = mContext.getString(R.string.unblocked_user,
 						getUserName(mContext, result.getData()));
 				mMessagesManager.showInfoMessage(message, false);
+                final Intent intent = new Intent(BROADCAST_FRIENDSHIP_CHANGED);
+                intent.putExtra(EXTRA_USER_ID, mUserId);
+                mContext.sendBroadcast(intent);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_unblocking, result.getException(), true);
 			}
-			final Intent intent = new Intent(BROADCAST_BLOCKSTATE_CHANGED);
-			intent.putExtra(EXTRA_USER_ID, mUserId);
-			intent.putExtra(EXTRA_SUCCEED, result.hasData());
-			mContext.sendBroadcast(intent);
+            super.onPostExecute(result);
+        }
+
+    }
+
+    class DestroyMuteTask extends ManagedAsyncTask<Void, Void, SingleResponse<User>> {
+
+        private final long mAccountId;
+        private final long mUserId;
+
+        public DestroyMuteTask(final long accountId, final long userId) {
+            super(mContext, mAsyncTaskManager);
+            mAccountId = accountId;
+            mUserId = userId;
+        }
+
+        @Override
+        protected SingleResponse<User> doInBackground(final Void... params) {
+            final Twitter twitter = getTwitterInstance(mContext, mAccountId, false);
+            if (twitter == null) return SingleResponse.getInstance();
+            try {
+                final User user = twitter.destroyMute(mUserId);
+                return SingleResponse.getInstance(user, null);
+            } catch (final TwitterException e) {
+                return SingleResponse.getInstance(null, e);
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(final SingleResponse<User> result) {
+            if (result.hasData()) {
+                final String message = mContext.getString(R.string.unmuted_user,
+                        getUserName(mContext, result.getData()));
+                mMessagesManager.showInfoMessage(message, false);
+                final Intent intent = new Intent(BROADCAST_FRIENDSHIP_CHANGED);
+                intent.putExtra(EXTRA_USER_ID, mUserId);
+                mContext.sendBroadcast(intent);
+            } else {
+                mMessagesManager.showErrorMessage(R.string.action_unmuting, result.getException(), true);
+            }
 			super.onPostExecute(result);
 		}
 
@@ -1234,18 +1312,12 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 					final twitter4j.Status status = twitter.destroyFavorite(status_id);
 					final ContentValues values = new ContentValues();
 					values.put(Statuses.IS_FAVORITE, 0);
-					final StringBuilder where = new StringBuilder();
-					where.append(Statuses.ACCOUNT_ID + " = " + account_id);
-					where.append(" AND ");
-					where.append("(");
-					where.append(Statuses.STATUS_ID + " = " + status_id);
-					where.append(" OR ");
-					where.append(Statuses.RETWEET_ID + " = " + status_id);
-					where.append(")");
+                    final Where where = Where.and(Where.equals(Statuses.ACCOUNT_ID, account_id),
+                            Where.or(Where.equals(Statuses.STATUS_ID, status_id), Where.equals(Statuses.RETWEET_ID, status_id)));
 					for (final Uri uri : TweetStore.STATUSES_URIS) {
-						mResolver.update(uri, values, where.toString(), null);
+                        mResolver.update(uri, values, where.getSQL(), null);
 					}
-					return new SingleResponse<ParcelableStatus>(new ParcelableStatus(status, account_id, false), null);
+                    return SingleResponse.getInstance(new ParcelableStatus(status, account_id, false));
 				} catch (final TwitterException e) {
 					return SingleResponse.getInstance(e);
 				}
@@ -1296,12 +1368,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				try {
 					final User user = twitter.destroyFriendship(user_id);
 					// remove user tweets and retweets
-					final String where
-							= Statuses.ACCOUNT_ID + " = " + account_id
-							+ " AND (" + Statuses.USER_ID + " = " + user_id
-							+ " OR " + Statuses.RETWEETED_BY_USER_ID + " = " + user_id
-							+ ")";
-					mResolver.delete(Statuses.CONTENT_URI, where, null);
+                    final Where where = Where.and(Where.equals(Statuses.ACCOUNT_ID, account_id),
+                            Where.or(Where.equals(Statuses.USER_ID, user_id),
+                                    Where.equals(Statuses.RETWEETED_BY_USER_ID, user_id)));
+                    mResolver.delete(Statuses.CONTENT_URI, where.getSQL(), null);
 					return SingleResponse.getInstance(user, null);
 				} catch (final TwitterException e) {
 					return SingleResponse.getInstance(null, e);
@@ -1316,13 +1386,12 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				final String message = mContext.getString(R.string.unfollowed_user,
 						getUserName(mContext, result.getData()));
 				mMessagesManager.showInfoMessage(message, false);
+                final Intent intent = new Intent(BROADCAST_FRIENDSHIP_CHANGED);
+                intent.putExtra(EXTRA_USER_ID, user_id);
+                mContext.sendBroadcast(intent);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_unfollowing, result.getException(), true);
 			}
-			final Intent intent = new Intent(BROADCAST_FRIENDSHIP_CHANGED);
-			intent.putExtra(EXTRA_USER_ID, user_id);
-			intent.putExtra(EXTRA_SUCCEED, result.hasData());
-			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
 
@@ -1379,44 +1448,34 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected SingleResponse<twitter4j.Status> doInBackground(final Void... params) {
             final Twitter twitter = getTwitterInstance(mContext, account_id, false);
 			if (twitter == null) return SingleResponse.getInstance();
-			TwitterException maybeRemoved = null;
-			twitter4j.Status status = null;
 			try {
-				status = twitter.destroyStatus(status_id);
-			} catch (final TwitterException e) {
-				// In the context of deleting tweets, a status code 404 means
-				// the required resource does not exist,
-				// And we should delete that tweet from Twidere client anyway.
-				// See also: https://dev.twitter.com/overview/api/response-codes
-				if (e.getStatusCode() != 404)
-					return SingleResponse.getInstance(null, e);
-				else
-					maybeRemoved = e;
-			}
-			final ContentValues values = new ContentValues();
-			values.put(Statuses.MY_RETWEET_ID, -1);
-			for (final Uri uri : TweetStore.STATUSES_URIS) {
-				mResolver.delete(uri, Statuses.STATUS_ID + " = " + status_id, null);
-				mResolver.update(uri, values, Statuses.MY_RETWEET_ID + " = " + status_id, null);
-			}
-			return SingleResponse.getInstance(status, maybeRemoved);
+                final twitter4j.Status status = twitter.destroyStatus(status_id);
+                final ContentValues values = new ContentValues();
+                values.put(Statuses.MY_RETWEET_ID, -1);
+                for (final Uri uri : TweetStore.STATUSES_URIS) {
+                    mResolver.delete(uri, Statuses.STATUS_ID + " = " + status_id, null);
+                    mResolver.update(uri, values, Statuses.MY_RETWEET_ID + " = " + status_id, null);
+                }
+                return SingleResponse.getInstance(status, null);
+            } catch (final TwitterException e) {
+                return SingleResponse.getInstance(null, e);
+            }
         }
 
 		@Override
 		protected void onPostExecute(final SingleResponse<twitter4j.Status> result) {
-			final Intent intent = new Intent(BROADCAST_STATUS_DESTROYED);
 			if (result.hasData() && result.getData().getId() > 0) {
-				intent.putExtra(EXTRA_STATUS_ID, status_id);
-				intent.putExtra(EXTRA_SUCCEED, true);
 				if (result.getData().getRetweetedStatus() != null) {
 					mMessagesManager.showInfoMessage(R.string.retweet_cancelled, false);
 				} else {
 					mMessagesManager.showInfoMessage(R.string.status_deleted, false);
 				}
+                final Intent intent = new Intent(BROADCAST_STATUS_DESTROYED);
+                intent.putExtra(EXTRA_STATUS_ID, status_id);
+                mContext.sendBroadcast(intent);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_deleting, result.getException(), true);
 			}
-			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
 
@@ -1455,13 +1514,12 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			if (succeed) {
 				final String message = mContext.getString(R.string.unsubscribed_from_list, result.getData().name);
 				mMessagesManager.showOkMessage(message, false);
+                final Intent intent = new Intent(BROADCAST_USER_LIST_UNSUBSCRIBED);
+                intent.putExtra(EXTRA_USER_LIST, result.getData());
+                mContext.sendBroadcast(intent);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_unsubscribing_from_list, result.getException(), true);
 			}
-			final Intent intent = new Intent(BROADCAST_USER_LIST_UNSUBSCRIBED);
-			intent.putExtra(EXTRA_USER_LIST, result.getData());
-			intent.putExtra(EXTRA_SUCCEED, succeed);
-			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
 
@@ -1487,7 +1545,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 					if (mListId > 0) {
 						final ParcelableUserList list = new ParcelableUserList(twitter.destroyUserList(mListId),
 								mAccountId);
-						return new SingleResponse<ParcelableUserList>(list, null);
+                        return SingleResponse.getInstance(list);
 					}
 				} catch (final TwitterException e) {
 					return SingleResponse.getInstance(e);
@@ -1502,13 +1560,12 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			if (succeed) {
 				final String message = mContext.getString(R.string.deleted_list, result.getData().name);
 				mMessagesManager.showInfoMessage(message, false);
+                final Intent intent = new Intent(BROADCAST_USER_LIST_DELETED);
+                intent.putExtra(EXTRA_USER_LIST, result.getData());
+                mContext.sendBroadcast(intent);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_deleting, result.getException(), true);
 			}
-			final Intent intent = new Intent(BROADCAST_USER_LIST_DELETED);
-			intent.putExtra(EXTRA_SUCCEED, succeed);
-			intent.putExtra(EXTRA_USER_LIST, result.getData());
-			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
 
@@ -1553,7 +1610,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 							since_id = since_ids[idx];
 							paging.setSinceId(since_id - 1);
 						}
-						final List<DirectMessage> messages = new ArrayList<DirectMessage>();
+                        final List<DirectMessage> messages = new ArrayList<>();
 						final boolean truncated = truncateMessages(getDirectMessages(twitter, paging), messages,
 								since_id);
 						result.add(new MessageListResponse(account_id, max_id, since_id, load_item_limit, messages,
@@ -1635,7 +1692,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 		@Override
 		public List<Trends> getTrends(final Twitter twitter) throws TwitterException {
-			final ArrayList<Trends> trends_list = new ArrayList<Trends>();
+            final ArrayList<Trends> trends_list = new ArrayList<>();
 			if (twitter != null) {
 				trends_list.add(twitter.getLocationTrends(woeid));
 			}
@@ -1753,7 +1810,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		@Override
 		protected List<StatusListResponse> doInBackground(final Void... params) {
 
-			final List<StatusListResponse> result = new ArrayList<StatusListResponse>();
+            final List<StatusListResponse> result = new ArrayList<>();
 
             if (mAccountIds == null) return result;
 
@@ -1778,7 +1835,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                         } else {
                             sinceId = -1;
 						}
-						final List<twitter4j.Status> statuses = new ArrayList<twitter4j.Status>();
+                        final List<twitter4j.Status> statuses = new ArrayList<>();
 						final boolean truncated = truncateStatuses(getStatuses(twitter, paging), statuses, sinceId);
                         result.add(new StatusListResponse(account_id, maxId, sinceId, load_item_limit, statuses,
 								truncated));
@@ -1819,12 +1876,12 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			extras.putLong(EXTRA_ACCOUNT_ID, account_id);
 			if (twitter != null) {
 				try {
-					return new ListResponse<Trends>(getTrends(twitter), null, extras);
+                    return new ListResponse<>(getTrends(twitter), null, extras);
 				} catch (final TwitterException e) {
-					return new ListResponse<Trends>(null, e, extras);
+                    return new ListResponse<>(null, e, extras);
 				}
 			}
-			return new ListResponse<Trends>(null, null, extras);
+            return new ListResponse<>(null, null, extras);
 		}
 
 	}
@@ -1861,7 +1918,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 			final Bundle extras = new Bundle();
 			extras.putLong(EXTRA_ACCOUNT_ID, account_id);
-			final List<Long> reported_users = new ArrayList<Long>();
+            final List<Long> reported_users = new ArrayList<>();
 			final Twitter twitter = getTwitterInstance(mContext, account_id, false);
 			if (twitter != null) {
 				for (final long user_id : user_ids) {
@@ -1872,11 +1929,11 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 						}
 						reported_users.add(user.getId());
 					} catch (final TwitterException e) {
-						return new ListResponse<Long>(null, e, extras);
+                        return new ListResponse<>(null, e, extras);
 					}
 				}
 			}
-			return new ListResponse<Long>(reported_users, null, extras);
+            return new ListResponse<>(reported_users, null, extras);
 		}
 
 		@Override
@@ -1884,17 +1941,16 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			if (result != null) {
 				final String user_id_where = ListUtils.toString(result.list, ',', false);
 				for (final Uri uri : STATUSES_URIS) {
-					final String where = Statuses.ACCOUNT_ID + " = " + account_id + " AND " + Statuses.USER_ID
-							+ " IN (" + user_id_where + ")";
-					mResolver.delete(uri, where, null);
+                    final Where where = Where.and(Where.equals(Statuses.ACCOUNT_ID, account_id),
+                            new Where(String.format(Locale.ROOT, "%s IN (%s)", Statuses.USER_ID, user_id_where)));
+                    mResolver.delete(uri, where.getSQL(), null);
 				}
 				mMessagesManager.showInfoMessage(R.string.reported_users_for_spam, false);
-			}
-			final Intent intent = new Intent(BROADCAST_MULTI_BLOCKSTATE_CHANGED);
-			intent.putExtra(EXTRA_USER_IDS, user_ids);
-			intent.putExtra(EXTRA_ACCOUNT_ID, account_id);
-			intent.putExtra(EXTRA_SUCCEED, result != null);
-			mContext.sendBroadcast(intent);
+                final Intent intent = new Intent(BROADCAST_MULTI_BLOCKSTATE_CHANGED);
+                intent.putExtra(EXTRA_USER_IDS, user_ids);
+                intent.putExtra(EXTRA_ACCOUNT_ID, account_id);
+                mContext.sendBroadcast(intent);
+            }
 			super.onPostExecute(result);
 		}
 
@@ -1934,13 +1990,12 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 					mResolver.delete(uri, where, null);
 				}
 				mMessagesManager.showInfoMessage(R.string.reported_user_for_spam, false);
+                final Intent intent = new Intent(BROADCAST_FRIENDSHIP_CHANGED);
+                intent.putExtra(EXTRA_USER_ID, user_id);
+                mContext.sendBroadcast(intent);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_reporting_for_spam, result.getException(), true);
 			}
-			final Intent intent = new Intent(BROADCAST_BLOCKSTATE_CHANGED);
-			intent.putExtra(EXTRA_USER_ID, user_id);
-			intent.putExtra(EXTRA_SUCCEED, result.hasData());
-			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
 
@@ -2000,55 +2055,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
-	class SendDirectMessageTask extends ManagedAsyncTask<Void, Void, SingleResponse<DirectMessage>> {
-
-		private final long user_id;
-		private final String screen_name;
-		private final String message;
-		private final long account_id;
-
-		public SendDirectMessageTask(final long account_id, final String screen_name, final long user_id,
-				final String message) {
-			super(mContext, mAsyncTaskManager);
-			this.account_id = account_id;
-			this.user_id = user_id;
-			this.screen_name = screen_name;
-			this.message = message;
-		}
-
-		@Override
-		protected SingleResponse<DirectMessage> doInBackground(final Void... args) {
-			final Twitter twitter = getTwitterInstance(mContext, account_id, true, true);
-			if (twitter == null) return SingleResponse.getInstance();
-			try {
-				if (user_id > 0)
-					return SingleResponse.getInstance(twitter.sendDirectMessage(user_id, message), null);
-				else if (screen_name != null)
-					return SingleResponse.getInstance(twitter.sendDirectMessage(screen_name, message), null);
-			} catch (final TwitterException e) {
-				return SingleResponse.getInstance(null, e);
-			}
-			return SingleResponse.getInstance();
-		}
-
-		@Override
-		protected void onPostExecute(final SingleResponse<DirectMessage> result) {
-			super.onPostExecute(result);
-			if (result.hasData() && result.getData().getId() > 0) {
-				final ContentValues values = makeDirectMessageContentValues(result.getData(), account_id, true);
-				final String delete_where = DirectMessages.ACCOUNT_ID + " = " + account_id + " AND "
-						+ DirectMessages.MESSAGE_ID + " = " + result.getData().getId();
-				mResolver.delete(DirectMessages.Outbox.CONTENT_URI, delete_where, null);
-				mResolver.insert(DirectMessages.Outbox.CONTENT_URI, values);
-				mMessagesManager.showOkMessage(R.string.direct_message_sent, false);
-			} else {
-				mMessagesManager.showErrorMessage(R.string.action_sending_direct_message, result.getException(), true);
-			}
-		}
-
-	}
-
-	abstract class StoreDirectMessagesTask extends ManagedAsyncTask<Void, Void, SingleResponse<Bundle>> {
+    abstract class StoreDirectMessagesTask extends ManagedAsyncTask<Void, Void, SingleResponse<Boolean>> {
 
 		private final List<MessageListResponse> responses;
 		private final Uri uri;
@@ -2063,44 +2070,39 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 		@Override
-		protected SingleResponse<Bundle> doInBackground(final Void... args) {
+        protected SingleResponse<Boolean> doInBackground(final Void... args) {
 
 			boolean succeed = false;
 			for (final TwitterListResponse<DirectMessage> response : responses) {
-				final long account_id = response.account_id;
+                final long accountId = response.account_id;
 				final List<DirectMessage> messages = response.list;
 				if (messages != null) {
 					final ContentValues[] values_array = new ContentValues[messages.size()];
-					final long[] message_ids = new long[messages.size()];
+                    final long[] messageIds = new long[messages.size()];
 
 					for (int i = 0, j = messages.size(); i < j; i++) {
 						final DirectMessage message = messages.get(i);
-						message_ids[i] = message.getId();
-						values_array[i] = makeDirectMessageContentValues(message, account_id, isOutgoing());
+                        messageIds[i] = message.getId();
+                        values_array[i] = makeDirectMessageContentValues(message, accountId, isOutgoing());
 					}
 
 					// Delete all rows conflicting before new data inserted.
 					{
-						final StringBuilder delete_where = new StringBuilder();
-						delete_where.append(DirectMessages.ACCOUNT_ID + " = " + account_id);
-						delete_where.append(" AND ");
-						delete_where.append(Where.in(new Column(DirectMessages.MESSAGE_ID),
-								new RawItemArray(message_ids)).getSQL());
-						final Uri delete_uri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY,
+                        final Where deleteWhere = Where.and(Where.equals(DirectMessages.ACCOUNT_ID, accountId),
+                                Where.in(new Column(DirectMessages.MESSAGE_ID), new RawItemArray(messageIds)));
+                        final Uri deleteUri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY,
 								false));
-						mResolver.delete(delete_uri, delete_where.toString(), null);
+                        mResolver.delete(deleteUri, deleteWhere.getSQL(), null);
 					}
 
 					// Insert previously fetched items.
-					final Uri insert_uri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY, notify));
-					bulkInsert(mResolver, insert_uri, values_array);
+                    final Uri insertUri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY, notify));
+                    bulkInsert(mResolver, insertUri, values_array);
 
 				}
 				succeed = true;
 			}
-			final Bundle bundle = new Bundle();
-			bundle.putBoolean(EXTRA_SUCCEED, succeed);
-			return SingleResponse.getInstance(bundle, null);
+            return SingleResponse.getInstance(succeed);
 		}
 
 		abstract boolean isOutgoing();
@@ -2114,12 +2116,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 		@Override
-		protected void onPostExecute(final SingleResponse<Bundle> response) {
-			final boolean succeed = response != null && response.hasData()
-					&& response.getData().getBoolean(EXTRA_SUCCEED);
-			final Bundle extras = new Bundle();
-			extras.putBoolean(EXTRA_SUCCEED, succeed);
-			mContext.sendBroadcast(new Intent(BROADCAST_HOME_TIMELINE_REFRESHED).putExtras(extras));
+        protected void onPostExecute(final SingleResponse<Boolean> response) {
+            if (Boolean.TRUE.equals(response.getData())) {
+                mContext.sendBroadcast(new Intent(BROADCAST_HOME_TIMELINE_REFRESHED));
+            }
 			super.onPostExecute(response);
 		}
 
@@ -2140,12 +2140,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 		@Override
-		protected void onPostExecute(final SingleResponse<Bundle> response) {
-			final boolean succeed = response != null && response.hasData()
-					&& response.getData().getBoolean(EXTRA_SUCCEED);
-			final Bundle extras = new Bundle();
-			extras.putBoolean(EXTRA_SUCCEED, succeed);
-			mContext.sendBroadcast(new Intent(BROADCAST_MENTIONS_REFRESHED).putExtras(extras));
+        protected void onPostExecute(final SingleResponse<Boolean> response) {
+            if (Boolean.TRUE.equals(response.getData())) {
+                mContext.sendBroadcast(new Intent(BROADCAST_MENTIONS_REFRESHED));
+            }
 			super.onPostExecute(response);
 		}
 
@@ -2177,11 +2175,11 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
-	abstract class StoreStatusesTask extends ManagedAsyncTask<Void, Void, SingleResponse<Bundle>> {
+    abstract class StoreStatusesTask extends ManagedAsyncTask<Void, Void, SingleResponse<Boolean>> {
 
 		private final List<StatusListResponse> responses;
 		private final Uri uri;
-		private final ArrayList<ContentValues> all_statuses = new ArrayList<ContentValues>();
+        private final ArrayList<ContentValues> all_statuses = new ArrayList<>();
 		private final boolean notify;
 
 		public StoreStatusesTask(final List<StatusListResponse> result, final Uri uri, final boolean notify,
@@ -2193,25 +2191,25 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 		@Override
-		protected SingleResponse<Bundle> doInBackground(final Void... args) {
+        protected SingleResponse<Boolean> doInBackground(final Void... args) {
 			boolean succeed = false;
 			for (final StatusListResponse response : responses) {
-				final long account_id = response.account_id;
+                final long accountId = response.account_id;
 				final List<twitter4j.Status> statuses = response.list;
 				if (statuses == null || statuses.isEmpty()) {
 					continue;
 				}
-				final ArrayList<Long> ids_in_db = getStatusIdsInDatabase(mContext, uri, account_id);
+                final ArrayList<Long> ids_in_db = getStatusIdsInDatabase(mContext, uri, accountId);
 				final boolean noItemsBefore = ids_in_db.isEmpty();
 				final ContentValues[] values = new ContentValues[statuses.size()];
 				final long[] statusIds = new long[statuses.size()];
 				for (int i = 0, j = statuses.size(); i < j; i++) {
 					final twitter4j.Status status = statuses.get(i);
-					values[i] = makeStatusContentValues(status, account_id);
+                    values[i] = makeStatusContentValues(status, accountId);
 					statusIds[i] = status.getId();
 				}
 				// Delete all rows conflicting before new data inserted.
-				final Where accountWhere = Where.equals(Statuses.ACCOUNT_ID, account_id);
+                final Where accountWhere = Where.equals(Statuses.ACCOUNT_ID, accountId);
 				final Where statusWhere = Where.in(new Column(Statuses.STATUS_ID), new RawItemArray(statusIds));
 				final String deleteWhere = Where.and(accountWhere, statusWhere).getSQL();
 				final Uri deleteUri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY, false));
@@ -2222,26 +2220,22 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				bulkInsert(mResolver, insertUri, values);
 
 				// Insert a gap.
-				final long min_id = statusIds.length != 0 ? ArrayUtils.min(statusIds) : -1;
+                final long minId = statusIds.length != 0 ? ArrayUtils.min(statusIds) : -1;
 				final boolean deletedOldGap = rowsDeleted > 0 && ArrayUtils.contains(statusIds, response.max_id);
 				final boolean noRowsDeleted = rowsDeleted == 0;
-				final boolean insertGap = min_id > 0 && (noRowsDeleted || deletedOldGap) && !response.truncated
+                final boolean insertGap = minId > 0 && (noRowsDeleted || deletedOldGap) && !response.truncated
 						&& !noItemsBefore && statuses.size() > 1;
 				if (insertGap) {
-					final ContentValues gap_value = new ContentValues();
-					gap_value.put(Statuses.IS_GAP, 1);
-					final StringBuilder where = new StringBuilder();
-					where.append(Statuses.ACCOUNT_ID + " = " + account_id);
-					where.append(" AND " + Statuses.STATUS_ID + " = " + min_id);
-					final Uri update_uri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY, true));
-					mResolver.update(update_uri, gap_value, where.toString(), null);
+                    final ContentValues gapValue = new ContentValues();
+                    gapValue.put(Statuses.IS_GAP, 1);
+                    final Where where = Where.and(Where.equals(Statuses.ACCOUNT_ID, accountId),
+                            Where.equals(Statuses.STATUS_ID, minId));
+                    final Uri updateUri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY, true));
+                    mResolver.update(updateUri, gapValue, where.getSQL(), null);
 				}
 				succeed = true;
 			}
-			final Bundle bundle = new Bundle();
-			bundle.putBoolean(EXTRA_SUCCEED, succeed);
-			getAllStatusesIds(mContext, uri);
-			return SingleResponse.getInstance(bundle, null);
+            return SingleResponse.getInstance(succeed, null);
 		}
 
 		@Override
@@ -2253,7 +2247,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
-	class StoreTrendsTask extends ManagedAsyncTask<Void, Void, SingleResponse<Bundle>> {
+    class StoreTrendsTask extends ManagedAsyncTask<Void, Void, SingleResponse<Boolean>> {
 
 		private final ListResponse<Trends> response;
 		private final Uri uri;
@@ -2265,38 +2259,34 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 		@Override
-		protected SingleResponse<Bundle> doInBackground(final Void... args) {
-			final Bundle bundle = new Bundle();
-			if (response != null) {
-
-				final List<Trends> messages = response.list;
-				final ArrayList<String> hashtags = new ArrayList<String>();
-				final ArrayList<ContentValues> hashtag_values = new ArrayList<ContentValues>();
-				if (messages != null && !messages.isEmpty()) {
-					final ContentValues[] values_array = makeTrendsContentValues(messages);
-					for (final ContentValues values : values_array) {
-						final String hashtag = values.getAsString(CachedTrends.NAME).replaceFirst("#", "");
-						if (hashtags.contains(hashtag)) {
-							continue;
-						}
-						hashtags.add(hashtag);
-						final ContentValues hashtag_value = new ContentValues();
-						hashtag_value.put(CachedHashtags.NAME, hashtag);
-						hashtag_values.add(hashtag_value);
+        protected SingleResponse<Boolean> doInBackground(final Void... args) {
+            if (response == null) return SingleResponse.getInstance(false);
+			final List<Trends> messages = response.list;
+            final ArrayList<String> hashtags = new ArrayList<>();
+            final ArrayList<ContentValues> hashtagValues = new ArrayList<>();
+            if (messages != null && messages.size() > 0) {
+                final ContentValues[] valuesArray = makeTrendsContentValues(messages);
+                for (final ContentValues values : valuesArray) {
+					final String hashtag = values.getAsString(CachedTrends.NAME).replaceFirst("#", "");
+					if (hashtags.contains(hashtag)) {
+						continue;
 					}
-					mResolver.delete(uri, null, null);
-					bulkInsert(mResolver, uri, values_array);
-					bulkDelete(mResolver, CachedHashtags.CONTENT_URI, CachedHashtags.NAME, hashtags, null, true);
-					bulkInsert(mResolver, CachedHashtags.CONTENT_URI,
-							hashtag_values.toArray(new ContentValues[hashtag_values.size()]));
-					bundle.putBoolean(EXTRA_SUCCEED, true);
+					hashtags.add(hashtag);
+                    final ContentValues hashtagValue = new ContentValues();
+                    hashtagValue.put(CachedHashtags.NAME, hashtag);
+                    hashtagValues.add(hashtagValue);
 				}
+				mResolver.delete(uri, null, null);
+                bulkInsert(mResolver, uri, valuesArray);
+				bulkDelete(mResolver, CachedHashtags.CONTENT_URI, CachedHashtags.NAME, hashtags, null, true);
+				bulkInsert(mResolver, CachedHashtags.CONTENT_URI,
+                        hashtagValues.toArray(new ContentValues[hashtagValues.size()]));
 			}
-			return new SingleResponse<Bundle>(bundle, null);
+            return SingleResponse.getInstance(true);
 		}
 
 		@Override
-		protected void onPostExecute(final SingleResponse<Bundle> response) {
+        protected void onPostExecute(final SingleResponse<Boolean> response) {
 			// if (response != null && response.data != null &&
 			// response.data.getBoolean(EXTRA_SUCCEED)) {
 			// final Intent intent = new Intent(BROADCAST_TRENDS_UPDATED);
@@ -2332,7 +2322,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			if (twitter != null) {
 				try {
 					final UserList list = twitter.updateUserList(listId, name, isPublic, description);
-					return new SingleResponse<ParcelableUserList>(new ParcelableUserList(list, accountId), null);
+                    return SingleResponse.getInstance(new ParcelableUserList(list, accountId));
 				} catch (final TwitterException e) {
 					return SingleResponse.getInstance(e);
 				}
@@ -2342,16 +2332,15 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 		@Override
 		protected void onPostExecute(final SingleResponse<ParcelableUserList> result) {
-			final Intent intent = new Intent(BROADCAST_USER_LIST_DETAILS_UPDATED);
-			intent.putExtra(EXTRA_LIST_ID, listId);
 			if (result.hasData() && result.getData().id > 0) {
 				final String message = mContext.getString(R.string.updated_list_details, result.getData().name);
 				mMessagesManager.showOkMessage(message, false);
-				intent.putExtra(EXTRA_SUCCEED, true);
+                final Intent intent = new Intent(BROADCAST_USER_LIST_DETAILS_UPDATED);
+                intent.putExtra(EXTRA_LIST_ID, listId);
+                mContext.sendBroadcast(intent);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_updating_details, result.getException(), true);
 			}
-			mContext.sendBroadcast(intent);
 			super.onPostExecute(result);
 		}
 

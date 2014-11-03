@@ -57,10 +57,9 @@ public abstract class ParcelableStatusesListFragment extends BaseStatusesListFra
 			if (getActivity() == null || !isAdded() || isDetached()) return;
 			final String action = intent.getAction();
 			if (BROADCAST_STATUS_DESTROYED.equals(action)) {
-				final long status_id = intent.getLongExtra(EXTRA_STATUS_ID, -1);
-				final boolean succeed = intent.getBooleanExtra(EXTRA_SUCCEED, false);
-				if (status_id > 0 && succeed) {
-					deleteStatus(status_id);
+                final long statusId = intent.getLongExtra(EXTRA_STATUS_ID, -1);
+                if (statusId > 0) {
+                    deleteStatus(statusId);
 				}
 			} else if (BROADCAST_RETWEET_CHANGED.equals(action)) {
 				final long status_id = intent.getLongExtra(EXTRA_STATUS_ID, -1);

@@ -53,7 +53,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -178,6 +177,7 @@ import de.vanita5.twittnuker.provider.TweetStore.DNS;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
+import de.vanita5.twittnuker.provider.TweetStore.Filters.Users;
 import de.vanita5.twittnuker.provider.TweetStore.Mentions;
 import de.vanita5.twittnuker.provider.TweetStore.Notifications;
 import de.vanita5.twittnuker.provider.TweetStore.Preferences;
@@ -187,7 +187,7 @@ import de.vanita5.twittnuker.provider.TweetStore.Tabs;
 import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
-import de.vanita5.twittnuker.util.menu.StatusMenuInfo;
+import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.util.net.TwidereHttpClientFactory;
 
@@ -3445,21 +3445,21 @@ public final class Utils implements Constants, TwitterConstants {
 		final MenuItem retweet = menu.findItem(MENU_RETWEET);
 		if (retweet != null) {
 			retweet.setVisible(!status.user_is_protected || isMyRetweet);
-            MenuUtils.setMenuInfo(retweet, new StatusMenuInfo(isMyRetweet));
+            MenuUtils.setMenuInfo(retweet, new TwidereMenuInfo(isMyRetweet));
             retweet.setTitle(isMyRetweet ? R.string.cancel_retweet : R.string.retweet);
 		}
         final MenuItem retweetSubItem = menu.findItem(R.id.retweet_submenu);
         if (retweetSubItem != null) {
-            MenuUtils.setMenuInfo(retweetSubItem, new StatusMenuInfo(isMyRetweet));
+            MenuUtils.setMenuInfo(retweetSubItem, new TwidereMenuInfo(isMyRetweet));
 		}
 		final MenuItem favorite = menu.findItem(MENU_FAVORITE);
 		if (favorite != null) {
-            MenuUtils.setMenuInfo(favorite, new StatusMenuInfo(status.is_favorite));
+            MenuUtils.setMenuInfo(favorite, new TwidereMenuInfo(status.is_favorite));
             favorite.setTitle(status.is_favorite ? R.string.unfavorite : R.string.favorite);
 		}
 		final MenuItem love = menu.findItem(MENU_LOVE);
 	    if (love != null) {
-		    MenuUtils.setMenuInfo(love, new StatusMenuInfo(isMyRetweet));
+		    MenuUtils.setMenuInfo(love, new TwidereMenuInfo(isMyRetweet));
         }
 		final MenuItem translate = menu.findItem(MENU_TRANSLATE);
 		if (translate != null) {
@@ -3595,16 +3595,16 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static void showInfoMessage(final Context context, final CharSequence message, final boolean long_message) {
 		if (context == null || isEmpty(message)) return;
-		if (context instanceof Activity) {
-			final Crouton crouton = Crouton.makeText((Activity) context, message, CroutonStyle.INFO);
-			final CroutonConfiguration.Builder cb = new CroutonConfiguration.Builder();
-			cb.setDuration(long_message ? CroutonConfiguration.DURATION_LONG : CroutonConfiguration.DURATION_SHORT);
-			crouton.setConfiguration(cb.build());
-			crouton.show();
-		} else {
+//        if (context instanceof Activity) {
+//            final Crouton crouton = Crouton.makeText((Activity) context, message, CroutonStyle.INFO);
+//            final CroutonConfiguration.Builder cb = new CroutonConfiguration.Builder();
+//            cb.setDuration(long_message ? CroutonConfiguration.DURATION_LONG : CroutonConfiguration.DURATION_SHORT);
+//            crouton.setConfiguration(cb.build());
+//            crouton.show();
+//        } else {
 			final Toast toast = Toast.makeText(context, message, long_message ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
 			toast.show();
-		}
+//        }
 	}
 
 	public static void showInfoMessage(final Context context, final int resId, final boolean long_message) {
@@ -3932,6 +3932,17 @@ public final class Utils implements Constants, TwitterConstants {
 					((MarginLayoutParams) lp).topMargin = insets.top;
 					indicatorView.setLayoutParams(lp);
 			}
+        }
+    }
+
+    public static boolean isFilteringUser(Context context, long userId) {
+        final ContentResolver cr = context.getContentResolver();
+        final Where where = Where.equals(Users.USER_ID, userId);
+        final Cursor c = cr.query(Users.CONTENT_URI, new String[0], where.getSQL(), null, null);
+        try {
+            return c.getCount() > 0;
+        } finally {
+            c.close();
 		}
 	}
 }

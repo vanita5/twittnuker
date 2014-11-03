@@ -57,7 +57,7 @@ import java.lang.reflect.InvocationTargetException;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.util.menu.StatusMenuInfo;
+import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 
 public class ThemeUtils implements Constants {
 
@@ -150,15 +150,15 @@ public class ThemeUtils implements Constants {
                 if (info instanceof MenuBarMenuInfo) {
                     final MenuBarMenuInfo mbInfo = (MenuBarMenuInfo) info;
                     final boolean inPopup = mbInfo.isInPopup();
-                    if (mbInfo.getMenuInfo() instanceof StatusMenuInfo) {
-                        final StatusMenuInfo sInfo = (StatusMenuInfo) mbInfo.getMenuInfo();
+                    if (mbInfo.getMenuInfo() instanceof TwidereMenuInfo) {
+                        final TwidereMenuInfo sInfo = (TwidereMenuInfo) mbInfo.getMenuInfo();
                         icon.setColorFilter(sInfo.isHighlight() ? highlightColor
                                 : (inPopup ? popupColor : color), mode);
                     } else {
                             icon.setColorFilter(inPopup ? popupColor : color, mode);
                     }
-                } else if (info instanceof StatusMenuInfo) {
-                    final StatusMenuInfo sInfo = (StatusMenuInfo) info;
+                } else if (info instanceof TwidereMenuInfo) {
+                    final TwidereMenuInfo sInfo = (TwidereMenuInfo) info;
                     icon.setColorFilter(sInfo.isHighlight() ? highlightColor : color, mode);
                 } else {
                     icon.setColorFilter(color, mode);

@@ -2,10 +2,10 @@ package de.vanita5.twittnuker.util.menu;
 
 import android.view.ContextMenu.ContextMenuInfo;
 
-public class StatusMenuInfo implements ContextMenuInfo {
+public class TwidereMenuInfo implements ContextMenuInfo {
 	private final boolean highlight;
 
-	public StatusMenuInfo(boolean highlight) {
+	public TwidereMenuInfo(boolean highlight) {
 		this.highlight = highlight;
 	}
 

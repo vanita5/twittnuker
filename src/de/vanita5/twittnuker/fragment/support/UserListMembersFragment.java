@@ -54,7 +54,6 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment impl
 			if (getActivity() == null || !isAdded() || isDetached()) return;
 			final String action = intent.getAction();
 			if (BROADCAST_USER_LIST_MEMBERS_DELETED.equals(action)) {
-				if (!intent.getBooleanExtra(EXTRA_SUCCEED, false)) return;
 				final ParcelableUserList list = intent.getParcelableExtra(EXTRA_USER_LIST);
 				if (mUserList != null && list != null && list.id == mUserList.id) {
 					removeUsers(intent.getLongArrayExtra(EXTRA_USER_IDS));
