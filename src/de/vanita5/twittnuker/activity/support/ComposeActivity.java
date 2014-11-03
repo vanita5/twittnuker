@@ -94,7 +94,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.StackView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -136,6 +135,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.view.ColorLabelFrameLayout;
 import de.vanita5.twittnuker.view.StatusTextCountView;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
@@ -185,7 +185,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	private ProgressBar mProgress;
     private View mSendView;
     private StatusTextCountView mSendTextCountView;
-    private View mSelectAccount;
+    private ColorLabelFrameLayout mSelectAccount;
 
 	private MediaPreviewAdapter mMediaPreviewAdapter;
 	private AccountSelectorAdapter mAccountSelectorAdapter;
@@ -384,7 +384,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		final View composeBottomBar = findViewById(R.id.compose_bottombar);
         mSendView = composeBottomBar.findViewById(R.id.send);
 		mSendTextCountView = (StatusTextCountView) mSendView.findViewById(R.id.status_text_count);
-        mSelectAccount = composeActionBar.findViewById(R.id.select_account);
+        mSelectAccount = (ColorLabelFrameLayout) composeActionBar.findViewById(R.id.select_account);
 		ViewAccessor.setBackground(findViewById(R.id.compose_content), getWindowContentOverlayForCompose(this));
         ViewAccessor.setBackground(composeActionBar, getActionBarBackground(this, getCurrentThemeResourceId()));
 	}
@@ -1013,7 +1013,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		for (final long accountId : mSendAccountIds) {
 			mAccountSelectorAdapter.setAccountSelected(accountId, true);
 		}
-		mColorIndicator.drawEnd(getAccountColors(this, mSendAccountIds));
+        mSelectAccount.drawEnd(getAccountColors(this, mSendAccountIds));
 	}
 
 	private void updateMediasPreview() {
