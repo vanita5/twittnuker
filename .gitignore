@@ -3,3 +3,4 @@
 *.iml
 local.properties
 build
+src/de/vanita5/twittnuker/SecretConstants.java
