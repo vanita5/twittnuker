@@ -54,6 +54,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 	public static final String SCHEME_TWITTNUKER = "twittnuker";
 
 	public static final String SERVICE_SHORTENER_HOTOTIN = "hototin";
+	public static final String SERVICE_SHORTENER_TWITLONGER = "twitlonger";
 
 	public static final String SERVICE_UPLOADER_TWITPIC = "twitpic";
 	public static final String SERVICE_UPLOADER_TWIPPLE = "twipple";

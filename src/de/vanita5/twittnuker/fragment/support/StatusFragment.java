@@ -225,6 +225,20 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 					linkify.setLinkTextColor(ThemeUtils.getUserLinkTextColor(getActivity()));
 					linkify.applyAllLinks(mTextView, mStatus.account_id, mStatus.is_possibly_sensitive);
 					setProgressBarIndeterminateVisibility(false);
+					break;
+				}
+				case BROADCAST_TWITLONGER_EXPANDED: {
+					final String expanded_status = intent.getStringExtra(EXTRA_TWITLONGER_EXPANDED_TEXT);
+					Spanned expanded_text = Html.fromHtml(expanded_status);
+
+					mTextView.setText(expanded_text);
+
+					final TwidereLinkify linkify = new TwidereLinkify(
+							new OnLinkClickHandler(getActivity(), getMultiSelectManager()));
+					linkify.setLinkTextColor(ThemeUtils.getUserLinkTextColor(getActivity()));
+					linkify.applyAllLinks(mTextView, mStatus.account_id, mStatus.is_possibly_sensitive);
+					setProgressBarIndeterminateVisibility(false);
+					break;
 				}
 			}
 		}
@@ -700,6 +714,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		filter.addAction(BROADCAST_FAVORITE_CHANGED);
 		filter.addAction(BROADCAST_RETWEET_CHANGED);
 		filter.addAction(BROADCAST_HOTOTIN_EXPANDED);
+		filter.addAction(BROADCAST_TWITLONGER_EXPANDED);
 		registerReceiver(mStatusReceiver, filter);
 		updateUserColor();
 		final int text_size = mPreferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(getActivity()));

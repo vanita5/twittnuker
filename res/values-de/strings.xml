@@ -656,6 +656,7 @@
 
     <string name="shortening">Tweet kürzen</string>
     <string name="error_hototin">...but I failed :(\nDer Tweet wurde zu den Entwürfen hinzugefügt.</string>
+    <string name="error_twitlonger">...I can\'t handle it :(\nDer Tweet wurde zu den Entwürfen hinzugefügt.</string>
     <string name="action_shortening">kürze Tweet</string>
     <string name="uploading_image">Lade hoch...</string>
     <string name="no_tab_hint">Du kannst Tabs in den Einstellungen hinzufügen</string>
