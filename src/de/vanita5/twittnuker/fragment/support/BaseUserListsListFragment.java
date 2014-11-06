@@ -63,7 +63,7 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 
 	private long mAccountId, mUserId;
 	private String mScreenName;
-	private final ArrayList<ParcelableUserList> mData = new ArrayList<ParcelableUserList>();
+    private final ArrayList<ParcelableUserList> mData = new ArrayList<>();
 	private ParcelableUserList mSelectedUserList;
 	private long mCursor = -1;
 	private boolean mLoadMoreAutomatically;
@@ -150,9 +150,9 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 	@Override
 	public final void onListItemClick(final ListView view, final View child, final int position, final long id) {
 		if (mMultiSelectManager.isActive()) return;
-		final ParcelableUserList userList = mAdapter.findItem(id);
-		if (userList == null) return;
-		openUserListDetails(getActivity(), userList);
+        final int userListPosition = mAdapter.findItemPosition(id);
+        if (userListPosition < 0) return;
+        openUserListDetails(getActivity(), mAdapter.getItem(userListPosition));
 	}
 
 	@Override

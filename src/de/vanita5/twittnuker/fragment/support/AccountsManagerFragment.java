@@ -1,5 +1,7 @@
 package de.vanita5.twittnuker.fragment.support;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -14,16 +16,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.DragSortListView.DropListener;
 
+import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.SignInActivity;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.util.Utils;
+
+import java.util.ArrayList;
 
 public class AccountsManagerFragment extends BaseSupportListFragment implements LoaderCallbacks<Cursor>, DropListener {
 
@@ -56,6 +62,7 @@ public class AccountsManagerFragment extends BaseSupportListFragment implements 
         Utils.configBaseAdapter(activity, mAdapter);
 		setListAdapter(mAdapter);
         final DragSortListView listView = (DragSortListView) getListView();
+        listView.setDragEnabled(true);
         listView.setDropListener(this);
 		getLoaderManager().initLoader(0, null, this);
 	}
@@ -88,7 +95,29 @@ public class AccountsManagerFragment extends BaseSupportListFragment implements 
 
     @Override
     public void drop(int from, int to) {
-
+        final DragSortListView listView = (DragSortListView) getListView();
+        mAdapter.drop(from, to);
+        if (listView.getChoiceMode() != AbsListView.CHOICE_MODE_NONE) {
+            listView.moveCheckState(from, to);
+        }
+        saveAccountPositions();
     }
 
+
+    private void saveAccountPositions() {
+        final ContentResolver cr = getContentResolver();
+        final ArrayList<Integer> positions = mAdapter.getCursorPositions();
+        final Cursor c = mAdapter.getCursor();
+        if (positions != null && c != null && !c.isClosed()) {
+            final int idIdx = c.getColumnIndex(Accounts._ID);
+            for (int i = 0, j = positions.size(); i < j; i++) {
+                c.moveToPosition(positions.get(i));
+                final long id = c.getLong(idIdx);
+                final ContentValues values = new ContentValues();
+                values.put(Accounts.SORT_POSITION, i);
+                final Where where = Where.equals(Accounts._ID, id);
+                cr.update(Accounts.CONTENT_URI, values, where.getSQL(), null);
+            }
+        }
+    }
 }

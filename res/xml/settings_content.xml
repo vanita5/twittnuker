@@ -92,12 +92,15 @@
 			android:key="remember_position"
 			android:summary="@string/remember_position_summary"
 			android:title="@string/remember_position"/>
-
         <CheckBoxPreference
             android:defaultValue="false"
         	android:key="load_more_from_top"
         	android:summary="@string/load_more_from_top_summary"
             android:title="@string/load_more_from_top"/>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="sort_timeline_by_id"
+            android:title="@string/sort_timeline_by_id"/>
 
 		<de.vanita5.twittnuker.preference.TrendsLocationPreference
 			android:key="trends_location"

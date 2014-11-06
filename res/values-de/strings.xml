@@ -676,4 +676,5 @@
 
     <string name="mute_user_confirm_message"><xliff:g id="name">%s</xliff:g> muten? Du wirst die Tweets dieses Nutzers nicht mehr sehen, ihm aber trotzdem noch folgen.</string>
     <string name="remove_from_filter">Aus dem Filter entfernen</string>
+    <string name="sort_timeline_by_id">Timeline anhand der Id sortieren (Status.net)</string>
 </resources>

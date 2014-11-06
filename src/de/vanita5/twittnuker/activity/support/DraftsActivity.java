@@ -42,6 +42,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -315,12 +316,15 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 			final int idxMedias = c.getColumnIndex(Drafts.MEDIAS);
 			c.moveToFirst();
 			while (!c.isAfterLast()) {
-				ParcelableMediaUpdate[] medias = ParcelableMediaUpdate.fromJSONString(c.getString(idxMedias));
+                final ParcelableMediaUpdate[] medias = ParcelableMediaUpdate.fromJSONString(c.getString(idxMedias));
 				if (medias != null) {
 					for (final ParcelableMediaUpdate media : medias) {
 						final Uri uri = Uri.parse(media.uri);
-						if ("file".equals(uri.getScheme()) && uri.getPath() != null) {
-							new File(uri.getPath()).delete();
+                        if ("file".equals(uri.getScheme())) {
+                            final File file = new File(uri.getPath());
+                            if (!file.delete()) {
+                                Log.w(LOGTAG, String.format("Unable to delete %s", file));
+                            }
 						}
 					}
 				}
