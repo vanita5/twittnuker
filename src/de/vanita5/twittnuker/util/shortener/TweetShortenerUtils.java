@@ -303,7 +303,7 @@ public class TweetShortenerUtils implements Constants {
 			oauthHeaderParams.add(new HttpParameter("oauth_signature_method", "HMAC-SHA1"));
 			oauthHeaderParams.add(new HttpParameter("oauth_timestamp", timestamp));
 			oauthHeaderParams.add(new HttpParameter("oauth_nonce", nonce));
-			oauthHeaderParams.add(new HttpParameter("oauth_version", "1.0"));
+			oauthHeaderParams.add(new HttpParameter("oauth_version", "1.1"));
 			if (twitter.getOAuthAccessToken() != null) {
 				oauthHeaderParams.add(new HttpParameter("oauth_token", twitter.getOAuthAccessToken().getToken()));
 			}
