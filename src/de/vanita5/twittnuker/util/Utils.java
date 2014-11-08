@@ -239,7 +239,8 @@ import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLException;
 
-public final class Utils implements Constants, TwitterConstants {
+public final class
+		Utils implements Constants, TwitterConstants {
 
 	private static final String UA_TEMPLATE = "Mozilla/5.0 (Linux; Android %s; %s Build/%s) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.111 Safari/537.36";
 
@@ -1552,7 +1553,8 @@ public final class Utils implements Constants, TwitterConstants {
 											final boolean is_retweet) {
 		if (is_mention) {
 			return HOLO_BLUE_LIGHT;
-		} else if (is_favorite) {
+		}
+		else if (is_favorite) {
 			return HOLO_ORANGE_LIGHT;
 		}
 		else if (is_retweet) {
@@ -3462,7 +3464,7 @@ public final class Utils implements Constants, TwitterConstants {
 		}
 		final MenuItem love = menu.findItem(MENU_LOVE);
 	    if (love != null) {
-		    MenuUtils.setMenuInfo(love, new TwidereMenuInfo(isMyRetweet));
+		    MenuUtils.setMenuInfo(love, new TwidereMenuInfo(isMyRetweet && status.is_favorite));
         }
 		final MenuItem translate = menu.findItem(MENU_TRANSLATE);
 		if (translate != null) {
