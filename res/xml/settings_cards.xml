@@ -24,23 +24,18 @@
 		android:defaultValue="false"
 		android:key="name_first"
 		android:order="22"
-		android:title="@string/name_first"/>
-	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
-		android:defaultValue="true"
-		android:key="nickname_only"
-		android:order="23"
-		android:summary="@string/nickname_only_summary"
-		android:title="@string/nickname_only"/>
+		android:title="@string/name_first"
+        android:summary="@string/name_first_summary"/>
 	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
 		android:defaultValue="true"
 		android:key="display_profile_image"
-		android:order="24"
+		android:order="23"
 		android:summary="@string/image_load_summary"
 		android:title="@string/display_profile_image"/>
 	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
 		android:defaultValue="true"
 		android:key="display_image_preview"
-		android:order="25"
+		android:order="24"
 		android:summary="@string/image_load_summary"
 		android:title="@string/display_image_preview"/>
 
@@ -49,14 +44,14 @@
     	android:entries="@array/entries_image_preview_scale_type"
     	android:entryValues="@array/values_image_preview_scale_type"
     	android:key="image_preview_scale_type"
-    	android:order="26"
+    	android:order="25"
     	android:summary="%s"
     	android:title="@string/image_preview_scale_type"/>
 
 	<de.vanita5.twittnuker.preference.LinkHighlightPreference
 		android:defaultValue="highlight"
 		android:key="link_highlight_option"
-		android:order="27"
+		android:order="26"
 		android:title="@string/link_highlight_option"/>
 
     <de.vanita5.twittnuker.preference.AutoInvalidateListPreference
@@ -64,36 +59,36 @@
     	android:entries="@array/entries_card_highlight_option"
     	android:entryValues="@array/values_card_highlight_option"
     	android:key="card_highlight_option"
-    	android:order="28"
+    	android:order="27"
     	android:summary="%s"
     	android:title="@string/card_highlight_option"/>
 
 	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
 		android:defaultValue="true"
 		android:key="indicate_my_status"
-		android:order="29"
+		android:order="28"
 		android:title="@string/indicate_my_status"/>
 	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
 		android:defaultValue="false"
 		android:key="show_absolute_time"
-		android:order="30"
+		android:order="29"
 		android:summary="@string/show_absolute_time_summary"
 		android:title="@string/show_absolute_time"/>
 	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
 		android:defaultValue="false"
 		android:key="card_animation"
-		android:order="31"
+		android:order="30"
 		android:title="@string/card_animation"/>
 	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
 		android:defaultValue="true"
 		android:key="compact_cards"
-		android:order="32"
+		android:order="31"
 		android:summary="@string/compact_cards_summary"
 		android:title="@string/compact_cards"/>
     <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
     	android:defaultValue="false"
     	android:key="plain_list_style"
-    	android:order="33"
+    	android:order="32"
     	android:title="@string/plain_list_style"/>
 
 </PreferenceScreen>

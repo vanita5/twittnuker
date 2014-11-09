@@ -97,7 +97,6 @@
     <string name="sources">Źródła</string>
     <string name="content">Zawartość</string>
     <string name="customize">Ustaw</string>
-    <string name="set_nickname">Ustaw pseudonim</string>
     <string name="set_color">Ustaw kolor</string>
     <string name="clear">Wyczyść</string>
     <string name="pick_color">Wybierz kolor</string>
@@ -441,10 +440,7 @@
     <string name="enable_for_rts">Włącz dla przesłanych ponownie</string>
     <string name="safety">Bezpieczeństwo</string>
     <string name="updating_status_notification">Wysyłanie ćwierka&#8230;</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
     <string name="query">Zapytanie</string>
-    <string name="nickname_only">Tylko pseudonim</string>
-    <string name="nickname_only_summary">Zastępuje nazwę użytkownika pseudonimem, tam gdzie to możliwe</string>
     <string name="input_text">Tekst wejściowy</string>
     <string name="users_lists_with_name">Listy użytkownika <xliff:g id="name">%s</xliff:g></string>
     <string name="lists_following_user_with_name">Listy obserwujące <xliff:g id="name">%s</xliff:g></string>
@@ -548,7 +544,6 @@
     <string name="export_settings">Eksportuj ustawienia</string>
     <string name="export_settings_type_dialog_title">Eksportowanie ustawień&#8230;</string>
     <string name="import_settings_type_dialog_title">Importowanie ustawień&#8230;</string>
-    <string name="nicknames">Pseudonimy</string>
     <string name="user_colors">Kolory użytkownika</string>
     <string name="import_export">Import/Eksport</string>
     <string name="theme_background_alpha">Przezroczystość tła motywu</string>

@@ -611,7 +611,6 @@ public final class Utils implements Constants, TwitterConstants {
 		adapter.setDisplayNameFirst(pref.getBoolean(KEY_NAME_FIRST, true));
 		adapter.setLinkHighlightOption(pref.getString(KEY_LINK_HIGHLIGHT_OPTION, VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT));
         adapter.setLinkHighlightColor(ThemeUtils.getUserLinkTextColor(context));
-		adapter.setNicknameOnly(pref.getBoolean(KEY_NICKNAME_ONLY, false));
 		adapter.setTextSize(pref.getInt(KEY_TEXT_SIZE, getDefaultTextSize(context)));
 		adapter.notifyDataSetChanged();
 	}
@@ -1647,43 +1646,13 @@ public final class Utils implements Constants, TwitterConstants {
         return getTwitterInstance(context, getDefaultAccountId(context), includeEntities, includeRetweets, apacheHttp);
 	}
 
-	public static String getDisplayName(final Context context, final long userId, final String name,
-			final String screenName) {
-		return getDisplayName(context, userId, name, screenName, false);
+	public static String getDisplayName(final String name, final String screen_name) {
+		return getDisplayName(name, screen_name, false);
 	}
 
-    public static String getDisplayName(final Context context, final ParcelableUser user) {
-        return getDisplayName(context, user, false);
-    }
-
-    public static String getDisplayName(final Context context, final ParcelableUser user, final boolean ignoreCache) {
-        return getDisplayName(context, user.id, user.name, user.screen_name, ignoreCache);
-    }
-
-    public static String getDisplayName(final Context context, final long userId, final String name,
-                                        final String screenName, final boolean ignoreCache) {
-		if (context == null) return null;
-		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        final boolean nameFirst = prefs.getBoolean(KEY_NAME_FIRST, true);
-        final boolean nicknameOnly = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-				.getBoolean(KEY_NICKNAME_ONLY, false);
-        return getDisplayName(context, userId, name, screenName, nameFirst, nicknameOnly, ignoreCache);
-	}
-
-	public static String getDisplayName(final Context context, final long user_id, final String name,
-			final String screen_name, final boolean name_first, final boolean nickname_only) {
-		return getDisplayName(context, user_id, name, screen_name, name_first, nickname_only, false);
-	}
-
-	public static String getDisplayName(final Context context, final long user_id, final String name,
-			final String screen_name, final boolean name_first, final boolean nickname_only, final boolean ignore_cache) {
-		if (context == null) return null;
-		final String nick = UserColorNicknameUtils.getUserNickname(context, user_id, ignore_cache);
-		final boolean nick_available = !isEmpty(nick);
-		if (nickname_only && nick_available) return nick;
-		if (!nick_available) return name_first && !isEmpty(name) ? name : "@" + screen_name;
-		return context.getString(R.string.name_with_nickname, name_first && !isEmpty(name) ? name : "@" + screen_name,
-				nick);
+	public static String getDisplayName(final String name,
+			final String screen_name, final boolean name_first) {
+		return name_first && !isEmpty(name) ? name : "@" + screen_name;
 	}
 
 	public static String getErrorMessage(final Context context, final CharSequence message) {
@@ -2096,14 +2065,6 @@ public final class Utils implements Constants, TwitterConstants {
 		m = PATTERN_XML_RESOURCE_IDENTIFIER.matcher(string);
 		if (m.matches()) return res.getIdentifier(m.group(1), "xml", context.getPackageName());
 		return 0;
-	}
-
-	public static String getSampleDisplayName(final Context context, final boolean name_first,
-			final boolean nickname_only) {
-		if (context == null) return null;
-		if (nickname_only) return TWIDERE_PREVIEW_NICKNAME;
-		return context.getString(R.string.name_with_nickname, name_first ? TWIDERE_PREVIEW_NAME : "@"
-				+ TWIDERE_PREVIEW_SCREEN_NAME, TWIDERE_PREVIEW_NICKNAME);
 	}
 
 	public static String getSenderUserName(final Context context, final ParcelableDirectMessage user) {
@@ -2540,19 +2501,16 @@ public final class Utils implements Constants, TwitterConstants {
 		return string.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">");
 	}
 
-	public static String getUserName(final Context context, final ParcelableStatus status) {
-		if (context == null || status == null) return null;
-		return getDisplayName(context, status.user_id, status.user_name, status.user_screen_name);
+	public static String getUserName(final ParcelableStatus status) {
+		return getDisplayName(status.user_name, status.user_screen_name);
 	}
 
-	public static String getUserName(final Context context, final ParcelableUser user) {
-		if (context == null || user == null) return null;
-		return getDisplayName(context, user.id, user.name, user.screen_name);
+	public static String getUserName(final ParcelableUser user) {
+		return getDisplayName(user.name, user.screen_name);
 	}
 
-	public static String getUserName(final Context context, final User user) {
-		if (context == null || user == null) return null;
-		return getDisplayName(context, user.getId(), user.getName(), user.getScreenName());
+	public static String getUserName(final User user) {
+		return getDisplayName(user.getName(), user.getScreenName());
 	}
 
 	public static int getUserTypeIconRes(final boolean is_verified, final boolean is_protected) {

@@ -99,7 +99,6 @@
     <string name="sources">Sumber</string>
     <string name="content">Konten</string>
     <string name="customize">Sesuaikan</string>
-    <string name="set_nickname">Tentukan nama panggilan</string>
     <string name="set_color">Tetapkan warna</string>
     <string name="clear">Bersihkan</string>
     <string name="pick_color">Pilih warna</string>
@@ -443,10 +442,7 @@
     <string name="enable_for_rts">Aktifkan untuk RTs</string>
     <string name="safety">Keamanan</string>
     <string name="updating_status_notification">Mengirim tweet&#8230;</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
     <string name="query">Menanyakan</string>
-    <string name="nickname_only">Hanya nama panggilan</string>
-    <string name="nickname_only_summary">Mengganti nama pengguna dengan nama panggilan ketika tersedia</string>
     <string name="input_text">Masukkan teks</string>
     <string name="users_lists_with_name">Daftar <xliff:g id="name">%s</xliff:g></string>
     <string name="lists_following_user_with_name">Daftar mengikuti <xliff:g id="name">%s</xliff:g></string>
@@ -569,7 +565,6 @@
     <string name="export_settings">Ekspor pengaturan</string>
     <string name="export_settings_type_dialog_title">Ekspor pengaturan&#8230;</string>
     <string name="import_settings_type_dialog_title">Impor pengaturan&#8230;</string>
-    <string name="nicknames">Nama panggilan</string>
     <string name="user_colors">Warna pengguna</string>
     <string name="import_export">Impor/Ekspor</string>
     <string name="theme_background_alpha">Latar belakang tema alpha</string>

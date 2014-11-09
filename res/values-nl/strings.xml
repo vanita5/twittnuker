@@ -99,7 +99,6 @@
   <string name="sources">Bronnen</string>
   <string name="content">Inhoud</string>
   <string name="customize">Aanpassen</string>
-  <string name="set_nickname">Stel bijnaam in</string>
   <string name="set_color">Stel kleur in</string>
   <string name="clear">Wis</string>
   <string name="pick_color">Kleur kiezen</string>
@@ -443,10 +442,7 @@
   <string name="enable_for_rts">Inschakelen voor retweets</string>
   <string name="safety">Veiligheid</string>
   <string name="updating_status_notification">Tweet versturen&#8230;</string>
-  <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
   <string name="query">Vraag</string>
-  <string name="nickname_only">Alleen bijnaam</string>
-  <string name="nickname_only_summary">Vervang gebruikersnaam met bijnaam indien beschikbaar</string>
   <string name="input_text">Tekst invoeren</string>
   <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g> lijsten</string>
   <string name="lists_following_user_with_name">Lijsten volgend <xliff:g id="name">%s</xliff:g></string>
@@ -565,7 +561,6 @@
   <string name="export_settings">Exporteer instellingen</string>
   <string name="export_settings_type_dialog_title">Exporteer instellingen&#8230;</string>
   <string name="import_settings_type_dialog_title">Importeer instellingen&#8230;</string>
-  <string name="nicknames">Bijnamen</string>
   <string name="user_colors">Gebruikerskleuren</string>
   <string name="import_export">Importeren/exporteren</string>
   <string name="theme_background_alpha">Thema achtergrond alfa</string>

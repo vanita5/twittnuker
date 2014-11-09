@@ -92,8 +92,6 @@ public interface Constants extends TwittnukerConstants {
 	public static final int MENU_LIST_MEMBERSHIPS = R.id.list_memberships;
 	public static final int MENU_CENTER = R.id.center;
 	public static final int MENU_FILTERS = R.id.filters;
-	public static final int MENU_SET_NICKNAME = R.id.set_nickname;
-	public static final int MENU_CLEAR_NICKNAME = R.id.clear_nickname;
 	public static final int MENU_ADD_TO_FILTER = R.id.add_to_filter;
 	public static final int MENU_FOLLOW = R.id.follow;
 	public static final int MENU_UNFOLLOW = R.id.unfollow;
@@ -141,7 +139,6 @@ public interface Constants extends TwittnukerConstants {
 
 	public static final String FRAGMENT_TAG_API_UPGRADE_NOTICE = "api_upgrade_notice";
 
-	public static final String TWIDERE_PREVIEW_NICKNAME = "Twittnuker";
 	public static final String TWIDERE_PREVIEW_NAME = "Twittnuker Project";
 	public static final String TWIDERE_PREVIEW_SCREEN_NAME = "twittnuker";
 	public static final String TWIDERE_PREVIEW_TEXT_HTML = "Twittnuker is an open source twitter client for Android, see <a href='https://github.com/vanita5/twittnuker'>https://github.com/vanita5/twittnuker<a/>";
@@ -161,15 +158,13 @@ public interface Constants extends TwittnukerConstants {
 	public static final int HOLO_PURPLE_LIGHT = 0xffaa66cc;
 
 	public static final String ENTRY_PREFERENCES = "preferences.json";
-	public static final String ENTRY_NICKNAMES = "nicknames.json";
 	public static final String ENTRY_USER_COLORS = "user_colors.json";
 	public static final String ENTRY_HOST_MAPPING = "host_mapping.json";
 
 	public static final int FLAG_PREFERENCES = 0x1;
-	public static final int FLAG_NICKNAMES = 0x2;
 	public static final int FLAG_USER_COLORS = 0x4;
 	public static final int FLAG_HOST_MAPPING = 0x8;
 
-	public static final int FLAG_ALL = FLAG_PREFERENCES | FLAG_NICKNAMES | FLAG_USER_COLORS | FLAG_HOST_MAPPING;
+	public static final int FLAG_ALL = FLAG_PREFERENCES |  FLAG_USER_COLORS | FLAG_HOST_MAPPING;
 
 }

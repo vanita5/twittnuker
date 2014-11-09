@@ -100,7 +100,6 @@
     <string name="sources">Quellen</string>
     <string name="content">Inhalt</string>
     <string name="customize">Anpassen</string>
-    <string name="set_nickname">Spitzname</string>
     <string name="set_color">Farbschema</string>
     <string name="clear">Löschen</string>
     <string name="pick_color">Wähle Farbe</string>
@@ -449,10 +448,7 @@
     <string name="enable_for_rts">Aktiviere für Retweets</string>
     <string name="safety">Sicherheit</string>
     <string name="updating_status_notification">Sende Tweet…</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
     <string name="query">Abfrage</string>
-    <string name="nickname_only">Nur Nickname</string>
-    <string name="nickname_only_summary">Benutzernamen durch Nicknamen ersetzen, falls verfügbar</string>
     <string name="input_text">Text eingeben</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="lists_following_user_with_name">Listen, die <xliff:g id="name">%s</xliff:g> folgen</string>
@@ -461,7 +457,8 @@
     <string name="link_highlight_option">Link hervorheben</string>
     <string name="users_statuses">Tweets des Nutzers</string>
     <string name="card_animation">Scroll Animation</string>
-    <string name="name_first">Name zuerst anzeigen</string>
+    <string name="name_first">Name bevorzugen</string>
+    <string name="name_first_summary">Benutzernamen statt den @Screennamen zeigen</string>
     <string name="next">Weiter</string>
     <string name="settings_wizard">Einstellungen</string>
     <string name="wizard_page_welcome_title">Willkomen</string>
@@ -573,7 +570,6 @@
     <string name="export_settings">Einstellungen exportieren</string>
     <string name="export_settings_type_dialog_title">Einstellungen exportieren&#8230;</string>
     <string name="import_settings_type_dialog_title">Einstellungen importieren&#8230;</string>
-    <string name="nicknames">Nicknames</string>
     <string name="user_colors">Benutzer-Farbschema</string>
     <string name="import_export">Importieren/Exportieren</string>
     <string name="theme_background_alpha">Theme Hintergrund Transparenz</string>

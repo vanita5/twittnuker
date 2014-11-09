@@ -30,7 +30,7 @@ import static de.vanita5.twittnuker.util.ThemeUtils.getActionBarBackground;
 import static de.vanita5.twittnuker.util.ThemeUtils.getComposeThemeResource;
 import static de.vanita5.twittnuker.util.ThemeUtils.getUserAccentColor;
 import static de.vanita5.twittnuker.util.ThemeUtils.getWindowContentOverlayForCompose;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.copyStream;
 import static de.vanita5.twittnuker.util.Utils.getAccountColors;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
@@ -870,13 +870,11 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		final String action = intent.getAction();
 		if (INTENT_ACTION_REPLY.equals(action)) {
 			if (mInReplyToStatus == null) return false;
-			final String display_name = getDisplayName(this, mInReplyToStatus.user_id, mInReplyToStatus.user_name,
-					mInReplyToStatus.user_screen_name);
+			final String display_name = getDisplayName(mInReplyToStatus.user_name, mInReplyToStatus.user_screen_name);
 			setTitle(getString(R.string.reply_to, display_name));
 		} else if (INTENT_ACTION_QUOTE.equals(action)) {
 			if (mInReplyToStatus == null) return false;
-			final String display_name = getDisplayName(this, mInReplyToStatus.user_id, mInReplyToStatus.user_name,
-					mInReplyToStatus.user_screen_name);
+			final String display_name = getDisplayName(mInReplyToStatus.user_name, mInReplyToStatus.user_screen_name);
 			setTitle(getString(R.string.quote_user, display_name));
 			mSubtitleView
 					.setVisibility(mInReplyToStatus.user_is_protected && mInReplyToStatus.account_id != mInReplyToStatus.user_id ? View.VISIBLE
@@ -886,8 +884,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			setTitle(R.string.edit_draft);
 		} else if (INTENT_ACTION_MENTION.equals(action)) {
 			if (mMentionUser == null) return false;
-			final String display_name = getDisplayName(this, mMentionUser.id, mMentionUser.name,
-					mMentionUser.screen_name);
+			final String display_name = getDisplayName(mMentionUser.name, mMentionUser.screen_name);
 			setTitle(getString(R.string.mention_user, display_name));
 		} else if (INTENT_ACTION_REPLY_MULTIPLE.equals(action)) {
 			setTitle(R.string.reply);

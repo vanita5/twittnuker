@@ -82,7 +82,6 @@ public final class DataExportImportTypeSelectorDialogFragment extends BaseSuppor
 		mAdapter = new TypeAdapter(context, flags);
 		mListView = new ListView(context);
 		mAdapter.add(new Type(R.string.settings, FLAG_PREFERENCES));
-		mAdapter.add(new Type(R.string.nicknames, FLAG_NICKNAMES));
 		mAdapter.add(new Type(R.string.user_colors, FLAG_USER_COLORS));
 		mAdapter.add(new Type(R.string.custom_host_mapping, FLAG_HOST_MAPPING));
 		mListView.setAdapter(mAdapter);

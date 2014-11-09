@@ -99,7 +99,6 @@
     <string name="sources">Sources</string>
     <string name="content">Contenu</string>
     <string name="customize">Personnaliser</string>
-    <string name="set_nickname">Définir le pseudo</string>
     <string name="set_color">Définir la couleur</string>
     <string name="clear">Effacer</string>
     <string name="pick_color">Choisir une couleur</string>
@@ -443,10 +442,7 @@
     <string name="enable_for_rts">Activer pour les RT</string>
     <string name="safety">Sécurité</string>
     <string name="updating_status_notification">Envoi du tweet&#8230;</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
     <string name="query">Requête</string>
-    <string name="nickname_only">Pseudo seulement</string>
-    <string name="nickname_only_summary">Remplacer le nom de l\'utilisateur par son pseudo lorsque cela est possible</string>
     <string name="input_text">Saisir le texte</string>
     <string name="users_lists_with_name">Listes de <xliff:g id="name">%s</xliff:g></string>
     <string name="lists_following_user_with_name">Listes suivant <xliff:g id="name">%s</xliff:g></string>
@@ -569,7 +565,6 @@
     <string name="export_settings">Exportation des paramètres</string>
     <string name="export_settings_type_dialog_title">Exportation des paramètres&#8230;</string>
     <string name="import_settings_type_dialog_title">Importation des paramètres&#8230;</string>
-    <string name="nicknames">Surnoms</string>
     <string name="user_colors">Couleurs utilisateur</string>
     <string name="import_export">Importer / Exporter</string>
     <string name="theme_background_alpha">Alpha de l\'arrière-plan du thème</string>

@@ -23,11 +23,9 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserColor;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserNickname;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.setUserColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.clearUserColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.setUserColor;
 import static de.vanita5.twittnuker.util.Utils.findStatus;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
@@ -78,7 +76,6 @@ import android.support.v4.content.Loader;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
 import android.util.Log;
@@ -374,12 +371,9 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 		updateUserColor();
 		mProfileView.drawEnd(getAccountColor(getActivity(), status.account_id));
-		final boolean nickname_only = mPreferences.getBoolean(KEY_NICKNAME_ONLY, false);
 		final boolean name_first = mPreferences.getBoolean(KEY_NAME_FIRST, true);
 		final boolean display_image_preview = mPreferences.getBoolean(KEY_DISPLAY_IMAGE_PREVIEW, false);
-		final String nick = getUserNickname(getActivity(), status.user_id, true);
-		mNameView.setText(TextUtils.isEmpty(nick) ? status.user_name : nickname_only ? nick : getString(
-				R.string.name_with_nickname, status.user_name, nick));
+		mNameView.setText(status.user_name);
 		mNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0,
 				getUserTypeIconRes(status.user_is_verified, status.user_is_protected), 0);
 		mScreenNameView.setText("@" + status.user_screen_name);
@@ -402,8 +396,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		}
 		mTimeSourceView.setMovementMethod(LinkMovementMethod.getInstance());
 
-		final String in_reply_to = getDisplayName(getActivity(), status.in_reply_to_user_id, status.in_reply_to_name,
-				status.in_reply_to_screen_name, name_first, nickname_only, true);
+		final String in_reply_to = getDisplayName(status.in_reply_to_name, status.in_reply_to_screen_name, name_first);
 		mInReplyToView.setText(getString(R.string.in_reply_to, in_reply_to));
 
 		if (mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true)) {
@@ -484,8 +477,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		final TwittnukerApplication application = getApplication();
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE)
-				.registerOnSharedPreferenceChangeListener(this);
-		getSharedPreferences(USER_NICKNAME_PREFERENCES_NAME, Context.MODE_PRIVATE)
 				.registerOnSharedPreferenceChangeListener(this);
 		mImageLoader = application.getImageLoaderWrapper();
 		mTwitterWrapper = getTwitterWrapper();
@@ -826,16 +817,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
                 intent.putExtra(EXTRA_CLEAR_BUTTON, color != 0);
 				intent.putExtra(EXTRA_ALPHA_SLIDER, false);
 				startActivityForResult(intent, REQUEST_SET_COLOR);
-				break;
-			}
-			case MENU_CLEAR_NICKNAME: {
-				clearUserNickname(getActivity(), status.user_id);
-				displayStatus(status);
-				break;
-			}
-			case MENU_SET_NICKNAME: {
-				final String nick = getUserNickname(getActivity(), status.user_id, true);
-				SetUserNicknameDialogFragment.show(getFragmentManager(), status.user_id, nick);
 				break;
 			}
 			case MENU_TRANSLATE: {

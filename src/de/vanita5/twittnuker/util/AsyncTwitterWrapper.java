@@ -28,7 +28,6 @@ import static de.vanita5.twittnuker.util.ContentValuesCreator.makeStatusContentV
 import static de.vanita5.twittnuker.util.ContentValuesCreator.makeTrendsContentValues;
 import static de.vanita5.twittnuker.util.Utils.appendQueryParameters;
 import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getAllStatusesIds;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
 import static de.vanita5.twittnuker.util.Utils.getNewestStatusIdsFromDatabase;
@@ -577,7 +576,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			if (result.hasData()) {
 				final User user = result.getData();
 				final String message = mContext.getString(R.string.accepted_users_follow_request,
-						getUserName(mContext, user));
+						getUserName(user));
 				mMessagesManager.showOkMessage(message, false);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_accepting_follow_request, result.getException(),
@@ -628,7 +627,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				final String message;
 				if (users.length == 1) {
 					final ParcelableUser user = users[0];
-					final String displayName = Utils.getDisplayName(mContext, user.id, user.name, user.screen_name);
+					final String displayName = Utils.getDisplayName(user.name, user.screen_name);
 					message = mContext.getString(R.string.added_user_to_list, displayName, result.getData().name);
 				} else {
 					final Resources res = mContext.getResources();
@@ -715,7 +714,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		protected void onPostExecute(final SingleResponse<User> result) {
 			if (result.hasData() && result.getData().getId() > 0) {
 				final String message = mContext.getString(R.string.blocked_user,
-						getUserName(mContext, result.getData()));
+						getUserName(result.getData()));
 				mMessagesManager.showInfoMessage(message, false);
                 final Intent intent = new Intent(BROADCAST_FRIENDSHIP_CHANGED);
                 intent.putExtra(EXTRA_USER_ID, user_id);
@@ -758,7 +757,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected void onPostExecute(final SingleResponse<User> result) {
             if (result.hasData() && result.getData().getId() > 0) {
                 final String message = mContext.getString(R.string.muted_user,
-                        getUserName(mContext, result.getData()));
+                        getUserName(result.getData()));
                 mMessagesManager.showInfoMessage(message, false);
                 final Intent intent = new Intent(BROADCAST_FRIENDSHIP_CHANGED);
                 intent.putExtra(EXTRA_USER_ID, mUserId);
@@ -856,9 +855,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				final User user = result.getData();
 				final String message;
 				if (user.isProtected()) {
-					message = mContext.getString(R.string.sent_follow_request_to_user, getUserName(mContext, user));
+					message = mContext.getString(R.string.sent_follow_request_to_user, getUserName(user));
 				} else {
-					message = mContext.getString(R.string.followed_user, getUserName(mContext, user));
+					message = mContext.getString(R.string.followed_user, getUserName(user));
 				}
 				mMessagesManager.showOkMessage(message, false);
 			} else {
@@ -1086,7 +1085,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			if (succeed) {
 				if (users.length == 1) {
 					final ParcelableUser user = users[0];
-					final String displayName = Utils.getDisplayName(mContext, user.id, user.name, user.screen_name);
+					final String displayName = Utils.getDisplayName(user.name, user.screen_name);
 					message = mContext.getString(R.string.deleted_user_from_list, displayName, result.getData().name);
 				} else {
 					final Resources res = mContext.getResources();
@@ -1143,7 +1142,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			if (result.hasData()) {
 				final User user = result.getData();
 				final String message = mContext.getString(R.string.denied_users_follow_request,
-						getUserName(mContext, user));
+						getUserName(user));
 				mMessagesManager.showOkMessage(message, false);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_denying_follow_request, result.getException(), false);
@@ -1184,7 +1183,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		protected void onPostExecute(final SingleResponse<User> result) {
 			if (result.hasData()) {
 				final String message = mContext.getString(R.string.unblocked_user,
-						getUserName(mContext, result.getData()));
+						getUserName(result.getData()));
 				mMessagesManager.showInfoMessage(message, false);
                 final Intent intent = new Intent(BROADCAST_FRIENDSHIP_CHANGED);
                 intent.putExtra(EXTRA_USER_ID, mUserId);
@@ -1225,7 +1224,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected void onPostExecute(final SingleResponse<User> result) {
             if (result.hasData()) {
                 final String message = mContext.getString(R.string.unmuted_user,
-                        getUserName(mContext, result.getData()));
+                        getUserName(result.getData()));
                 mMessagesManager.showInfoMessage(message, false);
                 final Intent intent = new Intent(BROADCAST_FRIENDSHIP_CHANGED);
                 intent.putExtra(EXTRA_USER_ID, mUserId);
@@ -1384,7 +1383,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		protected void onPostExecute(final SingleResponse<User> result) {
 			if (result.hasData()) {
 				final String message = mContext.getString(R.string.unfollowed_user,
-						getUserName(mContext, result.getData()));
+						getUserName(result.getData()));
 				mMessagesManager.showInfoMessage(message, false);
                 final Intent intent = new Intent(BROADCAST_FRIENDSHIP_CHANGED);
                 intent.putExtra(EXTRA_USER_ID, user_id);

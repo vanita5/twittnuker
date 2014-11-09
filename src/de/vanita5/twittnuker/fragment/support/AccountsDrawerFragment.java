@@ -362,8 +362,7 @@ public class AccountsDrawerFragment extends BaseSupportListFragment implements L
 		final Account account = mAccountsAdapter.getSelectedAccount();
 		if (account != null) {
 
-			final String displayName = getDisplayName(getActivity(), account.account_id, account.name,
-					account.screen_name);
+			final String displayName = getDisplayName(account.name, account.screen_name);
 			mAccountOptionsSectionView.setText(displayName);
 		} else {
 			mAccountOptionsSectionView.setText(null);

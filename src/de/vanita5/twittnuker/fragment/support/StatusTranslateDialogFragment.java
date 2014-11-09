@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import static de.vanita5.twittnuker.model.ParcelableLocation.isValidLocation;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
 import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
 import static de.vanita5.twittnuker.util.Utils.getStatusTypeIconRes;

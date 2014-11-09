@@ -99,7 +99,6 @@
     <string name="sources">Fonts</string>
     <string name="content">Contingut</string>
     <string name="customize">Personalitza</string>
-    <string name="set_nickname">Establiu sobrenom</string>
     <string name="set_color">Estableix un color</string>
     <string name="clear">Esborra</string>
     <string name="pick_color">Tria un color</string>
@@ -443,10 +442,7 @@
     <string name="enable_for_rts">Habilita per a repiulades</string>
     <string name="safety">Seguretat</string>
     <string name="updating_status_notification">S\'està enviant la piulada&#8230;</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
     <string name="query">Consulta</string>
-    <string name="nickname_only">Només el sobrenom</string>
-    <string name="nickname_only_summary">Substitueix el nom de l\'usuari pel seu sobrenom quan sigui possible</string>
     <string name="input_text">Entrada de text</string>
     <string name="users_lists_with_name">Llistes de <xliff:g id="name">%s</xliff:g></string>
     <string name="lists_following_user_with_name">Llistes que segueixen a <xliff:g id="name">%s</xliff:g></string>
@@ -570,7 +566,6 @@
     <string name="export_settings">Exporta els paràmetres</string>
     <string name="export_settings_type_dialog_title">Exporta els paràmetres&#8230;</string>
     <string name="import_settings_type_dialog_title">Importa paràmetres&#8230;</string>
-    <string name="nicknames">Sobrenoms</string>
     <string name="user_colors">Colors de l\'usuari</string>
     <string name="import_export">Importar/Exportar</string>
     <string name="theme_background_alpha">Transparència del fons de pantalla</string>

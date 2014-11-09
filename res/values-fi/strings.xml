@@ -99,7 +99,6 @@
     <string name="sources">Lähteet</string>
     <string name="content">Sisältö</string>
     <string name="customize">Mukauta</string>
-    <string name="set_nickname">Aseta kutsumanimi</string>
     <string name="set_color">Aseta väri</string>
     <string name="clear">Tyhjennä</string>
     <string name="pick_color">Valitse väri</string>
@@ -445,10 +444,7 @@
     <string name="enable_for_rts">Ota käyttöön uudelleentwiittauksissa</string>
     <string name="safety">Turvallisuus</string>
     <string name="updating_status_notification">Lähetetään twiittiä&#8230;</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
     <string name="query">Kysely</string>
-    <string name="nickname_only">Vain kutsumanimi</string>
-    <string name="nickname_only_summary">Korvaa käyttäjänimi kutsumanimellä aina kun mahdollista</string>
     <string name="input_text">Syötä tekstiä</string>
     <string name="users_lists_with_name">Listat käyttäjältä <xliff:g id="name">%s</xliff:g></string>
     <string name="lists_following_user_with_name">Listat, jotka seuraavat käyttäjää <xliff:g id="name">%s</xliff:g></string>
@@ -571,7 +567,6 @@
     <string name="export_settings">Vie asetukset</string>
     <string name="export_settings_type_dialog_title">Vie asetukset&#8230;</string>
     <string name="import_settings_type_dialog_title">Tuo asetukset&#8230;</string>
-    <string name="nicknames">Kutsumanimet</string>
     <string name="user_colors">Käyttäjän värit</string>
     <string name="import_export">Tuo/Vie</string>
     <string name="theme_background_alpha">Teeman taustan alpha-arvo</string>

@@ -104,7 +104,6 @@
 	<string name="sources">Sources</string>
 	<string name="content">Content</string>
 	<string name="customize">Customize</string>
-	<string name="set_nickname">Set nickname</string>
 	<string name="set_color">Set color</string>
 	<string name="clear">Clear</string>
 	<string name="pick_color">Pick color</string>
@@ -455,10 +454,7 @@
 	<string name="enable_for_rts">Enable for RTs</string>
 	<string name="safety">Safety</string>
 	<string name="updating_status_notification">Sending tweet…</string>
-	<string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
 	<string name="query">Query</string>
-	<string name="nickname_only">Nickname only</string>
-	<string name="nickname_only_summary">Replace user name with nickname when available</string>
 	<string name="input_text">Input text</string>
 	<string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s lists</string>
 	<string name="lists_following_user_with_name">Lists following <xliff:g id="name">%s</xliff:g></string>
@@ -467,7 +463,8 @@
 	<string name="link_highlight_option">Link highlight option</string>
 	<string name="users_statuses">User\'s tweets</string>
 	<string name="card_animation">Card animation</string>
-	<string name="name_first">Display name first</string>
+	<string name="name_first">Prefer name</string>
+    <string name="name_first_summary">Show user name instead of the @screenname</string>
 	<string name="next">Next</string>
 	<string name="settings_wizard">Settings wizard</string>
 	<string name="wizard_page_welcome_title">Welcome</string>
@@ -581,7 +578,6 @@
     <string name="export_settings">Export settings</string>
     <string name="export_settings_type_dialog_title">Export settings…</string>
     <string name="import_settings_type_dialog_title">Import settings…</string>
-    <string name="nicknames">Nicknames</string>
     <string name="user_colors">User colors</string>
     <string name="import_export">Import/Export</string>
     <string name="theme_background_alpha">Theme background alpha</string>

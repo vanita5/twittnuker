@@ -39,7 +39,7 @@ public class CreateUserMuteDialogFragment extends BaseSupportDialogFragment impl
 		final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 		final ParcelableUser user = getUser();
 		if (user != null) {
-			final String displayName = Utils.getDisplayName(wrapped, user.id, user.name, user.screen_name);
+			final String displayName = Utils.getDisplayName(user.name, user.screen_name);
 			builder.setTitle(getString(R.string.mute_user, displayName));
 			builder.setMessage(getString(R.string.mute_user_confirm_message, displayName));
 		}

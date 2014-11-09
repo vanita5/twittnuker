@@ -29,8 +29,7 @@ import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.Conversat
 import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_SCREEN_NAME;
 import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_TEXT;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
@@ -38,7 +37,6 @@ import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -100,9 +98,7 @@ public class DirectMessageConversationEntriesAdapter extends BaseCursorAdapter i
 		holder.setUserColor(getUserColor(mContext, conversationId));
 
 		holder.setTextSize(getTextSize());
-		final String nick = getUserNickname(context, conversationId);
-		holder.name.setText(TextUtils.isEmpty(nick) ? name : isNicknameOnly() ? nick : context.getString(
-				R.string.name_with_nickname, name, nick));
+		holder.name.setText(name);
 		holder.screen_name.setText("@" + screenName);
 		holder.screen_name.setVisibility(View.VISIBLE);
 		holder.text.setText(toPlainText(cursor.getString(IDX_TEXT)));

@@ -116,11 +116,6 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
     }
 
     @Override
-    public boolean isNicknameOnly() {
-        return false;
-    }
-
-    @Override
     public boolean isShowAccountColor() {
         return false;
     }
@@ -155,11 +150,6 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
 
     @Override
     public void setLinkHighlightOption(String option) {
-
-    }
-
-    @Override
-    public void setNicknameOnly(boolean nicknameOnly) {
 
     }
 

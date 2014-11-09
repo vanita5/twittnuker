@@ -40,7 +40,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 
 	public static final String LOGTAG = APP_NAME;
 
-	public static final String USER_NICKNAME_PREFERENCES_NAME = "user_nicknames";
 	public static final String USER_COLOR_PREFERENCES_NAME = "user_colors";
 	public static final String HOST_MAPPING_PREFERENCES_NAME = "host_mapping";
 	public static final String SHARED_PREFERENCES_NAME = "preferences";

@@ -145,8 +145,7 @@ public class UserListDetailsFragment extends BaseSupportListFragment implements 
 		mUserList = userList;
 		mProfileContainer.drawEnd(getAccountColor(getActivity(), userList.account_id));
 		mListNameView.setText(userList.name);
-		final String display_name = getDisplayName(getActivity(), userList.user_id, userList.user_name,
-				userList.user_screen_name, false);
+		final String display_name = getDisplayName(userList.user_name, userList.user_screen_name, false);
 		mCreatedByView.setText(getString(R.string.created_by, display_name));
 		final String description = userList.description;
 		mDescriptionContainer.setVisibility(is_myself || !isEmpty(description) ? View.VISIBLE : View.GONE);

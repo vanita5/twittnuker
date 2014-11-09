@@ -59,8 +59,6 @@
 	<item name="lists" type="id"/>
 	<item name="center" type="id"/>
 	<item name="filters" type="id"/>
-	<item name="set_nickname" type="id"/>
-	<item name="clear_nickname" type="id"/>
 	<item name="list_memberships" type="id"/>
 	<item name="unread_count" type="id"/>
 	<item name="add_to_filter" type="id"/>

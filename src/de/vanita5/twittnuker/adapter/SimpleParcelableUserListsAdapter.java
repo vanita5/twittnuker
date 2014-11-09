@@ -76,8 +76,7 @@ public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<Parcelabl
 		holder.icon.setImageDrawable(null);
 
 		final ParcelableUserList user_list = getItem(position);
-		final String display_name = getDisplayName(mContext, user_list.user_id, user_list.user_name,
-				user_list.user_screen_name, isDisplayNameFirst(), isNicknameOnly(), false);
+		final String display_name = getDisplayName(user_list.user_name, user_list.user_screen_name, isDisplayNameFirst());
 		holder.text1.setText(user_list.name);
 		holder.text2.setText(mContext.getString(R.string.created_by, display_name));
 		holder.icon.setVisibility(isDisplayProfileImage() ? View.VISIBLE : View.GONE);

@@ -101,7 +101,6 @@
     <string name="sources">来源</string>
     <string name="content">内容</string>
     <string name="customize">自定义</string>
-    <string name="set_nickname">设定昵称</string>
     <string name="set_color">设定颜色</string>
     <string name="clear">清除</string>
     <string name="pick_color">选取颜色</string>
@@ -450,10 +449,7 @@
     <string name="enable_for_rts">在转推启用</string>
     <string name="safety">安全</string>
     <string name="updating_status_notification">正在发送推文&#8230;</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g>（<xliff:g id="nickname">%2$s</xliff:g>）</string>
     <string name="query">查询</string>
-    <string name="nickname_only">仅显示昵称</string>
-    <string name="nickname_only_summary">当昵称可用时替代用户名</string>
     <string name="input_text">输入文本</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>的列表</string>
     <string name="lists_following_user_with_name">关注<xliff:g id="name">%s</xliff:g>的列表</string>
@@ -576,7 +572,6 @@
     <string name="export_settings">导出设定</string>
     <string name="export_settings_type_dialog_title">导出设定&#8230;</string>
     <string name="import_settings_type_dialog_title">导入设定&#8230;</string>
-    <string name="nicknames">昵称</string>
     <string name="user_colors">用户颜色标签</string>
     <string name="import_export">导入/导出</string>
     <string name="theme_background_alpha">主题背景透明度</string>

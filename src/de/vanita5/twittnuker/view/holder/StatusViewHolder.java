@@ -57,7 +57,7 @@ public class StatusViewHolder extends CardViewHolder {
 	public int position;
 	private boolean account_color_enabled;
 	private float text_size;
-	private boolean nickname_only, name_first;
+	private boolean name_first;
     private boolean display_profile_image;
 	private int card_highlight_option;
 
@@ -126,20 +126,14 @@ public class StatusViewHolder extends CardViewHolder {
 		reply_retweet_status.setVisibility(is_retweet || is_reply ? View.VISIBLE : View.GONE);
 	}
 
-	public void setNicknameOnly(final boolean nickname_only) {
-		this.nickname_only = nickname_only;
-	}
-
 	public void setReplyTo(final long user_id, final String name, final String screen_name) {
-		final String display_name = getDisplayName(getContext(), user_id, name, screen_name, name_first, nickname_only,
-				false);
+		final String display_name = getDisplayName(name, screen_name, name_first);
 		reply_retweet_status.setText(getString(R.string.in_reply_to, display_name));
 		reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_conversation, 0, 0, 0);
 	}
 
 	public void setRetweetedBy(final long count, final long user_id, final String name, final String screen_name) {
-		final String display_name = getDisplayName(getContext(), user_id, name, screen_name, name_first, nickname_only,
-				false);
+		final String display_name = getDisplayName(name, screen_name, name_first);
 		reply_retweet_status.setText(count > 1 ? getString(R.string.retweeted_by_with_count, display_name, count - 1)
 				: getString(R.string.retweeted_by, display_name));
 		reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_retweet, 0, 0, 0);

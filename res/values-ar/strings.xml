@@ -99,7 +99,6 @@
     <string name="sources">المصادر</string>
     <string name="content">المحتوى</string>
     <string name="customize">تخصيص</string>
-    <string name="set_nickname">تعين اللقب</string>
     <string name="set_color">تعيين اللون</string>
     <string name="clear">إفراغ</string>
     <string name="pick_color">إختيار لون</string>
@@ -411,10 +410,7 @@
     <string name="enable_for_rts">تفعيل من أجل إعادة التغريدات</string>
     <string name="safety">الأمن</string>
     <string name="updating_status_notification">جاري إرسال التغريدة&#8230;</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
     <string name="query">طلب</string>
-    <string name="nickname_only">اللقب فقط</string>
-    <string name="nickname_only_summary">تغير إسم المستخدم باللقب إن كان متواجدا</string>
     <string name="input_text">إدخال النص</string>
     <string name="users_lists_with_name">قواءم <xliff:g id="name">%s</xliff:g></string>
     <string name="lists_following_user_with_name">قوائم تتبع <xliff:g id="name">%s</xliff:g></string>
@@ -499,7 +495,6 @@
     <string name="export_settings">تصدير الإعدادات</string>
     <string name="export_settings_type_dialog_title">تصدير الإعدادات&#8230;</string>
     <string name="import_settings_type_dialog_title">استيراد الإعدادات&#8230;</string>
-    <string name="nicknames">أسماء مستعارة</string>
     <string name="user_colors">ألوان المستخدم</string>
     <string name="progress">التقدم</string>
     <string name="hidden_settings">إعدادات مخفية</string>

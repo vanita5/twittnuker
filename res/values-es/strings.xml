@@ -99,7 +99,6 @@
     <string name="sources">Fuentes</string>
     <string name="content">Contenido</string>
     <string name="customize">Personalizar</string>
-    <string name="set_nickname">Definir apodo</string>
     <string name="set_color">Establecer color</string>
     <string name="clear">Borrar</string>
     <string name="pick_color">Elegir color</string>
@@ -445,10 +444,7 @@
     <string name="enable_for_rts">Habilitar para RTs</string>
     <string name="safety">Seguro</string>
     <string name="updating_status_notification">Enviando tweet&#8230;</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
     <string name="query">Consulta</string>
-    <string name="nickname_only">Solamente Apodo</string>
-    <string name="nickname_only_summary">Cambia el nombre de usuario con el apodo cuando esté disponible</string>
     <string name="input_text">Introduce el texto</string>
     <string name="users_lists_with_name">Listas de <xliff:g id="name">%s</xliff:g></string>
     <string name="lists_following_user_with_name">Listas seguidas por <xliff:g id="name">%s</xliff:g></string>
@@ -569,7 +565,6 @@
     <string name="export_settings">Exportar ajustes</string>
     <string name="export_settings_type_dialog_title">Exportar ajustes&#8230;</string>
     <string name="import_settings_type_dialog_title">Importar ajustes&#8230;</string>
-    <string name="nicknames">Apodos</string>
     <string name="user_colors">Colores de usuario</string>
     <string name="import_export">Importar/exportar</string>
     <string name="theme_background_alpha">Fondo del tema alpha</string>

@@ -45,7 +45,6 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.text.Html;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -109,11 +108,9 @@ import twitter4j.TwitterException;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ParseUtils.parseLong;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserColor;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserNickname;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.setUserColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.clearUserColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.setUserColor;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
@@ -340,9 +337,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 		mUser = user;
         mProfileNameContainer.drawStart(getUserColor(getActivity(), user.id, true));
 		mProfileNameContainer.drawEnd(getAccountColor(getActivity(), user.account_id));
-		final String nick = getUserNickname(getActivity(), user.id, true);
-		mNameView
-				.setText(TextUtils.isEmpty(nick) ? user.name : getString(R.string.name_with_nickname, user.name, nick));
+		mNameView.setText(user.name);
         mProfileImageView.setUserType(user.is_verified, user.is_protected);
 		mScreenNameView.setText("@" + user.screen_name);
 		mDescriptionContainer.setVisibility(userIsMe || !isEmpty(user.description_html) ? View.VISIBLE : View.GONE);
@@ -442,8 +437,6 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 		setHasOptionsMenu(true);
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE)
-				.registerOnSharedPreferenceChangeListener(this);
-		getSharedPreferences(USER_NICKNAME_PREFERENCES_NAME, Context.MODE_PRIVATE)
 				.registerOnSharedPreferenceChangeListener(this);
 		mLocale = getResources().getConfiguration().locale;
 		final Bundle args = getArguments();
@@ -865,15 +858,6 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 				startActivityForResult(intent, REQUEST_SET_COLOR);
 				break;
 			}
-			case MENU_CLEAR_NICKNAME: {
-                clearUserNickname(getActivity(), user.id);
-				break;
-			}
-			case MENU_SET_NICKNAME: {
-                final String nick = getUserNickname(getActivity(), user.id, true);
-                SetUserNicknameDialogFragment.show(getFragmentManager(), user.id, nick);
-				break;
-			}
 			case MENU_ADD_TO_LIST: {
 				final Intent intent = new Intent(INTENT_ACTION_SELECT_USER_LIST);
 				intent.setClass(getActivity(), UserListSelectorActivity.class);
@@ -940,7 +924,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
         setMenuItemAvailability(menu, MENU_EDIT, isMyself);
         final MenuItem mentionItem = menu.findItem(MENU_MENTION);
         if (mentionItem != null) {
-            mentionItem.setTitle(getString(R.string.mention_user_name, getDisplayName(getActivity(), user)));
+            mentionItem.setTitle(getString(R.string.mention_user_name, getDisplayName(user.name, user.screen_name)));
         }
         final MenuItem followItem = menu.findItem(MENU_FOLLOW);
         followItem.setVisible(!isMyself);
@@ -1124,7 +1108,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 		@Override
 		public String getName() {
 			if (mUser == null) return getString(R.string.lists_following_user);
-			final String display_name = getDisplayName(getActivity(), mUser.id, mUser.name, mUser.screen_name);
+			final String display_name = getDisplayName(mUser.name, mUser.screen_name);
 			return getString(R.string.lists_following_user_with_name, display_name);
 		}
 
@@ -1145,7 +1129,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 		@Override
 		public String getName() {
 			if (mUser == null) return getString(R.string.users_lists);
-			final String display_name = getDisplayName(getActivity(), mUser.id, mUser.name, mUser.screen_name);
+			final String display_name = getDisplayName(mUser.name, mUser.screen_name);
 			return getString(R.string.users_lists_with_name, display_name);
 		}
 
