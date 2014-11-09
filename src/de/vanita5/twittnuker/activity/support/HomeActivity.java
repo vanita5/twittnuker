@@ -42,6 +42,8 @@ import java.util.List;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.gcm.GCMHelper;
+import de.vanita5.twittnuker.util.ActivityAccessor;
+import de.vanita5.twittnuker.util.ActivityAccessor.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.HotKeyHandler;
 import de.vanita5.twittnuker.util.Utils;
@@ -574,6 +576,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
             homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
             mTabIndicator.setStripColor(contrastColor);
             mTabIndicator.setIconColor(contrastColor);
+            ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null, themeColor));
         } else {
             final int backgroundColor = ThemeUtils.getThemeBackgroundColor(mTabIndicator.getItemContext());
             final int foregroundColor = ThemeUtils.getThemeForegroundColor(mTabIndicator.getItemContext());

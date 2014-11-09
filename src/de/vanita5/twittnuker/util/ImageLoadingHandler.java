@@ -39,7 +39,7 @@ import java.util.Map;
 
 public class ImageLoadingHandler implements ImageLoadingListener, ImageLoadingProgressListener {
 
-	private final Map<View, String> mLoadingUris = new HashMap<View, String>();
+	private final Map<View, String> mLoadingUris = new HashMap<>();
 	private final int[] mProgressBarIds;
 
 	public ImageLoadingHandler() {
@@ -82,8 +82,7 @@ public class ImageLoadingHandler implements ImageLoadingListener, ImageLoadingPr
 			view.setBackgroundResource(R.drawable.image_preview_refresh);
 		}
 		mLoadingUris.remove(view);
-		final View parent = (View) view.getParent();
-		final View progress = parent.findViewById(R.id.image_preview_progress);
+        final ProgressBar progress = findProgressBar(view.getParent());
 		if (progress != null) {
 			progress.setVisibility(View.GONE);
 		}

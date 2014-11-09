@@ -516,7 +516,7 @@
     <string name="general">Umum</string>
     <string name="hints">Petunjuk</string>
     <string name="finish">Selesai</string>
-    <string name="theme_background">Gambar latar tema</string>
+    <string name="background">Gambar latar tema</string>
     <string name="theme_background_default">Awal</string>
     <string name="theme_background_solid">Putih/hitam murni</string>
     <string name="theme_background_transparent">Transparan</string>

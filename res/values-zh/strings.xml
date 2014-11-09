@@ -514,7 +514,7 @@
     <string name="general">一般</string>
     <string name="hints">提示</string>
     <string name="finish">完成</string>
-    <string name="theme_background">主題背景</string>
+    <string name="background">主題背景</string>
     <string name="theme_background_default">預設</string>
     <string name="theme_background_solid">純白/純黑</string>
     <string name="theme_background_transparent">透明</string>

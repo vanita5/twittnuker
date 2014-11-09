@@ -523,7 +523,7 @@
     <string name="general">通用</string>
     <string name="hints">提示</string>
     <string name="finish">完成</string>
-    <string name="theme_background">主题背景</string>
+    <string name="background">主题背景</string>
     <string name="theme_background_default">默认</string>
     <string name="theme_background_solid">纯白/纯黑</string>
     <string name="theme_background_transparent">透明</string>
@@ -602,8 +602,8 @@
     <string name="image_preview_scale_type_fit_center">居中</string>
     <string name="quote_protected_status_warning_message">这条推文受保护。\n\n受保护的用户通常不希望他们的推文被公开分享。</string>
     <string name="send_anyway">仍然发送</string>
-    <string name="my_following_only">仅限我关注的</string>
-    <string name="my_following_only_summary">只显示来自你关注的用户的通知</string>
+    <string name="following_only">仅限我关注的</string>
+    <string name="following_only_summary">只显示来自你关注的用户的通知</string>
     <string name="new_direct_message">新私信</string>
     <string name="plain_list_style">简单列表样式</string>
     <string name="want_old_icon_back">想要原本的图标？</string>

@@ -525,7 +525,7 @@
     <string name="general">基本</string>
     <string name="hints">ヒント</string>
     <string name="finish">終了</string>
-    <string name="theme_background">テーマ背景</string>
+    <string name="background">テーマ背景</string>
     <string name="theme_background_default">デフォルト</string>
     <string name="theme_background_solid">白/黒一色</string>
     <string name="theme_background_transparent">背景透過</string>
@@ -604,8 +604,8 @@
     <string name="image_preview_scale_type_fit_center">中央表示</string>
     <string name="quote_protected_status_warning_message">このツイートは非公開にされています。\n\n非公開ユーザーのツイートを公開しないでください。</string>
     <string name="send_anyway">送信する</string>
-    <string name="my_following_only">フォロー中のみ</string>
-    <string name="my_following_only_summary">フォローしているユーザーからの通知だけを表示するようにします。</string>
+    <string name="following_only">フォロー中のみ</string>
+    <string name="following_only_summary">フォローしているユーザーからの通知だけを表示するようにします。</string>
     <string name="new_direct_message">新規メッセージ</string>
     <string name="plain_list_style">プレーンリスト表示</string>
     <string name="want_old_icon_back">以前のアイコンにしますか?</string>

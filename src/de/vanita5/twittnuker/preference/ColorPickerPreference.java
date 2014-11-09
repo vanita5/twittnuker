@@ -27,10 +27,10 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.preference.Preference;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import de.vanita5.twittnuker.Constants;
@@ -41,7 +41,6 @@ import de.vanita5.twittnuker.view.ColorPickerView;
 
 public class ColorPickerPreference extends Preference implements DialogInterface.OnClickListener, Constants {
 
-	private View mView;
 	protected int mDefaultValue = Color.WHITE;
 	private boolean mAlphaSliderEnabled = false;
 
@@ -60,6 +59,7 @@ public class ColorPickerPreference extends Preference implements DialogInterface
 	public ColorPickerPreference(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
         mResources = context.getResources();
+        setWidgetLayoutResource(R.layout.preference_widget_color_picker);
 		init(context, attrs);
 	}
 
@@ -77,7 +77,6 @@ public class ColorPickerPreference extends Preference implements DialogInterface
 				if (isPersistent()) {
 					persistInt(color);
 				}
-				setPreviewColor();
 				final OnPreferenceChangeListener listener = getOnPreferenceChangeListener();
 				if (listener != null) {
 					listener.onPreferenceChange(this, color);
@@ -113,10 +112,10 @@ public class ColorPickerPreference extends Preference implements DialogInterface
 	}
 
 	@Override
-	protected void onBindView(final View view) {
+    protected void onBindView(@NonNull final View view) {
 		super.onBindView(view);
-		mView = view;
-		setPreviewColor();
+        final ImageView imageView = (ImageView) view.findViewById(R.id.color);
+        imageView.setImageBitmap(ColorPickerView.getColorPreviewBitmap(getContext(), getValue()));
 	}
 
 	@Override
@@ -143,27 +142,6 @@ public class ColorPickerPreference extends Preference implements DialogInterface
 			e.printStackTrace();
 		}
 		return mDefaultValue;
-	}
-
-	private void setPreviewColor() {
-		if (mView == null) return;
-		final View widgetFrameView = mView.findViewById(android.R.id.widget_frame);
-		if (!(widgetFrameView instanceof ViewGroup)) return;
-		final ViewGroup widgetFrame = (ViewGroup) widgetFrameView;
-        widgetFrame.setVisibility(View.VISIBLE);
-		// remove preview image that is already created
-        widgetFrame.setAlpha(isEnabled() ? 1 : 0.25f);
-		final View foundView = widgetFrame.findViewById(R.id.color);
-		final ImageView imageView;
-		if (foundView instanceof ImageView) {
-			imageView = (ImageView) foundView;
-		} else {
-			imageView = new ImageView(getContext());
-			widgetFrame.removeAllViews();
-			imageView.setId(R.id.color);
-			widgetFrame.addView(imageView);
-		}
-		imageView.setImageBitmap(ColorPickerView.getColorPreviewBitmap(getContext(), getValue()));
 	}
 
 }

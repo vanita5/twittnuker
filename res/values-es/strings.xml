@@ -518,7 +518,7 @@
     <string name="general">General</string>
     <string name="hints">Consejos</string>
     <string name="finish">Terminar</string>
-    <string name="theme_background">Tema de fondo</string>
+    <string name="background">Tema de fondo</string>
     <string name="theme_background_default">Predeterminado</string>
     <string name="theme_background_solid">Blanco/Negro puro</string>
     <string name="theme_background_transparent">Transparente</string>
@@ -595,6 +595,6 @@
     <string name="image_preview_scale_type_fit_center">Ajustar al centro</string>
     <string name="quote_protected_status_warning_message">Este tuit está protegido.\n\nLos usuarios protegidos no suelen querer compartir públicamente sus tuits.</string>
     <string name="send_anyway">Enviar en todo caso</string>
-    <string name="my_following_only">Sólo mis seguidores</string>
-    <string name="my_following_only_summary">Solo mostrar notificaciones de los que sigo.</string>
+    <string name="following_only">Sólo mis seguidores</string>
+    <string name="following_only_summary">Solo mostrar notificaciones de los que sigo.</string>
 </resources>

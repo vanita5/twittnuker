@@ -152,8 +152,9 @@ import de.vanita5.twittnuker.fragment.support.UserListMembershipsListFragment;
 import de.vanita5.twittnuker.fragment.support.UserListSubscribersFragment;
 import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserListsListFragment;
+import de.vanita5.twittnuker.fragment.support.UserMediaTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserMentionsFragment;
-import de.vanita5.twittnuker.fragment.support.UserProfileFragment;
+import de.vanita5.twittnuker.fragment.support.UserProfileFragmentOld;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UsersListFragment;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
@@ -239,8 +240,7 @@ import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLException;
 
-public final class
-		Utils implements Constants, TwitterConstants {
+public final class Utils implements Constants, TwitterConstants {
 
 	private static final String UA_TEMPLATE = "Mozilla/5.0 (Linux; Android %s; %s Build/%s) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.111 Safari/537.36";
 
@@ -311,6 +311,7 @@ public final class
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_STATUS, null, LINK_ID_STATUS);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER, null, LINK_ID_USER);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_TIMELINE, null, LINK_ID_USER_TIMELINE);
+        LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_MEDIA_TIMELINE, null, LINK_ID_USER_MEDIA_TIMELINE);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_FOLLOWERS, null, LINK_ID_USER_FOLLOWERS);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_FRIENDS, null, LINK_ID_USER_FRIENDS);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_FAVORITES, null, LINK_ID_USER_FAVORITES);
@@ -654,7 +655,7 @@ public final class
 				break;
 			}
 			case LINK_ID_USER: {
-				fragment = new UserProfileFragment();
+				fragment = new UserProfileFragmentOld();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
@@ -668,28 +669,41 @@ public final class
 			case LINK_ID_USER_LIST_MEMBERSHIPS: {
 				fragment = new UserListMembershipsListFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
+                final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
 					args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				}
 				if (!args.containsKey(EXTRA_USER_ID)) {
-					args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
+                    args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(paramUserId));
 				}
 				break;
 			}
 			case LINK_ID_USER_TIMELINE: {
 				fragment = new UserTimelineFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
+                final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
 					args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				}
 				if (!args.containsKey(EXTRA_USER_ID)) {
-					args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
+                    args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(paramUserId));
 				}
-				if (isEmpty(paramScreenName) && isEmpty(param_user_id)) return null;
+                if (isEmpty(paramScreenName) && isEmpty(paramUserId)) return null;
 				break;
 			}
+            case LINK_ID_USER_MEDIA_TIMELINE: {
+                fragment = new UserMediaTimelineFragment();
+                final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
+                final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
+                if (!args.containsKey(EXTRA_SCREEN_NAME)) {
+                    args.putString(EXTRA_SCREEN_NAME, paramScreenName);
+                }
+                if (!args.containsKey(EXTRA_USER_ID)) {
+                    args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(paramUserId));
+                }
+                if (isEmpty(paramScreenName) && isEmpty(paramUserId)) return null;
+                break;
+            }
 			case LINK_ID_USER_FAVORITES: {
 				fragment = new UserFavoritesFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
@@ -1638,14 +1652,22 @@ public final class
 		return getDisplayName(context, userId, name, screenName, false);
 	}
 
-	public static String getDisplayName(final Context context, final long user_id, final String name,
-			final String screen_name, final boolean ignore_cache) {
+    public static String getDisplayName(final Context context, final ParcelableUser user) {
+        return getDisplayName(context, user, false);
+    }
+
+    public static String getDisplayName(final Context context, final ParcelableUser user, final boolean ignoreCache) {
+        return getDisplayName(context, user.id, user.name, user.screen_name, ignoreCache);
+    }
+
+    public static String getDisplayName(final Context context, final long userId, final String name,
+                                        final String screenName, final boolean ignoreCache) {
 		if (context == null) return null;
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         final boolean nameFirst = prefs.getBoolean(KEY_NAME_FIRST, true);
         final boolean nicknameOnly = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
 				.getBoolean(KEY_NICKNAME_ONLY, false);
-        return getDisplayName(context, user_id, name, screen_name, nameFirst, nicknameOnly, ignore_cache);
+        return getDisplayName(context, userId, name, screenName, nameFirst, nicknameOnly, ignoreCache);
 	}
 
 	public static String getDisplayName(final Context context, final long user_id, final String name,
@@ -3361,8 +3383,24 @@ public final class
 			}
 			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
             activity.startActivity(intent);
+    }
 
-	}
+    public static void openUserMediaTimeline(final Activity activity, final long account_id, final long user_id,
+                                             final String screen_name) {
+        if (activity == null) return;
+        final Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_USER_MEDIA_TIMELINE);
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(account_id));
+        if (user_id > 0) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(user_id));
+	    }
+        if (screen_name != null) {
+            builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screen_name);
+        }
+        final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
+        activity.startActivity(intent);
+    }
 
 	public static String replaceLast(final String text, final String regex, final String replacement) {
 		if (text == null || regex == null || replacement == null) return text;

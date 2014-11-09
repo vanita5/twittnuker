@@ -19,7 +19,7 @@
         android:minWidth="@dimen/element_size_small"
     	android:textAppearance="?android:textAppearanceSmall"/>
 
-    <ImageView
+    <de.vanita5.twittnuker.view.ActionIconView
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:contentDescription="@string/send"

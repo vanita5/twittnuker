@@ -273,6 +273,9 @@
                     android:host="user_timeline"
                     android:scheme="twittnuker" />
                 <data
+                    android:host="user_media_timeline"
+                    android:scheme="twittnuker"/>
+                <data
                     android:host="user_favorites"
                     android:scheme="twittnuker" />
                 <data

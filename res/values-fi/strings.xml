@@ -518,7 +518,7 @@
     <string name="general">Yleiset</string>
     <string name="hints">Vinkit</string>
     <string name="finish">Valmis</string>
-    <string name="theme_background">Teeman tausta</string>
+    <string name="background">Teeman tausta</string>
     <string name="theme_background_default">Oletus</string>
     <string name="theme_background_solid">Pelkkä valkoinen/musta</string>
     <string name="theme_background_transparent">Läpinäkyvä</string>
@@ -597,6 +597,6 @@
     <string name="image_preview_scale_type_fit_center">Sovita keskusta</string>
     <string name="quote_protected_status_warning_message">Twiitti on suojattu.\n\nSuojatut käyttäjät eivät yleensä halua twiittejään julkisiksi.</string>
     <string name="send_anyway">Lähetä joka tapauksessa</string>
-    <string name="my_following_only">Vain seuratut käyttäjät</string>
-    <string name="my_following_only_summary">Näytä ilmoitukset vain seuratuilta käyttäjiltä.</string>
+    <string name="following_only">Vain seuratut käyttäjät</string>
+    <string name="following_only_summary">Näytä ilmoitukset vain seuratuilta käyttäjiltä.</string>
 </resources>

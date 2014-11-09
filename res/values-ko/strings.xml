@@ -512,7 +512,7 @@
     <string name="general">일반</string>
     <string name="hints">힌트</string>
     <string name="finish">끝내기</string>
-    <string name="theme_background">테마 배경</string>
+    <string name="background">테마 배경</string>
     <string name="theme_background_default">기본</string>
     <string name="theme_background_solid">하양/검정</string>
     <string name="theme_background_transparent">투명</string>

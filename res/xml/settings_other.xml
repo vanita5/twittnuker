@@ -41,4 +41,16 @@
     	android:summary="%s"
     	android:title="@string/compose_now_action"/>
 
+    <Preference android:title="@string/import_settings">
+        <intent
+            android:targetPackage="de.vanita5.twittnuker"
+            android:targetClass="de.vanita5.twittnuker.activity.support.DataImportActivity"/>
+    </Preference>
+
+    <Preference android:title="@string/export_settings">
+        <intent
+            android:targetPackage="de.vanita5.twittnuker"
+            android:targetClass="de.vanita5.twittnuker.activity.support.DataExportActivity"/>
+    </Preference>
+
 </PreferenceScreen>

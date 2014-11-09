@@ -507,7 +507,7 @@
     <string name="delete_user_confirm_message">Eliminare <xliff:g id="name">%s</xliff:g>? Non è reversibile.</string>
     <string name="general">Generale</string>
     <string name="hints">Suggerimenti</string>
-    <string name="theme_background">Sfondo del tema</string>
+    <string name="background">Sfondo del tema</string>
     <string name="theme_background_default">Predefinito</string>
     <string name="theme_background_solid">Pure white/black</string>
     <string name="theme_background_transparent">Trasparente</string>

@@ -507,7 +507,7 @@
     <string name="general">Ogólne</string>
     <string name="hints">Wskazówki</string>
     <string name="finish">Zakończ</string>
-    <string name="theme_background">Tło motywu</string>
+    <string name="background">Tło motywu</string>
     <string name="theme_background_default">Domyślne</string>
     <string name="theme_background_solid">Czyste biało-czarne</string>
     <string name="theme_background_transparent">Przezroczyste</string>

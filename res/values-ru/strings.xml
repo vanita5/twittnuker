@@ -509,7 +509,7 @@
     <string name="general">Основное</string>
     <string name="hints">Советы</string>
     <string name="finish">Завершено</string>
-    <string name="theme_background">Фон темы</string>
+    <string name="background">Фон темы</string>
     <string name="theme_background_default">По умолчанию</string>
     <string name="theme_background_solid">Просто белый/чёрный</string>
     <string name="theme_background_transparent">Прозрачный</string>

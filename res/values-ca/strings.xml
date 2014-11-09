@@ -517,7 +517,7 @@
     <string name="general">General</string>
     <string name="hints">Consells</string>
     <string name="finish">Acabar</string>
-    <string name="theme_background">Fons del tema</string>
+    <string name="background">Fons del tema</string>
     <string name="theme_background_default">Per defecte</string>
     <string name="theme_background_solid">Blanc i negre pur</string>
     <string name="theme_background_transparent">Transparent</string>

@@ -512,7 +512,7 @@
   <string name="general">Загальні</string>
   <string name="hints">Підказки</string>
   <string name="finish">Завершити</string>
-  <string name="theme_background">Тло теми</string>
+  <string name="background">Тло теми</string>
   <string name="theme_background_default">Типово</string>
   <string name="theme_background_solid">Суцільно біле/чорне</string>
   <string name="theme_background_transparent">Прозоре</string>

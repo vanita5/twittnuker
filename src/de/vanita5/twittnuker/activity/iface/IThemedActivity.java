@@ -38,8 +38,6 @@ public interface IThemedActivity {
 
     int getThemeResourceId();
 
-	public boolean isDarkDrawerEnabled();
-
 	public void navigateUpFromSameTask();
 
 	public void overrideCloseAnimationIfNeeded();

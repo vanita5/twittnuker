@@ -520,7 +520,7 @@
     <string name="general">Geral</string>
     <string name="hints">Dicas</string>
     <string name="finish">Terminar</string>
-    <string name="theme_background">Tema de fundo</string>
+    <string name="background">Tema de fundo</string>
     <string name="theme_background_default">Padrão</string>
     <string name="theme_background_solid">Branco/Preto puro</string>
     <string name="theme_background_transparent">Transparente</string>
@@ -599,6 +599,6 @@
     <string name="image_preview_scale_type_fit_center">Ajustar ao Centro</string>
     <string name="quote_protected_status_warning_message">Este tweet é protegido.\n\n Protegido. Usuários normalmente não querem que os seus tweets Sejam compartilhados publicamente.</string>
     <string name="send_anyway">Enviar para Todos</string>
-    <string name="my_following_only">Apenas meus seguidores</string>
-    <string name="my_following_only_summary">Exibindo notificações apenas de usuários que você segue.</string>
+    <string name="following_only">Apenas meus seguidores</string>
+    <string name="following_only_summary">Exibindo notificações apenas de usuários que você segue.</string>
 </resources>

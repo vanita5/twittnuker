@@ -512,7 +512,7 @@
   <string name="general">Algemeen</string>
   <string name="hints">Hints</string>
   <string name="finish">Voltooi</string>
-  <string name="theme_background">Thema achtergrond</string>
+  <string name="background">Thema achtergrond</string>
   <string name="theme_background_default">Standaard</string>
   <string name="theme_background_solid">Zuiver wit/zwart</string>
   <string name="theme_background_transparent">Transparant</string>

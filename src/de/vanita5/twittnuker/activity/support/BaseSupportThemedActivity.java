@@ -69,11 +69,6 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 	}
 
 	@Override
-	public boolean isDarkDrawerEnabled() {
-		return ThemeUtils.isDarkDrawerEnabled(this);
-	}
-
-	@Override
 	public void navigateUpFromSameTask() {
 		NavUtils.navigateUpFromSameTask(this);
 		overrideCloseAnimationIfNeeded();

@@ -29,10 +29,11 @@ import de.vanita5.twittnuker.task.ManagedAsyncTask;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class AsyncTaskManager {
+public final class AsyncTaskManager {
 
-	private final ArrayList<ManagedAsyncTask<?, ?, ?>> mTasks = new ArrayList<ManagedAsyncTask<?, ?, ?>>();
+    private final CopyOnWriteArrayList<ManagedAsyncTask<?, ?, ?>> mTasks = new CopyOnWriteArrayList<>();
 	private final Handler mHandler;
 	private static AsyncTaskManager sInstance;
 
@@ -44,11 +45,12 @@ public class AsyncTaskManager {
 		mHandler = handler;
 	}
 
-	public <T> int add(final ManagedAsyncTask<T, ?, ?> task, final boolean exec, final T... params) {
+    @SafeVarargs
+    public final <T> int add(final ManagedAsyncTask<T, ?, ?> task, final boolean exec, final T... params) {
 		final int hashCode = task.hashCode();
 		mTasks.add(task);
 		if (exec) {
-			execute(hashCode);
+            execute(hashCode, params);
 		}
 		return hashCode;
 	}
@@ -78,10 +80,10 @@ public class AsyncTaskManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> boolean execute(final int hashCode, final T... params) {
+    public final <T> boolean execute(final int hashCode, final T... params) {
 		final ManagedAsyncTask<T, ?, ?> task = (ManagedAsyncTask<T, ?, ?>) findTask(hashCode);
 		if (task != null) {
-			task.execute(params == null || params.length == 0 ? null : params);
+            task.execute(params);
 			return true;
 		}
 		return false;
@@ -92,7 +94,7 @@ public class AsyncTaskManager {
 	}
 
 	public ArrayList<ManagedAsyncTask<?, ?, ?>> getTaskSpecList() {
-		return new ArrayList<ManagedAsyncTask<?, ?, ?>>(mTasks);
+        return new ArrayList<>(mTasks);
 	}
 
 	public boolean hasRunningTask() {

@@ -81,11 +81,6 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
     @Override
     public int getThemeResourceId() {
         return ThemeUtils.getSettingsThemeResource(this);
-    }
-
-	@Override
-	public boolean isDarkDrawerEnabled() {
-		return false;
 	}
 
     @Override

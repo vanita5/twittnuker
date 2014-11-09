@@ -473,7 +473,7 @@
     <string name="general">عام</string>
     <string name="hints">تعليمات</string>
     <string name="finish">إنهاء</string>
-    <string name="theme_background">ثيم الخلفية</string>
+    <string name="background">ثيم الخلفية</string>
     <string name="theme_background_default">افتراضي</string>
     <string name="theme_background_solid">أبيض و أسود خالص</string>
     <string name="theme_background_transparent">شفاف</string>

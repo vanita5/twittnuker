@@ -30,21 +30,19 @@ import android.database.sqlite.SQLiteDatabase;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
+import java.util.List;
+
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.User;
-
-import java.util.List;
 
 public class UserTimelineLoader extends Twitter4JStatusesLoader {
 
 	private final long mUserId;
 	private final String mUserScreenName;
 	private final boolean mIsMyTimeline;
-	private int mTotalItemsCount;
 
 	public UserTimelineLoader(final Context context, final long accountId, final long userId, final String screenName,
 							  final long maxId, final long sinceId, final List<ParcelableStatus> data, final String[] savedStatusesArgs,
@@ -55,27 +53,15 @@ public class UserTimelineLoader extends Twitter4JStatusesLoader {
 		mIsMyTimeline = userId > 0 ? accountId == userId : accountId == getAccountId(context, screenName);
 	}
 
-	public int getTotalItemsCount() {
-		return mTotalItemsCount;
-	}
-
 	@Override
 	protected ResponseList<Status> getStatuses(final Twitter twitter, final Paging paging) throws TwitterException {
 		if (twitter == null) return null;
-		final ResponseList<Status> statuses;
-		if (mUserId != -1) {
-			statuses = twitter.getUserTimeline(mUserId, paging);
-		} else if (mUserScreenName != null) {
-			statuses = twitter.getUserTimeline(mUserScreenName, paging);
-		} else
+        if (mUserId != -1)
+            return twitter.getUserTimeline(mUserId, paging);
+        else if (mUserScreenName != null)
+            return twitter.getUserTimeline(mUserScreenName, paging);
+        else
 			return null;
-		if (mTotalItemsCount == -1 && !statuses.isEmpty()) {
-			final User user = statuses.get(0).getUser();
-			if (user != null) {
-				mTotalItemsCount = user.getStatusesCount();
-			}
-		}
-		return statuses;
 	}
 
 	@Override

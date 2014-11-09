@@ -516,7 +516,7 @@
     <string name="general">Général</string>
     <string name="hints">Indices</string>
     <string name="finish">Terminer</string>
-    <string name="theme_background">Thème de l\'arrière-plan</string>
+    <string name="background">Thème de l\'arrière-plan</string>
     <string name="theme_background_default">Par défaut</string>
     <string name="theme_background_solid">Blanc/noir pur</string>
     <string name="theme_background_transparent">Transparent</string>
