@@ -508,7 +508,7 @@
     <string name="special_thanks_to">Special thanks to</string>
     <string name="contributors_list_summary">Wenn du deinen Namen nicht gefunden hast, wende dich bitte an den Entwickler.</string>
     <string name="account_options">Account Einstellungen</string>
-    <string name="show_in_timeline">In Timeline anzeigen</string>
+    <string name="show_in_timeline">Anzeigen</string>
     <string name="cards">Tweets</string>
     <string name="no_tab">Kein Tab</string>
     <string name="delete_user"><xliff:g id="name">%s</xliff:g> löschen</string>
