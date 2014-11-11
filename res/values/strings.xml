@@ -372,6 +372,7 @@
 	<string name="preview_images">Preview images</string>
 	<string name="preload_wifi_only">Preload using Wi-Fi only</string>
 	<string name="disable_tab_swipe">Disable tab swipe</string>
+    <string name="disable_tab_swipe_summary"></string>
 	<string name="sign_in_method_introduction_title">How does it work?</string>
 	<string name="sign_in_method_introduction">Most clients like twicca open a browser asking you to type username and password, and then take you back to the clients. Sometimes this can become very inconvenient.\n\nTwittnuker uses simpler steps to sign in, without opening the browser. Don\'t worry about your password, Twittnuker will never store it, it\'s totally safe!</string>
 	<string name="quote_protected_status_notice">It\'s not recommended to quote protected tweets.</string>

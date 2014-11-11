@@ -365,7 +365,8 @@
     <string name="profile_images">Profilbilder</string>
     <string name="preview_images">Vorschaubilder</string>
     <string name="preload_wifi_only">Vorladen nur mit WLAN</string>
-    <string name="disable_tab_swipe">Deaktiviere wischen für Reiter</string>
+    <string name="disable_tab_swipe">Deaktiviere Tab Swipe</string>
+    <string name="disable_tab_swipe_summary">Deaktiviert das wechseln zwischen Tabs durch wischen</string>
     <string name="sign_in_method_introduction_title">Wie funktioniert das?</string>
     <string name="sign_in_method_introduction">Die meisten Anwendungen öffnen einen externen Browser, um dort nach Benutzernamen und Passwort zu fragen. Dies ist manchmal sehr umständlich.\n\nTwittnuker öffnet keinen externen Browser, sondern verwendet einfacherere Methoden, um sich anzumelden. Twittnuker speichert niemals das Passwort, es ist daher völlig sicher!</string>
     <string name="quote_protected_status_notice">Es ist nicht empfohlen einen geschützten Tweet zu zitieren.</string>
@@ -553,7 +554,8 @@
     <string name="livewp_daydream_enabled_message">Here\'s a little present for you, find it in your system settings :)</string>
     <string name="center">Mitte</string>
     <string name="multi_select">Mehrfachauswahl</string>
-    <string name="long_click_to_open_menu">Lang halten um das Menü zu öffnen</string>
+    <string name="long_click_to_open_menu">Lange halten für Menü</string>
+    <string name="long_click_to_open_menu_summary">Öffnet das Tweet Menü, wenn lange auf einen Tweet gedrückt wird</string>
     <string name="swipe_back">Zum Schließen wischen</string>
     <string name="tab_display_option_icon">Symbol</string>
     <string name="tab_display_option_label">Label</string>

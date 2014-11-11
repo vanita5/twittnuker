@@ -7,10 +7,10 @@
 		android:key="unread_count"
 		android:title="@string/unread_count"
 		android:summary="@string/unread_count_summary"/>
-	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
-		android:defaultValue="false"
-		android:key="bottom_send_button"
-		android:title="@string/bottom_send_button"/>
+	<!--<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference-->
+		<!--android:defaultValue="false"-->
+		<!--android:key="bottom_send_button"-->
+		<!--android:title="@string/bottom_send_button"/>-->
 
 	<de.vanita5.twittnuker.preference.LeftsideComposeButtonPreference
 		android:defaultValue="false"
@@ -24,7 +24,8 @@
 	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
 		android:defaultValue="false"
 		android:key="disable_tab_swipe"
-		android:title="@string/disable_tab_swipe"/>
+		android:title="@string/disable_tab_swipe"
+        android:summary="@string/disable_tab_swipe_summary"/>
 
     <de.vanita5.twittnuker.preference.AutoInvalidateListPreference
         android:defaultValue="@string/default_tab_display_option"
@@ -37,6 +38,7 @@
 	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
 	    android:defaultValue="true"
 	    android:key="long_click_to_open_menu"
-	    android:title="@string/long_click_to_open_menu" />
+	    android:title="@string/long_click_to_open_menu"
+        android:summary="@string/long_click_to_open_menu_summary"/>
 
 </PreferenceScreen>

@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.Preference;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -40,6 +41,7 @@ import org.mariotaku.menucomponent.widget.MenuBar;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.iface.ICardItemView;
 import de.vanita5.twittnuker.view.iface.IExtendedView;
@@ -48,6 +50,7 @@ import de.vanita5.twittnuker.view.iface.IExtendedView.TouchInterceptor;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
 import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
+import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
 
 public class ThemePreviewPreference extends Preference implements Constants, OnSharedPreferenceChangeListener {
 
@@ -105,6 +108,11 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		ViewAccessor.setBackground(actionBarView, ThemeUtils.getActionBarBackground(context, themeRes));
 		ViewAccessor.setBackground(actionBarSplitView, ThemeUtils.getActionBarSplitBackground(context, themeRes));
 
+		final int highlightOption = getLinkHighlightOptionInt(context);
+		TwidereLinkify linkify = new TwidereLinkify(null);
+		linkify.setLinkTextColor(ThemeUtils.getUserLinkTextColor(context));
+		linkify.setHighlightOption(highlightOption);
+
 		actionBarTitleView.setTextAppearance(context, titleTextAppearance);
 		actionBarSplitView.setEnabled(false);
 		actionBarSplitView.inflate(R.menu.menu_status);
@@ -141,7 +149,13 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 			profileImageView.setImageResource(R.drawable.ic_launcher);
 			nameView.setText(TWIDERE_PREVIEW_NAME);
 			screenNameView.setText("@" + TWIDERE_PREVIEW_SCREEN_NAME);
-			textView.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
+
+			if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
+				textView.setText(Html.fromHtml(TWIDERE_PREVIEW_TEXT_HTML));
+				linkify.applyAllLinks(textView, 0, false);
+			} else {
+				textView.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
+			}
 
 			final String time = formatToLongTimeString(context, System.currentTimeMillis());
 			timeSourceView.setText(toPlainText(context.getString(R.string.time_source, time, TWIDERE_PREVIEW_SOURCE)));
