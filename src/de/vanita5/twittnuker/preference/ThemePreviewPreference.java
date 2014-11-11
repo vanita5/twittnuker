@@ -94,6 +94,8 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		final TextView actionBarTitleView = (TextView) view.findViewById(R.id.actionbar_title);
 		final MenuBar actionBarSplitView = (MenuBar) view.findViewById(R.id.actionbar_split);
 		final View statusContentView = view.findViewById(R.id.theme_preview_status_content);
+		final TextView retweetsCountView = (TextView) view.findViewById(R.id.retweets_count);
+		final TextView favoritesCountView = (TextView) view.findViewById(R.id.favorites_count);
 
 		final int defaultTextSize = getDefaultTextSize(context);
 		final int titleTextAppearance = ThemeUtils.getTitleTextAppearance(context);
@@ -143,6 +145,12 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 
 			final String time = formatToLongTimeString(context, System.currentTimeMillis());
 			timeSourceView.setText(toPlainText(context.getString(R.string.time_source, time, TWIDERE_PREVIEW_SOURCE)));
+		}
+		if (retweetsCountView != null) {
+			retweetsCountView.setText("2");
+		}
+		if (favoritesCountView != null) {
+			favoritesCountView.setText("4");
 		}
 	}
 
