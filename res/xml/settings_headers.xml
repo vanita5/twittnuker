@@ -41,7 +41,7 @@
 	</header>
 	<header
 		android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
-		android:icon="@drawable/ic_action_twidere_square"
+		android:icon="@drawable/ic_action_twittnuker_square"
     	android:title="@string/content">
 		<extra
 			android:name="resid"
