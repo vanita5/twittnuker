@@ -127,7 +127,7 @@
         </activity>
         <activity
             android:name=".activity.support.ComposeActivity"
-            android:icon="@drawable/ic_action_twittnuker"
+            android:icon="@drawable/ic_launcher"
             android:excludeFromRecents="true"
             android:label="@string/compose"
             android:launchMode="singleTop"
