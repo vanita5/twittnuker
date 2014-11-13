@@ -248,7 +248,7 @@ public class StreamingService extends Service implements Constants {
 	}
 
 	private void refreshBefore(final long[] mAccountId) {
-		if (mPreferences.getBoolean(KEY_REFRESH_BEFORE_STREAMING, false)) {
+		if (mPreferences.getBoolean(KEY_REFRESH_BEFORE_STREAMING, true)) {
 			mTwitterWrapper.refreshAll(mAccountId);
 		}
 	}
