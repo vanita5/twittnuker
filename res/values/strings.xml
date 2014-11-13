@@ -381,6 +381,7 @@
 	<string name="my_profile_image">My profile image</string>
 	<string name="mention_user">Mention <xliff:g id="user">%s</xliff:g></string>
 	<string name="theme_color">Theme color</string>
+    <string name="action_bar_color">Action bar color</string>
 	<string name="wrong_url_format">Wrong URL format.</string>
 	<string name="wrong_username_password">Wrong username/password.</string>
 	<string name="network_error">Network error.</string>

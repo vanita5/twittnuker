@@ -34,6 +34,8 @@ public interface IThemedActivity {
 
     public int getThemeColor();
 
+	public int getActionBarColor();
+
 	public String getThemeFontFamily();
 
     int getThemeResourceId();

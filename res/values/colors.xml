@@ -13,5 +13,7 @@
 	<color name="text_link_holo_light">#707070</color>
     <color name="accent_white">#ffffff</color>
     <color name="divider_color">#40808080</color>
+    <color name="twittnuker_material_dark">#ff212121</color>
+    <color name="twittnuker_material_light">#ffbdbdbd</color>
 
 </resources>

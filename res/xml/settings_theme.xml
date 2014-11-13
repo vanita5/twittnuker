@@ -18,16 +18,22 @@
         android:order="21"
 		android:title="@string/theme"/>
 
+    <de.vanita5.twittnuker.preference.ColorPickerPreference
+        android:defaultValue="@android:color/holo_blue_light"
+        android:key="theme_color"
+        android:order="22"
+        android:title="@string/theme_color"/>
+
+    <de.vanita5.twittnuker.preference.ColorPickerPreference
+        android:defaultValue="@color/twittnuker_material_dark"
+        android:key="action_bar_color"
+        android:order="23"
+        android:title="@string/action_bar_color"/>
+
     <de.vanita5.twittnuker.preference.ThemeBackgroundPreference
 		android:defaultValue="default"
-        android:order="22"
+        android:order="25"
         android:title="@string/background"/>
-
-	<de.vanita5.twittnuker.preference.ColorPickerPreference
-		android:defaultValue="@android:color/holo_blue_light"
-		android:key="theme_color"
-		android:order="25"
-		android:title="@string/theme_color"/>
 
     <de.vanita5.twittnuker.preference.ThemeFontFamilyPreference
         android:defaultValue="sans-serif-light"

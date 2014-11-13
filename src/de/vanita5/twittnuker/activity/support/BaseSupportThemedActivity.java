@@ -40,7 +40,8 @@ import static de.vanita5.twittnuker.util.Utils.restartActivity;
 
 public abstract class BaseSupportThemedActivity extends FragmentActivity implements Constants, IThemedActivity {
 
-	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha;
+	private int mCurrentThemeResource, mCurrentThemeColor,
+			mCurrentThemeBackgroundAlpha, mCurrentActionBarColor;
 
 	@Override
 	public void finish() {
@@ -137,9 +138,14 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
         ThemeUtils.applyActionBarBackground(getActionBar(), this, mCurrentThemeResource);
 	}
 
+	public int getActionBarColor() {
+		return ThemeUtils.getActionBarColor(this);
+	}
+
 	private final void setTheme() {
 		mCurrentThemeResource = getThemeResourceId();
 		mCurrentThemeColor = getThemeColor();
+		mCurrentActionBarColor = getActionBarColor();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentThemeColor,
 				mCurrentThemeBackgroundAlpha);

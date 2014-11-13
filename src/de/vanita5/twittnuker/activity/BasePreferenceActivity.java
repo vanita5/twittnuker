@@ -72,8 +72,12 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
         return 0;
     }
 
+	@Override
+	public int getActionBarColor() {
+		return ThemeUtils.getActionBarColor(this);
+	}
 
-    @Override
+	@Override
     public String getThemeFontFamily() {
         return VALUE_THEME_FONT_FAMILY_REGULAR;
     }

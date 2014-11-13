@@ -564,19 +564,20 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
     private void setupBars() {
         final int themeColor = getThemeColor();
-        final int themeResId = getCurrentThemeResourceId();
+        final int actionBarColor = getActionBarColor();
+		final int themeResId = getCurrentThemeResourceId();
         final boolean isTransparent = ThemeUtils.isTransparentBackground(themeResId);
         final int actionBarAlpha = isTransparent ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xFF;
         final IHomeActionButton homeActionButton = (IHomeActionButton) mActionsButton;
         mTabIndicator.setItemContext(ThemeUtils.getActionBarContext(this));
         if (ThemeUtils.isColoredActionBar(themeResId)) {
-            final int contrastColor = Utils.getContrastYIQ(themeColor, 192);
-            ViewAccessor.setBackground(mTabIndicator, new ColorDrawable(themeColor));
-            homeActionButton.setButtonColor(themeColor);
+            final int contrastColor = Utils.getContrastYIQ(actionBarColor, 192);
+            ViewAccessor.setBackground(mTabIndicator, new ColorDrawable(actionBarColor));
+            homeActionButton.setButtonColor(actionBarColor);
             homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
-            mTabIndicator.setStripColor(contrastColor);
+            mTabIndicator.setStripColor(themeColor);
             mTabIndicator.setIconColor(contrastColor);
-            ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null, themeColor));
+            ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
         } else {
             final int backgroundColor = ThemeUtils.getThemeBackgroundColor(mTabIndicator.getItemContext());
             final int foregroundColor = ThemeUtils.getThemeForegroundColor(mTabIndicator.getItemContext());

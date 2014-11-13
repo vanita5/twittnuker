@@ -630,6 +630,14 @@ public class ThemeUtils implements Constants {
         return pref.getInt(KEY_THEME_COLOR, defThemeColor);
     }
 
+	public static int getActionBarColor(final Context context) {
+		if (context == null) return MATERIAL_DARK;
+		final Resources res = getResources(context);
+		final SharedPreferencesWrapper pref = getSharedPreferencesWrapper(context);
+		final int def = res.getColor(R.color.twittnuker_material_dark);
+		return pref.getInt(KEY_ACTION_BAR_COLOR, def);
+	}
+
 	public static Typeface getUserTypeface(final Context context, final Typeface defTypeface) {
 		if (context == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return Typeface.DEFAULT;
 		final int fontStyle = defTypeface != null ? defTypeface.getStyle() : Typeface.NORMAL;
@@ -720,7 +728,7 @@ public class ThemeUtils implements Constants {
 	}
 
 	public static void notifyStatusBarColorChanged(final Context context, final int themeResource,
-												   final int accentColor, final int backgroundAlpha) {
+												   final int actionBarColor, final int backgroundAlpha) {
 		final Intent intent = new Intent("com.mohammadag.colouredstatusbar.ChangeStatusBarColor");
 //        if (isColoredActionBar(themeResource)) {
 //            intent.putExtra("status_bar_color", backgroundAlpha << 24 | accentColor);
@@ -797,7 +805,7 @@ public class ThemeUtils implements Constants {
         if (d instanceof LayerDrawable) {
             final Drawable colorLayer = ((LayerDrawable) d).findDrawableByLayerId(R.id.color_layer);
 			if (colorLayer != null) {
-                final int color = getUserAccentColor(context);
+                final int color = getActionBarColor(context);
 				colorLayer.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
 			}
 		}

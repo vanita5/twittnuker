@@ -483,12 +483,12 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 		final LinkHandlerActivity linkHandler = (LinkHandlerActivity) activity;
 		final ActionBar actionBar = linkHandler.getActionBar();
 		if (actionBar == null) return;
-		final int themeColor = linkHandler.getThemeColor();
+		final int actionBarColor = linkHandler.getActionBarColor();
 		final int themeResId = linkHandler.getCurrentThemeResourceId();
 		final boolean isTransparent = ThemeUtils.isTransparentBackground(themeResId);
 		final int actionBarAlpha = isTransparent ? ThemeUtils.getUserThemeBackgroundAlpha(linkHandler) : 0xFF;
 		if (ThemeUtils.isColoredActionBar(themeResId)) {
-			actionBar.setBackgroundDrawable(mActionBarBackground = new ColorDrawable(themeColor));
+			actionBar.setBackgroundDrawable(mActionBarBackground = new ColorDrawable(actionBarColor));
 		} else {
 			actionBar.setBackgroundDrawable(mActionBarBackground = ThemeUtils.getActionBarBackground(activity, themeResId));
 		}

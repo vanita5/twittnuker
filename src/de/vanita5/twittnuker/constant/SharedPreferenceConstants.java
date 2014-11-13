@@ -137,6 +137,8 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_THEME_DARK_ACTIONBAR = "theme_dark_actionbar";
 	@Preference(type = INT)
 	public static final String KEY_THEME_COLOR = "theme_color";
+	@Preference(type = INT)
+	public static final String KEY_ACTION_BAR_COLOR = "action_bar_color";
 	@Preference(type = STRING, hasDefault = true, defaultString = DEFAULT_THEME_FONT_FAMILY)
 	public static final String KEY_THEME_FONT_FAMILY = "theme_font_family";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)

@@ -157,6 +157,9 @@ public interface Constants extends TwittnukerConstants {
 	public static final int HOLO_PURPLE_DARK = 0xff9933cc;
 	public static final int HOLO_PURPLE_LIGHT = 0xffaa66cc;
 
+	public static final int MATERIAL_DARK = 0xff212121;
+	public static final int MATERIAL_LIGHT = 0xffbdbdbd;
+
 	public static final String ENTRY_PREFERENCES = "preferences.json";
 	public static final String ENTRY_USER_COLORS = "user_colors.json";
 	public static final String ENTRY_HOST_MAPPING = "host_mapping.json";

@@ -38,7 +38,8 @@ import static de.vanita5.twittnuker.util.Utils.restartActivity;
 
 public abstract class BaseThemedActivity extends Activity implements IThemedActivity {
 
-	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha;
+	private int mCurrentThemeResource, mCurrentThemeColor,
+			mCurrentThemeBackgroundAlpha, mCurrentActionBarColor;
 	private String mCurrentThemeFontFamily;
 	private Theme mTheme;
 
@@ -79,6 +80,10 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     @Override
     public abstract int getThemeColor();
 
+	public int getActionBarColor() {
+		return ThemeUtils.getActionBarColor(this);
+	}
+
 	@Override
 	public String getThemeFontFamily() {
 		return ThemeUtils.getThemeFontFamily(this);
@@ -115,7 +120,8 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 	protected final boolean isThemeChanged() {
 		return getThemeResourceId() != mCurrentThemeResource || getThemeColor() != mCurrentThemeColor
                 || !CompareUtils.objectEquals(getThemeFontFamily(), mCurrentThemeFontFamily)
-                || getThemeBackgroundAlpha() != mCurrentThemeBackgroundAlpha;
+                || getThemeBackgroundAlpha() != mCurrentThemeBackgroundAlpha
+				|| getActionBarColor() != mCurrentActionBarColor;
 	}
 
 	@Override
@@ -140,7 +146,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 		if (isThemeChanged()) {
 			restart();
 		} else {
-			ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentThemeColor,
+			ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentActionBarColor,
 					mCurrentThemeBackgroundAlpha);
 		}
 	}
@@ -152,6 +158,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 	private final void setTheme() {
 		mCurrentThemeResource = getThemeResourceId();
 		mCurrentThemeColor = getThemeColor();
+		mCurrentActionBarColor = getActionBarColor();
 		mCurrentThemeFontFamily = getThemeFontFamily();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentThemeColor,
