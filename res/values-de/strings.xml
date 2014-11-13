@@ -232,6 +232,7 @@
     <string name="media_uploader">Mediendienst</string>
     <string name="image_uploader_default">Standard (Twitter)</string>
     <string name="home_refresh">Zu aktualisierende Timelines</string>
+    <string name="home_refresh_summary">Timelines, die bei einem Refresh aktualisiert werden sollen</string>
     <string name="error_message_image_upload_failed">Bild-Upload schlug fehl.</string>
     <string name="image_upload_format">Tweet-Format mit Bild</string>
     <string name="image_upload_format_summary">\"[LINK]\" = Bild link\n\"[TEXT]\" = Text inhalt\n(Nur bei Third Party Services)</string>
@@ -675,5 +676,6 @@
 
     <string name="mute_user_confirm_message"><xliff:g id="name">%s</xliff:g> muten? Du wirst die Tweets dieses Nutzers nicht mehr sehen, ihm aber trotzdem noch folgen.</string>
     <string name="remove_from_filter">Aus dem Filter entfernen</string>
-    <string name="sort_timeline_by_id">Timeline anhand der ID sortieren (Status.net)</string>
+    <string name="sort_timeline_by_id">Timeline nach ID sortieren</string>
+    <string name="sort_timeline_by_id_summary">Kann für andere Dienste (Status.net) nützlich sein</string>
 </resources>

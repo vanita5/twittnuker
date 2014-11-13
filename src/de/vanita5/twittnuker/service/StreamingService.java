@@ -152,7 +152,7 @@ public class StreamingService extends Service implements Constants {
 	}
 
 	private void initStreaming() {
-		if (!mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) return;
+		if (!mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) return;
 
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);

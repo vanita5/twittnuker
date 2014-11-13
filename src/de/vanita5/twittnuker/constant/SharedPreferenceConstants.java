@@ -101,7 +101,7 @@ public interface SharedPreferenceConstants {
 	public static final String DEFAULT_IMAGE_UPLOAD_FORMAT = FORMAT_PATTERN_TEXT + " " + FORMAT_PATTERN_LINK;
 
 	public static final String DEFAULT_REFRESH_INTERVAL = "15";
-	public static final boolean DEFAULT_AUTO_REFRESH = true;
+	public static final boolean DEFAULT_AUTO_REFRESH = false;
 	public static final boolean DEFAULT_AUTO_REFRESH_HOME_TIMELINE = false;
 	public static final boolean DEFAULT_AUTO_REFRESH_MENTIONS = true;
 	public static final boolean DEFAULT_AUTO_REFRESH_DIRECT_MESSAGES = true;
@@ -276,7 +276,7 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_COMPACT_CARDS = "compact_cards";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_LONG_CLICK_TO_OPEN_MENU = "long_click_to_open_menu";
-	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_STREAMING_ENABLED = "stream_enabled";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_STREAMING_NOTIFICATION = "stream_notification";

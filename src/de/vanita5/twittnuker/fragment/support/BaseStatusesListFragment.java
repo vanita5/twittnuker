@@ -284,7 +284,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 		}
 
 		//Autoscroll on Streaming
-		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)
+		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)
 				&& mPreferences.getBoolean(KEY_STREAMING_AUTOSCROLL, false)) {
 			scrollToStart();
 		}

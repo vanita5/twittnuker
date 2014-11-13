@@ -625,7 +625,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         updateSmartBar();
 		updateSlidingMenuTouchMode();
 
-		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
+		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) {
 			startStreamingService();
 		} else {
 			stopStreamingService();
@@ -655,7 +655,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 				GCMHelper.unregisterGCM(this);
 			}
 		}
-		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
+		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) {
 			startStreamingService();
 		} else {
 			stopStreamingService();

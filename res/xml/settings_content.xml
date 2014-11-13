@@ -100,7 +100,8 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="sort_timeline_by_id"
-            android:title="@string/sort_timeline_by_id"/>
+            android:title="@string/sort_timeline_by_id"
+            android:summary="@string/sort_timeline_by_id_summary"/>
 
 		<de.vanita5.twittnuker.preference.TrendsLocationPreference
 			android:key="trends_location"
