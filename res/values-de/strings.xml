@@ -48,7 +48,7 @@
     <string name="delete">Löschen</string>
     <string name="retweet">Retweet</string>
     <string name="retweets">Retweets</string>
-    <string name="cancel_retweet">Retweet abbrechen</string>
+    <string name="cancel_retweet">Retweet löschen</string>
     <string name="favorite">Favorisieren</string>
     <string name="unfavorite">Favorit löschen</string>
     <string name="reply">Antworten</string>

@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.ThemeUtils.getUserAccentColor;
 import static de.vanita5.twittnuker.util.UserColorUtils.clearUserColor;
 import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
 import static de.vanita5.twittnuker.util.UserColorUtils.setUserColor;
@@ -35,6 +36,7 @@ import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.getMapStaticImageUri;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
+import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 import static de.vanita5.twittnuker.util.Utils.isSameAccount;
 import static de.vanita5.twittnuker.util.Utils.openImageDirectly;
 import static de.vanita5.twittnuker.util.Utils.openMap;
@@ -63,6 +65,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -439,6 +443,47 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		} else {
 			mFollowIndicator.setVisibility(View.GONE);
 		}
+
+		//TEMPORARY FIX for accent color
+		//remove as soon as TwidereMenuBar is working
+		if (mMenuBar != null) {
+			final int activatedColor = getUserAccentColor(mMenuBar.getContext());
+			final Menu menu = mMenuBar.getMenu();
+
+			final MenuItem itemRetweetSubmenu = menu.findItem(R.id.retweet_submenu);
+			if (itemRetweetSubmenu != null) {
+				final Drawable icon = itemRetweetSubmenu.getIcon();
+				icon.mutate();
+				if (isMyRetweet(status)) {
+					icon.setColorFilter(activatedColor, Mode.SRC_ATOP);
+				} else {
+					icon.clearColorFilter();
+				}
+			}
+
+			final MenuItem itemFavorite = menu.findItem(R.id.favorite);
+			if (itemFavorite != null) {
+				final Drawable icon = itemFavorite.getIcon();
+				icon.mutate();
+				if (status.is_favorite) {
+					icon.setColorFilter(activatedColor, Mode.SRC_ATOP);
+				} else {
+					icon.clearColorFilter();
+				}
+			}
+
+			final MenuItem itemLove = menu.findItem(R.id.love);
+			if (itemLove != null) {
+				final Drawable icon = itemLove.getIcon();
+				icon.mutate();
+				if (isMyRetweet(status) && status.is_favorite) {
+					icon.setColorFilter(activatedColor, Mode.SRC_ATOP);
+				} else {
+					icon.clearColorFilter();
+				}
+			}
+		}
+
 		updateConversationInfo();
 		scrollToStart();
 	}
