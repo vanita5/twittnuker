@@ -62,7 +62,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 
 	private HeaderAdapter mAdapter;
 
-	private int mCurrentThemeColor, mCurrentThemeBackgroundAlpha;
+	private int mCurrentThemeColor, mCurrentThemeBackgroundAlpha, mCurrentActionBarColor;
 	private boolean mCompactCards, mPlainListStyle;
 
 	private String mCurrentThemeFontFamily;
@@ -179,6 +179,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 		mCompactCards = mPreferences.getBoolean(KEY_COMPACT_CARDS, false);
 		mPlainListStyle = mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false);
         mCurrentThemeColor = ThemeUtils.getUserAccentColor(this);
+		mCurrentActionBarColor = ThemeUtils.getActionBarColor(this);
 		mCurrentThemeFontFamily = getThemeFontFamily();
 		mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		super.onCreate(savedInstanceState);
@@ -197,6 +198,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 				|| mPlainListStyle != mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false)
                 || getThemeResourceId() != getCurrentThemeResourceId()
                 || ThemeUtils.getUserAccentColor(this) != mCurrentThemeColor
+				|| ThemeUtils.getActionBarColor(this) != mCurrentActionBarColor
 				|| !CompareUtils.objectEquals(getThemeFontFamily(), mCurrentThemeFontFamily)
                 || getThemeBackgroundAlpha() != mCurrentThemeBackgroundAlpha;
 	}

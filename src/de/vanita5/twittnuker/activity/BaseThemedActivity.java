@@ -80,9 +80,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     @Override
     public abstract int getThemeColor();
 
-	public int getActionBarColor() {
-		return ThemeUtils.getActionBarColor(this);
-	}
+	public abstract int getActionBarColor();
 
 	@Override
 	public String getThemeFontFamily() {
