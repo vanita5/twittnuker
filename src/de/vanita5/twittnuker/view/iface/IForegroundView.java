@@ -22,11 +22,13 @@
 
 package de.vanita5.twittnuker.view.iface;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -50,7 +52,6 @@ public interface IForegroundView {
      * the padding area.
      *
      * @param drawable The Drawable to be drawn on top of the children.
-     *
      * @attr ref android.R.attr#foreground
      */
     public void setForeground(final Drawable drawable);
@@ -59,7 +60,6 @@ public interface IForegroundView {
      * Describes how the foreground is positioned. Defaults to START and TOP.
      *
      * @param foregroundGravity See {@link android.view.Gravity}
-     *
      * @attr ref android.R.attr#foregroundGravity
      */
     public void setForegroundGravity(int foregroundGravity);
@@ -75,7 +75,7 @@ public interface IForegroundView {
 
         private int mForegroundGravity = Gravity.FILL;
         private boolean mForegroundInPadding = true;
-        private boolean mForegroundBoundsChanged;
+        private boolean mForegroundBoundsChanged = false;
 
         public ForegroundViewHelper(final View view, final Context context, final AttributeSet attrs, final int defStyle) {
             mView = view;
@@ -227,6 +227,12 @@ public interface IForegroundView {
 
         public boolean verifyDrawable(final Drawable who) {
             return who == mForeground;
+        }
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        public void dispatchDrawableHotspotChanged(float x, float y) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+            mForeground.setHotspot(x, y);
         }
     }
 }

@@ -30,6 +30,7 @@ import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import de.vanita5.twittnuker.Constants;
@@ -58,6 +59,7 @@ public class ImageLoaderWrapper implements Constants {
 		bannerOptsBuilder.cacheInMemory(true);
 		bannerOptsBuilder.cacheOnDisk(true);
 		bannerOptsBuilder.bitmapConfig(Bitmap.Config.RGB_565);
+        bannerOptsBuilder.displayer(new FadeInBitmapDisplayer(200, true, true, false));
 
         mProfileImageDisplayOptions = profileOptsBuilder.build();
 		mImageDisplayOptions = imageOptsBuilder.build();

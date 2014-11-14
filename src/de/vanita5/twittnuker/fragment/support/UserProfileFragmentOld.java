@@ -35,6 +35,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -61,7 +62,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -88,6 +88,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -96,6 +97,7 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.view.ColorLabelLinearLayout;
 import de.vanita5.twittnuker.view.ExtendedFrameLayout;
+import de.vanita5.twittnuker.view.ProfileBannerImageView;
 import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.TwidereMenuBar;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
@@ -150,7 +152,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 	private SharedPreferences mPreferences;
 
     private ProfileImageView mProfileImageView;
-    private ImageView mProfileBannerView;
+    private ProfileBannerImageView mProfileBannerView;
 	private TextView mNameView, mScreenNameView, mDescriptionView, mLocationView, mURLView, mCreatedAtView,
 			mTweetCount, mFollowersCount, mFriendsCount, mErrorMessageView;
 	private View mDescriptionContainer, mLocationContainer, mURLContainer, mTweetsContainer, mFollowersContainer,
@@ -162,9 +164,9 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
     private View mErrorRetryContainer;
     private View mFollowingYouIndicator;
     private View mMainContent;
-	private View mProfileBannerSpace;
     private ProgressBar mDetailsLoadProgress;
     private TwidereMenuBar mMenuBar;
+    private View mProfileBannerSpace;
 
 	private ListActionAdapter mAdapter;
 
@@ -381,7 +383,9 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 			final String where = Accounts.ACCOUNT_ID + " = " + user.id;
 			resolver.update(Accounts.CONTENT_URI, values, where, null);
 		}
-        mAdapter.add(new MediaTimelineAction(1));
+        if (Utils.isOfficialKeyAccount(getActivity(), user.account_id)) {
+            mAdapter.add(new MediaTimelineAction(1));
+        }
         mAdapter.add(new FavoritesAction(2));
         mAdapter.add(new UserMentionsAction(3));
         mAdapter.add(new UserListsAction(4));
@@ -458,8 +462,9 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 		mFollowersContainer.setOnClickListener(this);
 		mFriendsContainer.setOnClickListener(this);
 		mRetryButton.setOnClickListener(this);
+        mProfileBannerView.setOnSizeChangedListener(this);
+        mProfileBannerSpace.setOnTouchListener(this);
 		setListAdapter(null);
-		mListView = getListView();
 		mListView.addHeaderView(mHeaderView, null, false);
 		mListView.setOnItemClickListener(this);
 		mListView.setOnItemLongClickListener(this);
@@ -468,8 +473,6 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
         mMenuBar.inflate(R.menu.menu_user_profile);
         mMenuBar.setIsBottomBar(true);
         mMenuBar.setOnMenuItemClickListener(this);
-
-		mProfileBannerSpace.setOnTouchListener(this);
 
 		setListAdapter(mAdapter);
         getUserInfo(accountId, userId, screenName, false);
@@ -487,11 +490,15 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 		final int themeResId = linkHandler.getCurrentThemeResourceId();
 		final boolean isTransparent = ThemeUtils.isTransparentBackground(themeResId);
 		final int actionBarAlpha = isTransparent ? ThemeUtils.getUserThemeBackgroundAlpha(linkHandler) : 0xFF;
-		if (ThemeUtils.isColoredActionBar(themeResId)) {
+        if (ThemeUtils.isColoredActionBar(themeResId) && useUserActionBar()) {
 			actionBar.setBackgroundDrawable(mActionBarBackground = new ColorDrawable(actionBarColor));
 		} else {
 			actionBar.setBackgroundDrawable(mActionBarBackground = ThemeUtils.getActionBarBackground(activity, themeResId));
 		}
+	}
+
+	private boolean useUserActionBar() {
+		return false;
 	}
 
 	@Override
@@ -547,25 +554,21 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 				openImage(activity, user.account_id, profile_image_url_string, false);
 				break;
 			}
-            case R.id.profile_banner:
-            case R.id.profile_banner_space: {
+            case R.id.profile_banner: {
 				final String profile_banner_url = mUser.profile_banner_url;
 				if (profile_banner_url == null) return;
 				openImage(getActivity(), user.account_id, profile_banner_url + "/ipad_retina", false);
 				break;
 			}
 			case R.id.tweets_container: {
-				if (mUser == null) return;
                 openUserTimeline(getActivity(), user.account_id, user.id, user.screen_name);
 				break;
 			}
 			case R.id.followers_container: {
-				if (mUser == null) return;
                 openUserFollowers(getActivity(), user.account_id, user.id, user.screen_name);
 				break;
 			}
 			case R.id.friends_container: {
-				if (mUser == null) return;
                 openUserFriends(getActivity(), user.account_id, user.id, user.screen_name);
 				break;
 			}
@@ -615,8 +618,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 	@Override
 	public boolean onItemLongClick(final AdapterView<?> adapter, final View view, final int position, final long id) {
 		final ListAction action = mAdapter.findItem(id);
-		if (action != null) return action.onLongClick();
-		return false;
+        return action != null && action.onLongClick();
 	}
 
 	@Override
@@ -690,14 +692,19 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
     public void onScroll(final AbsListView view, final int firstVisibleItem, final int visibleItemCount,
                          final int totalItemCount) {
         super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-		final View headerView = mHeaderView, profileBannerView = mProfileBannerView;
-		if (headerView == null || profileBannerView == null) return;
+        final View headerView = mHeaderView;
+        final ProfileBannerImageView profileBannerView = mProfileBannerView;
+        final ListView listView = mListView;
+        if (headerView == null || profileBannerView == null || listView == null) return;
         final float factor = -headerView.getTop() / (float) headerView.getHeight();
+        final int headerScroll = listView.getListPaddingTop() - headerView.getTop();
 		profileBannerView.setAlpha(1.0f - factor);
-		profileBannerView.setTranslationY(headerView.getTop() / 2);
+        profileBannerView.setTranslationY((headerView.getTop() - listView.getListPaddingTop()) / 2);
+        profileBannerView.setBottomClip(headerScroll);
 
         if (mActionBarBackground != null) {
-            mActionBarBackground.setAlpha(Math.round(0xFF * factor));
+            final float f = headerScroll / (float) mProfileBannerSpace.getHeight();
+            mActionBarBackground.setAlpha(Math.round(0xFF * MathUtils.clamp(f, 0, 1)));
         }
     }
 
@@ -710,6 +717,9 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
     @Override
     public void onSizeChanged(final View view, final int w, final int h, final int oldw, final int oldh) {
         mBannerWidth = w;
+        if (w != oldw || h != oldh) {
+            requestFitSystemWindows();
+        }
     }
 
     @Override
@@ -735,16 +745,25 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 	}
 
     @Override
+    protected void fitSystemWindows(Rect insets) {
+        super.fitSystemWindows(insets);
+        final ViewGroup.LayoutParams params = mProfileBannerSpace.getLayoutParams();
+        params.height = Math.max(insets.top, mProfileBannerView.getHeight() - insets.top);
+        mProfileBannerSpace.setLayoutParams(params);
+    }
+
+    @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         final Context context = view.getContext();
         super.onViewCreated(view, savedInstanceState);
         mMainContent = view.findViewById(R.id.content);
+        mListView = (ListView) view.findViewById(android.R.id.list);
         mDetailsLoadProgress = (ProgressBar) view.findViewById(R.id.details_load_progress);
         mMenuBar = (TwidereMenuBar) view.findViewById(R.id.menu_bar);
         mErrorRetryContainer = view.findViewById(R.id.error_retry_container);
         mRetryButton = (Button) view.findViewById(R.id.retry);
         mErrorMessageView = (TextView) view.findViewById(R.id.error_message);
-        mProfileBannerView = (ImageView) view.findViewById(R.id.profile_banner);
+        mProfileBannerView = (ProfileBannerImageView) view.findViewById(R.id.profile_banner);
         mNameView = (TextView) mHeaderView.findViewById(R.id.name);
         mScreenNameView = (TextView) mHeaderView.findViewById(R.id.screen_name);
         mDescriptionView = (TextView) mHeaderView.findViewById(R.id.description);
