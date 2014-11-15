@@ -65,9 +65,6 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyCVdCIMFFxdNqHnCPrJ9yKUzoTfs8jhYGc" />
-        <meta-data
             android:name="com.sec.android.support.multiwindow"
             android:value="true" />
         <meta-data
@@ -392,7 +389,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.support.GoogleMapViewerActivity"
+            android:name=".activity.support.OpenStreetMapViewerActivity"
             android:exported="false"
             android:label="@string/view_map"
             android:theme="@style/Theme.Blank">
