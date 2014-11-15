@@ -29,7 +29,6 @@ import static de.vanita5.twittnuker.util.Utils.cleanDatabasesByItemLimit;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
-import static de.vanita5.twittnuker.util.Utils.isPushEnabled;
 import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
@@ -41,7 +40,6 @@ import java.util.List;
 
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.service.StreamingService;
-import de.vanita5.twittnuker.gcm.GCMHelper;
 import de.vanita5.twittnuker.util.ActivityAccessor;
 import de.vanita5.twittnuker.util.ActivityAccessor.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.FlymeUtils;
@@ -172,7 +170,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private int mTabDisplayOption;
 	private boolean isStreamingServiceRunning = false;
 
-	private boolean mPushEnabled;
 	private float mPagerPosition;
 
 	public void closeAccountsDrawer() {
@@ -527,7 +524,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
         ThemeUtils.applyBackground(mTabIndicator);
         mPagerAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), mTabIndicator, 1);
-		mPushEnabled = isPushEnabled(this);
 		mViewPager.setAdapter(mPagerAdapter);
 		mViewPager.setOffscreenPageLimit(3);
         mTabIndicator.setViewPager(mViewPager);
@@ -647,15 +643,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			restart();
 		}
 		updateUnreadCount();
-
-		if (mPushEnabled != isPushEnabled(this) || mPushEnabled && !isPushRegistered()) {
-			mPushEnabled = isPushEnabled(this);
-			if (mPushEnabled) {
-				GCMHelper.registerIfNotAlreadyDone(this);
-			} else {
-				GCMHelper.unregisterGCM(this);
-			}
-		}
 		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) {
 			startStreamingService();
 		} else {
@@ -746,11 +733,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         for (int i = 0, j = mTabIndicator.getCount(); i < j; i++) {
             mTabIndicator.setBadge(i, 0);
 		}
-	}
-
-	private boolean isPushRegistered() {
-		final SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-		return preferences != null && preferences.getBoolean(KEY_PUSH_REGISTERED, false);
 	}
 
 	private boolean isTabsChanged(final List<SupportTabSpec> tabs) {

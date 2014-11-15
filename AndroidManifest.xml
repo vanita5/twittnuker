@@ -59,12 +59,6 @@
             android:required="false" />
 
         <meta-data
-            android:name="com.google.android.backup.api_key"
-            android:value="AEdPqrEAAAAIKbKATV1AGbLB4kem3w8QaPVJSPVVumbMHxkfwA" />
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-        <meta-data
             android:name="com.sec.android.support.multiwindow"
             android:value="true" />
         <meta-data
@@ -579,9 +573,6 @@
             android:label="@string/label_refresh_service"
             android:settingsActivity=".activity.SettingsActivity" />
         <service
-            android:name=".service.PushService"
-            android:label="@string/label_refresh_service"/>
-        <service
             android:name=".service.BackgroundOperationService"
             android:label="@string/label_background_operation_service" />
         <service
@@ -673,21 +664,6 @@
                 <data
                     android:host="8943373"
                     android:scheme="android_secret_code" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="de.vanita5.twittnuker.receiver.GCMReceiver"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-
-                <!-- Receives the actual messages. -->
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <!-- Receives the registration id. -->
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
-                <category android:name="com.nononsenseapps.linksgcm" />
             </intent-filter>
         </receiver>
         <receiver

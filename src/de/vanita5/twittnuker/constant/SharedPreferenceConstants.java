@@ -328,8 +328,6 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_REGID = "KEY_REGID";
 	@Preference(type = INT)
 	public static final String KEY_APP_VERSION = "KEY_APP_VERSION";
-	@Preference(type = BOOLEAN)
-	public static final String KEY_ENABLE_PUSH = "enable_push_notifications";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_PUSH_REGISTERED = "push_registered";
 	@Preference(type = STRING)

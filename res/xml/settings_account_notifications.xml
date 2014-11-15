@@ -17,20 +17,20 @@
             android:title="@string/notification_ringtone"/>
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:key="cat_push"
-        android:title="@string/push_notifications">
+    <!--<PreferenceCategory-->
+        <!--android:key="cat_push"-->
+        <!--android:title="@string/push_notifications">-->
 
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
-            android:defaultValue="false"
-            android:key="enable_push_notifications"
-            android:title="@string/enable_push_notifications"
-            android:summary="@string/enable_push_notifications_summary"/>
+        <!--<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference-->
+            <!--android:defaultValue="false"-->
+            <!--android:key="enable_push_notifications"-->
+            <!--android:title="@string/enable_push_notifications"-->
+            <!--android:summary="@string/enable_push_notifications_summary"/>-->
 
-        <de.vanita5.twittnuker.preference.PushNotificationContentPreference
-            android:key="content_to_notify_push"
-            android:title="@string/content_to_notify"/>
-    </PreferenceCategory>
+        <!--<de.vanita5.twittnuker.preference.PushNotificationContentPreference-->
+            <!--android:key="content_to_notify_push"-->
+            <!--android:title="@string/content_to_notify"/>-->
+    <!--</PreferenceCategory>-->
 
     <PreferenceCategory
         android:key="cat_standard"

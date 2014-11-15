@@ -22,7 +22,6 @@ import java.util.List;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
@@ -37,8 +36,8 @@ public class OpenStreetMapViewerActivity extends BaseSupportActivity implements 
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
-		inflater.inflate(R.menu.menu_osm_viewer, menu);
+	public boolean onCreateOptionsMenu(final Menu menu) {
+		getMenuInflater().inflate(R.menu.menu_osm_viewer, menu);
 		return true;
 	}
 

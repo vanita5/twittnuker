@@ -115,10 +115,6 @@ public class AccountPreferences implements Constants {
 		return mPreferences.getBoolean(KEY_NOTIFICATION, DEFAULT_NOTIFICATION);
 	}
 
-	public boolean isPushEnabled() {
-		return mPreferences.getBoolean(KEY_ENABLE_PUSH, false);
-	}
-
     public static AccountPreferences getAccountPreferences(final AccountPreferences[] prefs, final long accountId) {
         for (final AccountPreferences pref : prefs) {
             if (pref.getAccountId() == accountId) return pref;
@@ -156,21 +152,6 @@ public class AccountPreferences implements Constants {
 		for (final long accountId : accountIds) {
 			final AccountPreferences preference = new AccountPreferences(context, accountId);
 			if (preference.isNotificationEnabled()) {
-				temp[i++] = preference;
-			}
-		}
-		final AccountPreferences[] enabledIds = new AccountPreferences[i];
-		System.arraycopy(temp, 0, enabledIds, 0, i);
-		return enabledIds;
-	}
-
-	public static AccountPreferences[] getPushEnabledPreferences(final Context context, final long[] accountIds) {
-		if (context == null || accountIds == null) return null;
-		final AccountPreferences[] temp = new AccountPreferences[accountIds.length];
-		int i = 0;
-		for (final long accountId : accountIds) {
-			final AccountPreferences preference = new AccountPreferences(context, accountId);
-			if (preference.isPushEnabled()) {
 				temp[i++] = preference;
 			}
 		}
