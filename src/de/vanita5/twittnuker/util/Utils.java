@@ -2891,7 +2891,7 @@ public final class Utils implements Constants, TwitterConstants {
 		if (context == null || uri == null) return;
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		if (context instanceof FragmentActivity && isPossiblySensitive
-				&& !prefs.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, false)) {
+				&& !prefs.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, true)) {
 			final FragmentActivity activity = (FragmentActivity) context;
 			final FragmentManager fm = activity.getSupportFragmentManager();
 			final DialogFragment fragment = new SensitiveContentWarningDialogFragment();

@@ -224,7 +224,7 @@ public interface SharedPreferenceConstants {
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_NAME_FIRST = "name_first";
 	public static final String KEY_STOP_AUTO_REFRESH_WHEN_BATTERY_LOW = "stop_auto_refresh_when_battery_low";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_DISPLAY_SENSITIVE_CONTENTS = "display_sensitive_contents";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_PHISHING_LINK_WARNING = "phishing_link_warning";

@@ -397,7 +397,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 		mListView.setFastScrollEnabled(mPreferences.getBoolean(KEY_FAST_SCROLL_THUMB, false));
 		configBaseCardAdapter(getActivity(), mAdapter);
 		final boolean displayImagePreview = mPreferences.getBoolean(KEY_DISPLAY_IMAGE_PREVIEW, false);
-		final boolean displaySensitiveContents = mPreferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, false);
+		final boolean displaySensitiveContents = mPreferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, true);
 		final boolean indicateMyStatus = mPreferences.getBoolean(KEY_INDICATE_MY_STATUS, true);
 		final String cardHighlightOption = mPreferences.getString(KEY_CARD_HIGHLIGHT_OPTION,
 				DEFAULT_CARD_HIGHLIGHT_OPTION);
