@@ -22,8 +22,7 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.findStatusInDatabases;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
@@ -198,10 +197,7 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
             }
 			holder.setUserType(isVerified, isProtected);
 			holder.setDisplayNameFirst(isDisplayNameFirst());
-			holder.setNicknameOnly(isNicknameOnly());
-			final String nick = getUserNickname(context, userId);
-			holder.name.setText(TextUtils.isEmpty(nick) ? name : isNicknameOnly() ? nick : context.getString(
-					R.string.name_with_nickname, name, nick));
+			holder.name.setText(name);
 			holder.screen_name.setText("@" + screen_name);
 			if (getLinkHighlightOption() != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
 				linkify.applyUserProfileLinkNoHighlight(holder.name, accountId, userId, screen_name);
@@ -210,7 +206,8 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 				holder.screen_name.setMovementMethod(null);
 			}
 			holder.time.setTime(retweetTimestamp > 0 ? retweetTimestamp : timestamp);
-			holder.setStatusType(!mFavoritesHighlightDisabled && isFavorite, hasLocation, hasMedia || hasCustomMedia, possiblySensitive, isMyRetweet);
+			holder.setStatusType(!mFavoritesHighlightDisabled && isFavorite, hasLocation, hasMedia || hasCustomMedia,
+					possiblySensitive, isMyRetweet, isReply);
 
 			holder.setIsReplyRetweet(isReply, isRetweet);
 			if (isRetweet) {

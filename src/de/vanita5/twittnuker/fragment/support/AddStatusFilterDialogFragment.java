@@ -170,10 +170,10 @@ public class AddStatusFilterDialogFragment extends BaseSupportDialogFragment imp
 	private String getName(final Object value) {
 		if (value instanceof ParcelableUserMention) {
 			final ParcelableUserMention mention = (ParcelableUserMention) value;
-			return getDisplayName(getActivity(), mention.id, mention.name, mention.screen_name);
+			return getDisplayName(mention.name, mention.screen_name);
 		} else if (value instanceof ParcelableStatus) {
 			final ParcelableStatus status = (ParcelableStatus) value;
-			return getDisplayName(getActivity(), status.user_id, status.user_name, status.user_screen_name);
+			return getDisplayName(status.user_name, status.user_screen_name);
 		} else
 			return ParseUtils.parseString(value);
 	}

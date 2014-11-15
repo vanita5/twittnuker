@@ -53,8 +53,7 @@
   <string name="unfavorite">Mégsem kedvenc</string>
   <string name="reply">Válasz</string>
   <string name="share">Megosztás</string>
-  <string name="share_via_twittnuker">Megosztás Twittnuker-n keresztül</string>
-  <string name="view_image">Kép</string>
+    <string name="view_image">Kép</string>
   <string name="view_map">Térkép</string>
   <string name="view_status">Tweet megjelenítése</string>
   <string name="view_user_profile">Felhasználói profil</string>
@@ -99,7 +98,6 @@
   <string name="sources">Források</string>
   <string name="content">Tartalom</string>
   <string name="customize">Testreszabás</string>
-  <string name="set_nickname">Becenév beállítása</string>
   <string name="set_color">Szín beállítása</string>
   <string name="clear">Törlés</string>
   <string name="pick_color">Szín kiválasztása</string>

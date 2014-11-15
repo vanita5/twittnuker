@@ -186,14 +186,13 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 
 	protected String getName(final ParcelableStatus status) {
 		if (status == null) return null;
-		return getDisplayName(getContext(), status.user_id, status.user_name, status.user_screen_name,
-				isDisplayNameFirst(), isNicknameOnly());
+		return getDisplayName(status.user_name, status.user_screen_name,
+				isDisplayNameFirst());
 	}
 
 	protected String getName(final ParcelableUser user) {
 		if (user == null) return null;
-		return getDisplayName(getContext(), user.id, user.name, user.screen_name, isDisplayNameFirst(),
-				isNicknameOnly());
+		return getDisplayName(user.name, user.screen_name, isDisplayNameFirst());
 	}
 
 	protected void setProfileImage(final ImageView view, final ParcelableStatus status) {

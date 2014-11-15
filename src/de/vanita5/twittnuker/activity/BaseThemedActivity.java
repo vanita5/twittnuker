@@ -22,16 +22,13 @@
 
 package de.vanita5.twittnuker.activity;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.view.Menu;
 
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -41,35 +38,15 @@ import static de.vanita5.twittnuker.util.Utils.restartActivity;
 
 public abstract class BaseThemedActivity extends Activity implements IThemedActivity {
 
-	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha;
+	private int mCurrentThemeResource, mCurrentThemeColor,
+			mCurrentThemeBackgroundAlpha, mCurrentActionBarColor;
 	private String mCurrentThemeFontFamily;
 	private Theme mTheme;
-	private TwidereMenuInflater mMenuInflater;
 
 	@Override
 	public void finish() {
 		super.finish();
 		overrideCloseAnimationIfNeeded();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater) {
-		return false;
-	}
-
-	@Override
-	public final boolean onCreateOptionsMenu(Menu menu) {
-		return onCreateOptionsMenu(menu, getTwidereMenuInflater());
-	}
-
-	@Override
-	public TwidereMenuInflater getTwidereMenuInflater() {
-		if (mMenuInflater != null) return mMenuInflater;
-		final ActionBar actionBar = getActionBar();
-		if (actionBar != null) {
-			return mMenuInflater = new TwidereMenuInflater(actionBar.getThemedContext());
-		}
-		return mMenuInflater = new TwidereMenuInflater(this);
 	}
 
 	@Override
@@ -103,6 +80,8 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     @Override
     public abstract int getThemeColor();
 
+	public abstract int getActionBarColor();
+
 	@Override
 	public String getThemeFontFamily() {
 		return ThemeUtils.getThemeFontFamily(this);
@@ -110,11 +89,6 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 
     @Override
     public abstract int getThemeResourceId();
-
-	@Override
-	public boolean isDarkDrawerEnabled() {
-		return false;
-	}
 
 	@Override
 	public void navigateUpFromSameTask() {
@@ -144,7 +118,8 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 	protected final boolean isThemeChanged() {
 		return getThemeResourceId() != mCurrentThemeResource || getThemeColor() != mCurrentThemeColor
                 || !CompareUtils.objectEquals(getThemeFontFamily(), mCurrentThemeFontFamily)
-                || getThemeBackgroundAlpha() != mCurrentThemeBackgroundAlpha;
+                || getThemeBackgroundAlpha() != mCurrentThemeBackgroundAlpha
+				|| getActionBarColor() != mCurrentActionBarColor;
 	}
 
 	@Override
@@ -169,7 +144,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 		if (isThemeChanged()) {
 			restart();
 		} else {
-			ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentThemeColor,
+			ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentActionBarColor,
 					mCurrentThemeBackgroundAlpha);
 		}
 	}
@@ -181,6 +156,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 	private final void setTheme() {
 		mCurrentThemeResource = getThemeResourceId();
 		mCurrentThemeColor = getThemeColor();
+		mCurrentActionBarColor = getActionBarColor();
 		mCurrentThemeFontFamily = getThemeFontFamily();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentThemeColor,

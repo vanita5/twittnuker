@@ -56,7 +56,7 @@
 	<string name="unfavorite">Unfavorite</string>
 	<string name="reply">Reply</string>
 	<string name="share">Share</string>
-	<string name="share_via_twittnuker">Twittnuker</string>
+	<string name="share_via_twittnuker" translatable="false">Twittnuker</string>
 	<string name="view_image">Image</string>
 	<string name="view_map">Map</string>
 	<string name="view_status">View tweet</string>
@@ -104,7 +104,6 @@
 	<string name="sources">Sources</string>
 	<string name="content">Content</string>
 	<string name="customize">Customize</string>
-	<string name="set_nickname">Set nickname</string>
 	<string name="set_color">Set color</string>
 	<string name="clear">Clear</string>
 	<string name="pick_color">Pick color</string>
@@ -166,6 +165,7 @@
     <string name="twitter_muted_users">Muted users</string>
 	<string name="message_user_muted">Added this user to filter list. You will not see tweets from this user in your home timeline/mentions list.</string>
 	<string name="message_users_muted">Added users to filter list. You will not see tweets from these users in your home timeline/mentions list.</string>
+    <string name="message_user_unmuted">Removed this user from filter list.</string>
 	<string name="inbox">Inbox</string>
 	<string name="load_images">Load images</string>
 	<string name="other_settings">Other settings</string>
@@ -209,6 +209,7 @@
 	<string name="accounts">Accounts</string>
 	<string name="account">Account</string>
 	<string name="mention_this_user">Mention this user</string>
+    <string name="mention_user_name">Mention <xliff:g id="name">%1$s</xliff:g></string>
 	<string name="signing_in_please_wait">Signing in, please wait or press BACK to quit.</string>
 	<string name="connectivity">Connectivity</string>
 	<string name="add_member">Add member</string>
@@ -371,6 +372,7 @@
 	<string name="preview_images">Preview images</string>
 	<string name="preload_wifi_only">Preload using Wi-Fi only</string>
 	<string name="disable_tab_swipe">Disable tab swipe</string>
+    <string name="disable_tab_swipe_summary"></string>
 	<string name="sign_in_method_introduction_title">How does it work?</string>
 	<string name="sign_in_method_introduction">Most clients like twicca open a browser asking you to type username and password, and then take you back to the clients. Sometimes this can become very inconvenient.\n\nTwittnuker uses simpler steps to sign in, without opening the browser. Don\'t worry about your password, Twittnuker will never store it, it\'s totally safe!</string>
 	<string name="quote_protected_status_notice">It\'s not recommended to quote protected tweets.</string>
@@ -379,6 +381,7 @@
 	<string name="my_profile_image">My profile image</string>
 	<string name="mention_user">Mention <xliff:g id="user">%s</xliff:g></string>
 	<string name="theme_color">Theme color</string>
+    <string name="action_bar_color">Action bar color</string>
 	<string name="wrong_url_format">Wrong URL format.</string>
 	<string name="wrong_username_password">Wrong username/password.</string>
 	<string name="network_error">Network error.</string>
@@ -453,10 +456,7 @@
 	<string name="enable_for_rts">Enable for RTs</string>
 	<string name="safety">Safety</string>
 	<string name="updating_status_notification">Sending tweet…</string>
-	<string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
 	<string name="query">Query</string>
-	<string name="nickname_only">Nickname only</string>
-	<string name="nickname_only_summary">Replace user name with nickname when available</string>
 	<string name="input_text">Input text</string>
 	<string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s lists</string>
 	<string name="lists_following_user_with_name">Lists following <xliff:g id="name">%s</xliff:g></string>
@@ -465,7 +465,8 @@
 	<string name="link_highlight_option">Link highlight option</string>
 	<string name="users_statuses">User\'s tweets</string>
 	<string name="card_animation">Card animation</string>
-	<string name="name_first">Display name first</string>
+	<string name="name_first">Prefer name</string>
+    <string name="name_first_summary">Show user name instead of the @screenname</string>
 	<string name="next">Next</string>
 	<string name="settings_wizard">Settings wizard</string>
 	<string name="wizard_page_welcome_title">Welcome</string>
@@ -526,7 +527,7 @@
 	<string name="general">General</string>
 	<string name="hints">Hints</string>
 	<string name="finish">Finish</string>
-	<string name="theme_background">Theme background</string>
+    <string name="background">Background</string>
 	<string name="theme_background_default">Default</string>
 	<string name="theme_background_solid">Pure white/black</string>
 	<string name="theme_background_transparent">Transparent</string>
@@ -579,7 +580,6 @@
     <string name="export_settings">Export settings</string>
     <string name="export_settings_type_dialog_title">Export settings…</string>
     <string name="import_settings_type_dialog_title">Import settings…</string>
-    <string name="nicknames">Nicknames</string>
     <string name="user_colors">User colors</string>
     <string name="import_export">Import/Export</string>
     <string name="theme_background_alpha">Theme background alpha</string>
@@ -605,8 +605,8 @@
     <string name="image_preview_scale_type_fit_center">Fit center</string>
     <string name="quote_protected_status_warning_message">This tweet is protected.\n\nProtected users usually don\'t want their tweets to be shared publicly.</string>
     <string name="send_anyway">Send anyway</string>
-    <string name="my_following_only">My following only</string>
-    <string name="my_following_only_summary">Display notifications from users you follow only.</string>
+    <string name="following_only">Your following only</string>
+    <string name="following_only_summary">Display notifications from users you follow only.</string>
     <string name="new_direct_message">New direct message</string>
     <string name="plain_list_style">Plain list style</string>
     <string name="want_old_icon_back">Want old icon back?</string>
@@ -625,6 +625,21 @@
     <string name="exclude_this_host">Exclude this host</string>
     <string name="api_url_format_help">[DOMAIN]: Twitter API domain.\nExample: https://[DOMAIN].twitter.com/ will be replaced to https://api.twitter.com/.</string>
     <string name="no_version_suffix">No version suffix</string>
+    <string name="inverse_selection">Inverse selection</string>
+    <string name="edit_medias">Edit medias</string>
+    <string name="medias">Medias</string>
+    <string name="mute_user">Mute <xliff:g id="name">%s</xliff:g></string>
+    <string name="muted_user">Muted <xliff:g id="name">%s</xliff:g></string>
+    <string name="unmute_user">Unmute <xliff:g id="name">%s</xliff:g></string>
+    <string name="unmuted_user">Unmuted <xliff:g id="name">%s</xliff:g></string>
+    <string name="mute">Mute</string>
+    <string name="unmute">Unmute</string>
+    <string name="action_muting">muting</string>
+    <string name="action_unmuting">unmuting</string>
+    <string name="mute_user_confirm_message">Mute <xliff:g id="name">%s</xliff:g>? You will no longer see tweets from this user while keep following this user.</string>
+    <string name="remove_from_filter">Remove from filter</string>
+    <string name="sort_timeline_by_id">Sort timeline by ID</string>
+    <string name="sort_timeline_by_id_summary">May be useful for other services (Status.net)</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
@@ -679,6 +694,7 @@
 
     <string name="shortening">Shortening</string>
     <string name="error_hototin">...but I failed :(\nYour Tweet has not been send and saved to draft.</string>
+    <string name="error_twitlonger">...I can\'t handle it :(\nYour Tweet has not been send and saved to draft.</string>
     <string name="action_shortening">shortening tweet</string>
     <string name="uploading_image">Uploading...</string>
     <string name="no_tab_hint">You can add tabs in the settings</string>

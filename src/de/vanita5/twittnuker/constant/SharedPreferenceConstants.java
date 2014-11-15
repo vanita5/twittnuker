@@ -101,7 +101,7 @@ public interface SharedPreferenceConstants {
 	public static final String DEFAULT_IMAGE_UPLOAD_FORMAT = FORMAT_PATTERN_TEXT + " " + FORMAT_PATTERN_LINK;
 
 	public static final String DEFAULT_REFRESH_INTERVAL = "15";
-	public static final boolean DEFAULT_AUTO_REFRESH = true;
+	public static final boolean DEFAULT_AUTO_REFRESH = false;
 	public static final boolean DEFAULT_AUTO_REFRESH_HOME_TIMELINE = false;
 	public static final boolean DEFAULT_AUTO_REFRESH_MENTIONS = true;
 	public static final boolean DEFAULT_AUTO_REFRESH_DIRECT_MESSAGES = true;
@@ -137,6 +137,8 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_THEME_DARK_ACTIONBAR = "theme_dark_actionbar";
 	@Preference(type = INT)
 	public static final String KEY_THEME_COLOR = "theme_color";
+	@Preference(type = INT)
+	public static final String KEY_ACTION_BAR_COLOR = "action_bar_color";
 	@Preference(type = STRING, hasDefault = true, defaultString = DEFAULT_THEME_FONT_FAMILY)
 	public static final String KEY_THEME_FONT_FAMILY = "theme_font_family";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
@@ -144,11 +146,7 @@ public interface SharedPreferenceConstants {
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_DISPLAY_IMAGE_PREVIEW = "display_image_preview";
 	@Preference(type = BOOLEAN)
-	public static final String KEY_BOTTOM_COMPOSE_BUTTON = "bottom_compose_button";
-	@Preference(type = BOOLEAN)
 	public static final String KEY_LEFTSIDE_COMPOSE_BUTTON = "leftside_compose_button";
-	@Preference(type = BOOLEAN)
-	public static final String KEY_BOTTOM_SEND_BUTTON = "bottom_send_button";
 	@Preference(type = BOOLEAN)
 	public static final String KEY_ATTACH_LOCATION = "attach_location";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
@@ -226,7 +224,7 @@ public interface SharedPreferenceConstants {
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_NAME_FIRST = "name_first";
 	public static final String KEY_STOP_AUTO_REFRESH_WHEN_BATTERY_LOW = "stop_auto_refresh_when_battery_low";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_DISPLAY_SENSITIVE_CONTENTS = "display_sensitive_contents";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_PHISHING_LINK_WARNING = "phishing_link_warning";
@@ -266,8 +264,6 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_FILTERS_IN_HOME_TIMELINE = "filters_in_home_timeline";
 	public static final String KEY_FILTERS_IN_MENTIONS = "filters_in_mentions";
 	public static final String KEY_FILTERS_FOR_RTS = "filters_for_rts";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
-	public static final String KEY_NICKNAME_ONLY = "nickname_only";
 	public static final String KEY_SETTINGS_WIZARD_COMPLETED = "settings_wizard_completed";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_CARD_ANIMATION = "card_animation";
@@ -276,19 +272,19 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_NOTIFICATION_TYPE_HOME = "notification_type_home";
 	public static final String KEY_NOTIFICATION_TYPE_MENTIONS = "notification_type_mentions";
 	public static final String KEY_NOTIFICATION_TYPE_DIRECT_MESSAGES = "notification_type_direct_messages";
-    public static final String KEY_MY_FOLLOWING_ONLY = "my_following_only";
+	public static final String KEY_NOTIFICATION_FOLLOWING_ONLY = "notification_following_only";
 
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_COMPACT_CARDS = "compact_cards";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_LONG_CLICK_TO_OPEN_MENU = "long_click_to_open_menu";
-	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_STREAMING_ENABLED = "stream_enabled";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_STREAMING_NOTIFICATION = "stream_notification";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_STREAMING_AUTOSCROLL = "stream_autoscroll";
-	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_REFRESH_BEFORE_STREAMING = "refresh_before_streaming";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_STREAMING_ON_MOBILE = "stream_on_mobile";
@@ -309,8 +305,8 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_IMAGE_PREVIEW_SCALE_TYPE = "image_preview_scale_type";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_PLAIN_LIST_STYLE = "plain_list_style";
-	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
-	public static final String KEY_DARK_DRAWER = "dark_drawer";
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+	public static final String KEY_SORT_TIMELINE_BY_ID = "sort_timeline_by_id";
 
 	public static final String KEY_QUICK_MENU_EXPANDED = "quick_menu_expanded";
 

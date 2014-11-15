@@ -53,7 +53,6 @@
     <string name="unfavorite">Удалить из избранного</string>
     <string name="reply">Ответить</string>
     <string name="share">Поделиться</string>
-    <string name="share_via_twittnuker">Twittnuker</string>
     <string name="view_image">Изображение</string>
     <string name="view_map">Карта</string>
     <string name="view_status">Просмотреть твит</string>
@@ -100,7 +99,6 @@
     <string name="sources">Источники</string>
     <string name="content">Содержание</string>
     <string name="customize">Настроить</string>
-    <string name="set_nickname">Задать никнейм</string>
     <string name="set_color">Выбрать цвет</string>
     <string name="clear">Очистить</string>
     <string name="pick_color">Выбрать цвет</string>
@@ -446,10 +444,7 @@
     <string name="enable_for_rts">Включить для Ретвитов</string>
     <string name="safety">Безопасность</string>
     <string name="updating_status_notification">Отправление твита&#8230;</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g>(<xliff:g id="nickname">%2$s</xliff:g>)</string>
     <string name="query">Запрос</string>
-    <string name="nickname_only">Только никнеймы</string>
-    <string name="nickname_only_summary">Заменить имя пользователя никнеймом, когда возможно</string>
     <string name="input_text">Ввод текста</string>
     <string name="users_lists_with_name">Списки <xliff:g id="name">%s</xliff:g></string>
     <string name="lists_following_user_with_name">Лист читающих <xliff:g id="name">%s</xliff:g></string>
@@ -510,7 +505,7 @@
     <string name="general">Основное</string>
     <string name="hints">Советы</string>
     <string name="finish">Завершено</string>
-    <string name="theme_background">Фон темы</string>
+    <string name="background">Фон темы</string>
     <string name="theme_background_default">По умолчанию</string>
     <string name="theme_background_solid">Просто белый/чёрный</string>
     <string name="theme_background_transparent">Прозрачный</string>
@@ -550,7 +545,6 @@
     <string name="export_settings">Экспортировать параметры</string>
     <string name="export_settings_type_dialog_title">Экспорт настроек&#8230;</string>
     <string name="import_settings_type_dialog_title">Импорт настроек&#8230;</string>
-    <string name="nicknames">Имена</string>
     <string name="user_colors">Пользовательские цвета</string>
     <string name="import_export">Импортировать/Экспортировать</string>
     <string name="theme_background_alpha">Фон темы</string>

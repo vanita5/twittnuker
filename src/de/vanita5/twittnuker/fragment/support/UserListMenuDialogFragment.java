@@ -26,24 +26,24 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.MenuDialogFragment;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.Utils;
 
 public class UserListMenuDialogFragment extends MenuDialogFragment {
 
 	@Override
-	protected void onCreateMenu(final TwidereMenuInflater inflater, final Menu menu) {
+    protected void onCreateMenu(final MenuInflater inflater, final Menu menu) {
 		final SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final Bundle args = getArguments();
 		final ParcelableUserList user = args.getParcelable(EXTRA_USER_LIST);
 		inflater.inflate(R.menu.action_user_list, menu);
 		onPrepareItemMenu(menu, user);
-		final boolean longclickToOpenMenu = prefs.getBoolean(KEY_LONG_CLICK_TO_OPEN_MENU, false);
-		Utils.setMenuItemAvailability(menu, MENU_MULTI_SELECT, longclickToOpenMenu);
+		final boolean longClickToOpenMenu = prefs.getBoolean(KEY_LONG_CLICK_TO_OPEN_MENU, false);
+        Utils.setMenuItemAvailability(menu, MENU_MULTI_SELECT, longClickToOpenMenu);
 	}
 
 	protected void onPrepareItemMenu(final Menu menu, final ParcelableUserList userList) {

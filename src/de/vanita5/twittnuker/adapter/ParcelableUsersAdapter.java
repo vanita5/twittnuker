@@ -22,8 +22,7 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
@@ -115,9 +114,7 @@ public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> imp
 		holder.setTextSize(getTextSize());
 		holder.name.setCompoundDrawablesWithIntrinsicBounds(0, 0,
 				getUserTypeIconRes(user.is_verified, user.is_protected), 0);
-		final String nick = getUserNickname(mContext, user.id);
-		holder.name.setText(TextUtils.isEmpty(nick) ? user.name : isNicknameOnly() ? nick : mContext.getString(
-				R.string.name_with_nickname, user.name, nick));
+		holder.name.setText(user.name);
 		holder.screen_name.setText("@" + user.screen_name);
 		holder.description.setVisibility(TextUtils.isEmpty(user.description_unescaped) ? View.GONE : View.VISIBLE);
 		holder.description.setText(user.description_unescaped);
@@ -169,7 +166,7 @@ public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> imp
 		}
 		if (data == null) return;
 		for (final ParcelableUser user : data) {
-			if (clear_old || findItem(user.id) == null) {
+            if (clear_old || findItemPosition(user.id) < 0) {
 				add(user);
 			}
 		}

@@ -64,9 +64,9 @@
     		android:title="@string/other_settings">
     		<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
     			android:defaultValue="false"
-    			android:key="my_following_only"
-    			android:summary="@string/my_following_only_summary"
-    			android:title="@string/my_following_only"/>
+                android:key="notification_following_only"
+                android:summary="@string/following_only_summary"
+                android:title="@string/following_only"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

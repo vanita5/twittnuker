@@ -46,10 +46,13 @@ public class SeekBarDialogPreference extends DialogPreference {
 	private static final int DEFAULT_MIN_PROGRESS = 0;
 	private static final int DEFAULT_MAX_PROGRESS = 100;
 	private static final int DEFAULT_PROGRESS = 0;
+    private static final int DEFAULT_STEP = 1;
 
 	private int mMinProgress;
 	private int mMaxProgress;
 	private int mProgress;
+    private int mStep;
+
 	private CharSequence mProgressTextSuffix;
 	private TextView mProgressText;
 	private SeekBar mSeekBar;
@@ -71,6 +74,7 @@ public class SeekBarDialogPreference extends DialogPreference {
 		try {
 			setMinProgress(a.getInteger(R.styleable.SeekBarDialogPreference_min, DEFAULT_MIN_PROGRESS));
 			setMaxProgress(a.getInteger(R.styleable.SeekBarDialogPreference_max, DEFAULT_MAX_PROGRESS));
+            setStep(a.getInteger(R.styleable.SeekBarDialogPreference_step, DEFAULT_STEP));
 			setProgressTextSuffix(a.getString(R.styleable.SeekBarDialogPreference_progressTextSuffix));
 		} finally {
 			a.recycle();
@@ -82,6 +86,10 @@ public class SeekBarDialogPreference extends DialogPreference {
 		setNegativeButtonText(android.R.string.cancel);
 		setDialogIcon(null);
 	}
+
+    public void setStep(int step) {
+        mStep = step;
+    }
 
 	public int getMaxProgress() {
 		return mMaxProgress;
@@ -109,6 +117,9 @@ public class SeekBarDialogPreference extends DialogPreference {
 		setProgress(Math.max(mProgress, mMinProgress));
 	}
 
+    /**
+     * @param progress Real progress multiplied by steps
+     */
 	public void setProgress(int progress) {
 		progress = Math.max(Math.min(progress, mMaxProgress), mMinProgress);
 
@@ -141,7 +152,7 @@ public class SeekBarDialogPreference extends DialogPreference {
 				// update text that displays the current SeekBar progress value
 				// note: this does not persist the progress value. that is only
 				// ever done in setProgress()
-				final String progressStr = String.valueOf(progress + mMinProgress);
+                final String progressStr = String.valueOf(progress * mStep + mMinProgress);
 				mProgressText.setText(mProgressTextSuffix == null ? progressStr : progressStr
 						.concat(mProgressTextSuffix.toString()));
 			}
@@ -154,8 +165,8 @@ public class SeekBarDialogPreference extends DialogPreference {
 			public void onStopTrackingTouch(final SeekBar seekBar) {
 			}
 		});
-		mSeekBar.setMax(mMaxProgress - mMinProgress);
-		mSeekBar.setProgress(mProgress - mMinProgress);
+        mSeekBar.setMax((int) Math.ceil((mMaxProgress - mMinProgress) / (double) mStep));
+        mSeekBar.setProgress((int) Math.ceil((mProgress - mMinProgress) / (double) mStep));
 	}
 
 	@Override
@@ -164,9 +175,9 @@ public class SeekBarDialogPreference extends DialogPreference {
 
 		// when the user selects "OK", persist the new value
 		if (positiveResult) {
-			final int seekBarProgress = mSeekBar.getProgress() + mMinProgress;
-			if (callChangeListener(seekBarProgress)) {
-				setProgress(seekBarProgress);
+            final int realProgress = mSeekBar.getProgress() * mStep + mMinProgress;
+            if (callChangeListener(realProgress)) {
+                setProgress(realProgress);
 			}
 		}
 	}
@@ -190,6 +201,7 @@ public class SeekBarDialogPreference extends DialogPreference {
 		setMinProgress(myState.minProgress);
 		setMaxProgress(myState.maxProgress);
 		setProgress(myState.progress);
+        setStep(myState.step);
 
 		super.onRestoreInstanceState(myState.getSuperState());
 	}
@@ -206,9 +218,13 @@ public class SeekBarDialogPreference extends DialogPreference {
 		myState.minProgress = getMinProgress();
 		myState.maxProgress = getMaxProgress();
 		myState.progress = getProgress();
-
+        myState.step = getStep();
 		return myState;
 	}
+
+    private int getStep() {
+        return mStep;
+    }
 
 	@Override
 	protected void onSetInitialValue(final boolean restore, final Object defaultValue) {
@@ -219,6 +235,7 @@ public class SeekBarDialogPreference extends DialogPreference {
 		int minProgress;
 		int maxProgress;
 		int progress;
+        int step;
 
 		@SuppressWarnings("unused")
 		public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
@@ -239,6 +256,7 @@ public class SeekBarDialogPreference extends DialogPreference {
 			minProgress = source.readInt();
 			maxProgress = source.readInt();
 			progress = source.readInt();
+            step = source.readInt();
 		}
 
 		public SavedState(final Parcelable superState) {
@@ -252,6 +270,7 @@ public class SeekBarDialogPreference extends DialogPreference {
 			dest.writeInt(minProgress);
 			dest.writeInt(maxProgress);
 			dest.writeInt(progress);
+            dest.writeInt(step);
 		}
 	}
 }

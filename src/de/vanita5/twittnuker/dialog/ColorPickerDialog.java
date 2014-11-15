@@ -33,32 +33,30 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.scvngr.levelup.views.gallery.AdapterView;
-import com.scvngr.levelup.views.gallery.AdapterView.OnItemClickListener;
-import com.scvngr.levelup.views.gallery.Gallery;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.ArrayAdapter;
+import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter;
 import de.vanita5.twittnuker.view.ColorPickerView;
 import de.vanita5.twittnuker.view.ColorPickerView.OnColorChangedListener;
 import de.vanita5.twittnuker.view.ForegroundColorView;
 
-public final class ColorPickerDialog extends AlertDialog implements OnItemClickListener, OnColorChangedListener,
-        Constants {
+public final class ColorPickerDialog extends AlertDialog implements Constants, OnColorChangedListener {
 
-    private static final int[] COLORS = { HOLO_RED_DARK, HOLO_RED_LIGHT, HOLO_ORANGE_DARK, HOLO_ORANGE_LIGHT,
-            HOLO_GREEN_LIGHT, HOLO_GREEN_DARK, HOLO_BLUE_LIGHT, HOLO_BLUE_DARK, HOLO_PURPLE_DARK, HOLO_PURPLE_LIGHT,
+    private static final int[] COLORS = { MATERIAL_DARK, MATERIAL_LIGHT, HOLO_BLUE_LIGHT, HOLO_RED_DARK, HOLO_RED_LIGHT, HOLO_ORANGE_DARK, HOLO_ORANGE_LIGHT,
+            HOLO_GREEN_LIGHT, HOLO_GREEN_DARK, HOLO_BLUE_DARK, HOLO_PURPLE_DARK, HOLO_PURPLE_LIGHT,
             Color.WHITE };
 
     private final ColorsAdapter mColorsAdapter;
 
     private ColorPickerView mColorPicker;
-    private Gallery mColorPresets;
+    private RecyclerView mColorPresets;
 
     private final Resources mResources;
 
@@ -66,18 +64,18 @@ public final class ColorPickerDialog extends AlertDialog implements OnItemClickL
     private final Canvas mCanvas;
 
     private final int mIconWidth, mIconHeight;
-    private final int mRectrangleSize, mNumRectanglesHorizontal, mNumRectanglesVertical;
+    private final int mRectangleSize, mNumRectanglesHorizontal, mNumRectanglesVertical;
 
     public ColorPickerDialog(final Context context, final int initialColor, final boolean showAlphaSlider) {
         super(context);
-        mColorsAdapter = new ColorsAdapter(context);
+        mColorsAdapter = new ColorsAdapter(this, context);
         mResources = context.getResources();
         final float density = mResources.getDisplayMetrics().density;
         mIconWidth = (int) (32 * density);
         mIconHeight = (int) (32 * density);
-        mRectrangleSize = (int) (density * 5);
-        mNumRectanglesHorizontal = (int) Math.ceil(mIconWidth / mRectrangleSize);
-        mNumRectanglesVertical = (int) Math.ceil(mIconHeight / mRectrangleSize);
+        mRectangleSize = (int) (density * 5);
+        mNumRectanglesHorizontal = (int) Math.ceil(mIconWidth / mRectangleSize);
+        mNumRectanglesVertical = (int) Math.ceil(mIconHeight / mRectangleSize);
         mTempBitmap = Bitmap.createBitmap(mIconWidth, mIconHeight, Config.ARGB_8888);
         mCanvas = new Canvas(mTempBitmap);
         init(context, initialColor, showAlphaSlider);
@@ -94,13 +92,6 @@ public final class ColorPickerDialog extends AlertDialog implements OnItemClickL
         mColorsAdapter.setCurrentColor(color);
         updateColorPreviewBitmap(color);
         setIcon(new BitmapDrawable(mResources, mTempBitmap));
-    }
-
-    @Override
-    public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-        final int color = mColorsAdapter.getItem(position);
-        if (mColorPicker == null) return;
-        mColorPicker.setColor(color, true);
     }
 
     public final void setAlphaSliderVisible(final boolean visible) {
@@ -124,13 +115,12 @@ public final class ColorPickerDialog extends AlertDialog implements OnItemClickL
         final View dialogView = inflater.inflate(R.layout.dialog_color_picker, null);
 
         mColorPicker = (ColorPickerView) dialogView.findViewById(R.id.color_picker);
-        mColorPresets = (Gallery) dialogView.findViewById(R.id.color_presets);
+        mColorPresets = (RecyclerView) dialogView.findViewById(R.id.color_presets);
 
         mColorPicker.setOnColorChangedListener(this);
+        mColorPresets.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         mColorPresets.setAdapter(mColorsAdapter);
-        mColorPresets.setOnItemClickListener(this);
-        mColorPresets.setScrollAfterItemClickEnabled(false);
-        mColorPresets.setScrollRightSpacingEnabled(false);
+//		mColorPresets.setOnItemClickListener(this);
 
         setColor(color, true);
         setAlphaSliderVisible(showAlphaSlider);
@@ -153,10 +143,10 @@ public final class ColorPickerDialog extends AlertDialog implements OnItemClickL
             boolean isWhite = verticalStartWhite;
             for (int j = 0; j <= mNumRectanglesHorizontal; j++) {
 
-                r.top = i * mRectrangleSize;
-                r.left = j * mRectrangleSize;
-                r.bottom = r.top + mRectrangleSize;
-                r.right = r.left + mRectrangleSize;
+                r.top = i * mRectangleSize;
+                r.left = j * mRectangleSize;
+                r.bottom = r.top + mRectangleSize;
+                r.right = r.left + mRectangleSize;
                 final Paint paint = new Paint();
                 paint.setColor(isWhite ? Color.WHITE : Color.GRAY);
 
@@ -178,22 +168,15 @@ public final class ColorPickerDialog extends AlertDialog implements OnItemClickL
 
     }
 
-    public static class ColorsAdapter extends ArrayAdapter<Integer> {
+    private static class ColorsAdapter extends ArrayRecyclerAdapter<Integer, ColorViewHolder> implements View.OnClickListener {
 
+        private final ColorPickerDialog mDialog;
+        private final LayoutInflater mInflater;
         private int mCurrentColor;
 
-        public ColorsAdapter(final Context context) {
-            super(context, R.layout.gallery_item_color_picker_preset);
-        }
-
-        @Override
-        public View getView(final int position, final View convertView, final ViewGroup parent) {
-            final View view = super.getView(position, convertView, parent);
-            final ForegroundColorView colorView = (ForegroundColorView) view.findViewById(R.id.color);
-            final int color = getItem(position);
-            colorView.setColor(color);
-            colorView.setActivated(mCurrentColor == color);
-            return view;
+        public ColorsAdapter(ColorPickerDialog dialog, final Context context) {
+            mDialog = dialog;
+            mInflater = LayoutInflater.from(context);
         }
 
         public void setCurrentColor(final int color) {
@@ -201,5 +184,39 @@ public final class ColorPickerDialog extends AlertDialog implements OnItemClickL
             notifyDataSetChanged();
         }
 
+        @Override
+        public void onBindViewHolder(ColorViewHolder holder, int position, Integer item) {
+            holder.setItem(position, item, mCurrentColor == item);
+        }
+
+        @Override
+        public ColorViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            final View view = mInflater.inflate(R.layout.gallery_item_color_picker_preset, parent, false);
+            view.setOnClickListener(this);
+            return new ColorViewHolder(view);
+        }
+
+        @Override
+        public void onClick(View v) {
+            final Object tag = v.getTag();
+            if (!(tag instanceof Integer)) return;
+            mDialog.mColorPicker.setColor(getItem((Integer) tag), true);
+        }
+    }
+
+    public static class ColorViewHolder extends ViewHolder {
+
+        private final ForegroundColorView colorView;
+
+        public ColorViewHolder(View itemView) {
+            super(itemView);
+            colorView = (ForegroundColorView) itemView.findViewById(R.id.color);
+        }
+
+        public void setItem(int position, int color, boolean activated) {
+            itemView.setTag(position);
+            colorView.setColor(color);
+            colorView.setActivated(activated);
+        }
     }
 }

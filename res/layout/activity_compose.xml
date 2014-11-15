@@ -10,6 +10,7 @@
 	<de.vanita5.twittnuker.view.ActionBarThemedContainer
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+        style="?android:actionBarStyle"
 		android:layout="@layout/activity_compose_actionbar"/>
 
 	<LinearLayout
@@ -18,8 +19,7 @@
 		android:layout_height="wrap_content"
 		android:orientation="vertical">
 
-		<de.vanita5.twittnuker.view.ColorLabelRelativeLayout
-			android:id="@+id/accounts_color"
+        <RelativeLayout
 			android:layout_width="match_parent"
 			android:layout_height="0dp"
             android:layout_weight="1"
@@ -52,11 +52,12 @@
 					android:imeOptions="actionDone"
                     android:minLines="10"/>
 			</FrameLayout>
-		</de.vanita5.twittnuker.view.ColorLabelRelativeLayout>
+        </RelativeLayout>
 
 		<de.vanita5.twittnuker.view.ActionBarSplitThemedContainer
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+            style="?android:actionBarSplitStyle"
 			android:layout="@layout/activity_compose_bottombar"/>
 	</LinearLayout>
 

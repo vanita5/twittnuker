@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<de.vanita5.twittnuker.view.MainFrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:id="@+id/content_fragment"
-    android:layout_height="match_parent"/>

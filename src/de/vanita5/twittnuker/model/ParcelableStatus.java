@@ -33,6 +33,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import org.mariotaku.jsonserializer.JSONParcel;
 import org.mariotaku.jsonserializer.JSONParcelable;
@@ -163,11 +164,11 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		favorite_count = idx.favorite_count != -1 ? c.getLong(idx.favorite_count) : -1;
 		in_reply_to_status_id = idx.in_reply_to_status_id != -1 ? c.getLong(idx.in_reply_to_status_id) : -1;
 		in_reply_to_user_id = idx.in_reply_to_user_id != -1 ? c.getLong(idx.in_reply_to_user_id) : -1;
-		is_gap = idx.is_gap != -1 ? c.getInt(idx.is_gap) == 1 : false;
-		is_retweet = idx.is_retweet != -1 ? c.getInt(idx.is_retweet) == 1 : false;
-		is_favorite = idx.is_favorite != -1 ? c.getInt(idx.is_favorite) == 1 : false;
-		user_is_protected = idx.is_protected != -1 ? c.getInt(idx.is_protected) == 1 : false;
-		user_is_verified = idx.is_verified != -1 ? c.getInt(idx.is_verified) == 1 : false;
+        is_gap = idx.is_gap != -1 && c.getInt(idx.is_gap) == 1;
+        is_retweet = idx.is_retweet != -1 && c.getInt(idx.is_retweet) == 1;
+        is_favorite = idx.is_favorite != -1 && c.getInt(idx.is_favorite) == 1;
+        user_is_protected = idx.is_protected != -1 && c.getInt(idx.is_protected) == 1;
+        user_is_verified = idx.is_verified != -1 && c.getInt(idx.is_verified) == 1;
 		retweeted_by_name = idx.retweeted_by_user_name != -1 ? c.getString(idx.retweeted_by_user_name) : null;
 		retweeted_by_screen_name = idx.retweeted_by_user_screen_name != -1 ? c
 				.getString(idx.retweeted_by_user_screen_name) : null;
@@ -184,8 +185,8 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		user_profile_image_url = idx.user_profile_image_url != -1 ? c.getString(idx.user_profile_image_url) : null;
 		text_unescaped = idx.text_unescaped != -1 ? c.getString(idx.text_unescaped) : null;
 		my_retweet_id = idx.my_retweet_id != -1 ? c.getLong(idx.my_retweet_id) : -1;
-		is_possibly_sensitive = idx.is_possibly_sensitive != -1 ? c.getInt(idx.is_possibly_sensitive) == 1 : false;
-		user_is_following = idx.is_following != -1 ? c.getInt(idx.is_following) == 1 : false;
+        is_possibly_sensitive = idx.is_possibly_sensitive != -1 && c.getInt(idx.is_possibly_sensitive) == 1;
+        user_is_following = idx.is_following != -1 && c.getInt(idx.is_following) == 1;
 		mentions = idx.mentions != -1 ? ParcelableUserMention.fromJSONString(c.getString(idx.mentions)) : null;
 		first_media = idx.first_media != -1 ? c.getString(idx.first_media) : null;
 	}
@@ -270,14 +271,15 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		id = orig.getId();
 		timestamp = getTime(orig.getCreatedAt());
 		is_retweet = orig.isRetweet();
-		final Status retweeted_status = orig.getRetweetedStatus();
-		final User retweet_user = retweeted_status != null ? orig.getUser() : null;
-		retweet_id = retweeted_status != null ? retweeted_status.getId() : -1;
-		retweet_timestamp = retweeted_status != null ? getTime(orig.getCreatedAt()) : -1;
+        final Status retweeted = orig.getRetweetedStatus();
+        final User retweet_user = retweeted != null ? orig.getUser() : null;
+        retweet_id = retweeted != null ? retweeted.getId() : -1;
+		//NOTE getTime(orig.getCreatedAt())
+		retweet_timestamp = retweeted != null ? getTime(retweeted.getCreatedAt()) : -1;
 		retweeted_by_id = retweet_user != null ? retweet_user.getId() : -1;
 		retweeted_by_name = retweet_user != null ? retweet_user.getName() : null;
 		retweeted_by_screen_name = retweet_user != null ? retweet_user.getScreenName() : null;
-		final Status status = retweeted_status != null ? retweeted_status : orig;
+        final Status status = retweeted != null ? retweeted : orig;
 		final User user = status.getUser();
 		user_id = user.getId();
 		user_name = user.getName();
@@ -306,8 +308,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 	}
 
 	@Override
-	public int compareTo(final ParcelableStatus another) {
-		if (another == null) return 0;
+    public int compareTo(@NonNull final ParcelableStatus another) {
 		final long diff = another.id - id;
 		if (diff > Integer.MAX_VALUE) return Integer.MAX_VALUE;
 		if (diff < Integer.MIN_VALUE) return Integer.MIN_VALUE;
@@ -325,9 +326,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		if (obj == null) return false;
 		if (!(obj instanceof ParcelableStatus)) return false;
 		final ParcelableStatus other = (ParcelableStatus) obj;
-		if (account_id != other.account_id) return false;
-		if (id != other.id) return false;
-		return true;
+        return account_id == other.account_id && id == other.id;
 	}
 
 	@Override

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.pkmmte.view.CircularImageView
+        android:id="@+id/background"
+        android:layout_width="@dimen/float_action_button_size"
+        android:layout_height="@dimen/float_action_button_size"
+        android:layout_gravity="center"
+        app:border="false"
+        app:selector="true"
+        app:shadow="true"/>
+
+    <ProgressBar
+        android:id="@android:id/progress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@android:id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/element_spacing_normal"
+        android:contentDescription="@string/compose"
+        android:scaleType="centerInside"/>
+
+</merge>

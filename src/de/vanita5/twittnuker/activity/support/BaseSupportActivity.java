@@ -55,7 +55,7 @@ public class BaseSupportActivity extends BaseSupportThemedActivity implements Co
 
     @Override
     public int getThemeColor() {
-		return ThemeUtils.getUserThemeColor(this, getThemeResourceId());
+        return ThemeUtils.getUserAccentColor(this, getThemeResourceId());
     }
 
     @Override

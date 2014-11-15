@@ -21,13 +21,14 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:gravity="bottom"
-              android:orientation="horizontal">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="bottom"
+    android:orientation="horizontal">
 
-    <ImageView
+    <de.vanita5.twittnuker.view.ActionIconView
         android:id="@+id/add_image"
         style="?android:borderlessButtonStyle"
         android:layout_width="?android:actionBarSize"
@@ -58,7 +59,7 @@
 		android:layout_height="?android:actionBarSize"
 		android:layout_weight="0">
 
-        <ImageView
+        <de.vanita5.twittnuker.view.ActionIconView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/send"

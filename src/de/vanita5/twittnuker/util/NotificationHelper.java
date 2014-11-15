@@ -49,11 +49,7 @@ public class NotificationHelper implements Constants {
 	public NotificationHelper(final Context context) {
 		this.context = context;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-		final DisplayImageOptions.Builder profileOptsBuilder = new DisplayImageOptions.Builder();
-		profileOptsBuilder.cacheInMemory(true);
-		profileOptsBuilder.cacheOnDisk(true);
-		final DisplayImageOptions displayImageOptions = profileOptsBuilder.build();
-		mImagePreloader = new ImagePreloader(context, app.getImageLoader(), displayImageOptions);
+		mImagePreloader = new ImagePreloader(context, app.getImageLoader());
 		mSharedPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 	}
 

@@ -53,7 +53,6 @@
     <string name="unfavorite">Quitar de Favoritos</string>
     <string name="reply">Respuesta</string>
     <string name="share">Compartir</string>
-    <string name="share_via_twittnuker">Compartir a través de Twittnuker</string>
     <string name="view_image">Imagen</string>
     <string name="view_map">Mapa</string>
     <string name="view_status">Ver Tweet</string>
@@ -100,7 +99,6 @@
     <string name="sources">Fuentes</string>
     <string name="content">Contenido</string>
     <string name="customize">Personalizar</string>
-    <string name="set_nickname">Definir apodo</string>
     <string name="set_color">Establecer color</string>
     <string name="clear">Borrar</string>
     <string name="pick_color">Elegir color</string>
@@ -446,10 +444,7 @@
     <string name="enable_for_rts">Habilitar para RTs</string>
     <string name="safety">Seguro</string>
     <string name="updating_status_notification">Enviando tweet&#8230;</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
     <string name="query">Consulta</string>
-    <string name="nickname_only">Solamente Apodo</string>
-    <string name="nickname_only_summary">Cambia el nombre de usuario con el apodo cuando esté disponible</string>
     <string name="input_text">Introduce el texto</string>
     <string name="users_lists_with_name">Listas de <xliff:g id="name">%s</xliff:g></string>
     <string name="lists_following_user_with_name">Listas seguidas por <xliff:g id="name">%s</xliff:g></string>
@@ -519,7 +514,7 @@
     <string name="general">General</string>
     <string name="hints">Consejos</string>
     <string name="finish">Terminar</string>
-    <string name="theme_background">Tema de fondo</string>
+    <string name="background">Tema de fondo</string>
     <string name="theme_background_default">Predeterminado</string>
     <string name="theme_background_solid">Blanco/Negro puro</string>
     <string name="theme_background_transparent">Transparente</string>
@@ -570,7 +565,6 @@
     <string name="export_settings">Exportar ajustes</string>
     <string name="export_settings_type_dialog_title">Exportar ajustes&#8230;</string>
     <string name="import_settings_type_dialog_title">Importar ajustes&#8230;</string>
-    <string name="nicknames">Apodos</string>
     <string name="user_colors">Colores de usuario</string>
     <string name="import_export">Importar/exportar</string>
     <string name="theme_background_alpha">Fondo del tema alpha</string>
@@ -596,6 +590,6 @@
     <string name="image_preview_scale_type_fit_center">Ajustar al centro</string>
     <string name="quote_protected_status_warning_message">Este tuit está protegido.\n\nLos usuarios protegidos no suelen querer compartir públicamente sus tuits.</string>
     <string name="send_anyway">Enviar en todo caso</string>
-    <string name="my_following_only">Sólo mis seguidores</string>
-    <string name="my_following_only_summary">Solo mostrar notificaciones de los que sigo.</string>
+    <string name="following_only">Sólo mis seguidores</string>
+    <string name="following_only_summary">Solo mostrar notificaciones de los que sigo.</string>
 </resources>

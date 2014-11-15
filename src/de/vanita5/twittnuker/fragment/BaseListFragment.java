@@ -29,20 +29,13 @@ import android.content.ContentResolver;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.Utils;
@@ -93,20 +86,6 @@ public class BaseListFragment extends ListFragment implements Constants, OnScrol
 		final Activity activity = getActivity();
 		if (activity == null) return;
 		activity.invalidateOptionsMenu();
-    }
-
-    @Override
-    public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        final Activity activity = getActivity();
-        if (activity instanceof IThemedActivity) {
-            onCreateOptionsMenu(menu, ((IThemedActivity) activity).getTwidereMenuInflater());
-        } else {
-            super.onCreateOptionsMenu(menu, inflater);
-        }
-    }
-
-    public void onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater) {
-
 	}
 
 	public boolean isActivityFirstCreated() {
@@ -138,11 +117,6 @@ public class BaseListFragment extends ListFragment implements Constants, OnScrol
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mActivityFirstCreated = true;
-	}
-
-	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
 	@Override

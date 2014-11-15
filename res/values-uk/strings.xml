@@ -53,8 +53,7 @@
   <string name="unfavorite">Видалити з обраного</string>
   <string name="reply">Відповісти</string>
   <string name="share">Поділитися</string>
-  <string name="share_via_twittnuker">Поділитися через Twittnuker</string>
-  <string name="view_image">Зображення</string>
+    <string name="view_image">Зображення</string>
   <string name="view_map">Карта</string>
   <string name="view_status">Перегляд твіту</string>
   <string name="view_user_profile">Профіль користувача</string>
@@ -100,7 +99,6 @@
   <string name="sources">Джерела</string>
   <string name="content">Зміст</string>
   <string name="customize">Налаштувати</string>
-  <string name="set_nickname">Задати прізвисько</string>
   <string name="set_color">Задати колір</string>
   <string name="clear">Очистити</string>
   <string name="pick_color">Вибрати колір</string>
@@ -444,10 +442,7 @@
   <string name="enable_for_rts">Увімкнути для RTs</string>
   <string name="safety">Безпечність</string>
   <string name="updating_status_notification">Надсилання твіту&#8230;</string>
-  <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
   <string name="query">Запит</string>
-  <string name="nickname_only">Лише прізвисько</string>
-  <string name="nickname_only_summary">Замінити ім\'я користувача прізвиськом за можливості</string>
   <string name="input_text">Ввід тексту</string>
   <string name="users_lists_with_name">Списки <xliff:g id="name">%s</xliff:g></string>
   <string name="lists_following_user_with_name">Списки підписників <xliff:g id="name">%s</xliff:g></string>
@@ -513,7 +508,7 @@
   <string name="general">Загальні</string>
   <string name="hints">Підказки</string>
   <string name="finish">Завершити</string>
-  <string name="theme_background">Тло теми</string>
+  <string name="background">Тло теми</string>
   <string name="theme_background_default">Типово</string>
   <string name="theme_background_solid">Суцільно біле/чорне</string>
   <string name="theme_background_transparent">Прозоре</string>
@@ -566,7 +561,6 @@
   <string name="export_settings">Експорт налаштувань</string>
   <string name="export_settings_type_dialog_title">Експорт налаштувань&#8230;</string>
   <string name="import_settings_type_dialog_title">Імпорт налаштувань&#8230;</string>
-  <string name="nicknames">Псевдо</string>
   <string name="user_colors">Кольори користувача</string>
   <string name="import_export">Імпорт/експорт</string>
   <string name="theme_background_alpha">Альфа-версію тла теми</string>

@@ -78,7 +78,8 @@
 			android:summary="@string/load_item_limit_summary"
 			android:title="@string/load_item_limit"
 			app:max="200"
-			app:min="10"/>
+            app:min="10"
+            app:step="5"/>
 
         <de.vanita5.twittnuker.preference.TimelineSyncPreference
             android:enabled="false"
@@ -92,12 +93,16 @@
 			android:key="remember_position"
 			android:summary="@string/remember_position_summary"
 			android:title="@string/remember_position"/>
-
         <CheckBoxPreference
             android:defaultValue="false"
         	android:key="load_more_from_top"
         	android:summary="@string/load_more_from_top_summary"
             android:title="@string/load_more_from_top"/>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="sort_timeline_by_id"
+            android:title="@string/sort_timeline_by_id"
+            android:summary="@string/sort_timeline_by_id_summary"/>
 
 		<de.vanita5.twittnuker.preference.TrendsLocationPreference
 			android:key="trends_location"
@@ -117,7 +122,7 @@
 			android:summary="@string/phishing_link_warning_summary"
 			android:title="@string/phishing_link_warning"/>
 		<CheckBoxPreference
-			android:defaultValue="false"
+			android:defaultValue="true"
 			android:key="display_sensitive_contents"
 			android:summary="@string/display_sensitive_contents_summary"
 			android:title="@string/display_sensitive_contents"/>

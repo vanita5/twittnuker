@@ -29,7 +29,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import de.vanita5.twittnuker.content.iface.ITwidereContextWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 
@@ -50,12 +49,7 @@ public class ActionBarSplitThemedContainer extends FrameLayout {
 		a.recycle();
 		if (resId == 0) throw new IllegalArgumentException("You must specify a layout resource in layout XML file.");
 		final View view = LayoutInflater.from(getThemedContext(context)).inflate(resId, this, false);
-		final int themeResId;
-		if (context instanceof ITwidereContextWrapper) {
-			themeResId = ((ITwidereContextWrapper) context).getThemeResourceId();
-		} else {
-			themeResId = ThemeUtils.getThemeResource(context);
-		}
+        final int themeResId = ThemeUtils.getThemeResource(context);
 		ViewAccessor.setBackground(view, ThemeUtils.getActionBarSplitBackground(context, themeResId));
 		addView(view);
 	}

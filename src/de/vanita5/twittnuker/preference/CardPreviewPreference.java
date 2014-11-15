@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.preference;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
 import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
-import static de.vanita5.twittnuker.util.Utils.getSampleDisplayName;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -94,11 +93,9 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
 		final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, true);
 		final boolean display_image_preview = mPreferences.getBoolean(KEY_DISPLAY_IMAGE_PREVIEW, false);
 		final boolean display_profile_image = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-		final boolean nickname_only = mPreferences.getBoolean(KEY_NICKNAME_ONLY, false);
 		mHolder = new StatusViewHolder(view);
 		mLinkify.setHighlightOption(highlightOption);
 		mHolder.setDisplayNameFirst(nameFirst);
-		mHolder.setNicknameOnly(nickname_only);
 		mHolder.setShowAsGap(false);
 		mHolder.setIsMyStatus(false);
 		mHolder.setTextSize(mPreferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(context)));
@@ -117,8 +114,7 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
 		}
 		mHolder.profile_image.setImageResource(R.drawable.ic_launcher);
 		mHolder.image_preview.setImageResource(R.drawable.twittnuker_feature_graphic);
-		mHolder.name.setText(nickname_only ? TWIDERE_PREVIEW_NICKNAME : context.getString(R.string.name_with_nickname,
-				TWIDERE_PREVIEW_NAME, TWIDERE_PREVIEW_NICKNAME));
+		mHolder.name.setText(TWIDERE_PREVIEW_NAME);
 		mHolder.screen_name.setText("@" + TWIDERE_PREVIEW_SCREEN_NAME);
 		if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
 			mHolder.text.setText(Html.fromHtml(TWIDERE_PREVIEW_TEXT_HTML));
@@ -128,8 +124,7 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
 		} else {
 			mHolder.text.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
 		}
-		final String display_name = getSampleDisplayName(context, nameFirst, nickname_only);
-		mHolder.reply_retweet_status.setText(context.getString(R.string.retweeted_by, display_name));
+		mHolder.reply_retweet_status.setText(context.getString(R.string.retweeted_by, nameFirst ? TWIDERE_PREVIEW_NAME : "@" + TWIDERE_PREVIEW_SCREEN_NAME));
 		mHolder.reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_retweet, 0, 0, 0);
 		mHolder.time.setTime(System.currentTimeMillis() - 360000);
 		mHolder.time.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_indicator_media, 0);

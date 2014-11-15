@@ -62,7 +62,7 @@ public abstract class BaseAccountPreferenceFragment extends PreferenceFragment i
 		final Activity activity = getActivity();
 		final Intent intent = activity.getIntent();
 		if (account != null && intent.hasExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT)) {
-            final String name = getDisplayName(getActivity(), account.account_id, account.name, account.screen_name);
+            final String name = getDisplayName(account.name, account.screen_name);
 			activity.setTitle(name);
 		}
 		updatePreferenceScreen();

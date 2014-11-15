@@ -57,7 +57,7 @@ public class AlphaPatternDrawable extends Drawable {
                 mRect.bottom = Math.min(mRect.top + mAlphaPatternSize, mBounds.bottom);
                 mRect.right = Math.min(mRect.left + mAlphaPatternSize, mBounds.right);
 
-				mPaint.setColor(horizontalStartWhite ? Color.WHITE : Color.GRAY);
+                mPaint.setColor(horizontalStartWhite ? Color.WHITE : Color.LTGRAY);
 				canvas.drawRect(mRect, mPaint);
 
 				horizontalStartWhite = !horizontalStartWhite;

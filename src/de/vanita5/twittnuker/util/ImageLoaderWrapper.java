@@ -30,6 +30,7 @@ import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import de.vanita5.twittnuker.Constants;
@@ -43,26 +44,24 @@ public class ImageLoaderWrapper implements Constants {
 
 	public ImageLoaderWrapper(final ImageLoader loader) {
 		mImageLoader = loader;
-		final DisplayImageOptions.Builder profileOptsNuilder = new DisplayImageOptions.Builder();
-		profileOptsNuilder.cacheInMemory(true);
-		profileOptsNuilder.cacheOnDisk(true);
-		profileOptsNuilder.showImageForEmptyUri(R.drawable.ic_profile_image_default);
-		profileOptsNuilder.showImageOnFail(R.drawable.ic_profile_image_default);
-		profileOptsNuilder.showImageOnLoading(R.drawable.ic_profile_image_default);
-		profileOptsNuilder.bitmapConfig(Bitmap.Config.ARGB_8888);
-		profileOptsNuilder.resetViewBeforeLoading(true);
+        final DisplayImageOptions.Builder profileOptsBuilder = new DisplayImageOptions.Builder();
+        profileOptsBuilder.cacheInMemory(true);
+        profileOptsBuilder.cacheOnDisk(true);
+        profileOptsBuilder.showImageForEmptyUri(R.drawable.ic_profile_image_default);
+        profileOptsBuilder.showImageOnFail(R.drawable.ic_profile_image_default);
+        profileOptsBuilder.showImageOnLoading(R.drawable.ic_profile_image_default);
+        profileOptsBuilder.bitmapConfig(Bitmap.Config.ARGB_8888);
 		final DisplayImageOptions.Builder imageOptsBuilder = new DisplayImageOptions.Builder();
 		imageOptsBuilder.cacheInMemory(true);
 		imageOptsBuilder.cacheOnDisk(true);
 		imageOptsBuilder.bitmapConfig(Bitmap.Config.RGB_565);
-		imageOptsBuilder.resetViewBeforeLoading(true);
 		final DisplayImageOptions.Builder bannerOptsBuilder = new DisplayImageOptions.Builder();
 		bannerOptsBuilder.cacheInMemory(true);
 		bannerOptsBuilder.cacheOnDisk(true);
 		bannerOptsBuilder.bitmapConfig(Bitmap.Config.RGB_565);
-		bannerOptsBuilder.resetViewBeforeLoading(true);
+        bannerOptsBuilder.displayer(new FadeInBitmapDisplayer(200, true, true, false));
 
-		mProfileImageDisplayOptions = profileOptsNuilder.build();
+        mProfileImageDisplayOptions = profileOptsBuilder.build();
 		mImageDisplayOptions = imageOptsBuilder.build();
 		mBannerDisplayOptions = bannerOptsBuilder.build();
 	}

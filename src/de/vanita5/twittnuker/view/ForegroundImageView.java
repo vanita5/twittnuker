@@ -22,9 +22,11 @@
 
 package de.vanita5.twittnuker.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -52,7 +54,14 @@ public class ForegroundImageView extends ImageView implements IForegroundView {
         return mForegroundViewHelper.getForeground();
 	}
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	@Override
+    public void drawableHotspotChanged(float x, float y) {
+        super.drawableHotspotChanged(x, y);
+        mForegroundViewHelper.dispatchDrawableHotspotChanged(x, y);
+    }
+
+    @Override
 	public void jumpDrawablesToCurrentState() {
 		super.jumpDrawablesToCurrentState();
         mForegroundViewHelper.jumpDrawablesToCurrentState();
@@ -65,7 +74,6 @@ public class ForegroundImageView extends ImageView implements IForegroundView {
 	 * the padding area.
 	 * 
 	 * @param drawable The Drawable to be drawn on top of the children.
-	 * 
 	 * @attr ref android.R.styleable#FrameLayout_foreground
 	 */
     @Override
@@ -77,7 +85,6 @@ public class ForegroundImageView extends ImageView implements IForegroundView {
 	 * Describes how the foreground is positioned. Defaults to START and TOP.
 	 * 
 	 * @param foregroundGravity See {@link android.view.Gravity}
-	 * 
 	 * @attr ref android.R.styleable#FrameLayout_foregroundGravity
 	 */
     @Override

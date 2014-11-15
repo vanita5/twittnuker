@@ -18,8 +18,6 @@ package org.mariotaku.dynamicgridview;
 
 import android.content.Context;
 
-import org.mariotaku.dynamicgridview.DraggableAdapter;
-
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 
 import java.util.Collection;
@@ -72,22 +70,20 @@ public class DraggableArrayAdapter<T> extends ArrayAdapter<T> implements Draggab
 		return true;
 	}
 
-	@Override
-	public boolean remove(final int position) {
-		final boolean result = super.remove(position);
+    public void removeAt(final int position) {
+        super.removeAt(position);
 		rebuildIdMap();
-		return result;
 	}
 
 	@Override
-	public void removeAll(final List<T> collection) {
+    public void removeAll(final Collection<? extends T> collection) {
 		super.removeAll(collection);
 		rebuildIdMap();
 	}
 
 	@Override
 	public void reorderElements(final int position, final int newPosition) {
-		final List<T> objects = mData;
+        final List<T> objects = getObjects();
 
 		T previous = objects.get(position);
 		final int iterator = newPosition < position ? 1 : -1;
@@ -108,7 +104,7 @@ public class DraggableArrayAdapter<T> extends ArrayAdapter<T> implements Draggab
 
 	@Override
 	public void swapElements(final int position, final int newPosition) {
-		final List<T> objects = mData;
+        final List<T> objects = getObjects();
 		final T temp = objects.get(position);
 		objects.set(position, objects.get(newPosition));
 		objects.set(newPosition, temp);
@@ -117,8 +113,9 @@ public class DraggableArrayAdapter<T> extends ArrayAdapter<T> implements Draggab
 
 	private void rebuildIdMap() {
 		mIdMap.clear();
-		for (int i = 0, j = mData.size(); i < j; ++i) {
-			mIdMap.put(mData.get(i), i);
+        final List<T> objects = getObjects();
+        for (int i = 0, j = objects.size(); i < j; ++i) {
+            mIdMap.put(objects.get(i), i);
 		}
 	}
 }

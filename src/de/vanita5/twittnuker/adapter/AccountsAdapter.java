@@ -28,25 +28,30 @@ import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
+
+import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.Account.Indices;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.view.holder.AccountViewHolder;
 
-public class AccountsAdapter extends SimpleCursorAdapter implements Constants {
+public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Constants, IBaseAdapter {
 
 	private final ImageLoaderWrapper mImageLoader;
 	private final SharedPreferences mPreferences;
 
-	private int mUserColorIdx, mProfileImageIdx, mScreenNameIdx, mAccountIdIdx;
 	private long mDefaultAccountId;
 
 	private boolean mDisplayProfileImage;
 	private int mChoiceMode;
+    private boolean mSortEnabled;
+    private Indices mIndices;
 
 	public AccountsAdapter(final Context context) {
 		super(context, R.layout.list_item_account, null, new String[] { Accounts.NAME },
@@ -56,53 +61,85 @@ public class AccountsAdapter extends SimpleCursorAdapter implements Constants {
 		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 	}
 
+    public Account getAccount(int position) {
+        final Cursor c = getCursor();
+        if (c == null || c.isClosed() || !c.moveToPosition(position)) return null;
+        return new Account(c, mIndices);
+    }
+
 	@Override
 	public void bindView(final View view, final Context context, final Cursor cursor) {
-		final int color = cursor.getInt(mUserColorIdx);
+        final int color = cursor.getInt(mIndices.color);
 		final AccountViewHolder holder = (AccountViewHolder) view.getTag();
-		holder.screen_name.setText("@" + cursor.getString(mScreenNameIdx));
+        holder.screen_name.setText("@" + cursor.getString(mIndices.screen_name));
 		holder.setAccountColor(color);
-		holder.setIsDefault(mDefaultAccountId != -1 && mDefaultAccountId == cursor.getLong(mAccountIdIdx));
+        holder.setIsDefault(mDefaultAccountId != -1 && mDefaultAccountId == cursor.getLong(mIndices.account_id));
 		if (mDisplayProfileImage) {
-			mImageLoader.displayProfileImage(holder.profile_image, cursor.getString(mProfileImageIdx));
+            mImageLoader.displayProfileImage(holder.profile_image, cursor.getString(mIndices.profile_image_url));
 		} else {
 			mImageLoader.cancelDisplayTask(holder.profile_image);
-
 			holder.profile_image.setImageResource(R.drawable.ic_profile_image_default);
 		}
 		final boolean isMultipleChoice = mChoiceMode == ListView.CHOICE_MODE_MULTIPLE
 				|| mChoiceMode == ListView.CHOICE_MODE_MULTIPLE_MODAL;
 		holder.checkbox.setVisibility(isMultipleChoice ? View.VISIBLE : View.GONE);
+        holder.setSortEnabled(mSortEnabled);
 		super.bindView(view, context, cursor);
 	}
 
 	@Override
-	public long getItemId(final int position) {
-		final Cursor c = getCursor();
-		if (c == null || c.isClosed()) return -1;
-		c.moveToPosition(position);
-		return c.getLong(mAccountIdIdx);
-	}
-
-	@Override
-	public boolean hasStableIds() {
-		return true;
-	}
-
-	@Override
 	public View newView(final Context context, final Cursor cursor, final ViewGroup parent) {
-
 		final View view = super.newView(context, cursor, parent);
-		final AccountViewHolder viewholder = new AccountViewHolder(view);
-		view.setTag(viewholder);
+        final AccountViewHolder holder = new AccountViewHolder(view);
+        view.setTag(holder);
 		return view;
 	}
 
 	@Override
+    public ImageLoaderWrapper getImageLoader() {
+        return mImageLoader;
+    }
+
+    @Override
+    public int getLinkHighlightColor() {
+        return 0;
+    }
+
+    @Override
+    public int getLinkHighlightOption() {
+        return 0;
+    }
+
+    @Override
+    public float getTextSize() {
+        return 0;
+    }
+
+    @Override
+    public boolean isDisplayNameFirst() {
+        return false;
+    }
+
+    @Override
+    public boolean isDisplayProfileImage() {
+        return mDisplayProfileImage;
+    }
+
+    @Override
+    public boolean isShowAccountColor() {
+        return false;
+    }
+
+    @Override
 	public void notifyDataSetChanged() {
 		mDefaultAccountId = mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1);
 		super.notifyDataSetChanged();
 	}
+
+    @Override
+    public void setDisplayNameFirst(boolean nameFirst) {
+
+    }
 
 	public void setChoiceMode(final int mode) {
 		if (mChoiceMode == mode) return;
@@ -110,19 +147,43 @@ public class AccountsAdapter extends SimpleCursorAdapter implements Constants {
 		notifyDataSetChanged();
 	}
 
+    @Override
 	public void setDisplayProfileImage(final boolean display) {
 		mDisplayProfileImage = display;
 		notifyDataSetChanged();
+    }
+
+    @Override
+    public void setLinkHighlightColor(int color) {
+
+    }
+
+    @Override
+    public void setLinkHighlightOption(String option) {
+
+    }
+
+    @Override
+    public void setShowAccountColor(boolean show) {
+
+    }
+
+    @Override
+    public void setTextSize(float textSize) {
+
 	}
 
 	@Override
 	public Cursor swapCursor(final Cursor cursor) {
 		if (cursor != null) {
-			mAccountIdIdx = cursor.getColumnIndex(Accounts.ACCOUNT_ID);
-			mUserColorIdx = cursor.getColumnIndex(Accounts.COLOR);
-			mProfileImageIdx = cursor.getColumnIndex(Accounts.PROFILE_IMAGE_URL);
-			mScreenNameIdx = cursor.getColumnIndex(Accounts.SCREEN_NAME);
+            mIndices = new Indices(cursor);
 		}
 		return super.swapCursor(cursor);
+    }
+
+    public void setSortEnabled(boolean sortEnabled) {
+        if (mSortEnabled == sortEnabled) return;
+        mSortEnabled = sortEnabled;
+        notifyDataSetChanged();
 	}
 }

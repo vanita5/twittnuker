@@ -62,7 +62,6 @@ import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredLinksFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredSourcesFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredUsersFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
@@ -105,8 +104,8 @@ public class FiltersActivity extends BaseSupportActivity implements TabListener,
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
-		inflater.inflate(R.menu.menu_filters, menu);
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_filters, menu);
 		return true;
 	}
 

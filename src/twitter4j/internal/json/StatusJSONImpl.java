@@ -16,16 +16,12 @@
 
 package twitter4j.internal.json;
 
-import static twitter4j.internal.util.InternalParseUtil.getBoolean;
-import static twitter4j.internal.util.InternalParseUtil.getDate;
-import static twitter4j.internal.util.InternalParseUtil.getHTMLUnescapedString;
-import static twitter4j.internal.util.InternalParseUtil.getLong;
-import static twitter4j.internal.util.InternalParseUtil.getRawString;
-import static twitter4j.internal.util.InternalParseUtil.getUnescapedString;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.Date;
 
 import twitter4j.GeoLocation;
 import twitter4j.HashtagEntity;
@@ -41,8 +37,12 @@ import twitter4j.conf.Configuration;
 import twitter4j.http.HttpResponse;
 import twitter4j.internal.logging.Logger;
 
-import java.util.Arrays;
-import java.util.Date;
+import static twitter4j.internal.util.InternalParseUtil.getBoolean;
+import static twitter4j.internal.util.InternalParseUtil.getDate;
+import static twitter4j.internal.util.InternalParseUtil.getHTMLUnescapedString;
+import static twitter4j.internal.util.InternalParseUtil.getLong;
+import static twitter4j.internal.util.InternalParseUtil.getRawString;
+import static twitter4j.internal.util.InternalParseUtil.getUnescapedString;
 
 /**
  * A data class representing one single status of a user.
@@ -83,6 +83,7 @@ final class StatusJSONImpl extends TwitterResponseImpl implements Status {
 	private URLEntity[] urlEntities;
 	private HashtagEntity[] hashtagEntities;
 	private MediaEntity[] mediaEntities;
+    private MediaEntity[] extendedMediaEntities;
 
 	private User user = null;
 
@@ -431,6 +432,22 @@ final class StatusJSONImpl extends TwitterResponseImpl implements Status {
 				throw new TwitterException(jsone);
 			}
 		}
+        if (!json.isNull("extended_entities")) {
+            try {
+                final JSONObject entities = json.getJSONObject("extended_entities");
+                if (!entities.isNull("media")) {
+                    int len;
+                    final JSONArray mediaArray = entities.getJSONArray("media");
+                    len = mediaArray.length();
+                    extendedMediaEntities = new MediaEntity[len];
+                    for (int i = 0; i < len; i++) {
+                        extendedMediaEntities[i] = new MediaEntityJSONImpl(mediaArray.getJSONObject(i));
+                    }
+                }
+            } catch (final JSONException jsone) {
+                throw new TwitterException(jsone);
+            }
+        }
 		if (!json.isNull("current_user_retweet")) {
 			try {
 				currentUserRetweet = getLong("id", json.getJSONObject("current_user_retweet"));
@@ -461,4 +478,9 @@ final class StatusJSONImpl extends TwitterResponseImpl implements Status {
 			throw te;
 		}
 	}
+
+    @Override
+    public MediaEntity[] getExtendedMediaEntities() {
+        return extendedMediaEntities;
+    }
 }

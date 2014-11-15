@@ -43,7 +43,12 @@ public class BaseActivity extends BaseThemedActivity implements Constants {
 
 	@Override
     public int getThemeColor() {
-        return ThemeUtils.getUserThemeColor(this);
+		return ThemeUtils.getUserAccentColor(this);
+	}
+
+	@Override
+	public int getActionBarColor() {
+		return ThemeUtils.getActionBarColor(this);
 	}
 
     @Override

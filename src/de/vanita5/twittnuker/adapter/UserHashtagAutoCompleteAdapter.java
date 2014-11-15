@@ -22,41 +22,27 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.mariotaku.querybuilder.Columns.Column;
-import org.mariotaku.querybuilder.RawItemArray;
-import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TweetStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TweetStore.CachedValues;
-import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
-import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map.Entry;
 
 public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implements Constants {
 
@@ -69,12 +55,11 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 	private final ContentResolver mResolver;
 	private final SQLiteDatabase mDatabase;
 	private final ImageLoaderWrapper mProfileImageLoader;
-	private final SharedPreferences mPreferences, mUserNicknamePreferences;
-	private final Resources mResources;
+	private final SharedPreferences mPreferences;
 
 	private final EditText mEditText;
 
-	private final boolean mDisplayProfileImage, mNicknameOnly;
+	private final boolean mDisplayProfileImage;
 
 	private int mProfileImageUrlIdx, mNameIdx, mScreenNameIdx, mUserIdIdx;
 	private char mToken = '@';
@@ -87,24 +72,13 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 		super(context, R.layout.list_item_two_line_small, null, FROM, TO, 0);
 		mEditText = view;
 		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mUserNicknamePreferences = context.getSharedPreferences(USER_NICKNAME_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mResolver = context.getContentResolver();
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mProfileImageLoader = app != null ? app.getImageLoaderWrapper() : null;
 		mDatabase = app != null ? app.getSQLiteDatabase() : null;
 		mDisplayProfileImage = mPreferences != null
 				&& mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-		mNicknameOnly = mPreferences != null && mPreferences.getBoolean(KEY_NICKNAME_ONLY, false);
 		mLocale = context.getResources().getConfiguration().locale;
-		final int themeRes, accentColor;
-		if (context instanceof IThemedActivity) {
-			themeRes = ((IThemedActivity) context).getThemeResourceId();
-			accentColor = ((IThemedActivity) context).getThemeColor();
-		} else {
-			themeRes = ThemeUtils.getThemeResource(context);
-			accentColor = ThemeUtils.getUserThemeColor(context);
-		}
-		mResources = ThemeUtils.getThemedResourcesForActionIcons(context, themeRes, accentColor);
 	}
 
 	public UserHashtagAutoCompleteAdapter(final EditText view) {
@@ -122,13 +96,8 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 		icon.setImageDrawable(null);
 
 		if (mScreenNameIdx != -1 && mNameIdx != -1 && mUserIdIdx != -1) {
-			final String nick = getUserNickname(context, cursor.getLong(mUserIdIdx));
 			final String name = cursor.getString(mNameIdx);
-			if (TextUtils.isEmpty(nick)) {
-				text1.setText(name);
-			} else {
-				text1.setText(mNicknameOnly ? nick : context.getString(R.string.name_with_nickname, name, nick));
-			}
+			text1.setText(name);
 			text2.setText("@" + cursor.getString(mScreenNameIdx));
 		} else {
 			text1.setText("#" + cursor.getString(mNameIdx));
@@ -143,7 +112,7 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 				icon.setImageResource(R.drawable.ic_profile_image_default);
 			}
 		} else {
-			icon.setImageDrawable(mResources.getDrawable(R.drawable.ic_action_hashtag));
+            icon.setImageResource(R.drawable.ic_action_hashtag);
 		}
 		super.bindView(view, context, cursor);
 	}
@@ -185,9 +154,6 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 			builder.append(CachedUsers.SCREEN_NAME + " LIKE ?||'%' ESCAPE '^'");
 			builder.append(" OR ");
 			builder.append(CachedUsers.NAME + " LIKE ?||'%' ESCAPE '^'");
-			builder.append(" OR ");
-			builder.append(Where.in(new Column(CachedUsers.USER_ID),
-					new RawItemArray(getMatchedNicknameIds(ParseUtils.parseString(constraint)))).getSQL());
 			final String selection = constraint_escaped != null ? builder.toString() : null;
 			final String[] selectionArgs = constraint_escaped != null ? new String[] { constraint_escaped,
 					constraint_escaped } : null;
@@ -211,22 +177,6 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 			mProfileImageUrlIdx = cursor.getColumnIndex(CachedUsers.PROFILE_IMAGE_URL);
 		}
 		return super.swapCursor(cursor);
-	}
-
-	private long[] getMatchedNicknameIds(final String str) {
-		if (TextUtils.isEmpty(str)) return new long[0];
-		final List<Long> list = new ArrayList<Long>();
-		for (final Entry<String, ?> entry : mUserNicknamePreferences.getAll().entrySet()) {
-			final String value = ParseUtils.parseString(entry.getValue());
-			final long key = ParseUtils.parseLong(entry.getKey(), -1);
-			if (key == -1 || TextUtils.isEmpty(value)) {
-				continue;
-			}
-			if (value.toLowerCase(mLocale).startsWith(str.toLowerCase(mLocale))) {
-				list.add(key);
-			}
-		}
-		return ArrayUtils.fromList(list);
 	}
 
 	private static boolean isAtSymbol(final char character) {

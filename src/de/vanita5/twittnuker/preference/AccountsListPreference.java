@@ -29,10 +29,13 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.preference.Preference;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -97,22 +100,20 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 	protected abstract void setupPreference(AccountItemPreference preference, Account account);
 
 	public static final class AccountItemPreference extends Preference implements ImageLoadingListener,
-			OnCheckedChangeListener, OnSharedPreferenceChangeListener {
+            OnCheckedChangeListener, OnSharedPreferenceChangeListener, OnPreferenceClickListener, OnClickListener {
 
 		private final Account mAccount;
 		private final SharedPreferences mSwitchPreference;
 		private final String mSwitchKey;
 		private final boolean mSwitchDefault;
-		private final float mDensity;
-
-		private View mView;
 
 		public AccountItemPreference(final Context context, final Account account, final String switchKey,
 				final boolean switchDefault) {
 			super(context);
+            setWidgetLayoutResource(R.layout.preference_widget_account_preference_item);
+            setOnPreferenceClickListener(this);
 			final String switchPreferenceName = ACCOUNT_PREFERENCES_NAME_PREFIX + account.account_id;
 			mAccount = account;
-			mDensity = context.getResources().getDisplayMetrics().density;
 			mSwitchPreference = context.getSharedPreferences(switchPreferenceName, Context.MODE_PRIVATE);
 			mSwitchKey = switchKey;
 			mSwitchDefault = switchDefault;
@@ -149,11 +150,11 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 
 		@Override
 		public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-			updateSwitchState();
+            notifyChanged();
 		}
 
 		@Override
-		protected void onAttachedToHierarchy(final PreferenceManager preferenceManager) {
+        protected void onAttachedToHierarchy(@NonNull final PreferenceManager preferenceManager) {
 			super.onAttachedToHierarchy(preferenceManager);
 			setTitle(mAccount.name);
 			setSummary(String.format("@%s", mAccount.screen_name));
@@ -164,9 +165,17 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 		}
 
 		@Override
-		protected void onBindView(final View view) {
+        protected View onCreateView(ViewGroup parent) {
+            final View view = super.onCreateView(parent);
+            view.findViewById(R.id.settings).setOnClickListener(this);
+            final Switch toggle = (Switch) view.findViewById(android.R.id.toggle);
+            toggle.setOnCheckedChangeListener(this);
+            return view;
+        }
+
+        @Override
+        protected void onBindView(@NonNull final View view) {
 			super.onBindView(view);
-			mView = view;
 			final View iconView = view.findViewById(android.R.id.icon);
 			if (iconView instanceof ImageView) {
 				((ImageView) iconView).setScaleType(ScaleType.FIT_CENTER);
@@ -179,36 +188,25 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 			if (summaryView instanceof TextView) {
 				((TextView) summaryView).setSingleLine(true);
 			}
-			updateSwitchState();
-		}
-
-		private void updateSwitchState() {
-			if (mView == null) return;
-			final View widgetFrameView = mView.findViewById(android.R.id.widget_frame);
-			if (!(widgetFrameView instanceof ViewGroup)) return;
-			final ViewGroup widgetFrame = (ViewGroup) widgetFrameView;
-			widgetFrame.setVisibility(mSwitchKey != null ? View.VISIBLE : View.GONE);
-			widgetFrame.setPadding(widgetFrame.getPaddingLeft(), widgetFrame.getPaddingTop(), (int) (mDensity * 8),
-					widgetFrame.getPaddingBottom());
-			widgetFrame.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-			// remove preview image that is already created
-			widgetFrame.setAlpha(isEnabled() ? 1 : 0.25f);
-			final View foundView = widgetFrame.findViewById(android.R.id.toggle);
-			final Switch toggle;
-			if (foundView instanceof Switch) {
-				toggle = (Switch) foundView;
-			} else {
-				widgetFrame.removeAllViews();
-				toggle = new Switch(getContext());
-				toggle.setId(android.R.id.toggle);
-				toggle.setOnCheckedChangeListener(this);
-				widgetFrame.addView(toggle);
-			}
+            final Switch toggle = (Switch) view.findViewById(android.R.id.toggle);
 			if (mSwitchKey != null) {
 				toggle.setChecked(mSwitchPreference.getBoolean(mSwitchKey, mSwitchDefault));
 			}
 		}
 
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+
+            return true;
+        }
+
+        @Override
+        public void onClick(View v) {
+            final Context context = getContext();
+            if (!(context instanceof PreferenceActivity)) return;
+            final PreferenceActivity activity = (PreferenceActivity) context;
+            activity.startPreferencePanel(getFragment(), getExtras(), getTitleRes(), getTitle(), null, 0);
+        }
 	}
 
 	private static class LoadAccountsTask extends AsyncTask<Void, Void, List<Account>> {

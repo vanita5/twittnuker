@@ -138,8 +138,9 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 	@Override
 	public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position, final long id) {
 		final ParcelableUsersAdapter adapter = getListAdapter();
-		final ParcelableUser user = adapter.findItem(id);
-		if (user == null) return false;
+        final int userPosition = adapter.findItemPosition(id);
+        if (userPosition < 0) return false;
+        final ParcelableUser user = adapter.getItem(userPosition);
 		setItemSelected(user, position, !mMultiSelectManager.isSelected(user));
 		return true;
 	}
@@ -160,8 +161,10 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 
 	@Override
 	public void onListItemClick(final ListView l, final View v, final int position, final long id) {
-		final ParcelableUser user = mAdapter.findItem(id);
-		if (user == null) return;
+        final ParcelableUsersAdapter adapter = getListAdapter();
+        final int userPosition = adapter.findItemPosition(id);
+        if (userPosition < 0) return;
+        final ParcelableUser user = adapter.getItem(userPosition);
 		if (mMultiSelectManager.isActive()) {
 			setItemSelected(user, position, !mMultiSelectManager.isSelected(user));
 			return;
@@ -270,10 +273,10 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 
 	protected abstract Loader<List<ParcelableUser>> newLoaderInstance(Context context, Bundle args);
 
-	protected final void removeUsers(final long... user_ids) {
-		if (user_ids == null || user_ids.length == 0) return;
-		for (final long user_id : user_ids) {
-			mData.remove(mAdapter.findItem(user_id));
+    protected final void removeUsers(final long... userIds) {
+        if (userIds == null || userIds.length == 0) return;
+        for (final long userId : userIds) {
+            mData.remove(mAdapter.findItemPosition(userId));
 		}
 		mAdapter.setData(mData, true);
 	}

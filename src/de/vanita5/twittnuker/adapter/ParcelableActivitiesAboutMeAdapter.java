@@ -22,14 +22,12 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
 
 import android.content.Context;
 import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
 
 import de.vanita5.twittnuker.R;
@@ -250,10 +248,7 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 
 			holder.setUserType(status.user_is_verified, status.user_is_protected);
 			holder.setDisplayNameFirst(isDisplayNameFirst());
-			holder.setNicknameOnly(isNicknameOnly());
-			final String nick = getUserNickname(context, status.user_id);
-			holder.name.setText(TextUtils.isEmpty(nick) ? status.user_name : isNicknameOnly() ? nick : context
-					.getString(R.string.name_with_nickname, status.user_name, nick));
+			holder.name.setText(status.user_name);
 			holder.screen_name.setText("@" + status.user_screen_name);
 			if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
 				linkify.applyUserProfileLinkNoHighlight(holder.name, status.account_id, status.user_id,
@@ -266,7 +261,7 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 			holder.time.setTime(status.timestamp);
 			holder.setStatusType(!mFavoritesHighlightDisabled && status.is_favorite,
                     ParcelableLocation.isValidLocation(status.location), hasMedia, status.is_possibly_sensitive,
-					status.my_retweet_id > 0);
+					status.my_retweet_id > 0, status.in_reply_to_status_id > 0);
 			holder.setIsReplyRetweet(status.in_reply_to_status_id > 0, status.is_retweet);
 			if (status.is_retweet) {
 				holder.setRetweetedBy(status.retweet_count, status.retweeted_by_id, status.retweeted_by_name,

@@ -35,11 +35,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -52,19 +49,19 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ListScrollDistanceCalculator;
 import de.vanita5.twittnuker.util.ListScrollDistanceCalculator.ScrollDistanceListener;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.view.ExtendedFrameLayout;
+import de.vanita5.twittnuker.view.iface.IExtendedView.TouchInterceptor;
 
 import static android.support.v4.app.ListFragmentTrojan.INTERNAL_EMPTY_ID;
 import static android.support.v4.app.ListFragmentTrojan.INTERNAL_LIST_CONTAINER_ID;
@@ -81,24 +78,8 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 
 	private boolean mReachedTop, mNotReachedTopBefore;
 
-	private LayoutInflater mLayoutInflater;
-
 	private boolean mStoppedPreviously;
 
-
-    @Override
-    public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        final FragmentActivity activity = getActivity();
-        if (activity instanceof IThemedActivity) {
-            onCreateOptionsMenu(menu, ((IThemedActivity) activity).getTwidereMenuInflater());
-        } else {
-            super.onCreateOptionsMenu(menu, inflater);
-        }
-    }
-
-    public void onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater) {
-
-    }
 
 	public final TwittnukerApplication getApplication() {
 		return TwittnukerApplication.getInstance(getActivity());
@@ -118,12 +99,6 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 			extras.putAll(args.getBundle(EXTRA_EXTRAS));
 		}
 		return extras;
-	}
-
-	@Override
-	public LayoutInflater getLayoutInflater(final Bundle savedInstanceState) {
-		if (mLayoutInflater != null) return mLayoutInflater;
-		return mLayoutInflater = ThemeUtils.getThemedLayoutInflaterForActionIcons(getActivity());
 	}
 
 	public final MultiSelectManager getMultiSelectManager() {
@@ -198,15 +173,26 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 	}
 
 
-    private final OnTouchListener mInternalOnTouchListener = new OnTouchListener() {
+    private final TouchInterceptor mInternalOnTouchListener = new TouchInterceptor() {
+
         @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            switch (event.getAction()) {
+        public boolean dispatchTouchEvent(View view, MotionEvent event) {
+            return false;
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(View view, MotionEvent event) {
+            switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN: {
                     onListTouched();
                     break;
                 }
             }
+            return false;
+        }
+
+        @Override
+        public boolean onTouchEvent(View view, MotionEvent event) {
             return false;
         }
     };
@@ -218,8 +204,6 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final ListView listView = getListView();
-        listView.setOnTouchListener(mInternalOnTouchListener);
         requestFitSystemWindows();
     }
 
@@ -261,8 +245,9 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 
 		// ------------------------------------------------------------------
 
-		final FrameLayout lframe = new FrameLayout(context);
+        final ExtendedFrameLayout lframe = new ExtendedFrameLayout(context);
 		lframe.setId(INTERNAL_LIST_CONTAINER_ID);
+        lframe.setTouchInterceptor(mInternalOnTouchListener);
 
 		final TextView tv = new TextView(getActivity());
 		tv.setTextAppearance(context, ThemeUtils.getTextAppearanceLarge(context));

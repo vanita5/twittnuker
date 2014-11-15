@@ -74,9 +74,10 @@ public final class TwidereLinkify implements Constants {
 	public static final int LINK_TYPE_USER_ID = 8;
 	public static final int LINK_TYPE_STATUS = 9;
 	public static final int LINK_TYPE_HOTOTIN = 10;
+	public static final int LINK_TYPE_TWITLONGER = 11;
 
 	public static final int[] ALL_LINK_TYPES = new int[] { LINK_TYPE_LINK, LINK_TYPE_MENTION, LINK_TYPE_HASHTAG,
-			LINK_TYPE_STATUS, LINK_TYPE_CASHTAG, LINK_TYPE_HOTOTIN };
+			LINK_TYPE_STATUS, LINK_TYPE_CASHTAG, LINK_TYPE_HOTOTIN, LINK_TYPE_TWITLONGER };
 
 	public static final String AVAILABLE_URL_SCHEME_PREFIX = "(https?:\\/\\/)?";
 
@@ -105,6 +106,9 @@ public final class TwidereLinkify implements Constants {
 
 	public static final String STRING_PATTERN_HOTOTIN = AVAILABLE_URL_SCHEME_PREFIX + "((hotot\\.in)\\/([\\w\\d]+))";
 	public static final Pattern PATTERN_HOTOTIN = Pattern.compile(STRING_PATTERN_HOTOTIN, Pattern.CASE_INSENSITIVE);
+
+	public static final String STRING_PATTERN_TWITLONGER = AVAILABLE_URL_SCHEME_PREFIX + "(www\\.)?(tl\\.gd|twitlonger\\.com)\\/(show\\/)?([\\w\\d]+)";
+	public static final Pattern PATTERN_TWITLONGER = Pattern.compile(STRING_PATTERN_TWITLONGER, Pattern.CASE_INSENSITIVE);
 
 	public static final int GROUP_ID_TWITTER_LIST_SCREEN_NAME = 4;
 	public static final int GROUP_ID_TWITTER_LIST_LIST_NAME = 5;
@@ -279,6 +283,19 @@ public final class TwidereLinkify implements Constants {
 					if (PATTERN_HOTOTIN.matcher(url).matches()) {
 						string.removeSpan(span);
 						applyLink(url, start, end, string, accountId, LINK_TYPE_HOTOTIN, sensitive, listener,
+								highlightOption, highlightColor);
+					}
+				}
+			}
+			case LINK_TYPE_TWITLONGER: {
+				final URLSpan[] spans = string.getSpans(0, string.length(), URLSpan.class);
+				for (final URLSpan span : spans) {
+					final int start = string.getSpanStart(span);
+					final int end = string.getSpanEnd(span);
+					final String url = span.getURL();
+					if (PATTERN_TWITLONGER.matcher(url).matches()) {
+						string.removeSpan(span);
+						applyLink(url, start, end, string, accountId, LINK_TYPE_TWITLONGER, sensitive, listener,
 								highlightOption, highlightColor);
 					}
 				}

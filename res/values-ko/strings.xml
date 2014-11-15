@@ -53,7 +53,6 @@
     <string name="unfavorite">관심글 해제</string>
     <string name="reply">답변</string>
     <string name="share">공유</string>
-    <string name="share_via_twittnuker">Twittnuker를 통해 공유</string>
     <string name="view_image">이미지</string>
     <string name="view_map">지도</string>
     <string name="view_status">트윗 보기</string>
@@ -100,7 +99,6 @@
     <string name="sources">클라이언트</string>
     <string name="content">콘텐츠</string>
     <string name="customize">사용자 지정</string>
-    <string name="set_nickname">별명 설정</string>
     <string name="set_color">색상 설정</string>
     <string name="clear">설정 취소</string>
     <string name="pick_color">색상 선택</string>
@@ -444,10 +442,7 @@
     <string name="enable_for_rts">리트윗 활성화</string>
     <string name="safety">안전</string>
     <string name="updating_status_notification">트윗 보내는 중...</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
     <string name="query">쿼리</string>
-    <string name="nickname_only">별명만</string>
-    <string name="nickname_only_summary">별명이 있다면 사용자 이름 대신 표시</string>
     <string name="input_text">입력</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>님의 리스트</string>
     <string name="lists_following_user_with_name"><xliff:g id="name">%s</xliff:g>님이 멤버인 리스트</string>
@@ -513,7 +508,7 @@
     <string name="general">일반</string>
     <string name="hints">힌트</string>
     <string name="finish">끝내기</string>
-    <string name="theme_background">테마 배경</string>
+    <string name="background">테마 배경</string>
     <string name="theme_background_default">기본</string>
     <string name="theme_background_solid">하양/검정</string>
     <string name="theme_background_transparent">투명</string>
@@ -568,7 +563,6 @@
     <string name="export_settings">설정 내보내기</string>
     <string name="export_settings_type_dialog_title">설정을 내보내는 중...</string>
     <string name="import_settings_type_dialog_title">설정을 가져오는 중...</string>
-    <string name="nicknames">별명</string>
     <string name="user_colors">사용자 색상</string>
     <string name="import_export">가져오기/내보내기</string>
     <string name="theme_background_alpha">테마 배경 투명값</string>

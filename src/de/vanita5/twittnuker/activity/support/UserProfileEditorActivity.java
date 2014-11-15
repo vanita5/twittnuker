@@ -60,7 +60,6 @@ import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
@@ -269,8 +268,8 @@ public class UserProfileEditorActivity extends BaseSupportActivity implements On
 	}
 
 	@Override
-    public boolean onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
-        inflater.inflate(R.menu.menu_edit_user_profile, menu);
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_edit_user_profile, menu);
         return true;
 	}
 

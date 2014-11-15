@@ -95,20 +95,24 @@ public class OAuthPasswordAuthenticator implements Constants {
 	}
 
 	public static String readAuthenticityTokenFromHtml(final Reader in) throws IOException, XmlPullParserException {
-		final XmlPullParserFactory f = XmlPullParserFactory.newInstance();
-		final XmlPullParser parser = f.newPullParser();
-		parser.setFeature(Xml.FEATURE_RELAXED, true);
-		parser.setInput(in);
-		while (parser.next() != XmlPullParser.END_DOCUMENT) {
-			final String tag = parser.getName();
-			switch (parser.getEventType()) {
-				case XmlPullParser.START_TAG: {
-					if ("input".equals(tag) && "authenticity_token".equals(parser.getAttributeValue(null, "name")))
-						return parser.getAttributeValue(null, "value");
+		try {
+			final XmlPullParserFactory f = XmlPullParserFactory.newInstance();
+			final XmlPullParser parser = f.newPullParser();
+			parser.setFeature(Xml.FEATURE_RELAXED, true);
+			parser.setInput(in);
+			while (parser.next() != XmlPullParser.END_DOCUMENT) {
+				final String tag = parser.getName();
+				switch (parser.getEventType()) {
+					case XmlPullParser.START_TAG: {
+						if ("input".equals(tag) && "authenticity_token".equals(parser.getAttributeValue(null, "name")))
+							return parser.getAttributeValue(null, "value");
+					}
 				}
 			}
+			return null;
+		} finally {
+			if (in != null) in.close();
 		}
-		return null;
 	}
 
     public static String readCallbackUrlFromHtml(final Reader in) throws IOException, XmlPullParserException {
@@ -135,34 +139,39 @@ public class OAuthPasswordAuthenticator implements Constants {
     }
 
 	public static String readOAuthPINFromHtml(final Reader in) throws XmlPullParserException, IOException {
-		boolean start_div = false, start_code = false;
-		final XmlPullParserFactory f = XmlPullParserFactory.newInstance();
-		final XmlPullParser parser = f.newPullParser();
-		parser.setFeature(Xml.FEATURE_RELAXED, true);
-		parser.setInput(in);
-		while (parser.next() != XmlPullParser.END_DOCUMENT) {
-			final String tag = parser.getName();
-			final int type = parser.getEventType();
-			if (type == XmlPullParser.START_TAG) {
-				if ("div".equalsIgnoreCase(tag)) {
-					start_div = "oauth_pin".equals(parser.getAttributeValue(null, "id"));
-				} else if ("code".equalsIgnoreCase(tag)) {
-					if (start_div) {
-						start_code = true;
+		try {
+			boolean start_div = false, start_code = false;
+			final XmlPullParserFactory f = XmlPullParserFactory.newInstance();
+			final XmlPullParser parser = f.newPullParser();
+			parser.setFeature(Xml.FEATURE_RELAXED, true);
+			parser.setInput(in);
+			while (parser.next() != XmlPullParser.END_DOCUMENT) {
+				final String tag = parser.getName();
+				final int type = parser.getEventType();
+				if (type == XmlPullParser.START_TAG) {
+					if ("div".equalsIgnoreCase(tag)) {
+						start_div = "oauth_pin".equals(parser.getAttributeValue(null, "id"));
+					} else if ("code".equalsIgnoreCase(tag)) {
+						if (start_div) {
+							start_code = true;
+						}
 					}
+				} else if (type == XmlPullParser.END_TAG) {
+					if ("div".equalsIgnoreCase(tag)) {
+						start_div = false;
+					} else if ("code".equalsIgnoreCase(tag)) {
+						start_code = false;
+					}
+				} else if (type == XmlPullParser.TEXT) {
+					final String text = parser.getText();
+					if (start_code && !TextUtils.isEmpty(text) && TextUtils.isDigitsOnly(text))
+						return text;
 				}
-			} else if (type == XmlPullParser.END_TAG) {
-				if ("div".equalsIgnoreCase(tag)) {
-					start_div = false;
-				} else if ("code".equalsIgnoreCase(tag)) {
-					start_code = false;
-				}
-			} else if (type == XmlPullParser.TEXT) {
-				final String text = parser.getText();
-				if (start_code && !TextUtils.isEmpty(text) && TextUtils.isDigitsOnly(text)) return text;
 			}
+			return null;
+		} finally {
+			if (in != null) in.close();
 		}
-		return null;
 	}
 
 	public static class AuthenticationException extends Exception {

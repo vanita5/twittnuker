@@ -106,8 +106,7 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 		holder.position = position;
 
 		final ParcelableUserList user_list = getItem(position);
-		final String display_name = getDisplayName(mContext, user_list.user_id, user_list.user_name,
-				user_list.user_screen_name, isDisplayNameFirst(), isNicknameOnly(), false);
+		final String display_name = getDisplayName(user_list.user_name, user_list.user_screen_name, isDisplayNameFirst());
 		holder.setTextSize(getTextSize());
 		holder.name.setText(user_list.name);
 		holder.created_by.setText(mContext.getString(R.string.created_by, display_name));
@@ -172,7 +171,7 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 		}
 		if (data == null) return;
 		for (final ParcelableUserList user : data) {
-			if (clear_old || findItem(user.id) == null) {
+            if (clear_old || findItemPosition(user.id) < 0) {
 				add(user);
 			}
 		}

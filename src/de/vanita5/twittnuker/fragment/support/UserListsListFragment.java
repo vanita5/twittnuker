@@ -32,12 +32,12 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.Loader;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
 import de.vanita5.twittnuker.loader.support.UserListsLoader;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class UserListsListFragment extends BaseUserListsListFragment {
 			final String action = intent.getAction();
 			if (BROADCAST_USER_LIST_DELETED.equals(action)) {
 				final ParcelableUserList list = intent.getParcelableExtra(EXTRA_USER_LIST);
-				if (list != null && intent.getBooleanExtra(EXTRA_SUCCEED, false)) {
+				if (list != null) {
 					removeUserList(list.id);
 				}
 			}
@@ -72,7 +72,7 @@ public class UserListsListFragment extends BaseUserListsListFragment {
 	}
 
 	@Override
-    public void onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
 		inflater.inflate(R.menu.menu_user_list_created, menu);
 	}
 
@@ -119,7 +119,7 @@ public class UserListsListFragment extends BaseUserListsListFragment {
 		final ParcelableUserListsAdapter adapter = getListAdapter();
 		final int listsIdx = adapter.findItemPosition(id);
 		if (listsIdx >= 0) {
-			adapter.remove(listsIdx);
+            adapter.removeAt(listsIdx);
 		}
 	}
 

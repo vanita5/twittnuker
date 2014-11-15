@@ -56,7 +56,6 @@
     <string name="unfavorite">お気に入りから削除</string>
     <string name="reply">返信</string>
     <string name="share">共有</string>
-    <string name="share_via_twittnuker">Twittnukerで共有</string>
     <string name="view_image">画像</string>
     <string name="view_map">地図</string>
     <string name="view_status">ツイート</string>
@@ -104,7 +103,6 @@
     <string name="sources">クライアント</string>
     <string name="content">ツイート</string>
     <string name="customize">カスタマイズ</string>
-    <string name="set_nickname">ﾆｯｸﾈｰﾑの設定</string>
     <string name="set_color">色を設定</string>
     <string name="clear">クリア</string>
     <string name="pick_color">色を選択</string>
@@ -453,10 +451,7 @@
     <string name="enable_for_rts">RTで有効にする</string>
     <string name="safety">安全性</string>
     <string name="updating_status_notification">ツイートの送信中...</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
     <string name="query">クエリ</string>
-    <string name="nickname_only">ニックネームのみ表示</string>
-    <string name="nickname_only_summary">ニックネームがある場合ユーザー名の代わりに表示します。</string>
     <string name="input_text">テキストを入力</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>が保存しているリスト</string>
     <string name="lists_following_user_with_name"><xliff:g id="name">%s</xliff:g>が追加されているリスト</string>
@@ -526,7 +521,7 @@
     <string name="general">基本</string>
     <string name="hints">ヒント</string>
     <string name="finish">終了</string>
-    <string name="theme_background">テーマ背景</string>
+    <string name="background">テーマ背景</string>
     <string name="theme_background_default">デフォルト</string>
     <string name="theme_background_solid">白/黒一色</string>
     <string name="theme_background_transparent">背景透過</string>
@@ -579,7 +574,6 @@
     <string name="export_settings">設定のエクスポート</string>
     <string name="export_settings_type_dialog_title">設定をエクスポート中&#8230;</string>
     <string name="import_settings_type_dialog_title">設定のインポート&#8230;</string>
-    <string name="nicknames">ニックネーム</string>
     <string name="user_colors">ユーザー色</string>
     <string name="import_export">インポート/エクスポート</string>
     <string name="theme_background_alpha">テーマ背景の透過度</string>
@@ -605,8 +599,8 @@
     <string name="image_preview_scale_type_fit_center">中央表示</string>
     <string name="quote_protected_status_warning_message">このツイートは非公開にされています。\n\n非公開ユーザーのツイートを公開しないでください。</string>
     <string name="send_anyway">送信する</string>
-    <string name="my_following_only">フォロー中のみ</string>
-    <string name="my_following_only_summary">フォローしているユーザーからの通知だけを表示するようにします。</string>
+    <string name="following_only">フォロー中のみ</string>
+    <string name="following_only_summary">フォローしているユーザーからの通知だけを表示するようにします。</string>
     <string name="new_direct_message">新規メッセージ</string>
     <string name="plain_list_style">プレーンリスト表示</string>
     <string name="want_old_icon_back">以前のアイコンにしますか?</string>

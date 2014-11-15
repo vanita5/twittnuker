@@ -7,7 +7,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion '21.0.2'
+    buildToolsVersion '21.1'
 
     defaultConfig {
         applicationId "de.vanita5.twittnuker"
@@ -53,7 +53,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'com.android.tools.build:gradle:0.14.0'
     }
 }
 
@@ -75,11 +75,18 @@ dependencies {
     compile 'com.android.support:support-v13:21.0.0'
     compile 'com.android.support:cardview-v7:21.0.0'
     compile 'com.android.support:recyclerview-v7:21.0.0'
+<<<<<<< HEAD
+    compile 'com.android.support:palette-v7:21.0.0'
+    compile 'me.grantland:autofittextview:0.2.0'
+    compile 'com.pkmmte.view:circularimageview:1.1'
+    compile 'com.google.android.gms:play-services:6.1.71'
+=======
     //TODO remove GMS, replace Push Notifications with a free alternative
     compile 'com.google.android.gms:play-services:6.1.11'
+>>>>>>> f-droid
     compile 'com.etsy.android.grid:library:1.0.5'
     compile 'com.sothree.slidinguppanel:library:2.0.0'
-    compile 'it.sephiroth.android.library.imagezoom:imagezoom:+'
+    compile 'it.sephiroth.android.library.imagezoom:imagezoom:1.0.5'
     compile 'com.twitter:twitter-text:1.9.9'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5'

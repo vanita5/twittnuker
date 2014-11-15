@@ -41,17 +41,19 @@ import android.content.Loader;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.ListView;
 
@@ -64,16 +66,13 @@ import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
 import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.provider.TweetStore.Tabs;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
 import java.util.ArrayList;
@@ -96,7 +95,9 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 	@Override
 	public void drop(final int from, final int to) {
 		mAdapter.drop(from, to);
-		mListView.moveCheckState(from, to);
+        if (mListView.getChoiceMode() != AbsListView.CHOICE_MODE_NONE) {
+		    mListView.moveCheckState(from, to);
+        }
 		saveTabPositions();
 	}
 
@@ -119,13 +120,8 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 		setHasOptionsMenu(true);
 		mResolver = getContentResolver();
 		final Activity activity = getActivity();
-		final int themeRes;
-		if (activity instanceof IThemedActivity) {
-			themeRes = ((IThemedActivity) activity).getThemeResourceId();
-		} else {
-			themeRes = ThemeUtils.getSettingsThemeResource(activity);
-		}
-		mAdapter = new CustomTabsAdapter(ThemeUtils.getThemedContextForActionIcons(activity, themeRes));
+        final Context context = getView().getContext();
+        mAdapter = new CustomTabsAdapter(context);
 		setListAdapter(mAdapter);
 		setEmptyText(getString(R.string.no_tab));
 		mListView = (DragSortListView) getListView();
@@ -169,7 +165,7 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 
 	@Override
 	public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
-        new TwidereMenuInflater(getActivity()).inflate(R.menu.action_multi_select_items, menu);
+        mode.getMenuInflater().inflate(R.menu.action_multi_select_items, menu);
 		return true;
 	}
 
@@ -179,7 +175,7 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 	}
 
 	@Override
-	public void onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
 		inflater.inflate(R.menu.menu_custom_tabs, menu);
 	}
 
@@ -284,6 +280,7 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 				subItem.setIntent(intent);
 			}
 		}
+        ThemeUtils.applyColorFilterToMenuIcon(getActivity(), menu);
 	}
 
 	@Override
@@ -316,12 +313,14 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 		mode.setTitle(getResources().getQuantityString(R.plurals.Nitems_selected, count, count));
 	}
 
-	public static class CustomTabsAdapter extends SimpleDragSortCursorAdapter implements OnClickListener {
+    public static class CustomTabsAdapter extends SimpleDragSortCursorAdapter {
 
+        private final int mIconColor;
 		private CursorIndices mIndices;
 
 		public CustomTabsAdapter(final Context context) {
 			super(context, R.layout.list_item_custom_tab, null, new String[0], new int[0], 0);
+            mIconColor = ThemeUtils.getThemeForegroundColor(context);
 		}
 
 		@Override
@@ -345,10 +344,11 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 			final Drawable icon = getTabIconDrawable(context, getTabIconObject(iconKey));
             holder.icon.setVisibility(View.VISIBLE);
             if (icon != null) {
-				ViewAccessor.setBackground(holder.icon, icon);
+                holder.icon.setImageDrawable(icon);
 			} else {
-				holder.icon.setBackgroundResource(R.drawable.ic_action_list);
+                holder.icon.setImageResource(R.drawable.ic_action_list);
 			}
+            holder.icon.setColorFilter(mIconColor, Mode.SRC_ATOP);
 		}
 
 		@Override
@@ -368,12 +368,6 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 				view.setTag(holder);
 			}
 			return view;
-		}
-
-		@Override
-		public void onClick(final View view) {
-			// TODO Auto-generated method stub
-
 		}
 
 		static class CursorIndices {

@@ -43,8 +43,7 @@
   <string name="cancel_retweet">रीट्वीट कैंसल करे</string>
   <string name="reply">जवाब</string>
   <string name="share">शेयर</string>
-  <string name="share_via_twittnuker">त्विदेर के माध्यम से शेयर</string>
-  <string name="view_image">छवि</string>
+    <string name="view_image">छवि</string>
   <string name="view_map">नक्शा</string>
   <string name="view_status">ट्वीट देखे</string>
   <string name="view_user_profile">उपयोगकर्ता प्रोफ़ाइल</string>

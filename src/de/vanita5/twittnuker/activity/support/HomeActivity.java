@@ -40,9 +40,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.gcm.GCMHelper;
+import de.vanita5.twittnuker.util.ActivityAccessor;
+import de.vanita5.twittnuker.util.ActivityAccessor.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.HotKeyHandler;
 import de.vanita5.twittnuker.util.Utils;
@@ -59,7 +60,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.database.ContentObserver;
 import android.graphics.Canvas;
-import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -131,7 +132,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 				updateUnreadCount();
 			}
 		}
+
 	};
+
 
 	private final Handler mHandler = new Handler();
 
@@ -253,8 +256,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
 	@Override
-    public boolean onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
-        inflater.inflate(R.menu.menu_home, menu);
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home, menu);
         final MenuItem itemProgress = menu.findItem(MENU_PROGRESS);
         mSmartBarProgress = (ProgressBar) itemProgress.getActionView().findViewById(android.R.id.progress);
 		updateActionsButton();
@@ -454,7 +457,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	public void updateUnreadCount() {
         if (mTabIndicator == null || mUpdateUnreadCountTask != null
 				&& mUpdateUnreadCountTask.getStatus() == AsyncTask.Status.RUNNING) return;
-        mUpdateUnreadCountTask = new UpdateUnreadCountTask(mTabIndicator, mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
+        mUpdateUnreadCountTask = new UpdateUnreadCountTask(mTabIndicator);
 		mUpdateUnreadCountTask.execute();
 	}
 
@@ -536,15 +539,12 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
             mTabIndicator.setDisplayLabel(false);
             mTabIndicator.setDisplayIcon(true);
         }
+        mTabIndicator.setDisplayBadge(mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
         mActionsButton.setOnClickListener(this);
         mActionsButton.setOnLongClickListener(this);
-		initTabs();
-		final boolean tabsNotEmpty = mPagerAdapter.getCount() > 0;
-		mEmptyTab.setVisibility(tabsNotEmpty ? View.GONE : View.VISIBLE);
-		mEmptyTabHint.setVisibility(tabsNotEmpty ? View.GONE : View.VISIBLE);
-		mViewPager.setVisibility(tabsNotEmpty ? View.VISIBLE : View.GONE);
 		setTabPosition(initialTabPosition);
 		setupSlidingMenu();
+        setupBars();
 		initUnreadCount();
 		updateActionsButton();
         updateSmartBar();
@@ -559,24 +559,36 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			}
 		}
 		mPagerPosition = Float.NaN;
-        final int themeColor = getThemeColor(), contrastColor = Utils.getContrastYIQ(themeColor, 192);
-        final int themeResId = getCurrentThemeResourceId();
+        setupHomeTabs();
+    }
+
+    private void setupBars() {
+        final int themeColor = getThemeColor();
+        final int actionBarColor = getActionBarColor();
+		final int themeResId = getCurrentThemeResourceId();
         final boolean isTransparent = ThemeUtils.isTransparentBackground(themeResId);
         final int actionBarAlpha = isTransparent ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xFF;
+        final IHomeActionButton homeActionButton = (IHomeActionButton) mActionsButton;
+        mTabIndicator.setItemContext(ThemeUtils.getActionBarContext(this));
         if (ThemeUtils.isColoredActionBar(themeResId)) {
-            ViewAccessor.setBackground(mTabIndicator, new ColorDrawable(themeColor));
-            mTabIndicator.setStripColor(contrastColor);
-            mTabIndicator.setIconColor(contrastColor);
-        } else {
-            ViewAccessor.setBackground(mTabIndicator, ThemeUtils.getActionBarBackground(this, false));
+            final int contrastColor = Utils.getContrastYIQ(actionBarColor, 192);
+            ViewAccessor.setBackground(mTabIndicator, new ColorDrawable(actionBarColor));
+            homeActionButton.setButtonColor(actionBarColor);
+            homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
             mTabIndicator.setStripColor(themeColor);
-            mTabIndicator.setIconColor(ThemeUtils.isLightActionBar(themeResId) ? Color.BLACK : Color.WHITE);
-	}
+            mTabIndicator.setIconColor(contrastColor);
+            ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
+        } else {
+            final int backgroundColor = ThemeUtils.getThemeBackgroundColor(mTabIndicator.getItemContext());
+            final int foregroundColor = ThemeUtils.getThemeForegroundColor(mTabIndicator.getItemContext());
+            ViewAccessor.setBackground(mTabIndicator, ThemeUtils.getActionBarBackground(this, themeResId));
+            homeActionButton.setButtonColor(backgroundColor);
+            homeActionButton.setIconColor(foregroundColor, Mode.SRC_ATOP);
+            mTabIndicator.setStripColor(themeColor);
+            mTabIndicator.setIconColor(foregroundColor);
+	    }
         mTabIndicator.setAlpha(actionBarAlpha / 255f);
-        if (mActionsButton instanceof IHomeActionButton) {
-            ((IHomeActionButton) mActionsButton).setColor(themeColor);
-            mActionsButton.setAlpha(actionBarAlpha / 255f);
-        }
+        mActionsButton.setAlpha(actionBarAlpha / 255f);
         ViewAccessor.setBackground(mActionBarOverlay, ThemeUtils.getWindowContentOverlay(this));
     }
 
@@ -614,7 +626,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         updateSmartBar();
 		updateSlidingMenuTouchMode();
 
-		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
+		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) {
 			startStreamingService();
 		} else {
 			stopStreamingService();
@@ -644,7 +656,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 				GCMHelper.unregisterGCM(this);
 			}
 		}
-		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, false)) {
+		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) {
 			startStreamingService();
 		} else {
 			stopStreamingService();
@@ -719,12 +731,15 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		return mTwitterWrapper.hasActivatedTask();
 	}
 
-	private void initTabs() {
+    private void setupHomeTabs() {
 		final List<SupportTabSpec> tabs = getHomeTabs(this);
 		mCustomTabs.clear();
 		mCustomTabs.addAll(tabs);
 		mPagerAdapter.clear();
 		mPagerAdapter.addTabs(tabs);
+		mEmptyTab.setVisibility(tabs.isEmpty() ? View.VISIBLE : View.GONE);
+        mEmptyTabHint.setVisibility(tabs.isEmpty() ? View.VISIBLE : View.GONE);
+        mViewPager.setVisibility(tabs.isEmpty() ? View.GONE : View.VISIBLE);
 	}
 
 	private void initUnreadCount() {
@@ -951,12 +966,10 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private static class UpdateUnreadCountTask extends AsyncTask<Void, Void, int[]> {
 		private final Context mContext;
 		private final TabPagerIndicator mIndicator;
-		private final boolean mEnabled;
 
-		UpdateUnreadCountTask(final TabPagerIndicator indicator, final boolean enabled) {
+        UpdateUnreadCountTask(final TabPagerIndicator indicator) {
 			mIndicator = indicator;
 			mContext = indicator.getContext();
-			mEnabled = enabled;
 		}
 
 		@Override

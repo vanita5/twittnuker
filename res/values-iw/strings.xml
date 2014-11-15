@@ -39,7 +39,6 @@
     <string name="unfavorite">בטל סימון כמועדף</string>
     <string name="reply">השב</string>
     <string name="share">שתף</string>
-    <string name="share_via_twittnuker">שתף בעזרת טווידר</string>
     <string name="view_image">תמונה</string>
     <string name="view_map">מפה</string>
     <string name="view_status">צפה בtweet</string>
@@ -63,7 +62,6 @@
     <string name="user">משתמש</string>
     <string name="sources">מקורות</string>
     <string name="content">תוכן</string>
-    <string name="set_nickname">הגדר שם משתמש</string>
     <string name="set_color">הגדר צבע</string>
     <string name="clear">נקה</string>
     <string name="pick_color">בחר צבע</string>

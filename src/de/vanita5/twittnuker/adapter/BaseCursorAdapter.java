@@ -44,9 +44,9 @@ public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapt
 
 	private int mLinkHighlightOption, mLinkHighlightColor;
 
-	private boolean mDisplayProfileImage, mNicknameOnly, mDisplayNameFirst, mShowAccountColor;
+	private boolean mDisplayProfileImage, mDisplayNameFirst, mShowAccountColor;
 
-	private final SharedPreferences mNicknamePrefs, mColorPrefs;
+	private final SharedPreferences mColorPrefs;
 	private final ImageLoaderWrapper mImageLoader;
 
 	public BaseCursorAdapter(final Context context, final int layout, final Cursor c, final String[] from,
@@ -60,9 +60,7 @@ public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapt
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mLinkify = new TwidereLinkify(new OnLinkClickHandler(context, app.getMultiSelectManager()));
 		mImageLoader = app.getImageLoaderWrapper();
-		mNicknamePrefs = context.getSharedPreferences(USER_NICKNAME_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mColorPrefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mNicknamePrefs.registerOnSharedPreferenceChangeListener(this);
 		mColorPrefs.registerOnSharedPreferenceChangeListener(this);
 	}
 	
@@ -98,11 +96,6 @@ public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapt
 	@Override
 	public final boolean isDisplayProfileImage() {
 		return mDisplayProfileImage;
-	}
-
-	@Override
-	public final boolean isNicknameOnly() {
-		return mNicknameOnly;
 	}
 
 	@Override
@@ -147,13 +140,6 @@ public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapt
 	}
 
 	@Override
-	public final void setNicknameOnly(final boolean nickname_only) {
-		if (mNicknameOnly == nickname_only) return;
-		mNicknameOnly = nickname_only;
-		notifyDataSetChanged();
-	}
-
-	@Override
 	public final void setShowAccountColor(final boolean show) {
 		if (show == mShowAccountColor) return;
 		mShowAccountColor = show;
@@ -161,9 +147,9 @@ public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapt
 	}
 
 	@Override
-	public final void setTextSize(final float text_size) {
-		if (text_size == mTextSize) return;
-		mTextSize = text_size;
+	public final void setTextSize(final float textSize) {
+		if (textSize == mTextSize) return;
+		mTextSize = textSize;
 		notifyDataSetChanged();
 	}
 

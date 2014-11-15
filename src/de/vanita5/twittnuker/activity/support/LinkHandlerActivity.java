@@ -126,7 +126,7 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        setContentView(R.layout.layout_link_handler);
+        setContentView(R.layout.activity_content_fragment);
 		setProgressBarIndeterminateVisibility(false);
 		if (data == null || !showFragment(data)) {
 			finish();
@@ -248,6 +248,10 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
 				setTitle(R.string.statuses);
 				break;
 			}
+            case LINK_ID_USER_MEDIA_TIMELINE: {
+                setTitle(R.string.medias);
+                break;
+            }
 			case LINK_ID_STATUS_RETWEETERS: {
 				setTitle(R.string.users_retweeted_this);
 				break;
@@ -264,9 +268,6 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
 				setTitle(android.R.string.search_go);
 //                setSubtitle(uri.getQueryParameter(QUERY_PARAM_QUERY));
 				break;
-			}
-			default: {
-				return false;
 			}
 		}
 		mFinishOnly = Boolean.parseBoolean(uri.getQueryParameter(QUERY_PARAM_FINISH_ONLY));

@@ -58,9 +58,6 @@ public class DataImportExportUtils implements Constants {
 		if (hasFlag(flags, FLAG_PREFERENCES)) {
 			writeSharedPreferencesData(zos, context, SHARED_PREFERENCES_NAME, ENTRY_PREFERENCES);
 		}
-		if (hasFlag(flags, FLAG_NICKNAMES)) {
-			writeRawSharedPreferencesData(zos, context, USER_NICKNAME_PREFERENCES_NAME, ENTRY_NICKNAMES);
-		}
 		if (hasFlag(flags, FLAG_USER_COLORS)) {
 			writeRawSharedPreferencesData(zos, context, USER_COLOR_PREFERENCES_NAME, ENTRY_USER_COLORS);
 		}
@@ -79,9 +76,6 @@ public class DataImportExportUtils implements Constants {
 		int flags = 0;
 		if (zipFile.getEntry(ENTRY_PREFERENCES) != null) {
 		    flags |= FLAG_PREFERENCES;
-		}
-		if (zipFile.getEntry(ENTRY_NICKNAMES) != null) {
-		    flags |= FLAG_NICKNAMES;
 		}
 		if (zipFile.getEntry(ENTRY_USER_COLORS) != null) {
 		    flags |= FLAG_USER_COLORS;
@@ -115,9 +109,6 @@ public class DataImportExportUtils implements Constants {
 		final ZipFile zipFile = new ZipFile(src);
 		if (hasFlag(flags, FLAG_PREFERENCES)) {
 			readSharedPreferencesData(zipFile, context, SHARED_PREFERENCES_NAME, ENTRY_PREFERENCES);
-		}
-		if (hasFlag(flags, FLAG_NICKNAMES)) {
-			readRawSharedPreferencesData(zipFile, context, USER_NICKNAME_PREFERENCES_NAME, ENTRY_NICKNAMES);
 		}
 		if (hasFlag(flags, FLAG_USER_COLORS)) {
 		    readRawSharedPreferencesData(zipFile, context, USER_COLOR_PREFERENCES_NAME, ENTRY_USER_COLORS);

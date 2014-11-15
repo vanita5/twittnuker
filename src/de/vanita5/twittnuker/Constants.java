@@ -31,12 +31,7 @@ package de.vanita5.twittnuker;
 public interface Constants extends TwittnukerConstants {
 
 	public static final String DATABASES_NAME = "twittnuker.sqlite";
-	public static final int DATABASES_VERSION = 68;
-
-	public static final String GOOGLE_MAPS_API_KEY_RELEASE = "0kjPwJOe_zwYjzGc9uYak7vhm_Sf3eob-2L3Xzw";
-	public static final String GOOGLE_MAPS_API_KEY_DEBUG = "0kjPwJOe_zwY9p6kT-kygu4mxwysyOOpfkaXqTA";
-
-	public static final String TWITPIC_API_KEY = "620b9fbe7c4fec0a28175ea6b10caead";
+	public static final int DATABASES_VERSION = 69;
 
 	public static final int MENU_GROUP_STATUS_SHARE = 20;
 
@@ -97,8 +92,6 @@ public interface Constants extends TwittnukerConstants {
 	public static final int MENU_LIST_MEMBERSHIPS = R.id.list_memberships;
 	public static final int MENU_CENTER = R.id.center;
 	public static final int MENU_FILTERS = R.id.filters;
-	public static final int MENU_SET_NICKNAME = R.id.set_nickname;
-	public static final int MENU_CLEAR_NICKNAME = R.id.clear_nickname;
 	public static final int MENU_ADD_TO_FILTER = R.id.add_to_filter;
 	public static final int MENU_FOLLOW = R.id.follow;
 	public static final int MENU_UNFOLLOW = R.id.unfollow;
@@ -112,6 +105,8 @@ public interface Constants extends TwittnukerConstants {
     public static final int MENU_PROGRESS = R.id.progress;
 	public static final int MENU_OPEN_WITH_ACCOUNT = R.id.open_with_account;
     public static final int MENU_ACCOUNTS = R.id.accounts;
+	public static final int MENU_INVERSE_SELECTION = R.id.inverse_selection;
+	public static final int MENU_EDIT_MEDIAS = R.id.edit_medias;
 
 	public static final int LINK_ID_STATUS = 1;
 	public static final int LINK_ID_USER = 2;
@@ -120,6 +115,7 @@ public interface Constants extends TwittnukerConstants {
 	public static final int LINK_ID_USER_FOLLOWERS = 5;
 	public static final int LINK_ID_USER_FRIENDS = 6;
 	public static final int LINK_ID_USER_BLOCKS = 7;
+	public static final int LINK_ID_USER_MEDIA_TIMELINE = 8;
 	public static final int LINK_ID_DIRECT_MESSAGES_CONVERSATION = 9;
 	public static final int LINK_ID_USER_LIST = 10;
 	public static final int LINK_ID_USER_LISTS = 11;
@@ -143,7 +139,6 @@ public interface Constants extends TwittnukerConstants {
 
 	public static final String FRAGMENT_TAG_API_UPGRADE_NOTICE = "api_upgrade_notice";
 
-	public static final String TWIDERE_PREVIEW_NICKNAME = "Twittnuker";
 	public static final String TWIDERE_PREVIEW_NAME = "Twittnuker Project";
 	public static final String TWIDERE_PREVIEW_SCREEN_NAME = "twittnuker";
 	public static final String TWIDERE_PREVIEW_TEXT_HTML = "Twittnuker is an open source twitter client for Android, see <a href='https://github.com/vanita5/twittnuker'>https://github.com/vanita5/twittnuker<a/>";
@@ -162,16 +157,17 @@ public interface Constants extends TwittnukerConstants {
 	public static final int HOLO_PURPLE_DARK = 0xff9933cc;
 	public static final int HOLO_PURPLE_LIGHT = 0xffaa66cc;
 
+	public static final int MATERIAL_DARK = 0xff212121;
+	public static final int MATERIAL_LIGHT = 0xffbdbdbd;
+
 	public static final String ENTRY_PREFERENCES = "preferences.json";
-	public static final String ENTRY_NICKNAMES = "nicknames.json";
 	public static final String ENTRY_USER_COLORS = "user_colors.json";
 	public static final String ENTRY_HOST_MAPPING = "host_mapping.json";
 
 	public static final int FLAG_PREFERENCES = 0x1;
-	public static final int FLAG_NICKNAMES = 0x2;
 	public static final int FLAG_USER_COLORS = 0x4;
 	public static final int FLAG_HOST_MAPPING = 0x8;
 
-	public static final int FLAG_ALL = FLAG_PREFERENCES | FLAG_NICKNAMES | FLAG_USER_COLORS | FLAG_HOST_MAPPING;
+	public static final int FLAG_ALL = FLAG_PREFERENCES |  FLAG_USER_COLORS | FLAG_HOST_MAPPING;
 
 }

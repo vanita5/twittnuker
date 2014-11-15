@@ -41,8 +41,9 @@ public class StatusShortenerPreference extends DialogPreference implements Const
 
     private final ServiceSpec DEFAULT_NO_SERVICE = new ServiceSpec(getContext().getString(R.string.status_shortener_default), null);
     private final ServiceSpec HOTOTIN_SERVICE = new ServiceSpec(getContext().getString(R.string.tweet_shortener_hototin), SERVICE_SHORTENER_HOTOTIN);
+	private final ServiceSpec TWITLONGER_SERVICE = new ServiceSpec(getContext().getString(R.string.tweet_shortener_twitlonger), SERVICE_SHORTENER_TWITLONGER);
 
-    private final ServiceSpec[] AVAILABLE_SERVICES = { DEFAULT_NO_SERVICE, HOTOTIN_SERVICE };
+    private final ServiceSpec[] AVAILABLE_SERVICES = { DEFAULT_NO_SERVICE, HOTOTIN_SERVICE, TWITLONGER_SERVICE };
 
 	private SharedPreferences mPreferences;
 

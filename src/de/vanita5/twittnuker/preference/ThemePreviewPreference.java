@@ -26,7 +26,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.Preference;
+import android.text.Html;
 import android.util.AttributeSet;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,8 +40,8 @@ import org.mariotaku.menucomponent.widget.MenuBar;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.content.TwidereContextThemeWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.iface.ICardItemView;
 import de.vanita5.twittnuker.view.iface.IExtendedView;
@@ -48,6 +50,7 @@ import de.vanita5.twittnuker.view.iface.IExtendedView.TouchInterceptor;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
 import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
+import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
 
 public class ThemePreviewPreference extends Preference implements Constants, OnSharedPreferenceChangeListener {
 
@@ -68,7 +71,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 	@Override
 	public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
 		if (KEY_THEME.equals(key) || KEY_THEME_BACKGROUND.equals(key)
-				|| KEY_THEME_COLOR.equals(key)) {
+				|| KEY_THEME_COLOR.equals(key) || KEY_ACTION_BAR_COLOR.equals(key)) {
 			notifyChanged();
 		}
 	}
@@ -77,8 +80,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 	protected View onCreateView(final ViewGroup parent) {
 		final Context context = getContext();
 		final int themeResource = ThemeUtils.getThemeResource(context);
-		final int accentColor = ThemeUtils.getUserThemeColor(context);
-		final Context theme = new TwidereContextThemeWrapper(context, themeResource, accentColor);
+        final Context theme = new ContextThemeWrapper(context, themeResource);
 		final LayoutInflater inflater = LayoutInflater.from(theme);
 		final View view = inflater.inflate(R.layout.theme_preview, parent, false);
 		setPreviewView(theme, view.findViewById(R.id.theme_preview_content), themeResource);
@@ -95,6 +97,8 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		final TextView actionBarTitleView = (TextView) view.findViewById(R.id.actionbar_title);
 		final MenuBar actionBarSplitView = (MenuBar) view.findViewById(R.id.actionbar_split);
 		final View statusContentView = view.findViewById(R.id.theme_preview_status_content);
+		final TextView retweetsCountView = (TextView) view.findViewById(R.id.retweets_count);
+		final TextView favoritesCountView = (TextView) view.findViewById(R.id.favorites_count);
 
 		final int defaultTextSize = getDefaultTextSize(context);
 		final int titleTextAppearance = ThemeUtils.getTitleTextAppearance(context);
@@ -103,6 +107,11 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		ViewAccessor.setBackground(windowContentOverlayView, ThemeUtils.getWindowContentOverlay(context));
 		ViewAccessor.setBackground(actionBarView, ThemeUtils.getActionBarBackground(context, themeRes));
 		ViewAccessor.setBackground(actionBarSplitView, ThemeUtils.getActionBarSplitBackground(context, themeRes));
+
+		final int highlightOption = getLinkHighlightOptionInt(context);
+		TwidereLinkify linkify = new TwidereLinkify(null);
+		linkify.setLinkTextColor(ThemeUtils.getUserLinkTextColor(context));
+		linkify.setHighlightOption(highlightOption);
 
 		actionBarTitleView.setTextAppearance(context, titleTextAppearance);
 		actionBarSplitView.setEnabled(false);
@@ -140,10 +149,22 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 			profileImageView.setImageResource(R.drawable.ic_launcher);
 			nameView.setText(TWIDERE_PREVIEW_NAME);
 			screenNameView.setText("@" + TWIDERE_PREVIEW_SCREEN_NAME);
-			textView.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
+
+			if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
+				textView.setText(Html.fromHtml(TWIDERE_PREVIEW_TEXT_HTML));
+				linkify.applyAllLinks(textView, 0, false);
+			} else {
+				textView.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
+			}
 
 			final String time = formatToLongTimeString(context, System.currentTimeMillis());
 			timeSourceView.setText(toPlainText(context.getString(R.string.time_source, time, TWIDERE_PREVIEW_SOURCE)));
+		}
+		if (retweetsCountView != null) {
+			retweetsCountView.setText("2");
+		}
+		if (favoritesCountView != null) {
+			favoritesCountView.setText("4");
 		}
 	}
 
@@ -163,6 +184,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		public boolean onTouchEvent(final View view, final MotionEvent event) {
 			return false;
 		}
+
 	}
 
 }

@@ -6,7 +6,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-    <de.vanita5.twittnuker.view.HalfWidthSpace
+    <Space
         android:id="@+id/profile_banner_space"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

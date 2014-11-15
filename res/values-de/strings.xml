@@ -48,7 +48,7 @@
     <string name="delete">Löschen</string>
     <string name="retweet">Retweet</string>
     <string name="retweets">Retweets</string>
-    <string name="cancel_retweet">Retweet abbrechen</string>
+    <string name="cancel_retweet">Retweet löschen</string>
     <string name="favorite">Favorisieren</string>
     <string name="unfavorite">Favorit löschen</string>
     <string name="reply">Antworten</string>
@@ -100,7 +100,6 @@
     <string name="sources">Quellen</string>
     <string name="content">Inhalt</string>
     <string name="customize">Anpassen</string>
-    <string name="set_nickname">Spitzname</string>
     <string name="set_color">Farbschema</string>
     <string name="clear">Löschen</string>
     <string name="pick_color">Wähle Farbe</string>
@@ -204,6 +203,7 @@
     <string name="accounts">Accounts</string>
     <string name="account">Account</string>
     <string name="mention_this_user">Erwähne diesen Benutzer</string>
+    <string name="mention_user_name">Mention an <xliff:g id="name">%1$s</xliff:g></string>
     <string name="signing_in_please_wait">Anmeldung läuft, bitte warten oder zum Abbrechen ZURÜCK drücken.</string>
     <string name="connectivity">Konnektivität</string>
     <string name="add_member">Mitglied hinzufügen</string>
@@ -232,6 +232,7 @@
     <string name="media_uploader">Mediendienst</string>
     <string name="image_uploader_default">Standard (Twitter)</string>
     <string name="home_refresh">Zu aktualisierende Timelines</string>
+    <string name="home_refresh_summary">Timelines, die bei einem Refresh aktualisiert werden sollen</string>
     <string name="error_message_image_upload_failed">Bild-Upload schlug fehl.</string>
     <string name="image_upload_format">Tweet-Format mit Bild</string>
     <string name="image_upload_format_summary">\"[LINK]\" = Bild link\n\"[TEXT]\" = Text inhalt\n(Nur bei Third Party Services)</string>
@@ -347,7 +348,7 @@
     <string name="display_sensitive_contents_summary">Kritische Inhalte ohne Warnung anzeigen</string>
     <string name="sensitive_content_warning">Dieser Tweet könnte heiklen Inhalt haben. Fortfahren?</string>
     <string name="mark_as_sensitive">#NSFW</string>
-    <string name="remove_sensitive_mark">Nicht als #NSFW markieren</string>
+    <string name="remove_sensitive_mark">#NSFW</string>
     <string name="none">Nichts</string>
     <string name="large">Groß</string>
     <string name="small">Klein</string>
@@ -365,7 +366,8 @@
     <string name="profile_images">Profilbilder</string>
     <string name="preview_images">Vorschaubilder</string>
     <string name="preload_wifi_only">Vorladen nur mit WLAN</string>
-    <string name="disable_tab_swipe">Deaktiviere wischen für Reiter</string>
+    <string name="disable_tab_swipe">Deaktiviere Tab Swipe</string>
+    <string name="disable_tab_swipe_summary">Deaktiviert das wechseln zwischen Tabs durch wischen</string>
     <string name="sign_in_method_introduction_title">Wie funktioniert das?</string>
     <string name="sign_in_method_introduction">Die meisten Anwendungen öffnen einen externen Browser, um dort nach Benutzernamen und Passwort zu fragen. Dies ist manchmal sehr umständlich.\n\nTwittnuker öffnet keinen externen Browser, sondern verwendet einfacherere Methoden, um sich anzumelden. Twittnuker speichert niemals das Passwort, es ist daher völlig sicher!</string>
     <string name="quote_protected_status_notice">Es ist nicht empfohlen einen geschützten Tweet zu zitieren.</string>
@@ -374,6 +376,7 @@
     <string name="my_profile_image">Mein Profilbild</string>
     <string name="mention_user">Erwähnung <xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">Theme Farbe</string>
+    <string name="action_bar_color">Action Bar Farbe</string>
     <string name="wrong_url_format">Falsches URL-Format.</string>
     <string name="wrong_username_password">Falscher Benutzername/Passwort.</string>
     <string name="network_error">Netzwerkfehler</string>
@@ -448,10 +451,7 @@
     <string name="enable_for_rts">Aktiviere für Retweets</string>
     <string name="safety">Sicherheit</string>
     <string name="updating_status_notification">Sende Tweet…</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
     <string name="query">Abfrage</string>
-    <string name="nickname_only">Nur Nickname</string>
-    <string name="nickname_only_summary">Benutzernamen durch Nicknamen ersetzen, falls verfügbar</string>
     <string name="input_text">Text eingeben</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="lists_following_user_with_name">Listen, die <xliff:g id="name">%s</xliff:g> folgen</string>
@@ -460,7 +460,8 @@
     <string name="link_highlight_option">Link hervorheben</string>
     <string name="users_statuses">Tweets des Nutzers</string>
     <string name="card_animation">Scroll Animation</string>
-    <string name="name_first">Name zuerst anzeigen</string>
+    <string name="name_first">Name bevorzugen</string>
+    <string name="name_first_summary">Benutzernamen statt den @Screennamen zeigen</string>
     <string name="next">Weiter</string>
     <string name="settings_wizard">Einstellungen</string>
     <string name="wizard_page_welcome_title">Willkomen</string>
@@ -510,7 +511,7 @@
     <string name="special_thanks_to">Special thanks to</string>
     <string name="contributors_list_summary">Wenn du deinen Namen nicht gefunden hast, wende dich bitte an den Entwickler.</string>
     <string name="account_options">Account Einstellungen</string>
-    <string name="show_in_timeline">In Timeline anzeigen</string>
+    <string name="show_in_timeline">Anzeigen</string>
     <string name="cards">Tweets</string>
     <string name="no_tab">Kein Tab</string>
     <string name="delete_user"><xliff:g id="name">%s</xliff:g> löschen</string>
@@ -520,7 +521,7 @@
     <string name="general">Allgemein</string>
     <string name="hints">Tipps</string>
     <string name="finish">Fertig</string>
-    <string name="theme_background">Theme Hintergrund</string>
+    <string name="background">Hintergrund</string>
     <string name="theme_background_default">Default</string>
     <string name="theme_background_solid">Weiss/Schwarz</string>
     <string name="theme_background_transparent">Transparent</string>
@@ -555,7 +556,8 @@
     <string name="livewp_daydream_enabled_message">Here\'s a little present for you, find it in your system settings :)</string>
     <string name="center">Mitte</string>
     <string name="multi_select">Mehrfachauswahl</string>
-    <string name="long_click_to_open_menu">Lang halten um das Menü zu öffnen</string>
+    <string name="long_click_to_open_menu">Lange halten für Menü</string>
+    <string name="long_click_to_open_menu_summary">Öffnet das Tweet Menü, wenn lange auf einen Tweet gedrückt wird</string>
     <string name="swipe_back">Zum Schließen wischen</string>
     <string name="tab_display_option_icon">Symbol</string>
     <string name="tab_display_option_label">Label</string>
@@ -572,7 +574,6 @@
     <string name="export_settings">Einstellungen exportieren</string>
     <string name="export_settings_type_dialog_title">Einstellungen exportieren&#8230;</string>
     <string name="import_settings_type_dialog_title">Einstellungen importieren&#8230;</string>
-    <string name="nicknames">Nicknames</string>
     <string name="user_colors">Benutzer-Farbschema</string>
     <string name="import_export">Importieren/Exportieren</string>
     <string name="theme_background_alpha">Theme Hintergrund Transparenz</string>
@@ -594,8 +595,8 @@
     <string name="image_preview_scale_type_fit_center">Mittig ausrichten</string>
     <string name="quote_protected_status_warning_message">Der Account des Benutzers ist geschützt und er möchte vielleicht nicht, dass der Tweet öffentlich geteilt wird.</string>
     <string name="send_anyway">Trotzdem senden</string>
-    <string name="my_following_only">Nur Freunde</string>
-    <string name="my_following_only_summary">Zeigt nur Notifications von Benutzern an, denen du folgst</string>
+    <string name="following_only">Nur Freunde</string>
+    <string name="following_only_summary">Zeigt nur Notifications von Benutzern an, denen du folgst</string>
     <string name="new_direct_message">Neue Direktnachricht</string>
 
 
@@ -656,7 +657,26 @@
 
     <string name="shortening">Tweet kürzen</string>
     <string name="error_hototin">...but I failed :(\nDer Tweet wurde zu den Entwürfen hinzugefügt.</string>
+    <string name="error_twitlonger">...I can\'t handle it :(\nDer Tweet wurde zu den Entwürfen hinzugefügt.</string>
     <string name="action_shortening">kürze Tweet</string>
     <string name="uploading_image">Lade hoch...</string>
     <string name="no_tab_hint">Du kannst Tabs in den Einstellungen hinzufügen</string>
+    <string name="add"></string>
+    <string name="compose_now_summary">Neuen Tweet über Compose Now Verknüpfung schreiben</string>
+    <string name="edit_medias">Medien bearbeiten</string>
+    <string name="inverse_selection">Auswahl invertieren</string>
+    <string name="label_streaming_service">Streaming Service</string>
+    <string name="medias">Medien</string>
+    <string name="no_version_suffix">API Version nicht anhängen</string>
+    <string name="pebble_notifications_summary">Notifications an Pebble weiterleiten</string>
+    <string name="project_name">Twittnuker Projekt</string>
+    <string name="same_oauth_signing_url">Selbe URL für das Authentifizieren mit OAuth verwenden </string>
+    <string name="stream_notifications_summary">Push-ähnliche Benachrichtigungen beim streamen </string>
+    <string name="twidere_project_account">Twidere Projekt</string>
+    <string name="twitter_link_handler">Twitter Links mit Twittnuker öffnen</string>
+
+    <string name="mute_user_confirm_message"><xliff:g id="name">%s</xliff:g> muten? Du wirst die Tweets dieses Nutzers nicht mehr sehen, ihm aber trotzdem noch folgen.</string>
+    <string name="remove_from_filter">Aus dem Filter entfernen</string>
+    <string name="sort_timeline_by_id">Timeline nach ID sortieren</string>
+    <string name="sort_timeline_by_id_summary">Kann für andere Dienste (Status.net) nützlich sein</string>
 </resources>

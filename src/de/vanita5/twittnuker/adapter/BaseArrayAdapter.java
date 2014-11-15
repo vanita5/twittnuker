@@ -43,9 +43,9 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
 	private float mTextSize;
 	private int mLinkHighlightOption, mLinkHighlightColor;
 
-	private boolean mDisplayProfileImage, mNicknameOnly, mDisplayNameFirst, mShowAccountColor;
+	private boolean mDisplayProfileImage, mDisplayNameFirst, mShowAccountColor;
 
-	private final SharedPreferences mNicknamePrefs, mColorPrefs;
+	private final SharedPreferences mColorPrefs;
 	private final ImageLoaderWrapper mImageLoader;
 
 	public BaseArrayAdapter(final Context context, final int layoutRes) {
@@ -57,9 +57,7 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mLinkify = new TwidereLinkify(new OnLinkClickHandler(context, app.getMultiSelectManager()));
 		mImageLoader = app.getImageLoaderWrapper();
-		mNicknamePrefs = context.getSharedPreferences(USER_NICKNAME_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mColorPrefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mNicknamePrefs.registerOnSharedPreferenceChangeListener(this);
 		mColorPrefs.registerOnSharedPreferenceChangeListener(this);
 	}
 	
@@ -98,19 +96,17 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
 	}
 
 	@Override
-	public final boolean isNicknameOnly() {
-		return mNicknameOnly;
-	}
-
-	@Override
 	public final boolean isShowAccountColor() {
 		return mShowAccountColor;
 	}
 
 	@Override
-	public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
+    public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
+        if (KEY_DISPLAY_PROFILE_IMAGE.equals(key)
+                || KEY_DISPLAY_IMAGE_PREVIEW.equals(key) || KEY_DISPLAY_SENSITIVE_CONTENTS.equals(key)) {
 		notifyDataSetChanged();
-	}
+	    }
+    }
 
 	@Override
 	public final void setDisplayNameFirst(final boolean nameFirst) {
@@ -134,11 +130,6 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
 		mLinkify.setHighlightOption(optionInt);
 		if (optionInt == mLinkHighlightOption) return;
 		mLinkHighlightOption = optionInt;
-	}
-
-	@Override
-	public final void setNicknameOnly(final boolean nickname_only) {
-		mNicknameOnly = nickname_only;
 	}
 
 	@Override

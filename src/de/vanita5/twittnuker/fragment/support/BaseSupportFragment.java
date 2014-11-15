@@ -27,43 +27,30 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.view.View;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class BaseSupportFragment extends Fragment implements Constants {
+public class BaseSupportFragment extends Fragment implements IBaseFragment, Constants {
 
-	private LayoutInflater mLayoutInflater;
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        requestFitSystemWindows();
+    }
 
 	public BaseSupportFragment() {
 
 	}
-
-    @Override
-    public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        final FragmentActivity activity = getActivity();
-        if (activity instanceof IThemedActivity) {
-            onCreateOptionsMenu(menu, ((IThemedActivity) activity).getTwidereMenuInflater());
-        } else {
-            super.onCreateOptionsMenu(menu, inflater);
-        }
-    }
-
-    public void onCreateOptionsMenu(Menu menu, TwidereMenuInflater inflater) {
-
-    }
 
     public TwittnukerApplication getApplication() {
 		final Activity activity = getActivity();
@@ -75,12 +62,6 @@ public class BaseSupportFragment extends Fragment implements Constants {
 		final Activity activity = getActivity();
 		if (activity != null) return activity.getContentResolver();
 		return null;
-	}
-
-	@Override
-	public LayoutInflater getLayoutInflater(final Bundle savedInstanceState) {
-		if (mLayoutInflater != null) return mLayoutInflater;
-		return mLayoutInflater = ThemeUtils.getThemedLayoutInflaterForActionIcons(getActivity());
 	}
 
 	public MultiSelectManager getMultiSelectManager() {
@@ -127,4 +108,29 @@ public class BaseSupportFragment extends Fragment implements Constants {
 		if (activity == null) return;
 		activity.unregisterReceiver(receiver);
 	}
+
+    @Override
+    public Bundle getExtraConfiguration() {
+        return null;
+    }
+
+    @Override
+    public int getTabPosition() {
+        return 0;
+    }
+
+    @Override
+    public void requestFitSystemWindows() {
+        final Activity activity = getActivity();
+        if (!(activity instanceof SystemWindowsInsetsCallback)) return;
+        final SystemWindowsInsetsCallback callback = (SystemWindowsInsetsCallback) activity;
+        final Rect insets = new Rect();
+        if (callback.getSystemWindowsInsets(insets)) {
+            fitSystemWindows(insets);
+        }
+    }
+
+    protected void fitSystemWindows(Rect insets) {
+    }
+
 }

@@ -50,7 +50,6 @@ import org.mariotaku.menucomponent.widget.MenuBar.MenuBarListener;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.SaveImageTask;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -151,8 +150,8 @@ public final class ImageViewerGLActivity extends BaseSupportActivity implements 
 	}
 
 	@Override
-    public boolean onCreateOptionsMenu(final Menu menu, TwidereMenuInflater inflater) {
-        inflater.inflate(R.menu.menu_image_viewer_action_bar, menu);
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_image_viewer_action_bar, menu);
 		return true;
 	}
 

@@ -15,7 +15,7 @@
         android:title="@string/follow"/>
 	<item
 		android:id="@id/mention"
-        android:icon="@drawable/ic_action_mention"
+        android:icon="@drawable/ic_action_at"
         android:showAsAction="ifRoom"
 		android:title="@string/mention_this_user"/>
 	<item
@@ -25,16 +25,12 @@
 		android:visible="false"/>
 	<item
 		android:id="@id/add_to_list"
-        android:icon="@drawable/ic_action_list"
+        android:icon="@drawable/ic_action_add_to_list"
 		android:title="@string/add_to_list"/>
 	<item
 		android:id="@id/set_color"
         android:icon="@drawable/ic_action_color_palette"
         android:title="@string/set_color"/>
-    <item
-        android:id="@id/set_nickname"
-        android:icon="@drawable/ic_action_edit"
-        android:title="@string/set_nickname"/>
     <item
     	android:id="@id/add_to_filter"
         android:icon="@drawable/ic_action_speaker_muted"
@@ -45,7 +41,7 @@
         android:title="@string/twitter_mute_user"/>
 	<item
 		android:id="@id/block"
-        android:icon="@drawable/ic_action_ban"
+        android:icon="@drawable/ic_action_block"
 		android:title="@string/block"/>
 	<item
 		android:id="@id/report_spam"

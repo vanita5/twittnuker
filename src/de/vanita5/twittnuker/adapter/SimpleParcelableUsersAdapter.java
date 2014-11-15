@@ -22,12 +22,10 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
 import static de.vanita5.twittnuker.util.Utils.configBaseAdapter;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -74,9 +72,7 @@ public class SimpleParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUse
 
 		holder.text1.setCompoundDrawablesWithIntrinsicBounds(0, 0,
 				getUserTypeIconRes(user.is_verified, user.is_protected), 0);
-		final String nick = getUserNickname(mContext, user.id);
-		holder.text1.setText(TextUtils.isEmpty(nick) ? user.name : isNicknameOnly() ? nick : mContext.getString(
-				R.string.name_with_nickname, user.name, nick));
+		holder.text1.setText(user.name);
 		holder.text2.setText("@" + user.screen_name);
 		holder.icon.setVisibility(isDisplayProfileImage() ? View.VISIBLE : View.GONE);
 		if (isDisplayProfileImage()) {
@@ -97,7 +93,7 @@ public class SimpleParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUse
 		}
 		if (data == null) return;
 		for (final ParcelableUser user : data) {
-			if (clear_old || findItem(user.id) == null) {
+            if (clear_old || findItemPosition(user.id) < 0) {
 				add(user);
 			}
 		}

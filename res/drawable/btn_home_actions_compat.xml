@@ -7,9 +7,6 @@
                 android:gradientRadius="50%p"
                 android:startColor="#A0000000"
                 android:type="radial"/>
-            <size
-                android:width="64dp"
-                android:height="64dp"/>
         </shape>
     </item>
     <item

@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 
 import static de.vanita5.twittnuker.util.shortener.TweetShortenerUtils.expandHototin;
+import static de.vanita5.twittnuker.util.shortener.TweetShortenerUtils.expandTwitLonger;
 
 public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 
@@ -94,6 +95,11 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 			case TwidereLinkify.LINK_TYPE_HOTOTIN: {
 				activity.setProgressBarIndeterminateVisibility(true);
 				expandHototin(activity, link);
+				break;
+			}
+			case TwidereLinkify.LINK_TYPE_TWITLONGER: {
+				activity.setProgressBarIndeterminateVisibility(true);
+				expandTwitLonger(activity, link);
 				break;
 			}
 		}

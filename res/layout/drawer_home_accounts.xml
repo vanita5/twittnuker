@@ -9,7 +9,7 @@
 		android:id="@+id/left_drawer"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		class="de.vanita5.twittnuker.fragment.support.AccountsDrawerFragment"
+		class="de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment"
         tools:layout="@layout/fragment_accounts_drawer"/>
 
 </de.vanita5.twittnuker.view.LeftDrawerFrameLayout>

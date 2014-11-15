@@ -71,9 +71,9 @@ public class CustomTabUtils implements Constants {
 				HomeTimelineFragment.class, R.string.home, R.drawable.ic_action_home,
 				CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 0, false));
 		CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_MENTIONS_TIMELINE, new CustomTabConfiguration(
-				MentionsTimelineFragment.class, R.string.mentions, R.drawable.ic_action_mention,
+				MentionsTimelineFragment.class, R.string.mentions, R.drawable.ic_action_at,
 				CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 1, false,
-				ExtraConfiguration.newBoolean(EXTRA_MY_FOLLOWING_ONLY, R.string.my_following_only, false)));
+				ExtraConfiguration.newBoolean(EXTRA_MY_FOLLOWING_ONLY, R.string.following_only, false)));
 		CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_DIRECT_MESSAGES, new CustomTabConfiguration(
 				DirectMessagesFragment.class, R.string.direct_messages, R.drawable.ic_action_message,
 				CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 2, false));
@@ -106,7 +106,7 @@ public class CustomTabUtils implements Constants {
 		if (Utils.hasStaggeredTimeline()) {
 			CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_STAGGERED_HOME_TIMELINE, new CustomTabConfiguration(
 					StaggeredHomeTimelineFragment.class, R.string.staggered_home_timeline,
-					R.drawable.ic_action_staggered, CustomTabConfiguration.ACCOUNT_OPTIONAL,
+					R.drawable.ic_action_view_quilt, CustomTabConfiguration.ACCOUNT_OPTIONAL,
 					CustomTabConfiguration.FIELD_TYPE_NONE, 11, false));
 		}
 
@@ -115,16 +115,25 @@ public class CustomTabUtils implements Constants {
 		CUSTOM_TABS_ICON_NAME_MAP.put("heart", R.drawable.ic_action_heart);
 		CUSTOM_TABS_ICON_NAME_MAP.put("home", R.drawable.ic_action_home);
 		CUSTOM_TABS_ICON_NAME_MAP.put("list", R.drawable.ic_action_list);
-		CUSTOM_TABS_ICON_NAME_MAP.put("mention", R.drawable.ic_action_mention);
+		CUSTOM_TABS_ICON_NAME_MAP.put("mention", R.drawable.ic_action_at);
 		CUSTOM_TABS_ICON_NAME_MAP.put("message", R.drawable.ic_action_message);
 		CUSTOM_TABS_ICON_NAME_MAP.put("quote", R.drawable.ic_action_quote);
 		CUSTOM_TABS_ICON_NAME_MAP.put("search", R.drawable.ic_action_search);
-		CUSTOM_TABS_ICON_NAME_MAP.put("staggered", R.drawable.ic_action_staggered);
+		CUSTOM_TABS_ICON_NAME_MAP.put("staggered", R.drawable.ic_action_view_quilt);
 		CUSTOM_TABS_ICON_NAME_MAP.put("star", R.drawable.ic_action_star);
 		CUSTOM_TABS_ICON_NAME_MAP.put("trends", R.drawable.ic_action_trends);
 		CUSTOM_TABS_ICON_NAME_MAP.put("twittnuker", R.drawable.ic_action_twittnuker);
 		CUSTOM_TABS_ICON_NAME_MAP.put("twitter", R.drawable.ic_action_twitter);
 		CUSTOM_TABS_ICON_NAME_MAP.put("user", R.drawable.ic_action_user);
+
+		CUSTOM_TABS_ICON_NAME_MAP.put("comp", R.drawable.ic_action_comp);
+		CUSTOM_TABS_ICON_NAME_MAP.put("cthulhu", R.drawable.ic_action_cthulhu);
+		CUSTOM_TABS_ICON_NAME_MAP.put("harvey", R.drawable.ic_action_harvey);
+		CUSTOM_TABS_ICON_NAME_MAP.put("heart_z", R.drawable.ic_action_heart_z);
+		CUSTOM_TABS_ICON_NAME_MAP.put("metroid", R.drawable.ic_action_metroid);
+		CUSTOM_TABS_ICON_NAME_MAP.put("nyarlathorepirycx", R.drawable.ic_action_nyarlathorepirycx);
+		CUSTOM_TABS_ICON_NAME_MAP.put("pokeball", R.drawable.ic_action_pokeball);
+		CUSTOM_TABS_ICON_NAME_MAP.put("triforce", R.drawable.ic_action_triforce);
 	}
 
 	public static String findTabIconKey(final int iconRes) {

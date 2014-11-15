@@ -30,7 +30,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,7 +47,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.DataExportActivity;
 import de.vanita5.twittnuker.activity.support.DataImportActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.holder.ViewHolder;
@@ -61,12 +62,10 @@ public class SettingsActivity extends BasePreferenceActivity {
 
 	private HeaderAdapter mAdapter;
 
-	private int mCurrentThemeColor, mCurrentThemeBackgroundAlpha;
+	private int mCurrentThemeColor, mCurrentThemeBackgroundAlpha, mCurrentActionBarColor;
 	private boolean mCompactCards, mPlainListStyle;
 
 	private String mCurrentThemeFontFamily;
-
-	private boolean mCurrentIsDarkDrawerEnabled;
 
 	@Override
 	public void finish() {
@@ -80,7 +79,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 
 	public HeaderAdapter getHeaderAdapter() {
 		if (mAdapter != null) return mAdapter;
-		return mAdapter = new HeaderAdapter(ThemeUtils.getThemedContextForActionIcons(this, getThemeResourceId()));
+        return mAdapter = new HeaderAdapter(this);
 	}
 
 	@Override
@@ -101,21 +100,18 @@ public class SettingsActivity extends BasePreferenceActivity {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
 		if (getIntent().getStringExtra(EXTRA_SHOW_FRAGMENT) != null) return false;
-		inflater.inflate(R.menu.menu_settings, menu);
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
 		return true;
 	}
 
 	@Override
-	public void onHeaderClick(final Header header, final int position) {
+    public void onHeaderClick(@NonNull final Header header, final int position) {
 		if (header.id == HEADER_ID_RESTORE_ICON) {
 			final ComponentName main = new ComponentName(this, MainActivity.class);
-			//final ComponentName main2 = new ComponentName(this, MainHondaJOJOActivity.class);
 			mPackageManager.setComponentEnabledSetting(main, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
 					PackageManager.DONT_KILL_APP);
-			//mPackageManager.setComponentEnabledSetting(main2, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-			//		PackageManager.DONT_KILL_APP);
 			Toast.makeText(this, R.string.icon_restored_message, Toast.LENGTH_SHORT).show();
 			finish();
 			return;
@@ -182,10 +178,10 @@ public class SettingsActivity extends BasePreferenceActivity {
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mCompactCards = mPreferences.getBoolean(KEY_COMPACT_CARDS, false);
 		mPlainListStyle = mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false);
-		mCurrentThemeColor = ThemeUtils.getUserThemeColor(this);
+        mCurrentThemeColor = ThemeUtils.getUserAccentColor(this);
+		mCurrentActionBarColor = ThemeUtils.getActionBarColor(this);
 		mCurrentThemeFontFamily = getThemeFontFamily();
 		mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
-		mCurrentIsDarkDrawerEnabled = isDarkDrawerEnabled();
 		super.onCreate(savedInstanceState);
 		setIntent(getIntent().addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
 		final ActionBar actionBar = getActionBar();
@@ -201,10 +197,10 @@ public class SettingsActivity extends BasePreferenceActivity {
 		return mCompactCards != mPreferences.getBoolean(KEY_COMPACT_CARDS, false)
 				|| mPlainListStyle != mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false)
                 || getThemeResourceId() != getCurrentThemeResourceId()
-                || ThemeUtils.getUserThemeColor(this) != mCurrentThemeColor
+                || ThemeUtils.getUserAccentColor(this) != mCurrentThemeColor
+				|| ThemeUtils.getActionBarColor(this) != mCurrentActionBarColor
 				|| !CompareUtils.objectEquals(getThemeFontFamily(), mCurrentThemeFontFamily)
-				|| getThemeBackgroundAlpha() != mCurrentThemeBackgroundAlpha
-				|| isDarkDrawerEnabled() != mCurrentIsDarkDrawerEnabled;
+                || getThemeBackgroundAlpha() != mCurrentThemeBackgroundAlpha;
 	}
 
 	private static class HeaderAdapter extends ArrayAdapter<Header> {
@@ -214,11 +210,13 @@ public class SettingsActivity extends BasePreferenceActivity {
 
 		private final Context mContext;
 		private final Resources mResources;
+        private final int mActionIconColor;
 
 		public HeaderAdapter(final Context context) {
 			super(context, R.layout.list_item_preference_header);
 			mContext = context;
 			mResources = context.getResources();
+            mActionIconColor = ThemeUtils.getThemeForegroundColor(context);
 		}
 
 		@Override
@@ -265,10 +263,11 @@ public class SettingsActivity extends BasePreferenceActivity {
 						holder.summary.setVisibility(View.GONE);
 					}
 					if (header.iconRes != 0) {
-						holder.icon.setImageDrawable(mResources.getDrawable(header.iconRes));
+                        holder.icon.setImageResource(header.iconRes);
 					} else {
 						holder.icon.setImageDrawable(null);
 					}
+                    holder.icon.setColorFilter(mActionIconColor, Mode.SRC_ATOP);
 					break;
 				}
 			}

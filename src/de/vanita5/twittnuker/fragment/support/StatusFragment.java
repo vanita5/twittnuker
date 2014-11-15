@@ -23,11 +23,10 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserColor;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.clearUserNickname;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.setUserColor;
+import static de.vanita5.twittnuker.util.ThemeUtils.getUserAccentColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.clearUserColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.setUserColor;
 import static de.vanita5.twittnuker.util.Utils.findStatus;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
@@ -37,6 +36,7 @@ import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.getMapStaticImageUri;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
+import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 import static de.vanita5.twittnuker.util.Utils.isSameAccount;
 import static de.vanita5.twittnuker.util.Utils.openImageDirectly;
 import static de.vanita5.twittnuker.util.Utils.openMap;
@@ -65,6 +65,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -78,13 +80,13 @@ import android.support.v4.content.Loader;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
@@ -100,7 +102,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.mariotaku.menucomponent.widget.MenuBar;
 import org.mariotaku.refreshnow.widget.RefreshMode;
 
 import de.vanita5.twittnuker.R;
@@ -110,7 +111,6 @@ import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.menu.TwidereMenuInflater;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
 import de.vanita5.twittnuker.model.Panes;
@@ -193,33 +193,54 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		public void onReceive(final Context context, final Intent intent) {
 			if (getActivity() == null || !isAdded() || isDetached()) return;
 			final String action = intent.getAction();
-			if (BROADCAST_FRIENDSHIP_CHANGED.equals(action)) {
-				if (mStatus != null && mStatus.user_id == intent.getLongExtra(EXTRA_USER_ID, -1)
-						&& intent.getBooleanExtra(EXTRA_SUCCEED, false)) {
-					showFollowInfo(true);
+			switch (action) {
+				case BROADCAST_FRIENDSHIP_CHANGED: {
+					if (mStatus != null && mStatus.user_id == intent.getLongExtra(EXTRA_USER_ID, -1)) {
+						showFollowInfo(true);
+					}
+					break;
 				}
-			} else if (BROADCAST_FAVORITE_CHANGED.equals(action)) {
-				final ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
-				if (mStatus != null && status != null && isSameAccount(context, status.account_id, mStatus.account_id)
-						&& status.id == getStatusId()) {
-					getStatus(true);
+				case BROADCAST_FAVORITE_CHANGED: {
+					final ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
+					if (mStatus != null && status != null && isSameAccount(context, status.account_id, mStatus.account_id)
+							&& status.id == getStatusId()) {
+						getStatus(true);
+					}
+					break;
 				}
-			} else if (BROADCAST_RETWEET_CHANGED.equals(action)) {
-				final long status_id = intent.getLongExtra(EXTRA_STATUS_ID, -1);
-				if (status_id > 0 && status_id == getStatusId()) {
-					getStatus(true);
+				case BROADCAST_RETWEET_CHANGED: {
+					final long status_id = intent.getLongExtra(EXTRA_STATUS_ID, -1);
+					if (status_id > 0 && status_id == getStatusId()) {
+						getStatus(true);
+					}
+					break;
 				}
-			} else if (BROADCAST_HOTOTIN_EXPANDED.equals(action)) {
-				final String expanded_status = intent.getStringExtra(EXTRA_HOTOTIN_EXPANDED_TEXT);
-				Spanned expanded_text = Html.fromHtml(expanded_status);
+				case BROADCAST_HOTOTIN_EXPANDED: {
+					final String expanded_status = intent.getStringExtra(EXTRA_HOTOTIN_EXPANDED_TEXT);
+					Spanned expanded_text = Html.fromHtml(expanded_status);
 
-				mTextView.setText(expanded_text);
+					mTextView.setText(expanded_text);
 
-				final TwidereLinkify linkify = new TwidereLinkify(
-						new OnLinkClickHandler(getActivity(), getMultiSelectManager()));
-				linkify.setLinkTextColor(ThemeUtils.getUserLinkTextColor(getActivity()));
-				linkify.applyAllLinks(mTextView, mStatus.account_id, mStatus.is_possibly_sensitive);
-				setProgressBarIndeterminateVisibility(false);
+					final TwidereLinkify linkify = new TwidereLinkify(
+							new OnLinkClickHandler(getActivity(), getMultiSelectManager()));
+					linkify.setLinkTextColor(ThemeUtils.getUserLinkTextColor(getActivity()));
+					linkify.applyAllLinks(mTextView, mStatus.account_id, mStatus.is_possibly_sensitive);
+					setProgressBarIndeterminateVisibility(false);
+					break;
+				}
+				case BROADCAST_TWITLONGER_EXPANDED: {
+					final String expanded_status = intent.getStringExtra(EXTRA_TWITLONGER_EXPANDED_TEXT);
+					Spanned expanded_text = Html.fromHtml(expanded_status);
+
+					mTextView.setText(expanded_text);
+
+					final TwidereLinkify linkify = new TwidereLinkify(
+							new OnLinkClickHandler(getActivity(), getMultiSelectManager()));
+					linkify.setLinkTextColor(ThemeUtils.getUserLinkTextColor(getActivity()));
+					linkify.applyAllLinks(mTextView, mStatus.account_id, mStatus.is_possibly_sensitive);
+					setProgressBarIndeterminateVisibility(false);
+					break;
+				}
 			}
 		}
 	};
@@ -354,12 +375,9 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 		updateUserColor();
 		mProfileView.drawEnd(getAccountColor(getActivity(), status.account_id));
-		final boolean nickname_only = mPreferences.getBoolean(KEY_NICKNAME_ONLY, false);
 		final boolean name_first = mPreferences.getBoolean(KEY_NAME_FIRST, true);
 		final boolean display_image_preview = mPreferences.getBoolean(KEY_DISPLAY_IMAGE_PREVIEW, false);
-		final String nick = getUserNickname(getActivity(), status.user_id, true);
-		mNameView.setText(TextUtils.isEmpty(nick) ? status.user_name : nickname_only ? nick : getString(
-				R.string.name_with_nickname, status.user_name, nick));
+		mNameView.setText(status.user_name);
 		mNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0,
 				getUserTypeIconRes(status.user_is_verified, status.user_is_protected), 0);
 		mScreenNameView.setText("@" + status.user_screen_name);
@@ -382,8 +400,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		}
 		mTimeSourceView.setMovementMethod(LinkMovementMethod.getInstance());
 
-		final String in_reply_to = getDisplayName(getActivity(), status.in_reply_to_user_id, status.in_reply_to_name,
-				status.in_reply_to_screen_name, name_first, nickname_only, true);
+		final String in_reply_to = getDisplayName(status.in_reply_to_name, status.in_reply_to_screen_name, name_first);
 		mInReplyToView.setText(getString(R.string.in_reply_to, in_reply_to));
 
 		if (mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true)) {
@@ -426,6 +443,47 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		} else {
 			mFollowIndicator.setVisibility(View.GONE);
 		}
+
+		//TEMPORARY FIX for accent color
+		//remove as soon as TwidereMenuBar is working
+		if (mMenuBar != null) {
+			final int activatedColor = getUserAccentColor(mMenuBar.getContext());
+			final Menu menu = mMenuBar.getMenu();
+
+			final MenuItem itemRetweetSubmenu = menu.findItem(R.id.retweet_submenu);
+			if (itemRetweetSubmenu != null) {
+				final Drawable icon = itemRetweetSubmenu.getIcon();
+				icon.mutate();
+				if (isMyRetweet(status)) {
+					icon.setColorFilter(activatedColor, Mode.SRC_ATOP);
+				} else {
+					icon.clearColorFilter();
+				}
+			}
+
+			final MenuItem itemFavorite = menu.findItem(R.id.favorite);
+			if (itemFavorite != null) {
+				final Drawable icon = itemFavorite.getIcon();
+				icon.mutate();
+				if (status.is_favorite) {
+					icon.setColorFilter(activatedColor, Mode.SRC_ATOP);
+				} else {
+					icon.clearColorFilter();
+				}
+			}
+
+			final MenuItem itemLove = menu.findItem(R.id.love);
+			if (itemLove != null) {
+				final Drawable icon = itemLove.getIcon();
+				icon.mutate();
+				if (isMyRetweet(status) && status.is_favorite) {
+					icon.setColorFilter(activatedColor, Mode.SRC_ATOP);
+				} else {
+					icon.clearColorFilter();
+				}
+			}
+		}
+
 		updateConversationInfo();
 		scrollToStart();
 	}
@@ -464,8 +522,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		final TwittnukerApplication application = getApplication();
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE)
-				.registerOnSharedPreferenceChangeListener(this);
-		getSharedPreferences(USER_NICKNAME_PREFERENCES_NAME, Context.MODE_PRIVATE)
 				.registerOnSharedPreferenceChangeListener(this);
 		mImageLoader = application.getImageLoaderWrapper();
 		mTwitterWrapper = getTwitterWrapper();
@@ -576,7 +632,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	}
 
 	@Override
-    public void onCreateOptionsMenu(final Menu menu, final TwidereMenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
 		if (!shouldUseNativeMenu()) return;
 		inflater.inflate(R.menu.menu_status, menu);
 	}
@@ -694,6 +750,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		filter.addAction(BROADCAST_FAVORITE_CHANGED);
 		filter.addAction(BROADCAST_RETWEET_CHANGED);
 		filter.addAction(BROADCAST_HOTOTIN_EXPANDED);
+		filter.addAction(BROADCAST_TWITLONGER_EXPANDED);
 		registerReceiver(mStatusReceiver, filter);
 		updateUserColor();
 		final int text_size = mPreferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(getActivity()));
@@ -805,16 +862,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
                 intent.putExtra(EXTRA_CLEAR_BUTTON, color != 0);
 				intent.putExtra(EXTRA_ALPHA_SLIDER, false);
 				startActivityForResult(intent, REQUEST_SET_COLOR);
-				break;
-			}
-			case MENU_CLEAR_NICKNAME: {
-				clearUserNickname(getActivity(), status.user_id);
-				displayStatus(status);
-				break;
-			}
-			case MENU_SET_NICKNAME: {
-				final String nick = getUserNickname(getActivity(), status.user_id, true);
-				SetUserNicknameDialogFragment.show(getFragmentManager(), status.user_id, nick);
 				break;
 			}
 			case MENU_TRANSLATE: {

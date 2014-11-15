@@ -53,8 +53,7 @@
   <string name="unfavorite">Favorilerinden çıkar</string>
   <string name="reply">Cevapla</string>
   <string name="share">Paylaş</string>
-  <string name="share_via_twittnuker">Twittnuker üzerinden paylaş</string>
-  <string name="view_image">Resim</string>
+    <string name="view_image">Resim</string>
   <string name="view_map">Harita</string>
   <string name="view_status">Tweeti görüntüle</string>
   <string name="view_user_profile">Kullanıcı profili</string>
@@ -100,7 +99,6 @@
   <string name="sources">Kaynaklar</string>
   <string name="content">İçerik</string>
   <string name="customize">Özelleştir</string>
-  <string name="set_nickname">Lakap ayarla</string>
   <string name="set_color">Rengi ayarla</string>
   <string name="clear">Temizle</string>
   <string name="pick_color">Renk seç</string>
@@ -405,10 +403,7 @@
   <string name="enable_for_rts">RTlere izin ver</string>
   <string name="safety">Güvenlik</string>
   <string name="updating_status_notification">Tweet gönderiliyor&#8230;</string>
-  <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g>(<xliff:g id="nickname">%2$s</xliff:g>)</string>
   <string name="query">Sorgu</string>
-  <string name="nickname_only">Sadece lakap</string>
-  <string name="nickname_only_summary">Eğer varsa kullanıcı adını lakap ile değiştir</string>
   <string name="input_text">giriş metni</string>
   <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'nın listeleri</string>
   <string name="lists_following_user_with_name"><xliff:g id="name">%s</xliff:g>\'ı takip eden listeler</string>

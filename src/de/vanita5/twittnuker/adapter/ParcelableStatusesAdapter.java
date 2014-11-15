@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -50,8 +49,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static de.vanita5.twittnuker.model.ParcelableLocation.isValidLocation;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserColor;
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.getUserNickname;
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
@@ -230,10 +228,7 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 
 			holder.setUserType(status.user_is_verified, status.user_is_protected);
 			holder.setDisplayNameFirst(isDisplayNameFirst());
-			holder.setNicknameOnly(isNicknameOnly());
-			final String nick = getUserNickname(mContext, status.user_id);
-			holder.name.setText(TextUtils.isEmpty(nick) ? status.user_name : isNicknameOnly() ? nick : mContext
-					.getString(R.string.name_with_nickname, status.user_name, nick));
+			holder.name.setText(status.user_name);
 			holder.screen_name.setText("@" + status.user_screen_name);
 			if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
 				linkify.applyUserProfileLinkNoHighlight(holder.name, status.account_id, status.user_id,
@@ -245,7 +240,8 @@ public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus
 			}
 			holder.time.setTime(status.timestamp);
 			holder.setStatusType(!mFavoritesHighlightDisabled && status.is_favorite, isValidLocation(status.location),
-                    hasMedia || status.hasCustomMedia(), status.is_possibly_sensitive, status.my_retweet_id > 0);
+                    hasMedia || status.hasCustomMedia(), status.is_possibly_sensitive, status.my_retweet_id > 0,
+					status.in_reply_to_status_id > 0);
 			holder.setIsReplyRetweet(status.in_reply_to_status_id > 0, status.is_retweet);
 			if (status.is_retweet) {
 				holder.setRetweetedBy(status.retweet_count, status.retweeted_by_id, status.retweeted_by_name,

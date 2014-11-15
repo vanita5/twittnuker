@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.app;
 
-import static de.vanita5.twittnuker.util.UserColorNicknameUtils.initUserColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.initUserColor;
 import static de.vanita5.twittnuker.util.Utils.getBestCacheDir;
 import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;

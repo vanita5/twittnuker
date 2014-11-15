@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.activity;
 
-import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -35,7 +33,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -51,7 +48,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.DataImportActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.adapter.TabsAdapter;
-import de.vanita5.twittnuker.content.res.NoAccentResources;
 import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
@@ -68,14 +64,14 @@ import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.theme.TwidereResourceHelper;
 import de.vanita5.twittnuker.view.LinePageIndicator;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 
 public class SettingsWizardActivity extends Activity implements Constants {
 
