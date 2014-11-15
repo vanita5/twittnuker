@@ -126,7 +126,7 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.CameraCropActivity;
-import de.vanita5.twittnuker.activity.support.OpenStreetMapViewerActivity;
+import de.vanita5.twittnuker.activity.support.GoogleMapViewerActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -2932,8 +2932,8 @@ public final class Utils implements Constants, TwitterConstants {
 		builder.appendQueryParameter(QUERY_PARAM_LAT, String.valueOf(latitude));
 		builder.appendQueryParameter(QUERY_PARAM_LNG, String.valueOf(longitude));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-		//Compare with Twidere
-        intent.setClass(context, OpenStreetMapViewerActivity.class);
+		//Fix class, because the activity depends on the branch (master/f-droid)
+        intent.setClass(context, GoogleMapViewerActivity.class);
         context.startActivity(Intent.createChooser(intent, null));
 	}
 
