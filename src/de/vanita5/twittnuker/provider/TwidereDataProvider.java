@@ -471,48 +471,38 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	 * Creates notifications for mentions and DMs
 	 * @param pref
 	 * @param type
-	 * @param statuses
+	 * @param build
 	 */
-	private void createNotifications(final AccountPreferences pref, final String type, final List<?> statuses) {
+	private void createNotifications(final AccountPreferences pref, final String type,
+									 final Object o_status, final boolean build) {
 		if (mPreferences.getBoolean(KEY_ENABLE_PUSH, false)) return;
-		//Sort multiple statuses by timestamp
-		Collections.sort(statuses, new Comparator<Object>() {
-			@Override
-			public int compare(Object o, Object o2) {
-				if (o instanceof ParcelableStatus) {
-					return Long.compare(((ParcelableStatus) o).timestamp, ((ParcelableStatus) o2).timestamp);
-				} else if (o instanceof ParcelableDirectMessage) {
-					return Long.compare(((ParcelableDirectMessage) o).timestamp, ((ParcelableDirectMessage) o2).timestamp);
-				}
-				return 0;
-			}
-		});
-		for(int i = 0; i < statuses.size(); i++) {
-			Object o = statuses.get(i);
-			NotificationContent notification = new NotificationContent();
+		NotificationContent notification = null;
 
-			if (o instanceof ParcelableStatus) {
-				ParcelableStatus status = (ParcelableStatus) o;
-				notification.setAccountId(status.account_id);
-				notification.setFromUser(status.user_screen_name);
-				notification.setType(type);
-				notification.setMessage(status.text_unescaped);
-				notification.setTimestamp(status.timestamp);
-				notification.setProfileImageUrl(status.user_profile_image_url);
-				notification.setOriginalStatus(status);
-			} else if (o instanceof ParcelableDirectMessage) {
-				ParcelableDirectMessage dm = (ParcelableDirectMessage) o;
-				notification.setAccountId(dm.account_id);
-				notification.setFromUser(dm.sender_screen_name);
-				notification.setType(type);
-				notification.setMessage(dm.text_unescaped);
-				notification.setTimestamp(dm.timestamp);
-				notification.setProfileImageUrl(dm.sender_profile_image_url);
-				notification.setOriginalMessage(dm);
-			}
-			mNotificationHelper.cachePushNotification(notification);
-			if (i == statuses.size() - 1) mNotificationHelper.buildNotificationByType(notification, pref, false);
+		if (o_status instanceof ParcelableStatus) {
+			ParcelableStatus status = (ParcelableStatus) o_status;
+			notification = new NotificationContent();
+			notification.setAccountId(status.account_id);
+			notification.setFromUser(status.user_screen_name);
+			notification.setType(type);
+			notification.setMessage(status.text_unescaped);
+			notification.setTimestamp(status.timestamp);
+			notification.setProfileImageUrl(status.user_profile_image_url);
+			notification.setOriginalStatus(status);
+		} else if (o_status instanceof ParcelableDirectMessage) {
+			ParcelableDirectMessage dm = (ParcelableDirectMessage) o_status;
+			notification = new NotificationContent();
+			notification.setAccountId(dm.account_id);
+			notification.setFromUser(dm.sender_screen_name);
+			notification.setType(type);
+			notification.setMessage(dm.text_unescaped);
+			notification.setTimestamp(dm.timestamp);
+			notification.setProfileImageUrl(dm.sender_profile_image_url);
+			notification.setOriginalMessage(dm);
 		}
+		if (notification != null) {
+			mNotificationHelper.cachePushNotification(notification);
+		}
+		if (build) mNotificationHelper.buildNotificationByType(notification, pref, false);
 	}
 
 	private Cursor getCachedImageCursor(final String url) {
@@ -650,10 +640,19 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (values == null || values.length == 0) return 0;
 		// Add statuses that not filtered to list for future use.
 		int result = 0;
+		int i = 1;
 		for (final ContentValues value : values) {
 			final ParcelableDirectMessage message = new ParcelableDirectMessage(value);
 			mNewMessages.add(message);
-			if (mUnreadMessages.add(new UnreadItem(message.sender_id, message.account_id))) {
+			if (mUnreadMessages.add(new UnreadItem(message.sender_id, message.account_id))) { //we got a new dm
+				//DM Notification
+				final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
+						getAccountIds(getContext()));
+				final AccountPreferences pref = AccountPreferences.getAccountPreferences(prefs, message.account_id);
+				if (pref != null && pref.isDirectMessagesNotificationEnabled()) {
+					createNotifications(pref, NotificationContent.NOTIFICATION_TYPE_MENTION,
+							message, i >= values.length);
+				}
 				result++;
 			}
 		}
@@ -669,6 +668,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		int result = 0;
 		final boolean enabled = mPreferences.getBoolean(KEY_FILTERS_IN_MENTIONS, true);
 		final boolean filtersForRts = mPreferences.getBoolean(KEY_FILTERS_FOR_RTS, true);
+		int i = 1;
 		for (final ContentValues value : values) {
 			final ParcelableStatus status = new ParcelableStatus(value);
 			if (!enabled || !isFiltered(mDatabaseWrapper.getSQLiteDatabase(), status, filtersForRts)) {
@@ -676,10 +676,16 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				if (pref == null || status.user_is_following || !pref.isNotificationFollowingOnly()) {
                     mNewMentions.add(status);
                 }
-				if (mUnreadMentions.add(new UnreadItem(status.id, status.account_id))) {
+				if (mUnreadMentions.add(new UnreadItem(status.id, status.account_id))) { //we got a new mention
+					//Mention Notification
+					if (pref != null && pref.isMentionsNotificationEnabled()) {
+						createNotifications(pref, NotificationContent.NOTIFICATION_TYPE_MENTION,
+								status, i >= values.length);
+					}
 					result++;
 				}
 			}
+			i++;
 		}
 		if (result > 0) {
 			saveUnreadItemsFile(mUnreadMentions, UNREAD_MENTIONS_FILE_NAME);
@@ -745,31 +751,11 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
 						getAccountIds(getContext()));
                 notifyMentionsInserted(prefs, values);
-                final List<ParcelableStatus> items = new ArrayList<ParcelableStatus>(mNewMentions);
-                Collections.sort(items);
-				for (final AccountPreferences pref : prefs) {
-					if (pref.isMentionsNotificationEnabled()) {
-						final long accountId = pref.getAccountId();
-						createNotifications(pref, NotificationContent.NOTIFICATION_TYPE_MENTION,
-								getStatusesForAccounts(items, accountId));
-					}
-				}
 				notifyUnreadCountChanged(NOTIFICATION_ID_MENTIONS);
 				break;
 			}
 			case TABLE_ID_DIRECT_MESSAGES_INBOX: {
 				notifyIncomingMessagesInserted(values);
-				final List<ParcelableDirectMessage> items = new ArrayList<ParcelableDirectMessage>(mNewMessages);
-				Collections.sort(items);
-				final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
-						getAccountIds(getContext()));
-				for (final AccountPreferences pref : prefs) {
-					if (pref.isDirectMessagesNotificationEnabled()) {
-						final long accountId = pref.getAccountId();
-						createNotifications(pref, NotificationContent.NOTIFICATION_TYPE_DIRECT_MESSAGE,
-								getMessagesForAccounts(items, accountId));
-					}
-				}
 				notifyUnreadCountChanged(NOTIFICATION_ID_DIRECT_MESSAGES);
 				break;
 			}
