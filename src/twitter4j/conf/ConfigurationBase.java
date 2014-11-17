@@ -16,17 +16,17 @@
 
 package twitter4j.conf;
 
-import twitter4j.TwitterConstants;
-import twitter4j.Version;
-import twitter4j.http.HostAddressResolverFactory;
-import twitter4j.http.HttpClientFactory;
-
 import java.io.ObjectStreamException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import twitter4j.TwitterConstants;
+import twitter4j.Version;
+import twitter4j.http.HostAddressResolverFactory;
+import twitter4j.http.HttpClientFactory;
 
 /**
  * Configuration base class with default settings.
@@ -86,6 +86,10 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 
 	private boolean includeRTsEnabled;
 
+    private boolean includeReplyCountEnabled;
+
+    private boolean includeDescendentReplyCountEnabled;
+
 	private boolean includeEntitiesEnabled;
 
 	private boolean includeTwitterClientHeader;
@@ -130,9 +134,9 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 		setClientURL("http://twitter4j.org/en/twitter4j-" + Version.getVersion() + ".xml");
 		setHttpUserAgent("twitter4j http://twitter4j.org/ /" + Version.getVersion());
 
-		setIncludeRTsEnbled(true);
+        setIncludeRTsEnabled(true);
 
-		setIncludeEntitiesEnbled(true);
+        setIncludeEntitiesEnabled(true);
 
 		setOAuthBaseURL(DEFAULT_OAUTH_BASE_URL);
 		setSigningOAuthBaseURL(DEFAULT_SIGNING_OAUTH_BASE_URL);
@@ -142,7 +146,7 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 
 		setUploadBaseURL(DEFAULT_UPLOAD_BASE_URL);
 		setSigningUploadBaseURL(DEFAULT_SIGNING_UPLOAD_BASE_URL);
-		setIncludeRTsEnbled(true);
+        setIncludeRTsEnabled(true);
 
 		setMediaProvider("TWITTER");
 		setMediaProviderAPIKey(null);
@@ -550,6 +554,16 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 	}
 
 	@Override
+    public boolean isIncludeReplyCountEnabled() {
+        return includeReplyCountEnabled;
+    }
+
+    @Override
+    public boolean isIncludeDescendentReplyCountEnabled() {
+        return includeDescendentReplyCountEnabled;
+    }
+
+    @Override
 	public boolean isPrettyDebugEnabled() {
 		return prettyDebug;
 	}
@@ -695,12 +709,20 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 		initRequestHeaders();
 	}
 
-	protected final void setIncludeEntitiesEnbled(final boolean enabled) {
+    protected final void setIncludeEntitiesEnabled(final boolean enabled) {
 		includeEntitiesEnabled = enabled;
 	}
 
-	protected final void setIncludeRTsEnbled(final boolean enabled) {
+    protected final void setIncludeRTsEnabled(final boolean enabled) {
 		includeRTsEnabled = enabled;
+    }
+
+    protected final void setIncludeReplyCountEnabled(final boolean enabled) {
+        includeReplyCountEnabled = enabled;
+    }
+
+    protected final void setIncludeDescendentReplyCountEnabled(final boolean enabled) {
+        includeDescendentReplyCountEnabled = enabled;
 	}
 
 	protected final void setIncludeTwitterClientHeader(final boolean includeHeader) {

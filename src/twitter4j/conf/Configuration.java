@@ -68,6 +68,10 @@ public interface Configuration extends HttpClientConfiguration, HttpClientWrappe
 
 	boolean isIncludeRTsEnabled();
 
+	boolean isIncludeReplyCountEnabled();
+
+	boolean isIncludeDescendentReplyCountEnabled();
+
 	boolean isTwitterClientHeaderIncluded();
 
 	String getMediaProvider();

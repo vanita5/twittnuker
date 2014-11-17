@@ -164,13 +164,13 @@ public final class StreamConfigurationBuilder {
 
 	public StreamConfigurationBuilder setIncludeEntitiesEnabled(final boolean enabled) {
 		checkNotBuilt();
-		configuration.setIncludeEntitiesEnbled(enabled);
+		configuration.setIncludeEntitiesEnabled(enabled);
 		return this;
 	}
 
 	public StreamConfigurationBuilder setIncludeRTsEnabled(final boolean enabled) {
 		checkNotBuilt();
-		configuration.setIncludeRTsEnbled(enabled);
+		configuration.setIncludeRTsEnabled(enabled);
 		return this;
 	}
 

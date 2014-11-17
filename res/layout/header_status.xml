@@ -157,6 +157,34 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/replies_container"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?android:selectableItemBackground"
+                android:clickable="true"
+                android:gravity="center"
+                android:minWidth="@dimen/button_width_content_min"
+                android:orientation="vertical"
+                android:padding="@dimen/element_spacing_small">
+
+                <de.vanita5.twittnuker.view.themed.ThemedTextView
+                    android:id="@+id/replies_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="?android:textColorPrimary"/>
+
+                <de.vanita5.twittnuker.view.themed.ThemedTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="@string/replies"
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textColor="?android:textColorSecondary"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/favorites_container"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -212,20 +240,6 @@
                     android:textColor="?android:textColorSecondary"/>
             </LinearLayout>
         </LinearLayout>
-
-        <de.vanita5.twittnuker.view.themed.ThemedTextView
-            android:id="@+id/replies_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:selectableItemBackground"
-            android:clickable="true"
-            android:drawableLeft="@drawable/ic_indicator_reply"
-            android:drawablePadding="4dp"
-            android:gravity="center_vertical"
-            android:padding="@dimen/element_spacing_normal"
-            android:singleLine="true"
-            android:text="@string/view_replies"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
 
         <de.vanita5.twittnuker.view.themed.ThemedTextView
             android:id="@+id/in_reply_to"

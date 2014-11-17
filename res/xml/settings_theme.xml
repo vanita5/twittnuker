@@ -16,7 +16,7 @@
 		android:entryValues="@array/values_theme"
 		android:key="theme"
         android:order="21"
-		android:title="@string/theme"/>
+        android:title="@string/style"/>
 
     <de.vanita5.twittnuker.preference.ColorPickerPreference
         android:defaultValue="@android:color/holo_blue_light"
@@ -33,13 +33,13 @@
     <de.vanita5.twittnuker.preference.ThemeBackgroundPreference
 		android:defaultValue="default"
         android:order="25"
-        android:title="@string/background"/>
+        android:title="@string/color"/>
 
     <de.vanita5.twittnuker.preference.ThemeFontFamilyPreference
         android:defaultValue="sans-serif-light"
         android:enabled="@bool/has_font_family"
         android:key="theme_font_family"
         android:order="26"
-        android:title="@string/theme_font_family"/>
+        android:title="@string/font_family"/>
 
 </PreferenceScreen>

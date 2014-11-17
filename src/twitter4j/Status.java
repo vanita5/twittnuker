@@ -34,6 +34,10 @@ public interface Status extends Comparable<Status>, TwitterResponse, ExtendedEnt
 	 */
 	long[] getContributors();
 
+    long getReplyCount();
+
+    long getDescendentReplyCount();
+
 	/**
 	 * returns the created_at
 	 * 

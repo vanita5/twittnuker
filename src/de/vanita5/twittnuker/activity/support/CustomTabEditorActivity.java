@@ -34,6 +34,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
@@ -460,11 +461,13 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 	static class CustomTabIconsAdapter extends ArrayAdapter<Entry<String, Integer>> {
 
 		private final Resources mResources;
+        private final int mIconColor;
 
 		public CustomTabIconsAdapter(final Context context) {
 			super(context, R.layout.spinner_item_custom_tab_icon);
 			setDropDownViewResource(R.layout.list_item_two_line_small);
 			mResources = context.getResources();
+            mIconColor = ThemeUtils.getThemeForegroundColor(context);
 		}
 
 		@Override
@@ -480,7 +483,7 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 			} else {
 				text1.setText(R.string.customize);
 			}
-			bindView(position, item, view);
+            bindIconView(position, item, view);
 			return view;
 		}
 
@@ -495,7 +498,7 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 		@Override
 		public View getView(final int position, final View convertView, final ViewGroup parent) {
 			final View view = super.getView(position, convertView, parent);
-			bindView(position, getItem(position), view);
+            bindIconView(position, getItem(position), view);
 			return view;
 		}
 
@@ -506,13 +509,14 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 			sort(new LocationComparator(mResources));
 		}
 
-		private void bindView(final int position, final Entry<String, Integer> item, final View view) {
+        private void bindIconView(final int position, final Entry<String, Integer> item, final View view) {
 			final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
+            icon.setColorFilter(mIconColor, Mode.SRC_ATOP);
 			final int value = item.getValue();
 			if (value > 0) {
-				ViewAccessor.setBackground(icon, mResources.getDrawable(value));
+                icon.setImageResource(item.getValue());
 			} else {
-				ViewAccessor.setBackground(icon, null);
+                icon.setImageDrawable(null);
 			}
 		}
 

@@ -689,4 +689,11 @@
 
     <string name="mute_user_confirm_message"><xliff:g id="name">%s</xliff:g> muten? Du wirst die Tweets dieses Nutzers nicht mehr sehen, ihm aber trotzdem noch folgen.</string>
     <string name="sort_timeline_by_id_summary">Kann für andere Dienste (Status.net) nützlich sein</string>
+
+    <string name="style">Style</string>
+    <string name="color">Farbe</string>
+    <string name="font_family">Font Family</string>
+    <string name="appearance">Aussehen</string>
+    <string name="function">(D) Funktion</string>
+    <string name="replies">Antworten</string>
 </resources>

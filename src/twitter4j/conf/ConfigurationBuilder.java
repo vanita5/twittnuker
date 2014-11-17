@@ -56,8 +56,11 @@ public final class ConfigurationBuilder {
 		configuration.setHttpRetryIntervalSeconds(conf.getHttpRetryIntervalSeconds());
 		configuration.setHttpUserAgent(conf.getHttpUserAgent());
 		configuration.setIgnoreSSLError(conf.isSSLErrorIgnored());
-		configuration.setIncludeEntitiesEnbled(conf.isIncludeEntitiesEnabled());
-		configuration.setIncludeRTsEnbled(conf.isIncludeRTsEnabled());
+        configuration.setIncludeEntitiesEnabled(conf.isIncludeEntitiesEnabled());
+        configuration.setIncludeRTsEnabled(conf.isIncludeRTsEnabled());
+        configuration.setIncludeReplyCountEnabled(conf.isIncludeReplyCountEnabled());
+        configuration.setIncludeDescendentReplyCountEnabled(conf.isIncludeDescendentReplyCountEnabled());
+        configuration.setIncludeRTsEnabled(conf.isIncludeRTsEnabled());
 		configuration.setIncludeTwitterClientHeader(conf.isTwitterClientHeaderIncluded());
 		configuration.setOAuthAccessToken(conf.getOAuthAccessToken());
 		configuration.setOAuthAccessTokenSecret(conf.getOAuthAccessTokenSecret());
@@ -202,15 +205,28 @@ public final class ConfigurationBuilder {
 
 	public ConfigurationBuilder setIncludeEntitiesEnabled(final boolean enabled) {
 		checkNotBuilt();
-		configuration.setIncludeEntitiesEnbled(enabled);
+        configuration.setIncludeEntitiesEnabled(enabled);
 		return this;
 	}
 
 	public ConfigurationBuilder setIncludeRTsEnabled(final boolean enabled) {
 		checkNotBuilt();
-		configuration.setIncludeRTsEnbled(enabled);
+        configuration.setIncludeRTsEnabled(enabled);
 		return this;
 	}
+
+
+    public ConfigurationBuilder setIncludeReplyCountEnabled(final boolean enabled) {
+        checkNotBuilt();
+        configuration.setIncludeReplyCountEnabled(enabled);
+        return this;
+    }
+
+    public ConfigurationBuilder setIncludeDescendentReplyCountEnabled(final boolean enabled) {
+        checkNotBuilt();
+        configuration.setIncludeDescendentReplyCountEnabled(enabled);
+        return this;
+    }
 
 	public ConfigurationBuilder setIncludeTwitterClientHeader(final boolean includeTwitterClientHeader) {
 		checkNotBuilt();

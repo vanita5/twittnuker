@@ -71,6 +71,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
@@ -167,8 +168,8 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	private AsyncTwitterWrapper mTwitterWrapper;
 	private ImageLoaderWrapper mImageLoader;
 	private Handler mHandler;
-	private TextView mNameView, mScreenNameView, mTimeSourceView, mInReplyToView, mLocationView, mRepliesView;
-	private TextView mRetweetsCountView, mFavoritesCountView;
+    private TextView mNameView, mScreenNameView, mTimeSourceView, mInReplyToView, mLocationView;
+    private TextView mRepliesCountView, mRetweetsCountView, mFavoritesCountView;
 	private StatusTextView mTextView;
 
 	private ImageView mProfileImageView, mMapView;
@@ -181,7 +182,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
     private LinearLayout mImagePreviewGrid;
 	private View mHeaderView;
 	private View mLoadImagesIndicator;
-	private View mRetweetsContainer, mFavoritesContainer;
+    private View mRepliesContainer, mRetweetsContainer, mFavoritesContainer;
     private ExtendedFrameLayout mDetailsContainer;
 	private ListView mListView;
 
@@ -414,6 +415,8 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 			loadPreviewImages();
 		}
 		mRetweetsContainer.setVisibility(!status.user_is_protected ? View.VISIBLE : View.GONE);
+        mRepliesContainer.setVisibility(status.reply_count < 0 ? View.GONE : View.VISIBLE);
+        mRepliesCountView.setText(getLocalizedNumber(mLocale, status.reply_count));
 		mRetweetsCountView.setText(getLocalizedNumber(mLocale, status.retweet_count));
 		mFavoritesCountView.setText(getLocalizedNumber(mLocale, status.favorite_count));
 		final ParcelableLocation location = status.location;
@@ -529,10 +532,10 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		mLoadConversationsAutomatically = mPreferences.getBoolean(KEY_LOAD_CONVERSATIONS_AUTOMATICALLY, true);
 		mLoadImagesIndicator.setOnClickListener(this);
 		mInReplyToView.setOnClickListener(this);
-		mRepliesView.setOnClickListener(this);
 		mFollowButton.setOnClickListener(this);
 		mProfileView.setOnClickListener(this);
 		mLocationContainer.setOnClickListener(this);
+        mRepliesContainer.setOnClickListener(this);
 		mRetweetsContainer.setOnClickListener(this);
 		mFavoritesContainer.setOnClickListener(this);
 		mMenuBar.setVisibility(shouldUseNativeMenu() ? View.GONE : View.VISIBLE);
@@ -585,7 +588,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 				showConversation();
 				break;
 			}
-			case R.id.replies_view: {
+            case R.id.replies_container: {
 				openStatusReplies(getActivity(), status.account_id, status.id, status.user_screen_name);
 				break;
 			}
@@ -639,12 +642,12 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_details_page, null, false);
+        final View view = inflater.inflate(R.layout.fragment_details_page, container, false);
 		mMainContent = view.findViewById(R.id.content);
         mDetailsLoadProgress = (ProgressBar) view.findViewById(R.id.details_load_progress);
         mMenuBar = (TwidereMenuBar) view.findViewById(R.id.menu_bar);
         mDetailsContainer = (ExtendedFrameLayout) view.findViewById(R.id.details_container);
-        mDetailsContainer.addView(super.onCreateView(inflater, container, savedInstanceState));
+        mDetailsContainer.addView(super.onCreateView(inflater, mDetailsContainer, savedInstanceState));
 		mHeaderView = inflater.inflate(R.layout.header_status, null, false);
 		mImagePreviewContainer = mHeaderView.findViewById(R.id.image_preview);
 		mLocationContainer = mHeaderView.findViewById(R.id.location_container);
@@ -657,14 +660,15 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		mProfileImageView = (ImageView) mHeaderView.findViewById(R.id.profile_image);
 		mTimeSourceView = (TextView) mHeaderView.findViewById(R.id.time_source);
 		mInReplyToView = (TextView) mHeaderView.findViewById(R.id.in_reply_to);
-		mRepliesView = (TextView) mHeaderView.findViewById(R.id.replies_view);
 		mFollowButton = (Button) mHeaderView.findViewById(R.id.follow);
 		mFollowIndicator = mHeaderView.findViewById(R.id.follow_indicator);
 		mFollowInfoProgress = (ProgressBar) mHeaderView.findViewById(R.id.follow_info_progress);
 		mProfileView = (ColorLabelRelativeLayout) mHeaderView.findViewById(R.id.profile);
         mImagePreviewGrid = (LinearLayout) mHeaderView.findViewById(R.id.image_grid);
+        mRepliesContainer = mHeaderView.findViewById(R.id.replies_container);
 		mRetweetsContainer = mHeaderView.findViewById(R.id.retweets_container);
 		mFavoritesContainer = mHeaderView.findViewById(R.id.favorites_container);
+        mRepliesCountView = (TextView) mHeaderView.findViewById(R.id.replies_count);
 		mRetweetsCountView = (TextView) mHeaderView.findViewById(R.id.retweets_count);
 		mFavoritesCountView = (TextView) mHeaderView.findViewById(R.id.favorites_count);
 		mLoadImagesIndicator = mHeaderView.findViewById(R.id.load_images);
@@ -761,7 +765,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		mInReplyToView.setTextSize(text_size * 0.85f);
 		mLocationView.setTextSize(text_size * 0.85f);
 		//mRetweetView.setTextSize(text_size * 0.85f);
-		mRepliesView.setTextSize(text_size * 0.85f);
 	}
 
 	@Override
@@ -1049,6 +1052,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 		}
 
+        @NonNull
 		@Override
 		public Dialog onCreateDialog(final Bundle savedInstanceState) {
 			final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
@@ -1117,56 +1121,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		}
 	}
 
-	static class ImagesAdapter extends BaseAdapter {
-
-		private final List<ParcelableMedia> mImages = new ArrayList<ParcelableMedia>();
-		private final ImageLoaderWrapper mImageLoader;
-		private final LayoutInflater mInflater;
-
-		public ImagesAdapter(final Context context) {
-			mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
-			mInflater = LayoutInflater.from(context);
-		}
-
-		public boolean addAll(final Collection<? extends ParcelableMedia> images) {
-			final boolean ret = images != null && mImages.addAll(images);
-			notifyDataSetChanged();
-			return ret;
-		}
-
-		public void clear() {
-			mImages.clear();
-			notifyDataSetChanged();
-		}
-
-		@Override
-		public int getCount() {
-			return mImages.size();
-		}
-
-		@Override
-		public ParcelableMedia getItem(final int position) {
-			return mImages.get(position);
-		}
-
-		@Override
-		public long getItemId(final int position) {
-			final ParcelableMedia spec = getItem(position);
-			return spec != null ? spec.hashCode() : 0;
-		}
-
-		@Override
-		public View getView(final int position, final View convertView, final ViewGroup parent) {
-            final View view = convertView != null ? convertView : mInflater.inflate(
-                    R.layout.gallery_item_image_preview, null);
-			final ImageView image = (ImageView) view.findViewById(R.id.image);
-			final ParcelableMedia spec = getItem(position);
-			mImageLoader.displayPreviewImage(image, spec != null ? spec.media_url : null);
-			return view;
-		}
-
-	}
-
 	static class LoadConversationTask extends AsyncTask<ParcelableStatus, Void, SingleResponse<Boolean>> {
 
 		final Handler handler;
@@ -1181,7 +1135,8 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 		@Override
 		protected SingleResponse<Boolean> doInBackground(final ParcelableStatus... params) {
-			if (params == null || params.length != 1) return new SingleResponse<Boolean>(false, null);
+            if (params == null || params.length != 1)
+                return new SingleResponse<>(false, null);
 			try {
 				final long account_id = params[0].account_id;
 				ParcelableStatus status = params[0];
@@ -1193,9 +1148,9 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 					handler.post(new AddStatusRunnable(status));
 				}
 			} catch (final TwitterException e) {
-				return new SingleResponse<Boolean>(false, e);
+                return new SingleResponse<>(false, e);
 			}
-			return new SingleResponse<Boolean>(true, null);
+            return new SingleResponse<>(true, null);
 		}
 
 		@Override

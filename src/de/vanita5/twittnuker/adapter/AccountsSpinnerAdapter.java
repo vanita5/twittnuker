@@ -82,7 +82,6 @@ public class AccountsSpinnerAdapter extends ArrayAdapter<Account> {
 				mImageLoader.displayProfileImage(icon, item.profile_image_url);
 			} else {
 				mImageLoader.cancelDisplayTask(icon);
-
 				icon.setImageResource(R.drawable.ic_profile_image_default);
 			}
 		} else {

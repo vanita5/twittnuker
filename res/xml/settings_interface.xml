@@ -7,10 +7,6 @@
 		android:key="unread_count"
 		android:title="@string/unread_count"
 		android:summary="@string/unread_count_summary"/>
-	<!--<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference-->
-		<!--android:defaultValue="false"-->
-		<!--android:key="bottom_send_button"-->
-		<!--android:title="@string/bottom_send_button"/>-->
 
 	<de.vanita5.twittnuker.preference.LeftsideComposeButtonPreference
 		android:defaultValue="false"
