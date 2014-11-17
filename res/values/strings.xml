@@ -19,7 +19,7 @@
 	<string name="signing_oauth_base_url">Signing OAuth Base URL</string>
 	<string name="signing_rest_base_url">Signing REST Base URL</string>
     <string name="api_url_format">API URL Format</string>
-    <string name="same_oauth_signing_url">Use same url for OAuth signing</string>
+    <string name="same_oauth_signing_url">Use same URL for OAuth signing</string>
 	<string name="auth_type">Auth type</string>
 	<string name="oauth">OAuth</string>
 	<string name="xauth">xAuth</string>
@@ -387,7 +387,7 @@
 	<string name="network_error">Network error.</string>
 	<string name="api_data_corrupted">API data corrupted.</string>
 	<string name="ssl_error">SSL error, you may need to enable \"Ignore SSL error\" option.</string>
-	<string name="wrong_api_key">Incorrect API url or consumer key/secret, please check them again.</string>
+	<string name="wrong_api_key">Incorrect API URL or consumer key/secret, please check them again.</string>
 	<string name="status_updated">Tweet sent.</string>
 	<string name="status_deleted">Tweet deleted.</string>
 	<string name="status_favorited">Tweet favorited.</string>
