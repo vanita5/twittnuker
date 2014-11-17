@@ -1341,19 +1341,19 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	private static class DeleteImageTask extends AsyncTask<Void, Void, Boolean> {
 
-		final ComposeActivity activity;
-		private final ParcelableMediaUpdate[] medias;
+		final ComposeActivity mActivity;
+		private final ParcelableMediaUpdate[] media;
 
-		DeleteImageTask(final ComposeActivity activity, final ParcelableMediaUpdate... medias) {
-			this.activity = activity;
-			this.medias = medias;
+		DeleteImageTask(final ComposeActivity activity, final ParcelableMediaUpdate... media) {
+			this.mActivity = activity;
+			this.media = media;
 		}
 
 		@Override
 		protected Boolean doInBackground(final Void... params) {
-			if (medias == null) return false;
+			if (media == null) return false;
 			try {
-				for (final ParcelableMediaUpdate media : medias) {
+				for (final ParcelableMediaUpdate media : this.media) {
                     if (media.uri == null) continue;
                     final Uri uri = Uri.parse(media.uri);
                     if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
@@ -1371,17 +1371,17 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 		@Override
 		protected void onPostExecute(final Boolean result) {
-			activity.setProgressVisibility(false);
-			activity.removeAllMedia(Arrays.asList(medias));
-			activity.setMenu();
+			mActivity.setProgressVisibility(false);
+			mActivity.removeAllMedia(Arrays.asList(media));
+			mActivity.setMenu();
 			if (!result) {
-				Crouton.showText(activity, R.string.error_occurred, CroutonStyle.ALERT);
+				Crouton.showText(mActivity, R.string.error_occurred, CroutonStyle.ALERT);
 			}
 		}
 
 		@Override
 		protected void onPreExecute() {
-			activity.setProgressVisibility(true);
+			mActivity.setProgressVisibility(true);
 		}
 	}
 

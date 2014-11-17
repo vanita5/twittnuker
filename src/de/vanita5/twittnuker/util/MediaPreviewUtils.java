@@ -371,7 +371,7 @@ public class MediaPreviewUtils {
 
 	public static ParcelableMedia[] getImagesInStatus(final String status_string, final boolean fullImage) {
 		if (status_string == null) return new ParcelableMedia[0];
-		final List<ParcelableMedia> images = new ArrayList<ParcelableMedia>();
+        final List<ParcelableMedia> images = new ArrayList<>();
 		final HtmlLinkExtractor extractor = new HtmlLinkExtractor();
 		for (final HtmlLink link : extractor.grabLinks(status_string)) {
 			final ParcelableMedia spec = getAllAvailableImage(link.getLink(), fullImage);
@@ -384,17 +384,17 @@ public class MediaPreviewUtils {
 
 	public static String getSupportedFirstLink(final Status status) {
 		if (status == null) return null;
-		final MediaEntity[] medias = status.getMediaEntities();
-		if (medias != null) {
-			for (final MediaEntity entity : medias) {
-				final String expanded = ParseUtils.parseString(entity.getMediaURLHttps());
+        final MediaEntity[] mediaEntities = status.getMediaEntities();
+        if (mediaEntities != null) {
+            for (final MediaEntity mediaEntity : mediaEntities) {
+                final String expanded = ParseUtils.parseString(mediaEntity.getMediaURLHttps());
 				if (getSupportedLink(expanded) != null) return expanded;
 			}
 		}
-		final URLEntity[] urls = status.getURLEntities();
-		if (urls != null) {
-			for (final URLEntity entity : urls) {
-				final String expanded = ParseUtils.parseString(entity.getExpandedURL());
+        final URLEntity[] urlEntities = status.getURLEntities();
+        if (urlEntities != null) {
+            for (final URLEntity urlEntity : urlEntities) {
+                final String expanded = ParseUtils.parseString(urlEntity.getExpandedURL());
 				if (getSupportedLink(expanded) != null) return expanded;
 			}
 		}
@@ -420,7 +420,7 @@ public class MediaPreviewUtils {
 
 	public static List<String> getSupportedLinksInStatus(final String statusString) {
 		if (statusString == null) return Collections.emptyList();
-		final List<String> links = new ArrayList<String>();
+        final List<String> links = new ArrayList<>();
 		final HtmlLinkExtractor extractor = new HtmlLinkExtractor();
 		for (final HtmlLink link : extractor.grabLinks(statusString)) {
 			final String spec = getSupportedLink(link.getLink());
