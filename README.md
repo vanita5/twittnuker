@@ -15,7 +15,6 @@ Twidere updates will almost always be merged, so you can expect the latest featu
 * Additional image preview for various image hosters (If you are missing your favorite hoster, contact me!)
 * Tweet shortening via Hotot.in (more services may follow)
 * Hotot.in link expand (view Tweets shortened with hotot.in in full length!)
-* TwitPic Upload (more to follow)
 * Love Button (Retweet + Favorite in one action)
 
 

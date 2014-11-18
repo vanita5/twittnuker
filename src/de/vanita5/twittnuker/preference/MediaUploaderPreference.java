@@ -40,10 +40,9 @@ import java.util.ArrayList;
 public class MediaUploaderPreference extends DialogPreference implements Constants {
 
     private final ServiceSpec TWITTER_SERVICE = new ServiceSpec(getContext().getString(R.string.image_uploader_default), null);
-    private final ServiceSpec TWITPIC_SERVICE = new ServiceSpec(getContext().getString(R.string.image_uploader_twitpic), SERVICE_UPLOADER_TWITPIC);
 	private final ServiceSpec TWIPPLE_SERVICE = new ServiceSpec(getContext().getString(R.string.image_uploader_twipple), SERVICE_UPLOADER_TWIPPLE);
 
-    private final ServiceSpec[] AVAILABLE_SERVICES = { TWITTER_SERVICE, TWITPIC_SERVICE, TWIPPLE_SERVICE };
+    private final ServiceSpec[] AVAILABLE_SERVICES = { TWITTER_SERVICE, TWIPPLE_SERVICE };
 
 	private SharedPreferences mPreferences;
 

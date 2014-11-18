@@ -28,7 +28,7 @@ package twitter4j.media;
  */
 public enum MediaProvider {
 
-	IMG_LY("imgly"), PLIXI("plixi"), LOCKERZ("lockerz"), TWIPPLE("twipple"), TWITGOO("twitgoo"), TWITPIC("twitpic"), YFROG("yfrog"), MOBYPICTURE("mobypicture"), POSTEROUS("posterous");
+	IMG_LY("imgly"), PLIXI("plixi"), LOCKERZ("lockerz"), TWIPPLE("twipple"), TWITGOO("twitgoo"), YFROG("yfrog"), MOBYPICTURE("mobypicture"), POSTEROUS("posterous");
 
 	private final String text;
 

@@ -61,8 +61,6 @@ public class ImageUploadFactory {
             defaultMediaProvider = TWIPPLE;
         } else if ("twitgoo".equals(mediaProvider)) {
             defaultMediaProvider = TWITGOO;
-        } else if ("twitpic".equals(mediaProvider)) {
-            defaultMediaProvider = TWITPIC;
         } else if ("yfrog".equals(mediaProvider)) {
             defaultMediaProvider = YFROG;
         } else if ("mobypicture".equals(mediaProvider)) {
@@ -130,8 +128,6 @@ public class ImageUploadFactory {
             return new TwippleUpload(conf, oauth);
         } else if (mediaProvider == TWITGOO) {
             return new TwitgooUpload(conf, oauth);
-        } else if (mediaProvider == TWITPIC) {
-            return new TwitpicUpload(conf, apiKey, oauth);
         } else if (mediaProvider == YFROG) {
             return new YFrogUpload(conf, oauth);
         } else if (mediaProvider == MOBYPICTURE) {

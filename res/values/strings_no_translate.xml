@@ -17,7 +17,6 @@
     <string name="shortening_hototin">I have super power to compress...</string>
     <string name="shortening_twitlonger">Wow, your tweet is long...</string>
 
-    <string name="image_uploader_twitpic" translatable="false">Twitpic</string>
     <string name="image_uploader_twipple" translatable="false">Twipple</string>
 
 </resources>
