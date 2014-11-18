@@ -130,9 +130,10 @@ public abstract class ParcelableStatusesListFragment extends BaseStatusesListFra
 	@Override
 	public void onLoadFinished(final Loader<List<ParcelableStatus>> loader, final List<ParcelableStatus> data) {
 		super.onLoadFinished(loader, data);
-		if (mIsFirstCreated && mPreferences.getBoolean(KEY_REFRESH_ON_START, false)) {
-			onRefreshFromStart();
-		}
+		//FIXME workaround
+//		if (mIsFirstCreated && mPreferences.getBoolean(KEY_REFRESH_ON_START, false)) {
+//			onRefreshFromStart();
+//		}
 	}
 
 	@Override

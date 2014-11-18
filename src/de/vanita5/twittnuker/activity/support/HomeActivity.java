@@ -522,7 +522,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         }
 		setContentView(R.layout.activity_home);
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONCREATE));
-		final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
+//		final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
+		final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false); //FIXME workaround
         mTabDisplayOption = getTabDisplayOptionInt(this);
 		final int initialTabPosition = handleIntent(intent, savedInstanceState == null);
 
@@ -706,7 +707,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			openSearch(this, accountId, query);
 			return -1;
 		}
-		final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
+//		final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false); FIXME workaround
+		final boolean refreshOnStart = false;
 		final long[] refreshedIds = intent.getLongArrayExtra(EXTRA_IDS);
 		if (refreshedIds != null) {
 			mTwitterWrapper.refreshAll(refreshedIds);

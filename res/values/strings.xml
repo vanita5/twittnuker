@@ -622,7 +622,6 @@
     <string name="api_url_format_help">[DOMAIN]: Twitter API domain.\nExample: https://[DOMAIN].twitter.com/ will be replaced to https://api.twitter.com/.</string>
     <string name="no_version_suffix">No version suffix</string>
     <string name="inverse_selection">Inverse selection</string>
-    <string name="edit_medias">Edit medias</string>
     <string name="medias">Medias</string>
     <string name="mute_user">Mute <xliff:g id="name">%s</xliff:g></string>
     <string name="muted_user">Muted <xliff:g id="name">%s</xliff:g></string>
@@ -700,4 +699,6 @@
     <string name="action_shortening">shortening tweet</string>
     <string name="uploading_image">Uploading...</string>
     <string name="no_tab_hint">You can add tabs in the settings</string>
+
+    <string name="refresh_on_start_workaround">Use "Refresh before streaming" instead</string>
 </resources>

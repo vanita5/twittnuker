@@ -673,7 +673,6 @@
     <string name="add"></string>
     <string name="compose_now_summary">Neuen Tweet über die Google Now Verknüpfung schreiben (Lange die Home Taste drücken)</string>
     <string name="compose_now_action">Aktion bei der Verknüpfung</string>
-    <string name="edit_medias">Medien bearbeiten</string>
     <string name="inverse_selection">Auswahl invertieren</string>
     <string name="label_streaming_service">Streaming Service</string>
     <string name="no_version_suffix">API Version nicht anhängen</string>

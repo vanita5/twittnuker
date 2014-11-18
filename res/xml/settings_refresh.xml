@@ -74,7 +74,8 @@
 		<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
 			android:defaultValue="false"
 			android:key="refresh_on_start"
-			android:summary="@string/refresh_on_start_summary"
+            android:enabled="false"
+			android:summary="@string/refresh_on_start_workaround"
 			android:title="@string/refresh_on_start"/>
 		<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
 			android:defaultValue="false"

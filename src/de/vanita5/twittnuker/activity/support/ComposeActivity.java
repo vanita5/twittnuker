@@ -944,7 +944,6 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
         Utils.setMenuItemAvailability(menu, MENU_VIEW, hasInReplyTo);
         Utils.setMenuItemAvailability(menu, R.id.medias_menu, hasMedia /*|| hasInReplyTo*/);
         Utils.setMenuItemAvailability(menu, MENU_TOGGLE_SENSITIVE, hasMedia);
-        Utils.setMenuItemAvailability(menu, MENU_EDIT_MEDIAS, hasMedia);
 
         final MenuItem itemToggleSensitive = menu.findItem(MENU_TOGGLE_SENSITIVE);
         if (itemToggleSensitive != null) {

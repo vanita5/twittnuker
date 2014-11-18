@@ -28,10 +28,6 @@
         android:visible="false">
         <menu>
             <item
-                android:id="@+id/edit_medias"
-                android:icon="@drawable/ic_action_edit"
-                android:title="@string/edit_medias"/>
-            <item
                 android:id="@id/toggle_sensitive"
                 android:checkable="true"
                 android:icon="@drawable/ic_action_warning"
