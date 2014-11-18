@@ -387,37 +387,20 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	}
 
 	private void clearNotification(final int notificationType, final long accountId) {
-        final boolean isAccountSpecific;
-		String pushNotificationType = null;
 		switch (notificationType) {
 			case NOTIFICATION_ID_HOME_TIMELINE: {
 				mNewStatuses.clear();
-				isAccountSpecific = true;
 				break;
 			}
 			case NOTIFICATION_ID_MENTIONS: {
 				mNewMentions.clear();
-				isAccountSpecific = true;
-				pushNotificationType = NotificationContent.NOTIFICATION_TYPE_MENTION;
 				break;
 			}
 			case NOTIFICATION_ID_DIRECT_MESSAGES: {
 				mNewMessages.clear();
-				isAccountSpecific = true;
-				pushNotificationType = NotificationContent.NOTIFICATION_TYPE_DIRECT_MESSAGE;
 				break;
 			}
 			default: {
-				isAccountSpecific = false;
-			}
-		}
-		if (isAccountSpecific && pushNotificationType != null) {
-			if (accountId > 0) {
-				mNotificationHelper.deleteCachedNotifications(accountId, pushNotificationType);
-			} else {
-				for (final long id : getAccountIds(getContext())) {
-					mNotificationHelper.deleteCachedNotifications(id, pushNotificationType);
-				}
 			}
 		}
 	}
@@ -791,24 +774,28 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	private synchronized int removeUnreadItems(final int tab_position, final UnreadItem... items) {
 		if (tab_position < 0 || items == null || items.length == 0) return 0;
 		final int result;
+		String notificationType = null;
 		final String type = CustomTabUtils.getAddedTabTypeAt(getContext(), tab_position);
+		final List<UnreadItem> arrItems = Arrays.asList(items);
 		if (TAB_TYPE_HOME_TIMELINE.equals(type)) {
 			final int size = mUnreadStatuses.size();
-			mUnreadStatuses.removeAll(Arrays.asList(items));
+			mUnreadStatuses.removeAll(arrItems);
 			result = size - mUnreadStatuses.size();
 			if (result != 0) {
 				saveUnreadItemsFile(mUnreadStatuses, UNREAD_STATUSES_FILE_NAME);
 			}
 		} else if (TAB_TYPE_MENTIONS_TIMELINE.equals(type)) {
+			notificationType = NotificationContent.NOTIFICATION_TYPE_MENTION;
 			final int size = mUnreadMentions.size();
-			mUnreadMentions.removeAll(Arrays.asList(items));
+			mUnreadMentions.removeAll(arrItems);
 			result = size - mUnreadMentions.size();
 			if (result != 0) {
 				saveUnreadItemsFile(mUnreadMentions, UNREAD_MENTIONS_FILE_NAME);
 			}
 		} else if (TAB_TYPE_DIRECT_MESSAGES.equals(type)) {
+			notificationType = NotificationContent.NOTIFICATION_TYPE_DIRECT_MESSAGE;
 			final int size = mUnreadMessages.size();
-			mUnreadMessages.removeAll(Arrays.asList(items));
+			mUnreadMessages.removeAll(arrItems);
 			result = size - mUnreadMessages.size();
 			if (result != 0) {
 				saveUnreadItemsFile(mUnreadMessages, UNREAD_MESSAGES_FILE_NAME);
@@ -818,6 +805,27 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (result != 0) {
 			notifyUnreadCountChanged(tab_position);
 		}
+
+		if (notificationType != null) {
+			//get unique account ids from removed items
+			List<Long> accountIds = new ArrayList<>();
+			for (UnreadItem unreadItem : arrItems) {
+				if (!accountIds.contains(unreadItem.account_id) && unreadItem.account_id > 0) {
+					accountIds.add(unreadItem.account_id);
+				}
+			}
+
+			if (!accountIds.isEmpty()) {
+				for (Long accountId : accountIds) {
+					mNotificationHelper.deleteCachedNotifications(accountId, notificationType);
+				}
+			} else { //remove for all accounts
+				for (final long id : getAccountIds(getContext())) {
+					mNotificationHelper.deleteCachedNotifications(id, notificationType);
+				}
+			}
+		}
+
 		return result;
 	}
 
