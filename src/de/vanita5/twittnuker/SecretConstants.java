@@ -6,10 +6,7 @@ package de.vanita5.twittnuker;
  */
 public interface SecretConstants {
 
-	/**
-	 * Twitpic API Keys for uploading images to twitpic
-	 */
-	public static final String TWITPIC_API_KEY = "";
+	public static final String TWITLONGER_API_KEY = "";
 
 	/**
 	 * Twitter OAuth keys
