@@ -227,8 +227,6 @@
     <string name="image_uploader_default">Domyślne (Twitter)</string>
     <string name="home_refresh">Odśwież w strumieniu głównym</string>
     <string name="error_message_image_upload_failed">Wysyłanie obrazu nie powiodło się.</string>
-  <string name="image_upload_format">Format tweeta z obrazem</string>
-  <string name="image_upload_format_summary">\"[LINK]\" = Link do obrazu\n\"[TEXT]\" = Zawartość tweeta\n(tylko rozszerzenie)</string>
   <string name="tweet_shortener">Skracanie tweeta</string>
   <string name="status_shortener">Skracacz tweetów</string>
     <string name="status_shortener_default">Brak (przerwij wysyłanie)</string>

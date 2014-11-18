@@ -1331,7 +1331,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				intent.putExtra(EXTRA_STATUS, result.getData());
 				intent.putExtra(EXTRA_FAVORITED, false);
 				mContext.sendBroadcast(intent);
-				mMessagesManager.showInfoMessage(R.string.status_unfavorited, false);
+				//mMessagesManager.showInfoMessage(R.string.status_unfavorited, false);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_unfavoriting, result.getException(), true);
 			}

@@ -401,7 +401,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 				uploadResultUrl = uploadMedia(imageFile, statusUpdate.accounts, statusUpdate.text);
 			}
 
-            final String unshortenedContent = mUseUploader && uploadResultUrl != null ? getImageUploadStatus(this,
+            final String unshortenedContent = mUseUploader && uploadResultUrl != null ? getImageUploadStatus(
 					new String[] { uploadResultUrl.toString() }, statusUpdate.text) : statusUpdate.text;
 
 			final boolean shouldShorten = mValidator.getTweetLength(unshortenedContent) > mValidator.getMaxTweetLength();

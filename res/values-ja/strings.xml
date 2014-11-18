@@ -236,8 +236,6 @@
     <string name="image_uploader_default">デフォルト（Twitter）</string>
     <string name="home_refresh">ホームTLの更新</string>
     <string name="error_message_image_upload_failed">画像をアップロードできません。</string>
-    <string name="image_upload_format">画像付きツイートの書式</string>
-    <string name="image_upload_format_summary">\"[LINK]\" = 画像リンク\n\"[TEXT]\" = ツイート内容\n(拡張機能のみ)</string>
     <string name="tweet_shortener">ツイート短縮サービス</string>
     <string name="status_shortener">ツイート短縮サービス</string>
     <string name="status_shortener_default">なし (送信を取り消す)</string>

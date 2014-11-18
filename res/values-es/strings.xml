@@ -234,8 +234,6 @@
     <string name="image_uploader_default">Predeterminado (Twitter)</string>
     <string name="home_refresh">Actualizar en la cronología</string>
     <string name="error_message_image_upload_failed">Error al subir la imagen.</string>
-    <string name="image_upload_format">Formato de tweet con imagen</string>
-    <string name="image_upload_format_summary">\"[LINK]\" = Enlace de la imagen\n\"[TEXT]\" = Contenido del tuit\n(Sólo con extensión)</string>
     <string name="tweet_shortener">Acortador de Tweets</string>
   <string name="status_shortener">Acortador de tweets</string>
   <string name="status_shortener_default">Nada (Cancelar envío)</string>

@@ -13,14 +13,6 @@
         	android:summary="%s"
 			android:title="@string/image_uploader"/>
 
-		<EditTextPreference
-			android:defaultValue="[TEXT] [LINK]"
-			android:dialogTitle="@string/image_upload_format"
-			android:key="media_upload_format"
-			android:singleLine="true"
-			android:summary="@string/image_upload_format_summary"
-			android:title="@string/image_upload_format"/>
-
 		<de.vanita5.twittnuker.preference.ImagePreloadPreference
 			android:key="image_preload_options"
 			android:title="@string/image_preload_options"/>

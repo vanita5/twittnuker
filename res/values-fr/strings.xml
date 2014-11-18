@@ -234,8 +234,6 @@
     <string name="image_uploader_default">Défaut (Twitter)</string>
     <string name="home_refresh">Actualiser le fil d\'actualité</string>
     <string name="error_message_image_upload_failed">L\'envoi de l\'image a échoué.</string>
-    <string name="image_upload_format">Format des tweets avec image</string>
-  <string name="image_upload_format_summary">\"[LIEN]\" = Lien de l\'image\n\"[TEXTE]\" = Contenu du tweet\n(Extension seulement)</string>
     <string name="tweet_shortener">Raccourcisseur de tweet</string>
   <string name="status_shortener">Raccourcisseur de tweet</string>
     <string name="status_shortener_default">Aucun (Annuler l\'envoi)</string>

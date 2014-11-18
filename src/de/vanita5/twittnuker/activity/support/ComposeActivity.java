@@ -1058,7 +1058,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	private void updateTextCount() {
         if (mSendTextCountView == null || mEditText == null) return;
         final String textOrig = parseString(mEditText.getText());
-		final String text = hasMedia() && textOrig != null ? mImageUploaderUsed ? getImageUploadStatus(this,
+		final String text = hasMedia() && textOrig != null ? mImageUploaderUsed ? getImageUploadStatus(
 		    new String[] { FAKE_IMAGE_LINK }, textOrig) : textOrig + " " + FAKE_IMAGE_LINK : textOrig;
 		final int validatedCount = text != null ? mValidator.getTweetLength(text) : 0;
         mSendTextCountView.setTextCount(validatedCount);

@@ -1767,10 +1767,9 @@ public final class Utils implements Constants, TwitterConstants {
 		return null;
 	}
 
-	public static String getImageUploadStatus(final Context context, final CharSequence[] links, final CharSequence text) {
-		if (context == null || links == null || links.length == 0) return ParseUtils.parseString(text);
-		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final String imageUploadFormat = getNonEmptyString(prefs, KEY_IMAGE_UPLOAD_FORMAT, DEFAULT_IMAGE_UPLOAD_FORMAT);
+	public static String getImageUploadStatus(final CharSequence[] links, final CharSequence text) {
+		if (links == null || links.length == 0) return ParseUtils.parseString(text);
+		final String imageUploadFormat = DEFAULT_IMAGE_UPLOAD_FORMAT;
 		return imageUploadFormat.replace(FORMAT_PATTERN_LINK, ArrayUtils.toString(links, ' ', false)).replace(
 				FORMAT_PATTERN_TEXT, text);
 	}
