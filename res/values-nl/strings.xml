@@ -599,8 +599,6 @@
   <string name="send_anyway">Toch versturen</string>
   <string name="new_direct_message">Nieuw direct bericht</string>
   <string name="plain_list_style">Simpele lijstweergave</string>
-  <string name="want_old_icon_back">Wil je het oude icon terug?</string>
-  <string name="icon_restored_message">Icon herteld!</string>
   <string name="add">Toevoegen</string>
   <string name="delete_drafts_confirm">Geselecteerde concepten verwijderen?</string>
   <string name="extra_configurations">Extra instellingen</string>

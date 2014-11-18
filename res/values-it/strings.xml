@@ -596,8 +596,6 @@
   <string name="send_anyway">Invia comunuqe</string>
   <string name="new_direct_message">Nuovi messaggi diretti</string>
   <string name="plain_list_style">Stile plain list</string>
-  <string name="want_old_icon_back">Vuoi la vecchia icona?</string>
-  <string name="icon_restored_message">Icona ripristinata!</string>
   <string name="add">Aggiungi</string>
   <string name="delete_drafts_confirm">Eliminare le bozze selezionate?</string>
   <string name="extra_configurations">Configurazioni extra</string>

@@ -594,8 +594,6 @@
   <string name="send_anyway">Enviar de todas maneras</string>
   <string name="new_direct_message">Nuevo mensaje directo</string>
   <string name="plain_list_style">Estilo plano de lista</string>
-  <string name="want_old_icon_back">¿Quiere el icono antiguo?</string>
-  <string name="icon_restored_message">Icono restaurado</string>
   <string name="add">Agregar</string>
   <string name="delete_drafts_confirm">¿Confirma que quiere eliminar los borradores?</string>
   <string name="extra_configurations">Configuraciones Extra</string>

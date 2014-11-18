@@ -603,8 +603,6 @@
   <string name="following_only_summary">只顯示來自你關注的用戶的通知</string>
   <string name="new_direct_message">新私信</string>
   <string name="plain_list_style">簡單列表樣式</string>
-  <string name="want_old_icon_back">想要原本的圖標？</string>
-  <string name="icon_restored_message">圖標已恢復！</string>
   <string name="add">添加</string>
   <string name="N_medias_quantity_one"><xliff:g id="items">%d</xliff:g>媒體</string>
   <string name="N_medias_quantity_other"><xliff:g id="items">%d</xliff:g>媒體</string>

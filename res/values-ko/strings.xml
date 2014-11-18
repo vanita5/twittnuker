@@ -587,8 +587,6 @@
   <string name="image_preview_scale_type_fit_center">가운데에 맞추기</string>
   <string name="send_anyway">상관 않고 보내기</string>
   <string name="new_direct_message">새 쪽지</string>
-  <string name="want_old_icon_back">옛 아이콘을 사용할까요?</string>
-  <string name="icon_restored_message">아이콘이 복원되었습니다!</string>
   <string name="add">추가</string>
   <string name="delete_drafts_confirm">선택된 보관된 트윗을 지울까요?</string>
   <string name="extra_configurations">추가 설정</string>

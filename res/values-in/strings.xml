@@ -595,8 +595,6 @@
   <string name="send_anyway">Kirim saja</string>
   <string name="new_direct_message">Pesan baru</string>
   <string name="plain_list_style">List dengan gaya polos</string>
-  <string name="want_old_icon_back">Ingin icon lama dikembalikan?</string>
-  <string name="icon_restored_message">Icon telah dikembalikan!</string>
   <string name="add">Tambahkan</string>
   <string name="delete_drafts_confirm">Hapus draft?</string>
   <string name="extra_configurations">Pengaturan Ekstra</string>

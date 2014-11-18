@@ -563,7 +563,5 @@
   <string name="quote_protected_status_warning_message">Ten tweet jest chroniony.\n\nUżytkownicy, którzy ustawili opcję ochrony swoich kont zazwyczaj nie chcą, żeby ich tweety były rozpowszechniane.</string>
   <string name="send_anyway">Wyślij i tak</string>
   <string name="new_direct_message">Nowa wiadomość prywatna</string>
-  <string name="want_old_icon_back">Przywrócić poprzednią ikonę?</string>
-  <string name="icon_restored_message">Ikona przywrócona!</string>
   <string name="add">Dodaj</string>
 </resources>

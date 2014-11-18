@@ -596,8 +596,6 @@
   <string name="send_anyway">Envia igualment</string>
   <string name="new_direct_message">Nou missatge directe</string>
   <string name="plain_list_style">Estil simple de llista</string>
-  <string name="want_old_icon_back">Voleu recuperar la icona antiga?</string>
-  <string name="icon_restored_message">S\'ha restaurat la icona!</string>
   <string name="add">Afegeix</string>
   <string name="delete_drafts_confirm">Voleu eliminar els esborranys seleccionats?</string>
   <string name="extra_configurations">Paràmetres addicionals</string>

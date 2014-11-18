@@ -597,8 +597,6 @@
     <string name="send_anyway">Enviar para Todos</string>
   <string name="new_direct_message">Nova mensagem direta</string>
   <string name="plain_list_style">Estilo de lista simples</string>
-  <string name="want_old_icon_back">Quer o ícone antigo de volta?</string>
-  <string name="icon_restored_message">Ícone restaurado!</string>
   <string name="add">Adicionar</string>
   <string name="delete_drafts_confirm">Excluir rascunhos selecionados?</string>
   <string name="extra_configurations">Configurações extras</string>

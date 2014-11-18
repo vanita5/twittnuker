@@ -622,8 +622,6 @@
     <string name="retweets_of_me">Meine Retweets</string>
 
     <string name="plain_list_style">Flache Liste</string>
-    <string name="want_old_icon_back">Möchtest du das alte Icon zurück?</string>
-    <string name="icon_restored_message">Icon zurückgesetzt!</string>
     <string name="delete_drafts_confirm">Ausgewählte Entwürfe löschen?</string>
     <string name="extra_configurations">Erweiterte Einstellungen</string>
 

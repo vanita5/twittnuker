@@ -599,8 +599,6 @@
     <string name="following_only_summary">フォローしているユーザーからの通知だけを表示するようにします。</string>
     <string name="new_direct_message">新規メッセージ</string>
     <string name="plain_list_style">プレーンリスト表示</string>
-    <string name="want_old_icon_back">以前のアイコンにしますか?</string>
-    <string name="icon_restored_message">元に戻しました!</string>
     <string name="add">追加</string>
     <string name="N_medias_quantity_other"><xliff:g id="items">%d</xliff:g>個のメディア</string>
     <string name="delete_drafts_confirm">選択した下書きを削除しますか?</string>

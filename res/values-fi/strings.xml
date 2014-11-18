@@ -595,8 +595,6 @@
     <string name="send_anyway">Lähetä joka tapauksessa</string>
   <string name="new_direct_message">Uusi yksityisviesti</string>
   <string name="plain_list_style">Pelkistetty listatyyli</string>
-  <string name="want_old_icon_back">Palautetaanko vanha kuvake?</string>
-  <string name="icon_restored_message">Kuvake palautettu!</string>
   <string name="add">Lisää</string>
   <string name="delete_drafts_confirm">Poistetaanko valittu luonnos?</string>
   <string name="extra_configurations">Lisäasetukset</string>

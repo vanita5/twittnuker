@@ -595,8 +595,6 @@
   <string name="send_anyway">Envoyer quand même</string>
   <string name="new_direct_message">Nouveau message privé</string>
   <string name="plain_list_style">Style liste simple</string>
-  <string name="want_old_icon_back">Vous désirez l\'ancienne icône ?</string>
-  <string name="icon_restored_message">Icône restaurée !</string>
   <string name="add">Ajouter</string>
   <string name="delete_drafts_confirm">Supprimer les brouillons sélectionnés ?</string>
   <string name="extra_configurations">Configurations supplémentaires</string>
