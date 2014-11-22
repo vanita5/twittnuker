@@ -214,7 +214,7 @@
     <string name="add_member">Mitglied hinzufügen</string>
     <string name="new_user_list">Neue Liste</string>
     <string name="is_public">Öffentlich</string>
-    <string name="send_direct_message">Direktnachricht senden</string>
+    <string name="send_direct_message">Direktnachricht</string>
     <string name="uninstall">Deinstallieren</string>
     <string name="saved_searches">Gespeicherte Suchen</string>
     <string name="tabs">Tabs</string>
@@ -441,7 +441,7 @@
     <string name="select_user_list">Wähle Benutzer-Liste aus</string>
     <string name="select_user">Benutzer wählen</string>
     <string name="created_by">Erstellt von <xliff:g id="created_by">%s</xliff:g></string>
-    <string name="add_to_list">Zu Liste hinzufügen</string>
+    <string name="add_to_list">Liste hinzufügen</string>
     <string name="account_delete_confirm_title">Account löschen</string>
     <string name="account_delete_confirm_message">Dieser Account wird von Twittnuker gelöscht.</string>
     <string name="theme">Theme</string>
@@ -556,7 +556,7 @@
     <string name="preparing_database_toast">Bereite Datenbank vor, bitte hab etwas Geduld.</string>
     <string name="action_name_saved_at_time"><xliff:g id="action">%1$s</xliff:g>, gespeichert um <xliff:g id="time">%2$s</xliff:g></string>
     <string name="update_status">Tweet senden</string>
-    <string name="sending_direct_message">Direktnachricht</string>
+    <string name="sending_direct_message">Direktnachricht senden</string>
     <string name="tab_display_option">Tab Anzeige</string>
     <string name="livewp_daydream_enabled_message">Here\'s a little present for you, find it in your system settings :)</string>
     <string name="center">Mitte</string>
