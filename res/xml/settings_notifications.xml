@@ -43,26 +43,26 @@
             android:title="@string/pebble_notifications"/>
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:key="cat_push"
-        android:title="@string/push_notifications">
+    <!--<PreferenceCategory-->
+        <!--android:key="cat_push"-->
+        <!--android:title="@string/push_notifications">-->
 
-        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
-            android:dialogTitle="@string/push_api_url"
-            android:key="push_api_url"
-            android:singleLine="true"
-            android:summary="@string/push_api_url_summary"
-            android:title="@string/push_api_url"/>
+        <!--<de.vanita5.twittnuker.preference.SummaryEditTextPreference-->
+            <!--android:dialogTitle="@string/push_api_url"-->
+            <!--android:key="push_api_url"-->
+            <!--android:singleLine="true"-->
+            <!--android:summary="@string/push_api_url_summary"-->
+            <!--android:title="@string/push_api_url"/>-->
 
-        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
-            android:dialogTitle="@string/push_api_port"
-            android:key="push_api_port"
-            android:inputType="number"
-            android:singleLine="true"
-            android:summary="@string/push_api_port_summary"
-            android:title="@string/push_api_port"/>
+        <!--<de.vanita5.twittnuker.preference.SummaryEditTextPreference-->
+            <!--android:dialogTitle="@string/push_api_port"-->
+            <!--android:key="push_api_port"-->
+            <!--android:inputType="number"-->
+            <!--android:singleLine="true"-->
+            <!--android:summary="@string/push_api_port_summary"-->
+            <!--android:title="@string/push_api_port"/>-->
 
-        <!-- TODO Add Info/Help -->
-    </PreferenceCategory>
+        <!--&lt;!&ndash; TODO Add Info/Help &ndash;&gt;-->
+    <!--</PreferenceCategory>-->
 
 </PreferenceScreen>

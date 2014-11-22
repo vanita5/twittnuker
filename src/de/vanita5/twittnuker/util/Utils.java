@@ -3721,8 +3721,7 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static void startRefreshServiceIfNeeded(final Context context) {
 		final Intent refreshServiceIntent = new Intent(context, RefreshService.class);
-		if (isNetworkAvailable(context) && hasAutoRefreshAccounts(context)
-				&& !isPushEnabled(context)) {
+		if (isNetworkAvailable(context) && hasAutoRefreshAccounts(context)) {
 			if (isDebugBuild()) {
 				Log.d(LOGTAG, "Start background refresh service");
 			}
@@ -3730,22 +3729,6 @@ public final class Utils implements Constants, TwitterConstants {
 		} else {
 			context.stopService(refreshServiceIntent);
 		}
-	}
-
-	/**
-	 * Returns true if at least one account has Push enabled
-	 * @return
-	 */
-	public static boolean isPushEnabled(final Context context) {
-		final long[] accountIds = getAccountIds(context);
-		final AccountPreferences[] accountPrefs = AccountPreferences.getAccountPreferences(context, accountIds);
-
-		for (final AccountPreferences pref : accountPrefs) {
-			if (pref.isPushEnabled()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public static void startStatusShareChooser(final Context context, final ParcelableStatus status) {

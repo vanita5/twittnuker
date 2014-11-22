@@ -458,7 +458,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	 */
 	private void createNotifications(final AccountPreferences pref, final String type,
 									 final Object o_status, final boolean build) {
-		if (mPreferences.getBoolean(KEY_ENABLE_PUSH, false)) return;
 		NotificationContent notification = null;
 
 		if (o_status instanceof ParcelableStatus) {
