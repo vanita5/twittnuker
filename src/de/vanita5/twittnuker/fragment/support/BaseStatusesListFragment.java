@@ -41,7 +41,6 @@ import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.model.Account;
@@ -66,10 +65,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static de.vanita5.twittnuker.util.Utils.cancelRetweet;
 import static de.vanita5.twittnuker.util.Utils.clearListViewChoices;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 import static de.vanita5.twittnuker.util.Utils.openStatus;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 import static de.vanita5.twittnuker.util.Utils.startStatusShareChooser;
@@ -249,14 +246,16 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
             savedChildIndex = childCount - 1;
             if (childCount > 0) {
                 final View lastChild = mListView.getChildAt(savedChildIndex);
-                mListScrollOffset = lastChild != null ? lastChild.getTop() : 0;
+                mListScrollOffset = lastChild == null ? 0
+							: lastChild.getTop() - mListView.getListPaddingTop();
             }
         } else {
             listVisiblePosition = firstVisiblePosition;
             savedChildIndex = 0;
             if (childCount > 0) {
                 final View firstChild = mListView.getChildAt(savedChildIndex);
-                mListScrollOffset = firstChild != null ? firstChild.getTop() : 0;
+                mListScrollOffset = firstChild == null ? 0
+							: firstChild.getTop() - mListView.getListPaddingTop();
             }
 		}
         final long lastViewedId = mAdapter.getStatusId(listVisiblePosition);
