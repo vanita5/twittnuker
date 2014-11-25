@@ -54,7 +54,7 @@ import org.mariotaku.menucomponent.widget.PopupMenu;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
-import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.task.AsyncTask;
@@ -83,7 +83,7 @@ abstract class BaseStatusesStaggeredGridFragment<Data> extends BasePullToRefresh
 	private SharedPreferences mPreferences;
 
 	private StaggeredGridView mListView;
-	private IStatusesAdapter<Data> mAdapter;
+	private IStatusesListAdapter<Data> mAdapter;
 	private PopupMenu mPopupMenu;
 
 	private Data mData;
@@ -113,7 +113,7 @@ abstract class BaseStatusesStaggeredGridFragment<Data> extends BasePullToRefresh
 	}
 
 	@Override
-	public IStatusesAdapter<Data> getListAdapter() {
+	public IStatusesListAdapter<Data> getListAdapter() {
 		return mAdapter;
 	}
 
@@ -368,8 +368,7 @@ abstract class BaseStatusesStaggeredGridFragment<Data> extends BasePullToRefresh
 		mListView.setFastScrollEnabled(mPreferences.getBoolean(KEY_FAST_SCROLL_THUMB, false));
 		configBaseCardAdapter(getActivity(), mAdapter);
 		final boolean display_image_preview = mPreferences.getBoolean(KEY_DISPLAY_IMAGE_PREVIEW, false);
-		final boolean display_sensitive_contents = mPreferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS,
-				true);
+		final boolean display_sensitive_contents = mPreferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, true);
 		final boolean indicate_my_status = mPreferences.getBoolean(KEY_INDICATE_MY_STATUS, true);
 		mAdapter.setDisplayImagePreview(display_image_preview);
 		mAdapter.setDisplaySensitiveContents(display_sensitive_contents);
@@ -457,7 +456,7 @@ abstract class BaseStatusesStaggeredGridFragment<Data> extends BasePullToRefresh
 
 	protected abstract void loadMoreStatuses();
 
-	protected abstract IStatusesAdapter<Data> newAdapterInstance();
+	protected abstract IStatusesListAdapter<Data> newAdapterInstance();
 
 	@Override
 	protected void onReachedBottom() {
@@ -549,7 +548,7 @@ abstract class BaseStatusesStaggeredGridFragment<Data> extends BasePullToRefresh
 
 	static class RemoveUnreadCountsTask<T> extends AsyncTask<Void, Void, Void> {
 		private final List<Integer> read_positions;
-		private final IStatusesAdapter<T> adapter;
+		private final IStatusesListAdapter<T> adapter;
 		private final BaseStatusesStaggeredGridFragment<T> fragment;
 
 		RemoveUnreadCountsTask(final List<Integer> read_positions, final BaseStatusesStaggeredGridFragment<T> fragment) {

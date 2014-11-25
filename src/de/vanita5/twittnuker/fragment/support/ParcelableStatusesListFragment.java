@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.encodeQueryParams;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +32,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
-import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.loader.support.DummyParcelableStatusesLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.ArrayUtils;
@@ -42,6 +40,8 @@ import de.vanita5.twittnuker.util.ArrayUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static de.vanita5.twittnuker.util.Utils.encodeQueryParams;
 
 public abstract class ParcelableStatusesListFragment extends BaseStatusesListFragment<List<ParcelableStatus>> {
 
@@ -139,7 +139,7 @@ public abstract class ParcelableStatusesListFragment extends BaseStatusesListFra
 	@Override
 	public void onRefreshFromStart() {
 		if (isRefreshing()) return;
-		final IStatusesAdapter<List<ParcelableStatus>> adapter = getListAdapter();
+        final IStatusesListAdapter<List<ParcelableStatus>> adapter = getListAdapter();
 		final int count = adapter.getCount();
 		final ParcelableStatus status = count > 0 ? adapter.getStatus(0) : null;
 		if (status != null) {
@@ -174,14 +174,14 @@ public abstract class ParcelableStatusesListFragment extends BaseStatusesListFra
 
 	@Override
 	protected final long[] getNewestStatusIds() {
-		final IStatusesAdapter<List<ParcelableStatus>> adapter = getListAdapter();
+        final IStatusesListAdapter<List<ParcelableStatus>> adapter = getListAdapter();
 		final long last_id = adapter.getCount() > 0 ? adapter.getStatus(0).id : -1;
 		return last_id > 0 ? new long[] { last_id } : null;
 	}
 
 	@Override
 	protected final long[] getOldestStatusIds() {
-		final IStatusesAdapter<List<ParcelableStatus>> adapter = getListAdapter();
+        final IStatusesListAdapter<List<ParcelableStatus>> adapter = getListAdapter();
 		final ParcelableStatus status = adapter.getLastStatus();
 		final long last_id = status != null ? status.id : -1;
 		return last_id > 0 ? new long[] { last_id } : null;
@@ -204,7 +204,7 @@ public abstract class ParcelableStatusesListFragment extends BaseStatusesListFra
 	@Override
 	protected void loadMoreStatuses() {
 		if (isRefreshing()) return;
-		final IStatusesAdapter<List<ParcelableStatus>> adapter = getListAdapter();
+        final IStatusesListAdapter<List<ParcelableStatus>> adapter = getListAdapter();
 		final ParcelableStatus status = adapter.getLastStatus();
 		if (status != null) {
 			getStatuses(new long[] { status.account_id }, new long[] { status.id }, null);

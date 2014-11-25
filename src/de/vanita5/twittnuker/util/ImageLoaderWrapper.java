@@ -36,11 +36,14 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.imageloader.AccountExtra;
+import de.vanita5.twittnuker.util.imageloader.OvalBitmapDisplayer;
 
 public class ImageLoaderWrapper implements Constants {
 
 	private final ImageLoader mImageLoader;
-	private final DisplayImageOptions mProfileImageDisplayOptions, mImageDisplayOptions, mBannerDisplayOptions;
+    private final DisplayImageOptions mProfileImageDisplayOptions;
+    private final DisplayImageOptions mOvalProfileImageDisplayOptions;
+    private final DisplayImageOptions mImageDisplayOptions, mBannerDisplayOptions;
 
 	public ImageLoaderWrapper(final ImageLoader loader) {
 		mImageLoader = loader;
@@ -52,6 +55,15 @@ public class ImageLoaderWrapper implements Constants {
         profileOptsBuilder.showImageOnLoading(R.drawable.ic_profile_image_default);
         profileOptsBuilder.bitmapConfig(Bitmap.Config.ARGB_8888);
 		profileOptsBuilder.resetViewBeforeLoading(true);
+        final DisplayImageOptions.Builder ovalProfileOptsBuilder = new DisplayImageOptions.Builder();
+        ovalProfileOptsBuilder.cacheInMemory(true);
+        ovalProfileOptsBuilder.cacheOnDisk(true);
+        ovalProfileOptsBuilder.showImageForEmptyUri(R.drawable.ic_profile_image_default);
+        ovalProfileOptsBuilder.showImageOnFail(R.drawable.ic_profile_image_default);
+        ovalProfileOptsBuilder.showImageOnLoading(R.drawable.ic_profile_image_default);
+        ovalProfileOptsBuilder.bitmapConfig(Bitmap.Config.ARGB_8888);
+        ovalProfileOptsBuilder.displayer(new OvalBitmapDisplayer());
+        ovalProfileOptsBuilder.resetViewBeforeLoading(true);
 		final DisplayImageOptions.Builder imageOptsBuilder = new DisplayImageOptions.Builder();
 		imageOptsBuilder.cacheInMemory(true);
 		imageOptsBuilder.cacheOnDisk(true);
@@ -64,6 +76,7 @@ public class ImageLoaderWrapper implements Constants {
         bannerOptsBuilder.displayer(new FadeInBitmapDisplayer(200, true, true, false));
 
         mProfileImageDisplayOptions = profileOptsBuilder.build();
+        mOvalProfileImageDisplayOptions = ovalProfileOptsBuilder.build();
 		mImageDisplayOptions = imageOptsBuilder.build();
 		mBannerDisplayOptions = bannerOptsBuilder.build();
 	}
@@ -76,8 +89,8 @@ public class ImageLoaderWrapper implements Constants {
 		mImageLoader.clearMemoryCache();
 	}
 
-	public void displayPreviewImage(final ImageView view, final String url) {
-		mImageLoader.displayImage(url, view, mImageDisplayOptions);
+    public void displayPreviewImage(final String uri, final ImageView view) {
+        mImageLoader.displayImage(uri, view, mImageDisplayOptions);
 	}
 
 	public void displayPreviewImage(final ImageView view, final String url, final ImageLoadingHandler loadingHandler) {
@@ -104,6 +117,10 @@ public class ImageLoaderWrapper implements Constants {
 
 	public void loadProfileImage(final String url, final ImageLoadingListener listener) {
 		mImageLoader.loadImage(url, mProfileImageDisplayOptions, listener);
+    }
+
+    public void displayOvalProfileImage(final String url, final ImageView view) {
+        mImageLoader.displayImage(url, view, mOvalProfileImageDisplayOptions);
     }
 
     public void cancelDisplayTask(ImageView imageView) {

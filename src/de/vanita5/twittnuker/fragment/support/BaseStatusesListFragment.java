@@ -42,7 +42,7 @@ import android.widget.ListView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
-import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
 import de.vanita5.twittnuker.model.Panes;
@@ -81,7 +81,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 	private SharedPreferences mPreferences;
 
 	private ListView mListView;
-	private IStatusesAdapter<Data> mAdapter;
+    private IStatusesListAdapter<Data> mAdapter;
 
 	private Data mData;
 	private ParcelableStatus mSelectedStatus;
@@ -110,7 +110,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 	}
 
 	@Override
-	public IStatusesAdapter<Data> getListAdapter() {
+    public IStatusesListAdapter<Data> getListAdapter() {
 		return mAdapter;
 	}
 
@@ -489,7 +489,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 
 	protected abstract void loadMoreStatuses();
 
-	protected abstract IStatusesAdapter<Data> newAdapterInstance(boolean compact, boolean plain);
+    protected abstract IStatusesListAdapter<Data> newAdapterInstance(boolean compact, boolean plain);
 
 	@Override
 	protected void onReachedBottom() {
@@ -576,7 +576,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 
 	static class RemoveUnreadCountsTask<T> extends AsyncTask<Void, Void, Void> {
         private final List<Integer> read_positions;
-		private final IStatusesAdapter<T> adapter;
+        private final IStatusesListAdapter<T> adapter;
 		private final BaseStatusesListFragment<T> fragment;
 
         RemoveUnreadCountsTask(final List<Integer> read_positions, final BaseStatusesListFragment<T> fragment) {

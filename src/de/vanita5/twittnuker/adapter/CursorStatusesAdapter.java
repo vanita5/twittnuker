@@ -47,7 +47,7 @@ import android.widget.ImageView.ScaleType;
 import java.util.Locale;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -61,7 +61,7 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.iface.ICardItemView.OnOverflowIconClickListener;
 
-public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatusesAdapter<Cursor>, OnClickListener,
+public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatusesListAdapter<Cursor>, OnClickListener,
 		OnOverflowIconClickListener {
 
 	public static final String[] CURSOR_COLS = Statuses.COLUMNS;
@@ -147,15 +147,15 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 			final String name = cursor.getString(mIndices.user_name);
 			final String inReplyToName = cursor.getString(mIndices.in_reply_to_user_name);
 			final String inReplyToScreenName = cursor.getString(mIndices.in_reply_to_user_screen_name);
-			final ParcelableMedia[] medias = ParcelableMedia.fromJSONString(cursor.getString(mIndices.medias));
-			final String firstMedia = medias != null && medias.length > 0 ? medias[0].media_url : null;
+			final ParcelableMedia[] media = ParcelableMedia.fromJSONString(cursor.getString(mIndices.medias));
+            final String firstMedia = media != null && media.length > 0 ? media[0].media_url : null;
 
 			// Tweet type (favorite/location/media)
 			final boolean isFavorite = cursor.getShort(mIndices.is_favorite) == 1;
 			final boolean isMyRetweet = cursor.getLong(mIndices.my_retweet_id) > 0;
 			final boolean hasLocation = !TextUtils.isEmpty(cursor.getString(mIndices.location));
 			final boolean possiblySensitive = cursor.getInt(mIndices.is_possibly_sensitive) == 1;
-			final boolean hasMedia = medias != null && medias.length > 0;
+            final boolean hasMedia = media != null && media.length > 0;
 
 			// User type (protected/verified)
 			final boolean isVerified = cursor.getShort(mIndices.is_verified) == 1;
@@ -230,7 +230,7 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 			}
             final boolean hasPreview = mDisplayImagePreview && (hasMedia || hasCustomMedia);
             holder.image_preview_container.setVisibility(hasPreview ? View.VISIBLE : View.GONE);
-            if (hasPreview && (firstMedia != null || customMediaLink != null) && medias != null) {
+            if (hasPreview && (firstMedia != null || customMediaLink != null) && media != null) {
 				if (mImagePreviewScaleType != null) {
 					holder.image_preview.setScaleType(mImagePreviewScaleType);
 				}
@@ -247,7 +247,7 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
                     mImageLoader.displayPreviewImage(holder.image_preview, customMediaLink, mImageLoadingHandler);
                 }
 				final Resources res = mContext.getResources();
-				final int count = medias.length;
+				final int count = media.length;
 				holder.image_preview_count.setText(res.getQuantityString(R.plurals.N_medias, count, count));
 				holder.image_preview.setTag(position);
             } else {

@@ -29,7 +29,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.loader.support.UserTimelineLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
@@ -59,7 +59,7 @@ public class UserTimelineFragment extends ParcelableStatusesListFragment {
         final String screenName = args != null ? args.getString(EXTRA_SCREEN_NAME) : null;
         final boolean isMyTimeline = userId > 0 ? accountId == userId : accountId == getAccountId(getActivity(),
                 screenName);
-		final IStatusesAdapter<List<ParcelableStatus>> adapter = getListAdapter();
+		final IStatusesListAdapter<List<ParcelableStatus>> adapter = getListAdapter();
         adapter.setIndicateMyStatusDisabled(isMyTimeline);
         adapter.setFiltersEnabled(!isMyTimeline);
 		adapter.setIgnoredFilterFields(true, false, false, false, false);

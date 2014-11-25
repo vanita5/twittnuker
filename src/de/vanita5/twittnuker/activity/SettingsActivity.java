@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.activity;
 
 import android.app.ActionBar;
 import android.app.Fragment;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,7 +40,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.DataExportActivity;
@@ -60,10 +58,12 @@ public class SettingsActivity extends BasePreferenceActivity {
 
 	private HeaderAdapter mAdapter;
 
-	private int mCurrentThemeColor, mCurrentThemeBackgroundAlpha, mCurrentActionBarColor;
+	private int mCurrentThemeColor, mThemeBackgroundAlpha, mCurrentActionBarColor;
 	private boolean mCompactCards, mPlainListStyle;
 
-	private String mCurrentThemeFontFamily;
+    private String mTheme;
+    private String mThemeFontFamily;
+    private String mThemeBackground;
 
 	@Override
 	public void finish() {
@@ -126,8 +126,8 @@ public class SettingsActivity extends BasePreferenceActivity {
 	}
 
 	@Override
-	public void switchToHeader(final Header header) {
-		if (header == null || header.fragment == null && header.intent == null) return;
+    public void switchToHeader(@NonNull final Header header) {
+        if (header.fragment == null && header.intent == null) return;
 		super.switchToHeader(header);
 	}
 
@@ -154,10 +154,12 @@ public class SettingsActivity extends BasePreferenceActivity {
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mCompactCards = mPreferences.getBoolean(KEY_COMPACT_CARDS, false);
 		mPlainListStyle = mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false);
+        mTheme = mPreferences.getString(KEY_THEME, DEFAULT_THEME);
+        mThemeBackground = mPreferences.getString(KEY_THEME_BACKGROUND, DEFAULT_THEME_BACKGROUND);
+        mThemeBackgroundAlpha = mPreferences.getInt(KEY_THEME_BACKGROUND_ALPHA, DEFAULT_THEME_BACKGROUND_ALPHA);
+        mThemeFontFamily = mPreferences.getString(KEY_THEME_FONT_FAMILY, DEFAULT_THEME_FONT_FAMILY);
         mCurrentThemeColor = ThemeUtils.getUserAccentColor(this);
 		mCurrentActionBarColor = ThemeUtils.getActionBarColor(this);
-		mCurrentThemeFontFamily = getThemeFontFamily();
-		mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		super.onCreate(savedInstanceState);
 		setIntent(getIntent().addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
 		final ActionBar actionBar = getActionBar();
@@ -170,13 +172,14 @@ public class SettingsActivity extends BasePreferenceActivity {
 	}
 
 	private boolean shouldNotifyThemeChange() {
-		return mCompactCards != mPreferences.getBoolean(KEY_COMPACT_CARDS, false)
-				|| mPlainListStyle != mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false)
-                || getThemeResourceId() != getCurrentThemeResourceId()
-                || ThemeUtils.getUserAccentColor(this) != mCurrentThemeColor
-				|| ThemeUtils.getActionBarColor(this) != mCurrentActionBarColor
-				|| !CompareUtils.objectEquals(getThemeFontFamily(), mCurrentThemeFontFamily)
-                || getThemeBackgroundAlpha() != mCurrentThemeBackgroundAlpha;
+		return !CompareUtils.objectEquals(mTheme, mPreferences.getString(KEY_THEME, DEFAULT_THEME))
+				|| !CompareUtils.objectEquals(mThemeFontFamily, mPreferences.getString(KEY_THEME_FONT_FAMILY, DEFAULT_THEME_FONT_FAMILY))
+				|| !CompareUtils.objectEquals(mThemeBackground, mPreferences.getString(KEY_THEME_BACKGROUND, DEFAULT_THEME_BACKGROUND))
+				|| mCurrentThemeColor != ThemeUtils.getUserAccentColor(this)
+				|| mCurrentActionBarColor != ThemeUtils.getActionBarColor(this)
+				|| mThemeBackgroundAlpha != mPreferences.getInt(KEY_THEME_BACKGROUND_ALPHA, DEFAULT_THEME_BACKGROUND_ALPHA)
+				|| mCompactCards != mPreferences.getBoolean(KEY_COMPACT_CARDS, false)
+				|| mPlainListStyle != mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false);
 	}
 
 	private static class HeaderAdapter extends ArrayAdapter<Header> {

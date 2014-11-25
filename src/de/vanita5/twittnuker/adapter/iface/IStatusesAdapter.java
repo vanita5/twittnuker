@@ -19,52 +19,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package de.vanita5.twittnuker.adapter.iface;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
-public interface IStatusesAdapter<Data> extends IBaseCardAdapter {
-
-	public int findPositionByStatusId(final long statusId);
-
-	public long getAccountId(final int position);
-
-	public int getActualCount();
-
-	public ParcelableStatus getLastStatus();
-
-	public long getLastStatusId();
+public interface IStatusesAdapter {
 
 	public ParcelableStatus getStatus(int position);
-
-	public long getStatusId(final int position);
-
-	public boolean isLastItemFiltered();
-
-	public void setCardHighlightOption(String option);
-
-	public void setData(Data data);
-
-	public void setDisplayImagePreview(boolean display);
-
-	public void setDisplaySensitiveContents(boolean display);
-
-	public void setFavoritesHightlightDisabled(boolean disable);
-
-	public void setFiltersEnabled(boolean enabled);
-
-	public void setGapDisallowed(boolean disallowed);
-
-	public void setHighlightKeyword(String... keywords);
-
-	public void setIgnoredFilterFields(final boolean user, final boolean textPlain, final boolean textHtml,
-									   final boolean source, final boolean retweetedById);
-
-	public void setImagePreviewScaleType(String scaleType);
-
-	public void setIndicateMyStatusDisabled(boolean disable);
-
-	public void setMentionsHightlightDisabled(boolean disable);
-
 }

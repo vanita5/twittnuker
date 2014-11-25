@@ -33,7 +33,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
@@ -59,7 +59,7 @@ import static de.vanita5.twittnuker.util.Utils.openImage;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 
 public class ParcelableStatusesAdapter extends BaseArrayAdapter<ParcelableStatus> implements
-		IStatusesAdapter<List<ParcelableStatus>>, OnClickListener, OnOverflowIconClickListener {
+        IStatusesListAdapter<List<ParcelableStatus>>, OnClickListener, OnOverflowIconClickListener {
 
 	private final Context mContext;
 	private final MultiSelectManager mMultiSelectManager;

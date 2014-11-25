@@ -28,7 +28,7 @@ import android.support.v4.content.Loader;
 
 import java.util.List;
 
-import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.loader.support.RetweetsOfMeLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
@@ -48,7 +48,7 @@ public class RetweetsOfMeFragment extends ParcelableStatusesListFragment {
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		final IStatusesAdapter<List<ParcelableStatus>> adapter = getListAdapter();
+		final IStatusesListAdapter<List<ParcelableStatus>> adapter = getListAdapter();
 		adapter.setIndicateMyStatusDisabled(false);
 		adapter.setFiltersEnabled(true);
 		adapter.setIgnoredFilterFields(true, false, false, false, false);

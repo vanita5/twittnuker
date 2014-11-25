@@ -26,7 +26,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.loader.support.UserListTimelineLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
@@ -52,7 +52,7 @@ public class UserListTimelineFragment extends ParcelableStatusesListFragment {
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		final IStatusesAdapter<List<ParcelableStatus>> adapter = getListAdapter();
+		final IStatusesListAdapter<List<ParcelableStatus>> adapter = getListAdapter();
 		adapter.setFiltersEnabled(true);
 		adapter.setIgnoredFilterFields(false, false, false, false, false);
 	}
