@@ -397,12 +397,13 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 	}
 
 	public int updateStatusAsync(final long[] accountIds, final String text, final ParcelableLocation location,
-								 final ParcelableMediaUpdate[] medias, final long inReplyToStatusId, final boolean isPossiblySensitive) {
+                                 final ParcelableMediaUpdate[] media, final long inReplyToStatusId,
+                                 final boolean isPossiblySensitive) {
 		final ParcelableStatusUpdate.Builder builder = new ParcelableStatusUpdate.Builder();
         builder.accounts(Account.getAccounts(mContext, accountIds));
 		builder.text(text);
 		builder.location(location);
-		builder.medias(medias);
+		builder.medias(media);
 		builder.inReplyToStatusId(inReplyToStatusId);
 		builder.isPossiblySensitive(isPossiblySensitive);
 		return updateStatusesAsync(builder.build());
@@ -1331,7 +1332,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				intent.putExtra(EXTRA_STATUS, result.getData());
 				intent.putExtra(EXTRA_FAVORITED, false);
 				mContext.sendBroadcast(intent);
-				//mMessagesManager.showInfoMessage(R.string.status_unfavorited, false);
+                mMessagesManager.showInfoMessage(R.string.status_unfavorited, false);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_unfavoriting, result.getException(), true);
 			}
@@ -1447,18 +1448,22 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected SingleResponse<twitter4j.Status> doInBackground(final Void... params) {
             final Twitter twitter = getTwitterInstance(mContext, account_id, false);
 			if (twitter == null) return SingleResponse.getInstance();
+            twitter4j.Status status = null;
+            TwitterException exception = null;
 			try {
-                final twitter4j.Status status = twitter.destroyStatus(status_id);
+                status = twitter.destroyStatus(status_id);
+            } catch (final TwitterException e) {
+                exception = e;
+            }
+            if (status != null || (exception != null && exception.getErrorCode() == HttpResponseCode.NOT_FOUND)) {
                 final ContentValues values = new ContentValues();
                 values.put(Statuses.MY_RETWEET_ID, -1);
                 for (final Uri uri : TweetStore.STATUSES_URIS) {
                     mResolver.delete(uri, Statuses.STATUS_ID + " = " + status_id, null);
                     mResolver.update(uri, values, Statuses.MY_RETWEET_ID + " = " + status_id, null);
                 }
-                return SingleResponse.getInstance(status, null);
-            } catch (final TwitterException e) {
-                return SingleResponse.getInstance(null, e);
             }
+            return SingleResponse.getInstance(status, exception);
         }
 
 		@Override
