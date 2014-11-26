@@ -51,7 +51,7 @@ public class GetGCMTokenTask extends AsyncTask<Void, Void, String> implements Co
 		}
 		if (token != null) {
 			//TODO
-			mPreferences.edit().putString(KEY_GOOGLE_ACCOUNT, mEmail).commit();
+			mPreferences.edit().putString(KEY_GOOGLE_ACCOUNT, mEmail).apply();
 		}
 		return token;
 	}

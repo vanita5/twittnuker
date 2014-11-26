@@ -50,7 +50,7 @@ public class GCMHelper implements TwittnukerConstants {
 		preferencesWrapper.edit()
 				.putString(KEY_REGID, regid)
 				.putInt(KEY_APP_VERSION, getAppVersion(context))
-				.commit();
+				.apply();
 	}
 
 	private static void setPushRegistered(final Context context, final boolean success) {
@@ -58,7 +58,7 @@ public class GCMHelper implements TwittnukerConstants {
 				.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		preferencesWrapper.edit()
 				.putBoolean(KEY_PUSH_REGISTERED, success)
-				.commit();
+				.apply();
 	}
 
 	/**
