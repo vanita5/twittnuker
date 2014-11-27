@@ -50,14 +50,13 @@ import org.mariotaku.menucomponent.internal.Utils;
 import org.mariotaku.menucomponent.widget.MenuBar.MenuBarMenuInfo;
 import org.mariotaku.refreshnow.widget.RefreshNowConfig;
 import org.mariotaku.refreshnow.widget.RefreshNowProgressIndicator.IndicatorConfig;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 public class ThemeUtils implements Constants {
 
@@ -66,7 +65,7 @@ public class ThemeUtils implements Constants {
 	private static final int[] ANIM_CLOSE_STYLE_ATTRS = { android.R.attr.activityCloseEnterAnimation,
 			android.R.attr.activityCloseExitAnimation };
 
-	private static final String[] sClassPrefixList = { "android.widget.", "android.webkit." };
+    private static final String[] sClassPrefixList = {"android.widget.", "android.webkit.", "de.vanita5.twittnuker.view"};
 
 	private ThemeUtils() {
 		throw new AssertionError();
@@ -185,6 +184,9 @@ public class ThemeUtils implements Constants {
 
 	public static RefreshNowConfig buildRefreshNowConfig(final Context context) {
 		final RefreshNowConfig.Builder builder = new RefreshNowConfig.Builder(context);
+        builder.minPullDivisor(2);
+        builder.extraPullDivisor(1);
+        builder.maxOverScrollDistance(72);
 		return builder.build();
 	}
 

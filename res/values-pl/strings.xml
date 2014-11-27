@@ -83,9 +83,9 @@
     <string name="look_and_feel">Wygląd</string>
     <string name="display_profile_image">Wyświetl obraz profilu</string>
     <string name="image_load_summary">Wyłączenie zwiększy prędkość przewijania listy i zmniejszy ilość przesyłanych danych.</string>
-    <string name="in_reply_to">W odpowiedzi do <xliff:g id="user_name">%s</xliff:g></string>
-    <string name="retweeted_by"><xliff:g id="user_name">%s</xliff:g> przesłał dalej</string>
-    <string name="retweeted_by_with_count"><xliff:g id="user_name">%1$s</xliff:g> oraz <xliff:g id="retweet_count">%2$d</xliff:g> innych przesłało dalej</string>
+    <string name="in_reply_to_name">W odpowiedzi do <xliff:g id="user_name">%s</xliff:g></string>
+    <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> przesłał dalej</string>
+    <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> oraz <xliff:g id="retweet_count">%2$d</xliff:g> innych przesłało dalej</string>
     <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> przesłało dalej</string>
     <string name="users_retweeted_this">Użytkownicy którzy to przesłali dalej</string>
     <string name="reply_to">Odpowiedz do <xliff:g id="user_name">%s</xliff:g></string>

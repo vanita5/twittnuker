@@ -22,30 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import static android.os.Environment.getExternalStorageState;
-import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.model.ParcelableLocation.isValidLocation;
-import static de.vanita5.twittnuker.util.ParseUtils.parseString;
-import static de.vanita5.twittnuker.util.ThemeUtils.getActionBarBackground;
-import static de.vanita5.twittnuker.util.ThemeUtils.getComposeThemeResource;
-import static de.vanita5.twittnuker.util.ThemeUtils.getUserAccentColor;
-import static de.vanita5.twittnuker.util.ThemeUtils.getWindowContentOverlayForCompose;
-import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
-import static de.vanita5.twittnuker.util.Utils.copyStream;
-import static de.vanita5.twittnuker.util.Utils.getAccountColors;
-import static de.vanita5.twittnuker.util.Utils.getAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
-import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
-import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
-import static de.vanita5.twittnuker.util.Utils.getImageUploadStatus;
-import static de.vanita5.twittnuker.util.Utils.getQuoteStatus;
-import static de.vanita5.twittnuker.util.Utils.getShareStatus;
-import static de.vanita5.twittnuker.util.Utils.getStatusTypeIconRes;
-import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
-import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
-import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -103,15 +79,11 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import org.mariotaku.dynamicgridview.DraggableArrayAdapter;
-
 import com.nostra13.universalimageloader.utils.IoUtils;
 import com.twitter.Extractor;
 
+import org.mariotaku.dynamicgridview.DraggableArrayAdapter;
 import org.mariotaku.menucomponent.internal.widget.IListPopupWindow;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.BaseArrayAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -141,7 +113,7 @@ import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.ColorLabelFrameLayout;
 import de.vanita5.twittnuker.view.StatusTextCountView;
 import de.vanita5.twittnuker.view.TwidereMenuBar;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder;
+import de.vanita5.twittnuker.view.holder.StatusListViewHolder;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -154,6 +126,33 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
+
+import static android.os.Environment.getExternalStorageState;
+import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.model.ParcelableLocation.isValidLocation;
+import static de.vanita5.twittnuker.util.ParseUtils.parseString;
+import static de.vanita5.twittnuker.util.ThemeUtils.getActionBarBackground;
+import static de.vanita5.twittnuker.util.ThemeUtils.getComposeThemeResource;
+import static de.vanita5.twittnuker.util.ThemeUtils.getUserAccentColor;
+import static de.vanita5.twittnuker.util.ThemeUtils.getWindowContentOverlayForCompose;
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
+import static de.vanita5.twittnuker.util.Utils.copyStream;
+import static de.vanita5.twittnuker.util.Utils.getAccountColors;
+import static de.vanita5.twittnuker.util.Utils.getAccountIds;
+import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
+import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
+import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
+import static de.vanita5.twittnuker.util.Utils.getDisplayName;
+import static de.vanita5.twittnuker.util.Utils.getImageUploadStatus;
+import static de.vanita5.twittnuker.util.Utils.getQuoteStatus;
+import static de.vanita5.twittnuker.util.Utils.getShareStatus;
+import static de.vanita5.twittnuker.util.Utils.getStatusTypeIconRes;
+import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
+import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
+import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
 public class ComposeActivity extends BaseSupportDialogActivity implements TextWatcher, LocationListener,
         OnMenuItemClickListener, OnClickListener, OnEditorActionListener, OnLongClickListener, OnItemClickListener {
@@ -181,7 +180,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	private AsyncTask<Void, Void, ?> mTask;
     private IListPopupWindow mAccountSelectorPopup;
 	private TextView mTitleView, mSubtitleView;
-	private GridView mMediasPreviewGrid;
+    private GridView mMediaPreviewGrid;
 
     private TwidereMenuBar mMenuBar;
 	private EditText mEditText;
@@ -386,7 +385,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		mEditText = (EditText) findViewById(R.id.edit_text);
 		mTitleView = (TextView) findViewById(R.id.actionbar_title);
 		mSubtitleView = (TextView) findViewById(R.id.actionbar_subtitle);
-		mMediasPreviewGrid = (GridView) findViewById(R.id.medias_thumbnail_preview);
+		mMediaPreviewGrid = (GridView) findViewById(R.id.medias_thumbnail_preview);
         mMenuBar = (TwidereMenuBar) findViewById(R.id.menu_bar);
 		mProgress = (ProgressBar) findViewById(R.id.actionbar_progress_indeterminate);
 		final View composeActionBar = findViewById(R.id.compose_actionbar);
@@ -446,7 +445,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	@Override
 	public void onSaveInstanceState(final Bundle outState) {
 		outState.putLongArray(EXTRA_ACCOUNT_IDS, mSendAccountIds);
-		outState.putParcelableArrayList(EXTRA_MEDIAS, new ArrayList<Parcelable>(getMediasList()));
+		outState.putParcelableArrayList(EXTRA_MEDIAS, new ArrayList<Parcelable>(getMediaList()));
 		outState.putBoolean(EXTRA_IS_POSSIBLY_SENSITIVE, mIsPossiblySensitive);
 		outState.putParcelable(EXTRA_STATUS, mInReplyToStatus);
 		outState.putLong(EXTRA_STATUS_ID, mInReplyToStatusId);
@@ -486,7 +485,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	public void removeAllMedia(final List<ParcelableMediaUpdate> list) {
 		mMediaPreviewAdapter.removeAll(list);
-		updateMediasPreview();
+        updateMediaPreview();
 	}
 
 	public void saveToDrafts() {
@@ -498,7 +497,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		builder.location(mRecentLocation);
 		builder.isPossiblySensitive(mIsPossiblySensitive);
 		if (hasMedia()) {
-			builder.medias(getMedias());
+			builder.medias(getMedia());
 		}
 		final ContentValues values = ContentValuesCreator.makeStatusDraftContentValues(builder.build());
 		mResolver.insert(Drafts.CONTENT_URI, values);
@@ -544,7 +543,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
         mSelectAccountButton.setOnLongClickListener(this);
 
 		mMediaPreviewAdapter = new MediaPreviewAdapter(this);
-		mMediasPreviewGrid.setAdapter(mMediaPreviewAdapter);
+        mMediaPreviewGrid.setAdapter(mMediaPreviewAdapter);
 
 		final Intent intent = getIntent();
 
@@ -552,9 +551,9 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			// Restore from previous saved state
 			mSendAccountIds = savedInstanceState.getLongArray(EXTRA_ACCOUNT_IDS);
 			mIsPossiblySensitive = savedInstanceState.getBoolean(EXTRA_IS_POSSIBLY_SENSITIVE);
-			final ArrayList<ParcelableMediaUpdate> mediasList = savedInstanceState.getParcelableArrayList(EXTRA_MEDIAS);
-			if (mediasList != null) {
-				addMedias(mediasList);
+			final ArrayList<ParcelableMediaUpdate> mediaList = savedInstanceState.getParcelableArrayList(EXTRA_MEDIAS);
+            if (mediaList != null) {
+                addMedia(mediaList);
 			}
 			mInReplyToStatus = savedInstanceState.getParcelable(EXTRA_STATUS);
 			mInReplyToStatusId = savedInstanceState.getLong(EXTRA_STATUS_ID);
@@ -590,7 +589,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		mSendView.setOnLongClickListener(this);
         setMenu();
         updateAccountSelection();
-		updateMediasPreview();
+        updateMediaPreview();
     }
 
 	@Override
@@ -621,17 +620,17 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	private void addMedia(final ParcelableMediaUpdate media) {
 		mMediaPreviewAdapter.add(media);
-		updateMediasPreview();
+        updateMediaPreview();
 	}
 
-	private void addMedias(final List<ParcelableMediaUpdate> medias) {
-		mMediaPreviewAdapter.addAll(medias);
-		updateMediasPreview();
+    private void addMedia(final List<ParcelableMediaUpdate> media) {
+        mMediaPreviewAdapter.addAll(media);
+        updateMediaPreview();
 	}
 
 	private void clearMedia() {
 		mMediaPreviewAdapter.clear();
-		updateMediasPreview();
+        updateMediaPreview();
 	}
 
 	private Uri createTempImageUri() {
@@ -667,12 +666,12 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		return provider != null;
 	}
 
-	private ParcelableMediaUpdate[] getMedias() {
-		final List<ParcelableMediaUpdate> list = getMediasList();
+    private ParcelableMediaUpdate[] getMedia() {
+        final List<ParcelableMediaUpdate> list = getMediaList();
 		return list.toArray(new ParcelableMediaUpdate[list.size()]);
 	}
 
-	private List<ParcelableMediaUpdate> getMediasList() {
+    private List<ParcelableMediaUpdate> getMediaList() {
 		return mMediaPreviewAdapter.getAsList();
 	}
 
@@ -713,7 +712,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		mEditText.setSelection(selection_end);
 		mSendAccountIds = draft.account_ids;
 		if (draft.medias != null) {
-			addMedias(Arrays.asList(draft.medias));
+			addMedia(Arrays.asList(draft.medias));
 		}
 		mIsPossiblySensitive = draft.is_possibly_sensitive;
 		mInReplyToStatusId = draft.in_reply_to_status_id;
@@ -898,34 +897,15 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	private void setMenu() {
         if (mMenuBar == null) return;
-		final int activatedColor = getUserAccentColor(this);
-		final boolean hasMedia = hasMedia(), hasInReplyTo = mInReplyToStatus != null;
         final Menu menu = mMenuBar.getMenu();
-
-		final MenuItem itemAddImageSubmenu = menu.findItem(R.id.add_image_submenu);
-		if (itemAddImageSubmenu != null) {
-			final Drawable iconAddImage = itemAddImageSubmenu.getIcon();
-			iconAddImage.mutate();
-			if (hasMedia) {
-				iconAddImage.setColorFilter(activatedColor, Mode.SRC_ATOP);
-			} else {
-				iconAddImage.clearColorFilter();
-			}
-		}
-
         final MenuItem itemAttachLocation = menu.findItem(MENU_ADD_LOCATION);
         if (itemAttachLocation != null) {
-			final Drawable iconAttachLocation = itemAttachLocation.getIcon().mutate();
             final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
             if (attachLocation && getLocation()) {
-				iconAttachLocation.setColorFilter(activatedColor, Mode.SRC_ATOP);
-				itemAttachLocation.setTitle(R.string.remove_location);
                 itemAttachLocation.setChecked(true);
             } else {
                 setProgressVisibility(false);
                 mPreferences.edit().putBoolean(KEY_ATTACH_LOCATION, false).apply();
-				iconAttachLocation.clearColorFilter();
-				itemAttachLocation.setTitle(R.string.add_location);
                 itemAttachLocation.setChecked(false);
             }
         }
@@ -933,6 +913,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
         if (viewItem != null) {
             viewItem.setVisible(mInReplyToStatus != null);
         }
+        final boolean hasMedia = hasMedia(), hasInReplyTo = mInReplyToStatus != null;
 
         /*
          * No media & Not reply: [[Take photo][Add image]][Attach location][Drafts]
@@ -948,17 +929,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
         final MenuItem itemToggleSensitive = menu.findItem(MENU_TOGGLE_SENSITIVE);
         if (itemToggleSensitive != null) {
             itemToggleSensitive.setChecked(hasMedia && mIsPossiblySensitive);
-			if (hasMedia) {
-				final Drawable iconToggleSensitive = itemToggleSensitive.getIcon().mutate();
-				if (mIsPossiblySensitive) {
-					itemToggleSensitive.setTitle(R.string.remove_sensitive_mark);
-					iconToggleSensitive.setColorFilter(activatedColor, Mode.SRC_ATOP);
-				} else {
-					itemToggleSensitive.setTitle(R.string.mark_as_sensitive);
-					iconToggleSensitive.clearColorFilter();
-				}
-			}
-        }
+		}
         mMenuBar.show();
 	}
 
@@ -992,11 +963,11 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
         mSelectAccountButton.drawEnd(getAccountColors(this, mSendAccountIds));
 	}
 
-	private void updateMediasPreview() {
+    private void updateMediaPreview() {
 		final int count = mMediaPreviewAdapter.getCount();
 		final Resources res = getResources();
 		final int maxColumns = res.getInteger(R.integer.grid_column_image_preview);
-		mMediasPreviewGrid.setNumColumns(MathUtils.clamp(count, maxColumns, 1));
+        mMediaPreviewGrid.setNumColumns(MathUtils.clamp(count, maxColumns, 1));
 	}
 
 	private void updateStatus() {
@@ -1028,7 +999,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		final boolean linkToQuotedTweet = mPreferences.getBoolean(KEY_LINK_TO_QUOTED_TWEET, true);
 		final long inReplyToStatusId = !isQuote || linkToQuotedTweet ? mInReplyToStatusId : -1;
 		final boolean isPossiblySensitive = hasMedia && mIsPossiblySensitive;
-		mTwitterWrapper.updateStatusAsync(mSendAccountIds, text, statusLocation, getMedias(), inReplyToStatusId,
+        mTwitterWrapper.updateStatusAsync(mSendAccountIds, text, statusLocation, getMedia(), inReplyToStatusId,
 				isPossiblySensitive);
 		if (mPreferences.getBoolean(KEY_NO_CLOSE_AFTER_TWEET_SENT, false)
 				&& (mInReplyToStatus == null || mInReplyToStatusId <= 0)) {
@@ -1144,7 +1115,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	public static class ViewStatusDialogFragment extends BaseSupportDialogFragment {
 
-		private StatusViewHolder mHolder;
+        private StatusListViewHolder mHolder;
 
 		public ViewStatusDialogFragment() {
 			setStyle(STYLE_NO_TITLE, 0);
@@ -1177,7 +1148,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			final String retweeted_by_screen_name = status.retweeted_by_screen_name;
 
 			final boolean is_my_status = status.account_id == status.user_id;
-            final boolean hasMedia = status.medias != null && status.medias.length > 0;
+            final boolean hasMedia = status.media != null && status.media.length > 0;
 			mHolder.setUserColor(getUserColor(getActivity(), status.user_id, true));
 			mHolder.setHighlightColor(getCardHighlightColor(status, false));
 
@@ -1192,18 +1163,18 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			mHolder.reply_retweet_status.setVisibility(status.in_reply_to_status_id != -1 || status.is_retweet ? View.VISIBLE : View.GONE);
 			if (status.is_retweet && !TextUtils.isEmpty(retweeted_by_name) && !TextUtils.isEmpty(retweeted_by_screen_name)) {
 				if (!prefs.getBoolean(KEY_NAME_FIRST, true)) {
-					mHolder.reply_retweet_status.setText(status.retweet_count > 1 ? getString(R.string.retweeted_by_with_count,
+					mHolder.reply_retweet_status.setText(status.retweet_count > 1 ? getString(R.string.retweeted_by_name_with_count,
 							retweeted_by_screen_name, status.retweet_count - 1)
-							: getString(R.string.retweeted_by, retweeted_by_screen_name));
+							: getString(R.string.retweeted_by_name, retweeted_by_screen_name));
 				} else {
-					mHolder.reply_retweet_status.setText(status.retweet_count > 1 ? getString(R.string.retweeted_by_with_count,
-							retweeted_by_name, status.retweet_count - 1) : getString(R.string.retweeted_by, retweeted_by_name));
+					mHolder.reply_retweet_status.setText(status.retweet_count > 1 ? getString(R.string.retweeted_by_name_with_count,
+							retweeted_by_name, status.retweet_count - 1) : getString(R.string.retweeted_by_name, retweeted_by_name));
 				}
-				mHolder.reply_retweet_status.setText(status.retweet_count > 1 ? getString(R.string.retweeted_by_with_count,
-						retweeted_by_name, status.retweet_count - 1) : getString(R.string.retweeted_by, retweeted_by_name));
+				mHolder.reply_retweet_status.setText(status.retweet_count > 1 ? getString(R.string.retweeted_by_name_with_count,
+						retweeted_by_name, status.retweet_count - 1) : getString(R.string.retweeted_by_name, retweeted_by_name));
 				mHolder.reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_retweet, 0, 0, 0);
 			} else if (status.in_reply_to_status_id > 0 && !TextUtils.isEmpty(status.in_reply_to_screen_name)) {
-				mHolder.reply_retweet_status.setText(getString(R.string.in_reply_to, status.in_reply_to_screen_name));
+				mHolder.reply_retweet_status.setText(getString(R.string.in_reply_to_name, status.in_reply_to_screen_name));
 				mHolder.reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_conversation, 0, 0, 0);
 			}
 			if (prefs.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true)) {
@@ -1219,7 +1190,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		@Override
 		public View onCreateView(final LayoutInflater inflater, final ViewGroup parent, final Bundle savedInstanceState) {
 			final ScrollView view = (ScrollView) inflater.inflate(R.layout.dialog_scrollable_status, parent, false);
-			mHolder = new StatusViewHolder(view.getChildAt(0));
+            mHolder = new StatusListViewHolder(view.getChildAt(0));
 			return view;
 		}
 
@@ -1341,18 +1312,18 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	private static class DeleteImageTask extends AsyncTask<Void, Void, Boolean> {
 
 		final ComposeActivity mActivity;
-		private final ParcelableMediaUpdate[] media;
+        private final ParcelableMediaUpdate[] mMedia;
 
 		DeleteImageTask(final ComposeActivity activity, final ParcelableMediaUpdate... media) {
 			this.mActivity = activity;
-			this.media = media;
+            this.mMedia = media;
 		}
 
 		@Override
 		protected Boolean doInBackground(final Void... params) {
-			if (media == null) return false;
+            if (mMedia == null) return false;
 			try {
-				for (final ParcelableMediaUpdate media : this.media) {
+                for (final ParcelableMediaUpdate media : mMedia) {
                     if (media.uri == null) continue;
                     final Uri uri = Uri.parse(media.uri);
                     if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
@@ -1371,7 +1342,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		@Override
 		protected void onPostExecute(final Boolean result) {
 			mActivity.setProgressVisibility(false);
-			mActivity.removeAllMedia(Arrays.asList(media));
+            mActivity.removeAllMedia(Arrays.asList(mMedia));
 			mActivity.setMenu();
 			if (!result) {
 				Crouton.showText(mActivity, R.string.error_occurred, CroutonStyle.ALERT);
@@ -1386,15 +1357,15 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	private static class DiscardTweetTask extends AsyncTask<Void, Void, Void> {
 
-		final ComposeActivity activity;
+        final ComposeActivity mActivity;
 
 		DiscardTweetTask(final ComposeActivity activity) {
-			this.activity = activity;
+            this.mActivity = activity;
 		}
 
 		@Override
 		protected Void doInBackground(final Void... params) {
-            for (final ParcelableMediaUpdate media : activity.getMediasList()) {
+            for (final ParcelableMediaUpdate media : mActivity.getMediaList()) {
                 if (media.uri == null) continue;
                 final Uri uri = Uri.parse(media.uri);
                 if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
@@ -1409,13 +1380,13 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 		@Override
 		protected void onPostExecute(final Void result) {
-			activity.setProgressVisibility(false);
-			activity.finish();
+            mActivity.setProgressVisibility(false);
+            mActivity.finish();
 		}
 
 		@Override
 		protected void onPreExecute() {
-			activity.setProgressVisibility(true);
+            mActivity.setProgressVisibility(true);
 		}
 	}
 

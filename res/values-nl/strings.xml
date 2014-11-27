@@ -84,9 +84,9 @@
   <string name="look_and_feel">Vormgeving en stijl</string>
   <string name="display_profile_image">Geef profielafbeeldingen weer</string>
   <string name="image_load_summary">Dit uitschakelen versnelt het scrollen en vermindert data verkeer.</string>
-  <string name="in_reply_to">In antwoord aan <xliff:g id="user_name">%s</xliff:g>;</string>
-  <string name="retweeted_by"><xliff:g id="user_name">%s</xliff:g> retweet dit</string>
-  <string name="retweeted_by_with_count"><xliff:g id="user_name">%1$s</xliff:g> en <xliff:g id="retweet_count">%2$d</xliff:g> anderen hebben dit geretweet</string>
+  <string name="in_reply_to_name">In antwoord aan <xliff:g id="user_name">%s</xliff:g>;</string>
+  <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> retweet dit</string>
+  <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> en <xliff:g id="retweet_count">%2$d</xliff:g> anderen hebben dit geretweet</string>
   <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> personen hebben dit geretweet</string>
   <string name="users_retweeted_this">Gebruikers retweet dit</string>
   <string name="users_favorited_this">Gebruikers hebben dit toegevoegd als favoriet</string>

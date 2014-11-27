@@ -19,23 +19,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.vanita5.twittnuker.adapter.iface;
 
-import android.content.Context;
+package de.vanita5.twittnuker.view.holder;
 
-import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
-public interface IStatusesAdapter {
-
-    ImageLoaderWrapper getImageLoader();
-
-    Context getContext();
-
-    ImageLoadingHandler getImageLoadingHandler();
-
-    ParcelableStatus getStatus(int position);
-
-    int getStatusCount();
+public class LoadIndicatorViewHolder extends RecyclerView.ViewHolder {
+	public LoadIndicatorViewHolder(View view) {
+		super(view);
+	}
 }

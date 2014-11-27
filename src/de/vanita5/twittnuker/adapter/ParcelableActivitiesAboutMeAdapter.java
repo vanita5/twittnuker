@@ -36,11 +36,10 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
-import de.vanita5.twittnuker.view.holder.ActivityViewHolder;
+import de.vanita5.twittnuker.view.holder.ActivityListViewHolder;
 
 public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivitiesAdapter {
 
@@ -58,7 +57,7 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 	}
 
 	@Override
-	public void bindView(final int position, final ActivityViewHolder holder, final ParcelableActivity item) {
+	public void bindView(final int position, final ActivityListViewHolder holder, final ParcelableActivity item) {
 		if (item == null) return;
 		final ParcelableUser[] sources = item.sources;
 		if (sources == null || sources.length == 0) return;
@@ -198,7 +197,7 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 		}
 	}
 
-	private void displayStatus(final ParcelableStatus status, final ActivityViewHolder holder, final int position) {
+	private void displayStatus(final ParcelableStatus status, final ActivityListViewHolder holder, final int position) {
 
 		final boolean showGap = status.is_gap && !mGapDisallowed && position != getCount() - 1;
 		final boolean displayProfileImage = isDisplayProfileImage();

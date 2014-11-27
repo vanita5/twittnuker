@@ -310,14 +310,14 @@ public interface TweetStore {
 		public static final String SENDER_PROFILE_IMAGE_URL = "sender_profile_image_url";
 		public static final String RECIPIENT_PROFILE_IMAGE_URL = "recipient_profile_image_url";
 
-		public static final String MEDIAS = "medias";
+		public static final String MEDIA = "medias";
 
 		public static final String FIRST_MEDIA = "first_media";
 
 		public static final String[] COLUMNS = new String[] { _ID, ACCOUNT_ID, MESSAGE_ID, MESSAGE_TIMESTAMP,
 				SENDER_ID, RECIPIENT_ID, IS_OUTGOING, TEXT_HTML, TEXT_PLAIN, TEXT_UNESCAPED, SENDER_NAME,
 				RECIPIENT_NAME, SENDER_SCREEN_NAME, RECIPIENT_SCREEN_NAME, SENDER_PROFILE_IMAGE_URL,
-				RECIPIENT_PROFILE_IMAGE_URL, MEDIAS, FIRST_MEDIA };
+				RECIPIENT_PROFILE_IMAGE_URL, MEDIA, FIRST_MEDIA };
 		public static final String[] TYPES = new String[] { TYPE_PRIMARY_KEY, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT,
 				TYPE_INT, TYPE_BOOLEAN, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
 				TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT };
@@ -439,7 +439,7 @@ public interface TweetStore {
 
 		public static final String IN_REPLY_TO_STATUS_ID = "in_reply_to_status_id";
 
-		public static final String MEDIAS = "medias";
+		public static final String MEDIA = "medias";
 
 		public static final String IS_POSSIBLY_SENSITIVE = "is_possibly_sensitive";
 
@@ -449,7 +449,7 @@ public interface TweetStore {
 
 		public static final String ACTION_EXTRAS = "action_extras";
 
-		public static final String[] COLUMNS = new String[] { _ID, TEXT, ACCOUNT_IDS, LOCATION, MEDIAS,
+        public static final String[] COLUMNS = new String[]{_ID, TEXT, ACCOUNT_IDS, LOCATION, MEDIA,
 				IN_REPLY_TO_STATUS_ID, IS_POSSIBLY_SENSITIVE, TIMESTAMP, ACTION_TYPE, ACTION_EXTRAS };
 
 		public static final String[] TYPES = new String[] { TYPE_PRIMARY_KEY, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
@@ -688,6 +688,8 @@ public interface TweetStore {
 
 		public static final String RETWEETED_BY_USER_SCREEN_NAME = "retweeted_by_user_screen_name";
 
+        public static final String RETWEETED_BY_USER_PROFILE_IMAGE = "retweeted_by_user_profile_image";
+
 		/**
 		 * Timestamp of the status.<br>
 		 * Type: INTEGER (long)
@@ -696,7 +698,7 @@ public interface TweetStore {
 
 		public static final String MY_RETWEET_ID = "my_retweet_id";
 
-        public static final String MEDIAS = "medias";
+        public static final String MEDIA = "medias";
 
         public static final String FIRST_MEDIA = "first_media";
 
@@ -711,18 +713,18 @@ public interface TweetStore {
 		public static final String[] COLUMNS = new String[]{_ID, ACCOUNT_ID, STATUS_ID, USER_ID,
 				STATUS_TIMESTAMP, TEXT_HTML, TEXT_PLAIN, TEXT_UNESCAPED, USER_NAME, USER_SCREEN_NAME,
 				USER_PROFILE_IMAGE_URL, IN_REPLY_TO_STATUS_ID, IN_REPLY_TO_USER_ID, IN_REPLY_TO_USER_NAME,
-				IN_REPLY_TO_USER_SCREEN_NAME, SOURCE, LOCATION, RETWEET_COUNT, FAVORITE_COUNT,
-				REPLY_COUNT, DESCENDENT_REPLY_COUNT, RETWEET_ID, RETWEET_TIMESTAMP,
-				RETWEETED_BY_USER_ID, RETWEETED_BY_USER_NAME, RETWEETED_BY_USER_SCREEN_NAME,
-				MY_RETWEET_ID, IS_RETWEET, IS_FAVORITE, IS_PROTECTED, IS_VERIFIED, IS_FOLLOWING,
-				IS_GAP, IS_POSSIBLY_SENSITIVE, MEDIAS, FIRST_MEDIA, MENTIONS};
+				IN_REPLY_TO_USER_SCREEN_NAME, SOURCE, LOCATION, RETWEET_COUNT, FAVORITE_COUNT, REPLY_COUNT,
+				DESCENDENT_REPLY_COUNT, RETWEET_ID, RETWEET_TIMESTAMP, RETWEETED_BY_USER_ID,
+				RETWEETED_BY_USER_NAME, RETWEETED_BY_USER_SCREEN_NAME, RETWEETED_BY_USER_PROFILE_IMAGE,
+				MY_RETWEET_ID, IS_RETWEET, IS_FAVORITE, IS_PROTECTED, IS_VERIFIED, IS_FOLLOWING, IS_GAP,
+				IS_POSSIBLY_SENSITIVE, MEDIA, FIRST_MEDIA, MENTIONS};
 
 		public static final String[] TYPES = new String[]{TYPE_PRIMARY_KEY, TYPE_INT, TYPE_INT,
 				TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
-				TYPE_INT, TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT,
-				TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_INT,
-				TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN,
-				TYPE_BOOLEAN, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT};
+                TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_INT,
+                TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT,
+                TYPE_TEXT, TYPE_INT, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN,
+                TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT};
 
 	}
 

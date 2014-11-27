@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.loader.support;
 
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-import static de.vanita5.twittnuker.util.Utils.truncateStatuses;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -36,17 +33,20 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
 import de.vanita5.twittnuker.util.TwitterWrapper.StatusListResponse;
 
-import twitter4j.Paging;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import twitter4j.Paging;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+
+import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.Utils.truncateStatuses;
 
 public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
 
@@ -58,16 +58,16 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
 	private final Object[] mSavedStatusesFileArgs;
 
 	public Twitter4JStatusesLoader(final Context context, final long account_id, final long max_id,
-			final long since_id, final List<ParcelableStatus> data, final String[] saved_statuses_args,
-			final int tab_position) {
-		super(context, data, tab_position);
+                                   final long since_id, final List<ParcelableStatus> data, final String[] savedStatusesArgs,
+                                   final int tabPosition) {
+        super(context, data, tabPosition);
 		mContext = context;
 		mAccountId = account_id;
 		mMaxId = max_id;
 		mSinceId = since_id;
 		mDatabase = TwittnukerApplication.getInstance(context).getSQLiteDatabase();
 		mHandler = new Handler();
-		mSavedStatusesFileArgs = saved_statuses_args;
+        mSavedStatusesFileArgs = savedStatusesArgs;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -121,7 +121,7 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
 			}
 		}
         saveCachedData(serializationFile, data);
-        return new CopyOnWriteArrayList<ParcelableStatus>(data);
+        return new CopyOnWriteArrayList<>(data);
 	}
 
 	protected abstract List<Status> getStatuses(Twitter twitter, Paging paging) throws TwitterException;

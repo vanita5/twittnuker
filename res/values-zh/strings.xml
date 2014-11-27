@@ -86,9 +86,9 @@
     <string name="look_and_feel">觀感</string>
     <string name="display_profile_image">顯示個人資料圖片</string>
     <string name="image_load_summary">關閉可以加快列表的滾動速度，以及減少數據流量</string>
-    <string name="in_reply_to">回覆<xliff:g id="user_name">%s</xliff:g></string>
-    <string name="retweeted_by"><xliff:g id="user_name">%s</xliff:g>轉推了這個</string>
-    <string name="retweeted_by_with_count"><xliff:g id="user_name">%1$s</xliff:g>和其他<xliff:g id="retweet_count">%2$d</xliff:g>人轉推了這個</string>
+    <string name="in_reply_to_name">回覆<xliff:g id="user_name">%s</xliff:g></string>
+    <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g>轉推了這個</string>
+    <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g>和其他<xliff:g id="retweet_count">%2$d</xliff:g>人轉推了這個</string>
     <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g>人轉推了這條推文</string>
     <string name="users_retweeted_this">轉推了這條推文的用戶</string>
   <string name="users_favorited_this">收藏這條推文的用戶</string>

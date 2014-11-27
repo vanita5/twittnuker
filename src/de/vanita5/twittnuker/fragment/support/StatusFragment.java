@@ -22,37 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.ThemeUtils.getUserAccentColor;
-import static de.vanita5.twittnuker.util.UserColorUtils.clearUserColor;
-import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
-import static de.vanita5.twittnuker.util.UserColorUtils.setUserColor;
-import static de.vanita5.twittnuker.util.Utils.findStatus;
-import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
-import static de.vanita5.twittnuker.util.Utils.getAccountColor;
-import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
-import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
-import static de.vanita5.twittnuker.util.Utils.getMapStaticImageUri;
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
-import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
-import static de.vanita5.twittnuker.util.Utils.isSameAccount;
-import static de.vanita5.twittnuker.util.Utils.openImageDirectly;
-import static de.vanita5.twittnuker.util.Utils.openMap;
-import static de.vanita5.twittnuker.util.Utils.openStatus;
-import static de.vanita5.twittnuker.util.Utils.openStatusFavoriters;
-import static de.vanita5.twittnuker.util.Utils.openStatusReplies;
-import static de.vanita5.twittnuker.util.Utils.openStatusRetweeters;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-import static de.vanita5.twittnuker.util.Utils.scrollListToPosition;
-import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
-import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
-import static de.vanita5.twittnuker.util.Utils.showOkMessage;
-import static de.vanita5.twittnuker.util.Utils.startStatusShareChooser;
-import static de.vanita5.twittnuker.util.Utils.retweet;
-import static de.vanita5.twittnuker.util.Utils.favorite;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -103,12 +72,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.mariotaku.refreshnow.widget.RefreshMode;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
-import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
+import de.vanita5.twittnuker.adapter.ParcelableStatusesListAdapter;
 import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.Account;
@@ -133,16 +101,47 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 import de.vanita5.twittnuker.view.ExtendedFrameLayout;
-
 import de.vanita5.twittnuker.view.StatusTextView;
 import de.vanita5.twittnuker.view.TwidereMenuBar;
-import twitter4j.Relationship;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import twitter4j.Relationship;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+
+import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.ThemeUtils.getUserAccentColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.clearUserColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
+import static de.vanita5.twittnuker.util.UserColorUtils.setUserColor;
+import static de.vanita5.twittnuker.util.Utils.findStatus;
+import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
+import static de.vanita5.twittnuker.util.Utils.getAccountColor;
+import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
+import static de.vanita5.twittnuker.util.Utils.getDisplayName;
+import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
+import static de.vanita5.twittnuker.util.Utils.getMapStaticImageUri;
+import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
+import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
+import static de.vanita5.twittnuker.util.Utils.isSameAccount;
+import static de.vanita5.twittnuker.util.Utils.openImageDirectly;
+import static de.vanita5.twittnuker.util.Utils.openMap;
+import static de.vanita5.twittnuker.util.Utils.openStatus;
+import static de.vanita5.twittnuker.util.Utils.openStatusFavoriters;
+import static de.vanita5.twittnuker.util.Utils.openStatusReplies;
+import static de.vanita5.twittnuker.util.Utils.openStatusRetweeters;
+import static de.vanita5.twittnuker.util.Utils.openUserProfile;
+import static de.vanita5.twittnuker.util.Utils.scrollListToPosition;
+import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
+import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
+import static de.vanita5.twittnuker.util.Utils.showOkMessage;
+import static de.vanita5.twittnuker.util.Utils.startStatusShareChooser;
+import static de.vanita5.twittnuker.util.Utils.retweet;
+import static de.vanita5.twittnuker.util.Utils.favorite;
 
 public class StatusFragment extends ParcelableStatusesListFragment implements OnClickListener, Panes.Right,
 		OnMediaClickListener, OnSharedPreferenceChangeListener, ActionMode.Callback {
@@ -399,14 +398,14 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		mTimeSourceView.setMovementMethod(LinkMovementMethod.getInstance());
 
 		final String in_reply_to = getDisplayName(status.in_reply_to_name, status.in_reply_to_screen_name, name_first);
-		mInReplyToView.setText(getString(R.string.in_reply_to, in_reply_to));
+		mInReplyToView.setText(getString(R.string.in_reply_to_name, in_reply_to));
 
 		if (mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true)) {
 			mImageLoader.displayProfileImage(mProfileImageView, status.user_profile_image_url);
 		} else {
 			mProfileImageView.setImageResource(R.drawable.ic_profile_image_default);
 		}
-		mImagePreviewContainer.setVisibility(status.medias == null || status.medias.length == 0 ? View.GONE
+		mImagePreviewContainer.setVisibility(status.media == null || status.media.length == 0 ? View.GONE
 				: View.VISIBLE);
 		if (display_image_preview) {
 			loadPreviewImages();
@@ -443,47 +442,6 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		} else {
 			mFollowIndicator.setVisibility(View.GONE);
 		}
-
-		//TEMPORARY FIX for accent color
-		//remove as soon as TwidereMenuBar is working
-		if (mMenuBar != null) {
-			final int activatedColor = getUserAccentColor(mMenuBar.getContext());
-			final Menu menu = mMenuBar.getMenu();
-
-			final MenuItem itemRetweetSubmenu = menu.findItem(R.id.retweet_submenu);
-			if (itemRetweetSubmenu != null) {
-				final Drawable icon = itemRetweetSubmenu.getIcon();
-				icon.mutate();
-				if (isMyRetweet(status)) {
-					icon.setColorFilter(activatedColor, Mode.SRC_ATOP);
-				} else {
-					icon.clearColorFilter();
-				}
-			}
-
-			final MenuItem itemFavorite = menu.findItem(R.id.favorite);
-			if (itemFavorite != null) {
-				final Drawable icon = itemFavorite.getIcon();
-				icon.mutate();
-				if (status.is_favorite) {
-					icon.setColorFilter(activatedColor, Mode.SRC_ATOP);
-				} else {
-					icon.clearColorFilter();
-				}
-			}
-
-			final MenuItem itemLove = menu.findItem(R.id.love);
-			if (itemLove != null) {
-				final Drawable icon = itemLove.getIcon();
-				icon.mutate();
-				if (isMyRetweet(status) && status.is_favorite) {
-					icon.setColorFilter(activatedColor, Mode.SRC_ATOP);
-				} else {
-					icon.clearColorFilter();
-				}
-			}
-		}
-
 		updateConversationInfo();
 		scrollToStart();
 	}
@@ -922,7 +880,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		final List<ParcelableStatus> data = getData();
 		if (data == null) return;
 		data.add(status);
-		final ParcelableStatusesAdapter adapter = (ParcelableStatusesAdapter) getListAdapter();
+        final ParcelableStatusesListAdapter adapter = (ParcelableStatusesListAdapter) getListAdapter();
 		adapter.setData(data);
 		if (!mLoadMoreAutomatically && !mLoadConversationsAutomatically && mShouldScroll) {
 			setSelection(0);
@@ -960,9 +918,9 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		mLoadImagesIndicator.setVisibility(View.GONE);
         mImagePreviewGrid.setVisibility(View.VISIBLE);
         mImagePreviewGrid.removeAllViews();
-        if (mStatus.medias != null) {
+        if (mStatus.media != null) {
             final int maxColumns = getResources().getInteger(R.integer.grid_column_image_preview);
-            MediaPreviewUtils.addToLinearLayout(mImagePreviewGrid, mImageLoader, mStatus.medias, maxColumns, this);
+            MediaPreviewUtils.addToLinearLayout(mImagePreviewGrid, mImageLoader, mStatus.media, maxColumns, this);
         }
 	}
 

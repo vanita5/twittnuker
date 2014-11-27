@@ -84,9 +84,9 @@
     <string name="look_and_feel">Entorn i comportament</string>
     <string name="display_profile_image">Mostra la imatge del perfil</string>
     <string name="image_load_summary">Desactivant aquesta opció s\'incrementarà la velocitat del desplaçament i es reduirà l\'ús de dades.</string>
-    <string name="in_reply_to">En resposta a <xliff:g id="user_name">%s</xliff:g></string>
-    <string name="retweeted_by"><xliff:g id="user_name">%s</xliff:g> ho ha repiulat</string>
-    <string name="retweeted_by_with_count"><xliff:g id="user_name">%1$s</xliff:g> i <xliff:g id="retweet_count">%2$d</xliff:g> més ho han repiulat</string>
+    <string name="in_reply_to_name">En resposta a <xliff:g id="user_name">%s</xliff:g></string>
+    <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> ho ha repiulat</string>
+    <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> i <xliff:g id="retweet_count">%2$d</xliff:g> més ho han repiulat</string>
     <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> usuaris ho han repiulat</string>
     <string name="users_retweeted_this">Usuaris que han repiulat</string>
   <string name="users_favorited_this">Usuaris que ho han marcat com a preferit</string>

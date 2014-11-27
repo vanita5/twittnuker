@@ -56,7 +56,7 @@ import de.vanita5.twittnuker.util.PositionManager;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.collection.NoDuplicatesCopyOnWriteArrayList;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder;
+import de.vanita5.twittnuker.view.holder.StatusListViewHolder;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -164,8 +164,8 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 	@Override
 	public boolean onItemLongClick(final AdapterView<?> parent, final View view, final int position, final long id) {
 		final Object tag = view.getTag();
-		if (tag instanceof StatusViewHolder) {
-			final StatusViewHolder holder = (StatusViewHolder) tag;
+        if (tag instanceof StatusListViewHolder) {
+            final StatusListViewHolder holder = (StatusListViewHolder) tag;
 			final ParcelableStatus status = mAdapter.getStatus(position - mListView.getHeaderViewsCount());
 			final AsyncTwitterWrapper twitter = getTwitterWrapper();
 			if (twitter != null) {
@@ -199,7 +199,7 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 	@Override
 	public void onListItemClick(final ListView l, final View v, final int position, final long id) {
 		final Object tag = v.getTag();
-		if (tag instanceof StatusViewHolder) {
+        if (tag instanceof StatusListViewHolder) {
 			final int pos = position - l.getHeaderViewsCount();
 			final ParcelableStatus status = mAdapter.getStatus(pos);
 			if (status == null) return;
@@ -207,8 +207,8 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 			if (twitter != null) {
 				TwitterWrapper.removeUnreadCounts(getActivity(), getTabPosition(), status.account_id, status.id);
 			}
-			if (((StatusViewHolder) tag).show_as_gap) {
-				final long since_id = position + 1 < mAdapter.getActualCount() ? mAdapter.getStatus(pos + 1).id : -1;
+            if (((StatusListViewHolder) tag).show_as_gap) {
+                final long since_id = position + 1 < mAdapter.getStatusCount() ? mAdapter.getStatus(pos + 1).id : -1;
 				getStatuses(new long[] { status.account_id }, new long[] { status.id }, new long[] { since_id });
 				mListView.setItemChecked(position, false);
 			} else {

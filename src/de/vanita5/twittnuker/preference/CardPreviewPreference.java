@@ -42,14 +42,14 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.view.CardItemLinearLayout;
 import de.vanita5.twittnuker.view.ForegroundImageView;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder;
+import de.vanita5.twittnuker.view.holder.StatusListViewHolder;
 
 public class CardPreviewPreference extends Preference implements Constants, OnSharedPreferenceChangeListener {
 
 	private final LayoutInflater mInflater;
 	private final SharedPreferences mPreferences;
 	private final TwidereLinkify mLinkify;
-	private StatusViewHolder mHolder;
+	private StatusListViewHolder mHolder;
 	private boolean mCompactModeChanged;
 
 	public CardPreviewPreference(final Context context) {
@@ -93,7 +93,7 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
 		final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, true);
 		final boolean display_image_preview = mPreferences.getBoolean(KEY_DISPLAY_IMAGE_PREVIEW, false);
 		final boolean display_profile_image = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-		mHolder = new StatusViewHolder(view);
+		mHolder = new StatusListViewHolder(view);
 		mLinkify.setHighlightOption(highlightOption);
 		mHolder.setDisplayNameFirst(nameFirst);
 		mHolder.setShowAsGap(false);
@@ -124,7 +124,7 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
 		} else {
 			mHolder.text.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
 		}
-		mHolder.reply_retweet_status.setText(context.getString(R.string.retweeted_by, nameFirst ? TWIDERE_PREVIEW_NAME : "@" + TWIDERE_PREVIEW_SCREEN_NAME));
+		mHolder.reply_retweet_status.setText(context.getString(R.string.retweeted_by_name, nameFirst ? TWIDERE_PREVIEW_NAME : "@" + TWIDERE_PREVIEW_SCREEN_NAME));
 		mHolder.reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_retweet, 0, 0, 0);
 		mHolder.time.setTime(System.currentTimeMillis() - 360000);
 		mHolder.time.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_indicator_media, 0);

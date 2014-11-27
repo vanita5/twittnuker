@@ -33,7 +33,7 @@ import java.util.List;
 
 public abstract class ParcelableStatusesLoader extends AsyncTaskLoader<List<ParcelableStatus>> implements Constants {
 
-	private final List<ParcelableStatus> mData = new NoDuplicatesArrayList<ParcelableStatus>();
+    private final List<ParcelableStatus> mData = new NoDuplicatesArrayList<>();
 	private final boolean mFirstLoad;
 	private final int mTabPosition;
 

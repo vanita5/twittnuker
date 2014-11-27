@@ -83,9 +83,9 @@
   <string name="look_and_feel">Megjelenés és működés</string>
   <string name="display_profile_image">Profilkép megjelenítése</string>
   <string name="image_load_summary">Ennek kikapcsolása gyorsabb listagörgetést és kisebb adatforgalmat eredményez.</string>
-  <string name="in_reply_to">Válasz neki: <xliff:g id="username">%s</xliff:g></string>
-  <string name="retweeted_by"><xliff:g id="user_name">%s</xliff:g> retweetelte ezt</string>
-  <string name="retweeted_by_with_count"><xliff:g id="user_name">%1$s</xliff:g> és másik <xliff:g id="retweet_count">%2$d</xliff:g> felhasználó retweetelte ezt</string>
+  <string name="in_reply_to_name">Válasz neki: <xliff:g id="username">%s</xliff:g></string>
+  <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> retweetelte ezt</string>
+  <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> és másik <xliff:g id="retweet_count">%2$d</xliff:g> felhasználó retweetelte ezt</string>
   <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> felhasználó retweetelte ezt</string>
   <string name="users_retweeted_this">Következő felhasználók által retweetelve</string>
   <string name="users_favorited_this">Felhasználók kedvencnek jelölték ezt</string>

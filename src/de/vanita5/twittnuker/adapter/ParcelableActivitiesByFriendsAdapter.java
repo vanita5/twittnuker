@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.TwidereLinkify;
-import de.vanita5.twittnuker.view.holder.ActivityViewHolder;
+import de.vanita5.twittnuker.view.holder.ActivityListViewHolder;
 
 public class ParcelableActivitiesByFriendsAdapter extends BaseParcelableActivitiesAdapter {
 
@@ -43,7 +43,7 @@ public class ParcelableActivitiesByFriendsAdapter extends BaseParcelableActiviti
 	}
 
 	@Override
-	public void bindView(final int position, final ActivityViewHolder holder, final ParcelableActivity item) {
+	public void bindView(final int position, final ActivityListViewHolder holder, final ParcelableActivity item) {
 		if (item == null) return;
 		final ParcelableUser[] sources = item.sources;
 		final ParcelableStatus[] targetStatuses = item.target_statuses;

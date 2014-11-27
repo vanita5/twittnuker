@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.util;
 
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
-import static de.vanita5.twittnuker.util.Utils.getBiggerTwitterProfileImage;
-
 import android.content.ContentValues;
 
 import org.json.JSONException;
@@ -48,6 +45,9 @@ import de.vanita5.twittnuker.provider.TweetStore.Drafts;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import twitter4j.DirectMessage;
 import twitter4j.GeoLocation;
 import twitter4j.Status;
@@ -58,8 +58,8 @@ import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
 
-import java.util.ArrayList;
-import java.util.List;
+import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
+import static de.vanita5.twittnuker.util.Utils.getBiggerTwitterProfileImage;
 
 public final class ContentValuesCreator implements TwittnukerConstants {
 
@@ -187,10 +187,10 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL,
 				large_profile_image ? getBiggerTwitterProfileImage(recipient_profile_image_url)
 						: recipient_profile_image_url);
-		final ParcelableMedia[] medias = ParcelableMedia.fromEntities(message);
-		if (medias != null) {
-			values.put(DirectMessages.MEDIAS, JSONSerializer.toJSONArrayString(medias));
-			values.put(DirectMessages.FIRST_MEDIA, medias[0].url);
+        final ParcelableMedia[] mediaArray = ParcelableMedia.fromEntities(message);
+        if (mediaArray != null) {
+            values.put(DirectMessages.MEDIA, JSONSerializer.toJSONArrayString(mediaArray));
+            values.put(DirectMessages.FIRST_MEDIA, mediaArray[0].url);
 		}
 		return values;
 	}
@@ -213,7 +213,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL, message.sender_profile_image_url);
 		values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, message.recipient_profile_image_url);
 		if (message.medias != null) {
-			values.put(Statuses.MEDIAS, JSONSerializer.toJSONArrayString(message.medias));
+			values.put(Statuses.MEDIA, JSONSerializer.toJSONArrayString(message.medias));
 			values.put(Statuses.FIRST_MEDIA, message.medias[0].url);
 		}
 		return values;
@@ -227,8 +227,8 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Drafts.ACCOUNT_IDS, ArrayUtils.toString(new long[] { accountId }, ',', false));
 		values.put(Drafts.TIMESTAMP, System.currentTimeMillis());
 		if (imageUri != null) {
-			final ParcelableMediaUpdate[] medias = { new ParcelableMediaUpdate(imageUri, 0) };
-			values.put(Drafts.MEDIAS, JSONSerializer.toJSONArrayString(medias));
+            final ParcelableMediaUpdate[] mediaArray = {new ParcelableMediaUpdate(imageUri, 0)};
+            values.put(Drafts.MEDIA, JSONSerializer.toJSONArrayString(mediaArray));
 		}
 		final JSONObject extras = new JSONObject();
 		try {
@@ -267,15 +267,15 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-	public static ContentValues makeStatusContentValues(final Status orig, final long account_id) {
-		return makeStatusContentValues(orig, account_id, false);
+	public static ContentValues makeStatusContentValues(final Status orig, final long accountId) {
+		return makeStatusContentValues(orig, accountId, false);
 	}
 
-	public static ContentValues makeStatusContentValues(final Status orig, final long account_id,
-														final boolean large_profile_image) {
+	public static ContentValues makeStatusContentValues(final Status orig, final long accountId,
+														final boolean largeProfileImage) {
 		if (orig == null || orig.getId() <= 0) return null;
 		final ContentValues values = new ContentValues();
-		values.put(Statuses.ACCOUNT_ID, account_id);
+        values.put(Statuses.ACCOUNT_ID, accountId);
 		values.put(Statuses.STATUS_ID, orig.getId());
 		values.put(Statuses.STATUS_TIMESTAMP, orig.getCreatedAt().getTime());
 		values.put(Statuses.MY_RETWEET_ID, orig.getCurrentUserRetweet());
@@ -289,6 +289,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
             values.put(Statuses.RETWEETED_BY_USER_ID, retweetUser.getId());
             values.put(Statuses.RETWEETED_BY_USER_NAME, retweetUser.getName());
             values.put(Statuses.RETWEETED_BY_USER_SCREEN_NAME, retweetUser.getScreenName());
+            values.put(Statuses.RETWEETED_BY_USER_PROFILE_IMAGE, ParseUtils.parseString(retweetUser.getProfileImageUrlHttps()));
             status = retweetedStatus;
 		} else {
 			status = orig;
@@ -304,7 +305,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 			values.put(Statuses.IS_PROTECTED, user.isProtected());
 			values.put(Statuses.IS_VERIFIED, user.isVerified());
 			values.put(Statuses.USER_PROFILE_IMAGE_URL,
-					large_profile_image ? getBiggerTwitterProfileImage(profileImageUrl) : profileImageUrl);
+					largeProfileImage ? getBiggerTwitterProfileImage(profileImageUrl) : profileImageUrl);
             values.put(CachedUsers.IS_FOLLOWING, user.isFollowing());
 		}
 		final String text_html = Utils.formatStatusText(status);
@@ -326,10 +327,10 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		}
         values.put(Statuses.IS_RETWEET, isRetweet);
 		values.put(Statuses.IS_FAVORITE, status.isFavorited());
-        final ParcelableMedia[] medias = ParcelableMedia.fromEntities(status);
-        if (medias != null) {
-			values.put(Statuses.MEDIAS, JSONSerializer.toJSONArrayString(medias));
-            values.put(Statuses.FIRST_MEDIA, medias[0].url);
+        final ParcelableMedia[] media = ParcelableMedia.fromEntities(status);
+        if (media != null) {
+            values.put(Statuses.MEDIA, JSONSerializer.toJSONArrayString(media));
+            values.put(Statuses.FIRST_MEDIA, media[0].url);
         }
 		final ParcelableUserMention[] mentions = ParcelableUserMention.fromStatus(status);
         if (mentions != null) {
@@ -353,7 +354,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Drafts.IS_POSSIBLY_SENSITIVE, status.is_possibly_sensitive);
 		values.put(Drafts.TIMESTAMP, System.currentTimeMillis());
 		if (status.medias != null) {
-			values.put(Drafts.MEDIAS, JSONSerializer.toJSONArrayString(status.medias));
+			values.put(Drafts.MEDIA, JSONSerializer.toJSONArrayString(status.medias));
 		}
 		return values;
 	}

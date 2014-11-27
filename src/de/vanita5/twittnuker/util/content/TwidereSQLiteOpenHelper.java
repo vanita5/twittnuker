@@ -119,7 +119,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 		accountsAlias.put(Accounts.ACCOUNT_ID, "user_id");
 		accountsAlias.put(Accounts.COLOR, "user_color");
 		accountsAlias.put(Accounts.OAUTH_TOKEN_SECRET, "token_secret");
-        draftsAlias.put(Drafts.MEDIAS, "medias");
+        draftsAlias.put(Drafts.MEDIA, "medias");
 		safeUpgrade(db, Accounts.TABLE_NAME, Accounts.COLUMNS, Accounts.TYPES, false, accountsAlias);
 		safeUpgrade(db, Statuses.TABLE_NAME, Statuses.COLUMNS, Statuses.TYPES, true, null);
 		safeUpgrade(db, Mentions.TABLE_NAME, Mentions.COLUMNS, Mentions.TYPES, true, null);

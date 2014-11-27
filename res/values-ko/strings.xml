@@ -84,9 +84,9 @@
     <string name="look_and_feel">모양</string>
     <string name="display_profile_image">프로필 이미지 표시</string>
     <string name="image_load_summary">체크하지 않으면 리스트 스크롤 속도가 빨라지고 데이터 사용량이 줄어듭니다.</string>
-    <string name="in_reply_to"><xliff:g id="user_name">%s</xliff:g>님의 트윗에 대한 답글</string>
-    <string name="retweeted_by"><xliff:g id="user_name">%s</xliff:g>이(가) 리트윗함</string>
-    <string name="retweeted_by_with_count"><xliff:g id="user_name">%1$s</xliff:g>님 외 <xliff:g id="retweet_count">%2$d</xliff:g>명이 리트윗했습니다.</string>
+    <string name="in_reply_to_name"><xliff:g id="user_name">%s</xliff:g>님의 트윗에 대한 답글</string>
+    <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g>이(가) 리트윗함</string>
+    <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g>님 외 <xliff:g id="retweet_count">%2$d</xliff:g>명이 리트윗했습니다.</string>
     <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g>명이 리트윗했습니다.</string>
     <string name="users_retweeted_this">리트윗한 사용자</string>
   <string name="users_favorited_this">사용자들이 이 트윗을 관심글로 지정하였습니다.</string>

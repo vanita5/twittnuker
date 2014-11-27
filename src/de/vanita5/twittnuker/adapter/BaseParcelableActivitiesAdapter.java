@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
-import de.vanita5.twittnuker.view.holder.ActivityViewHolder;
+import de.vanita5.twittnuker.view.holder.ActivityListViewHolder;
 
 import java.util.List;
 
@@ -70,7 +70,7 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 		configBaseCardAdapter(context, this);
 	}
 
-	public abstract void bindView(final int position, final ActivityViewHolder holder, final ParcelableActivity item);
+	public abstract void bindView(final int position, final ActivityListViewHolder holder, final ParcelableActivity item);
 
 	@Override
 	public ImageLoaderWrapper getImageLoader() {
@@ -87,9 +87,9 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 	public View getView(final int position, final View convertView, final ViewGroup parent) {
 		final View view = super.getView(position, convertView, parent);
 		final Object tag = view.getTag();
-		final ActivityViewHolder holder = tag instanceof ActivityViewHolder ? (ActivityViewHolder) tag
-				: new ActivityViewHolder(view);
-		if (!(tag instanceof ActivityViewHolder)) {
+		final ActivityListViewHolder holder = tag instanceof ActivityListViewHolder ? (ActivityListViewHolder) tag
+				: new ActivityListViewHolder(view);
+		if (!(tag instanceof ActivityListViewHolder)) {
 			if (mPlainList) {
 				((View) holder.content).setPadding(0, 0, 0, 0);
 				holder.content.setItemBackground(null);
@@ -152,7 +152,7 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 		}
 	}
 
-	protected void displayActivityUserProfileImages(final ActivityViewHolder holder, final ParcelableStatus[] statuses) {
+	protected void displayActivityUserProfileImages(final ActivityListViewHolder holder, final ParcelableStatus[] statuses) {
 		if (statuses == null) {
 			displayActivityUserProfileImages(holder, new String[0]);
 		} else {
@@ -164,7 +164,7 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 		}
 	}
 
-	protected void displayActivityUserProfileImages(final ActivityViewHolder holder, final ParcelableUser[] users) {
+	protected void displayActivityUserProfileImages(final ActivityListViewHolder holder, final ParcelableUser[] users) {
 		if (users == null) {
 			displayActivityUserProfileImages(holder, new String[0]);
 		} else {
@@ -207,7 +207,7 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 		return isDisplayProfileImage();
 	}
 
-	private void displayActivityUserProfileImages(final ActivityViewHolder holder, final String[] urls) {
+	private void displayActivityUserProfileImages(final ActivityListViewHolder holder, final String[] urls) {
 		final int length = urls != null ? Math.min(holder.activity_profile_images.length, urls.length) : 0;
 		final boolean shouldDisplayImages = isDisplayProfileImage() && length > 0;
 		holder.activity_profile_images_container.setVisibility(shouldDisplayImages ? View.VISIBLE : View.GONE);

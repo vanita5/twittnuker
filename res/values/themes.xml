@@ -39,6 +39,7 @@
 
 		<!-- Card UI styles -->
         <item name="cardActionButtonStyle">@style/Widget.CardActionButton</item>
+        <item name="profileImageStyleLarge">@style/Widget.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_dark</item>
 		<item name="cardItemBackgroundColor">#1a1a1a</item>
 		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_dark</item>
@@ -72,6 +73,7 @@
 
 		<!-- Card UI styles -->
         <item name="cardActionButtonStyle">@style/Widget.Light.CardActionButton</item>
+        <item name="profileImageStyleLarge">@style/Widget.Light.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_light</item>
 		<item name="cardItemBackgroundColor">#f8f8f8</item>
 		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_light</item>
@@ -133,6 +135,7 @@
 
 		<!-- Card UI styles -->
         <item name="cardActionButtonStyle">@style/Widget.CardActionButton</item>
+        <item name="profileImageStyleLarge">@style/Widget.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_dark</item>
 		<item name="cardItemBackgroundColor">#1a1a1a</item>
 		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_dark</item>
@@ -153,6 +156,7 @@
 
 		<!-- Card UI styles -->
         <item name="cardActionButtonStyle">@style/Widget.Light.CardActionButton</item>
+        <item name="profileImageStyleLarge">@style/Widget.Light.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_light</item>
 		<item name="cardItemBackgroundColor">#f8f8f8</item>
 		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_light</item>
@@ -202,6 +206,7 @@
 
 		<!-- Card UI styles -->
         <item name="cardActionButtonStyle">@style/Widget.CardActionButton</item>
+        <item name="profileImageStyleLarge">@style/Widget.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_dark</item>
 		<item name="cardItemBackgroundColor">#1a1a1a</item>
 		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_dark</item>
@@ -287,6 +292,7 @@
 
 		<!-- Card UI styles -->
         <item name="cardActionButtonStyle">@style/Widget.CardActionButton</item>
+        <item name="profileImageStyleLarge">@style/Widget.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_dark</item>
 		<item name="cardItemBackgroundColor">#1a1a1a</item>
 		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_dark</item>
@@ -313,6 +319,7 @@
 
 		<!-- Card UI styles -->
         <item name="cardActionButtonStyle">@style/Widget.Light.CardActionButton</item>
+        <item name="profileImageStyleLarge">@style/Widget.Light.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_light</item>
 		<item name="cardItemBackgroundColor">#f8f8f8</item>
 		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_light</item>
@@ -339,6 +346,7 @@
 
 		<!-- Card UI styles -->
         <item name="cardActionButtonStyle">@style/Widget.Light.CardActionButton</item>
+        <item name="profileImageStyleLarge">@style/Widget.Light.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_light</item>
 		<item name="cardItemBackgroundColor">#f8f8f8</item>
 		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_light</item>

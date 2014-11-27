@@ -50,7 +50,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder;
+import de.vanita5.twittnuker.view.holder.StatusListViewHolder;
 
 import twitter4j.TranslationResult;
 import twitter4j.Twitter;
@@ -59,7 +59,7 @@ import twitter4j.TwitterException;
 public class StatusTranslateDialogFragment extends BaseSupportDialogFragment implements
 		LoaderCallbacks<SingleResponse<TranslationResult>> {
 
-	private StatusViewHolder mHolder;
+	private StatusListViewHolder mHolder;
 	private ProgressBar mProgressBar;
 	private TextView mMessageView;
 	private View mProgressContainer;
@@ -98,7 +98,7 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 		mProgressBar = (ProgressBar) mProgressContainer.findViewById(android.R.id.progress);
 		mMessageView = (TextView) mProgressContainer.findViewById(android.R.id.message);
 		mStatusContainer = view.findViewById(R.id.status_container);
-		mHolder = new StatusViewHolder(mStatusContainer);
+		mHolder = new StatusListViewHolder(mStatusContainer);
 		mHolder.setShowAsGap(false);
 		mHolder.setAccountColorEnabled(true);
 		((View) mHolder.content).setPadding(0, 0, 0, 0);
@@ -145,7 +145,7 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 		final String retweeted_by_screen_name = status.retweeted_by_screen_name;
 
         final boolean isMyStatus = status.account_id == status.user_id;
-        final boolean hasMedia = status.medias != null && status.medias.length > 0;
+        final boolean hasMedia = status.media != null && status.media.length > 0;
 		mHolder.setUserColor(getUserColor(getActivity(), status.user_id, true));
 		mHolder.setHighlightColor(getCardHighlightColor(status, false));
 
@@ -162,19 +162,19 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 		if (status.is_retweet && !TextUtils.isEmpty(retweeted_by_name) && !TextUtils.isEmpty(retweeted_by_screen_name)) {
 			if (!prefs.getBoolean(KEY_NAME_FIRST, true)) {
 				mHolder.reply_retweet_status.setText(status.retweet_count > 1 ? getString(
-						R.string.retweeted_by_with_count, retweeted_by_screen_name, status.retweet_count - 1)
-						: getString(R.string.retweeted_by, retweeted_by_screen_name));
+						R.string.retweeted_by_name_with_count, retweeted_by_screen_name, status.retweet_count - 1)
+						: getString(R.string.retweeted_by_name, retweeted_by_screen_name));
 			} else {
 				mHolder.reply_retweet_status.setText(status.retweet_count > 1 ? getString(
-						R.string.retweeted_by_with_count, retweeted_by_name, status.retweet_count - 1) : getString(
-						R.string.retweeted_by, retweeted_by_name));
+						R.string.retweeted_by_name_with_count, retweeted_by_name, status.retweet_count - 1) : getString(
+						R.string.retweeted_by_name, retweeted_by_name));
 			}
-			mHolder.reply_retweet_status.setText(status.retweet_count > 1 ? getString(R.string.retweeted_by_with_count,
-					retweeted_by_name, status.retweet_count - 1) : getString(R.string.retweeted_by, retweeted_by_name));
+			mHolder.reply_retweet_status.setText(status.retweet_count > 1 ? getString(R.string.retweeted_by_name_with_count,
+					retweeted_by_name, status.retweet_count - 1) : getString(R.string.retweeted_by_name, retweeted_by_name));
 			mHolder.reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_retweet, 0, 0,
 					0);
 		} else if (status.in_reply_to_status_id > 0 && !TextUtils.isEmpty(status.in_reply_to_screen_name)) {
-			mHolder.reply_retweet_status.setText(getString(R.string.in_reply_to, status.in_reply_to_screen_name));
+			mHolder.reply_retweet_status.setText(getString(R.string.in_reply_to_name, status.in_reply_to_screen_name));
 			mHolder.reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_conversation,
 					0, 0, 0);
 		}

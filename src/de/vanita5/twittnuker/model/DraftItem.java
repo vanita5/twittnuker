@@ -134,7 +134,7 @@ public class DraftItem implements Parcelable {
 			in_reply_to_status_id = cursor.getColumnIndex(Drafts.IN_REPLY_TO_STATUS_ID);
 			timestamp = cursor.getColumnIndex(Drafts.TIMESTAMP);
 			text = cursor.getColumnIndex(Drafts.TEXT);
-			medias = cursor.getColumnIndex(Drafts.MEDIAS);
+			medias = cursor.getColumnIndex(Drafts.MEDIA);
 			is_possibly_sensitive = cursor.getColumnIndex(Drafts.IS_POSSIBLY_SENSITIVE);
 			location = cursor.getColumnIndex(Drafts.LOCATION);
 			action_type = cursor.getColumnIndex(Drafts.ACTION_TYPE);

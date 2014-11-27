@@ -22,15 +22,6 @@
 
 package de.vanita5.twittnuker.util;
 
-import static android.text.TextUtils.isEmpty;
-import static android.text.format.DateUtils.getRelativeTimeSpanString;
-import static de.vanita5.twittnuker.provider.TweetStore.CACHE_URIS;
-import static de.vanita5.twittnuker.provider.TweetStore.DIRECT_MESSAGES_URIS;
-import static de.vanita5.twittnuker.provider.TweetStore.STATUSES_URIS;
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
-import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
-import static de.vanita5.twittnuker.util.TwidereLinkify.TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -72,6 +63,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -121,10 +113,6 @@ import org.mariotaku.querybuilder.Tables;
 import org.mariotaku.querybuilder.Where;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
 import org.mariotaku.refreshnow.widget.RefreshNowListView;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.CroutonConfiguration;
-import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -158,7 +146,7 @@ import de.vanita5.twittnuker.fragment.support.UserListsListFragment;
 import de.vanita5.twittnuker.fragment.support.UserMediaTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserMentionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserProfileFragmentOld;
-import de.vanita5.twittnuker.fragment.support.UserTimelineFragment2;
+import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UsersListFragment;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
 import de.vanita5.twittnuker.model.Account;
@@ -195,6 +183,34 @@ import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.util.net.TwidereHttpClientFactory;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.SocketAddress;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.net.ssl.SSLException;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.CroutonConfiguration;
+import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
+
 import twitter4j.DirectMessage;
 import twitter4j.EntitySupport;
 import twitter4j.MediaEntity;
@@ -219,29 +235,14 @@ import twitter4j.http.HostAddressResolverFactory;
 import twitter4j.http.HttpClientWrapper;
 import twitter4j.http.HttpResponse;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.SocketAddress;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.net.ssl.SSLException;
+import static android.text.TextUtils.isEmpty;
+import static android.text.format.DateUtils.getRelativeTimeSpanString;
+import static de.vanita5.twittnuker.provider.TweetStore.CACHE_URIS;
+import static de.vanita5.twittnuker.provider.TweetStore.DIRECT_MESSAGES_URIS;
+import static de.vanita5.twittnuker.provider.TweetStore.STATUSES_URIS;
+import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
+import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
+import static de.vanita5.twittnuker.util.TwidereLinkify.TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES;
 
 public final class Utils implements Constants, TwitterConstants {
 
@@ -702,7 +703,7 @@ public final class Utils implements Constants, TwitterConstants {
 				break;
 			}
 			case LINK_ID_USER_TIMELINE: {
-                fragment = new UserTimelineFragment2();
+                fragment = new UserTimelineFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
                 final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
@@ -1798,14 +1799,14 @@ public final class Utils implements Constants, TwitterConstants {
 				FORMAT_PATTERN_TEXT, text);
 	}
 
-	public static String getInReplyToName(final Status status) {
-		if (status == null) return null;
+    @NonNull
+    public static String getInReplyToName(@NonNull final Status status) {
 		final Status orig = status.isRetweet() ? status.getRetweetedStatus() : status;
-		final long in_reply_to_user_id = status.getInReplyToUserId();
+        final long inReplyToUserId = status.getInReplyToUserId();
 		final UserMentionEntity[] entities = status.getUserMentionEntities();
 		if (entities == null) return orig.getInReplyToScreenName();
 		for (final UserMentionEntity entity : entities) {
-			if (in_reply_to_user_id == entity.getId()) return entity.getName();
+            if (inReplyToUserId == entity.getId()) return entity.getName();
 		}
 		return orig.getInReplyToScreenName();
 	}
@@ -3845,23 +3846,25 @@ public final class Utils implements Constants, TwitterConstants {
 
 	private static void parseEntities(final HtmlBuilder builder, final EntitySupport entities) {
 		// Format media.
-		final MediaEntity[] medias = entities.getMediaEntities();
-		if (medias != null) {
-			for (final MediaEntity media : medias) {
-				final int start = media.getStart(), end = media.getEnd();
-				final URL mediaUrl = media.getMediaURL();
+        final MediaEntity[] mediaEntities = entities.getMediaEntities();
+        if (mediaEntities != null) {
+            for (final MediaEntity mediaEntity : mediaEntities) {
+                final int start = mediaEntity.getStart(), end = mediaEntity.getEnd();
+                final URL mediaUrl = mediaEntity.getMediaURL();
 				if (mediaUrl != null && start >= 0 && end >= 0) {
-					builder.addLink(ParseUtils.parseString(mediaUrl), media.getDisplayURL(), start, end);
+                    builder.addLink(ParseUtils.parseString(mediaUrl), mediaEntity.getDisplayURL(),
+                            start, end);
 				}
 			}
 		}
-        final URLEntity[] urls = entities.getURLEntities();
-		if (urls != null) {
-			for (final URLEntity url : urls) {
-				final int start = url.getStart(), end = url.getEnd();
-				final URL expandedUrl = url.getExpandedURL();
+        final URLEntity[] urlEntities = entities.getURLEntities();
+        if (urlEntities != null) {
+            for (final URLEntity urlEntity : urlEntities) {
+                final int start = urlEntity.getStart(), end = urlEntity.getEnd();
+                final URL expandedUrl = urlEntity.getExpandedURL();
 				if (expandedUrl != null && start >= 0 && end >= 0) {
-					builder.addLink(ParseUtils.parseString(expandedUrl), url.getDisplayURL(), start, end);
+                    builder.addLink(ParseUtils.parseString(expandedUrl), urlEntity.getDisplayURL(),
+                            start, end);
 				}
 			}
 		}

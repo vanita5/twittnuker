@@ -77,9 +77,9 @@
   <string name="look_and_feel">Utseende</string>
   <string name="display_profile_image">Vis profilbilde</string>
   <string name="image_load_summary">Deaktivering av dette vil øke scrollehastigheten og redusere databruken.</string>
-  <string name="in_reply_to">Som svar til <xliff:g id="user_name">%s</xliff:g></string>
-  <string name="retweeted_by"><xliff:g id="user_name">%s</xliff:g> retweetet dette</string>
-  <string name="retweeted_by_with_count"><xliff:g id="user_name">%1$s</xliff:g> og <xliff:g id="retweet_count">%2$d</xliff:g> andre retweetet dette</string>
+  <string name="in_reply_to_name">Som svar til <xliff:g id="user_name">%s</xliff:g></string>
+  <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> retweetet dette</string>
+  <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> og <xliff:g id="retweet_count">%2$d</xliff:g> andre retweetet dette</string>
   <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> brukere retweetet dette</string>
   <string name="users_retweeted_this">Brukere retweetet dette</string>
   <string name="users_favorited_this">Brukere favorittmarkerte dette</string>

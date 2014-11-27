@@ -65,8 +65,8 @@
   <string name="clear_databases">डेटाबेस साफ़ करे</string>
   <string name="look_and_feel">रूप और फील</string>
   <string name="display_profile_image">प्रोफ़ाइल छवि प्रदर्शित करें</string>
-  <string name="in_reply_to">के विषय में उत्तर दें <xliff:g id="username">%s</xliff:g></string>
-  <string name="retweeted_by"><xliff:g id="user_name"> %s </xliff:g> यह रीट्वीट किया</string>
+  <string name="in_reply_to_name">के विषय में उत्तर दें <xliff:g id="username">%s</xliff:g></string>
+  <string name="retweeted_by_name"><xliff:g id="user_name"> %s </xliff:g> यह रीट्वीट किया</string>
   <string name="users_retweeted_this">उपयोगकर्ताओं ने यह रीट्वीट किया</string>
   <string name="reply_to">को उत्तर दें <xliff:g id="user_name">%s</xliff:g></string>
   <string name="quote_user">उद्धरण <xliff:g id="user_name">%s</xliff:g></string>

@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -35,10 +36,14 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Outline;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
@@ -95,10 +100,10 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
+import de.vanita5.twittnuker.view.CircularImageView;
 import de.vanita5.twittnuker.view.ColorLabelLinearLayout;
 import de.vanita5.twittnuker.view.ExtendedFrameLayout;
 import de.vanita5.twittnuker.view.ProfileBannerImageView;
-import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.TwidereMenuBar;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
@@ -151,7 +156,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 	private ImageLoaderWrapper mProfileImageLoader;
 	private SharedPreferences mPreferences;
 
-    private ProfileImageView mProfileImageView;
+    private CircularImageView mProfileImageView;
     private ProfileBannerImageView mProfileBannerView;
 	private TextView mNameView, mScreenNameView, mDescriptionView, mLocationView, mURLView, mCreatedAtView,
 			mTweetCount, mFollowersCount, mFriendsCount, mErrorMessageView;
@@ -178,6 +183,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 
 	private int mBannerWidth;
 
+    private Drawable mActionBarShadow;
     private Drawable mActionBarBackground;
 
 	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
@@ -340,7 +346,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
         mProfileNameContainer.drawStart(getUserColor(getActivity(), user.id, true));
 		mProfileNameContainer.drawEnd(getAccountColor(getActivity(), user.account_id));
 		mNameView.setText(user.name);
-        mProfileImageView.setUserType(user.is_verified, user.is_protected);
+//        mProfileImageView.setUserType(user.is_verified, user.is_protected);
 		mScreenNameView.setText("@" + user.screen_name);
 		mDescriptionContainer.setVisibility(userIsMe || !isEmpty(user.description_html) ? View.VISIBLE : View.GONE);
 		mDescriptionView.setText(user.description_html != null ? Html.fromHtml(user.description_html) : null);
@@ -490,11 +496,18 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 		final int themeResId = linkHandler.getCurrentThemeResourceId();
 		final boolean isTransparent = ThemeUtils.isTransparentBackground(themeResId);
 		final int actionBarAlpha = isTransparent ? ThemeUtils.getUserThemeBackgroundAlpha(linkHandler) : 0xFF;
+        mActionBarShadow = activity.getResources().getDrawable(R.drawable.shadow_user_banner_action_bar);
+        if (mActionBarShadow instanceof ShapeDrawable) {
+            final ShapeDrawable sd = (ShapeDrawable) mActionBarBackground;
+            sd.setIntrinsicHeight(actionBar.getHeight());
+            sd.setIntrinsicWidth(activity.getWindowManager().getDefaultDisplay().getWidth());
+        }
         if (ThemeUtils.isColoredActionBar(themeResId) && useUserActionBar()) {
-			actionBar.setBackgroundDrawable(mActionBarBackground = new ColorDrawable(actionBarColor));
+            mActionBarBackground = new ColorDrawable(actionBarColor);
 		} else {
-			actionBar.setBackgroundDrawable(mActionBarBackground = ThemeUtils.getActionBarBackground(activity, themeResId));
+            mActionBarBackground = ThemeUtils.getActionBarBackground(activity, themeResId);
 		}
+        actionBar.setBackgroundDrawable(new ActionBarDrawable(mActionBarShadow, mActionBarBackground));
 	}
 
 	private boolean useUserActionBar() {
@@ -702,8 +715,9 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
         profileBannerView.setTranslationY((headerView.getTop() - listView.getListPaddingTop()) / 2);
         profileBannerView.setBottomClip(headerScroll);
 
-        if (mActionBarBackground != null) {
+        if (mActionBarShadow != null && mActionBarBackground != null) {
             final float f = headerScroll / (float) mProfileBannerSpace.getHeight();
+            mActionBarShadow.setAlpha(Math.round(0xFF * MathUtils.clamp(1 - f, 0, 1)));
             mActionBarBackground.setAlpha(Math.round(0xFF * MathUtils.clamp(f, 0, 1)));
         }
     }
@@ -777,7 +791,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
         mFriendsContainer = mHeaderView.findViewById(R.id.friends_container);
         mFriendsCount = (TextView) mHeaderView.findViewById(R.id.friends_count);
         mProfileNameContainer = (ColorLabelLinearLayout) mHeaderView.findViewById(R.id.profile_name_container);
-        mProfileImageView = (ProfileImageView) mHeaderView.findViewById(R.id.profile_image);
+        mProfileImageView = (CircularImageView) mHeaderView.findViewById(R.id.profile_image);
         mDescriptionContainer = mHeaderView.findViewById(R.id.description_container);
         mLocationContainer = mHeaderView.findViewById(R.id.location_container);
         mURLContainer = mHeaderView.findViewById(R.id.url_container);
@@ -1212,4 +1226,28 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 		}
 	}
 
+    private static class ActionBarDrawable extends LayerDrawable {
+        private final Drawable mBackgroundDrawable;
+
+        public ActionBarDrawable(Drawable shadow, Drawable background) {
+            super(new Drawable[]{shadow, background});
+            mBackgroundDrawable = background;
+        }
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void getOutline(Outline outline) {
+            mBackgroundDrawable.getOutline(outline);
+        }
+
+        @Override
+        public int getIntrinsicWidth() {
+            return mBackgroundDrawable.getIntrinsicWidth();
+        }
+
+        @Override
+        public int getIntrinsicHeight() {
+            return mBackgroundDrawable.getIntrinsicHeight();
+        }
+    }
 }

@@ -311,9 +311,9 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 		protected Integer doInBackground(final Void... params) {
 			final ContentResolver resolver = mActivity.getContentResolver();
 			final Where where = Where.in(new Column(Drafts._ID), new RawItemArray(mIds));
-			final String[] projection = { Drafts.MEDIAS };
+			final String[] projection = { Drafts.MEDIA };
 			final Cursor c = resolver.query(Drafts.CONTENT_URI, projection, where.getSQL(), null, null);
-			final int idxMedias = c.getColumnIndex(Drafts.MEDIAS);
+			final int idxMedias = c.getColumnIndex(Drafts.MEDIA);
 			c.moveToFirst();
 			while (!c.isAfterLast()) {
                 final ParcelableMediaUpdate[] medias = ParcelableMediaUpdate.fromJSONString(c.getString(idxMedias));

@@ -84,9 +84,9 @@
     <string name="look_and_feel">Estilos y comportamiento</string>
     <string name="display_profile_image">Imagen de perfil para mostrar</string>
     <string name="image_load_summary">Desactivarlo aumentará la velocidad de desplazamiento en la lista y reducirá el uso de datos.</string>
-    <string name="in_reply_to">En respuesta a <xliff:g id="user_name">%s</xliff:g></string>
-    <string name="retweeted_by">Retweet por <xliff:g id="user_name">%s</xliff:g></string>
-    <string name="retweeted_by_with_count"><xliff:g id="user_name">%1$s</xliff:g> y otros <xliff:g id="retweet_count">%2$d</xliff:g> han retuiteado esto</string>
+    <string name="in_reply_to_name">En respuesta a <xliff:g id="user_name">%s</xliff:g></string>
+    <string name="retweeted_by_name">Retweet por <xliff:g id="user_name">%s</xliff:g></string>
+    <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> y otros <xliff:g id="retweet_count">%2$d</xliff:g> han retuiteado esto</string>
   <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> han retwiteado esto</string>
     <string name="users_retweeted_this">Usuarios retweeted esto</string>
   <string name="users_favorited_this">Favoritos de los usuarios</string>

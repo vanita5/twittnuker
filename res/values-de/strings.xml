@@ -86,9 +86,9 @@
     <string name="look_and_feel">Aussehen</string>
     <string name="display_profile_image">Zeige Profilbilder</string>
     <string name="image_load_summary">Deaktivieren um die Scroll-Geschwindigkeit zu erhöhen und den Datenverbrauch zu verringern</string>
-    <string name="in_reply_to">Als Antwort auf <xliff:g id="user_name">%s</xliff:g></string>
-    <string name="retweeted_by"><xliff:g id="user_name">%s</xliff:g> retweetete das</string>
-    <string name="retweeted_by_with_count"><xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> weitere haben das retweetet</string>
+    <string name="in_reply_to_name">Als Antwort auf <xliff:g id="user_name">%s</xliff:g></string>
+    <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> retweetete das</string>
+    <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> weitere haben das retweetet</string>
     <string name="retweeted_by_count">Von <xliff:g id="retweet_count">%d</xliff:g> Benutzern retweetet</string>
     <string name="users_retweeted_this">Benutzer retweeteten das</string>
     <string name="users_favorited_this">Benutzer favorisierten das</string>
