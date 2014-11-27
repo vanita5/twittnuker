@@ -20,7 +20,8 @@
         android:paddingRight="@dimen/element_spacing_large"
         android:paddingTop="@dimen/element_spacing_normal">
 
-        <de.vanita5.twittnuker.view.ProfileImageView
+        <de.vanita5.twittnuker.view.CircularImageView
+            style="?profileImageStyle"
             android:id="@+id/profile_image"
             android:layout_width="@dimen/icon_size_card_list_item"
             android:layout_height="@dimen/icon_size_card_list_item"
@@ -75,7 +76,8 @@
                 android:textColor="?android:attr/textColorSecondary"/>
         </LinearLayout>
 
-        <de.vanita5.twittnuker.view.ProfileImageView
+        <de.vanita5.twittnuker.view.CircularImageView
+            style="?profileImageStyle"
             android:id="@+id/my_profile_image"
             android:layout_width="@dimen/icon_size_card_list_item"
             android:layout_height="@dimen/icon_size_card_list_item"

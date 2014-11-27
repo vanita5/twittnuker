@@ -22,14 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.Utils.buildDirectMessageConversationUri;
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
-import static de.vanita5.twittnuker.util.Utils.getOldestMessageIdsFromDatabase;
-import static de.vanita5.twittnuker.util.Utils.showOkMessage;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -50,6 +42,7 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
@@ -67,13 +60,13 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import org.mariotaku.menucomponent.widget.PopupMenu;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ImagePickerActivity;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.DirectMessagesConversationAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
@@ -84,15 +77,25 @@ import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.Conversation;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
+import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.StatusTextCountView;
+import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 import java.util.List;
 import java.util.Locale;
+
+import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.Utils.buildDirectMessageConversationUri;
+import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
+import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
+import static de.vanita5.twittnuker.util.Utils.getOldestMessageIdsFromDatabase;
+import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 
 public class DirectMessagesConversationFragment extends BasePullToRefreshListFragment implements
 		LoaderCallbacks<Cursor>, OnMenuItemClickListener, TextWatcher, OnClickListener, Panes.Right,
@@ -109,6 +112,7 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 	private ImageView mAddImageButton;
 	private View mConversationContainer, mRecipientSelectorContainer, mRecipientSelector;
 	private Spinner mAccountSpinner;
+    private ImageView mSenderProfileImageView, mRecipientProfileImageView;
 
 	private PopupMenu mPopupMenu;
 
@@ -134,6 +138,11 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 		}
 	};
 
+    private Account mSender;
+    private ParcelableUser mRecipient;
+    private ImageLoaderWrapper mImageLoader;
+    private IColorLabelView mProfileImageContainer;
+
 	@Override
 	public void afterTextChanged(final Editable s) {
 
@@ -147,7 +156,9 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mImageLoader = TwittnukerApplication.getInstance(getActivity()).getImageLoaderWrapper();
 		mTwitterWrapper = getTwitterWrapper();
 		mValidator = new TwidereValidator(getActivity());
 		mLocale = getResources().getConfiguration().locale;
@@ -202,7 +213,9 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 				final ParcelableUser user = data.getParcelableExtra(EXTRA_USER);
 				if (user != null && mAccountId > 0) {
 					mRecipientId = user.id;
+                    mRecipient = user;
 					showConversation(mAccountId, mRecipientId);
+                    updateProfileImage();
 				}
 				break;
 			}
@@ -219,6 +232,37 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 	}
 
 	@Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        updateProfileImage();
+    }
+
+    private void updateProfileImage() {
+        if (mProfileImageContainer == null || mRecipientProfileImageView == null
+                || mSenderProfileImageView == null) {
+            return;
+        }
+        if (mSender != null && mRecipient != null) {
+            mImageLoader.displayProfileImage(mSenderProfileImageView, mSender.profile_image_url);
+            mImageLoader.displayProfileImage(mRecipientProfileImageView, mRecipient.profile_image_url);
+            mProfileImageContainer.drawEnd(mSender.color);
+        } else {
+            mImageLoader.cancelDisplayTask(mSenderProfileImageView);
+            mImageLoader.cancelDisplayTask(mRecipientProfileImageView);
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_direct_messages_conversation, menu);
+        final View profileImageItemView = menu.findItem(R.id.item_profile_image).getActionView();
+        profileImageItemView.setOnClickListener(this);
+        mProfileImageContainer = (IColorLabelView) profileImageItemView;
+        mRecipientProfileImageView = (ImageView) profileImageItemView.findViewById(R.id.recipient_profile_image);
+        mSenderProfileImageView = (ImageView) profileImageItemView.findViewById(R.id.sender_profile_image);
+    }
+
+    @Override
 	public void onClick(final View view) {
 		switch (view.getId()) {
 			case R.id.send: {
@@ -238,8 +282,15 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 				startActivityForResult(intent, REQUEST_PICK_IMAGE);
 				break;
 			}
-		}
-	}
+            case R.id.item_profile_image: {
+                final ParcelableUser recipient = mRecipient;
+                if (recipient == null) return;
+                Utils.openUserProfile(getActivity(), recipient.account_id, recipient.id,
+                        recipient.screen_name);
+                break;
+            }
+        }
+    }
 
 	@Override
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
@@ -287,6 +338,8 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 		final Account account = (Account) mAccountSpinner.getSelectedItem();
 		if (account != null) {
 			mAccountId = account.account_id;
+            mSender = account;
+            updateProfileImage();
 		}
 	}
 
@@ -437,6 +490,9 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 	public void showConversation(final long accountId, final long recipientId) {
 		mAccountId = accountId;
 		mRecipientId = recipientId;
+        final Context context = getActivity();
+        mSender = Account.getAccount(context, accountId);
+        mRecipient = Utils.getUserForConversation(context, accountId, recipientId);
 		final LoaderManager lm = getLoaderManager();
 		final Bundle args = new Bundle();
 		args.putLong(EXTRA_ACCOUNT_ID, accountId);
@@ -447,6 +503,7 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 			mLoaderInitialized = true;
 			lm.initLoader(0, args, this);
 		}
+        updateProfileImage();
 	}
 
 	@Override

@@ -22,25 +22,25 @@
 
 package de.vanita5.twittnuker.model;
 
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
-import static de.vanita5.twittnuker.util.Utils.formatExpandedUserDescription;
-import static de.vanita5.twittnuker.util.Utils.formatUserDescription;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
-import de.vanita5.twittnuker.util.ParseUtils;
-
 import org.mariotaku.jsonserializer.JSONParcel;
 import org.mariotaku.jsonserializer.JSONParcelable;
+import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
+import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries;
+import de.vanita5.twittnuker.util.ParseUtils;
+
+import java.util.Date;
 
 import twitter4j.URLEntity;
 import twitter4j.User;
 
-import java.util.Date;
+import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
+import static de.vanita5.twittnuker.util.Utils.formatExpandedUserDescription;
+import static de.vanita5.twittnuker.util.Utils.formatUserDescription;
 
 public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableUser> {
 
@@ -78,6 +78,43 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 	public final int followers_count, friends_count, statuses_count, favorites_count;
 
 	public final boolean is_cache;
+
+    public ParcelableUser(final long account_id, final long id, final String name,
+                          final String screen_name, final String profile_image_url) {
+        this.account_id = account_id;
+        this.id = id;
+        this.name = name;
+        this.screen_name = screen_name;
+        this.profile_image_url = profile_image_url;
+        this.created_at = 0;
+        this.position = 0;
+        is_protected = false;
+        is_verified = false;
+        is_follow_request_sent = false;
+        is_following = false;
+        description_plain = null;
+        location = null;
+        profile_banner_url = null;
+        url = null;
+        url_expanded = null;
+        description_html = null;
+        description_unescaped = null;
+        description_expanded = null;
+        followers_count = 0;
+        friends_count = 0;
+        statuses_count = 0;
+        favorites_count = 0;
+        is_cache = true;
+    }
+
+    public static ParcelableUser fromDirectMessageConversationEntry(final Cursor cursor) {
+        final long account_id = cursor.getLong(ConversationEntries.IDX_ACCOUNT_ID);
+        final long id = cursor.getLong(ConversationEntries.IDX_CONVERSATION_ID);
+        final String name = cursor.getString(ConversationEntries.IDX_NAME);
+        final String screen_name = cursor.getString(ConversationEntries.IDX_SCREEN_NAME);
+        final String profile_image_url = cursor.getString(ConversationEntries.IDX_PROFILE_IMAGE_URL);
+        return new ParcelableUser(account_id, id, name, screen_name, profile_image_url);
+    }
 
 	public ParcelableUser(final Cursor cursor, final long account_id) {
 		this.account_id = account_id;

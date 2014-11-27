@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<de.vanita5.twittnuker.view.CardItemFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.CardItemFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content"
 	android:layout_width="match_parent"
@@ -18,7 +19,8 @@
         android:paddingRight="@dimen/item_menu_card_padding_compact"
         android:paddingTop="@dimen/element_spacing_normal">
 
-        <de.vanita5.twittnuker.view.ProfileImageView
+        <de.vanita5.twittnuker.view.CircularImageView
+            style="?profileImageStyle"
             android:id="@+id/profile_image"
             android:layout_width="@dimen/icon_size_card_list_item"
             android:layout_height="@dimen/icon_size_card_list_item"

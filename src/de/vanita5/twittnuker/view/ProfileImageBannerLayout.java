@@ -26,6 +26,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.annotation.IdRes;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -34,7 +35,9 @@ import android.widget.ImageView;
 
 public class ProfileImageBannerLayout extends ExtendedFrameLayout {
 
+    @IdRes
 	public static final int VIEW_ID_PROFILE_IMAGE = 0x10000001;
+    @IdRes
 	public static final int VIEW_ID_PROFILE_BANNER = 0x10000002;
 
 	private static final double PROFILE_IMAGE_WIDTH_FACTOR = 0.1425;
@@ -42,7 +45,7 @@ public class ProfileImageBannerLayout extends ExtendedFrameLayout {
 
 	private final int mBorderWidth;
     private final ImageView mProfileBannerImageView;
-    private final ProfileImageView mProfileImageView;
+    private final ImageView mProfileImageView;
 
 	public ProfileImageBannerLayout(final Context context) {
 		this(context, null);
@@ -68,7 +71,7 @@ public class ProfileImageBannerLayout extends ExtendedFrameLayout {
 		return mProfileBannerImageView;
 	}
 
-	public ProfileImageView getProfileImageView() {
+    public ImageView getProfileImageView() {
 		return mProfileImageView;
 	}
 
@@ -88,7 +91,7 @@ public class ProfileImageBannerLayout extends ExtendedFrameLayout {
 		}
 	}
 
-    private static class ProfileImageViewInternal extends ProfileImageView {
+    private static class ProfileImageViewInternal extends ImageView {
 
 		private final Paint mWhitePaint, mBlackPaint;
 		private final int mPaddings;

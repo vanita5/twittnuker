@@ -167,6 +167,7 @@ import de.vanita5.twittnuker.provider.TweetStore.CachedTrends;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TweetStore.DNS;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
+import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.provider.TweetStore.Filters.Users;
@@ -3972,5 +3973,20 @@ public final class Utils implements Constants, TwitterConstants {
         } finally {
             c.close();
 		}
+    }
+
+    public static ParcelableUser getUserForConversation(Context context, long accountId,
+                                                        long conversationId) {
+        final ContentResolver cr = context.getContentResolver();
+        final Where where = Where.and(Where.equals(ConversationEntries.ACCOUNT_ID, accountId),
+				Where.equals(ConversationEntries.CONVERSATION_ID, conversationId));
+        final Cursor c = cr.query(ConversationEntries.CONTENT_URI, null, where.getSQL(), null, null);
+        try {
+            if (c.moveToFirst()) return ParcelableUser.fromDirectMessageConversationEntry(c);
+
+        } finally {
+            c.close();
+        }
+        return null;
 	}
 }

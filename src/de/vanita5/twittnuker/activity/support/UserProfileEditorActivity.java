@@ -22,12 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.Utils.createPickImageIntent;
-import static de.vanita5.twittnuker.util.Utils.createTakePhotoIntent;
-import static de.vanita5.twittnuker.util.Utils.isMyAccount;
-import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
-
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -52,10 +46,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.CroutonLifecycleCallback;
-import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
-
 import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -74,10 +64,19 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ProfileImageBannerLayout;
-import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
 import java.io.File;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.CroutonLifecycleCallback;
+import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
+
+import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.Utils.createPickImageIntent;
+import static de.vanita5.twittnuker.util.Utils.createTakePhotoIntent;
+import static de.vanita5.twittnuker.util.Utils.isMyAccount;
+import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 
 public class UserProfileEditorActivity extends BaseSupportActivity implements OnSizeChangedListener, TextWatcher,
 		OnClickListener, CroutonLifecycleCallback, LoaderCallbacks<SingleResponse<ParcelableUser>> {
@@ -92,7 +91,7 @@ public class UserProfileEditorActivity extends BaseSupportActivity implements On
 	private AsyncTask<Void, Void, ?> mTask;
 
 	private ProfileImageBannerLayout mProfileImageBannerLayout;
-    private ProfileImageView mProfileImageView;
+    private ImageView mProfileImageView;
     private ImageView mProfileBannerView;
 	private EditText mEditName, mEditDescription, mEditLocation, mEditUrl;
 	private View mProgress, mContent;

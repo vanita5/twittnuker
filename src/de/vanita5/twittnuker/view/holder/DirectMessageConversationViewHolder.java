@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.view.holder;
 
+import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -32,11 +34,8 @@ import de.vanita5.twittnuker.R;
 
 public class DirectMessageConversationViewHolder extends CardViewHolder {
 
-	public final ImageView incoming_profile_image, outgoing_profile_image;
-	public final View incoming_message_container, outgoing_message_container, incoming_profile_image_container,
-			outgoing_profile_image_container;
+    public final View incoming_message_container, outgoing_message_container;
 	public final TextView incoming_text, incoming_time, outgoing_text, outgoing_time;
-	public final View incoming_item_menu, outgoing_item_menu;
 
 	public final ImageView incoming_image_preview, outgoing_image_preview;
 	public final ViewGroup incoming_image_preview_container, outgoing_image_preview_container;
@@ -48,22 +47,21 @@ public class DirectMessageConversationViewHolder extends CardViewHolder {
 		super(view);
 		incoming_message_container = findViewById(R.id.incoming_message_container);
 		outgoing_message_container = findViewById(R.id.outgoing_message_container);
-		incoming_profile_image_container = findViewById(R.id.incoming_profile_image_container);
-		outgoing_profile_image_container = findViewById(R.id.outgoing_profile_image_container);
-		incoming_profile_image = (ImageView) findViewById(R.id.incoming_profile_image);
-		outgoing_profile_image = (ImageView) findViewById(R.id.outgoing_profile_image);
 		incoming_text = (TextView) findViewById(R.id.incoming_text);
 		incoming_time = (TextView) findViewById(R.id.incoming_time);
 		outgoing_text = (TextView) findViewById(R.id.outgoing_text);
 		outgoing_time = (TextView) findViewById(R.id.outgoing_time);
-		incoming_item_menu = findViewById(R.id.incoming_item_menu);
-		outgoing_item_menu = findViewById(R.id.outgoing_item_menu);
 		outgoing_image_preview = (ImageView) findViewById(R.id.outgoing_image_preview);
 		outgoing_image_preview_progress = (ProgressBar) findViewById(R.id.outgoing_image_preview_progress);
 		outgoing_image_preview_container = (ViewGroup) findViewById(R.id.outgoing_image_preview_container);
 		incoming_image_preview = (ImageView) findViewById(R.id.incoming_image_preview);
 		incoming_image_preview_progress = (ProgressBar) findViewById(R.id.incoming_image_preview_progress);
 		incoming_image_preview_container = (ViewGroup) findViewById(R.id.incoming_image_preview_container);
+
+        final Drawable drawable = outgoing_message_container.getBackground();
+        if (drawable != null) {
+            drawable.setColorFilter(0x20009900, Mode.MULTIPLY);
+        }
 	}
 
 	public void setTextSize(final float text_size) {

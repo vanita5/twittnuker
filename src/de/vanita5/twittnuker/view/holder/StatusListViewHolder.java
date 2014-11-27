@@ -32,7 +32,6 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.ShortTimeView;
 
 import static de.vanita5.twittnuker.util.Utils.getDisplayName;
@@ -64,7 +63,7 @@ public class StatusListViewHolder extends CardViewHolder {
 		super(view);
 		final Context context = getContext();
         profile_image = (ImageView) findViewById(R.id.profile_image);
-		my_profile_image = (ProfileImageView) findViewById(R.id.my_profile_image);
+        my_profile_image = (ImageView) findViewById(R.id.my_profile_image);
 		image_preview = (ImageView) findViewById(R.id.image_preview);
 		image_preview_progress = (ProgressBar) findViewById(R.id.image_preview_progress);
 		image_preview_container = (ViewGroup) findViewById(R.id.image_preview_container);
