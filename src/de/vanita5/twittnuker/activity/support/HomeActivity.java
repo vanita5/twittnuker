@@ -22,33 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
-import static de.vanita5.twittnuker.util.CustomTabUtils.getAddedTabPosition;
-import static de.vanita5.twittnuker.util.CustomTabUtils.getHomeTabs;
-import static de.vanita5.twittnuker.util.Utils.cleanDatabasesByItemLimit;
-import static de.vanita5.twittnuker.util.Utils.getAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
-import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
-import static de.vanita5.twittnuker.util.Utils.isPushEnabled;
-import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
-import static de.vanita5.twittnuker.util.Utils.openSearch;
-import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
-import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
-import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import de.vanita5.twittnuker.activity.SettingsWizardActivity;
-import de.vanita5.twittnuker.service.StreamingService;
-import de.vanita5.twittnuker.gcm.GCMHelper;
-import de.vanita5.twittnuker.util.ActivityAccessor;
-import de.vanita5.twittnuker.util.ActivityAccessor.TaskDescriptionCompat;
-import de.vanita5.twittnuker.util.FlymeUtils;
-import de.vanita5.twittnuker.util.HotKeyHandler;
-import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.HomeSlidingMenu;
-import de.vanita5.twittnuker.view.RightDrawerFrameLayout;
 import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
@@ -91,6 +64,8 @@ import android.widget.Toast;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
 
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
@@ -98,23 +73,48 @@ import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment;
+import de.vanita5.twittnuker.gcm.GCMHelper;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
+import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.util.ActivityAccessor;
+import de.vanita5.twittnuker.util.ActivityAccessor.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.FlymeUtils;
+import de.vanita5.twittnuker.util.HotKeyHandler;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UnreadCountUtils;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.ExtendedViewPager;
+import de.vanita5.twittnuker.view.HomeSlidingMenu;
 import de.vanita5.twittnuker.view.LeftDrawerFrameLayout;
-import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.view.RightDrawerFrameLayout;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 import de.vanita5.twittnuker.view.iface.IHomeActionButton;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
+import static de.vanita5.twittnuker.util.CustomTabUtils.getAddedTabPosition;
+import static de.vanita5.twittnuker.util.CustomTabUtils.getHomeTabs;
+import static de.vanita5.twittnuker.util.Utils.cleanDatabasesByItemLimit;
+import static de.vanita5.twittnuker.util.Utils.getAccountIds;
+import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
+import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
+import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
+import static de.vanita5.twittnuker.util.Utils.isPushEnabled;
+import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
+import static de.vanita5.twittnuker.util.Utils.openSearch;
+import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
+import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
 public class HomeActivity extends BaseSupportActivity implements OnClickListener, OnPageChangeListener,
 		SupportFragmentCallback, SlidingMenu.OnOpenedListener, SlidingMenu.OnClosedListener,
@@ -428,7 +428,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
 	public void setHomeProgressBarIndeterminateVisibility(final boolean visible) {
-		
 	}
 
 	@Override
@@ -523,7 +522,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		setContentView(R.layout.activity_home);
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONCREATE));
 //		final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
-		final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false); //FIXME workaround
+		final boolean refreshOnStart = false; //FIXME workaround
         mTabDisplayOption = getTabDisplayOptionInt(this);
 		final int initialTabPosition = handleIntent(intent, savedInstanceState == null);
 
@@ -799,7 +798,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		mSlidingMenu.setShadowWidthRes(R.dimen.default_sliding_menu_shadow_width);
 		mSlidingMenu.setShadowDrawable(R.drawable.shadow_left);
 		mSlidingMenu.setSecondaryShadowDrawable(R.drawable.shadow_right);
-		mSlidingMenu.setBehindWidthRes(R.dimen.drawer_width_home);
+//        mSlidingMenu.setBehindWidthRes(R.dimen.drawer_width_home);
+        mSlidingMenu.setBehindOffsetRes(R.dimen.drawer_offset_home);
 		mSlidingMenu.setTouchmodeMarginThreshold(marginThreshold);
 		mSlidingMenu.setFadeDegree(0.5f);
 		mSlidingMenu.setMenu(R.layout.drawer_home_accounts);

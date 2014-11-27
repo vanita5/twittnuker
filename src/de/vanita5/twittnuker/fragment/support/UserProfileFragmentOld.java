@@ -35,13 +35,17 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Outline;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,6 +54,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.graphics.Palette;
+import android.support.v7.graphics.Palette.PaletteAsyncListener;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -72,6 +78,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+
 import org.mariotaku.menucomponent.internal.menu.MenuUtils;
 import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
@@ -83,7 +92,7 @@ import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.ListActionAdapter;
 import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.ListAction;
-import de.vanita5.twittnuker.model.Panes;
+import de.vanita5.twittnuker.model.Panes.Right;;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -148,14 +157,13 @@ import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
 import static de.vanita5.twittnuker.util.Utils.showInfoMessage;
 
 public class UserProfileFragmentOld extends BaseSupportListFragment implements OnClickListener, OnItemClickListener,
-		OnItemLongClickListener, OnMenuItemClickListener, OnLinkClickListener, Panes.Right, OnSizeChangedListener,
-		OnSharedPreferenceChangeListener, OnTouchListener {
+        OnItemLongClickListener, OnMenuItemClickListener, OnLinkClickListener, Right, OnSizeChangedListener,
+        OnSharedPreferenceChangeListener, OnTouchListener, ImageLoadingListener {
 
 	private static final int LOADER_ID_USER = 1;
 	private static final int LOADER_ID_FRIENDSHIP = 2;
 
 	private ImageLoaderWrapper mProfileImageLoader;
-	private SharedPreferences mPreferences;
 
     private CircularImageView mProfileImageView;
     private ImageView mProfileTypeView;
@@ -185,8 +193,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 
 	private int mBannerWidth;
 
-    private Drawable mActionBarShadow;
-    private Drawable mActionBarBackground;
+    private ActionBarDrawable mActionBarBackground;
 
 	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
 
@@ -345,7 +352,8 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 		final boolean userIsMe = user.account_id == user.id;
 		mErrorRetryContainer.setVisibility(View.GONE);
 		mUser = user;
-        mProfileImageView.setBorderColor(getUserColor(getActivity(), user.id, true));
+        final int userColor = getUserColor(getActivity(), user.id, true);
+        mProfileImageView.setBorderColor(userColor);
 		mProfileNameContainer.drawEnd(getAccountColor(getActivity(), user.account_id));
 		mNameView.setText(user.name);
         final int typeIconRes = getUserTypeIconRes(user.is_verified, user.is_protected);
@@ -377,17 +385,17 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 		mTweetCount.setText(getLocalizedNumber(mLocale, user.statuses_count));
 		mFollowersCount.setText(getLocalizedNumber(mLocale, user.followers_count));
 		mFriendsCount.setText(getLocalizedNumber(mLocale, user.friends_count));
-		if (mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true)) {
+        if (userColor != 0) {
             mProfileImageLoader.displayProfileImage(mProfileImageView,
                     getOriginalTwitterProfileImage(user.profile_image_url));
-			final int def_width = res.getDisplayMetrics().widthPixels;
-			final int width = mBannerWidth > 0 ? mBannerWidth : def_width;
-			mProfileBannerView.setImageBitmap(null);
-			mProfileImageLoader.displayProfileBanner(mProfileBannerView, user.profile_banner_url, width);
+            setupUserColorActionBar(userColor);
 		} else {
-			mProfileImageView.setImageResource(R.drawable.ic_profile_image_default);
-			mProfileBannerView.setImageResource(android.R.color.transparent);
+            mProfileImageLoader.displayProfileImage(mProfileImageView,
+                    getOriginalTwitterProfileImage(user.profile_image_url), this);
 		}
+        final int defWidth = res.getDisplayMetrics().widthPixels;
+        final int width = mBannerWidth > 0 ? mBannerWidth : defWidth;
+        mProfileImageLoader.displayProfileBanner(mProfileBannerView, user.profile_banner_url, width);
 		if (isMyAccount(getActivity(), user.id)) {
 			final ContentResolver resolver = getContentResolver();
 			final ContentValues values = new ContentValues();
@@ -454,7 +462,6 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
-		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE)
 				.registerOnSharedPreferenceChangeListener(this);
 		mLocale = getResources().getConfiguration().locale;
@@ -492,35 +499,27 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 		setListAdapter(mAdapter);
         getUserInfo(accountId, userId, screenName, false);
 
-        setupBars();
+        setupBaseActionBar();
 	}
 
-	private void setupBars() {
+    private void setupBaseActionBar() {
 		final FragmentActivity activity = getActivity();
 		if (!(activity instanceof LinkHandlerActivity)) return;
 		final LinkHandlerActivity linkHandler = (LinkHandlerActivity) activity;
 		final ActionBar actionBar = linkHandler.getActionBar();
 		if (actionBar == null) return;
-		final int actionBarColor = linkHandler.getActionBarColor();
 		final int themeResId = linkHandler.getCurrentThemeResourceId();
-		final boolean isTransparent = ThemeUtils.isTransparentBackground(themeResId);
-		final int actionBarAlpha = isTransparent ? ThemeUtils.getUserThemeBackgroundAlpha(linkHandler) : 0xFF;
-        mActionBarShadow = activity.getResources().getDrawable(R.drawable.shadow_user_banner_action_bar);
-        if (mActionBarShadow instanceof ShapeDrawable) {
-            final ShapeDrawable sd = (ShapeDrawable) mActionBarBackground;
-            sd.setIntrinsicHeight(actionBar.getHeight());
-            sd.setIntrinsicWidth(activity.getWindowManager().getDefaultDisplay().getWidth());
+        final Drawable shadow = activity.getResources().getDrawable(R.drawable.shadow_user_banner_action_bar);
+        final Drawable background = ThemeUtils.getActionBarBackground(activity, themeResId);
+        actionBar.setBackgroundDrawable(mActionBarBackground = new ActionBarDrawable(getResources(),
+                shadow, background, ThemeUtils.isDarkTheme(themeResId)));
         }
-        if (ThemeUtils.isColoredActionBar(themeResId) && useUserActionBar()) {
-            mActionBarBackground = new ColorDrawable(actionBarColor);
-		} else {
-            mActionBarBackground = ThemeUtils.getActionBarBackground(activity, themeResId);
-		}
-        actionBar.setBackgroundDrawable(new ActionBarDrawable(mActionBarShadow, mActionBarBackground));
-	}
 
-	private boolean useUserActionBar() {
-		return false;
+    private void setupUserColorActionBar(int color) {
+        if (mActionBarBackground == null) {
+            setupBaseActionBar();
+		}
+        mActionBarBackground.setColor(color);
 	}
 
 	@Override
@@ -724,10 +723,9 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
         profileBannerView.setTranslationY((headerView.getTop() - listView.getListPaddingTop()) / 2);
         profileBannerView.setBottomClip(headerScroll);
 
-        if (mActionBarShadow != null && mActionBarBackground != null) {
+        if (mActionBarBackground != null) {
             final float f = headerScroll / (float) mProfileBannerSpace.getHeight();
-            mActionBarShadow.setAlpha(Math.round(0xFF * MathUtils.clamp(1 - f, 0, 1)));
-            mActionBarBackground.setAlpha(Math.round(0xFF * MathUtils.clamp(f, 0, 1)));
+            mActionBarBackground.setFactor(f);
         }
     }
 
@@ -1016,6 +1014,34 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
         return getActivity() instanceof LinkHandlerActivity;
     }
 
+    @Override
+    public void onLoadingStarted(String imageUri, View view) {
+
+    }
+
+    @Override
+    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+    }
+
+    @Override
+    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+        Palette.generateAsync(loadedImage, new PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                final ParcelableUser user = mUser;
+                if (user == null) return;
+                final int color = palette.getVibrantColor(0);
+                setupUserColorActionBar(color);
+            }
+        });
+    }
+
+    @Override
+    public void onLoadingCancelled(String imageUri, View view) {
+
+    }
+
     private final class MediaTimelineAction extends ListAction {
 
         public MediaTimelineAction(final int order) {
@@ -1237,27 +1263,145 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 	}
 
     private static class ActionBarDrawable extends LayerDrawable {
-        private final Drawable mBackgroundDrawable;
 
-        public ActionBarDrawable(Drawable shadow, Drawable background) {
-            super(new Drawable[]{shadow, background});
-            mBackgroundDrawable = background;
+        private final Drawable mShadowDrawable;
+        private final Drawable mBackgroundDrawable;
+        private final LineBackgroundDrawable mLineDrawable;
+        private final ColorDrawable mColorDrawable;
+        private final boolean mColorLineOnly;
+
+        private float mFactor;
+        private int mColor;
+
+        public ActionBarDrawable(Resources resources, Drawable shadow, Drawable background,
+                                 boolean colorLineOnly) {
+            super(new Drawable[]{shadow, background, new LineBackgroundDrawable(resources, 2.0f),
+                    new ColorDrawable()});
+            mShadowDrawable = shadow;
+            mBackgroundDrawable = getDrawable(1);
+            mLineDrawable = (LineBackgroundDrawable) getDrawable(2);
+            mColorDrawable = (ColorDrawable) getDrawable(3);
+            mColorLineOnly = colorLineOnly;
+        }
+
+        public void setColor(int color) {
+            mColor = color;
+            final float[] hsv = new float[3];
+            Color.colorToHSV(color, hsv);
+            hsv[2] = Math.min(hsv[2], 0.8f);
+            final int processedColor = Color.HSVToColor(hsv);
+            mColorDrawable.setColor(processedColor);
+            mLineDrawable.setColor(color);
+            setFactor(mFactor);
         }
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void getOutline(Outline outline) {
+            final boolean showColor = !mColorLineOnly && mColor != 0;
+            if (showColor) {
+                mColorDrawable.getOutline(outline);
+            } else {
             mBackgroundDrawable.getOutline(outline);
+            }
         }
 
         @Override
         public int getIntrinsicWidth() {
-            return mBackgroundDrawable.getIntrinsicWidth();
+            final boolean showColor = !mColorLineOnly && mColor != 0;
+            if (showColor) {
+                return mColorDrawable.getIntrinsicWidth();
+            } else {
+                return mBackgroundDrawable.getIntrinsicWidth();
+            }
         }
 
         @Override
         public int getIntrinsicHeight() {
-            return mBackgroundDrawable.getIntrinsicHeight();
+            final boolean showColor = !mColorLineOnly && mColor != 0;
+            if (showColor) {
+                return mColorDrawable.getIntrinsicHeight();
+            } else {
+                return mBackgroundDrawable.getIntrinsicHeight();
+            }
+        }
+
+        public void setFactor(float f) {
+            mFactor = f;
+            mShadowDrawable.setAlpha(Math.round(0xFF * MathUtils.clamp(1 - f, 0, 1)));
+            final boolean hasColor = mColor != 0;
+            final boolean showBackground = mColorLineOnly || !hasColor;
+            final boolean showLine = mColorLineOnly && hasColor;
+            final boolean showColor = !mColorLineOnly && hasColor;
+            mBackgroundDrawable.setAlpha(showBackground ? Math.round(0xFF * MathUtils.clamp(f, 0, 1)) : 0);
+            mLineDrawable.setAlpha(showLine ? Math.round(0xFF * MathUtils.clamp(f, 0, 1)) : 0);
+            mColorDrawable.setAlpha(showColor ? Math.round(0xFF * MathUtils.clamp(f, 0, 1)) : 0);
+        }
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        private static class LineBackgroundDrawable extends Drawable {
+
+            private final Rect mBounds;
+            private final Paint mPaint;
+            private final float mLineSize;
+
+            private int mAlpha;
+            private int mColor;
+
+            LineBackgroundDrawable(Resources resources, float lineSizeDp) {
+                mBounds = new Rect();
+                mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                mLineSize = resources.getDisplayMetrics().density * lineSizeDp;
+                setColor(Color.TRANSPARENT);
+            }
+
+            @Override
+            protected void onBoundsChange(Rect bounds) {
+                super.onBoundsChange(bounds);
+                mBounds.set(bounds);
+            }
+
+            @Override
+            public void draw(Canvas canvas) {
+                canvas.drawRect(mBounds.left, mBounds.bottom - mLineSize, mBounds.right,
+                        mBounds.bottom, mPaint);
+            }
+
+            @Override
+            public int getAlpha() {
+                return mAlpha;
+            }
+
+            @Override
+            public void setAlpha(int alpha) {
+                mAlpha = alpha;
+                updatePaint();
+            }
+
+            @Override
+            public void setColorFilter(ColorFilter cf) {
+
+            }
+
+            @Override
+            public int getOpacity() {
+                return PixelFormat.TRANSLUCENT;
+            }
+
+            public void setColor(int color) {
+                mColor = color;
+                updatePaint();
+            }
+
+            private void updatePaint() {
+                mPaint.setColor(mColor);
+                mPaint.setAlpha(Color.alpha(mColor) * mAlpha / 0xFF);
+                invalidateSelf();
+            }
+
+            public int getColor() {
+                return mColor;
+            }
         }
     }
 }

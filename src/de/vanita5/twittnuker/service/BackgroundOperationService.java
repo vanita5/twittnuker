@@ -22,13 +22,6 @@
 
 package de.vanita5.twittnuker.service;
 
-import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeDirectMessageContentValues;
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeDirectMessageDraftContentValues;
-import static de.vanita5.twittnuker.util.Utils.getImagePathFromUri;
-import static de.vanita5.twittnuker.util.Utils.getImageUploadStatus;
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -72,9 +65,18 @@ import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener;
-
 import de.vanita5.twittnuker.util.shortener.TweetShortenerUtils;
 import de.vanita5.twittnuker.util.shortener.TweetShortenerUtils.ShortenedStatusModel;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import twitter4j.MediaUploadResponse;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
@@ -85,14 +87,12 @@ import twitter4j.media.ImageUpload;
 import twitter4j.media.ImageUploadFactory;
 import twitter4j.media.MediaProvider;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeDirectMessageContentValues;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeDirectMessageDraftContentValues;
+import static de.vanita5.twittnuker.util.Utils.getImagePathFromUri;
+import static de.vanita5.twittnuker.util.Utils.getImageUploadStatus;
+import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 
 public class BackgroundOperationService extends IntentService implements Constants {
 
@@ -451,44 +451,29 @@ public class BackgroundOperationService extends IntentService implements Constan
                 if (!mUseUploader && hasMedia) {
 					final BitmapFactory.Options o = new BitmapFactory.Options();
 					o.inJustDecodeBounds = true;
-					if (statusUpdate.medias.length == 1) {
-						final ParcelableMediaUpdate media = statusUpdate.medias[0];
-						final String path = getImagePathFromUri(this, Uri.parse(media.uri));
-						try {
+                    final long[] mediaIds = new long[statusUpdate.medias.length];
+					try {
+						for (int i = 0, j = mediaIds.length; i < j; i++) {
+							final ParcelableMediaUpdate media = statusUpdate.medias[i];
+							final String path = getImagePathFromUri(this, Uri.parse(media.uri));
 							if (path == null) throw new FileNotFoundException();
 							BitmapFactory.decodeFile(path, o);
 							final File file = new File(path);
 							final ContentLengthInputStream is = new ContentLengthInputStream(file);
 							is.setReadListener(new StatusMediaUploadListener(this, mNotificationManager, builder,
 									statusUpdate));
-							status.setMedia(file.getName(), is, o.outMimeType);
-						} catch (final FileNotFoundException e) {
+                            final MediaUploadResponse uploadResp = twitter.uploadMedia(file.getName(), is,
+                                    o.outMimeType);
+                            mediaIds[i] = uploadResp.getId();
 						}
-					} else {
-						final long[] mediaIds = new long[statusUpdate.medias.length];
-						try {
-							for (int i = 0, j = mediaIds.length; i < j; i++) {
-								final ParcelableMediaUpdate media = statusUpdate.medias[i];
-								final String path = getImagePathFromUri(this, Uri.parse(media.uri));
-								if (path == null) throw new FileNotFoundException();
-								BitmapFactory.decodeFile(path, o);
-								final File file = new File(path);
-								final ContentLengthInputStream is = new ContentLengthInputStream(file);
-								is.setReadListener(new StatusMediaUploadListener(this, mNotificationManager, builder,
-										statusUpdate));
-								final MediaUploadResponse uploadResp = twitter.uploadMedia(file.getName(), is,
-										o.outMimeType);
-								mediaIds[i] = uploadResp.getId();
-							}
-						} catch (final FileNotFoundException e) {
+                    } catch (final FileNotFoundException e) {
 
-						} catch (final TwitterException e) {
-							final SingleResponse<ParcelableStatus> response = SingleResponse.getInstance(e);
-							results.add(response);
-							continue;
-						}
-						status.mediaIds(mediaIds);
-					}
+                    } catch (final TwitterException e) {
+                        final SingleResponse<ParcelableStatus> response = SingleResponse.getInstance(e);
+                        results.add(response);
+                        continue;
+                    }
+                    status.mediaIds(mediaIds);
 				}
 				status.setPossiblySensitive(statusUpdate.is_possibly_sensitive);
 

@@ -22,16 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeAccountContentValuesBasic;
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeAccountContentValuesOAuth;
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeAccountContentValuesTWIP;
-import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
-import static de.vanita5.twittnuker.util.Utils.isUserLoggedIn;
-import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
-import static de.vanita5.twittnuker.util.Utils.trim;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentResolver;
@@ -57,10 +47,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.CroutonLifecycleCallback;
-import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -77,6 +63,9 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.util.net.TwidereHttpClientFactory;
 
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.CroutonLifecycleCallback;
+import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
 import twitter4j.TwitterException;
@@ -90,6 +79,16 @@ import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.http.HttpClientWrapper;
 import twitter4j.http.HttpResponse;
+
+import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeAccountContentValuesBasic;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeAccountContentValuesOAuth;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeAccountContentValuesTWIP;
+import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
+import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
+import static de.vanita5.twittnuker.util.Utils.isUserLoggedIn;
+import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
+import static de.vanita5.twittnuker.util.Utils.trim;
 
 public class SignInActivity extends BaseSupportActivity implements TwitterConstants, OnClickListener, TextWatcher,
 		CroutonLifecycleCallback {
@@ -537,22 +536,13 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 			}
 		}
 
-        int getProfileBackgroundColor(String color) {
-            if (isEmpty(color)) return Color.TRANSPARENT;
-            try {
-                return Color.parseColor(color);
-            } catch (IllegalArgumentException e) {
-                return Color.TRANSPARENT;
-            }
-        }
-
 		int analyseUserProfileColor(final User user) throws TwitterException {
 			if (user == null) throw new TwitterException("Unable to get user info");
 			final HttpClientWrapper client = new HttpClientWrapper(conf);
 			final String profileImageUrl = ParseUtils.parseString(user.getProfileImageURL());
 			final HttpResponse conn = profileImageUrl != null ? client.get(profileImageUrl, null) : null;
 			final Bitmap bm = conn != null ? BitmapFactory.decodeStream(conn.asStream()) : null;
-            final int profileBackgroundColor = getProfileBackgroundColor(user.getProfileBackgroundColor());
+            final int profileBackgroundColor = ParseUtils.parseColor(user.getProfileBackgroundColor(), Color.TRANSPARENT);
             if (bm == null) return profileBackgroundColor;
 				try {
                 return Palette.generate(bm).getVibrantColor(profileBackgroundColor);

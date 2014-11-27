@@ -56,7 +56,7 @@
 	<string name="unfavorite">Unfavorite</string>
 	<string name="reply">Reply</string>
 	<string name="share">Share</string>
-	<string name="share_via_twittnuker" translatable="false">Twittnuker</string>
+	<string name="share_via_twittnuker" translateable="false">Twittnuker</string>
 	<string name="view_image">Image</string>
 	<string name="view_map">Map</string>
 	<string name="view_status">View tweet</string>
@@ -646,6 +646,7 @@
     <string name="appearance">Appearance</string>
     <string name="function">Function</string>
     <string name="replies">Replies</string>
+    <string name="profile_banner">Profile banner</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

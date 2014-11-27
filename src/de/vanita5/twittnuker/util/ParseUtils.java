@@ -22,13 +22,13 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 
-import de.vanita5.twittnuker.Constants;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+import de.vanita5.twittnuker.Constants;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -36,6 +36,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Set;
+
+import static android.text.TextUtils.isEmpty;
 
 public final class ParseUtils implements Constants {
 
@@ -194,4 +196,12 @@ public final class ParseUtils implements Constants {
 				|| EXTRA_LIST_ID.equals(key);
 	}
 
+    public static int parseColor(String str, int def) {
+        if (isEmpty(str)) return def;
+        try {
+            return Color.parseColor(str);
+        } catch (IllegalArgumentException e) {
+            return def;
+        }
+    }
 }
