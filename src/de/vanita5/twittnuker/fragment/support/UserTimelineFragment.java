@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.loader.support.UserTimelineLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.util.List;
@@ -82,7 +83,7 @@ public class UserTimelineFragment extends BaseSupportFragment
         final Context context = view.getContext();
         final boolean compact = Utils.isCompactCards(context);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE);
+        mSwipeRefreshLayout.setColorSchemeResources(ThemeUtils.getUserAccentColor(context));
         mAdapter = new ParcelableStatusesAdapter(context, compact);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
