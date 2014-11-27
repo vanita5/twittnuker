@@ -14,7 +14,7 @@
 		<item name="android:windowBackground">@android:color/black</item>
 	</style>
 
-    <style name="Theme.Blank.Dialog" parent="android:Theme.DeviceDefault.Dialog" />
+    <style name="Theme.Blank.Dialog" parent="android:Theme.DeviceDefault.Dialog"/>
 
     <style name="Theme.Twidere.Dark" parent="android:Theme.DeviceDefault">
 
@@ -42,12 +42,25 @@
         <item name="profileImageStyleLarge">@style/Widget.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_dark</item>
 		<item name="cardItemBackgroundColor">#1a1a1a</item>
-		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_dark</item>
-		<item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_dark</item>
-		<item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_dark</item>
-		<item name="cardItemMessageProfileImageOutgoingBackground">@drawable/bg_card_item_message_profile_image_outgoing_dark</item>
-		<item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_dark</item>
+        <item name="cardItemMessageIncomingBackground">
+            @drawable/bg_card_item_message_incoming_dark
+        </item>
+        <item name="cardItemMessageOutgoingBackground">
+            @drawable/bg_card_item_message_outgoing_dark
+        </item>
+        <item name="cardItemMessageProfileImageIncomingBackground">
+            @drawable/bg_card_item_message_profile_image_incoming_dark
+        </item>
+        <item name="cardItemMessageProfileImageOutgoingBackground">
+            @drawable/bg_card_item_message_profile_image_outgoing_dark
+        </item>
+        <item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_dark
+        </item>
 		<item name="cardItemViewStyle">@style/Widget.CardItemView</item>
+
+        <!-- Twidere specific styles -->
+        <item name="menuIconColor">@color/action_icon_light</item>
+        <item name="menuIconColorActionBar">?menuIconColor</item>
 	</style>
 
     <style name="Theme.Twidere.Light" parent="android:Theme.DeviceDefault.Light.DarkActionBar">
@@ -68,7 +81,9 @@
 		<!-- Custom view styles -->
 		<item name="tabItemStyle">@style/Widget.TabPageIndicator.TabItem</item>
 		<item name="tabItemContentStyle">@style/Widget.TabPageIndicator.TabItem.Content</item>
-		<item name="tabItemTextStyle">@style/Widget.TabPageIndicator.TabItem.TextView.Light.DarkActionBar</item>
+        <item name="tabItemTextStyle">
+            @style/Widget.TabPageIndicator.TabItem.TextView.Light.DarkActionBar
+        </item>
         <item name="staggeredGridViewStyle">@style/Widget.StaggeredGridView</item>
 
 		<!-- Card UI styles -->
@@ -76,12 +91,25 @@
         <item name="profileImageStyleLarge">@style/Widget.Light.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_light</item>
 		<item name="cardItemBackgroundColor">#f8f8f8</item>
-		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_light</item>
-		<item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_light</item>
-		<item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_light</item>
-		<item name="cardItemMessageProfileImageOutgoingBackground">@drawable/bg_card_item_message_profile_image_outgoing_light</item>
-		<item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_light</item>
+        <item name="cardItemMessageIncomingBackground">
+            @drawable/bg_card_item_message_incoming_light
+        </item>
+        <item name="cardItemMessageOutgoingBackground">
+            @drawable/bg_card_item_message_outgoing_light
+        </item>
+        <item name="cardItemMessageProfileImageIncomingBackground">
+            @drawable/bg_card_item_message_profile_image_incoming_light
+        </item>
+        <item name="cardItemMessageProfileImageOutgoingBackground">
+            @drawable/bg_card_item_message_profile_image_outgoing_light
+        </item>
+        <item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_light
+        </item>
 		<item name="cardItemViewStyle">@style/Widget.CardItemView.Light</item>
+
+        <!-- Twidere specific styles -->
+        <item name="menuIconColor">@color/action_icon_dark</item>
+        <item name="menuIconColorActionBar">@color/action_icon_light</item>
 	</style>
 
 	<style name="Theme.Twidere.Dark.Transparent">
@@ -138,12 +166,25 @@
         <item name="profileImageStyleLarge">@style/Widget.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_dark</item>
 		<item name="cardItemBackgroundColor">#1a1a1a</item>
-		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_dark</item>
-		<item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_dark</item>
-		<item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_dark</item>
-		<item name="cardItemMessageProfileImageOutgoingBackground">@drawable/bg_card_item_message_profile_image_outgoing_dark</item>
-		<item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_dark</item>
+        <item name="cardItemMessageIncomingBackground">
+            @drawable/bg_card_item_message_incoming_dark
+        </item>
+        <item name="cardItemMessageOutgoingBackground">
+            @drawable/bg_card_item_message_outgoing_dark
+        </item>
+        <item name="cardItemMessageProfileImageIncomingBackground">
+            @drawable/bg_card_item_message_profile_image_incoming_dark
+        </item>
+        <item name="cardItemMessageProfileImageOutgoingBackground">
+            @drawable/bg_card_item_message_profile_image_outgoing_dark
+        </item>
+        <item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_dark
+        </item>
 		<item name="cardItemViewStyle">@style/Widget.CardItemView</item>
+
+        <!-- Twidere specific styles -->
+        <item name="menuIconColor">@color/action_icon_light</item>
+        <item name="menuIconColorActionBar">?menuIconColor</item>
 	</style>
 
     <style name="Theme.Twidere.Light.Dialog" parent="android:Theme.DeviceDefault.Light.Dialog">
@@ -159,12 +200,25 @@
         <item name="profileImageStyleLarge">@style/Widget.Light.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_light</item>
 		<item name="cardItemBackgroundColor">#f8f8f8</item>
-		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_light</item>
-		<item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_light</item>
-		<item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_light</item>
-		<item name="cardItemMessageProfileImageOutgoingBackground">@drawable/bg_card_item_message_profile_image_outgoing_light</item>
-		<item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_light</item>
+        <item name="cardItemMessageIncomingBackground">
+            @drawable/bg_card_item_message_incoming_light
+        </item>
+        <item name="cardItemMessageOutgoingBackground">
+            @drawable/bg_card_item_message_outgoing_light
+        </item>
+        <item name="cardItemMessageProfileImageIncomingBackground">
+            @drawable/bg_card_item_message_profile_image_incoming_light
+        </item>
+        <item name="cardItemMessageProfileImageOutgoingBackground">
+            @drawable/bg_card_item_message_profile_image_outgoing_light
+        </item>
+        <item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_light
+        </item>
 		<item name="cardItemViewStyle">@style/Widget.CardItemView.Light</item>
+
+        <!-- Twidere specific styles -->
+        <item name="menuIconColor">@color/action_icon_dark</item>
+        <item name="menuIconColorActionBar">?menuIconColor</item>
 	</style>
 
 	<style name="Theme.Twidere.Dark.Compose">
@@ -209,12 +263,25 @@
         <item name="profileImageStyleLarge">@style/Widget.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_dark</item>
 		<item name="cardItemBackgroundColor">#1a1a1a</item>
-		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_dark</item>
-		<item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_dark</item>
-		<item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_dark</item>
-		<item name="cardItemMessageProfileImageOutgoingBackground">@drawable/bg_card_item_message_profile_image_outgoing_dark</item>
-		<item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_dark</item>
+        <item name="cardItemMessageIncomingBackground">
+            @drawable/bg_card_item_message_incoming_dark
+        </item>
+        <item name="cardItemMessageOutgoingBackground">
+            @drawable/bg_card_item_message_outgoing_dark
+        </item>
+        <item name="cardItemMessageProfileImageIncomingBackground">
+            @drawable/bg_card_item_message_profile_image_incoming_dark
+        </item>
+        <item name="cardItemMessageProfileImageOutgoingBackground">
+            @drawable/bg_card_item_message_profile_image_outgoing_dark
+        </item>
+        <item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_dark
+        </item>
 		<item name="cardItemViewStyle">@style/Widget.CardItemView</item>
+
+        <!-- Twidere specific styles -->
+        <item name="menuIconColor">@color/action_icon_light</item>
+        <item name="menuIconColorActionBar">?menuIconColor</item>
 	</style>
 
 	<style name="Theme.Twidere.Viewer.Transparent">
@@ -295,12 +362,25 @@
         <item name="profileImageStyleLarge">@style/Widget.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_dark</item>
 		<item name="cardItemBackgroundColor">#1a1a1a</item>
-		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_dark</item>
-		<item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_dark</item>
-		<item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_dark</item>
-		<item name="cardItemMessageProfileImageOutgoingBackground">@drawable/bg_card_item_message_profile_image_outgoing_dark</item>
-		<item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_dark</item>
+        <item name="cardItemMessageIncomingBackground">
+            @drawable/bg_card_item_message_incoming_dark
+        </item>
+        <item name="cardItemMessageOutgoingBackground">
+            @drawable/bg_card_item_message_outgoing_dark
+        </item>
+        <item name="cardItemMessageProfileImageIncomingBackground">
+            @drawable/bg_card_item_message_profile_image_incoming_dark
+        </item>
+        <item name="cardItemMessageProfileImageOutgoingBackground">
+            @drawable/bg_card_item_message_profile_image_outgoing_dark
+        </item>
+        <item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_dark
+        </item>
 		<item name="cardItemViewStyle">@style/Widget.CardItemView</item>
+
+        <!-- Twidere specific styles -->
+        <item name="menuIconColor">@color/action_icon_light</item>
+        <item name="menuIconColorActionBar">?menuIconColor</item>
 	</style>
 
     <style name="Theme.Twidere.Settings.Light" parent="android:Theme.DeviceDefault.Light">
@@ -322,12 +402,25 @@
         <item name="profileImageStyleLarge">@style/Widget.Light.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_light</item>
 		<item name="cardItemBackgroundColor">#f8f8f8</item>
-		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_light</item>
-		<item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_light</item>
-		<item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_light</item>
-		<item name="cardItemMessageProfileImageOutgoingBackground">@drawable/bg_card_item_message_profile_image_outgoing_light</item>
-		<item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_light</item>
+        <item name="cardItemMessageIncomingBackground">
+            @drawable/bg_card_item_message_incoming_light
+        </item>
+        <item name="cardItemMessageOutgoingBackground">
+            @drawable/bg_card_item_message_outgoing_light
+        </item>
+        <item name="cardItemMessageProfileImageIncomingBackground">
+            @drawable/bg_card_item_message_profile_image_incoming_light
+        </item>
+        <item name="cardItemMessageProfileImageOutgoingBackground">
+            @drawable/bg_card_item_message_profile_image_outgoing_light
+        </item>
+        <item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_light
+        </item>
 		<item name="cardItemViewStyle">@style/Widget.CardItemView.Light</item>
+
+        <!-- Twidere specific styles -->
+        <item name="menuIconColor">@color/action_icon_dark</item>
+        <item name="menuIconColorActionBar">?menuIconColor</item>
 	</style>
 
     <style name="Theme.Twidere.Settings.Light.DarkActionBar" parent="android:Theme.DeviceDefault.Light.DarkActionBar">
@@ -349,12 +442,25 @@
         <item name="profileImageStyleLarge">@style/Widget.Light.ProfileImage.Large</item>
 		<item name="cardItemBackground">@drawable/bg_card_item_light</item>
 		<item name="cardItemBackgroundColor">#f8f8f8</item>
-		<item name="cardItemMessageIncomingBackground">@drawable/bg_card_item_message_incoming_light</item>
-		<item name="cardItemMessageOutgoingBackground">@drawable/bg_card_item_message_outgoing_light</item>
-		<item name="cardItemMessageProfileImageIncomingBackground">@drawable/bg_card_item_message_profile_image_incoming_light</item>
-		<item name="cardItemMessageProfileImageOutgoingBackground">@drawable/bg_card_item_message_profile_image_outgoing_light</item>
-		<item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_light</item>
+        <item name="cardItemMessageIncomingBackground">
+            @drawable/bg_card_item_message_incoming_light
+        </item>
+        <item name="cardItemMessageOutgoingBackground">
+            @drawable/bg_card_item_message_outgoing_light
+        </item>
+        <item name="cardItemMessageProfileImageIncomingBackground">
+            @drawable/bg_card_item_message_profile_image_incoming_light
+        </item>
+        <item name="cardItemMessageProfileImageOutgoingBackground">
+            @drawable/bg_card_item_message_profile_image_outgoing_light
+        </item>
+        <item name="listMenuOverflowButton">@drawable/ic_list_menu_moreoverflow_normal_holo_light
+        </item>
 		<item name="cardItemViewStyle">@style/Widget.CardItemView.Light</item>
+
+        <!-- Twidere specific styles -->
+        <item name="menuIconColor">@color/action_icon_dark</item>
+        <item name="menuIconColorActionBar">@color/action_icon_light</item>
 	</style>
 
     <style name="Theme.Twidere.Settings.Light.DarkActionBar.DarkIcon"/>

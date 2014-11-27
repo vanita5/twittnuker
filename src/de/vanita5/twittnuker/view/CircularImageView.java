@@ -30,6 +30,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Outline;
 import android.graphics.Paint;
@@ -54,7 +55,7 @@ public class CircularImageView extends ImageView {
 
 	private static final int SHADOW_START_COLOR = 0x37000000;
 
-	private static final boolean USE_OUTLINE = false && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    private static final boolean USE_OUTLINE = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
 
 	private final Matrix mMatrix;
 	private final RectF mSource;
@@ -190,9 +191,6 @@ public class CircularImageView extends ImageView {
 
 	@Override
 	protected void dispatchDraw(Canvas canvas) {
-		if (mBackground != null) {
-			mBackground.draw(canvas);
-		}
 		super.dispatchDraw(canvas);
 	}
 
@@ -247,6 +245,8 @@ public class CircularImageView extends ImageView {
 		if (USE_OUTLINE) {
 			super.onDraw(canvas);
 		} else {
+
+
 			final int contentLeft = getPaddingLeft(), contentTop = getPaddingTop(),
 					contentRight = getWidth() - getPaddingRight(),
 					contentBottom = getHeight() - getPaddingBottom();
@@ -278,6 +278,10 @@ public class CircularImageView extends ImageView {
 
 			mSource.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
 
+			if (mBackground != null) {
+				mBackground.draw(canvas);
+			}
+
 			//TODO circular preference
 			drawBitmapWithCircleOnCanvas(bitmap, canvas, mSource, mDestination);
 		}
@@ -289,6 +293,15 @@ public class CircularImageView extends ImageView {
 					mDestination.width() / 2f - mBorderPaint.getStrokeWidth() / 2, mBorderPaint);
 		}
 	}
+
+    @Override
+    public void setColorFilter(ColorFilter cf) {
+        if (USE_OUTLINE) {
+            super.setColorFilter(cf);
+            return;
+        }
+        mBitmapPaint.setColorFilter(cf);
+    }
 
 	/**
 	 * Given the source bitmap and a canvas, draws the bitmap through a circular

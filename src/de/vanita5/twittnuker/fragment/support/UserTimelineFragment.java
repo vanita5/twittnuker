@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.getAccountId;
-import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -41,11 +38,11 @@ import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
-import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.loader.support.UserTimelineLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.Utils;
@@ -57,6 +54,7 @@ public class UserTimelineFragment extends BaseSupportFragment
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
 
     private ParcelableStatusesAdapter mAdapter;
     private OnScrollListener mOnScrollListener = new OnScrollListener() {
@@ -95,6 +93,12 @@ public class UserTimelineFragment extends BaseSupportFragment
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setOnScrollListener(mOnScrollListener);
         getLoaderManager().initLoader(0, getArguments(), this);
+        setListShown(false);
+    }
+
+    private void setListShown(boolean shown) {
+        mProgressBar.setVisibility(shown ? View.GONE : View.VISIBLE);
+        mSwipeRefreshLayout.setVisibility(shown ? View.VISIBLE : View.GONE);
     }
 
 
@@ -111,13 +115,14 @@ public class UserTimelineFragment extends BaseSupportFragment
         super.onViewCreated(view, savedInstanceState);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progress);
 	}
 
 	@Override
     protected void fitSystemWindows(Rect insets) {
         super.fitSystemWindows(insets);
-        mRecyclerView.setClipToPadding(false);
-        mRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+//        mRecyclerView.setClipToPadding(false);
+//        mRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
     }
 
     @Override
@@ -144,6 +149,7 @@ public class UserTimelineFragment extends BaseSupportFragment
     public void onLoadFinished(Loader<List<ParcelableStatus>> loader, List<ParcelableStatus> data) {
         mSwipeRefreshLayout.setRefreshing(false);
         mAdapter.setData(data);
+        setListShown(true);
 	}
 
 	@Override

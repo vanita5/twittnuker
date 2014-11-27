@@ -34,8 +34,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -99,6 +97,7 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.view.CircularImageView;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 import de.vanita5.twittnuker.view.ExtendedFrameLayout;
 import de.vanita5.twittnuker.view.StatusTextView;
@@ -113,7 +112,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.ThemeUtils.getUserAccentColor;
 import static de.vanita5.twittnuker.util.UserColorUtils.clearUserColor;
 import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
 import static de.vanita5.twittnuker.util.UserColorUtils.setUserColor;
@@ -126,7 +124,6 @@ import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.getMapStaticImageUri;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
-import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 import static de.vanita5.twittnuker.util.Utils.isSameAccount;
 import static de.vanita5.twittnuker.util.Utils.openImageDirectly;
 import static de.vanita5.twittnuker.util.Utils.openMap;
@@ -168,7 +165,8 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
     private TextView mRepliesCountView, mRetweetsCountView, mFavoritesCountView;
 	private StatusTextView mTextView;
 
-	private ImageView mProfileImageView, mMapView;
+    private CircularImageView mProfileImageView;
+    private ImageView mProfileTypeView, mMapView;
 	private Button mFollowButton;
     private Button mRetryButton;
     private View mMainContent, mFollowIndicator, mImagePreviewContainer, mLocationContainer, mLocationBackgroundView;
@@ -375,14 +373,22 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		final boolean name_first = mPreferences.getBoolean(KEY_NAME_FIRST, true);
 		final boolean display_image_preview = mPreferences.getBoolean(KEY_DISPLAY_IMAGE_PREVIEW, false);
 		mNameView.setText(status.user_name);
-		mNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0,
-				getUserTypeIconRes(status.user_is_verified, status.user_is_protected), 0);
+        final int typeIconRes = getUserTypeIconRes(status.user_is_verified, status.user_is_protected);
+        if (typeIconRes != 0) {
+            mProfileTypeView.setImageResource(typeIconRes);
+            mProfileTypeView.setVisibility(View.VISIBLE);
+        } else {
+            mProfileTypeView.setImageDrawable(null);
+            mProfileTypeView.setVisibility(View.GONE);
+        }
 		mScreenNameView.setText("@" + status.user_screen_name);
 		mTextView.setText(Html.fromHtml(status.text_html));
 		final TwidereLinkify linkify = new TwidereLinkify(
 				new OnLinkClickHandler(getActivity(), getMultiSelectManager()));
         linkify.setLinkTextColor(ThemeUtils.getUserLinkTextColor(getActivity()));
 		linkify.applyAllLinks(mTextView, status.account_id, status.is_possibly_sensitive);
+        ThemeUtils.applyParagraphSpacing(mTextView, 1.1f);
+
 		mTextView.setMovementMethod(StatusContentMovementMethod.getInstance());
 		mTextView.setCustomSelectionActionModeCallback(this);
         long timestamp = status.retweet_timestamp > 0 ? status.retweet_timestamp : status.timestamp;
@@ -598,12 +604,13 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_details_page, container, false);
+        view.findViewById(R.id.menu_bar).setVisibility(View.GONE);
 		mMainContent = view.findViewById(R.id.content);
         mDetailsLoadProgress = (ProgressBar) view.findViewById(R.id.details_load_progress);
-        mMenuBar = (TwidereMenuBar) view.findViewById(R.id.menu_bar);
         mDetailsContainer = (ExtendedFrameLayout) view.findViewById(R.id.details_container);
         mDetailsContainer.addView(super.onCreateView(inflater, mDetailsContainer, savedInstanceState));
 		mHeaderView = inflater.inflate(R.layout.header_status, null, false);
+        mMenuBar = (TwidereMenuBar) mHeaderView.findViewById(R.id.menu_bar);
 		mImagePreviewContainer = mHeaderView.findViewById(R.id.image_preview);
 		mLocationContainer = mHeaderView.findViewById(R.id.location_container);
 		mLocationView = (TextView) mHeaderView.findViewById(R.id.location_view);
@@ -612,7 +619,8 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		mNameView = (TextView) mHeaderView.findViewById(R.id.name);
 		mScreenNameView = (TextView) mHeaderView.findViewById(R.id.screen_name);
 		mTextView = (StatusTextView) mHeaderView.findViewById(R.id.text);
-		mProfileImageView = (ImageView) mHeaderView.findViewById(R.id.profile_image);
+        mProfileImageView = (CircularImageView) mHeaderView.findViewById(R.id.profile_image);
+        mProfileTypeView = (ImageView) mHeaderView.findViewById(R.id.profile_type);
 		mTimeSourceView = (TextView) mHeaderView.findViewById(R.id.time_source);
 		mInReplyToView = (TextView) mHeaderView.findViewById(R.id.in_reply_to);
 		mFollowButton = (Button) mHeaderView.findViewById(R.id.follow);
@@ -984,7 +992,7 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 
 	private void updateUserColor() {
 		if (mStatus == null) return;
-		mProfileView.drawStart(getUserColor(getActivity(), mStatus.user_id, true));
+        mProfileImageView.setBorderColor(getUserColor(getActivity(), mStatus.user_id, true));
 	}
 
 	public static final class LoadSensitiveImageConfirmDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {

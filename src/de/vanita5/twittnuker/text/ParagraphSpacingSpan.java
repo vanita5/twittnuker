@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+/*
  * Twittnuker - Twitter client for Android
  *
  * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
@@ -19,12 +18,31 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
+ */
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true">
-        <shape android:shape="oval">
-            <solid android:color="#20FFFFFF"/>
-        </shape>
-    </item>
-</selector>
+package de.vanita5.twittnuker.text;
+
+import android.graphics.Paint.FontMetricsInt;
+import android.text.Spanned;
+import android.text.style.LineHeightSpan;
+
+public class ParagraphSpacingSpan implements LineHeightSpan {
+
+	private final float spacingMultiplier;
+
+	public ParagraphSpacingSpan(float spacingMultiplier) {
+		this.spacingMultiplier = spacingMultiplier;
+	}
+
+	@Override
+	public void chooseHeight(CharSequence text, int start, int end,
+							 int spanstartv, int v, FontMetricsInt fm) {
+		Spanned spanned = (Spanned) text;
+		int en = spanned.getSpanEnd(this);
+		if (end - 1 == en) {
+			final int extra = Math.round((fm.bottom - fm.top) * (spacingMultiplier - 1));
+			fm.descent += extra;
+			fm.bottom += extra;
+		}
+	}
+}

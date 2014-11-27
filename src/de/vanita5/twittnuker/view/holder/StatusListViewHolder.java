@@ -41,7 +41,7 @@ import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 
 public class StatusListViewHolder extends CardViewHolder {
 
-	public final ProfileImageView my_profile_image, profile_image;
+    public final ImageView my_profile_image, profile_image;
 	public final ImageView image_preview;
 	public final ViewGroup image_preview_container;
 	public final ProgressBar image_preview_progress;
@@ -63,7 +63,7 @@ public class StatusListViewHolder extends CardViewHolder {
 	public StatusListViewHolder(final View view) {
 		super(view);
 		final Context context = getContext();
-		profile_image = (ProfileImageView) findViewById(R.id.profile_image);
+        profile_image = (ImageView) findViewById(R.id.profile_image);
 		my_profile_image = (ProfileImageView) findViewById(R.id.my_profile_image);
 		image_preview = (ImageView) findViewById(R.id.image_preview);
 		image_preview_progress = (ProgressBar) findViewById(R.id.image_preview_progress);

@@ -17,7 +17,7 @@
         android:layout_height="@dimen/element_size_small"
         android:layout_marginLeft="@dimen/element_spacing_normal"/>
 
-    <TextView
+    <de.vanita5.twittnuker.view.CardActionTextView
         android:id="@+id/reply_retweet_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="10sp"/>
 
-    <org.mariotaku.twidere.view.CircularImageView
+    <de.vanita5.twittnuker.view.CircularImageView
         android:id="@+id/profile_image"
         android:layout_width="@dimen/icon_size_status_profile_image"
         android:layout_height="@dimen/icon_size_status_profile_image"

@@ -31,7 +31,7 @@ import android.util.AttributeSet;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.graphic.DropShadowDrawable;
 
-public class ProfileImageView extends HighlightImageView {
+public class ProfileImageView extends CircularImageView {
 
     private final Drawable mVerifiedDrawable, mProtectedDrawable;
 

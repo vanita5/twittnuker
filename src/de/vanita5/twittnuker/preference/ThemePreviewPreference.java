@@ -37,13 +37,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.mariotaku.menucomponent.widget.MenuBar;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
-import de.vanita5.twittnuker.view.iface.ICardItemView;
 import de.vanita5.twittnuker.view.iface.IExtendedView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.TouchInterceptor;
 
@@ -122,7 +120,6 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		if (statusContentView != null) {
 			ViewAccessor.setBackground(statusContentView, ThemeUtils.getWindowBackground(context));
 
-			final ICardItemView cardView = (ICardItemView) statusContentView.findViewById(R.id.card);
 			final View profileView = statusContentView.findViewById(R.id.profile);
 			final ImageView profileImageView = (ImageView) statusContentView.findViewById(R.id.profile_image);
 			final TextView nameView = (TextView) statusContentView.findViewById(R.id.name);
@@ -131,8 +128,6 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 			final TextView timeSourceView = (TextView) statusContentView.findViewById(R.id.time_source);
 			// final TextView retweetView = (TextView)
 			// statusContentView.findViewById(R.id.retweet_view);
-
-			cardView.setItemSelector(null);
 
 			nameView.setTextSize(defaultTextSize * 1.25f);
 			textView.setTextSize(defaultTextSize * 1.25f);

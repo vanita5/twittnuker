@@ -36,6 +36,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -53,6 +55,7 @@ import org.mariotaku.refreshnow.widget.RefreshNowProgressIndicator.IndicatorConf
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.text.ParagraphSpacingSpan;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 
 import java.lang.reflect.Constructor;
@@ -856,4 +859,21 @@ public class ThemeUtils implements Constants {
         view.setHighlightColor(ThemeUtils.getUserHighlightColor(context));
         view.setTypeface(ThemeUtils.getUserTypeface(context, view.getTypeface()));
     }
+
+    public static void applyParagraphSpacing(TextView textView, float multiplier) {
+        final SpannableStringBuilder builder = SpannableStringBuilder.valueOf(textView.getText());
+        int prevLineBreak, currLineBreak = 0;
+        for (int i = 0, j = builder.length(); i < j; i++) {
+            if (builder.charAt(i) == '\n') {
+                prevLineBreak = currLineBreak;
+                currLineBreak = i;
+                if (currLineBreak > 0) {
+                    builder.setSpan(new ParagraphSpacingSpan(multiplier), prevLineBreak, currLineBreak,
+                            Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                }
+            }
+        }
+        textView.setText(builder);
+    }
+
 }

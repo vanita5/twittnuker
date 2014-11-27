@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="nyan_background">#003366</color>
 	<color name="bg_color_light">#e5e5e5</color>
 	<color name="bg_color_dark">#101010</color>
     <color name="bg_color_transparent_dark">#ff000000</color>
@@ -13,6 +14,11 @@
 	<color name="text_link_holo_light">#707070</color>
     <color name="accent_white">#ffffff</color>
     <color name="divider_color">#40808080</color>
+    <color name="action_icon_dark">#99333333</color>
+    <color name="action_icon_dark_disabled">#4D333333</color>
+    <color name="action_icon_light">#CCFFFFFF</color>
+    <color name="action_icon_light_disabled">#4DFFFFFF</color>
+
     <color name="twittnuker_material_dark">#ff212121</color>
     <color name="twittnuker_material_light">#ffbdbdbd</color>
 

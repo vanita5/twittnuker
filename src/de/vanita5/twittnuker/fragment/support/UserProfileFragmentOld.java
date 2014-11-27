@@ -67,6 +67,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -91,7 +92,6 @@ import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
-import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -126,6 +126,7 @@ import static de.vanita5.twittnuker.util.Utils.getErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.getOriginalTwitterProfileImage;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.isMyAccount;
 import static de.vanita5.twittnuker.util.Utils.openImage;
 import static de.vanita5.twittnuker.util.Utils.openIncomingFriendships;
@@ -157,6 +158,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 	private SharedPreferences mPreferences;
 
     private CircularImageView mProfileImageView;
+    private ImageView mProfileTypeView;
     private ProfileBannerImageView mProfileBannerView;
 	private TextView mNameView, mScreenNameView, mDescriptionView, mLocationView, mURLView, mCreatedAtView,
 			mTweetCount, mFollowersCount, mFriendsCount, mErrorMessageView;
@@ -343,10 +345,17 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 		final boolean userIsMe = user.account_id == user.id;
 		mErrorRetryContainer.setVisibility(View.GONE);
 		mUser = user;
-        mProfileNameContainer.drawStart(getUserColor(getActivity(), user.id, true));
+        mProfileImageView.setBorderColor(getUserColor(getActivity(), user.id, true));
 		mProfileNameContainer.drawEnd(getAccountColor(getActivity(), user.account_id));
 		mNameView.setText(user.name);
-//        mProfileImageView.setUserType(user.is_verified, user.is_protected);
+        final int typeIconRes = getUserTypeIconRes(user.is_verified, user.is_protected);
+        if (typeIconRes != 0) {
+            mProfileTypeView.setImageResource(typeIconRes);
+            mProfileTypeView.setVisibility(View.VISIBLE);
+        } else {
+            mProfileTypeView.setImageDrawable(null);
+            mProfileTypeView.setVisibility(View.GONE);
+        }
 		mScreenNameView.setText("@" + user.screen_name);
 		mDescriptionContainer.setVisibility(userIsMe || !isEmpty(user.description_html) ? View.VISIBLE : View.GONE);
 		mDescriptionView.setText(user.description_html != null ? Html.fromHtml(user.description_html) : null);
@@ -792,6 +801,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
         mFriendsCount = (TextView) mHeaderView.findViewById(R.id.friends_count);
         mProfileNameContainer = (ColorLabelLinearLayout) mHeaderView.findViewById(R.id.profile_name_container);
         mProfileImageView = (CircularImageView) mHeaderView.findViewById(R.id.profile_image);
+        mProfileTypeView = (ImageView) mHeaderView.findViewById(R.id.profile_type);
         mDescriptionContainer = mHeaderView.findViewById(R.id.description_container);
         mLocationContainer = mHeaderView.findViewById(R.id.location_container);
         mURLContainer = mHeaderView.findViewById(R.id.url_container);
@@ -959,19 +969,20 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
         if (mentionItem != null) {
             mentionItem.setTitle(getString(R.string.mention_user_name, getDisplayName(user.name, user.screen_name)));
         }
-        final MenuItem followItem = menu.findItem(MENU_FOLLOW);
-        followItem.setVisible(!isMyself);
-        final boolean shouldShowFollowItem = !creatingFriendship && !destroyingFriendship && !isMyself
-                && relationship != null;
-        followItem.setEnabled(shouldShowFollowItem);
-        if (shouldShowFollowItem) {
-            followItem.setTitle(isFollowing ? R.string.unfollow : isProtected ? R.string.send_follow_request
-                    : R.string.follow);
-            followItem.setIcon(isFollowing ? R.drawable.ic_action_cancel : R.drawable.ic_action_add);
-        } else {
-            followItem.setTitle(null);
-            followItem.setIcon(null);
-        }
+        Utils.setMenuItemAvailability(menu, MENU_MENTION, !isMyself);
+//        final MenuItem followItem = menu.findItem(MENU_FOLLOW);
+//        followItem.setVisible(!isMyself);
+//        final boolean shouldShowFollowItem = !creatingFriendship && !destroyingFriendship && !isMyself
+//                && relationship != null;
+//        followItem.setEnabled(shouldShowFollowItem);
+//        if (shouldShowFollowItem) {
+//            followItem.setTitle(isFollowing ? R.string.unfollow : isProtected ? R.string.send_follow_request
+//                    : R.string.follow);
+//            followItem.setIcon(isFollowing ? R.drawable.ic_action_cancel : R.drawable.ic_action_add);
+//        } else {
+//            followItem.setTitle(null);
+//            followItem.setIcon(null);
+//        }
 		if (user.id != user.account_id && relationship != null) {
 			setMenuItemAvailability(menu, MENU_SEND_DIRECT_MESSAGE, relationship.canSourceDMTarget());
 			setMenuItemAvailability(menu, MENU_BLOCK, true);
@@ -1002,8 +1013,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
     }
 
     private boolean shouldUseNativeMenu() {
-        final boolean isInLinkHandler = getActivity() instanceof LinkHandlerActivity;
-        return isInLinkHandler && FlymeUtils.hasSmartBar();
+        return getActivity() instanceof LinkHandlerActivity;
     }
 
     private final class MediaTimelineAction extends ListAction {

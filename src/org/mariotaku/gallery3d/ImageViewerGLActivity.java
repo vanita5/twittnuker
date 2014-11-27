@@ -46,7 +46,6 @@ import org.mariotaku.gallery3d.util.GalleryUtils;
 import org.mariotaku.gallery3d.util.ThreadPool;
 import org.mariotaku.menucomponent.widget.MenuBar;
 import org.mariotaku.menucomponent.widget.MenuBar.MenuBarListener;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
@@ -517,6 +516,11 @@ public final class ImageViewerGLActivity extends BaseSupportActivity implements 
 
     @Override
     public void onPreShowMenu(Menu menu) {
+
+    }
+
+    @Override
+    public void onPostShowMenu(Menu menu) {
 
 	}
 
