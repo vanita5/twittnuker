@@ -42,6 +42,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.view.CircularImageView;
 import de.vanita5.twittnuker.view.iface.IExtendedView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.TouchInterceptor;
 
@@ -69,7 +70,8 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 	@Override
 	public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
 		if (KEY_THEME.equals(key) || KEY_THEME_BACKGROUND.equals(key)
-				|| KEY_THEME_COLOR.equals(key) || KEY_ACTION_BAR_COLOR.equals(key)) {
+				|| KEY_THEME_COLOR.equals(key) || KEY_ACTION_BAR_COLOR.equals(key)
+				|| KEY_CIRCULAR_PROFILE_IMAGES.equals(key)) {
 			notifyChanged();
 		}
 	}
@@ -121,7 +123,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 			ViewAccessor.setBackground(statusContentView, ThemeUtils.getWindowBackground(context));
 
 			final View profileView = statusContentView.findViewById(R.id.profile);
-			final ImageView profileImageView = (ImageView) statusContentView.findViewById(R.id.profile_image);
+			final CircularImageView profileImageView = (CircularImageView) statusContentView.findViewById(R.id.profile_image);
 			final TextView nameView = (TextView) statusContentView.findViewById(R.id.name);
 			final TextView screenNameView = (TextView) statusContentView.findViewById(R.id.screen_name);
 			final TextView textView = (TextView) statusContentView.findViewById(R.id.text);

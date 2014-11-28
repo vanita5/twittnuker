@@ -699,6 +699,8 @@
     <string name="notification_new_follower">is now following you.</string>
     <string name="notification_new_direct_message">Direct message</string>
 
+    <string name="circular_profile_images">Circular Profile Images</string>
+
     <string name="shortening">Shortening</string>
     <string name="error_hototin">...but I failed :(\nYour Tweet has not been send and saved to draft.</string>
     <string name="error_twitlonger">...I can\'t handle it :(\nYour Tweet has not been send and saved to draft.</string>

@@ -30,6 +30,12 @@
         android:order="23"
         android:title="@string/action_bar_color"/>
 
+    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        android:key="circular_profile_images"
+        android:order="24"
+        android:defaultValue="false"
+        android:title="@string/circular_profile_images"/>
+
     <de.vanita5.twittnuker.preference.ThemeBackgroundPreference
 		android:defaultValue="default"
         android:order="25"

@@ -307,6 +307,9 @@ public interface SharedPreferenceConstants {
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_SORT_TIMELINE_BY_ID = "sort_timeline_by_id";
 
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+	public static final String KEY_CIRCULAR_PROFILE_IMAGES = "circular_profile_images";
+
 	public static final String KEY_QUICK_MENU_EXPANDED = "quick_menu_expanded";
 
 	@Preference(type = STRING)

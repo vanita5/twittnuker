@@ -671,6 +671,8 @@
     <string name="notification_new_follower">folgt dir jetzt.</string>
     <string name="notification_new_direct_message">Direktnachricht</string>
 
+    <string name="circular_profile_images">Runde Profilbilder</string>
+
     <string name="shortening">Tweet kürzen</string>
     <string name="error_hototin">...but I failed :(\nDer Tweet wurde zu den Entwürfen hinzugefügt.</string>
     <string name="error_twitlonger">...I can\'t handle it :(\nDer Tweet wurde zu den Entwürfen hinzugefügt.</string>

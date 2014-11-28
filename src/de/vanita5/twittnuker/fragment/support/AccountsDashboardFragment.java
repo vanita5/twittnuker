@@ -90,6 +90,8 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 	private final SupportFragmentReloadCursorObserver mReloadContentObserver = new SupportFragmentReloadCursorObserver(
 			this, 0, this);
 
+	private Account mAccount;
+
 	private ContentResolver mResolver;
 	private SharedPreferences mPreferences;
 	private MergeAdapter mAdapter;
@@ -124,6 +126,8 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
         mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
         final LayoutInflater inflater = LayoutInflater.from(context);
         final ListView listView = getListView();
+		listView.setHorizontalScrollBarEnabled(false);
+		listView.setVerticalScrollBarEnabled(false);
 		mAdapter = new MergeAdapter();
 		mAccountsAdapter = new DrawerAccountsAdapter(context);
 		mAccountOptionsAdapter = new AccountOptionsAdapter(context);
@@ -188,7 +192,9 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 			if (!(item instanceof Account)) return;
 			final Account account = (Account) item;
 			mAccountsAdapter.setSelectedAccountId(account.account_id);
-			updateAccountOptionsSeparatorLabel();
+			if (account.account_id != mAccount.account_id) {
+				updateAccountOptionsSeparatorLabel();
+			}
 			updateDefaultAccountState();
 		} else if (adapter instanceof AccountOptionsAdapter) {
 			final Account account = mAccountsAdapter.getSelectedAccount();
@@ -285,7 +291,9 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 			mAccountsAdapter.setSelectedAccountId(data.getLong(data.getColumnIndex(Accounts.ACCOUNT_ID)));
 		}
 		mAccountsAdapter.changeCursor(data);
-		updateAccountOptionsSeparatorLabel();
+		if (mAccount == null || mAccountsAdapter.getSelectedAccountId() != mAccount.account_id) {
+			updateAccountOptionsSeparatorLabel();
+		}
 		updateDefaultAccountState();
 	}
 
@@ -338,6 +346,7 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
         if (account == null) {
             return;
 		}
+		mAccount = account;
 		final String displayName = getDisplayName(account.name, account.screen_name);
 		mAccountOptionsSectionView.setText(displayName);
         mAccountProfileNameView.setText(account.name);

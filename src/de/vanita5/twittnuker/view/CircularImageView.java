@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -42,6 +43,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -49,9 +51,10 @@ import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 
-public class CircularImageView extends ImageView {
+public class CircularImageView extends ImageView implements Constants {
 
 	private static final int SHADOW_START_COLOR = 0x37000000;
 
@@ -67,6 +70,9 @@ public class CircularImageView extends ImageView {
 	private Bitmap mShadowBitmap;
 	private float mShadowRadius;
 	private Drawable mBackground;
+
+	private boolean mUseCircularImages;
+	private boolean mForceCircularImage;
 
 	public CircularImageView(Context context) {
 		this(context, null, 0);
@@ -115,6 +121,9 @@ public class CircularImageView extends ImageView {
 		if (USE_OUTLINE) {
 			initOutlineProvider();
 		}
+
+		final SharedPreferences mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+		mUseCircularImages = mPreferences.getBoolean(KEY_CIRCULAR_PROFILE_IMAGES, false);
 	}
 
 	public void setBorderWidth(int width) {
@@ -136,8 +145,12 @@ public class CircularImageView extends ImageView {
 	private void initOutlineProvider() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			setClipToOutline(true);
-			//TODO circular preference
-			setOutlineProvider(new CircularOutlineProvider());
+
+			if (mUseCircularImages || mForceCircularImage) {
+				setOutlineProvider(new CircularOutlineProvider());
+			} else {
+				setOutlineProvider(new RectangularOutlineProvider());
+			}
 		}
 	}
 
@@ -180,12 +193,20 @@ public class CircularImageView extends ImageView {
 		paint.setColor(Color.WHITE);
 		paint.setShadowLayer(radius, 0, radius * 1.5f / 2, SHADOW_START_COLOR);
 		final RectF rect = new RectF(radius, radius, size - radius, size - radius);
-		//TODO circular preference
-		canvas.drawOval(rect, paint);
+
+		if (mUseCircularImages || mForceCircularImage)
+			canvas.drawOval(rect, paint);
+		else
+			canvas.drawRect(rect, paint);
+
 		paint.setShadowLayer(0, 0, 0, 0);
 		paint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
-		//TODO circular preference
-		canvas.drawOval(rect, paint);
+
+		if (mUseCircularImages || mForceCircularImage)
+			canvas.drawOval(rect, paint);
+		else
+			canvas.drawRect(rect, paint);
+
 		invalidate();
 	}
 
@@ -282,15 +303,22 @@ public class CircularImageView extends ImageView {
 				mBackground.draw(canvas);
 			}
 
-			//TODO circular preference
-			drawBitmapWithCircleOnCanvas(bitmap, canvas, mSource, mDestination);
+			if (mUseCircularImages || mForceCircularImage) {
+				drawBitmapWithCircleOnCanvas(bitmap, canvas, mSource, mDestination);
+			} else {
+				drawBitmapRectangular(bitmap, canvas, mSource, mDestination);
+			}
 		}
 
 		// Then draw the border.
-		//TODO circular preference
 		if (mBorderEnabled) {
-			canvas.drawCircle(mDestination.centerX(), mDestination.centerY(),
+			if (mUseCircularImages || mForceCircularImage) {
+				canvas.drawCircle(mDestination.centerX(), mDestination.centerY(),
 					mDestination.width() / 2f - mBorderPaint.getStrokeWidth() / 2, mBorderPaint);
+			} else {
+				canvas.drawRect(mDestination.left, mDestination.top, mDestination.right,
+						mDestination.bottom, mBorderPaint);
+			}
 		}
 	}
 
@@ -302,6 +330,10 @@ public class CircularImageView extends ImageView {
         }
         mBitmapPaint.setColorFilter(cf);
     }
+
+	public void setForceCircularImage(boolean mForceCircularImage) {
+		this.mForceCircularImage = mForceCircularImage;
+	}
 
 	/**
 	 * Given the source bitmap and a canvas, draws the bitmap through a circular
@@ -329,6 +361,29 @@ public class CircularImageView extends ImageView {
 
 	}
 
+	/**
+	 * Given the source bitmap and a canvas, draws the bitmap through a rectangular
+	 * mask.
+	 * TODO: This can probably be optimized.
+	 *
+	 * @param bitmap The source bitmap to draw.
+	 * @param canvas The canvas to draw it on.
+	 * @param source The source bound of the bitmap.
+	 * @param dest   The destination bound on the canvas.
+	 */
+	public void drawBitmapRectangular(Bitmap bitmap, Canvas canvas,
+									  RectF source, RectF dest) {
+		BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP,
+			Shader.TileMode.CLAMP);
+		mMatrix.reset();
+
+		mMatrix.setRectToRect(source, dest, Matrix.ScaleToFit.FILL);
+
+		shader.setLocalMatrix(mMatrix);
+		mBitmapPaint.setShader(shader);
+		canvas.drawRect(dest.left, dest.top, dest.right, dest.bottom, mBitmapPaint);
+	}
+
 	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	private static class CircularOutlineProvider extends ViewOutlineProvider {
 		@Override
@@ -346,5 +401,20 @@ public class CircularImageView extends ImageView {
 		}
 	}
 
-	//TODO maybe we need a RectangleOutlineProvider class
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+	private static class RectangularOutlineProvider extends ViewOutlineProvider {
+		@Override
+		public void getOutline(View view, Outline outline) {
+			final int contentLeft = view.getPaddingLeft(), contentTop = view.getPaddingTop(),
+					contentRight = view.getWidth() - view.getPaddingRight(),
+					contentBottom = view.getHeight() - view.getPaddingBottom();
+			final int contentWidth = contentRight - contentLeft,
+					contentHeight = contentBottom - contentTop;
+			final int size = Math.min(contentWidth, contentHeight);
+			outline.setRect(contentLeft + (contentWidth - size) / 2,
+					contentTop + (contentHeight - size) / 2,
+					contentRight - (contentWidth - size) / 2,
+					contentBottom - (contentHeight - size) / 2);
+		}
+	}
 }
