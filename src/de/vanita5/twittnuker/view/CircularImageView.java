@@ -263,7 +263,7 @@ public class CircularImageView extends ImageView implements Constants {
 		mDestination.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(),
 				getHeight() - getPaddingBottom());
 
-		if (USE_OUTLINE) {
+		if (USE_OUTLINE || !(mUseCircularImages || mForceCircularImage)) {
 			super.onDraw(canvas);
 		} else {
 
@@ -303,11 +303,7 @@ public class CircularImageView extends ImageView implements Constants {
 				mBackground.draw(canvas);
 			}
 
-			if (mUseCircularImages || mForceCircularImage) {
-				drawBitmapWithCircleOnCanvas(bitmap, canvas, mSource, mDestination);
-			} else {
-				drawBitmapRectangular(bitmap, canvas, mSource, mDestination);
-			}
+			drawBitmapWithCircleOnCanvas(bitmap, canvas, mSource, mDestination);
 		}
 
 		// Then draw the border.
@@ -359,29 +355,6 @@ public class CircularImageView extends ImageView implements Constants {
 		canvas.drawCircle(dest.centerX(), dest.centerY(), Math.min(dest.width(), dest.height()) / 2f,
 				mBitmapPaint);
 
-	}
-
-	/**
-	 * Given the source bitmap and a canvas, draws the bitmap through a rectangular
-	 * mask.
-	 * TODO: This can probably be optimized.
-	 *
-	 * @param bitmap The source bitmap to draw.
-	 * @param canvas The canvas to draw it on.
-	 * @param source The source bound of the bitmap.
-	 * @param dest   The destination bound on the canvas.
-	 */
-	public void drawBitmapRectangular(Bitmap bitmap, Canvas canvas,
-									  RectF source, RectF dest) {
-		BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP,
-			Shader.TileMode.CLAMP);
-		mMatrix.reset();
-
-		mMatrix.setRectToRect(source, dest, Matrix.ScaleToFit.FILL);
-
-		shader.setLocalMatrix(mMatrix);
-		mBitmapPaint.setShader(shader);
-		canvas.drawRect(dest.left, dest.top, dest.right, dest.bottom, mBitmapPaint);
 	}
 
 	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
