@@ -92,7 +92,6 @@ import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.ListActionAdapter;
 import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.ListAction;
-import de.vanita5.twittnuker.model.Panes.Right;;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -157,7 +156,7 @@ import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
 import static de.vanita5.twittnuker.util.Utils.showInfoMessage;
 
 public class UserProfileFragmentOld extends BaseSupportListFragment implements OnClickListener, OnItemClickListener,
-        OnItemLongClickListener, OnMenuItemClickListener, OnLinkClickListener, Right, OnSizeChangedListener,
+        OnItemLongClickListener, OnMenuItemClickListener, OnLinkClickListener, OnSizeChangedListener,
         OnSharedPreferenceChangeListener, OnTouchListener, ImageLoadingListener {
 
 	private static final int LOADER_ID_USER = 1;
@@ -412,7 +411,6 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
         mAdapter.add(new FavoritesAction(2));
         mAdapter.add(new UserMentionsAction(3));
         mAdapter.add(new UserListsAction(4));
-        mAdapter.add(new UserListMembershipsAction(5));
 		if (userIsMe) {
 			mAdapter.add(new SavedSearchesAction(11));
 			if (user.is_protected) {
@@ -1169,26 +1167,6 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 
 	}
 
-	private final class UserListMembershipsAction extends ListAction {
-		public UserListMembershipsAction(final int order) {
-			super(order);
-		}
-
-		@Override
-		public String getName() {
-			if (mUser == null) return getString(R.string.lists_following_user);
-			final String display_name = getDisplayName(mUser.name, mUser.screen_name);
-			return getString(R.string.lists_following_user_with_name, display_name);
-		}
-
-		@Override
-		public void onClick() {
-            final ParcelableUser user = mUser;
-            if (user == null) return;
-            openUserListMemberships(getActivity(), user.account_id, user.id, user.screen_name);
-		}
-	}
-
 	private final class UserListsAction extends ListAction {
 
 		public UserListsAction(final int order) {
@@ -1197,9 +1175,7 @@ public class UserProfileFragmentOld extends BaseSupportListFragment implements O
 
 		@Override
 		public String getName() {
-			if (mUser == null) return getString(R.string.users_lists);
-			final String display_name = getDisplayName(mUser.name, mUser.screen_name);
-			return getString(R.string.users_lists_with_name, display_name);
+            return getString(R.string.lists);
 		}
 
 		@Override

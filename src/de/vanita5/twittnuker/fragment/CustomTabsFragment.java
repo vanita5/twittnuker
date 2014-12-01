@@ -22,14 +22,6 @@
 
 package de.vanita5.twittnuker.fragment;
 
-import static de.vanita5.twittnuker.util.CustomTabUtils.getConfiguraionMap;
-import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconDrawable;
-import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconObject;
-import static de.vanita5.twittnuker.util.CustomTabUtils.getTabTypeName;
-import static de.vanita5.twittnuker.util.CustomTabUtils.isTabAdded;
-import static de.vanita5.twittnuker.util.CustomTabUtils.isTabTypeValid;
-import static de.vanita5.twittnuker.util.Utils.getAccountIds;
-
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
@@ -69,7 +61,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
-import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.provider.TweetStore.Tabs;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -81,7 +72,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-public class CustomTabsFragment extends BaseListFragment implements LoaderCallbacks<Cursor>, Panes.Right,
+import static de.vanita5.twittnuker.util.CustomTabUtils.getConfiguraionMap;
+import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconDrawable;
+import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconObject;
+import static de.vanita5.twittnuker.util.CustomTabUtils.getTabTypeName;
+import static de.vanita5.twittnuker.util.CustomTabUtils.isTabAdded;
+import static de.vanita5.twittnuker.util.CustomTabUtils.isTabTypeValid;
+import static de.vanita5.twittnuker.util.Utils.getAccountIds;
+
+public class CustomTabsFragment extends BaseListFragment implements LoaderCallbacks<Cursor>,
 		MultiChoiceModeListener, DropListener {
 
 	private ContentResolver mResolver;

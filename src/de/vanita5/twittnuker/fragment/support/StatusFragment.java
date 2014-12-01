@@ -79,7 +79,6 @@ import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
-import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -140,7 +139,7 @@ import static de.vanita5.twittnuker.util.Utils.startStatusShareChooser;
 import static de.vanita5.twittnuker.util.Utils.retweet;
 import static de.vanita5.twittnuker.util.Utils.favorite;
 
-public class StatusFragment extends ParcelableStatusesListFragment implements OnClickListener, Panes.Right,
+public class StatusFragment extends ParcelableStatusesListFragment implements OnClickListener,
 		OnMediaClickListener, OnSharedPreferenceChangeListener, ActionMode.Callback {
 
 	private static final int LOADER_ID_STATUS = 1;

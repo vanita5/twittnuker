@@ -37,24 +37,22 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 
 import org.mariotaku.refreshnow.widget.RefreshMode;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.loader.support.BaseUserListsLoader;
-import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
 
 abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment implements
-		LoaderCallbacks<List<ParcelableUserList>>, Panes.Left, OnMenuItemClickListener, MenuButtonClickListener {
+        LoaderCallbacks<List<ParcelableUserList>>, OnMenuItemClickListener, MenuButtonClickListener {
 
 	private ParcelableUserListsAdapter mAdapter;
 

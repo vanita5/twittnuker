@@ -188,7 +188,7 @@
     <string name="type_to_compose">اكتب للإرسال</string>
     <string name="users_lists">قوائم المستخدم</string>
     <string name="lists_following_user">القوائم المتتبعة لهذا المستخدم</string>
-    <string name="lists_following_me">القوائم التي تُتابعني</string>
+    <string name="lists_following_you">القوائم التي تُتابعني</string>
     <string name="item_3_minutes">ثلاث دقائق</string>
     <string name="item_5_minutes">5 دقائق</string>
     <string name="item_10_minutes">10 دقائق</string>
@@ -342,7 +342,7 @@
     <string name="clear_search_history">مسح سجل البحث</string>
     <string name="no_thanks">لا، شكرا</string>
     <string name="fast_scroll_thumb">تنقل الإبهام السريع</string>
-    <string name="indicate_my_status">الإشارة إلى تغريدتي</string>
+    <string name="indicate_your_status">الإشارة إلى تغريدتي</string>
     <string name="default_ringtone">الرنة الافتراضية</string>
     <string name="phishing_link_warning">تحذير من الروابط المحتالة</string>
     <string name="phishing_link_warning_summary">تحذيرك عند محاولتك لفتح رابط يمكن أن يكون محتالا في رسالة مباشرة.</string>
@@ -358,7 +358,7 @@
     <string name="quote_protected_status_notice">لا يُنصح بإقتباس تغريدةٍ محمية.</string>
     <string name="edit_draft">تعدبل المسودة</string>
     <string name="profile_image">صورة الملف الشخصي</string>
-    <string name="my_profile_image">صورة الملف الشخصي الخاص بي</string>
+    <string name="your_profile_image">صورة الملف الشخصي الخاص بي</string>
     <string name="mention_user">الإشارة إلى <xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">لون السِمَة</string>
     <string name="wrong_url_format">تشكيل الرابط خاطئ.</string>

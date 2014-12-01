@@ -22,11 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.clearListViewChoices;
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -45,7 +40,6 @@ import android.widget.ListView;
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.loader.support.DummyParcelableUsersLoader;
-import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
@@ -54,8 +48,13 @@ import de.vanita5.twittnuker.util.Utils;
 import java.util.Collections;
 import java.util.List;
 
+import static de.vanita5.twittnuker.util.Utils.clearListViewChoices;
+import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
+import static de.vanita5.twittnuker.util.Utils.openUserProfile;
+
 abstract class BaseUsersListFragment extends BasePullToRefreshListFragment implements
-		LoaderCallbacks<List<ParcelableUser>>, OnItemLongClickListener, Panes.Left, OnMenuItemClickListener,
+        LoaderCallbacks<List<ParcelableUser>>, OnItemLongClickListener, OnMenuItemClickListener,
 		MultiSelectManager.Callback, MenuButtonClickListener {
 
 	private SharedPreferences mPreferences;

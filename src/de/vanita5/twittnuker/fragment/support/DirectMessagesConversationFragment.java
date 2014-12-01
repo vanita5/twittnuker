@@ -68,7 +68,6 @@ import de.vanita5.twittnuker.adapter.DirectMessagesConversationAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.Account;
-import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TweetStore;
@@ -98,7 +97,7 @@ import static de.vanita5.twittnuker.util.Utils.getOldestMessageIdsFromDatabase;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 
 public class DirectMessagesConversationFragment extends BasePullToRefreshListFragment implements
-		LoaderCallbacks<Cursor>, OnMenuItemClickListener, TextWatcher, OnClickListener, Panes.Right,
+		LoaderCallbacks<Cursor>, OnMenuItemClickListener, TextWatcher, OnClickListener,
 		OnItemSelectedListener, OnEditorActionListener, MenuButtonClickListener {
 
 	private TwidereValidator mValidator;

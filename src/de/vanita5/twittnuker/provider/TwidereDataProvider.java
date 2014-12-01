@@ -22,15 +22,6 @@
 
 package de.vanita5.twittnuker.provider;
 
-import static de.vanita5.twittnuker.util.Utils.clearAccountColor;
-import static de.vanita5.twittnuker.util.Utils.clearAccountName;
-import static de.vanita5.twittnuker.util.Utils.getAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getNotificationUri;
-import static de.vanita5.twittnuker.util.Utils.getTableId;
-import static de.vanita5.twittnuker.util.Utils.getTableNameById;
-import static de.vanita5.twittnuker.util.Utils.isFiltered;
-
 import android.app.NotificationManager;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -48,7 +39,6 @@ import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 import org.mariotaku.jsonserializer.JSONFileIO;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
@@ -74,8 +64,6 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder;
 import de.vanita5.twittnuker.util.Utils;
 
-import twitter4j.http.HostAddressResolver;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -83,11 +71,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import twitter4j.http.HostAddressResolver;
+
+import static de.vanita5.twittnuker.util.Utils.clearAccountColor;
+import static de.vanita5.twittnuker.util.Utils.clearAccountName;
+import static de.vanita5.twittnuker.util.Utils.getAccountIds;
+import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
+import static de.vanita5.twittnuker.util.Utils.getNotificationUri;
+import static de.vanita5.twittnuker.util.Utils.getTableId;
+import static de.vanita5.twittnuker.util.Utils.getTableNameById;
+import static de.vanita5.twittnuker.util.Utils.isFiltered;
 
 public final class TwidereDataProvider extends ContentProvider implements Constants, LazyLoadCallback {
 
@@ -103,13 +101,13 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	private HostAddressResolver mHostAddressResolver;
 	private NotificationHelper mNotificationHelper;
 
-	private final List<ParcelableStatus> mNewStatuses = new CopyOnWriteArrayList<ParcelableStatus>();
-	private final List<ParcelableStatus> mNewMentions = new CopyOnWriteArrayList<ParcelableStatus>();
-	private final List<ParcelableDirectMessage> mNewMessages = new CopyOnWriteArrayList<ParcelableDirectMessage>();
+    private final List<ParcelableStatus> mNewStatuses = new CopyOnWriteArrayList<>();
+    private final List<ParcelableStatus> mNewMentions = new CopyOnWriteArrayList<>();
+    private final List<ParcelableDirectMessage> mNewMessages = new CopyOnWriteArrayList<>();
 
-	private final List<UnreadItem> mUnreadStatuses = new NoDuplicatesCopyOnWriteArrayList<UnreadItem>();
-	private final List<UnreadItem> mUnreadMentions = new NoDuplicatesCopyOnWriteArrayList<UnreadItem>();
-	private final List<UnreadItem> mUnreadMessages = new NoDuplicatesCopyOnWriteArrayList<UnreadItem>();
+    private final List<UnreadItem> mUnreadStatuses = new NoDuplicatesCopyOnWriteArrayList<>();
+    private final List<UnreadItem> mUnreadMentions = new NoDuplicatesCopyOnWriteArrayList<>();
+    private final List<UnreadItem> mUnreadMessages = new NoDuplicatesCopyOnWriteArrayList<>();
 
 	@Override
 	public int bulkInsert(final Uri uri, final ContentValues[] values) {

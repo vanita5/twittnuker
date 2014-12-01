@@ -22,15 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.clearListViewChoices;
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.openStatus;
-import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
-import static de.vanita5.twittnuker.util.Utils.showOkMessage;
-import static de.vanita5.twittnuker.util.Utils.retweet;
-import static de.vanita5.twittnuker.util.Utils.favorite;
-import static de.vanita5.twittnuker.util.Utils.startStatusShareChooser;
-
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -54,7 +45,6 @@ import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
-import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
@@ -74,8 +64,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static de.vanita5.twittnuker.util.Utils.clearListViewChoices;
+import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.openStatus;
+import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
+import static de.vanita5.twittnuker.util.Utils.showOkMessage;
+import static de.vanita5.twittnuker.util.Utils.retweet;
+import static de.vanita5.twittnuker.util.Utils.favorite;
+import static de.vanita5.twittnuker.util.Utils.startStatusShareChooser;
+
 abstract class BaseStatusesStaggeredGridFragment<Data> extends BasePullToRefreshStaggeredGridFragment implements
-        LoaderCallbacks<Data>, OnItemLongClickListener, OnMenuItemClickListener, Panes.Left,
+        LoaderCallbacks<Data>, OnItemLongClickListener, OnMenuItemClickListener,
         MultiSelectManager.Callback, MenuButtonClickListener {
 
 	private AsyncTaskManager mAsyncTaskManager;

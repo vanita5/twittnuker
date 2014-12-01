@@ -45,7 +45,6 @@ import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListe
 import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.model.Account;
 import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
-import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
@@ -74,7 +73,7 @@ import static de.vanita5.twittnuker.util.Utils.retweet;
 import static de.vanita5.twittnuker.util.Utils.favorite;
 
 abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragment implements LoaderCallbacks<Data>,
-		OnItemLongClickListener, OnMenuItemClickListener, Panes.Left, MultiSelectManager.Callback,
+		OnItemLongClickListener, OnMenuItemClickListener, MultiSelectManager.Callback,
 		MenuButtonClickListener {
 
 	private AsyncTaskManager mAsyncTaskManager;

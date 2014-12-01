@@ -22,37 +22,29 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.app.ActionBar;
 import android.os.Bundle;
-import android.provider.SearchRecentSuggestions;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
-import de.vanita5.twittnuker.provider.RecentSearchProvider;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.ExtendedViewPager;
 import de.vanita5.twittnuker.view.LinePageIndicator;
 
-public class SearchFragment extends BaseSupportFragment implements OnPageChangeListener,
+public class UserListsFragment extends BaseSupportFragment implements OnPageChangeListener,
 		RefreshScrollTopInterface, SupportFragmentCallback {
 
 	private ExtendedViewPager mViewPager;
 
 	private SupportTabsAdapter mAdapter;
-    private LinePageIndicator mPagerIndicator;
+	private LinePageIndicator mPagerIndicator;
 
 	private Fragment mCurrentVisibleFragment;
 
@@ -67,62 +59,29 @@ public class SearchFragment extends BaseSupportFragment implements OnPageChangeL
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		setHasOptionsMenu(true);
 		final Bundle args = getArguments();
 		final FragmentActivity activity = getActivity();
 		mAdapter = new SupportTabsAdapter(activity, getChildFragmentManager(), null, 1);
-		mAdapter.addTab(SearchStatusesFragment.class, args, getString(R.string.statuses),
-                R.drawable.ic_action_twitter, 0);
-        mAdapter.addTab(SearchUsersFragment.class, args, getString(R.string.users), R.drawable.ic_action_user, 1);
+		mAdapter.addTab(UserListsListFragment.class, args, getString(R.string.lists),
+				R.drawable.ic_action_twitter, 0);
+		mAdapter.addTab(UserListMembershipsListFragment.class, args,
+				getString(R.string.lists_following_user), R.drawable.ic_action_user, 1);
 		mViewPager.setAdapter(mAdapter);
 		mViewPager.setOnPageChangeListener(this);
 		mViewPager.setOffscreenPageLimit(2);
-        mPagerIndicator.setSelectedColor(ThemeUtils.getThemeColor(activity));
+		mPagerIndicator.setSelectedColor(ThemeUtils.getThemeColor(activity));
 		mPagerIndicator.setViewPager(mViewPager);
-		if (savedInstanceState == null && args != null && args.containsKey(EXTRA_QUERY)) {
-			final String query = args.getString(EXTRA_QUERY);
-			final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),
-					RecentSearchProvider.AUTHORITY, RecentSearchProvider.MODE);
-			suggestions.saveRecentQuery(query, null);
-			if (activity instanceof LinkHandlerActivity) {
-				final ActionBar ab = activity.getActionBar();
-				if (ab != null) {
-					ab.setSubtitle(query);
-				}
-			}
-		}
 	}
 
-	@Override
-    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-		inflater.inflate(R.menu.menu_search, menu);
-	}
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_search, container, false);
+		return inflater.inflate(R.layout.fragment_search, container, false);
 	}
-	
+
 	@Override
 	public void onDetachFragment(final Fragment fragment) {
 
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
-		case MENU_SAVE: {
-			final AsyncTwitterWrapper twitter = getTwitterWrapper();
-			final Bundle args = getArguments();
-			if (twitter != null && args != null) {
-				final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
-				final String query = args.getString(EXTRA_QUERY);
-				twitter.createSavedSearchAsync(accountId, query);
-			}
-			return true;
-		}
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -148,7 +107,7 @@ public class SearchFragment extends BaseSupportFragment implements OnPageChangeL
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		mViewPager = (ExtendedViewPager) view.findViewById(R.id.search_pager);
-        mPagerIndicator = (LinePageIndicator) view.findViewById(R.id.search_pager_indicator);
+		mPagerIndicator = (LinePageIndicator) view.findViewById(R.id.search_pager_indicator);
 	}
 
 	@Override

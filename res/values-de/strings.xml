@@ -123,7 +123,7 @@
     <string name="load_item_limit">Limitierung zu ladender Elemente</string>
     <string name="load_item_limit_summary">Element-Limitierung pro Ladevorgang festlegen</string>
     <string name="load_more_automatically">Lade automatisch mehr Inhalt</string>
-    <string name="load_more_automatically_summary">Lade weitere Inhalte (z.B. Fotos, Karten, Statusmeldungen) automatisch</string>
+    <string name="load_more_automatically_summary">Lade weitere Inhalte (z.B. Fotos, Karten, Tweets) automatisch</string>
     <string name="quote">Zitat</string>
     <string name="add_rule">Regel hinzufügen</string>
     <string name="text_size">Textgröße</string>
@@ -194,9 +194,10 @@
     <string name="list_members">Mitglieder anzeigen</string>
     <string name="list_subscribers">Abonnenten anzeigen</string>
     <string name="type_to_compose">Schreibe etwas</string>
+    <string name="lists">Listen</string>
     <string name="users_lists">Eigene Listen</string>
     <string name="lists_following_user">Mitglied von Listen</string>
-    <string name="lists_following_me">Mitglied von Listen</string>
+    <string name="lists_following_you">Mitglied von Listen</string>
     <string name="item_3_minutes">3 Minuten</string>
     <string name="item_5_minutes">5 Minuten</string>
     <string name="item_10_minutes">10 Minuten</string>
@@ -366,7 +367,7 @@
     <string name="clear_search_history">Suchbegriffe löschen</string>
     <string name="no_thanks">Nein, danke</string>
     <string name="fast_scroll_thumb">Schnelles scrollen</string>
-    <string name="indicate_my_status">Kennzeichne meine Tweets</string>
+    <string name="indicate_your_status">Kennzeichne deine Tweets</string>
     <string name="default_ringtone">Standard Klingelton</string>
     <string name="phishing_link_warning">Warnung vor Phishing Links</string>
     <string name="phishing_link_warning_summary">Warnung beim Öffnen eines möglichen Phishing Links in Direktnachrichten</string>
@@ -383,7 +384,7 @@
     <string name="quote_protected_status_notice">Es ist nicht empfohlen einen geschützten Tweet zu zitieren.</string>
     <string name="edit_draft">Bearbeite Entwurf</string>
     <string name="profile_image">Profilbild</string>
-    <string name="my_profile_image">Mein Profilbild</string>
+    <string name="your_profile_image">Dein Profilbild</string>
     <string name="mention_user">Erwähnung <xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">Theme Farbe</string>
     <string name="action_bar_color">Action Bar Farbe</string>
@@ -618,6 +619,7 @@
     <string name="medias">Medien</string>
     <string name="remove_from_filter">Aus dem Filter entfernen</string>
     <string name="sort_timeline_by_id">Timeline nach ID sortieren</string>
+    <string name="profile">Profil</string>
 
 
     <!-- Twittnuker -->

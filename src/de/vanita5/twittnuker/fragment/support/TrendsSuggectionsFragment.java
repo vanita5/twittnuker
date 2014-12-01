@@ -22,10 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
-import static de.vanita5.twittnuker.util.Utils.getTableNameByUri;
-import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -41,13 +37,15 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.widget.ListView;
 
-import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.provider.TweetStore.CachedTrends;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 
-public class TrendsSuggectionsFragment extends BasePullToRefreshListFragment implements LoaderCallbacks<Cursor>,
-		Panes.Left {
+import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
+import static de.vanita5.twittnuker.util.Utils.getTableNameByUri;
+import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
+
+public class TrendsSuggectionsFragment extends BasePullToRefreshListFragment implements LoaderCallbacks<Cursor> {
 
 	private MultiSelectManager mMultiSelectManager;
 	private SharedPreferences mPreferences;

@@ -22,17 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.Utils.getAccountColor;
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
-import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-import static de.vanita5.twittnuker.util.Utils.openUserListMembers;
-import static de.vanita5.twittnuker.util.Utils.openUserListSubscribers;
-import static de.vanita5.twittnuker.util.Utils.openUserListTimeline;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -72,7 +61,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.ListActionAdapter;
 import de.vanita5.twittnuker.model.ListAction;
-import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -84,17 +72,27 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
-
 import de.vanita5.twittnuker.view.TwidereMenuBar;
+
+import java.util.Locale;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserList;
 
-import java.util.Locale;
+import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.Utils.getAccountColor;
+import static de.vanita5.twittnuker.util.Utils.getDisplayName;
+import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
+import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.Utils.openUserListMembers;
+import static de.vanita5.twittnuker.util.Utils.openUserListSubscribers;
+import static de.vanita5.twittnuker.util.Utils.openUserListTimeline;
+import static de.vanita5.twittnuker.util.Utils.openUserProfile;
+import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
 
 public class UserListDetailsFragment extends BaseSupportListFragment implements OnClickListener, OnItemClickListener,
-		OnItemLongClickListener, OnMenuItemClickListener, LoaderCallbacks<SingleResponse<ParcelableUserList>>,
-		Panes.Right {
+        OnItemLongClickListener, OnMenuItemClickListener, LoaderCallbacks<SingleResponse<ParcelableUserList>> {
 
 	private ImageLoaderWrapper mProfileImageLoader;
 	private AsyncTwitterWrapper mTwitterWrapper;
