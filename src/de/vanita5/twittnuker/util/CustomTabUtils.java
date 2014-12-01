@@ -129,7 +129,7 @@ public class CustomTabUtils implements Constants {
 		CUSTOM_TABS_ICON_NAME_MAP.put("comp", R.drawable.ic_action_comp);
 		CUSTOM_TABS_ICON_NAME_MAP.put("cthulhu", R.drawable.ic_action_cthulhu);
 		CUSTOM_TABS_ICON_NAME_MAP.put("harvey", R.drawable.ic_action_harvey);
-		CUSTOM_TABS_ICON_NAME_MAP.put("heart_z", R.drawable.ic_action_heart_z);
+		CUSTOM_TABS_ICON_NAME_MAP.put("Majora's Mask", R.drawable.ic_action_heart_z);
 		CUSTOM_TABS_ICON_NAME_MAP.put("metroid", R.drawable.ic_action_metroid);
 		CUSTOM_TABS_ICON_NAME_MAP.put("nyarlathorepirycx", R.drawable.ic_action_nyarlathorepirycx);
 		CUSTOM_TABS_ICON_NAME_MAP.put("pokeball", R.drawable.ic_action_pokeball);
