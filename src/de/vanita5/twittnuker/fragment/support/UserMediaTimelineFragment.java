@@ -18,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.loader.support.MediaTimelineLoader;
@@ -28,6 +26,8 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.view.MediaSizeImageView;
+
+import java.util.List;
 
 public class UserMediaTimelineFragment extends BaseSupportFragment
 		implements LoaderCallbacks<List<ParcelableStatus>> {
@@ -73,16 +73,18 @@ public class UserMediaTimelineFragment extends BaseSupportFragment
 	@Override
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		mRecyclerView = (RecyclerView) view.findViewById(android.R.id.list);
-		mProgress = (ProgressBar) view.findViewById(android.R.id.progress);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mProgress = (ProgressBar) view.findViewById(R.id.progress);
 	}
 
 	@Override
 	protected void fitSystemWindows(Rect insets) {
 		super.fitSystemWindows(insets);
-		mRecyclerView.setClipToPadding(false);
-		mRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-	}
+        if (mRecyclerView != null) {
+            mRecyclerView.setClipToPadding(false);
+            mRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+	    }
+    }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -164,9 +166,9 @@ public class UserMediaTimelineFragment extends BaseSupportFragment
 		}
 
 		public void setMedia(ImageLoaderWrapper loader, ImageLoadingHandler loadingHandler, ParcelableStatus status) {
-			final ParcelableMedia[] medias = status.media;
-			if (medias == null || medias.length < 1) return;
-			final ParcelableMedia firstMedia = medias[0];
+            final ParcelableMedia[] media = status.media;
+            if (media == null || media.length < 1) return;
+            final ParcelableMedia firstMedia = media[0];
 			if (status.text_plain.codePointCount(0, status.text_plain.length()) == firstMedia.end) {
 				mediaTextView.setText(status.text_unescaped.substring(0, firstMedia.start));
 			} else {

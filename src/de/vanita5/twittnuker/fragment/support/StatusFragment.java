@@ -39,12 +39,14 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.util.Pair;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -54,7 +56,6 @@ import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
@@ -73,7 +74,6 @@ import org.mariotaku.refreshnow.widget.RefreshMode;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
-import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesListAdapter;
 import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -87,7 +87,6 @@ import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.text.method.StatusContentMovementMethod;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
-import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
 import de.vanita5.twittnuker.util.MediaPreviewUtils.OnMediaClickListener;
@@ -531,7 +530,12 @@ public class StatusFragment extends ParcelableStatusesListFragment implements On
 		final ParcelableStatus status = mStatus;
 		switch (view.getId()) {
 			case R.id.profile: {
-				openUserProfile(getActivity(), status.account_id, status.user_id, null);
+                final FragmentActivity activity = getActivity();
+                final ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                        new Pair<View, String>(mProfileImageView, UserProfileFragment.TRANSITION_NAME_PROFILE_IMAGE),
+                        new Pair<View, String>(mProfileTypeView, UserProfileFragment.TRANSITION_NAME_PROFILE_TYPE));
+                openUserProfile(activity, status.account_id, status.user_id, status.user_screen_name,
+                        options.toBundle());
 				break;
 			}
 			case R.id.follow: {

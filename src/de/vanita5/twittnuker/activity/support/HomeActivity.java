@@ -437,11 +437,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
 	@Override
-	public boolean shouldOverrideActivityAnimation() {
-		return false;
-	}
-
-	@Override
 	public float getControlBarOffset() {
 		final float totalHeight = getControlBarHeight();
         return 1 + mTabsContainer.getTranslationY() / totalHeight;
@@ -496,8 +491,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	protected void onCreate(final Bundle savedInstanceState) {
 		setUiOptions(getWindow());
         final Window window = getWindow();
-        window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.requestFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		if (!isDatabaseReady(this)) {

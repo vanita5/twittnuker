@@ -22,13 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.model.ParcelableLocation.isValidLocation;
-import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
-import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
-import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
-import static de.vanita5.twittnuker.util.Utils.getStatusTypeIconRes;
-import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -55,6 +48,13 @@ import de.vanita5.twittnuker.view.holder.StatusListViewHolder;
 import twitter4j.TranslationResult;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+
+import static de.vanita5.twittnuker.model.ParcelableLocation.isValidLocation;
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
+import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
+import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
+import static de.vanita5.twittnuker.util.Utils.getStatusTypeIconRes;
+import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 
 public class StatusTranslateDialogFragment extends BaseSupportDialogFragment implements
 		LoaderCallbacks<SingleResponse<TranslationResult>> {
@@ -147,7 +147,7 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
         final boolean isMyStatus = status.account_id == status.user_id;
         final boolean hasMedia = status.media != null && status.media.length > 0;
 		mHolder.setUserColor(getUserColor(getActivity(), status.user_id, true));
-		mHolder.setHighlightColor(getCardHighlightColor(status, false));
+		mHolder.setHighlightColor(getCardHighlightColor(getResources(), status, false));
 
         mHolder.setIsMyStatus(isMyStatus && !prefs.getBoolean(KEY_INDICATE_MY_STATUS, true));
 

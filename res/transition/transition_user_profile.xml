@@ -21,27 +21,17 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/element_spacing_normal">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/hidden_settings_warning_title"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/material_red"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hidden_settings_warning_message"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="?android:textColorPrimary"/>
-
-</LinearLayout>
+<transitionSet
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <changeBounds>
+        <targets>
+            <target android:targetId="@id/profile_image"/>
+            <target android:targetId="@id/profile_type"/>
+        </targets>
+    </changeBounds>
+    <autoTransition>
+        <targets>
+            <target android:targetId="@id/profile_banner"/>
+        </targets>
+    </autoTransition>
+</transitionSet>

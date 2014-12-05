@@ -33,15 +33,12 @@ import android.support.v4.content.Loader;
 import android.view.View;
 import android.widget.ListView;
 
-import org.mariotaku.refreshnow.widget.RefreshNowConfig;
-
 import de.vanita5.twittnuker.adapter.BaseParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesByFriendsAdapter;
 import de.vanita5.twittnuker.loader.support.ActivitiesAboutMeLoader;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
-
 
 import java.util.Arrays;
 import java.util.List;
@@ -85,7 +82,7 @@ public class ActivitiesByFriendsFragment extends BaseActivitiesListFragment {
 			case ParcelableActivity.ACTION_FOLLOW: {
 				if (targetUsers == null || targetUsers.length == 0) return;
 				if (targetUsers.length == 1) {
-					openUserProfile(getActivity(), targetUsers[0]);
+					openUserProfile(getActivity(), targetUsers[0], null);
 				} else {
 					final List<ParcelableUser> users = Arrays.asList(targetUsers);
 					openUsers(getActivity(), users);

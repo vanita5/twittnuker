@@ -24,24 +24,16 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/element_spacing_normal">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
+    <com.astuetz.PagerSlidingTabStrip
+        android:id="@+id/view_pager_tabs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/hidden_settings_warning_title"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/material_red"
-        android:textStyle="bold"/>
+        android:layout_height="@dimen/element_size_normal"/>
 
-    <TextView
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hidden_settings_warning_message"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="?android:textColorPrimary"/>
-
+        android:layout_height="match_parent"/>
 </LinearLayout>

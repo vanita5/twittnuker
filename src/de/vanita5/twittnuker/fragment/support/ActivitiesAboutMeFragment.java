@@ -32,15 +32,12 @@ import android.support.v4.content.Loader;
 import android.view.View;
 import android.widget.ListView;
 
-import org.mariotaku.refreshnow.widget.RefreshNowConfig;
-
 import de.vanita5.twittnuker.adapter.BaseParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAboutMeAdapter;
 import de.vanita5.twittnuker.loader.support.ActivitiesAboutMeLoader;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
-
 
 import java.util.Arrays;
 import java.util.List;
@@ -72,7 +69,7 @@ public class ActivitiesAboutMeFragment extends BaseActivitiesListFragment {
 		switch (item.action) {
 			case ParcelableActivity.ACTION_FAVORITE: {
 				if (sources.length == 1) {
-					openUserProfile(getActivity(), sources[0]);
+					openUserProfile(getActivity(), sources[0], null);
 				} else {
 					final List<ParcelableUser> users = Arrays.asList(sources);
 					openUsers(getActivity(), users);
@@ -81,7 +78,7 @@ public class ActivitiesAboutMeFragment extends BaseActivitiesListFragment {
 			}
 			case ParcelableActivity.ACTION_FOLLOW: {
 				if (sources.length == 1) {
-					openUserProfile(getActivity(), sources[0]);
+					openUserProfile(getActivity(), sources[0], null);
 				} else {
 					final List<ParcelableUser> users = Arrays.asList(sources);
 					openUsers(getActivity(), users);
@@ -102,7 +99,7 @@ public class ActivitiesAboutMeFragment extends BaseActivitiesListFragment {
 			}
 			case ParcelableActivity.ACTION_RETWEET: {
 				if (sources.length == 1) {
-					openUserProfile(getActivity(), sources[0]);
+					openUserProfile(getActivity(), sources[0], null);
 				} else {
 					final List<ParcelableUser> users = Arrays.asList(sources);
 					openUsers(getActivity(), users);

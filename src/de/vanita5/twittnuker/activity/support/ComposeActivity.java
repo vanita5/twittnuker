@@ -1144,7 +1144,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			final boolean is_my_status = status.account_id == status.user_id;
             final boolean hasMedia = status.media != null && status.media.length > 0;
 			mHolder.setUserColor(getUserColor(getActivity(), status.user_id, true));
-			mHolder.setHighlightColor(getCardHighlightColor(status, false));
+			mHolder.setHighlightColor(getCardHighlightColor(getResources(), status, false));
 
 			mHolder.setIsMyStatus(is_my_status && !prefs.getBoolean(KEY_INDICATE_MY_STATUS, true));
 

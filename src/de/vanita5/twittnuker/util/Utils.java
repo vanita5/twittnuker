@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -36,7 +37,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -64,6 +64,7 @@ import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -79,6 +80,7 @@ import android.text.format.Time;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -143,10 +145,9 @@ import de.vanita5.twittnuker.fragment.support.UserListMembershipsListFragment;
 import de.vanita5.twittnuker.fragment.support.UserListSubscribersFragment;
 import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserListsFragment;
-import de.vanita5.twittnuker.fragment.support.UserListsListFragment;
 import de.vanita5.twittnuker.fragment.support.UserMediaTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserMentionsFragment;
-import de.vanita5.twittnuker.fragment.support.UserProfileFragmentOld;
+import de.vanita5.twittnuker.fragment.support.UserProfileFragment;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UsersListFragment;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
@@ -656,7 +657,13 @@ public final class Utils implements Constants, TwitterConstants {
         return output;
     }
 
+
 	public static Fragment createFragmentForIntent(final Context context, final Intent intent) {
+        final Uri uri = intent.getData();
+        return createFragmentForIntent(context, matchLinkId(uri), intent);
+    }
+
+    public static Fragment createFragmentForIntent(final Context context, final int linkId, final Intent intent) {
 		final long start = System.currentTimeMillis();
 		intent.setExtrasClassLoader(context.getClassLoader());
 		final Bundle extras = intent.getExtras();
@@ -667,7 +674,7 @@ public final class Utils implements Constants, TwitterConstants {
 		if (extras != null) {
 			args.putAll(extras);
 		}
-		switch (matchLinkId(uri)) {
+        switch (linkId) {
 			case LINK_ID_STATUS: {
 				fragment = new StatusFragment();
 				if (!args.containsKey(EXTRA_STATUS_ID)) {
@@ -677,7 +684,7 @@ public final class Utils implements Constants, TwitterConstants {
 				break;
 			}
 			case LINK_ID_USER: {
-				fragment = new UserProfileFragmentOld();
+                fragment = new UserProfileFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
@@ -1577,25 +1584,25 @@ public final class Utils implements Constants, TwitterConstants {
 		return def;
 	}
 
-	public static int getCardHighlightColor(ParcelableStatus status, boolean isMention) {
-		return getCardHighlightColor(isMention, status.is_favorite, isMyRetweet(status));
+	public static int getCardHighlightColor(final Resources res, ParcelableStatus status, boolean isMention) {
+		return getCardHighlightColor(res, isMention, status.is_favorite, isMyRetweet(status));
 	}
 
-	public static int getCardHighlightColor(ParcelableStatus status, boolean isMention, boolean favoritesHighlightEnabled) {
-		return getCardHighlightColor(isMention, favoritesHighlightEnabled && status.is_favorite, isMyRetweet(status));
+	public static int getCardHighlightColor(final Resources res, ParcelableStatus status, boolean isMention, boolean favoritesHighlightEnabled) {
+		return getCardHighlightColor(res, isMention, favoritesHighlightEnabled && status.is_favorite, isMyRetweet(status));
 	}
 
-	public static int getCardHighlightColor(final boolean is_mention, final boolean is_favorite,
+	public static int getCardHighlightColor(final Resources res, final boolean is_mention, final boolean is_favorite,
 											final boolean is_retweet) {
-//		if (is_mention) {
-//			return HOLO_BLUE_LIGHT;
-//		}
-//		else if (is_retweet) {
-//			return HOLO_GREEN_LIGHT;
-//		}
-//		else if (is_favorite) {
-//			return HOLO_ORANGE_LIGHT;
-//		}
+		if (is_mention) {
+			return res.getColor(R.color.highlight_reply);
+		}
+		else if (is_retweet) {
+			res.getColor(R.color.highlight_retweet);
+		}
+		else if (is_favorite) {
+			return res.getColor(R.color.highlight_favorite);
+		}
 		return Color.TRANSPARENT;
 	}
 
@@ -3297,41 +3304,58 @@ public final class Utils implements Constants, TwitterConstants {
 		}
 
     public static void openUserProfile(final Context context, final long accountId, final long userId,
-                                       final String screenName) {
+                                       final String screenName, final Bundle activityOptions) {
         if (context == null || accountId <= 0 || userId <= 0 && isEmpty(screenName)) return;
 			final Uri.Builder builder = new Uri.Builder();
-			builder.scheme(SCHEME_TWITTNUKER);
-			builder.authority(AUTHORITY_USER);
-            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
-            if (userId > 0) {
-                builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
-			}
-            if (screenName != null) {
-                builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
-			}
-			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_USER);
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
+        if (userId > 0) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
+        }
+        if (screenName != null) {
+            builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
+        }
+        final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
+        if (context instanceof Activity) {
+            ActivityCompat.startActivity((Activity) context, intent, activityOptions);
+        } else {
             context.startActivity(intent);
-		}
+        }
+    }
 
-	public static void openUserProfile(final Activity activity, final ParcelableUser user) {
-		if (activity == null || user == null) return;
+    public static int getInsetsTopWithoutActionBarHeight(Context context, int top) {
+        if (context instanceof Activity) {
+            final ActionBar actionBar = ((Activity) context).getActionBar();
+            if (actionBar != null) return top - getActionBarHeight(actionBar);
+        }
+        return top;
+    }
+
+    public static void openUserProfile(final Context context, final ParcelableUser user,
+                                       final Bundle activityOptions) {
+        if (context == null || user == null) return;
 		final Bundle extras = new Bundle();
 		extras.putParcelable(EXTRA_USER, user);
-			final Uri.Builder builder = new Uri.Builder();
-			builder.scheme(SCHEME_TWITTNUKER);
-			builder.authority(AUTHORITY_USER);
-			builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(user.account_id));
-			if (user.id > 0) {
-				builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(user.id));
-			}
-			if (user.screen_name != null) {
-				builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, user.screen_name);
-			}
-			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-			intent.setExtrasClassLoader(activity.getClassLoader());
-			intent.putExtras(extras);
-            activity.startActivity(intent);
+        final Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_USER);
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(user.account_id));
+        if (user.id > 0) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(user.id));
+        }
+        if (user.screen_name != null) {
+            builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, user.screen_name);
+        }
+        final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
+        intent.setExtrasClassLoader(context.getClassLoader());
+        intent.putExtras(extras);
+        if (context instanceof Activity) {
+            ActivityCompat.startActivity((Activity) context, intent, activityOptions);
+        } else {
+            context.startActivity(intent);
 		}
+    }
 
 	public static void openUsers(final Activity activity, final List<ParcelableUser> users) {
 		if (activity == null || users == null) return;
@@ -3457,9 +3481,9 @@ public final class Utils implements Constants, TwitterConstants {
 	public static void setMenuForStatus(final Context context, final Menu menu, final ParcelableStatus status) {
 		if (context == null || menu == null || status == null) return;
         final Resources resources = context.getResources();
-        final int retweetHighlight = resources.getColor(android.R.color.holo_green_light);
-        final int favoriteHighlight = resources.getColor(android.R.color.holo_orange_light);
-		final int loveHighlight = resources.getColor(android.R.color.holo_red_light);
+        final int retweetHighlight = resources.getColor(R.color.highlight_retweet);
+        final int favoriteHighlight = resources.getColor(R.color.highlight_favorite);
+		final int loveHighlight = resources.getColor(R.color.highlight_love);
 		final boolean isMyRetweet = isMyRetweet(status);
 		final MenuItem delete = menu.findItem(MENU_DELETE);
 		if (delete != null) {
@@ -3874,13 +3898,24 @@ public final class Utils implements Constants, TwitterConstants {
 		}
 	}
 
-	public static int getActionBarHeight(Context context) {
-		final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.actionBarSize});
-		try {
-			return a.getDimensionPixelSize(0, 0);
-		} finally {
-			a.recycle();
+	public static int getActionBarHeight(ActionBar actionBar) {
+		if (actionBar == null) return 0;
+		final Context context = actionBar.getThemedContext();
+		final TypedValue tv = new TypedValue();
+		final int height = actionBar.getHeight();
+		if (height > 0) return height;
+		if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+			return TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
 		}
+		return 0;
+	}
+
+	public static int getActionBarHeight(Context context) {
+        final TypedValue tv = new TypedValue();
+        if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            return TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
+		}
+        return 0;
 	}
 
 	public static void makeListFragmentFitsSystemWindows(ListFragment fragment) {

@@ -22,18 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_ACCOUNT_ID;
-import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_CONVERSATION_ID;
-import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_NAME;
-import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_PROFILE_IMAGE_URL;
-import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_SCREEN_NAME;
-import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_TEXT;
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
-import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.getAccountColor;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
@@ -49,6 +37,18 @@ import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.DirectMessageEntryViewHolder;
+
+import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_ACCOUNT_ID;
+import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_CONVERSATION_ID;
+import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_NAME;
+import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_PROFILE_IMAGE_URL;
+import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_SCREEN_NAME;
+import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_TEXT;
+import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
+import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.getAccountColor;
+import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 
 public class DirectMessageConversationEntriesAdapter extends BaseCursorAdapter implements IBaseCardAdapter,
 		OnClickListener {
@@ -171,7 +171,7 @@ public class DirectMessageConversationEntriesAdapter extends BaseCursorAdapter i
 					final long account_id = getAccountId(position);
 					final long user_id = getConversationId(position);
 					final String screen_name = getScreenName(position);
-					openUserProfile((Activity) mContext, account_id, user_id, screen_name);
+                    openUserProfile(mContext, account_id, user_id, screen_name, null);
 				}
 				break;
 			}
@@ -196,7 +196,6 @@ public class DirectMessageConversationEntriesAdapter extends BaseCursorAdapter i
 
 	@Override
 	public void setMenuButtonClickListener(final MenuButtonClickListener listener) {
-		//
 	}
 
 	private static int getItemResource(final boolean compactCards) {

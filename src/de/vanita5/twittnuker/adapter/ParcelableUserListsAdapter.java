@@ -22,11 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
-import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
@@ -46,6 +41,11 @@ import de.vanita5.twittnuker.view.iface.ICardItemView.OnOverflowIconClickListene
 
 import java.util.List;
 import java.util.Locale;
+
+import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.getDisplayName;
+import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
+import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 
 public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserList> implements IBaseCardAdapter,
 		OnClickListener, OnOverflowIconClickListener {
@@ -140,7 +140,8 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 			case R.id.profile_image: {
 				if (mContext instanceof Activity) {
 					final ParcelableUserList item = getItem(position);
-					openUserProfile((Activity) mContext, item.account_id, item.user_id, item.user_screen_name);
+                    openUserProfile(mContext, item.account_id, item.user_id, item.user_screen_name,
+                            null);
 				}
 				break;
 			}

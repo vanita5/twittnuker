@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
@@ -119,9 +120,10 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 
 		if (!showGap) {
 
-            final TwidereLinkify linkify = getLinkify();
+            // Clear images in prder to prevent images in recycled view shown.
 
-			// Clear images in prder to prevent images in recycled view shown.
+			final Resources res = mContext.getResources();
+            final TwidereLinkify linkify = getLinkify();
 
             linkify.setHasExtraMediaLink(false);
             linkify.setCustomMediaUrl(null);
@@ -172,7 +174,7 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 			} else {
 				holder.setUserColor(getUserColor(mContext, userId));
 			}
-			holder.setHighlightColor(getCardHighlightColor(!mMentionsHighlightDisabled && isMention,
+            holder.setHighlightColor(getCardHighlightColor(res, !mMentionsHighlightDisabled && isMention,
 					!mFavoritesHighlightDisabled && isFavorite, isMyRetweet));
 
 			holder.setAccountColorEnabled(showAccountColor);
@@ -246,7 +248,6 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
                     holder.image_preview.setBackgroundResource(0);
                     mImageLoader.displayPreviewImage(holder.image_preview, customMediaLink, mImageLoadingHandler);
                 }
-				final Resources res = mContext.getResources();
 				final int count = media.length;
 				holder.image_preview_count.setText(res.getQuantityString(R.plurals.N_medias, count, count));
 				holder.image_preview.setTag(position);
@@ -387,9 +388,11 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 			case R.id.profile_image: {
 				final ParcelableStatus status = getStatus(position);
 				if (status == null) return;
-				if (mContext instanceof Activity) {
-					openUserProfile((Activity) mContext, status.account_id, status.user_id, status.user_screen_name);
-				}
+                final Activity activity = (Activity) getContext();
+                final ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                        view, "profile_image");
+                openUserProfile(mContext, status.account_id, status.user_id,
+                        status.user_screen_name, options.toBundle());
 				break;
 			}
 		}

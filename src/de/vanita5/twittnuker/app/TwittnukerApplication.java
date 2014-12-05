@@ -22,12 +22,6 @@
 
 package de.vanita5.twittnuker.app;
 
-import static de.vanita5.twittnuker.util.UserColorUtils.initUserColor;
-import static de.vanita5.twittnuker.util.Utils.getBestCacheDir;
-import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
-import static de.vanita5.twittnuker.util.Utils.initAccountColor;
-import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
-
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
@@ -57,7 +51,6 @@ import org.acra.collector.CrashReportData;
 import org.acra.sender.ReportSender;
 import org.acra.sender.ReportSenderException;
 import org.mariotaku.gallery3d.util.GalleryUtils;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.MainActivity;
@@ -68,17 +61,24 @@ import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
 import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator;
 import de.vanita5.twittnuker.util.net.TwidereHostAddressResolver;
 
-import twitter4j.http.HostAddressResolver;
-
 import java.io.File;
 import java.util.Date;
 import java.util.Locale;
+
+import twitter4j.http.HostAddressResolver;
+
+import static de.vanita5.twittnuker.util.UserColorUtils.initUserColor;
+import static de.vanita5.twittnuker.util.Utils.getBestCacheDir;
+import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
+import static de.vanita5.twittnuker.util.Utils.initAccountColor;
+import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
 @ReportsCrashes(formUri = "http://www.bugsense.com/api/acra?api_key=741d7d6c",
 		mailTo = Constants.APP_PROJECT_EMAIL,
@@ -187,6 +187,7 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		if (Utils.isDebugBuild()) {
 			StrictModeUtils.detectAllVmPolicy();
 		}
+        setTheme(ThemeUtils.getThemeResource(this));
 		super.onCreate();
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mHandler = new Handler();

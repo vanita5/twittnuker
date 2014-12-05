@@ -42,9 +42,6 @@ public interface IThemedActivity {
 
 	public void navigateUpFromSameTask();
 
-	public void overrideCloseAnimationIfNeeded();
-
 	public void restart();
 
-	public boolean shouldOverrideActivityAnimation();
 }

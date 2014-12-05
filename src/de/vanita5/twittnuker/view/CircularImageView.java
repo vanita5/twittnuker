@@ -59,6 +59,7 @@ public class CircularImageView extends ImageView implements Constants {
 	private static final int SHADOW_START_COLOR = 0x37000000;
 
     private static final boolean USE_OUTLINE = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+	private static final boolean OUTLINE_DRAW = false;
 
 	private final Matrix mMatrix;
 	private final RectF mSource;
@@ -217,7 +218,7 @@ public class CircularImageView extends ImageView implements Constants {
 
 	@Override
 	public void setBackgroundDrawable(Drawable background) {
-		if (USE_OUTLINE) {
+		if (OUTLINE_DRAW) {
 			super.setBackgroundDrawable(background);
 			return;
 		}
@@ -227,7 +228,6 @@ public class CircularImageView extends ImageView implements Constants {
 	}
 
 	private void updateBackgroundPadding() {
-		if (USE_OUTLINE) return;
 		final Drawable drawable = mBackground;
 		if (drawable == null) return;
 		final int width = getWidth(), height = getHeight();
@@ -248,7 +248,7 @@ public class CircularImageView extends ImageView implements Constants {
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
 	public void setBackground(Drawable background) {
-		if (USE_OUTLINE) {
+		if (OUTLINE_DRAW) {
 			super.setBackground(background);
 			return;
 		}
@@ -263,11 +263,9 @@ public class CircularImageView extends ImageView implements Constants {
 		mDestination.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(),
 				getHeight() - getPaddingBottom());
 
-		if (USE_OUTLINE) {
+		if (OUTLINE_DRAW || !(mUseCircularImages || mForceCircularImage)) {
 			super.onDraw(canvas);
 		} else {
-
-
 			final int contentLeft = getPaddingLeft(), contentTop = getPaddingTop(),
 					contentRight = getWidth() - getPaddingRight(),
 					contentBottom = getHeight() - getPaddingBottom();
@@ -324,7 +322,7 @@ public class CircularImageView extends ImageView implements Constants {
 
     @Override
     public void setColorFilter(ColorFilter cf) {
-        if (USE_OUTLINE) {
+        if (OUTLINE_DRAW) {
             super.setColorFilter(cf);
             return;
         }

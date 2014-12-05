@@ -44,12 +44,6 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 			mCurrentThemeBackgroundAlpha, mCurrentActionBarColor;
 
 	@Override
-	public void finish() {
-		super.finish();
-		overrideCloseAnimationIfNeeded();
-	}
-
-	@Override
 	public Resources getDefaultResources() {
 		return super.getResources();
 	}
@@ -72,18 +66,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 	@Override
 	public void navigateUpFromSameTask() {
 		NavUtils.navigateUpFromSameTask(this);
-		overrideCloseAnimationIfNeeded();
 	}
-
-	@Override
-	public void overrideCloseAnimationIfNeeded() {
-		if (shouldOverrideActivityAnimation()) {
-			ThemeUtils.overrideActivityCloseAnimation(this);
-		} else {
-			ThemeUtils.overrideNormalActivityCloseAnimation(this);
-		}
-    }
-
 
 	@Override
 	public final void restart() {
@@ -91,18 +74,10 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 	}
 
 	@Override
-	public boolean shouldOverrideActivityAnimation() {
-		return true;
-	}
-
-	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		if (Utils.isDebugBuild()) {
 			StrictModeUtils.detectAllVmPolicy();
 			StrictModeUtils.detectAllThreadPolicy();
-		}
-		if (shouldOverrideActivityAnimation()) {
-			ThemeUtils.overrideActivityOpenAnimation(this);
 		}
 		setTheme();
 		super.onCreate(savedInstanceState);
@@ -147,7 +122,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 		mCurrentThemeColor = getThemeColor();
 		mCurrentActionBarColor = getActionBarColor();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
-		ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentThemeColor,
+		ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentActionBarColor,
 				mCurrentThemeBackgroundAlpha);
 		setTheme(mCurrentThemeResource);
         if (shouldSetWindowBackground() && ThemeUtils.isTransparentBackground(mCurrentThemeResource)) {
