@@ -125,16 +125,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
-
 import static android.os.Environment.getExternalStorageState;
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.model.ParcelableLocation.isValidLocation;
 import static de.vanita5.twittnuker.util.ParseUtils.parseString;
 import static de.vanita5.twittnuker.util.ThemeUtils.getActionBarBackground;
 import static de.vanita5.twittnuker.util.ThemeUtils.getComposeThemeResource;
-import static de.vanita5.twittnuker.util.ThemeUtils.getUserAccentColor;
 import static de.vanita5.twittnuker.util.ThemeUtils.getWindowContentOverlayForCompose;
 import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.copyStream;
@@ -659,7 +655,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			}
 			mRecentLocation = location != null ? new ParcelableLocation(location) : null;
 		} else {
-			Crouton.showText(this, R.string.cannot_get_location, CroutonStyle.ALERT);
+            Toast.makeText(this, R.string.cannot_get_location, Toast.LENGTH_SHORT).show();
 		}
 		return provider != null;
 	}
@@ -1297,7 +1293,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			activity.setMenu();
 			activity.updateTextCount();
 			if (!result) {
-				Crouton.showText(activity, R.string.error_occurred, CroutonStyle.ALERT);
+                Toast.makeText(activity, R.string.error_occurred, Toast.LENGTH_SHORT).show();
 			}
 		}
 
@@ -1343,7 +1339,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
             mActivity.removeAllMedia(Arrays.asList(mMedia));
 			mActivity.setMenu();
 			if (!result) {
-				Crouton.showText(mActivity, R.string.error_occurred, CroutonStyle.ALERT);
+                Toast.makeText(mActivity, R.string.error_occurred, Toast.LENGTH_SHORT).show();
 			}
 		}
 

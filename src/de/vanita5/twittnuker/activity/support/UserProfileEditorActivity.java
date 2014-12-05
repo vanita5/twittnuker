@@ -68,10 +68,6 @@ import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
 import java.io.File;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.CroutonLifecycleCallback;
-import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
-
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.Utils.createPickImageIntent;
 import static de.vanita5.twittnuker.util.Utils.createTakePhotoIntent;
@@ -79,7 +75,7 @@ import static de.vanita5.twittnuker.util.Utils.isMyAccount;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 
 public class UserProfileEditorActivity extends BaseSupportActivity implements OnSizeChangedListener, TextWatcher,
-		OnClickListener, CroutonLifecycleCallback, LoaderCallbacks<SingleResponse<ParcelableUser>> {
+        OnClickListener, LoaderCallbacks<SingleResponse<ParcelableUser>> {
 
 	private static final int LOADER_ID_USER = 1;
 
@@ -202,10 +198,8 @@ public class UserProfileEditorActivity extends BaseSupportActivity implements On
 	@Override
 	public void onBackPressed() {
 		if (mHasUnsavedChanges() && !mBackPressed) {
-			final CroutonStyle.Builder builder = new CroutonStyle.Builder(CroutonStyle.INFO);
-			final Crouton crouton = Crouton.makeText(this, R.string.unsaved_change_back_pressed, builder.build());
-			crouton.setLifecycleCallback(this);
-			crouton.show();
+            final Toast toast = Toast.makeText(this, R.string.unsaved_change_back_pressed, Toast.LENGTH_SHORT);
+            toast.show();
 			return;
 		}
 		super.onBackPressed();
@@ -273,11 +267,6 @@ public class UserProfileEditorActivity extends BaseSupportActivity implements On
 	}
 
 	@Override
-	public void onDisplayed() {
-		mBackPressed = true;
-	}
-
-	@Override
 	public void onLoaderReset(final Loader<SingleResponse<ParcelableUser>> loader) {
 
 	}
@@ -321,11 +310,6 @@ public class UserProfileEditorActivity extends BaseSupportActivity implements On
 			save.setEnabled(mHasUnsavedChanges() && (mTask == null || mTask.getStatus() != AsyncTask.Status.RUNNING));
 		}
 		return super.onPrepareOptionsMenu(menu);
-	}
-
-	@Override
-	public void onRemoved() {
-		mBackPressed = false;
 	}
 
 	@Override

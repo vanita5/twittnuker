@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import static de.vanita5.twittnuker.util.Utils.createFragmentForIntent;
-import static de.vanita5.twittnuker.util.Utils.matchLinkId;
-
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -49,6 +46,9 @@ import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
+
+import static de.vanita5.twittnuker.util.Utils.createFragmentForIntent;
+import static de.vanita5.twittnuker.util.Utils.matchLinkId;
 
 public class LinkHandlerActivity extends BaseSupportActivity implements OnClickListener,
         OnLongClickListener, SystemWindowsInsetsCallback, IControlBarActivity {
@@ -154,13 +154,15 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
         }
 	}
 
-	private void setUiOptions(final Window window, final Uri data) {
-		if (FlymeUtils.hasSmartBar()) {
-			window.setUiOptions(ActivityInfo.UIOPTION_SPLIT_ACTION_BAR_WHEN_NARROW);
-		} else {
-			window.setUiOptions(0);
-		}
-	}
+    private void setUiOptions(final Window window, final Uri uri) {
+        if (!FlymeUtils.hasSmartBar()) return;
+        switch (matchLinkId(uri)) {
+            case LINK_ID_USER: {
+			    window.setUiOptions(ActivityInfo.UIOPTION_SPLIT_ACTION_BAR_WHEN_NARROW);
+                break;
+		    }
+	    }
+    }
 
 	private boolean showFragment(final Uri uri) {
 		final Intent intent = getIntent();

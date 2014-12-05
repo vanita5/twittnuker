@@ -121,7 +121,7 @@ public class ColorPickerPreference extends Preference implements DialogInterface
 			((CircularImageView) imageView).setForceCircularImage(true);
 		}
 
-		imageView.setImageBitmap(ColorPickerView.getColorPreviewBitmap(getContext(), getValue()));
+		imageView.setImageBitmap(ColorPickerView.getColorPreviewBitmap(getContext(), getValue(), false));
 	}
 
 	@Override

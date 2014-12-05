@@ -42,7 +42,7 @@
 				android:scaleType="centerInside"
                 android:src="@drawable/ic_action_twittnuker" />
 
-			<TextView
+            <de.vanita5.twittnuker.view.ActionBarTitleView
 				android:id="@+id/actionbar_title"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"

@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
 
 public class AccountPreferences implements Constants {
 
@@ -49,7 +50,7 @@ public class AccountPreferences implements Constants {
 
 	public int getDefaultNotificationLightColor() {
 		final Account a = Account.getAccount(mContext, mAccountId);
-		return a != null ? a.color : HOLO_BLUE_LIGHT;
+        return a != null ? a.color : mContext.getResources().getColor(R.color.material_light_blue);
 	}
 
 	public int getDirectMessagesNotificationType() {

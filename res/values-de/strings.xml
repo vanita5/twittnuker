@@ -159,6 +159,7 @@
     <string name="save_as">Speichern als</string>
     <string name="please_wait">Bitte warten.</string>
     <string name="file_saved_to">Datei gespeichert als <xliff:g id="filename">%s</xliff:g> .</string>
+    <string name="saved_to_gallery">In Galerie gespeichert.</string>
     <string name="proxy">Proxy</string>
     <string name="http_proxy">HTTP Proxy</string>
     <string name="http_proxy_summary">HTTP Proxy für alle Netzwerkanfragen verwenden</string>

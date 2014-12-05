@@ -142,6 +142,7 @@ import de.vanita5.twittnuker.fragment.support.UserListMembersFragment;
 import de.vanita5.twittnuker.fragment.support.UserListMembershipsListFragment;
 import de.vanita5.twittnuker.fragment.support.UserListSubscribersFragment;
 import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
+import de.vanita5.twittnuker.fragment.support.UserListsFragment;
 import de.vanita5.twittnuker.fragment.support.UserListsListFragment;
 import de.vanita5.twittnuker.fragment.support.UserMediaTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserMentionsFragment;
@@ -207,10 +208,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLException;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.CroutonConfiguration;
-import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 
 import twitter4j.DirectMessage;
 import twitter4j.EntitySupport;
@@ -805,29 +802,29 @@ public final class Utils implements Constants, TwitterConstants {
 				break;
 			}
 			case LINK_ID_USER_LISTS: {
-				fragment = new UserListsListFragment();
+                fragment = new UserListsFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
+                final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
 					args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				}
 				if (!args.containsKey(EXTRA_USER_ID)) {
-					args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
+                    args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(paramUserId));
 				}
-				if (isEmpty(paramScreenName) && isEmpty(param_user_id)) return null;
+                if (isEmpty(paramScreenName) && isEmpty(paramUserId)) return null;
 				break;
 			}
 			case LINK_ID_USER_LIST_TIMELINE: {
 				fragment = new UserListTimelineFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
-				final String param_list_id = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
+                final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
+                final String paramListId = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
 				final String paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
-				if (isEmpty(param_list_id)
-                        && (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(param_user_id)))
+                if (isEmpty(paramListId)
+                        && (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(paramUserId)))
                     return null;
-				args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(param_list_id));
-				args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
+                args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(paramListId));
+                args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(paramUserId));
 				args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				args.putString(EXTRA_LIST_NAME, paramListName);
 				break;
@@ -835,14 +832,14 @@ public final class Utils implements Constants, TwitterConstants {
 			case LINK_ID_USER_LIST_MEMBERS: {
 				fragment = new UserListMembersFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
-				final String param_list_id = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
+                final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
+                final String paramListId = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
 				final String paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
-				if (isEmpty(param_list_id)
-                        && (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(param_user_id)))
+                if (isEmpty(paramListId)
+                        && (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(paramUserId)))
                     return null;
-				args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(param_list_id));
-				args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
+                args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(paramListId));
+                args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(paramUserId));
 				args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				args.putString(EXTRA_LIST_NAME, paramListName);
 				break;
@@ -850,14 +847,14 @@ public final class Utils implements Constants, TwitterConstants {
 			case LINK_ID_USER_LIST_SUBSCRIBERS: {
 				fragment = new UserListSubscribersFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
-				final String param_list_id = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
+                final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
+                final String paramListId = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
 				final String paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
-				if (isEmpty(param_list_id)
-                        && (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(param_user_id)))
+                if (isEmpty(paramListId)
+                        && (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(paramUserId)))
                     return null;
-				args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(param_list_id));
-				args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
+                args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(paramListId));
+                args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(paramUserId));
 				args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				args.putString(EXTRA_LIST_NAME, paramListName);
 				break;
@@ -890,16 +887,16 @@ public final class Utils implements Constants, TwitterConstants {
 			case LINK_ID_STATUS_RETWEETERS: {
 				fragment = new StatusRetweetersListFragment();
 				if (!args.containsKey(EXTRA_STATUS_ID)) {
-					final String param_status_id = uri.getQueryParameter(QUERY_PARAM_STATUS_ID);
-					args.putLong(EXTRA_STATUS_ID, ParseUtils.parseLong(param_status_id));
+                    final String paramStatusId = uri.getQueryParameter(QUERY_PARAM_STATUS_ID);
+                    args.putLong(EXTRA_STATUS_ID, ParseUtils.parseLong(paramStatusId));
 				}
 				break;
 			}
 			case LINK_ID_STATUS_FAVORITERS: {
 				fragment = new StatusFavoritersListFragment();
 				if (!args.containsKey(EXTRA_STATUS_ID)) {
-					final String param_status_id = uri.getQueryParameter(QUERY_PARAM_STATUS_ID);
-					args.putLong(EXTRA_STATUS_ID, ParseUtils.parseLong(param_status_id));
+                    final String paramStatusId = uri.getQueryParameter(QUERY_PARAM_STATUS_ID);
+                    args.putLong(EXTRA_STATUS_ID, ParseUtils.parseLong(paramStatusId));
 				}
 				break;
 			}
@@ -926,17 +923,17 @@ public final class Utils implements Constants, TwitterConstants {
 				return null;
 			}
 		}
-		final String param_account_id = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID);
-		if (param_account_id != null) {
-			args.putLong(EXTRA_ACCOUNT_ID, ParseUtils.parseLong(param_account_id));
+        final String paramAccountId = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID);
+        if (paramAccountId != null) {
+            args.putLong(EXTRA_ACCOUNT_ID, ParseUtils.parseLong(paramAccountId));
 		} else {
-			final String param_account_name = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_NAME);
-			if (param_account_name != null) {
-				args.putLong(EXTRA_ACCOUNT_ID, getAccountId(context, param_account_name));
+            final String paramAccountName = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_NAME);
+            if (paramAccountName != null) {
+                args.putLong(EXTRA_ACCOUNT_ID, getAccountId(context, paramAccountName));
 			} else {
-				final long account_id = getDefaultAccountId(context);
-				if (isMyAccount(context, account_id)) {
-					args.putLong(EXTRA_ACCOUNT_ID, account_id);
+                final long accountId = getDefaultAccountId(context);
+                if (isMyAccount(context, accountId)) {
+                    args.putLong(EXTRA_ACCOUNT_ID, accountId);
 				}
 			}
 		}
@@ -1590,15 +1587,15 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static int getCardHighlightColor(final boolean is_mention, final boolean is_favorite,
 											final boolean is_retweet) {
-		if (is_mention) {
-			return HOLO_BLUE_LIGHT;
-		}
-		else if (is_retweet) {
-			return HOLO_GREEN_LIGHT;
-		}
-		else if (is_favorite) {
-			return HOLO_ORANGE_LIGHT;
-		}
+//		if (is_mention) {
+//			return HOLO_BLUE_LIGHT;
+//		}
+//		else if (is_retweet) {
+//			return HOLO_GREEN_LIGHT;
+//		}
+//		else if (is_favorite) {
+//			return HOLO_ORANGE_LIGHT;
+//		}
 		return Color.TRANSPARENT;
 	}
 
@@ -3578,34 +3575,26 @@ public final class Utils implements Constants, TwitterConstants {
 		return mPreferences.getBoolean(KEY_STOP_AUTO_REFRESH_WHEN_BATTERY_LOW, true);
 	}
 
-	public static void showErrorMessage(final Context context, final CharSequence message, final boolean long_message) {
+    public static void showErrorMessage(final Context context, final CharSequence message, final boolean longMessage) {
 		if (context == null) return;
-		if (context instanceof Activity) {
-			final Crouton crouton = Crouton.makeText((Activity) context, message, CroutonStyle.ALERT);
-			final CroutonConfiguration.Builder cb = new CroutonConfiguration.Builder();
-			cb.setDuration(long_message ? CroutonConfiguration.DURATION_LONG : CroutonConfiguration.DURATION_SHORT);
-			crouton.setConfiguration(cb.build());
-			crouton.show();
-		} else {
-			final Toast toast = Toast.makeText(context, message, long_message ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
-			toast.show();
-		}
+        final Toast toast = Toast.makeText(context, message, longMessage ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    public static void showErrorMessage(final Context context, final CharSequence action,
+                                        final CharSequence message, final boolean longMessage) {
+		if (context == null) return;
+        showErrorMessage(context, getErrorMessage(context, message), longMessage);
 	}
 
-	public static void showErrorMessage(final Context context, final CharSequence action, final CharSequence message,
-			final boolean long_message) {
-		if (context == null) return;
-		showErrorMessage(context, getErrorMessage(context, message), long_message);
-	}
-
-	public static void showErrorMessage(final Context context, final CharSequence action, final Throwable t,
-			final boolean long_message) {
+    public static void showErrorMessage(final Context context, final CharSequence action,
+                                        final Throwable t, final boolean longMessage) {
 		if (context == null) return;
 		if (t instanceof TwitterException) {
-			showTwitterErrorMessage(context, action, (TwitterException) t, long_message);
+            showTwitterErrorMessage(context, action, (TwitterException) t, longMessage);
 			return;
 		}
-		showErrorMessage(context, getErrorMessage(context, action, t), long_message);
+        showErrorMessage(context, getErrorMessage(context, action, t), longMessage);
 	}
 
 	public static void showErrorMessage(final Context context, final int action, final String desc,
@@ -3622,16 +3611,8 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static void showInfoMessage(final Context context, final CharSequence message, final boolean long_message) {
 		if (context == null || isEmpty(message)) return;
-//        if (context instanceof Activity) {
-//            final Crouton crouton = Crouton.makeText((Activity) context, message, CroutonStyle.INFO);
-//            final CroutonConfiguration.Builder cb = new CroutonConfiguration.Builder();
-//            cb.setDuration(long_message ? CroutonConfiguration.DURATION_LONG : CroutonConfiguration.DURATION_SHORT);
-//            crouton.setConfiguration(cb.build());
-//            crouton.show();
-//        } else {
 			final Toast toast = Toast.makeText(context, message, long_message ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
 			toast.show();
-//        }
 	}
 
 	public static void showInfoMessage(final Context context, final int resId, final boolean long_message) {
@@ -3668,19 +3649,11 @@ public final class Utils implements Constants, TwitterConstants {
 		cheatSheet.show();
 	}
 
-	public static void showOkMessage(final Context context, final CharSequence message, final boolean long_message) {
+    public static void showOkMessage(final Context context, final CharSequence message, final boolean longMessage) {
 		if (context == null || isEmpty(message)) return;
-		if (context instanceof Activity) {
-			final Crouton crouton = Crouton.makeText((Activity) context, message, CroutonStyle.CONFIRM);
-			final CroutonConfiguration.Builder cb = new CroutonConfiguration.Builder();
-			cb.setDuration(long_message ? CroutonConfiguration.DURATION_LONG : CroutonConfiguration.DURATION_SHORT);
-			crouton.setConfiguration(cb.build());
-			crouton.show();
-		} else {
-			final Toast toast = Toast.makeText(context, message, long_message ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
-			toast.show();
-		}
-	}
+        final Toast toast = Toast.makeText(context, message, longMessage ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
+        toast.show();
+    }
 
 	public static void showOkMessage(final Context context, final int resId, final boolean long_message) {
 		if (context == null) return;
@@ -3730,19 +3703,11 @@ public final class Utils implements Constants, TwitterConstants {
 		showErrorMessage(context, message, long_message);
 	}
 
-	public static void showWarnMessage(final Context context, final CharSequence message, final boolean long_message) {
+    public static void showWarnMessage(final Context context, final CharSequence message, final boolean longMessage) {
 		if (context == null || isEmpty(message)) return;
-		if (context instanceof Activity) {
-			final Crouton crouton = Crouton.makeText((Activity) context, message, CroutonStyle.WARN);
-			final CroutonConfiguration.Builder cb = new CroutonConfiguration.Builder();
-			cb.setDuration(long_message ? CroutonConfiguration.DURATION_LONG : CroutonConfiguration.DURATION_SHORT);
-			crouton.setConfiguration(cb.build());
-			crouton.show();
-		} else {
-			final Toast toast = Toast.makeText(context, message, long_message ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
-			toast.show();
-		}
-	}
+        final Toast toast = Toast.makeText(context, message, longMessage ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
+        toast.show();
+    }
 
 	public static void showWarnMessage(final Context context, final int resId, final boolean long_message) {
 		if (context == null) return;

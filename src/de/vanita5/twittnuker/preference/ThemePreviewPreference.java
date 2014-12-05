@@ -33,7 +33,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.mariotaku.menucomponent.widget.MenuBar;
@@ -95,7 +94,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		final View windowContentOverlayView = view.findViewById(R.id.theme_preview_window_content_overlay);
 		final View actionBarView = view.findViewById(R.id.actionbar);
 		final TextView actionBarTitleView = (TextView) view.findViewById(R.id.actionbar_title);
-		final MenuBar actionBarSplitView = (MenuBar) view.findViewById(R.id.actionbar_split);
+        final MenuBar actionBarSplitView = (MenuBar) view.findViewById(R.id.menu_bar);
 		final View statusContentView = view.findViewById(R.id.theme_preview_status_content);
 		final TextView retweetsCountView = (TextView) view.findViewById(R.id.retweets_count);
 		final TextView favoritesCountView = (TextView) view.findViewById(R.id.favorites_count);
@@ -107,7 +106,6 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		ViewAccessor.setBackground(windowBackgroundView, ThemeUtils.getWindowBackground(context));
 		ViewAccessor.setBackground(windowContentOverlayView, ThemeUtils.getWindowContentOverlay(context));
 		ViewAccessor.setBackground(actionBarView, ThemeUtils.getActionBarBackground(context, themeRes));
-		ViewAccessor.setBackground(actionBarSplitView, ThemeUtils.getActionBarSplitBackground(context, themeRes));
 
 		final int highlightOption = getLinkHighlightOptionInt(context);
 		TwidereLinkify linkify = new TwidereLinkify(null);
@@ -128,17 +126,13 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 			final TextView screenNameView = (TextView) statusContentView.findViewById(R.id.screen_name);
 			final TextView textView = (TextView) statusContentView.findViewById(R.id.text);
 			final TextView timeSourceView = (TextView) statusContentView.findViewById(R.id.time_source);
-			// final TextView retweetView = (TextView)
-			// statusContentView.findViewById(R.id.retweet_view);
 
 			nameView.setTextSize(defaultTextSize * 1.25f);
 			textView.setTextSize(defaultTextSize * 1.25f);
 			screenNameView.setTextSize(defaultTextSize * 0.85f);
 			timeSourceView.setTextSize(defaultTextSize * 0.85f);
-			//retweetView.setTextSize(defaultTextSize * 0.85f);
 
 			profileView.setBackgroundResource(0);
-			//retweetView.setBackgroundResource(0);
 			textView.setTextIsSelectable(false);
 
 			profileImageView.setImageResource(R.drawable.ic_launcher);
