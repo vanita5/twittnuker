@@ -31,8 +31,11 @@ public interface IThemedActivity {
 	public Resources getDefaultResources();
 
     public int getThemeBackgroundAlpha();
+    public int getCurrentThemeBackgroundAlpha();
 
     public int getThemeColor();
+
+	public int getCurrentThemeColor();
 
 	public int getActionBarColor();
 

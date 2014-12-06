@@ -95,11 +95,11 @@ import de.vanita5.twittnuker.util.UnreadCountUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.ExtendedViewPager;
-import de.vanita5.twittnuker.view.HomeContentFrameLayout;
 import de.vanita5.twittnuker.view.HomeSlidingMenu;
 import de.vanita5.twittnuker.view.LeftDrawerFrameLayout;
 import de.vanita5.twittnuker.view.RightDrawerFrameLayout;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
+import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import de.vanita5.twittnuker.view.iface.IHomeActionButton;
 
 import java.util.ArrayList;
@@ -169,7 +169,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
     private View mActionBarOverlay;
 	private LeftDrawerFrameLayout mLeftDrawerContainer;
 	private RightDrawerFrameLayout mRightDrawerContainer;
-    private HomeContentFrameLayout mHomeContentFrameLayout;
+    private TintedStatusFrameLayout mColorStatusFrameLayout;
 
 	private Fragment mCurrentVisibleFragment;
 	private UpdateUnreadCountTask mUpdateUnreadCountTask;
@@ -258,7 +258,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         mTabsContainer = findViewById(R.id.tabs_container);
         mTabIndicator = (TabPagerIndicator) findViewById(R.id.main_tabs);
         mActionBarOverlay = findViewById(R.id.actionbar_overlay);
-        mHomeContentFrameLayout = (HomeContentFrameLayout) findViewById(R.id.home_content);
+        mColorStatusFrameLayout = (TintedStatusFrameLayout) findViewById(R.id.home_content);
 	}
 
 	@Override
@@ -583,7 +583,10 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
             mTabIndicator.setStripColor(themeColor);
             mTabIndicator.setIconColor(contrastColor);
             ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
-			mHomeContentFrameLayout.setColor(themeColor, actionBarAlpha);
+            mColorStatusFrameLayout.setDrawColor(true);
+            mColorStatusFrameLayout.setDrawShadow(false);
+            mColorStatusFrameLayout.setColor(themeColor, actionBarAlpha);
+            mColorStatusFrameLayout.setFactor(1);
 		} else {
             final int backgroundColor = ThemeUtils.getThemeBackgroundColor(mTabIndicator.getItemContext());
             final int foregroundColor = ThemeUtils.getThemeForegroundColor(mTabIndicator.getItemContext());
@@ -592,7 +595,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
             homeActionButton.setIconColor(foregroundColor, Mode.SRC_ATOP);
             mTabIndicator.setStripColor(themeColor);
             mTabIndicator.setIconColor(foregroundColor);
-            mHomeContentFrameLayout.setColor(backgroundColor, actionBarAlpha);
+            mColorStatusFrameLayout.setDrawColor(false);
+            mColorStatusFrameLayout.setDrawShadow(false);
 	    }
         mTabIndicator.setAlpha(actionBarAlpha / 255f);
         mActionsButton.setAlpha(actionBarAlpha / 255f);
@@ -922,7 +926,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
 	public void setSystemWindowInsets(Rect insets) {
-		mHomeContentFrameLayout.setStatusBarHeight(insets.top);
 		final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.left_drawer);
 		if (fragment instanceof AccountsDashboardFragment) {
 			((AccountsDashboardFragment) fragment).setStatusBarHeight(insets.top);

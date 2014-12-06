@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -65,12 +66,14 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.util.LongSparseArray;
+import android.support.v4.util.Pair;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -79,6 +82,8 @@ import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -138,8 +143,9 @@ import de.vanita5.twittnuker.fragment.support.StatusesListFragment;
 import de.vanita5.twittnuker.fragment.support.UserBlocksListFragment;
 import de.vanita5.twittnuker.fragment.support.UserFavoritesFragment;
 import de.vanita5.twittnuker.fragment.support.UserFollowersFragment;
+import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.fragment.support.UserFriendsFragment;
-import de.vanita5.twittnuker.fragment.support.UserListDetailsFragment;
+import de.vanita5.twittnuker.fragment.support.UserListFragment;
 import de.vanita5.twittnuker.fragment.support.UserListMembersFragment;
 import de.vanita5.twittnuker.fragment.support.UserListMembershipsListFragment;
 import de.vanita5.twittnuker.fragment.support.UserListSubscribersFragment;
@@ -147,7 +153,6 @@ import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserListsFragment;
 import de.vanita5.twittnuker.fragment.support.UserMediaTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserMentionsFragment;
-import de.vanita5.twittnuker.fragment.support.UserProfileFragment;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UsersListFragment;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
@@ -684,7 +689,7 @@ public final class Utils implements Constants, TwitterConstants {
 				break;
 			}
 			case LINK_ID_USER: {
-                fragment = new UserProfileFragment();
+                fragment = new UserFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
@@ -794,7 +799,7 @@ public final class Utils implements Constants, TwitterConstants {
 				break;
 			}
 			case LINK_ID_USER_LIST: {
-				fragment = new UserListDetailsFragment();
+				fragment = new UserListFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				final String param_list_id = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
@@ -1598,7 +1603,7 @@ public final class Utils implements Constants, TwitterConstants {
 			return res.getColor(R.color.highlight_reply);
 		}
 		else if (is_retweet) {
-			res.getColor(R.color.highlight_retweet);
+			return res.getColor(R.color.highlight_retweet);
 		}
 		else if (is_favorite) {
 			return res.getColor(R.color.highlight_favorite);
@@ -2139,8 +2144,8 @@ public final class Utils implements Constants, TwitterConstants {
 			final boolean is_retweeted_by_me, final boolean is_reply) {
 		if (is_reply)
 			return R.drawable.ic_indicator_reply;
-		else if (is_possibly_sensitive && has_media)
-			return R.drawable.ic_indicator_reported_media;
+//		else if (is_possibly_sensitive && has_media)
+//			return R.drawable.ic_indicator_reported_media;
 		else if (has_media)
 			return R.drawable.ic_indicator_media;
 		else if (is_favorite)
@@ -3992,5 +3997,31 @@ public final class Utils implements Constants, TwitterConstants {
             c.close();
         }
         return null;
+    }
+
+    @SafeVarargs
+    public static Bundle makeSceneTransitionOption(final Activity activity,
+                                                      final Pair<View, String>... sharedElements) {
+        if (ThemeUtils.isTransparentBackground(activity)) return null;
+        return ActivityOptionsCompat.makeSceneTransitionAnimation(activity, sharedElements).toBundle();
+    }
+
+
+    public static void setSharedElementTransition(Context context, Window window, int transitionRes) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+        UtilsL.setSharedElementTransition(context, window, transitionRes);
+    }
+
+    static class UtilsL {
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        static void setSharedElementTransition(Context context, Window window, int transitionRes) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+            window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+            final TransitionInflater inflater = TransitionInflater.from(context);
+            final Transition transition = inflater.inflateTransition(transitionRes);
+            window.setSharedElementEnterTransition(transition);
+            window.setSharedElementExitTransition(transition);
+        }
 	}
 }

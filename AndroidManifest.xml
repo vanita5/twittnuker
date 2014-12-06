@@ -52,7 +52,7 @@
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Twidere.Dark"
+        android:theme="@style/Theme.Blank"
         tools:replace="allowBackup">
         <uses-library
             android:name="com.sec.android.app.multiwindow"

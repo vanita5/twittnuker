@@ -45,6 +45,16 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
 	}
 
 	@Override
+    public int getCurrentThemeBackgroundAlpha() {
+        return 0;
+    }
+
+    @Override
+    public int getCurrentThemeColor() {
+        return 0;
+    }
+
+    @Override
     public int getCurrentThemeResourceId() {
         return mCurrentThemeResource;
     }

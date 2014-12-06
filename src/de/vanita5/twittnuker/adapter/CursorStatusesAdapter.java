@@ -27,7 +27,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
@@ -38,6 +40,7 @@ import android.widget.ImageView.ScaleType;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
@@ -389,10 +392,10 @@ public class CursorStatusesAdapter extends BaseCursorAdapter implements IStatuse
 				final ParcelableStatus status = getStatus(position);
 				if (status == null) return;
                 final Activity activity = (Activity) getContext();
-                final ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
-                        view, "profile_image");
+                final Bundle options = Utils.makeSceneTransitionOption(activity,
+						new Pair<>(view, UserFragment.TRANSITION_NAME_PROFILE_IMAGE));
                 openUserProfile(mContext, status.account_id, status.user_id,
-                        status.user_screen_name, options.toBundle());
+                        status.user_screen_name, options);
 				break;
 			}
 		}

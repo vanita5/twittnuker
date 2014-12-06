@@ -32,8 +32,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -48,8 +46,13 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCal
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
+import de.vanita5.twittnuker.util.ActivityAccessor;
+import de.vanita5.twittnuker.util.ActivityAccessor.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
+import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 
 import static de.vanita5.twittnuker.util.Utils.createFragmentForIntent;
 import static de.vanita5.twittnuker.util.Utils.matchLinkId;
@@ -59,13 +62,15 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
 
 	private MultiSelectEventHandler mMultiSelectHandler;
 
+    private TintedStatusFrameLayout mMainContent;
+
 	private boolean mFinishOnly;
 
 	@Override
 	public void onClick(final View v) {
 		switch (v.getId()) {
 			case R.id.go_top: {
-                final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_fragment);
+                final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_content);
 				if (fragment instanceof RefreshScrollTopInterface) {
 					((RefreshScrollTopInterface) fragment).scrollToStart();
 				} else if (fragment instanceof ListFragment) {
@@ -80,7 +85,7 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
 	public boolean onLongClick(final View v) {
 		switch (v.getId()) {
 			case R.id.go_top: {
-                final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_fragment);
+                final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_content);
 				if (fragment instanceof RefreshScrollTopInterface) {
 					((RefreshScrollTopInterface) fragment).triggerRefresh();
 				}
@@ -118,6 +123,12 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
 	}
 
 	@Override
+    public void onContentChanged() {
+        super.onContentChanged();
+        mMainContent = (TintedStatusFrameLayout) findViewById(R.id.main_content);
+    }
+
+    @Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		mMultiSelectHandler = new MultiSelectEventHandler(this);
 		mMultiSelectHandler.dispatchOnCreate();
@@ -130,26 +141,74 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
         final ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            setActionBarBackground(actionBar, linkId, data);
         }
         setContentView(R.layout.activity_content_fragment);
+        setStatusBarColor(linkId, data);
+        setTaskinfo(linkId, data);
 		setProgressBarIndeterminateVisibility(false);
         if (data == null || !showFragment(linkId, data)) {
 			finish();
 		}
 	}
 
-    private void requestWindowFeatures(Window window, int linkId, Uri uri) {
+    private void setTaskinfo(int linkId, Uri uri) {
         switch (linkId) {
             case LINK_ID_USER: {
+                break;
+            }
+            default: {
+                if (ThemeUtils.isColoredActionBar(getCurrentThemeResourceId())) {
+                    ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null,
+							getCurrentThemeColor()));
+                }
+                break;
+            }
+        }
+    }
+
+    private void setActionBarBackground(ActionBar actionBar, int linkId, Uri data) {
+        switch (linkId) {
+            case LINK_ID_USER: {
+                break;
+            }
+            default: {
+                ThemeUtils.applyActionBarBackground(actionBar, this, getCurrentThemeResourceId(),
+                        getCurrentThemeColor());
+                break;
+            }
+        }
+
+    }
+
+    private void setStatusBarColor(int linkId, Uri uri) {
+        switch (linkId) {
+            case LINK_ID_USER: {
+                mMainContent.setShadowColor(0xA0000000);
+                mMainContent.setDrawShadow(false);
+                mMainContent.setDrawColor(!ThemeUtils.isDarkTheme(getCurrentThemeResourceId()));
+                break;
+            }
+            default: {
+                mMainContent.setDrawShadow(false);
+                mMainContent.setDrawColor(true);
+                mMainContent.setFactor(1);
+                final int color = ThemeUtils.getUserAccentColor(this);
+                final int alpha = ThemeUtils.getThemeAlpha(this);
+                mMainContent.setColor(color, alpha);
+                break;
+            }
+        }
+    }
+
+    private void requestWindowFeatures(Window window, int linkId, Uri uri) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     window.addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
-                    final TransitionInflater inflater = TransitionInflater.from(this);
-                    final Transition transition = inflater.inflateTransition(R.transition.transition_user_profile);
-                    window.setSharedElementEnterTransition(transition);
-                    window.setSharedElementExitTransition(transition);
+        switch (linkId) {
+            case LINK_ID_USER: {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !ThemeUtils.isTransparentBackground(this)) {
+                    Utils.setSharedElementTransition(this, window, R.transition.transition_user_profile);
                 }
                 break;
             }
@@ -171,7 +230,7 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
 	@Override
     public void fitSystemWindows(Rect insets) {
         super.fitSystemWindows(insets);
-        final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_fragment);
+        final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_content);
         if (fragment instanceof IBaseFragment) {
             ((IBaseFragment) fragment).requestFitSystemWindows();
         }
@@ -297,7 +356,7 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
 		}
 		mFinishOnly = Boolean.parseBoolean(uri.getQueryParameter(QUERY_PARAM_FINISH_ONLY));
 		final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content_fragment, fragment);
+        ft.replace(R.id.main_content, fragment);
 		ft.commit();
 		return true;
 	}

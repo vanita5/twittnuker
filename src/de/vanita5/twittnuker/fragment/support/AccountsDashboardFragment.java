@@ -190,9 +190,9 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 				case MENU_VIEW_PROFILE: {
                     final FragmentActivity activity = getActivity();
                     final ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
-                            new Pair<View, String>(mAccountProfileImageView, UserProfileFragment.TRANSITION_NAME_PROFILE_IMAGE));
+                            new Pair<View, String>(mAccountProfileImageView, UserFragment.TRANSITION_NAME_PROFILE_IMAGE));
                     openUserProfile(activity, account.account_id, account.account_id, account.screen_name,
-                            options.toBundle());
+							options.toBundle());
 					break;
 				}
 				case MENU_SEARCH: {

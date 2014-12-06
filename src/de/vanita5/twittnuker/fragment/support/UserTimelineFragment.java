@@ -48,7 +48,7 @@ import de.vanita5.twittnuker.loader.support.UserTimelineLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.UserProfileDrawer.DrawerCallback;
+import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 
 import java.util.List;
 
