@@ -34,10 +34,12 @@ import android.database.Cursor;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -186,9 +188,11 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 			final OptionItem option = (OptionItem) item;
 			switch (option.id) {
 				case MENU_VIEW_PROFILE: {
-                    openUserProfile(getActivity(), account.account_id, account.account_id,
-                            account.screen_name, null);
-					closeAccountsDrawer();
+                    final FragmentActivity activity = getActivity();
+                    final ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                            new Pair<View, String>(mAccountProfileImageView, UserProfileFragment.TRANSITION_NAME_PROFILE_IMAGE));
+                    openUserProfile(activity, account.account_id, account.account_id, account.screen_name,
+                            options.toBundle());
 					break;
 				}
 				case MENU_SEARCH: {
@@ -203,22 +207,18 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 				}
 				case MENU_STATUSES: {
 					openUserTimeline(getActivity(), account.account_id, account.account_id, account.screen_name);
-					closeAccountsDrawer();
 					break;
 				}
 				case MENU_FAVORITES: {
 					openUserFavorites(getActivity(), account.account_id, account.account_id, account.screen_name);
-					closeAccountsDrawer();
 					break;
 				}
 				case MENU_LISTS: {
 					openUserLists(getActivity(), account.account_id, account.account_id, account.screen_name);
-					closeAccountsDrawer();
 					break;
 				}
 				case MENU_LIST_MEMBERSHIPS: {
 					openUserListMemberships(getActivity(), account.account_id, account.account_id, account.screen_name);
-					closeAccountsDrawer();
 					break;
 					}
 				case MENU_EDIT: {
@@ -228,7 +228,6 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 					intent.setClass(getActivity(), UserProfileEditorActivity.class);
 					intent.putExtras(bundle);
 					startActivity(intent);
-					closeAccountsDrawer();
 					break;
 				}
 			}

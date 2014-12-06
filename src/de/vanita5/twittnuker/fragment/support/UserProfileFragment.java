@@ -59,7 +59,6 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import org.mariotaku.menucomponent.internal.menu.MenuUtils;
 import org.mariotaku.querybuilder.Where;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
@@ -67,6 +66,7 @@ import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -127,7 +127,7 @@ import static de.vanita5.twittnuker.util.Utils.showInfoMessage;
 public class UserProfileFragment extends BaseSupportFragment implements OnClickListener,
 		OnMenuItemClickListener, OnLinkClickListener, OnSizeChangedListener,
 		OnSharedPreferenceChangeListener, OnTouchListener, ImageLoadingListener, DrawerCallback,
-		SupportFragmentCallback {
+        SupportFragmentCallback, SystemWindowsInsetsCallback {
 
 	public static final String TRANSITION_NAME_PROFILE_IMAGE = "profile_image";
 	public static final String TRANSITION_NAME_PROFILE_TYPE = "profile_type";
@@ -159,16 +159,6 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 
 	private Relationship mRelationship;
 	private ParcelableUser mUser = null;
-	private Locale mLocale;
-
-	private boolean mGetUserInfoLoaderInitialized, mGetFriendShipLoaderInitialized;
-
-	private int mBannerWidth;
-
-	private ActionBarDrawable mActionBarBackground;
-
-	private Fragment mCurrentVisibleFragment;
-
 	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -204,7 +194,6 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 			}
 		}
 	};
-
 	private final LoaderCallbacks<SingleResponse<ParcelableUser>> mUserInfoLoaderCallbacks = new LoaderCallbacks<SingleResponse<ParcelableUser>>() {
 
 		@Override
@@ -270,7 +259,6 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 		}
 
 	};
-
 	private final LoaderCallbacks<SingleResponse<Relationship>> mFriendshipLoaderCallbacks = new LoaderCallbacks<SingleResponse<Relationship>>() {
 
 		@Override
@@ -315,6 +303,11 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 		}
 
 	};
+    private Locale mLocale;
+    private boolean mGetUserInfoLoaderInitialized, mGetFriendShipLoaderInitialized;
+    private int mBannerWidth;
+    private ActionBarDrawable mActionBarBackground;
+    private Fragment mCurrentVisibleFragment;
 
 	public void displayUser(final ParcelableUser user) {
 		mRelationship = null;
@@ -429,52 +422,6 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 		mUserProfileContent.setDrawColor(drawColor);
 	}
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		setHasOptionsMenu(true);
-		getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE)
-				.registerOnSharedPreferenceChangeListener(this);
-		mLocale = getResources().getConfiguration().locale;
-		final Bundle args = getArguments();
-		long accountId = -1, userId = -1;
-		String screenName = null;
-		if (savedInstanceState != null) {
-			args.putAll(savedInstanceState);
-		} else {
-			accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
-			userId = args.getLong(EXTRA_USER_ID, -1);
-			screenName = args.getString(EXTRA_SCREEN_NAME);
-		}
-		mProfileImageLoader = getApplication().getImageLoaderWrapper();
-		final FragmentActivity activity = getActivity();
-
-		ViewCompat.setTransitionName(mProfileImageView, TRANSITION_NAME_PROFILE_IMAGE);
-		ViewCompat.setTransitionName(mProfileTypeView, TRANSITION_NAME_PROFILE_TYPE);
-
-		mUserProfileDrawer.setDrawerCallback(this);
-
-		mPagerAdapter = new SupportTabsAdapter(activity, getChildFragmentManager());
-
-		mViewPager.setAdapter(mPagerAdapter);
-		mPagerIndicator.setViewPager(mViewPager);
-
-		mProfileImageView.setOnClickListener(this);
-		mProfileBannerView.setOnClickListener(this);
-		mTweetsContainer.setOnClickListener(this);
-		mFollowersContainer.setOnClickListener(this);
-		mFriendsContainer.setOnClickListener(this);
-		mRetryButton.setOnClickListener(this);
-		mProfileBannerView.setOnSizeChangedListener(this);
-		mProfileBannerSpace.setOnTouchListener(this);
-
-		getUserInfo(accountId, userId, screenName, false);
-
-		setupBaseActionBar();
-
-		setupUserPages();
-	}
-
 	private void setupUserPages() {
 		final Context context = getActivity();
 		final Bundle args = getArguments(), tabArgs = new Bundle();
@@ -492,8 +439,9 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 		}
 		mPagerAdapter.addTab(UserTimelineFragment.class, tabArgs, getString(R.string.statuses), null, 0);
 		if (Utils.isOfficialKeyAccount(context, accountId)) {
-			mPagerAdapter.addTab(UserMediaTimelineFragment.class, tabArgs, getString(R.string.medias), null, 0);
+			mPagerAdapter.addTab(UserMediaTimelineFragment.class, tabArgs, getString(R.string.medias), null, 1);
 		}
+        mPagerAdapter.addTab(UserFavoritesFragment.class, tabArgs, getString(R.string.favorites), null, 2);
 		mPagerIndicator.notifyDataSetChanged();
 	}
 
@@ -517,6 +465,7 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 		}
 		mActionBarBackground.setColor(color);
 		mUserProfileContent.setColor(color);
+        mPagerIndicator.setIndicatorColor(color);
 	}
 
 	@Override
@@ -558,6 +507,109 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 	}
 
 	@Override
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_user_profile, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+        getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE)
+                .registerOnSharedPreferenceChangeListener(this);
+        mLocale = getResources().getConfiguration().locale;
+        final Bundle args = getArguments();
+        long accountId = -1, userId = -1;
+        String screenName = null;
+        if (savedInstanceState != null) {
+            args.putAll(savedInstanceState);
+        } else {
+            accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+            userId = args.getLong(EXTRA_USER_ID, -1);
+            screenName = args.getString(EXTRA_SCREEN_NAME);
+        }
+        mProfileImageLoader = getApplication().getImageLoaderWrapper();
+        final FragmentActivity activity = getActivity();
+
+        ViewCompat.setTransitionName(mProfileImageView, TRANSITION_NAME_PROFILE_IMAGE);
+        ViewCompat.setTransitionName(mProfileTypeView, TRANSITION_NAME_PROFILE_TYPE);
+
+        mUserProfileDrawer.setDrawerCallback(this);
+
+        mPagerAdapter = new SupportTabsAdapter(activity, getChildFragmentManager());
+
+        mViewPager.setAdapter(mPagerAdapter);
+        mPagerIndicator.setViewPager(mViewPager);
+
+        mProfileImageView.setOnClickListener(this);
+        mProfileBannerView.setOnClickListener(this);
+		mTweetsContainer.setOnClickListener(this);
+        mFollowersContainer.setOnClickListener(this);
+        mFriendsContainer.setOnClickListener(this);
+        mRetryButton.setOnClickListener(this);
+        mProfileBannerView.setOnSizeChangedListener(this);
+        mProfileBannerSpace.setOnTouchListener(this);
+
+        getUserInfo(accountId, userId, screenName, false);
+
+        setupBaseActionBar();
+
+//        updateScrollOffset(0);
+
+        setupUserPages();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        final IntentFilter filter = new IntentFilter(BROADCAST_TASK_STATE_CHANGED);
+        filter.addAction(BROADCAST_FRIENDSHIP_CHANGED);
+        filter.addAction(BROADCAST_PROFILE_UPDATED);
+        filter.addAction(BROADCAST_PROFILE_IMAGE_UPDATED);
+        filter.addAction(BROADCAST_PROFILE_BANNER_UPDATED);
+        registerReceiver(mStatusReceiver, filter);
+    }
+
+    @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        outState.putParcelable(EXTRA_USER, mUser);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onStop() {
+        unregisterReceiver(mStatusReceiver);
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        mUser = null;
+        mRelationship = null;
+        final LoaderManager lm = getLoaderManager();
+        lm.destroyLoader(LOADER_ID_USER);
+        lm.destroyLoader(LOADER_ID_FRIENDSHIP);
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+        if (!shouldUseNativeMenu()) return;
+        inflater.inflate(R.menu.menu_user_profile, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(final Menu menu) {
+        if (!shouldUseNativeMenu() || !menu.hasVisibleItems()) return;
+        setMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        return handleMenuItemClick(item);
+    }
+
+    @Override
 	public void onClick(final View view) {
 		final FragmentActivity activity = getActivity();
 		final ParcelableUser user = mUser;
@@ -598,28 +650,6 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 		}
 
 	}
-
-	@Override
-	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-		if (!shouldUseNativeMenu()) return;
-		inflater.inflate(R.menu.menu_user_profile, menu);
-	}
-
-	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_user_profile, container, false);
-	}
-
-	@Override
-	public void onDestroyView() {
-		mUser = null;
-		mRelationship = null;
-		final LoaderManager lm = getLoaderManager();
-		lm.destroyLoader(LOADER_ID_USER);
-		lm.destroyLoader(LOADER_ID_FRIENDSHIP);
-		super.onDestroyView();
-	}
-
 
 	@Override
 	public void onLinkClick(final String link, final String orig, final long account_id, final int type,
@@ -668,23 +698,6 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		return handleMenuItemClick(item);
-	}
-
-	@Override
-	public void onPrepareOptionsMenu(final Menu menu) {
-		if (!shouldUseNativeMenu() || !menu.hasVisibleItems()) return;
-		setMenu(menu);
-	}
-
-	@Override
-	public void onSaveInstanceState(final Bundle outState) {
-		outState.putParcelable(EXTRA_USER, mUser);
-		super.onSaveInstanceState(outState);
-	}
-
-	@Override
 	public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
 		if (mUser == null || !ParseUtils.parseString(mUser.id).equals(key)) return;
 		displayUser(mUser);
@@ -699,45 +712,8 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 	}
 
 	@Override
-	public void onStart() {
-		super.onStart();
-		final IntentFilter filter = new IntentFilter(BROADCAST_TASK_STATE_CHANGED);
-		filter.addAction(BROADCAST_FRIENDSHIP_CHANGED);
-		filter.addAction(BROADCAST_PROFILE_UPDATED);
-		filter.addAction(BROADCAST_PROFILE_IMAGE_UPDATED);
-		filter.addAction(BROADCAST_PROFILE_BANNER_UPDATED);
-		registerReceiver(mStatusReceiver, filter);
-	}
-
-	@Override
-	public void onStop() {
-		unregisterReceiver(mStatusReceiver);
-		super.onStop();
-	}
-
-	@Override
 	public boolean onTouch(final View v, final MotionEvent event) {
 		return mProfileBannerView.dispatchTouchEvent(event);
-	}
-
-	@Override
-	protected void fitSystemWindows(Rect insets) {
-		super.fitSystemWindows(insets);
-		final View view = getView();
-		if (view != null) {
-			final View progress = view.findViewById(R.id.progress_container);
-			progress.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-		}
-		mErrorRetryContainer.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-		mUserProfileDrawer.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-		mUserProfileDrawer.setClipToPadding(false);
-		final int bannerHeight = mProfileBannerView.getHeight();
-		if (bannerHeight != 0) {
-			final ViewGroup.LayoutParams params = mProfileBannerSpace.getLayoutParams();
-			params.height = bannerHeight - insets.top;
-			mProfileBannerSpace.setLayoutParams(params);
-			mProfileBannerSpace.requestLayout();
-		}
 	}
 
 	@Override
@@ -779,6 +755,26 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 		final View cardView = headerView.findViewById(R.id.card);
 		ThemeUtils.applyThemeAlphaToDrawable(context, cardView.getBackground());
 	}
+
+    @Override
+    protected void fitSystemWindows(Rect insets) {
+        super.fitSystemWindows(insets);
+        final View view = getView();
+        if (view != null) {
+            final View progress = view.findViewById(R.id.progress_container);
+            progress.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        }
+        mErrorRetryContainer.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        mUserProfileDrawer.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        mUserProfileDrawer.setClipToPadding(false);
+        final int bannerHeight = mProfileBannerView.getHeight();
+        if (bannerHeight != 0) {
+            final ViewGroup.LayoutParams params = mProfileBannerSpace.getLayoutParams();
+            params.height = bannerHeight - insets.top;
+            mProfileBannerSpace.setLayoutParams(params);
+            mProfileBannerSpace.requestLayout();
+        }
+    }
 
 	private void getFriendship() {
 		final ParcelableUser user = mUser;
@@ -937,7 +933,7 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 		if (mentionItem != null) {
             mentionItem.setTitle(getString(R.string.mention_user_name, getDisplayName(user.name, user.screen_name)));
 		}
-		setMenuItemAvailability(menu, MENU_MENTION, !isMyself);
+        Utils.setMenuItemAvailability(menu, MENU_MENTION, !isMyself);
 //        final MenuItem followItem = menu.findItem(MENU_FOLLOW);
 //        followItem.setVisible(!isMyself);
 //        final boolean shouldShowFollowItem = !creatingFriendship && !destroyingFriendship && !isMyself
@@ -1036,8 +1032,11 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 
 	@Override
 	public boolean isScrollContent(float x, float y) {
-		final Fragment fragment = mCurrentVisibleFragment;
-		return fragment instanceof DrawerCallback && ((DrawerCallback) fragment).isScrollContent(x, y);
+        final ViewPager v = mViewPager;
+        final int[] location = new int[2];
+        v.getLocationOnScreen(location);
+        return x >= location[0] && x <= location[0] + v.getWidth()
+                && y >= location[1] && y <= location[1] + v.getHeight();
 	}
 
 	@Override
@@ -1051,9 +1050,19 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 	@Override
 	public void topChanged(int top) {
 		final UserProfileDrawer drawer = mUserProfileDrawer;
+        if (drawer == null) return;
+        final int offset = drawer.getPaddingTop() - top;
+        updateScrollOffset(offset);
+
+        final Fragment fragment = mCurrentVisibleFragment;
+        if (fragment instanceof DrawerCallback) {
+            ((DrawerCallback) fragment).topChanged(top);
+        }
+    }
+
+    private void updateScrollOffset(int offset) {
 		final View space = mProfileBannerSpace;
-		if (drawer == null || space == null) return;
-		final int offset = drawer.getPaddingTop() - top;
+        if (space == null) return;
 		final float factor = offset / (float) space.getHeight();
 		final ProfileBannerImageView profileBannerView = mProfileBannerView;
 		profileBannerView.setAlpha(1.0f - factor / 8f);
@@ -1063,11 +1072,6 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 		if (mActionBarBackground != null) {
 			mActionBarBackground.setFactor(factor);
 			mUserProfileContent.setFactor(factor);
-		}
-
-		final Fragment fragment = mCurrentVisibleFragment;
-		if (fragment instanceof DrawerCallback) {
-			((DrawerCallback) fragment).topChanged(top);
 		}
 	}
 
@@ -1090,6 +1094,11 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 	public boolean triggerRefresh(int position) {
 		return false;
 	}
+
+    @Override
+    public boolean getSystemWindowsInsets(Rect insets) {
+        return false;
+    }
 
 
 	static class FriendshipLoader extends AsyncTaskLoader<SingleResponse<Relationship>> {
@@ -1217,21 +1226,36 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 			}
 
 			@Override
+            public void draw(Canvas canvas) {
+                canvas.drawRect(mBounds.left, mBounds.bottom - mLineSize, mBounds.right,
+                        mBounds.bottom, mPaint);
+            }
+
+            @Override
 			protected void onBoundsChange(Rect bounds) {
 				super.onBoundsChange(bounds);
 				mBounds.set(bounds);
 			}
 
-			@Override
-			public void draw(Canvas canvas) {
-				canvas.drawRect(mBounds.left, mBounds.bottom - mLineSize, mBounds.right,
-						mBounds.bottom, mPaint);
+            private void updatePaint() {
+                mPaint.setColor(mColor);
+                mPaint.setAlpha(Color.alpha(mColor) * mAlpha / 0xFF);
+                invalidateSelf();
 			}
+
+            public int getColor() {
+                return mColor;
+            }
 
 			@Override
 			public int getAlpha() {
 				return mAlpha;
 			}
+
+            public void setColor(int color) {
+                mColor = color;
+                updatePaint();
+            }
 
 			@Override
 			public void setAlpha(int alpha) {
@@ -1249,20 +1273,6 @@ public class UserProfileFragment extends BaseSupportFragment implements OnClickL
 				return PixelFormat.TRANSLUCENT;
 			}
 
-			public void setColor(int color) {
-				mColor = color;
-				updatePaint();
-			}
-
-			private void updatePaint() {
-				mPaint.setColor(mColor);
-				mPaint.setAlpha(Color.alpha(mColor) * mAlpha / 0xFF);
-				invalidateSelf();
-			}
-
-			public int getColor() {
-				return mColor;
-			}
 		}
 	}
 }

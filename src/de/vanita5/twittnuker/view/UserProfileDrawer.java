@@ -53,7 +53,8 @@ public class UserProfileDrawer extends ViewGroup {
 	private final DragCallback mDragCallback;
 
 	private DrawerCallback mDrawerCallback;
-	private boolean mUsingDragHelper, mScrollingHeaderByGesture;
+    private boolean mUsingDragHelper;
+    private boolean mScrollingHeaderByGesture, mScrollingContentCallback;
 	private boolean mTouchDown, mTouchingScrollableContent;
 
 	private int mHeaderOffset;
@@ -92,6 +93,20 @@ public class UserProfileDrawer extends ViewGroup {
 		mScrollingHeaderByGesture = scrolling;
 	}
 
+    public void flingHeader(float velocity) {
+        if (mTouchDown) {
+            mScroller.abortAnimation();
+            return;
+        }
+        mScroller.fling(0, getHeaderTop(), 0, (int) velocity, 0, 0,
+                mContainer.getHeaderTopMinimum(), mContainer.getHeaderTopMaximum());
+        ViewCompat.postInvalidateOnAnimation(this);
+    }
+
+    private void flingCallback(float velocity) {
+        mDrawerCallback.fling(velocity);
+    }
+
 	@Override
 	public void computeScroll() {
 		boolean invalidate = mDragHelper.continueSettling(true);
@@ -107,28 +122,8 @@ public class UserProfileDrawer extends ViewGroup {
 		}
 	}
 
-	public void flingHeader(float velocity) {
-		if (mTouchDown) {
-			mScroller.abortAnimation();
-			return;
-		}
-		mScroller.fling(0, getHeaderTop(), 0, (int) velocity, 0, 0,
-				mContainer.getHeaderTopMinimum(), mContainer.getHeaderTopMaximum());
-		ViewCompat.postInvalidateOnAnimation(this);
-	}
-
-	@Override
-	protected void onFinishInflate() {
-		if (getChildCount() != 1) {
-			throw new IllegalArgumentException("Add subview by XML is not allowed.");
-		}
-	}
-
-	private void flingCallback(float velocity) {
-		mDrawerCallback.fling(velocity);
-	}
-
 	private void scrollByCallback(float dy) {
+        setScrollingContentCallback(true);
 		mDrawerCallback.scrollBy(dy);
 	}
 
@@ -139,6 +134,13 @@ public class UserProfileDrawer extends ViewGroup {
 	private void cancelTouchCallback() {
 		mDrawerCallback.cancelTouch();
 	}
+
+    @Override
+    protected void onFinishInflate() {
+        if (getChildCount() != 1) {
+            throw new IllegalArgumentException("Add subview by XML is not allowed.");
+        }
+    }
 
 	private boolean canScrollCallback(float dy) {
 		return mDrawerCallback.canScroll(dy);
@@ -159,7 +161,6 @@ public class UserProfileDrawer extends ViewGroup {
 				mTouchDown = true;
 				mTouchingScrollableContent = isScrollContentCallback(ev.getX(), ev.getY());
 				mUsingDragHelper = false;
-				mScrollingHeaderByGesture = false;
 				break;
 			}
 			case MotionEvent.ACTION_CANCEL:
@@ -167,7 +168,6 @@ public class UserProfileDrawer extends ViewGroup {
 				mTouchDown = false;
 				mTouchingScrollableContent = false;
 				mUsingDragHelper = false;
-				mScrollingHeaderByGesture = false;
 			}
 		}
 		mGestureDetector.onTouchEvent(ev);
@@ -191,6 +191,7 @@ public class UserProfileDrawer extends ViewGroup {
 			final int top = i == 0 ? mHeaderOffset + getPaddingTop() : getChildAt(i - 1).getBottom();
 			final int bottom = top + child.getMeasuredHeight();
 			child.layout(left, top, right, bottom);
+            notifyOffsetChanged();
 		}
 	}
 
@@ -202,17 +203,6 @@ public class UserProfileDrawer extends ViewGroup {
 
 	public View getHeader() {
 		return mContainer.getHeader();
-	}
-
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		final View child = getChildAt(0);
-
-		final int childWidthMeasureSpec = makeChildMeasureSpec(widthMeasureSpec, getPaddingLeft() + getPaddingRight());
-		final int childHeightMeasureSpec = makeChildMeasureSpec(heightMeasureSpec, getPaddingTop() + getPaddingBottom());
-
-		child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
 
 	public View getContent() {
@@ -241,6 +231,17 @@ public class UserProfileDrawer extends ViewGroup {
 		return mContainer.getHeaderTopMinimum();
 	}
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final View child = getChildAt(0);
+
+        final int childWidthMeasureSpec = makeChildMeasureSpec(widthMeasureSpec, getPaddingLeft() + getPaddingRight());
+        final int childHeightMeasureSpec = makeChildMeasureSpec(heightMeasureSpec, getPaddingTop() + getPaddingBottom());
+
+        child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
 	private boolean isTouchingScrollableContent() {
 		return mTouchingScrollableContent;
 	}
@@ -258,6 +259,18 @@ public class UserProfileDrawer extends ViewGroup {
 	private boolean isValidScroll(float direction, float other) {
 		return Math.abs(direction) > getDragTouchSlop() && Math.abs(direction) > Math.abs(other);
 	}
+
+    private boolean isScrollingHeaderByHelper() {
+        return mDragCallback.isScrollingHeaderByHelper();
+    }
+
+    private boolean isScrollingContentCallback() {
+        return mScrollingContentCallback;
+    }
+
+    private void setScrollingContentCallback(boolean scrolling) {
+        mScrollingContentCallback = scrolling;
+    }
 
 	public static interface DrawerCallback {
 
@@ -279,7 +292,7 @@ public class UserProfileDrawer extends ViewGroup {
 		private final UserProfileDrawer mDrawer;
 		private long mTime;
 		private float mDx, mDy, mVelocity;
-		private boolean mScrollingByHelper;
+        private boolean mScrollingHeaderByHelper;
 
 		public DragCallback(UserProfileDrawer drawer) {
 			mDrawer = drawer;
@@ -294,7 +307,7 @@ public class UserProfileDrawer extends ViewGroup {
 			switch (state) {
 				case ViewDragHelper.STATE_SETTLING:
 				case ViewDragHelper.STATE_DRAGGING: {
-					mScrollingByHelper = false;
+                    mScrollingHeaderByHelper = false;
 					break;
 				}
 				case ViewDragHelper.STATE_IDLE: {
@@ -308,7 +321,7 @@ public class UserProfileDrawer extends ViewGroup {
 					mDx = Float.NaN;
 					mDy = Float.NaN;
 					mVelocity = Float.NaN;
-					mScrollingByHelper = false;
+                    mScrollingHeaderByHelper = false;
 					break;
 				}
 			}
@@ -350,31 +363,33 @@ public class UserProfileDrawer extends ViewGroup {
 		}
 
 		@Override
-		public int clampViewPositionVertical(View child, int top, int dy) {
+        public int clampViewPositionVertical(final View child, final int top, final int dy) {
 			final int current = mDrawer.getHeaderTop();
 			if (!Float.isNaN(mDx) && mDrawer.isValidScroll(mDx, dy)) {
-				mScrollingByHelper = false;
+                mScrollingHeaderByHelper = false;
 				return current;
 			}
-			if (dy > 0 && mDrawer.canScrollCallback(-dy) && !mDrawer.isUsingDragHelper()) {
-				// Scrolling up while list still has space to scroll, so make header still
-				mScrollingByHelper = false;
-				return current;
-			} else if (dy > 0 && mDrawer.canScrollCallback(-dy) && mDrawer.isTouchingScrollableContent()) {
-				mDrawer.scrollByCallback(-dy);
-				mScrollingByHelper = false;
-				return current;
-			}
+            if (dy > 0 && mDrawer.canScrollCallback(-dy)) {
+                if (!mDrawer.isUsingDragHelper()) {
+                    // Scrolling up while list still has space to scroll, so make header still
+                        mScrollingHeaderByHelper = false;
+                    return current;
+                } else if (mDrawer.isTouchingScrollableContent()) {
+				    mDrawer.scrollByCallback(-dy);
+                    mScrollingHeaderByHelper = false;
+				    return current;
+			    }
+            }
 			final int min = mDrawer.getHeaderTopMinimum(), max = mDrawer.getHeaderTopMaximum();
-			if (top < min && mDrawer.isTouchingScrollableContent()) {
+            if (top < min && mDrawer.isTouchingScrollableContent() && mDrawer.isUsingDragHelper()) {
 				mDrawer.scrollByCallback(-dy);
 			}
-			mScrollingByHelper = true;
+            mScrollingHeaderByHelper = true;
 			return MathUtils.clamp(top, min, max);
 		}
 
-		private boolean isScrollingByHelper() {
-			return mScrollingByHelper;
+        private boolean isScrollingHeaderByHelper() {
+            return mScrollingHeaderByHelper;
 		}
 	}
 
@@ -392,14 +407,14 @@ public class UserProfileDrawer extends ViewGroup {
 				final int offset = mDrawer.getHeaderTop(), min = mDrawer.getHeaderTopMinimum();
 				if (!mDrawer.canScrollCallback(-1)) {
 					if (distanceY < 0) {
-						if (!mDrawer.mDragCallback.isScrollingByHelper()) {
+                        if (!mDrawer.isScrollingHeaderByHelper()) {
 							mDrawer.offsetHeaderBy(Math.round(-distanceY));
 						}
 						mDrawer.setScrollingHeaderByGesture(true);
 					} else if (distanceY > 0 && offset > min) {
 						// Scrolling up when scrolling to list top, so we cancel touch event and scrolling header up
 						mDrawer.cancelTouchCallback();
-						if (!mDrawer.mDragCallback.isScrollingByHelper()) {
+                        if (!mDrawer.isScrollingHeaderByHelper()) {
 							mDrawer.offsetHeaderBy(Math.round(-distanceY));
 						}
 					} else if (offset <= min) {
@@ -412,12 +427,13 @@ public class UserProfileDrawer extends ViewGroup {
 
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            final int top = mDrawer.getHeaderTop(), min = mDrawer.getHeaderTopMinimum();
 			if (velocityY > 0 && !mDrawer.canScrollCallback(-1)) {
 				// Fling down when list reached top, so we fling header down here
 				if (Math.abs(velocityY) > Math.abs(velocityX)) {
 					mDrawer.flingHeader(velocityY);
 				}
-			} else if (velocityY < 0 && mDrawer.getHeaderTop() <= mDrawer.getHeaderTopMinimum()) {
+            } else if (velocityY < 0 && top <= min && mDrawer.isScrollingContentCallback()) {
 				// Fling up when showing full content, so we fling list up here
 				if (Math.abs(velocityY) > Math.abs(velocityX)) {
 					mDrawer.flingCallback(-velocityY);
@@ -428,6 +444,8 @@ public class UserProfileDrawer extends ViewGroup {
 
 		@Override
 		public boolean onDown(MotionEvent e) {
+            mDrawer.setScrollingHeaderByGesture(false);
+            mDrawer.setScrollingContentCallback(false);
 			return true;
 		}
 	}
