@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.encodeQueryParams;
-import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -41,6 +38,9 @@ import de.vanita5.twittnuker.util.Utils;
 import java.io.IOException;
 import java.util.List;
 
+import static de.vanita5.twittnuker.util.Utils.encodeQueryParams;
+import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
+
 public abstract class BaseActivitiesListFragment extends BasePullToRefreshListFragment implements
 		LoaderCallbacks<List<ParcelableActivity>> {
 
@@ -49,8 +49,8 @@ public abstract class BaseActivitiesListFragment extends BasePullToRefreshListFr
 
 	private List<ParcelableActivity> mData;
 
-	public abstract BaseParcelableActivitiesAdapter createListAdapter(Context context, boolean compactCards,
-																	  boolean plainListStyle);
+    public abstract BaseParcelableActivitiesAdapter createListAdapter(final Context context,
+                                                                      final boolean compactCards);
 
 	@Override
 	public BaseParcelableActivitiesAdapter getListAdapter() {
@@ -61,12 +61,11 @@ public abstract class BaseActivitiesListFragment extends BasePullToRefreshListFr
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final boolean plainListStyle = mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false);
 		final boolean compactCards = mPreferences.getBoolean(KEY_COMPACT_CARDS, false);
-		mAdapter = createListAdapter(getActivity(), compactCards, plainListStyle);
+        mAdapter = createListAdapter(getActivity(), compactCards);
 		setListAdapter(mAdapter);
 		final ListView lv = getListView();
-		if (!plainListStyle) {
+        if (!compactCards) {
 			lv.setDivider(null);
 		}
 		lv.setSelector(android.R.color.transparent);

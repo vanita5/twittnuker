@@ -83,11 +83,7 @@ import twitter4j.UserList;
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getDisplayName;
-import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-import static de.vanita5.twittnuker.util.Utils.openUserListMembers;
-import static de.vanita5.twittnuker.util.Utils.openUserListSubscribers;
-import static de.vanita5.twittnuker.util.Utils.openUserListTimeline;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
 
@@ -449,6 +445,11 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
     @Override
     public void scrollBy(float dy) {
 
+    }
+
+    @Override
+    public boolean shouldLayoutHeaderBottom() {
+        return false;
     }
 
     @Override

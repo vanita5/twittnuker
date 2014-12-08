@@ -26,8 +26,10 @@ import android.content.Context;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
-public interface IStatusesAdapter {
+public interface IStatusesAdapter<Data> extends IGapSupportedAdapter<StatusViewHolder>,
+        IItemMenuSupportedAdapter<StatusViewHolder> {
 
     ImageLoaderWrapper getImageLoader();
 
@@ -38,4 +40,10 @@ public interface IStatusesAdapter {
     ParcelableStatus getStatus(int position);
 
     int getStatusCount();
+
+    void onStatusClick(StatusViewHolder holder, int position);
+
+    void onUserProfileClick(StatusViewHolder holder, int position);
+
+    void setData(Data data);
 }

@@ -621,6 +621,8 @@
     <string name="remove_from_filter">Aus dem Filter entfernen</string>
     <string name="sort_timeline_by_id">Timeline nach ID sortieren</string>
     <string name="profile">Profil</string>
+    <string name="state_blocking">(D) Blocking</string>
+    <string name="load_more">Mehr laden</string>
 
 
     <!-- Twittnuker -->

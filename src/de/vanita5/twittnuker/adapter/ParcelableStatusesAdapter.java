@@ -29,7 +29,7 @@ import java.util.List;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
-public class ParcelableStatusesAdapter extends AbsStatusesAdapter {
+public class ParcelableStatusesAdapter extends AbsStatusesAdapter<List<ParcelableStatus>> {
 
 	private List<ParcelableStatus> mData;
 
@@ -38,6 +38,16 @@ public class ParcelableStatusesAdapter extends AbsStatusesAdapter {
 	}
 
 	@Override
+    public boolean isGapItem(int position) {
+        return getStatus(position).is_gap;
+    }
+
+    @Override
+    public void onGapClick(StatusViewHolder holder, int position) {
+
+    }
+
+    @Override
 	protected void bindStatus(StatusViewHolder holder, int position) {
 		holder.displayStatus(getStatus(position));
 	}
@@ -62,4 +72,5 @@ public class ParcelableStatusesAdapter extends AbsStatusesAdapter {
 	public List<ParcelableStatus> getData() {
 		return mData;
 	}
+
 }

@@ -13,7 +13,7 @@ import de.vanita5.twittnuker.fragment.support.SearchStatusesFragment;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserFavoritesFragment;
 import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
-import de.vanita5.twittnuker.fragment.support.UserTimelineFragmentOld;
+import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 
 import java.util.Comparator;
 import java.util.Map.Entry;
@@ -35,7 +35,7 @@ public enum CustomTabConfiguration2 implements Constants {
 	FAVORITES(UserFavoritesFragment.class, R.string.favorites, R.drawable.ic_action_star,
 			CustomTabConfiguration.ACCOUNT_REQUIRED, CustomTabConfiguration.FIELD_TYPE_USER, 4),
 
-	USER_TIMELINE(UserTimelineFragmentOld.class, R.string.users_statuses, R.drawable.ic_action_quote,
+    USER_TIMELINE(UserTimelineFragment.class, R.string.users_statuses, R.drawable.ic_action_quote,
 			CustomTabConfiguration.ACCOUNT_REQUIRED, CustomTabConfiguration.FIELD_TYPE_USER, 5),
 
 	SEARCH_STATUSES(SearchStatusesFragment.class, R.string.search_statuses, R.drawable.ic_action_search,

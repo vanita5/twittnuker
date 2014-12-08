@@ -580,7 +580,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
             ViewAccessor.setBackground(mTabIndicator, new ColorDrawable(actionBarColor));
             homeActionButton.setButtonColor(actionBarColor);
             homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
-            mTabIndicator.setStripColor(themeColor);
+            mTabIndicator.setStripColor(contrastColor);
             mTabIndicator.setIconColor(contrastColor);
             ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
             mColorStatusFrameLayout.setDrawColor(true);
@@ -828,7 +828,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         final Window window = getWindow();
 		final Drawable windowBackground = ThemeUtils.getWindowBackground(this, getCurrentThemeResourceId());
 		ViewAccessor.setBackground(mSlidingMenu.getContent(), windowBackground);
-        window.setBackgroundDrawable(new EmptyDrawable());
+        window.setBackgroundDrawable(new EmptyDrawable(windowBackground));
 	}
 
     private void triggerActionsClick() {
@@ -930,6 +930,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		if (fragment instanceof AccountsDashboardFragment) {
 			((AccountsDashboardFragment) fragment).setStatusBarHeight(insets.top);
 		}
+        //TODO
+        mColorStatusFrameLayout.setStatusBarHeight(insets.top);
 	}
 
 	private void startStreamingService() {

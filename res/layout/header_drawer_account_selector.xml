@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/profile_banner"
+        android:id="@+id/account_profile_banner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignBottom="@id/profile_container"
@@ -32,11 +32,10 @@
                 android:layout_width="@dimen/icon_size_profile_image_dashboard_current"
                 android:layout_height="@dimen/icon_size_profile_image_dashboard_current"
                 android:layout_marginBottom="@dimen/element_spacing_mlarge"
-                android:layout_marginTop="@dimen/element_spacing_mlarge"
-                android:layout_centerHorizontal="true"/>
+                android:layout_marginTop="@dimen/element_spacing_mlarge"/>
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/account_selector"
+                android:id="@+id/other_accounts_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/profile_image"
@@ -65,15 +64,13 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:textAppearanceSmall"
                         android:textColor="?android:textColorPrimary"
-                        android:textStyle="bold"
-                        android:layout_gravity="center_horizontal"/>
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/screen_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:textAppearanceSmall"
-                        android:layout_gravity="center_horizontal"/>
+                        android:textAppearance="?android:textAppearanceSmall"/>
 
                 </LinearLayout>
 

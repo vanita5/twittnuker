@@ -7,6 +7,47 @@ import android.graphics.drawable.Drawable;
 
 public class EmptyDrawable extends Drawable {
 
+    private final int mIntrinsicWidth, mIntrinsicHeight, mMinimumWidth, mMinimumHeight;
+
+    @Override
+    public int getMinimumHeight() {
+        return mMinimumHeight;
+    }
+
+    @Override
+    public int getMinimumWidth() {
+        return mMinimumWidth;
+    }
+
+    @Override
+    public int getIntrinsicHeight() {
+        return mIntrinsicHeight;
+    }
+
+    @Override
+    public int getIntrinsicWidth() {
+        return mIntrinsicWidth;
+    }
+
+
+    public EmptyDrawable() {
+        this(0, 0, -1, -1);
+    }
+
+    public EmptyDrawable(int minimumWidth, int minimumHeight, int intrinsicWidth, int intrinsicHeight) {
+        mMinimumWidth = minimumWidth;
+        mMinimumHeight = minimumHeight;
+        mIntrinsicWidth = intrinsicWidth;
+        mIntrinsicHeight = intrinsicHeight;
+    }
+
+    public EmptyDrawable(Drawable drawableToCopySize) {
+        mMinimumWidth = drawableToCopySize.getMinimumWidth();
+        mMinimumHeight = drawableToCopySize.getMinimumHeight();
+        mIntrinsicWidth = drawableToCopySize.getIntrinsicWidth();
+        mIntrinsicHeight = drawableToCopySize.getIntrinsicHeight();
+    }
+
     @Override
     public void draw(final Canvas canvas) {
 

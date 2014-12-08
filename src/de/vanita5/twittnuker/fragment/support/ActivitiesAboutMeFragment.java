@@ -22,10 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.openStatus;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-import static de.vanita5.twittnuker.util.Utils.openUsers;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
@@ -42,12 +38,15 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.vanita5.twittnuker.util.Utils.openStatus;
+import static de.vanita5.twittnuker.util.Utils.openUserProfile;
+import static de.vanita5.twittnuker.util.Utils.openUsers;
+
 public class ActivitiesAboutMeFragment extends BaseActivitiesListFragment {
 
 	@Override
-	public BaseParcelableActivitiesAdapter createListAdapter(final Context context, final boolean compactCards,
-															 final boolean plainListStyle) {
-		return new ParcelableActivitiesAboutMeAdapter(context, compactCards, plainListStyle);
+    public BaseParcelableActivitiesAdapter createListAdapter(final Context context, final boolean compactCards) {
+        return new ParcelableActivitiesAboutMeAdapter(context, compactCards);
 	}
 
 	@Override
@@ -87,13 +86,13 @@ public class ActivitiesAboutMeFragment extends BaseActivitiesListFragment {
 				}
 			case ParcelableActivity.ACTION_MENTION: {
 				if (target_objects != null && target_objects.length > 0) {
-				openStatus(getActivity(), target_objects[0]);
+                    openStatus(getActivity(), target_objects[0], null);
 				}
 				break;
 			}
 			case ParcelableActivity.ACTION_REPLY: {
 				if (target_statuses != null && target_statuses.length > 0) {
-				openStatus(getActivity(), target_statuses[0]);
+                    openStatus(getActivity(), target_statuses[0], null);
 				}
 				break;
 			}

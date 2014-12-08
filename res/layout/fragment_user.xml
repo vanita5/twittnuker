@@ -33,13 +33,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <de.vanita5.twittnuker.view.ProfileBannerImageView
+        <FrameLayout
+            android:id="@+id/profile_banner_container"
+            android:layout_gravity="top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.vanita5.twittnuker.view.ProfileBannerImageView
             android:id="@+id/profile_banner"
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
             android:scaleType="centerCrop"/>
+        </FrameLayout>
 
         <de.vanita5.twittnuker.view.HeaderDrawerLayout
             android:id="@+id/user_profile_drawer"
@@ -48,7 +53,5 @@
             app:contentLayout="@layout/fragment_content_pages"
             app:headerLayout="@layout/header_user"/>
     </de.vanita5.twittnuker.view.ExtendedFrameLayout>
-
-    <include layout="@layout/layout_content_fragment_common"/>
 
 </FrameLayout>

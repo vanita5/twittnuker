@@ -85,10 +85,5 @@
 		android:order="31"
 		android:summary="@string/compact_cards_summary"
 		android:title="@string/compact_cards"/>
-    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
-    	android:defaultValue="false"
-    	android:key="plain_list_style"
-    	android:order="32"
-    	android:title="@string/plain_list_style"/>
 
 </PreferenceScreen>

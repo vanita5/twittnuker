@@ -22,12 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.getAccountColor;
-import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
-import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
-
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
@@ -46,6 +40,12 @@ import de.vanita5.twittnuker.view.iface.ICardItemView.OnOverflowIconClickListene
 import java.util.List;
 import java.util.Locale;
 
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
+import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.getAccountColor;
+import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
+import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
+
 public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> implements IBaseCardAdapter,
 		OnOverflowIconClickListener {
 
@@ -55,18 +55,16 @@ public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> imp
 	private MenuButtonClickListener mListener;
 
 	private final Locale mLocale;
-	private final boolean mPlainList;
 
 	private boolean mAnimationEnabled;
 	private int mMaxAnimationPosition;
 
 	public ParcelableUsersAdapter(final Context context) {
-		this(context, Utils.isCompactCards(context), Utils.isPlainListStyle(context));
+        this(context, Utils.isCompactCards(context));
 	}
 
-	public ParcelableUsersAdapter(final Context context, final boolean compactCards, final boolean plainList) {
+    public ParcelableUsersAdapter(final Context context, final boolean compactCards) {
 		super(context, getItemResource(compactCards));
-		mPlainList = plainList;
 		mContext = context;
 		mLocale = context.getResources().getConfiguration().locale;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
@@ -90,10 +88,6 @@ public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> imp
 		} else {
 			holder = new UserViewHolder(view);
 			holder.content.setOnOverflowIconClickListener(this);
-			if (mPlainList) {
-				((View) holder.content).setPadding(0, 0, 0, 0);
-				holder.content.setItemBackground(null);
-			}
 			view.setTag(holder);
 		}
 

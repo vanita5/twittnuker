@@ -22,12 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
-import static de.vanita5.twittnuker.util.Utils.getOldestMessageIdsFromDatabase;
-import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
-
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -63,6 +57,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
+import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
+import static de.vanita5.twittnuker.util.Utils.getOldestMessageIdsFromDatabase;
+import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
 
 public class DirectMessagesFragment extends BasePullToRefreshListFragment implements LoaderCallbacks<Cursor> {
 
@@ -115,7 +115,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 		mAdapter = new DirectMessageConversationEntriesAdapter(getActivity());
 		setListAdapter(mAdapter);
 		mListView = getListView();
-		if (!mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false)) {
+        if (!mPreferences.getBoolean(KEY_COMPACT_CARDS, false)) {
 			mListView.setDivider(null);
 		}
 		mListView.setSelector(android.R.color.transparent);
