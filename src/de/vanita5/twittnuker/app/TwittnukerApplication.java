@@ -238,8 +238,8 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 	}
 
 	private void configACRA() {
-		ACRA.init(this);
-		ACRA.getErrorReporter().setReportSender(new EmailIntentSender(this));
+//		ACRA.init(this);
+//		ACRA.getErrorReporter().setReportSender(new EmailIntentSender(this));
 	}
 
     private DiskCache createDiskCache(final String dirName) {
