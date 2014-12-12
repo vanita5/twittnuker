@@ -21,9 +21,6 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<com.etsy.android.grid.StaggeredGridView xmlns:android="http://schemas.android.com/apk/res/android"
-                                         xmlns:app="http://schemas.android.com/apk/res-auto"
-                                         android:layout_width="match_parent"
-                                         android:layout_height="match_parent"
-                                         app:column_count_landscape="@integer/staggered_grid_columns_land"
-                                         app:column_count_portrait="@integer/staggered_grid_columns_port"/>
+<Space xmlns:android="http://schemas.android.com/apk/res/android"
+       android:layout_width="match_parent"
+       android:layout_height="@dimen/element_spacing_normal"/>

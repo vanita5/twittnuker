@@ -43,8 +43,8 @@ import android.widget.ListView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
-import de.vanita5.twittnuker.model.Account;
-import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
+import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableAccountWithCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
@@ -351,9 +351,9 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 				break;
 			}
 			case MENU_TRANSLATE: {
-				final AccountWithCredentials account = Account.getAccountWithCredentials(getActivity(),
+                final ParcelableAccountWithCredentials account = ParcelableAccount.getAccountWithCredentials(getActivity(),
 						status.account_id);
-				if (AccountWithCredentials.isOfficialCredentials(getActivity(), account)) {
+                if (ParcelableAccountWithCredentials.isOfficialCredentials(getActivity(), account)) {
 										StatusTranslateDialogFragment.show(getFragmentManager(), status);
 				} else {
 

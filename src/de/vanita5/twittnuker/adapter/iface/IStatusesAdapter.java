@@ -28,8 +28,7 @@ import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
-public interface IStatusesAdapter<Data> extends IGapSupportedAdapter<StatusViewHolder>,
-        IItemMenuSupportedAdapter<StatusViewHolder> {
+public interface IStatusesAdapter<Data> extends IGapSupportedAdapter, ICardSupportedAdapter {
 
     ImageLoaderWrapper getImageLoader();
 

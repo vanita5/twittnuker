@@ -27,13 +27,13 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.preference.Preference;
 
-import com.google.android.gms.auth.GoogleAuthUtil;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.dialog.GoogleAccountDialog;
-import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.task.GetGCMTokenTask;
 import de.vanita5.twittnuker.util.PushBackendHelper;
+
+import com.google.android.gms.auth.GoogleAuthUtil;
 
 public class AccountNotificationSettingsFragment extends BaseAccountPreferenceFragment {
 
@@ -41,7 +41,7 @@ public class AccountNotificationSettingsFragment extends BaseAccountPreferenceFr
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		final Preference preference = findPreference(KEY_NOTIFICATION_LIGHT_COLOR);
-		final Account account = getAccount();
+		final ParcelableAccount account = getAccount();
 		if (preference != null && account != null) {
 			preference.setDefaultValue(account.color);
 		}

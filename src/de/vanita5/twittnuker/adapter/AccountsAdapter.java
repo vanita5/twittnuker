@@ -35,8 +35,8 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.model.Account;
-import de.vanita5.twittnuker.model.Account.Indices;
+import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableAccount.Indices;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.view.holder.AccountViewHolder;
@@ -61,10 +61,10 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
 		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 	}
 
-    public Account getAccount(int position) {
+    public ParcelableAccount getAccount(int position) {
         final Cursor c = getCursor();
         if (c == null || c.isClosed() || !c.moveToPosition(position)) return null;
-        return new Account(c, mIndices);
+        return new ParcelableAccount(c, mIndices);
     }
 
 	@Override

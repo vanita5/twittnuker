@@ -39,8 +39,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -50,7 +48,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.Utils;
@@ -79,9 +77,9 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 		a.recycle();
 	}
 
-	public void setAccountsData(final List<Account> accounts) {
+	public void setAccountsData(final List<ParcelableAccount> accounts) {
 		removeAll();
-		for (final Account account : accounts) {
+		for (final ParcelableAccount account : accounts) {
 			final AccountItemPreference preference = new AccountItemPreference(getContext(), account, mSwitchKey,
 					mSwitchDefault);
 			setupPreference(preference, account);
@@ -98,12 +96,12 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 		new LoadAccountsTask(this).execute();
 	}
 
-	protected abstract void setupPreference(AccountItemPreference preference, Account account);
+	protected abstract void setupPreference(AccountItemPreference preference, ParcelableAccount account);
 
 	public static final class AccountItemPreference extends Preference implements ImageLoadingListener,
             OnCheckedChangeListener, OnSharedPreferenceChangeListener, OnPreferenceClickListener, OnClickListener {
 
-		private final Account mAccount;
+		private final ParcelableAccount mAccount;
 		private final SharedPreferences mSwitchPreference;
         private final ImageLoaderWrapper mImageLoader;
 
@@ -111,7 +109,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 		private final boolean mSwitchDefault;
         private Switch mToggle;
 
-		public AccountItemPreference(final Context context, final Account account, final String switchKey,
+		public AccountItemPreference(final Context context, final ParcelableAccount account, final String switchKey,
 				final boolean switchDefault) {
 			super(context);
             setWidgetLayoutResource(R.layout.preference_widget_account_preference_item);
@@ -218,7 +216,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
         }
 	}
 
-	private static class LoadAccountsTask extends AsyncTask<Void, Void, List<Account>> {
+	private static class LoadAccountsTask extends AsyncTask<Void, Void, List<ParcelableAccount>> {
 
 		private final AccountsListPreference mPreference;
 
@@ -227,12 +225,12 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 		}
 
 		@Override
-		protected List<Account> doInBackground(final Void... params) {
-            return Account.getAccountsList(mPreference.getContext(), false);
+		protected List<ParcelableAccount> doInBackground(final Void... params) {
+            return ParcelableAccount.getAccountsList(mPreference.getContext(), false);
 		}
 
 		@Override
-		protected void onPostExecute(final List<Account> result) {
+		protected void onPostExecute(final List<ParcelableAccount> result) {
 			mPreference.setAccountsData(result);
 		}
 

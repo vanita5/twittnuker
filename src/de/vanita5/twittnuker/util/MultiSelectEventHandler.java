@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.menu.AccountActionProvider;
-import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
@@ -182,7 +182,7 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
 		if (item.getGroupId() == AccountActionProvider.MENU_GROUP) {
 			final Intent intent = item.getIntent();
 			if (intent == null || !intent.hasExtra(EXTRA_ACCOUNT)) return false;
-			final Account account = intent.getParcelableExtra(EXTRA_ACCOUNT);
+			final ParcelableAccount account = intent.getParcelableExtra(EXTRA_ACCOUNT);
 			mMultiSelectManager.setAccountId(account.account_id);
 			if (mAccountActionProvider != null) {
 				mAccountActionProvider.setAccountId(account.account_id);

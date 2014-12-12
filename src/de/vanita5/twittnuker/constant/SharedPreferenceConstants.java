@@ -261,7 +261,7 @@ public interface SharedPreferenceConstants {
 	@Preference(type = STRING, hasDefault = true, defaultString = TwittnukerConstants.TWITTER_CONSUMER_SECRET_2)
 	public static final String KEY_CONSUMER_SECRET = "consumer_secret";
 	public static final String KEY_FILTERS_IN_HOME_TIMELINE = "filters_in_home_timeline";
-	public static final String KEY_FILTERS_IN_MENTIONS = "filters_in_mentions";
+	public static final String KEY_FILTERS_IN_MENTIONS_TIMELINE = "filters_in_mentions";
 	public static final String KEY_FILTERS_FOR_RTS = "filters_for_rts";
 	public static final String KEY_SETTINGS_WIZARD_COMPLETED = "settings_wizard_completed";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)

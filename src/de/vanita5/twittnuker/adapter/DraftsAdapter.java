@@ -62,7 +62,7 @@ public class DraftsAdapter extends SimpleCursorAdapter {
 		final DraftViewHolder holder = (DraftViewHolder) view.getTag();
 		final long[] accountIds = ArrayUtils.parseLongArray(cursor.getString(mIndices.account_ids), ',');
 		final String text = cursor.getString(mIndices.text);
-		final ParcelableMediaUpdate[] medias = ParcelableMediaUpdate.fromJSONString(cursor.getString(mIndices.medias));
+		final ParcelableMediaUpdate[] medias = ParcelableMediaUpdate.fromJSONString(cursor.getString(mIndices.media));
 		final long timestamp = cursor.getLong(mIndices.timestamp);
 		final int actionType = cursor.getInt(mIndices.action_type);
 		final String actionName = getActionName(context, actionType);

@@ -52,9 +52,9 @@ public final class ColorPickerDialog extends AlertDialog implements Constants, O
     private static final int[] COLORS = { R.color.material_dark, R.color.material_light,
 			R.color.material_light_blue, R.color.material_blue,
 			R.color.material_red, R.color.material_pink, R.color.material_orange, R.color.material_deep_orange,
+			R.color.material_lime, R.color.material_yellow, R.color.material_amber,
 			R.color.material_cyan, R.color.material_teal,
 			R.color.material_light_green, R.color.material_green,
-			R.color.material_lime, R.color.material_yellow, R.color.material_amber, R.color.material_blue,
 			R.color.material_purple, R.color.material_deep_purple, R.color.material_indigo };
 
     private final ColorsAdapter mColorsAdapter;

@@ -22,23 +22,17 @@
 
 package de.vanita5.twittnuker.util.content;
 
-import static org.mariotaku.querybuilder.SQLQueryBuilder.alterTable;
-import static org.mariotaku.querybuilder.SQLQueryBuilder.createTable;
-import static org.mariotaku.querybuilder.SQLQueryBuilder.dropTable;
-import static org.mariotaku.querybuilder.SQLQueryBuilder.insertInto;
-import static org.mariotaku.querybuilder.SQLQueryBuilder.select;
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import org.mariotaku.querybuilder.Columns;
 import org.mariotaku.querybuilder.Columns.Column;
+import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.NewColumn;
+import org.mariotaku.querybuilder.OnConflict;
 import org.mariotaku.querybuilder.Tables;
-import org.mariotaku.querybuilder.Where;
-import org.mariotaku.querybuilder.query.SQLInsertIntoQuery;
-import org.mariotaku.querybuilder.query.SQLInsertIntoQuery.OnConflict;
+import org.mariotaku.querybuilder.query.SQLInsertQuery;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
 import de.vanita5.twittnuker.util.ArrayUtils;
 
@@ -49,8 +43,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public final class DatabaseUpgradeHelper {
+import static org.mariotaku.querybuilder.SQLQueryBuilder.alterTable;
+import static org.mariotaku.querybuilder.SQLQueryBuilder.createTable;
+import static org.mariotaku.querybuilder.SQLQueryBuilder.dropTable;
+import static org.mariotaku.querybuilder.SQLQueryBuilder.insertInto;
+import static org.mariotaku.querybuilder.SQLQueryBuilder.select;
 
+public final class DatabaseUpgradeHelper {
 	public static void safeUpgrade(final SQLiteDatabase db, final String table, final String[] newColNames,
 								   final String[] newColTypes, final boolean dropDirectly, final boolean strictMode,
 								   final Map<String, String> colAliases) {
@@ -114,7 +113,7 @@ public final class DatabaseUpgradeHelper {
 	private static String createInsertDataQuery(final String table, final String tempTable, final String[] newCols,
 												final String[] oldCols, final Map<String, String> colAliases, final String[] notNullCols,
 												final OnConflict onConflict) {
-		final SQLInsertIntoQuery.Builder qb = insertInto(onConflict, table);
+        final SQLInsertQuery.Builder qb = insertInto(onConflict, table);
 		final List<String> newInsertColsList = new ArrayList<String>();
 		for (final String newCol : newCols) {
 			final String oldAliasedCol = colAliases != null ? colAliases.get(newCol) : null;
@@ -155,7 +154,7 @@ public final class DatabaseUpgradeHelper {
 	private static String getCreateSQL(final SQLiteDatabase db, final String table) {
 		final SQLSelectQuery.Builder qb = select(new Column("sql"));
 		qb.from(new Tables("sqlite_master"));
-		qb.where(new Where("type = ? AND name = ?"));
+        qb.where(new Expression("type = ? AND name = ?"));
 		final Cursor c = db.rawQuery(qb.buildSQL(), new String[] { "table", table });
 		if (c == null) return null;
 		try {

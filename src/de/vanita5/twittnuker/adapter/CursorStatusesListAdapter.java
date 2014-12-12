@@ -28,12 +28,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.util.Pair;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
-
-import java.util.Locale;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
@@ -47,6 +46,8 @@ import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.iface.ICardItemView.OnOverflowIconClickListener;
+
+import java.util.Locale;
 
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.findStatusInDatabases;
@@ -124,11 +125,16 @@ public class CursorStatusesListAdapter extends BaseCursorAdapter implements ISta
 	}
 
 	@Override
-	public void onItemMenuClick(StatusViewHolder holder, int position) {
+    public void onItemActionClick(ViewHolder holder, int id, int position) {
 
 	}
 
 	@Override
+    public void onItemMenuClick(ViewHolder holder, int position) {
+
+    }
+
+    @Override
 	public void onStatusClick(StatusViewHolder holder, int position) {
 
 	}
@@ -367,7 +373,7 @@ public class CursorStatusesListAdapter extends BaseCursorAdapter implements ISta
 	}
 
 	@Override
-	public void onGapClick(StatusViewHolder holder, int position) {
+    public void onGapClick(ViewHolder holder, int position) {
 
 	}
 }

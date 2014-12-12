@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.util;
 
 import android.graphics.Bitmap;
-import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -36,7 +35,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.imageloader.AccountExtra;
 import de.vanita5.twittnuker.util.imageloader.OvalBitmapDisplayer;
 
-import static de.vanita5.twittnuker.util.Utils.getBestBannerType;
+import static de.vanita5.twittnuker.util.Utils.getBestBannerUrl;
 
 public class ImageLoaderWrapper implements Constants {
 
@@ -107,10 +106,17 @@ public class ImageLoaderWrapper implements Constants {
 		mImageLoader.displayImage(url, view, b.build(), loadingHandler, loadingHandler);
 	}
 
-	public void displayProfileBanner(final ImageView view, final String base_url, final int width) {
-		final String type = getBestBannerType(width);
-		final String url = TextUtils.isEmpty(base_url) ? null : base_url + "/" + type;
-		mImageLoader.displayImage(url, view, mBannerDisplayOptions);
+    public void displayProfileBanner(final ImageView view, final String url,
+                                     final ImageLoadingListener listener) {
+        mImageLoader.displayImage(url, view, mBannerDisplayOptions, listener);
+    }
+
+    public void displayProfileBanner(final ImageView view, final String url) {
+        displayProfileBanner(view, url, null);
+    }
+
+    public void displayProfileBanner(final ImageView view, final String baseUrl, final int width) {
+        displayProfileBanner(view, getBestBannerUrl(baseUrl, width));
 	}
 
 	public void displayProfileImage(final ImageView view, final String url) {

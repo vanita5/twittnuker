@@ -49,7 +49,7 @@ public class DraftItem implements Parcelable {
 	public final long[] account_ids;
 	public final long _id, in_reply_to_status_id, timestamp;
 	public final String text;
-	public final ParcelableMediaUpdate[] medias;
+    public final ParcelableMediaUpdate[] media;
 	public final boolean is_possibly_sensitive;
 	public final ParcelableLocation location;
 	public final int action_type;
@@ -58,7 +58,7 @@ public class DraftItem implements Parcelable {
 	public DraftItem(final Cursor cursor, final CursorIndices indices) {
 		_id = cursor.getLong(indices._id);
 		text = cursor.getString(indices.text);
-		medias = ParcelableMediaUpdate.fromJSONString(cursor.getString(indices.medias));
+        media = ParcelableMediaUpdate.fromJSONString(cursor.getString(indices.media));
 		account_ids = ArrayUtils.parseLongArray(cursor.getString(indices.account_ids), ',');
 		in_reply_to_status_id = cursor.getLong(indices.in_reply_to_status_id);
 		is_possibly_sensitive = cursor.getShort(indices.is_possibly_sensitive) == 1;
@@ -73,7 +73,7 @@ public class DraftItem implements Parcelable {
 		_id = in.readLong();
 		in_reply_to_status_id = in.readLong();
 		text = in.readString();
-		medias = in.createTypedArray(ParcelableMediaUpdate.CREATOR);
+        media = in.createTypedArray(ParcelableMediaUpdate.CREATOR);
 		is_possibly_sensitive = in.readInt() == 1;
 		location = ParcelableLocation.fromString(in.readString());
 		timestamp = in.readLong();
@@ -83,10 +83,10 @@ public class DraftItem implements Parcelable {
 
 	public DraftItem(final ParcelableStatusUpdate status) {
 		_id = 0;
-        account_ids = Account.getAccountIds(status.accounts);
+        account_ids = ParcelableAccount.getAccountIds(status.accounts);
 		in_reply_to_status_id = status.in_reply_to_status_id;
 		text = status.text;
-		medias = status.medias;
+		media = status.media;
 		is_possibly_sensitive = status.is_possibly_sensitive;
 		location = status.location;
 		timestamp = System.currentTimeMillis();
@@ -105,7 +105,7 @@ public class DraftItem implements Parcelable {
 		out.writeLong(_id);
 		out.writeLong(in_reply_to_status_id);
 		out.writeString(text);
-		out.writeTypedArray(medias, flags);
+        out.writeTypedArray(media, flags);
 		out.writeInt(is_possibly_sensitive ? 1 : 0);
 		out.writeString(ParcelableLocation.toString(location));
 		out.writeLong(timestamp);
@@ -125,7 +125,7 @@ public class DraftItem implements Parcelable {
 
 	public static final class CursorIndices {
 
-		public final int _id, account_ids, in_reply_to_status_id, text, location, medias, is_possibly_sensitive,
+        public final int _id, account_ids, in_reply_to_status_id, text, location, media, is_possibly_sensitive,
 						timestamp, action_type, action_extras;
 
 		public CursorIndices(final Cursor cursor) {
@@ -134,7 +134,7 @@ public class DraftItem implements Parcelable {
 			in_reply_to_status_id = cursor.getColumnIndex(Drafts.IN_REPLY_TO_STATUS_ID);
 			timestamp = cursor.getColumnIndex(Drafts.TIMESTAMP);
 			text = cursor.getColumnIndex(Drafts.TEXT);
-			medias = cursor.getColumnIndex(Drafts.MEDIA);
+            media = cursor.getColumnIndex(Drafts.MEDIA);
 			is_possibly_sensitive = cursor.getColumnIndex(Drafts.IS_POSSIBLY_SENSITIVE);
 			location = cursor.getColumnIndex(Drafts.LOCATION);
 			action_type = cursor.getColumnIndex(Drafts.ACTION_TYPE);

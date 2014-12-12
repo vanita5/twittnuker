@@ -28,7 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariotaku.jsonserializer.JSONSerializer;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -344,7 +344,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 	}
 
 	public static ContentValues makeStatusDraftContentValues(final ParcelableStatusUpdate status) {
-        return makeStatusDraftContentValues(status, Account.getAccountIds(status.accounts));
+        return makeStatusDraftContentValues(status, ParcelableAccount.getAccountIds(status.accounts));
 	}
 
 	public static ContentValues makeStatusDraftContentValues(final ParcelableStatusUpdate status,
@@ -357,8 +357,8 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Drafts.LOCATION, ParcelableLocation.toString(status.location));
 		values.put(Drafts.IS_POSSIBLY_SENSITIVE, status.is_possibly_sensitive);
 		values.put(Drafts.TIMESTAMP, System.currentTimeMillis());
-		if (status.medias != null) {
-			values.put(Drafts.MEDIA, JSONSerializer.toJSONArrayString(status.medias));
+		if (status.media != null) {
+			values.put(Drafts.MEDIA, JSONSerializer.toJSONArrayString(status.media));
 		}
 		return values;
 	}

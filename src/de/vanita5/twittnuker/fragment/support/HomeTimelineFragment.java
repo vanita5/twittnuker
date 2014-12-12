@@ -22,30 +22,58 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.adapter.CursorStatusesListAdapter;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
 public class HomeTimelineFragment extends CursorStatusesFragment {
+
+    @Override
+    public Uri getContentUri() {
+        return Statuses.CONTENT_URI;
+    }
+
+    @Override
+    protected int getNotificationType() {
+        return NOTIFICATION_ID_HOME_TIMELINE;
+    }
+
+    @Override
+    protected boolean isFilterEnabled() {
+        final SharedPreferences pref = getSharedPreferences();
+        return pref != null && pref.getBoolean(KEY_FILTERS_IN_HOME_TIMELINE, true);
+    }
+
     @Override
     public int getStatuses(long[] accountIds, long[] maxIds, long[] sinceIds) {
-        return 0;
+        final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        if (twitter == null) return -1;
+        return twitter.getHomeTimelineAsync(accountIds, maxIds, sinceIds);
     }
 
 	@Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        final Context context = getActivity();
-        final Uri uri = Statuses.CONTENT_URI;
-        final SharedPreferences preferences = getSharedPreferences();
-        final boolean sortById = preferences.getBoolean(KEY_SORT_TIMELINE_BY_ID, false);
-        final String sortOrder = sortById ? Statuses.SORT_ORDER_STATUS_ID_DESC : Statuses.SORT_ORDER_TIMESTAMP_DESC;
-        return new CursorLoader(context, uri, CursorStatusesListAdapter.CURSOR_COLS, null, null, sortOrder);
-	}
+    protected void onReceivedBroadcast(Intent intent, String action) {
+        switch (action) {
+            case BROADCAST_TASK_STATE_CHANGED: {
+                updateRefreshState();
+                break;
+	        }
+        }
+    }
+
+    @Override
+    protected void onSetIntentFilter(IntentFilter filter) {
+        filter.addAction(BROADCAST_TASK_STATE_CHANGED);
+    }
+
+    private void updateRefreshState() {
+        final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        if (twitter == null) return;
+        setRefreshing(twitter.isHomeTimelineRefreshing());
+    }
+
 }

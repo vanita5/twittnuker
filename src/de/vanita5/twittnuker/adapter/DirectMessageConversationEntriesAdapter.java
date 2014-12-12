@@ -35,7 +35,6 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.DirectMessageEntryViewHolder;
 
 import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_ACCOUNT_ID;
@@ -56,15 +55,8 @@ public class DirectMessageConversationEntriesAdapter extends BaseCursorAdapter i
 	private final ImageLoaderWrapper mImageLoader;
 	private final MultiSelectManager mMultiSelectManager;
 
-	private boolean mAnimationEnabled;
-	private int mMaxAnimationPosition;
-
 	public DirectMessageConversationEntriesAdapter(final Context context) {
-        this(context, Utils.isCompactCards(context));
-	}
-
-    public DirectMessageConversationEntriesAdapter(final Context context, final boolean compactCards) {
-		super(context, getItemResource(compactCards), null, new String[0], new int[0], 0);
+        super(context, R.layout.list_item_message_entry, null, new String[0], new int[0], 0);
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mMultiSelectManager = app.getMultiSelectManager();
 		mImageLoader = app.getImageLoaderWrapper();
@@ -95,8 +87,8 @@ public class DirectMessageConversationEntriesAdapter extends BaseCursorAdapter i
 
 		holder.setTextSize(getTextSize());
 		holder.name.setText(name);
-		holder.screen_name.setText("@" + screenName);
-		holder.screen_name.setVisibility(View.VISIBLE);
+//		holder.screen_name.setText("@" + screenName);
+//		holder.screen_name.setVisibility(View.VISIBLE);
 		holder.text.setText(toPlainText(cursor.getString(IDX_TEXT)));
 		holder.time.setTime(timestamp);
 		holder.setIsOutgoing(isOutgoing);
@@ -108,12 +100,6 @@ public class DirectMessageConversationEntriesAdapter extends BaseCursorAdapter i
 			mImageLoader.displayProfileImage(holder.profile_image, profile_image_url_string);
 		} else {
             mImageLoader.cancelDisplayTask(holder.profile_image);
-		}
-		if (position > mMaxAnimationPosition) {
-			if (mAnimationEnabled) {
-				view.startAnimation(holder.item_animation);
-			}
-			mMaxAnimationPosition = position;
 		}
 		super.bindView(view, context, cursor);
 	}
@@ -177,20 +163,14 @@ public class DirectMessageConversationEntriesAdapter extends BaseCursorAdapter i
 
 	@Override
 	public void setAnimationEnabled(final boolean anim) {
-		if (mAnimationEnabled == anim) return;
-		mAnimationEnabled = anim;
 	}
 
 	@Override
 	public void setMaxAnimationPosition(final int position) {
-		mMaxAnimationPosition = position;
 	}
 
 	@Override
 	public void setMenuButtonClickListener(final MenuButtonClickListener listener) {
 	}
 
-	private static int getItemResource(final boolean compactCards) {
-		return compactCards ? R.layout.card_item_message_entry_compact : R.layout.card_item_message_entry;
-	}
 }

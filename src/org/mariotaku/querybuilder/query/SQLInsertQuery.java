@@ -1,16 +1,17 @@
 package org.mariotaku.querybuilder.query;
 
-import org.mariotaku.querybuilder.SQLLang;
+import org.mariotaku.querybuilder.OnConflict;
+import org.mariotaku.querybuilder.SQLQuery;
 import org.mariotaku.querybuilder.Utils;
 
-public class SQLInsertIntoQuery implements SQLLang {
+public class SQLInsertQuery implements SQLQuery {
 
 	private OnConflict onConflict;
 	private String table;
 	private String[] columns;
 	private SQLSelectQuery select;
 
-	SQLInsertIntoQuery() {
+	SQLInsertQuery() {
 
 	}
 
@@ -44,14 +45,14 @@ public class SQLInsertIntoQuery implements SQLLang {
 		this.table = table;
 	}
 
-	public static final class Builder implements IBuilder<SQLInsertIntoQuery> {
+	public static final class Builder implements IBuilder<SQLInsertQuery> {
 
-		private final SQLInsertIntoQuery query = new SQLInsertIntoQuery();
+		private final SQLInsertQuery query = new SQLInsertQuery();
 
 		private boolean buildCalled;
 
 		@Override
-		public SQLInsertIntoQuery build() {
+		public SQLInsertQuery build() {
 			buildCalled = true;
 			return query;
 		}
@@ -88,19 +89,6 @@ public class SQLInsertIntoQuery implements SQLLang {
 			if (buildCalled) throw new IllegalStateException();
 		}
 
-	}
-
-	public static enum OnConflict {
-		ROLLBACK("ROLLBACK"), ABORT("ABORT"), REPLACE("REPLACE"), FAIL("FAIL"), IGNORE("IGNORE");
-		private final String action;
-
-		private OnConflict(final String action) {
-			this.action = action;
-		}
-
-		public String getAction() {
-			return action;
-		}
 	}
 
 }

@@ -46,9 +46,6 @@ import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.provider.RecentSearchProvider;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.view.ExtendedViewPager;
-import de.vanita5.twittnuker.view.LinePageIndicator;
 
 public class SearchFragment extends BaseSupportFragment implements RefreshScrollTopInterface,
         SupportFragmentCallback, SystemWindowsInsetsCallback {
@@ -59,6 +56,15 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
     private PagerSlidingTabStrip mPagerIndicator;
 
 	private Fragment mCurrentVisibleFragment;
+
+    @Override
+    protected void fitSystemWindows(Rect insets) {
+        super.fitSystemWindows(insets);
+        final View view = getView();
+        if (view != null) {
+            view.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        }
+    }
 
 	@Override
 	public Fragment getCurrentVisibleFragment() {

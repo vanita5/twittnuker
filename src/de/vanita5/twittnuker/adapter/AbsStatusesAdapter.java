@@ -60,6 +60,8 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 	private final int mCardLayoutResource;
 	private boolean mLoadMoreIndicatorEnabled;
 
+    private EventListener mEventListener;
+
 	public AbsStatusesAdapter(Context context, boolean compact) {
 		mContext = context;
 		mInflater = LayoutInflater.from(context);
@@ -77,7 +79,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 		switch (viewType) {
 			case ITEM_VIEW_TYPE_STATUS: {
 				final View view = mInflater.inflate(mCardLayoutResource, parent, false);
-                return new StatusViewHolder<>(this, view);
+                return new StatusViewHolder(this, view);
 			}
             case ITEM_VIEW_TYPE_GAP: {
                 final View view = mInflater.inflate(R.layout.card_item_gap, parent, false);
@@ -144,16 +146,10 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 	}
 
     @Override
-    public void onStatusClick(StatusViewHolder holder, int position) {
-        final Context context = getContext();
-//        final View cardView = holder.getCardView();
-//        if (cardView != null && context instanceof FragmentActivity) {
-//            final Bundle options = Utils.makeSceneTransitionOption((FragmentActivity) context,
-//                    new Pair<>(cardView, StatusFragment.TRANSITION_NAME_CARD));
-//            Utils.openStatus(context, getStatus(position), options);
-//        } else {
-            Utils.openStatus(context, getStatus(position), null);
-//        }
+    public final void onStatusClick(StatusViewHolder holder, int position) {
+        if (mEventListener != null) {
+            mEventListener.onStatusClick(holder, position);
+        }
     }
 
     @Override
@@ -171,18 +167,42 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     }
 
     @Override
-    public void onItemMenuClick(StatusViewHolder holder, int position) {
-        final Context context = getContext();
-        if (!(context instanceof FragmentActivity)) return;
-        final Bundle args = new Bundle();
-        args.putParcelable(EXTRA_STATUS, getStatus(position));
-        final StatusMenuDialogFragment f = new StatusMenuDialogFragment();
-        f.setArguments(args);
-        f.show(((FragmentActivity) context).getSupportFragmentManager(), "status_menu");
+    public void onItemActionClick(ViewHolder holder, int id, int position) {
+        if (mEventListener != null) {
+            mEventListener.onStatusActionClick((StatusViewHolder) holder, id, position);
+        }
+    }
+
+    @Override
+    public void onItemMenuClick(ViewHolder holder, int position) {
+        if (mEventListener != null) {
+            mEventListener.onStatusMenuClick((StatusViewHolder) holder, position);
+        }
     }
 
     public abstract void setData(D data);
 
     public abstract D getData();
+
+    public void setEventListener(EventListener listener) {
+        mEventListener = listener;
+    }
+
+    @Override
+    public final void onGapClick(ViewHolder holder, int position) {
+        if (mEventListener != null) {
+            mEventListener.onGapClick((GapViewHolder) holder, position);
+        }
+    }
+
+    public static interface EventListener {
+        void onStatusActionClick(StatusViewHolder holder, int id, int position);
+
+        void onStatusClick(StatusViewHolder holder, int position);
+
+        void onGapClick(GapViewHolder holder, int position);
+
+        void onStatusMenuClick(StatusViewHolder holder, int position);
+    }
 
 }

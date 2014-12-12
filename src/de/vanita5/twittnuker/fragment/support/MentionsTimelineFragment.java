@@ -28,90 +28,54 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Bundle;
-
-import org.mariotaku.querybuilder.Where;
 
 import de.vanita5.twittnuker.provider.TweetStore.Mentions;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
-public class MentionsTimelineFragment extends CursorStatusesListFragment {
+public class MentionsTimelineFragment extends CursorStatusesFragment {
 
-	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(final Context context, final Intent intent) {
-			if (getActivity() == null || !isAdded() || isDetached()) return;
-			final String action = intent.getAction();
-			if (BROADCAST_MENTIONS_REFRESHED.equals(action)) {
-				setRefreshComplete();
-			} else if (BROADCAST_TASK_STATE_CHANGED.equals(action)) {
-				updateRefreshState();
-			}
-		}
-	};
+    @Override
+    public Uri getContentUri() {
+        return Mentions.CONTENT_URI;
+    }
 
 	@Override
-	public int getStatuses(final long[] account_ids, final long[] max_ids, final long[] since_ids) {
+    protected int getNotificationType() {
+        return NOTIFICATION_ID_MENTIONS_TIMELINE;
+	}
+
+	@Override
+    protected boolean isFilterEnabled() {
+        final SharedPreferences pref = getSharedPreferences();
+        return pref != null && pref.getBoolean(KEY_FILTERS_IN_MENTIONS_TIMELINE, true);
+	}
+
+	@Override
+    public int getStatuses(long[] accountIds, long[] maxIds, long[] sinceIds) {
+        final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        if (twitter == null) return -1;
+        return twitter.getMentionsTimelineAsync(accountIds, maxIds, sinceIds);
+	}
+
+	@Override
+    protected void onReceivedBroadcast(Intent intent, String action) {
+        switch (action) {
+            case BROADCAST_TASK_STATE_CHANGED: {
+                updateRefreshState();
+                break;
+	        }
+	    }
+	}
+
+	@Override
+    protected void onSetIntentFilter(IntentFilter filter) {
+        filter.addAction(BROADCAST_TASK_STATE_CHANGED);
+	}
+
+    private void updateRefreshState() {
 		final AsyncTwitterWrapper twitter = getTwitterWrapper();
-		if (twitter == null) return -1;
-		return twitter.getMentionsAsync(account_ids, max_ids, since_ids);
-	}
-
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		getListAdapter().setMentionsHightlightDisabled(true);
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		final IntentFilter filter = new IntentFilter(BROADCAST_MENTIONS_REFRESHED);
-		filter.addAction(BROADCAST_TASK_STATE_CHANGED);
-		registerReceiver(mStatusReceiver, filter);
-	}
-
-	@Override
-	public void onStop() {
-		unregisterReceiver(mStatusReceiver);
-		super.onStop();
-	}
-
-	@Override
-	protected Uri getContentUri() {
-		return Mentions.CONTENT_URI;
-	}
-
-	@Override
-	protected int getNotificationType() {
-		return NOTIFICATION_ID_MENTIONS;
-	}
-
-	@Override
-	protected String getPositionKey() {
-		return "mentions_timeline" + getTabPosition();
-	}
-
-	@Override
-	protected boolean isFiltersEnabled() {
-		final SharedPreferences pref = getSharedPreferences();
-		return pref != null && pref.getBoolean(KEY_FILTERS_IN_MENTIONS, true);
-	}
-
-	@Override
-	protected Where processWhere(final Where where) {
-		final Bundle extras = getExtraConfiguration();
-		if (extras.getBoolean(EXTRA_MY_FOLLOWING_ONLY))
-			return Where.and(where, Where.equals(Mentions.IS_FOLLOWING, 1));
-		return where;
-	}
-
-	@Override
-	protected void updateRefreshState() {
-		final AsyncTwitterWrapper twitter = getTwitterWrapper();
-		if (twitter == null || !getUserVisibleHint()) return;
-		setRefreshing(twitter.isMentionsRefreshing());
+        if (twitter == null) return;
+        setRefreshing(twitter.isMentionsTimelineRefreshing());
 	}
 
 }

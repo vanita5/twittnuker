@@ -31,14 +31,12 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShortTimeView;
-import de.vanita5.twittnuker.view.iface.ICardItemView;
 
-public class DirectMessageEntryViewHolder extends CardViewHolder {
+public class DirectMessageEntryViewHolder extends ViewHolder {
 
 	public final ImageView profile_image;
-	public final TextView name, screen_name, text;
+    public final TextView name, text;
 	public final ShortTimeView time;
-	public final ICardItemView content;
 	private float text_size;
 	private boolean account_color_enabled;
 	private final boolean is_rtl;
@@ -46,24 +44,22 @@ public class DirectMessageEntryViewHolder extends CardViewHolder {
 	public DirectMessageEntryViewHolder(final View view) {
 		super(view);
 		final Context context = view.getContext();
-		content = (ICardItemView) findViewById(R.id.content);
 		profile_image = (ImageView) findViewById(R.id.profile_image);
 		name = (TextView) findViewById(R.id.name);
-		screen_name = (TextView) findViewById(R.id.screen_name);
 		text = (TextView) findViewById(R.id.text);
 		time = (ShortTimeView) findViewById(R.id.time);
 		is_rtl = Utils.isRTL(context);
 	}
 
 	public void setAccountColor(final int color) {
-		content.drawEnd(account_color_enabled ? color : Color.TRANSPARENT);
+//        content.drawEnd(account_color_enabled ? color : Color.TRANSPARENT);
 	}
 
 	public void setAccountColorEnabled(final boolean enabled) {
 		if (account_color_enabled == enabled) return;
 		account_color_enabled = enabled;
 		if (!account_color_enabled) {
-			content.drawEnd(Color.TRANSPARENT);
+//            content.drawEnd(Color.TRANSPARENT);
 		}
 	}
 
@@ -78,13 +74,9 @@ public class DirectMessageEntryViewHolder extends CardViewHolder {
 	public void setTextSize(final float text_size) {
 		if (this.text_size == text_size) return;
 		this.text_size = text_size;
-		text.setTextSize(text_size);
-		name.setTextSize(text_size);
-		screen_name.setTextSize(text_size * 0.75f);
-		time.setTextSize(text_size * 0.65f);
 	}
 
 	public void setUserColor(final int color) {
-		content.drawStart(color);
+//        content.drawStart(color);
 	}
 }

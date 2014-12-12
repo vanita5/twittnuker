@@ -77,7 +77,7 @@ import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment;
 import de.vanita5.twittnuker.gcm.GCMHelper;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
-import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.service.StreamingService;
@@ -147,7 +147,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private final ArrayList<SupportTabSpec> mCustomTabs = new ArrayList<SupportTabSpec>();
 
 	private final SparseArray<Fragment> mAttachedFragments = new SparseArray<Fragment>();
-	private Account mSelectedAccountToSearch;
+    private ParcelableAccount mSelectedAccountToSearch;
 
 	private SharedPreferences mPreferences;
 
@@ -428,7 +428,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		}
 	}
 
-	public void openSearchView(final Account account) {
+    public void openSearchView(final ParcelableAccount account) {
 		mSelectedAccountToSearch = account;
 		onSearchRequested();
 	}

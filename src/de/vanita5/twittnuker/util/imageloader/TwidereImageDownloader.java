@@ -38,12 +38,12 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.Account;
-import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
+import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableAccountWithCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
-
 import de.vanita5.twittnuker.util.Utils;
+
 import twitter4j.TwitterException;
 import twitter4j.auth.Authorization;
 import twitter4j.http.HttpClientWrapper;
@@ -128,10 +128,10 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 			throws IOException, TwitterException {
 		final Uri uri = Uri.parse(uriString);
 		final Authorization auth;
-		final AccountWithCredentials account;
+		final ParcelableAccountWithCredentials account;
 		if (isTwitterAuthRequired(uri) && extras instanceof AccountExtra) {
 			final AccountExtra accountExtra = (AccountExtra) extras;
-			account = Account.getAccountWithCredentials(mContext, accountExtra.account_id);
+			account = ParcelableAccount.getAccountWithCredentials(mContext, accountExtra.account_id);
 			auth = getTwitterAuthorization(mContext, accountExtra.account_id);
 		} else {
 			account = null;

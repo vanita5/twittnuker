@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -34,11 +35,8 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.model.ParcelableUserMention;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MultiSelectManager;
-import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusListViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
@@ -47,11 +45,7 @@ import de.vanita5.twittnuker.view.iface.ICardItemView.OnOverflowIconClickListene
 import java.util.List;
 import java.util.Locale;
 
-import static de.vanita5.twittnuker.model.ParcelableLocation.isValidLocation;
-import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.getAccountColor;
-import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
 import static de.vanita5.twittnuker.util.Utils.getCardHighlightOptionInt;
 import static de.vanita5.twittnuker.util.Utils.isFiltered;
 import static de.vanita5.twittnuker.util.Utils.openImage;
@@ -115,7 +109,12 @@ public class ParcelableStatusesListAdapter extends BaseArrayAdapter<ParcelableSt
 	}
 
 	@Override
-    public void onItemMenuClick(StatusViewHolder holder, int position) {
+    public void onItemActionClick(ViewHolder holder, int id, int position) {
+
+    }
+
+    @Override
+    public void onItemMenuClick(ViewHolder holder, int position) {
 
     }
 
@@ -194,7 +193,7 @@ public class ParcelableStatusesListAdapter extends BaseArrayAdapter<ParcelableSt
     }
 
     @Override
-    public void onGapClick(StatusViewHolder holder, int position) {
+    public void onGapClick(ViewHolder holder, int position) {
 
     }
 

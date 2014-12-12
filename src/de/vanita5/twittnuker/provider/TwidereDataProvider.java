@@ -263,11 +263,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 			mode_code = ParcelFileDescriptor.MODE_READ_WRITE | ParcelFileDescriptor.MODE_TRUNCATE;
 		} else
 			throw new IllegalArgumentException();
-		if (mode_code == ParcelFileDescriptor.MODE_READ_ONLY) {
-			//
-		} else if ((mode_code & ParcelFileDescriptor.MODE_READ_WRITE) != 0) {
-			//
-		}
 		switch (table_id) {
 			case VIRTUAL_TABLE_ID_CACHED_IMAGES: {
 				return getCachedImageFd(uri.getQueryParameter(QUERY_PARAM_URL));
@@ -390,7 +385,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				mNewStatuses.clear();
 				break;
 			}
-			case NOTIFICATION_ID_MENTIONS: {
+			case NOTIFICATION_ID_MENTIONS_TIMELINE: {
 				mNewMentions.clear();
 				break;
 			}
@@ -544,7 +539,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	private Cursor getNotificationsCursor() {
 		final MatrixCursor c = new MatrixCursor(TweetStore.Notifications.MATRIX_COLUMNS);
 		c.addRow(new Integer[] { NOTIFICATION_ID_HOME_TIMELINE, mUnreadStatuses.size() });
-		c.addRow(new Integer[] { NOTIFICATION_ID_MENTIONS, mNewMentions.size() });
+		c.addRow(new Integer[] {NOTIFICATION_ID_MENTIONS_TIMELINE, mNewMentions.size() });
 		c.addRow(new Integer[] { NOTIFICATION_ID_DIRECT_MESSAGES, mNewMessages.size() });
 		return c;
 	}
@@ -553,7 +548,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		final MatrixCursor c = new MatrixCursor(TweetStore.Notifications.MATRIX_COLUMNS);
 		if (id == NOTIFICATION_ID_HOME_TIMELINE) {
 			c.addRow(new Integer[] { id, mNewStatuses.size() });
-		} else if (id == NOTIFICATION_ID_MENTIONS) {
+		} else if (id == NOTIFICATION_ID_MENTIONS_TIMELINE) {
 			c.addRow(new Integer[] { id, mNewMentions.size() });
 		} else if (id == NOTIFICATION_ID_DIRECT_MESSAGES) {
 			c.addRow(new Integer[] { id, mNewMessages.size() });
@@ -647,7 +642,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (values == null || values.length == 0) return 0;
 		// Add statuses that not filtered to list for future use.
 		int result = 0;
-		final boolean enabled = mPreferences.getBoolean(KEY_FILTERS_IN_MENTIONS, true);
+		final boolean enabled = mPreferences.getBoolean(KEY_FILTERS_IN_MENTIONS_TIMELINE, true);
 		final boolean filtersForRts = mPreferences.getBoolean(KEY_FILTERS_FOR_RTS, true);
 		int i = 1;
 		for (final ContentValues value : values) {
@@ -732,7 +727,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
 						getAccountIds(getContext()));
                 notifyMentionsInserted(prefs, values);
-				notifyUnreadCountChanged(NOTIFICATION_ID_MENTIONS);
+				notifyUnreadCountChanged(NOTIFICATION_ID_MENTIONS_TIMELINE);
 				break;
 			}
 			case TABLE_ID_DIRECT_MESSAGES_INBOX: {

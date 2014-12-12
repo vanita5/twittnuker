@@ -59,7 +59,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import org.mariotaku.menucomponent.internal.menu.MenuUtils;
-import org.mariotaku.querybuilder.Where;
+import org.mariotaku.querybuilder.Expression;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
@@ -307,7 +307,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                     mFollowButton.setText(R.string.follow);
                 }
 				final ContentResolver resolver = getContentResolver();
-				final String where = Where.equals(CachedUsers.USER_ID, user.id).getSQL();
+                final String where = Expression.equals(CachedUsers.USER_ID, user.id).getSQL();
 				resolver.delete(CachedUsers.CONTENT_URI, where, null);
 				// I bet you don't want to see blocked user in your auto
 				// complete list.
@@ -895,7 +895,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 				final boolean filtering = Utils.isFilteringUser(getActivity(), user.id);
 				final ContentResolver cr = getContentResolver();
 				if (filtering) {
-					final Where where = Where.equals(Filters.Users.USER_ID, user.id);
+                    final Expression where = Expression.equals(Filters.Users.USER_ID, user.id);
 					cr.delete(Filters.Users.CONTENT_URI, where.getSQL(), null);
 					showInfoMessage(getActivity(), R.string.message_user_unmuted, false);
 				} else {
@@ -1060,7 +1060,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final Drawable shadow = activity.getResources().getDrawable(R.drawable.shadow_user_banner_action_bar);
         final Drawable background = ThemeUtils.getActionBarBackground(activity, themeResId);
         mActionBarBackground = new ActionBarDrawable(getResources(), shadow, background, ThemeUtils.isDarkTheme(themeResId));
-        mActionBarBackground.setAlpha(ThemeUtils.getThemeAlpha(activity));
+        mActionBarBackground.setAlpha(linkHandler.getCurrentThemeBackgroundAlpha());
+        mProfileBannerView.setAlpha(linkHandler.getCurrentThemeBackgroundAlpha() / 255f);
         actionBar.setBackgroundDrawable(mActionBarBackground);
 	}
 
@@ -1106,8 +1107,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final View profileBannerContainer = mProfileBannerContainer;
         final int spaceHeight = space.getHeight();
         final float factor = MathUtils.clamp(offset / (float) spaceHeight, 0, 1);
-		profileBannerView.setAlpha(1.0f - factor / 8f);
-        profileBannerContainer.setTranslationY(-offset);
+        profileBannerContainer.setTranslationY(Math.max(-offset, -spaceHeight));
         profileBannerView.setTranslationY(Math.min(offset, spaceHeight) / 2);
 
         if (mActionBarBackground != null && mTintedStatusContent != null) {

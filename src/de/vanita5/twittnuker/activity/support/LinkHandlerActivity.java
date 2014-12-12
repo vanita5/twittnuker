@@ -212,8 +212,7 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
                 break;
             }
             case LINK_ID_STATUS: {
-//                transitionRes = R.transition.transition_status;
-                transitionRes = 0;
+                transitionRes = R.transition.transition_status;
                 break;
             }
             default: {
@@ -223,7 +222,7 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
         }
         if (transitionRes != 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
                 && !ThemeUtils.isTransparentBackground(this)) {
-            Utils.setSharedElementTransition(this, window, R.transition.transition_status);
+            Utils.setSharedElementTransition(this, window, transitionRes);
         }
     }
 

@@ -22,57 +22,30 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.loader.support.UserListTimelineLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 import java.util.List;
 
-public class UserListTimelineFragment extends ParcelableStatusesListFragment {
+public class UserListTimelineFragment extends ParcelableStatusesFragment {
 
 	@Override
-	public Loader<List<ParcelableStatus>> newLoaderInstance(final Context context, final Bundle args) {
+    public Loader<List<ParcelableStatus>> onCreateLoader(int id, Bundle args) {
+        setRefreshing(true);
 		if (args == null) return null;
-		final int list_id = args.getInt(EXTRA_LIST_ID, -1);
-		final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
-		final long max_id = args.getLong(EXTRA_MAX_ID, -1);
-		final long since_id = args.getLong(EXTRA_SINCE_ID, -1);
-		final long user_id = args.getLong(EXTRA_USER_ID, -1);
-		final String screen_name = args.getString(EXTRA_SCREEN_NAME);
-		final String list_name = args.getString(EXTRA_LIST_NAME);
-		final int tab_position = args.getInt(EXTRA_TAB_POSITION, -1);
-		return new UserListTimelineLoader(getActivity(), account_id, list_id, user_id, screen_name, list_name, max_id,
-				since_id, getData(), getSavedStatusesFileArgs(), tab_position);
-	}
-
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		final IStatusesListAdapter<List<ParcelableStatus>> adapter = getListAdapter();
-		adapter.setFiltersEnabled(true);
-		adapter.setIgnoredFilterFields(false, false, false, false, false);
-	}
-
-	@Override
-	protected String[] getSavedStatusesFileArgs() {
-		final Bundle args = getArguments();
-		if (args == null) return null;
-		final int list_id = args.getInt(EXTRA_LIST_ID, -1);
-		final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
-		final long user_id = args.getLong(EXTRA_USER_ID, -1);
-		final String screen_name = args.getString(EXTRA_SCREEN_NAME);
-		final String list_name = args.getString(EXTRA_LIST_NAME);
-		return new String[] { AUTHORITY_USER_LIST_TIMELINE, "account" + account_id, "list_id" + list_id,
-				"list_name" + list_name, "user" + user_id, "screen_name" + screen_name };
-	}
-
-	@Override
-	protected boolean shouldShowAccountColor() {
-		return false;
+        final int listId = args.getInt(EXTRA_LIST_ID, -1);
+        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final long maxId = args.getLong(EXTRA_MAX_ID, -1);
+        final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
+        final long userId = args.getLong(EXTRA_USER_ID, -1);
+        final String screenName = args.getString(EXTRA_SCREEN_NAME);
+        final String listName = args.getString(EXTRA_LIST_NAME);
+        final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
+        return new UserListTimelineLoader(getActivity(), accountId, listId, userId, screenName,
+                listName, maxId, sinceId, getAdapterData(), null, tabPosition);
 	}
 
 }

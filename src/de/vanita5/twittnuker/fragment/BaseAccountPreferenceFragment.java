@@ -42,7 +42,7 @@ import android.widget.Switch;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 
 public abstract class BaseAccountPreferenceFragment extends PreferenceFragment implements Constants,
 		OnCheckedChangeListener, OnSharedPreferenceChangeListener {
@@ -52,7 +52,7 @@ public abstract class BaseAccountPreferenceFragment extends PreferenceFragment i
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
 		final PreferenceManager pm = getPreferenceManager();
-		final Account account = getArguments().getParcelable(EXTRA_ACCOUNT);
+		final ParcelableAccount account = getArguments().getParcelable(EXTRA_ACCOUNT);
 		final String preferenceName = ACCOUNT_PREFERENCES_NAME_PREFIX
 				+ (account != null ? account.account_id : "unknown");
 		pm.setSharedPreferencesName(preferenceName);
@@ -96,7 +96,7 @@ public abstract class BaseAccountPreferenceFragment extends PreferenceFragment i
 		}
 	}
 
-	protected Account getAccount() {
+	protected ParcelableAccount getAccount() {
 		final Bundle args = getArguments();
 		if (args == null) return null;
 		return args.getParcelable(EXTRA_ACCOUNT);

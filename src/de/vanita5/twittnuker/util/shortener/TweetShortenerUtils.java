@@ -84,7 +84,7 @@ import java.util.Random;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.task.HototinAsyncTask;
 import de.vanita5.twittnuker.Constants;
@@ -125,10 +125,10 @@ public class TweetShortenerUtils implements Constants {
 	 * @return shortened tweet
 	 */
 	public static Map<Long, ShortenedStatusModel> shortWithHototin(final Context context, final ParcelableStatusUpdate pstatus) {
-		final Account[] accounts = pstatus.accounts;
+		final ParcelableAccount[] accounts = pstatus.accounts;
 		Map<Long, ShortenedStatusModel> statuses = new HashMap<>();
 
-		for (Account account : accounts) {
+		for (ParcelableAccount account : accounts) {
 
 			String screen_name = null;
 			String avatar_url = null;
@@ -183,9 +183,9 @@ public class TweetShortenerUtils implements Constants {
 	 * @return shortened tweet
 	 */
 	public static Map<Long, ShortenedStatusModel> postTwitlonger(final Context context, final ParcelableStatusUpdate pstatus) {
-		final Account[] accounts = pstatus.accounts;
+		final ParcelableAccount[] accounts = pstatus.accounts;
 		Map<Long, ShortenedStatusModel> statuses = new HashMap<>();
-		for (Account account : accounts) {
+		for (ParcelableAccount account : accounts) {
 			Twitter twitter = Utils.getTwitterInstance(context, account.account_id, true);
 			try {
 				HttpClient httpClient = new DefaultHttpClient();

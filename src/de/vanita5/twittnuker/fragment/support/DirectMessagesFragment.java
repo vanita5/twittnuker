@@ -40,8 +40,8 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 
 import org.mariotaku.querybuilder.Columns.Column;
+import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
-import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DirectMessageConversationEntriesAdapter;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
@@ -115,10 +115,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 		mAdapter = new DirectMessageConversationEntriesAdapter(getActivity());
 		setListAdapter(mAdapter);
 		mListView = getListView();
-        if (!mPreferences.getBoolean(KEY_COMPACT_CARDS, false)) {
-			mListView.setDivider(null);
-		}
-		mListView.setSelector(android.R.color.transparent);
+        mListView.setDivider(null);
 		getLoaderManager().initLoader(0, null, this);
 		setListShown(false);
 	}
@@ -133,7 +130,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 		if (!no_account_selected) {
 			getListView().setEmptyView(null);
 		}
-		final Where account_where = Where.in(new Column(Statuses.ACCOUNT_ID), new RawItemArray(account_ids));
+        final Expression account_where = Expression.in(new Column(Statuses.ACCOUNT_ID), new RawItemArray(account_ids));
 		return new CursorLoader(getActivity(), uri, null, account_where.getSQL(), null, null);
 	}
 

@@ -43,7 +43,6 @@ import de.vanita5.twittnuker.fragment.support.InvalidTabFragment;
 import de.vanita5.twittnuker.fragment.support.MentionsTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.RetweetsOfMeFragment;
 import de.vanita5.twittnuker.fragment.support.SearchStatusesFragment;
-import de.vanita5.twittnuker.fragment.support.StaggeredHomeTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserFavoritesFragment;
 import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
@@ -104,10 +103,6 @@ public class CustomTabUtils implements Constants {
 				RetweetsOfMeFragment.class, R.string.retweets_of_me, R.drawable.ic_action_retweet,
 				CustomTabConfiguration.ACCOUNT_REQUIRED, CustomTabConfiguration.FIELD_TYPE_NONE, 10));
 		if (Utils.hasStaggeredTimeline()) {
-			CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_STAGGERED_HOME_TIMELINE, new CustomTabConfiguration(
-					StaggeredHomeTimelineFragment.class, R.string.staggered_home_timeline,
-					R.drawable.ic_action_view_quilt, CustomTabConfiguration.ACCOUNT_OPTIONAL,
-					CustomTabConfiguration.FIELD_TYPE_NONE, 11, false));
 		}
 
 		CUSTOM_TABS_ICON_NAME_MAP.put("accounts", R.drawable.ic_action_accounts);

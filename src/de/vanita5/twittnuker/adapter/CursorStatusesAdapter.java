@@ -25,8 +25,6 @@ package de.vanita5.twittnuker.adapter;
 import android.content.Context;
 import android.database.Cursor;
 
-import java.util.Locale;
-
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatus.CursorIndices;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
@@ -73,12 +71,7 @@ public class CursorStatusesAdapter extends AbsStatusesAdapter<Cursor> {
         mCursor = data;
         mIndices = data != null ? new CursorIndices(data) : null;
         notifyDataSetChanged();
-	}
-
-	@Override
-    public void onGapClick(StatusViewHolder holder, int position) {
-
-			}
+    }
 
 	@Override
     public Cursor getData() {
