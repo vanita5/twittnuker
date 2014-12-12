@@ -585,7 +585,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
             ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
             mColorStatusFrameLayout.setDrawColor(true);
             mColorStatusFrameLayout.setDrawShadow(false);
-            mColorStatusFrameLayout.setColor(themeColor, actionBarAlpha);
+            mColorStatusFrameLayout.setColor(actionBarColor, actionBarAlpha);
             mColorStatusFrameLayout.setFactor(1);
 		} else {
             final int backgroundColor = ThemeUtils.getThemeBackgroundColor(mTabIndicator.getItemContext());

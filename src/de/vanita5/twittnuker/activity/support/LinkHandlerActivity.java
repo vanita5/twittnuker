@@ -193,7 +193,7 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
                 mMainContent.setDrawShadow(false);
                 mMainContent.setDrawColor(!ThemeUtils.isDarkTheme(getCurrentThemeResourceId()));
                 mMainContent.setFactor(1);
-                final int color = getCurrentThemeColor();
+                final int color = getActionBarColor();
                 final int alpha = getCurrentThemeBackgroundAlpha();
                 mMainContent.setColor(color, alpha);
                 break;
