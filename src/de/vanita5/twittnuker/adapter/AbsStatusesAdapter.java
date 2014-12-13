@@ -36,7 +36,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.fragment.support.StatusMenuDialogFragment;
 import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
@@ -49,9 +48,9 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implements Constants,
         IStatusesAdapter<D> {
 
-	private static final int ITEM_VIEW_TYPE_STATUS = 1;
-    private static final int ITEM_VIEW_TYPE_GAP = 2;
-    private static final int ITEM_VIEW_TYPE_LOAD_INDICATOR = 3;
+    private static final int ITEM_VIEW_TYPE_STATUS = 0;
+    private static final int ITEM_VIEW_TYPE_GAP = 1;
+    private static final int ITEM_VIEW_TYPE_LOAD_INDICATOR = 2;
 
 	private final Context mContext;
 	private final LayoutInflater mInflater;
@@ -68,9 +67,9 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 		mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
 		mLoadingHandler = new ImageLoadingHandler(R.id.media_preview_progress);
 		if (compact) {
-			mCardLayoutResource = R.layout.card_item_list_status_compat;
+            mCardLayoutResource = R.layout.card_item_status_compat;
 		} else {
-			mCardLayoutResource = R.layout.card_item_list_status;
+            mCardLayoutResource = R.layout.card_item_status;
 		}
 	}
 

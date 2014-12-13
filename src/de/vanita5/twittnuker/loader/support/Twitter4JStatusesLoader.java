@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -56,6 +57,7 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
 	private final SQLiteDatabase mDatabase;
 	private final Handler mHandler;
 	private final Object[] mSavedStatusesFileArgs;
+    private Comparator<ParcelableStatus> mComparator;
 
 	public Twitter4JStatusesLoader(final Context context, final long account_id, final long max_id,
                                    final long since_id, final List<ParcelableStatus> data, final String[] savedStatusesArgs,
@@ -79,7 +81,11 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
             final List<ParcelableStatus> cached = getCachedData(serializationFile);
             if (cached != null) {
                 data.addAll(cached);
-                Collections.sort(data);
+                if (mComparator != null) {
+                    Collections.sort(data, mComparator);
+                } else {
+                    Collections.sort(data);
+                }
                 return new CopyOnWriteArrayList<>(data);
 			}
 		}
@@ -112,7 +118,6 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
             final boolean deleted = deleteStatus(data, id);
 			data.add(new ParcelableStatus(status, mAccountId, minStatusId == id && insertGap && !deleted));
         }
-        Collections.sort(data);
         final ParcelableStatus[] array = data.toArray(new ParcelableStatus[data.size()]);
         for (int i = 0, size = array.length; i < size; i++) {
             final ParcelableStatus status = array[i];
@@ -120,9 +125,18 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
                 deleteStatus(data, status.id);
 			}
 		}
+        if (mComparator != null) {
+            Collections.sort(data, mComparator);
+        } else {
+            Collections.sort(data);
+        }
         saveCachedData(serializationFile, data);
         return new CopyOnWriteArrayList<>(data);
 	}
+
+    public final void setComparator(Comparator<ParcelableStatus> comparator) {
+        mComparator = comparator;
+    }
 
 	protected abstract List<Status> getStatuses(Twitter twitter, Paging paging) throws TwitterException;
 

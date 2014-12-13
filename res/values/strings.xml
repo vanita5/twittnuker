@@ -655,6 +655,7 @@
     <string name="photo">Photo</string>
     <string name="gallery">Gallery</string>
     <string name="remove">Remove</string>
+    <string name="load_media">Load media</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

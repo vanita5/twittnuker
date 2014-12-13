@@ -20,32 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model;
+package android.support.v7.widget;
 
-import android.os.Bundle;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 
-import java.util.List;
+public class ViewHolderTrojan {
 
-public class ListResponse<Data> extends SingleResponse<List<Data>> {
-
-	public final List<Data> list;
-
-	public ListResponse(final List<Data> list, final Exception exception) {
-		super(list, exception);
-		this.list = list;
+	public static boolean isRemoved(ViewHolder holder) {
+		return holder.isRemoved();
 	}
-
-	public ListResponse(final List<Data> list, final Exception exception, final Bundle extras) {
-		super(list, exception, extras);
-		this.list = list;
-    }
-
-    public static <Data> ListResponse<Data> getListInstance(Exception exception) {
-        return new ListResponse<>(null, exception);
-    }
-
-    public static <Data> ListResponse<Data> getListInstance(List<Data> data) {
-        return new ListResponse<>(data, null);
-	}
-
 }

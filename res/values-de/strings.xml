@@ -626,6 +626,7 @@
     <string name="photo">Kamera</string>
     <string name="gallery">Gallerie</string>
     <string name="remove">Entfernen</string>
+    <string name="load_media">Bilder laden</string>
 
 
     <!-- Twittnuker -->
