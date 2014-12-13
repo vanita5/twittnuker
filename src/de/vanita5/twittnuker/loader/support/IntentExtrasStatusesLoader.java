@@ -42,12 +42,10 @@ public class IntentExtrasStatusesLoader extends ParcelableStatusesLoader {
 	@Override
 	public List<ParcelableStatus> loadInBackground() {
 		final List<ParcelableStatus> data = getData();
-		if (mExtras != null) {
+        if (mExtras != null && mExtras.containsKey(EXTRA_STATUSES)) {
 			final List<ParcelableStatus> users = mExtras.getParcelableArrayList(EXTRA_STATUSES);
-			if (users != null) {
-				data.addAll(users);
-				Collections.sort(data);
-			}
+            data.addAll(users);
+            Collections.sort(data);
 		}
 		return data;
 	}

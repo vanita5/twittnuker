@@ -42,7 +42,7 @@ import de.vanita5.twittnuker.fragment.support.HomeTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.InvalidTabFragment;
 import de.vanita5.twittnuker.fragment.support.MentionsTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.RetweetsOfMeFragment;
-import de.vanita5.twittnuker.fragment.support.SearchStatusesFragment;
+import de.vanita5.twittnuker.fragment.support.StatusesSearchFragment;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserFavoritesFragment;
 import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
@@ -86,7 +86,7 @@ public class CustomTabUtils implements Constants {
                 UserTimelineFragment.class, R.string.users_statuses, R.drawable.ic_action_quote,
 				CustomTabConfiguration.ACCOUNT_REQUIRED, CustomTabConfiguration.FIELD_TYPE_USER, 5));
 		CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_SEARCH_STATUSES, new CustomTabConfiguration(
-				SearchStatusesFragment.class, R.string.search_statuses, R.drawable.ic_action_search,
+                StatusesSearchFragment.class, R.string.search_statuses, R.drawable.ic_action_search,
 				CustomTabConfiguration.ACCOUNT_REQUIRED, CustomTabConfiguration.FIELD_TYPE_TEXT, R.string.query,
 				EXTRA_QUERY, 6));
 		CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_LIST_TIMELINE, new CustomTabConfiguration(

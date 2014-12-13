@@ -23,8 +23,6 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -37,7 +35,7 @@ import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.adapter.CursorStatusesAdapter;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.Utils;
 
 import static de.vanita5.twittnuker.util.Utils.buildStatusFilterWhereClause;
@@ -71,7 +69,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
 
     @Override
     public boolean triggerRefresh() {
-        new AsyncTask<Void, Void, long[][]>() {
+        new TwidereAsyncTask<Void, Void, long[][]>() {
 
             @Override
             protected long[][] doInBackground(final Void... params) {
@@ -86,7 +84,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
                 getStatuses(result[0], result[1], result[2]);
             }
 
-        }.execute();
+        }.executeTask();
         return true;
     }
 
@@ -108,7 +106,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
 
     @Override
     protected void onLoadMoreStatuses() {
-        new AsyncTask<Void, Void, long[][]>() {
+        new TwidereAsyncTask<Void, Void, long[][]>() {
 
             @Override
             protected long[][] doInBackground(final Void... params) {
@@ -123,7 +121,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
                 getStatuses(result[0], result[1], result[2]);
             }
 
-        }.execute();
+        }.executeTask();
     }
 
     protected Expression getFiltersWhere(String table) {

@@ -46,7 +46,7 @@ import de.vanita5.twittnuker.adapter.iface.IStatusesListAdapter;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableAccountWithCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
@@ -565,12 +565,13 @@ abstract class BaseStatusesListFragment<Data> extends BasePullToRefreshListFragm
 	}
 
 	private void removeUnreadCounts() {
-		if (mRemoveUnreadCountsTask != null && mRemoveUnreadCountsTask.getStatus() == AsyncTask.Status.RUNNING) return;
+        if (mRemoveUnreadCountsTask != null && mRemoveUnreadCountsTask.getStatus() == TwidereAsyncTask.Status.RUNNING)
+            return;
 		mRemoveUnreadCountsTask = new RemoveUnreadCountsTask<Data>(mReadPositions, this);
-		mRemoveUnreadCountsTask.execute();
+        mRemoveUnreadCountsTask.executeTask();
 	}
 
-	static class RemoveUnreadCountsTask<T> extends AsyncTask<Void, Void, Void> {
+    static class RemoveUnreadCountsTask<T> extends TwidereAsyncTask<Void, Void, Void> {
         private final List<Integer> read_positions;
         private final IStatusesListAdapter<T> adapter;
 		private final BaseStatusesListFragment<T> fragment;

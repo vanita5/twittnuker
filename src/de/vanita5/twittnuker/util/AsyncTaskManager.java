@@ -24,17 +24,20 @@ package de.vanita5.twittnuker.util;
 
 import android.os.Handler;
 
-import de.vanita5.twittnuker.task.AsyncTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public final class AsyncTaskManager {
 
     private final CopyOnWriteArrayList<ManagedAsyncTask<?, ?, ?>> mTasks = new CopyOnWriteArrayList<>();
 	private final Handler mHandler;
+    private final ExecutorService mExecutor;
 	private static AsyncTaskManager sInstance;
 
 	AsyncTaskManager() {
@@ -43,6 +46,7 @@ public final class AsyncTaskManager {
 
 	AsyncTaskManager(final Handler handler) {
 		mHandler = handler;
+        mExecutor = Executors.newCachedThreadPool();
 	}
 
     @SafeVarargs
@@ -83,7 +87,7 @@ public final class AsyncTaskManager {
     public final <T> boolean execute(final int hashCode, final T... params) {
 		final ManagedAsyncTask<T, ?, ?> task = (ManagedAsyncTask<T, ?, ?>) findTask(hashCode);
 		if (task != null) {
-            task.execute(params);
+            task.executeTask(params);
 			return true;
 		}
 		return false;
@@ -114,7 +118,7 @@ public final class AsyncTaskManager {
 
 	public boolean isExecuting(final int hashCode) {
 		final ManagedAsyncTask<?, ?, ?> task = findTask(hashCode);
-		if (task != null && task.getStatus() == AsyncTask.Status.RUNNING) return true;
+		if (task != null && task.getStatus() == TwidereAsyncTask.Status.RUNNING) return true;
 		return false;
 	}
 

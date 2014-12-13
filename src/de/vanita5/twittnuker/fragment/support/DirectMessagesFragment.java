@@ -47,7 +47,7 @@ import de.vanita5.twittnuker.adapter.DirectMessageConversationEntriesAdapter;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
@@ -181,7 +181,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 	@Override
 	public void onRefreshFromStart() {
 		if (isRefreshing()) return;
-		new AsyncTask<Void, Void, long[][]>() {
+        new TwidereAsyncTask<Void, Void, long[][]>() {
 
 			@Override
 			protected long[][] doInBackground(final Void... params) {
@@ -199,7 +199,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 				twitter.getSentDirectMessagesAsync(result[0], null, null);
 			}
 
-		}.execute();
+        }.executeTask();
 	}
 
 	@Override
@@ -315,7 +315,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 
 	private void loadMoreMessages() {
 		if (isRefreshing()) return;
-		new AsyncTask<Void, Void, long[][]>() {
+        new TwidereAsyncTask<Void, Void, long[][]>() {
 
 			@Override
 			protected long[][] doInBackground(final Void... params) {
@@ -334,16 +334,17 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 				twitter.getSentDirectMessagesAsync(result[0], result[2], null);
 			}
 
-		}.execute();
+        }.executeTask();
 	}
 
 	private void removeUnreadCounts() {
-		if (mRemoveUnreadCountsTask != null && mRemoveUnreadCountsTask.getStatus() == AsyncTask.Status.RUNNING) return;
+        if (mRemoveUnreadCountsTask != null && mRemoveUnreadCountsTask.getStatus() == TwidereAsyncTask.Status.RUNNING)
+            return;
 		mRemoveUnreadCountsTask = new RemoveUnreadCountsTask(mReadPositions, this);
-		mRemoveUnreadCountsTask.execute();
+        mRemoveUnreadCountsTask.executeTask();
 	}
 
-	static class RemoveUnreadCountsTask extends AsyncTask<Void, Void, Void> {
+    static class RemoveUnreadCountsTask extends TwidereAsyncTask<Void, Void, Void> {
 		private final Set<Integer> read_positions;
 		private final DirectMessageConversationEntriesAdapter adapter;
 		private final DirectMessagesFragment fragment;

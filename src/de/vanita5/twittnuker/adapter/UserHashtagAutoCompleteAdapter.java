@@ -34,6 +34,8 @@ import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.mariotaku.querybuilder.Expression;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -148,21 +150,17 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 			if (filter != null) return filter.runQuery(constraint);
 		}
 		mToken = token;
-		final String constraint_escaped = constraint != null ? constraint.toString().replaceAll("_", "^_") : null;
+        final String constraintEscaped = constraint != null ? constraint.toString().replaceAll("_", "^_") : null;
 		if (isAtSymbol(token)) {
-			final StringBuilder builder = new StringBuilder();
-			builder.append(CachedUsers.SCREEN_NAME + " LIKE ?||'%' ESCAPE '^'");
-			builder.append(" OR ");
-			builder.append(CachedUsers.NAME + " LIKE ?||'%' ESCAPE '^'");
-			final String selection = constraint_escaped != null ? builder.toString() : null;
-			final String[] selectionArgs = constraint_escaped != null ? new String[] { constraint_escaped,
-					constraint_escaped } : null;
+            final String selection = constraintEscaped != null ? (CachedUsers.SCREEN_NAME + " LIKE ?||'%' ESCAPE '^'") + " OR " + CachedUsers.NAME + " LIKE ?||'%' ESCAPE '^'" : null;
+            final String[] selectionArgs = constraintEscaped != null ? new String[]{constraintEscaped,
+                    constraintEscaped} : null;
 			final String orderBy = CachedUsers.SCREEN_NAME + ", " + CachedUsers.NAME;
 			return mResolver.query(CachedUsers.CONTENT_URI, CACHED_USERS_COLUMNS, selection, selectionArgs, orderBy);
 		} else {
-			final String selection = constraint_escaped != null ? CachedHashtags.NAME + " LIKE ?||'%' ESCAPE '^'"
+            final String selection = constraintEscaped != null ? CachedHashtags.NAME + " LIKE ?||'%' ESCAPE '^'"
 					: null;
-			final String[] selectionArgs = constraint_escaped != null ? new String[] { constraint_escaped } : null;
+            final String[] selectionArgs = constraintEscaped != null ? new String[]{constraintEscaped} : null;
 			return mDatabase.query(true, CachedHashtags.TABLE_NAME, CachedHashtags.COLUMNS, selection, selectionArgs,
 					null, null, CachedHashtags.NAME, null);
 		}

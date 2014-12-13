@@ -25,23 +25,23 @@ package de.vanita5.twittnuker.fragment.support;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.loader.support.UserMentionsLoader;
-import de.vanita5.twittnuker.model.ParcelableStatus;
-
 import java.util.List;
 
-public class UserMentionsFragment extends StatusesSearchFragment {
+import de.vanita5.twittnuker.loader.support.TweetSearchLoader;
+import de.vanita5.twittnuker.model.ParcelableStatus;
+
+public class StatusesSearchFragment extends ParcelableStatusesFragment {
 
 	@Override
-    public Loader<List<ParcelableStatus>> onCreateLoader(final int id, final Bundle args) {
-		if (args == null) return null;
-		final String screenName = args.getString(EXTRA_SCREEN_NAME);
+	public Loader<List<ParcelableStatus>> onCreateLoader(int id, Bundle args) {
+		setRefreshing(true);
 		final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
 		final long maxId = args.getLong(EXTRA_MAX_ID, -1);
 		final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
+		final String query = args.getString(EXTRA_QUERY);
 		final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
-        return new UserMentionsLoader(getActivity(), accountId, screenName, maxId, sinceId,
-                getAdapterData(), getSavedStatusesFileArgs(), tabPosition);
+		return new TweetSearchLoader(getActivity(), accountId, query, maxId, sinceId, getAdapterData(),
+				getSavedStatusesFileArgs(), tabPosition);
 	}
 
 	@Override
@@ -49,8 +49,9 @@ public class UserMentionsFragment extends StatusesSearchFragment {
 		final Bundle args = getArguments();
 		if (args == null) return null;
 		final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
-		final String screen_name = args.getString(EXTRA_SCREEN_NAME);
-		return new String[] { AUTHORITY_USER_MENTIONS, "account" + account_id, "screen_name" + screen_name };
+		final String query = args.getString(EXTRA_QUERY);
+		return new String[]{AUTHORITY_SEARCH_TWEETS, "account" + account_id, "query" + query};
 	}
+
 
 }

@@ -63,7 +63,7 @@ import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
@@ -278,7 +278,7 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 					final Bundle args = getArguments();
 					if (args == null) return;
 					final DeleteDraftsTask task = new DeleteDraftsTask(getActivity(), args.getLongArray(EXTRA_IDS));
-					task.execute();
+                    task.executeTask();
 					break;
 				}
 			}
@@ -296,7 +296,7 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 
 	}
 
-	private static class DeleteDraftsTask extends AsyncTask<Void, Void, Integer> {
+    private static class DeleteDraftsTask extends TwidereAsyncTask<Void, Void, Integer> {
 
 		private static final String FRAGMENT_TAG_DELETING_DRAFTS = "deleting_drafts";
 		private final FragmentActivity mActivity;

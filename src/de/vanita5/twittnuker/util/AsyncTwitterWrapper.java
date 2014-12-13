@@ -54,7 +54,7 @@ import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TweetStore.Mentions;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
 
@@ -132,12 +132,12 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	public void clearNotificationAsync(final int notificationId, final long notificationAccount) {
 		final ClearNotificationTask task = new ClearNotificationTask(notificationId, notificationAccount);
-		task.execute();
+        task.executeTask();
 	}
 
 	public void clearUnreadCountAsync(final int position) {
 		final ClearUnreadCountTask task = new ClearUnreadCountTask(position);
-		task.execute();
+        task.executeTask();
 	}
 
 	public int createBlockAsync(final long accountId, final long user_id) {
@@ -274,7 +274,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		for (final ManagedAsyncTask<?, ?, ?> task : mAsyncTaskManager.getTaskSpecList()) {
 			if (task instanceof CreateFriendshipTask) {
 				final CreateFriendshipTask create_friendship = (CreateFriendshipTask) task;
-				if (create_friendship.getStatus() == AsyncTask.Status.RUNNING
+				if (create_friendship.getStatus() == TwidereAsyncTask.Status.RUNNING
 						&& create_friendship.getAccountId() == accountId && create_friendship.getUserId() == user_id)
 					return true;
 			}
@@ -286,7 +286,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		for (final ManagedAsyncTask<?, ?, ?> task : mAsyncTaskManager.getTaskSpecList()) {
 			if (task instanceof DestroyFriendshipTask) {
 				final DestroyFriendshipTask create_friendship = (DestroyFriendshipTask) task;
-				if (create_friendship.getStatus() == AsyncTask.Status.RUNNING
+				if (create_friendship.getStatus() == TwidereAsyncTask.Status.RUNNING
 						&& create_friendship.getAccountId() == accountId && create_friendship.getUserId() == user_id)
 					return true;
 			}
@@ -347,7 +347,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	public void removeUnreadCountsAsync(final int position, final Map<Long, Set<Long>> counts) {
 		final RemoveUnreadCountsTask task = new RemoveUnreadCountsTask(position, counts);
-		task.execute();
+        task.executeTask();
 	}
 
 	public int reportMultiSpam(final long accountId, final long[] user_ids) {
@@ -648,7 +648,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
-	final class ClearNotificationTask extends AsyncTask<Void, Void, Integer> {
+	final class ClearNotificationTask extends TwidereAsyncTask<Void, Void, Integer> {
 		private final int notificationType;
 		private final long accountId;
 
@@ -664,7 +664,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
-	final class ClearUnreadCountTask extends AsyncTask<Void, Void, Integer> {
+	final class ClearUnreadCountTask extends TwidereAsyncTask<Void, Void, Integer> {
 		private final int position;
 
 		ClearUnreadCountTask(final int position) {
@@ -805,9 +805,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		@Override
 		protected void onPostExecute(final SingleResponse<ParcelableStatus> result) {
 			if (result.hasData()) {
-				final Intent intent = new Intent(BROADCAST_FAVORITE_CHANGED);
+                final Intent intent = new Intent(BROADCAST_STATUS_FAVORITE_CREATED);
 				intent.putExtra(EXTRA_STATUS, result.getData());
-				intent.putExtra(EXTRA_FAVORITED, true);
 				mContext.sendBroadcast(intent);
 				mMessagesManager.showOkMessage(R.string.status_favorited, false);
 			} else {
@@ -1328,9 +1327,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		@Override
 		protected void onPostExecute(final SingleResponse<ParcelableStatus> result) {
 			if (result.hasData()) {
-				final Intent intent = new Intent(BROADCAST_FAVORITE_CHANGED);
+                final Intent intent = new Intent(BROADCAST_STATUS_FAVORITE_DESTROYED);
 				intent.putExtra(EXTRA_STATUS, result.getData());
-				intent.putExtra(EXTRA_FAVORITED, false);
 				mContext.sendBroadcast(intent);
                 mMessagesManager.showInfoMessage(R.string.status_unfavorited, false);
 			} else {
@@ -1890,7 +1888,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
-	final class RemoveUnreadCountsTask extends AsyncTask<Void, Void, Integer> {
+	final class RemoveUnreadCountsTask extends TwidereAsyncTask<Void, Void, Integer> {
 		private final int position;
 		private final Map<Long, Set<Long>> counts;
 
@@ -2245,7 +2243,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			final StatusListResponse[] array = new StatusListResponse[responses.size()];
-			new CacheUsersStatusesTask(mContext, responses.toArray(array)).execute();
+            new CacheUsersStatusesTask(mContext, responses.toArray(array)).executeTask();
 		}
 
 	}

@@ -56,7 +56,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.HostsFileParser;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -300,7 +300,7 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
 
 	}
 
-	static class ImportHostsTask extends AsyncTask<Void, Void, Boolean> {
+	static class ImportHostsTask extends TwidereAsyncTask<Void, Void, Boolean> {
 
 		private final SharedPreferences mPreferences;
 		private final HostMappingsListFragment mActivity;

@@ -96,7 +96,7 @@ import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
@@ -171,7 +171,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	private ParcelableLocation mRecentLocation;
 
 	private ContentResolver mResolver;
-	private AsyncTask<Void, Void, ?> mTask;
+    private TwidereAsyncTask<Void, Void, ?> mTask;
     private IListPopupWindow mAccountSelectorPopup;
 	private TextView mTitleView, mSubtitleView;
     private GridView mMediaPreviewGrid;
@@ -249,7 +249,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 				break;
 			}
 			case MENU_DELETE: {
-				new DeleteImageTask(this).execute();
+                new DeleteImageTask(this).executeTask();
 				break;
 			}
 			case MENU_TOGGLE_SENSITIVE: {
@@ -281,7 +281,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			case REQUEST_TAKE_PHOTO: {
 				if (resultCode == Activity.RESULT_OK) {
 					mTask = new AddMediaTask(this, mTempPhotoUri, createTempImageUri(), ParcelableMedia.TYPE_IMAGE,
-							true).execute();
+                            true).executeTask();
 					mTempPhotoUri = null;
 				}
 				break;
@@ -290,7 +290,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 				if (resultCode == Activity.RESULT_OK) {
 					final Uri src = intent.getData();
 					mTask = new AddMediaTask(this, src, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false)
-							.execute();
+                            .executeTask();
 				}
 				break;
 			}
@@ -298,7 +298,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 					if (resultCode == Activity.RESULT_OK) {
 						final Uri src = intent.getData();
 						mTask = new AddMediaTask(this, src, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false)
-								.execute();
+                            .executeTask();
 					}
 					break;
 				}
@@ -320,13 +320,13 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
 	@Override
 	public void onBackPressed() {
-		if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING) return;
+        if (mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING) return;
 		final String option = mPreferences.getString(KEY_COMPOSE_QUIT_ACTION, VALUE_COMPOSE_QUIT_ACTION_ASK);
 		final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
 		final boolean textChanged = text != null && !text.isEmpty() && !text.equals(mOriginalText);
 		final boolean isEditingDraft = INTENT_ACTION_EDIT_DRAFT.equals(getIntent().getAction());
 		if (VALUE_COMPOSE_QUIT_ACTION_DISCARD.equals(option)) {
-			mTask = new DiscardTweetTask(this).execute();
+			mTask = new DiscardTweetTask(this).executeTask();
 		} else if (textChanged || hasMedia() || isEditingDraft) {
 			if (VALUE_COMPOSE_QUIT_ACTION_SAVE.equals(option)) {
 				saveToDrafts();
@@ -336,7 +336,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 				new UnsavedTweetDialogFragment().show(getSupportFragmentManager(), "unsaved_tweet");
 			}
 		} else {
-			mTask = new DiscardTweetTask(this).execute();
+			mTask = new DiscardTweetTask(this).executeTask();
 		}
 	}
 
@@ -690,14 +690,14 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		final Uri extraStream = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         //TODO handle share_screenshot extra (Bitmap)
 		if (extraStream != null) {
-			new AddMediaTask(this, extraStream, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false).execute();
+            new AddMediaTask(this, extraStream, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false).executeTask();
 		} else if (data != null) {
-			new AddMediaTask(this, data, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false).execute();
+            new AddMediaTask(this, data, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false).executeTask();
         } else if (intent.hasExtra(EXTRA_SHARE_SCREENSHOT)) {
             final Bitmap bitmap = intent.getParcelableExtra(EXTRA_SHARE_SCREENSHOT);
             if (bitmap != null) {
                 try {
-                    new AddBitmapTask(this, bitmap, createTempImageUri(), ParcelableMedia.TYPE_IMAGE).execute();
+                    new AddBitmapTask(this, bitmap, createTempImageUri(), ParcelableMedia.TYPE_IMAGE).executeTask();
                 } catch (IOException e) {
                     // ignore
                     bitmap.recycle();
@@ -1096,7 +1096,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			}
 			case DialogInterface.BUTTON_NEGATIVE: {
 				if (activity instanceof ComposeActivity) {
-					new DiscardTweetTask((ComposeActivity) activity).execute();
+                        new DiscardTweetTask((ComposeActivity) activity).executeTask();
 				} else {
 					activity.finish();
 				}
@@ -1256,7 +1256,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 
     }
 
-	private static class AddMediaTask extends AsyncTask<Void, Void, Boolean> {
+    private static class AddMediaTask extends TwidereAsyncTask<Void, Void, Boolean> {
 
 		private final ComposeActivity activity;
 		private final int media_type;
@@ -1314,7 +1314,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		}
 	}
 
-	private static class DeleteImageTask extends AsyncTask<Void, Void, Boolean> {
+    private static class DeleteImageTask extends TwidereAsyncTask<Void, Void, Boolean> {
 
 		final ComposeActivity mActivity;
         private final ParcelableMediaUpdate[] mMedia;
@@ -1360,7 +1360,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		}
 	}
 
-	private static class DiscardTweetTask extends AsyncTask<Void, Void, Void> {
+    private static class DiscardTweetTask extends TwidereAsyncTask<Void, Void, Void> {
 
         final ComposeActivity mActivity;
 

@@ -49,7 +49,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.Utils;
 
@@ -93,7 +93,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 	@Override
 	protected void onAttachedToHierarchy(final PreferenceManager preferenceManager) {
 		super.onAttachedToHierarchy(preferenceManager);
-		new LoadAccountsTask(this).execute();
+		new LoadAccountsTask(this).executeTask();
 	}
 
 	protected abstract void setupPreference(AccountItemPreference preference, ParcelableAccount account);
@@ -216,7 +216,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
         }
 	}
 
-	private static class LoadAccountsTask extends AsyncTask<Void, Void, List<ParcelableAccount>> {
+	private static class LoadAccountsTask extends TwidereAsyncTask<Void, Void, List<ParcelableAccount>> {
 
 		private final AccountsListPreference mPreference;
 

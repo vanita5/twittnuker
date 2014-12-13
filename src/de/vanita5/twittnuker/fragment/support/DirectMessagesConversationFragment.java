@@ -73,7 +73,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TweetStore;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.Conversation;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
@@ -389,7 +389,7 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 
 	@Override
 	public void onRefreshFromEnd() {
-		new AsyncTask<Void, Void, long[][]>() {
+        new TwidereAsyncTask<Void, Void, long[][]>() {
 
 			@Override
 			protected long[][] doInBackground(final Void... params) {
@@ -407,7 +407,7 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 				twitter.getSentDirectMessagesAsync(result[0], null, null);
 			}
 
-		}.execute();
+        }.executeTask();
 	}
 
 	@Override
@@ -522,7 +522,7 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 
 	private void loadMoreMessages() {
 		if (isRefreshing()) return;
-		new AsyncTask<Void, Void, long[][]>() {
+        new TwidereAsyncTask<Void, Void, long[][]>() {
 
 			@Override
 			protected long[][] doInBackground(final Void... params) {
@@ -541,7 +541,7 @@ public class DirectMessagesConversationFragment extends BasePullToRefreshListFra
 				twitter.getSentDirectMessagesAsync(result[0], result[2], null);
 			}
 
-		}.execute();
+        }.executeTask();
 	}
 
 	private void sendDirectMessage() {

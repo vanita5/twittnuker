@@ -28,7 +28,7 @@ import android.content.Intent;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 
-public abstract class ManagedAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> implements
+public abstract class ManagedAsyncTask<Params, Progress, Result> extends TwidereAsyncTask<Params, Progress, Result> implements
 		Constants {
 
 	private final AsyncTaskManager manager;

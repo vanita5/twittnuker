@@ -38,6 +38,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -81,7 +82,7 @@ import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.service.StreamingService;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.ActivityAccessor;
 import de.vanita5.twittnuker.util.ActivityAccessor.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.ArrayUtils;
@@ -456,9 +457,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
 	public void updateUnreadCount() {
         if (mTabIndicator == null || mUpdateUnreadCountTask != null
-				&& mUpdateUnreadCountTask.getStatus() == AsyncTask.Status.RUNNING) return;
+                && mUpdateUnreadCountTask.getStatus() == TwidereAsyncTask.Status.RUNNING) return;
         mUpdateUnreadCountTask = new UpdateUnreadCountTask(mTabIndicator);
-		mUpdateUnreadCountTask.execute();
+        mUpdateUnreadCountTask.executeTask();
 		mTabIndicator.setDisplayBadge(mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
 	}
 
@@ -491,8 +492,12 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	protected void onCreate(final Bundle savedInstanceState) {
 		setUiOptions(getWindow());
         final Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
         window.requestFeature(Window.FEATURE_NO_TITLE);
+        window.requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        window.requestFeature(Window.FEATURE_ACTION_MODE_OVERLAY);
 		super.onCreate(savedInstanceState);
 		if (!isDatabaseReady(this)) {
 			Toast.makeText(this, R.string.preparing_database_toast, Toast.LENGTH_SHORT).show();
@@ -985,7 +990,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
 	}
 
-	private static class UpdateUnreadCountTask extends AsyncTask<Void, Void, int[]> {
+    private static class UpdateUnreadCountTask extends TwidereAsyncTask<Void, Void, int[]> {
 		private final Context mContext;
 		private final TabPagerIndicator mIndicator;
 
