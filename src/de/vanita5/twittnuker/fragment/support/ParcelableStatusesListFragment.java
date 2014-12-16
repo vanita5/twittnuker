@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.fragment.support;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -56,20 +55,24 @@ public abstract class ParcelableStatusesListFragment extends BaseStatusesListFra
 		public void onReceive(final Context context, final Intent intent) {
 			if (getActivity() == null || !isAdded() || isDetached()) return;
 			final String action = intent.getAction();
-            if (BROADCAST_STATUS_RETWEETED.equals(action)) {
-				final long status_id = intent.getLongExtra(EXTRA_STATUS_ID, -1);
-				final boolean retweeted = intent.getBooleanExtra(EXTRA_RETWEETED, false);
-				if (status_id > 0 && !retweeted) {
-					deleteStatus(status_id);
-				}
-			} else if (BROADCAST_MULTI_MUTESTATE_CHANGED.equals(action)) {
-				final Bundle args = getArguments();
-				final long account_id = args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-				if (account_id <= 0) return;
-				getStatuses(new long[] { account_id }, null, null);
-			}
-
-		}
+            switch (action) {
+//                case BROADCAST_STATUS_RETWEETED: {
+//                    final long status_id = intent.getLongExtra(EXTRA_STATUS_ID, -1);
+//                    final boolean retweeted = intent.getBooleanExtra(EXTRA_RETWEETED, false);
+//                    if (status_id > 0 && !retweeted) {
+//                        deleteStatus(status_id);
+//                    }
+//                    break;
+//                }
+                case BROADCAST_MULTI_MUTESTATE_CHANGED: {
+                    final Bundle args = getArguments();
+                    final long account_id = args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
+                    if (account_id <= 0) return;
+                    getStatuses(new long[] { account_id }, null, null);
+                    break;
+                }
+            }
+        }
 
 	};
 

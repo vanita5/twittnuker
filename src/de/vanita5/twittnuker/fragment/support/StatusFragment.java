@@ -340,6 +340,7 @@ public class StatusFragment extends BaseSupportFragment
         private final StatusFragment mFragment;
         private final LayoutInflater mInflater;
         private final ImageLoaderWrapper mImageLoader;
+        private final ImageLoadingHandler mImageLoadingHandler;
 
         private final boolean mNameFirst;
         private final int mCardLayoutResource;
@@ -358,6 +359,7 @@ public class StatusFragment extends BaseSupportFragment
             mContext = context;
             mInflater = LayoutInflater.from(context);
             mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
+            mImageLoadingHandler = new ImageLoadingHandler(R.id.media_preview_progress);
             mNameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
             mTextSize = preferences.getInt(KEY_TEXT_SIZE, res.getInteger(R.integer.default_text_size));
             if (compact) {
@@ -388,7 +390,7 @@ public class StatusFragment extends BaseSupportFragment
 
 	    @Override
         public ImageLoadingHandler getImageLoadingHandler() {
-		    return null;
+            return mImageLoadingHandler;
 	    }
 
 	    @Override
@@ -463,7 +465,9 @@ public class StatusFragment extends BaseSupportFragment
 	            }
                 case VIEW_TYPE_LIST_STATUS: {
                     final View view = mInflater.inflate(mCardLayoutResource, parent, false);
-                    return new StatusViewHolder(this, view);
+                    final StatusViewHolder holder = new StatusViewHolder(this, view);
+                    holder.setupViews();
+                    return holder;
 			    }
                 case VIEW_TYPE_CONVERSATION_LOAD_INDICATOR:
                 case VIEW_TYPE_REPLIES_LOAD_INDICATOR: {

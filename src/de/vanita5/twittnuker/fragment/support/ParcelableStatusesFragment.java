@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
 import de.vanita5.twittnuker.util.message.StatusDestroyedEvent;
+import de.vanita5.twittnuker.util.message.StatusRetweetedEvent;
 
 import java.util.HashSet;
 import java.util.List;
@@ -52,9 +53,12 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
         final List<ParcelableStatus> data = getAdapterData();
         if (statusId <= 0 || data == null) return;
         final Set<ParcelableStatus> dataToRemove = new HashSet<>();
-        for (final ParcelableStatus status : data) {
+        for (int i = 0, j = data.size(); i < j; i++) {
+            final ParcelableStatus status = data.get(i);
             if (status.id == statusId || status.retweet_id > 0 && status.retweet_id == statusId) {
                 dataToRemove.add(status);
+            } else if (status.my_retweet_id == statusId) {
+                data.set(i, new ParcelableStatus(status, -1));
             }
         }
         data.removeAll(dataToRemove);
@@ -165,6 +169,11 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
         }
 
         @Subscribe
+        public void notifyStatusRetweeted(StatusRetweetedEvent event) {
+            fragment.updateRetweetedStatuses(event.status);
+        }
+
+        @Subscribe
         public void notifyFavoriteDestroyed(FavoriteDestroyedEvent event) {
             fragment.updateFavoritedStatus(event.status);
         }
@@ -174,6 +183,18 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
             fragment.deleteStatus(event.status.id);
         }
 
+    }
+
+    private void updateRetweetedStatuses(ParcelableStatus status) {
+        final List<ParcelableStatus> data = getAdapterData();
+        if (status == null || status.retweet_id <= 0 || data == null) return;
+        for (int i = 0, j = data.size(); i < j; i++) {
+            final ParcelableStatus orig = data.get(i);
+            if (orig.account_id == status.account_id && orig.id == status.retweet_id) {
+                data.set(i, new ParcelableStatus(orig, status.id));
+            }
+        }
+        setAdapterData(data);
 	}
 
 }

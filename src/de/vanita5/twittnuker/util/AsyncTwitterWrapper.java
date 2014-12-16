@@ -30,6 +30,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.util.LongSparseArray;
 import android.util.Log;
 
@@ -74,6 +75,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import de.vanita5.twittnuker.util.message.StatusDestroyedEvent;
+import de.vanita5.twittnuker.util.message.StatusRetweetedEvent;
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
@@ -199,6 +201,19 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		final DenyFriendshipTask task = new DenyFriendshipTask(accountId, userId);
 		return mAsyncTaskManager.add(task, true);
 	}
+
+
+    public int cancelRetweetAsync(long account_id, long status_id, long my_retweet_id) {
+        if (my_retweet_id > 0)
+            return destroyStatusAsync(account_id, my_retweet_id);
+        else if (status_id > 0)
+            return destroyStatusAsync(account_id, status_id);
+        return -1;
+    }
+
+    public int cancelRetweetAsync(@NonNull final ParcelableStatus status) {
+        return cancelRetweetAsync(status.account_id, status.id, status.my_retweet_id);
+    }
 
 	public int destroyBlockAsync(final long accountId, final long user_id) {
 		final DestroyBlockTask task = new DestroyBlockTask(accountId, user_id);
@@ -818,7 +833,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		@Override
 		protected SingleResponse<ParcelableStatus> doInBackground(final Void... params) {
 			if (account_id < 0) return SingleResponse.getInstance();
-            final Twitter twitter = getTwitterInstance(mContext, account_id, false);
+            final Twitter twitter = getTwitterInstance(mContext, account_id, true);
 			if (twitter == null) return SingleResponse.getInstance();
             try {
                 final twitter4j.Status status = twitter.createFavorite(status_id);
@@ -1335,7 +1350,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		@Override
 		protected SingleResponse<ParcelableStatus> doInBackground(final Void... params) {
 			if (account_id < 0) return SingleResponse.getInstance();
-			final Twitter twitter = getTwitterInstance(mContext, account_id, false);
+            final Twitter twitter = getTwitterInstance(mContext, account_id, true);
 			if (twitter != null) {
 				try {
 					final twitter4j.Status status = twitter.destroyFavorite(status_id);
@@ -2030,7 +2045,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
-	class RetweetStatusTask extends ManagedAsyncTask<Void, Void, SingleResponse<twitter4j.Status>> {
+    class RetweetStatusTask extends ManagedAsyncTask<Void, Void, SingleResponse<ParcelableStatus>> {
 
 		private final long account_id;
 
@@ -2043,36 +2058,36 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 		@Override
-		protected SingleResponse<twitter4j.Status> doInBackground(final Void... params) {
-
+        protected SingleResponse<ParcelableStatus> doInBackground(final Void... params) {
 			if (account_id < 0) return SingleResponse.getInstance();
-
-			final Twitter twitter = getTwitterInstance(mContext, account_id, false);
-			if (twitter != null) {
-				try {
-					final twitter4j.Status status = twitter.retweetStatus(status_id);
-					return SingleResponse.getInstance(status, null);
-				} catch (final TwitterException e) {
-					return SingleResponse.getInstance(null, e);
-				}
-			}
-			return SingleResponse.getInstance();
-		}
+            final Twitter twitter = getTwitterInstance(mContext, account_id, true);
+            if (twitter == null) {
+                return SingleResponse.getInstance();
+            }
+            try {
+                final ParcelableStatus status = new ParcelableStatus(twitter.retweetStatus(status_id),
+                        account_id, false);
+                return SingleResponse.getInstance(status);
+            } catch (final TwitterException e) {
+                return SingleResponse.getInstance(e);
+            }
+        }
 
 		@Override
-		protected void onPostExecute(final SingleResponse<twitter4j.Status> result) {
-
-			if (result.hasData() && result.getData().getId() > 0) {
+        protected void onPostExecute(final SingleResponse<ParcelableStatus> result) {
+            if (result.hasData()) {
 				final ContentValues values = new ContentValues();
-				values.put(Statuses.MY_RETWEET_ID, result.getData().getId());
-				final String where = Statuses.STATUS_ID + " = " + status_id + " OR " + Statuses.RETWEET_ID + " = "
-						+ status_id;
+                final ParcelableStatus status = result.getData();
+                values.put(Statuses.MY_RETWEET_ID, status.id);
+                final Expression where = Expression.or(
+                        Expression.equals(Statuses.STATUS_ID, status_id),
+                        Expression.equals(Statuses.RETWEET_ID, status_id)
+                );
 				for (final Uri uri : STATUSES_URIS) {
-					mResolver.update(uri, values, where, null);
+                    mResolver.update(uri, values, where.getSQL(), null);
 				}
-                final Intent intent = new Intent(BROADCAST_STATUS_RETWEETED);
-				intent.putExtra(EXTRA_STATUS_ID, status_id);
-				mContext.sendBroadcast(intent);
+                final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
+                bus.post(new StatusRetweetedEvent(status));
 				mMessagesManager.showOkMessage(R.string.status_retweeted, false);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_retweeting, result.getException(), true);

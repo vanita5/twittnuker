@@ -196,13 +196,15 @@ public class StatusFragmentOld extends ParcelableStatusesListFragment implements
 //                    }
 //                    break;
 //                }
-				case BROADCAST_STATUS_RETWEETED: {
-					final long status_id = intent.getLongExtra(EXTRA_STATUS_ID, -1);
-					if (status_id > 0 && status_id == getStatusId()) {
-						getStatus(true);
-					}
-					break;
-				}
+//                case BROADCAST_STATUS_RETWEETED: {
+//                    final long status_id = intent.getLongExtra(EXTRA_STATUS_ID, -1);
+//                    if (status_id > 0 && status_id == getStatusId()) {
+//                        getStatus(true);
+//                    }
+//                    break;
+//                }
+
+
 				case BROADCAST_HOTOTIN_EXPANDED: {
 					final String expanded_status = intent.getStringExtra(EXTRA_HOTOTIN_EXPANDED_TEXT);
 					Spanned expanded_text = Html.fromHtml(expanded_status);
@@ -684,7 +686,6 @@ public class StatusFragmentOld extends ParcelableStatusesListFragment implements
 	public void onStart() {
 		super.onStart();
 		final IntentFilter filter = new IntentFilter();
-		filter.addAction(BROADCAST_STATUS_RETWEETED);
 		filter.addAction(BROADCAST_HOTOTIN_EXPANDED);
 		filter.addAction(BROADCAST_TWITLONGER_EXPANDED);
 		registerReceiver(mStatusReceiver, filter);
