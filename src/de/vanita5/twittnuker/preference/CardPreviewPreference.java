@@ -22,10 +22,6 @@
 
 package de.vanita5.twittnuker.preference;
 
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
-import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
-import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -40,9 +36,12 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
-import de.vanita5.twittnuker.view.CardItemLinearLayout;
 import de.vanita5.twittnuker.view.ForegroundImageView;
 import de.vanita5.twittnuker.view.holder.StatusListViewHolder;
+
+import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
+import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
+import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
 
 public class CardPreviewPreference extends Preference implements Constants, OnSharedPreferenceChangeListener {
 
@@ -109,9 +108,7 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
 		if (mHolder.image_preview instanceof ForegroundImageView) {
 			((ForegroundImageView) mHolder.image_preview).setForeground(null);
 		}
-		if (mHolder.content instanceof CardItemLinearLayout) {
-			((CardItemLinearLayout) mHolder.content).setItemSelector(null);
-		}
+        mHolder.content.setItemSelector(null);
 		mHolder.profile_image.setImageResource(R.drawable.ic_launcher);
 		mHolder.image_preview.setImageResource(R.drawable.twittnuker_feature_graphic);
 		mHolder.name.setText(TWIDERE_PREVIEW_NAME);

@@ -58,8 +58,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.astuetz.PagerSlidingTabStrip;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
@@ -79,6 +77,7 @@ import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 
+import de.vanita5.twittnuker.view.TabPagerIndicator;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserList;
@@ -105,7 +104,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 	private Button mRetryButton;
     private HeaderDrawerLayout mHeaderDrawerLayout;
     private ViewPager mViewPager;
-    private PagerSlidingTabStrip mPagerIndicator;
+    private TabPagerIndicator mPagerIndicator;
     private CardView mCardView;
 
     private SupportTabsAdapter mPagerAdapter;
@@ -480,7 +479,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         mRetryButton = (Button) mErrorRetryContainer.findViewById(R.id.retry);
         mErrorMessageView = (TextView) mErrorRetryContainer.findViewById(R.id.error_message);
         mViewPager = (ViewPager) contentView.findViewById(R.id.view_pager);
-        mPagerIndicator = (PagerSlidingTabStrip) contentView.findViewById(R.id.view_pager_tabs);
+        mPagerIndicator = (TabPagerIndicator) contentView.findViewById(R.id.view_pager_tabs);
 	}
 
     @Override

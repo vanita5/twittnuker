@@ -19,33 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.vanita5.twittnuker.adapter.iface;
 
-import android.content.Context;
+package de.vanita5.twittnuker.util.message;
 
-import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder;
-
-public interface IStatusesAdapter<Data> extends IGapSupportedAdapter, ICardSupportedAdapter {
-
-    ImageLoaderWrapper getImageLoader();
-
-    Context getContext();
-
-    ImageLoadingHandler getImageLoadingHandler();
-
-    ParcelableStatus getStatus(int position);
-
-    int getStatusCount();
-
-    void onStatusClick(StatusViewHolder holder, int position);
-
-    void onUserProfileClick(StatusViewHolder holder, int position);
-
-    void setData(Data data);
-
-    AsyncTwitterWrapper getTwitterWrapper();
+public class StatusListChangedEvent {
 }

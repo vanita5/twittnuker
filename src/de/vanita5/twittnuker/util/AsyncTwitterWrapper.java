@@ -62,10 +62,14 @@ import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
+import de.vanita5.twittnuker.util.collection.LongSparseMap;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
 import de.vanita5.twittnuker.util.message.ProfileUpdatedEvent;
+import de.vanita5.twittnuker.util.message.StatusDestroyedEvent;
+import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
+import de.vanita5.twittnuker.util.message.StatusRetweetedEvent;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -74,8 +78,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import de.vanita5.twittnuker.util.message.StatusDestroyedEvent;
-import de.vanita5.twittnuker.util.message.StatusRetweetedEvent;
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
@@ -118,6 +120,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 	private int mGetReceivedDirectMessagesTaskId, mGetSentDirectMessagesTaskId;
 	private int mGetLocalTrendsTaskId;
 
+    private LongSparseMap<Long> mCreatingFavoriteIds = new LongSparseMap<>();
+    private LongSparseMap<Long> mDestroyingFavoriteIds = new LongSparseMap<>();
+
 	public AsyncTwitterWrapper(final Context context) {
 		mContext = context;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
@@ -136,6 +141,15 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		final AddUserListMembersTask task = new AddUserListMembersTask(accountId, listId, users);
 		return mAsyncTaskManager.add(task, true);
 	}
+
+    public boolean isCreatingFavorite(final long accountId, final long statusId) {
+        return mCreatingFavoriteIds.has(accountId, statusId);
+    }
+
+
+    public boolean isDestroyingFavorite(final long accountId, final long statusId) {
+        return mDestroyingFavoriteIds.has(accountId, statusId);
+    }
 
 	public void clearNotificationAsync(final int notificationType) {
 		clearNotificationAsync(notificationType, 0);
@@ -852,7 +866,16 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         }
 
 		@Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mCreatingFavoriteIds.put(account_id, status_id);
+            final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
+            bus.post(new StatusListChangedEvent());
+        }
+
+        @Override
 		protected void onPostExecute(final SingleResponse<ParcelableStatus> result) {
+            mCreatingFavoriteIds.remove(account_id, status_id);
 			if (result.hasData()) {
                 final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
                 bus.post(new FavoriteCreatedEvent(result.getData()));
@@ -1370,7 +1393,16 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 		@Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDestroyingFavoriteIds.put(account_id, status_id);
+            final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
+            bus.post(new StatusListChangedEvent());
+        }
+
+        @Override
 		protected void onPostExecute(final SingleResponse<ParcelableStatus> result) {
+            mDestroyingFavoriteIds.remove(account_id, status_id);
 			if (result.hasData()) {
                 final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
                 bus.post(new FavoriteDestroyedEvent(result.getData()));

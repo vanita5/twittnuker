@@ -31,16 +31,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.astuetz.PagerSlidingTabStrip;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
-import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.view.ExtendedViewPager;
-import de.vanita5.twittnuker.view.LinePageIndicator;
+import de.vanita5.twittnuker.view.TabPagerIndicator;
 
 public class UserListsFragment extends BaseSupportFragment implements RefreshScrollTopInterface,
         SupportFragmentCallback, SystemWindowsInsetsCallback {
@@ -48,7 +44,7 @@ public class UserListsFragment extends BaseSupportFragment implements RefreshScr
     private ViewPager mViewPager;
 
 	private SupportTabsAdapter mAdapter;
-    private PagerSlidingTabStrip mPagerIndicator;
+    private TabPagerIndicator mPagerIndicator;
 
 	private Fragment mCurrentVisibleFragment;
 
@@ -96,7 +92,7 @@ public class UserListsFragment extends BaseSupportFragment implements RefreshScr
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
         mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
-        mPagerIndicator = (PagerSlidingTabStrip) view.findViewById(R.id.view_pager_tabs);
+        mPagerIndicator = (TabPagerIndicator) view.findViewById(R.id.view_pager_tabs);
 	}
 
 	@Override

@@ -50,7 +50,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -92,6 +91,7 @@ import de.vanita5.twittnuker.view.CircularImageView;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.ProfileBannerImageView;
+import de.vanita5.twittnuker.view.TabPagerIndicator;
 import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
@@ -156,7 +156,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private TintedStatusFrameLayout mTintedStatusContent;
     private HeaderDrawerLayout mHeaderDrawerLayout;
 	private ViewPager mViewPager;
-	private PagerSlidingTabStrip mPagerIndicator;
+    private TabPagerIndicator mPagerIndicator;
     private CardView mCardView;
     private View mProfileBannerContainer;
     private Button mFollowButton;
@@ -587,6 +587,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(mPagerAdapter);
         mPagerIndicator.setViewPager(mViewPager);
+        mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
 
         mFollowButton.setOnClickListener(this);
         mProfileImageView.setOnClickListener(this);
@@ -823,7 +824,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		mURLContainer = headerView.findViewById(R.id.url_container);
 		mProfileBannerSpace = headerView.findViewById(R.id.profile_banner_space);
 		mViewPager = (ViewPager) contentView.findViewById(R.id.view_pager);
-		mPagerIndicator = (PagerSlidingTabStrip) contentView.findViewById(R.id.view_pager_tabs);
+        mPagerIndicator = (TabPagerIndicator) contentView.findViewById(R.id.view_pager_tabs);
         mFollowButton = (Button) headerView.findViewById(R.id.follow);
         mFollowProgress = (ProgressBar) headerView.findViewById(R.id.follow_progress);
 	}
@@ -1088,7 +1089,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 	    }
         mActionBarBackground.setColor(color);
         mTintedStatusContent.setColor(color, ThemeUtils.getThemeAlpha(getActivity()));
-        mPagerIndicator.setIndicatorColor(color);
+        mPagerIndicator.setStripColor(color);
 	}
 
     private void setupUserPages() {
@@ -1106,12 +1107,11 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             tabArgs.putLong(EXTRA_USER_ID, args.getLong(EXTRA_USER_ID, -1));
             tabArgs.putString(EXTRA_SCREEN_NAME, args.getString(EXTRA_SCREEN_NAME));
 			}
-        mPagerAdapter.addTab(UserTimelineFragment.class, tabArgs, getString(R.string.statuses), null, 0);
+        mPagerAdapter.addTab(UserTimelineFragment.class, tabArgs, getString(R.string.statuses), R.drawable.ic_action_quote, 0);
         if (Utils.isOfficialKeyAccount(context, accountId)) {
-            mPagerAdapter.addTab(UserMediaTimelineFragment.class, tabArgs, getString(R.string.medias), null, 1);
+            mPagerAdapter.addTab(UserMediaTimelineFragment.class, tabArgs, getString(R.string.medias), R.drawable.ic_action_gallery, 1);
 	    }
-        mPagerAdapter.addTab(UserFavoritesFragment.class, tabArgs, getString(R.string.favorites), null, 2);
-        mPagerIndicator.notifyDataSetChanged();
+        mPagerAdapter.addTab(UserFavoritesFragment.class, tabArgs, getString(R.string.favorites), R.drawable.ic_action_star, 2);
 	}
 
     private boolean shouldUseNativeMenu() {

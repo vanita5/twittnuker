@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
 import de.vanita5.twittnuker.util.message.StatusDestroyedEvent;
+import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.util.message.StatusRetweetedEvent;
 
 import java.util.HashSet;
@@ -43,11 +44,6 @@ import java.util.Set;
 
 public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<List<ParcelableStatus>> {
 
-    private final StatusesBusCallback mStatusesBusCallback;
-
-    protected ParcelableStatusesFragment() {
-        mStatusesBusCallback = new StatusesBusCallback(this);
-    }
 
     public final void deleteStatus(final long statusId) {
         final List<ParcelableStatus> data = getAdapterData();
@@ -98,8 +94,8 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
     }
 
     @Override
-    protected Object getMessageBusCallback() {
-        return mStatusesBusCallback;
+    protected Object createMessageBusCallback() {
+        return new ParcelableStatusesBusCallback();
     }
 
     @Override
@@ -155,36 +151,6 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
         }
     }
 
-    protected static class StatusesBusCallback {
-
-        private final ParcelableStatusesFragment fragment;
-
-        StatusesBusCallback(ParcelableStatusesFragment fragment) {
-            this.fragment = fragment;
-        }
-
-        @Subscribe
-        public void notifyFavoriteCreated(FavoriteCreatedEvent event) {
-            fragment.updateFavoritedStatus(event.status);
-        }
-
-        @Subscribe
-        public void notifyStatusRetweeted(StatusRetweetedEvent event) {
-            fragment.updateRetweetedStatuses(event.status);
-        }
-
-        @Subscribe
-        public void notifyFavoriteDestroyed(FavoriteDestroyedEvent event) {
-            fragment.updateFavoritedStatus(event.status);
-        }
-
-        @Subscribe
-        public void notifyStatusDestroyed(StatusDestroyedEvent event) {
-            fragment.deleteStatus(event.status.id);
-        }
-
-    }
-
     private void updateRetweetedStatuses(ParcelableStatus status) {
         final List<ParcelableStatus> data = getAdapterData();
         if (status == null || status.retweet_id <= 0 || data == null) return;
@@ -195,6 +161,35 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
             }
         }
         setAdapterData(data);
+    }
+
+    protected class ParcelableStatusesBusCallback {
+
+        @Subscribe
+        public void notifyFavoriteCreated(FavoriteCreatedEvent event) {
+            updateFavoritedStatus(event.status);
+        }
+
+        @Subscribe
+        public void notifyFavoriteDestroyed(FavoriteDestroyedEvent event) {
+            updateFavoritedStatus(event.status);
+        }
+
+        @Subscribe
+        public void notifyStatusDestroyed(StatusDestroyedEvent event) {
+            deleteStatus(event.status.id);
+        }
+
+        @Subscribe
+        public void notifyStatusListChanged(StatusListChangedEvent event) {
+            getAdapter().notifyDataSetChanged();
+        }
+
+        @Subscribe
+        public void notifyStatusRetweeted(StatusRetweetedEvent event) {
+            updateRetweetedStatuses(event.status);
+        }
+
 	}
 
 }

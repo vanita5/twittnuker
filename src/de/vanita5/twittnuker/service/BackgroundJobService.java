@@ -19,33 +19,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.vanita5.twittnuker.adapter.iface;
 
-import android.content.Context;
+package de.vanita5.twittnuker.service;
 
-import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder;
+import android.annotation.TargetApi;
+import android.app.job.JobParameters;
+import android.app.job.JobService;
+import android.os.Build;
 
-public interface IStatusesAdapter<Data> extends IGapSupportedAdapter, ICardSupportedAdapter {
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+public class BackgroundJobService extends JobService {
+	@Override
+	public boolean onStartJob(JobParameters params) {
+		return false;
+	}
 
-    ImageLoaderWrapper getImageLoader();
-
-    Context getContext();
-
-    ImageLoadingHandler getImageLoadingHandler();
-
-    ParcelableStatus getStatus(int position);
-
-    int getStatusCount();
-
-    void onStatusClick(StatusViewHolder holder, int position);
-
-    void onUserProfileClick(StatusViewHolder holder, int position);
-
-    void setData(Data data);
-
-    AsyncTwitterWrapper getTwitterWrapper();
+	@Override
+	public boolean onStopJob(JobParameters params) {
+		return false;
+	}
 }
