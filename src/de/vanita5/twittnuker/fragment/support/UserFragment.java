@@ -57,6 +57,7 @@ import com.squareup.otto.Subscribe;
 import org.mariotaku.menucomponent.internal.menu.MenuUtils;
 import org.mariotaku.querybuilder.Expression;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
@@ -66,6 +67,7 @@ import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
+import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
 import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
@@ -179,9 +181,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     @Subscribe
     public void notifyFriendshipUpdated(FriendshipUpdatedEvent event) {
-        if (event.user != null && event.user.equals(mUser)) {
-            getFriendship();
-        }
+        if (!event.user.equals(mUser)) return;
+        getFriendship();
     }
 
     private void updateRefreshState() {
@@ -319,7 +320,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 	};
 
 	public void displayUser(final ParcelableUser user) {
-		mRelationship = null;
 		mUser = null;
 		if (user == null || user.id <= 0 || getActivity() == null) return;
 		final Resources res = getResources();
@@ -822,7 +822,15 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     protected void fitSystemWindows(Rect insets) {
         super.fitSystemWindows(insets);
         mHeaderDrawerLayout.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-        mHeaderDrawerLayout.setClipToPadding(ThemeUtils.isTransparentBackground(getActivity()));
+        final FragmentActivity activity = getActivity();
+        final boolean isTransparentBackground;
+        if (activity instanceof IThemedActivity) {
+            final int themeRes = ((IThemedActivity) activity).getCurrentThemeResourceId();
+            isTransparentBackground = ThemeUtils.isTransparentBackground(themeRes);
+        } else {
+            isTransparentBackground = ThemeUtils.isTransparentBackground(getActivity());
+        }
+        mHeaderDrawerLayout.setClipToPadding(isTransparentBackground);
     }
 
     public void setListShown(boolean shown) {
@@ -836,6 +844,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
 	private void getFriendship() {
+        mRelationship = null;
 		final ParcelableUser user = mUser;
 		final LoaderManager lm = getLoaderManager();
 		lm.destroyLoader(LOADER_ID_FRIENDSHIP);
@@ -1170,7 +1179,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		public ActionBarDrawable(Resources resources, Drawable shadow, Drawable background,
 								 boolean colorLineOnly) {
 			super(new Drawable[]{shadow, background, new LineBackgroundDrawable(resources, 2.0f),
-					new ColorDrawable()});
+                    new ActionBarColorDrawable()});
 			mShadowDrawable = shadow;
 			mBackgroundDrawable = getDrawable(1);
 			mLineDrawable = (LineBackgroundDrawable) getDrawable(2);
@@ -1188,11 +1197,11 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 			} else {
 				mBackgroundDrawable.getOutline(outline);
 			}
+            outline.setAlpha(mFactor * 0.99f);
 		}
 
 		@Override
         public void setAlpha(int alpha) {
-            super.setAlpha(alpha);
             mAlpha = alpha;
             setFactor(mFactor);
         }

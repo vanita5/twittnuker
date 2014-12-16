@@ -108,7 +108,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
-import de.vanita5.twittnuker.view.ColorLabelFrameLayout;
+import de.vanita5.twittnuker.view.ComposeSelectAccountButton;
 import de.vanita5.twittnuker.view.StatusTextCountView;
 import de.vanita5.twittnuker.view.TwidereMenuBar;
 import de.vanita5.twittnuker.view.holder.StatusListViewHolder;
@@ -181,7 +181,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	private ProgressBar mProgress;
     private View mSendView;
     private StatusTextCountView mSendTextCountView;
-    private ColorLabelFrameLayout mSelectAccountButton;
+    private ComposeSelectAccountButton mSelectAccountAccounts;
 
 	private MediaPreviewAdapter mMediaPreviewAdapter;
 
@@ -386,7 +386,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		final View composeBottomBar = findViewById(R.id.compose_bottombar);
         mSendView = composeBottomBar.findViewById(R.id.send);
 		mSendTextCountView = (StatusTextCountView) mSendView.findViewById(R.id.status_text_count);
-        mSelectAccountButton = (ColorLabelFrameLayout) composeActionBar.findViewById(R.id.select_account);
+        mSelectAccountAccounts = (ComposeSelectAccountButton) composeActionBar.findViewById(R.id.select_account);
 		ViewAccessor.setBackground(findViewById(R.id.compose_content), getWindowContentOverlayForCompose(this));
         ViewAccessor.setBackground(composeActionBar, getActionBarBackground(this, getCurrentThemeResourceId()));
 	}
@@ -529,12 +529,12 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
         mAccountSelectorPopup.setModal(true);
         mAccountSelectorPopup.setContentWidth(getResources().getDimensionPixelSize(R.dimen.account_selector_popup_width));
         mAccountSelectorPopup.setAdapter(accountAdapter);
-        mAccountSelectorPopup.setAnchorView(mSelectAccountButton);
+        mAccountSelectorPopup.setAnchorView(mSelectAccountAccounts);
 //        mSelectAccountButton.setOnTouchListener(ListPopupWindowCompat.createDragToOpenListener(
 //                mAccountSelectorPopup, mSelectAccountButton));
 
-        mSelectAccountButton.setOnClickListener(this);
-        mSelectAccountButton.setOnLongClickListener(this);
+        mSelectAccountAccounts.setOnClickListener(this);
+        mSelectAccountAccounts.setOnLongClickListener(this);
 
 		mMediaPreviewAdapter = new MediaPreviewAdapter(this);
         mMediaPreviewGrid.setAdapter(mMediaPreviewAdapter);
@@ -557,7 +557,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			mOriginalText = savedInstanceState.getString(EXTRA_ORIGINAL_TEXT);
 			mTempPhotoUri = savedInstanceState.getParcelable(EXTRA_TEMP_URI);
 		} else {
-			// The activity was first created
+            // The context was first created
 			final int notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1);
 			final long notificationAccount = intent.getLongExtra(EXTRA_NOTIFICATION_ACCOUNT, -1);
 			if (notificationId != -1) {
@@ -965,7 +965,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			editor.putString(KEY_COMPOSE_ACCOUNTS, ArrayUtils.toString(mSendAccountIds, ',', false));
             editor.apply();
 		}
-        mSelectAccountButton.drawEnd(getAccountColors(this, mSendAccountIds));
+        mSelectAccountAccounts.setSelectedAccounts(mSendAccountIds);
 	}
 
     private void updateMediaPreview() {
@@ -1417,4 +1417,6 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
             return Collections.unmodifiableList(getObjects());
         }
 	}
+
+
 }

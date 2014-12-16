@@ -1,18 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<de.vanita5.twittnuker.view.ColorLabelFrameLayout
+<de.vanita5.twittnuker.view.ComposeSelectAccountButton
     android:id="@+id/select_account"
     style="?android:actionButtonStyle"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    app:ignorePadding="true">
-
-    <de.vanita5.twittnuker.view.ActionIconView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:scaleType="center"
-        android:src="@drawable/ic_action_accounts"/>
-
-</de.vanita5.twittnuker.view.ColorLabelFrameLayout>
+    android:layout_weight="0"
+    android:padding="@dimen/element_spacing_small"/>

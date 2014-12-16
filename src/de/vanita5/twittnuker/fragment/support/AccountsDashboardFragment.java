@@ -63,12 +63,12 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.FiltersActivity;
+import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.AccountsManagerActivity;
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
-import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.support.DraftsActivity;
+import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -499,7 +499,7 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 
 		@Override
         public AccountProfileImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            final View view = mInflater.inflate(R.layout.adapter_item_compose_account, parent, false);
+            final View view = mInflater.inflate(R.layout.adapter_item_dashboard_account, parent, false);
             return new AccountProfileImageViewHolder(this, view);
 		}
 

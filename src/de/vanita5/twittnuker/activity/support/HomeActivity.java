@@ -106,9 +106,6 @@ import de.vanita5.twittnuker.view.TabPagerIndicator;
 import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import de.vanita5.twittnuker.view.iface.IHomeActionButton;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 import static de.vanita5.twittnuker.util.CustomTabUtils.getAddedTabPosition;
@@ -132,8 +129,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private final Handler mHandler = new Handler();
 
 	private final ContentObserver mAccountChangeObserver = new AccountChangeObserver(this, mHandler);
-
-    private final ArrayList<SupportTabSpec> mCustomTabs = new ArrayList<>();
 
     private final SparseArray<Fragment> mAttachedFragments = new SparseArray<>();
     private ParcelableAccount mSelectedAccountToSearch;
@@ -583,7 +578,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
             ViewAccessor.setBackground(mTabIndicator, new ColorDrawable(actionBarColor));
             homeActionButton.setButtonColor(actionBarColor);
             homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
-            mTabIndicator.setStripColor(contrastColor);
+            mTabIndicator.setStripColor(themeColor);
             mTabIndicator.setIconColor(contrastColor);
             ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
             mColorStatusFrameLayout.setDrawColor(true);
@@ -656,7 +651,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		resolver.registerContentObserver(Accounts.CONTENT_URI, true, mAccountChangeObserver);
         final Bus bus = TwittnukerApplication.getInstance(this).getMessageBus();
         bus.register(this);
-		if (isTabsChanged(getHomeTabs(this)) || getTabDisplayOptionInt(this) != mTabDisplayOption) {
+        if (getTabDisplayOptionInt(this) != mTabDisplayOption) {
 			restart();
 		}
 		updateUnreadCount();
@@ -747,14 +742,12 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
     private void setupHomeTabs() {
-		final List<SupportTabSpec> tabs = getHomeTabs(this);
-		mCustomTabs.clear();
-		mCustomTabs.addAll(tabs);
 		mPagerAdapter.clear();
-		mPagerAdapter.addTabs(tabs);
-		mEmptyTab.setVisibility(tabs.isEmpty() ? View.VISIBLE : View.GONE);
-        mEmptyTabHint.setVisibility(tabs.isEmpty() ? View.VISIBLE : View.GONE);
-        mViewPager.setVisibility(tabs.isEmpty() ? View.GONE : View.VISIBLE);
+        mPagerAdapter.addTabs(getHomeTabs(this));
+		final boolean hasNoTab = mPagerAdapter.getCount() == 0;
+		mEmptyTab.setVisibility(hasNoTab ? View.VISIBLE : View.GONE);
+        mEmptyTabHint.setVisibility(hasNoTab ? View.VISIBLE : View.GONE);
+        mViewPager.setVisibility(hasNoTab ? View.GONE : View.VISIBLE);
 	}
 
 	private void initUnreadCount() {
@@ -766,15 +759,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private boolean isPushRegistered() {
 		final SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		return preferences != null && preferences.getBoolean(KEY_PUSH_REGISTERED, false);
-	}
-
-	private boolean isTabsChanged(final List<SupportTabSpec> tabs) {
-		if (mCustomTabs.size() == 0 && tabs == null) return false;
-		if (mCustomTabs.size() != tabs.size()) return true;
-		for (int i = 0, size = mCustomTabs.size(); i < size; i++) {
-			if (!mCustomTabs.get(i).equals(tabs.get(i))) return true;
-		}
-		return false;
 	}
 
 	private void openAccountsDrawer() {

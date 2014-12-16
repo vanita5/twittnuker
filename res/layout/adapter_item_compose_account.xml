@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/element_spacing_msmall">
+    android:padding="@dimen/element_spacing_small">
 
     <de.vanita5.twittnuker.view.CircularImageView
     android:id="@android:id/icon"

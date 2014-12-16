@@ -35,12 +35,11 @@ public final class FlymeUtils {
 		try {
 			// Invoke Build.hasSmartBar()
 			final Method method = Build.class.getMethod("hasSmartBar");
-			return ((Boolean) method.invoke(null)).booleanValue();
-		} catch (final Exception e) {
+            return (Boolean) method.invoke(null);
+        } catch (final Exception ignored) {
 		}
 		// Detect by Build.DEVICE
-		if (isDeviceWithSmartBar(Build.DEVICE)) return true;
-		return false;
+        return isDeviceWithSmartBar(Build.DEVICE);
 	}
 
 	public static boolean isDeviceWithSmartBar(final String buildDevice) {

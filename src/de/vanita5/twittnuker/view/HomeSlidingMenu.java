@@ -9,7 +9,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.jeremyfeinstein.slidingmenu.lib.CustomViewAbove;
 import com.jeremyfeinstein.slidingmenu.lib.CustomViewBehind;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -32,7 +31,6 @@ public class HomeSlidingMenu extends SlidingMenu implements Constants {
 		super(context, attrs, defStyle);
 		mActivity = (HomeActivity) context;
 	}
-
 
 	@Override
     public boolean dispatchTouchEvent(@NonNull final MotionEvent ev) {

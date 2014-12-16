@@ -56,6 +56,7 @@ import org.mariotaku.refreshnow.widget.RefreshNowProgressIndicator.IndicatorConf
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
 import de.vanita5.twittnuker.text.ParagraphSpacingSpan;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 
@@ -243,7 +244,7 @@ public class ThemeUtils implements Constants {
     public static Drawable getActionBarBackground(final Context context, final int themeRes,
                                                   final int accentColor) {
         if (!isDarkTheme(themeRes)) {
-            final ColorDrawable d = new ColorDrawable(accentColor);
+            final ColorDrawable d = new ActionBarColorDrawable(accentColor);
             return applyActionBarDrawable(context, d, isTransparentBackground(themeRes));
         }
         final TypedArray a = context.obtainStyledAttributes(null, new int[]{android.R.attr.background},
