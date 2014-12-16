@@ -47,7 +47,6 @@
 
 package de.vanita5.twittnuker.util.shortener;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -243,14 +242,14 @@ public class TweetShortenerUtils implements Constants {
 		return statuses;
 	}
 
-	public static void expandHototin(final Activity activity, final String url) {
-		if (activity == null || url == null) return;
-		new HototinAsyncTask(activity, url);
+	public static void expandHototin(final Context context, final String url) {
+		if (context == null || url == null) return;
+		new HototinAsyncTask(context, url);
 	}
 
-	public static void expandTwitLonger(final Activity activity, final String url) {
-		if (activity == null || url == null) return;
-		new TwitlongerAsyncTask(activity, url);
+	public static void expandTwitLonger(final Context context, final String url) {
+		if (context == null || url == null) return;
+		new TwitlongerAsyncTask(context, url);
 	}
 
 	/**

@@ -22,10 +22,7 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -37,9 +34,14 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.widget.ListView;
 
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TweetStore.CachedTrends;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.getTableNameByUri;
@@ -54,19 +56,7 @@ public class TrendsSuggectionsFragment extends BasePullToRefreshListFragment imp
 
 	private long mAccountId;
 
-	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(final Context context, final Intent intent) {
-			if (getActivity() == null || !isAdded() || isDetached()) return;
-			final String action = intent.getAction();
-			if (BROADCAST_TASK_STATE_CHANGED.equals(action)) {
-				updateRefreshState();
-			}
-		}
-	};
-
-	@Override
+    @Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		super.onActivityCreated(savedInstanceState);
@@ -121,14 +111,20 @@ public class TrendsSuggectionsFragment extends BasePullToRefreshListFragment imp
 	public void onStart() {
 		super.onStart();
 		getLoaderManager().restartLoader(0, null, this);
-		final IntentFilter filter = new IntentFilter(BROADCAST_TASK_STATE_CHANGED);
-		registerReceiver(mStatusReceiver, filter);
+        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
+        bus.register(this);
 	}
 
 	@Override
 	public void onStop() {
-		unregisterReceiver(mStatusReceiver);
+        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
+        bus.unregister(this);
 		super.onStop();
+    }
+
+    @Subscribe
+    public void notifyTaskStateChanged(TaskStateChangedEvent event) {
+        updateRefreshState();
 	}
 
 	protected void updateRefreshState() {

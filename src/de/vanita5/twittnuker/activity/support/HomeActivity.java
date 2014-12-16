@@ -24,11 +24,9 @@ package de.vanita5.twittnuker.activity.support;
 
 import android.app.ActionBar;
 import android.app.SearchManager;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.database.ContentObserver;
@@ -65,10 +63,13 @@ import android.widget.Toast;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
@@ -95,6 +96,8 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UnreadCountUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.view.ExtendedViewPager;
 import de.vanita5.twittnuker.view.HomeSlidingMenu;
 import de.vanita5.twittnuker.view.LeftDrawerFrameLayout;
@@ -125,29 +128,14 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		SupportFragmentCallback, SlidingMenu.OnOpenedListener, SlidingMenu.OnClosedListener,
         OnLongClickListener {
 
-	private final BroadcastReceiver mStateReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(final Context context, final Intent intent) {
-			final String action = intent.getAction();
-			if (BROADCAST_TASK_STATE_CHANGED.equals(action)) {
-				updateActionsButton();
-                updateSmartBar();
-			} else if (BROADCAST_UNREAD_COUNT_UPDATED.equals(action)) {
-				updateUnreadCount();
-			}
-		}
-
-	};
-
 
 	private final Handler mHandler = new Handler();
 
 	private final ContentObserver mAccountChangeObserver = new AccountChangeObserver(this, mHandler);
 
-	private final ArrayList<SupportTabSpec> mCustomTabs = new ArrayList<SupportTabSpec>();
+    private final ArrayList<SupportTabSpec> mCustomTabs = new ArrayList<>();
 
-	private final SparseArray<Fragment> mAttachedFragments = new SparseArray<Fragment>();
+    private final SparseArray<Fragment> mAttachedFragments = new SparseArray<>();
     private ParcelableAccount mSelectedAccountToSearch;
 
 	private SharedPreferences mPreferences;
@@ -242,6 +230,19 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			}
 		}
 	}
+
+
+    @Subscribe
+    public void notifyTaskStateChanged(TaskStateChangedEvent event) {
+        updateActionsButton();
+        updateSmartBar();
+    }
+
+    @Subscribe
+    public void notifyUnreadCountUpdated(UnreadCountUpdatedEvent event) {
+        updateUnreadCount();
+    }
+
 
 	@Override
 	public void onClosed() {
@@ -385,7 +386,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 				icon = R.drawable.ic_action_status_compose;
             } else {
                 if (classEquals(DirectMessagesFragment.class, tab.cls)) {
-					icon = R.drawable.ic_action_new_message;
+                    icon = R.drawable.ic_action_add;
                     title = R.string.new_direct_message;
                 } else if (classEquals(TrendsSuggectionsFragment.class, tab.cls)) {
 					icon = R.drawable.ic_action_search;
@@ -432,9 +433,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
     public void openSearchView(final ParcelableAccount account) {
 		mSelectedAccountToSearch = account;
 		onSearchRequested();
-	}
-
-	public void setHomeProgressBarIndeterminateVisibility(final boolean visible) {
 	}
 
 	@Override
@@ -486,7 +484,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
     /**
-     * Called when the activity is first created.
+     * Called when the context is first created.
      */
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -656,9 +654,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONSTART));
 		final ContentResolver resolver = getContentResolver();
 		resolver.registerContentObserver(Accounts.CONTENT_URI, true, mAccountChangeObserver);
-		final IntentFilter filter = new IntentFilter(BROADCAST_TASK_STATE_CHANGED);
-		filter.addAction(BROADCAST_UNREAD_COUNT_UPDATED);
-		registerReceiver(mStateReceiver, filter);
+        final Bus bus = TwittnukerApplication.getInstance(this).getMessageBus();
+        bus.register(this);
 		if (isTabsChanged(getHomeTabs(this)) || getTabDisplayOptionInt(this) != mTabDisplayOption) {
 			restart();
 		}
@@ -682,7 +679,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	@Override
 	protected void onStop() {
 		mMultiSelectHandler.dispatchOnStop();
-		unregisterReceiver(mStateReceiver);
+        final Bus bus = TwittnukerApplication.getInstance(this).getMessageBus();
+        bus.unregister(this);
 		final ContentResolver resolver = getContentResolver();
 		resolver.unregisterContentObserver(mAccountChangeObserver);
 		mPreferences.edit().putInt(KEY_SAVED_TAB_POSITION, mViewPager.getCurrentItem()).apply();
@@ -863,7 +861,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			icon = R.drawable.ic_action_status_compose;
 		} else {
 			if (classEquals(DirectMessagesFragment.class, tab.cls)) {
-				icon = R.drawable.ic_action_new_message;
+                icon = R.drawable.ic_action_add;
                 title = R.string.new_direct_message;
 			} else if (classEquals(TrendsSuggectionsFragment.class, tab.cls)) {
 				icon = R.drawable.ic_action_search;

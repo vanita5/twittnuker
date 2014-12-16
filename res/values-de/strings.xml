@@ -627,6 +627,9 @@
     <string name="gallery">Gallerie</string>
     <string name="remove">Entfernen</string>
     <string name="load_media">Bilder laden</string>
+    <string name="profile_text_color">Textfarbe</string>
+    <string name="profile_background_color">Hintergrundfarbe</string>
+    <string name="profile_link_color_main_color">Linkfarbe (Hauptfarbe)</string>
 
 
     <!-- Twittnuker -->

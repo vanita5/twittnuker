@@ -153,12 +153,12 @@ public abstract class TwidereAsyncTask<Param, Progress, Result> {
 
 		@Override
 		public void run() {
+            mStatus = Status.FINISHED;
 			if (isCancelled()) {
 				onCancelled(mResult);
 			} else {
 				onPostExecute(mResult);
 			}
-			mStatus = Status.FINISHED;
 		}
 	}
 

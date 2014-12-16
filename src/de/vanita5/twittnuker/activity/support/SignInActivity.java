@@ -528,7 +528,8 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 			final String profileImageUrl = ParseUtils.parseString(user.getProfileImageURL());
 			final HttpResponse conn = profileImageUrl != null ? client.get(profileImageUrl, null) : null;
 			final Bitmap bm = conn != null ? BitmapFactory.decodeStream(conn.asStream()) : null;
-            final int profileBackgroundColor = ParseUtils.parseColor(user.getProfileBackgroundColor(), Color.TRANSPARENT);
+            final int profileBackgroundColor = ParseUtils.parseColor("#" + user.getProfileLinkColor(),
+                    Color.TRANSPARENT);
             if (bm == null) return profileBackgroundColor;
 				try {
                 return Palette.generate(bm).getVibrantColor(profileBackgroundColor);

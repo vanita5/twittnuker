@@ -439,7 +439,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 	@Override
 	public void onSaveInstanceState(final Bundle outState) {
 		outState.putLongArray(EXTRA_ACCOUNT_IDS, mSendAccountIds);
-		outState.putParcelableArrayList(EXTRA_MEDIAS, new ArrayList<Parcelable>(getMediaList()));
+		outState.putParcelableArrayList(EXTRA_MEDIA, new ArrayList<Parcelable>(getMediaList()));
 		outState.putBoolean(EXTRA_IS_POSSIBLY_SENSITIVE, mIsPossiblySensitive);
 		outState.putParcelable(EXTRA_STATUS, mInReplyToStatus);
 		outState.putLong(EXTRA_STATUS_ID, mInReplyToStatusId);
@@ -545,7 +545,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			// Restore from previous saved state
 			mSendAccountIds = savedInstanceState.getLongArray(EXTRA_ACCOUNT_IDS);
 			mIsPossiblySensitive = savedInstanceState.getBoolean(EXTRA_IS_POSSIBLY_SENSITIVE);
-			final ArrayList<ParcelableMediaUpdate> mediaList = savedInstanceState.getParcelableArrayList(EXTRA_MEDIAS);
+			final ArrayList<ParcelableMediaUpdate> mediaList = savedInstanceState.getParcelableArrayList(EXTRA_MEDIA);
             if (mediaList != null) {
                 addMedia(mediaList);
 			}

@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.loader.support;
 
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeCachedUserContentValues;
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -32,16 +29,21 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 
+import org.mariotaku.querybuilder.Expression;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 
+import de.vanita5.twittnuker.util.TwitterWrapper;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
-import java.io.IOException;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.makeCachedUserContentValues;
+import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+
 
 public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<ParcelableUser>> implements Constants {
 
@@ -72,11 +74,11 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
 				final ContentValues values = ParcelableUser.makeCachedUserContentValues(user);
 				resolver.delete(CachedUsers.CONTENT_URI, CachedUsers.USER_ID + " = " + user.id, null);
 				resolver.insert(CachedUsers.CONTENT_URI, values);
-				return new SingleResponse<ParcelableUser>(user, null);
+                return SingleResponse.getInstance(user);
 			}
 		}
 		final Twitter twitter = getTwitterInstance(getContext(), account_id, true);
-		if (twitter == null) return new SingleResponse<ParcelableUser>(null, null);
+        if (twitter == null) return SingleResponse.getInstance();
 		if (load_from_cache) {
 			final String where = CachedUsers.USER_ID + " = " + user_id + " OR " + CachedUsers.SCREEN_NAME + " = '"
 					+ screen_name + "'";
@@ -85,64 +87,28 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
 			try {
 				if (count > 0) {
 					cur.moveToFirst();
-					return new SingleResponse<ParcelableUser>(new ParcelableUser(cur, account_id), null);
+                    return new SingleResponse<>(new ParcelableUser(cur, account_id), null);
 				}
 			} finally {
 				cur.close();
 			}
 		}
 		try {
-			final User user = tryShowUser(twitter, user_id, screen_name);
-			if (user == null) return new SingleResponse<ParcelableUser>(null, null);
+            final User user = TwitterWrapper.tryShowUser(twitter, user_id, screen_name);
+            if (user == null) return SingleResponse.getInstance();
 			final ContentValues values = makeCachedUserContentValues(user);
-			final String where = CachedUsers.USER_ID + " = " + user.getId() + " OR " + CachedUsers.SCREEN_NAME + " = ?";
-			resolver.delete(CachedUsers.CONTENT_URI, where, new String[] { user.getScreenName() });
+            final String where = Expression.equals(CachedUsers.USER_ID, user.getId()).getSQL();
+            resolver.delete(CachedUsers.CONTENT_URI, where, null);
 			resolver.insert(CachedUsers.CONTENT_URI, values);
-			return new SingleResponse<ParcelableUser>(new ParcelableUser(user, account_id), null);
+            return SingleResponse.getInstance(new ParcelableUser(user, account_id));
 		} catch (final TwitterException e) {
-			return new SingleResponse<ParcelableUser>(null, e);
+            return SingleResponse.getInstance(e);
 		}
 	}
 
 	@Override
 	protected void onStartLoading() {
 		forceLoad();
-	}
-
-	private static User showUser(final Twitter twitter, final long id, final String screenName) throws TwitterException {
-		if (id != -1)
-			return twitter.showUser(id);
-		else if (screenName != null) return twitter.showUser(screenName);
-		return null;
-	}
-
-	private static User showUserAlternative(final Twitter twitter, final long id, final String screenName)
-			throws TwitterException {
-		final String searchScreenName;
-		if (screenName != null) {
-			searchScreenName = screenName;
-		} else if (id != -1) {
-			searchScreenName = twitter.showFriendship(twitter.getId(), id).getTargetUserScreenName();
-		} else
-			return null;
-		for (final User user : twitter.searchUsers(searchScreenName, 1)) {
-			if (user.getId() == id || searchScreenName.equals(user.getScreenName())) return user;
-		}
-		return null;
-	}
-
-	private static User tryShowUser(final Twitter twitter, final long id, final String screenName)
-			throws TwitterException {
-		try {
-			final User user = showUser(twitter, id, screenName);
-			if (user != null) return user;
-		} catch (final TwitterException e) {
-			if (!(e.getCause() instanceof IOException))
-				return showUserAlternative(twitter, id, screenName);
-			else
-				throw e;
-		}
-		return null;
 	}
 
 }

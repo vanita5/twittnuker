@@ -1,1 +1,13 @@
 Test media upload
+Settings export/import: action bar color
+Fix push toast messages
+Add new compact cards
+Fix loading indicator on shortened tweet expand
+generic image preview
+
+add Strings with no default translation:
+    warning: string 'home_refresh_summary' has no default translation.
+    warning: string 'indicate_my_status' has no default translation.
+    warning: string 'lists_following_me' has no default translation.
+    warning: string 'long_click_to_open_menu_summary' has no default translation.
+    warning: string 'my_profile_image' has no default translation.

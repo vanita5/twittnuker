@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.Layout;
 import android.text.Selection;
 import android.text.Spannable;
@@ -48,7 +49,7 @@ public class HandleSpanClickTextView extends ThemedTextView {
 	}
 
 	@Override
-	public boolean onTouchEvent(final MotionEvent event) {
+    public boolean onTouchEvent(@NonNull final MotionEvent event) {
 		final Spannable buffer = SpannableString.valueOf(getText());
 		final int action = event.getAction();
 		if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
@@ -75,7 +76,7 @@ public class HandleSpanClickTextView extends ThemedTextView {
 					setClickable(false);
                     link.onClick(this);
 					return true;
-				} else if (action == MotionEvent.ACTION_DOWN) {
+                } else {
 					Selection.setSelection(buffer, buffer.getSpanStart(link), buffer.getSpanEnd(link));
 					setClickable(true);
 				}

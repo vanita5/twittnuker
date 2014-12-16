@@ -27,8 +27,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
 public class HomeTimelineFragment extends CursorStatusesFragment {
 
@@ -56,18 +61,32 @@ public class HomeTimelineFragment extends CursorStatusesFragment {
     }
 
 	@Override
-    protected void onReceivedBroadcast(Intent intent, String action) {
-        switch (action) {
-            case BROADCAST_TASK_STATE_CHANGED: {
-                updateRefreshState();
-                break;
-	        }
+    public void onStart() {
+        super.onStart();
+        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
+        bus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
+        bus.unregister(this);
+        super.onStop();
         }
+
+    @Subscribe
+    public void notifyTaskStateChanged(TaskStateChangedEvent event) {
+        updateRefreshState();
+    }
+
+    @Override
+    protected void onReceivedBroadcast(Intent intent, String action) {
+
     }
 
     @Override
     protected void onSetIntentFilter(IntentFilter filter) {
-        filter.addAction(BROADCAST_TASK_STATE_CHANGED);
+
     }
 
     private void updateRefreshState() {

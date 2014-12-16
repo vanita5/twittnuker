@@ -86,6 +86,7 @@ import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.ActionProvider;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -156,6 +157,7 @@ import de.vanita5.twittnuker.fragment.support.UserMentionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UsersListFragment;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
+import de.vanita5.twittnuker.menu.StatusShareProvider;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableAccountWithCredentials;
@@ -1654,9 +1656,9 @@ public final class Utils implements Constants, TwitterConstants {
 		return context.getResources().getInteger(R.integer.default_text_size);
 	}
 
-	public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities) {
+    public static Twitter getDefaultTwitterInstance(final Context context, final boolean include_entities) {
 		if (context == null) return null;
-		return getDefaultTwitterInstance(context, includeEntities, true, true);
+        return getDefaultTwitterInstance(context, include_entities, true, true);
 	}
 
 	public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities,
@@ -2388,9 +2390,9 @@ public final class Utils implements Constants, TwitterConstants {
 			return te.getMessage();
 	}
 
-	public static Twitter getTwitterInstance(final Context context, final long accountId,
-			final boolean includeEntities) {
-		return getTwitterInstance(context, accountId, includeEntities, true, !MIUIUtils.isMIUI());
+    public static Twitter getTwitterInstance(final Context context, final long account_id,
+                                             final boolean include_entities) {
+        return getTwitterInstance(context, account_id, include_entities, true, !MIUIUtils.isMIUI());
 	}
 
 	public static Twitter getTwitterInstance(final Context context, final long accountId,
@@ -2960,26 +2962,26 @@ public final class Utils implements Constants, TwitterConstants {
         activity.startActivity(intent);
 	}
 
-	public static void openSearch(final Activity activity, final long account_id, final String query) {
-		if (activity == null) return;
+    public static void openSearch(final Context context, final long account_id, final String query) {
+        if (context == null) return;
 		final Uri.Builder builder = new Uri.Builder();
 		builder.scheme(SCHEME_TWITTNUKER);
 		builder.authority(AUTHORITY_SEARCH);
 		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(account_id));
 		builder.appendQueryParameter(QUERY_PARAM_QUERY, query);
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        activity.startActivity(intent);
+        context.startActivity(intent);
 	}
 
-	public static void openStatus(final Activity activity, final long accountId, final long statusId) {
-		if (activity == null || accountId <= 0 || statusId <= 0) return;
+    public static void openStatus(final Context context, final long accountId, final long statusId) {
+        if (context == null || accountId <= 0 || statusId <= 0) return;
 		final Uri.Builder builder = new Uri.Builder();
 		builder.scheme(SCHEME_TWITTNUKER);
 		builder.authority(AUTHORITY_STATUS);
 		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
 		builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(statusId));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        activity.startActivity(intent);
+        context.startActivity(intent);
 	}
 
     public static void openStatus(final Context context, final ParcelableStatus status, Bundle activityOptions) {
@@ -3049,8 +3051,8 @@ public final class Utils implements Constants, TwitterConstants {
         activity.startActivity(intent);
 	}
 
-	public static void openTweetSearch(final Activity activity, final long accountId, final String query) {
-		if (activity == null) return;
+    public static void openTweetSearch(final Context context, final long accountId, final String query) {
+        if (context == null) return;
 		final Uri.Builder builder = new Uri.Builder();
 		builder.scheme(SCHEME_TWITTNUKER);
 		builder.authority(AUTHORITY_SEARCH);
@@ -3060,7 +3062,7 @@ public final class Utils implements Constants, TwitterConstants {
 			builder.appendQueryParameter(QUERY_PARAM_QUERY, query);
 		}
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        activity.startActivity(intent);
+        context.startActivity(intent);
 	}
 
 	public static void openUserBlocks(final Activity activity, final long account_id) {
@@ -3126,9 +3128,9 @@ public final class Utils implements Constants, TwitterConstants {
 
 	}
 
-	public static void openUserListDetails(final Activity activity, final long accountId, final int listId,
+    public static void openUserListDetails(final Context context, final long accountId, final int listId,
 			final long userId, final String screenName, final String listName) {
-		if (activity == null) return;
+        if (context == null) return;
 		final Uri.Builder builder = new Uri.Builder();
 		builder.scheme(SCHEME_TWITTNUKER);
 		builder.authority(AUTHORITY_USER_LIST);
@@ -3146,7 +3148,7 @@ public final class Utils implements Constants, TwitterConstants {
 			builder.appendQueryParameter(QUERY_PARAM_LIST_NAME, listName);
 		}
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        activity.startActivity(intent);
+        context.startActivity(intent);
 	}
 
 	public static void openUserListDetails(final Activity activity, final ParcelableUserList userList) {
@@ -3518,12 +3520,17 @@ public final class Utils implements Constants, TwitterConstants {
 			final boolean isOfficialKey = ParcelableAccountWithCredentials.isOfficialCredentials(context, account);
 		    setMenuItemAvailability(menu, MENU_TRANSLATE, isOfficialKey);
 		}
-		final MenuItem shareItem = menu.findItem(R.id.share_submenu);
-        final Menu shareSubMenu = shareItem != null && shareItem.hasSubMenu() ? shareItem.getSubMenu() : null;
-        if (shareSubMenu != null) {
-			final Intent shareIntent = createStatusShareIntent(context, status);
-            shareSubMenu.removeGroup(MENU_GROUP_STATUS_SHARE);
-            addIntentToMenu(context, shareSubMenu, shareIntent, MENU_GROUP_STATUS_SHARE);
+		final MenuItem shareItem = menu.findItem(R.id.share);
+		final ActionProvider shareProvider = shareItem.getActionProvider();
+		if (shareProvider instanceof StatusShareProvider) {
+			((StatusShareProvider) shareProvider).setStatus(status);
+		} else {
+			if (shareItem.hasSubMenu()) {
+				final Menu shareSubMenu = shareItem.getSubMenu();
+				final Intent shareIntent = createStatusShareIntent(context, status);
+				shareSubMenu.removeGroup(MENU_GROUP_STATUS_SHARE);
+				addIntentToMenu(context, shareSubMenu, shareIntent, MENU_GROUP_STATUS_SHARE);
+			}
 		}
 	}
 	
@@ -3888,7 +3895,8 @@ public final class Utils implements Constants, TwitterConstants {
 		if (isMyRetweet(status)) {
 			cancelRetweet(twitter, status);
 		} else {
-			final long id_to_retweet = status.retweet_id > 0 ? status.retweet_id : status.id;
+			final long id_to_retweet = status.is_retweet && status.retweet_id > 0 ? status.retweet_id
+					: status.id;
 			twitter.retweetStatus(status.account_id, id_to_retweet);
 		}
 	}

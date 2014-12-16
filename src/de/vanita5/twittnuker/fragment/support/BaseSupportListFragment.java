@@ -49,7 +49,6 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
@@ -382,9 +381,6 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 		final Activity activity = getActivity();
 		if (activity == null) return;
 		activity.setProgressBarIndeterminateVisibility(visible);
-		if (activity instanceof HomeActivity) {
-			((HomeActivity) activity).setHomeProgressBarIndeterminateVisibility(visible);
-		}
 	}
 
 	@Override

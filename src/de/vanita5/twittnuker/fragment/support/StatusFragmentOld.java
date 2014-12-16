@@ -190,12 +190,12 @@ public class StatusFragmentOld extends ParcelableStatusesListFragment implements
 			if (getActivity() == null || !isAdded() || isDetached()) return;
 			final String action = intent.getAction();
 			switch (action) {
-				case BROADCAST_FRIENDSHIP_CHANGED: {
-					if (mStatus != null && mStatus.user_id == intent.getLongExtra(EXTRA_USER_ID, -1)) {
-						showFollowInfo(true);
-					}
-					break;
-				}
+//                case BROADCAST_FRIENDSHIP_CHANGED: {
+//                    if (mStatus != null && mStatus.user_id == intent.getLongExtra(EXTRA_USER_ID, -1)) {
+//                        showFollowInfo(true);
+//                    }
+//                    break;
+//                }
 				case BROADCAST_STATUS_FAVORITE_CREATED: {
 					final ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
 					if (mStatus != null && status != null && isSameAccount(context, status.account_id, mStatus.account_id)
@@ -358,10 +358,6 @@ public class StatusFragmentOld extends ParcelableStatusesListFragment implements
 			hidePreviewImages();
 		}
 		if (status == null || getActivity() == null) return;
-		final Bundle args = getArguments();
-		args.putLong(EXTRA_ACCOUNT_ID, status.account_id);
-		args.putLong(EXTRA_STATUS_ID, status.id);
-		args.putParcelable(EXTRA_STATUS, status);
 		setMenuForStatus(getActivity(), mMenuBar.getMenu(), status);
 		mMenuBar.show();
 
@@ -559,15 +555,15 @@ public class StatusFragmentOld extends ParcelableStatusesListFragment implements
 				openMap(getActivity(), location.latitude, location.longitude);
 				break;
 			}
-            case R.id.load_media: {
-				if (status.is_possibly_sensitive) {
-					final LoadSensitiveImageConfirmDialogFragment f = new LoadSensitiveImageConfirmDialogFragment();
-					f.show(getChildFragmentManager(), "load_sensitive_image_confirmation");
-				} else {
-					loadPreviewImages();
-				}
-				break;
-			}
+//            case R.id.media_preview_load: {
+//				if (status.is_possibly_sensitive) {
+//					final LoadSensitiveImageConfirmDialogFragment f = new LoadSensitiveImageConfirmDialogFragment();
+//					f.show(getChildFragmentManager(), "load_sensitive_image_confirmation");
+//				} else {
+//					loadPreviewImages();
+//				}
+//				break;
+//			}
 			case R.id.retweets_container: {
 				openStatusRetweeters(getActivity(), status.account_id, status.retweet_id > 0 ? status.retweet_id
 						: status.id);
@@ -621,14 +617,14 @@ public class StatusFragmentOld extends ParcelableStatusesListFragment implements
 		mFollowIndicator = mHeaderView.findViewById(R.id.follow_indicator);
 		mFollowInfoProgress = (ProgressBar) mHeaderView.findViewById(R.id.follow_info_progress);
 		mProfileView = (ColorLabelRelativeLayout) mHeaderView.findViewById(R.id.profile);
-        mImagePreviewGrid = (LinearLayout) mHeaderView.findViewById(R.id.media_grid);
+        mImagePreviewGrid = (LinearLayout) mHeaderView.findViewById(R.id.media_preview_grid);
 		mRepliesContainer = mHeaderView.findViewById(R.id.replies_container);
 		mRetweetsContainer = mHeaderView.findViewById(R.id.retweets_container);
 		mFavoritesContainer = mHeaderView.findViewById(R.id.favorites_container);
 		mRepliesCountView = (TextView) mHeaderView.findViewById(R.id.replies_count);
 		mRetweetsCountView = (TextView) mHeaderView.findViewById(R.id.retweets_count);
 		mFavoritesCountView = (TextView) mHeaderView.findViewById(R.id.favorites_count);
-        mLoadImagesIndicator = mHeaderView.findViewById(R.id.load_media);
+//        mLoadImagesIndicator = mHeaderView.findViewById(R.id.media_preview_load);
 		mRetryButton = (Button) view.findViewById(R.id.retry);
 		final View cardView = mHeaderView.findViewById(R.id.card);
 		ViewCompat.setTransitionName(cardView, TRANSITION_NAME_CARD);
@@ -695,7 +691,6 @@ public class StatusFragmentOld extends ParcelableStatusesListFragment implements
 	public void onStart() {
 		super.onStart();
 		final IntentFilter filter = new IntentFilter();
-		filter.addAction(BROADCAST_FRIENDSHIP_CHANGED);
 		filter.addAction(BROADCAST_STATUS_FAVORITE_CREATED);
 		filter.addAction(BROADCAST_STATUS_RETWEETED);
 		filter.addAction(BROADCAST_HOTOTIN_EXPANDED);
