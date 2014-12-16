@@ -61,6 +61,8 @@ import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
+import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
+import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
 import de.vanita5.twittnuker.util.message.ProfileUpdatedEvent;
 
@@ -71,6 +73,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import de.vanita5.twittnuker.util.message.StatusDestroyedEvent;
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
@@ -836,9 +839,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		@Override
 		protected void onPostExecute(final SingleResponse<ParcelableStatus> result) {
 			if (result.hasData()) {
-                final Intent intent = new Intent(BROADCAST_STATUS_FAVORITE_CREATED);
-				intent.putExtra(EXTRA_STATUS, result.getData());
-				mContext.sendBroadcast(intent);
+                final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
+                bus.post(new FavoriteCreatedEvent(result.getData()));
 				mMessagesManager.showOkMessage(R.string.status_favorited, false);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_favoriting, result.getException(), true);
@@ -1355,9 +1357,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		@Override
 		protected void onPostExecute(final SingleResponse<ParcelableStatus> result) {
 			if (result.hasData()) {
-                final Intent intent = new Intent(BROADCAST_STATUS_FAVORITE_DESTROYED);
-				intent.putExtra(EXTRA_STATUS, result.getData());
-				mContext.sendBroadcast(intent);
+                final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
+                bus.post(new FavoriteDestroyedEvent(result.getData()));
                 mMessagesManager.showInfoMessage(R.string.status_unfavorited, false);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_unfavoriting, result.getException(), true);
@@ -1457,7 +1458,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
-	class DestroyStatusTask extends ManagedAsyncTask<Void, Void, SingleResponse<twitter4j.Status>> {
+    class DestroyStatusTask extends ManagedAsyncTask<Void, Void, SingleResponse<ParcelableStatus>> {
 
 		private final long account_id;
 
@@ -1470,13 +1471,13 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 		@Override
-        protected SingleResponse<twitter4j.Status> doInBackground(final Void... params) {
+        protected SingleResponse<ParcelableStatus> doInBackground(final Void... params) {
             final Twitter twitter = getTwitterInstance(mContext, account_id, false);
 			if (twitter == null) return SingleResponse.getInstance();
-            twitter4j.Status status = null;
+            ParcelableStatus status = null;
             TwitterException exception = null;
 			try {
-                status = twitter.destroyStatus(status_id);
+                status = new ParcelableStatus(twitter.destroyStatus(status_id), account_id, false);
             } catch (final TwitterException e) {
                 exception = e;
             }
@@ -1492,16 +1493,16 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         }
 
 		@Override
-		protected void onPostExecute(final SingleResponse<twitter4j.Status> result) {
-			if (result.hasData() && result.getData().getId() > 0) {
-				if (result.getData().getRetweetedStatus() != null) {
+        protected void onPostExecute(final SingleResponse<ParcelableStatus> result) {
+            if (result.hasData()) {
+                final ParcelableStatus status = result.getData();
+                if (status.retweet_id > 0) {
 					mMessagesManager.showInfoMessage(R.string.retweet_cancelled, false);
 				} else {
 					mMessagesManager.showInfoMessage(R.string.status_deleted, false);
 				}
-                final Intent intent = new Intent(BROADCAST_STATUS_DESTROYED);
-                intent.putExtra(EXTRA_STATUS_ID, status_id);
-                mContext.sendBroadcast(intent);
+                final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
+                bus.post(new StatusDestroyedEvent(status));
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_deleting, result.getException(), true);
 			}

@@ -196,14 +196,6 @@ public class StatusFragmentOld extends ParcelableStatusesListFragment implements
 //                    }
 //                    break;
 //                }
-				case BROADCAST_STATUS_FAVORITE_CREATED: {
-					final ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
-					if (mStatus != null && status != null && isSameAccount(context, status.account_id, mStatus.account_id)
-							&& status.id == getStatusId()) {
-						getStatus(true);
-					}
-					break;
-				}
 				case BROADCAST_STATUS_RETWEETED: {
 					final long status_id = intent.getLongExtra(EXTRA_STATUS_ID, -1);
 					if (status_id > 0 && status_id == getStatusId()) {
@@ -653,11 +645,12 @@ public class StatusFragmentOld extends ParcelableStatusesListFragment implements
 
 	}
 
-
-
 	@Override
-	public void onMediaClick(View view, ParcelableMedia media, long accountId) {
-
+    public void onMediaClick(final View view, final ParcelableMedia media, long accountId) {
+        final ParcelableStatus status = mStatus;
+        if (status == null) return;
+        // UCD
+        openImageDirectly(getActivity(), status.account_id, media.url);
 	}
 
 	@Override
@@ -691,7 +684,6 @@ public class StatusFragmentOld extends ParcelableStatusesListFragment implements
 	public void onStart() {
 		super.onStart();
 		final IntentFilter filter = new IntentFilter();
-		filter.addAction(BROADCAST_STATUS_FAVORITE_CREATED);
 		filter.addAction(BROADCAST_STATUS_RETWEETED);
 		filter.addAction(BROADCAST_HOTOTIN_EXPANDED);
 		filter.addAction(BROADCAST_TWITLONGER_EXPANDED);

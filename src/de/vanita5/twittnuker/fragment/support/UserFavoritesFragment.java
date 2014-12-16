@@ -23,8 +23,6 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
@@ -33,35 +31,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 
 import java.util.List;
 
-import static de.vanita5.twittnuker.util.Utils.isSameAccount;
-
 public class UserFavoritesFragment extends ParcelableStatusesFragment {
-
-    @Override
-    protected void onReceivedBroadcast(Intent intent, String action) {
-        switch (action) {
-            case BROADCAST_STATUS_FAVORITE_DESTROYED: {
-                final Context context = getActivity();
-                final ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
-                final Bundle args = getArguments();
-                if (context == null || status == null || args == null) return;
-                final long userId = args.getLong(EXTRA_USER_ID, -1);
-                final String screenName = args.getString(EXTRA_SCREEN_NAME);
-                if (isSameAccount(context, status.account_id, userId)
-                        || isSameAccount(context, status.account_id, screenName)) {
-                    deleteStatus(status.id);
-                }
-                return;
-            }
-        }
-        super.onReceivedBroadcast(intent, action);
-    }
-
-    @Override
-    protected void onSetIntentFilter(IntentFilter filter) {
-        super.onSetIntentFilter(filter);
-        filter.addAction(BROADCAST_STATUS_FAVORITE_DESTROYED);
-    }
 
     @Override
     public Loader<List<ParcelableStatus>> onCreateLoader(int id, Bundle args) {

@@ -20,11 +20,13 @@ import android.widget.ProgressBar;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.view.helper.PressElevateViewHelper;
 import de.vanita5.twittnuker.view.iface.IHomeActionButton;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class HomeActionButton extends FrameLayout implements IHomeActionButton {
 
+    private final PressElevateViewHelper mHelper;
 	private final ImageView mIconView;
 	private final ProgressBar mProgressBar;
 
@@ -38,6 +40,7 @@ public class HomeActionButton extends FrameLayout implements IHomeActionButton {
 
 	public HomeActionButton(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
+        mHelper = new PressElevateViewHelper(this);
         inflate(ThemeUtils.getActionBarContext(context), R.layout.action_item_home_actions, this);
 		mIconView = (ImageView) findViewById(android.R.id.icon);
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
@@ -88,6 +91,15 @@ public class HomeActionButton extends FrameLayout implements IHomeActionButton {
 		setTitle(getResources().getText(title));
 	}
 
+    @Override
+    public void setPressed(boolean pressed) {
+        final boolean oldState = mHelper.getState();
+        super.setPressed(pressed);
+        final boolean state = mHelper.getState();
+        if (oldState == state) return;
+        mHelper.updateButtonState();
+    }
+
 	private static class HomeActionButtonOutlineProvider extends ViewOutlineProvider {
 		@Override
 		public void getOutline(View view, Outline outline) {
@@ -97,4 +109,6 @@ public class HomeActionButton extends FrameLayout implements IHomeActionButton {
 			outline.setOval(left, top, left + size, top + size);
 		}
 	}
+
+
 }
