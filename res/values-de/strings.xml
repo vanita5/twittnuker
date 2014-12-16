@@ -88,9 +88,9 @@
     <string name="image_load_summary">Deaktivieren um die Scroll-Geschwindigkeit zu erhöhen und den Datenverbrauch zu verringern</string>
     <string name="in_reply_to_name">Als Antwort auf <xliff:g id="user_name">%s</xliff:g></string>
 
-    <string name="name_retweeted">(D) <xliff:g id="user_name">%s</xliff:g> retweetete</string>
-    <string name="name_and_another_retweeted">(D) <xliff:g id="user_name">%1$s</xliff:g> und eine weitere Person retweeteten</string>
-    <string name="name_and_count_retweeted">(D) <xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> andere retweeteten</string>
+    <string name="name_retweeted">Retweetet von <xliff:g id="user_name">%s</xliff:g></string>
+    <string name="name_and_another_retweeted">Retweetet von <xliff:g id="user_name">%1$s</xliff:g> und einer weiteren Person</string>
+    <string name="name_and_count_retweeted">Retweetet von <xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> anderen</string>
     <string name="N_retweeted_quantity_one"><xliff:g id="retweet_count">%d</xliff:g> Retweet</string>
     <string name="N_retweeted_quantity_other"><xliff:g id="retweet_count">%d</xliff:g> Retweets</string>
 
@@ -630,6 +630,7 @@
     <string name="profile_text_color">Textfarbe</string>
     <string name="profile_background_color">Hintergrundfarbe</string>
     <string name="profile_link_color_main_color">Linkfarbe (Hauptfarbe)</string>
+    <string name="retweet_quote_confirm_title">Retweet</string>
 
 
     <!-- Twittnuker -->

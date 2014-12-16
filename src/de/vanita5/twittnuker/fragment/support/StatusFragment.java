@@ -121,11 +121,20 @@ public class StatusFragment extends BaseSupportFragment
     private static final int LOADER_ID_DETAIL_STATUS = 1;
     private static final int LOADER_ID_STATUS_REPLIES = 2;
 
+    private static final int STATE_LOADED = 1;
+    private static final int STATE_LOADING = 2;
+    private static final int STATE_ERROR = 3;
+
     private RecyclerView mRecyclerView;
     private StatusAdapter mStatusAdapter;
     private boolean mRepliesLoaderInitialized;
 
     private LoadConversationTask mLoadConversationTask;
+
+    private LinearLayoutManager mLayoutManager;
+    private View mStatusContent;
+    private View mProgressContainer;
+    private View mErrorContainer;
 
     private LoaderCallbacks<List<ParcelableStatus>> mRepliesLoaderCallback = new LoaderCallbacks<List<ParcelableStatus>>() {
 		@Override
@@ -151,7 +160,6 @@ public class StatusFragment extends BaseSupportFragment
 
         }
 	};
-    private LinearLayoutManager mLayoutManager;
 
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
@@ -212,12 +220,14 @@ public class StatusFragment extends BaseSupportFragment
         mStatusAdapter = new StatusAdapter(this, compact);
         mRecyclerView.setAdapter(mStatusAdapter);
 
+        setState(STATE_LOADING);
+
         getLoaderManager().initLoader(LOADER_ID_DETAIL_STATUS, getArguments(), this);
     }
 
     @Override
-    public void onMediaClick(View view, ParcelableMedia media) {
-
+    public void onMediaClick(View view, ParcelableMedia media, long accountId) {
+        Utils.openImageDirectly(getActivity(), accountId, media.url);
     }
 
     @Override
@@ -238,15 +248,26 @@ public class StatusFragment extends BaseSupportFragment
                 final int position = mStatusAdapter.findPositionById(itemId);
                 mLayoutManager.scrollToPositionWithOffset(position, top);
             }
+            setState(STATE_LOADED);
         } else {
             //TODO show errors
+            setState(STATE_ERROR);
         }
+    }
+
+    private void setState(int state) {
+        mStatusContent.setVisibility(state == STATE_LOADED ? View.VISIBLE : View.GONE);
+        mProgressContainer.setVisibility(state == STATE_LOADING ? View.VISIBLE : View.GONE);
+        mErrorContainer.setVisibility(state == STATE_ERROR ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mStatusContent = view.findViewById(R.id.status_content);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mProgressContainer = view.findViewById(R.id.progress_container);
+        mErrorContainer = view.findViewById(R.id.error_retry_container);
     }
 
     @Override
@@ -316,12 +337,13 @@ public class StatusFragment extends BaseSupportFragment
         private static final int VIEW_TYPE_SPACE = 4;
 
         private final Context mContext;
+        private final StatusFragment mFragment;
         private final LayoutInflater mInflater;
         private final ImageLoaderWrapper mImageLoader;
 
         private final boolean mNameFirst;
         private final int mCardLayoutResource;
-        private final StatusFragment mFragment;
+        private final int mTextSize;
 
         private ParcelableStatus mStatus;
 
@@ -329,6 +351,7 @@ public class StatusFragment extends BaseSupportFragment
 
         public StatusAdapter(StatusFragment fragment, boolean compact) {
             final Context context = fragment.getActivity();
+            final Resources res = context.getResources();
             final SharedPreferences preferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
                     Context.MODE_PRIVATE);
             mFragment = fragment;
@@ -336,6 +359,7 @@ public class StatusFragment extends BaseSupportFragment
             mInflater = LayoutInflater.from(context);
             mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
             mNameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
+            mTextSize = preferences.getInt(KEY_TEXT_SIZE, res.getInteger(R.integer.default_text_size));
             if (compact) {
                 mCardLayoutResource = R.layout.card_item_status_compat;
 		    } else {
@@ -385,6 +409,10 @@ public class StatusFragment extends BaseSupportFragment
         public int getStatusCount() {
             return getConversationCount() + 1 + getRepliesCount() + 1;
 	    }
+
+        public int getTextSize() {
+            return mTextSize;
+        }
 
 	    @Override
         public void onStatusClick(StatusViewHolder holder, int position) {
@@ -586,11 +614,10 @@ public class StatusFragment extends BaseSupportFragment
         }
     }
 
-    private static class DetailStatusViewHolder extends ViewHolder implements OnClickListener, OnMediaClickListener, OnMenuItemClickListener {
+    private static class DetailStatusViewHolder extends ViewHolder implements OnClickListener, OnMenuItemClickListener {
 
         private final StatusAdapter adapter;
 
-        private final View cardContent, progressContainer;
         private final CardView cardView;
 
         private final TwidereMenuBar menuBar;
@@ -613,8 +640,6 @@ public class StatusFragment extends BaseSupportFragment
             super(itemView);
             this.adapter = adapter;
             cardView = (CardView) itemView.findViewById(R.id.card);
-            cardContent = itemView.findViewById(R.id.card_content);
-            progressContainer = itemView.findViewById(R.id.progress_container);
             menuBar = (TwidereMenuBar) itemView.findViewById(R.id.menu_bar);
             nameView = (TextView) itemView.findViewById(R.id.name);
             screenNameView = (TextView) itemView.findViewById(R.id.screen_name);
@@ -750,7 +775,6 @@ public class StatusFragment extends BaseSupportFragment
 
         public void showStatus(ParcelableStatus status) {
             if (status == null) return;
-            progressContainer.setVisibility(View.GONE);
             final Context context = adapter.getContext();
             final Resources resources = context.getResources();
             final ImageLoaderWrapper loader = adapter.getImageLoader();
@@ -807,22 +831,22 @@ public class StatusFragment extends BaseSupportFragment
                 mediaPreviewGrid.removeAllViews();
                 final int maxColumns = resources.getInteger(R.integer.grid_column_image_preview);
                 MediaPreviewUtils.addToLinearLayout(mediaPreviewGrid, loader, status.media,
-                        maxColumns, this);
+						status.account_id, maxColumns, adapter.getFragment());
             }
             setMenuForStatus(context, menuBar.getMenu(), status);
             menuBar.show();
 		}
-
-        @Override
-        public void onMediaClick(View view, ParcelableMedia media) {
-            adapter.mFragment.onMediaClick(view, media);
-        }
 
         private void initViews() {
             menuBar.setOnMenuItemClickListener(this);
             menuBar.inflate(R.menu.menu_status);
             profileContainer.setOnClickListener(this);
 
+            final int defaultTextSize = adapter.getTextSize();
+            nameView.setTextSize(defaultTextSize * 1.25f);
+            textView.setTextSize(defaultTextSize * 1.25f);
+            screenNameView.setTextSize(defaultTextSize * 0.85f);
+            timeSourceView.setTextSize(defaultTextSize * 0.85f);
     	}
 
 

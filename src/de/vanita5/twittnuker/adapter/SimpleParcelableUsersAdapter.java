@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.Utils.configBaseAdapter;
-import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,13 +35,16 @@ import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
 import java.util.List;
 
+import static de.vanita5.twittnuker.util.Utils.configBaseAdapter;
+import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
+
 public class SimpleParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> implements IBaseAdapter {
 
     private final ImageLoaderWrapper mImageLoader;
 	private final Context mContext;
 
 	public SimpleParcelableUsersAdapter(final Context context) {
-		super(context, R.layout.list_item_two_line);
+        super(context, R.layout.list_item_user);
 		mContext = context;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mImageLoader = app.getImageLoaderWrapper();

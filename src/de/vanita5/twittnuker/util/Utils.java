@@ -3897,7 +3897,7 @@ public final class Utils implements Constants, TwitterConstants {
 		} else {
 			final long id_to_retweet = status.is_retweet && status.retweet_id > 0 ? status.retweet_id
 					: status.id;
-			twitter.retweetStatus(status.account_id, id_to_retweet);
+			twitter.retweetStatusAsync(status.account_id, id_to_retweet);
 		}
 	}
 

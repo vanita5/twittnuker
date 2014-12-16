@@ -40,8 +40,8 @@ import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ListResponse;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -60,6 +60,9 @@ import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
+import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
+import de.vanita5.twittnuker.util.message.ProfileUpdatedEvent;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -68,9 +71,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import de.vanita5.twittnuker.task.TwidereAsyncTask;
-import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
-import de.vanita5.twittnuker.util.message.ProfileUpdatedEvent;
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
@@ -368,7 +368,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		return mAsyncTaskManager.add(task, true);
 	}
 
-	public int retweetStatus(final long accountId, final long status_id) {
+    public int retweetStatusAsync(final long accountId, final long status_id) {
 		final RetweetStatusTask task = new RetweetStatusTask(accountId, status_id);
 		return mAsyncTaskManager.add(task, true);
 	}

@@ -21,36 +21,21 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<FrameLayout
+<de.vanita5.twittnuker.view.SquareFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:descendantFocusability="beforeDescendants"
-    android:orientation="vertical">
+    tools:layout_height="?android:actionBarSize"
+    android:padding="@dimen/element_spacing_small">
 
+    <de.vanita5.twittnuker.view.CircularImageView
+        android:id="@android:id/icon"
+        android:layout_width="@dimen/icon_size_list_item_small"
+        android:layout_height="@dimen/icon_size_list_item_small"
+        android:layout_gravity="center"
+        android:contentDescription="@string/profile_image"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/ic_profile_image_default"/>
 
-    <RelativeLayout
-        android:id="@+id/status_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:visibility="gone">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <requestFocus/>
-        </android.support.v7.widget.RecyclerView>
-
-        <de.vanita5.twittnuker.view.themed.ThemedMultiAutoCompleteTextView
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="wrap_content"/>
-
-
-    </RelativeLayout>
-
-    <include layout="@layout/layout_content_fragment_common"/>
-</FrameLayout>
+</de.vanita5.twittnuker.view.SquareFrameLayout>

@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatus.CursorIndices;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.UserColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.CircularImageView;
@@ -61,11 +62,14 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
     private final View mediaPreviewContainer;
     private final TextView replyCountView, retweetCountView, favoriteCountView;
 
+
+    public StatusViewHolder(View itemView) {
+        this(null, itemView);
+    }
+
     public StatusViewHolder(IStatusesAdapter<?> adapter, View itemView) {
         super(itemView);
         this.adapter = adapter;
-        itemView.findViewById(R.id.item_content).setOnClickListener(this);
-        itemView.findViewById(R.id.menu).setOnClickListener(this);
         profileImageView = (CircularImageView) itemView.findViewById(R.id.profile_image);
         profileTypeView = (ImageView) itemView.findViewById(R.id.profile_type);
         textView = (TextView) itemView.findViewById(R.id.text);
@@ -83,6 +87,11 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         favoriteCountView = (TextView) itemView.findViewById(R.id.favorite_count);
 //TODO
 //        profileImageView.setSelectorColor(ThemeUtils.getUserHighlightColor(itemView.getContext()));
+    }
+
+    public void setupViews() {
+        itemView.findViewById(R.id.item_content).setOnClickListener(this);
+        itemView.findViewById(R.id.item_menu).setOnClickListener(this);
 
         itemView.setOnClickListener(this);
         profileImageView.setOnClickListener(this);
@@ -92,9 +101,13 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         favoriteCountView.setOnClickListener(this);
 	}
 
-    public void displayStatus(ParcelableStatus status) {
-        final ImageLoaderWrapper loader = adapter.getImageLoader();
-        final Context context = adapter.getContext();
+    public void displayStatus(final ParcelableStatus status) {
+        displayStatus(adapter.getContext(), adapter.getImageLoader(),
+				adapter.getImageLoadingHandler(), status);
+    }
+
+    public void displayStatus(final Context context, final ImageLoaderWrapper loader,
+                              final ImageLoadingHandler handler, final ParcelableStatus status) {
         final ParcelableMedia[] media = status.media;
 
         if (status.retweet_id > 0) {
@@ -140,13 +153,9 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
 
         if (media != null && media.length > 0) {
             final ParcelableMedia firstMedia = media[0];
-            if (status.text_plain.codePointCount(0, status.text_plain.length()) == firstMedia.end) {
-                textView.setText(status.text_unescaped.substring(0, firstMedia.start));
-		    } else {
-                textView.setText(status.text_unescaped);
-		    }
+            textView.setText(status.text_unescaped);
             loader.displayPreviewImageWithCredentials(mediaPreviewView, firstMedia.media_url,
-                    status.account_id, adapter.getImageLoadingHandler());
+                    status.account_id, handler);
             mediaPreviewContainer.setVisibility(View.VISIBLE);
         } else {
             loader.cancelDisplayTask(mediaPreviewView);
@@ -247,14 +256,9 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         loader.displayProfileImage(profileImageView, user_profile_image_url);
 
         if (media != null && media.length > 0) {
-            final String text_plain = cursor.getString(indices.text_plain);
-            final String text_unescaped = cursor.getString(indices.text_unescaped);
+            final String textUnescaped = cursor.getString(indices.text_unescaped);
             final ParcelableMedia firstMedia = media[0];
-            if (text_plain.codePointCount(0, text_plain.length()) == firstMedia.end) {
-                textView.setText(text_unescaped.substring(0, firstMedia.start));
-            } else {
-                textView.setText(text_unescaped);
-            }
+            textView.setText(textUnescaped);
             loader.displayPreviewImageWithCredentials(mediaPreviewView, firstMedia.media_url,
                     account_id, adapter.getImageLoadingHandler());
             mediaPreviewContainer.setVisibility(View.VISIBLE);
@@ -307,7 +311,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
                 adapter.onStatusClick(this, position);
                 break;
 		    }
-            case R.id.menu: {
+            case R.id.item_menu: {
                 adapter.onItemMenuClick(this, position);
                 break;
 	        }
@@ -315,7 +319,9 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
                 adapter.onUserProfileClick(this, position);
                 break;
 	        }
-            case R.id.reply_count: {
+            case R.id.reply_count:
+            case R.id.retweet_count:
+            case R.id.favorite_count: {
                 adapter.onItemActionClick(this, v.getId(), position);
                 break;
 	        }

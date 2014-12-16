@@ -653,11 +653,11 @@ public class StatusFragmentOld extends ParcelableStatusesListFragment implements
 
 	}
 
+
+
 	@Override
-	public void onMediaClick(final View view, final ParcelableMedia media) {
-		final ParcelableStatus status = mStatus;
-		if (status == null) return;
-		openImageDirectly(getActivity(), status.account_id, media.url);
+	public void onMediaClick(View view, ParcelableMedia media, long accountId) {
+
 	}
 
 	@Override
@@ -899,13 +899,15 @@ public class StatusFragmentOld extends ParcelableStatusesListFragment implements
 	}
 
 	private void loadPreviewImages() {
-		if (mStatus == null) return;
+        final ParcelableStatus status = mStatus;
+        if (status == null) return;
 		mLoadImagesIndicator.setVisibility(View.GONE);
 		mImagePreviewGrid.setVisibility(View.VISIBLE);
 		mImagePreviewGrid.removeAllViews();
 		if (mStatus.media != null) {
 			final int maxColumns = getResources().getInteger(R.integer.grid_column_image_preview);
-			MediaPreviewUtils.addToLinearLayout(mImagePreviewGrid, mImageLoader, mStatus.media, maxColumns, this);
+            MediaPreviewUtils.addToLinearLayout(mImagePreviewGrid, mImageLoader, status.media,
+                    status.account_id, maxColumns, this);
 		}
 	}
 

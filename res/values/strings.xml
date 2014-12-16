@@ -659,6 +659,7 @@
     <string name="profile_text_color">Text color</string>
     <string name="profile_background_color">Background color</string>
     <string name="profile_link_color_main_color">Link color (main color)</string>
+    <string name="retweet_quote_confirm_title">Retweet to your followers?</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
