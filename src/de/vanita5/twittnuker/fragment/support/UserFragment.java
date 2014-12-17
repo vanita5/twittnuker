@@ -73,7 +73,6 @@ import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
-import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.text.TextAlphaSpan;
@@ -90,10 +89,10 @@ import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
 import de.vanita5.twittnuker.util.message.ProfileUpdatedEvent;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
-import de.vanita5.twittnuker.view.CircularImageView;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.ProfileBannerImageView;
+import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
@@ -119,7 +118,6 @@ import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.getOriginalTwitterProfileImage;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
-import static de.vanita5.twittnuker.util.Utils.isMyAccount;
 import static de.vanita5.twittnuker.util.Utils.openImage;
 import static de.vanita5.twittnuker.util.Utils.openStatus;
 import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
@@ -144,7 +142,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
 	private ImageLoaderWrapper mProfileImageLoader;
 
-	private CircularImageView mProfileImageView;
+    private ProfileImageView mProfileImageView;
 	private ImageView mProfileTypeView;
 	private ProfileBannerImageView mProfileBannerView;
 	private TextView mNameView, mScreenNameView, mDescriptionView, mLocationView, mURLView, mCreatedAtView,
@@ -189,11 +187,13 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     private void updateRefreshState() {
+        final ParcelableUser user = mUser;
+        if (user == null) return;
         final AsyncTwitterWrapper twitter = getTwitterWrapper();
         final boolean is_creating_friendship = twitter != null
-                && twitter.isCreatingFriendship(mUser.account_id, mUser.id);
+                && twitter.isCreatingFriendship(user.account_id, user.id);
         final boolean is_destroying_friendship = twitter != null
-                && twitter.isDestroyingFriendship(mUser.account_id, mUser.id);
+                && twitter.isDestroyingFriendship(user.account_id, user.id);
         setProgressBarIndeterminateVisibility(is_creating_friendship || is_destroying_friendship);
         invalidateOptionsMenu();
     }
@@ -336,7 +336,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		mProgressContainer.setVisibility(View.GONE);
 		mUser = user;
         final int userColor = getUserColor(activity, user.id, true);
-        mProfileImageView.setBorderColor(userColor);
+        mProfileImageView.setBorderColor(userColor != 0 ? userColor : Color.WHITE);
         mProfileNameContainer.drawEnd(getAccountColor(activity, user.account_id));
 		mNameView.setText(user.name);
 		final int typeIconRes = getUserTypeIconRes(user.is_verified, user.is_protected);
@@ -381,16 +381,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		final int defWidth = res.getDisplayMetrics().widthPixels;
 		final int width = mBannerWidth > 0 ? mBannerWidth : defWidth;
 		mProfileImageLoader.displayProfileBanner(mProfileBannerView, user.profile_banner_url, width);
-        if (isMyAccount(activity, user.id)) {
-			final ContentResolver resolver = getContentResolver();
-			final ContentValues values = new ContentValues();
-			values.put(Accounts.NAME, user.name);
-			values.put(Accounts.SCREEN_NAME, user.screen_name);
-			values.put(Accounts.PROFILE_IMAGE_URL, user.profile_image_url);
-			values.put(Accounts.PROFILE_BANNER_URL, user.profile_banner_url);
-			final String where = Accounts.ACCOUNT_ID + " = " + user.id;
-			resolver.update(Accounts.CONTENT_URI, values, where, null);
-		}
         final Relationship relationship = mRelationship;
         if (relationship == null || relationship.getTargetUserId() != user.id) {
 			getFriendship();
@@ -490,11 +480,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		final LoaderManager lm = getLoaderManager();
 		lm.destroyLoader(LOADER_ID_USER);
 		lm.destroyLoader(LOADER_ID_FRIENDSHIP);
-		if (!isMyAccount(getActivity(), accountId)) {
-            mCardContent.setVisibility(View.GONE);
-			mErrorRetryContainer.setVisibility(View.GONE);
-			return;
-		}
 		final Bundle args = new Bundle();
 		args.putLong(EXTRA_ACCOUNT_ID, accountId);
 		args.putLong(EXTRA_USER_ID, userId);
@@ -509,7 +494,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		if (accountId == -1 || userId == -1 && screenName == null) {
             mCardContent.setVisibility(View.GONE);
 			mErrorRetryContainer.setVisibility(View.GONE);
-			return;
 		}
 	}
 
@@ -823,7 +807,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		mFriendsContainer = headerView.findViewById(R.id.friends_container);
 		mFriendsCount = (TextView) headerView.findViewById(R.id.friends_count);
         mProfileNameContainer = (IColorLabelView) headerView.findViewById(R.id.profile_name_container);
-		mProfileImageView = (CircularImageView) headerView.findViewById(R.id.profile_image);
+        mProfileImageView = (ProfileImageView) headerView.findViewById(R.id.profile_image);
 		mProfileTypeView = (ImageView) headerView.findViewById(R.id.profile_type);
 		mDescriptionContainer = headerView.findViewById(R.id.description_container);
 		mLocationContainer = headerView.findViewById(R.id.location_container);

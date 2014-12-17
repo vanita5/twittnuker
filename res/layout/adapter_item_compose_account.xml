@@ -5,8 +5,9 @@
     android:layout_height="match_parent"
     android:padding="@dimen/element_spacing_small">
 
-    <de.vanita5.twittnuker.view.CircularImageView
-    android:id="@android:id/icon"
+    <de.vanita5.twittnuker.view.ProfileImageView
+        android:id="@android:id/icon"
+        style="?profileImageStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

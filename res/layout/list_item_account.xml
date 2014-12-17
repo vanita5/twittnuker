@@ -36,7 +36,7 @@
         android:layout_weight="0"
         android:background="@drawable/list_drag_handle"/>
 
-    <de.vanita5.twittnuker.view.CircularImageView
+    <de.vanita5.twittnuker.view.ProfileImageView
 		android:id="@android:id/icon"
         style="?profileImageStyle"
 		android:layout_width="@dimen/icon_size_list_item"

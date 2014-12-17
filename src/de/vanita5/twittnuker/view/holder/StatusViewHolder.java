@@ -43,7 +43,7 @@ import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.UserColorUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.CircularImageView;
+import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.ShortTimeView;
 
 import java.util.Locale;
@@ -57,7 +57,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
     private final IStatusesAdapter<?> adapter;
 
     private final ImageView retweetProfileImageView;
-    private final CircularImageView profileImageView;
+    private final ProfileImageView profileImageView;
     private final ImageView profileTypeView;
     private final ImageView mediaPreviewView;
     private final TextView textView;
@@ -75,7 +75,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
     public StatusViewHolder(IStatusesAdapter<?> adapter, View itemView) {
         super(itemView);
         this.adapter = adapter;
-        profileImageView = (CircularImageView) itemView.findViewById(R.id.profile_image);
+        profileImageView = (ProfileImageView) itemView.findViewById(R.id.profile_image);
         profileTypeView = (ImageView) itemView.findViewById(R.id.profile_type);
         textView = (TextView) itemView.findViewById(R.id.text);
         nameView = (TextView) itemView.findViewById(R.id.name);
@@ -329,7 +329,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         return (CardView) itemView.findViewById(R.id.card);
     }
 
-    public CircularImageView getProfileImageView() {
+    public ProfileImageView getProfileImageView() {
         return profileImageView;
     }
 

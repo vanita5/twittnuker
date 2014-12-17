@@ -44,7 +44,7 @@ import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.DirectMessageConversationEntriesAdapter;
+import de.vanita5.twittnuker.adapter.DirectMessageEntriesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
@@ -77,7 +77,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 
 	private boolean mLoadMoreAutomatically;
 
-	private DirectMessageConversationEntriesAdapter mAdapter;
+	private DirectMessageEntriesAdapter mAdapter;
 	private int mFirstVisibleItem;
 
     private final LongSparseArray<Set<Long>> mUnreadCountsToRemove = new LongSparseArray<>();
@@ -87,8 +87,8 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 	private RemoveUnreadCountsTask mRemoveUnreadCountsTask;
 
 	@Override
-	public DirectMessageConversationEntriesAdapter getListAdapter() {
-		return (DirectMessageConversationEntriesAdapter) super.getListAdapter();
+	public DirectMessageEntriesAdapter getListAdapter() {
+		return (DirectMessageEntriesAdapter) super.getListAdapter();
 	}
 
     public final LongSparseArray<Set<Long>> getUnreadCountsToRemove() {
@@ -100,7 +100,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		super.onActivityCreated(savedInstanceState);
 		mMultiSelectManager = getMultiSelectManager();
-		mAdapter = new DirectMessageConversationEntriesAdapter(getActivity());
+		mAdapter = new DirectMessageEntriesAdapter(getActivity());
 		setListAdapter(mAdapter);
 		mListView = getListView();
         mListView.setDivider(null);
@@ -340,7 +340,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 
     static class RemoveUnreadCountsTask extends TwidereAsyncTask<Void, Void, Void> {
 		private final Set<Integer> read_positions;
-		private final DirectMessageConversationEntriesAdapter adapter;
+		private final DirectMessageEntriesAdapter adapter;
 		private final DirectMessagesFragment fragment;
 
 		RemoveUnreadCountsTask(final Set<Integer> read_positions, final DirectMessagesFragment fragment) {

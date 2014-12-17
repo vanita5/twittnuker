@@ -29,7 +29,7 @@
     tools:layout_height="?android:actionBarSize"
     android:padding="@dimen/element_spacing_small">
 
-    <de.vanita5.twittnuker.view.CircularImageView
+    <de.vanita5.twittnuker.view.ProfileImageView
         android:id="@android:id/icon"
         android:layout_width="@dimen/icon_size_list_item_small"
         android:layout_height="@dimen/icon_size_list_item_small"

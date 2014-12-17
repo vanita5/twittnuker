@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
-import de.vanita5.twittnuker.view.CircularImageView;
+import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.iface.IExtendedView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.TouchInterceptor;
 
@@ -121,7 +121,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 			ViewAccessor.setBackground(statusContentView, ThemeUtils.getWindowBackground(context));
 
 			final View profileView = statusContentView.findViewById(R.id.profile_container);
-			final CircularImageView profileImageView = (CircularImageView) statusContentView.findViewById(R.id.profile_image);
+			final ProfileImageView profileImageView = (ProfileImageView) statusContentView.findViewById(R.id.profile_image);
 			final TextView nameView = (TextView) statusContentView.findViewById(R.id.name);
 			final TextView screenNameView = (TextView) statusContentView.findViewById(R.id.screen_name);
 			final TextView textView = (TextView) statusContentView.findViewById(R.id.text);

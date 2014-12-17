@@ -19,6 +19,9 @@
     <color name="material_grey">#9E9E9E</color>
     <color name="material_blue_grey">#607D8B</color>
 
+    <color name="material_light_blue_700">#0288D1</color>
+    <color name="material_light_blue_a200">#40C4FF</color>
+
     <color name="material_dark">#ff212121</color>
     <color name="material_light">#ffbdbdbd</color>
 </resources>
