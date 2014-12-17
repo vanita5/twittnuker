@@ -48,6 +48,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -64,7 +65,6 @@ import com.squareup.otto.Subscribe;
 import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ImagePickerActivity;
-import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.DirectMessagesConversationAdapter;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
@@ -72,21 +72,19 @@ import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListe
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.loader.support.UserSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TweetStore;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.Conversation;
-import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.view.StatusTextCountView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
@@ -94,12 +92,8 @@ import de.vanita5.twittnuker.view.iface.IColorLabelView;
 import java.util.List;
 import java.util.Locale;
 
-import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.Utils.buildDirectMessageConversationUri;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
-import static de.vanita5.twittnuker.util.Utils.getOldestMessageIdsFromDatabase;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 
 public class DirectMessagesConversationFragment extends BaseSupportFragment implements
@@ -111,6 +105,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 	private TwidereValidator mValidator;
 	private AsyncTwitterWrapper mTwitterWrapper;
 	private SharedPreferences mPreferences;
+    private SharedPreferences mMessageDrafts;
 
     private ListView mMessagesListView, mUsersSearchList;
 	private EditText mEditText;
@@ -127,7 +122,6 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 	private PopupMenu mPopupMenu;
 
 	private ParcelableDirectMessage mSelectedDirectMessage;
-	private long mAccountId, mRecipientId;
 	private boolean mLoaderInitialized;
 	private boolean mLoadMoreAutomatically;
 	private String mImageUri;
@@ -137,7 +131,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 	private DirectMessagesConversationAdapter mAdapter;
     private SimpleParcelableUsersAdapter mUsersSearchAdapter;
 
-    private ParcelableAccount mSender;
+    private ParcelableCredentials mAccount;
     private ParcelableUser mRecipient;
 
     private ImageLoaderWrapper mImageLoader;
@@ -188,30 +182,29 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
         setHasOptionsMenu(true);
         final FragmentActivity activity = getActivity();
         final ActionBar actionBar = activity.getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
-                    ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
-            actionBar.setCustomView(R.layout.actionbar_custom_view_message_user_picker);
-            final View actionBarView = actionBar.getCustomView();
-            mAccountSpinner = (Spinner) actionBarView.findViewById(R.id.account_spinner);
-            mUserQuery = (EditText) actionBarView.findViewById(R.id.user_query);
-            mQueryButton = actionBarView.findViewById(R.id.query_button);
-            final List<ParcelableAccount> accounts = ParcelableAccount.getAccountsList(activity, false);
-            final AccountsSpinnerAdapter adapter = new AccountsSpinnerAdapter(actionBar.getThemedContext(), R.layout.spinner_item_account_icon);
-            adapter.setDropDownViewResource(R.layout.list_item_user);
-            adapter.addAll(accounts);
-            mAccountSpinner.setAdapter(adapter);
-            mAccountSpinner.setOnItemSelectedListener(this);
-            mQueryButton.setOnClickListener(this);
-        }
+        if (actionBar == null) throw new NullPointerException();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+                ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setCustomView(R.layout.actionbar_custom_view_message_user_picker);
+        final View actionBarView = actionBar.getCustomView();
+        mAccountSpinner = (Spinner) actionBarView.findViewById(R.id.account_spinner);
+        mUserQuery = (EditText) actionBarView.findViewById(R.id.user_query);
+        mQueryButton = actionBarView.findViewById(R.id.query_button);
+        final List<ParcelableCredentials> accounts = ParcelableCredentials.getCredentialsList(activity, false);
+        final AccountsSpinnerAdapter accountsSpinnerAdapter = new AccountsSpinnerAdapter(actionBar.getThemedContext(), R.layout.spinner_item_account_icon);
+        accountsSpinnerAdapter.setDropDownViewResource(R.layout.list_item_user);
+        accountsSpinnerAdapter.addAll(accounts);
+        mAccountSpinner.setAdapter(accountsSpinnerAdapter);
+        mAccountSpinner.setOnItemSelectedListener(this);
+        mQueryButton.setOnClickListener(this);
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mMessageDrafts = getSharedPreferences(MESSAGE_DRAFTS_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mImageLoader = TwittnukerApplication.getInstance(getActivity()).getImageLoaderWrapper();
 		mTwitterWrapper = getTwitterWrapper();
 		mValidator = new TwidereValidator(getActivity());
 		mLocale = getResources().getConfiguration().locale;
 		mAdapter = new DirectMessagesConversationAdapter(getActivity());
         mMessagesListView.setAdapter(mAdapter);
-		mAdapter.setMenuButtonClickListener(this);
         mMessagesListView.setDivider(null);
         mMessagesListView.setSelector(android.R.color.transparent);
         mMessagesListView.setFastScrollEnabled(mPreferences.getBoolean(KEY_FAST_SCROLL_THUMB, false));
@@ -220,6 +213,14 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 
         mUsersSearchAdapter = new SimpleParcelableUsersAdapter(activity);
         mUsersSearchList.setAdapter(mUsersSearchAdapter);
+        mUsersSearchList.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final ParcelableCredentials account = (ParcelableCredentials) mAccountSpinner.getSelectedItem();
+                showConversation(account, mUsersSearchAdapter.getItem(position));
+                updateProfileImage();
+            }
+        });
 
 		if (mPreferences.getBoolean(KEY_QUICK_SEND, false)) {
 			mEditText.setOnEditorActionListener(this);
@@ -231,18 +232,38 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 		mAddImageButton.setOnClickListener(this);
 		mSendButton.setEnabled(false);
 		if (savedInstanceState != null) {
-			final long accountId = savedInstanceState.getLong(EXTRA_ACCOUNT_ID, -1);
-			final long recipientId = savedInstanceState.getLong(EXTRA_RECIPIENT_ID, -1);
-			showConversation(accountId, recipientId);
+            final ParcelableCredentials account = savedInstanceState.getParcelable(EXTRA_ACCOUNT);
+            final ParcelableUser recipient = savedInstanceState.getParcelable(EXTRA_USER);
+            showConversation(account, recipient);
 			mEditText.setText(savedInstanceState.getString(EXTRA_TEXT));
 			mImageUri = savedInstanceState.getString(EXTRA_IMAGE_URI);
 		} else {
 			final Bundle args = getArguments();
-			final long accountId = args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-			final long recipientId = args != null ? args.getLong(EXTRA_RECIPIENT_ID, -1) : -1;
-			showConversation(accountId, recipientId);
-		}
-		final boolean isValid = mAccountId > 0 && mRecipientId > 0;
+            final ParcelableCredentials account;
+            final ParcelableUser recipient;
+            if (args != null) {
+                if (args.containsKey(EXTRA_ACCOUNT)) {
+                    account = args.getParcelable(EXTRA_ACCOUNT);
+                    recipient = args.getParcelable(EXTRA_USER);
+                } else if (args.containsKey(EXTRA_ACCOUNT_ID)) {
+                    final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+                    final long userId = args.getLong(EXTRA_RECIPIENT_ID, -1);
+                    final int accountPos = accountsSpinnerAdapter.findItemPosition(accountId);
+                    account = accountPos < 0 ? ParcelableAccount.getCredentials(activity, accountId)
+                            : (ParcelableCredentials) accountsSpinnerAdapter.getItem(accountPos);
+                    recipient = Utils.getUserForConversation(activity, accountId, userId);
+                } else {
+                    account = null;
+                    recipient = null;
+		        }
+                showConversation(account, recipient);
+                if (account != null && recipient != null) {
+                    final String key = getDraftsTextKey(account.account_id, recipient.id);
+                    mEditText.setText(mMessageDrafts.getString(key, null));
+                }
+            }
+        }
+        final boolean isValid = mAccount != null && mRecipient != null;
 		mConversationContainer.setVisibility(isValid ? View.VISIBLE : View.GONE);
 		mRecipientSelectorContainer.setVisibility(isValid ? View.GONE : View.VISIBLE);
 
@@ -250,22 +271,13 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
         mUsersSearchProgress.setVisibility(View.GONE);
 	}
 
+    private String getDraftsTextKey(long accountId, long userId) {
+        return String.format(Locale.ROOT, "text_%d_to_%d", accountId, userId);
+    }
+
 	@Override
 	public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
 		switch (requestCode) {
-			case REQUEST_SELECT_USER: {
-				if (resultCode != Activity.RESULT_OK || !data.hasExtra(EXTRA_USER)) {
-					break;
-				}
-				final ParcelableUser user = data.getParcelableExtra(EXTRA_USER);
-				if (user != null && mAccountId > 0) {
-					mRecipientId = user.id;
-                    mRecipient = user;
-					showConversation(mAccountId, mRecipientId);
-                    updateProfileImage();
-				}
-				break;
-			}
 			case REQUEST_PICK_IMAGE: {
 				if (resultCode != Activity.RESULT_OK || data.getDataString() == null) {
 					break;
@@ -290,13 +302,19 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
             return;
         }
         mProfileImageContainer.setVisibility(mRecipient != null ? View.VISIBLE : View.GONE);
-        if (mSender != null && mRecipient != null) {
-            mImageLoader.displayProfileImage(mSenderProfileImageView, mSender.profile_image_url);
+        if (mAccount != null && mRecipient != null) {
+            mImageLoader.displayProfileImage(mSenderProfileImageView, mAccount.profile_image_url);
             mImageLoader.displayProfileImage(mRecipientProfileImageView, mRecipient.profile_image_url);
-            mProfileImageContainer.drawEnd(mSender.color);
+            mProfileImageContainer.drawEnd(mAccount.color);
         } else {
             mImageLoader.cancelDisplayTask(mSenderProfileImageView);
             mImageLoader.cancelDisplayTask(mRecipientProfileImageView);
+        }
+        final FragmentActivity activity = getActivity();
+        if (mRecipient != null) {
+            activity.setTitle(Utils.getDisplayName(mRecipient));
+        } else {
+            activity.setTitle(R.string.direct_messages);
         }
     }
 
@@ -401,10 +419,9 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 
 	@Override
 	public void onItemSelected(final AdapterView<?> parent, final View view, final int pos, final long id) {
-        final ParcelableAccount account = (ParcelableAccount) mAccountSpinner.getSelectedItem();
+        final ParcelableCredentials account = (ParcelableCredentials) mAccountSpinner.getSelectedItem();
 		if (account != null) {
-			mAccountId = account.account_id;
-            mSender = account;
+            mAccount = account;
             updateProfileImage();
 		}
 	}
@@ -501,8 +518,8 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 		if (mEditText != null) {
 			outState.putCharSequence(EXTRA_TEXT, mEditText.getText());
 		}
-		outState.putLong(EXTRA_ACCOUNT_ID, mAccountId);
-		outState.putLong(EXTRA_RECIPIENT_ID, mRecipientId);
+        outState.putParcelable(EXTRA_ACCOUNT, mAccount);
+        outState.putParcelable(EXTRA_USER, mRecipient);
 		outState.putString(EXTRA_IMAGE_URI, mImageUri);
 	}
 
@@ -521,6 +538,15 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 		if (mPopupMenu != null) {
 			mPopupMenu.dismiss();
 		}
+
+        final ParcelableCredentials account = mAccount;
+        final ParcelableUser recipient = mRecipient;
+        if (account != null && recipient != null) {
+            final String key = getDraftsTextKey(account.account_id, recipient.id);
+            final SharedPreferences.Editor editor = mMessageDrafts.edit();
+            editor.putString(key, ParseUtils.parseString(mEditText.getText()));
+            editor.apply();
+        }
 		super.onStop();
 	}
 
@@ -554,16 +580,14 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 //        return true;
 //    }
 
-	public void showConversation(final long accountId, final long recipientId) {
-		mAccountId = accountId;
-		mRecipientId = recipientId;
-        final Context context = getActivity();
-        mSender = ParcelableAccount.getAccount(context, accountId);
-        mRecipient = Utils.getUserForConversation(context, accountId, recipientId);
+    public void showConversation(final ParcelableCredentials account, final ParcelableUser recipient) {
+        mAccount = account;
+        mRecipient = recipient;
+        if (account == null || recipient == null) return;
 		final LoaderManager lm = getLoaderManager();
 		final Bundle args = new Bundle();
-		args.putLong(EXTRA_ACCOUNT_ID, accountId);
-		args.putLong(EXTRA_RECIPIENT_ID, recipientId);
+        args.putLong(EXTRA_ACCOUNT_ID, account.account_id);
+        args.putLong(EXTRA_RECIPIENT_ID, recipient.id);
 		if (mLoaderInitialized) {
 			lm.restartLoader(0, args, this);
 		} else {
@@ -622,12 +646,13 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 //    }
 
 	private void sendDirectMessage() {
-		final Editable text = mEditText.getText();
-		if (isEmpty(text) || mAccountId <= 0 || mRecipientId <= 0) return;
-		final String message = text.toString();
+        final ParcelableCredentials account = mAccount;
+        final ParcelableUser recipient = mRecipient;
+        if (mAccount == null || mRecipient == null) return;
+        final String message = mEditText.getText().toString();
 		if (mValidator.isValidTweet(message)) {
-			mTwitterWrapper.sendDirectMessageAsync(mAccountId, mRecipientId, message, mImageUri);
-			text.clear();
+            mTwitterWrapper.sendDirectMessageAsync(account.account_id, recipient.id, message, mImageUri);
+            mEditText.setText(null);
 			mImageUri = null;
 			updateAddImageButton();
 		}

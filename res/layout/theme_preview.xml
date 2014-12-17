@@ -11,8 +11,7 @@
 		android:layout_marginBottom="4dp"
 		android:layout_marginLeft="8dp"
 		android:layout_marginRight="8dp"
-		android:layout_marginTop="4dp"
-		android:background="?cardItemBackground">
+        android:layout_marginTop="4dp">
 
 		<include layout="@layout/theme_preview_content"/>
 	</de.vanita5.twittnuker.view.ExtendedRelativeLayout>

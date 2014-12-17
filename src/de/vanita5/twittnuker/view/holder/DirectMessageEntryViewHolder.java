@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.view.holder;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +31,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShortTimeView;
 
-public class DirectMessageEntryViewHolder extends ViewHolder {
+public class DirectMessageEntryViewHolder extends ListViewHolder {
 
 	public final ImageView profile_image;
     public final TextView name, text;

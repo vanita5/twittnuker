@@ -5,6 +5,7 @@ Add new compact cards
 Fix loading indicator on shortened tweet expand
 generic image preview
 Compose Screen: force circular profile images
+Fix default streaming settings (notification, streaming enabled)
 
 add Strings with no default translation:
     warning: string 'home_refresh_summary' has no default translation.

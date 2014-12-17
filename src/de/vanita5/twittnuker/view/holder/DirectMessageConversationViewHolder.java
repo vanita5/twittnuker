@@ -34,7 +34,7 @@ import android.widget.TextView;
 import org.mariotaku.messagebubbleview.library.MessageBubbleView;
 import de.vanita5.twittnuker.R;
 
-public class DirectMessageConversationViewHolder extends CardViewHolder {
+public class DirectMessageConversationViewHolder extends ListViewHolder {
 
     public final TextView text, time;
 

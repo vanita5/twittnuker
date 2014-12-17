@@ -161,16 +161,5 @@ public class DirectMessageConversationEntriesAdapter extends BaseCursorAdapter i
 		}
 	}
 
-	@Override
-	public void setAnimationEnabled(final boolean anim) {
-	}
-
-	@Override
-	public void setMaxAnimationPosition(final int position) {
-	}
-
-	@Override
-	public void setMenuButtonClickListener(final MenuButtonClickListener listener) {
-	}
 
 }

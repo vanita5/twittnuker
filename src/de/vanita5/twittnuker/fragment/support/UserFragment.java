@@ -34,6 +34,8 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -74,6 +76,7 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
+import de.vanita5.twittnuker.text.TextAlphaSpan;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
@@ -320,8 +323,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 	};
 
 	public void displayUser(final ParcelableUser user) {
-		mUser = null;
-		if (user == null || user.id <= 0 || getActivity() == null) return;
+        mUser = user;
+        final FragmentActivity activity = getActivity();
+        if (user == null || user.id <= 0 || activity == null) return;
 		final Resources res = getResources();
 		final LoaderManager lm = getLoaderManager();
 		lm.destroyLoader(LOADER_ID_USER);
@@ -331,9 +335,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		mErrorRetryContainer.setVisibility(View.GONE);
 		mProgressContainer.setVisibility(View.GONE);
 		mUser = user;
-		final int userColor = getUserColor(getActivity(), user.id, true);
+        final int userColor = getUserColor(activity, user.id, true);
         mProfileImageView.setBorderColor(userColor);
-		mProfileNameContainer.drawEnd(getAccountColor(getActivity(), user.account_id));
+        mProfileNameContainer.drawEnd(getAccountColor(activity, user.account_id));
 		mNameView.setText(user.name);
 		final int typeIconRes = getUserTypeIconRes(user.is_verified, user.is_protected);
 		if (typeIconRes != 0) {
@@ -357,7 +361,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		mURLView.setText(isEmpty(user.url_expanded) ? user.url : user.url_expanded);
         mURLView.setLinkTextColor(user.link_color);
 		mURLView.setMovementMethod(null);
-		final String createdAt = formatToLongTimeString(getActivity(), user.created_at);
+        final String createdAt = formatToLongTimeString(activity, user.created_at);
 		final float daysSinceCreated = (System.currentTimeMillis() - user.created_at) / 1000 / 60 / 60 / 24;
 		final int dailyTweets = Math.round(user.statuses_count / Math.max(1, daysSinceCreated));
 		mCreatedAtView.setText(res.getQuantityString(R.plurals.created_at_with_N_tweets_per_day, dailyTweets,
@@ -377,7 +381,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		final int defWidth = res.getDisplayMetrics().widthPixels;
 		final int width = mBannerWidth > 0 ? mBannerWidth : defWidth;
 		mProfileImageLoader.displayProfileBanner(mProfileBannerView, user.profile_banner_url, width);
-		if (isMyAccount(getActivity(), user.id)) {
+        if (isMyAccount(activity, user.id)) {
 			final ContentResolver resolver = getContentResolver();
 			final ContentValues values = new ContentValues();
 			values.put(Accounts.NAME, user.name);
@@ -391,6 +395,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         if (relationship == null || relationship.getTargetUserId() != user.id) {
 			getFriendship();
 		}
+        activity.setTitle(getDisplayName(user));
+        updateTitleColor();
 		invalidateOptionsMenu();
 	}
 
@@ -1131,6 +1137,31 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 			mActionBarBackground.setFactor(factor);
             mTintedStatusContent.setFactor(factor);
 		}
+        updateTitleColor();
+    }
+
+    private void updateTitleColor() {
+        final int[] location = new int[2];
+        mNameView.getLocationOnScreen(location);
+        final float nameShowingRatio = (mHeaderDrawerLayout.getPaddingTop() - location[1])
+                / (float) mNameView.getHeight();
+        final int textAlpha = Math.round(0xFF * MathUtils.clamp(nameShowingRatio, 0, 1));
+        final FragmentActivity activity = getActivity();
+        final SpannableStringBuilder spannedTitle;
+        final CharSequence title = activity.getTitle();
+        if (title instanceof SpannableStringBuilder) {
+            spannedTitle = (SpannableStringBuilder) title;
+        } else {
+            spannedTitle = SpannableStringBuilder.valueOf(title);
+        }
+        final TextAlphaSpan[] spans = spannedTitle.getSpans(0, spannedTitle.length(), TextAlphaSpan.class);
+        if (spans.length > 0) {
+            spans[0].setAlpha(textAlpha);
+        } else {
+            spannedTitle.setSpan(new TextAlphaSpan(textAlpha), 0, spannedTitle.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        activity.setTitle(spannedTitle);
 	}
 
     static class RelationshipLoader extends AsyncTaskLoader<SingleResponse<Relationship>> {

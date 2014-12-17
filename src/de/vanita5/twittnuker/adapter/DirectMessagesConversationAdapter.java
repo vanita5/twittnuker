@@ -53,12 +53,8 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 	private final ImageLoaderWrapper mImageLoader;
 	private final Context mContext;
 	private final MultiSelectManager mMultiSelectManager;
-	private MenuButtonClickListener mListener;
 	private final ImageLoadingHandler mImageLoadingHandler;
 
-	private boolean mAnimationEnabled = true;
-
-	private int mMaxAnimationPosition;
 	private ParcelableDirectMessage.CursorIndices mIndices;
 
 	public DirectMessagesConversationAdapter(final Context context) {
@@ -88,12 +84,6 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
         getLinkify().applyAllLinks(holder.text, accountId, false);
         holder.text.setMovementMethod(null);
         holder.time.setText(formatToLongTimeString(mContext, timestamp));
-		if (position > mMaxAnimationPosition) {
-			if (mAnimationEnabled) {
-				view.startAnimation(holder.item_animation);
-			}
-			mMaxAnimationPosition = position;
-		}
 
 		if (firstMedia == null) {
             mImageLoader.cancelDisplayTask(holder.media_preview);
@@ -159,11 +149,6 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 	}
 
 	@Override
-	public void setAnimationEnabled(final boolean anim) {
-		mAnimationEnabled = anim;
-	}
-
-	@Override
 	public void setDisplayImagePreview(final boolean display) {
 		// Images in DM are always enabled
 	}
@@ -172,16 +157,6 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 	public void setImagePreviewScaleType(final String scaleTypeString) {
 		final ScaleType scaleType = ScaleType.valueOf(scaleTypeString.toUpperCase(Locale.US));
 		mImagePreviewScaleType = scaleType;
-	}
-
-	@Override
-	public void setMaxAnimationPosition(final int position) {
-		mMaxAnimationPosition = position;
-	}
-
-	@Override
-	public void setMenuButtonClickListener(final MenuButtonClickListener listener) {
-		mListener = listener;
 	}
 
 	@Override

@@ -20,32 +20,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.holder;
+package de.vanita5.twittnuker.text;
 
-import android.content.Context;
-import android.view.View;
+import android.text.TextPaint;
+import android.text.style.CharacterStyle;
 
-import de.vanita5.twittnuker.Constants;
+public class TextAlphaSpan extends CharacterStyle {
 
-public class ViewHolder implements Constants {
+	private int alpha;
 
-	public View view;
-
-	public ViewHolder(final View view) {
-		if (view == null) throw new NullPointerException();
-		this.view = view;
+	public TextAlphaSpan(int alpha) {
+		this.alpha = alpha;
 	}
 
-	public View findViewById(final int id) {
-		return view.findViewById(id);
+	public void setAlpha(int alpha) {
+		this.alpha = alpha;
 	}
 
-	public Context getContext() {
-		return view.getContext();
+	@Override
+	public void updateDrawState(TextPaint tp) {
+		tp.setAlpha(alpha);
 	}
-
-	protected String getString(final int resId, final Object... formatArgs) {
-		return getContext().getString(resId, formatArgs);
-	}
-
 }

@@ -160,7 +160,7 @@ import de.vanita5.twittnuker.graphic.PaddingDrawable;
 import de.vanita5.twittnuker.menu.StatusShareProvider;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableAccountWithCredentials;
+import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -604,7 +604,6 @@ public final class Utils implements Constants, TwitterConstants {
 		if (context == null) return;
 		configBaseAdapter(context, adapter);
 		final SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		adapter.setAnimationEnabled(pref.getBoolean(KEY_CARD_ANIMATION, true));
 		adapter.notifyDataSetChanged();
 	}
 
@@ -1664,6 +1663,12 @@ public final class Utils implements Constants, TwitterConstants {
         return getTwitterInstance(context, getDefaultAccountId(context), includeEntities, includeRetweets, apacheHttp);
 	}
 
+
+
+	public static String getDisplayName(final ParcelableUser user) {
+		return getDisplayName(user.name, user.screen_name, false);
+	}
+
 	public static String getDisplayName(final String name, final String screenName) {
 		return getDisplayName(name, screenName, false);
 	}
@@ -2227,7 +2232,7 @@ public final class Utils implements Constants, TwitterConstants {
 		return date.getTime();
 	}
 
-	public static Authorization getTwitterAuthorization(final Context context, final ParcelableAccountWithCredentials account) {
+    public static Authorization getTwitterAuthorization(final Context context, final ParcelableCredentials account) {
 		if (context == null || account == null) return null;
 		switch (account.auth_type) {
 			case Accounts.AUTH_TYPE_OAUTH:
@@ -3468,14 +3473,14 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static void setMenuForStatus(final Context context, final Menu menu,
 										final ParcelableStatus status) {
-        final ParcelableAccountWithCredentials account
-                = ParcelableAccount.getAccountWithCredentials(context, status.account_id);
+        final ParcelableCredentials account
+                = ParcelableAccount.getCredentials(context, status.account_id);
         setMenuForStatus(context, menu, status, account);
     }
 
     public static void setMenuForStatus(final Context context, final Menu menu,
                                         final ParcelableStatus status,
-                                        final ParcelableAccountWithCredentials account) {
+                                        final ParcelableCredentials account) {
 		if (context == null || menu == null || status == null) return;
         final Resources resources = context.getResources();
         final int retweetHighlight = resources.getColor(R.color.highlight_retweet);
@@ -3508,7 +3513,7 @@ public final class Utils implements Constants, TwitterConstants {
         }
 		final MenuItem translate = menu.findItem(MENU_TRANSLATE);
 		if (translate != null) {
-			final boolean isOfficialKey = ParcelableAccountWithCredentials.isOfficialCredentials(context, account);
+            final boolean isOfficialKey = ParcelableCredentials.isOfficialCredentials(context, account);
 		    setMenuItemAvailability(menu, MENU_TRANSLATE, isOfficialKey);
 		}
 		final MenuItem shareItem = menu.findItem(R.id.share);

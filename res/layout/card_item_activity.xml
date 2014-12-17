@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<de.vanita5.twittnuker.view.CardItemLinearLayout
+<de.vanita5.twittnuker.view.ColorLabelLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/content"
     android:layout_width="match_parent"
@@ -201,4 +201,4 @@
             android:textStyle="bold"/>
     </LinearLayout>
 
-</de.vanita5.twittnuker.view.CardItemLinearLayout>
+</de.vanita5.twittnuker.view.ColorLabelLinearLayout>

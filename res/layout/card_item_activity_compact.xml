@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<de.vanita5.twittnuker.view.CardItemFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.ColorLabelFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -212,4 +213,4 @@
         </LinearLayout>
     </RelativeLayout>
 
-</de.vanita5.twittnuker.view.CardItemFrameLayout>
+</de.vanita5.twittnuker.view.ColorLabelFrameLayout>

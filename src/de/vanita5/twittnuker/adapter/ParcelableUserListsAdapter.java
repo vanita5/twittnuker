@@ -36,8 +36,7 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.holder.UserListViewHolder;
-import de.vanita5.twittnuker.view.iface.ICardItemView.OnOverflowIconClickListener;
+import de.vanita5.twittnuker.view.holder.UserListListViewHolder;
 
 import java.util.List;
 import java.util.Locale;
@@ -48,17 +47,12 @@ import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 
 public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserList> implements IBaseCardAdapter,
-		OnClickListener, OnOverflowIconClickListener {
+        OnClickListener {
 
 	private final Context mContext;
     private final ImageLoaderWrapper mImageLoader;
 	private final MultiSelectManager mMultiSelectManager;
 	private final Locale mLocale;
-
-	private MenuButtonClickListener mListener;
-
-	private boolean mAnimationEnabled;
-	private int mMaxAnimationPosition;
 
 	public ParcelableUserListsAdapter(final Context context) {
         this(context, Utils.isCompactCards(context));
@@ -87,13 +81,13 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 	public View getView(final int position, final View convertView, final ViewGroup parent) {
 		final View view = super.getView(position, convertView, parent);
 		final Object tag = view.getTag();
-		final UserListViewHolder holder;
-		if (tag instanceof UserListViewHolder) {
-			holder = (UserListViewHolder) tag;
+        final UserListListViewHolder holder;
+        if (tag instanceof UserListListViewHolder) {
+            holder = (UserListListViewHolder) tag;
 		} else {
-			holder = new UserListViewHolder(view);
+            holder = new UserListListViewHolder(view);
 			holder.profile_image.setOnClickListener(this);
-			holder.content.setOnOverflowIconClickListener(this);
+//            holder.content.setOnOverflowIconClickListener(this);
 			view.setTag(holder);
 		}
 
@@ -115,12 +109,6 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
             mImageLoader.cancelDisplayTask(holder.profile_image);
 		}
 		holder.profile_image.setTag(position);
-		if (position > mMaxAnimationPosition) {
-			if (mAnimationEnabled) {
-				view.startAnimation(holder.item_animation);
-			}
-			mMaxAnimationPosition = position;
-		}
 		return view;
 	}
 
@@ -142,24 +130,6 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 		}
 	}
 
-	@Override
-	public void onOverflowIconClick(final View view) {
-		if (mMultiSelectManager.isActive()) return;
-		final Object tag = view.getTag();
-		if (tag instanceof UserListViewHolder) {
-			final UserListViewHolder holder = (UserListViewHolder) tag;
-			final int position = holder.position;
-			if (position == -1 || mListener == null) return;
-			mListener.onMenuButtonClick(view, position, getItemId(position));
-		}
-	}
-
-	@Override
-	public void setAnimationEnabled(final boolean anim) {
-		if (mAnimationEnabled == anim) return;
-		mAnimationEnabled = anim;
-	}
-
 	public void setData(final List<ParcelableUserList> data, final boolean clear_old) {
 		if (clear_old) {
 			clear();
@@ -172,15 +142,6 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 		}
 	}
 
-	@Override
-	public void setMaxAnimationPosition(final int position) {
-		mMaxAnimationPosition = position;
-	}
-
-	@Override
-	public void setMenuButtonClickListener(final MenuButtonClickListener listener) {
-		mListener = listener;
-	}
 
 	private static int getItemResource(final boolean compactCards) {
 		return compactCards ? R.layout.card_item_user_list_compact : R.layout.card_item_user_list;

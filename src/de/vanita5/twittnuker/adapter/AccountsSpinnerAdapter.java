@@ -56,6 +56,11 @@ public class AccountsSpinnerAdapter extends ArrayAdapter<ParcelableAccount> {
     public AccountsSpinnerAdapter(final Context context, final Collection<ParcelableAccount> accounts) {
 		this(context);
 		addAll(accounts);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return getItem(position).account_id;
 	}
 
 	@Override

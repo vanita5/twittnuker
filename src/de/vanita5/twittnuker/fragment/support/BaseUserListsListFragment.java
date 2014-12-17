@@ -133,7 +133,6 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
         // }
         // mAccountId = account_id;
 		setListAdapter(mAdapter);
-		mAdapter.setMenuButtonClickListener(this);
 		getLoaderManager().initLoader(0, getArguments(), this);
 		setListShown(false);
 		setRefreshMode(RefreshMode.NONE);

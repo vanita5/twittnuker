@@ -42,6 +42,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 
 	public static final String USER_COLOR_PREFERENCES_NAME = "user_colors";
 	public static final String HOST_MAPPING_PREFERENCES_NAME = "host_mapping";
+	public static final String MESSAGE_DRAFTS_PREFERENCES_NAME = "message_drafts";
 	public static final String SHARED_PREFERENCES_NAME = "preferences";
 	public static final String SILENT_NOTIFICATIONS_PREFERENCE_NAME = "silent_notifications";
 	public static final String TIMELINE_POSITIONS_PREFERENCES_NAME = "timeline_positions";

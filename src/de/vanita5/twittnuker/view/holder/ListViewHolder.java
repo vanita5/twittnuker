@@ -22,19 +22,30 @@
 
 package de.vanita5.twittnuker.view.holder;
 
+import android.content.Context;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-public class TwoLineWithIconViewHolder extends ListViewHolder {
+import de.vanita5.twittnuker.Constants;
 
-	public final ImageView icon;
-	public final TextView text1, text2;
+public class ListViewHolder implements Constants {
 
-	public TwoLineWithIconViewHolder(final View view) {
-		super(view);
-		icon = (ImageView) findViewById(android.R.id.icon);
-		text1 = (TextView) findViewById(android.R.id.text1);
-		text2 = (TextView) findViewById(android.R.id.text2);
+	public View view;
+
+	public ListViewHolder(final View view) {
+		if (view == null) throw new NullPointerException();
+		this.view = view;
 	}
+
+	public View findViewById(final int id) {
+		return view.findViewById(id);
+	}
+
+	public Context getContext() {
+		return view.getContext();
+	}
+
+	protected String getString(final int resId, final Object... formatArgs) {
+		return getContext().getString(resId, formatArgs);
+	}
+
 }

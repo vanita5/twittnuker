@@ -54,7 +54,7 @@ import de.vanita5.twittnuker.activity.support.DataImportActivity;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.view.holder.ViewHolder;
+import de.vanita5.twittnuker.view.holder.ListViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,6 @@ import java.util.List;
 public class SettingsActivity extends BasePreferenceActivity {
 
 	private SharedPreferences mPreferences;
-	private PackageManager mPackageManager;
 
 	private HeaderAdapter mAdapter;
 
@@ -158,7 +157,6 @@ public class SettingsActivity extends BasePreferenceActivity {
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-		mPackageManager = getPackageManager();
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mCompactCards = mPreferences.getBoolean(KEY_COMPACT_CARDS, false);
         mTheme = mPreferences.getString(KEY_THEME, DEFAULT_THEME);
@@ -405,7 +403,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 
 		}
 
-		private static class HeaderViewHolder extends ViewHolder {
+        private static class HeaderViewHolder extends ListViewHolder {
 			private final TextView title, summary;
 			private final ImageView icon;
             private final LinearLayout content;

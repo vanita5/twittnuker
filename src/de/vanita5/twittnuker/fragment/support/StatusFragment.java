@@ -68,7 +68,7 @@ import de.vanita5.twittnuker.loader.ParcelableStatusLoader;
 import de.vanita5.twittnuker.loader.support.StatusRepliesLoader;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableAccountWithCredentials;
+import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -347,7 +347,7 @@ public class StatusFragment extends BaseSupportFragment
         private final int mTextSize;
 
         private ParcelableStatus mStatus;
-        private ParcelableAccountWithCredentials mStatusAccount;
+        private ParcelableCredentials mStatusAccount;
         private List<ParcelableStatus> mConversation, mReplies;
 
         public StatusAdapter(StatusFragment fragment, boolean compact) {
@@ -407,7 +407,7 @@ public class StatusFragment extends BaseSupportFragment
 			}
 		}
 
-        public ParcelableAccountWithCredentials getStatusAccount() {
+        public ParcelableCredentials getStatusAccount() {
             return mStatusAccount;
         }
 
@@ -448,7 +448,7 @@ public class StatusFragment extends BaseSupportFragment
             final ParcelableStatus old = mStatus;
             mStatus = status;
             if (status != null) {
-                mStatusAccount = ParcelableAccount.getAccountWithCredentials(mContext, status.account_id);
+                mStatusAccount = ParcelableAccount.getCredentials(mContext, status.account_id);
             } else {
                 mStatusAccount = null;
             }
@@ -760,9 +760,9 @@ public class StatusFragment extends BaseSupportFragment
                     break;
                 }
                 case MENU_TRANSLATE: {
-                    final ParcelableAccountWithCredentials account
-                            = ParcelableAccount.getAccountWithCredentials(activity, status.account_id);
-                    if (ParcelableAccountWithCredentials.isOfficialCredentials(activity, account)) {
+                    final ParcelableCredentials account
+                            = ParcelableAccount.getCredentials(activity, status.account_id);
+                    if (ParcelableCredentials.isOfficialCredentials(activity, account)) {
                         StatusTranslateDialogFragment.show(fragment.getFragmentManager(), status);
                     } else {
 
