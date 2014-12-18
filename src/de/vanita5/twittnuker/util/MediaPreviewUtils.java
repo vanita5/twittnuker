@@ -64,6 +64,7 @@ public class MediaPreviewUtils {
 
 
 
+	private static final String STRING_PATTERN_GENERIC_DOMAIN = "[^:\\/\\/].+?\\.";
 	private static final String STRING_PATTERN_TWITTER_IMAGES_DOMAIN = "(p|pbs)\\.twimg\\.com";
 	private static final String STRING_PATTERN_SINA_WEIBO_IMAGES_DOMAIN = "[\\w\\d]+\\.sinaimg\\.cn|[\\w\\d]+\\.sina\\.cn";
 	private static final String STRING_PATTERN_LOCKERZ_DOMAIN = "lockerz\\.com";
@@ -77,16 +78,12 @@ public class MediaPreviewUtils {
 	private static final String STRING_PATTERN_IMGUR_DOMAIN = "imgur\\.com|i\\.imgur\\.com";
 	private static final String STRING_PATTERN_PHOTOZOU_DOMAIN = "photozou\\.jp";
 	private static final String STRING_PATTERN_GOOGLE_IMAGES_DOMAIN = "(lh|gp|s)(\\d+)?\\.(ggpht|googleusercontent)\\.com";
-    private static final String STRING_PATTERN_PUUSH_DOMAIN = "puu\\.sh";
-    private static final String STRING_PATTERN_PR0GRAMM_DOMAIN = "img\\.pr0gramm\\.com";
     private static final String STRING_PATTERN_ABLOAD_DOMAIN = "abload\\.de";
-    private static final String STRING_PATTERN_TUMBLR_DOMAIN = "media\\.tumblr\\.com";
-	private static final String STRING_PATTERN_POMFSE_DOMAIN = "a\\.pomf\\.se";
 	private static final String STRING_PATTERN_TWIPPLE_DOMAIN = "p\\.twipple\\.jp";
 
 
 
-	private static final String STRING_PATTERN_IMAGES_NO_SCHEME = "[^:\\/\\/].+?\\." + AVAILABLE_IMAGE_SHUFFIX;
+	private static final String STRING_PATTERN_GENERIC_NO_SCHEME = STRING_PATTERN_GENERIC_DOMAIN + AVAILABLE_IMAGE_SHUFFIX;
 	private static final String STRING_PATTERN_TWITTER_IMAGES_NO_SCHEME = STRING_PATTERN_TWITTER_IMAGES_DOMAIN
 			+ "(\\/media)?\\/([\\d\\w\\-_]+)\\." + AVAILABLE_IMAGE_SHUFFIX;
 	private static final String STRING_PATTERN_SINA_WEIBO_IMAGES_NO_SCHEME = "("
@@ -113,21 +110,14 @@ public class MediaPreviewUtils {
 	private static final String STRING_PATTERN_GOOGLE_PROXY_IMAGES_NO_SCHEME = "("
 			+ STRING_PATTERN_GOOGLE_IMAGES_DOMAIN + ")" + "\\/proxy\\/([\\w\\d\\-\\_]+)="
 			+ GOOGLE_IMAGES_AVAILABLE_SIZES;
-    private static final String STRING_PATTERN_PUUSH_NO_SCHEME = "(" + STRING_PATTERN_PUUSH_DOMAIN + ")"
-            + "\\/([\\d\\w\\/]+)\\/?(\\." + AVAILABLE_IMAGE_SHUFFIX + ")?";
-    private static final String STRING_PATTERN_PR0GRAMM_NO_SCHEME = "(" + STRING_PATTERN_PR0GRAMM_DOMAIN + ")"
-            + "(\\/\\d+\\/\\d+\\/)([\\d\\w]+)\\/?(\\." + AVAILABLE_IMAGE_SHUFFIX + ")?";
     private static final String STRING_PATTERN_ABLOAD_NO_SCHEME = "(" + STRING_PATTERN_ABLOAD_DOMAIN + ")"
             + "\\/(img|thumb)\\/([\\w\\d\\-\\_]+\\." + AVAILABLE_IMAGE_SHUFFIX + ")";
-    private static final String STRING_PATTERN_TUMBLR_NO_SCHEME = "([\\d]+)\\." + "(" + STRING_PATTERN_TUMBLR_DOMAIN + ")"
-            + "\\/([\\d\\w\\-\\_\\/]+\\." + AVAILABLE_IMAGE_SHUFFIX + ")";
-	private static final String STRING_PATTERN_POMFSE_NO_SCHEME = "(" + STRING_PATTERN_POMFSE_DOMAIN + ")"
-			+ "\\/([\\d\\w]+\\." + AVAILABLE_IMAGE_SHUFFIX + ")";
 	private static final String STRING_PATTERN_TWIPPLE_NO_SCHEME = "(" + STRING_PATTERN_TWIPPLE_DOMAIN + ")"
 			+ "\\/([\\d\\w]+)";
 
 
-	private static final String STRING_PATTERN_IMAGES = AVAILABLE_URL_SCHEME_PREFIX + STRING_PATTERN_IMAGES_NO_SCHEME;
+
+	private static final String STRING_PATTERN_GENERIC = AVAILABLE_URL_SCHEME_PREFIX + STRING_PATTERN_GENERIC_NO_SCHEME;
 	private static final String STRING_PATTERN_TWITTER_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
 			+ STRING_PATTERN_TWITTER_IMAGES_NO_SCHEME;
 	private static final String STRING_PATTERN_SINA_WEIBO_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
@@ -149,49 +139,14 @@ public class MediaPreviewUtils {
 			+ STRING_PATTERN_GOOGLE_IMAGES_NO_SCHEME;
 	private static final String STRING_PATTERN_GOOGLE_PROXY_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
 			+ STRING_PATTERN_GOOGLE_PROXY_IMAGES_NO_SCHEME;
-    private static final String STRING_PATTERN_PUUSH_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
-            + STRING_PATTERN_PUUSH_NO_SCHEME;
-    private static final String STRING_PATTERN_PR0GRAMM_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
-            + STRING_PATTERN_PR0GRAMM_NO_SCHEME;
     private static final String STRING_PATTERN_ABLOAD_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
             + STRING_PATTERN_ABLOAD_NO_SCHEME;
-    private static final String STRING_PATTERN_TUMBLR_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
-            + STRING_PATTERN_TUMBLR_NO_SCHEME;
-	private static final String STRING_PATTERN_POMFSE_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
-			+ STRING_PATTERN_POMFSE_NO_SCHEME;
 	private static final String STRING_PATTERN_TWIPPLE_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
 			+ STRING_PATTERN_TWIPPLE_NO_SCHEME;
 
 
 
-	public static final Pattern PATTERN_ALL_AVAILABLE_IMAGES = Pattern.compile(AVAILABLE_URL_SCHEME_PREFIX + "("
-			+ STRING_PATTERN_IMAGES_NO_SCHEME + "|" + STRING_PATTERN_TWITTER_IMAGES_NO_SCHEME + "|"
-			+ STRING_PATTERN_INSTAGRAM_NO_SCHEME + "|" + STRING_PATTERN_GOOGLE_IMAGES_NO_SCHEME + "|"
-			+ STRING_PATTERN_SINA_WEIBO_IMAGES_NO_SCHEME + "|" + STRING_PATTERN_LOCKERZ_NO_SCHEME + "|"
-			+ STRING_PATTERN_PLIXI_NO_SCHEME + "|" + STRING_PATTERN_TWITPIC_NO_SCHEME + "|"
-			+ STRING_PATTERN_IMGLY_NO_SCHEME + "|" + STRING_PATTERN_YFROG_NO_SCHEME + "|"
-            + STRING_PATTERN_PUUSH_NO_SCHEME + "|" + STRING_PATTERN_PR0GRAMM_NO_SCHEME + "|"
-			+ STRING_PATTERN_TWITGOO_NO_SCHEME + "|" + STRING_PATTERN_MOBYPICTURE_NO_SCHEME + "|"
-			+ STRING_PATTERN_IMGUR_NO_SCHEME + "|" + STRING_PATTERN_PHOTOZOU_NO_SCHEME
-            + STRING_PATTERN_ABLOAD_NO_SCHEME + "|" + STRING_PATTERN_TUMBLR_NO_SCHEME + "|"
-			+ STRING_PATTERN_POMFSE_NO_SCHEME + "|" + STRING_PATTERN_TWIPPLE_NO_SCHEME + ")", Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern PATTERN_PREVIEW_AVAILABLE_IMAGES_MATCH_ONLY = Pattern.compile(
-			AVAILABLE_URL_SCHEME_PREFIX + "(" + STRING_PATTERN_IMAGES_NO_SCHEME + "|"
-					+ STRING_PATTERN_TWITTER_IMAGES_DOMAIN + "|" + STRING_PATTERN_INSTAGRAM_DOMAIN + "|"
-					+ STRING_PATTERN_GOOGLE_IMAGES_DOMAIN + "|" + STRING_PATTERN_SINA_WEIBO_IMAGES_DOMAIN + "|"
-					+ STRING_PATTERN_LOCKERZ_DOMAIN + "|" + STRING_PATTERN_PLIXI_DOMAIN + "|"
-					+ STRING_PATTERN_TWITPIC_DOMAIN + "|" + STRING_PATTERN_IMGLY_DOMAIN + "|"
-					+ STRING_PATTERN_YFROG_DOMAIN + "|" + STRING_PATTERN_TWITGOO_DOMAIN + "|"
-					+ STRING_PATTERN_MOBYPICTURE_DOMAIN + "|" + STRING_PATTERN_IMGUR_DOMAIN + "|"
-					+ STRING_PATTERN_PHOTOZOU_DOMAIN + "|" + STRING_PATTERN_PUUSH_DOMAIN + "|"
-                    + STRING_PATTERN_PR0GRAMM_DOMAIN + "|" + STRING_PATTERN_ABLOAD_DOMAIN + "|"
-                    + STRING_PATTERN_TUMBLR_DOMAIN + "|" + STRING_PATTERN_POMFSE_DOMAIN + "|"
-					+ STRING_PATTERN_TWIPPLE_DOMAIN + ")", Pattern.CASE_INSENSITIVE);
-
-
-
-	public static final Pattern PATTERN_IMAGES = Pattern.compile(STRING_PATTERN_IMAGES, Pattern.CASE_INSENSITIVE);
+	public static final Pattern PATTERN_GENERIC = Pattern.compile(STRING_PATTERN_GENERIC, Pattern.CASE_INSENSITIVE);
 	public static final Pattern PATTERN_TWITTER_IMAGES = Pattern.compile(STRING_PATTERN_TWITTER_IMAGES,
 			Pattern.CASE_INSENSITIVE);
 	public static final Pattern PATTERN_SINA_WEIBO_IMAGES = Pattern.compile(STRING_PATTERN_SINA_WEIBO_IMAGES,
@@ -211,23 +166,8 @@ public class MediaPreviewUtils {
 	public static final Pattern PATTERN_YFROG = Pattern.compile(STRING_PATTERN_YFROG, Pattern.CASE_INSENSITIVE);
 	public static final int YFROG_GROUP_ID = 2;
 
-    public static final Pattern PATTERN_PUUSH = Pattern.compile(STRING_PATTERN_PUUSH_IMAGES, Pattern.CASE_INSENSITIVE);
-    public static final int PUUSH_GROUP_ID = 3;
-
-    public static final Pattern PATTERN_PR0GRAMM = Pattern.compile(STRING_PATTERN_PR0GRAMM_IMAGES, Pattern.CASE_INSENSITIVE);
-    public static final int PR0GRAMM_GROUP_DATE = 3;
-    public static final int PR0GRAMM_GROUP_ID = 4;
-    public static final int PR0GRAMM_GROUP_EXTENSION = 5;
-
     public static final Pattern PATTERN_ABLOAD = Pattern.compile(STRING_PATTERN_ABLOAD_IMAGES, Pattern.CASE_INSENSITIVE);
     public static final int ABLOAD_GROUP_ID = 4;
-
-    public static final Pattern PATTERN_TUMBLR = Pattern.compile(STRING_PATTERN_TUMBLR_IMAGES, Pattern.CASE_INSENSITIVE);
-    public static final int TUMBLR_GROUP_SUB = 2;
-    public static final int TUMBLR_GROUP_ID = 4;
-
-	public static final Pattern PATTERN_POMFSE = Pattern.compile(STRING_PATTERN_POMFSE_IMAGES, Pattern.CASE_INSENSITIVE);
-	public static final int POMFSE_GROUP_ID = 3;
 
 	public static final Pattern PATTERN_TWIPPLE = Pattern.compile(STRING_PATTERN_TWIPPLE_IMAGES, Pattern.CASE_INSENSITIVE);
 	public static final int TWIPPLE_GROUP_ID = 3;
@@ -257,11 +197,10 @@ public class MediaPreviewUtils {
 
 
 
-	private static final Pattern[] SUPPORTED_PATTERNS = { PATTERN_TWITTER_IMAGES, PATTERN_INSTAGRAM,
+	private static final Pattern[] SUPPORTED_PATTERNS = { PATTERN_GENERIC, PATTERN_TWITTER_IMAGES, PATTERN_INSTAGRAM,
 			PATTERN_GOOGLE_IMAGES, PATTERN_GOOGLE_PROXY_IMAGES, PATTERN_SINA_WEIBO_IMAGES, PATTERN_TWITPIC,
 			PATTERN_IMGUR, PATTERN_IMGLY, PATTERN_YFROG, PATTERN_LOCKERZ, PATTERN_PLIXI, PATTERN_TWITGOO,
-			PATTERN_MOBYPICTURE, PATTERN_PHOTOZOU, PATTERN_PUUSH, PATTERN_PR0GRAMM, PATTERN_ABLOAD,
-            PATTERN_TUMBLR, PATTERN_POMFSE, PATTERN_TWIPPLE };
+			PATTERN_MOBYPICTURE, PATTERN_PHOTOZOU, PATTERN_ABLOAD, PATTERN_TWIPPLE };
 
 	private static final String URL_PHOTOZOU_PHOTO_INFO = "https://api.photozou.jp/rest/photo_info.json";
 
@@ -344,17 +283,8 @@ public class MediaPreviewUtils {
 		if (m.matches()) return getImglyImage(matcherGroup(m, IMGLY_GROUP_ID), link, fullImage);
 		m = PATTERN_YFROG.matcher(link);
 		if (m.matches()) return getYfrogImage(matcherGroup(m, YFROG_GROUP_ID), link, fullImage);
-		m = PATTERN_PUUSH.matcher(link);
-		if (m.matches()) return getPuushImage(matcherGroup(m, PUUSH_GROUP_ID), link);
-		m = PATTERN_PR0GRAMM.matcher(link);
-		if (m.matches()) return getPr0grammImage(matcherGroup(m, PR0GRAMM_GROUP_ID), matcherGroup(m, PR0GRAMM_GROUP_DATE),
-				matcherGroup(m, PR0GRAMM_GROUP_EXTENSION), link);
 		m = PATTERN_TWIPPLE.matcher(link);
 		if (m.matches()) return getTwippleImage(matcherGroup(m, TWIPPLE_GROUP_ID), link);
-		m = PATTERN_TUMBLR.matcher(link);
-		if (m.matches()) return getTumblrImage(matcherGroup(m, TUMBLR_GROUP_SUB), matcherGroup(m, TUMBLR_GROUP_ID), link);
-		m = PATTERN_POMFSE.matcher(link);
-		if (m.matches()) return getPomfseImage(matcherGroup(m, POMFSE_GROUP_ID), link);
 		m = PATTERN_LOCKERZ.matcher(link);
 		if (m.matches()) return getLockerzAndPlixiImage(link, fullImage);
 		m = PATTERN_PLIXI.matcher(link);
@@ -369,6 +299,8 @@ public class MediaPreviewUtils {
         if (m.matches()) return getAbloadImage(matcherGroup(m, ABLOAD_GROUP_ID), link);
 		m = PATTERN_SINA_WEIBO_IMAGES.matcher(link);
 		if (m.matches()) return getSinaWeiboImage(link, fullImage);
+		m = PATTERN_GENERIC.matcher(link);
+		if (m.matches()) return getGenericImage(link);
 		return null;
 	}
 
@@ -440,6 +372,11 @@ public class MediaPreviewUtils {
 			if (pattern.matcher(link).matches()) return true;
 		}
 		return false;
+	}
+
+	private static ParcelableMedia getGenericImage(final String url) {
+		if (isEmpty(url)) return null;
+		return ParcelableMedia.newImage(url, url);
 	}
 
 	private static ParcelableMedia getGoogleImage(final String server, final String id, final boolean fullImage) {
@@ -544,35 +481,11 @@ public class MediaPreviewUtils {
 		return ParcelableMedia.newImage(preview, orig);
 	}
 
-    private static ParcelableMedia getPuushImage(final String id, final String orig) {
-        if (isEmpty(id)) return null;
-        final String preview = String.format("http://puu.sh/%s", id);
-        return ParcelableMedia.newImage(preview, orig);
-    }
-
-    private static ParcelableMedia getPr0grammImage(final String id, final String date, final String extension, final String orig) {
-        if (isEmpty(id)) return null;
-        final String preview = String.format("http://img.pr0gramm.com%s%s%s", date, id, extension);
-        return ParcelableMedia.newImage(preview, orig);
-    }
-
     private static ParcelableMedia getAbloadImage(final String id, final String orig) {
         if (isEmpty(id)) return null;
         final String preview = String.format("http://abload.de/img/%s", id);
         return ParcelableMedia.newImage(preview, orig);
     }
-
-    private static ParcelableMedia getTumblrImage(final String sub, final String id, final String orig) {
-        if (isEmpty(id)) return null;
-        final String preview = String.format("http://%s.media.tumblr.com/%s", sub, id);
-        return ParcelableMedia.newImage(preview, orig);
-    }
-
-	private static ParcelableMedia getPomfseImage(final String id, final String orig) {
-		if (isEmpty(id)) return null;
-		final String preview = String.format("http://a.pomf.se/%s", id);
-		return ParcelableMedia.newImage(preview, orig);
-	}
 
 	/**
 	 * http://p.twipple.jp/wiki/API_Thumbnail

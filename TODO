@@ -3,7 +3,7 @@ Settings export/import: action bar color
 Fix push toast messages
 Add new compact cards
 Fix loading indicator on shortened tweet expand
-generic image preview
+cache image preview if downloading full image (generic)
 Compose Screen: force circular profile images
 Fix default streaming settings (notification, streaming enabled)
 
