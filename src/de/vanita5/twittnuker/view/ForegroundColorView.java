@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -29,6 +30,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -95,6 +97,13 @@ public class ForegroundColorView extends View implements IForegroundView {
         invalidate();
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void drawableHotspotChanged(float x, float y) {
+        super.drawableHotspotChanged(x, y);
+        mForegroundViewHelper.dispatchDrawableHotspotChanged(x, y);
+    }
+
     /**
      * Supply a Drawable that is to be rendered on top of all of the child views
      * in the frame layout. Any padding in the Drawable will be taken into
@@ -102,7 +111,6 @@ public class ForegroundColorView extends View implements IForegroundView {
      * the padding area.
      *
      * @param drawable The Drawable to be drawn on top of the children.
-     *
      * @attr ref android.R.styleable#FrameLayout_foreground
      */
     @Override
@@ -114,7 +122,6 @@ public class ForegroundColorView extends View implements IForegroundView {
      * Describes how the foreground is positioned. Defaults to START and TOP.
      *
      * @param foregroundGravity See {@link android.view.Gravity}
-     *
      * @attr ref android.R.styleable#FrameLayout_foregroundGravity
      */
     @Override

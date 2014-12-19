@@ -23,11 +23,12 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.app.ActionBar;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,24 +39,31 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
-import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.provider.RecentSearchProvider;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.view.ExtendedViewPager;
-import de.vanita5.twittnuker.view.LinePageIndicator;
+import de.vanita5.twittnuker.view.TabPagerIndicator;
 
-public class SearchFragment extends BaseSupportFragment implements Panes.Left, OnPageChangeListener,
-		RefreshScrollTopInterface, SupportFragmentCallback {
+public class SearchFragment extends BaseSupportFragment implements RefreshScrollTopInterface,
+        SupportFragmentCallback, SystemWindowsInsetsCallback {
 
-	private ExtendedViewPager mViewPager;
+    private ViewPager mViewPager;
 
 	private SupportTabsAdapter mAdapter;
-    private LinePageIndicator mPagerIndicator;
+    private TabPagerIndicator mPagerIndicator;
 
 	private Fragment mCurrentVisibleFragment;
+
+    @Override
+    protected void fitSystemWindows(Rect insets) {
+        super.fitSystemWindows(insets);
+        final View view = getView();
+        if (view != null) {
+            view.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        }
+    }
 
 	@Override
 	public Fragment getCurrentVisibleFragment() {
@@ -72,13 +80,11 @@ public class SearchFragment extends BaseSupportFragment implements Panes.Left, O
 		final Bundle args = getArguments();
 		final FragmentActivity activity = getActivity();
 		mAdapter = new SupportTabsAdapter(activity, getChildFragmentManager(), null, 1);
-		mAdapter.addTab(SearchStatusesFragment.class, args, getString(R.string.statuses),
+        mAdapter.addTab(StatusesSearchFragment.class, args, getString(R.string.statuses),
                 R.drawable.ic_action_twitter, 0);
         mAdapter.addTab(SearchUsersFragment.class, args, getString(R.string.users), R.drawable.ic_action_user, 1);
 		mViewPager.setAdapter(mAdapter);
-		mViewPager.setOnPageChangeListener(this);
 		mViewPager.setOffscreenPageLimit(2);
-        mPagerIndicator.setSelectedColor(ThemeUtils.getThemeColor(activity));
 		mPagerIndicator.setViewPager(mViewPager);
 		if (savedInstanceState == null && args != null && args.containsKey(EXTRA_QUERY)) {
 			final String query = args.getString(EXTRA_QUERY);
@@ -101,7 +107,7 @@ public class SearchFragment extends BaseSupportFragment implements Panes.Left, O
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        return inflater.inflate(R.layout.fragment_content_pages, container, false);
 	}
 	
 	@Override
@@ -127,18 +133,6 @@ public class SearchFragment extends BaseSupportFragment implements Panes.Left, O
 	}
 
 	@Override
-	public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
-	}
-
-	@Override
-	public void onPageScrollStateChanged(final int state) {
-	}
-
-	@Override
-	public void onPageSelected(final int position) {
-	}
-
-	@Override
 	public void onSetUserVisibleHint(final Fragment fragment, final boolean isVisibleToUser) {
 		if (isVisibleToUser) {
 			mCurrentVisibleFragment = fragment;
@@ -148,8 +142,8 @@ public class SearchFragment extends BaseSupportFragment implements Panes.Left, O
 	@Override
 	public void onViewCreated(final View view, final Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		mViewPager = (ExtendedViewPager) view.findViewById(R.id.search_pager);
-        mPagerIndicator = (LinePageIndicator) view.findViewById(R.id.search_pager_indicator);
+        mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
+        mPagerIndicator = (TabPagerIndicator) view.findViewById(R.id.view_pager_tabs);
 	}
 
 	@Override
@@ -174,4 +168,8 @@ public class SearchFragment extends BaseSupportFragment implements Panes.Left, O
 		return false;
 	}
 
+    @Override
+    public boolean getSystemWindowsInsets(Rect insets) {
+        return false;
+    }
 }

@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView
+<de.vanita5.twittnuker.view.SquareFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/icon"
-    android:layout_width="32dp"
-    android:layout_height="32dp"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentTop="true"/>
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:padding="@dimen/element_spacing_small">
+
+    <de.vanita5.twittnuker.view.ProfileImageView
+        android:id="@android:id/icon"
+        style="?profileImageStyle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</de.vanita5.twittnuker.view.SquareFrameLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<de.vanita5.twittnuker.view.CardItemFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.ColorLabelFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,7 +14,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/element_spacing_normal">
 
-        <de.vanita5.twittnuker.view.CircularImageView
+        <de.vanita5.twittnuker.view.ProfileImageView
             style="?profileImageStyle"
             android:id="@+id/profile_image"
             android:layout_width="@dimen/icon_size_card_list_item"
@@ -24,7 +25,7 @@
             android:contentDescription="@string/profile_image"
             android:scaleType="fitCenter"/>
 
-        <de.vanita5.twittnuker.view.CircularImageView
+        <de.vanita5.twittnuker.view.ProfileImageView
             style="?profileImageStyle"
             android:id="@+id/my_profile_image"
             android:layout_width="@dimen/icon_size_card_list_item"
@@ -42,7 +43,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignWithParentIfMissing="true"
             android:layout_toLeftOf="@+id/time_frame"
-            android:layout_toRightOf="@+id/profile_image">
+            android:layout_toRightOf="@id/profile_image">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -111,7 +112,7 @@
                 android:scaleType="centerCrop"/>
 
             <ProgressBar
-                android:id="@+id/image_preview_progress"
+                android:id="@+id/media_preview_progress"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -150,12 +151,12 @@
             android:layout_alignRight="@+id/time_frame"
             android:layout_alignWithParentIfMissing="true"
             android:layout_below="@+id/reply_retweet_status"
-            android:layout_toRightOf="@+id/profile_image"
+            android:layout_toRightOf="@id/profile_image"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingTop="@dimen/element_spacing_small">
 
-            <de.vanita5.twittnuker.view.CircularImageView
+            <de.vanita5.twittnuker.view.ProfileImageView
                 style="?profileImageStyle"
                 android:id="@+id/activity_profile_image_1"
                 android:layout_width="@dimen/profile_image_size_activity_small"
@@ -164,7 +165,7 @@
                 android:contentDescription="@string/profile_image"
                 android:scaleType="fitCenter"/>
 
-            <de.vanita5.twittnuker.view.CircularImageView
+            <de.vanita5.twittnuker.view.ProfileImageView
                 style="?profileImageStyle"
                 android:id="@+id/activity_profile_image_2"
                 android:layout_width="@dimen/profile_image_size_activity_small"
@@ -173,7 +174,7 @@
                 android:contentDescription="@string/profile_image"
                 android:scaleType="fitCenter"/>
 
-            <de.vanita5.twittnuker.view.CircularImageView
+            <de.vanita5.twittnuker.view.ProfileImageView
                 style="?profileImageStyle"
                 android:id="@+id/activity_profile_image_3"
                 android:layout_width="@dimen/profile_image_size_activity_small"
@@ -182,7 +183,7 @@
                 android:contentDescription="@string/profile_image"
                 android:scaleType="fitCenter"/>
 
-            <de.vanita5.twittnuker.view.CircularImageView
+            <de.vanita5.twittnuker.view.ProfileImageView
                 style="?profileImageStyle"
                 android:id="@+id/activity_profile_image_4"
                 android:layout_width="@dimen/profile_image_size_activity_small"
@@ -191,7 +192,7 @@
                 android:contentDescription="@string/profile_image"
                 android:scaleType="fitCenter"/>
 
-            <de.vanita5.twittnuker.view.CircularImageView
+            <de.vanita5.twittnuker.view.ProfileImageView
                 style="?profileImageStyle"
                 android:id="@+id/activity_profile_image_5"
                 android:layout_width="@dimen/profile_image_size_activity_small"
@@ -212,4 +213,4 @@
         </LinearLayout>
     </RelativeLayout>
 
-</de.vanita5.twittnuker.view.CardItemFrameLayout>
+</de.vanita5.twittnuker.view.ColorLabelFrameLayout>

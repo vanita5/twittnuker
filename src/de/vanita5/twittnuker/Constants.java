@@ -31,7 +31,7 @@ package de.vanita5.twittnuker;
 public interface Constants extends TwittnukerConstants {
 
 	public static final String DATABASES_NAME = "twittnuker.sqlite";
-	public static final int DATABASES_VERSION = 72;
+	public static final int DATABASES_VERSION = 75;
 
 	public static final int MENU_GROUP_STATUS_SHARE = 20;
 
@@ -144,17 +144,6 @@ public interface Constants extends TwittnukerConstants {
 	public static final String TWIDERE_PREVIEW_SOURCE = "Twittnuker";
 
 	public static final float DEFAULT_PULL_TO_REFRESH_SCROLL_DISTANCE = 0.3f;
-
-	public static final int HOLO_RED_DARK = 0xffcc0000;
-	public static final int HOLO_RED_LIGHT = 0xffff4444;
-	public static final int HOLO_ORANGE_DARK = 0xffff8800;
-	public static final int HOLO_ORANGE_LIGHT = 0xffffbb33;
-	public static final int HOLO_GREEN_DARK = 0xff669900;
-	public static final int HOLO_GREEN_LIGHT = 0xff99cc00;
-	public static final int HOLO_BLUE_DARK = 0xff0099cc;
-	public static final int HOLO_BLUE_LIGHT = 0xff33b5e5;
-	public static final int HOLO_PURPLE_DARK = 0xff9933cc;
-	public static final int HOLO_PURPLE_LIGHT = 0xffaa66cc;
 
 	public static final int MATERIAL_DARK = 0xff212121;
 	public static final int MATERIAL_LIGHT = 0xffbdbdbd;

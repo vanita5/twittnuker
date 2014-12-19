@@ -33,7 +33,7 @@ import android.content.Context;
 
 import com.twitter.Extractor;
 
-import org.mariotaku.querybuilder.Where;
+import org.mariotaku.querybuilder.Expression;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.provider.TweetStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TweetStore.CachedStatuses;
@@ -47,7 +47,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CacheUsersStatusesTask extends AsyncTask<Void, Void, Void> implements Constants {
+public class CacheUsersStatusesTask extends TwidereAsyncTask<Void, Void, Void> implements Constants {
 
 	private final TwitterListResponse<twitter4j.Status>[] all_statuses;
 	private final ContentResolver resolver;
@@ -87,7 +87,7 @@ public class CacheUsersStatusesTask extends AsyncTask<Void, Void, Void> implemen
 					final ContentValues filtered_users_values = new ContentValues();
 					filtered_users_values.put(Filters.Users.NAME, user.getName());
 					filtered_users_values.put(Filters.Users.SCREEN_NAME, user.getScreenName());
-					final String filtered_users_where = Where.equals(Filters.Users.USER_ID, user.getId()).getSQL();
+					final String filtered_users_where = Expression.equals(Filters.Users.USER_ID, user.getId()).getSQL();
 					resolver.update(Filters.Users.CONTENT_URI, filtered_users_values, filtered_users_where, null);
 				}
 			}
@@ -130,7 +130,7 @@ public class CacheUsersStatusesTask extends AsyncTask<Void, Void, Void> implemen
 
 		@Override
 		public void run() {
-			new CacheUsersStatusesTask(context, all_statuses).execute();
+			new CacheUsersStatusesTask(context, all_statuses).executeTask();
 		}
 	}
 }

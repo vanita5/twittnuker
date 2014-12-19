@@ -236,8 +236,6 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_PRELOAD_PREVIEW_IMAGES = "preload_preview_images";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_PRELOAD_WIFI_ONLY = "preload_wifi_only";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
-	public static final String KEY_DISABLE_TAB_SWIPE = "disable_tab_swipe";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_LINK_TO_QUOTED_TWEET = "link_to_quoted_tweet";
 	@Preference(type = BOOLEAN)
@@ -261,7 +259,7 @@ public interface SharedPreferenceConstants {
 	@Preference(type = STRING, hasDefault = true, defaultString = TwittnukerConstants.TWITTER_CONSUMER_SECRET_2)
 	public static final String KEY_CONSUMER_SECRET = "consumer_secret";
 	public static final String KEY_FILTERS_IN_HOME_TIMELINE = "filters_in_home_timeline";
-	public static final String KEY_FILTERS_IN_MENTIONS = "filters_in_mentions";
+	public static final String KEY_FILTERS_IN_MENTIONS_TIMELINE = "filters_in_mentions";
 	public static final String KEY_FILTERS_FOR_RTS = "filters_for_rts";
 	public static final String KEY_SETTINGS_WIZARD_COMPLETED = "settings_wizard_completed";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
@@ -275,8 +273,6 @@ public interface SharedPreferenceConstants {
 
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_COMPACT_CARDS = "compact_cards";
-	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
-	public static final String KEY_LONG_CLICK_TO_OPEN_MENU = "long_click_to_open_menu";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_STREAMING_ENABLED = "stream_enabled";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
@@ -302,8 +298,6 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_FALLBACK_TWITTER_LINK_HANDLER = "fallback_twitter_link_handler";
 	@Preference(type = STRING, hasDefault = true, defaultString = "CENTER_CROP")
 	public static final String KEY_IMAGE_PREVIEW_SCALE_TYPE = "image_preview_scale_type";
-	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
-	public static final String KEY_PLAIN_LIST_STYLE = "plain_list_style";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_SORT_TIMELINE_BY_ID = "sort_timeline_by_id";
 

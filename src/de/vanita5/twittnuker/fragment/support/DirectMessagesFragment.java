@@ -22,17 +22,8 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
-import static de.vanita5.twittnuker.util.Utils.getOldestMessageIdsFromDatabase;
-import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
-
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -40,46 +31,44 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.util.LongSparseArray;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+
 import org.mariotaku.querybuilder.Columns.Column;
+import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
-import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.DirectMessageConversationEntriesAdapter;
+import de.vanita5.twittnuker.adapter.DirectMessageEntriesAdapter;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
+import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+
+import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
+import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
+import static de.vanita5.twittnuker.util.Utils.getOldestMessageIdsFromDatabase;
+import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
 
 public class DirectMessagesFragment extends BasePullToRefreshListFragment implements LoaderCallbacks<Cursor> {
 
 	private final SupportFragmentReloadCursorObserver mReloadContentObserver = new SupportFragmentReloadCursorObserver(
 			this, 0, this);
-
-	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(final Context context, final Intent intent) {
-			if (getActivity() == null || !isAdded() || isDetached()) return;
-			final String action = intent.getAction();
-			if (BROADCAST_TASK_STATE_CHANGED.equals(action)) {
-				updateRefreshState();
-			}
-		}
-	};
 
 	private MultiSelectManager mMultiSelectManager;
 
@@ -88,22 +77,21 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 
 	private boolean mLoadMoreAutomatically;
 
-	private DirectMessageConversationEntriesAdapter mAdapter;
+	private DirectMessageEntriesAdapter mAdapter;
 	private int mFirstVisibleItem;
 
-	private final Map<Long, Set<Long>> mUnreadCountsToRemove = Collections
-			.synchronizedMap(new HashMap<Long, Set<Long>>());
+    private final LongSparseArray<Set<Long>> mUnreadCountsToRemove = new LongSparseArray<>();
 
 	private final Set<Integer> mReadPositions = Collections.synchronizedSet(new HashSet<Integer>());
 
 	private RemoveUnreadCountsTask mRemoveUnreadCountsTask;
 
 	@Override
-	public DirectMessageConversationEntriesAdapter getListAdapter() {
-		return (DirectMessageConversationEntriesAdapter) super.getListAdapter();
+	public DirectMessageEntriesAdapter getListAdapter() {
+		return (DirectMessageEntriesAdapter) super.getListAdapter();
 	}
 
-	public final Map<Long, Set<Long>> getUnreadCountsToRemove() {
+    public final LongSparseArray<Set<Long>> getUnreadCountsToRemove() {
 		return mUnreadCountsToRemove;
 	}
 
@@ -112,13 +100,10 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		super.onActivityCreated(savedInstanceState);
 		mMultiSelectManager = getMultiSelectManager();
-		mAdapter = new DirectMessageConversationEntriesAdapter(getActivity());
+		mAdapter = new DirectMessageEntriesAdapter(getActivity());
 		setListAdapter(mAdapter);
 		mListView = getListView();
-		if (!mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false)) {
-			mListView.setDivider(null);
-		}
-		mListView.setSelector(android.R.color.transparent);
+        mListView.setDivider(null);
 		getLoaderManager().initLoader(0, null, this);
 		setListShown(false);
 	}
@@ -133,7 +118,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 		if (!no_account_selected) {
 			getListView().setEmptyView(null);
 		}
-		final Where account_where = Where.in(new Column(Statuses.ACCOUNT_ID), new RawItemArray(account_ids));
+        final Expression account_where = Expression.in(new Column(Statuses.ACCOUNT_ID), new RawItemArray(account_ids));
 		return new CursorLoader(getActivity(), uri, null, account_where.getSQL(), null, null);
 	}
 
@@ -184,7 +169,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 	@Override
 	public void onRefreshFromStart() {
 		if (isRefreshing()) return;
-		new AsyncTask<Void, Void, long[][]>() {
+        new TwidereAsyncTask<Void, Void, long[][]>() {
 
 			@Override
 			protected long[][] doInBackground(final Void... params) {
@@ -202,7 +187,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 				twitter.getSentDirectMessagesAsync(result[0], null, null);
 			}
 
-		}.execute();
+        }.executeTask();
 	}
 
 	@Override
@@ -242,14 +227,14 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 		super.onStart();
 		final ContentResolver resolver = getContentResolver();
 		resolver.registerContentObserver(Accounts.CONTENT_URI, true, mReloadContentObserver);
-		final IntentFilter filter = new IntentFilter();
-		filter.addAction(BROADCAST_TASK_STATE_CHANGED);
-		registerReceiver(mStatusReceiver, filter);
+        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
+        bus.register(this);
 	}
 
 	@Override
 	public void onStop() {
-		unregisterReceiver(mStatusReceiver);
+        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
+        bus.unregister(this);
 		final ContentResolver resolver = getContentResolver();
 		resolver.unregisterContentObserver(mReloadContentObserver);
 		super.onStop();
@@ -286,6 +271,12 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 		}
 	}
 
+
+    @Subscribe
+    public void notifyTaskStateChanged(TaskStateChangedEvent event) {
+        updateRefreshState();
+    }
+
 	@Override
 	protected void onReachedBottom() {
 		if (!mLoadMoreAutomatically) return;
@@ -305,20 +296,20 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 		mFirstVisibleItem = firstVisibleItem;
 	}
 
-	private void addUnreadCountsToRemove(final long account_id, final long id) {
-		if (mUnreadCountsToRemove.containsKey(account_id)) {
-			final Set<Long> counts = mUnreadCountsToRemove.get(account_id);
+    private void addUnreadCountsToRemove(final long accountId, final long id) {
+        if (mUnreadCountsToRemove.indexOfKey(accountId) < 0) {
+            final Set<Long> counts = new HashSet<>();
 			counts.add(id);
+            mUnreadCountsToRemove.put(accountId, counts);
 		} else {
-			final Set<Long> counts = new HashSet<Long>();
+            final Set<Long> counts = mUnreadCountsToRemove.get(accountId);
 			counts.add(id);
-			mUnreadCountsToRemove.put(account_id, counts);
 		}
 	}
 
 	private void loadMoreMessages() {
 		if (isRefreshing()) return;
-		new AsyncTask<Void, Void, long[][]>() {
+        new TwidereAsyncTask<Void, Void, long[][]>() {
 
 			@Override
 			protected long[][] doInBackground(final Void... params) {
@@ -337,18 +328,19 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 				twitter.getSentDirectMessagesAsync(result[0], result[2], null);
 			}
 
-		}.execute();
+        }.executeTask();
 	}
 
 	private void removeUnreadCounts() {
-		if (mRemoveUnreadCountsTask != null && mRemoveUnreadCountsTask.getStatus() == AsyncTask.Status.RUNNING) return;
+        if (mRemoveUnreadCountsTask != null && mRemoveUnreadCountsTask.getStatus() == TwidereAsyncTask.Status.RUNNING)
+            return;
 		mRemoveUnreadCountsTask = new RemoveUnreadCountsTask(mReadPositions, this);
-		mRemoveUnreadCountsTask.execute();
+        mRemoveUnreadCountsTask.executeTask();
 	}
 
-	static class RemoveUnreadCountsTask extends AsyncTask<Void, Void, Void> {
+    static class RemoveUnreadCountsTask extends TwidereAsyncTask<Void, Void, Void> {
 		private final Set<Integer> read_positions;
-		private final DirectMessageConversationEntriesAdapter adapter;
+		private final DirectMessageEntriesAdapter adapter;
 		private final DirectMessagesFragment fragment;
 
 		RemoveUnreadCountsTask(final Set<Integer> read_positions, final DirectMessagesFragment fragment) {

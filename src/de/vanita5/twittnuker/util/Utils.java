@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -36,7 +38,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -64,12 +65,15 @@ import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.util.LongSparseArray;
+import android.support.v4.util.Pair;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -78,7 +82,11 @@ import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.ActionProvider;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -97,8 +105,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.etsy.android.grid.StaggeredGridView;
-
 import org.apache.http.NameValuePair;
 import org.json.JSONException;
 import org.mariotaku.gallery3d.ImageViewerGLActivity;
@@ -106,11 +112,13 @@ import org.mariotaku.menucomponent.internal.menu.MenuUtils;
 import org.mariotaku.querybuilder.AllColumns;
 import org.mariotaku.querybuilder.Columns;
 import org.mariotaku.querybuilder.Columns.Column;
+import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.OrderBy;
 import org.mariotaku.querybuilder.RawItemArray;
+import org.mariotaku.querybuilder.SQLQueryBuilder;
 import org.mariotaku.querybuilder.Selectable;
+import org.mariotaku.querybuilder.Table;
 import org.mariotaku.querybuilder.Tables;
-import org.mariotaku.querybuilder.Where;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
 import org.mariotaku.refreshnow.widget.RefreshNowListView;
 import de.vanita5.twittnuker.BuildConfig;
@@ -136,22 +144,23 @@ import de.vanita5.twittnuker.fragment.support.StatusesListFragment;
 import de.vanita5.twittnuker.fragment.support.UserBlocksListFragment;
 import de.vanita5.twittnuker.fragment.support.UserFavoritesFragment;
 import de.vanita5.twittnuker.fragment.support.UserFollowersFragment;
+import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.fragment.support.UserFriendsFragment;
-import de.vanita5.twittnuker.fragment.support.UserListDetailsFragment;
+import de.vanita5.twittnuker.fragment.support.UserListFragment;
 import de.vanita5.twittnuker.fragment.support.UserListMembersFragment;
 import de.vanita5.twittnuker.fragment.support.UserListMembershipsListFragment;
 import de.vanita5.twittnuker.fragment.support.UserListSubscribersFragment;
 import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
-import de.vanita5.twittnuker.fragment.support.UserListsListFragment;
+import de.vanita5.twittnuker.fragment.support.UserListsFragment;
 import de.vanita5.twittnuker.fragment.support.UserMediaTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserMentionsFragment;
-import de.vanita5.twittnuker.fragment.support.UserProfileFragmentOld;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UsersListFragment;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
-import de.vanita5.twittnuker.model.Account;
-import de.vanita5.twittnuker.model.Account.AccountWithCredentials;
+import de.vanita5.twittnuker.menu.StatusShareProvider;
 import de.vanita5.twittnuker.model.AccountPreferences;
+import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -196,6 +205,7 @@ import java.net.Proxy;
 import java.net.SocketAddress;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -205,12 +215,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 
 import javax.net.ssl.SSLException;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.CroutonConfiguration;
-import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 
 import twitter4j.DirectMessage;
 import twitter4j.EntitySupport;
@@ -422,10 +430,10 @@ public final class Utils implements Constants, TwitterConstants {
 	public static String buildActivatedStatsWhereClause(final Context context, final String selection) {
 		if (context == null) return null;
 		final long[] account_ids = getActivatedAccountIds(context);
-		final Where accountWhere = Where.in(new Column(Statuses.ACCOUNT_ID), new RawItemArray(account_ids));
-		final Where where;
+        final Expression accountWhere = Expression.in(new Column(Statuses.ACCOUNT_ID), new RawItemArray(account_ids));
+        final Expression where;
 		if (selection != null) {
-			where = Where.and(accountWhere, new Where(selection));
+            where = Expression.and(accountWhere, new Expression(selection));
 		} else {
 			where = accountWhere;
 		}
@@ -442,66 +450,55 @@ public final class Utils implements Constants, TwitterConstants {
 		return builder.build();
 	}
 
-	public static String buildStatusFilterWhereClause(final String table, final String selection,
+    public static Expression buildStatusFilterWhereClause(final String table, final Expression extraSelection,
 			final boolean enableInRts) {
 		if (table == null) return null;
-		final StringBuilder builder = new StringBuilder();
-		if (selection != null) {
-			builder.append(selection);
-			builder.append(" AND ");
-		}
-		builder.append(Statuses._ID + " NOT IN ( ");
-		builder.append("SELECT DISTINCT " + table + "." + Statuses._ID + " FROM " + table);
-		builder.append(" WHERE " + table + "." + Statuses.USER_ID + " IN ( SELECT " + Filters.Users.TABLE_NAME + "."
-				+ Filters.Users.USER_ID + " FROM " + Filters.Users.TABLE_NAME + " )");
+        final SQLSelectQuery filteredUsersQuery = SQLQueryBuilder
+                .select(new Column(new Table(Filters.Users.TABLE_NAME), Filters.Users.USER_ID))
+                .from(new Tables(Filters.Users.TABLE_NAME))
+                .build();
+        final Expression filteredUsersWhere;
 		if (enableInRts) {
-			builder.append(" OR " + table + "." + Statuses.RETWEETED_BY_USER_ID + " IN ( SELECT "
-					+ Filters.Users.TABLE_NAME + "." + Filters.Users.USER_ID + " FROM " + Filters.Users.TABLE_NAME
-					+ " )");
+            filteredUsersWhere = Expression.or(
+                    Expression.in(new Column(new Table(table), Statuses.USER_ID), filteredUsersQuery),
+                    Expression.in(new Column(new Table(table), Statuses.RETWEETED_BY_USER_ID), filteredUsersQuery));
+        } else {
+            filteredUsersWhere = Expression.in(new Column(new Table(table), Statuses.USER_ID), filteredUsersQuery);
 		}
-		builder.append(" AND " + table + "." + Statuses.IS_GAP + " IS NULL");
-		builder.append(" OR " + table + "." + Statuses.IS_GAP + " == 0");
-		builder.append(" UNION ");
-		builder.append("SELECT DISTINCT " + table + "." + Statuses._ID + " FROM " + table + ", "
-				+ Filters.Sources.TABLE_NAME);
-		builder.append(" WHERE " + table + "." + Statuses.SOURCE + " LIKE '%>'||" + Filters.Sources.TABLE_NAME + "."
-				+ Filters.Sources.VALUE + "||'</a>%'");
-		builder.append(" AND " + table + "." + Statuses.IS_GAP + " IS NULL");
-		builder.append(" OR " + table + "." + Statuses.IS_GAP + " == 0");
-		builder.append(" UNION ");
-		builder.append("SELECT DISTINCT " + table + "." + Statuses._ID + " FROM " + table + ", "
-				+ Filters.Keywords.TABLE_NAME);
-		builder.append(" WHERE " + table + "." + Statuses.TEXT_PLAIN + " LIKE '%'||" + Filters.Keywords.TABLE_NAME
-				+ "." + Filters.Keywords.VALUE + "||'%'");
-		builder.append(" AND " + table + "." + Statuses.IS_GAP + " IS NULL");
-		builder.append(" OR " + table + "." + Statuses.IS_GAP + " == 0");
-		builder.append(" UNION ");
-		builder.append("SELECT DISTINCT " + table + "." + Statuses._ID + " FROM " + table + ", "
-				+ Filters.Links.TABLE_NAME);
-		builder.append(" WHERE " + table + "." + Statuses.TEXT_HTML + " LIKE '%<a href=\"%'||"
-				+ Filters.Links.TABLE_NAME + "." + Filters.Links.VALUE + "||'%\">%'");
-		builder.append(" OR " + table + "." + Statuses.TEXT_HTML + " LIKE '%>%'||" + Filters.Links.TABLE_NAME + "."
-				+ Filters.Links.VALUE + "||'%</a>%'");
-		builder.append(" AND " + table + "." + Statuses.IS_GAP + " IS NULL");
-		builder.append(" OR " + table + "." + Statuses.IS_GAP + " == 0");
-		builder.append(" )");
-		return builder.toString();
-	}
+        final SQLSelectQuery.Builder filteredIdsQueryBuilder = SQLQueryBuilder
+                .select(true, new Column(new Table(table), Statuses._ID))
+                .from(new Tables(table))
+                .where(filteredUsersWhere)
+                .union()
+                .select(true, new Columns(new Column(new Table(table), Statuses._ID)))
+                .from(new Tables(table, Filters.Sources.TABLE_NAME))
+                .where(Expression.like(new Column(new Table(table), Statuses.SOURCE),
+                        "%>'||" + Filters.Sources.TABLE_NAME + "." + Filters.Sources.VALUE + "||'</a>%"))
+                .union()
+                .select(true, new Columns(new Column(new Table(table), Statuses._ID)))
+                .from(new Tables(table, Filters.Keywords.TABLE_NAME))
+                .where(Expression.like(new Column(new Table(table), Statuses.TEXT_PLAIN),
+                        "%'||" + Filters.Keywords.TABLE_NAME + "." + Filters.Keywords.VALUE + "||'%"))
+                .union()
+                .select(true, new Columns(new Column(new Table(table), Statuses._ID)))
+                .from(new Tables(table, Filters.Links.TABLE_NAME))
+                .where(Expression.like(new Column(new Table(table), Statuses.SOURCE),
+                        "%>%'||" + Filters.Links.TABLE_NAME + "." + Filters.Links.VALUE + "||'%</a>%"));
+        final Expression filterExpression = Expression.or(
+                Expression.notIn(new Column(new Table(table), Statuses._ID), filteredIdsQueryBuilder.build()),
+                Expression.equals(new Column(new Table(table), Statuses.IS_GAP), 1)
+        );
+        if (extraSelection != null) {
+            return Expression.and(filterExpression, extraSelection);
+	    }
+        return filterExpression;
+    }
 
 	public static int calculateInSampleSize(final int width, final int height, final int preferredWidth,
 			final int preferredHeight) {
 		if (preferredHeight > height && preferredWidth > width) return 1;
         final int result = Math.round(Math.max(width, height) / (float) Math.max(preferredWidth, preferredHeight));
         return Math.max(1, result);
-	}
-
-	public static int cancelRetweet(final AsyncTwitterWrapper wrapper, final ParcelableStatus status) {
-		if (wrapper == null || status == null) return -1;
-		if (status.my_retweet_id > 0)
-			return wrapper.destroyStatusAsync(status.account_id, status.my_retweet_id);
-		else if (status.retweeted_by_id == status.account_id)
-			return wrapper.destroyStatusAsync(status.account_id, status.retweet_id);
-		return -1;
 	}
 
 	public static boolean checkActivityValidity(final Context context, final Intent intent) {
@@ -522,24 +519,24 @@ public final class Utils implements Constants, TwitterConstants {
 					continue;
 				}
 				final String table = getTableNameByUri(uri);
-				final Where account_where = new Where(Statuses.ACCOUNT_ID + " = " + account_id);
+                final Expression account_where = new Expression(Statuses.ACCOUNT_ID + " = " + account_id);
 				final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
 				qb.select(new Column(Statuses._ID)).from(new Tables(table));
-				qb.where(new Where(Statuses.ACCOUNT_ID + " = " + account_id));
+                qb.where(new Expression(Statuses.ACCOUNT_ID + " = " + account_id));
 				qb.orderBy(new OrderBy(Statuses.STATUS_ID + " DESC"));
                 qb.limit(itemLimit);
-				final Where where = Where.and(Where.notIn(new Column(Statuses._ID), qb.build()), account_where);
+                final Expression where = Expression.and(Expression.notIn(new Column(Statuses._ID), qb.build()), account_where);
 				resolver.delete(uri, where.getSQL(), null);
 			}
 			for (final Uri uri : DIRECT_MESSAGES_URIS) {
 				final String table = getTableNameByUri(uri);
-				final Where account_where = new Where(DirectMessages.ACCOUNT_ID + " = " + account_id);
+                final Expression account_where = new Expression(DirectMessages.ACCOUNT_ID + " = " + account_id);
 				final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
 				qb.select(new Column(DirectMessages._ID)).from(new Tables(table));
-				qb.where(new Where(DirectMessages.ACCOUNT_ID + " = " + account_id));
+                qb.where(new Expression(DirectMessages.ACCOUNT_ID + " = " + account_id));
 				qb.orderBy(new OrderBy(DirectMessages.MESSAGE_ID + " DESC"));
                 qb.limit(itemLimit);
-				final Where where = Where.and(Where.notIn(new Column(DirectMessages._ID), qb.build()), account_where);
+                final Expression where = Expression.and(Expression.notIn(new Column(DirectMessages._ID), qb.build()), account_where);
 				resolver.delete(uri, where.getSQL(), null);
 			}
 		}
@@ -551,7 +548,7 @@ public final class Utils implements Constants, TwitterConstants {
             qb.from(new Tables(table));
             qb.orderBy(new OrderBy(BaseColumns._ID + " DESC"));
             qb.limit(itemLimit * 20);
-            final Where where = Where.notIn(new Column(BaseColumns._ID), qb.build());
+            final Expression where = Expression.notIn(new Column(BaseColumns._ID), qb.build());
 			resolver.delete(uri, where.getSQL(), null);
 		}
 	}
@@ -585,20 +582,6 @@ public final class Utils implements Constants, TwitterConstants {
 //        Utils.scrollListToPosition(view, position, offset);
 	}
 
-	public static void clearListViewChoices(final StaggeredGridView view) {
-		if (view == null) return;
-		final ListAdapter adapter = view.getAdapter();
-		if (adapter == null) return;
-		view.clearChoices();
-		view.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
-		view.invalidateViews();
-		// Workaround for Android bug
-		// http://stackoverflow.com/questions/9754170/listview-selection-remains-persistent-after-exiting-choice-mode
-		// final int position = view.getFirstVisiblePosition();
-		// view.setAdapter(adapter);
-		// Utils.scrollListToPosition(view, position);
-	}
-
 	public static boolean closeSilently(final Closeable c) {
 		if (c == null) return false;
 		try {
@@ -624,7 +607,6 @@ public final class Utils implements Constants, TwitterConstants {
 		if (context == null) return;
 		configBaseAdapter(context, adapter);
 		final SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		adapter.setAnimationEnabled(pref.getBoolean(KEY_CARD_ANIMATION, true));
 		adapter.notifyDataSetChanged();
 	}
 
@@ -659,7 +641,13 @@ public final class Utils implements Constants, TwitterConstants {
         return output;
     }
 
+
 	public static Fragment createFragmentForIntent(final Context context, final Intent intent) {
+        final Uri uri = intent.getData();
+        return createFragmentForIntent(context, matchLinkId(uri), intent);
+    }
+
+    public static Fragment createFragmentForIntent(final Context context, final int linkId, final Intent intent) {
 		final long start = System.currentTimeMillis();
 		intent.setExtrasClassLoader(context.getClassLoader());
 		final Bundle extras = intent.getExtras();
@@ -670,7 +658,7 @@ public final class Utils implements Constants, TwitterConstants {
 		if (extras != null) {
 			args.putAll(extras);
 		}
-		switch (matchLinkId(uri)) {
+        switch (linkId) {
 			case LINK_ID_STATUS: {
 				fragment = new StatusFragment();
 				if (!args.containsKey(EXTRA_STATUS_ID)) {
@@ -680,7 +668,7 @@ public final class Utils implements Constants, TwitterConstants {
 				break;
 			}
 			case LINK_ID_USER: {
-				fragment = new UserProfileFragmentOld();
+                fragment = new UserFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
@@ -790,7 +778,7 @@ public final class Utils implements Constants, TwitterConstants {
 				break;
 			}
 			case LINK_ID_USER_LIST: {
-				fragment = new UserListDetailsFragment();
+				fragment = new UserListFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				final String param_list_id = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
@@ -805,29 +793,29 @@ public final class Utils implements Constants, TwitterConstants {
 				break;
 			}
 			case LINK_ID_USER_LISTS: {
-				fragment = new UserListsListFragment();
+                fragment = new UserListsFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
+                final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
 					args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				}
 				if (!args.containsKey(EXTRA_USER_ID)) {
-					args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
+                    args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(paramUserId));
 				}
-				if (isEmpty(paramScreenName) && isEmpty(param_user_id)) return null;
+                if (isEmpty(paramScreenName) && isEmpty(paramUserId)) return null;
 				break;
 			}
 			case LINK_ID_USER_LIST_TIMELINE: {
 				fragment = new UserListTimelineFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
-				final String param_list_id = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
+                final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
+                final String paramListId = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
 				final String paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
-				if (isEmpty(param_list_id)
-                        && (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(param_user_id)))
+                if (isEmpty(paramListId)
+                        && (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(paramUserId)))
                     return null;
-				args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(param_list_id));
-				args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
+                args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(paramListId));
+                args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(paramUserId));
 				args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				args.putString(EXTRA_LIST_NAME, paramListName);
 				break;
@@ -835,14 +823,14 @@ public final class Utils implements Constants, TwitterConstants {
 			case LINK_ID_USER_LIST_MEMBERS: {
 				fragment = new UserListMembersFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
-				final String param_list_id = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
+                final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
+                final String paramListId = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
 				final String paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
-				if (isEmpty(param_list_id)
-                        && (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(param_user_id)))
+                if (isEmpty(paramListId)
+                        && (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(paramUserId)))
                     return null;
-				args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(param_list_id));
-				args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
+                args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(paramListId));
+                args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(paramUserId));
 				args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				args.putString(EXTRA_LIST_NAME, paramListName);
 				break;
@@ -850,14 +838,14 @@ public final class Utils implements Constants, TwitterConstants {
 			case LINK_ID_USER_LIST_SUBSCRIBERS: {
 				fragment = new UserListSubscribersFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-				final String param_user_id = uri.getQueryParameter(QUERY_PARAM_USER_ID);
-				final String param_list_id = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
+                final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
+                final String paramListId = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
 				final String paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
-				if (isEmpty(param_list_id)
-                        && (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(param_user_id)))
+                if (isEmpty(paramListId)
+                        && (isEmpty(paramListName) || isEmpty(paramScreenName) && isEmpty(paramUserId)))
                     return null;
-				args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(param_list_id));
-				args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(param_user_id));
+                args.putInt(EXTRA_LIST_ID, ParseUtils.parseInt(paramListId));
+                args.putLong(EXTRA_USER_ID, ParseUtils.parseLong(paramUserId));
 				args.putString(EXTRA_SCREEN_NAME, paramScreenName);
 				args.putString(EXTRA_LIST_NAME, paramListName);
 				break;
@@ -890,16 +878,16 @@ public final class Utils implements Constants, TwitterConstants {
 			case LINK_ID_STATUS_RETWEETERS: {
 				fragment = new StatusRetweetersListFragment();
 				if (!args.containsKey(EXTRA_STATUS_ID)) {
-					final String param_status_id = uri.getQueryParameter(QUERY_PARAM_STATUS_ID);
-					args.putLong(EXTRA_STATUS_ID, ParseUtils.parseLong(param_status_id));
+                    final String paramStatusId = uri.getQueryParameter(QUERY_PARAM_STATUS_ID);
+                    args.putLong(EXTRA_STATUS_ID, ParseUtils.parseLong(paramStatusId));
 				}
 				break;
 			}
 			case LINK_ID_STATUS_FAVORITERS: {
 				fragment = new StatusFavoritersListFragment();
 				if (!args.containsKey(EXTRA_STATUS_ID)) {
-					final String param_status_id = uri.getQueryParameter(QUERY_PARAM_STATUS_ID);
-					args.putLong(EXTRA_STATUS_ID, ParseUtils.parseLong(param_status_id));
+                    final String paramStatusId = uri.getQueryParameter(QUERY_PARAM_STATUS_ID);
+                    args.putLong(EXTRA_STATUS_ID, ParseUtils.parseLong(paramStatusId));
 				}
 				break;
 			}
@@ -926,17 +914,17 @@ public final class Utils implements Constants, TwitterConstants {
 				return null;
 			}
 		}
-		final String param_account_id = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID);
-		if (param_account_id != null) {
-			args.putLong(EXTRA_ACCOUNT_ID, ParseUtils.parseLong(param_account_id));
+        final String paramAccountId = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID);
+        if (paramAccountId != null) {
+            args.putLong(EXTRA_ACCOUNT_ID, ParseUtils.parseLong(paramAccountId));
 		} else {
-			final String param_account_name = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_NAME);
-			if (param_account_name != null) {
-				args.putLong(EXTRA_ACCOUNT_ID, getAccountId(context, param_account_name));
+            final String paramAccountName = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_NAME);
+            if (paramAccountName != null) {
+                args.putLong(EXTRA_ACCOUNT_ID, getAccountId(context, paramAccountName));
 			} else {
-				final long account_id = getDefaultAccountId(context);
-				if (isMyAccount(context, account_id)) {
-					args.putLong(EXTRA_ACCOUNT_ID, account_id);
+                final long accountId = getDefaultAccountId(context);
+                if (isMyAccount(context, accountId)) {
+                    args.putLong(EXTRA_ACCOUNT_ID, accountId);
 				}
 			}
 		}
@@ -1090,21 +1078,22 @@ public final class Utils implements Constants, TwitterConstants {
 		return message;
 	}
 
-	public static ParcelableStatus findStatus(final Context context, final long account_id, final long status_id)
+    @NonNull
+    public static ParcelableStatus findStatus(final Context context, final long accountId, final long statusId)
 			throws TwitterException {
-		if (context == null || account_id <= 0 || status_id <= 0) return null;
-		final ParcelableStatus p_status = findStatusInDatabases(context, account_id, status_id);
-		if (p_status != null) return p_status;
-		final Twitter twitter = getTwitterInstance(context, account_id, true);
-		if (twitter == null) return null;
-		final Status status = twitter.showStatus(status_id);
-		if (status == null || status.getId() <= 0) return null;
-		final String where = Statuses.ACCOUNT_ID + " = " + account_id + " AND " + Statuses.STATUS_ID + " = "
-				+ status.getId();
+        if (context == null) throw new NullPointerException();
+        final ParcelableStatus cached = findStatusInDatabases(context, accountId, statusId);
+        if (cached != null) return cached;
+        final Twitter twitter = getTwitterInstance(context, accountId, true);
+        if (twitter == null) throw new TwitterException("Account does not exist");
+        final Status status = twitter.showStatus(statusId);
+        final String where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
+                Expression.equals(Statuses.STATUS_ID, statusId)).getSQL();
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.delete(CachedStatuses.CONTENT_URI, where, null);
-		resolver.insert(CachedStatuses.CONTENT_URI, ContentValuesCreator.makeStatusContentValues(status, account_id));
-		return new ParcelableStatus(status, account_id, false);
+        resolver.insert(CachedStatuses.CONTENT_URI,
+                ContentValuesCreator.makeStatusContentValues(status, accountId));
+        return new ParcelableStatus(status, accountId, false);
 	}
 
 	public static ParcelableStatus findStatusInDatabases(final Context context, final long account_id,
@@ -1259,7 +1248,7 @@ public final class Utils implements Constants, TwitterConstants {
     public static int[] getAccountColors(final Context context, final long[] accountIds) {
         if (context == null || accountIds == null) return new int[0];
         final String[] cols = new String[]{Accounts.ACCOUNT_ID, Accounts.COLOR};
-        final String where = Where.in(new Column(Accounts.ACCOUNT_ID), new RawItemArray(accountIds)).getSQL();
+        final String where = Expression.in(new Column(Accounts.ACCOUNT_ID), new RawItemArray(accountIds)).getSQL();
 		final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI, cols, where,
 				null, null);
 		if (cur == null) return new int[0];
@@ -1344,7 +1333,7 @@ public final class Utils implements Constants, TwitterConstants {
 	public static String[] getAccountNames(final Context context, final long[] accountIds) {
 		if (context == null) return new String[0];
 		final String[] cols = new String[] { Accounts.NAME };
-		final String where = accountIds != null ? Where.in(new Column(Accounts.ACCOUNT_ID),
+        final String where = accountIds != null ? Expression.in(new Column(Accounts.ACCOUNT_ID),
 				new RawItemArray(accountIds)).getSQL() : null;
 		final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI, cols, where,
 				null, null);
@@ -1424,7 +1413,7 @@ public final class Utils implements Constants, TwitterConstants {
 			final boolean includeAtChar) {
 		if (context == null) return new String[0];
 		final String[] cols = new String[] { Accounts.SCREEN_NAME };
-		final String where = accountIds != null ? Where.in(new Column(Accounts.ACCOUNT_ID),
+        final String where = accountIds != null ? Expression.in(new Column(Accounts.ACCOUNT_ID),
 				new RawItemArray(accountIds)).getSQL() : null;
 		final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI, cols, where,
 				null, null);
@@ -1466,8 +1455,8 @@ public final class Utils implements Constants, TwitterConstants {
 		if (context == null) return 0;
 		final ContentResolver resolver = context.getContentResolver();
 		final Cursor cur = ContentResolverUtils.query(resolver, uri, new String[] { Statuses.STATUS_ID },
-				buildStatusFilterWhereClause(getTableNameByUri(uri), null, shouldEnableFiltersForRTs(context)), null,
-				null);
+                buildStatusFilterWhereClause(getTableNameByUri(uri), null, shouldEnableFiltersForRTs(context)).getSQL(),
+                null, null);
 		if (cur == null) return 0;
 		try {
 			return cur.getCount();
@@ -1480,8 +1469,8 @@ public final class Utils implements Constants, TwitterConstants {
 		if (context == null) return new long[0];
 		final ContentResolver resolver = context.getContentResolver();
 		final Cursor cur = ContentResolverUtils.query(resolver, uri, new String[] { Statuses.STATUS_ID },
-				buildStatusFilterWhereClause(getTableNameByUri(uri), null, shouldEnableFiltersForRTs(context)), null,
-				null);
+                buildStatusFilterWhereClause(getTableNameByUri(uri), null, shouldEnableFiltersForRTs(context)).getSQL(),
+                null, null);
 		if (cur == null) return new long[0];
 		final long[] ids = new long[cur.getCount()];
 		cur.moveToFirst();
@@ -1519,6 +1508,11 @@ public final class Utils implements Constants, TwitterConstants {
 		}
 		return sb.toString();
 	}
+
+    public static String getBestBannerUrl(final String baseUrl, final int width) {
+        final String type = getBestBannerType(width);
+        return TextUtils.isEmpty(baseUrl) ? null : baseUrl + "/" + type;
+    }
 
 	public static String getBestBannerType(final int width) {
 		if (width <= 320)
@@ -1580,24 +1574,24 @@ public final class Utils implements Constants, TwitterConstants {
 		return def;
 	}
 
-	public static int getCardHighlightColor(ParcelableStatus status, boolean isMention) {
-		return getCardHighlightColor(isMention, status.is_favorite, isMyRetweet(status));
+	public static int getCardHighlightColor(final Resources res, ParcelableStatus status, boolean isMention) {
+		return getCardHighlightColor(res, isMention, status.is_favorite, isMyRetweet(status));
 	}
 
-	public static int getCardHighlightColor(ParcelableStatus status, boolean isMention, boolean favoritesHighlightEnabled) {
-		return getCardHighlightColor(isMention, favoritesHighlightEnabled && status.is_favorite, isMyRetweet(status));
+	public static int getCardHighlightColor(final Resources res, ParcelableStatus status, boolean isMention, boolean favoritesHighlightEnabled) {
+		return getCardHighlightColor(res, isMention, favoritesHighlightEnabled && status.is_favorite, isMyRetweet(status));
 	}
 
-	public static int getCardHighlightColor(final boolean is_mention, final boolean is_favorite,
+	public static int getCardHighlightColor(final Resources res, final boolean is_mention, final boolean is_favorite,
 											final boolean is_retweet) {
 		if (is_mention) {
-			return HOLO_BLUE_LIGHT;
+			return res.getColor(R.color.highlight_reply);
 		}
 		else if (is_retweet) {
-			return HOLO_GREEN_LIGHT;
+			return res.getColor(R.color.highlight_retweet);
 		}
 		else if (is_favorite) {
-			return HOLO_ORANGE_LIGHT;
+			return res.getColor(R.color.highlight_favorite);
 		}
 		return Color.TRANSPARENT;
 	}
@@ -1655,9 +1649,9 @@ public final class Utils implements Constants, TwitterConstants {
 		return context.getResources().getInteger(R.integer.default_text_size);
 	}
 
-	public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities) {
+    public static Twitter getDefaultTwitterInstance(final Context context, final boolean include_entities) {
 		if (context == null) return null;
-		return getDefaultTwitterInstance(context, includeEntities, true, true);
+        return getDefaultTwitterInstance(context, include_entities, true, true);
 	}
 
 	public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities,
@@ -1670,6 +1664,12 @@ public final class Utils implements Constants, TwitterConstants {
                                                     final boolean includeRetweets, final boolean apacheHttp) {
 		if (context == null) return null;
         return getTwitterInstance(context, getDefaultAccountId(context), includeEntities, includeRetweets, apacheHttp);
+	}
+
+
+
+	public static String getDisplayName(final ParcelableUser user) {
+		return getDisplayName(user.name, user.screen_name, false);
 	}
 
 	public static String getDisplayName(final String name, final String screenName) {
@@ -2135,8 +2135,8 @@ public final class Utils implements Constants, TwitterConstants {
 			final boolean is_retweeted_by_me, final boolean is_reply) {
 		if (is_reply)
 			return R.drawable.ic_indicator_reply;
-		else if (is_possibly_sensitive && has_media)
-			return R.drawable.ic_indicator_reported_media;
+//		else if (is_possibly_sensitive && has_media)
+//			return R.drawable.ic_indicator_reported_media;
 		else if (has_media)
 			return R.drawable.ic_indicator_media;
 		else if (is_favorite)
@@ -2235,7 +2235,7 @@ public final class Utils implements Constants, TwitterConstants {
 		return date.getTime();
 	}
 
-	public static Authorization getTwitterAuthorization(final Context context, final AccountWithCredentials account) {
+    public static Authorization getTwitterAuthorization(final Context context, final ParcelableCredentials account) {
 		if (context == null || account == null) return null;
 		switch (account.auth_type) {
 			case Accounts.AUTH_TYPE_OAUTH:
@@ -2289,7 +2289,7 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static Authorization getTwitterAuthorization(final Context context, final long accountId) {
 
-		final String where = Where.equals(new Column(Accounts.ACCOUNT_ID), accountId).getSQL();
+        final String where = Expression.equals(new Column(Accounts.ACCOUNT_ID), accountId).getSQL();
 		final Cursor c = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
                 Accounts.COLUMNS, where, null, null);
 		if (c == null) return null;
@@ -2389,9 +2389,9 @@ public final class Utils implements Constants, TwitterConstants {
 			return te.getMessage();
 	}
 
-	public static Twitter getTwitterInstance(final Context context, final long accountId,
-			final boolean includeEntities) {
-		return getTwitterInstance(context, accountId, includeEntities, true, !MIUIUtils.isMIUI());
+    public static Twitter getTwitterInstance(final Context context, final long accountId,
+                                             final boolean includeEntities) {
+        return getTwitterInstance(context, accountId, includeEntities, true, !MIUIUtils.isMIUI());
 	}
 
 	public static Twitter getTwitterInstance(final Context context, final long accountId,
@@ -2421,7 +2421,7 @@ public final class Utils implements Constants, TwitterConstants {
         final boolean enableProxy = prefs.getBoolean(KEY_ENABLE_PROXY, false);
 		// Here I use old consumer key/secret because it's default key for older
 		// versions
-		final String where = Where.equals(new Column(Accounts.ACCOUNT_ID), accountId).getSQL();
+        final String where = Expression.equals(new Column(Accounts.ACCOUNT_ID), accountId).getSQL();
 		final Cursor c = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
                 Accounts.COLUMNS, where, null, null);
 		if (c == null) return null;
@@ -2554,16 +2554,19 @@ public final class Utils implements Constants, TwitterConstants {
 		final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
 				Accounts.COLUMNS, null, null, null);
 		if (cur == null) return false;
-		final String[] keySecrets = context.getResources().getStringArray(R.array.values_official_consumer_key_secret);
-		final Account.Indices indices = new Account.Indices(cur);
+        final String[] keySecrets = context.getResources().getStringArray(R.array.values_official_consumer_secret_crc32);
+		final ParcelableAccount.Indices indices = new ParcelableAccount.Indices(cur);
 		cur.moveToFirst();
+        final CRC32 crc32 = new CRC32();
 		try {
 			while (!cur.isAfterLast()) {
-				final String consumerKey = cur.getString(indices.consumer_key);
 				final String consumerSecret = cur.getString(indices.consumer_secret);
+                final byte[] consumerSecretBytes = consumerSecret.getBytes(Charset.forName("UTF-8"));
+                crc32.update(consumerSecretBytes, 0, consumerSecretBytes.length);
+                final long value = crc32.getValue();
+                crc32.reset();
 				for (final String keySecret : keySecrets) {
-					final String[] pair = keySecret.split(";");
-					if (pair[0].equals(consumerKey) && pair[1].equals(consumerSecret)) return true;
+                    if (Long.parseLong(keySecret, 16) == value) return true;
 				}
 				cur.moveToNext();
 			}
@@ -2678,15 +2681,13 @@ public final class Utils implements Constants, TwitterConstants {
 			if (!selection_args.isEmpty()) {
 				builder.append(" OR ");
 			}
-			builder.append("(SELECT " + user_id + " IN (SELECT " + Filters.Users.USER_ID + " FROM "
-					+ Filters.Users.TABLE_NAME + "))");
+            builder.append("(SELECT ").append(user_id).append(" IN (SELECT ").append(Users.USER_ID).append(" FROM ").append(Users.TABLE_NAME).append("))");
 		}
 		if (retweeted_by_id > 0) {
 			if (!selection_args.isEmpty()) {
 				builder.append(" OR ");
 			}
-			builder.append("(SELECT " + retweeted_by_id + " IN (SELECT " + Filters.Users.USER_ID + " FROM "
-					+ Filters.Users.TABLE_NAME + "))");
+            builder.append("(SELECT ").append(retweeted_by_id).append(" IN (SELECT ").append(Users.USER_ID).append(" FROM ").append(Users.TABLE_NAME).append("))");
 		}
 		if (source != null) {
 			if (!selection_args.isEmpty()) {
@@ -2743,9 +2744,12 @@ public final class Utils implements Constants, TwitterConstants {
 	}
 
 	public static boolean isMyRetweet(final ParcelableStatus status) {
-		if (status == null) return false;
-		return status.retweeted_by_id == status.account_id || status.my_retweet_id > 0;
+        return status != null && isMyRetweet(status.account_id, status.retweeted_by_id, status.my_retweet_id);
 	}
+
+    public static boolean isMyRetweet(final long account_id, final long retweeted_by_id, final long my_retweet_id) {
+        return retweeted_by_id == account_id || my_retweet_id > 0;
+    }
 
 	public static boolean isMyUserName(final Context context, final String screen_name) {
 		if (context == null) return false;
@@ -2772,10 +2776,14 @@ public final class Utils implements Constants, TwitterConstants {
 	public static boolean isOfficialConsumerKeySecret(final Context context, final String consumerKey,
 			final String consumerSecret) {
 		if (context == null || consumerKey == null || consumerSecret == null) return false;
-		final String[] keySecrets = context.getResources().getStringArray(R.array.values_official_consumer_key_secret);
+        final String[] keySecrets = context.getResources().getStringArray(R.array.values_official_consumer_secret_crc32);
+        final CRC32 crc32 = new CRC32();
+        final byte[] consumerSecretBytes = consumerSecret.getBytes(Charset.forName("UTF-8"));
+        crc32.update(consumerSecretBytes, 0, consumerSecretBytes.length);
+        final long value = crc32.getValue();
+        crc32.reset();
 		for (final String keySecret : keySecrets) {
-			final String[] pair = keySecret.split(";");
-			if (pair[0].equals(consumerKey) && pair[1].equals(consumerSecret)) return true;
+            if (Long.parseLong(keySecret, 16) == value) return true;
 		}
 		return false;
 	}
@@ -2783,7 +2791,7 @@ public final class Utils implements Constants, TwitterConstants {
 	public static boolean isOfficialKeyAccount(final Context context, final long accountId) {
 		if (context == null) return false;
 		final String[] projection = {Accounts.CONSUMER_KEY, Accounts.CONSUMER_SECRET};
-		final String selection = Where.equals(Accounts.ACCOUNT_ID, accountId).getSQL();
+        final String selection = Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL();
 		final Cursor c = context.getContentResolver().query(Accounts.CONTENT_URI, projection, selection, null, null);
 		try {
 			if (c.moveToPosition(0))
@@ -2809,11 +2817,6 @@ public final class Utils implements Constants, TwitterConstants {
 		final NetworkInfo networkInfo = conn.getActiveNetworkInfo();
 		return networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI
 				&& networkInfo.isConnected();
-	}
-
-	public static boolean isPlainListStyle(final Context context) {
-		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		return prefs != null && prefs.getBoolean(KEY_PLAIN_LIST_STYLE, false);
 	}
 
 	public static boolean isRedirected(final int code) {
@@ -2965,29 +2968,29 @@ public final class Utils implements Constants, TwitterConstants {
         activity.startActivity(intent);
 	}
 
-	public static void openSearch(final Activity activity, final long account_id, final String query) {
-		if (activity == null) return;
+    public static void openSearch(final Context context, final long account_id, final String query) {
+        if (context == null) return;
 		final Uri.Builder builder = new Uri.Builder();
 		builder.scheme(SCHEME_TWITTNUKER);
 		builder.authority(AUTHORITY_SEARCH);
 		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(account_id));
 		builder.appendQueryParameter(QUERY_PARAM_QUERY, query);
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        activity.startActivity(intent);
+        context.startActivity(intent);
 	}
 
-	public static void openStatus(final Activity activity, final long accountId, final long statusId) {
-		if (activity == null || accountId <= 0 || statusId <= 0) return;
+    public static void openStatus(final Context context, final long accountId, final long statusId) {
+        if (context == null || accountId <= 0 || statusId <= 0) return;
 		final Uri.Builder builder = new Uri.Builder();
 		builder.scheme(SCHEME_TWITTNUKER);
 		builder.authority(AUTHORITY_STATUS);
 		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
 		builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(statusId));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        activity.startActivity(intent);
+        context.startActivity(intent);
 	}
 
-    public static void openStatus(final Context context, final ParcelableStatus status) {
+    public static void openStatus(final Context context, final ParcelableStatus status, Bundle activityOptions) {
         if (context == null || status == null) return;
 		final long account_id = status.account_id, status_id = status.id;
 		final Bundle extras = new Bundle();
@@ -3000,8 +3003,12 @@ public final class Utils implements Constants, TwitterConstants {
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
         intent.setExtrasClassLoader(context.getClassLoader());
 		intent.putExtras(extras);
-        context.startActivity(intent);
-	}
+        if (context instanceof Activity) {
+            ActivityCompat.startActivity((Activity) context, intent, activityOptions);
+        } else {
+            context.startActivity(intent);
+        }
+    }
 
 	public static void openStatuses(final Activity activity, final List<ParcelableStatus> statuses) {
 		if (activity == null || statuses == null) return;
@@ -3050,8 +3057,8 @@ public final class Utils implements Constants, TwitterConstants {
         activity.startActivity(intent);
 	}
 
-	public static void openTweetSearch(final Activity activity, final long accountId, final String query) {
-		if (activity == null) return;
+    public static void openTweetSearch(final Context context, final long accountId, final String query) {
+        if (context == null) return;
 		final Uri.Builder builder = new Uri.Builder();
 		builder.scheme(SCHEME_TWITTNUKER);
 		builder.authority(AUTHORITY_SEARCH);
@@ -3061,7 +3068,7 @@ public final class Utils implements Constants, TwitterConstants {
 			builder.appendQueryParameter(QUERY_PARAM_QUERY, query);
 		}
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        activity.startActivity(intent);
+        context.startActivity(intent);
 	}
 
 	public static void openUserBlocks(final Activity activity, final long account_id) {
@@ -3127,9 +3134,9 @@ public final class Utils implements Constants, TwitterConstants {
 
 	}
 
-	public static void openUserListDetails(final Activity activity, final long accountId, final int listId,
+    public static void openUserListDetails(final Context context, final long accountId, final int listId,
 			final long userId, final String screenName, final String listName) {
-		if (activity == null) return;
+        if (context == null) return;
 		final Uri.Builder builder = new Uri.Builder();
 		builder.scheme(SCHEME_TWITTNUKER);
 		builder.authority(AUTHORITY_USER_LIST);
@@ -3147,7 +3154,7 @@ public final class Utils implements Constants, TwitterConstants {
 			builder.appendQueryParameter(QUERY_PARAM_LIST_NAME, listName);
 		}
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        activity.startActivity(intent);
+        context.startActivity(intent);
 	}
 
 	public static void openUserListDetails(final Activity activity, final ParcelableUserList userList) {
@@ -3300,41 +3307,58 @@ public final class Utils implements Constants, TwitterConstants {
 		}
 
     public static void openUserProfile(final Context context, final long accountId, final long userId,
-                                       final String screenName) {
+                                       final String screenName, final Bundle activityOptions) {
         if (context == null || accountId <= 0 || userId <= 0 && isEmpty(screenName)) return;
 			final Uri.Builder builder = new Uri.Builder();
-			builder.scheme(SCHEME_TWITTNUKER);
-			builder.authority(AUTHORITY_USER);
-            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
-            if (userId > 0) {
-                builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
-			}
-            if (screenName != null) {
-                builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
-			}
-			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_USER);
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
+        if (userId > 0) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
+        }
+        if (screenName != null) {
+            builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
+        }
+        final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
+        if (context instanceof Activity) {
+            ActivityCompat.startActivity((Activity) context, intent, activityOptions);
+        } else {
             context.startActivity(intent);
-		}
+        }
+    }
 
-	public static void openUserProfile(final Activity activity, final ParcelableUser user) {
-		if (activity == null || user == null) return;
+    public static int getInsetsTopWithoutActionBarHeight(Context context, int top) {
+        if (context instanceof Activity) {
+            final ActionBar actionBar = ((Activity) context).getActionBar();
+            if (actionBar != null) return top - getActionBarHeight(actionBar);
+        }
+        return top;
+    }
+
+    public static void openUserProfile(final Context context, final ParcelableUser user,
+                                       final Bundle activityOptions) {
+        if (context == null || user == null) return;
 		final Bundle extras = new Bundle();
 		extras.putParcelable(EXTRA_USER, user);
-			final Uri.Builder builder = new Uri.Builder();
-			builder.scheme(SCHEME_TWITTNUKER);
-			builder.authority(AUTHORITY_USER);
-			builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(user.account_id));
-			if (user.id > 0) {
-				builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(user.id));
-			}
-			if (user.screen_name != null) {
-				builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, user.screen_name);
-			}
-			final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-			intent.setExtrasClassLoader(activity.getClassLoader());
-			intent.putExtras(extras);
-            activity.startActivity(intent);
+        final Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_USER);
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(user.account_id));
+        if (user.id > 0) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(user.id));
+        }
+        if (user.screen_name != null) {
+            builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, user.screen_name);
+        }
+        final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
+        intent.setExtrasClassLoader(context.getClassLoader());
+        intent.putExtras(extras);
+        if (context instanceof Activity) {
+            ActivityCompat.startActivity((Activity) context, intent, activityOptions);
+        } else {
+            context.startActivity(intent);
 		}
+    }
 
 	public static void openUsers(final Activity activity, final List<ParcelableUser> users) {
 		if (activity == null || users == null) return;
@@ -3457,12 +3481,21 @@ public final class Utils implements Constants, TwitterConstants {
 		scrollListToPosition(list, 0);
 	}
 
-	public static void setMenuForStatus(final Context context, final Menu menu, final ParcelableStatus status) {
+	public static void setMenuForStatus(final Context context, final Menu menu,
+										final ParcelableStatus status) {
+        final ParcelableCredentials account
+                = ParcelableAccount.getCredentials(context, status.account_id);
+        setMenuForStatus(context, menu, status, account);
+    }
+
+    public static void setMenuForStatus(final Context context, final Menu menu,
+                                        final ParcelableStatus status,
+                                        final ParcelableCredentials account) {
 		if (context == null || menu == null || status == null) return;
         final Resources resources = context.getResources();
-        final int retweetHighlight = resources.getColor(android.R.color.holo_green_light);
-        final int favoriteHighlight = resources.getColor(android.R.color.holo_orange_light);
-		final int loveHighlight = resources.getColor(android.R.color.holo_red_light);
+        final int retweetHighlight = resources.getColor(R.color.highlight_retweet);
+        final int favoriteHighlight = resources.getColor(R.color.highlight_favorite);
+		final int loveHighlight = resources.getColor(R.color.highlight_love);
 		final boolean isMyRetweet = isMyRetweet(status);
 		final MenuItem delete = menu.findItem(MENU_DELETE);
 		if (delete != null) {
@@ -3490,16 +3523,20 @@ public final class Utils implements Constants, TwitterConstants {
         }
 		final MenuItem translate = menu.findItem(MENU_TRANSLATE);
 		if (translate != null) {
-			final AccountWithCredentials account = Account.getAccountWithCredentials(context, status.account_id);
-			final boolean isOfficialKey = AccountWithCredentials.isOfficialCredentials(context, account);
+            final boolean isOfficialKey = ParcelableCredentials.isOfficialCredentials(context, account);
 		    setMenuItemAvailability(menu, MENU_TRANSLATE, isOfficialKey);
 		}
-		final MenuItem shareItem = menu.findItem(R.id.share_submenu);
-        final Menu shareSubMenu = shareItem != null && shareItem.hasSubMenu() ? shareItem.getSubMenu() : null;
-        if (shareSubMenu != null) {
-			final Intent shareIntent = createStatusShareIntent(context, status);
-            shareSubMenu.removeGroup(MENU_GROUP_STATUS_SHARE);
-            addIntentToMenu(context, shareSubMenu, shareIntent, MENU_GROUP_STATUS_SHARE);
+		final MenuItem shareItem = menu.findItem(R.id.share);
+		final ActionProvider shareProvider = shareItem.getActionProvider();
+		if (shareProvider instanceof StatusShareProvider) {
+			((StatusShareProvider) shareProvider).setStatus(status);
+		} else {
+			if (shareItem.hasSubMenu()) {
+				final Menu shareSubMenu = shareItem.getSubMenu();
+				final Intent shareIntent = createStatusShareIntent(context, status);
+				shareSubMenu.removeGroup(MENU_GROUP_STATUS_SHARE);
+				addIntentToMenu(context, shareSubMenu, shareIntent, MENU_GROUP_STATUS_SHARE);
+			}
 		}
 	}
 	
@@ -3578,34 +3615,26 @@ public final class Utils implements Constants, TwitterConstants {
 		return mPreferences.getBoolean(KEY_STOP_AUTO_REFRESH_WHEN_BATTERY_LOW, true);
 	}
 
-	public static void showErrorMessage(final Context context, final CharSequence message, final boolean long_message) {
+    public static void showErrorMessage(final Context context, final CharSequence message, final boolean longMessage) {
 		if (context == null) return;
-		if (context instanceof Activity) {
-			final Crouton crouton = Crouton.makeText((Activity) context, message, CroutonStyle.ALERT);
-			final CroutonConfiguration.Builder cb = new CroutonConfiguration.Builder();
-			cb.setDuration(long_message ? CroutonConfiguration.DURATION_LONG : CroutonConfiguration.DURATION_SHORT);
-			crouton.setConfiguration(cb.build());
-			crouton.show();
-		} else {
-			final Toast toast = Toast.makeText(context, message, long_message ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
-			toast.show();
-		}
+        final Toast toast = Toast.makeText(context, message, longMessage ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    public static void showErrorMessage(final Context context, final CharSequence action,
+                                        final CharSequence message, final boolean longMessage) {
+		if (context == null) return;
+        showErrorMessage(context, getErrorMessage(context, message), longMessage);
 	}
 
-	public static void showErrorMessage(final Context context, final CharSequence action, final CharSequence message,
-			final boolean long_message) {
-		if (context == null) return;
-		showErrorMessage(context, getErrorMessage(context, message), long_message);
-	}
-
-	public static void showErrorMessage(final Context context, final CharSequence action, final Throwable t,
-			final boolean long_message) {
+    public static void showErrorMessage(final Context context, final CharSequence action,
+                                        final Throwable t, final boolean longMessage) {
 		if (context == null) return;
 		if (t instanceof TwitterException) {
-			showTwitterErrorMessage(context, action, (TwitterException) t, long_message);
+            showTwitterErrorMessage(context, action, (TwitterException) t, longMessage);
 			return;
 		}
-		showErrorMessage(context, getErrorMessage(context, action, t), long_message);
+        showErrorMessage(context, getErrorMessage(context, action, t), longMessage);
 	}
 
 	public static void showErrorMessage(final Context context, final int action, final String desc,
@@ -3622,16 +3651,8 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static void showInfoMessage(final Context context, final CharSequence message, final boolean long_message) {
 		if (context == null || isEmpty(message)) return;
-//        if (context instanceof Activity) {
-//            final Crouton crouton = Crouton.makeText((Activity) context, message, CroutonStyle.INFO);
-//            final CroutonConfiguration.Builder cb = new CroutonConfiguration.Builder();
-//            cb.setDuration(long_message ? CroutonConfiguration.DURATION_LONG : CroutonConfiguration.DURATION_SHORT);
-//            crouton.setConfiguration(cb.build());
-//            crouton.show();
-//        } else {
 			final Toast toast = Toast.makeText(context, message, long_message ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
 			toast.show();
-//        }
 	}
 
 	public static void showInfoMessage(final Context context, final int resId, final boolean long_message) {
@@ -3668,19 +3689,11 @@ public final class Utils implements Constants, TwitterConstants {
 		cheatSheet.show();
 	}
 
-	public static void showOkMessage(final Context context, final CharSequence message, final boolean long_message) {
+    public static void showOkMessage(final Context context, final CharSequence message, final boolean longMessage) {
 		if (context == null || isEmpty(message)) return;
-		if (context instanceof Activity) {
-			final Crouton crouton = Crouton.makeText((Activity) context, message, CroutonStyle.CONFIRM);
-			final CroutonConfiguration.Builder cb = new CroutonConfiguration.Builder();
-			cb.setDuration(long_message ? CroutonConfiguration.DURATION_LONG : CroutonConfiguration.DURATION_SHORT);
-			crouton.setConfiguration(cb.build());
-			crouton.show();
-		} else {
-			final Toast toast = Toast.makeText(context, message, long_message ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
-			toast.show();
-		}
-	}
+        final Toast toast = Toast.makeText(context, message, longMessage ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
+        toast.show();
+    }
 
 	public static void showOkMessage(final Context context, final int resId, final boolean long_message) {
 		if (context == null) return;
@@ -3730,19 +3743,11 @@ public final class Utils implements Constants, TwitterConstants {
 		showErrorMessage(context, message, long_message);
 	}
 
-	public static void showWarnMessage(final Context context, final CharSequence message, final boolean long_message) {
+    public static void showWarnMessage(final Context context, final CharSequence message, final boolean longMessage) {
 		if (context == null || isEmpty(message)) return;
-		if (context instanceof Activity) {
-			final Crouton crouton = Crouton.makeText((Activity) context, message, CroutonStyle.WARN);
-			final CroutonConfiguration.Builder cb = new CroutonConfiguration.Builder();
-			cb.setDuration(long_message ? CroutonConfiguration.DURATION_LONG : CroutonConfiguration.DURATION_SHORT);
-			crouton.setConfiguration(cb.build());
-			crouton.show();
-		} else {
-			final Toast toast = Toast.makeText(context, message, long_message ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
-			toast.show();
-		}
-	}
+        final Toast toast = Toast.makeText(context, message, longMessage ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
+        toast.show();
+    }
 
 	public static void showWarnMessage(final Context context, final int resId, final boolean long_message) {
 		if (context == null) return;
@@ -3894,10 +3899,9 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static void retweet(ParcelableStatus status, AsyncTwitterWrapper twitter) {
 		if (isMyRetweet(status)) {
-			cancelRetweet(twitter, status);
+			twitter.cancelRetweetAsync(status.account_id, status.id, status.my_retweet_id);
 		} else {
-			final long id_to_retweet = status.retweet_id > 0 ? status.retweet_id : status.id;
-			twitter.retweetStatus(status.account_id, id_to_retweet);
+			twitter.retweetStatusAsync(status.account_id, status.id);
 		}
 	}
 
@@ -3909,13 +3913,24 @@ public final class Utils implements Constants, TwitterConstants {
 		}
 	}
 
-	public static int getActionBarHeight(Context context) {
-		final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.actionBarSize});
-		try {
-			return a.getDimensionPixelSize(0, 0);
-		} finally {
-			a.recycle();
+	public static int getActionBarHeight(ActionBar actionBar) {
+		if (actionBar == null) return 0;
+		final Context context = actionBar.getThemedContext();
+		final TypedValue tv = new TypedValue();
+		final int height = actionBar.getHeight();
+		if (height > 0) return height;
+		if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+			return TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
 		}
+		return 0;
+	}
+
+	public static int getActionBarHeight(Context context) {
+        final TypedValue tv = new TypedValue();
+        if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            return TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
+		}
+        return 0;
 	}
 
 	public static void makeListFragmentFitsSystemWindows(ListFragment fragment) {
@@ -3970,7 +3985,7 @@ public final class Utils implements Constants, TwitterConstants {
 
     public static boolean isFilteringUser(Context context, long userId) {
         final ContentResolver cr = context.getContentResolver();
-        final Where where = Where.equals(Users.USER_ID, userId);
+        final Expression where = Expression.equals(Users.USER_ID, userId);
         final Cursor c = cr.query(Users.CONTENT_URI, new String[0], where.getSQL(), null, null);
         try {
             return c.getCount() > 0;
@@ -3982,8 +3997,8 @@ public final class Utils implements Constants, TwitterConstants {
     public static ParcelableUser getUserForConversation(Context context, long accountId,
                                                         long conversationId) {
         final ContentResolver cr = context.getContentResolver();
-        final Where where = Where.and(Where.equals(ConversationEntries.ACCOUNT_ID, accountId),
-				Where.equals(ConversationEntries.CONVERSATION_ID, conversationId));
+        final Expression where = Expression.and(Expression.equals(ConversationEntries.ACCOUNT_ID, accountId),
+                Expression.equals(ConversationEntries.CONVERSATION_ID, conversationId));
         final Cursor c = cr.query(ConversationEntries.CONTENT_URI, null, where.getSQL(), null, null);
         try {
             if (c.moveToFirst()) return ParcelableUser.fromDirectMessageConversationEntry(c);
@@ -3992,5 +4007,31 @@ public final class Utils implements Constants, TwitterConstants {
             c.close();
         }
         return null;
+    }
+
+    @SafeVarargs
+    public static Bundle makeSceneTransitionOption(final Activity activity,
+                                                      final Pair<View, String>... sharedElements) {
+        if (ThemeUtils.isTransparentBackground(activity)) return null;
+        return ActivityOptionsCompat.makeSceneTransitionAnimation(activity, sharedElements).toBundle();
+    }
+
+
+    public static void setSharedElementTransition(Context context, Window window, int transitionRes) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+        UtilsL.setSharedElementTransition(context, window, transitionRes);
+    }
+
+    static class UtilsL {
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        static void setSharedElementTransition(Context context, Window window, int transitionRes) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+            window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+            final TransitionInflater inflater = TransitionInflater.from(context);
+            final Transition transition = inflater.inflateTransition(transitionRes);
+            window.setSharedElementEnterTransition(transition);
+            window.setSharedElementExitTransition(transition);
+        }
 	}
 }

@@ -88,9 +88,9 @@
     <string name="image_load_summary">Deaktivieren um die Scroll-Geschwindigkeit zu erhöhen und den Datenverbrauch zu verringern</string>
     <string name="in_reply_to_name">Als Antwort auf <xliff:g id="user_name">%s</xliff:g></string>
 
-    <string name="name_retweeted">(D) <xliff:g id="user_name">%s</xliff:g> retweetete</string>
-    <string name="name_and_another_retweeted">(D) <xliff:g id="user_name">%1$s</xliff:g> und eine weitere Person retweeteten</string>
-    <string name="name_and_count_retweeted">(D) <xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> andere retweeteten</string>
+    <string name="name_retweeted">Retweetet von <xliff:g id="user_name">%s</xliff:g></string>
+    <string name="name_and_another_retweeted">Retweetet von <xliff:g id="user_name">%1$s</xliff:g> und einer weiteren Person</string>
+    <string name="name_and_count_retweeted">Retweetet von <xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> anderen</string>
     <string name="N_retweeted_quantity_one"><xliff:g id="retweet_count">%d</xliff:g> Retweet</string>
     <string name="N_retweeted_quantity_other"><xliff:g id="retweet_count">%d</xliff:g> Retweets</string>
 
@@ -123,7 +123,7 @@
     <string name="load_item_limit">Limitierung zu ladender Elemente</string>
     <string name="load_item_limit_summary">Element-Limitierung pro Ladevorgang festlegen</string>
     <string name="load_more_automatically">Lade automatisch mehr Inhalt</string>
-    <string name="load_more_automatically_summary">Lade weitere Inhalte (z.B. Fotos, Karten, Statusmeldungen) automatisch</string>
+    <string name="load_more_automatically_summary">Lade weitere Inhalte (z.B. Fotos, Karten, Tweets) automatisch</string>
     <string name="quote">Zitat</string>
     <string name="add_rule">Regel hinzufügen</string>
     <string name="text_size">Textgröße</string>
@@ -159,6 +159,7 @@
     <string name="save_as">Speichern als</string>
     <string name="please_wait">Bitte warten.</string>
     <string name="file_saved_to">Datei gespeichert als <xliff:g id="filename">%s</xliff:g> .</string>
+    <string name="saved_to_gallery">In Galerie gespeichert.</string>
     <string name="proxy">Proxy</string>
     <string name="http_proxy">HTTP Proxy</string>
     <string name="http_proxy_summary">HTTP Proxy für alle Netzwerkanfragen verwenden</string>
@@ -194,9 +195,10 @@
     <string name="list_members">Mitglieder anzeigen</string>
     <string name="list_subscribers">Abonnenten anzeigen</string>
     <string name="type_to_compose">Schreibe etwas</string>
+    <string name="lists">Listen</string>
     <string name="users_lists">Eigene Listen</string>
     <string name="lists_following_user">Mitglied von Listen</string>
-    <string name="lists_following_me">Mitglied von Listen</string>
+    <string name="lists_following_you">Mitglied von Listen</string>
     <string name="item_3_minutes">3 Minuten</string>
     <string name="item_5_minutes">5 Minuten</string>
     <string name="item_10_minutes">10 Minuten</string>
@@ -366,7 +368,7 @@
     <string name="clear_search_history">Suchbegriffe löschen</string>
     <string name="no_thanks">Nein, danke</string>
     <string name="fast_scroll_thumb">Schnelles scrollen</string>
-    <string name="indicate_my_status">Kennzeichne meine Tweets</string>
+    <string name="indicate_your_status">Kennzeichne deine Tweets</string>
     <string name="default_ringtone">Standard Klingelton</string>
     <string name="phishing_link_warning">Warnung vor Phishing Links</string>
     <string name="phishing_link_warning_summary">Warnung beim Öffnen eines möglichen Phishing Links in Direktnachrichten</string>
@@ -383,7 +385,7 @@
     <string name="quote_protected_status_notice">Es ist nicht empfohlen einen geschützten Tweet zu zitieren.</string>
     <string name="edit_draft">Bearbeite Entwurf</string>
     <string name="profile_image">Profilbild</string>
-    <string name="my_profile_image">Mein Profilbild</string>
+    <string name="your_profile_image">Dein Profilbild</string>
     <string name="mention_user">Erwähnung <xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">Theme Farbe</string>
     <string name="action_bar_color">Action Bar Farbe</string>
@@ -618,6 +620,19 @@
     <string name="medias">Medien</string>
     <string name="remove_from_filter">Aus dem Filter entfernen</string>
     <string name="sort_timeline_by_id">Timeline nach ID sortieren</string>
+    <string name="profile">Profil</string>
+    <string name="state_blocking">(D) Blocking</string>
+    <string name="load_more">Mehr laden</string>
+    <string name="photo">Kamera</string>
+    <string name="gallery">Gallerie</string>
+    <string name="remove">Entfernen</string>
+    <string name="load_media">Bilder laden</string>
+    <string name="profile_text_color">Textfarbe</string>
+    <string name="profile_background_color">Hintergrundfarbe</string>
+    <string name="profile_link_color_main_color">Linkfarbe (Hauptfarbe)</string>
+    <string name="retweet_quote_confirm_title">Retweet</string>
+    <string name="font">Font</string>
+    <string name="size">Grösse</string>
 
 
     <!-- Twittnuker -->

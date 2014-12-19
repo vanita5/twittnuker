@@ -33,12 +33,11 @@
         android:showAsAction="ifRoom"
         android:title="@string/love"/>
 	<item
-		android:id="@+id/share_submenu"
+		android:id="@+id/share"
 		android:icon="@drawable/ic_action_share"
 		android:showAsAction="ifRoom"
-		android:title="@string/share">
-		<menu/>
-	</item>
+        android:actionProviderClass="de.vanita5.twittnuker.menu.StatusShareProvider"
+        android:title="@string/share"/>
 	<item
 		android:id="@id/copy"
 		android:icon="@drawable/ic_action_copy"

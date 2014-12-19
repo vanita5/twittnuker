@@ -32,6 +32,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
@@ -55,6 +56,7 @@ import org.mariotaku.refreshnow.widget.RefreshNowProgressIndicator.IndicatorConf
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
 import de.vanita5.twittnuker.text.ParagraphSpacingSpan;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 
@@ -91,6 +93,15 @@ public class ThemeUtils implements Constants {
     public static void applyActionBarBackground(final ActionBar actionBar, final Context context, final int themeRes) {
         if (actionBar == null || context == null) return;
         actionBar.setBackgroundDrawable(getActionBarBackground(context, themeRes));
+        actionBar.setSplitBackgroundDrawable(getActionBarSplitBackground(context, themeRes));
+        actionBar.setStackedBackgroundDrawable(getActionBarStackedBackground(context, themeRes));
+    }
+
+
+    public static void applyActionBarBackground(final ActionBar actionBar, final Context context,
+                                                final int themeRes, final int actionBarColor) {
+        if (actionBar == null || context == null) return;
+        actionBar.setBackgroundDrawable(getActionBarBackground(context, themeRes, actionBarColor));
         actionBar.setSplitBackgroundDrawable(getActionBarSplitBackground(context, themeRes));
         actionBar.setStackedBackgroundDrawable(getActionBarStackedBackground(context, themeRes));
     }
@@ -230,6 +241,19 @@ public class ThemeUtils implements Constants {
         return applyActionBarDrawable(context, d, isTransparentBackground(themeRes));
     }
 
+    public static Drawable getActionBarBackground(final Context context, final int themeRes,
+                                                  final int accentColor) {
+        if (!isDarkTheme(themeRes)) {
+            final ColorDrawable d = new ActionBarColorDrawable(accentColor);
+            return applyActionBarDrawable(context, d, isTransparentBackground(themeRes));
+        }
+        final TypedArray a = context.obtainStyledAttributes(null, new int[]{android.R.attr.background},
+                android.R.attr.actionBarStyle, themeRes);
+        final Drawable d = a.getDrawable(0);
+        a.recycle();
+        return applyActionBarDrawable(context, d, isTransparentBackground(themeRes));
+    }
+
     public static Context getActionBarContext(final Context context) {
         final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.actionBarTheme,
                 android.R.attr.actionBarWidgetTheme});
@@ -296,23 +320,6 @@ public class ThemeUtils implements Constants {
 				return 0x99333333;
 		}
 		return 0xCCFFFFFF;
-	}
-
-	public static Drawable getCardItemBackground(final Context context) {
-
-        final TypedArray a = context.obtainStyledAttributes(new int[] { R.attr.cardItemBackground });
-		final Drawable d = a.getDrawable(0);
-		a.recycle();
-		return d;
-	}
-
-	public static Drawable getCardItemMenuOverflowButtonDrawable(final Context context) {
-		final Resources res = getResources(context);
-		final TypedArray a = context.obtainStyledAttributes(new int[] { R.attr.cardOverflowIcon });
-		final Drawable d = a.getDrawable(0);
-		a.recycle();
-		if (d == null) return res.getDrawable(R.drawable.ic_menu_moreoverflow_card_light);
-		return d;
 	}
 
     public static int getColorBackgroundCacheHint(final Context context) {
@@ -382,15 +389,6 @@ public class ThemeUtils implements Constants {
         }
         return d;
     }
-
-	public static Drawable getListMenuOverflowButtonDrawable(final Context context) {
-        final Resources res = getResources(context);
-        final TypedArray a = context.obtainStyledAttributes(new int[] { R.attr.listMenuOverflowButton });
-		final Drawable d = a.getDrawable(0);
-		a.recycle();
-        if (d == null) return res.getDrawable(R.drawable.ic_list_menu_moreoverflow_normal_holo_light);
-		return d;
-	}
 
 	public static int getMenuIconColor(final Context context) {
 		return getMenuIconColor(getThemeResource(context));
@@ -503,7 +501,7 @@ public class ThemeUtils implements Constants {
         final Context wrapped = getThemedContext(context, res);
         final TypedArray a = wrapped.obtainStyledAttributes(new int[] { android.R.attr.colorActivatedHighlight });
 		try {
-		    return a.getColor(0, res.getColor(android.R.color.holo_blue_light));
+            return a.getColor(0, res.getColor(R.color.material_light_blue));
 		} finally {
 		    a.recycle();
 		}
@@ -625,7 +623,7 @@ public class ThemeUtils implements Constants {
 		if (context == null) return Color.TRANSPARENT;
         final Resources res = getResources(context);
         final SharedPreferencesWrapper pref = getSharedPreferencesWrapper(context);
-        final int def = res.getColor(android.R.color.holo_blue_light);
+        final int def = res.getColor(R.color.material_light_blue);
         return pref.getInt(KEY_THEME_COLOR, def);
 	}
 
@@ -843,7 +841,7 @@ public class ThemeUtils implements Constants {
         final TypedArray a = appContext.obtainStyledAttributes(null,
                 new int[]{android.R.attr.colorActivatedHighlight}, 0, themeResourceId);
         try {
-            return a.getColor(0, res.getColor(android.R.color.holo_blue_light));
+            return a.getColor(0, res.getColor(R.color.material_light_blue));
         } finally {
             a.recycle();
         }

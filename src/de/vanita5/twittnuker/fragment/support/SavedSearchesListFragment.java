@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -38,16 +36,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.loader.support.SavedSearchesLoader;
-import de.vanita5.twittnuker.model.Panes;
-
-import twitter4j.ResponseList;
-import twitter4j.SavedSearch;
 
 import java.util.Collections;
 import java.util.Comparator;
 
+import twitter4j.ResponseList;
+import twitter4j.SavedSearch;
+
+import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
+
 public class SavedSearchesListFragment extends BasePullToRefreshListFragment implements
-		LoaderCallbacks<ResponseList<SavedSearch>>, OnItemLongClickListener, Panes.Left {
+        LoaderCallbacks<ResponseList<SavedSearch>>, OnItemLongClickListener {
 
 	private SavedSearchesAdapter mAdapter;
 

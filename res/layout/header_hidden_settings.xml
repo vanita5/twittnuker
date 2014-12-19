@@ -21,11 +21,12 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:padding="@dimen/element_spacing_normal">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/element_spacing_normal">
 
     <TextView
         android:layout_width="match_parent"
@@ -33,7 +34,7 @@
         android:gravity="center"
         android:text="@string/hidden_settings_warning_title"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/holo_orange_dark"
+        android:textColor="@color/material_red"
         android:textStyle="bold"/>
 
     <TextView

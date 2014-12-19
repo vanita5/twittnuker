@@ -187,7 +187,7 @@ public class RefreshService extends Service implements Constants {
 	}
 
 	private int getMentions(final long[] accountIds, final long[] maxIds, final long[] sinceIds) {
-		return mTwitterWrapper.getMentionsAsync(accountIds, maxIds, sinceIds);
+		return mTwitterWrapper.getMentionsTimelineAsync(accountIds, maxIds, sinceIds);
 	}
 
 	private int getReceivedDirectMessages(final long[] accountIds, final long[] maxIds, final long[] sinceIds) {
@@ -223,7 +223,7 @@ public class RefreshService extends Service implements Constants {
 	}
 
 	private boolean isMentionsRefreshing() {
-		return mTwitterWrapper.isMentionsRefreshing();
+		return mTwitterWrapper.isMentionsTimelineRefreshing();
 	}
 
 	private boolean isReceivedDirectMessagesRefreshing() {

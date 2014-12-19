@@ -22,10 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.CompareUtils.objectEquals;
-import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
-
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
@@ -34,21 +30,18 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 
 import java.util.List;
 
-public class UserMentionsFragment extends SearchStatusesFragment {
+public class UserMentionsFragment extends StatusesSearchFragment {
 
 	@Override
-	public Loader<List<ParcelableStatus>> newLoaderInstance(final Context context, final Bundle args) {
+    public Loader<List<ParcelableStatus>> onCreateLoader(final int id, final Bundle args) {
 		if (args == null) return null;
 		final String screenName = args.getString(EXTRA_SCREEN_NAME);
-		if (screenName == null) return null;
 		final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
 		final long maxId = args.getLong(EXTRA_MAX_ID, -1);
 		final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
 		final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
-		getListAdapter().setMentionsHightlightDisabled(
-				objectEquals(getAccountScreenName(getActivity(), accountId), screenName));
-		return new UserMentionsLoader(getActivity(), accountId, screenName, maxId, sinceId, getData(),
-				getSavedStatusesFileArgs(), tabPosition);
+        return new UserMentionsLoader(getActivity(), accountId, screenName, maxId, sinceId,
+                getAdapterData(), getSavedStatusesFileArgs(), tabPosition);
 	}
 
 	@Override

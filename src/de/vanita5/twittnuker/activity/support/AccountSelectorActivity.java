@@ -78,7 +78,7 @@ public class AccountSelectorActivity extends BaseSupportDialogActivity implement
 		switch (view.getId()) {
 			case R.id.save: {
 				final long[] checkedIds = mListView.getCheckedItemIds();
-				if (checkedIds == null || checkedIds.length == 0 && !isSelectNoneAllowed()) {
+                if (checkedIds.length == 0 && !isSelectNoneAllowed()) {
 					Toast.makeText(this, R.string.no_account_selected, Toast.LENGTH_SHORT).show();
 					return;
 				}
@@ -106,19 +106,6 @@ public class AccountSelectorActivity extends BaseSupportDialogActivity implement
 	}
 
 	@Override
-	public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-		final Intent data = new Intent();
-		data.putExtra(EXTRA_ID, id);
-		setResult(RESULT_OK, data);
-		finish();
-	}
-
-	@Override
-	public void onLoaderReset(final Loader<Cursor> loader) {
-		mAdapter.swapCursor(null);
-	}
-
-	@Override
 	public void onLoadFinished(final Loader<Cursor> loader, final Cursor cursor) {
 		mAdapter.swapCursor(cursor);
 		if (cursor != null && mFirstCreated) {
@@ -130,6 +117,19 @@ public class AccountSelectorActivity extends BaseSupportDialogActivity implement
 	}
 
 	@Override
+    public void onLoaderReset(final Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
+        final Intent data = new Intent();
+        data.putExtra(EXTRA_ID, mAdapter.getAccount(position).account_id);
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
+    @Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mFirstCreated = savedInstanceState == null;
@@ -151,16 +151,16 @@ public class AccountSelectorActivity extends BaseSupportDialogActivity implement
 	}
 
 	@Override
+    protected void onStart() {
+        super.onStart();
+        getContentResolver().registerContentObserver(Accounts.CONTENT_URI, true, mContentObserver);
+    }
+
+    @Override
 	protected void onResume() {
 		super.onResume();
 		final boolean display_profile_image = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
 		mAdapter.setDisplayProfileImage(display_profile_image);
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		getContentResolver().registerContentObserver(Accounts.CONTENT_URI, true, mContentObserver);
 	}
 
 	@Override

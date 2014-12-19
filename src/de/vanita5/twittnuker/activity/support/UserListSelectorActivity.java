@@ -50,7 +50,7 @@ import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
@@ -210,7 +210,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 		if (screen_name == null) return;
 		mScreenName = screen_name;
 		final GetUserListsTask task = new GetUserListsTask(this, getAccountId(), screen_name);
-		task.execute();
+		task.executeTask();
 	}
 
 	private boolean isSelectingUser() {
@@ -219,7 +219,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 
 	private void searchUser(final String name) {
 		final SearchUsersTask task = new SearchUsersTask(this, getAccountId(), name);
-		task.execute();
+		task.executeTask();
 	}
 
 	private void setUserListsData(final List<ParcelableUserList> data, final boolean is_my_account) {
@@ -229,7 +229,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 		mCreateUserListContainer.setVisibility(is_my_account ? View.VISIBLE : View.GONE);
 	}
 
-	private static class GetUserListsTask extends AsyncTask<Void, Void, SingleResponse<List<ParcelableUserList>>> {
+	private static class GetUserListsTask extends TwidereAsyncTask<Void, Void, SingleResponse<List<ParcelableUserList>>> {
 
 		private static final String FRAGMENT_TAG_GET_USER_LISTS = "get_user_lists";
 		private final UserListSelectorActivity mActivity;
@@ -291,7 +291,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 
 	}
 
-	private static class SearchUsersTask extends AsyncTask<Void, Void, SingleResponse<List<ParcelableUser>>> {
+	private static class SearchUsersTask extends TwidereAsyncTask<Void, Void, SingleResponse<List<ParcelableUser>>> {
 
 		private static final String FRAGMENT_TAG_SEARCH_USERS = "search_users";
 		private final UserListSelectorActivity mActivity;

@@ -196,8 +196,16 @@ import java.util.Arrays;
 
 	@Override
 	public String toString() {
-		return "QueryResultJSONImpl{" + "sinceId=" + sinceId + ", maxId=" + maxId + ", refreshUrl='" + refreshUrl
-				+ '\'' + ", resultsPerPage=" + resultsPerPage + ", warning='" + warning + '\'' + ", completedIn="
-				+ completedIn + ", page=" + page + ", query='" + query + '\'' + ", statuses=" + statuses + '}';
+        return "QueryResultJSONImpl{" +
+                "sinceId=" + sinceId +
+                ", maxId=" + maxId +
+                ", refreshUrl='" + refreshUrl + '\'' +
+                ", resultsPerPage=" + resultsPerPage +
+                ", warning='" + warning + '\'' +
+                ", completedIn=" + completedIn +
+                ", page=" + page +
+                ", query='" + query + '\'' +
+                ", statuses=" + Arrays.toString(statuses) +
+                '}';
 	}
 }

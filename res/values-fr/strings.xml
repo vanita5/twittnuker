@@ -186,7 +186,7 @@
     <string name="type_to_compose">Tapez pour composer</string>
     <string name="users_lists">Listes de l\'utilisateur</string>
     <string name="lists_following_user">Liste dont cet utilisateur est membre</string>
-    <string name="lists_following_me">Listes me suivant</string>
+    <string name="lists_following_you">Listes me suivant</string>
     <string name="item_3_minutes">3 minutes</string>
     <string name="item_5_minutes">5 minutes</string>
     <string name="item_10_minutes">10 minutes</string>
@@ -354,7 +354,7 @@
     <string name="clear_search_history">Supprimer l\'historique de recherche</string>
     <string name="no_thanks">Non, merci</string>
     <string name="fast_scroll_thumb">Curseur de défilement plus rapide</string>
-    <string name="indicate_my_status">Indique mon tweet</string>
+    <string name="indicate_your_status">Indique mon tweet</string>
     <string name="default_ringtone">Sonnerie par défaut</string>
     <string name="phishing_link_warning">Alerte lien d\'hameçonnage</string>
     <string name="phishing_link_warning_summary">Vous alerte quand vous essayez d\'ouvrir un lien d\'hammeçonnage dans vos messages privés.</string>
@@ -370,7 +370,7 @@
     <string name="quote_protected_status_notice">Il n\'est pas recommandé de citer un tweet protégé.</string>
     <string name="edit_draft">Modifier brouillons</string>
     <string name="profile_image">Photo de profil</string>
-    <string name="my_profile_image">Ma photo de profil</string>
+    <string name="your_profile_image">Ma photo de profil</string>
     <string name="mention_user">Mention <xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">Couleur du thème</string>
     <string name="wrong_url_format">Format d\'URL érroné.</string>

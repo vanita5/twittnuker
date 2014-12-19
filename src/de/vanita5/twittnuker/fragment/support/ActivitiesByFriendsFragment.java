@@ -22,18 +22,11 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.openStatus;
-import static de.vanita5.twittnuker.util.Utils.openStatuses;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-import static de.vanita5.twittnuker.util.Utils.openUsers;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.view.View;
 import android.widget.ListView;
-
-import org.mariotaku.refreshnow.widget.RefreshNowConfig;
 
 import de.vanita5.twittnuker.adapter.BaseParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesByFriendsAdapter;
@@ -42,16 +35,19 @@ import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
-
 import java.util.Arrays;
 import java.util.List;
+
+import static de.vanita5.twittnuker.util.Utils.openStatus;
+import static de.vanita5.twittnuker.util.Utils.openStatuses;
+import static de.vanita5.twittnuker.util.Utils.openUserProfile;
+import static de.vanita5.twittnuker.util.Utils.openUsers;
 
 public class ActivitiesByFriendsFragment extends BaseActivitiesListFragment {
 
 	@Override
-	public BaseParcelableActivitiesAdapter createListAdapter(final Context context, final boolean compactCards,
-															 final boolean plainListStyle) {
-		return new ParcelableActivitiesByFriendsAdapter(context, compactCards, plainListStyle);
+    public BaseParcelableActivitiesAdapter createListAdapter(final Context context, final boolean compactCards) {
+        return new ParcelableActivitiesByFriendsAdapter(context, compactCards);
 	}
 
 	@Override
@@ -75,7 +71,7 @@ public class ActivitiesByFriendsFragment extends BaseActivitiesListFragment {
 			case ParcelableActivity.ACTION_FAVORITE: {
 				if (targetStatuses == null || targetStatuses.length == 0) return;
 				if (targetStatuses.length == 1) {
-					openStatus(getActivity(), targetStatuses[0]);
+                    openStatus(getActivity(), targetStatuses[0], null);
 				} else {
 					final List<ParcelableStatus> statuses = Arrays.asList(targetStatuses);
 					openStatuses(getActivity(), statuses);
@@ -85,7 +81,7 @@ public class ActivitiesByFriendsFragment extends BaseActivitiesListFragment {
 			case ParcelableActivity.ACTION_FOLLOW: {
 				if (targetUsers == null || targetUsers.length == 0) return;
 				if (targetUsers.length == 1) {
-					openUserProfile(getActivity(), targetUsers[0]);
+					openUserProfile(getActivity(), targetUsers[0], null);
 				} else {
 					final List<ParcelableUser> users = Arrays.asList(targetUsers);
 					openUsers(getActivity(), users);
@@ -94,20 +90,20 @@ public class ActivitiesByFriendsFragment extends BaseActivitiesListFragment {
 			}
 			case ParcelableActivity.ACTION_MENTION: {
 				if (target_object_statuses != null && target_object_statuses.length > 0) {
-					openStatus(getActivity(), target_object_statuses[0]);
+                    openStatus(getActivity(), target_object_statuses[0], null);
 				}
 				break;
 			}
 			case ParcelableActivity.ACTION_REPLY: {
 				if (targetStatuses != null && targetStatuses.length > 0) {
-					openStatus(getActivity(), targetStatuses[0]);
+                    openStatus(getActivity(), targetStatuses[0], null);
 				}
 				break;
 			}
 			case ParcelableActivity.ACTION_RETWEET: {
 				if (targetStatuses == null || targetStatuses.length == 0) return;
 				if (targetStatuses.length == 1) {
-					openStatus(getActivity(), targetStatuses[0]);
+                    openStatus(getActivity(), targetStatuses[0], null);
 				} else {
 					final List<ParcelableStatus> statuses = Arrays.asList(targetStatuses);
 					openStatuses(getActivity(), statuses);

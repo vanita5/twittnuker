@@ -6,6 +6,7 @@
     android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/element_spacing_normal"
@@ -14,13 +15,13 @@
         app:cardElevation="@dimen/elevation_card">
 
         <LinearLayout
-            android:id="@+id/card"
+            android:id="@+id/card_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <de.vanita5.twittnuker.view.themed.ThemedTextView
-                android:id="@+id/in_reply_to"
+                android:id="@+id/reply_retweet_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?android:selectableItemBackground"
@@ -35,41 +36,42 @@
 
 
             <de.vanita5.twittnuker.view.ColorLabelRelativeLayout
-                android:id="@+id/profile"
+                android:id="@+id/profile_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?android:selectableItemBackground"
                 android:padding="@dimen/element_spacing_small"
                 app:ignorePadding="true">
 
-                <de.vanita5.twittnuker.view.CircularImageView
+                <de.vanita5.twittnuker.view.ProfileImageView
                     android:id="@+id/profile_image"
+                    style="?profileImageStyle"
                     android:layout_width="@dimen/element_size_mlarge"
                     android:layout_height="@dimen/element_size_mlarge"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
+                    android:layout_margin="@dimen/padding_profile_image_detail_page"
                     android:contentDescription="@string/profile_image"
-                    android:padding="@dimen/padding_profile_image_detail_page"
                     android:scaleType="centerCrop"
-                    app:border="true"
-                    app:borderWidth="1dp"/>
+                    app:pivBorder="true"
+                    app:pivBorderWidth="1dp"/>
 
                 <ImageView
                     android:id="@+id/profile_type"
                     android:layout_width="@dimen/icon_size_profile_type_detail"
                     android:layout_height="@dimen/icon_size_profile_type_detail"
-                    android:layout_alignBottom="@+id/profile_image"
-                    android:layout_alignRight="@+id/profile_image"
+                    android:layout_alignBottom="@id/profile_image"
+                    android:layout_alignRight="@id/profile_image"
                     android:scaleType="fitCenter"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/profile_image"
-                    android:layout_alignTop="@+id/profile_image"
+                    android:layout_alignBottom="@id/profile_image"
+                    android:layout_alignTop="@id/profile_image"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/follow_indicator"
-                    android:layout_toRightOf="@+id/profile_image"
+                    android:layout_toRightOf="@id/profile_image"
                     android:gravity="center_vertical"
                     android:orientation="vertical"
                     android:paddingLeft="8dp"
@@ -135,7 +137,7 @@
             </de.vanita5.twittnuker.view.ColorLabelRelativeLayout>
 
             <include
-                layout="@layout/image_preview_grid"
+                layout="@layout/layout_media_preview"
                 android:visibility="gone"/>
 
             <de.vanita5.twittnuker.view.StatusTextView
@@ -294,5 +296,6 @@
                 app:maxActionItems="@integer/max_action_buttons_bottom"/>
 
         </LinearLayout>
+
     </android.support.v7.widget.CardView>
 </FrameLayout>

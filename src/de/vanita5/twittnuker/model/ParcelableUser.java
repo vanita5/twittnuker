@@ -26,14 +26,13 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import org.mariotaku.jsonserializer.JSONParcel;
 import org.mariotaku.jsonserializer.JSONParcelable;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.ParseUtils;
-
-import java.util.Date;
 
 import twitter4j.URLEntity;
 import twitter4j.User;
@@ -75,7 +74,9 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 	public final String description_plain, name, screen_name, location, profile_image_url, profile_banner_url, url,
 			url_expanded, description_html, description_unescaped, description_expanded;
 
-	public final int followers_count, friends_count, statuses_count, favorites_count;
+    public final int followers_count, friends_count, statuses_count, favorites_count, listed_count;
+
+    public final int background_color, link_color, text_color;
 
 	public final boolean is_cache;
 
@@ -104,6 +105,10 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
         friends_count = 0;
         statuses_count = 0;
         favorites_count = 0;
+        listed_count = 0;
+        background_color = 0;
+        link_color = 0;
+        text_color = 0;
         is_cache = true;
     }
 
@@ -128,6 +133,7 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		is_protected = cursor.getInt(cursor.getColumnIndex(CachedUsers.IS_PROTECTED)) == 1;
 		is_verified = cursor.getInt(cursor.getColumnIndex(CachedUsers.IS_VERIFIED)) == 1;
 		favorites_count = cursor.getInt(cursor.getColumnIndex(CachedUsers.FAVORITES_COUNT));
+        listed_count = cursor.getInt(cursor.getColumnIndex(CachedUsers.LISTED_COUNT));
 		followers_count = cursor.getInt(cursor.getColumnIndex(CachedUsers.FOLLOWERS_COUNT));
 		friends_count = cursor.getInt(cursor.getColumnIndex(CachedUsers.FRIENDS_COUNT));
 		statuses_count = cursor.getInt(cursor.getColumnIndex(CachedUsers.STATUSES_COUNT));
@@ -141,6 +147,9 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		is_cache = true;
 		description_unescaped = toPlainText(description_html);
 		is_following = cursor.getInt(cursor.getColumnIndex(CachedUsers.IS_FOLLOWING)) == 1;
+        background_color = cursor.getInt(cursor.getColumnIndex(CachedUsers.BACKGROUND_COLOR));
+        link_color = cursor.getInt(cursor.getColumnIndex(CachedUsers.LINK_COLOR));
+        text_color = cursor.getInt(cursor.getColumnIndex(CachedUsers.TEXT_COLOR));
 	}
 
 	public ParcelableUser(final JSONParcel in) {
@@ -153,6 +162,9 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		name = in.readString("name");
 		screen_name = in.readString("screen_name");
 		description_plain = in.readString("description_plain");
+        description_html = in.readString("description_html");
+        description_expanded = in.readString("description_expanded");
+        description_unescaped = in.readString("description_unescaped");
 		location = in.readString("location");
 		profile_image_url = in.readString("profile_image_url");
 		profile_banner_url = in.readString("profile_banner_url");
@@ -162,12 +174,13 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		friends_count = in.readInt("friends_count");
 		statuses_count = in.readInt("statuses_count");
 		favorites_count = in.readInt("favorites_count");
+        listed_count = in.readInt("listed_count");
 		is_cache = in.readBoolean("is_cache");
-		description_html = in.readString("description_html");
-		description_expanded = in.readString("description_expanded");
 		url_expanded = in.readString("url_expanded");
 		is_following = in.readBoolean("is_following");
-		description_unescaped = in.readString("description_unescaped");
+        background_color = in.readInt("background_color");
+        link_color = in.readInt("link_color");
+        text_color = in.readInt("text_color");
 	}
 
 	public ParcelableUser(final Parcel in) {
@@ -180,6 +193,9 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		name = in.readString();
 		screen_name = in.readString();
 		description_plain = in.readString();
+        description_html = in.readString();
+        description_expanded = in.readString();
+        description_unescaped = in.readString();
 		location = in.readString();
 		profile_image_url = in.readString();
 		profile_banner_url = in.readString();
@@ -189,12 +205,13 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		friends_count = in.readInt();
 		statuses_count = in.readInt();
 		favorites_count = in.readInt();
+        listed_count = in.readInt();
 		is_cache = in.readInt() == 1;
-		description_html = in.readString();
-		description_expanded = in.readString();
 		url_expanded = in.readString();
 		is_following = in.readInt() == 1;
-		description_unescaped = in.readString();
+        background_color = in.readInt();
+        link_color = in.readInt();
+        text_color = in.readInt();
 	}
 
 	public ParcelableUser(final User user, final long account_id) {
@@ -206,7 +223,7 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		this.account_id = account_id;
 		final URLEntity[] urls_url_entities = user.getURLEntities();
 		id = user.getId();
-		created_at = getTime(user.getCreatedAt());
+        created_at = user.getCreatedAt().getTime();
 		is_protected = user.isProtected();
 		is_verified = user.isVerified();
 		name = user.getName();
@@ -214,6 +231,7 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		description_plain = user.getDescription();
 		description_html = formatUserDescription(user);
 		description_expanded = formatExpandedUserDescription(user);
+        description_unescaped = toPlainText(description_html);
 		location = user.getLocation();
 		profile_image_url = ParseUtils.parseString(user.getProfileImageUrlHttps());
 		profile_banner_url = user.getProfileBannerImageUrl();
@@ -225,14 +243,17 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		friends_count = user.getFriendsCount();
 		statuses_count = user.getStatusesCount();
 		favorites_count = user.getFavouritesCount();
+        listed_count = user.getListedCount();
 		is_cache = false;
 		is_following = user.isFollowing();
-		description_unescaped = toPlainText(description_html);
+        background_color = ParseUtils.parseColor("#" + user.getProfileBackgroundColor(), 0);
+        link_color = ParseUtils.parseColor("#"+user.getProfileLinkColor(), 0);
+        text_color = ParseUtils.parseColor("#"+user.getProfileTextColor(), 0);
 	}
 
 	@Override
-	public int compareTo(final ParcelableUser that) {
-		final long diff = that != null ? position - that.position : position;
+    public int compareTo(@NonNull final ParcelableUser that) {
+        final long diff = position - that.position;
 		if (diff > Integer.MAX_VALUE) return Integer.MAX_VALUE;
 		if (diff < Integer.MIN_VALUE) return Integer.MIN_VALUE;
 		return (int) diff;
@@ -288,6 +309,9 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		out.writeString("name", name);
 		out.writeString("screen_name", screen_name);
 		out.writeString("description_plain", description_plain);
+        out.writeString("description_html", description_html);
+        out.writeString("description_expanded", description_expanded);
+        out.writeString("description_unescaped", description_unescaped);
 		out.writeString("location", location);
 		out.writeString("profile_image_url", profile_image_url);
 		out.writeString("profile_banner_url", profile_banner_url);
@@ -297,12 +321,13 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		out.writeInt("friends_count", friends_count);
 		out.writeInt("statuses_count", statuses_count);
 		out.writeInt("favorites_count", favorites_count);
+        out.writeInt("listed_count", listed_count);
 		out.writeBoolean("is_cache", is_cache);
-		out.writeString("description_html", description_html);
-		out.writeString("description_expanded", description_expanded);
 		out.writeString("url_expanded", url_expanded);
 		out.writeBoolean("is_following", is_following);
-		out.writeString("description_unescaped", description_unescaped);
+        out.writeInt("background_color", background_color);
+        out.writeInt("link_color", link_color);
+        out.writeInt("text_color", text_color);
 	}
 
 	@Override
@@ -316,6 +341,9 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		out.writeString(name);
 		out.writeString(screen_name);
 		out.writeString(description_plain);
+        out.writeString(description_html);
+        out.writeString(description_expanded);
+        out.writeString(description_unescaped);
 		out.writeString(location);
 		out.writeString(profile_image_url);
 		out.writeString(profile_banner_url);
@@ -325,12 +353,13 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		out.writeInt(friends_count);
 		out.writeInt(statuses_count);
 		out.writeInt(favorites_count);
+        out.writeInt(listed_count);
 		out.writeInt(is_cache ? 1 : 0);
-		out.writeString(description_html);
-		out.writeString(description_expanded);
 		out.writeString(url_expanded);
 		out.writeInt(is_following ? 1 : 0);
-		out.writeString(description_unescaped);
+        out.writeInt(background_color);
+        out.writeInt(link_color);
+        out.writeInt(text_color);
 	}
 
 	public static ContentValues makeCachedUserContentValues(final ParcelableUser user) {
@@ -343,6 +372,7 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		values.put(CachedUsers.CREATED_AT, user.created_at);
 		values.put(CachedUsers.IS_PROTECTED, user.is_protected);
 		values.put(CachedUsers.IS_VERIFIED, user.is_verified);
+        values.put(CachedUsers.LISTED_COUNT, user.listed_count);
 		values.put(CachedUsers.FAVORITES_COUNT, user.favorites_count);
 		values.put(CachedUsers.FOLLOWERS_COUNT, user.followers_count);
 		values.put(CachedUsers.FRIENDS_COUNT, user.friends_count);
@@ -355,10 +385,10 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		values.put(CachedUsers.URL_EXPANDED, user.url_expanded);
 		values.put(CachedUsers.PROFILE_BANNER_URL, user.profile_banner_url);
 		values.put(CachedUsers.IS_FOLLOWING, user.is_following);
+        values.put(CachedUsers.BACKGROUND_COLOR, user.background_color);
+        values.put(CachedUsers.LINK_COLOR, user.link_color);
+        values.put(CachedUsers.TEXT_COLOR, user.text_color);
 		return values;
 	}
 
-	private static long getTime(final Date date) {
-		return date != null ? date.getTime() : 0;
-	}
 }

@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -185,6 +187,14 @@ public final class ArrayUtils {
 			array[i] = items_list.get(i);
 		}
 		return array;
+    }
+
+    public static void reverse(@NonNull Object[] array) {
+        for (int i = 0; i < array.length / 2; i++) {
+            Object temp = array[i];
+            array[i] = array[array.length - i - 1];
+            array[array.length - i - 1] = temp;
+        }
 	}
 
 	public static int[] subArray(final int[] array, final int start, final int end) {

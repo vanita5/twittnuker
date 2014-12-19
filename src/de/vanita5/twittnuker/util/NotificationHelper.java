@@ -151,6 +151,7 @@ public class NotificationHelper implements Constants {
 		int smallicon = R.drawable.ic_stat_twittnuker;
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+		builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
 
 		if (NotificationContent.NOTIFICATION_TYPE_MENTION.equals(type)) {
 			contentText = stripMentionText(notification.getMessage(),

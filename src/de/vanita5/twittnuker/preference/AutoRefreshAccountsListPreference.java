@@ -27,7 +27,7 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.fragment.AccountRefreshSettingsFragment;
-import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 
 public class AutoRefreshAccountsListPreference extends AccountsListPreference {
 
@@ -44,7 +44,7 @@ public class AutoRefreshAccountsListPreference extends AccountsListPreference {
 	}
 
 	@Override
-	protected void setupPreference(final AccountItemPreference preference, final Account account) {
+	protected void setupPreference(final AccountItemPreference preference, final ParcelableAccount account) {
 		preference.setFragment(AccountRefreshSettingsFragment.class.getName());
 		final Bundle args = preference.getExtras();
 		args.putParcelable(EXTRA_ACCOUNT, account);

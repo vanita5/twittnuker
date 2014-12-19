@@ -26,12 +26,6 @@ import android.view.View;
 
 public interface IBaseCardAdapter extends IBaseAdapter {
 
-	public void setAnimationEnabled(boolean anim);
-
-	public void setMaxAnimationPosition(int position);
-
-	public void setMenuButtonClickListener(MenuButtonClickListener listener);
-
 	public static interface MenuButtonClickListener {
 		void onMenuButtonClick(View button, int position, long id);
 	}

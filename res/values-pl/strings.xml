@@ -180,7 +180,7 @@
     <string name="type_to_compose">Wpisuj</string>
     <string name="users_lists">Listy użytkownika</string>
     <string name="lists_following_user">Listy obserwujące tego użytkownika</string>
-    <string name="lists_following_me">Listy obserwujące mnie</string>
+    <string name="lists_following_you">Listy obserwujące mnie</string>
     <string name="item_3_minutes">3 minuty</string>
     <string name="item_5_minutes">5 minut</string>
     <string name="item_10_minutes">10 minut</string>
@@ -347,7 +347,7 @@
     <string name="clear_search_history">Wyczyść historię wyszukiwania</string>
     <string name="no_thanks">Nie, dziękuję</string>
     <string name="fast_scroll_thumb">Szybkie przewijanie palcem</string>
-  <string name="indicate_my_status">Wyróżniaj moje tweety</string>
+  <string name="indicate_your_status">Wyróżniaj moje tweety</string>
     <string name="default_ringtone">Domyślny dzwonek</string>
     <string name="phishing_link_warning">Ostrzeżenie od linku phishingowym</string>
     <string name="phishing_link_warning_summary">Ostrzega użytkownika przed odnośnikiem w wiadomości, którego odwiedzenie może prowadzić do wyłudzenia informacji (phishing).</string>
@@ -364,7 +364,7 @@
   <string name="quote_protected_status_notice">Nie jest zalecane cytowanie chronionych tweetów.</string>
     <string name="edit_draft">Edytuj szkic</string>
     <string name="profile_image">Obraz profilu</string>
-    <string name="my_profile_image">Obraz mojego profilu</string>
+    <string name="your_profile_image">Obraz mojego profilu</string>
     <string name="theme_color">Kolor motywu</string>
     <string name="wrong_url_format">Nieprawidłowy format URL.</string>
     <string name="wrong_username_password">Błędna nazwa użytkownika / hasło.</string>

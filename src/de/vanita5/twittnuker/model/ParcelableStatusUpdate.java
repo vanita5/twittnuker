@@ -42,8 +42,8 @@ public class ParcelableStatusUpdate implements Parcelable {
 		}
 	};
 
-    public final Account[] accounts;
-	public final ParcelableMediaUpdate[] medias;
+    public final ParcelableAccount[] accounts;
+    public final ParcelableMediaUpdate[] media;
 	public final String text;
 	public final ParcelableLocation location;
 	public final long in_reply_to_status_id;
@@ -54,30 +54,30 @@ public class ParcelableStatusUpdate implements Parcelable {
 	 *             <b>ParcelableStatusUpdate.Builder</b> instead.
 	 */
 	@Deprecated
-	public ParcelableStatusUpdate(final Account[] accounts, final String text, final ParcelableLocation location,
-								  final ParcelableMediaUpdate[] medias, final long in_reply_to_status_id, final boolean is_possibly_sensitive) {
+	public ParcelableStatusUpdate(final ParcelableAccount[] accounts, final String text, final ParcelableLocation location,
+                                  final ParcelableMediaUpdate[] media, final long in_reply_to_status_id, final boolean is_possibly_sensitive) {
         this.accounts = accounts;
 		this.text = text;
 		this.location = location;
-		this.medias = medias;
+        this.media = media;
 		this.in_reply_to_status_id = in_reply_to_status_id;
 		this.is_possibly_sensitive = is_possibly_sensitive;
 	}
 
     public ParcelableStatusUpdate(final Context context, final DraftItem draft) {
-        accounts = Account.getAccounts(context, draft.account_ids);
+        accounts = ParcelableAccount.getAccounts(context, draft.account_ids);
         text = draft.text;
         location = draft.location;
-		medias = draft.medias;
+        media = draft.media;
         in_reply_to_status_id = draft.in_reply_to_status_id;
         is_possibly_sensitive = draft.is_possibly_sensitive;
     }
 
 	public ParcelableStatusUpdate(final Parcel in) {
-        accounts = in.createTypedArray(Account.CREATOR);
+        accounts = in.createTypedArray(ParcelableAccount.CREATOR);
 		text = in.readString();
 		location = in.readParcelable(ParcelableLocation.class.getClassLoader());
-		medias = in.createTypedArray(ParcelableMediaUpdate.CREATOR);
+        media = in.createTypedArray(ParcelableMediaUpdate.CREATOR);
 		in_reply_to_status_id = in.readLong();
 		is_possibly_sensitive = in.readInt() == 1;
 	}
@@ -89,7 +89,7 @@ public class ParcelableStatusUpdate implements Parcelable {
 
 	@Override
 	public String toString() {
-		return "ParcelableStatusUpdate{accounts=" + Arrays.toString(accounts) + ", medias=" + Arrays.toString(medias)
+        return "ParcelableStatusUpdate{accounts=" + Arrays.toString(accounts) + ", media=" + Arrays.toString(media)
 				+ ", text=" + text + ", location=" + location + ", in_reply_to_status_id=" + in_reply_to_status_id
 				+ ", is_possibly_sensitive=" + is_possibly_sensitive + "}";
 	}
@@ -99,17 +99,17 @@ public class ParcelableStatusUpdate implements Parcelable {
         dest.writeTypedArray(accounts, flags);
 		dest.writeString(text);
 		dest.writeParcelable(location, flags);
-		dest.writeTypedArray(medias, flags);
+        dest.writeTypedArray(media, flags);
 		dest.writeLong(in_reply_to_status_id);
 		dest.writeInt(is_possibly_sensitive ? 1 : 0);
 	}
 
 	public static final class Builder {
 
-        private Account[] accounts;
+        private ParcelableAccount[] accounts;
 		private String text;
 		private ParcelableLocation location;
-		private ParcelableMediaUpdate[] medias;
+        private ParcelableMediaUpdate[] media;
 		private long in_reply_to_status_id;
 		private boolean is_possibly_sensitive;
 
@@ -120,19 +120,19 @@ public class ParcelableStatusUpdate implements Parcelable {
 		public Builder(final ParcelableStatusUpdate base) {
             accounts(base.accounts);
 			text(base.text);
-			medias(base.medias);
+            media(base.media);
 			location(base.location);
 			inReplyToStatusId(base.in_reply_to_status_id);
 			isPossiblySensitive(base.is_possibly_sensitive);
 		}
 
-        public Builder accounts(final Account[] accounts) {
+        public Builder accounts(final ParcelableAccount[] accounts) {
             this.accounts = accounts;
 			return this;
 		}
 
 		public ParcelableStatusUpdate build() {
-			return new ParcelableStatusUpdate(accounts, text, location, medias, in_reply_to_status_id,
+            return new ParcelableStatusUpdate(accounts, text, location, media, in_reply_to_status_id,
                     is_possibly_sensitive);
 		}
 
@@ -151,8 +151,8 @@ public class ParcelableStatusUpdate implements Parcelable {
 			return this;
 		}
 
-		public Builder medias(final ParcelableMediaUpdate... medias) {
-			this.medias = medias;
+        public Builder media(final ParcelableMediaUpdate... media) {
+            this.media = media;
 			return this;
 		}
 

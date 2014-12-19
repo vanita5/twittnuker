@@ -29,7 +29,7 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
-public class DraftViewHolder extends ViewHolder {
+public class DraftViewHolder extends ListViewHolder {
 
 	public final IColorLabelView content;
 	public final TextView text;

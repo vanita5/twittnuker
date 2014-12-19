@@ -22,11 +22,11 @@
 			android:layout_alignTop="@+id/status_content"/>
 	</RelativeLayout>
 
-	<de.vanita5.twittnuker.view.TwidereMenuBar
-		android:id="@+id/actionbar_split"
-		android:layout_width="match_parent"
-		android:layout_height="?android:actionBarSize"
-        android:layout_weight="0"
-    	android:max="@integer/max_action_buttons_bottom"/>
+	<!--<de.vanita5.twittnuker.view.TwidereMenuBar-->
+		<!--android:id="@+id/actionbar_split"-->
+		<!--android:layout_width="match_parent"-->
+		<!--android:layout_height="?android:actionBarSize"-->
+        <!--android:layout_weight="0"-->
+    	<!--android:max="@integer/max_action_buttons_bottom"/>-->
 
 </LinearLayout>

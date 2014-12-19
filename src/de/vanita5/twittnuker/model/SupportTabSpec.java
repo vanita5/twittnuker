@@ -22,14 +22,15 @@
 
 package de.vanita5.twittnuker.model;
 
-import static de.vanita5.twittnuker.util.CompareUtils.bundleEquals;
-import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
-import static de.vanita5.twittnuker.util.CompareUtils.objectEquals;
-
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
+
+import static de.vanita5.twittnuker.util.CompareUtils.bundleEquals;
+import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
+import static de.vanita5.twittnuker.util.CompareUtils.objectEquals;
 
 public class SupportTabSpec implements Comparable<SupportTabSpec>, TwittnukerConstants {
 
@@ -60,7 +61,7 @@ public class SupportTabSpec implements Comparable<SupportTabSpec>, TwittnukerCon
 	}
 
 	@Override
-	public int compareTo(final SupportTabSpec another) {
+    public int compareTo(@NonNull final SupportTabSpec another) {
 		return position - another.position;
 	}
 

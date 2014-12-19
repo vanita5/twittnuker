@@ -22,11 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import static de.vanita5.twittnuker.util.CustomTabUtils.findTabIconKey;
-import static de.vanita5.twittnuker.util.CustomTabUtils.getIconMap;
-import static de.vanita5.twittnuker.util.CustomTabUtils.getTabConfiguration;
-import static de.vanita5.twittnuker.util.CustomTabUtils.getTabTypeName;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -56,7 +51,7 @@ import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.ExtraConfiguration;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -64,13 +59,17 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 
 import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import static de.vanita5.twittnuker.util.CustomTabUtils.findTabIconKey;
+import static de.vanita5.twittnuker.util.CustomTabUtils.getIconMap;
+import static de.vanita5.twittnuker.util.CustomTabUtils.getTabConfiguration;
+import static de.vanita5.twittnuker.util.CustomTabUtils.getTabTypeName;
 
 public class CustomTabEditorActivity extends BaseSupportDialogActivity implements OnClickListener {
 
@@ -301,10 +300,10 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 			mSecondaryFieldContainer.setVisibility(has_secondary_field ? View.VISIBLE : View.GONE);
 			final boolean accountIdRequired = conf.getAccountRequirement() == CustomTabConfiguration.ACCOUNT_REQUIRED;
 			if (!accountIdRequired) {
-				mAccountsAdapter.add(Account.dummyInstance());
+                mAccountsAdapter.add(ParcelableAccount.dummyInstance());
 			}
 			final boolean officialKeyOnly = intent.getBooleanExtra(EXTRA_OFFICIAL_KEY_ONLY, false);
-            mAccountsAdapter.addAll(Account.getAccountsList(this, false, officialKeyOnly));
+            mAccountsAdapter.addAll(ParcelableAccount.getAccountsList(this, false, officialKeyOnly));
 			switch (conf.getSecondaryFieldType()) {
 				case CustomTabConfiguration.FIELD_TYPE_USER: {
 					mSecondaryFieldLabel.setText(R.string.user);

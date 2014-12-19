@@ -22,13 +22,6 @@
 
 package de.vanita5.twittnuker.util;
 
-import static de.vanita5.twittnuker.util.Utils.openImage;
-import static de.vanita5.twittnuker.util.Utils.openStatus;
-import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
-import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -37,80 +30,85 @@ import android.net.Uri;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 
+import static de.vanita5.twittnuker.util.Utils.openImage;
+import static de.vanita5.twittnuker.util.Utils.openStatus;
+import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
+import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
+import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 import static de.vanita5.twittnuker.util.shortener.TweetShortenerUtils.expandHototin;
 import static de.vanita5.twittnuker.util.shortener.TweetShortenerUtils.expandTwitLonger;
 
 public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 
-	protected final Activity activity;
+    protected final Context context;
     protected final MultiSelectManager manager;
 
     public OnLinkClickHandler(final Context context, final MultiSelectManager manager) {
-		activity = context instanceof Activity ? (Activity) context : null;
+        this.context = context;
         this.manager = manager;
 	}
 
 	@Override
 	public void onLinkClick(final String link, final String orig, final long account_id, final int type,
 			final boolean sensitive) {
+        if (context == null || (manager != null && manager.isActive())) return;
 		
-        if (activity == null) return;
 		switch (type) {
 			case TwidereLinkify.LINK_TYPE_MENTION: {
-				openUserProfile(activity, account_id, -1, link);
+                openUserProfile(context, account_id, -1, link, null);
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_HASHTAG: {
-                openTweetSearch(activity, account_id, "#" + link);
+                openTweetSearch(context, account_id, "#" + link);
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_LINK: {
 				if (MediaPreviewUtils.isLinkSupported(link)) {
-					openImage(activity, account_id, link, sensitive);
+                    openImage(context, account_id, link, sensitive);
 				} else {
 					openLink(link);
 				}
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_LIST: {
-				final String[] mention_list = link.split("\\/");
-				if (mention_list == null || mention_list.length != 2) {
+                final String[] mentionList = link.split("/");
+                if (mentionList.length != 2) {
 					break;
 				}
-				openUserListDetails(activity, account_id, -1, -1, mention_list[0], mention_list[1]);
+                openUserListDetails(context, account_id, -1, -1, mentionList[0], mentionList[1]);
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_CASHTAG: {
-				openTweetSearch(activity, account_id, link);
+                openTweetSearch(context, account_id, link);
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_USER_ID: {
-				openUserProfile(activity, account_id, ParseUtils.parseLong(link), null);
+                openUserProfile(context, account_id, ParseUtils.parseLong(link), null, null);
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_STATUS: {
-				openStatus(activity, account_id, ParseUtils.parseLong(link));
+                openStatus(context, account_id, ParseUtils.parseLong(link));
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_HOTOTIN: {
-				activity.setProgressBarIndeterminateVisibility(true);
-				expandHototin(activity, link);
+//				context.setProgressBarIndeterminateVisibility(true); //FIXME
+				expandHototin(context, link);
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_TWITLONGER: {
-				activity.setProgressBarIndeterminateVisibility(true);
-				expandTwitLonger(activity, link);
+//				context.setProgressBarIndeterminateVisibility(true); //FIXME
+				expandTwitLonger(context, link);
 				break;
 			}
 		}
 	}
 
 	protected void openLink(final String link) {
-        if (activity == null || manager.isActive()) return;
+        if (context == null || (manager != null && manager.isActive())) return;
 		final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
-            activity.startActivity(intent);
+            context.startActivity(intent);
         } catch (final ActivityNotFoundException e) {
             // TODO
         }

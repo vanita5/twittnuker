@@ -22,15 +22,6 @@
 
 package de.vanita5.twittnuker.provider;
 
-import static de.vanita5.twittnuker.util.Utils.clearAccountColor;
-import static de.vanita5.twittnuker.util.Utils.clearAccountName;
-import static de.vanita5.twittnuker.util.Utils.getAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getNotificationUri;
-import static de.vanita5.twittnuker.util.Utils.getTableId;
-import static de.vanita5.twittnuker.util.Utils.getTableNameById;
-import static de.vanita5.twittnuker.util.Utils.isFiltered;
-
 import android.app.NotificationManager;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -44,11 +35,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.ParcelFileDescriptor;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-import org.mariotaku.jsonserializer.JSONFileIO;
+import com.squareup.otto.Bus;
 
+import org.mariotaku.jsonserializer.JSONFileIO;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
@@ -74,8 +69,6 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder;
 import de.vanita5.twittnuker.util.Utils;
 
-import twitter4j.http.HostAddressResolver;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -83,11 +76,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
+import twitter4j.http.HostAddressResolver;
+
+import static de.vanita5.twittnuker.util.Utils.clearAccountColor;
+import static de.vanita5.twittnuker.util.Utils.clearAccountName;
+import static de.vanita5.twittnuker.util.Utils.getAccountIds;
+import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
+import static de.vanita5.twittnuker.util.Utils.getNotificationUri;
+import static de.vanita5.twittnuker.util.Utils.getTableId;
+import static de.vanita5.twittnuker.util.Utils.getTableNameById;
+import static de.vanita5.twittnuker.util.Utils.isFiltered;
 
 public final class TwidereDataProvider extends ContentProvider implements Constants, LazyLoadCallback {
 
@@ -102,17 +106,18 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	private ImagePreloader mImagePreloader;
 	private HostAddressResolver mHostAddressResolver;
 	private NotificationHelper mNotificationHelper;
+	private Handler mHandler;
 
-	private final List<ParcelableStatus> mNewStatuses = new CopyOnWriteArrayList<ParcelableStatus>();
-	private final List<ParcelableStatus> mNewMentions = new CopyOnWriteArrayList<ParcelableStatus>();
-	private final List<ParcelableDirectMessage> mNewMessages = new CopyOnWriteArrayList<ParcelableDirectMessage>();
+    private final List<ParcelableStatus> mNewStatuses = new CopyOnWriteArrayList<>();
+    private final List<ParcelableStatus> mNewMentions = new CopyOnWriteArrayList<>();
+    private final List<ParcelableDirectMessage> mNewMessages = new CopyOnWriteArrayList<>();
 
-	private final List<UnreadItem> mUnreadStatuses = new NoDuplicatesCopyOnWriteArrayList<UnreadItem>();
-	private final List<UnreadItem> mUnreadMentions = new NoDuplicatesCopyOnWriteArrayList<UnreadItem>();
-	private final List<UnreadItem> mUnreadMessages = new NoDuplicatesCopyOnWriteArrayList<UnreadItem>();
+    private final List<UnreadItem> mUnreadStatuses = new NoDuplicatesCopyOnWriteArrayList<>();
+    private final List<UnreadItem> mUnreadMentions = new NoDuplicatesCopyOnWriteArrayList<>();
+    private final List<UnreadItem> mUnreadMessages = new NoDuplicatesCopyOnWriteArrayList<>();
 
 	@Override
-	public int bulkInsert(final Uri uri, final ContentValues[] values) {
+	public int bulkInsert(final Uri uri, @NonNull final ContentValues[] values) {
 		try {
 			final int tableId = getTableId(uri);
 			final String table = getTableNameById(tableId);
@@ -123,7 +128,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 					return 0;
 			}
 			int result = 0;
-			if (table != null && values != null) {
+            if (table != null) {
 				mDatabaseWrapper.beginTransaction();
 				final boolean replaceOnConflict = shouldReplaceOnConflict(tableId);
 				for (final ContentValues contentValues : values) {
@@ -232,6 +237,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	public boolean onCreate() {
 		final Context context = getContext();
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
+        mHandler = new Handler(Looper.getMainLooper());
         mDatabaseWrapper = new SQLiteDatabaseWrapper(this);
 		mHostAddressResolver = app.getHostAddressResolver();
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -240,7 +246,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		mNotificationHelper = new NotificationHelper(context);
 		// final GetWritableDatabaseTask task = new
 		// GetWritableDatabaseTask(context, helper, mDatabaseWrapper);
-		// task.execute();
+        // task.executeTask();
 		return true;
 	}
 
@@ -255,21 +261,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	public ParcelFileDescriptor openFile(final Uri uri, final String mode) throws FileNotFoundException {
 		if (uri == null || mode == null) throw new IllegalArgumentException();
 		final int table_id = getTableId(uri);
-		final String table = getTableNameById(table_id);
-		final int mode_code;
-		if ("r".equals(mode)) {
-			mode_code = ParcelFileDescriptor.MODE_READ_ONLY;
-		} else if ("rw".equals(mode)) {
-			mode_code = ParcelFileDescriptor.MODE_READ_WRITE;
-		} else if ("rwt".equals(mode)) {
-			mode_code = ParcelFileDescriptor.MODE_READ_WRITE | ParcelFileDescriptor.MODE_TRUNCATE;
-		} else
-			throw new IllegalArgumentException();
-		if (mode_code == ParcelFileDescriptor.MODE_READ_ONLY) {
-			//
-		} else if ((mode_code & ParcelFileDescriptor.MODE_READ_WRITE) != 0) {
-			//
-		}
 		switch (table_id) {
 			case VIRTUAL_TABLE_ID_CACHED_IMAGES: {
 				return getCachedImageFd(uri.getQueryParameter(QUERY_PARAM_URL));
@@ -392,7 +383,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				mNewStatuses.clear();
 				break;
 			}
-			case NOTIFICATION_ID_MENTIONS: {
+			case NOTIFICATION_ID_MENTIONS_TIMELINE: {
 				mNewMentions.clear();
 				break;
 			}
@@ -546,7 +537,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	private Cursor getNotificationsCursor() {
 		final MatrixCursor c = new MatrixCursor(TweetStore.Notifications.MATRIX_COLUMNS);
 		c.addRow(new Integer[] { NOTIFICATION_ID_HOME_TIMELINE, mUnreadStatuses.size() });
-		c.addRow(new Integer[] { NOTIFICATION_ID_MENTIONS, mNewMentions.size() });
+		c.addRow(new Integer[] {NOTIFICATION_ID_MENTIONS_TIMELINE, mNewMentions.size() });
 		c.addRow(new Integer[] { NOTIFICATION_ID_DIRECT_MESSAGES, mNewMessages.size() });
 		return c;
 	}
@@ -555,7 +546,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		final MatrixCursor c = new MatrixCursor(TweetStore.Notifications.MATRIX_COLUMNS);
 		if (id == NOTIFICATION_ID_HOME_TIMELINE) {
 			c.addRow(new Integer[] { id, mNewStatuses.size() });
-		} else if (id == NOTIFICATION_ID_MENTIONS) {
+		} else if (id == NOTIFICATION_ID_MENTIONS_TIMELINE) {
 			c.addRow(new Integer[] { id, mNewMentions.size() });
 		} else if (id == NOTIFICATION_ID_DIRECT_MESSAGES) {
 			c.addRow(new Integer[] { id, mNewMessages.size() });
@@ -649,7 +640,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (values == null || values.length == 0) return 0;
 		// Add statuses that not filtered to list for future use.
 		int result = 0;
-		final boolean enabled = mPreferences.getBoolean(KEY_FILTERS_IN_MENTIONS, true);
+		final boolean enabled = mPreferences.getBoolean(KEY_FILTERS_IN_MENTIONS_TIMELINE, true);
 		final boolean filtersForRts = mPreferences.getBoolean(KEY_FILTERS_FOR_RTS, true);
 		int i = 1;
 		for (final ContentValues value : values) {
@@ -698,10 +689,14 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	}
 
 	private void notifyUnreadCountChanged(final int position) {
-		final Intent intent = new Intent(BROADCAST_UNREAD_COUNT_UPDATED);
-		intent.putExtra(EXTRA_TAB_POSITION, position);
 		final Context context = getContext();
-		context.sendBroadcast(intent);
+        final Bus bus = TwittnukerApplication.getInstance(context).getMessageBus();
+        mHandler.post(new Runnable() {
+			@Override
+			public void run() {
+				bus.post(new UnreadCountUpdatedEvent(position));
+			}
+		});
 		notifyContentObserver(UnreadCounts.CONTENT_URI);
 	}
 
@@ -734,7 +729,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
 						getAccountIds(getContext()));
                 notifyMentionsInserted(prefs, values);
-				notifyUnreadCountChanged(NOTIFICATION_ID_MENTIONS);
+				notifyUnreadCountChanged(NOTIFICATION_ID_MENTIONS_TIMELINE);
 				break;
 			}
 			case TABLE_ID_DIRECT_MESSAGES_INBOX: {

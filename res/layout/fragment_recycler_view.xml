@@ -3,9 +3,8 @@
     android:id="@+id/fragment_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:animateLayoutChanges="true"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:animateLayoutChanges="true">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_layout"
@@ -22,10 +21,5 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        style="?android:progressBarStyleLarge"
-        android:layout_gravity="center"
-        android:layout_height="wrap_content"/>
+    <include layout="@layout/layout_content_fragment_common"/>
 </FrameLayout>

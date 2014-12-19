@@ -31,14 +31,15 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -46,120 +47,72 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.commonsware.cwac.merge.MergeAdapter;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.FiltersActivity;
+import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.AccountsManagerActivity;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
-import de.vanita5.twittnuker.activity.SettingsActivity;
+import de.vanita5.twittnuker.activity.support.ComposeActivity;
 import de.vanita5.twittnuker.activity.support.DraftsActivity;
+import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableAccount.Indices;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
+import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
-import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 import java.util.ArrayList;
 
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.openUserFavorites;
-import static de.vanita5.twittnuker.util.Utils.openUserListMemberships;
 import static de.vanita5.twittnuker.util.Utils.openUserLists;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-import static de.vanita5.twittnuker.util.Utils.openUserTimeline;
 
 public class AccountsDashboardFragment extends BaseSupportListFragment implements LoaderCallbacks<Cursor>,
-		OnSharedPreferenceChangeListener, OnAccountActivateStateChangeListener {
+        OnSharedPreferenceChangeListener, OnCheckedChangeListener, ImageLoadingListener, OnClickListener {
 
 	private final SupportFragmentReloadCursorObserver mReloadContentObserver = new SupportFragmentReloadCursorObserver(
 			this, 0, this);
-
-	private Account mAccount;
 
 	private ContentResolver mResolver;
 	private SharedPreferences mPreferences;
 	private MergeAdapter mAdapter;
 
-	private DrawerAccountsAdapter mAccountsAdapter;
+    private AccountSelectorAdapter mAccountsAdapter;
 	private AccountOptionsAdapter mAccountOptionsAdapter;
 	private AppMenuAdapter mAppMenuAdapter;
 
-    private TextView mAccountOptionsSectionView, mAppMenuSectionView;
+    private TextView mAppMenuSectionView;
     private View mAccountSelectorView;
     private RecyclerView mAccountsSelector;
     private ImageView mAccountProfileBannerView, mAccountProfileImageView;
     private TextView mAccountProfileNameView, mAccountProfileScreenNameView;
+    private Switch mAccountsToggle;
+    private View mAccountProfileContainer;
 
 	private Context mThemedContext;
     private ImageLoaderWrapper mImageLoader;
 
 	@Override
-	public void onAccountActivateStateChanged(final Account account, final boolean activated) {
-		final ContentValues values = new ContentValues();
-		values.put(Accounts.IS_ACTIVATED, activated);
-		final String where = Accounts.ACCOUNT_ID + " = " + account.account_id;
-		mResolver.update(Accounts.CONTENT_URI, values, where, null);
-	}
-
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mResolver = getContentResolver();
-		final Context context = getView().getContext();
-        mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
-        final LayoutInflater inflater = LayoutInflater.from(context);
-        final ListView listView = getListView();
-		listView.setHorizontalScrollBarEnabled(false);
-		listView.setVerticalScrollBarEnabled(false);
-		mAdapter = new MergeAdapter();
-		mAccountsAdapter = new DrawerAccountsAdapter(context);
-		mAccountOptionsAdapter = new AccountOptionsAdapter(context);
-		mAppMenuAdapter = new AppMenuAdapter(context);
-		mAccountOptionsSectionView = newSectionView(context, 0);
-		mAppMenuSectionView = newSectionView(context, R.string.more);
-        mAccountSelectorView = inflater.inflate(R.layout.header_drawer_account_selector, listView, false);
-        mAccountsSelector = (RecyclerView) mAccountSelectorView.findViewById(R.id.account_selector);
-        mAccountsSelector.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-//        mAccountsSelector.setAdapter(mAccountsAdapter);
-        mAccountProfileImageView = (ImageView) mAccountSelectorView.findViewById(R.id.profile_image);
-        mAccountProfileBannerView = (ImageView) mAccountSelectorView.findViewById(R.id.profile_banner);
-        mAccountProfileNameView = (TextView) mAccountSelectorView.findViewById(R.id.name);
-        mAccountProfileScreenNameView = (TextView) mAccountSelectorView.findViewById(R.id.screen_name);
-		mAccountsAdapter.setOnAccountActivateStateChangeListener(this);
-        mAdapter.addView(mAccountSelectorView, false);
-		mAdapter.addAdapter(mAccountsAdapter);
-		mAdapter.addView(mAccountOptionsSectionView, false);
-		mAdapter.addAdapter(mAccountOptionsAdapter);
-		mAdapter.addView(mAppMenuSectionView, false);
-		mAdapter.addAdapter(mAppMenuAdapter);
-		setListAdapter(mAdapter);
-		mPreferences.registerOnSharedPreferenceChangeListener(this);
-		getLoaderManager().initLoader(0, null, this);
-	}
-
-	@Override
-    protected void fitSystemWindows(Rect insets) {
-        // No-op
-    }
-
-    @Override
 	public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
 		switch (requestCode) {
 			case REQUEST_SETTINGS: {
@@ -175,37 +128,67 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 	}
 
 	@Override
+    public void onResume() {
+        super.onResume();
+        updateDefaultAccountState();
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        final ParcelableAccount account = mAccountsAdapter.getSelectedAccount();
+        if (account == null) return;
+        final ContentValues values = new ContentValues();
+        values.put(Accounts.IS_ACTIVATED, isChecked);
+        final String where = Accounts.ACCOUNT_ID + " = " + account.account_id;
+        mResolver.update(Accounts.CONTENT_URI, values, where, null);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.profile_container: {
+                final ParcelableAccount account = mAccountsAdapter.getSelectedAccount();
+                if (account == null) return;
+                final FragmentActivity activity = getActivity();
+                final Bundle activityOption = Utils.makeSceneTransitionOption(activity,
+                        new Pair<View, String>(mAccountProfileImageView, UserFragment.TRANSITION_NAME_PROFILE_IMAGE));
+                openUserProfile(activity, account.account_id, account.account_id,
+                        account.screen_name, activityOption);
+                break;
+            }
+        }
+    }
+
+    @Override
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
         return new CursorLoader(getActivity(), Accounts.CONTENT_URI, Accounts.COLUMNS, null, null, Accounts.SORT_POSITION);
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-		return LayoutInflater.from(getThemedContext()).inflate(R.layout.fragment_accounts_drawer, container, false);
-	}
+    public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
+        if (data != null && data.getCount() > 0 && mAccountsAdapter.getSelectedAccountId() <= 0) {
+            data.moveToFirst();
+            mAccountsAdapter.setSelectedAccountId(data.getLong(data.getColumnIndex(Accounts.ACCOUNT_ID)));
+	    }
+        mAccountsAdapter.changeCursor(data);
+        updateAccountOptionsSeparatorLabel();
+        updateDefaultAccountState();
+    }
 
 	@Override
+    public void onLoaderReset(final Loader<Cursor> loader) {
+        mAccountsAdapter.changeCursor(null);
+    }
+
+    @Override
 	public void onListItemClick(final ListView l, final View v, final int position, final long id) {
 		final ListAdapter adapter = mAdapter.getAdapter(position);
 		final Object item = mAdapter.getItem(position);
-		if (adapter instanceof DrawerAccountsAdapter) {
-			if (!(item instanceof Account)) return;
-			final Account account = (Account) item;
-			mAccountsAdapter.setSelectedAccountId(account.account_id);
-			if (account.account_id != mAccount.account_id) {
-				updateAccountOptionsSeparatorLabel();
-			}
-			updateDefaultAccountState();
-		} else if (adapter instanceof AccountOptionsAdapter) {
-			final Account account = mAccountsAdapter.getSelectedAccount();
+        if (adapter instanceof AccountOptionsAdapter) {
+            final ParcelableAccount account = mAccountsAdapter.getSelectedAccount();
 			if (account == null || !(item instanceof OptionItem)) return;
 			final OptionItem option = (OptionItem) item;
 			switch (option.id) {
-				case MENU_VIEW_PROFILE: {
-					openUserProfile(getActivity(), account.account_id, account.account_id, account.screen_name);
-					closeAccountsDrawer();
-					break;
-				}
 				case MENU_SEARCH: {
 					final FragmentActivity a = getActivity();
 					if (a instanceof HomeActivity) {
@@ -216,26 +199,21 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 					closeAccountsDrawer();
 					break;
 				}
-				case MENU_STATUSES: {
-					openUserTimeline(getActivity(), account.account_id, account.account_id, account.screen_name);
-					closeAccountsDrawer();
+                case MENU_COMPOSE: {
+                    final Intent composeIntent = new Intent(INTENT_ACTION_COMPOSE);
+                    composeIntent.setClass(getActivity(), ComposeActivity.class);
+                    composeIntent.putExtra(EXTRA_ACCOUNT_IDS, new long[]{account.account_id});
+                    startActivity(composeIntent);
 					break;
 				}
 				case MENU_FAVORITES: {
 					openUserFavorites(getActivity(), account.account_id, account.account_id, account.screen_name);
-					closeAccountsDrawer();
 					break;
 				}
 				case MENU_LISTS: {
 					openUserLists(getActivity(), account.account_id, account.account_id, account.screen_name);
-					closeAccountsDrawer();
 					break;
 				}
-				case MENU_LIST_MEMBERSHIPS: {
-					openUserListMemberships(getActivity(), account.account_id, account.account_id, account.screen_name);
-					closeAccountsDrawer();
-					break;
-					}
 				case MENU_EDIT: {
 					final Bundle bundle = new Bundle();
 					bundle.putLong(EXTRA_ACCOUNT_ID, account.account_id);
@@ -243,7 +221,6 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 					intent.setClass(getActivity(), UserProfileEditorActivity.class);
 					intent.putExtras(bundle);
 					startActivity(intent);
-					closeAccountsDrawer();
 					break;
 				}
 			}
@@ -280,39 +257,88 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 	}
 
 	@Override
-	public void onLoaderReset(final Loader<Cursor> loader) {
-		mAccountsAdapter.changeCursor(null);
+    public void onLoadingStarted(String imageUri, View view) {
+
 	}
 
 	@Override
-	public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
-		if (data != null && data.getCount() > 0 && mAccountsAdapter.getSelectedAccountId() <= 0) {
-			data.moveToFirst();
-			mAccountsAdapter.setSelectedAccountId(data.getLong(data.getColumnIndex(Accounts.ACCOUNT_ID)));
+    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
 		}
-		mAccountsAdapter.changeCursor(data);
-		if (mAccount == null || mAccountsAdapter.getSelectedAccountId() != mAccount.account_id) {
-			updateAccountOptionsSeparatorLabel();
-		}
-		updateDefaultAccountState();
+
+    @Override
+    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+        view.setTag(imageUri);
 	}
 
 	@Override
-	public void onResume() {
-		super.onResume();
-		mAccountsAdapter.setDefaultAccountId(mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1));
-		updateDefaultAccountState();
+    public void onLoadingCancelled(String imageUri, View view) {
+
 	}
 
 	@Override
 	public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
 		if (KEY_DEFAULT_ACCOUNT_ID.equals(key)) {
-			mAccountsAdapter.setDefaultAccountId(mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1));
 			updateDefaultAccountState();
 		}
 	}
 
+    public void setStatusBarHeight(int height) {
+        mAccountProfileContainer.setPadding(0, height, 0, 0);
+    }
+
 	@Override
+    protected void fitSystemWindows(Rect insets) {
+        // No-op
+    }
+
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mResolver = getContentResolver();
+        final Context context = getView().getContext();
+        mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
+        final LayoutInflater inflater = LayoutInflater.from(context);
+        final ListView listView = getListView();
+        listView.setHorizontalScrollBarEnabled(false);
+        listView.setVerticalScrollBarEnabled(false);
+        mAdapter = new MergeAdapter();
+        mAccountsAdapter = new AccountSelectorAdapter(context, this);
+        mAccountOptionsAdapter = new AccountOptionsAdapter(context);
+        mAppMenuAdapter = new AppMenuAdapter(context);
+        mAppMenuSectionView = newSectionView(context, R.string.more);
+        mAccountSelectorView = inflater.inflate(R.layout.header_drawer_account_selector, listView, false);
+        mAccountsSelector = (RecyclerView) mAccountSelectorView.findViewById(R.id.other_accounts_list);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        layoutManager.setStackFromEnd(true);
+        mAccountsSelector.setLayoutManager(layoutManager);
+        mAccountsSelector.setAdapter(mAccountsAdapter);
+        mAccountProfileContainer = mAccountSelectorView.findViewById(R.id.profile_container);
+        mAccountProfileImageView = (ImageView) mAccountSelectorView.findViewById(R.id.profile_image);
+        mAccountProfileBannerView = (ImageView) mAccountSelectorView.findViewById(R.id.account_profile_banner);
+        mAccountProfileNameView = (TextView) mAccountSelectorView.findViewById(R.id.name);
+        mAccountProfileScreenNameView = (TextView) mAccountSelectorView.findViewById(R.id.screen_name);
+        mAccountsToggle = (Switch) mAccountSelectorView.findViewById(R.id.toggle);
+
+        mAccountProfileContainer.setOnClickListener(this);
+
+        mAccountsToggle.setOnCheckedChangeListener(this);
+        mAdapter.addView(mAccountSelectorView, false);
+        mAdapter.addAdapter(mAccountOptionsAdapter);
+        mAdapter.addView(mAppMenuSectionView, false);
+        mAdapter.addAdapter(mAppMenuAdapter);
+        setListAdapter(mAdapter);
+        mPreferences.registerOnSharedPreferenceChangeListener(this);
+        getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+        return LayoutInflater.from(getThemedContext()).inflate(R.layout.fragment_accounts_drawer, container, false);
+    }
+
+    @Override
 	public void onStart() {
 		super.onStart();
 		final ContentResolver resolver = getContentResolver();
@@ -341,50 +367,51 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
         return mThemedContext = new ContextThemeWrapper(context, themeResource);
 	}
 
+    private static TextView newSectionView(final Context context, final int titleRes) {
+        final TextView textView = new TextView(context, null, android.R.attr.listSeparatorTextViewStyle);
+        if (titleRes != 0) {
+            textView.setText(titleRes);
+        }
+        return textView;
+    }
+
+    private void onAccountSelected(ParcelableAccount account) {
+        mAccountsAdapter.setSelectedAccountId(account.account_id);
+        updateAccountOptionsSeparatorLabel();
+    }
+
 	private void updateAccountOptionsSeparatorLabel() {
-		final Account account = mAccountsAdapter.getSelectedAccount();
+        final ParcelableAccount account = mAccountsAdapter.getSelectedAccount();
         if (account == null) {
             return;
 		}
-		mAccount = account;
-		final String displayName = getDisplayName(account.name, account.screen_name);
-		mAccountOptionsSectionView.setText(displayName);
         mAccountProfileNameView.setText(account.name);
         mAccountProfileScreenNameView.setText("@" + account.screen_name);
+        mAccountsToggle.setChecked(account.is_activated);
         mImageLoader.displayProfileImage(mAccountProfileImageView, account.profile_image_url);
         final int bannerWidth = mAccountProfileBannerView.getWidth();
         final Resources res = getResources();
         final int defWidth = res.getDisplayMetrics().widthPixels;
         final int width = bannerWidth > 0 ? bannerWidth : defWidth;
-        mImageLoader.displayProfileBanner(mAccountProfileBannerView, account.profile_banner_url, width);
-	}
+        final String bannerUrl = Utils.getBestBannerUrl(account.profile_banner_url, width);
+        final ImageView bannerView = mAccountProfileBannerView;
+        if (bannerView.getDrawable() == null || !CompareUtils.objectEquals(bannerUrl, bannerView.getTag())) {
+            mImageLoader.displayProfileBanner(mAccountProfileBannerView, bannerUrl, this);
+	    }
+    }
 
 	private void updateDefaultAccountState() {
-		final long defaultAccountId = mAccountsAdapter.getDefaultAccountId();
-		final long selectedAccountId = mAccountsAdapter.getSelectedAccountId();
 	}
-
-	private static TextView newSectionView(final Context context, final int titleRes) {
-		final TextView textView = new TextView(context, null, android.R.attr.listSeparatorTextViewStyle);
-		if (titleRes != 0) {
-			textView.setText(titleRes);
-		}
-		return textView;
-	}
-
 
 	private static final class AccountOptionsAdapter extends OptionItemsAdapter {
 
         private static final ArrayList<OptionItem> sOptions = new ArrayList<>();
 
 		static {
-            sOptions.add(new OptionItem(R.string.view_user_profile, R.drawable.ic_action_profile, MENU_VIEW_PROFILE));
             sOptions.add(new OptionItem(android.R.string.search_go, R.drawable.ic_action_search, MENU_SEARCH));
-            sOptions.add(new OptionItem(R.string.statuses, R.drawable.ic_action_quote, MENU_STATUSES));
+            sOptions.add(new OptionItem(R.string.compose, R.drawable.ic_action_status_compose, MENU_COMPOSE));
             sOptions.add(new OptionItem(R.string.favorites, R.drawable.ic_action_star, MENU_FAVORITES));
-            sOptions.add(new OptionItem(R.string.users_lists, R.drawable.ic_action_list, MENU_LISTS));
-            sOptions.add(new OptionItem(R.string.lists_following_me, R.drawable.ic_action_list,
-					MENU_LIST_MEMBERSHIPS));
+            sOptions.add(new OptionItem(R.string.lists, R.drawable.ic_action_list, MENU_LISTS));
 		}
 
 		public AccountOptionsAdapter(final Context context) {
@@ -407,136 +434,100 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 
 	}
 
-	private static class DrawerAccountsAdapter extends SimpleCursorAdapter implements Constants,
-			OnCheckedChangeListener {
+    static class AccountProfileImageViewHolder extends ViewHolder implements OnClickListener {
 
-		private final ImageLoaderWrapper mImageLoader;
-        private final int mActivatedColor;
+        private final AccountSelectorAdapter adapter;
+        private final ImageView icon;
 
-		private Account.Indices mIndices;
-		private long mSelectedAccountId, mDefaultAccountId;
-
-		private OnAccountActivateStateChangeListener mOnAccountActivateStateChangeListener;
-
-		public DrawerAccountsAdapter(final Context context) {
-            super(context, R.layout.list_item_drawer_account, null, new String[0], new int[0], 0);
-			final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-			mImageLoader = app.getImageLoaderWrapper();
-            mActivatedColor = ThemeUtils.getUserAccentColor(context);
-		}
-
-		@Override
-        public void bindView(@NonNull final View view, final Context context, @NonNull final Cursor cursor) {
-			super.bindView(view, context, cursor);
-			final CompoundButton toggle = (CompoundButton) view.findViewById(R.id.toggle);
-			final TextView name = (TextView) view.findViewById(R.id.name);
-            final TextView screenNameView = (TextView) view.findViewById(R.id.screen_name);
-            final TextView defaultIndicatorView = (TextView) view.findViewById(R.id.default_indicator);
-            final ImageView profileImageView = (ImageView) view.findViewById(R.id.profile_image);
-			final Account account = new Account(cursor, mIndices);
-			name.setText(account.name);
-            screenNameView.setText(String.format("@%s", account.screen_name));
-            defaultIndicatorView.setVisibility(account.account_id == mDefaultAccountId ? View.VISIBLE : View.GONE);
-            mImageLoader.displayProfileImage(profileImageView, account.profile_image_url);
-			toggle.setChecked(account.is_activated);
-			toggle.setTag(account);
-			toggle.setOnCheckedChangeListener(this);
-			view.setActivated(account.account_id == mSelectedAccountId);
-            final IColorLabelView colorLabelView = (IColorLabelView) view;
-            colorLabelView.drawStart(account.account_id == mSelectedAccountId ? mActivatedColor : 0);
-            colorLabelView.drawEnd(account.color);
-		}
-
-		public long getDefaultAccountId() {
-			return mDefaultAccountId;
-		}
-
-		@Override
-		public Account getItem(final int position) {
-			final Cursor c = getCursor();
-			if (c == null || c.isClosed() || !c.moveToPosition(position)) return null;
-			return new Account(c, mIndices);
-		}
-
-		public Account getSelectedAccount() {
-			final Cursor c = getCursor();
-			if (c == null || c.isClosed() || !c.moveToFirst() || mIndices == null) return null;
-			while (!c.isAfterLast()) {
-				if (mSelectedAccountId == c.getLong(mIndices.account_id)) return new Account(c, mIndices);
-				c.moveToNext();
-			}
-			return null;
-		}
-
-		public long getSelectedAccountId() {
-			return mSelectedAccountId;
-		}
-
-		@Override
-		public boolean isEnabled(final int position) {
-			final Cursor c = getCursor();
-			if (c == null || c.isClosed() || !c.moveToPosition(position)) return false;
-			return c.getLong(mIndices.account_id) != mSelectedAccountId;
-		}
-
-		@Override
-		public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
-			final Account account = (Account) buttonView.getTag();
-			if (mOnAccountActivateStateChangeListener != null) {
-				mOnAccountActivateStateChangeListener.onAccountActivateStateChanged(account, isChecked);
-			}
-		}
-
-		public void setDefaultAccountId(final long account_id) {
-			if (mDefaultAccountId == account_id) return;
-			mDefaultAccountId = account_id;
-			notifyDataSetChanged();
-		}
-
-		public void setOnAccountActivateStateChangeListener(final OnAccountActivateStateChangeListener listener) {
-			mOnAccountActivateStateChangeListener = listener;
-		}
-
-		public void setSelectedAccountId(final long account_id) {
-			if (mSelectedAccountId == account_id) return;
-			mSelectedAccountId = account_id;
-			notifyDataSetChanged();
-		}
-
-		@Override
-		public Cursor swapCursor(final Cursor c) {
-			final Cursor old = super.swapCursor(c);
-			mIndices = c != null ? new Account.Indices(c) : null;
-			return old;
-		}
-
-    }
-
-    static class AccountProfileImageViewHolder extends ViewHolder {
-
-        public AccountProfileImageViewHolder(View itemView) {
+        public AccountProfileImageViewHolder(AccountSelectorAdapter adapter, View itemView) {
             super(itemView);
-        }
+            this.adapter = adapter;
+            itemView.setOnClickListener(this);
+            icon = (ImageView) itemView.findViewById(android.R.id.icon);
+		}
+
+		@Override
+        public void onClick(View v) {
+            adapter.dispatchItemSelected(getPosition());
+		}
     }
 
-    private static class DrawerAccountsAdapter2 extends Adapter<AccountProfileImageViewHolder> {
+    private static class AccountSelectorAdapter extends Adapter<AccountProfileImageViewHolder> {
 
+        private final LayoutInflater mInflater;
+        private final ImageLoaderWrapper mImageLoader;
+        private final AccountsDashboardFragment mFragment;
+        private Cursor mCursor;
+        private Indices mIndices;
+        private long mSelectedAccountId;
 
-        @Override
-        public AccountProfileImageViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        AccountSelectorAdapter(Context context, AccountsDashboardFragment fragment) {
+            mInflater = LayoutInflater.from(context);
+            mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
+            mFragment = fragment;
+		}
+
+        public void changeCursor(Cursor cursor) {
+            mCursor = cursor;
+            if (cursor != null) {
+                mIndices = new Indices(cursor);
+            }
+            notifyDataSetChanged();
+        }
+
+        public ParcelableAccount getSelectedAccount() {
+            final Cursor c = mCursor;
+            final Indices i = mIndices;
+            if (c != null && i != null && c.moveToFirst()) {
+                while (!c.isAfterLast()) {
+                    if (c.getLong(mIndices.account_id) == mSelectedAccountId)
+                        return new ParcelableAccount(c, mIndices);
+                    c.moveToNext();
+                }
+            }
             return null;
         }
 
-        @Override
-        public void onBindViewHolder(AccountProfileImageViewHolder accountProfileImageViewHolder, int i) {
-
+        public long getSelectedAccountId() {
+            return mSelectedAccountId;
         }
 
+        public void setSelectedAccountId(long accountId) {
+            mSelectedAccountId = accountId;
+            notifyDataSetChanged();
+        }
+
+		@Override
+        public AccountProfileImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            final View view = mInflater.inflate(R.layout.adapter_item_dashboard_account, parent, false);
+            return new AccountProfileImageViewHolder(this, view);
+		}
+
         @Override
+        public void onBindViewHolder(AccountProfileImageViewHolder holder, int position) {
+            final Cursor c = mCursor;
+            c.moveToPosition(position);
+            if (c.getLong(mIndices.account_id) == mSelectedAccountId) {
+				c.moveToNext();
+			}
+            holder.itemView.setAlpha(c.getInt(mIndices.is_activated) == 1 ? 1 : 0.5f);
+            mImageLoader.displayProfileImage(holder.icon, c.getString(mIndices.profile_image_url));
+		}
+
+		@Override
         public int getItemCount() {
-            return 0;
+            if (mCursor == null) return 0;
+            return Math.max(mCursor.getCount() - 1, 0);
+		}
+
+        private void dispatchItemSelected(int position) {
+            final Cursor c = mCursor;
+            c.moveToPosition(position);
+            if (c.getLong(mIndices.account_id) != mSelectedAccountId || c.moveToNext()) {
+                mFragment.onAccountSelected(new ParcelableAccount(c, mIndices));
+            }
         }
-	}
+    }
 
 	private static class OptionItem {
 
@@ -599,8 +590,4 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 		}
 
 	}
-}
-
-interface OnAccountActivateStateChangeListener {
-	void onAccountActivateStateChanged(Account account, boolean activated);
 }

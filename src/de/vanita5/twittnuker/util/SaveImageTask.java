@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.util;
 
-import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.Utils.getImageMimeType;
-
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
@@ -34,9 +31,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
+import android.widget.Toast;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -44,6 +39,9 @@ import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 
 import java.io.File;
 import java.io.IOException;
+
+import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.Utils.getImageMimeType;
 
 public class SaveImageTask extends AsyncTask<Void, Void, File> implements Constants {
 
@@ -82,10 +80,9 @@ public class SaveImageTask extends AsyncTask<Void, Void, File> implements Consta
 		}
 		super.onPostExecute(result);
 		if (result != null && result.exists()) {
-			Crouton.showText(activity, activity.getString(R.string.file_saved_to, result.getPath()),
-					CroutonStyle.CONFIRM);
+            Toast.makeText(activity, R.string.saved_to_gallery, Toast.LENGTH_SHORT).show();
 		} else {
-			Crouton.showText(activity, R.string.error_occurred, CroutonStyle.ALERT);
+            Toast.makeText(activity, R.string.error_occurred, Toast.LENGTH_SHORT).show();
 		}
 	}
 

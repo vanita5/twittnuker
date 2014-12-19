@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Widget.CardActionButton" parent="android:Widget.DeviceDefault.ImageButton">
+    <style name="Widget.CardActionButton" parent="Widget.Base.ImageButton">
         <item name="android:background">?android:selectableItemBackgroundBorderless</item>
     </style>
 
-    <style name="Widget.Light.CardActionButton" parent="android:Widget.DeviceDefault.ImageButton">
+    <style name="Widget.Light.CardActionButton" parent="Widget.Base.ImageButton">
         <item name="android:background">?android:selectableItemBackgroundBorderless</item>
     </style>
 
     <style name="Widget.ProfileImage.Large">
         <item name="android:background">@drawable/bg_oval_white</item>
         <!-- NOTE circular preference? -->
-        <item name="elevation">@dimen/elevation_card</item>
-        <item name="borderWidth">2dp</item>
+        <item name="pivElevation">@dimen/elevation_card</item>
+        <item name="pivBorderWidth">2dp</item>
     </style>
 
     <style name="Widget.Light.ProfileImage.Large">
         <item name="android:background">@drawable/bg_oval_white</item>
         <!-- NOT circular preference? -->
-        <item name="elevation">@dimen/elevation_card</item>
-        <item name="borderWidth">2dp</item>
+        <item name="pivElevation">@dimen/elevation_card</item>
+        <item name="pivBorderWidth">2dp</item>
     </style>
 
-    <style name="Widget.ProfileType" parent="android:Widget.DeviceDefault">
+    <style name="Widget.ProfileType" parent="Widget.Base">
+        <item name="android:scaleType">centerInside</item>
         <item name="android:elevation">@dimen/elevation_card</item>
         <item name="android:outlineProvider">none</item>
     </style>

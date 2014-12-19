@@ -30,6 +30,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.State;
 import android.view.View;
 
 public class DividerItemDecoration extends RecyclerView.ItemDecoration {
@@ -45,8 +46,10 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 	private Drawable mDivider;
 
 	private int mOrientation;
+    private Rect mPadding;
 
 	public DividerItemDecoration(Context context, int orientation) {
+        mPadding = new Rect();
 		final TypedArray a = context.obtainStyledAttributes(ATTRS);
 		mDivider = a.getDrawable(0);
 		a.recycle();
@@ -61,13 +64,17 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 	}
 
 	@Override
-	public void onDraw(Canvas c, RecyclerView parent) {
+    public void onDraw(Canvas c, RecyclerView parent, State state) {
 		if (mOrientation == VERTICAL_LIST) {
 			drawVertical(c, parent);
 		} else {
 			drawHorizontal(c, parent);
 		}
 	}
+
+    public void setPadding(int left, int top, int right, int bottom) {
+        mPadding.set(left, top, right, bottom);
+    }
 
 	public void drawVertical(Canvas c, RecyclerView parent) {
 		final int left = parent.getPaddingLeft();
@@ -81,7 +88,8 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 			final int top = child.getBottom() + params.bottomMargin +
 					Math.round(ViewCompat.getTranslationY(child));
 			final int bottom = top + mDivider.getIntrinsicHeight();
-			mDivider.setBounds(left, top, right, bottom);
+            mDivider.setBounds(left + mPadding.left, top + mPadding.top, right - mPadding.right,
+                    bottom - mPadding.bottom);
 			mDivider.draw(c);
 		}
 	}
@@ -98,13 +106,14 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 			final int left = child.getRight() + params.rightMargin +
 					Math.round(ViewCompat.getTranslationX(child));
 			final int right = left + mDivider.getIntrinsicHeight();
-			mDivider.setBounds(left, top, right, bottom);
+            mDivider.setBounds(left + mPadding.left, top + mPadding.top, right - mPadding.right,
+                    bottom - mPadding.bottom);
 			mDivider.draw(c);
 		}
 	}
 
 	@Override
-	public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
+    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, State state) {
 		if (mOrientation == VERTICAL_LIST) {
 			outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
 		} else {

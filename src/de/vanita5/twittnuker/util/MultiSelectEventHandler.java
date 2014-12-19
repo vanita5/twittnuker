@@ -22,10 +22,6 @@
 
 package de.vanita5.twittnuker.util;
 
-import static de.vanita5.twittnuker.util.Utils.getAccountScreenNames;
-import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
-import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
-
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -34,18 +30,16 @@ import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.twitter.Extractor;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.menu.AccountActionProvider;
-import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
@@ -57,6 +51,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import static de.vanita5.twittnuker.util.Utils.getAccountScreenNames;
+import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
+import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
 
 @SuppressLint("Registered")
 public class MultiSelectEventHandler implements Constants, ActionMode.Callback, MultiSelectManager.Callback {
@@ -157,7 +155,7 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
 				}
 				bulkDelete(resolver, Filters.Users.CONTENT_URI, Filters.Users.USER_ID, userIds, null, false);
 				bulkInsert(resolver, Filters.Users.CONTENT_URI, valuesList);
-				Crouton.showText(mActivity, R.string.message_users_muted, CroutonStyle.INFO);
+                Toast.makeText(mActivity, R.string.message_users_muted, Toast.LENGTH_SHORT).show();
 				mode.finish();
 				mActivity.sendBroadcast(new Intent(BROADCAST_MULTI_MUTESTATE_CHANGED));
 				break;
@@ -184,7 +182,7 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
 		if (item.getGroupId() == AccountActionProvider.MENU_GROUP) {
 			final Intent intent = item.getIntent();
 			if (intent == null || !intent.hasExtra(EXTRA_ACCOUNT)) return false;
-			final Account account = intent.getParcelableExtra(EXTRA_ACCOUNT);
+			final ParcelableAccount account = intent.getParcelableExtra(EXTRA_ACCOUNT);
 			mMultiSelectManager.setAccountId(account.account_id);
 			if (mAccountActionProvider != null) {
 				mAccountActionProvider.setAccountId(account.account_id);

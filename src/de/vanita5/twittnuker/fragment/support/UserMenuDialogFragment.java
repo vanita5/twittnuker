@@ -18,8 +18,6 @@ public class UserMenuDialogFragment extends MenuDialogFragment {
         final Bundle args = getArguments();
         final ParcelableUser user = args.getParcelable(EXTRA_USER);
         onPrepareItemMenu(menu, user);
-        final boolean longclickToOpenMenu = prefs.getBoolean(KEY_LONG_CLICK_TO_OPEN_MENU, false);
-        Utils.setMenuItemAvailability(menu, MENU_MULTI_SELECT, longclickToOpenMenu);
     }
 
     protected void onPrepareItemMenu(final Menu menu, final ParcelableUser user) {

@@ -15,10 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import java.util.List;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -27,15 +24,57 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.SimpleDrawerCallback;
+import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.MediaSizeImageView;
 
-public class UserMediaTimelineFragment extends BaseSupportFragment
-		implements LoaderCallbacks<List<ParcelableStatus>> {
+import java.util.List;
 
+public class UserMediaTimelineFragment extends BaseSupportFragment
+        implements LoaderCallbacks<List<ParcelableStatus>>, DrawerCallback {
+
+    private View mProgressContainer;
 	private RecyclerView mRecyclerView;
-	private ProgressBar mProgress;
 
 	private MediaTimelineAdapter mAdapter;
+
+    @Override
+    public void fling(float velocity) {
+        mDrawerCallback.fling(velocity);
+    }
+
+    @Override
+    public void scrollBy(float dy) {
+        mDrawerCallback.scrollBy(dy);
+    }
+
+    @Override
+    public boolean shouldLayoutHeaderBottom() {
+        return mDrawerCallback.shouldLayoutHeaderBottom();
+    }
+
+    @Override
+    public boolean canScroll(float dy) {
+        return mDrawerCallback.canScroll(dy);
+    }
+
+    @Override
+    public boolean isScrollContent(float x, float y) {
+        return mDrawerCallback.isScrollContent(x, y);
+    }
+
+    @Override
+    public void cancelTouch() {
+        mDrawerCallback.cancelTouch();
+    }
+
+    @Override
+    public void topChanged(int offset) {
+        mDrawerCallback.topChanged(offset);
+    }
+
+    private SimpleDrawerCallback mDrawerCallback;
+
 	private OnScrollListener mOnScrollListener = new OnScrollListener() {
 		@Override
 		public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -46,10 +85,11 @@ public class UserMediaTimelineFragment extends BaseSupportFragment
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		final View view = getView();
-		assert view != null;
+        if (view == null) throw new AssertionError();
 		final Context context = view.getContext();
 		mAdapter = new MediaTimelineAdapter(context);
 		final StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        mDrawerCallback = new SimpleDrawerCallback(mRecyclerView);
 		mRecyclerView.setLayoutManager(layoutManager);
 		mRecyclerView.setAdapter(mAdapter);
 		mRecyclerView.setOnScrollListener(mOnScrollListener);
@@ -59,7 +99,7 @@ public class UserMediaTimelineFragment extends BaseSupportFragment
 
 	public void setListShown(boolean shown) {
 		mRecyclerView.setVisibility(shown ? View.VISIBLE : View.GONE);
-		mProgress.setVisibility(shown ? View.GONE : View.VISIBLE);
+        mProgressContainer.setVisibility(shown ? View.GONE : View.VISIBLE);
 	}
 
 	public int getStatuses(final long maxId, final long sinceId) {
@@ -73,16 +113,18 @@ public class UserMediaTimelineFragment extends BaseSupportFragment
 	@Override
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		mRecyclerView = (RecyclerView) view.findViewById(android.R.id.list);
-		mProgress = (ProgressBar) view.findViewById(android.R.id.progress);
+        mProgressContainer = view.findViewById(R.id.progress_container);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 	}
 
 	@Override
 	protected void fitSystemWindows(Rect insets) {
 		super.fitSystemWindows(insets);
-		mRecyclerView.setClipToPadding(false);
-		mRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-	}
+        if (mRecyclerView != null) {
+            mRecyclerView.setClipToPadding(false);
+            mRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+	    }
+    }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -164,9 +206,9 @@ public class UserMediaTimelineFragment extends BaseSupportFragment
 		}
 
 		public void setMedia(ImageLoaderWrapper loader, ImageLoadingHandler loadingHandler, ParcelableStatus status) {
-			final ParcelableMedia[] medias = status.media;
-			if (medias == null || medias.length < 1) return;
-			final ParcelableMedia firstMedia = medias[0];
+            final ParcelableMedia[] media = status.media;
+            if (media == null || media.length < 1) return;
+            final ParcelableMedia firstMedia = media[0];
 			if (status.text_plain.codePointCount(0, status.text_plain.length()) == firstMedia.end) {
 				mediaTextView.setText(status.text_unescaped.substring(0, firstMedia.start));
 			} else {

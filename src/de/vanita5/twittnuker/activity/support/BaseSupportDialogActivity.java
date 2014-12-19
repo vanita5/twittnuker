@@ -49,12 +49,6 @@ public class BaseSupportDialogActivity extends BaseSupportThemedActivity impleme
         return (TwittnukerApplication) getApplication();
     }
 
-    @Override
-    public final boolean shouldOverrideActivityAnimation() {
-        // Dialog theme should never use custom animations
-        return false;
-    }
-
 	protected boolean isStateSaved() {
 		return mInstanceStateSaved;
 	}

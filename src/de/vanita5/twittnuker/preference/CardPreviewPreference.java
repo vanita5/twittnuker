@@ -22,10 +22,6 @@
 
 package de.vanita5.twittnuker.preference;
 
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
-import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
-import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -40,16 +36,20 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
-import de.vanita5.twittnuker.view.CardItemLinearLayout;
 import de.vanita5.twittnuker.view.ForegroundImageView;
 import de.vanita5.twittnuker.view.holder.StatusListViewHolder;
+import de.vanita5.twittnuker.view.holder.StatusViewHolder;
+
+import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
+import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
+import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
 
 public class CardPreviewPreference extends Preference implements Constants, OnSharedPreferenceChangeListener {
 
 	private final LayoutInflater mInflater;
 	private final SharedPreferences mPreferences;
 	private final TwidereLinkify mLinkify;
-	private StatusListViewHolder mHolder;
+    private StatusViewHolder mHolder;
 	private boolean mCompactModeChanged;
 
 	public CardPreviewPreference(final Context context) {
@@ -93,49 +93,47 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
 		final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, true);
 		final boolean display_image_preview = mPreferences.getBoolean(KEY_DISPLAY_IMAGE_PREVIEW, false);
 		final boolean display_profile_image = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-		mHolder = new StatusListViewHolder(view);
+		mHolder = new StatusViewHolder(view);
 		mLinkify.setHighlightOption(highlightOption);
-		mHolder.setDisplayNameFirst(nameFirst);
-		mHolder.setShowAsGap(false);
-		mHolder.setIsMyStatus(false);
-		mHolder.setTextSize(mPreferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(context)));
-		mHolder.image_preview_container.setVisibility(display_image_preview ? View.VISIBLE : View.GONE);
-		mHolder.profile_image.setVisibility(display_profile_image ? View.VISIBLE : View.GONE);
-		mHolder.image_preview_progress.setVisibility(View.GONE);
-
-		if (mHolder.profile_image instanceof ForegroundImageView) {
-			((ForegroundImageView) mHolder.profile_image).setForeground(null);
-		}
-		if (mHolder.image_preview instanceof ForegroundImageView) {
-			((ForegroundImageView) mHolder.image_preview).setForeground(null);
-		}
-		if (mHolder.content instanceof CardItemLinearLayout) {
-			((CardItemLinearLayout) mHolder.content).setItemSelector(null);
-		}
-		mHolder.profile_image.setImageResource(R.drawable.ic_launcher);
-		mHolder.image_preview.setImageResource(R.drawable.twittnuker_feature_graphic);
-		mHolder.name.setText(TWIDERE_PREVIEW_NAME);
-		mHolder.screen_name.setText("@" + TWIDERE_PREVIEW_SCREEN_NAME);
-		if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
-			mHolder.text.setText(Html.fromHtml(TWIDERE_PREVIEW_TEXT_HTML));
-			mLinkify.applyAllLinks(mHolder.text, 0, false);
-			mLinkify.applyUserProfileLinkNoHighlight(mHolder.name, 0, 0, TWIDERE_PREVIEW_SCREEN_NAME);
-			mLinkify.applyUserProfileLinkNoHighlight(mHolder.screen_name, 0, 0, TWIDERE_PREVIEW_SCREEN_NAME);
-		} else {
-			mHolder.text.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
-		}
-		mHolder.reply_retweet_status.setText(context.getString(R.string.retweeted_by_name, nameFirst ? TWIDERE_PREVIEW_NAME : "@" + TWIDERE_PREVIEW_SCREEN_NAME));
-		mHolder.reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_retweet, 0, 0, 0);
-		mHolder.time.setTime(System.currentTimeMillis() - 360000);
-		mHolder.time.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_indicator_media, 0);
+//		mHolder.setDisplayNameFirst(nameFirst);
+//		mHolder.setShowAsGap(false);
+//		mHolder.setIsMyStatus(false);
+//		mHolder.setTextSize(mPreferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(context)));
+//		mHolder.image_preview_container.setVisibility(display_image_preview ? View.VISIBLE : View.GONE);
+//		mHolder.profile_image.setVisibility(display_profile_image ? View.VISIBLE : View.GONE);
+//		mHolder.image_preview_progress.setVisibility(View.GONE);
+//
+//		if (mHolder.profile_image instanceof ForegroundImageView) {
+//			((ForegroundImageView) mHolder.profile_image).setForeground(null);
+//		}
+//		if (mHolder.image_preview instanceof ForegroundImageView) {
+//			((ForegroundImageView) mHolder.image_preview).setForeground(null);
+//		}
+//        mHolder.content.setItemSelector(null);
+//		mHolder.profile_image.setImageResource(R.drawable.ic_launcher);
+//		mHolder.image_preview.setImageResource(R.drawable.twittnuker_feature_graphic);
+//		mHolder.name.setText(TWIDERE_PREVIEW_NAME);
+//		mHolder.screen_name.setText("@" + TWIDERE_PREVIEW_SCREEN_NAME);
+//		if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
+//			mHolder.text.setText(Html.fromHtml(TWIDERE_PREVIEW_TEXT_HTML));
+//			mLinkify.applyAllLinks(mHolder.text, 0, false);
+//			mLinkify.applyUserProfileLinkNoHighlight(mHolder.name, 0, 0, TWIDERE_PREVIEW_SCREEN_NAME);
+//			mLinkify.applyUserProfileLinkNoHighlight(mHolder.screen_name, 0, 0, TWIDERE_PREVIEW_SCREEN_NAME);
+//		} else {
+//			mHolder.text.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
+//		}
+//		mHolder.reply_retweet_status.setText(context.getString(R.string.retweeted_by_name, nameFirst ? TWIDERE_PREVIEW_NAME : "@" + TWIDERE_PREVIEW_SCREEN_NAME));
+//		mHolder.reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_retweet, 0, 0, 0);
+//		mHolder.time.setTime(System.currentTimeMillis() - 360000);
+//		mHolder.time.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_indicator_media, 0);
 		super.onBindView(view);
 	}
 
 	@Override
 	protected View onCreateView(final ViewGroup parent) {
 		if (mPreferences != null && mPreferences.getBoolean(KEY_COMPACT_CARDS, false))
-			return mInflater.inflate(R.layout.card_item_status_compact, parent, false);
-		return mInflater.inflate(R.layout.card_item_status, parent, false);
+            return mInflater.inflate(R.layout.card_item_status_compat, parent, false);
+        return mInflater.inflate(R.layout.card_item_status, parent, false);
 	}
 
 }

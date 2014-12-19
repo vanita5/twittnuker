@@ -60,7 +60,7 @@ import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.preference.WizardPageHeaderPreference;
 import de.vanita5.twittnuker.preference.WizardPageNavPreference;
 import de.vanita5.twittnuker.provider.TweetStore.Tabs;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -90,15 +90,15 @@ public class SettingsWizardActivity extends Activity implements Constants {
 	private AbsInitialSettingsTask mTask;
 
 	public void applyInitialSettings() {
-		if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING) return;
+        if (mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING) return;
 		mTask = new InitialSettingsTask(this);
-		mTask.execute();
+        mTask.executeTask();
 	}
 
 	public void applyInitialTabSettings() {
-		if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING) return;
+        if (mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING) return;
 		mTask = new InitialTabSettingsTask(this);
-		mTask.execute();
+        mTask.executeTask();
 	}
 
 	public void exitWizard() {
@@ -481,7 +481,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		}
 	}
 
-	static abstract class AbsInitialSettingsTask extends AsyncTask<Void, Void, Boolean> {
+    static abstract class AbsInitialSettingsTask extends TwidereAsyncTask<Void, Void, Boolean> {
 
 		private static final String FRAGMENT_TAG = "initial_settings_dialog";
 

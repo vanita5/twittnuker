@@ -22,11 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.clearListViewChoices;
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -45,7 +40,6 @@ import android.widget.ListView;
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.loader.support.DummyParcelableUsersLoader;
-import de.vanita5.twittnuker.model.Panes;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
@@ -54,8 +48,13 @@ import de.vanita5.twittnuker.util.Utils;
 import java.util.Collections;
 import java.util.List;
 
+import static de.vanita5.twittnuker.util.Utils.clearListViewChoices;
+import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
+import static de.vanita5.twittnuker.util.Utils.openUserProfile;
+
 abstract class BaseUsersListFragment extends BasePullToRefreshListFragment implements
-		LoaderCallbacks<List<ParcelableUser>>, OnItemLongClickListener, Panes.Left, OnMenuItemClickListener,
+        LoaderCallbacks<List<ParcelableUser>>, OnItemLongClickListener, OnMenuItemClickListener,
 		MultiSelectManager.Callback, MenuButtonClickListener {
 
 	private SharedPreferences mPreferences;
@@ -107,7 +106,6 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 		super.onActivityCreated(savedInstanceState);
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mAdapter = new ParcelableUsersAdapter(getActivity());
-		mAdapter.setMenuButtonClickListener(this);
 		mMultiSelectManager = getMultiSelectManager();
 		mListView = getListView();
 		mListView.setFastScrollEnabled(mPreferences.getBoolean(KEY_FAST_SCROLL_THUMB, false));
@@ -118,7 +116,7 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 			mData.clear();
 		}
 		mAccountId = accountId;
-		if (!mPreferences.getBoolean(KEY_PLAIN_LIST_STYLE, false)) {
+        if (!mPreferences.getBoolean(KEY_COMPACT_CARDS, false)) {
 			mListView.setDivider(null);
 		}
 		mListView.setSelector(android.R.color.transparent);
@@ -169,7 +167,7 @@ abstract class BaseUsersListFragment extends BasePullToRefreshListFragment imple
 			setItemSelected(user, position, !mMultiSelectManager.isSelected(user));
 			return;
 		}
-		openUserProfile(getActivity(), user);
+        openUserProfile(getActivity(), user, null);
 	}
 
 	@Override

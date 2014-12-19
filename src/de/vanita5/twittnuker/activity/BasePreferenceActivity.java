@@ -22,9 +22,7 @@
 
 package de.vanita5.twittnuker.activity;
 
-import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.NavUtils;
@@ -47,12 +45,16 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
 	}
 
 	@Override
-	public void finish() {
-		super.finish();
-		overrideCloseAnimationIfNeeded();
-	}
+    public int getCurrentThemeBackgroundAlpha() {
+        return 0;
+    }
 
-	@Override
+    @Override
+    public int getCurrentThemeColor() {
+        return 0;
+    }
+
+    @Override
     public int getCurrentThemeResourceId() {
         return mCurrentThemeResource;
     }
@@ -90,26 +92,11 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
     @Override
 	public void navigateUpFromSameTask() {
 		NavUtils.navigateUpFromSameTask(this);
-		overrideCloseAnimationIfNeeded();
 	}
 
 	@Override
-	public void overrideCloseAnimationIfNeeded() {
-		if (shouldOverrideActivityAnimation()) {
-			ThemeUtils.overrideActivityCloseAnimation(this);
-		} else {
-			ThemeUtils.overrideNormalActivityCloseAnimation(this);
-		}
-	}
-
-    @Override
 	public final void restart() {
 		restartActivity(this);
-	}
-
-	@Override
-	public boolean shouldOverrideActivityAnimation() {
-		return true;
 	}
 
 	protected final boolean isThemeChanged() {
@@ -118,9 +105,6 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-		if (shouldOverrideActivityAnimation()) {
-			ThemeUtils.overrideActivityOpenAnimation(this);
-		}
 		ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, 0, 0xFF);
         setTheme(mCurrentThemeResource = getThemeResourceId());
 		super.onCreate(savedInstanceState);

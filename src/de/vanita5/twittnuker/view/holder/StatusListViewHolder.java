@@ -47,7 +47,6 @@ public class StatusListViewHolder extends CardViewHolder {
 	public final TextView name, screen_name, reply_retweet_status;
 	public final ShortTimeView time;
 	public final TextView text;
-	public final TextView image_preview_count;
 
 	private final float density;
 	private final boolean is_rtl;
@@ -65,15 +64,14 @@ public class StatusListViewHolder extends CardViewHolder {
         profile_image = (ImageView) findViewById(R.id.profile_image);
         my_profile_image = (ImageView) findViewById(R.id.my_profile_image);
 		image_preview = (ImageView) findViewById(R.id.image_preview);
-		image_preview_progress = (ProgressBar) findViewById(R.id.image_preview_progress);
+        image_preview_progress = (ProgressBar) findViewById(R.id.media_preview_progress);
 		image_preview_container = (ViewGroup) findViewById(R.id.image_preview_container);
 		name = (TextView) findViewById(R.id.name);
 		screen_name = (TextView) findViewById(R.id.screen_name);
 		text = (TextView) findViewById(R.id.text);
 		time = (ShortTimeView) findViewById(R.id.time);
 		reply_retweet_status = (TextView) findViewById(R.id.reply_retweet_status);
-		image_preview_count = (TextView) findViewById(R.id.image_preview_count);
-		show_as_gap = content.isGap();
+        show_as_gap = false;
 		is_rtl = Utils.isRTL(context);
 		density = context.getResources().getDisplayMetrics().density;
 	}
@@ -139,7 +137,6 @@ public class StatusListViewHolder extends CardViewHolder {
 	public void setShowAsGap(final boolean show_gap) {
 		show_as_gap = show_gap;
 		if (content != null) {
-			content.setIsGap(show_gap);
 		}
 		// if (item_menu != null) {
 		// item_menu.setVisibility(show_gap ? View.GONE : View.VISIBLE);
@@ -162,7 +159,6 @@ public class StatusListViewHolder extends CardViewHolder {
 		screen_name.setTextSize(text_size * 0.75f);
 		time.setTextSize(text_size * 0.65f);
 		reply_retweet_status.setTextSize(text_size * 0.65f);
-		image_preview_count.setTextSize(text_size * 1.25f);
 		return true;
 	}
 

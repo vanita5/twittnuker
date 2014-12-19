@@ -44,7 +44,7 @@ import com.twitter.Extractor;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
@@ -279,7 +279,7 @@ public class BackgroundOperationService extends IntentService implements Constan
             final List<SingleResponse<ParcelableStatus>> result = updateStatus(builder, item);
 			boolean failed = false;
 			Exception exception = null;
-            final List<Long> failed_account_ids = ListUtils.fromArray(Account.getAccountIds(item.accounts));
+            final List<Long> failed_account_ids = ListUtils.fromArray(ParcelableAccount.getAccountIds(item.accounts));
 
 			for (final SingleResponse<ParcelableStatus> response : result) {
 				if (response.getData() == null) {
@@ -308,8 +308,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 				}
 			} else {
 				showOkMessage(R.string.status_updated, false);
-				if (item.medias != null) {
-					for (final ParcelableMediaUpdate media : item.medias) {
+				if (item.media != null) {
+					for (final ParcelableMediaUpdate media : item.media) {
 						final String path = getImagePathFromUri(this, Uri.parse(media.uri));
 						if (path != null) {
 							new File(path).delete();
@@ -391,8 +391,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 		if (statusUpdate.accounts.length == 0) return Collections.emptyList();
 
 		try {
-			final boolean hasMedia = statusUpdate.medias != null && statusUpdate.medias.length > 0;
-			final String imagePath = hasMedia ? getImagePathFromUri(this, Uri.parse(statusUpdate.medias[0].uri)) : null;
+			final boolean hasMedia = statusUpdate.media != null && statusUpdate.media.length > 0;
+			final String imagePath = hasMedia ? getImagePathFromUri(this, Uri.parse(statusUpdate.media[0].uri)) : null;
             final File imageFile = imagePath != null ? new File(imagePath) : null;
 
 			String uploadResultUrl = null;
@@ -424,8 +424,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 					throw new StatusTooLongException(this);
 				else if (unshortenedContent == null) throw new ShortenException(this);
 			}
-			if (!mUseUploader && statusUpdate.medias != null) {
-				for (final ParcelableMediaUpdate media : statusUpdate.medias) {
+			if (!mUseUploader && statusUpdate.media != null) {
+				for (final ParcelableMediaUpdate media : statusUpdate.media) {
 					final String path = getImagePathFromUri(this, Uri.parse(media.uri));
 					final File file = path != null ? new File(path) : null;
 					if (file != null && file.exists()) {
@@ -433,7 +433,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 					}
 				}
 			}
-            for (final Account account : statusUpdate.accounts) {
+            for (final ParcelableAccount account : statusUpdate.accounts) {
 				String shortenedContent = "";
 				ShortenedStatusModel shortenedStatusModel = null;
 				final Twitter twitter = getTwitterInstance(this, account.account_id, true, true);
@@ -451,10 +451,10 @@ public class BackgroundOperationService extends IntentService implements Constan
                 if (!mUseUploader && hasMedia) {
 					final BitmapFactory.Options o = new BitmapFactory.Options();
 					o.inJustDecodeBounds = true;
-                    final long[] mediaIds = new long[statusUpdate.medias.length];
+                    final long[] mediaIds = new long[statusUpdate.media.length];
 					try {
 						for (int i = 0, j = mediaIds.length; i < j; i++) {
-							final ParcelableMediaUpdate media = statusUpdate.medias[i];
+							final ParcelableMediaUpdate media = statusUpdate.media[i];
 							final String path = getImagePathFromUri(this, Uri.parse(media.uri));
 							if (path == null) throw new FileNotFoundException();
 							BitmapFactory.decodeFile(path, o);
@@ -588,7 +588,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		return statuses;
 	}
 
-	private String uploadMedia(File file, Account[] accounts, String message) throws UploadException {
+	private String uploadMedia(File file, ParcelableAccount[] accounts, String message) throws UploadException {
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 		String url = null;
 		Configuration conf = null;

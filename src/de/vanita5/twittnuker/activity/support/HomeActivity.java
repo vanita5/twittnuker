@@ -24,11 +24,9 @@ package de.vanita5.twittnuker.activity.support;
 
 import android.app.ActionBar;
 import android.app.SearchManager;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.database.ContentObserver;
@@ -38,6 +36,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -56,6 +55,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ProgressBar;
@@ -63,23 +63,27 @@ import android.widget.Toast;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
+import de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment;
 import de.vanita5.twittnuker.gcm.GCMHelper;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
-import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.service.StreamingService;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.ActivityAccessor;
 import de.vanita5.twittnuker.util.ActivityAccessor.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.ArrayUtils;
@@ -92,15 +96,16 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UnreadCountUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.view.ExtendedViewPager;
 import de.vanita5.twittnuker.view.HomeSlidingMenu;
 import de.vanita5.twittnuker.view.LeftDrawerFrameLayout;
 import de.vanita5.twittnuker.view.RightDrawerFrameLayout;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
+import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import de.vanita5.twittnuker.view.iface.IHomeActionButton;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 import static de.vanita5.twittnuker.util.CustomTabUtils.getAddedTabPosition;
@@ -120,30 +125,13 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		SupportFragmentCallback, SlidingMenu.OnOpenedListener, SlidingMenu.OnClosedListener,
         OnLongClickListener {
 
-	private final BroadcastReceiver mStateReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(final Context context, final Intent intent) {
-			final String action = intent.getAction();
-			if (BROADCAST_TASK_STATE_CHANGED.equals(action)) {
-				updateActionsButton();
-                updateSmartBar();
-			} else if (BROADCAST_UNREAD_COUNT_UPDATED.equals(action)) {
-				updateUnreadCount();
-			}
-		}
-
-	};
-
 
 	private final Handler mHandler = new Handler();
 
 	private final ContentObserver mAccountChangeObserver = new AccountChangeObserver(this, mHandler);
 
-	private final ArrayList<SupportTabSpec> mCustomTabs = new ArrayList<SupportTabSpec>();
-
-	private final SparseArray<Fragment> mAttachedFragments = new SparseArray<Fragment>();
-	private Account mSelectedAccountToSearch;
+    private final SparseArray<Fragment> mAttachedFragments = new SparseArray<>();
+    private ParcelableAccount mSelectedAccountToSearch;
 
 	private SharedPreferences mPreferences;
 
@@ -165,6 +153,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
     private View mActionBarOverlay;
 	private LeftDrawerFrameLayout mLeftDrawerContainer;
 	private RightDrawerFrameLayout mRightDrawerContainer;
+    private TintedStatusFrameLayout mColorStatusFrameLayout;
 
 	private Fragment mCurrentVisibleFragment;
 	private UpdateUnreadCountTask mUpdateUnreadCountTask;
@@ -230,12 +219,25 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	@Override
 	public void onClick(final View v) {
 		switch (v.getId()) {
-            case R.id.actions_button: {
+            case R.id.action_buttons: {
                 triggerActionsClick();
 				break;
 			}
 		}
 	}
+
+
+    @Subscribe
+    public void notifyTaskStateChanged(TaskStateChangedEvent event) {
+        updateActionsButton();
+        updateSmartBar();
+    }
+
+    @Subscribe
+    public void notifyUnreadCountUpdated(UnreadCountUpdatedEvent event) {
+        updateUnreadCount();
+    }
+
 
 	@Override
 	public void onClosed() {
@@ -249,10 +251,11 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		mViewPager = (ExtendedViewPager) findViewById(R.id.main_pager);
 		mEmptyTab = findViewById(R.id.empty_tab);
 		mEmptyTabHint = findViewById(R.id.empty_tab_hint);
-        mActionsButton = findViewById(R.id.actions_button);
+        mActionsButton = findViewById(R.id.action_buttons);
         mTabsContainer = findViewById(R.id.tabs_container);
         mTabIndicator = (TabPagerIndicator) findViewById(R.id.main_tabs);
         mActionBarOverlay = findViewById(R.id.actionbar_overlay);
+        mColorStatusFrameLayout = (TintedStatusFrameLayout) findViewById(R.id.home_content);
 	}
 
 	@Override
@@ -298,7 +301,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	@Override
 	public boolean onLongClick(final View v) {
 		switch (v.getId()) {
-			case R.id.actions_button: {
+            case R.id.action_buttons: {
 				showMenuItemToast(v, v.getContentDescription(), true);
 				return true;
 			}
@@ -378,7 +381,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 				icon = R.drawable.ic_action_status_compose;
             } else {
                 if (classEquals(DirectMessagesFragment.class, tab.cls)) {
-					icon = R.drawable.ic_action_new_message;
+                    icon = R.drawable.ic_action_add;
                     title = R.string.new_direct_message;
                 } else if (classEquals(TrendsSuggectionsFragment.class, tab.cls)) {
 					icon = R.drawable.ic_action_search;
@@ -422,17 +425,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		}
 	}
 
-	public void openSearchView(final Account account) {
+    public void openSearchView(final ParcelableAccount account) {
 		mSelectedAccountToSearch = account;
 		onSearchRequested();
-	}
-
-	public void setHomeProgressBarIndeterminateVisibility(final boolean visible) {
-	}
-
-	@Override
-	public boolean shouldOverrideActivityAnimation() {
-		return false;
 	}
 
 	@Override
@@ -455,9 +450,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
 	public void updateUnreadCount() {
         if (mTabIndicator == null || mUpdateUnreadCountTask != null
-				&& mUpdateUnreadCountTask.getStatus() == AsyncTask.Status.RUNNING) return;
+                && mUpdateUnreadCountTask.getStatus() == TwidereAsyncTask.Status.RUNNING) return;
         mUpdateUnreadCountTask = new UpdateUnreadCountTask(mTabIndicator);
-		mUpdateUnreadCountTask.execute();
+        mUpdateUnreadCountTask.executeTask();
 		mTabIndicator.setDisplayBadge(mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
 	}
 
@@ -484,11 +479,18 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
     /**
-     * Called when the activity is first created.
+     * Called when the context is first created.
      */
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		setUiOptions(getWindow());
+        final Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+        window.requestFeature(Window.FEATURE_NO_TITLE);
+        window.requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        window.requestFeature(Window.FEATURE_ACTION_MODE_OVERLAY);
 		super.onCreate(savedInstanceState);
 		if (!isDatabaseReady(this)) {
 			Toast.makeText(this, R.string.preparing_database_toast, Toast.LENGTH_SHORT).show();
@@ -534,13 +536,11 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         mTabIndicator.setViewPager(mViewPager);
         mTabIndicator.setOnPageChangeListener(this);
         if (mTabDisplayOption != 0) {
-            mTabIndicator.setDisplayLabel((mTabDisplayOption & VALUE_TAB_DIPLAY_OPTION_CODE_LABEL) != 0);
-            mTabIndicator.setDisplayIcon((mTabDisplayOption & VALUE_TAB_DIPLAY_OPTION_CODE_ICON) != 0);
+            mTabIndicator.setTabDisplayOption(mTabDisplayOption);
         } else {
-            mTabIndicator.setDisplayLabel(false);
-            mTabIndicator.setDisplayIcon(true);
+            mTabIndicator.setTabDisplayOption(TabPagerIndicator.ICON);
         }
-//        mTabIndicator.setDisplayBadge(mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
+        mTabIndicator.setDisplayBadge(mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
         mActionsButton.setOnClickListener(this);
         mActionsButton.setOnLongClickListener(this);
 		setTabPosition(initialTabPosition);
@@ -579,7 +579,11 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
             mTabIndicator.setStripColor(themeColor);
             mTabIndicator.setIconColor(contrastColor);
             ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
-        } else {
+            mColorStatusFrameLayout.setDrawColor(true);
+            mColorStatusFrameLayout.setDrawShadow(false);
+            mColorStatusFrameLayout.setColor(actionBarColor, actionBarAlpha);
+            mColorStatusFrameLayout.setFactor(1);
+		} else {
             final int backgroundColor = ThemeUtils.getThemeBackgroundColor(mTabIndicator.getItemContext());
             final int foregroundColor = ThemeUtils.getThemeForegroundColor(mTabIndicator.getItemContext());
             ViewAccessor.setBackground(mTabIndicator, ThemeUtils.getActionBarBackground(this, themeResId));
@@ -587,6 +591,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
             homeActionButton.setIconColor(foregroundColor, Mode.SRC_ATOP);
             mTabIndicator.setStripColor(themeColor);
             mTabIndicator.setIconColor(foregroundColor);
+            mColorStatusFrameLayout.setDrawColor(false);
+            mColorStatusFrameLayout.setDrawShadow(false);
 	    }
         mTabIndicator.setAlpha(actionBarAlpha / 255f);
         mActionsButton.setAlpha(actionBarAlpha / 255f);
@@ -620,7 +626,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	protected void onResume() {
 		super.onResume();
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONRESUME));
-		mViewPager.setEnabled(!mPreferences.getBoolean(KEY_DISABLE_TAB_SWIPE, false));
 		invalidateOptionsMenu();
 		updateActionsButtonStyle();
 		updateActionsButton();
@@ -641,10 +646,9 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONSTART));
 		final ContentResolver resolver = getContentResolver();
 		resolver.registerContentObserver(Accounts.CONTENT_URI, true, mAccountChangeObserver);
-		final IntentFilter filter = new IntentFilter(BROADCAST_TASK_STATE_CHANGED);
-		filter.addAction(BROADCAST_UNREAD_COUNT_UPDATED);
-		registerReceiver(mStateReceiver, filter);
-		if (isTabsChanged(getHomeTabs(this)) || getTabDisplayOptionInt(this) != mTabDisplayOption) {
+        final Bus bus = TwittnukerApplication.getInstance(this).getMessageBus();
+        bus.register(this);
+        if (getTabDisplayOptionInt(this) != mTabDisplayOption) {
 			restart();
 		}
 		updateUnreadCount();
@@ -667,20 +671,14 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	@Override
 	protected void onStop() {
 		mMultiSelectHandler.dispatchOnStop();
-		unregisterReceiver(mStateReceiver);
+        final Bus bus = TwittnukerApplication.getInstance(this).getMessageBus();
+        bus.unregister(this);
 		final ContentResolver resolver = getContentResolver();
 		resolver.unregisterContentObserver(mAccountChangeObserver);
 		mPreferences.edit().putInt(KEY_SAVED_TAB_POSITION, mViewPager.getCurrentItem()).apply();
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONSTOP));
 
 		super.onStop();
-	}
-
-	protected void setPagingEnabled(final boolean enabled) {
-        if (mTabIndicator != null && mViewPager != null) {
-			mViewPager.setEnabled(!mPreferences.getBoolean(KEY_DISABLE_TAB_SWIPE, false));
-            mTabIndicator.setEnabled(enabled);
-		}
 	}
 
     @Override
@@ -734,14 +732,12 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
     private void setupHomeTabs() {
-		final List<SupportTabSpec> tabs = getHomeTabs(this);
-		mCustomTabs.clear();
-		mCustomTabs.addAll(tabs);
 		mPagerAdapter.clear();
-		mPagerAdapter.addTabs(tabs);
-		mEmptyTab.setVisibility(tabs.isEmpty() ? View.VISIBLE : View.GONE);
-        mEmptyTabHint.setVisibility(tabs.isEmpty() ? View.VISIBLE : View.GONE);
-        mViewPager.setVisibility(tabs.isEmpty() ? View.GONE : View.VISIBLE);
+        mPagerAdapter.addTabs(getHomeTabs(this));
+		final boolean hasNoTab = mPagerAdapter.getCount() == 0;
+		mEmptyTab.setVisibility(hasNoTab ? View.VISIBLE : View.GONE);
+        mEmptyTabHint.setVisibility(hasNoTab ? View.VISIBLE : View.GONE);
+        mViewPager.setVisibility(hasNoTab ? View.GONE : View.VISIBLE);
 	}
 
 	private void initUnreadCount() {
@@ -753,15 +749,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private boolean isPushRegistered() {
 		final SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		return preferences != null && preferences.getBoolean(KEY_PUSH_REGISTERED, false);
-	}
-
-	private boolean isTabsChanged(final List<SupportTabSpec> tabs) {
-		if (mCustomTabs.size() == 0 && tabs == null) return false;
-		if (mCustomTabs.size() != tabs.size()) return true;
-		for (int i = 0, size = mCustomTabs.size(); i < size; i++) {
-			if (!mCustomTabs.get(i).equals(tabs.get(i))) return true;
-		}
-		return false;
 	}
 
 	private void openAccountsDrawer() {
@@ -818,7 +805,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         final Window window = getWindow();
 		final Drawable windowBackground = ThemeUtils.getWindowBackground(this, getCurrentThemeResourceId());
 		ViewAccessor.setBackground(mSlidingMenu.getContent(), windowBackground);
-        window.setBackgroundDrawable(new EmptyDrawable());
+        window.setBackgroundDrawable(new EmptyDrawable(windowBackground));
 	}
 
     private void triggerActionsClick() {
@@ -848,7 +835,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			icon = R.drawable.ic_action_status_compose;
 		} else {
 			if (classEquals(DirectMessagesFragment.class, tab.cls)) {
-				icon = R.drawable.ic_action_new_message;
+                icon = R.drawable.ic_action_add;
                 title = R.string.new_direct_message;
 			} else if (classEquals(TrendsSuggectionsFragment.class, tab.cls)) {
 				icon = R.drawable.ic_action_search;
@@ -915,6 +902,15 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		notifyControlBarOffsetChanged();
 	}
 
+	public void setSystemWindowInsets(Rect insets) {
+		final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.left_drawer);
+		if (fragment instanceof AccountsDashboardFragment) {
+			((AccountsDashboardFragment) fragment).setStatusBarHeight(insets.top);
+		}
+        //TODO
+        mColorStatusFrameLayout.setStatusBarHeight(insets.top);
+	}
+
 	private void startStreamingService() {
 		if (!isStreamingServiceRunning) {
 			final Intent serviceIntent = new Intent(this, StreamingService.class);
@@ -966,7 +962,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
 	}
 
-	private static class UpdateUnreadCountTask extends AsyncTask<Void, Void, int[]> {
+    private static class UpdateUnreadCountTask extends TwidereAsyncTask<Void, Void, int[]> {
 		private final Context mContext;
 		private final TabPagerIndicator mIndicator;
 

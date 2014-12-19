@@ -22,12 +22,6 @@
 
 package de.vanita5.twittnuker.app;
 
-import static de.vanita5.twittnuker.util.UserColorUtils.initUserColor;
-import static de.vanita5.twittnuker.util.Utils.getBestCacheDir;
-import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
-import static de.vanita5.twittnuker.util.Utils.initAccountColor;
-import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
-
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
@@ -35,11 +29,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
 
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
@@ -49,15 +41,9 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.nostra13.universalimageloader.utils.L;
+import com.squareup.otto.Bus;
 
-import org.acra.ACRA;
-import org.acra.ReportField;
-import org.acra.annotation.ReportsCrashes;
-import org.acra.collector.CrashReportData;
-import org.acra.sender.ReportSender;
-import org.acra.sender.ReportSenderException;
 import org.mariotaku.gallery3d.util.GalleryUtils;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.MainActivity;
@@ -68,22 +54,23 @@ import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
 import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator;
 import de.vanita5.twittnuker.util.net.TwidereHostAddressResolver;
 
+import java.io.File;
+
 import twitter4j.http.HostAddressResolver;
 
-import java.io.File;
-import java.util.Date;
-import java.util.Locale;
+import static de.vanita5.twittnuker.util.UserColorUtils.initUserColor;
+import static de.vanita5.twittnuker.util.Utils.getBestCacheDir;
+import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
+import static de.vanita5.twittnuker.util.Utils.initAccountColor;
+import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
-@ReportsCrashes(formUri = "http://www.bugsense.com/api/acra?api_key=741d7d6c",
-		mailTo = Constants.APP_PROJECT_EMAIL,
-        formKey = "", sharedPreferencesMode = Context.MODE_PRIVATE,
-	    sharedPreferencesName = Constants.SHARED_PREFERENCES_NAME)
 public class TwittnukerApplication extends Application implements Constants, OnSharedPreferenceChangeListener {
 
 	private Handler mHandler;
@@ -100,6 +87,7 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 	private SQLiteOpenHelper mSQLiteOpenHelper;
 	private HostAddressResolver mResolver;
 	private SQLiteDatabase mDatabase;
+    private Bus mMessageBus;
 
 	public AsyncTaskManager getAsyncTaskManager() {
 		if (mAsyncTaskManager != null) return mAsyncTaskManager;
@@ -187,11 +175,12 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		if (Utils.isDebugBuild()) {
 			StrictModeUtils.detectAllVmPolicy();
 		}
+        setTheme(ThemeUtils.getThemeResource(this));
 		super.onCreate();
+        mHandler = new Handler();
+        mMessageBus = new Bus();
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-		mHandler = new Handler();
 		mPreferences.registerOnSharedPreferenceChangeListener(this);
-		configACRA();
 		initializeAsyncTask();
 		GalleryUtils.initialize(this);
 		initAccountColor(this);
@@ -236,11 +225,6 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		}
 	}
 
-	private void configACRA() {
-		ACRA.init(this);
-		ACRA.getErrorReporter().setReportSender(new EmailIntentSender(this));
-	}
-
     private DiskCache createDiskCache(final String dirName) {
         final File cacheDir = getBestCacheDir(this, dirName);
 		final File fallbackCacheDir = getInternalCacheDir(this, dirName);
@@ -260,71 +244,14 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		}
 	}
 
-	public static TwittnukerApplication getInstance(final Context context) {
+    public Bus getMessageBus() {
+        return mMessageBus;
+    }
+
+    public static TwittnukerApplication getInstance(final Context context) {
 		if (context == null) return null;
 		final Context app = context.getApplicationContext();
-		return app instanceof TwittnukerApplication ? (TwittnukerApplication) app : null;
-	}
-
-	static class EmailIntentSender implements ReportSender {
-
-		private final Context mContext;
-
-		EmailIntentSender(final Context ctx) {
-			mContext = ctx;
-		}
-
-		@Override
-		public void send(final CrashReportData errorContent) throws ReportSenderException {
-			final Intent email = new Intent(Intent.ACTION_SEND);
-			email.setType("text/plain");
-			email.putExtra(Intent.EXTRA_SUBJECT, String.format("%s Crash Report", getAppName()));
-			email.putExtra(Intent.EXTRA_TEXT, buildBody(errorContent));
-			email.putExtra(Intent.EXTRA_EMAIL, new String[] { APP_PROJECT_EMAIL });
-			final Intent chooser = Intent.createChooser(email, mContext.getString(R.string.send_crash_report));
-			chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			mContext.startActivity(chooser);
-		}
-
-		private String buildBody(final CrashReportData errorContent) {
-			final String stack_trace = errorContent.getProperty(ReportField.STACK_TRACE);
-			final StringBuilder builder = new StringBuilder();
-			builder.append(String.format(Locale.US, "Report date: %s\n", new Date(System.currentTimeMillis())));
-			builder.append(String.format(Locale.US, "Android version: %s\n", Build.VERSION.RELEASE));
-			builder.append(String.format(Locale.US, "API version: %d\n", Build.VERSION.SDK_INT));
-			builder.append(String.format(Locale.US, "App version name: %s\n", getAppVersionName()));
-			builder.append(String.format(Locale.US, "App version code: %d\n", getAppVersionCode()));
-			builder.append(String.format(Locale.US, "Configuration: %s\n", mContext.getResources().getConfiguration()));
-			builder.append(String.format(Locale.US, "Stack trace:\n%s\n", stack_trace));
-			return builder.toString();
-		}
-
-		private CharSequence getAppName() {
-			final PackageManager pm = mContext.getPackageManager();
-			try {
-				return pm.getApplicationLabel(pm.getApplicationInfo(mContext.getPackageName(), 0));
-			} catch (final NameNotFoundException e) {
-				return APP_NAME;
-			}
-		}
-
-		private int getAppVersionCode() {
-			final PackageManager pm = mContext.getPackageManager();
-			try {
-				return pm.getPackageInfo(mContext.getPackageName(), 0).versionCode;
-			} catch (final NameNotFoundException e) {
-				return 0;
-			}
-		}
-
-		private String getAppVersionName() {
-			final PackageManager pm = mContext.getPackageManager();
-			try {
-				return pm.getPackageInfo(mContext.getPackageName(), 0).versionName;
-			} catch (final NameNotFoundException e) {
-				return "unknown";
-			}
-		}
+        return app instanceof TwittnukerApplication ? (TwittnukerApplication) app : null;
 	}
 
 }

@@ -189,7 +189,7 @@
     <string name="type_to_compose">键入信息</string>
     <string name="users_lists">列表</string>
     <string name="lists_following_user">关注这个用户的列表</string>
-    <string name="lists_following_me">关注我的列表</string>
+    <string name="lists_following_you">关注我的列表</string>
     <string name="item_3_minutes">3分钟</string>
     <string name="item_5_minutes">5分钟</string>
     <string name="item_10_minutes">10分钟</string>
@@ -358,7 +358,7 @@
     <string name="clear_search_history">清除搜索历史</string>
     <string name="no_thanks">不用了，谢谢</string>
     <string name="fast_scroll_thumb">快速滚动条</string>
-    <string name="indicate_my_status">区别我的推文</string>
+    <string name="indicate_your_status">区别我的推文</string>
     <string name="default_ringtone">默认铃声</string>
     <string name="phishing_link_warning">钓鱼链接警告</string>
     <string name="phishing_link_warning_summary">在你试图打开私信中可能的钓鱼链接时发出警告</string>
@@ -374,7 +374,7 @@
     <string name="quote_protected_status_notice">不建议引用受保护的推文</string>
     <string name="edit_draft">编辑草稿</string>
     <string name="profile_image">个人资料图片</string>
-    <string name="my_profile_image">我的个人资料图片</string>
+    <string name="your_profile_image">我的个人资料图片</string>
     <string name="mention_user">提及<xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">主题颜色</string>
     <string name="wrong_url_format">URL格式错误</string>

@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.util;
 
-import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
@@ -44,12 +42,11 @@ import de.vanita5.twittnuker.fragment.support.HomeTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.InvalidTabFragment;
 import de.vanita5.twittnuker.fragment.support.MentionsTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.RetweetsOfMeFragment;
-import de.vanita5.twittnuker.fragment.support.SearchStatusesFragment;
-import de.vanita5.twittnuker.fragment.support.StaggeredHomeTimelineFragment;
+import de.vanita5.twittnuker.fragment.support.StatusesSearchFragment;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserFavoritesFragment;
 import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
-import de.vanita5.twittnuker.fragment.support.UserTimelineFragmentOld;
+import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.ExtraConfiguration;
 import de.vanita5.twittnuker.model.SupportTabSpec;
@@ -61,6 +58,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+
+import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 
 public class CustomTabUtils implements Constants {
 	private static final HashMap<String, CustomTabConfiguration> CUSTOM_TABS_CONFIGURATION_MAP = new HashMap<String, CustomTabConfiguration>();
@@ -84,10 +83,10 @@ public class CustomTabUtils implements Constants {
 				R.string.favorites, R.drawable.ic_action_star, CustomTabConfiguration.ACCOUNT_REQUIRED,
 				CustomTabConfiguration.FIELD_TYPE_USER, 4));
 		CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_USER_TIMELINE, new CustomTabConfiguration(
-				UserTimelineFragmentOld.class, R.string.users_statuses, R.drawable.ic_action_quote,
+                UserTimelineFragment.class, R.string.users_statuses, R.drawable.ic_action_quote,
 				CustomTabConfiguration.ACCOUNT_REQUIRED, CustomTabConfiguration.FIELD_TYPE_USER, 5));
 		CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_SEARCH_STATUSES, new CustomTabConfiguration(
-				SearchStatusesFragment.class, R.string.search_statuses, R.drawable.ic_action_search,
+                StatusesSearchFragment.class, R.string.search_statuses, R.drawable.ic_action_search,
 				CustomTabConfiguration.ACCOUNT_REQUIRED, CustomTabConfiguration.FIELD_TYPE_TEXT, R.string.query,
 				EXTRA_QUERY, 6));
 		CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_LIST_TIMELINE, new CustomTabConfiguration(
@@ -104,10 +103,6 @@ public class CustomTabUtils implements Constants {
 				RetweetsOfMeFragment.class, R.string.retweets_of_me, R.drawable.ic_action_retweet,
 				CustomTabConfiguration.ACCOUNT_REQUIRED, CustomTabConfiguration.FIELD_TYPE_NONE, 10));
 		if (Utils.hasStaggeredTimeline()) {
-			CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_STAGGERED_HOME_TIMELINE, new CustomTabConfiguration(
-					StaggeredHomeTimelineFragment.class, R.string.staggered_home_timeline,
-					R.drawable.ic_action_view_quilt, CustomTabConfiguration.ACCOUNT_OPTIONAL,
-					CustomTabConfiguration.FIELD_TYPE_NONE, 11, false));
 		}
 
 		CUSTOM_TABS_ICON_NAME_MAP.put("accounts", R.drawable.ic_action_accounts);
@@ -129,7 +124,7 @@ public class CustomTabUtils implements Constants {
 		CUSTOM_TABS_ICON_NAME_MAP.put("comp", R.drawable.ic_action_comp);
 		CUSTOM_TABS_ICON_NAME_MAP.put("cthulhu", R.drawable.ic_action_cthulhu);
 		CUSTOM_TABS_ICON_NAME_MAP.put("harvey", R.drawable.ic_action_harvey);
-		CUSTOM_TABS_ICON_NAME_MAP.put("heart_z", R.drawable.ic_action_heart_z);
+		CUSTOM_TABS_ICON_NAME_MAP.put("Majora's Mask", R.drawable.ic_action_heart_z);
 		CUSTOM_TABS_ICON_NAME_MAP.put("metroid", R.drawable.ic_action_metroid);
 		CUSTOM_TABS_ICON_NAME_MAP.put("nyarlathorepirycx", R.drawable.ic_action_nyarlathorepirycx);
 		CUSTOM_TABS_ICON_NAME_MAP.put("pokeball", R.drawable.ic_action_pokeball);

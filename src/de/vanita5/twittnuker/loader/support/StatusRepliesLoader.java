@@ -26,16 +26,17 @@ import android.content.Context;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
-import static de.vanita5.twittnuker.util.Utils.isOfficialTwitterInstance;
-import static de.vanita5.twittnuker.util.Utils.shouldForceUsingPrivateAPIs;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import java.util.ArrayList;
-import java.util.List;
+import static de.vanita5.twittnuker.util.Utils.isOfficialTwitterInstance;
+import static de.vanita5.twittnuker.util.Utils.shouldForceUsingPrivateAPIs;
 
 public class StatusRepliesLoader extends UserMentionsLoader {
 
@@ -51,25 +52,23 @@ public class StatusRepliesLoader extends UserMentionsLoader {
 	@Override
 	public List<Status> getStatuses(final Twitter twitter, final Paging paging) throws TwitterException {
 		final Context context = getContext();
+        final List<Status> result = new ArrayList<>();
 		if (shouldForceUsingPrivateAPIs(context) || isOfficialTwitterInstance(context, twitter)) {
             final List<Status> statuses = twitter.showConversation(mInReplyToStatusId, paging);
-            final List<Status> result = new ArrayList<Status>();
             for (final Status status : statuses) {
                 if (status.getId() > mInReplyToStatusId) {
                     result.add(status);
                 }
             }
-            return result;
         } else {
             final List<Status> statuses = super.getStatuses(twitter, paging);
-            final List<Status> result = new ArrayList<Status>();
             for (final Status status : statuses) {
                 if (status.getInReplyToStatusId() == mInReplyToStatusId) {
                     result.add(status);
                 }
 			}
-            return result;
-		}
+        }
+        return result;
 	}
 
 }

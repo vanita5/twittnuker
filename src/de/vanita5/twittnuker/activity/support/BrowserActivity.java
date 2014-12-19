@@ -28,9 +28,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.Window;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.CroutonStyle;
+import android.widget.Toast;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.BaseWebViewFragment;
@@ -56,7 +54,7 @@ public class BrowserActivity extends BaseSupportActivity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		mUri = getIntent().getData();
 		if (mUri == null) {
-			Crouton.showText(this, R.string.error_occurred, CroutonStyle.ALERT);
+            Toast.makeText(this, R.string.error_occurred, Toast.LENGTH_SHORT).show();
 			finish();
 			return;
 		}

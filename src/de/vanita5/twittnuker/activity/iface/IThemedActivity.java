@@ -31,8 +31,11 @@ public interface IThemedActivity {
 	public Resources getDefaultResources();
 
     public int getThemeBackgroundAlpha();
+    public int getCurrentThemeBackgroundAlpha();
 
     public int getThemeColor();
+
+	public int getCurrentThemeColor();
 
 	public int getActionBarColor();
 
@@ -42,9 +45,6 @@ public interface IThemedActivity {
 
 	public void navigateUpFromSameTask();
 
-	public void overrideCloseAnimationIfNeeded();
-
 	public void restart();
 
-	public boolean shouldOverrideActivityAnimation();
 }

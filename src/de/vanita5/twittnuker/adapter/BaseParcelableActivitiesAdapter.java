@@ -22,12 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.getAccountColor;
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
-import static de.vanita5.twittnuker.util.Utils.isCompactCards;
-import static de.vanita5.twittnuker.util.Utils.isPlainListStyle;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,25 +39,25 @@ import de.vanita5.twittnuker.view.holder.ActivityListViewHolder;
 
 import java.util.List;
 
+import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.getAccountColor;
+import static de.vanita5.twittnuker.util.Utils.getDisplayName;
+import static de.vanita5.twittnuker.util.Utils.isCompactCards;
+
 public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<ParcelableActivity> implements
 		IBaseCardAdapter {
 
 	private final MultiSelectManager mMultiSelectManager;
 	private final ImageLoaderWrapper mImageLoader;
 
-	private boolean mShowAbsoluteTime, mAnimationEnabled;
-	private int mMaxAnimationPosition;
-
-	private MenuButtonClickListener mListener;
-	private final boolean mPlainList;
+    private boolean mShowAbsoluteTime;
 
 	public BaseParcelableActivitiesAdapter(final Context context) {
-		this(context, isCompactCards(context), isPlainListStyle(context));
+        this(context, isCompactCards(context));
 	}
 
-	public BaseParcelableActivitiesAdapter(final Context context, final boolean compactCards, final boolean plainList) {
+    public BaseParcelableActivitiesAdapter(final Context context, final boolean compactCards) {
 		super(context, getItemResource(compactCards));
-		mPlainList = plainList;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mMultiSelectManager = app.getMultiSelectManager();
 		mImageLoader = app.getImageLoaderWrapper();
@@ -90,10 +84,6 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 		final ActivityListViewHolder holder = tag instanceof ActivityListViewHolder ? (ActivityListViewHolder) tag
 				: new ActivityListViewHolder(view);
 		if (!(tag instanceof ActivityListViewHolder)) {
-			if (mPlainList) {
-				((View) holder.content).setPadding(0, 0, 0, 0);
-				holder.content.setItemBackground(null);
-			}
 			view.setTag(holder);
 		}
 
@@ -123,26 +113,10 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 		notifyDataSetChanged();
 	}
 
-	@Override
-	public void setAnimationEnabled(final boolean anim) {
-		if (mAnimationEnabled == anim) return;
-		mAnimationEnabled = anim;
-	}
-
 	public void setData(final List<ParcelableActivity> data) {
 		clear();
 		if (data == null) return;
 		addAll(data);
-	}
-
-	@Override
-	public void setMaxAnimationPosition(final int position) {
-		mMaxAnimationPosition = position;
-	}
-
-	@Override
-	public void setMenuButtonClickListener(final MenuButtonClickListener listener) {
-		mListener = listener;
 	}
 
 	public void setShowAbsoluteTime(final boolean show) {

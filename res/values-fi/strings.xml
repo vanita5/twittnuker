@@ -186,7 +186,7 @@
     <string name="type_to_compose">Kirjoita</string>
     <string name="users_lists">Käyttäjän listat</string>
     <string name="lists_following_user">Käyttäjää seuraavat listat</string>
-    <string name="lists_following_me">Käyttäjää seuraavat listat</string>
+    <string name="lists_following_you">Käyttäjää seuraavat listat</string>
     <string name="item_3_minutes">3 minuuttia</string>
     <string name="item_5_minutes">5 minuuttia</string>
     <string name="item_10_minutes">10 minuuttia</string>
@@ -354,7 +354,7 @@
     <string name="clear_search_history">Tyhjennä hakuhistoria</string>
     <string name="no_thanks">Ei kiitos</string>
     <string name="fast_scroll_thumb">Peukalon nopea vieritys</string>
-    <string name="indicate_my_status">Osoita oma twiitti</string>
+    <string name="indicate_your_status">Osoita oma twiitti</string>
     <string name="default_ringtone">Oletus merkkiääni</string>
     <string name="phishing_link_warning">Huijauslinkin varoitus</string>
     <string name="phishing_link_warning_summary">Varoittaa, kun yrität avata yksityisviestin mahdollista huijauslinkkiä.</string>
@@ -370,7 +370,7 @@
     <string name="quote_protected_status_notice">Ei ole suositeltavaa lainata suojattua twiittiä.</string>
     <string name="edit_draft">Muokkaa luonnosta</string>
     <string name="profile_image">Profiilikuva</string>
-    <string name="my_profile_image">Profiilikuvani</string>
+    <string name="your_profile_image">Profiilikuvani</string>
     <string name="mention_user">Mainitse <xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">Teeman väri</string>
     <string name="wrong_url_format">Virheellinen URL-muoto.</string>

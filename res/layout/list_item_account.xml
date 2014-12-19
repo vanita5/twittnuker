@@ -36,13 +36,14 @@
         android:layout_weight="0"
         android:background="@drawable/list_drag_handle"/>
 
-	<ImageView
+    <de.vanita5.twittnuker.view.ProfileImageView
 		android:id="@android:id/icon"
+        style="?profileImageStyle"
 		android:layout_width="@dimen/icon_size_list_item"
 		android:layout_height="@dimen/icon_size_list_item"
 		android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/drag_handle"
-		android:contentDescription="@string/my_profile_image"
+        android:contentDescription="@string/your_profile_image"
 		android:scaleType="fitCenter"/>
 
 	<LinearLayout
@@ -66,7 +67,6 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
-
 
 		    <TextView
                 android:id="@+id/default_indicator"

@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
-
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -55,8 +53,8 @@ import android.widget.ListView;
 
 import org.mariotaku.menucomponent.widget.PopupMenu;
 import org.mariotaku.querybuilder.Columns.Column;
+import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
-import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
@@ -65,13 +63,15 @@ import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
 
 public class DraftsActivity extends BaseSupportActivity implements LoaderCallbacks<Cursor>, OnItemClickListener,
 		MultiChoiceModeListener {
@@ -109,7 +109,7 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 					}
 				}
 				if (sendDrafts(list)) {
-					final Where where = Where.in(new Column(Drafts._ID),
+                    final Expression where = Expression.in(new Column(Drafts._ID),
 							new RawItemArray(mListView.getCheckedItemIds()));
 					mResolver.delete(Drafts.CONTENT_URI, where.getSQL(), null);
 				}
@@ -240,7 +240,7 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 		final Bundle bundle = new Bundle();
 		bundle.putParcelable(EXTRA_DRAFT, draft);
 		intent.putExtras(bundle);
-		mResolver.delete(Drafts.CONTENT_URI, Where.equals(Drafts._ID, draft._id).getSQL(), null);
+        mResolver.delete(Drafts.CONTENT_URI, Expression.equals(Drafts._ID, draft._id).getSQL(), null);
 		startActivityForResult(intent, REQUEST_COMPOSE);
 	}
 
@@ -256,7 +256,7 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 					continue;
 				}
 				final long accountId = item.account_ids[0];
-				final String imageUri = item.medias != null && item.medias.length > 0 ? item.medias[0].uri : null;
+				final String imageUri = item.media != null && item.media.length > 0 ? item.media[0].uri : null;
 				twitter.sendDirectMessageAsync(accountId, recipientId, item.text, imageUri);
 			}
 		}
@@ -278,7 +278,7 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 					final Bundle args = getArguments();
 					if (args == null) return;
 					final DeleteDraftsTask task = new DeleteDraftsTask(getActivity(), args.getLongArray(EXTRA_IDS));
-					task.execute();
+                    task.executeTask();
 					break;
 				}
 			}
@@ -296,7 +296,7 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 
 	}
 
-	private static class DeleteDraftsTask extends AsyncTask<Void, Void, Integer> {
+    private static class DeleteDraftsTask extends TwidereAsyncTask<Void, Void, Integer> {
 
 		private static final String FRAGMENT_TAG_DELETING_DRAFTS = "deleting_drafts";
 		private final FragmentActivity mActivity;
@@ -310,15 +310,15 @@ public class DraftsActivity extends BaseSupportActivity implements LoaderCallbac
 		@Override
 		protected Integer doInBackground(final Void... params) {
 			final ContentResolver resolver = mActivity.getContentResolver();
-			final Where where = Where.in(new Column(Drafts._ID), new RawItemArray(mIds));
+            final Expression where = Expression.in(new Column(Drafts._ID), new RawItemArray(mIds));
 			final String[] projection = { Drafts.MEDIA };
 			final Cursor c = resolver.query(Drafts.CONTENT_URI, projection, where.getSQL(), null, null);
-			final int idxMedias = c.getColumnIndex(Drafts.MEDIA);
+            final int idxMedia = c.getColumnIndex(Drafts.MEDIA);
 			c.moveToFirst();
 			while (!c.isAfterLast()) {
-                final ParcelableMediaUpdate[] medias = ParcelableMediaUpdate.fromJSONString(c.getString(idxMedias));
-				if (medias != null) {
-					for (final ParcelableMediaUpdate media : medias) {
+                final ParcelableMediaUpdate[] mediaArray = ParcelableMediaUpdate.fromJSONString(c.getString(idxMedia));
+                if (mediaArray != null) {
+                    for (final ParcelableMediaUpdate media : mediaArray) {
 						final Uri uri = Uri.parse(media.uri);
                         if ("file".equals(uri.getScheme())) {
                             final File file = new File(uri.getPath());

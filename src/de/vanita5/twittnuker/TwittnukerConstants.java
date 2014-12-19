@@ -42,6 +42,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 
 	public static final String USER_COLOR_PREFERENCES_NAME = "user_colors";
 	public static final String HOST_MAPPING_PREFERENCES_NAME = "host_mapping";
+	public static final String MESSAGE_DRAFTS_PREFERENCES_NAME = "message_drafts";
 	public static final String SHARED_PREFERENCES_NAME = "preferences";
 	public static final String SILENT_NOTIFICATIONS_PREFERENCE_NAME = "silent_notifications";
 	public static final String TIMELINE_POSITIONS_PREFERENCES_NAME = "timeline_positions";
@@ -174,7 +175,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 	public static final int VIRTUAL_TABLE_ID_UNREAD_COUNTS_BY_TYPE = 109;
 
 	public static final int NOTIFICATION_ID_HOME_TIMELINE = 1;
-	public static final int NOTIFICATION_ID_MENTIONS = 2;
+	public static final int NOTIFICATION_ID_MENTIONS_TIMELINE = 2;
 	public static final int NOTIFICATION_ID_DIRECT_MESSAGES = 3;
 	public static final int NOTIFICATION_ID_DRAFTS = 4;
 	public static final int NOTIFICATION_ID_STREAMING = 6;

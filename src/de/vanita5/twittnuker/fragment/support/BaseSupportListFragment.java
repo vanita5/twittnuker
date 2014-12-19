@@ -49,7 +49,6 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
@@ -126,8 +125,15 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
     @Override
     public void requestFitSystemWindows() {
         final Activity activity = getActivity();
-        if (!(activity instanceof SystemWindowsInsetsCallback)) return;
-        final SystemWindowsInsetsCallback callback = (SystemWindowsInsetsCallback) activity;
+        final Fragment parentFragment = getParentFragment();
+        final SystemWindowsInsetsCallback callback;
+        if (parentFragment instanceof SystemWindowsInsetsCallback) {
+            callback = (SystemWindowsInsetsCallback) parentFragment;
+        } else if (activity instanceof SystemWindowsInsetsCallback) {
+            callback = (SystemWindowsInsetsCallback) activity;
+        } else {
+            return;
+        }
         final Rect insets = new Rect();
         if (callback.getSystemWindowsInsets(insets)) {
             fitSystemWindows(insets);
@@ -283,13 +289,13 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 	@Override
 	public void onDetach() {
 		super.onDetach();
+        final Fragment fragment = getParentFragment();
+        if (fragment instanceof SupportFragmentCallback) {
+            ((SupportFragmentCallback) fragment).onDetachFragment(this);
+        }
 		final Activity activity = getActivity();
 		if (activity instanceof SupportFragmentCallback) {
 			((SupportFragmentCallback) activity).onDetachFragment(this);
-		}
-		final Fragment fragment = getParentFragment();
-		if (fragment instanceof SupportFragmentCallback) {
-			((SupportFragmentCallback) fragment).onDetachFragment(this);
 		}
 	}
 
@@ -375,9 +381,6 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 		final Activity activity = getActivity();
 		if (activity == null) return;
 		activity.setProgressBarIndeterminateVisibility(visible);
-		if (activity instanceof HomeActivity) {
-			((HomeActivity) activity).setHomeProgressBarIndeterminateVisibility(visible);
-		}
 	}
 
 	@Override
@@ -389,13 +392,13 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 	@Override
 	public void setUserVisibleHint(final boolean isVisibleToUser) {
 		super.setUserVisibleHint(isVisibleToUser);
+        final Fragment fragment = getParentFragment();
+        if (fragment instanceof SupportFragmentCallback) {
+            ((SupportFragmentCallback) fragment).onSetUserVisibleHint(this, isVisibleToUser);
+        }
 		final Activity activity = getActivity();
 		if (activity instanceof SupportFragmentCallback) {
 			((SupportFragmentCallback) activity).onSetUserVisibleHint(this, isVisibleToUser);
-		}
-		final Fragment fragment = getParentFragment();
-		if (fragment instanceof SupportFragmentCallback) {
-			((SupportFragmentCallback) fragment).onSetUserVisibleHint(this, isVisibleToUser);
 		}
 	}
 

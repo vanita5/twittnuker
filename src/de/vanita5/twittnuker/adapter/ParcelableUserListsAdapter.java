@@ -22,11 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
-import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
@@ -41,33 +36,30 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.holder.UserListViewHolder;
-import de.vanita5.twittnuker.view.iface.ICardItemView.OnOverflowIconClickListener;
+import de.vanita5.twittnuker.view.holder.UserListListViewHolder;
 
 import java.util.List;
 import java.util.Locale;
 
+import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
+import static de.vanita5.twittnuker.util.Utils.getDisplayName;
+import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
+import static de.vanita5.twittnuker.util.Utils.openUserProfile;
+
 public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserList> implements IBaseCardAdapter,
-		OnClickListener, OnOverflowIconClickListener {
+        OnClickListener {
 
 	private final Context mContext;
     private final ImageLoaderWrapper mImageLoader;
 	private final MultiSelectManager mMultiSelectManager;
 	private final Locale mLocale;
 
-	private MenuButtonClickListener mListener;
-
-	private boolean mAnimationEnabled;
-	private int mMaxAnimationPosition;
-	private final boolean mPlainList;
-
 	public ParcelableUserListsAdapter(final Context context) {
-		this(context, Utils.isCompactCards(context), Utils.isPlainListStyle(context));
+        this(context, Utils.isCompactCards(context));
 	}
 
-	public ParcelableUserListsAdapter(final Context context, final boolean compactCards, final boolean plainList) {
+    public ParcelableUserListsAdapter(final Context context, final boolean compactCards) {
 		super(context, getItemResource(compactCards));
-		mPlainList = plainList;
 		mContext = context;
 		mLocale = context.getResources().getConfiguration().locale;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
@@ -89,17 +81,13 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 	public View getView(final int position, final View convertView, final ViewGroup parent) {
 		final View view = super.getView(position, convertView, parent);
 		final Object tag = view.getTag();
-		final UserListViewHolder holder;
-		if (tag instanceof UserListViewHolder) {
-			holder = (UserListViewHolder) tag;
+        final UserListListViewHolder holder;
+        if (tag instanceof UserListListViewHolder) {
+            holder = (UserListListViewHolder) tag;
 		} else {
-			holder = new UserListViewHolder(view);
+            holder = new UserListListViewHolder(view);
 			holder.profile_image.setOnClickListener(this);
-			holder.content.setOnOverflowIconClickListener(this);
-			if (mPlainList) {
-				((View) holder.content).setPadding(0, 0, 0, 0);
-				holder.content.setItemBackground(null);
-			}
+//            holder.content.setOnOverflowIconClickListener(this);
 			view.setTag(holder);
 		}
 
@@ -121,12 +109,6 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
             mImageLoader.cancelDisplayTask(holder.profile_image);
 		}
 		holder.profile_image.setTag(position);
-		if (position > mMaxAnimationPosition) {
-			if (mAnimationEnabled) {
-				view.startAnimation(holder.item_animation);
-			}
-			mMaxAnimationPosition = position;
-		}
 		return view;
 	}
 
@@ -140,29 +122,12 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 			case R.id.profile_image: {
 				if (mContext instanceof Activity) {
 					final ParcelableUserList item = getItem(position);
-					openUserProfile((Activity) mContext, item.account_id, item.user_id, item.user_screen_name);
+                    openUserProfile(mContext, item.account_id, item.user_id, item.user_screen_name,
+                            null);
 				}
 				break;
 			}
 		}
-	}
-
-	@Override
-	public void onOverflowIconClick(final View view) {
-		if (mMultiSelectManager.isActive()) return;
-		final Object tag = view.getTag();
-		if (tag instanceof UserListViewHolder) {
-			final UserListViewHolder holder = (UserListViewHolder) tag;
-			final int position = holder.position;
-			if (position == -1 || mListener == null) return;
-			mListener.onMenuButtonClick(view, position, getItemId(position));
-		}
-	}
-
-	@Override
-	public void setAnimationEnabled(final boolean anim) {
-		if (mAnimationEnabled == anim) return;
-		mAnimationEnabled = anim;
 	}
 
 	public void setData(final List<ParcelableUserList> data, final boolean clear_old) {
@@ -177,15 +142,6 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 		}
 	}
 
-	@Override
-	public void setMaxAnimationPosition(final int position) {
-		mMaxAnimationPosition = position;
-	}
-
-	@Override
-	public void setMenuButtonClickListener(final MenuButtonClickListener listener) {
-		mListener = listener;
-	}
 
 	private static int getItemResource(final boolean compactCards) {
 		return compactCards ? R.layout.card_item_user_list_compact : R.layout.card_item_user_list;

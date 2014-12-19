@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
+import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 
@@ -116,17 +117,51 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
 
     @Override
     public int getTabPosition() {
-        return 0;
+        final Bundle args = getArguments();
+        return args != null ? args.getInt(EXTRA_TAB_POSITION, -1) : -1;
     }
 
     @Override
     public void requestFitSystemWindows() {
         final Activity activity = getActivity();
-        if (!(activity instanceof SystemWindowsInsetsCallback)) return;
-        final SystemWindowsInsetsCallback callback = (SystemWindowsInsetsCallback) activity;
+        final Fragment parentFragment = getParentFragment();
+        final SystemWindowsInsetsCallback callback;
+        if (parentFragment instanceof SystemWindowsInsetsCallback) {
+            callback = (SystemWindowsInsetsCallback) parentFragment;
+        } else if (activity instanceof SystemWindowsInsetsCallback) {
+            callback = (SystemWindowsInsetsCallback) activity;
+        } else {
+            return;
+        }
         final Rect insets = new Rect();
         if (callback.getSystemWindowsInsets(insets)) {
             fitSystemWindows(insets);
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        final Fragment fragment = getParentFragment();
+        if (fragment instanceof SupportFragmentCallback) {
+            ((SupportFragmentCallback) fragment).onDetachFragment(this);
+        }
+        final Activity activity = getActivity();
+        if (activity instanceof SupportFragmentCallback) {
+            ((SupportFragmentCallback) activity).onDetachFragment(this);
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(final boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        final Activity activity = getActivity();
+        final Fragment fragment = getParentFragment();
+        if (fragment instanceof SupportFragmentCallback) {
+            ((SupportFragmentCallback) fragment).onSetUserVisibleHint(this, isVisibleToUser);
+        }
+        if (activity instanceof SupportFragmentCallback) {
+            ((SupportFragmentCallback) activity).onSetUserVisibleHint(this, isVisibleToUser);
         }
     }
 

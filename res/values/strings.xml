@@ -122,11 +122,11 @@
 	<string name="load_item_limit">Load item limit</string>
 	<string name="load_item_limit_summary">Set items limit per load.</string>
 	<string name="load_more_automatically">Load more content automatically</string>
-	<string name="load_more_automatically_summary">Load more content (e.g. photos, maps, statuses) automatically</string>
+	<string name="load_more_automatically_summary">Load more content (e.g. photos, maps, tweets) automatically</string>
 	<string name="quote">Quote</string>
 	<string name="add_rule">Add rule</string>
 	<string name="text_size">Text size</string>
-	<string name="text_size_summary">Text size of statuses.</string>
+	<string name="text_size_summary">Text size of tweets.</string>
 	<string name="cannot_get_location">Can\'t get your location.</string>
 	<string name="drafts">Drafts</string>
 	<string name="description">Description</string>
@@ -158,6 +158,7 @@
 	<string name="save_as">Save as</string>
 	<string name="please_wait">Please wait.</string>
 	<string name="file_saved_to">File saved to <xliff:g id="filename">%s</xliff:g> .</string>
+    <string name="saved_to_gallery">Saved to gallery.</string>
 	<string name="proxy">Proxy</string>
 	<string name="http_proxy">HTTP Proxy</string>
 	<string name="http_proxy_summary">Use HTTP Proxy for all network requests.</string>
@@ -193,9 +194,10 @@
 	<string name="list_members">List members</string>
 	<string name="list_subscribers">List subscribers</string>
 	<string name="type_to_compose">Type to compose</string>
+    <string name="lists">Lists</string>
 	<string name="users_lists">User\'s lists</string>
 	<string name="lists_following_user">Lists following this user</string>
-	<string name="lists_following_me">Lists following me</string>
+	<string name="lists_following_you">Lists following you</string>
 	<string name="item_3_minutes">3 minutes</string>
 	<string name="item_5_minutes">5 minutes</string>
 	<string name="item_10_minutes">10 minutes</string>
@@ -364,7 +366,7 @@
 	<string name="clear_search_history">Clear search history</string>
 	<string name="no_thanks">No, thanks</string>
 	<string name="fast_scroll_thumb">Fast scroll thumb</string>
-	<string name="indicate_my_status">Indicate my tweet</string>
+	<string name="indicate_your_status">Indicate your tweet</string>
 	<string name="default_ringtone">Default ringtone</string>
 	<string name="phishing_link_warning">Phishing link warning</string>
 	<string name="phishing_link_warning_summary">Warn you when are trying to open a possibly phishing link in a direct message.</string>
@@ -381,7 +383,7 @@
 	<string name="quote_protected_status_notice">It\'s not recommended to quote protected tweets.</string>
 	<string name="edit_draft">Edit draft</string>
 	<string name="profile_image">Profile image</string>
-	<string name="my_profile_image">My profile image</string>
+	<string name="your_profile_image">Your profile image</string>
 	<string name="mention_user">Mention <xliff:g id="user">%s</xliff:g></string>
 	<string name="theme_color">Theme color</string>
     <string name="action_bar_color">Action bar color</string>
@@ -647,6 +649,19 @@
     <string name="function">Function</string>
     <string name="replies">Replies</string>
     <string name="profile_banner">Profile banner</string>
+    <string name="profile">Profile</string>
+    <string name="state_blocking">Blocking</string>
+    <string name="load_more">Load more</string>
+    <string name="photo">Photo</string>
+    <string name="gallery">Gallery</string>
+    <string name="remove">Remove</string>
+    <string name="load_media">Load media</string>
+    <string name="profile_text_color">Text color</string>
+    <string name="profile_background_color">Background color</string>
+    <string name="profile_link_color_main_color">Link color (main color)</string>
+    <string name="retweet_quote_confirm_title">Retweet</string>
+    <string name="font">Font</string>
+    <string name="size">Size</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

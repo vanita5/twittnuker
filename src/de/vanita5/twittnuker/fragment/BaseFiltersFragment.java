@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.fragment;
 
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
-
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -50,11 +48,13 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import org.mariotaku.querybuilder.Columns.Column;
+import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
-import org.mariotaku.querybuilder.Where;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.support.BaseSupportListFragment;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
+
+import static de.vanita5.twittnuker.util.Utils.getDisplayName;
 
 public abstract class BaseFiltersFragment extends BaseSupportListFragment implements LoaderManager.LoaderCallbacks<Cursor>,
 		MultiChoiceModeListener {
@@ -86,7 +86,7 @@ public abstract class BaseFiltersFragment extends BaseSupportListFragment implem
 	public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
 		switch (item.getItemId()) {
 			case MENU_DELETE: {
-				final Where where = Where.in(new Column(Filters._ID), new RawItemArray(mListView.getCheckedItemIds()));
+                final Expression where = Expression.in(new Column(Filters._ID), new RawItemArray(mListView.getCheckedItemIds()));
 				mResolver.delete(getContentUri(), where.getSQL(), null);
 				break;
             }

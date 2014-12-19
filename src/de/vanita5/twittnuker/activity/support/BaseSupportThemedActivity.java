@@ -44,12 +44,6 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 			mCurrentThemeBackgroundAlpha, mCurrentActionBarColor;
 
 	@Override
-	public void finish() {
-		super.finish();
-		overrideCloseAnimationIfNeeded();
-	}
-
-	@Override
 	public Resources getDefaultResources() {
 		return super.getResources();
 	}
@@ -65,6 +59,16 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
     }
 
     @Override
+    public int getCurrentThemeBackgroundAlpha() {
+        return mCurrentThemeBackgroundAlpha;
+    }
+
+    @Override
+    public int getCurrentThemeColor() {
+        return mCurrentThemeColor;
+    }
+
+    @Override
 	public String getThemeFontFamily() {
 		return ThemeUtils.getThemeFontFamily(this);
 	}
@@ -72,27 +76,11 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 	@Override
 	public void navigateUpFromSameTask() {
 		NavUtils.navigateUpFromSameTask(this);
-		overrideCloseAnimationIfNeeded();
 	}
-
-	@Override
-	public void overrideCloseAnimationIfNeeded() {
-		if (shouldOverrideActivityAnimation()) {
-			ThemeUtils.overrideActivityCloseAnimation(this);
-		} else {
-			ThemeUtils.overrideNormalActivityCloseAnimation(this);
-		}
-    }
-
 
 	@Override
 	public final void restart() {
 		restartActivity(this);
-	}
-
-	@Override
-	public boolean shouldOverrideActivityAnimation() {
-		return true;
 	}
 
 	@Override
@@ -101,12 +89,8 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 			StrictModeUtils.detectAllVmPolicy();
 			StrictModeUtils.detectAllThreadPolicy();
 		}
-		if (shouldOverrideActivityAnimation()) {
-			ThemeUtils.overrideActivityOpenAnimation(this);
-		}
 		setTheme();
 		super.onCreate(savedInstanceState);
-		setActionBarBackground();
 	}
 
 	@Override
@@ -117,12 +101,12 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
     @Override
     protected void onTitleChanged(CharSequence title, int color) {
         final SpannableStringBuilder builder = new SpannableStringBuilder(title);
-        super.onTitleChanged(title, color);
         final int themeResId = getCurrentThemeResourceId();
         final int themeColor = getThemeColor(), contrastColor = Utils.getContrastYIQ(themeColor, 192);
         if (!ThemeUtils.isDarkTheme(themeResId)) {
             builder.setSpan(new ForegroundColorSpan(contrastColor), 0, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
+        super.onTitleChanged(title, color);
     }
 
     @Override
@@ -134,10 +118,6 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
         return true;
     }
 
-	private final void setActionBarBackground() {
-        ThemeUtils.applyActionBarBackground(getActionBar(), this, mCurrentThemeResource);
-	}
-
 	public int getActionBarColor() {
 		return ThemeUtils.getActionBarColor(this);
 	}
@@ -147,7 +127,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 		mCurrentThemeColor = getThemeColor();
 		mCurrentActionBarColor = getActionBarColor();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
-		ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentThemeColor,
+		ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentActionBarColor,
 				mCurrentThemeBackgroundAlpha);
 		setTheme(mCurrentThemeResource);
         if (shouldSetWindowBackground() && ThemeUtils.isTransparentBackground(mCurrentThemeResource)) {

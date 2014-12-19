@@ -28,7 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mariotaku.jsonserializer.JSONSerializer;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.model.Account;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -135,6 +135,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(CachedUsers.NAME, user.getName());
 		values.put(CachedUsers.SCREEN_NAME, user.getScreenName());
 		values.put(CachedUsers.PROFILE_IMAGE_URL, profile_image_url);
+        values.put(CachedUsers.PROFILE_BANNER_URL, user.getProfileBannerImageUrl());
 		values.put(CachedUsers.CREATED_AT, user.getCreatedAt().getTime());
 		values.put(CachedUsers.IS_PROTECTED, user.isProtected());
 		values.put(CachedUsers.IS_VERIFIED, user.isVerified());
@@ -143,15 +144,18 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(CachedUsers.FOLLOWERS_COUNT, user.getFollowersCount());
 		values.put(CachedUsers.FRIENDS_COUNT, user.getFriendsCount());
 		values.put(CachedUsers.STATUSES_COUNT, user.getStatusesCount());
+        values.put(CachedUsers.LISTED_COUNT, user.getListedCount());
 		values.put(CachedUsers.LOCATION, user.getLocation());
 		values.put(CachedUsers.DESCRIPTION_PLAIN, user.getDescription());
 		values.put(CachedUsers.DESCRIPTION_HTML, Utils.formatUserDescription(user));
 		values.put(CachedUsers.DESCRIPTION_EXPANDED, Utils.formatExpandedUserDescription(user));
 		values.put(CachedUsers.URL, url);
-		values.put(CachedUsers.URL_EXPANDED,
-				url != null && urls != null && urls.length > 0 ? ParseUtils.parseString(urls[0].getExpandedURL())
-						: null);
-		values.put(CachedUsers.PROFILE_BANNER_URL, user.getProfileBannerImageUrl());
+        if (url != null && urls != null && urls.length > 0) {
+            values.put(CachedUsers.URL_EXPANDED, ParseUtils.parseString(urls[0].getExpandedURL()));
+        }
+        values.put(CachedUsers.BACKGROUND_COLOR, ParseUtils.parseColor("#" + user.getProfileBackgroundColor(), 0));
+        values.put(CachedUsers.LINK_COLOR, ParseUtils.parseColor("#" + user.getProfileLinkColor(), 0));
+        values.put(CachedUsers.TEXT_COLOR, ParseUtils.parseColor("#" + user.getProfileTextColor(), 0));
 		return values;
 	}
 
@@ -340,7 +344,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 	}
 
 	public static ContentValues makeStatusDraftContentValues(final ParcelableStatusUpdate status) {
-        return makeStatusDraftContentValues(status, Account.getAccountIds(status.accounts));
+        return makeStatusDraftContentValues(status, ParcelableAccount.getAccountIds(status.accounts));
 	}
 
 	public static ContentValues makeStatusDraftContentValues(final ParcelableStatusUpdate status,
@@ -353,8 +357,8 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Drafts.LOCATION, ParcelableLocation.toString(status.location));
 		values.put(Drafts.IS_POSSIBLY_SENSITIVE, status.is_possibly_sensitive);
 		values.put(Drafts.TIMESTAMP, System.currentTimeMillis());
-		if (status.medias != null) {
-			values.put(Drafts.MEDIA, JSONSerializer.toJSONArrayString(status.medias));
+		if (status.media != null) {
+			values.put(Drafts.MEDIA, JSONSerializer.toJSONArrayString(status.media));
 		}
 		return values;
 	}

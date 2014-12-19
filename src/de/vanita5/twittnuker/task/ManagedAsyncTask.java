@@ -23,12 +23,15 @@
 package de.vanita5.twittnuker.task;
 
 import android.content.Context;
-import android.content.Intent;
+
+import com.squareup.otto.Bus;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
+import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
-public abstract class ManagedAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> implements
+public abstract class ManagedAsyncTask<Params, Progress, Result> extends TwidereAsyncTask<Params, Progress, Result> implements
 		Constants {
 
 	private final AsyncTaskManager manager;
@@ -63,19 +66,22 @@ public abstract class ManagedAsyncTask<Params, Progress, Result> extends AsyncTa
 	@Override
 	protected void onCancelled() {
 		super.onCancelled();
-		context.sendBroadcast(new Intent(BROADCAST_TASK_STATE_CHANGED));
+        final Bus bus = TwittnukerApplication.getInstance(context).getMessageBus();
+        bus.post(new TaskStateChangedEvent());
 	}
 
 	@Override
 	protected void onPostExecute(final Result result) {
 		super.onPostExecute(result);
-		context.sendBroadcast(new Intent(BROADCAST_TASK_STATE_CHANGED));
+        final Bus bus = TwittnukerApplication.getInstance(context).getMessageBus();
+        bus.post(new TaskStateChangedEvent());
 	}
 
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-		context.sendBroadcast(new Intent(BROADCAST_TASK_STATE_CHANGED));
+        final Bus bus = TwittnukerApplication.getInstance(context).getMessageBus();
+        bus.post(new TaskStateChangedEvent());
 	}
 
 }

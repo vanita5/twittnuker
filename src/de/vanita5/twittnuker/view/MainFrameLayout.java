@@ -3,9 +3,8 @@ package de.vanita5.twittnuker.view;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
 
-public class MainFrameLayout extends FrameLayout {
+public class MainFrameLayout extends TintedStatusFrameLayout {
 	public MainFrameLayout(Context context) {
 		super(context);
 	}
@@ -19,14 +18,10 @@ public class MainFrameLayout extends FrameLayout {
 	}
 
 	@Override
-	protected boolean fitSystemWindows(Rect insets) {
-		final Context context = getContext();
-		if (context instanceof FitSystemWindowsCallback) {
-			((FitSystemWindowsCallback) context).fitSystemWindows(insets);
-		}
-		return super.fitSystemWindows(insets);
+    public void setStatusBarHeight(int height) {
+        setPadding(0, height, 0, 0);
+        super.setStatusBarHeight(height);
 	}
-
 
 	public static interface FitSystemWindowsCallback {
 		void fitSystemWindows(Rect insets);

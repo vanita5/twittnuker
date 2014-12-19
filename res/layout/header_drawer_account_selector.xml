@@ -5,70 +5,84 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/profile_banner"
+        android:id="@+id/account_profile_banner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignBottom="@id/profile_container"
         android:layout_alignTop="@id/profile_container"
-        android:alpha="0.33"
+        android:alpha="0.5"
         android:contentDescription="@string/profile_banner"
-        android:scaleType="centerCrop"
-        android:src="@drawable/twittnuker_feature_graphic"/>
+        android:scaleType="centerCrop"/>
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/profile_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/element_spacing_normal"
-        android:paddingLeft="@dimen/element_spacing_large"
-        android:paddingRight="@dimen/element_spacing_large"
-        android:paddingTop="@dimen/element_spacing_normal">
+        android:foreground="?android:selectableItemBackground">
 
-        <de.vanita5.twittnuker.view.CircularImageView
-            android:id="@+id/profile_image"
-            android:layout_width="@dimen/icon_size_profile_image_dashboard_current"
-            android:layout_height="@dimen/icon_size_profile_image_dashboard_current"
-            android:layout_marginBottom="@dimen/element_spacing_large"
-            android:layout_marginTop="@dimen/element_spacing_large"
-            android:src="@drawable/ic_action_twittnuker"
-            android:layout_alignParentRight="false"
-            android:layout_alignParentLeft="false"
-            android:layout_alignWithParentIfMissing="false"
-            android:layout_centerHorizontal="true"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/account_selector"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/profile_image"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/profile_image"
-            android:layout_toRightOf="@+id/profile_image"/>
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/profile_image"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical">
+            android:paddingBottom="@dimen/element_spacing_normal"
+            android:paddingLeft="@dimen/element_spacing_large"
+            android:paddingRight="@dimen/element_spacing_large"
+            android:paddingTop="@dimen/element_spacing_normal">
 
-            <TextView
-                android:id="@+id/name"
+            <de.vanita5.twittnuker.view.ProfileImageView
+                android:id="@+id/profile_image"
+                android:layout_width="@dimen/icon_size_profile_image_dashboard_current"
+                android:layout_height="@dimen/icon_size_profile_image_dashboard_current"
+                style="?profileImageStyle"
+                android:layout_marginBottom="@dimen/element_spacing_mlarge"
+                android:layout_marginTop="@dimen/element_spacing_mlarge"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/other_accounts_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:textColor="?android:textColorPrimary"
-                android:textStyle="bold"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_alignBottom="@id/profile_image"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/profile_image"
+                android:layout_marginBottom="@dimen/element_spacing_large"
+                android:layout_toRightOf="@id/profile_image"/>
 
-            <TextView
-                android:id="@+id/screen_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:layout_gravity="center_horizontal"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@id/profile_image"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        </LinearLayout>
-    </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        android:textColor="?android:textColorPrimary"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/screen_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceSmall"/>
+
+                </LinearLayout>
+
+                <Switch
+                    android:id="@+id/toggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </FrameLayout>
 
 </RelativeLayout>

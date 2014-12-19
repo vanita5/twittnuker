@@ -39,19 +39,20 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
-import static android.text.TextUtils.isEmpty;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
-import de.vanita5.twittnuker.task.AsyncTask;
+import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.util.net.TwidereHttpClientFactory;
-
 import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.io.StringReader;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
@@ -60,9 +61,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.io.IOException;
-import java.io.StringReader;
-
+import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -123,9 +122,10 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 	}
 
 	private void getRequestToken() {
-		if (mRequestToken != null || mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING) return;
+        if (mRequestToken != null || mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING)
+            return;
 		mTask = new GetRequestTokenTask(this);
-		mTask.execute();
+        mTask.executeTask();
 	}
 
 	private void loadUrl(final String url) {
@@ -210,7 +210,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 
 	}
 
-	static class GetRequestTokenTask extends AsyncTask<Void, Void, RequestToken> {
+    static class GetRequestTokenTask extends TwidereAsyncTask<Void, Void, RequestToken> {
 
 		private final String mConsumerKey, mConsumerSecret;
 		private final TwittnukerApplication mApplication;
@@ -233,7 +233,8 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 			final boolean ignore_ssl_error = mPreferences.getBoolean(KEY_IGNORE_SSL_ERROR, false);
 			final boolean enable_proxy = mPreferences.getBoolean(KEY_ENABLE_PROXY, false);
 			final String consumerKey = getNonEmptyString(mPreferences, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
-			final String consumerSecret = getNonEmptyString(mPreferences, KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
+			final String consumerSecret = getNonEmptyString(mPreferences, KEY_CONSUMER_SECRET,
+					TWITTER_CONSUMER_SECRET_2);
 			cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(mApplication));
 			cb.setHttpClientFactory(new TwidereHttpClientFactory(mApplication));
             if (Utils.isOfficialConsumerKeySecret(mActivity, consumerKey, consumerSecret)) {

@@ -22,10 +22,11 @@
 
 package de.vanita5.twittnuker.util;
 
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.v4.util.LongSparseArray;
+import android.util.Log;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ListResponse;
@@ -34,18 +35,20 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.provider.TweetStore.Notifications;
 import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Set;
+
 import twitter4j.DirectMessage;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 
 public class TwitterWrapper implements Constants {
 
@@ -87,18 +90,54 @@ public class TwitterWrapper implements Constants {
 		return result;
 	}
 
-	public static int removeUnreadCounts(final Context context, final int position, final Map<Long, Set<Long>> counts) {
+    public static int removeUnreadCounts(final Context context, final int position, final LongSparseArray<Set<Long>> counts) {
 		if (context == null || position < 0 || counts == null) return 0;
 		int result = 0;
-		for (final Entry<Long, Set<Long>> entry : counts.entrySet()) {
+        for (int i = 0, j = counts.size(); i < j; i++) {
+            final long key = counts.keyAt(i);
+            final Set<Long> value = counts.valueAt(i);
 			final Uri.Builder builder = UnreadCounts.CONTENT_URI.buildUpon();
 			builder.appendPath(String.valueOf(position));
-			builder.appendPath(String.valueOf(entry.getKey()));
-			builder.appendPath(ListUtils.toString(new ArrayList<Long>(entry.getValue()), ',', false));
+            builder.appendPath(String.valueOf(key));
+            builder.appendPath(CollectionUtils.toString(value, ',', false));
 			result += context.getContentResolver().delete(builder.build(), null, null);
 		}
 		return result;
 	}
+
+    @NonNull
+    public static User showUser(final Twitter twitter, final long id, final String screenName) throws TwitterException {
+        if (id != -1)
+            return twitter.showUser(id);
+        else if (screenName != null) return twitter.showUser(screenName);
+        throw new IllegalArgumentException();
+    }
+
+    public static User showUserAlternative(final Twitter twitter, final long id, final String screenName)
+            throws TwitterException {
+        final String searchScreenName;
+        if (screenName != null) {
+            searchScreenName = screenName;
+        } else if (id != -1) {
+            searchScreenName = twitter.showFriendship(twitter.getId(), id).getTargetUserScreenName();
+        } else
+            throw new IllegalArgumentException();
+        for (final User user : twitter.searchUsers(searchScreenName, 1)) {
+            if (user.getId() == id || searchScreenName.equals(user.getScreenName())) return user;
+        }
+        return null;
+    }
+
+    public static User tryShowUser(final Twitter twitter, final long id, final String screenName)
+            throws TwitterException {
+        try {
+            return showUser(twitter, id, screenName);
+        } catch (final TwitterException e) {
+            if (e.getCause() instanceof IOException)
+                throw e;
+        }
+        return showUserAlternative(twitter, id, screenName);
+    }
 
 	public static SingleResponse<ParcelableUser> updateProfile(final Context context, final long account_id,
 			final String name, final String url, final String location, final String description) {
@@ -106,54 +145,60 @@ public class TwitterWrapper implements Constants {
 		if (twitter != null) {
 			try {
 				final User user = twitter.updateProfile(name, url, location, description);
-				return new SingleResponse<ParcelableUser>(new ParcelableUser(user, account_id), null);
+                return new SingleResponse<>(new ParcelableUser(user, account_id), null);
 			} catch (final TwitterException e) {
-				return new SingleResponse<ParcelableUser>(null, e);
+                return new SingleResponse<>(null, e);
 			}
 		}
 		return SingleResponse.getInstance();
 	}
 
-	public static SingleResponse<Boolean> updateProfileBannerImage(final Context context, final long account_id,
-			final Uri image_uri, final boolean delete_image) {
-		final Twitter twitter = getTwitterInstance(context, account_id, false);
-		if (twitter != null && image_uri != null && "file".equals(image_uri.getScheme())) {
+    public static void updateProfileBannerImage(final Context context, final long accountId,
+                                                final Uri imageUri, final boolean deleteImage)
+                                                throws FileNotFoundException, TwitterException {
+        final Twitter twitter = getTwitterInstance(context, accountId, false);
+        updateProfileBannerImage(context, twitter, imageUri, deleteImage);
+    }
+
+    public static void updateProfileBannerImage(final Context context, final Twitter twitter,
+                                                final Uri imageUri, final boolean deleteImage)
+            throws FileNotFoundException, TwitterException {
+        InputStream is;
 			try {
-				final File file = new File(image_uri.getPath());
-				twitter.updateProfileBannerImage(file);
-				// Wait for 5 seconds, see
-				// https://dev.twitter.com/docs/api/1.1/post/account/update_profile_image
-				Thread.sleep(5000L);
-				if (delete_image) {
-					file.delete();
+            is = context.getContentResolver().openInputStream(imageUri);
+            twitter.updateProfileBannerImage(is);
+        } finally {
+            if (deleteImage && "file".equals(imageUri.getScheme())) {
+                final File file = new File(imageUri.getPath());
+                if (!file.delete()) {
+                    Log.w(LOGTAG, String.format("Unable to delete %s", file));
 				}
-				return new SingleResponse<Boolean>(true, null);
-			} catch (final TwitterException e) {
-				return new SingleResponse<Boolean>(false, e);
-			} catch (final InterruptedException e) {
-				e.printStackTrace();
 			}
 		}
-		return new SingleResponse<Boolean>(false, null);
 	}
 
-	public static SingleResponse<ParcelableUser> updateProfileImage(final Context context, final long account_id,
-			final Uri image_uri, final boolean delete_image) {
-		final Twitter twitter = getTwitterInstance(context, account_id, false);
-		if (twitter != null && image_uri != null && "file".equals(image_uri.getScheme())) {
-			try {
-				final User user = twitter.updateProfileImage(new File(image_uri.getPath()));
-				// Wait for 5 seconds, see
-				// https://dev.twitter.com/docs/api/1.1/post/account/update_profile_image
-				Thread.sleep(5000L);
-				return new SingleResponse<ParcelableUser>(new ParcelableUser(user, account_id), null);
-			} catch (final TwitterException e) {
-				return new SingleResponse<ParcelableUser>(null, e);
-			} catch (final InterruptedException e) {
-				return new SingleResponse<ParcelableUser>(null, e);
-			}
-		}
-		return SingleResponse.getInstance();
+    public static User updateProfileImage(final Context context, final Twitter twitter,
+                                          final Uri imageUri, final boolean deleteImage)
+                                          throws FileNotFoundException, TwitterException {
+        InputStream is;
+        try {
+            is = context.getContentResolver().openInputStream(imageUri);
+            return twitter.updateProfileImage(is);
+        } finally {
+            if (deleteImage && "file".equals(imageUri.getScheme())) {
+                final File file = new File(imageUri.getPath());
+                if (!file.delete()) {
+                    Log.w(LOGTAG, String.format("Unable to delete %s", file));
+                }
+            }
+        }
+    }
+
+    public static User updateProfileImage(final Context context, final long accountId,
+                                          final Uri imageUri, final boolean deleteImage)
+            throws FileNotFoundException, TwitterException {
+        final Twitter twitter = getTwitterInstance(context, accountId, true);
+        return updateProfileImage(context, twitter, imageUri, deleteImage);
 	}
 
 	public static final class MessageListResponse extends TwitterListResponse<DirectMessage> {

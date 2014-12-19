@@ -22,10 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
-import static de.vanita5.twittnuker.util.Utils.getAccountColor;
-import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
-
 import android.content.Context;
 import android.text.Html;
 import android.view.View;
@@ -41,6 +37,10 @@ import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.view.holder.ActivityListViewHolder;
 
+import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
+import static de.vanita5.twittnuker.util.Utils.getAccountColor;
+import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
+
 public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivitiesAdapter {
 
 	private final ImageLoadingHandler mImageLoadingHandler;
@@ -51,8 +51,8 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 	private boolean mDisplayImagePreview;
 	private boolean mDisplaySensitiveContents;
 
-	public ParcelableActivitiesAboutMeAdapter(final Context context, final boolean compactCards, final boolean plainList) {
-		super(context, compactCards, plainList);
+    public ParcelableActivitiesAboutMeAdapter(final Context context, final boolean compactCards) {
+        super(context, compactCards);
 		mImageLoadingHandler = new ImageLoadingHandler();
 	}
 
@@ -240,7 +240,8 @@ public class ParcelableActivitiesAboutMeAdapter extends BaseParcelableActivities
 			final boolean isMyStatus = status.account_id == status.user_id;
             final boolean hasMedia = status.first_media != null;
 			holder.setUserColor(getUserColor(context, status.user_id));
-			holder.setHighlightColor(getCardHighlightColor(status, false, !mFavoritesHighlightDisabled));
+			holder.setHighlightColor(getCardHighlightColor(context.getResources(),
+					status, false, !mFavoritesHighlightDisabled));
 			holder.setTextSize(getTextSize());
 
 			holder.setIsMyStatus(isMyStatus && !mIndicateMyStatusDisabled);

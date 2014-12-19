@@ -28,7 +28,6 @@ import android.text.TextUtils;
 import android.util.Xml;
 
 import de.vanita5.twittnuker.Constants;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -68,7 +67,7 @@ public class OAuthPasswordAuthenticator implements Constants {
 		}
 		try {
             final String oauthToken = requestToken.getToken();
-            final String authorizationUrl = requestToken.getAuthorizationURL().toString();
+			final String authorizationUrl = requestToken.getAuthorizationURL();
             final String authenticityToken = readAuthenticityTokenFromHtml(client.get(authorizationUrl,
                     authorizationUrl, null, null).asReader());
             if (authenticityToken == null) throw new AuthenticityTokenException();
@@ -78,18 +77,12 @@ public class OAuthPasswordAuthenticator implements Constants {
             params[1] = new HttpParameter("oauth_token", oauthToken);
 			params[2] = new HttpParameter("session[username_or_email]", username);
 			params[3] = new HttpParameter("session[password]", password);
-            final String oAuthAuthorizationUrl = conf.getOAuthAuthorizationURL().toString();
+			final String oAuthAuthorizationUrl = conf.getOAuthAuthorizationURL();
             final String oauthPin = readOAuthPINFromHtml(client.post(oAuthAuthorizationUrl, oAuthAuthorizationUrl,
                     params).asReader());
             if (isEmpty(oauthPin)) throw new WrongUserPassException();
             return twitter.getOAuthAccessToken(requestToken, oauthPin);
-		} catch (final IOException e) {
-			throw new AuthenticationException(e);
-		} catch (final TwitterException e) {
-			throw new AuthenticationException(e);
-		} catch (final NullPointerException e) {
-			throw new AuthenticationException(e);
-		} catch (final XmlPullParserException e) {
+		} catch (final IOException | TwitterException | NullPointerException | XmlPullParserException e) {
 			throw new AuthenticationException(e);
 		}
 	}

@@ -182,7 +182,7 @@
   <string name="type_to_compose">Gépeljen új létrehozásához</string>
   <string name="users_lists">Felhasználó listája</string>
   <string name="lists_following_user">Ezt a fehasználót követő listák</string>
-  <string name="lists_following_me">Engem követő listák</string>
+  <string name="lists_following_you">Engem követő listák</string>
   <string name="item_3_minutes">3 perc</string>
   <string name="item_5_minutes">5 perc</string>
   <string name="item_10_minutes">10 perc</string>

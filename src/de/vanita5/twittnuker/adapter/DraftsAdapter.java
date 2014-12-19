@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.Utils.getAccountColors;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Typeface;
@@ -43,6 +41,8 @@ import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.DraftViewHolder;
 
+import static de.vanita5.twittnuker.util.Utils.getAccountColors;
+
 public class DraftsAdapter extends SimpleCursorAdapter {
 
 	private final ImageLoaderWrapper mImageLoader;
@@ -54,7 +54,7 @@ public class DraftsAdapter extends SimpleCursorAdapter {
 	public DraftsAdapter(final Context context) {
 		super(context, R.layout.card_item_draft, null, new String[0], new int[0], 0);
 		mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
-		mImageLoadingHandler = new ImageLoadingHandler(R.id.image_preview_progress);
+        mImageLoadingHandler = new ImageLoadingHandler(R.id.media_preview_progress);
 	}
 
 	@Override
@@ -62,12 +62,12 @@ public class DraftsAdapter extends SimpleCursorAdapter {
 		final DraftViewHolder holder = (DraftViewHolder) view.getTag();
 		final long[] accountIds = ArrayUtils.parseLongArray(cursor.getString(mIndices.account_ids), ',');
 		final String text = cursor.getString(mIndices.text);
-		final ParcelableMediaUpdate[] medias = ParcelableMediaUpdate.fromJSONString(cursor.getString(mIndices.medias));
+        final ParcelableMediaUpdate[] media = ParcelableMediaUpdate.fromJSONString(cursor.getString(mIndices.media));
 		final long timestamp = cursor.getLong(mIndices.timestamp);
 		final int actionType = cursor.getInt(mIndices.action_type);
 		final String actionName = getActionName(context, actionType);
 		if (actionType == Drafts.ACTION_UPDATE_STATUS) {
-			final String mediaUri = medias != null && medias.length > 0 ? medias[0].uri : null;
+            final String mediaUri = media != null && media.length > 0 ? media[0].uri : null;
 			holder.image_preview_container.setVisibility(TextUtils.isEmpty(mediaUri) ? View.GONE : View.VISIBLE);
 			if (mediaUri != null && !mediaUri.equals(mImageLoadingHandler.getLoadingUri(holder.image_preview))) {
 				mImageLoader.displayPreviewImage(holder.image_preview, mediaUri, mImageLoadingHandler);
@@ -76,7 +76,6 @@ public class DraftsAdapter extends SimpleCursorAdapter {
 			}
 		} else {
 			mImageLoader.cancelDisplayTask(holder.image_preview);
-
 			holder.image_preview_container.setVisibility(View.GONE);
 		}
 		holder.content.drawEnd(getAccountColors(context, accountIds));

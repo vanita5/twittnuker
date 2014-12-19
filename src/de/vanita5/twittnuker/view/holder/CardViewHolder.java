@@ -25,18 +25,15 @@ package de.vanita5.twittnuker.view.holder;
 import android.view.View;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.animation.CardItemAnimation;
-import de.vanita5.twittnuker.view.iface.ICardItemView;
+import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
-public class CardViewHolder extends ViewHolder {
+public class CardViewHolder extends ListViewHolder {
 
-	public final CardItemAnimation item_animation;
-	public final ICardItemView content;
+    public final IColorLabelView content;
 
 	public CardViewHolder(final View view) {
 		super(view);
-		content = (ICardItemView) view.findViewById(R.id.content);
-		item_animation = new CardItemAnimation();
+        content = (IColorLabelView) view.findViewById(R.id.content);
 	}
 
 }
