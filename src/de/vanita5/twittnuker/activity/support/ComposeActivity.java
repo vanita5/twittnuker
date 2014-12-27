@@ -81,6 +81,7 @@ import com.nostra13.universalimageloader.utils.IoUtils;
 import com.twitter.Extractor;
 
 import org.mariotaku.dynamicgridview.DraggableArrayAdapter;
+import org.mariotaku.menucomponent.internal.menu.MenuUtils;
 import org.mariotaku.menucomponent.internal.widget.IListPopupWindow;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.BaseArrayAdapter;
@@ -109,6 +110,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.view.ComposeSelectAccountButton;
 import de.vanita5.twittnuker.view.StatusTextCountView;
 import de.vanita5.twittnuker.view.TwidereMenuBar;
@@ -128,23 +130,18 @@ import java.util.TreeSet;
 
 import static android.os.Environment.getExternalStorageState;
 import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.model.ParcelableLocation.isValidLocation;
 import static de.vanita5.twittnuker.util.ParseUtils.parseString;
 import static de.vanita5.twittnuker.util.ThemeUtils.getActionBarBackground;
 import static de.vanita5.twittnuker.util.ThemeUtils.getComposeThemeResource;
 import static de.vanita5.twittnuker.util.ThemeUtils.getWindowContentOverlayForCompose;
-import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.copyStream;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
-import static de.vanita5.twittnuker.util.Utils.getCardHighlightColor;
 import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
 import static de.vanita5.twittnuker.util.Utils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getImageUploadStatus;
 import static de.vanita5.twittnuker.util.Utils.getQuoteStatus;
 import static de.vanita5.twittnuker.util.Utils.getShareStatus;
-import static de.vanita5.twittnuker.util.Utils.getStatusTypeIconRes;
-import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
@@ -906,12 +903,15 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
         final MenuItem itemAttachLocation = menu.findItem(MENU_ADD_LOCATION);
         if (itemAttachLocation != null) {
             final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
+            final int menuHighlight = ThemeUtils.getUserAccentColor(this);
             if (attachLocation && getLocation()) {
                 itemAttachLocation.setChecked(true);
+                MenuUtils.setMenuInfo(itemAttachLocation, new TwidereMenuInfo(true, menuHighlight));
             } else {
                 setProgressVisibility(false);
                 mPreferences.edit().putBoolean(KEY_ATTACH_LOCATION, false).apply();
                 itemAttachLocation.setChecked(false);
+                MenuUtils.setMenuInfo(itemAttachLocation, new TwidereMenuInfo(false, menuHighlight));
             }
         }
         final MenuItem viewItem = menu.findItem(MENU_VIEW);

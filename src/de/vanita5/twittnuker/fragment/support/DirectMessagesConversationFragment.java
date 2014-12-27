@@ -37,6 +37,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -63,6 +64,10 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.mariotaku.menucomponent.widget.PopupMenu;
+import org.mariotaku.querybuilder.Columns.Column;
+import org.mariotaku.querybuilder.Expression;
+import org.mariotaku.querybuilder.OrderBy;
+import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ImagePickerActivity;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
@@ -72,9 +77,9 @@ import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListe
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.loader.support.UserSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.ParcelableUser.CachedIndices;
 import de.vanita5.twittnuker.provider.TweetStore;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
@@ -89,6 +94,8 @@ import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.view.StatusTextCountView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -101,6 +108,8 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 		OnItemSelectedListener, OnEditorActionListener, MenuButtonClickListener {
 
     private static final int LOADER_ID_SEARCH_USERS = 1;
+
+    private static final String EXTRA_FROM_CACHE = "from_cache";
 
 	private TwidereValidator mValidator;
 	private AsyncTwitterWrapper mTwitterWrapper;
@@ -131,7 +140,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 	private DirectMessagesConversationAdapter mAdapter;
     private SimpleParcelableUsersAdapter mUsersSearchAdapter;
 
-    private ParcelableCredentials mAccount;
+    private ParcelableAccount mAccount;
     private ParcelableUser mRecipient;
 
     private ImageLoaderWrapper mImageLoader;
@@ -144,7 +153,8 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
             mUsersSearchProgress.setVisibility(View.VISIBLE);
             final long accountId = args.getLong(EXTRA_ACCOUNT_ID);
             final String query = args.getString(EXTRA_QUERY);
-            return new UserSearchLoader(getActivity(), accountId, query, 0, null);
+            final boolean fromCache = args.getBoolean(EXTRA_FROM_CACHE);
+            return new MyUserSearchLoader(getActivity(), accountId, query, fromCache);
         }
 
         @Override
@@ -190,12 +200,29 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
         mAccountSpinner = (Spinner) actionBarView.findViewById(R.id.account_spinner);
         mUserQuery = (EditText) actionBarView.findViewById(R.id.user_query);
         mQueryButton = actionBarView.findViewById(R.id.query_button);
-        final List<ParcelableCredentials> accounts = ParcelableCredentials.getCredentialsList(activity, false);
+        final List<ParcelableAccount> accounts = ParcelableAccount.getAccountsList(activity, false);
         final AccountsSpinnerAdapter accountsSpinnerAdapter = new AccountsSpinnerAdapter(actionBar.getThemedContext(), R.layout.spinner_item_account_icon);
         accountsSpinnerAdapter.setDropDownViewResource(R.layout.list_item_user);
         accountsSpinnerAdapter.addAll(accounts);
         mAccountSpinner.setAdapter(accountsSpinnerAdapter);
         mAccountSpinner.setOnItemSelectedListener(this);
+        mUserQuery.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				final ParcelableAccount account = (ParcelableAccount) mAccountSpinner.getSelectedItem();
+				searchUsers(account.account_id, ParseUtils.parseString(s), true);
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+
+			}
+		});
         mQueryButton.setOnClickListener(this);
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mMessageDrafts = getSharedPreferences(MESSAGE_DRAFTS_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -216,7 +243,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
         mUsersSearchList.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final ParcelableCredentials account = (ParcelableCredentials) mAccountSpinner.getSelectedItem();
+                final ParcelableAccount account = (ParcelableAccount) mAccountSpinner.getSelectedItem();
                 showConversation(account, mUsersSearchAdapter.getItem(position));
                 updateProfileImage();
             }
@@ -232,14 +259,14 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 		mAddImageButton.setOnClickListener(this);
 		mSendButton.setEnabled(false);
 		if (savedInstanceState != null) {
-            final ParcelableCredentials account = savedInstanceState.getParcelable(EXTRA_ACCOUNT);
+            final ParcelableAccount account = savedInstanceState.getParcelable(EXTRA_ACCOUNT);
             final ParcelableUser recipient = savedInstanceState.getParcelable(EXTRA_USER);
             showConversation(account, recipient);
 			mEditText.setText(savedInstanceState.getString(EXTRA_TEXT));
 			mImageUri = savedInstanceState.getString(EXTRA_IMAGE_URI);
 		} else {
 			final Bundle args = getArguments();
-            final ParcelableCredentials account;
+            final ParcelableAccount account;
             final ParcelableUser recipient;
             if (args != null) {
                 if (args.containsKey(EXTRA_ACCOUNT)) {
@@ -250,7 +277,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
                     final long userId = args.getLong(EXTRA_RECIPIENT_ID, -1);
                     final int accountPos = accountsSpinnerAdapter.findItemPosition(accountId);
                     account = accountPos < 0 ? ParcelableAccount.getCredentials(activity, accountId)
-                            : (ParcelableCredentials) accountsSpinnerAdapter.getItem(accountPos);
+                            : accountsSpinnerAdapter.getItem(accountPos);
                     recipient = Utils.getUserForConversation(activity, accountId, userId);
                 } else {
                     account = null;
@@ -263,6 +290,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
                 }
             }
         }
+        mEditText.setSelection(mEditText.length());
         final boolean isValid = mAccount != null && mRecipient != null;
 		mConversationContainer.setVisibility(isValid ? View.VISIBLE : View.GONE);
 		mRecipientSelectorContainer.setVisibility(isValid ? View.GONE : View.VISIBLE);
@@ -357,7 +385,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
             }
             case R.id.query_button: {
                 final ParcelableAccount account = (ParcelableAccount) mAccountSpinner.getSelectedItem();
-                searchUsers(account.account_id, ParseUtils.parseString(mUserQuery.getText()));
+                searchUsers(account.account_id, ParseUtils.parseString(mUserQuery.getText()), false);
                 break;
             }
         }
@@ -365,10 +393,11 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 
     private boolean mSearchUsersLoaderInitialized;
 
-    private void searchUsers(long accountId, String query) {
+    private void searchUsers(long accountId, String query, boolean fromCache) {
         final Bundle args = new Bundle();
         args.putLong(EXTRA_ACCOUNT_ID, accountId);
         args.putString(EXTRA_QUERY, query);
+        args.putBoolean(EXTRA_FROM_CACHE, fromCache);
         final LoaderManager lm = getLoaderManager();
         if (mSearchUsersLoaderInitialized) {
             lm.restartLoader(LOADER_ID_SEARCH_USERS, args, mSearchLoadersCallback);
@@ -419,7 +448,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 
 	@Override
 	public void onItemSelected(final AdapterView<?> parent, final View view, final int pos, final long id) {
-        final ParcelableCredentials account = (ParcelableCredentials) mAccountSpinner.getSelectedItem();
+        final ParcelableAccount account = (ParcelableAccount) mAccountSpinner.getSelectedItem();
 		if (account != null) {
             mAccount = account;
             updateProfileImage();
@@ -494,7 +523,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 //    }
 //
 //    @Override
-//    public void onRefreshFromStart() {
+//    public void onRefresh() {
 //        loadMoreMessages();
 //    }
 
@@ -539,7 +568,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 			mPopupMenu.dismiss();
 		}
 
-        final ParcelableCredentials account = mAccount;
+        final ParcelableAccount account = mAccount;
         final ParcelableUser recipient = mRecipient;
         if (account != null && recipient != null) {
             final String key = getDraftsTextKey(account.account_id, recipient.id);
@@ -580,7 +609,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 //        return true;
 //    }
 
-    public void showConversation(final ParcelableCredentials account, final ParcelableUser recipient) {
+    public void showConversation(final ParcelableAccount account, final ParcelableUser recipient) {
         mAccount = account;
         mRecipient = recipient;
         if (account == null || recipient == null) return;
@@ -646,7 +675,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 //    }
 
 	private void sendDirectMessage() {
-        final ParcelableCredentials account = mAccount;
+        final ParcelableAccount account = mAccount;
         final ParcelableUser recipient = mRecipient;
         if (mAccount == null || mRecipient == null) return;
         final String message = mEditText.getText().toString();
@@ -761,6 +790,49 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 
         private void bindUser(View view, Cursor cursor) {
 
+        }
+    }
+
+    private static class MyUserSearchLoader extends UserSearchLoader {
+        private final boolean mFromCache;
+
+        public MyUserSearchLoader(Context context, long accountId, String query, boolean fromCache) {
+            super(context, accountId, query, 0, null);
+            mFromCache = fromCache;
+        }
+
+        @Override
+        public List<ParcelableUser> loadInBackground() {
+            final String query = getQuery();
+            if (TextUtils.isEmpty(query)) return Collections.emptyList();
+            if (mFromCache) {
+                final Context context = getContext();
+                final ArrayList<ParcelableUser> cachedList = new ArrayList<>();
+                final String queryEscaped = query.replace("_", "^_");
+                final Expression selection;
+                final String[] selectionArgs;
+                if (queryEscaped != null) {
+                    selection = Expression.or(Expression.likeRaw(new Column(CachedUsers.SCREEN_NAME), "?||'%'", "^"),
+                            Expression.likeRaw(new Column(CachedUsers.NAME), "?||'%'", "^"));
+                    selectionArgs = new String[]{queryEscaped, queryEscaped};
+                } else {
+                    selection = null;
+                    selectionArgs = null;
+                }
+                final OrderBy orderBy = new OrderBy(CachedUsers.SCREEN_NAME, CachedUsers.NAME);
+                final Cursor c = context.getContentResolver().query(CachedUsers.CONTENT_URI,
+                        CachedUsers.BASIC_COLUMNS, selection != null ? selection.getSQL() : null,
+                        selectionArgs, orderBy.getSQL());
+                final CachedIndices i = new CachedIndices(c);
+                c.moveToFirst();
+                while (!c.isAfterLast()) {
+                    cachedList.add(new ParcelableUser(c, i, -1));
+                    c.moveToNext();
+                }
+                c.close();
+                return cachedList;
+            }
+            return super.loadInBackground();
         }
     }
 }

@@ -70,11 +70,6 @@ public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapt
 	}
 
 	@Override
-	public final int getLinkHighlightColor() {
-		return mLinkHighlightColor;
-	}
-
-	@Override
 	public final int getLinkHighlightOption() {
 		return mLinkHighlightOption;
 	}
@@ -119,14 +114,6 @@ public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapt
 	public final void setDisplayProfileImage(final boolean display) {
 		if (display == mDisplayProfileImage) return;
 		mDisplayProfileImage = display;
-		notifyDataSetChanged();
-	}
-
-	@Override
-	public final void setLinkHighlightColor(final int color) {
-		if (color == mLinkHighlightColor) return;
-		mLinkHighlightColor = color;
-		mLinkify.setLinkTextColor(color);
 		notifyDataSetChanged();
 	}
 

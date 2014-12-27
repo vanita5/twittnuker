@@ -92,7 +92,6 @@ dependencies {
     compile project(':SlidingMenu')
     compile project(':DragSortListView')
     compile project(':MenuComponent')
-    compile project(':RefreshNow')
     compile project(':PullToRefresh')
     compile project(':MessageBubbleView')
     compile fileTree(dir: 'libs', include: ['*.jar'])

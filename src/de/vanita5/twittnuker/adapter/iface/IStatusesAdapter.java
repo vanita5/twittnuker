@@ -48,4 +48,6 @@ public interface IStatusesAdapter<Data> extends IGapSupportedAdapter, ICardSuppo
     void setData(Data data);
 
     AsyncTwitterWrapper getTwitterWrapper();
+
+	float getTextSize();
 }

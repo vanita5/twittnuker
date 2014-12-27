@@ -18,10 +18,9 @@ include 'services:webservice'
 
 rootProject.name = 'twittnuker'
 include ':twittnuker'
-include ':SlidingMenu', ':DragSortListView', ':MenuComponent', ':RefreshNow', ':PullToRefresh', ':MessageBubbleView'
+include ':SlidingMenu', ':DragSortListView', ':MenuComponent', ':PullToRefresh', ':MessageBubbleView'
 project(':SlidingMenu').projectDir = file('libraries/SlidingMenu/library')
 project(':DragSortListView').projectDir = file('libraries/DragSortListView/library')
 project(':MenuComponent').projectDir = file('libraries/MenuComponent/library')
-project(':RefreshNow').projectDir = file('libraries/RefreshNow/library')
 project(':PullToRefresh').projectDir = file('libraries/PullToRefresh/library')
 project(':MessageBubbleView').projectDir = file('libraries/MessageBubbleView/library')

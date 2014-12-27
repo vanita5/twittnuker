@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.view;
 
-import static android.text.format.DateUtils.getRelativeTimeSpanString;
-import static de.vanita5.twittnuker.util.Utils.formatSameDayTime;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -34,7 +31,11 @@ import android.text.format.DateUtils;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.view.themed.ThemedTextView;
+
+import static android.text.format.DateUtils.getRelativeTimeSpanString;
+import static de.vanita5.twittnuker.util.Utils.formatSameDayTime;
 
 public class ShortTimeView extends ThemedTextView implements Constants, OnSharedPreferenceChangeListener {
 
@@ -94,8 +95,14 @@ public class ShortTimeView extends ThemedTextView implements Constants, OnShared
 		if (mShowAbsoluteTime) {
 			setText(formatSameDayTime(getContext(), mTime));
 		} else {
-            setText(getRelativeTimeSpanString(mTime, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS,
-                    DateUtils.FORMAT_ABBREV_ALL));
+			//NOTE display seconds
+            final long current = System.currentTimeMillis();
+            if (Math.abs(current - mTime) > 60 * 1000) {
+                setText(getRelativeTimeSpanString(mTime, System.currentTimeMillis(),
+                        DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL));
+            } else {
+                setText(R.string.just_now);
+            }
 		}
 	}
 

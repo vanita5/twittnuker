@@ -66,7 +66,7 @@
         <attr name="iabActivatedColor" format="color"/>
         <attr name="iabDisabledColor" format="color"/>
     </declare-styleable>
-    <declare-styleable name="ProfileImageView">
+    <declare-styleable name="ShapedImageView">
         <attr name="pivBorder" format="boolean"/>
         <attr name="pivBorderWidth" format="dimension"/>
         <attr name="pivBorderColor" format="color"/>

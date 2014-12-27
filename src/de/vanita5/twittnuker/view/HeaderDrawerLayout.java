@@ -274,7 +274,8 @@ public class HeaderDrawerLayout extends ViewGroup {
 	}
 
     private void scrollByCallback(float dy) {
-        setScrollingContentCallback(true);
+        final int top = getHeaderTop();
+        setScrollingContentCallback(top > getHeaderTopMinimum() && top < getHeaderTopMaximum());
         mDrawerCallback.scrollBy(dy);
 	}
 

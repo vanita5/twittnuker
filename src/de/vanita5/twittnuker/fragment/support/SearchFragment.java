@@ -37,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
@@ -86,6 +87,11 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
 		mViewPager.setAdapter(mAdapter);
 		mViewPager.setOffscreenPageLimit(2);
 		mPagerIndicator.setViewPager(mViewPager);
+        if (activity instanceof IThemedActivity) {
+            mPagerIndicator.setStripColor(((IThemedActivity) activity).getCurrentThemeColor());
+        } else {
+
+        }
 		if (savedInstanceState == null && args != null && args.containsKey(EXTRA_QUERY)) {
 			final String query = args.getString(EXTRA_QUERY);
 			final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),

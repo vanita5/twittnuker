@@ -26,11 +26,11 @@ import android.content.Context;
 
 import de.vanita5.twittnuker.model.ParcelableUser;
 
+import java.util.List;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
-
-import java.util.List;
 
 public class UserSearchLoader extends Twitter4JUsersLoader {
 
@@ -42,6 +42,10 @@ public class UserSearchLoader extends Twitter4JUsersLoader {
 		super(context, account_id, data);
 		mQuery = query;
 		mPage = page;
+    }
+
+    public String getQuery() {
+        return mQuery;
 	}
 
 	@Override

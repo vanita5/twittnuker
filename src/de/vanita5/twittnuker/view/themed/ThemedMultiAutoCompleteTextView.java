@@ -23,12 +23,15 @@
 package de.vanita5.twittnuker.view.themed;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.util.AttributeSet;
 import android.widget.MultiAutoCompleteTextView;
 
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.view.iface.IThemedView;
 
-public class ThemedMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
+public class ThemedMultiAutoCompleteTextView extends MultiAutoCompleteTextView  implements IThemedView {
 
     public ThemedMultiAutoCompleteTextView(final Context context) {
         this(context, null);
@@ -43,4 +46,8 @@ public class ThemedMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
         ThemeUtils.initTextView(this);
     }
 
+    @Override
+    public void setThemeTintColor(ColorStateList color) {
+        ViewAccessor.setBackgroundTintList(this, color);
+    }
 }

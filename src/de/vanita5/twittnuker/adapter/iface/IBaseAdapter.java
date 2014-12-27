@@ -31,8 +31,6 @@ public interface IBaseAdapter extends Constants, ListAdapter {
 	
 	public ImageLoaderWrapper getImageLoader();
 
-	public int getLinkHighlightColor();
-
 	public int getLinkHighlightOption();
 
 	public float getTextSize();
@@ -48,8 +46,6 @@ public interface IBaseAdapter extends Constants, ListAdapter {
 	public void setDisplayNameFirst(boolean nameFirst);
 
 	public void setDisplayProfileImage(boolean display);
-
-	public void setLinkHighlightColor(int color);
 
 	public void setLinkHighlightOption(String option);
 

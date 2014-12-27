@@ -34,8 +34,10 @@ import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
-
+import org.mariotaku.querybuilder.OrderBy;
+import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -43,16 +45,13 @@ import de.vanita5.twittnuker.provider.TweetStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TweetStore.CachedValues;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
-
-import java.util.Locale;
+import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.Utils;
 
 public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implements Constants {
 
 	private static final String[] FROM = new String[0];
 	private static final int[] TO = new int[0];
-	private static final String[] CACHED_USERS_COLUMNS = new String[] { CachedUsers._ID, CachedUsers.USER_ID,
-			CachedUsers.NAME, CachedUsers.SCREEN_NAME, CachedUsers.PROFILE_IMAGE_URL };
-	private final Locale mLocale;
 
 	private final ContentResolver mResolver;
 	private final SQLiteDatabase mDatabase;
@@ -80,7 +79,6 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 		mDatabase = app != null ? app.getSQLiteDatabase() : null;
 		mDisplayProfileImage = mPreferences != null
 				&& mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-		mLocale = context.getResources().getConfiguration().locale;
 	}
 
 	public UserHashtagAutoCompleteAdapter(final EditText view) {
@@ -152,12 +150,20 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 		mToken = token;
         final String constraintEscaped = constraint != null ? constraint.toString().replaceAll("_", "^_") : null;
 		if (isAtSymbol(token)) {
-            final String selection = constraintEscaped != null ? (CachedUsers.SCREEN_NAME + " LIKE ?||'%' ESCAPE '^'") + " OR " + CachedUsers.NAME + " LIKE ?||'%' ESCAPE '^'" : null;
-            final String[] selectionArgs = constraintEscaped != null ? new String[]{constraintEscaped,
-                    constraintEscaped} : null;
-			final String orderBy = CachedUsers.SCREEN_NAME + ", " + CachedUsers.NAME;
-			return mResolver.query(CachedUsers.CONTENT_URI, CACHED_USERS_COLUMNS, selection, selectionArgs, orderBy);
-		} else {
+            final Expression selection;
+            final String[] selectionArgs;
+            if (constraintEscaped != null) {
+                selection = Expression.or(Expression.likeRaw(new Column(CachedUsers.SCREEN_NAME), "?||'%'", "^"),
+                        Expression.likeRaw(new Column(CachedUsers.NAME), "?||'%'", "^"));
+                selectionArgs = new String[]{constraintEscaped, constraintEscaped};
+            } else {
+                selection = null;
+                selectionArgs = null;
+            }
+            final OrderBy orderBy = new OrderBy(CachedUsers.SCREEN_NAME, CachedUsers.NAME);
+            return mResolver.query(CachedUsers.CONTENT_URI, CachedUsers.BASIC_COLUMNS,
+                    selection != null ? selection.getSQL() : null, selectionArgs, orderBy.getSQL());
+        } else {
             final String selection = constraintEscaped != null ? CachedHashtags.NAME + " LIKE ?||'%' ESCAPE '^'"
 					: null;
             final String[] selectionArgs = constraintEscaped != null ? new String[]{constraintEscaped} : null;
@@ -176,6 +182,7 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 		}
 		return super.swapCursor(cursor);
 	}
+
 
 	private static boolean isAtSymbol(final char character) {
 		switch (character) {

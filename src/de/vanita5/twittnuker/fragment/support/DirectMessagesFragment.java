@@ -75,8 +75,6 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 	private SharedPreferences mPreferences;
 	private ListView mListView;
 
-	private boolean mLoadMoreAutomatically;
-
 	private DirectMessageEntriesAdapter mAdapter;
 	private int mFirstVisibleItem;
 
@@ -161,13 +159,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 	}
 
 	@Override
-	public void onRefreshFromEnd() {
-		if (mLoadMoreAutomatically) return;
-		loadMoreMessages();
-	}
-
-	@Override
-	public void onRefreshFromStart() {
+    public void onRefresh() {
 		if (isRefreshing()) return;
         new TwidereAsyncTask<Void, Void, long[][]>() {
 
@@ -195,7 +187,6 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 		super.onResume();
 		mListView.setFastScrollEnabled(mPreferences.getBoolean(KEY_FAST_SCROLL_THUMB, false));
 		configBaseCardAdapter(getActivity(), mAdapter);
-		mLoadMoreAutomatically = mPreferences.getBoolean(KEY_LOAD_MORE_AUTOMATICALLY, false);
 	}
 
 	@Override
@@ -279,7 +270,6 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 
 	@Override
 	protected void onReachedBottom() {
-		if (!mLoadMoreAutomatically) return;
 		loadMoreMessages();
 	}
 

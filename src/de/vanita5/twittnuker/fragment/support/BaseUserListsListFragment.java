@@ -36,7 +36,6 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
-import org.mariotaku.refreshnow.widget.RefreshMode;
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.loader.support.BaseUserListsLoader;
@@ -135,7 +134,6 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 		setListAdapter(mAdapter);
 		getLoaderManager().initLoader(0, getArguments(), this);
 		setListShown(false);
-		setRefreshMode(RefreshMode.NONE);
 	}
 
 	@Override
@@ -167,7 +165,7 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 				mCursor = cursor;
 			}
 		}
-		setRefreshComplete();
+        setRefreshing(false);
 		setListShown(true);
 	}
 
@@ -207,13 +205,7 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 	}
 
 	@Override
-	public void onRefreshFromEnd() {
-		if (mLoadMoreAutomatically) return;
-		loadMoreUserLists();
-	}
-
-	@Override
-	public void onRefreshFromStart() {
+    public void onRefresh() {
 		if (isRefreshing()) return;
 		getLoaderManager().restartLoader(0, getArguments(), this);
 	}

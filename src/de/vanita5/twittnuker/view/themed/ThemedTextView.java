@@ -23,12 +23,14 @@
 package de.vanita5.twittnuker.view.themed;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.view.iface.IThemedView;
 
-public class ThemedTextView extends TextView {
+public class ThemedTextView extends TextView implements IThemedView {
 
     public ThemedTextView(final Context context) {
         this(context, null);
@@ -43,4 +45,8 @@ public class ThemedTextView extends TextView {
         ThemeUtils.initTextView(this);
     }
 
+    @Override
+    public void setThemeTintColor(ColorStateList color) {
+        setLinkTextColor(color);
+    }
 }

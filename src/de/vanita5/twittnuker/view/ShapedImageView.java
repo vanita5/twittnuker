@@ -58,10 +58,10 @@ import de.vanita5.twittnuker.R;
  * An ImageView class with a (optional) circle mask so that all images are drawn in a
  * circle instead of a square.
  */
-public class ProfileImageView extends ImageView implements Constants {
+public class ShapedImageView extends ImageView implements Constants {
 
-    public static final int STYLE_CIRCLE = 0x1;
-    public static final int STYLE_RECTANGLE = 0x2;
+    public static final int SHAPE_CIRCLE = 0x1;
+    public static final int SHAPE_RECTANGLE = 0x2;
 
 	private static final int SHADOW_START_COLOR = 0x37000000;
 
@@ -74,11 +74,11 @@ public class ProfileImageView extends ImageView implements Constants {
     private final RectF mTempDestination;
 	private final Paint mBitmapPaint;
 	private final Paint mBorderPaint;
+    private final Paint mBackgroundPaint;
 
 	private boolean mBorderEnabled;
 	private Bitmap mShadowBitmap;
 	private float mShadowRadius;
-	private Drawable mBackground;
 
 	private int mStyle;
 	private float mCornerRadius, mCornerRadiusRatio;
@@ -86,18 +86,25 @@ public class ProfileImageView extends ImageView implements Constants {
 	private boolean mUseCircularImages;
 	private boolean mForceCircularImage;
 
-	public ProfileImageView(Context context) {
+	public ShapedImageView(Context context) {
 		this(context, null, 0);
 	}
 
-	public ProfileImageView(Context context, AttributeSet attrs) {
+	public ShapedImageView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
-	public ProfileImageView(Context context, AttributeSet attrs, int defStyle) {
+    @Override
+    public void setBackgroundColor(int color) {
+        mBackgroundPaint.setColor(0xFF000000 | color);
+        mBackgroundPaint.setAlpha(Color.alpha(color));
+        invalidate();
+    }
+
+	public ShapedImageView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 
-		final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ProfileImageView, defStyle, 0);
+		final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ShapedImageView, defStyle, 0);
 
 		mMatrix = new Matrix();
 		mSource = new RectF();
@@ -111,27 +118,29 @@ public class ProfileImageView extends ImageView implements Constants {
 		mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mBorderPaint.setStyle(Paint.Style.STROKE);
 
-        if (a.hasValue(R.styleable.ProfileImageView_pivBorder)) {
-            setBorderEnabled(a.getBoolean(R.styleable.ProfileImageView_pivBorder, false));
-        } else if (a.hasValue(R.styleable.ProfileImageView_pivBorderColor)
-                || a.hasValue(R.styleable.ProfileImageView_pivBorderWidth)) {
+        mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        if (a.hasValue(R.styleable.ShapedImageView_sivBorder)) {
+            setBorderEnabled(a.getBoolean(R.styleable.ShapedImageView_sivBorder, false));
+        } else if (a.hasValue(R.styleable.ShapedImageView_sivBorderColor)
+                || a.hasValue(R.styleable.ShapedImageView_sivBorderWidth)) {
 			setBorderEnabled(true);
 		}
-        setBorderColor(a.getColor(R.styleable.ProfileImageView_pivBorderColor, Color.TRANSPARENT));
-        setBorderWidth(a.getDimensionPixelSize(R.styleable.ProfileImageView_pivBorderWidth, 0));
-        setStyle(a.getInt(R.styleable.ProfileImageView_pivStyle, STYLE_RECTANGLE));
-        setCornerRadius(a.getDimension(R.styleable.ProfileImageView_pivCornerRadius, 0));
-        setCornerRadiusRatio(a.getFraction(R.styleable.ProfileImageView_pivCornerRadiusRatio, 1, 1, -1));
+        setBorderColor(a.getColor(R.styleable.ShapedImageView_sivBorderColor, Color.TRANSPARENT));
+        setBorderWidth(a.getDimensionPixelSize(R.styleable.ShapedImageView_sivBorderWidth, 0));
+        setStyle(a.getInt(R.styleable.ShapedImageView_sivShape, SHAPE_RECTANGLE));
+        setCornerRadius(a.getDimension(R.styleable.ShapedImageView_sivCornerRadius, 0));
+        setCornerRadiusRatio(a.getFraction(R.styleable.ShapedImageView_sivCornerRadiusRatio, 1, 1, -1));
 
 		if (USE_OUTLINE) {
-            if (a.hasValue(R.styleable.ProfileImageView_pivElevation)) {
+            if (a.hasValue(R.styleable.ShapedImageView_sivElevation)) {
 				ViewCompat.setElevation(this,
-                        a.getDimensionPixelSize(R.styleable.ProfileImageView_pivElevation, 0));
+                        a.getDimensionPixelSize(R.styleable.ShapedImageView_sivElevation, 0));
 			}
 		} else {
-            mShadowRadius = a.getDimensionPixelSize(R.styleable.ProfileImageView_pivElevation, 0);
+            mShadowRadius = a.getDimensionPixelSize(R.styleable.ShapedImageView_sivElevation, 0);
 		}
-
+        setBackgroundColor(a.getColor(R.styleable.ShapedImageView_sivBackgroundColor, 0));
 		a.recycle();
 
 		if (USE_OUTLINE) {
@@ -196,7 +205,7 @@ public class ProfileImageView extends ImageView implements Constants {
         shader.setLocalMatrix(mMatrix);
         mBitmapPaint.setShader(shader);
 
-        if (getStyle() == STYLE_CIRCLE) {
+        if (getStyle() == SHAPE_CIRCLE) {
             canvas.drawCircle(dest.centerX(), dest.centerY(), Math.min(dest.width(), dest.height()) / 2f,
                     mBitmapPaint);
         } else {
@@ -235,7 +244,14 @@ public class ProfileImageView extends ImageView implements Constants {
 		mDestination.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(),
 				getHeight() - getPaddingBottom());
 
-		if (OUTLINE_DRAW || !(mUseCircularImages || mForceCircularImage)) {
+        if (getStyle() == SHAPE_CIRCLE || !(mUseCircularImages || mForceCircularImage)) {
+            canvas.drawOval(mDestination, mBackgroundPaint);
+        } else {
+            final float radius = getCalculatedCornerRadius();
+            canvas.drawRoundRect(mDestination, radius, radius, mBackgroundPaint);
+        }
+
+        if (OUTLINE_DRAW) {
 			super.onDraw(canvas);
 		} else {
 			final int contentLeft = getPaddingLeft(), contentTop = getPaddingTop(),
@@ -269,23 +285,19 @@ public class ProfileImageView extends ImageView implements Constants {
 
 			mSource.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
 
-			if (mBackground != null) {
-				mBackground.draw(canvas);
-			}
-
 			drawBitmapWithCircleOnCanvas(bitmap, canvas, mSource, mDestination);
 		}
 
 		// Then draw the border.
 		if (mBorderEnabled) {
-//            if (getStyle() == STYLE_CIRCLE) {
-//				canvas.drawCircle(mDestination.centerX(), mDestination.centerY(),
-//					mDestination.width() / 2f - mBorderPaint.getStrokeWidth() / 2, mBorderPaint);
-//			} else {
+            if (getStyle() == SHAPE_CIRCLE) {
+                canvas.drawCircle(mDestination.centerX(), mDestination.centerY(),
+                        mDestination.width() / 2f - mBorderPaint.getStrokeWidth() / 2, mBorderPaint);
+            } else {
                 final float radius = getCalculatedCornerRadius();
                 canvas.drawRoundRect(mDestination, radius, radius, mBorderPaint);
-//		    }
-	    }
+            }
+        }
     }
 
     @Override
@@ -305,7 +317,6 @@ public class ProfileImageView extends ImageView implements Constants {
 	 protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
 		updateShadowBitmap();
-		updateBackgroundPadding();
 	}
 
     @Override
@@ -316,31 +327,16 @@ public class ProfileImageView extends ImageView implements Constants {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void setBackground(Drawable background) {
-        if (OUTLINE_DRAW) {
-            super.setBackground(background);
-            return;
-        }
-        super.setBackground(null);
-        mBackground = background;
-        updateBackgroundPadding();
     }
 
     @Override
     public void setBackgroundDrawable(Drawable background) {
-        if (OUTLINE_DRAW) {
-            super.setBackgroundDrawable(background);
-            return;
-        }
-        super.setBackgroundDrawable(null);
-        mBackground = background;
-        updateBackgroundPadding();
     }
 
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
         super.setPadding(left, top, right, bottom);
         updateShadowBitmap();
-        updateBackgroundPadding();
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -348,7 +344,6 @@ public class ProfileImageView extends ImageView implements Constants {
     public void setPaddingRelative(int start, int top, int end, int bottom) {
         super.setPaddingRelative(start, top, end, bottom);
         updateShadowBitmap();
-        updateBackgroundPadding();
     }
 
     private float getCornerRadius() {
@@ -364,23 +359,6 @@ public class ProfileImageView extends ImageView implements Constants {
 			setClipToOutline(true);
 			setOutlineProvider(new CircularOutlineProvider());
 		}
-	}
-
-	private void updateBackgroundPadding() {
-		final Drawable drawable = mBackground;
-		if (drawable == null) return;
-		final int width = getWidth(), height = getHeight();
-		if (width <= 0 || height <= 0) return;
-		final int contentLeft = getPaddingLeft(), contentTop = getPaddingTop(),
-				contentRight = width - getPaddingRight(),
-				contentBottom = height - getPaddingBottom();
-		final int contentWidth = contentRight - contentLeft,
-				contentHeight = contentBottom - contentTop;
-		final int size = Math.min(contentWidth, contentHeight);
-		drawable.setBounds(contentLeft + (contentWidth - size) / 2,
-				contentTop + (contentHeight - size) / 2,
-				contentRight - (contentWidth - size) / 2,
-				contentBottom - (contentHeight - size) / 2);
 	}
 
 	private void updateShadowBitmap() {
@@ -415,8 +393,8 @@ public class ProfileImageView extends ImageView implements Constants {
 			final int contentLeft = view.getPaddingLeft(), contentTop = view.getPaddingTop(),
 					contentRight = view.getWidth() - view.getPaddingRight(),
 					contentBottom = view.getHeight() - view.getPaddingBottom();
-            final ProfileImageView imageView = (ProfileImageView) view;
-            if (imageView.getStyle() == STYLE_CIRCLE) {
+            final ShapedImageView imageView = (ShapedImageView) view;
+            if (imageView.getStyle() == SHAPE_CIRCLE) {
                 final int contentWidth = contentRight - contentLeft,
                         contentHeight = contentBottom - contentTop;
                 final int size = Math.min(contentWidth, contentHeight);

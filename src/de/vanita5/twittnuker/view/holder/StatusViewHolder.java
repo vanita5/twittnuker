@@ -43,7 +43,8 @@ import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.UserColorUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.ProfileImageView;
+import de.vanita5.twittnuker.view.CardMediaContainer;
+import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShortTimeView;
 
 import java.util.Locale;
@@ -57,14 +58,13 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
     private final IStatusesAdapter<?> adapter;
 
     private final ImageView retweetProfileImageView;
-    private final ProfileImageView profileImageView;
+    private final ShapedImageView profileImageView;
     private final ImageView profileTypeView;
-    private final ImageView mediaPreviewView;
     private final TextView textView;
     private final TextView nameView, screenNameView;
     private final TextView replyRetweetView;
     private final ShortTimeView timeView;
-    private final View mediaPreviewContainer;
+    private final CardMediaContainer mediaPreviewContainer;
     private final TextView replyCountView, retweetCountView, favoriteCountView;
 
 
@@ -75,7 +75,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
     public StatusViewHolder(IStatusesAdapter<?> adapter, View itemView) {
         super(itemView);
         this.adapter = adapter;
-        profileImageView = (ProfileImageView) itemView.findViewById(R.id.profile_image);
+        profileImageView = (ShapedImageView) itemView.findViewById(R.id.profile_image);
         profileTypeView = (ImageView) itemView.findViewById(R.id.profile_type);
         textView = (TextView) itemView.findViewById(R.id.text);
         nameView = (TextView) itemView.findViewById(R.id.name);
@@ -84,8 +84,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         replyRetweetView = (TextView) itemView.findViewById(R.id.reply_retweet_status);
         timeView = (ShortTimeView) itemView.findViewById(R.id.time);
 
-        mediaPreviewContainer = itemView.findViewById(R.id.media_preview_container);
-        mediaPreviewView = (ImageView) itemView.findViewById(R.id.media_preview);
+        mediaPreviewContainer = (CardMediaContainer) itemView.findViewById(R.id.media_preview_container);
 
         replyCountView = (TextView) itemView.findViewById(R.id.reply_count);
         retweetCountView = (TextView) itemView.findViewById(R.id.retweet_count);
@@ -94,7 +93,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
 //        profileImageView.setSelectorColor(ThemeUtils.getUserHighlightColor(itemView.getContext()));
     }
 
-    public void setupViews() {
+    public void setupViewListeners() {
         itemView.findViewById(R.id.item_content).setOnClickListener(this);
         itemView.findViewById(R.id.item_menu).setOnClickListener(this);
 
@@ -105,6 +104,18 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         retweetCountView.setOnClickListener(this);
         favoriteCountView.setOnClickListener(this);
 	}
+
+    public void setupViewOptions() {
+        final float textSize = adapter.getTextSize();
+        nameView.setTextSize(textSize);
+        textView.setTextSize(textSize);
+        screenNameView.setTextSize(textSize * 0.85f);
+        timeView.setTextSize(textSize * 0.85f);
+        replyRetweetView.setTextSize(textSize * 0.75f);
+        replyCountView.setTextSize(textSize);
+        replyCountView.setTextSize(textSize);
+        favoriteCountView.setTextSize(textSize);
+    }
 
     public void displayStatus(final ParcelableStatus status) {
         displayStatus(adapter.getContext(), adapter.getImageLoader(),
@@ -156,15 +167,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
 
         loader.displayProfileImage(profileImageView, status.user_profile_image_url);
 
-        if (media != null && media.length > 0) {
-            final ParcelableMedia firstMedia = media[0];
-            loader.displayPreviewImageWithCredentials(mediaPreviewView, firstMedia.media_url,
-                    status.account_id, handler);
-            mediaPreviewContainer.setVisibility(View.VISIBLE);
-        } else {
-            loader.cancelDisplayTask(mediaPreviewView);
-            mediaPreviewContainer.setVisibility(View.GONE);
-	    }
+        mediaPreviewContainer.displayMedia(media, loader, status.account_id, null, handler);
         if (translation != null) {
             textView.setText(translation.getText());
         } else {
@@ -273,19 +276,10 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
 
         loader.displayProfileImage(profileImageView, user_profile_image_url);
 
-        if (media != null && media.length > 0) {
-            final String textUnescaped = cursor.getString(indices.text_unescaped);
-            final ParcelableMedia firstMedia = media[0];
-            textView.setText(textUnescaped);
-            loader.displayPreviewImageWithCredentials(mediaPreviewView, firstMedia.media_url,
-                    account_id, adapter.getImageLoadingHandler());
-            mediaPreviewContainer.setVisibility(View.VISIBLE);
-        } else {
             final String text_unescaped = cursor.getString(indices.text_unescaped);
-            loader.cancelDisplayTask(mediaPreviewView);
-            textView.setText(text_unescaped);
-            mediaPreviewContainer.setVisibility(View.GONE);
-        }
+        mediaPreviewContainer.displayMedia(media, loader, account_id, null,
+                adapter.getImageLoadingHandler());
+        textView.setText(text_unescaped);
 
         if (reply_count > 0) {
             replyCountView.setText(Utils.getLocalizedNumber(Locale.getDefault(), reply_count));
@@ -329,7 +323,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         return (CardView) itemView.findViewById(R.id.card);
     }
 
-    public ProfileImageView getProfileImageView() {
+    public ShapedImageView getProfileImageView() {
         return profileImageView;
     }
 
@@ -337,6 +331,15 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         return profileTypeView;
     }
 
+    public void displaySampleStatus() {
+        nameView.setText("Twittnuker Project");
+        screenNameView.setText("@twittnuker");
+        timeView.setTime(System.currentTimeMillis());
+        textView.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam faucibus quis purus ac malesuada. Duis id vulputate magna, a eleifend amet.");
+        mediaPreviewContainer.displayMedia(R.drawable.ic_profile_image_default,
+                R.drawable.ic_profile_image_default);
+		//TODO sample preview images
+    }
 
     @Override
     public void onClick(View v) {

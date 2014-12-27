@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.text;
 
+import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.style.URLSpan;
 import android.view.View;
@@ -31,20 +32,19 @@ import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 
 public class TwidereURLSpan extends URLSpan implements Constants {
 
-	private final int type, highlightStyle, highlightColor;
+    private final int type, highlightStyle;
 	private final long accountId;
 	private final String url, orig;
 	private final boolean sensitive;
 	private final OnLinkClickListener listener;
 
 	public TwidereURLSpan(final String url, final long accountId, final int type, final boolean sensitive,
-			final OnLinkClickListener listener, final int highlightStyle, final int highlightColor) {
-		this(url, null, accountId, type, sensitive, listener, highlightStyle, highlightColor);
+                          final OnLinkClickListener listener, final int highlightStyle) {
+        this(url, null, accountId, type, sensitive, listener, highlightStyle);
 	}
 
 	public TwidereURLSpan(final String url, final String orig, final long accountId, final int type,
-			final boolean sensitive, final OnLinkClickListener listener, final int highlightStyle,
-			final int highlightColor) {
+                          final boolean sensitive, final OnLinkClickListener listener, final int highlightStyle) {
 		super(url);
 		this.url = url;
 		this.orig = orig;
@@ -53,23 +53,22 @@ public class TwidereURLSpan extends URLSpan implements Constants {
 		this.sensitive = sensitive;
 		this.listener = listener;
 		this.highlightStyle = highlightStyle;
-		this.highlightColor = highlightColor;
 	}
 
 	@Override
-	public void onClick(final View widget) {
+    public void onClick(@NonNull final View widget) {
 		if (listener != null) {
 			listener.onLinkClick(url, orig, accountId, type, sensitive);
 		}
 	}
 
 	@Override
-	public void updateDrawState(final TextPaint ds) {
+    public void updateDrawState(@NonNull final TextPaint ds) {
 		if ((highlightStyle & VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE) != 0) {
 			ds.setUnderlineText(true);
 		}
 		if ((highlightStyle & VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT) != 0) {
-			ds.setColor(highlightColor != 0 ? highlightColor : ds.linkColor);
+            ds.setColor(ds.linkColor);
 		}
 	}
 }

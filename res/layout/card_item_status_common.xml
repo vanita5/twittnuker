@@ -23,6 +23,7 @@
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        xmlns:app="http://schemas.android.com/apk/res-auto"
+       xmlns:tools="http://schemas.android.com/tools"
        android:layout_width="match_parent"
        android:layout_height="match_parent">
 
@@ -33,7 +34,7 @@
         android:background="?android:selectableItemBackground"
         android:orientation="vertical">
 
-        <de.vanita5.twittnuker.view.ProfileImageView
+        <de.vanita5.twittnuker.view.ShapedImageView
             android:id="@+id/retweet_profile_image"
             style="?profileImageStyle"
             android:layout_width="@dimen/element_size_small"
@@ -41,7 +42,8 @@
             android:layout_marginBottom="@dimen/element_spacing_small"
             android:layout_marginLeft="@dimen/element_spacing_normal"
             android:layout_marginTop="@dimen/element_spacing_small"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
 
         <de.vanita5.twittnuker.view.ActionIconTextView
             android:id="@+id/reply_retweet_status"
@@ -68,7 +70,7 @@
             android:layout_marginTop="@dimen/element_spacing_normal"
             android:paddingLeft="@dimen/element_spacing_mlarge">
 
-            <de.vanita5.twittnuker.view.ProfileImageView
+            <de.vanita5.twittnuker.view.ShapedImageView
                 android:id="@+id/profile_image"
                 style="?profileImageStyle"
                 android:layout_width="@dimen/icon_size_status_profile_image"
@@ -110,6 +112,7 @@
                         android:layout_height="wrap_content"
                         android:singleLine="true"
                         android:textAppearance="?android:textAppearanceSmall"
+                        tools:text="User"
                         android:textColor="?android:textColorPrimary"
                         android:textStyle="bold"/>
 
@@ -117,6 +120,7 @@
                         android:id="@+id/screen_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        tools:text="\@user"
                         android:layout_marginLeft="@dimen/element_spacing_small"
                         android:singleLine="true"
                         android:textAppearance="?android:textAppearanceSmall"
@@ -147,31 +151,19 @@
 
         </RelativeLayout>
 
-        <de.vanita5.twittnuker.view.ImagePreviewContainer
+        <de.vanita5.twittnuker.view.CardMediaContainer
             android:id="@+id/media_preview_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/profile_container"
             android:layout_below="@id/profile_container"
             android:layout_marginTop="@dimen/element_spacing_normal"
-            android:foreground="?android:selectableItemBackground">
+            android:horizontalSpacing="@dimen/element_spacing_normal"
+            android:verticalSpacing="@dimen/element_spacing_normal">
 
-            <ImageView
-                android:id="@+id/media_preview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/medias"
-                android:scaleType="centerCrop"/>
+            <include layout="@layout/layout_card_media_preview"/>
 
-            <ProgressBar
-                android:id="@+id/media_preview_progress"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/element_spacing_large"/>
-
-        </de.vanita5.twittnuker.view.ImagePreviewContainer>
+        </de.vanita5.twittnuker.view.CardMediaContainer>
 
         <de.vanita5.twittnuker.view.HandleSpanClickTextView
             android:id="@+id/text"
@@ -181,6 +173,7 @@
             android:layout_below="@id/media_preview_container"
             android:layout_marginBottom="@dimen/element_spacing_normal"
             android:layout_marginTop="@dimen/element_spacing_normal"
+            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam faucibus quis purus ac malesuada. Duis id vulputate magna, a eleifend amet."
             android:paddingLeft="@dimen/element_spacing_normal"
             android:paddingRight="@dimen/element_spacing_normal"
             android:textAppearance="?android:attr/textAppearanceSmall"

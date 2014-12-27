@@ -22,13 +22,17 @@
 
 package de.vanita5.twittnuker.activity.support;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.AttributeSet;
+import android.view.View;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
@@ -110,6 +114,13 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
     }
 
     @Override
+    public View onCreateView(String name, @NonNull Context context, @NonNull AttributeSet attrs) {
+        final View view = ThemeUtils.createView(name, context, attrs, mCurrentThemeColor);
+        if (view != null) return view;
+        return super.onCreateView(name, context, attrs);
+    }
+
+    @Override
 	protected void onResume() {
 		super.onResume();
 		}
@@ -122,7 +133,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 		return ThemeUtils.getActionBarColor(this);
 	}
 
-	private final void setTheme() {
+	private void setTheme() {
 		mCurrentThemeResource = getThemeResourceId();
 		mCurrentThemeColor = getThemeColor();
 		mCurrentActionBarColor = getActionBarColor();

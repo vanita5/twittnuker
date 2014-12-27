@@ -151,6 +151,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
     public boolean isDestroyingFavorite(final long accountId, final long statusId) {
         return mDestroyingFavoriteIds.has(accountId, statusId);
     }
+
     public boolean isCreatingRetweet(final long accountId, final long statusId) {
         return mCreatingRetweetIds.has(accountId, statusId);
     }
@@ -2299,8 +2300,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				if (statuses == null || statuses.isEmpty()) {
 					continue;
 				}
-                final ArrayList<Long> ids_in_db = getStatusIdsInDatabase(mContext, uri, accountId);
-				final boolean noItemsBefore = ids_in_db.isEmpty();
+                final boolean noItemsBefore = getStatusCountInDatabase(mContext, uri, accountId) <= 0;
 				final ContentValues[] values = new ContentValues[statuses.size()];
 				final long[] statusIds = new long[statuses.size()];
 				for (int i = 0, j = statuses.size(); i < j; i++) {

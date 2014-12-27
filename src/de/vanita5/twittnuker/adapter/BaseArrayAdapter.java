@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -36,12 +34,14 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 
 import java.util.Collection;
 
+import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
+
 public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter, OnSharedPreferenceChangeListener {
 
 	private final TwidereLinkify mLinkify;
 
 	private float mTextSize;
-	private int mLinkHighlightOption, mLinkHighlightColor;
+    private int mLinkHighlightOption;
 
 	private boolean mDisplayProfileImage, mDisplayNameFirst, mShowAccountColor;
 
@@ -64,11 +64,6 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
 	@Override
 	public ImageLoaderWrapper getImageLoader() {
 		return mImageLoader;
-	}
-
-	@Override
-	public final int getLinkHighlightColor() {
-		return mLinkHighlightColor;
 	}
 
 	@Override
@@ -116,12 +111,6 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
 	@Override
 	public final void setDisplayProfileImage(final boolean display) {
 		mDisplayProfileImage = display;
-	}
-
-	@Override
-	public final void setLinkHighlightColor(final int color) {
-		mLinkify.setLinkTextColor(color);
-		mLinkHighlightColor = color;
 	}
 
 	@Override

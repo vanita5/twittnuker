@@ -22,22 +22,22 @@
   -->
 
 <de.vanita5.twittnuker.view.RightDrawerFrameLayout
+    android:id="@+id/right_drawer_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/right_drawer_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <fragment
             android:id="@+id/right_drawer"
+            class="de.vanita5.twittnuker.fragment.support.QuickMenuFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            class="de.vanita5.twittnuker.fragment.support.QuickMenuFragment"
             tools:layout="@layout/fragment_quick_menu"/>
     </FrameLayout>
 

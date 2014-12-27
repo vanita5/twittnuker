@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.dialog.ColorPickerDialog;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.ProfileImageView;
+import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ColorPickerView;
 
 public class ColorPickerPreference extends Preference implements DialogInterface.OnClickListener, Constants {
@@ -117,8 +117,8 @@ public class ColorPickerPreference extends Preference implements DialogInterface
 		super.onBindView(view);
         final ImageView imageView = (ImageView) view.findViewById(R.id.color);
 
-		if (imageView instanceof ProfileImageView) {
-			((ProfileImageView) imageView).setForceCircularImage(true);
+		if (imageView instanceof ShapedImageView) {
+			((ShapedImageView) imageView).setForceCircularImage(true);
 		}
 
 		imageView.setImageBitmap(ColorPickerView.getColorPreviewBitmap(getContext(), getValue(), false));

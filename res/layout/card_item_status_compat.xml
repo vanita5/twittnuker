@@ -1,4 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Twittnuker - Twitter client for Android
+  ~
+  ~ Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
+  ~
+  ~ This program incorporates a modified version of Twidere.
+  ~ Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <RelativeLayout
     android:id="@+id/item_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -11,13 +33,14 @@
     android:paddingRight="@dimen/element_spacing_normal"
     android:paddingTop="@dimen/element_spacing_normal">
 
-    <de.vanita5.twittnuker.view.ProfileImageView
+    <de.vanita5.twittnuker.view.ShapedImageView
         android:id="@+id/retweet_profile_image"
         style="?profileImageStyle"
         android:layout_width="@dimen/element_size_small"
         android:layout_height="@dimen/element_size_small"
         android:layout_marginLeft="@dimen/element_spacing_normal"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:visibility="gone"/>
 
     <de.vanita5.twittnuker.view.ActionIconTextView
         android:id="@+id/reply_retweet_status"
@@ -34,7 +57,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="10sp"/>
 
-    <de.vanita5.twittnuker.view.ProfileImageView
+    <de.vanita5.twittnuker.view.ShapedImageView
         android:id="@+id/profile_image"
         style="?profileImageStyle"
         android:layout_width="@dimen/icon_size_status_profile_image"
@@ -104,29 +127,15 @@
                 android:textSize="10sp"/>
         </LinearLayout>
 
-        <de.vanita5.twittnuker.view.ImagePreviewContainer
+        <de.vanita5.twittnuker.view.CardMediaContainer
             android:id="@+id/media_preview_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/element_spacing_small"
-            android:foreground="?android:selectableItemBackground">
+            android:layout_marginTop="@dimen/element_spacing_small">
 
-            <ImageView
-                android:id="@+id/media_preview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/medias"
-                android:scaleType="centerCrop"/>
+            <include layout="@layout/layout_card_media_preview"/>
 
-            <ProgressBar
-                android:id="@+id/media_preview_progress"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/element_spacing_large"/>
-
-        </de.vanita5.twittnuker.view.ImagePreviewContainer>
+        </de.vanita5.twittnuker.view.CardMediaContainer>
 
         <de.vanita5.twittnuker.view.HandleSpanClickTextView
             android:id="@+id/text"

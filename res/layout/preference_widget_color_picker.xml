@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<de.vanita5.twittnuker.view.ProfileImageView
+<de.vanita5.twittnuker.view.ShapedImageView
     android:id="@+id/color"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/element_size_small"

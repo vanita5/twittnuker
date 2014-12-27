@@ -35,9 +35,9 @@
 
         <FrameLayout
             android:id="@+id/profile_banner_container"
-            android:layout_gravity="top"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="top">
 
             <de.vanita5.twittnuker.view.ProfileBannerImageView
             android:id="@+id/profile_banner"

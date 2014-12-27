@@ -33,6 +33,7 @@
 
     <de.vanita5.twittnuker.view.SquareCircularImageView
         android:id="@+id/sender_profile_image"
+        style="?profileImageStyle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
@@ -41,6 +42,7 @@
         android:visibility="gone"/>
 
     <de.vanita5.twittnuker.view.SquareCircularImageView
+        style="?profileImageStyle"
         android:id="@+id/recipient_profile_image"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

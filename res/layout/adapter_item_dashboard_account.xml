@@ -27,7 +27,7 @@
     android:layout_height="match_parent"
     android:layout_margin="@dimen/element_spacing_msmall">
 
-    <de.vanita5.twittnuker.view.ProfileImageView
+    <de.vanita5.twittnuker.view.ShapedImageView
         android:id="@android:id/icon"
         style="?profileImageStyle"
         android:layout_width="match_parent"
