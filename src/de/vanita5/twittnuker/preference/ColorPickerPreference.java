@@ -116,11 +116,6 @@ public class ColorPickerPreference extends Preference implements DialogInterface
     protected void onBindView(@NonNull final View view) {
 		super.onBindView(view);
         final ImageView imageView = (ImageView) view.findViewById(R.id.color);
-
-		if (imageView instanceof ShapedImageView) {
-			((ShapedImageView) imageView).setForceCircularImage(true);
-		}
-
 		imageView.setImageBitmap(ColorPickerView.getColorPreviewBitmap(getContext(), getValue(), false));
 	}
 

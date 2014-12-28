@@ -69,8 +69,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 	@Override
 	public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
 		if (KEY_THEME.equals(key) || KEY_THEME_BACKGROUND.equals(key)
-				|| KEY_THEME_COLOR.equals(key) || KEY_ACTION_BAR_COLOR.equals(key)
-				|| KEY_CIRCULAR_PROFILE_IMAGES.equals(key)) {
+				|| KEY_THEME_COLOR.equals(key) || KEY_ACTION_BAR_COLOR.equals(key)) {
 			notifyChanged();
 		}
 	}

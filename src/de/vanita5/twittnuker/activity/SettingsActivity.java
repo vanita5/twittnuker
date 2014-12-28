@@ -66,7 +66,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 	private HeaderAdapter mAdapter;
 
 	private int mCurrentThemeColor, mThemeBackgroundAlpha, mCurrentActionBarColor;
-	private boolean mCompactCards, mUseCircularImages;
+	private boolean mCompactCards;
 
     private String mTheme;
     private String mThemeFontFamily;
@@ -163,7 +163,6 @@ public class SettingsActivity extends BasePreferenceActivity {
         mThemeBackground = mPreferences.getString(KEY_THEME_BACKGROUND, DEFAULT_THEME_BACKGROUND);
         mThemeBackgroundAlpha = mPreferences.getInt(KEY_THEME_BACKGROUND_ALPHA, DEFAULT_THEME_BACKGROUND_ALPHA);
         mThemeFontFamily = mPreferences.getString(KEY_THEME_FONT_FAMILY, DEFAULT_THEME_FONT_FAMILY);
-		mUseCircularImages = mPreferences.getBoolean(KEY_CIRCULAR_PROFILE_IMAGES, false);
         mCurrentThemeColor = ThemeUtils.getUserAccentColor(this);
 		mCurrentActionBarColor = ThemeUtils.getActionBarColor(this);
 		super.onCreate(savedInstanceState);
@@ -202,8 +201,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 				|| mCurrentThemeColor != ThemeUtils.getUserAccentColor(this)
 				|| mThemeBackgroundAlpha != mPreferences.getInt(KEY_THEME_BACKGROUND_ALPHA, DEFAULT_THEME_BACKGROUND_ALPHA)
 				|| mCompactCards != mPreferences.getBoolean(KEY_COMPACT_CARDS, false)
-				|| mCurrentActionBarColor != ThemeUtils.getActionBarColor(this)
-				|| mUseCircularImages != mPreferences.getBoolean(KEY_CIRCULAR_PROFILE_IMAGES, false);
+				|| mCurrentActionBarColor != ThemeUtils.getActionBarColor(this);
 	}
 
     private static class HeaderAdapter extends BaseAdapter {

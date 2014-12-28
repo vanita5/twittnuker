@@ -83,9 +83,6 @@ public class ShapedImageView extends ImageView implements Constants {
 	private int mStyle;
 	private float mCornerRadius, mCornerRadiusRatio;
 
-	private boolean mUseCircularImages;
-	private boolean mForceCircularImage;
-
 	public ShapedImageView(Context context) {
 		this(context, null, 0);
 	}
@@ -146,9 +143,6 @@ public class ShapedImageView extends ImageView implements Constants {
 		if (USE_OUTLINE) {
 			initOutlineProvider();
 		}
-
-		final SharedPreferences mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mUseCircularImages = mPreferences.getBoolean(KEY_CIRCULAR_PROFILE_IMAGES, false);
 	}
 
     public void setCornerRadiusRatio(float ratio) {
@@ -244,7 +238,7 @@ public class ShapedImageView extends ImageView implements Constants {
 		mDestination.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(),
 				getHeight() - getPaddingBottom());
 
-        if (getStyle() == SHAPE_CIRCLE || !(mUseCircularImages || mForceCircularImage)) {
+        if (getStyle() == SHAPE_CIRCLE) {
             canvas.drawOval(mDestination, mBackgroundPaint);
         } else {
             final float radius = getCalculatedCornerRadius();
@@ -309,10 +303,6 @@ public class ShapedImageView extends ImageView implements Constants {
         mBitmapPaint.setColorFilter(cf);
     }
 
-	public void setForceCircularImage(boolean mForceCircularImage) {
-		this.mForceCircularImage = mForceCircularImage;
-	}
-
 	@Override
 	 protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
@@ -363,7 +353,6 @@ public class ShapedImageView extends ImageView implements Constants {
 
 	private void updateShadowBitmap() {
 		if (USE_OUTLINE) return;
-		if (!(mUseCircularImages || mForceCircularImage)) return;
 		final int width = getWidth(), height = getHeight();
 		if (width <= 0 || height <= 0) return;
 		final int contentLeft = getPaddingLeft(), contentTop = getPaddingTop(),
