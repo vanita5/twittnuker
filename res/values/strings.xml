@@ -724,4 +724,6 @@
     <string name="no_tab_hint">You can add tabs in the settings</string>
 
     <string name="refresh_on_start_workaround">Use "Refresh before streaming" instead</string>
+    <string name="just_now">(D) just_now</string>
+    <string name="requested">(D) requested</string>
 </resources>

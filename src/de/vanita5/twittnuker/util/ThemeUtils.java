@@ -63,6 +63,7 @@ import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
 import de.vanita5.twittnuker.text.ParagraphSpacingSpan;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
+import de.vanita5.twittnuker.view.iface.IThemedView;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

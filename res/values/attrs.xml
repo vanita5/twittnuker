@@ -67,13 +67,15 @@
         <attr name="iabDisabledColor" format="color"/>
     </declare-styleable>
     <declare-styleable name="ShapedImageView">
-        <attr name="pivBorder" format="boolean"/>
-        <attr name="pivBorderWidth" format="dimension"/>
-        <attr name="pivBorderColor" format="color"/>
-        <attr name="pivElevation" format="dimension"/>
-        <attr name="pivCornerRadius" format="dimension"/>
-        <attr name="pivCornerRadiusRatio" format="fraction"/>
-        <attr name="pivStyle"/>
+        <attr name="sivBorder" format="boolean"/>
+        <attr name="sivBorderWidth" format="dimension"/>
+        <attr name="sivBorderColor" format="color"/>
+        <attr name="sivElevation" format="dimension"/>
+        <attr name="sivCornerRadius" format="dimension"/>
+        <attr name="sivCornerRadiusRatio" format="fraction"/>
+        <attr name="sivShape"/>
+
+        <attr name="sivBackgroundColor" format="color"/>
     </declare-styleable>
     <declare-styleable name="HeaderDrawerLayout">
         <attr name="headerLayout" format="reference"/>
@@ -89,7 +91,7 @@
         <flag name="label" value="0x1"/>
         <flag name="icon" value="0x2"/>
     </attr>
-    <attr name="pivStyle">
+    <attr name="sivShape">
         <enum name="circle" value="0x1"/>
         <enum name="rectangle" value="0x2"/>
     </attr>

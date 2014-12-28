@@ -1,6 +1,7 @@
 Test media upload
 Settings export/import: action bar color
 Fix push toast messages
+check if url has subdirs (port, push)
 Add new compact cards
 Fix loading indicator on shortened tweet expand
 cache image preview if downloading full image (generic)

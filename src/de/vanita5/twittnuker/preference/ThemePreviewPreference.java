@@ -109,7 +109,6 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 
 		final int highlightOption = getLinkHighlightOptionInt(context);
 		TwidereLinkify linkify = new TwidereLinkify(null);
-		linkify.setLinkTextColor(ThemeUtils.getUserLinkTextColor(context));
 		linkify.setHighlightOption(highlightOption);
 
 		actionBarTitleView.setTextAppearance(context, titleTextAppearance);

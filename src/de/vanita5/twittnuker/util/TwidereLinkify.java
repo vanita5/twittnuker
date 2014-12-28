@@ -260,8 +260,7 @@ public final class TwidereLinkify implements Constants {
 					final String url = span.getURL();
 					if (PATTERN_HOTOTIN.matcher(url).matches()) {
 						string.removeSpan(span);
-						applyLink(url, start, end, string, accountId, LINK_TYPE_HOTOTIN, sensitive, listener,
-								highlightOption);
+						applyLink(url, start, end, string, accountId, LINK_TYPE_HOTOTIN, sensitive, listener);
 					}
 				}
 			}
@@ -273,8 +272,7 @@ public final class TwidereLinkify implements Constants {
 					final String url = span.getURL();
 					if (PATTERN_TWITLONGER.matcher(url).matches()) {
 						string.removeSpan(span);
-						applyLink(url, start, end, string, accountId, LINK_TYPE_TWITLONGER, sensitive, listener,
-								highlightOption);
+						applyLink(url, start, end, string, accountId, LINK_TYPE_TWITLONGER, sensitive, listener);
 					}
 				}
 			}

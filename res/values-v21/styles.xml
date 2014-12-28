@@ -12,15 +12,15 @@
     <style name="Widget.ProfileImage.Large">
         <item name="android:background">@drawable/bg_oval_white</item>
         <!-- NOTE circular preference? -->
-        <item name="pivElevation">@dimen/elevation_card</item>
-        <item name="pivBorderWidth">2dp</item>
+        <item name="sivElevation">@dimen/elevation_card</item>
+        <item name="sivBorderWidth">2dp</item>
     </style>
 
     <style name="Widget.Light.ProfileImage.Large">
         <item name="android:background">@drawable/bg_oval_white</item>
         <!-- NOT circular preference? -->
-        <item name="pivElevation">@dimen/elevation_card</item>
-        <item name="pivBorderWidth">2dp</item>
+        <item name="sivElevation">@dimen/elevation_card</item>
+        <item name="sivBorderWidth">2dp</item>
     </style>
 
     <style name="Widget.ProfileType" parent="Widget.Base">

@@ -98,7 +98,7 @@ import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
 import static de.vanita5.twittnuker.util.Utils.getNewestStatusIdsFromDatabase;
-import static de.vanita5.twittnuker.util.Utils.getStatusIdsInDatabase;
+import static de.vanita5.twittnuker.util.Utils.getStatusCountInDatabase;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.getUserName;
 import static de.vanita5.twittnuker.util.Utils.truncateMessages;

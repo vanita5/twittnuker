@@ -85,6 +85,7 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
+import de.vanita5.twittnuker.util.UserColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
@@ -119,8 +120,10 @@ import static de.vanita5.twittnuker.util.Utils.getOriginalTwitterProfileImage;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.openImage;
+import static de.vanita5.twittnuker.util.Utils.openMutesUsers;
 import static de.vanita5.twittnuker.util.Utils.openStatus;
 import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
+import static de.vanita5.twittnuker.util.Utils.openUserBlocks;
 import static de.vanita5.twittnuker.util.Utils.openUserFollowers;
 import static de.vanita5.twittnuker.util.Utils.openUserFriends;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
@@ -529,7 +532,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 				if (resultCode == Activity.RESULT_OK) {
 					if (data == null) return;
 					final int color = data.getIntExtra(EXTRA_COLOR, Color.TRANSPARENT);
-					setUserColor(getActivity(), mUser.id, color);
+					UserColorUtils.setUserColor(getActivity(), mUser.id, color);
 				} else if (resultCode == ColorPickerDialogActivity.RESULT_CLEARED) {
 					clearUserColor(getActivity(), mUser.id);
 				}
@@ -721,7 +724,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 			setMenuItemAvailability(menu, MENU_REPORT_SPAM, false);
 		}
         setMenuItemAvailability(menu, R.id.muted_users, isMyself);
-        setMenuItemAvailability(menu, R.id.blocked_users, isMyself);Activity(), menu, intent, MENU_GROUP_USER_EXTENSION);
+        setMenuItemAvailability(menu, R.id.blocked_users, isMyself);
     }
 
     @Override
