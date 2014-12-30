@@ -290,7 +290,7 @@
     <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%s</xliff:g> und <xliff:g id="count">%d</xliff:g> Weitere haben Dich zu ihren Listen hinzugefügt.</string>
     <string name="activity_by_friends_favorite"><xliff:g id="user">%1$s</xliff:g> favorisierte <xliff:g id="target">%2$s</xliff:g>s tweet.</string>
     <string name="activity_by_friends_favorite_multi"><xliff:g id="user">%1$s</xliff:g> favorisierte <xliff:g id="target">%2$s</xliff:g> und <xliff:g id="count">%3$d</xliff:g> andere Tweets.</string>
-    <string name="activity_by_friends_follow"><xliff:g id="user">%1$s</xliff:g>folgt <xliff:g id="target">%2$s</xliff:g>.</string>
+    <string name="activity_by_friends_follow"><xliff:g id="user">%1$s</xliff:g> folgt <xliff:g id="target">%2$s</xliff:g>.</string>
     <string name="activity_by_friends_follow_multi"><xliff:g id="user">%1$s</xliff:g> folgt <xliff:g id="target">%2$s</xliff:g> und <xliff:g id="count">%3$d</xliff:g> Weiteren.</string>
     <string name="activity_by_friends_retweet"><xliff:g id="user">%1$s</xliff:g> retweetete <xliff:g id="target">%2$s</xliff:g>s tweet.</string>
     <string name="activity_by_friends_list_member_added"><xliff:g id="user">%1$s</xliff:g> fügte <xliff:g id="target">%2$s</xliff:g> zur Liste hinzu.</string>
