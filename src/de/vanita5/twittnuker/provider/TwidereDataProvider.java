@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.provider;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -39,12 +40,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Action;
 import android.util.Log;
 
 import com.squareup.otto.Bus;
 
 import org.mariotaku.jsonserializer.JSONFileIO;
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
@@ -53,9 +57,11 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.model.UnreadItem;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
+import de.vanita5.twittnuker.provider.TweetStore.Drafts;
 import de.vanita5.twittnuker.provider.TweetStore.Preferences;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
+import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.ImagePreloader;
@@ -146,7 +152,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 			if (result > 0) {
 				onDatabaseUpdated(tableId, uri);
 			}
-			onNewItemsInserted(uri, values);
+            onNewItemsInserted(uri, tableId, values);
 			return result;
 		} catch (final SQLException e) {
 			throw new IllegalStateException(e);
@@ -226,7 +232,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				rowId = mDatabaseWrapper.insert(table, null, values);
 			}
 			onDatabaseUpdated(tableId, uri);
-			onNewItemsInserted(uri, values);
+            onNewItemsInserted(uri, tableId, values);
 			return Uri.withAppendedPath(uri, String.valueOf(rowId));
 		} catch (final SQLException e) {
 			throw new IllegalStateException(e);
@@ -712,13 +718,13 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		notifyContentObserver(getNotificationUri(tableId, uri));
 	}
 
-	private void onNewItemsInserted(final Uri uri, final ContentValues... values) {
-		if (uri == null || values == null || values.length == 0) return;
-		preloadImages(values);
+    private void onNewItemsInserted(final Uri uri, final int tableId, final ContentValues... valuesArray) {
+        if (uri == null || valuesArray == null || valuesArray.length == 0) return;
+        preloadImages(valuesArray);
 		if (!uri.getBooleanQueryParameter(QUERY_PARAM_NOTIFY, true)) return;
-		switch (getTableId(uri)) {
+        switch (tableId) {
 			case TABLE_ID_STATUSES: {
-				notifyStatusesInserted(values);
+				notifyStatusesInserted(valuesArray);
 				final List<ParcelableStatus> items = new ArrayList<ParcelableStatus>(mNewStatuses);
 				Collections.sort(items);
 				//TODO Notifications for new tweets in timeline
@@ -728,17 +734,40 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 			case TABLE_ID_MENTIONS: {
 				final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
 						getAccountIds(getContext()));
-                notifyMentionsInserted(prefs, values);
+                notifyMentionsInserted(prefs, valuesArray);
 				notifyUnreadCountChanged(NOTIFICATION_ID_MENTIONS_TIMELINE);
 				break;
 			}
 			case TABLE_ID_DIRECT_MESSAGES_INBOX: {
-				notifyIncomingMessagesInserted(values);
+				notifyIncomingMessagesInserted(valuesArray);
 				notifyUnreadCountChanged(NOTIFICATION_ID_DIRECT_MESSAGES);
 				break;
 			}
-		}
-	}
+            case TABLE_ID_DRAFTS: {
+                for (ContentValues values : valuesArray) {
+                    displayNewDraftNotification(values);
+		        }
+                break;
+	        }
+        }
+    }
+
+    private void displayNewDraftNotification(ContentValues values) {
+        final Context context = getContext();
+        final NotificationManager nm = getNotificationManager();
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        builder.setTicker(context.getString(R.string.draft_saved));
+        builder.setContentTitle(context.getString(R.string.draft_saved));
+        builder.setContentText(values.getAsString(Drafts.TEXT));
+        builder.setSmallIcon(R.drawable.ic_stat_info);
+        final Intent service = new Intent(context, BackgroundOperationService.class);
+        service.setAction(INTENT_ACTION_DISCARD_DRAFT);
+        final PendingIntent discardIntent = PendingIntent.getService(context, 0, service, 0);
+        final Action.Builder actionBuilder = new Action.Builder(R.drawable.ic_action_delete,
+                context.getString(R.string.discard), discardIntent);
+        builder.addAction(actionBuilder.build());
+        nm.notify(16, builder.build());
+    }
 
 	private void preloadImages(final ContentValues... values) {
 		if (values == null) return;

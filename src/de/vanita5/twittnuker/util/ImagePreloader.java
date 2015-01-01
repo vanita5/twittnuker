@@ -57,17 +57,7 @@ public class ImagePreloader implements Constants {
 	public File getCachedImageFile(final String url) {
 		if (url == null) return null;
 		final File cache = mDiskCache.get(url);
-//		if (ImageValidator.checkImageValidity(cache))
-//			return cache;
-//		else {
-//			preloadImage(url);
-//		}
-//		return null;
 
-		//TEST
-		//It looks like the image validation is not always working correctly
-		//Return the cache file either way,
-		//worst case should be cache == null, but thats okay.
 		if (!ImageValidator.checkImageValidity(cache)) {
 			preloadImage(url);
 		}

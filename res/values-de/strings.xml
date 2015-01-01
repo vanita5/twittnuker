@@ -633,6 +633,14 @@
     <string name="retweet_quote_confirm_title">Retweet</string>
     <string name="font">Font</string>
     <string name="size">Grösse</string>
+    <string name="just_now">Jetzt</string>
+    <string name="requested">(D) Requested</string>
+    <string name="round">Rund</string>
+    <string name="square">Rechteckig</string>
+    <string name="profile_image_style">Profilbild Format</string>
+    <string name="media_preview_style">Bildvorschau Format</string>
+    <string name="draft_saved">Entwurf gespeichert</string>
+    <string name="open_twitter_links">Twitter Links öffnen</string>
 
 
     <!-- Twittnuker -->

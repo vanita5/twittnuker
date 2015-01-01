@@ -57,6 +57,11 @@ public class ParcelableStatusesAdapter extends AbsStatusesAdapter<List<Parcelabl
 	public int getStatusCount() {
 		if (mData == null) return 0;
 		return mData.size();
+    }
+
+    @Override
+    public int getMediaPreviewStyle() {
+        return 0;
 	}
 
 	public void setData(List<ParcelableStatus> data) {

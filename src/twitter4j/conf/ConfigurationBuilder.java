@@ -76,7 +76,8 @@ public final class ConfigurationBuilder {
 		configuration.setSigningUploadBaseURL(conf.getSigningUploadBaseURL());
 		configuration.setUser(conf.getUser());
 		configuration.setUseSSL(conf.isSSLEnabled());
-
+        configuration.setIncludeCards(conf.isIncludeCardsEnabled());
+        configuration.setCardsPlatform(conf.getCardsPlatform());
 	}
 
 	public Configuration build() {
@@ -327,6 +328,19 @@ public final class ConfigurationBuilder {
 	public ConfigurationBuilder setUseSSL(final boolean useSSL) {
 		checkNotBuilt();
 		configuration.setUseSSL(useSSL);
+		return this;
+	}
+
+	public ConfigurationBuilder setIncludeCards(final boolean includeCards) {
+		checkNotBuilt();
+		configuration.setIncludeCards(includeCards);
+		return this;
+	}
+
+
+	public ConfigurationBuilder setCardsPlatform(final String cardsPlatform) {
+		checkNotBuilt();
+		configuration.setCardsPlatform(cardsPlatform);
 		return this;
 	}
 

@@ -662,6 +662,15 @@
     <string name="retweet_quote_confirm_title">Retweet</string>
     <string name="font">Font</string>
     <string name="size">Size</string>
+    <string name="just_now">Just now</string>
+    <string name="requested">Requested</string>
+    <string name="round">Round</string>
+    <string name="square">Square</string>
+    <string name="profile_image_style">Profile image style</string>
+    <string name="default_profile_image_style">round</string>
+    <string name="media_preview_style">Media preview style</string>
+    <string name="draft_saved">Draft saved</string>
+    <string name="open_twitter_links">Open Twitter links</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
@@ -724,6 +733,4 @@
     <string name="no_tab_hint">You can add tabs in the settings</string>
 
     <string name="refresh_on_start_workaround">Use "Refresh before streaming" instead</string>
-    <string name="just_now">(D) just_now</string>
-    <string name="requested">(D) requested</string>
 </resources>

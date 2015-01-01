@@ -25,20 +25,20 @@
     <de.vanita5.twittnuker.preference.ComponentStatePreference
     	android:name="de.vanita5.twittnuker.activity.TwitterLinkHandlerActivity"
     	android:key="twitter_link_handler"
-    	android:title="@string/twitter_link_handler"/>
+    	android:title="@string/open_twitter_links"/>
+
     <de.vanita5.twittnuker.preference.ComponentStatePreference
     	android:name="de.vanita5.twittnuker.activity.AssistLauncherActivity"
     	android:key="compose_now"
     	android:summary="@string/compose_now_summary"
     	android:title="@string/compose_now"/>
 
-    <de.vanita5.twittnuker.preference.AutoInvalidateListPreference
+    <de.vanita5.twittnuker.preference.SummaryListPreference
     	android:defaultValue="compose"
     	android:dependency="compose_now"
     	android:entries="@array/entries_compose_now_action"
     	android:entryValues="@array/values_compose_now_action"
     	android:key="compose_now_action"
-    	android:summary="%s"
     	android:title="@string/compose_now_action"/>
 
     <Preference android:title="@string/import_settings">

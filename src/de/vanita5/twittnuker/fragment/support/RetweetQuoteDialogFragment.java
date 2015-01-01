@@ -39,7 +39,9 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
 import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
@@ -73,13 +75,16 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
 		final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
 		final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 		final Context context = builder.getContext();
+		final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
+				SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final ImageLoaderWrapper loader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
 		final ImageLoadingHandler handler = new ImageLoadingHandler(R.id.media_preview_progress);
         final AsyncTwitterWrapper twitter = getTwitterWrapper();
 		final LayoutInflater inflater = LayoutInflater.from(context);
 		@SuppressLint("InflateParams") final View view = inflater.inflate(R.layout.dialog_scrollable_status, null);
 		final StatusViewHolder holder = new StatusViewHolder(view.findViewById(R.id.item_content));
-
+        final int profileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
+        final int mediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
 		final ParcelableStatus status = getStatus();
 
 		builder.setView(view);
@@ -89,7 +94,8 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
 		builder.setNegativeButton(android.R.string.cancel, null);
 
 
-        holder.displayStatus(context, loader, handler, twitter, getStatus());
+        holder.displayStatus(context, loader, handler, twitter, profileImageStyle, mediaPreviewStyle,
+                getStatus(), null);
 		view.findViewById(R.id.item_menu).setVisibility(View.GONE);
 		view.findViewById(R.id.action_buttons).setVisibility(View.GONE);
 		view.findViewById(R.id.reply_retweet_status).setVisibility(View.GONE);

@@ -16,8 +16,15 @@
 
 package twitter4j;
 
-import static twitter4j.http.HttpResponseCode.ENHANCE_YOUR_CLAIM;
-import static twitter4j.http.HttpResponseCode.SERVICE_UNAVAILABLE;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.Authorization;
 import twitter4j.auth.AuthorizationFactory;
@@ -36,14 +43,8 @@ import twitter4j.http.HttpResponseListener;
 import twitter4j.internal.json.InternalJSONFactory;
 import twitter4j.internal.json.InternalJSONFactoryImpl;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import static twitter4j.http.HttpResponseCode.ENHANCE_YOUR_CLAIM;
+import static twitter4j.http.HttpResponseCode.SERVICE_UNAVAILABLE;
 
 /**
  * Base class of Twitter / AsyncTwitter / TwitterStream supports OAuth.
@@ -432,6 +433,13 @@ abstract class TwitterBaseImpl implements OAuthSupport, HttpResponseListener, Tw
 	protected boolean isOk(final HttpResponse response) {
 		return response != null && response.getStatusCode() < 300;
 	}
+
+    protected HttpParameter[] mergeParameters(final Paging paging, final HttpParameter... params2) {
+        if (paging == null) {
+            return params2;
+        }
+        return mergeParameters(paging.asPostParameterArray(), params2);
+    }
 
 	protected HttpParameter[] mergeParameters(final HttpParameter[] params1, final HttpParameter... params2) {
 		if (params1 != null && params2 != null) {

@@ -47,7 +47,6 @@ import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter.StatusAdapterListener;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -212,9 +211,9 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
         switch (id) {
             case R.id.reply_count: {
                 final Context context = getActivity();
-                final Intent intent = new Intent(IntentConstants.INTENT_ACTION_REPLY);
+                final Intent intent = new Intent(INTENT_ACTION_REPLY);
                 intent.setPackage(context.getPackageName());
-                intent.putExtra(IntentConstants.EXTRA_STATUS, status);
+                intent.putExtra(EXTRA_STATUS, status);
                 context.startActivity(intent);
                 break;
             }

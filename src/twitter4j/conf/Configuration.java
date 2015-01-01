@@ -28,6 +28,8 @@ import twitter4j.http.HttpClientWrapperConfiguration;
 public interface Configuration extends HttpClientConfiguration, HttpClientWrapperConfiguration,
 		AuthorizationConfiguration {
 
+    String getCardsPlatform();
+
 	String getClientName();
 
 	String getClientURL();
@@ -63,6 +65,8 @@ public interface Configuration extends HttpClientConfiguration, HttpClientWrappe
 	String getUploadBaseURL();
 
 	boolean isDebugEnabled();
+
+    boolean isIncludeCardsEnabled();
 
 	boolean isIncludeEntitiesEnabled();
 

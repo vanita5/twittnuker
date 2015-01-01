@@ -34,6 +34,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
@@ -52,6 +54,7 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Space;
@@ -60,9 +63,11 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
+import de.vanita5.twittnuker.adapter.AbsStatusesAdapter.StatusAdapterListener;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader;
 import de.vanita5.twittnuker.loader.support.StatusRepliesLoader;
 import de.vanita5.twittnuker.model.ListResponse;
@@ -88,6 +93,7 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.StatusTextView;
 import de.vanita5.twittnuker.view.TwidereMenuBar;
+import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
@@ -115,26 +121,21 @@ import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 import static de.vanita5.twittnuker.util.Utils.startStatusShareChooser;
 
 public class StatusFragment extends BaseSupportFragment
-        implements LoaderCallbacks<SingleResponse<ParcelableStatus>>, OnMediaClickListener {
+        implements LoaderCallbacks<SingleResponse<ParcelableStatus>>, OnMediaClickListener, StatusAdapterListener {
 
     private static final int LOADER_ID_DETAIL_STATUS = 1;
     private static final int LOADER_ID_STATUS_REPLIES = 2;
-
     private static final int STATE_LOADED = 1;
     private static final int STATE_LOADING = 2;
     private static final int STATE_ERROR = 3;
-
     private RecyclerView mRecyclerView;
     private StatusAdapter mStatusAdapter;
     private boolean mRepliesLoaderInitialized;
-
     private LoadConversationTask mLoadConversationTask;
-
     private LinearLayoutManager mLayoutManager;
     private View mStatusContent;
     private View mProgressContainer;
     private View mErrorContainer;
-
     private LoaderCallbacks<List<ParcelableStatus>> mRepliesLoaderCallback = new LoaderCallbacks<List<ParcelableStatus>>() {
 		@Override
         public Loader<List<ParcelableStatus>> onCreateLoader(int id, Bundle args) {
@@ -195,14 +196,6 @@ public class StatusFragment extends BaseSupportFragment
     }
 
     @Override
-    public Loader<SingleResponse<ParcelableStatus>> onCreateLoader(final int id, final Bundle args) {
-        final Bundle fragmentArgs = getArguments();
-        final long accountId = fragmentArgs.getLong(EXTRA_ACCOUNT_ID, -1);
-        final long statusId = fragmentArgs.getLong(EXTRA_STATUS_ID, -1);
-        return new ParcelableStatusLoader(getActivity(), false, fragmentArgs, accountId, statusId);
-    }
-
-    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         final View view = getView();
@@ -217,6 +210,7 @@ public class StatusFragment extends BaseSupportFragment
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setClipToPadding(false);
         mStatusAdapter = new StatusAdapter(this, compact);
+        mStatusAdapter.setEventListener(this);
         mRecyclerView.setAdapter(mStatusAdapter);
 
         setState(STATE_LOADING);
@@ -225,8 +219,81 @@ public class StatusFragment extends BaseSupportFragment
     }
 
     @Override
+    public void onGapClick(GapViewHolder holder, int position) {
+
+    }
+
+    @Override
+    public void onStatusActionClick(StatusViewHolder holder, int id, int position) {
+        final ParcelableStatus status = mStatusAdapter.getStatus(position);
+        if (status == null) return;
+        switch (id) {
+            case R.id.reply_count: {
+                final Context context = getActivity();
+                final Intent intent = new Intent(IntentConstants.INTENT_ACTION_REPLY);
+                intent.setPackage(context.getPackageName());
+                intent.putExtra(IntentConstants.EXTRA_STATUS, status);
+                context.startActivity(intent);
+                break;
+            }
+            case R.id.retweet_count: {
+                RetweetQuoteDialogFragment.show(getFragmentManager(), status);
+                break;
+            }
+            case R.id.favorite_count: {
+                final AsyncTwitterWrapper twitter = getTwitterWrapper();
+                if (twitter == null) return;
+                if (status.is_favorite) {
+                    twitter.destroyFavoriteAsync(status.account_id, status.id);
+                } else {
+                    twitter.createFavoriteAsync(status.account_id, status.id);
+                }
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onStatusClick(StatusViewHolder holder, int position) {
+        openStatus(getActivity(), mStatusAdapter.getStatus(position), null);
+    }
+
+    @Override
+    public void onStatusMenuClick(StatusViewHolder holder, int position) {
+        final Bundle args = new Bundle();
+        args.putParcelable(EXTRA_STATUS, mStatusAdapter.getStatus(position));
+        final StatusMenuDialogFragment f = new StatusMenuDialogFragment();
+        f.setArguments(args);
+        f.show(getActivity().getSupportFragmentManager(), "status_menu");
+    }
+
+    @Override
+    public Loader<SingleResponse<ParcelableStatus>> onCreateLoader(final int id, final Bundle args) {
+        final Bundle fragmentArgs = getArguments();
+        final long accountId = fragmentArgs.getLong(EXTRA_ACCOUNT_ID, -1);
+        final long statusId = fragmentArgs.getLong(EXTRA_STATUS_ID, -1);
+        return new ParcelableStatusLoader(getActivity(), false, fragmentArgs, accountId, statusId);
+    }
+
+    @Override
     public void onMediaClick(View view, ParcelableMedia media, long accountId) {
         Utils.openImageDirectly(getActivity(), accountId, media.url);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mStatusContent = view.findViewById(R.id.status_content);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mProgressContainer = view.findViewById(R.id.progress_container);
+        mErrorContainer = view.findViewById(R.id.error_retry_container);
+    }
+
+    @Override
+    protected void fitSystemWindows(Rect insets) {
+        super.fitSystemWindows(insets);
+//        mRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        getView().setPadding(insets.left, insets.top, insets.right, insets.bottom);
     }
 
     @Override
@@ -254,28 +321,6 @@ public class StatusFragment extends BaseSupportFragment
         }
     }
 
-    private void setState(int state) {
-        mStatusContent.setVisibility(state == STATE_LOADED ? View.VISIBLE : View.GONE);
-        mProgressContainer.setVisibility(state == STATE_LOADING ? View.VISIBLE : View.GONE);
-        mErrorContainer.setVisibility(state == STATE_ERROR ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mStatusContent = view.findViewById(R.id.status_content);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        mProgressContainer = view.findViewById(R.id.progress_container);
-        mErrorContainer = view.findViewById(R.id.error_retry_container);
-    }
-
-    @Override
-    protected void fitSystemWindows(Rect insets) {
-        super.fitSystemWindows(insets);
-//        mRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-        getView().setPadding(insets.left, insets.top, insets.right, insets.bottom);
-    }
-
     private void loadConversation(ParcelableStatus status) {
         if (mLoadConversationTask != null && mLoadConversationTask.getStatus() == Status.RUNNING) {
             mLoadConversationTask.cancel(true);
@@ -296,11 +341,6 @@ public class StatusFragment extends BaseSupportFragment
         }
         getLoaderManager().initLoader(LOADER_ID_STATUS_REPLIES, args, mRepliesLoaderCallback);
         mRepliesLoaderInitialized = true;
-    }
-
-    @Override
-    public void onLoaderReset(final Loader<SingleResponse<ParcelableStatus>> loader) {
-
     }
 
     private void setConversation(List<ParcelableStatus> data) {
@@ -327,6 +367,12 @@ public class StatusFragment extends BaseSupportFragment
         }
     }
 
+    private void setState(int state) {
+        mStatusContent.setVisibility(state == STATE_LOADED ? View.VISIBLE : View.GONE);
+        mProgressContainer.setVisibility(state == STATE_LOADING ? View.VISIBLE : View.GONE);
+        mErrorContainer.setVisibility(state == STATE_ERROR ? View.VISIBLE : View.GONE);
+    }
+
     private static class StatusAdapter extends Adapter<ViewHolder> implements IStatusesAdapter<List<ParcelableStatus>> {
 
         private static final int VIEW_TYPE_DETAIL_STATUS = 0;
@@ -349,6 +395,8 @@ public class StatusFragment extends BaseSupportFragment
         private ParcelableStatus mStatus;
         private ParcelableCredentials mStatusAccount;
         private List<ParcelableStatus> mConversation, mReplies;
+		private StatusAdapterListener mStatusAdapterListener;
+		private DetailStatusViewHolder mCachedHolder;
 
         public StatusAdapter(StatusFragment fragment, boolean compact) {
             final Context context = fragment.getActivity();
@@ -408,25 +456,29 @@ public class StatusFragment extends BaseSupportFragment
 			}
 		}
 
-        public ParcelableCredentials getStatusAccount() {
-            return mStatusAccount;
-        }
-
 	    @Override
         public int getStatusCount() {
             return getConversationCount() + 1 + getRepliesCount() + 1;
 	    }
 
-        public float getTextSize() {
-            return mTextSize;
+        @Override
+        public int getProfileImageStyle() {
+            return 0;
         }
 
 	    @Override
-        public void onStatusClick(StatusViewHolder holder, int position) {
-            openStatus(mFragment.getActivity(), getStatus(position), null);
+        public int getMediaPreviewStyle() {
+            return 0;
 	    }
 
 	    @Override
+        public final void onStatusClick(StatusViewHolder holder, int position) {
+            if (mStatusAdapterListener != null) {
+                mStatusAdapterListener.onStatusClick(holder, position);
+            }
+        }
+
+        @Override
         public void onUserProfileClick(StatusViewHolder holder, int position) {
 
 	    }
@@ -441,20 +493,16 @@ public class StatusFragment extends BaseSupportFragment
             return mFragment.getTwitterWrapper();
         }
 
+        public float getTextSize() {
+            return mTextSize;
+        }
+
         public ParcelableStatus getStatus() {
             return mStatus;
         }
 
-        public boolean setStatus(ParcelableStatus status) {
-            final ParcelableStatus old = mStatus;
-            mStatus = status;
-            if (status != null) {
-                mStatusAccount = ParcelableAccount.getCredentials(mContext, status.account_id);
-            } else {
-                mStatusAccount = null;
-            }
-            notifyDataSetChanged();
-            return !CompareUtils.objectEquals(old, status);
+        public ParcelableCredentials getStatusAccount() {
+            return mStatusAccount;
         }
 
 	    @Override
@@ -463,18 +511,37 @@ public class StatusFragment extends BaseSupportFragment
 	    }
 
 	    @Override
-        public void onGapClick(ViewHolder holder, int position) {
-
-	    }
+        public final void onGapClick(ViewHolder holder, int position) {
+            if (mStatusAdapterListener != null) {
+                mStatusAdapterListener.onGapClick((GapViewHolder) holder, position);
+	        }
+        }
 
         public boolean isNameFirst() {
             return mNameFirst;
 	    }
 
 	    @Override
+        public void onViewDetachedFromWindow(ViewHolder holder) {
+            super.onViewDetachedFromWindow(holder);
+            if (holder instanceof DetailStatusViewHolder) {
+                mCachedHolder = (DetailStatusViewHolder) holder;
+            }
+        }
+
+        @Override
+        public void onViewAttachedToWindow(ViewHolder holder) {
+            super.onViewAttachedToWindow(holder);
+            if (mCachedHolder == holder) {
+                mCachedHolder = null;
+            }
+        }
+
+        @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             switch (viewType) {
                 case VIEW_TYPE_DETAIL_STATUS: {
+                    if (mCachedHolder != null) return mCachedHolder;
                     final View view = mInflater.inflate(R.layout.header_status, parent, false);
                     final CardView cardView = (CardView) view.findViewById(R.id.card);
                     if (cardView != null) {
@@ -558,23 +625,43 @@ public class StatusFragment extends BaseSupportFragment
 
         @Override
         public void onItemActionClick(ViewHolder holder, int id, int position) {
-
-	    }
+            if (mStatusAdapterListener != null) {
+                mStatusAdapterListener.onStatusActionClick((StatusViewHolder) holder, id, position);
+	        }
+        }
 
         @Override
         public void onItemMenuClick(ViewHolder holder, int position) {
-
-	    }
+            if (mStatusAdapterListener != null) {
+                mStatusAdapterListener.onStatusMenuClick((StatusViewHolder) holder, position);
+	        }
+        }
 
         public void setConversation(List<ParcelableStatus> conversation) {
             mConversation = conversation;
             notifyDataSetChanged();
 	    }
 
+        public void setEventListener(StatusAdapterListener listener) {
+            mStatusAdapterListener = listener;
+        }
+
         public void setReplies(List<ParcelableStatus> replies) {
             mReplies = replies;
             notifyDataSetChanged();
 	    }
+
+        public boolean setStatus(ParcelableStatus status) {
+            final ParcelableStatus old = mStatus;
+            mStatus = status;
+            if (status != null) {
+                mStatusAccount = ParcelableAccount.getCredentials(mContext, status.account_id);
+            } else {
+                mStatusAccount = null;
+            }
+            notifyDataSetChanged();
+            return !CompareUtils.objectEquals(old, status);
+        }
 
         private int getConversationCount() {
             return mConversation != null ? mConversation.size() : 1;
@@ -585,6 +672,10 @@ public class StatusFragment extends BaseSupportFragment
 	    }
     }
 
+    @Override
+    public void onLoaderReset(final Loader<SingleResponse<ParcelableStatus>> loader) {
+
+    }
 
     static class LoadConversationTask extends TwidereAsyncTask<ParcelableStatus, ParcelableStatus,
 			ListResponse<ParcelableStatus>> {
@@ -662,6 +753,7 @@ public class StatusFragment extends BaseSupportFragment
         private final LinearLayout mediaPreviewGrid;
 
         private final View locationContainer;
+        private final FrameLayout twitterCard;
 
         public DetailStatusViewHolder(StatusAdapter adapter, View itemView) {
             super(itemView);
@@ -685,6 +777,7 @@ public class StatusFragment extends BaseSupportFragment
             mediaPreviewGrid = (LinearLayout) itemView.findViewById(R.id.media_preview_grid);
             locationContainer = itemView.findViewById(R.id.location_container);
             profileContainer = itemView.findViewById(R.id.profile_container);
+            twitterCard = (FrameLayout) itemView.findViewById(R.id.twitter_card);
 
             setIsRecyclable(false);
             initViews();
@@ -803,6 +896,7 @@ public class StatusFragment extends BaseSupportFragment
 
         public void showStatus(ParcelableStatus status) {
             if (status == null) return;
+            final StatusFragment fragment = adapter.getFragment();
             final Context context = adapter.getContext();
             final Resources resources = context.getResources();
             final ImageLoaderWrapper loader = adapter.getImageLoader();
@@ -860,6 +954,20 @@ public class StatusFragment extends BaseSupportFragment
                 MediaPreviewUtils.addToLinearLayout(mediaPreviewGrid, loader, status.media,
 						status.account_id, maxColumns, adapter.getFragment());
             }
+
+            if (Utils.isCardSupported(status.card)) {
+                twitterCard.setVisibility(View.VISIBLE);
+                final Fragment cardFragment = Utils.createTwitterCardFragment(status.card);
+                final FragmentManager fm = fragment.getChildFragmentManager();
+                final FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.twitter_card, cardFragment);
+                ft.commit();
+            } else {
+                twitterCard.setVisibility(View.GONE);
+                final FragmentManager fm = fragment.getChildFragmentManager();
+//                final FragmentTransaction ft = fm.beginTransaction();
+            }
+
             setMenuForStatus(context, menuBar.getMenu(), status, adapter.getStatusAccount());
             menuBar.show();
 		}
@@ -890,13 +998,6 @@ public class StatusFragment extends BaseSupportFragment
         }
 
         @Override
-        public void setOrientation(int orientation) {
-            if (orientation != VERTICAL)
-                throw new IllegalArgumentException("Only VERTICAL orientation supported");
-            super.setOrientation(orientation);
-		}
-
-		@Override
         public int getDecoratedMeasuredHeight(View child) {
             final int height = super.getDecoratedMeasuredHeight(child);
             int heightBeforeSpace = 0;
@@ -919,6 +1020,13 @@ public class StatusFragment extends BaseSupportFragment
 		        }
             }
             return height;
+        }
+
+        @Override
+        public void setOrientation(int orientation) {
+            if (orientation != VERTICAL)
+                throw new IllegalArgumentException("Only VERTICAL orientation supported");
+            super.setOrientation(orientation);
         }
 
 	}

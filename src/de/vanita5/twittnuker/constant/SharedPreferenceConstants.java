@@ -27,6 +27,7 @@ import static de.vanita5.twittnuker.annotation.Preference.Type.INT;
 import static de.vanita5.twittnuker.annotation.Preference.Type.LONG;
 import static de.vanita5.twittnuker.annotation.Preference.Type.STRING;
 
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.annotation.Preference;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
@@ -48,6 +49,14 @@ public interface SharedPreferenceConstants {
 	public static final int VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE = 0x2;
 	public static final int VALUE_LINK_HIGHLIGHT_OPTION_CODE_BOTH = VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT
 			| VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE;
+
+    public static final String VALUE_MEDIA_PREVIEW_STYLE_CROP = "crop";
+    public static final String VALUE_MEDIA_PREVIEW_STYLE_SCALE = "scale";
+    public static final String VALUE_MEDIA_PREVIEW_STYLE_NONE = VALUE_NONE;
+
+    public static final int VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP = 1;
+    public static final int VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE = 2;
+    public static final int VALUE_MEDIA_PREVIEW_STYLE_CODE_NONE = 0;
 
 	public static final String VALUE_THEME_FONT_FAMILY_REGULAR = "sans-serif";
 	public static final String VALUE_THEME_FONT_FAMILY_CONDENSED = "sans-serif-condensed";
@@ -78,6 +87,9 @@ public interface SharedPreferenceConstants {
 	public static final String VALUE_THEME_NAME_TWIDERE = "twidere";
 	public static final String VALUE_THEME_NAME_DARK = "dark";
 	public static final String VALUE_THEME_NAME_LIGHT = "light";
+
+    public static final String VALUE_PROFILE_IMAGE_STYLE_ROUND = "round";
+    public static final String VALUE_PROFILE_IMAGE_STYLE_SQUARE = "square";
 
 	public static final String VALUE_COMPOSE_NOW_ACTION_COMPOSE = "compose";
 	public static final String VALUE_COMPOSE_NOW_ACTION_TAKE_PHOTO = "take_photo";
@@ -125,7 +137,7 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_DATABASE_ITEM_LIMIT = "database_item_limit";
 	@Preference(type = INT, hasDefault = true, defaultInt = DEFAULT_LOAD_ITEM_LIMIT)
 	public static final String KEY_LOAD_ITEM_LIMIT = "load_item_limit";
-	@Preference(type = INT)
+    @Preference(type = INT, hasDefault = true, defaultResource = R.integer.default_text_size)
 	public static final String KEY_TEXT_SIZE = "text_size_int";
 	@Preference(type = STRING, hasDefault = true, defaultString = DEFAULT_THEME)
 	public static final String KEY_THEME = "theme";
@@ -143,8 +155,6 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_THEME_FONT_FAMILY = "theme_font_family";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	public static final String KEY_DISPLAY_PROFILE_IMAGE = "display_profile_image";
-	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
-	public static final String KEY_DISPLAY_IMAGE_PREVIEW = "display_image_preview";
 	@Preference(type = BOOLEAN)
 	public static final String KEY_LEFTSIDE_COMPOSE_BUTTON = "leftside_compose_button";
 	@Preference(type = BOOLEAN)
@@ -296,10 +306,13 @@ public interface SharedPreferenceConstants {
 	@Preference(type = STRING, hasDefault = true, defaultString = VALUE_COMPOSE_NOW_ACTION_COMPOSE)
 	public static final String KEY_COMPOSE_NOW_ACTION = "compose_now_action";
 	public static final String KEY_FALLBACK_TWITTER_LINK_HANDLER = "fallback_twitter_link_handler";
-	@Preference(type = STRING, hasDefault = true, defaultString = "CENTER_CROP")
-	public static final String KEY_IMAGE_PREVIEW_SCALE_TYPE = "image_preview_scale_type";
+
+    @Preference(type = STRING, hasDefault = true, defaultString = VALUE_MEDIA_PREVIEW_STYLE_CROP)
+    public static final String KEY_MEDIA_PREVIEW_STYLE = "media_preview_style";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	public static final String KEY_SORT_TIMELINE_BY_ID = "sort_timeline_by_id";
+    @Preference(type = STRING, hasDefault = true)
+    public static final String KEY_PROFILE_IMAGE_STYLE = "profile_image_style";
 
 	public static final String KEY_QUICK_MENU_EXPANDED = "quick_menu_expanded";
 

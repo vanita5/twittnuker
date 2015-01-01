@@ -64,8 +64,14 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     private final AsyncTwitterWrapper mTwitterWrapper;
     private final int mCardBackgroundColor;
     private final int mTextSize;
+    private final int mProfileImageStyle, mMediaPreviewStyle;
 	private boolean mLoadMoreIndicatorEnabled;
     private StatusAdapterListener mStatusAdapterListener;
+
+    @Override
+    public int getMediaPreviewStyle() {
+        return mMediaPreviewStyle;
+    }
 
 	public AbsStatusesAdapter(Context context, boolean compact) {
 		mContext = context;
@@ -82,6 +88,13 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 		} else {
             mCardLayoutResource = R.layout.card_item_status;
 		}
+        mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
+        mMediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
+    }
+
+    @Override
+    public int getProfileImageStyle() {
+        return mProfileImageStyle;
 	}
 
     public abstract D getData();
