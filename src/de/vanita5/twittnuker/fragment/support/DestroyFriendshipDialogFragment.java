@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 
 public class DestroyFriendshipDialogFragment extends BaseSupportDialogFragment implements
 		DialogInterface.OnClickListener {
@@ -62,7 +62,7 @@ public class DestroyFriendshipDialogFragment extends BaseSupportDialogFragment i
         final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 		final ParcelableUser user = getUser();
 		if (user != null) {
-			final String display_name = Utils.getDisplayName(user.name, user.screen_name);
+            final String display_name = UserColorNameUtils.getDisplayName(getActivity(), user.name, user.screen_name);
 			builder.setTitle(getString(R.string.unfollow_user, display_name));
 			builder.setMessage(getString(R.string.unfollow_user_confirm_message, display_name));
 		}

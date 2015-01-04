@@ -26,18 +26,19 @@ import android.content.Context;
 
 import de.vanita5.twittnuker.model.ParcelableActivity;
 
+import java.util.List;
+
 import twitter4j.Activity;
 import twitter4j.Paging;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import java.util.List;
+public class ActivitiesByFriendsLoader extends Twitter4JActivitiesLoaderOld {
 
-public class ActivitiesByFriendsLoader extends Twitter4JActivitiesLoader {
-
-	public ActivitiesByFriendsLoader(final Context context, final long[] accountIds,
-									 final List<ParcelableActivity> data, final String[] saveFileArgs, final boolean useCache) {
-		super(context, accountIds, data, saveFileArgs, useCache);
+    public ActivitiesByFriendsLoader(final Context context, final long[] accountIds, long[] sinceIds,
+                                     long[] maxIds, final List<ParcelableActivity> data,
+                                     final String[] saveFileArgs, final boolean useCache) {
+        super(context, accountIds, sinceIds, maxIds, data, saveFileArgs, useCache);
 	}
 
 	@Override

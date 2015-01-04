@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.Utils.configBaseAdapter;
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,9 +31,13 @@ import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
 import java.util.List;
+
+import static de.vanita5.twittnuker.util.Utils.configBaseAdapter;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
 
 public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserList> implements IBaseAdapter {
 
@@ -76,7 +77,8 @@ public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<Parcelabl
 		holder.icon.setImageDrawable(null);
 
 		final ParcelableUserList user_list = getItem(position);
-		final String display_name = getDisplayName(user_list.user_name, user_list.user_screen_name, isDisplayNameFirst());
+        final String display_name = UserColorNameUtils.getDisplayName(user_list.user_name,
+				user_list.user_screen_name, isDisplayNameFirst());
 		holder.text1.setText(user_list.name);
 		holder.text2.setText(mContext.getString(R.string.created_by, display_name));
 		holder.icon.setVisibility(isDisplayProfileImage() ? View.VISIBLE : View.GONE);

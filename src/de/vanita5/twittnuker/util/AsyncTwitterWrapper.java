@@ -702,7 +702,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				final String message;
 				if (users.length == 1) {
 					final ParcelableUser user = users[0];
-					final String displayName = Utils.getDisplayName(user.name, user.screen_name);
+                    final String displayName = UserColorNameUtils.getDisplayName(mContext, user.name, user.screen_name);
 					message = mContext.getString(R.string.added_user_to_list, displayName, result.getData().name);
 				} else {
 					final Resources res = mContext.getResources();
@@ -1164,7 +1164,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			if (succeed) {
 				if (users.length == 1) {
 					final ParcelableUser user = users[0];
-					final String displayName = Utils.getDisplayName(user.name, user.screen_name);
+                    final String displayName = UserColorNameUtils.getDisplayName(mContext, user.name, user.screen_name);
 					message = mContext.getString(R.string.deleted_user_from_list, displayName, result.getData().name);
 				} else {
 					final Resources res = mContext.getResources();

@@ -36,7 +36,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 
 public class DeleteUserListMembersDialogFragment extends BaseSupportDialogFragment implements
 		DialogInterface.OnClickListener {
@@ -67,7 +67,7 @@ public class DeleteUserListMembersDialogFragment extends BaseSupportDialogFragme
 		if (users == null || userList == null) throw new NullPointerException();
 		if (users.length == 1) {
 			final ParcelableUser user = users[0];
-            final String displayName = Utils.getDisplayName(user.name, user.screen_name);
+			final String displayName = UserColorNameUtils.getDisplayName(wrapped, user.name, user.screen_name);
 			builder.setTitle(getString(R.string.delete_user, displayName));
 			builder.setMessage(getString(R.string.delete_user_from_list_confirm, displayName, userList.name));
 		} else {

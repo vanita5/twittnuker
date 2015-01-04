@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 
 public class CreateUserBlockDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
 
@@ -59,7 +59,7 @@ public class CreateUserBlockDialogFragment extends BaseSupportDialogFragment imp
         final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 		final ParcelableUser user = getUser();
 		if (user != null) {
-            final String display_name = Utils.getDisplayName(user.name, user.screen_name);
+			final String display_name = UserColorNameUtils.getDisplayName(wrapped, user.name, user.screen_name);
 			builder.setTitle(getString(R.string.block_user, display_name));
 			builder.setMessage(getString(R.string.block_user_confirm_message, display_name));
 		}

@@ -21,37 +21,18 @@
  */
 package de.vanita5.twittnuker.adapter.iface;
 
-import android.content.Context;
-
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
-public interface IStatusesAdapter<Data> extends IGapSupportedAdapter, ICardSupportedAdapter {
-
-    ImageLoaderWrapper getImageLoader();
-
-    Context getContext();
-
-    ImageLoadingHandler getImageLoadingHandler();
+public interface IStatusesAdapter<Data> extends IContentCardAdapter {
 
     ParcelableStatus getStatus(int position);
 
     int getStatusCount();
 
-    int getProfileImageStyle();
-
-    int getMediaPreviewStyle();
-
-    void onStatusClick(StatusViewHolder holder, int position);
+    void setData(Data data);
 
     void onUserProfileClick(StatusViewHolder holder, int position);
 
-    void setData(Data data);
-
-    AsyncTwitterWrapper getTwitterWrapper();
-
-	float getTextSize();
+    void onStatusClick(StatusViewHolder holder, int position);
 }

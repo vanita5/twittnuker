@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.view.holder.UserListViewHolder;
 import java.util.List;
 import java.util.Locale;
 
-import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;

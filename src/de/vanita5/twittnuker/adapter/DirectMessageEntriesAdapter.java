@@ -44,7 +44,7 @@ import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.Conversat
 import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_SCREEN_NAME;
 import static de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries.IDX_TEXT;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
-import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;

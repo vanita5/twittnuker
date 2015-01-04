@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus.CursorIndices;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
-import de.vanita5.twittnuker.util.UserColorUtils;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.ShapedImageView;
@@ -106,7 +106,10 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
 	}
 
     public void setupViewOptions() {
-        final float textSize = adapter.getTextSize();
+        setTextSize(adapter.getTextSize());
+    }
+
+    public void setTextSize(final float textSize) {
         nameView.setTextSize(textSize);
         textView.setTextSize(textSize);
         screenNameView.setTextSize(textSize * 0.85f);
@@ -158,7 +161,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         screenNameView.setText("@" + status.user_screen_name);
         timeView.setTime(status.timestamp);
 
-        final int userColor = UserColorUtils.getUserColor(context, status.user_id);
+        final int userColor = UserColorNameUtils.getUserColor(context, status.user_id);
         profileImageView.setBorderColor(userColor);
         profileImageView.setStyle(profileImageStyle);
 
@@ -269,7 +272,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         screenNameView.setText("@" + user_screen_name);
         timeView.setTime(timestamp);
 
-        final int userColor = UserColorUtils.getUserColor(context, user_id);
+        final int userColor = UserColorNameUtils.getUserColor(context, user_id);
         profileImageView.setBorderColor(userColor);
         profileImageView.setStyle(adapter.getProfileImageStyle());
 

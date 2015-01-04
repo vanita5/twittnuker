@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -25,19 +25,21 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
-
 import java.util.List;
 
-public abstract class ParcelableStatusesLoader extends AsyncTaskLoader<List<ParcelableStatus>> implements Constants {
+import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 
-    private final List<ParcelableStatus> mData = new NoDuplicatesArrayList<>();
+public abstract class ParcelableActivitiesLoader extends AsyncTaskLoader<List<ParcelableActivity>> implements Constants {
+
+	private final List<ParcelableActivity> mData = new NoDuplicatesArrayList<>();
 	private final boolean mFirstLoad;
 	private final int mTabPosition;
 
-	public ParcelableStatusesLoader(final Context context, final List<ParcelableStatus> data, final int tab_position) {
+	private Long mLastViewedId;
+
+	public ParcelableActivitiesLoader(final Context context, final List<ParcelableActivity> data, final int tab_position) {
 		super(context);
 		mFirstLoad = data == null;
 		if (data != null) {
@@ -46,25 +48,29 @@ public abstract class ParcelableStatusesLoader extends AsyncTaskLoader<List<Parc
 		mTabPosition = tab_position;
 	}
 
-	protected boolean containsStatus(final long status_id) {
-		for (final ParcelableStatus status : mData) {
-			if (status.id == status_id) return true;
+	public Long getLastViewedId() {
+		return mLastViewedId;
+	}
+
+	protected boolean containsStatus(final long id) {
+		for (final ParcelableActivity activity : mData) {
+			if (activity.max_position <= id && activity.min_position >= id) return true;
 		}
 		return false;
 	}
 
-    protected boolean deleteStatus(final List<ParcelableStatus> statuses, final long status_id) {
-        if (statuses == null || statuses.isEmpty()) return false;
-        boolean result = false;
-        for (final ParcelableStatus status : statuses.toArray(new ParcelableStatus[statuses.size()])) {
-            if (status.id == status_id) {
-                result |= statuses.remove(status);
-            }
+	protected boolean deleteStatus(final List<ParcelableActivity> activities, final long id) {
+		if (activities == null || activities.isEmpty()) return false;
+		boolean result = false;
+		for (final ParcelableActivity activity : activities.toArray(new ParcelableActivity[activities.size()])) {
+			if (id <= activity.max_position && id >= activity.min_position) {
+				result |= activities.remove(activity);
+			}
 		}
 		return result;
 	}
 
-	protected List<ParcelableStatus> getData() {
+	protected List<ParcelableActivity> getData() {
 		return mData;
 	}
 
@@ -80,6 +86,5 @@ public abstract class ParcelableStatusesLoader extends AsyncTaskLoader<List<Parc
 	protected void onStartLoading() {
 		forceLoad();
 	}
-
 
 }

@@ -108,6 +108,7 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
@@ -138,7 +139,6 @@ import static de.vanita5.twittnuker.util.Utils.copyStream;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
 import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getImageUploadStatus;
 import static de.vanita5.twittnuker.util.Utils.getQuoteStatus;
 import static de.vanita5.twittnuker.util.Utils.getShareStatus;
@@ -871,11 +871,13 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		final String action = intent.getAction();
 		if (INTENT_ACTION_REPLY.equals(action)) {
 			if (mInReplyToStatus == null) return false;
-			final String display_name = getDisplayName(mInReplyToStatus.user_name, mInReplyToStatus.user_screen_name);
+            final String display_name = UserColorNameUtils.getDisplayName(this, mInReplyToStatus.user_name,
+					mInReplyToStatus.user_screen_name);
 			setTitle(getString(R.string.reply_to, display_name));
 		} else if (INTENT_ACTION_QUOTE.equals(action)) {
 			if (mInReplyToStatus == null) return false;
-			final String display_name = getDisplayName(mInReplyToStatus.user_name, mInReplyToStatus.user_screen_name);
+            final String display_name = UserColorNameUtils.getDisplayName(this, mInReplyToStatus.user_name,
+					mInReplyToStatus.user_screen_name);
 			setTitle(getString(R.string.quote_user, display_name));
 			mSubtitleView
 					.setVisibility(mInReplyToStatus.user_is_protected && mInReplyToStatus.account_id != mInReplyToStatus.user_id ? View.VISIBLE
@@ -885,7 +887,8 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 			setTitle(R.string.edit_draft);
 		} else if (INTENT_ACTION_MENTION.equals(action)) {
 			if (mMentionUser == null) return false;
-			final String display_name = getDisplayName(mMentionUser.name, mMentionUser.screen_name);
+            final String display_name = UserColorNameUtils.getDisplayName(this, mMentionUser.name,
+					mMentionUser.screen_name);
 			setTitle(getString(R.string.mention_user, display_name));
 		} else if (INTENT_ACTION_REPLY_MULTIPLE.equals(action)) {
 			setTitle(R.string.reply);

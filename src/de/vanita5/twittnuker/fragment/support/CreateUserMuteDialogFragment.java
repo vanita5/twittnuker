@@ -12,7 +12,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 
 public class CreateUserMuteDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
 
@@ -39,7 +39,7 @@ public class CreateUserMuteDialogFragment extends BaseSupportDialogFragment impl
 		final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 		final ParcelableUser user = getUser();
 		if (user != null) {
-			final String displayName = Utils.getDisplayName(user.name, user.screen_name);
+            final String displayName = UserColorNameUtils.getDisplayName(wrapped, user.name, user.screen_name);
 			builder.setTitle(getString(R.string.mute_user, displayName));
 			builder.setMessage(getString(R.string.mute_user_confirm_message, displayName));
 		}

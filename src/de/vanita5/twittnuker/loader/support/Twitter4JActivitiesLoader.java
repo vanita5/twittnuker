@@ -22,103 +22,129 @@
 
 package de.vanita5.twittnuker.loader.support;
 
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v4.content.AsyncTaskLoader;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
 
 import org.mariotaku.jsonserializer.JSONFileIO;
-
-import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableActivity;
-import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import twitter4j.Activity;
 import twitter4j.Paging;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.Utils.truncateActivities;
 
-public abstract class Twitter4JActivitiesLoader extends AsyncTaskLoader<List<ParcelableActivity>> implements Constants {
-	private final Context mContext;
+public abstract class Twitter4JActivitiesLoader extends ParcelableActivitiesLoader {
 
-	private final long[] mAccountIds;
-	private final List<ParcelableActivity> mData = new NoDuplicatesArrayList<ParcelableActivity>();
-	private final boolean mIsFirstLoad;
-	private final boolean mUseCache;
+    private final Context mContext;
+    private final long mAccountIds;
+    private final long mMaxId, mSinceId;
+    private final SQLiteDatabase mDatabase;
+    private final Handler mHandler;
+    private final Object[] mSavedStatusesFileArgs;
+    private Comparator<ParcelableActivity> mComparator;
 
-	private final Object[] mSavedActivitiesFileArgs;
-
-	public Twitter4JActivitiesLoader(final Context context, final long[] accountIds,
-									 final List<ParcelableActivity> data, final String[] saveFileArgs, final boolean useCache) {
-		super(context);
+    public Twitter4JActivitiesLoader(final Context context, final long accountId, final long sinceId,
+                                     final long maxId, final List<ParcelableActivity> data, final String[] savedStatusesArgs,
+                                     final int tabPosition) {
+        super(context, data, tabPosition);
 		mContext = context;
-		mAccountIds = accountIds;
-		mIsFirstLoad = data == null;
-		if (data != null) {
-			mData.addAll(data);
-		}
-		mUseCache = useCache;
-		mSavedActivitiesFileArgs = saveFileArgs;
-	}
+        mAccountIds = accountId;
+        mSinceId = sinceId;
+        mMaxId = maxId;
+        mDatabase = TwittnukerApplication.getInstance(context).getSQLiteDatabase();
+        mHandler = new Handler();
+        mSavedStatusesFileArgs = savedStatusesArgs;
+    }
 
-	public final long[] getAccountIds() {
-		return mAccountIds;
-	}
-
+    @SuppressWarnings("unchecked")
 	@Override
     public final List<ParcelableActivity> loadInBackground() {
-		if (mAccountIds == null) return Collections.emptyList();
         final File serializationFile = getSerializationFile();
-		if (mIsFirstLoad && mUseCache && serializationFile != null) {
+        final List<ParcelableActivity> data = getData();
+        if (isFirstLoad() && getTabPosition() >= 0 && serializationFile != null) {
             final List<ParcelableActivity> cached = getCachedData(serializationFile);
 			if (cached != null) {
-				Collections.sort(cached);
-				return new CopyOnWriteArrayList<ParcelableActivity>(cached);
-			}
-		}
-        final SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+                data.addAll(cached);
+                if (mComparator != null) {
+                    Collections.sort(data, mComparator);
+                } else {
+                    Collections.sort(data);
+			    }
+                return new CopyOnWriteArrayList<>(data);
+		    }
+        }
+        final List<Activity> activities;
+        final boolean truncated;
+        final Context context = getContext();
+        final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         final int loadItemLimit = prefs.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
-		final List<ParcelableActivity> result = new ArrayList<ParcelableActivity>();
-		for (final long accountId : mAccountIds) {
-			final List<Activity> activities;
-			try {
-				final Paging paging = new Paging();
-				paging.setCount(Math.min(100, loadItemLimit));
-				activities = getActivities(getTwitter(accountId), paging);
-			} catch (final TwitterException e) {
-				e.printStackTrace();
-				final List<ParcelableActivity> cached = getCachedData(serializationFile);
-				if (cached == null) return Collections.emptyList();
-				return new CopyOnWriteArrayList<ParcelableActivity>(cached);
-			}
-			if (activities == null) return new CopyOnWriteArrayList<ParcelableActivity>(mData);
-			for (final Activity activity : activities) {
-				result.add(new ParcelableActivity(activity, accountId));
-			}
+        try {
+            final Paging paging = new Paging();
+            paging.setCount(loadItemLimit);
+            if (mMaxId > 0) {
+                paging.setMaxId(mMaxId);
+            }
+            if (mSinceId > 0) {
+                paging.setSinceId(mSinceId);
+            }
+            activities = new ArrayList<>();
+            truncated = truncateActivities(getActivities(getTwitter(), paging), activities, mSinceId);
+        } catch (final TwitterException e) {
+            // mHandler.post(new ShowErrorRunnable(e));
+            e.printStackTrace();
+            return new CopyOnWriteArrayList<>(data);
+        }
+    //        final long minStatusId = activities.isEmpty() ? -1 : Collections.min(activities).getId();
+    //        final boolean insertGap = minStatusId > 0 && activities.size() > 1 && !data.isEmpty() && !truncated;
+    //        mHandler.post(CacheUsersStatusesTask.getRunnable(context, new StatusListResponse(mAccountIds, activities)));
+        for (final Activity activity : activities) {
+            final long id = activity.getMaxPosition();
+            deleteStatus(data, id);
+    //            final boolean deleted = deleteStatus(data, id);
+    //            final boolean isGap = minStatusId == id && insertGap && !deleted;
+            data.add(new ParcelableActivity(activity, mAccountIds));
+        }
+        final ParcelableActivity[] array = data.toArray(new ParcelableActivity[data.size()]);
+//        for (int i = 0, size = array.length; i < size; i++) {
+//            final ParcelableActivity status = array[i];
+//            if (shouldFilterActivity(mDatabase, status) && !status.is_gap && i != size - 1) {
+//                deleteStatus(data, status.max_position);
+//            }
+//        }
+        if (mComparator != null) {
+            Collections.sort(data, mComparator);
+        } else {
+            Collections.sort(data);
 		}
-		Collections.sort(result);
-		saveCachedData(serializationFile, result);
-		return new CopyOnWriteArrayList<ParcelableActivity>(result);
+        saveCachedData(serializationFile, data);
+        return new CopyOnWriteArrayList<>(data);
 	}
+
+    public final void setComparator(Comparator<ParcelableActivity> comparator) {
+        mComparator = comparator;
+    }
 
 	protected abstract List<Activity> getActivities(Twitter twitter, Paging paging) throws TwitterException;
 
-	protected final Twitter getTwitter(final long accountId) {
-		return getTwitterInstance(mContext, accountId, true);
+    protected final Twitter getTwitter() {
+        return getTwitterInstance(mContext, mAccountIds, true, true);
 	}
 
-	@Override
-	protected void onStartLoading() {
-		forceLoad();
-	}
+    protected abstract boolean shouldFilterActivity(final SQLiteDatabase database, final ParcelableActivity activity);
 	
 	private List<ParcelableActivity> getCachedData(final File file) {
 		if (file == null)
@@ -132,10 +158,9 @@ public abstract class Twitter4JActivitiesLoader extends AsyncTaskLoader<List<Par
 	}
 
 	private File getSerializationFile() {
-		if (mSavedActivitiesFileArgs == null)
-			return null;
+        if (mSavedStatusesFileArgs == null) return null;
 		try {
-			return JSONFileIO.getSerializationFile(mContext, mSavedActivitiesFileArgs);
+            return JSONFileIO.getSerializationFile(mContext, mSavedStatusesFileArgs);
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}

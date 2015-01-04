@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.util.webkit;
 
-import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
-
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -32,12 +30,14 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.support.annotation.NonNull;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
 import de.vanita5.twittnuker.fragment.BaseWebViewFragment;
+
+import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 
 public class DefaultWebViewClient extends WebViewClient {
 
@@ -52,22 +52,16 @@ public class DefaultWebViewClient extends WebViewClient {
 	@Override
 	public void onPageFinished(final WebView view, final String url) {
 		super.onPageFinished(view, url);
-		if (mActivity instanceof BaseSupportActivity) {
-			mActivity.setTitle(view.getTitle());
-			((BaseSupportActivity) mActivity).setProgressBarIndeterminateVisibility(false);
-		}
-	}
+    }
 
 	@Override
 	public void onPageStarted(final WebView view, final String url, final Bitmap favicon) {
 		super.onPageStarted(view, url, favicon);
-		if (mActivity instanceof BaseSupportActivity) {
-			((BaseSupportActivity) mActivity).setProgressBarIndeterminateVisibility(true);
-		}
-	}
+    }
 
 	@Override
-	public void onReceivedSslError(final WebView view, final SslErrorHandler handler, final SslError error) {
+    public void onReceivedSslError(final WebView view, @NonNull final SslErrorHandler handler,
+                                   final SslError error) {
 		if (mPreferences.getBoolean(BaseWebViewFragment.KEY_IGNORE_SSL_ERROR, false)) {
 			handler.proceed();
 		} else {

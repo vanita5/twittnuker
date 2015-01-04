@@ -20,30 +20,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment.support;
+package de.vanita5.twittnuker.adapter.iface;
 
-import android.os.Bundle;
-import android.webkit.WebView;
+import android.content.Context;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 
-import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.ImageLoadingHandler;
 
-public class SupportBrowserFragment extends BaseSupportWebViewFragment {
+public interface IContentCardAdapter extends IGapSupportedAdapter, ICardSupportedAdapter {
+	ImageLoaderWrapper getImageLoader();
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		final Bundle args = getArguments();
-		final Object uri = args != null ? args.get(EXTRA_URI) : null;
-		final WebView view = getWebView();
-		view.loadUrl(ParseUtils.parseString(uri, "about:blank"));
-    }
+	Context getContext();
 
-    public static SupportBrowserFragment show(String uri) {
-        final Bundle args = new Bundle();
-        args.putString(EXTRA_URI, uri);
-        final SupportBrowserFragment fragment = new SupportBrowserFragment();
-        fragment.setArguments(args);
-        return fragment;
-	}
+	ImageLoadingHandler getImageLoadingHandler();
+
+	int getProfileImageStyle();
+
+	int getMediaPreviewStyle();
+
+	AsyncTwitterWrapper getTwitterWrapper();
+
+	float getTextSize();
 
 }

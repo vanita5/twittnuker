@@ -103,12 +103,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayer.OnInitializedListener;
-import com.google.android.youtube.player.YouTubePlayer.Provider;
-import com.google.android.youtube.player.YouTubePlayerSupportFragment;
-
 import org.apache.http.NameValuePair;
 import org.json.JSONException;
 import org.mariotaku.gallery3d.ImageViewerGLActivity;
@@ -168,8 +162,6 @@ import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity;
-import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity.ParcelableValueItem;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.provider.TweetStore;
@@ -1672,21 +1664,6 @@ public final class Utils implements Constants, TwitterConstants {
         return getTwitterInstance(context, getDefaultAccountId(context), includeEntities, includeRetweets, apacheHttp);
 	}
 
-
-
-	public static String getDisplayName(final ParcelableUser user) {
-		return getDisplayName(user.name, user.screen_name, false);
-	}
-
-	public static String getDisplayName(final String name, final String screenName) {
-		return getDisplayName(name, screenName, false);
-	}
-
-	public static String getDisplayName(final String name,
-			final String screenName, final boolean nameFirst) {
-		return nameFirst && !isEmpty(name) ? name : "@" + screenName;
-	}
-
 	public static String getErrorMessage(final Context context, final CharSequence message) {
 		if (context == null) return ParseUtils.parseString(message);
 		if (isEmpty(message)) return context.getString(R.string.error_unknown_error);
@@ -2553,15 +2530,15 @@ public final class Utils implements Constants, TwitterConstants {
 	}
 
 	public static String getUserName(final ParcelableStatus status) {
-		return getDisplayName(status.user_name, status.user_screen_name);
+		return UserColorNameUtils.getDisplayName(status.user_name, status.user_screen_name, false);
 	}
 
 	public static String getUserName(final ParcelableUser user) {
-		return getDisplayName(user.name, user.screen_name);
+		return UserColorNameUtils.getDisplayName(user.name, user.screen_name, false);
 	}
 
 	public static String getUserName(final User user) {
-		return getDisplayName(user.getName(), user.getScreenName());
+		return UserColorNameUtils.getDisplayName(user.getName(), user.getScreenName(), false);
 	}
 
     public static int getUserTypeIconRes(final boolean isVerified, final boolean isProtected) {
@@ -2633,32 +2610,6 @@ public final class Utils implements Constants, TwitterConstants {
 		final float scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100);
 		return plugged || level / scale > 0.15f;
 	}
-
-    public static boolean isCardSupported(ParcelableCardEntity card) {
-        return card != null && "player".equals(card.name);
-    }
-
-    public static Fragment createTwitterCardFragment(ParcelableCardEntity card) {
-        if ("player".equals(card.name)) {
-            final ParcelableValueItem player_url = ParcelableCardEntity.getValue(card, "player_url");
-            final YouTubePlayerSupportFragment fragment = YouTubePlayerSupportFragment.newInstance();
-            fragment.initialize("AIzaSyCVdCIMFFxdNqHnCPrJ9yKUzoTfs8jhYGc", new OnInitializedListener() {
-                @Override
-                public void onInitializationSuccess(Provider provider, YouTubePlayer player, boolean b) {
-                    final String url = (String) player_url.value;
-                    final String id = url.substring(url.lastIndexOf('/') + 1);
-                    player.cueVideo(id);
-                }
-
-                @Override
-                public void onInitializationFailure(Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-
-                }
-            });
-            return fragment;
-        }
-        return null;
-    }
 
 	public static boolean isCompactCards(final Context context) {
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -3862,6 +3813,18 @@ public final class Utils implements Constants, TwitterConstants {
 		}
 		return in.size() != out.size();
 	}
+
+    public static boolean truncateActivities(final List<twitter4j.Activity> in, final List<twitter4j.Activity> out,
+                                             final long sinceId) {
+        if (in == null) return false;
+        for (final twitter4j.Activity status : in) {
+            if (sinceId > 0 && status.getMaxPosition() <= sinceId) {
+                continue;
+            }
+            out.add(status);
+        }
+        return in.size() != out.size();
+    }
 
 	private static Drawable getMetadataDrawable(final PackageManager pm, final ActivityInfo info, final String key) {
 		if (pm == null || info == null || info.metaData == null || key == null || !info.metaData.containsKey(key))

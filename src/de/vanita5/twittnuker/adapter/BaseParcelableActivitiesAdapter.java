@@ -35,13 +35,14 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.view.holder.ActivityListViewHolder;
 
 import java.util.List;
 
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.isCompactCards;
 
 public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<ParcelableActivity> implements
@@ -97,9 +98,9 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 			holder.setAccountColor(getAccountColor(getContext(), item.account_id));
 		}
 		if (mShowAbsoluteTime) {
-			holder.time.setTime(item.activity_timestamp);
+            holder.time.setTime(item.timestamp);
 		} else {
-			holder.time.setTime(item.activity_timestamp);
+            holder.time.setTime(item.timestamp);
 		}
 		bindView(position, holder, item);
 		return view;
@@ -160,13 +161,13 @@ public abstract class BaseParcelableActivitiesAdapter extends BaseArrayAdapter<P
 
 	protected String getName(final ParcelableStatus status) {
 		if (status == null) return null;
-		return getDisplayName(status.user_name, status.user_screen_name,
+        return UserColorNameUtils.getDisplayName(status.user_name, status.user_screen_name,
 				isDisplayNameFirst());
 	}
 
 	protected String getName(final ParcelableUser user) {
 		if (user == null) return null;
-		return getDisplayName(user.name, user.screen_name, isDisplayNameFirst());
+        return UserColorNameUtils.getDisplayName(user.name, user.screen_name, isDisplayNameFirst());
 	}
 
 	protected void setProfileImage(final ImageView view, final ParcelableStatus status) {

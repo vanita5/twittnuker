@@ -10,6 +10,7 @@
     <string name="font_family_condensed" translatable="false">Condensed</string>
     <string name="font_family_light" translatable="false">Light</string>
     <string name="font_family_thin" translatable="false">Thin</string>
+    <string name="sample_status_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam faucibus quis purus ac malesuada. Duis id vulputate magna, a eleifend amet.</string>
 
     <!--Twittnuker-->
     <string name="tweet_shortener_twitlonger" translatable="false">TwitLonger</string>

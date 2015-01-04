@@ -72,19 +72,19 @@ import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
-
 import de.vanita5.twittnuker.view.TabPagerIndicator;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserList;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
@@ -194,7 +194,8 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 		mUserList = userList;
 		mProfileContainer.drawEnd(getAccountColor(getActivity(), userList.account_id));
 		mListNameView.setText(userList.name);
-		final String display_name = getDisplayName(userList.user_name, userList.user_screen_name, false);
+        final String display_name = UserColorNameUtils.getDisplayName(getActivity(), userList.user_name,
+				userList.user_screen_name);
 		mCreatedByView.setText(getString(R.string.created_by, display_name));
 		final String description = userList.description;
 		mDescriptionContainer.setVisibility(is_myself || !isEmpty(description) ? View.VISIBLE : View.GONE);

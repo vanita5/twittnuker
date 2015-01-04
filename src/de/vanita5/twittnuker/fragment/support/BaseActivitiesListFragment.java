@@ -30,7 +30,7 @@ import android.support.v4.content.Loader;
 import android.widget.ListView;
 
 import de.vanita5.twittnuker.adapter.BaseParcelableActivitiesAdapter;
-import de.vanita5.twittnuker.loader.support.Twitter4JActivitiesLoader;
+import de.vanita5.twittnuker.loader.support.Twitter4JActivitiesLoaderOld;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -84,8 +84,8 @@ public abstract class BaseActivitiesListFragment extends BasePullToRefreshListFr
 		setProgressBarIndeterminateVisibility(false);
 		mData = data;
 		mAdapter.setData(data);
-		if (loader instanceof Twitter4JActivitiesLoader) {
-			final boolean multipleAccounts = ((Twitter4JActivitiesLoader) loader).getAccountIds().length > 1;
+        if (loader instanceof Twitter4JActivitiesLoaderOld) {
+            final boolean multipleAccounts = ((Twitter4JActivitiesLoaderOld) loader).getAccountIds().length > 1;
 			mAdapter.setShowAccountColor(multipleAccounts);
 		}
         setRefreshing(false);

@@ -37,9 +37,8 @@ import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.DirectMessageConversationViewHolder;
-
-import java.util.Locale;
 
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.findDirectMessageInDatabases;
@@ -155,7 +154,20 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 
 	@Override
 	public void setImagePreviewScaleType(final String scaleTypeString) {
-		final ScaleType scaleType = ScaleType.valueOf(scaleTypeString.toUpperCase(Locale.US));
+        final ScaleType scaleType;
+        switch (Utils.getMediaPreviewStyle(scaleTypeString)) {
+            case VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP: {
+                scaleType = ScaleType.CENTER_CROP;
+                break;
+            }
+            case VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE: {
+                scaleType = ScaleType.CENTER_INSIDE;
+                break;
+            }
+            default: {
+                return;
+            }
+        }
 		mImagePreviewScaleType = scaleType;
 	}
 

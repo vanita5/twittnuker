@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -54,7 +55,6 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Space;
@@ -89,10 +89,12 @@ import de.vanita5.twittnuker.util.MediaPreviewUtils.OnMediaClickListener;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
+import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.StatusTextView;
 import de.vanita5.twittnuker.view.TwidereMenuBar;
+import de.vanita5.twittnuker.view.TwitterCardContainer;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
@@ -104,9 +106,9 @@ import java.util.Locale;
 import twitter4j.TwitterException;
 
 import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.UserColorUtils.clearUserColor;
-import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
-import static de.vanita5.twittnuker.util.UserColorUtils.setUserColor;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.clearUserColor;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.getUserColor;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.setUserColor;
 import static de.vanita5.twittnuker.util.Utils.favorite;
 import static de.vanita5.twittnuker.util.Utils.findStatus;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
@@ -480,8 +482,19 @@ public class StatusFragment extends BaseSupportFragment
 
         @Override
         public void onUserProfileClick(StatusViewHolder holder, int position) {
-
-	    }
+            final Context context = getContext();
+            final ParcelableStatus status = getStatus(position);
+            final View profileImageView = holder.getProfileImageView();
+            final View profileTypeView = holder.getProfileTypeView();
+            if (context instanceof FragmentActivity) {
+                final Bundle options = Utils.makeSceneTransitionOption((FragmentActivity) context,
+                        new Pair<>(profileImageView, UserFragment.TRANSITION_NAME_PROFILE_IMAGE),
+                        new Pair<>(profileTypeView, UserFragment.TRANSITION_NAME_PROFILE_TYPE));
+                Utils.openUserProfile(context, status.account_id, status.user_id, status.user_screen_name, options);
+            } else {
+                Utils.openUserProfile(context, status.account_id, status.user_id, status.user_screen_name, null);
+	        }
+        }
 
 	    @Override
         public void setData(List<ParcelableStatus> data) {
@@ -753,7 +766,7 @@ public class StatusFragment extends BaseSupportFragment
         private final LinearLayout mediaPreviewGrid;
 
         private final View locationContainer;
-        private final FrameLayout twitterCard;
+        private final TwitterCardContainer twitterCard;
 
         public DetailStatusViewHolder(StatusAdapter adapter, View itemView) {
             super(itemView);
@@ -777,7 +790,7 @@ public class StatusFragment extends BaseSupportFragment
             mediaPreviewGrid = (LinearLayout) itemView.findViewById(R.id.media_preview_grid);
             locationContainer = itemView.findViewById(R.id.location_container);
             profileContainer = itemView.findViewById(R.id.profile_container);
-            twitterCard = (FrameLayout) itemView.findViewById(R.id.twitter_card);
+            twitterCard = (TwitterCardContainer) itemView.findViewById(R.id.twitter_card);
 
             setIsRecyclable(false);
             initViews();
@@ -955,9 +968,15 @@ public class StatusFragment extends BaseSupportFragment
 						status.account_id, maxColumns, adapter.getFragment());
             }
 
-            if (Utils.isCardSupported(status.card)) {
+            if (TwitterCardUtils.isCardSupported(status.card)) {
+                final Point size = TwitterCardUtils.getCardSize(status.card);
                 twitterCard.setVisibility(View.VISIBLE);
-                final Fragment cardFragment = Utils.createTwitterCardFragment(status.card);
+                if (size != null) {
+                    twitterCard.setCardSize(size.x, size.y);
+                } else {
+                    twitterCard.setCardSize(0, 0);
+                }
+                final Fragment cardFragment = TwitterCardUtils.createCardFragment(status.card);
                 final FragmentManager fm = fragment.getChildFragmentManager();
                 final FragmentTransaction ft = fm.beginTransaction();
                 ft.replace(R.id.twitter_card, cardFragment);

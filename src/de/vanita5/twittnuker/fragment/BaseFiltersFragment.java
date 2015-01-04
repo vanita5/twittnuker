@@ -53,8 +53,9 @@ import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.support.BaseSupportListFragment;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
 
 public abstract class BaseFiltersFragment extends BaseSupportListFragment implements LoaderManager.LoaderCallbacks<Cursor>,
 		MultiChoiceModeListener {
@@ -283,7 +284,7 @@ public abstract class BaseFiltersFragment extends BaseSupportListFragment implem
 				final long user_id = cursor.getLong(mUserIdIdx);
 				final String name = cursor.getString(mNameIdx);
 				final String screen_name = cursor.getString(mScreenNameIdx);
-				final String display_name = getDisplayName(name, screen_name, mNameFirst);
+                final String display_name = UserColorNameUtils.getDisplayName(name, screen_name, mNameFirst);
 				text1.setText(display_name);
 			}
 

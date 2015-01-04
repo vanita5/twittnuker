@@ -31,10 +31,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShortTimeView;
 
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getStatusTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 
@@ -122,13 +123,13 @@ public class StatusListViewHolder extends CardViewHolder {
 	}
 
 	public void setReplyTo(final long user_id, final String name, final String screen_name) {
-		final String display_name = getDisplayName(name, screen_name, name_first);
+        final String display_name = UserColorNameUtils.getDisplayName(name, screen_name, name_first);
 		reply_retweet_status.setText(getString(R.string.in_reply_to_name, display_name));
 		reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_conversation, 0, 0, 0);
 	}
 
 	public void setRetweetedBy(final long count, final long user_id, final String name, final String screen_name) {
-		final String display_name = getDisplayName(name, screen_name, name_first);
+        final String display_name = UserColorNameUtils.getDisplayName(name, screen_name, name_first);
 		reply_retweet_status.setText(count > 1 ? getString(R.string.retweeted_by_name_with_count, display_name, count - 1)
 				: getString(R.string.retweeted_by_name, display_name));
 		reply_retweet_status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_indicator_retweet, 0, 0, 0);

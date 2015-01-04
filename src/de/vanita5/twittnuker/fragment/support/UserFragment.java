@@ -85,7 +85,7 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
-import de.vanita5.twittnuker.util.UserColorUtils;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
@@ -108,12 +108,12 @@ import twitter4j.TwitterException;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ParseUtils.parseLong;
-import static de.vanita5.twittnuker.util.UserColorUtils.clearUserColor;
-import static de.vanita5.twittnuker.util.UserColorUtils.getUserColor;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.clearUserColor;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.getOriginalTwitterProfileImage;
@@ -411,7 +411,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         if (relationship == null || relationship.getTargetUserId() != user.id) {
 			getFriendship();
 		}
-        activity.setTitle(getDisplayName(user));
+        activity.setTitle(UserColorNameUtils.getDisplayName(activity, user));
         updateTitleColor();
 		invalidateOptionsMenu();
 	}
@@ -532,7 +532,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 				if (resultCode == Activity.RESULT_OK) {
 					if (data == null) return;
 					final int color = data.getIntExtra(EXTRA_COLOR, Color.TRANSPARENT);
-					UserColorUtils.setUserColor(getActivity(), mUser.id, color);
+                    UserColorNameUtils.setUserColor(getActivity(), mUser.id, color);
 				} else if (resultCode == ColorPickerDialogActivity.RESULT_CLEARED) {
 					clearUserColor(getActivity(), mUser.id);
 				}
@@ -679,7 +679,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		final boolean isMyself = user.account_id == user.id;
 		final MenuItem mentionItem = menu.findItem(MENU_MENTION);
 		if (mentionItem != null) {
-			mentionItem.setTitle(getString(R.string.mention_user_name, getDisplayName(user.name, user.screen_name)));
+            mentionItem.setTitle(getString(R.string.mention_user_name, UserColorNameUtils.getDisplayName(getActivity(), user)));
 		}
 		Utils.setMenuItemAvailability(menu, MENU_MENTION, !isMyself);
 //        final MenuItem followItem = menu.findItem(MENU_FOLLOW);

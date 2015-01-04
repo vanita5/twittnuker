@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import static de.vanita5.twittnuker.util.ContentValuesCreator.makeFilteredUserContentValues;
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
 
@@ -48,6 +48,7 @@ import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -170,10 +171,10 @@ public class AddStatusFilterDialogFragment extends BaseSupportDialogFragment imp
 	private String getName(final Object value) {
 		if (value instanceof ParcelableUserMention) {
 			final ParcelableUserMention mention = (ParcelableUserMention) value;
-			return getDisplayName(mention.name, mention.screen_name);
+			return UserColorNameUtils.getDisplayName(getActivity(), mention.name, mention.screen_name);
 		} else if (value instanceof ParcelableStatus) {
 			final ParcelableStatus status = (ParcelableStatus) value;
-			return getDisplayName(status.user_name, status.user_screen_name);
+			return UserColorNameUtils.getDisplayName(getActivity(), status.user_name, status.user_screen_name);
 		} else
 			return ParseUtils.parseString(value);
 	}

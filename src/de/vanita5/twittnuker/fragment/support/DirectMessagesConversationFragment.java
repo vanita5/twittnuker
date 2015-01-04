@@ -89,6 +89,7 @@ import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.view.StatusTextCountView;
@@ -340,7 +341,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
         }
         final FragmentActivity activity = getActivity();
         if (mRecipient != null) {
-            activity.setTitle(Utils.getDisplayName(mRecipient));
+            activity.setTitle(UserColorNameUtils.getDisplayName(activity, mRecipient));
         } else {
             activity.setTitle(R.string.direct_messages);
         }

@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -28,15 +28,21 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
 import android.support.v4.util.LongSparseArray;
 
-import de.vanita5.twittnuker.TwittnukerConstants;
-
 import java.util.Map;
 
-public class UserColorUtils implements TwittnukerConstants {
+import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.ParcelableUser;
+import twitter4j.TwitterConstants;
 
-	private static LongSparseArray<Integer> sUserColors = new LongSparseArray<Integer>();
+import static android.text.TextUtils.isEmpty;
 
-	private UserColorUtils() {
+public class UserColorNameUtils implements Constants {
+
+	private static LongSparseArray<Integer> sUserColors = new LongSparseArray<>();
+
+	private UserColorNameUtils() {
 		throw new AssertionError();
 	}
 
@@ -46,19 +52,43 @@ public class UserColorUtils implements TwittnukerConstants {
 		final SharedPreferences prefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final SharedPreferences.Editor editor = prefs.edit();
 		editor.remove(Long.toString(user_id));
-		editor.commit();
+		editor.apply();
+	}
+
+	public static String getDisplayName(final Context context, final ParcelableUser user) {
+		return getDisplayName(context, user.name, user.screen_name);
+	}
+
+	public static String getDisplayName(final Context context, final String name, final String screenName) {
+		if (context == null) return null;
+		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+		final boolean nameFirst = prefs.getBoolean(KEY_NAME_FIRST, true);
+		return getDisplayName(name, screenName, nameFirst);
+	}
+
+	public static String getDisplayName(final ParcelableUser user, final boolean nameFirst) {
+		return getDisplayName(user.name, user.screen_name, nameFirst);
+	}
+
+
+	public static String getDisplayName(final ParcelableStatus status, final boolean nameFirst) {
+		return getDisplayName(status.user_name, status.user_screen_name, nameFirst);
+	}
+
+	public static String getDisplayName(final String name, final String screenName, final boolean nameFirst) {
+		return nameFirst && !isEmpty(name) ? name : "@" + screenName;
 	}
 
 	public static int getUserColor(final Context context, final long user_id) {
 		return getUserColor(context, user_id, false);
 	}
 
-	public static int getUserColor(final Context context, final long user_id, final boolean ignore_cache) {
-		if (context == null || user_id == -1) return Color.TRANSPARENT;
-		if (!ignore_cache && sUserColors.indexOfKey(user_id) >= 0) return sUserColors.get(user_id);
+	public static int getUserColor(final Context context, final long userId, final boolean ignoreCache) {
+		if (context == null || userId == -1) return Color.TRANSPARENT;
+		if (!ignoreCache && sUserColors.indexOfKey(userId) >= 0) return sUserColors.get(userId);
 		final SharedPreferences prefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final int color = prefs.getInt(Long.toString(user_id), Color.TRANSPARENT);
-		sUserColors.put(user_id, color);
+		final int color = prefs.getInt(Long.toString(userId), Color.TRANSPARENT);
+		sUserColors.put(userId, color);
 		return color;
 	}
 
@@ -72,7 +102,7 @@ public class UserColorUtils implements TwittnukerConstants {
 	}
 
 	public static void registerOnUserColorChangedListener(final Context context,
-			final OnUserColorChangedListener listener) {
+														  final OnUserColorChangedListener listener) {
 
 		final SharedPreferences prefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		prefs.registerOnSharedPreferenceChangeListener(new OnColorPreferenceChangeListener(listener));
@@ -84,11 +114,15 @@ public class UserColorUtils implements TwittnukerConstants {
 		final SharedPreferences prefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(String.valueOf(user_id), color);
-		editor.commit();
+		editor.apply();
 	}
 
 	public static interface OnUserColorChangedListener {
 		void onUserColorChanged(long userId, int color);
+	}
+
+	public static interface OnUserNicknameChangedListener {
+		void onUserNicknameChanged(long userId, String nick);
 	}
 
 	private static final class OnColorPreferenceChangeListener implements OnSharedPreferenceChangeListener {

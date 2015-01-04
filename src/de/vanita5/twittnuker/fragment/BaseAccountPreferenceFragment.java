@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.fragment;
 
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -43,6 +43,7 @@ import android.widget.Switch;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 
 public abstract class BaseAccountPreferenceFragment extends PreferenceFragment implements Constants,
 		OnCheckedChangeListener, OnSharedPreferenceChangeListener {
@@ -62,7 +63,7 @@ public abstract class BaseAccountPreferenceFragment extends PreferenceFragment i
 		final Activity activity = getActivity();
 		final Intent intent = activity.getIntent();
 		if (account != null && intent.hasExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT)) {
-            final String name = getDisplayName(account.name, account.screen_name);
+			final String name = UserColorNameUtils.getDisplayName(getActivity(), account.name, account.screen_name);
 			activity.setTitle(name);
 		}
 		updatePreferenceScreen();

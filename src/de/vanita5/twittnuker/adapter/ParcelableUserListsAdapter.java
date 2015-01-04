@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.UserListListViewHolder;
 
@@ -42,7 +43,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.Utils.getDisplayName;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 
@@ -94,7 +95,8 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 		holder.position = position;
 
 		final ParcelableUserList user_list = getItem(position);
-		final String display_name = getDisplayName(user_list.user_name, user_list.user_screen_name, isDisplayNameFirst());
+        final String display_name = UserColorNameUtils.getDisplayName(user_list.user_name,
+				user_list.user_screen_name, isDisplayNameFirst());
 		holder.setTextSize(getTextSize());
 		holder.name.setText(user_list.name);
 		holder.created_by.setText(mContext.getString(R.string.created_by, display_name));

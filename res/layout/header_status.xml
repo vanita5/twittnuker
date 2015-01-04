@@ -172,11 +172,10 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textIsSelectable="true"/>
 
-            <FrameLayout
+            <de.vanita5.twittnuker.view.TwitterCardContainer
                 android:id="@+id/twitter_card"
                 android:layout_width="match_parent"
-                android:minHeight="200dp"
-                android:layout_height="wrap_content"></FrameLayout>
+                android:layout_height="wrap_content"/>
 
             <RelativeLayout
                 android:id="@+id/location_container"

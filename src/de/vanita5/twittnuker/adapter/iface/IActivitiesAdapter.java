@@ -20,30 +20,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment.support;
+package de.vanita5.twittnuker.adapter.iface;
 
-import android.os.Bundle;
-import android.webkit.WebView;
+import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
-import de.vanita5.twittnuker.util.ParseUtils;
+public interface IActivitiesAdapter<Data> extends IContentCardAdapter {
 
-public class SupportBrowserFragment extends BaseSupportWebViewFragment {
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		final Bundle args = getArguments();
-		final Object uri = args != null ? args.get(EXTRA_URI) : null;
-		final WebView view = getWebView();
-		view.loadUrl(ParseUtils.parseString(uri, "about:blank"));
-    }
+	ParcelableActivity getActivity(int position);
 
-    public static SupportBrowserFragment show(String uri) {
-        final Bundle args = new Bundle();
-        args.putString(EXTRA_URI, uri);
-        final SupportBrowserFragment fragment = new SupportBrowserFragment();
-        fragment.setArguments(args);
-        return fragment;
-	}
+	int getActivityCount();
+
+	void onStatusClick(StatusViewHolder holder, int position);
+
+	void onUserProfileClick(StatusViewHolder holder, int position);
+
+	void setData(Data data);
 
 }

@@ -65,7 +65,7 @@ import java.io.File;
 
 import twitter4j.http.HostAddressResolver;
 
-import static de.vanita5.twittnuker.util.UserColorUtils.initUserColor;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.initUserColor;
 import static de.vanita5.twittnuker.util.Utils.getBestCacheDir;
 import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
