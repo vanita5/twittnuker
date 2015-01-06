@@ -645,6 +645,10 @@
     <string name="media_preview_style">Bildvorschau Format</string>
     <string name="draft_saved">Entwurf gespeichert</string>
     <string name="open_twitter_links">Twitter Links öffnen</string>
+    <string name="type_name_to_search">(D) Nach Namen suchen</string>
+    <string name="no_user_found">Niemanden gefunden</string>
+    <string name="members">(D) Members</string>
+    <string name="subscribers">(D) Follower</string>
 
 
     <!-- Twittnuker -->

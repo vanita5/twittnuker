@@ -68,6 +68,7 @@ import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.AccountsManagerActivity;
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
 import de.vanita5.twittnuker.activity.support.DraftsActivity;
+import de.vanita5.twittnuker.activity.support.GlobalSearchBoxActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
@@ -190,12 +191,15 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 			final OptionItem option = (OptionItem) item;
 			switch (option.id) {
 				case MENU_SEARCH: {
-					final FragmentActivity a = getActivity();
-					if (a instanceof HomeActivity) {
-						((HomeActivity) a).openSearchView(account);
-					} else {
-						getActivity().onSearchRequested();
-					}
+//                    final FragmentActivity a = getActivity();
+//                    if (a instanceof HomeActivity) {
+//                        ((HomeActivity) a).openSearchView(account);
+//                    } else {
+//                        getActivity().onSearchRequested();
+//                    }
+                    final Intent intent = new Intent(getActivity(), GlobalSearchBoxActivity.class);
+                    intent.putExtra(EXTRA_ACCOUNT_ID, account.account_id);
+                    startActivity(intent);
 					closeAccountsDrawer();
 					break;
 				}
@@ -297,7 +301,9 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
         super.onActivityCreated(savedInstanceState);
         mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mResolver = getContentResolver();
-        final Context context = getView().getContext();
+        final View view = getView();
+        if (view == null) throw new AssertionError();
+        final Context context = view.getContext();
         mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
         final LayoutInflater inflater = LayoutInflater.from(context);
         final ListView listView = getListView();

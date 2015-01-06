@@ -39,7 +39,7 @@ import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getStatusTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 
-public class StatusListViewHolder extends CardViewHolder {
+public class StatusViewListHolder extends CardViewHolder {
 
     public final ImageView my_profile_image, profile_image;
 	public final ImageView image_preview;
@@ -59,7 +59,7 @@ public class StatusListViewHolder extends CardViewHolder {
 	private boolean display_profile_image;
 	private int card_highlight_option;
 
-	public StatusListViewHolder(final View view) {
+	public StatusViewListHolder(final View view) {
 		super(view);
 		final Context context = getContext();
         profile_image = (ImageView) findViewById(R.id.profile_image);

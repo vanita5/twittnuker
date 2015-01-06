@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -36,11 +34,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
+import de.vanita5.twittnuker.adapter.ParcelableUserListsListAdapter;
 import de.vanita5.twittnuker.loader.support.UserListsLoader;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 
 import java.util.List;
+
+import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
 
 public class UserListsListFragment extends BaseUserListsListFragment {
 
@@ -62,7 +62,7 @@ public class UserListsListFragment extends BaseUserListsListFragment {
 	@Override
 	public Loader<List<ParcelableUserList>> newLoaderInstance(final long accountId, final long userId,
 			final String screenName) {
-		return new UserListsLoader(getActivity(), accountId, userId, screenName, getData());
+        return new UserListsLoader(getActivity(), accountId, userId, screenName, true, getData());
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public class UserListsListFragment extends BaseUserListsListFragment {
 	}
 
 	private void removeUserList(final long id) {
-		final ParcelableUserListsAdapter adapter = getListAdapter();
+		final ParcelableUserListsListAdapter adapter = getListAdapter();
 		final int listsIdx = adapter.findItemPosition(id);
 		if (listsIdx >= 0) {
             adapter.removeAt(listsIdx);

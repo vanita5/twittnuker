@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.loader;
+package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -29,6 +29,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
+
 import twitter4j.TwitterException;
 
 import static de.vanita5.twittnuker.util.Utils.findStatus;

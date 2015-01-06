@@ -23,13 +23,12 @@
 package de.vanita5.twittnuker.adapter.iface;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 
-public interface IContentCardAdapter extends IGapSupportedAdapter, ICardSupportedAdapter {
+public interface IContentCardAdapter extends IGapSupportedAdapter, ContentCardClickListener {
 	ImageLoaderWrapper getImageLoader();
 
 	Context getContext();

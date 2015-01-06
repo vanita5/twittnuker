@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.util;
 
 import android.support.v4.app.Fragment;
 
-import de.vanita5.twittnuker.fragment.support.SupportBrowserFragment;
+import de.vanita5.twittnuker.fragment.support.CardBrowserFragment;
 import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity.ParcelableValueItem;
 
@@ -42,6 +42,6 @@ public abstract class TwitterCardFragmentFactory {
 
 	public static Fragment createGenericPlayerFragment(ParcelableCardEntity card) {
 		final ParcelableValueItem player_url = ParcelableCardEntity.getValue(card, "player_url");
-		return SupportBrowserFragment.show((String) player_url.value);
+        return CardBrowserFragment.show((String) player_url.value);
 	}
 }

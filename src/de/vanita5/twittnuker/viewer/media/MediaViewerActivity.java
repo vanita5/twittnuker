@@ -20,32 +20,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.holder;
+package de.vanita5.twittnuker.viewer.media;
 
-import android.content.Context;
-import android.view.View;
+import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 
-import de.vanita5.twittnuker.Constants;
-
-public class ListViewHolder implements Constants {
-
-	public View view;
-
-	public ListViewHolder(final View view) {
-		if (view == null) throw new NullPointerException();
-		this.view = view;
-	}
-
-	public View findViewById(final int id) {
-		return view.findViewById(id);
-	}
-
-	public Context getContext() {
-		return view.getContext();
-	}
-
-	protected String getString(final int resId, final Object... formatArgs) {
-		return getContext().getString(resId, formatArgs);
-	}
-
+public class MediaViewerActivity extends FragmentActivity {
 }

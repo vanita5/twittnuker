@@ -20,12 +20,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface;
+package de.vanita5.twittnuker.view.holder;
 
-import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.content.Context;
+import android.view.View;
 
-public interface ICardSupportedAdapter {
-    void onItemActionClick(ViewHolder holder, int id, int position);
+import de.vanita5.twittnuker.Constants;
 
-    void onItemMenuClick(ViewHolder holder, int position);
+public class ViewListHolder implements Constants {
+
+	public View view;
+
+	public ViewListHolder(final View view) {
+		if (view == null) throw new NullPointerException();
+		this.view = view;
+	}
+
+	public View findViewById(final int id) {
+		return view.findViewById(id);
+	}
+
+	public Context getContext() {
+		return view.getContext();
+	}
+
+	protected String getString(final int resId, final Object... formatArgs) {
+		return getContext().getString(resId, formatArgs);
+	}
+
 }

@@ -7,7 +7,7 @@ import twitter4j.StatusActivitySummary;
 import twitter4j.TranslationResult;
 import twitter4j.TwitterException;
 
-public interface UndocumentedTweetResources extends UndocumentedResources {
+public interface PrivateTweetResources extends PrivateResources {
 
 	StatusActivitySummary getStatusActivitySummary(long statusId) throws TwitterException;
 

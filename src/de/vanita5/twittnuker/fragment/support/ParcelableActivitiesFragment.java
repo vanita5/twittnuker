@@ -27,12 +27,12 @@ import android.os.Bundle;
 
 import com.squareup.otto.Bus;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableActivity;
+
+import java.util.List;
 
 public abstract class ParcelableActivitiesFragment extends AbsActivitiesFragment<List<ParcelableActivity>> {
 
@@ -67,7 +67,7 @@ public abstract class ParcelableActivitiesFragment extends AbsActivitiesFragment
 
 	@Override
 	protected ParcelableActivitiesAdapter onCreateAdapter(final Context context, final boolean compact) {
-		return new ParcelableActivitiesAdapter(context);
+        return new ParcelableActivitiesAdapter(context,compact);
 	}
 
 	@Override

@@ -22,11 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.ParseUtils.parseString;
-import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -52,6 +47,9 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -59,8 +57,10 @@ import twitter4j.User;
 import twitter4j.UserList;
 import twitter4j.http.HttpResponseCode;
 
-import java.util.ArrayList;
-import java.util.List;
+import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.ParseUtils.parseString;
+import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
+import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 
 public class UserListSelectorActivity extends BaseSupportDialogActivity implements OnClickListener, OnItemClickListener {
 
@@ -247,7 +247,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 			final Twitter twitter = getTwitterInstance(mActivity, mAccountId, false);
 			if (twitter == null) return SingleResponse.getInstance();
 			try {
-				final ResponseList<UserList> lists = twitter.getUserLists(mScreenName);
+                final ResponseList<UserList> lists = twitter.getUserLists(mScreenName, true);
 				final List<ParcelableUserList> data = new ArrayList<ParcelableUserList>();
 				boolean is_my_account = mScreenName.equalsIgnoreCase(getAccountScreenName(mActivity, mAccountId));
 				for (final UserList item : lists) {
@@ -310,7 +310,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 			if (twitter == null) return SingleResponse.getInstance();
 			try {
 				final ResponseList<User> lists = twitter.searchUsers(mName, 1);
-				final List<ParcelableUser> data = new ArrayList<ParcelableUser>();
+                final List<ParcelableUser> data = new ArrayList<>();
 				for (final User item : lists) {
 					data.add(new ParcelableUser(item, mAccountId));
 				}

@@ -65,6 +65,8 @@ public interface Relationship extends TwitterResponse {
 	 */
 	boolean isSourceBlockingTarget();
 
+    boolean isSourceBlockedByTarget();
+
 	/**
 	 * Checks if source user is being followed by target user
 	 * 

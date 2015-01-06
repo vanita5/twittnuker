@@ -68,6 +68,7 @@ public class UserListsFragment extends BaseSupportFragment implements RefreshScr
 		mViewPager.setAdapter(mAdapter);
 		mViewPager.setOffscreenPageLimit(2);
 		mPagerIndicator.setViewPager(mViewPager);
+        mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
 	}
 
 

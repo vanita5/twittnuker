@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 @SuppressLint("Registered")
-public class BaseSupportDialogActivity extends BaseSupportThemedActivity implements Constants, IThemedActivity {
+public class BaseSupportDialogActivity extends ThemedFragmentActivity implements Constants, IThemedActivity {
 
 	private boolean mInstanceStateSaved;
 

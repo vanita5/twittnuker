@@ -3,7 +3,7 @@ package twitter4j.api;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
-public interface UndocumentedFriendsFollowersResources extends UndocumentedResources {
+public interface PrivateFriendsFollowersResources extends PrivateResources {
 
 	public User acceptFriendship(long userId) throws TwitterException;
 

@@ -54,7 +54,7 @@ import de.vanita5.twittnuker.activity.support.DataImportActivity;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.view.holder.ListViewHolder;
+import de.vanita5.twittnuker.view.holder.ViewListHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -401,7 +401,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 
 		}
 
-        private static class HeaderViewHolder extends ListViewHolder {
+        private static class HeaderViewHolder extends ViewListHolder {
 			private final TextView title, summary;
 			private final ImageView icon;
             private final LinearLayout content;

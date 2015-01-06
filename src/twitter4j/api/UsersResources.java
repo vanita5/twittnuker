@@ -16,17 +16,18 @@
 
 package twitter4j.api;
 
+import java.io.File;
+import java.io.InputStream;
+
 import twitter4j.AccountSettings;
 import twitter4j.Category;
 import twitter4j.CursorPaging;
 import twitter4j.IDs;
 import twitter4j.PagableResponseList;
 import twitter4j.ResponseList;
+import twitter4j.SettingsUpdate;
 import twitter4j.TwitterException;
 import twitter4j.User;
-
-import java.io.File;
-import java.io.InputStream;
 
 /**
  * @author Joern Huxhorn - jhuxhorn at googlemail.com
@@ -295,18 +296,7 @@ public interface UsersResources {
 	 * in incompatible ways. <br>
 	 * This method calls http://api.twitter.com/1.1/account/settings.json
 	 * 
-	 * @param trendLocationWoeid Optional. The Yahoo! Where On Earth ID to use
-	 *            as the user's default trend location.
-	 * @param sleepTimeEnabled Optional. Whether sleep time is enabled for the
-	 *            user
-	 * @param startSleepTime Optional. The hour that sleep time should begin if
-	 *            it is enabled.
-	 * @param endSleepTime Optional. The hour that sleep time should end if it
-	 *            is enabled.
-	 * @param timeZone Optional. The timezone dates and times should be
-	 *            displayed in for the user.
-	 * @param lang Optional. The language which Twitter should render in for
-	 *            this user. (two letter ISO 639-1)
+     * @param settingsUpdate Settings to be updated
 	 * @return the current trend, geo and sleep time information for the
 	 *         authenticating user.
 	 * @throws TwitterException when Twitter service or network is unavailable
@@ -315,8 +305,7 @@ public interface UsersResources {
 	 *      account/settings | Twitter Developers</a>
 	 * @since Twitter4J 2.2.4
 	 */
-	AccountSettings updateAccountSettings(Integer trendLocationWoeid, Boolean sleepTimeEnabled, String startSleepTime,
-			String endSleepTime, String timeZone, String lang) throws TwitterException;
+    AccountSettings updateAccountSettings(SettingsUpdate settingsUpdate) throws TwitterException;
 
 	/**
 	 * Sets values that users are able to set under the "Account" tab of their

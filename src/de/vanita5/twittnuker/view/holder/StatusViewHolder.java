@@ -34,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.adapter.iface.ContentCardClickListener;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -67,6 +68,8 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
     private final CardMediaContainer mediaPreviewContainer;
     private final TextView replyCountView, retweetCountView, favoriteCountView;
 
+    private StatusClickListener statusClickListener;
+
 
     public StatusViewHolder(View itemView) {
         this(null, itemView);
@@ -94,20 +97,28 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
     }
 
     public void setOnClickListeners() {
-        setOnClickListeners(this);
+        setStatusClickListener(adapter);
     }
 
-    public void setOnClickListeners(OnClickListener listener) {
-        itemView.findViewById(R.id.item_content).setOnClickListener(listener);
-        itemView.findViewById(R.id.item_menu).setOnClickListener(listener);
+    public static interface StatusClickListener extends ContentCardClickListener {
 
-        itemView.setOnClickListener(listener);
-        profileImageView.setOnClickListener(listener);
-        mediaPreviewContainer.setOnClickListener(listener);
-        replyCountView.setOnClickListener(listener);
-        retweetCountView.setOnClickListener(listener);
-        favoriteCountView.setOnClickListener(listener);
+        void onUserProfileClick(StatusViewHolder holder, int position);
+
+        void onStatusClick(StatusViewHolder holder, int position);
 	}
+
+    public void setStatusClickListener(StatusClickListener listener) {
+        statusClickListener = listener;
+        itemView.findViewById(R.id.item_content).setOnClickListener(this);
+        itemView.findViewById(R.id.item_menu).setOnClickListener(this);
+
+        itemView.setOnClickListener(this);
+        profileImageView.setOnClickListener(this);
+        mediaPreviewContainer.setOnClickListener(this);
+        replyCountView.setOnClickListener(this);
+        retweetCountView.setOnClickListener(this);
+        favoriteCountView.setOnClickListener(this);
+    }
 
     public void setupViewOptions() {
         setTextSize(adapter.getTextSize());
@@ -350,24 +361,25 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
 
     @Override
     public void onClick(View v) {
+        if (statusClickListener == null) return;
         final int position = getPosition();
         switch (v.getId()) {
             case R.id.item_content: {
-                adapter.onStatusClick(this, position);
+                statusClickListener.onStatusClick(this, position);
                 break;
 		    }
             case R.id.item_menu: {
-                adapter.onItemMenuClick(this, position);
+                statusClickListener.onItemMenuClick(this, position);
                 break;
 	        }
             case R.id.profile_image: {
-                adapter.onUserProfileClick(this, position);
+                statusClickListener.onUserProfileClick(this, position);
                 break;
 	        }
             case R.id.reply_count:
             case R.id.retweet_count:
             case R.id.favorite_count: {
-                adapter.onItemActionClick(this, v.getId(), position);
+                statusClickListener.onItemActionClick(this, v.getId(), position);
                 break;
 	        }
         }

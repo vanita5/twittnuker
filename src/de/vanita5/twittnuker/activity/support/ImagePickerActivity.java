@@ -1,5 +1,7 @@
 package de.vanita5.twittnuker.activity.support;
 
+import static android.os.Environment.getExternalStorageState;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
@@ -21,21 +23,19 @@ import android.webkit.MimeTypeMap;
 
 import com.nostra13.universalimageloader.utils.IoUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
-import static android.os.Environment.getExternalStorageState;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-public class ImagePickerActivity extends BaseSupportThemedActivity {
+public class ImagePickerActivity extends ThemedFragmentActivity {
 
 	public static final int REQUEST_PICK_IMAGE = 101;
 	public static final int REQUEST_TAKE_PHOTO = 102;

@@ -25,7 +25,7 @@ import android.os.Build;
 import android.os.Message;
 import android.view.MotionEvent;
 
-import org.mariotaku.gallery3d.ImageViewerGLActivity;
+import org.mariotaku.gallery3d.ImageViewerGLActivityOld;
 import org.mariotaku.gallery3d.util.BitmapPool;
 
 public class PhotoView extends GLView {
@@ -64,7 +64,7 @@ public class PhotoView extends GLView {
 	private final Context mContext;
 	private final FullPicture mPicture;
 
-	public PhotoView(final ImageViewerGLActivity activity) {
+	public PhotoView(final ImageViewerGLActivityOld activity) {
 		mTileView = new TileImageView(activity);
 		addComponent(mTileView);
 		mContext = activity;
@@ -376,7 +376,7 @@ public class PhotoView extends GLView {
 				final Matrix m = getGLRoot().getCompensationMatrix();
 				final Matrix inv = new Matrix();
 				m.invert(inv);
-				final float[] pts = new float[] { x, y };
+				final float[] pts = new float[]{x, y};
 				inv.mapPoints(pts);
 				mListener.onSingleTapUp((int) (pts[0] + 0.5f), (int) (pts[1] + 0.5f));
 			}
@@ -421,7 +421,7 @@ public class PhotoView extends GLView {
 
 	private class MyHandler extends SynchronizedHandler {
 
-		private MyHandler(final ImageViewerGLActivity activity) {
+		private MyHandler(final ImageViewerGLActivityOld activity) {
 			super(activity.getGLRoot());
 		}
 
@@ -547,7 +547,7 @@ public class PhotoView extends GLView {
 
 		// Set the position of the tile view
 		private void setTileViewPosition(final float cx, final float cy, final int viewW, final int viewH,
-				final float scale) {
+										 final float scale) {
 			// Find out the bitmap coordinates of the center of the view
 			final int imageW = mPositionController.getImageWidth();
 			final int imageH = mPositionController.getImageHeight();

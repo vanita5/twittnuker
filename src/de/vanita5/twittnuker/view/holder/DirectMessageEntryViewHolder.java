@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShortTimeView;
 
-public class DirectMessageEntryViewHolder extends ListViewHolder {
+public class DirectMessageEntryViewHolder extends ViewListHolder {
 
 	public final ImageView profile_image;
     public final TextView name, screen_name, text;

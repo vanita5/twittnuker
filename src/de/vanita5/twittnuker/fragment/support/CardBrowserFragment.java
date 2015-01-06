@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -20,12 +20,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter;
+package de.vanita5.twittnuker.fragment.support;
 
-import android.content.Context;
+import android.os.Bundle;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
-public class ParcelableActivitiesAboutMeAdapter extends ParcelableActivitiesAdapter {
-    protected ParcelableActivitiesAboutMeAdapter(Context context) {
-        super(context);
+public class CardBrowserFragment extends SupportBrowserFragment {
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		final WebView view = getWebView();
+		final WebSettings settings = view.getSettings();
+		settings.setBuiltInZoomControls(false);
+	}
+
+	public static CardBrowserFragment show(String uri) {
+		final Bundle args = new Bundle();
+		args.putString(EXTRA_URI, uri);
+		final CardBrowserFragment fragment = new CardBrowserFragment();
+		fragment.setArguments(args);
+		return fragment;
 	}
 }

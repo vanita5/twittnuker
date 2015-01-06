@@ -42,23 +42,12 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/icon_size_card_list_item"
-            android:orientation="vertical"
-            android:padding="@dimen/element_spacing_normal">
-
-            <de.vanita5.twittnuker.view.HandleSpanClickTextView
-                android:id="@+id/text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="?android:attr/textColorSecondary"/>
+            android:orientation="vertical">
 
             <de.vanita5.twittnuker.view.SquareFrameLayout
                 android:id="@+id/media_preview_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/element_spacing_small"
-                android:paddingTop="@dimen/element_spacing_small"
                 android:visibility="gone">
 
                 <de.vanita5.twittnuker.view.HighlightImageView
@@ -75,6 +64,15 @@
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/element_spacing_large"/>
             </de.vanita5.twittnuker.view.SquareFrameLayout>
+
+            <de.vanita5.twittnuker.view.HandleSpanClickTextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/element_spacing_small"
+                android:paddingTop="@dimen/element_spacing_small"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="?android:attr/textColorSecondary"/>
 
             <de.vanita5.twittnuker.view.themed.ThemedTextView
                 android:id="@+id/time"

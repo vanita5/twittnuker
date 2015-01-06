@@ -79,7 +79,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
         final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mTextSize = preferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
 		if (compact) {
-            mCardLayoutResource = R.layout.card_item_status_compat;
+            mCardLayoutResource = R.layout.card_item_status_compact;
 		} else {
             mCardLayoutResource = R.layout.card_item_status;
 		}
@@ -191,7 +191,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 
 	@Override
 	public int getItemViewType(int position) {
-		if (position == getItemCount() - 1) {
+        if (position == getStatusCount()) {
 			return ITEM_VIEW_TYPE_LOAD_INDICATOR;
         } else if (isGapItem(position)) {
             return ITEM_VIEW_TYPE_GAP;

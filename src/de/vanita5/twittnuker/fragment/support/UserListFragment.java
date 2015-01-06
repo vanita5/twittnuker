@@ -100,7 +100,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 	private TextView mListNameView, mCreatedByView, mDescriptionView, mErrorMessageView;
     private View mErrorRetryContainer, mProgressContainer;
 	private ColorLabelRelativeLayout mProfileContainer;
-	private View mDescriptionContainer;
 	private Button mRetryButton;
     private HeaderDrawerLayout mHeaderDrawerLayout;
     private ViewPager mViewPager;
@@ -188,7 +187,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 	public void displayUserList(final ParcelableUserList userList) {
 		if (userList == null || getActivity() == null) return;
 		getLoaderManager().destroyLoader(0);
-		final boolean is_myself = userList.account_id == userList.user_id;
+        final boolean isMyself = userList.account_id == userList.user_id;
 		mErrorRetryContainer.setVisibility(View.GONE);
         mProgressContainer.setVisibility(View.GONE);
 		mUserList = userList;
@@ -198,7 +197,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 				userList.user_screen_name);
 		mCreatedByView.setText(getString(R.string.created_by, display_name));
 		final String description = userList.description;
-		mDescriptionContainer.setVisibility(is_myself || !isEmpty(description) ? View.VISIBLE : View.GONE);
+        mDescriptionView.setVisibility(isMyself || !isEmpty(description) ? View.VISIBLE : View.GONE);
 		mDescriptionView.setText(description);
         final TwidereLinkify linkify = new TwidereLinkify(new OnLinkClickHandler(getActivity(), getMultiSelectManager()));
 		linkify.applyAllLinks(mDescriptionView, userList.account_id, false);
@@ -277,6 +276,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 
         mViewPager.setAdapter(mPagerAdapter);
         mPagerIndicator.setViewPager(mViewPager);
+        mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
 
         mTwitterWrapper = getApplication().getTwitterWrapper();
         mProfileImageLoader = getApplication().getImageLoaderWrapper();
@@ -476,7 +476,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         mCreatedByView = (TextView) headerView.findViewById(R.id.created_by);
         mDescriptionView = (TextView) headerView.findViewById(R.id.description);
         mProfileImageView = (ImageView) headerView.findViewById(R.id.profile_image);
-        mDescriptionContainer = headerView.findViewById(R.id.description_container);
         mRetryButton = (Button) mErrorRetryContainer.findViewById(R.id.retry);
         mErrorMessageView = (TextView) mErrorRetryContainer.findViewById(R.id.error_message);
         mViewPager = (ViewPager) contentView.findViewById(R.id.view_pager);
@@ -515,8 +514,8 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
             tabArgs.putString(EXTRA_LIST_NAME, args.getString(EXTRA_LIST_NAME));
         }
         mPagerAdapter.addTab(UserListTimelineFragment.class, tabArgs, getString(R.string.statuses), null, 0);
-        mPagerAdapter.addTab(UserListMembersFragment.class, tabArgs, getString(R.string.list_members), null, 1);
-        mPagerAdapter.addTab(UserListSubscribersFragment.class, tabArgs, getString(R.string.list_subscribers), null, 2);
+        mPagerAdapter.addTab(UserListMembersFragment.class, tabArgs, getString(R.string.members), null, 1);
+        mPagerAdapter.addTab(UserListSubscribersFragment.class, tabArgs, getString(R.string.subscribers), null, 2);
         mPagerIndicator.notifyDataSetChanged();
     }
 

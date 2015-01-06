@@ -37,17 +37,16 @@ import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.holder.UserListListViewHolder;
+import de.vanita5.twittnuker.view.holder.UserListViewListHolder;
 
 import java.util.List;
 import java.util.Locale;
 
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
-import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 
-public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserList> implements IBaseCardAdapter,
+public class ParcelableUserListsListAdapter extends BaseArrayAdapter<ParcelableUserList> implements IBaseCardAdapter,
         OnClickListener {
 
 	private final Context mContext;
@@ -55,11 +54,11 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 	private final MultiSelectManager mMultiSelectManager;
 	private final Locale mLocale;
 
-	public ParcelableUserListsAdapter(final Context context) {
+	public ParcelableUserListsListAdapter(final Context context) {
         this(context, Utils.isCompactCards(context));
 	}
 
-    public ParcelableUserListsAdapter(final Context context, final boolean compactCards) {
+    public ParcelableUserListsListAdapter(final Context context, final boolean compactCards) {
 		super(context, getItemResource(compactCards));
 		mContext = context;
 		mLocale = context.getResources().getConfiguration().locale;
@@ -82,11 +81,11 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 	public View getView(final int position, final View convertView, final ViewGroup parent) {
 		final View view = super.getView(position, convertView, parent);
 		final Object tag = view.getTag();
-        final UserListListViewHolder holder;
-        if (tag instanceof UserListListViewHolder) {
-            holder = (UserListListViewHolder) tag;
+        final UserListViewListHolder holder;
+        if (tag instanceof UserListViewListHolder) {
+            holder = (UserListViewListHolder) tag;
 		} else {
-            holder = new UserListListViewHolder(view);
+            holder = new UserListViewListHolder(view);
 			holder.profile_image.setOnClickListener(this);
 //            holder.content.setOnOverflowIconClickListener(this);
 			view.setTag(holder);
@@ -100,10 +99,16 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 		holder.setTextSize(getTextSize());
 		holder.name.setText(user_list.name);
 		holder.created_by.setText(mContext.getString(R.string.created_by, display_name));
-		holder.description.setVisibility(TextUtils.isEmpty(user_list.description) ? View.GONE : View.VISIBLE);
-		holder.description.setText(user_list.description);
-		holder.members_count.setText(getLocalizedNumber(mLocale, user_list.members_count));
-		holder.subscribers_count.setText(getLocalizedNumber(mLocale, user_list.subscribers_count));
+        if (holder.description != null) {
+            holder.description.setVisibility(TextUtils.isEmpty(user_list.description) ? View.GONE : View.VISIBLE);
+            holder.description.setText(user_list.description);
+        }
+        if (holder.members_count != null) {
+		    holder.members_count.setText(getLocalizedNumber(mLocale, user_list.members_count));
+        }
+        if (holder.subscribers_count != null) {
+		    holder.subscribers_count.setText(getLocalizedNumber(mLocale, user_list.subscribers_count));
+        }
 		holder.profile_image.setVisibility(isDisplayProfileImage() ? View.VISIBLE : View.GONE);
 		if (isDisplayProfileImage()) {
             mImageLoader.displayProfileImage(holder.profile_image, user_list.user_profile_image_url);
@@ -146,6 +151,7 @@ public class ParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserL
 
 
 	private static int getItemResource(final boolean compactCards) {
-		return compactCards ? R.layout.card_item_user_list_compact : R.layout.card_item_user_list;
+//        return compactCards ? R.layout.card_item_user_list_compact : R.layout.card_item_user_list;
+        return R.layout.list_item_user_list;
 	}
 }

@@ -27,7 +27,7 @@ import android.view.View;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
-public class CardViewHolder extends ListViewHolder {
+public class CardViewHolder extends ViewListHolder {
 
     public final IColorLabelView content;
 

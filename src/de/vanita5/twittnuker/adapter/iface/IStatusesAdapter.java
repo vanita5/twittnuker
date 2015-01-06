@@ -23,8 +23,9 @@ package de.vanita5.twittnuker.adapter.iface;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
+import de.vanita5.twittnuker.view.holder.StatusViewHolder.StatusClickListener;
 
-public interface IStatusesAdapter<Data> extends IContentCardAdapter {
+public interface IStatusesAdapter<Data> extends IContentCardAdapter, StatusClickListener {
 
     ParcelableStatus getStatus(int position);
 
@@ -32,7 +33,4 @@ public interface IStatusesAdapter<Data> extends IContentCardAdapter {
 
     void setData(Data data);
 
-    void onUserProfileClick(StatusViewHolder holder, int position);
-
-    void onStatusClick(StatusViewHolder holder, int position);
 }

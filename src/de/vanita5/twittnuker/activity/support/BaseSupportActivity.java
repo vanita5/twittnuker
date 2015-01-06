@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.view.MainFrameLayout.FitSystemWindowsCallback;
 import java.util.ArrayList;
 
 @SuppressLint("Registered")
-public class BaseSupportActivity extends BaseSupportThemedActivity implements Constants,
+public class BaseSupportActivity extends ThemedFragmentActivity implements Constants,
         FitSystemWindowsCallback, SystemWindowsInsetsCallback, IControlBarActivity {
 
 	private boolean mInstanceStateSaved, mIsVisible, mIsOnTop;

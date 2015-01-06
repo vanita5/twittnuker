@@ -113,7 +113,6 @@ import static de.vanita5.twittnuker.util.UserColorNameUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
-import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
 import static de.vanita5.twittnuker.util.Utils.getErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.getOriginalTwitterProfileImage;
@@ -297,6 +296,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 mFollowButton.setVisibility(View.VISIBLE);
             } else if (relationship != null) {
                 final int drawableRes;
+                mFollowButton.setEnabled(!relationship.isSourceBlockedByTarget());
+                getView().findViewById(R.id.pages_error).setVisibility(relationship.isSourceBlockedByTarget() ? View.VISIBLE : View.GONE);
                 if (relationship.isSourceBlockingTarget()) {
                     mFollowButton.setText(R.string.unblock);
                     drawableRes = R.drawable.ic_follow_blocked;
@@ -344,6 +345,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 			} else {
                 mFollowButton.setText(null);
                 mFollowButton.setVisibility(View.GONE);
+                getView().findViewById(R.id.pages_error).setVisibility(View.GONE);
 //                mFollowingYouIndicator.setVisibility(View.GONE);
 			}
 		}

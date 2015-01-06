@@ -1,17 +1,20 @@
 /*
- * Copyright (C) 2009 The Android Open Source Project
+ * Twidere - Twitter client for Android
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.mariotaku.gallery3d;
@@ -49,14 +52,15 @@ import org.mariotaku.menucomponent.widget.MenuBar.MenuBarListener;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
+import de.vanita5.twittnuker.loader.support.TileImageLoader;
 import de.vanita5.twittnuker.util.SaveImageTask;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.io.File;
 
-public final class ImageViewerGLActivity extends BaseSupportActivity implements Constants, PhotoView.Listener,
-		GLImageLoader.DownloadListener, LoaderManager.LoaderCallbacks<GLImageLoader.Result>, OnMenuVisibilityListener,
+public final class ImageViewerGLActivityOld extends BaseSupportActivity implements Constants, PhotoView.Listener,
+        TileImageLoader.DownloadListener, LoaderManager.LoaderCallbacks<TileImageLoader.Result>, OnMenuVisibilityListener,
         MenuBarListener {
 
 	private final GLView mRootPane = new GLView() {
@@ -139,13 +143,13 @@ public final class ImageViewerGLActivity extends BaseSupportActivity implements 
 	}
 
 	@Override
-	public Loader<GLImageLoader.Result> onCreateLoader(final int id, final Bundle args) {
+    public Loader<TileImageLoader.Result> onCreateLoader(final int id, final Bundle args) {
 		mProgress.setVisibility(View.VISIBLE);
 		mProgress.setIndeterminate(true);
 		invalidateOptionsMenu();
 		final Uri uri = args.getParcelable(EXTRA_URI);
 		final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
-		return new GLImageLoader(this, this, accountId, uri);
+        return new TileImageLoader(this, this, accountId, uri);
 	}
 
 	@Override
@@ -178,12 +182,12 @@ public final class ImageViewerGLActivity extends BaseSupportActivity implements 
 
 
 	@Override
-	public void onLoaderReset(final Loader<GLImageLoader.Result> loader) {
+    public void onLoaderReset(final Loader<TileImageLoader.Result> loader) {
 
 	}
 
 	@Override
-	public void onLoadFinished(final Loader<GLImageLoader.Result> loader, final GLImageLoader.Result data) {
+    public void onLoadFinished(final Loader<TileImageLoader.Result> loader, final TileImageLoader.Result data) {
 		if (data != null && (data.decoder != null || data.bitmap != null)) {
 			if (data.decoder != null) {
 				mGLRootView.setVisibility(View.VISIBLE);
@@ -525,9 +529,9 @@ public final class ImageViewerGLActivity extends BaseSupportActivity implements 
 	}
 
 	private static class MyHandler extends SynchronizedHandler {
-		ImageViewerGLActivity activity;
+		ImageViewerGLActivityOld activity;
 
-		private MyHandler(final ImageViewerGLActivity activity) {
+		private MyHandler(final ImageViewerGLActivityOld activity) {
 			super(activity.getGLRoot());
 			this.activity = activity;
 		}

@@ -16,10 +16,6 @@
 
 package twitter4j.internal.json;
 
-import static twitter4j.internal.util.InternalParseUtil.getBoolean;
-import static twitter4j.internal.util.InternalParseUtil.getHTMLUnescapedString;
-import static twitter4j.internal.util.InternalParseUtil.getLong;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +25,10 @@ import twitter4j.ResponseList;
 import twitter4j.TwitterException;
 import twitter4j.conf.Configuration;
 import twitter4j.http.HttpResponse;
+
+import static twitter4j.internal.util.InternalParseUtil.getBoolean;
+import static twitter4j.internal.util.InternalParseUtil.getHTMLUnescapedString;
+import static twitter4j.internal.util.InternalParseUtil.getLong;
 
 /**
  * A data class that has detailed information about a relationship between two
@@ -45,6 +45,7 @@ import twitter4j.http.HttpResponse;
 	private final long targetUserId;
 	private final String targetUserScreenName;
 	private final boolean sourceBlockingTarget;
+    private final boolean sourceBlockedByTarget;
 	private final boolean sourceNotificationsEnabled;
 	private final boolean sourceFollowingTarget;
 	private final boolean sourceFollowedByTarget;
@@ -70,6 +71,7 @@ import twitter4j.http.HttpResponse;
 			sourceUserScreenName = getHTMLUnescapedString("screen_name", sourceJson);
 			targetUserScreenName = getHTMLUnescapedString("screen_name", targetJson);
 			sourceBlockingTarget = getBoolean("blocking", sourceJson);
+            sourceBlockedByTarget = getBoolean("blocked_by", sourceJson);
 			sourceFollowingTarget = getBoolean("following", sourceJson);
 			sourceFollowedByTarget = getBoolean("followed_by", sourceJson);
 			sourceNotificationsEnabled = getBoolean("notifications_enabled", sourceJson);
@@ -184,6 +186,14 @@ import twitter4j.http.HttpResponse;
 	 * {@inheritDoc}
 	 */
 	@Override
+    public boolean isSourceBlockedByTarget() {
+        return sourceBlockedByTarget;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
 	public boolean isSourceFollowedByTarget() {
 		return sourceFollowedByTarget;
 	}

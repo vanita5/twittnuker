@@ -39,13 +39,17 @@ import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.view.ShapedImageView;
+import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
 import static de.vanita5.twittnuker.util.Utils.restartActivity;
 
-public abstract class BaseSupportThemedActivity extends FragmentActivity implements Constants, IThemedActivity {
+public abstract class ThemedFragmentActivity extends FragmentActivity implements Constants, IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor,
 			mCurrentThemeBackgroundAlpha, mCurrentActionBarColor;
+	@ShapeStyle
+	private int mProfileImageStyle;
 
 	@Override
 	public Resources getDefaultResources() {
@@ -116,6 +120,10 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
     @Override
     public View onCreateView(String name, @NonNull Context context, @NonNull AttributeSet attrs) {
         final View view = ThemeUtils.createView(name, context, attrs, mCurrentThemeColor);
+        if (view instanceof ShapedImageView) {
+            final ShapedImageView shapedImageView = (ShapedImageView) view;
+            shapedImageView.setStyle(mProfileImageStyle);
+        }
         if (view != null) return view;
         return super.onCreateView(name, context, attrs);
     }
@@ -138,6 +146,7 @@ public abstract class BaseSupportThemedActivity extends FragmentActivity impleme
 		mCurrentThemeColor = getThemeColor();
 		mCurrentActionBarColor = getActionBarColor();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
+		mProfileImageStyle = Utils.getProfileImageStyle(this);
 		ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentActionBarColor,
 				mCurrentThemeBackgroundAlpha);
 		setTheme(mCurrentThemeResource);

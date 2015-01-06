@@ -19,11 +19,11 @@ package org.mariotaku.gallery3d.ui;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.v4.util.LongSparseArray;
 import android.util.FloatMath;
 import android.util.Log;
-import android.util.LongSparseArray;
 
-import org.mariotaku.gallery3d.ImageViewerGLActivity;
+import org.mariotaku.gallery3d.ImageViewerGLActivityOld;
 import org.mariotaku.gallery3d.util.ApiHelper;
 import org.mariotaku.gallery3d.util.BitmapPool;
 import org.mariotaku.gallery3d.util.DecodeUtils;
@@ -108,7 +108,7 @@ public class TileImageView extends GLView {
 
 	// Temp variables to avoid memory allocation
 	private final Rect mTileRange = new Rect();
-	private final Rect mActiveRange[] = { new Rect(), new Rect() };
+	private final Rect mActiveRange[] = {new Rect(), new Rect()};
 
 	private final TileUploader mTileUploader = new TileUploader();
 	private boolean mIsTextureFreed;
@@ -116,7 +116,7 @@ public class TileImageView extends GLView {
 	private final ThreadPool mThreadPool;
 	private boolean mBackgroundTileUploaded;
 
-	public TileImageView(final ImageViewerGLActivity context) {
+	public TileImageView(final ImageViewerGLActivityOld context) {
 		mThreadPool = context.getThreadPool();
 		mTileDecoder = mThreadPool.submit(new TileDecoder());
 		if (TILE_SIZE == 0) {
@@ -199,7 +199,8 @@ public class TileImageView extends GLView {
 	}
 
 	public boolean setPosition(final int centerX, final int centerY, final float scale, final int rotation) {
-		if (mCenterX == centerX && mCenterY == centerY && mScale == scale && mRotation == rotation) return false;
+		if (mCenterX == centerX && mCenterY == centerY && mScale == scale && mRotation == rotation)
+			return false;
 		mCenterX = centerX;
 		mCenterY = centerY;
 		mScale = scale;
@@ -320,7 +321,7 @@ public class TileImageView extends GLView {
 	// Draw the tile to a square at canvas that locates at (x, y) and
 	// has a side length of length.
 	private void drawTile(final GLCanvas canvas, final int tx, final int ty, final int level, final float x,
-			final float y, final float length) {
+						  final float y, final float length) {
 		final RectF source = mSourceRect;
 		final RectF target = mTargetRect;
 		target.set(x, y, x + length, y + length);
@@ -359,7 +360,7 @@ public class TileImageView extends GLView {
 	// (cX, cY) is the point on the original bitmap which will be put in the
 	// center of the ImageViewer.
 	private void getRange(final Rect out, final int cX, final int cY, final int level, final float scale,
-			final int rotation) {
+						  final int rotation) {
 
 		final double radians = Math.toRadians(-rotation);
 		final double w = getWidth();

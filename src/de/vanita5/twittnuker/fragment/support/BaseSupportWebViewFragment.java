@@ -26,10 +26,11 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient;
 import de.vanita5.twittnuker.util.accessor.WebSettingsAccessor;
+import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class BaseSupportWebViewFragment extends SupportWebViewFragment implements Constants {
@@ -38,11 +39,15 @@ public class BaseSupportWebViewFragment extends SupportWebViewFragment implement
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		final WebView view = getWebView();
-		view.setWebViewClient(new DefaultWebViewClient(getActivity()));
+        view.setWebViewClient(createWebViewClient());
 		final WebSettings settings = view.getSettings();
 		settings.setBuiltInZoomControls(true);
 		settings.setJavaScriptEnabled(true);
 		WebSettingsAccessor.setAllowUniversalAccessFromFileURLs(settings, true);
     }
 
+
+    protected WebViewClient createWebViewClient() {
+        return new DefaultWebViewClient(getActivity());
+    }
 }

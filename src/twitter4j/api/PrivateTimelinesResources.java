@@ -5,7 +5,7 @@ import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.TwitterException;
 
-public interface UndocumentedTimelinesResources extends UndocumentedResources {
+public interface PrivateTimelinesResources extends PrivateResources {
 
 	ResponseList<Status> getMediaTimeline() throws TwitterException;
 

@@ -23,18 +23,12 @@
 package de.vanita5.twittnuker.adapter.iface;
 
 import de.vanita5.twittnuker.model.ParcelableActivity;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
 public interface IActivitiesAdapter<Data> extends IContentCardAdapter {
-
 
 	ParcelableActivity getActivity(int position);
 
 	int getActivityCount();
-
-	void onStatusClick(StatusViewHolder holder, int position);
-
-	void onUserProfileClick(StatusViewHolder holder, int position);
 
 	void setData(Data data);
 

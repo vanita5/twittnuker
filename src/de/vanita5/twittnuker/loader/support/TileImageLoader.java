@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.mariotaku.gallery3d;
+package de.vanita5.twittnuker.loader.support;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -33,16 +33,14 @@ import android.util.DisplayMetrics;
 
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
+import com.nostra13.universalimageloader.utils.IoUtils;
 
-import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.Exif;
 import de.vanita5.twittnuker.util.ImageValidator;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.imageloader.AccountExtra;
-
-import org.mariotaku.gallery3d.util.BitmapUtils;
-import org.mariotaku.gallery3d.util.GalleryUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,7 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> implements Constants {
+public class TileImageLoader extends AsyncTaskLoader<TileImageLoader.Result> {
 
 	private final Uri mUri;
 	private final Handler mHandler;
@@ -61,7 +59,7 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
 	private final float mFallbackSize;
 	private final long mAccountId;
 
-	public GLImageLoader(final Context context, final DownloadListener listener, final long accountId, final Uri uri) {
+	public TileImageLoader(final Context context, final DownloadListener listener, final long accountId, final Uri uri) {
 		super(context);
 		mHandler = new Handler();
 		mAccountId = accountId;
@@ -76,9 +74,9 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
 	}
 
 	@Override
-	public GLImageLoader.Result loadInBackground() {
+	public TileImageLoader.Result loadInBackground() {
 		if (mUri == null) {
-			Result.nullInstance();
+            return Result.nullInstance();
 		}
 		final String scheme = mUri.getScheme();
 		if ("http".equals(scheme) || "https".equals(scheme)) {
@@ -105,8 +103,8 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
 					dump(is, os);
 					mHandler.post(new DownloadFinishRunnable(this, mListener));
 				} finally {
-					GalleryUtils.closeSilently(is);
-					GalleryUtils.closeSilently(os);
+                    IoUtils.closeSilently(is);
+                    IoUtils.closeSilently(os);
 				}
 				if (!ImageValidator.checkImageValidity(cacheFile)) {
 					// The file is corrupted, so we remove it from
@@ -137,7 +135,6 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
 		final String path = file.getAbsolutePath();
 		final BitmapFactory.Options o = new BitmapFactory.Options();
 		o.inJustDecodeBounds = true;
-		o.inPreferredConfig = Bitmap.Config.RGB_565;
 		BitmapFactory.decodeFile(path, o);
 		final int width = o.outWidth, height = o.outHeight;
 		if (width <= 0 || height <= 0) return Result.getInstance(file, null);
@@ -155,7 +152,6 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
 			final int height = decoder.getHeight();
 			final BitmapFactory.Options options = new BitmapFactory.Options();
 			options.inSampleSize = BitmapUtils.computeSampleSize(mFallbackSize / Math.max(width, height));
-			options.inPreferredConfig = Bitmap.Config.RGB_565;
 			final Bitmap bitmap = decoder.decodeRegion(new Rect(0, 0, width, height), options);
 			return Result.getInstance(decoder, bitmap, Exif.getOrientation(file), file);
 		} catch (final IOException e) {
@@ -215,6 +211,10 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
 			this.decoder = decoder;
 			this.orientation = orientation;
 			this.exception = exception;
+        }
+
+        public boolean hasData() {
+            return bitmap != null || decoder != null;
 		}
 
 		public static Result getInstance(final Bitmap bitmap, final int orientation, final File file) {
@@ -237,11 +237,11 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
 
 	private final static class DownloadErrorRunnable implements Runnable {
 
-		private final GLImageLoader loader;
+		private final TileImageLoader loader;
 		private final DownloadListener listener;
 		private final Throwable t;
 
-		DownloadErrorRunnable(final GLImageLoader loader, final DownloadListener listener, final Throwable t) {
+		DownloadErrorRunnable(final TileImageLoader loader, final DownloadListener listener, final Throwable t) {
 			this.loader = loader;
 			this.listener = listener;
 			this.t = t;
@@ -256,10 +256,10 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
 
 	private final static class DownloadFinishRunnable implements Runnable {
 
-		private final GLImageLoader loader;
+		private final TileImageLoader loader;
 		private final DownloadListener listener;
 
-		DownloadFinishRunnable(final GLImageLoader loader, final DownloadListener listener) {
+		DownloadFinishRunnable(final TileImageLoader loader, final DownloadListener listener) {
 			this.loader = loader;
 			this.listener = listener;
 		}
@@ -273,11 +273,11 @@ public class GLImageLoader extends AsyncTaskLoader<GLImageLoader.Result> impleme
 
 	private final static class DownloadStartRunnable implements Runnable {
 
-		private final GLImageLoader loader;
+		private final TileImageLoader loader;
 		private final DownloadListener listener;
 		private final long total;
 
-		DownloadStartRunnable(final GLImageLoader loader, final DownloadListener listener, final long total) {
+		DownloadStartRunnable(final TileImageLoader loader, final DownloadListener listener, final long total) {
 			this.loader = loader;
 			this.listener = listener;
 			this.total = total;

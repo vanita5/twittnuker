@@ -20,7 +20,6 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
 <LinearLayout
     android:id="@+id/card_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -98,9 +97,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-                    tools:text="Name"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="?android:textColorPrimary"/>
+                    android:textColor="?android:textColorPrimary"
+                    tools:text="Name"/>
 
                 <de.vanita5.twittnuker.view.themed.ThemedTextView
                     android:id="@+id/screen_name"
@@ -108,9 +107,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/element_spacing_small"
                     android:singleLine="true"
-                    tools:text="\@username"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="?android:attr/textColorSecondary"/>
+                    android:textColor="?android:attr/textColorSecondary"
+                    tools:text="\@username"/>
             </LinearLayout>
 
             <de.vanita5.twittnuker.view.themed.ThemedTextView
@@ -119,6 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/element_spacing_small"
                 android:gravity="center_vertical"
+                tools:text="Jan 8 2015 13:37, via Twittnuker"
                 android:textAppearance="?android:attr/textAppearanceSmall"/>
 
         </LinearLayout>
@@ -156,15 +156,17 @@
     <de.vanita5.twittnuker.view.StatusTextView
         android:id="@+id/text"
         android:layout_width="match_parent"
-        tools:text="@string/sample_status_text"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/element_spacing_normal"
         android:singleLine="false"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textIsSelectable="true"/>
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="?android:textColorPrimary"
+        android:textIsSelectable="true"
+        tools:text="@string/sample_status_text"/>
 
     <de.vanita5.twittnuker.view.TwitterCardContainer
         android:id="@+id/twitter_card"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
