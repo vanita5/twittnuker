@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.fragment.support;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -50,7 +49,6 @@ import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.AccelerateSmoothScroller;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.SimpleDrawerCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -283,26 +281,7 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
         if (twitter != null && tabPosition != -1) {
             twitter.clearUnreadCountAsync(tabPosition);
 	    }
-//        mRecyclerView.smoothScrollToPosition(0);
-        final LinearLayoutManager layoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
-        final AccelerateSmoothScroller smoothScroller = new AccelerateSmoothScroller(getActivity(), 2) {
-
-            @Override
-            public PointF computeScrollVectorForPosition(int targetPosition) {
-                if (getChildCount() == 0) {
-                    return null;
-                }
-                final int firstChildPos = layoutManager.getPosition(layoutManager.getChildAt(0));
-                final int direction = targetPosition < firstChildPos != layoutManager.getReverseLayout() ? -1 : 1;
-                if (layoutManager.getOrientation() == LinearLayoutManager.HORIZONTAL) {
-                    return new PointF(direction, 0);
-                } else {
-                    return new PointF(0, direction);
-                }
-            }
-        };
-        smoothScroller.setTargetPosition(0);
-        layoutManager.startSmoothScroll(smoothScroller);
+        mRecyclerView.smoothScrollToPosition(0);
         return true;
     }
 

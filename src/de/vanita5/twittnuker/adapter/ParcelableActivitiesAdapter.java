@@ -25,9 +25,10 @@ package de.vanita5.twittnuker.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
+
+import java.util.List;
 
 public class ParcelableActivitiesAdapter extends AbsActivitiesAdapter<List<ParcelableActivity>> {
 
@@ -79,6 +80,11 @@ public class ParcelableActivitiesAdapter extends AbsActivitiesAdapter<List<Parce
 	public void setData(List<ParcelableActivity> data) {
 		mData = data;
 		notifyDataSetChanged();
+    }
+
+    @Override
+    protected void bindTitleSummaryViewHolder(ActivityTitleSummaryViewHolder holder, int position) {
+        holder.displayActivity(getActivity(position));
 	}
 
 	@Override

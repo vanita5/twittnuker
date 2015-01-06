@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 import de.vanita5.twittnuker.model.ParcelableActivity;
 
@@ -33,12 +34,13 @@ import twitter4j.Paging;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-public class ActivitiesByFriendsLoader extends Twitter4JActivitiesLoaderOld {
+public class ActivitiesByFriendsLoader extends Twitter4JActivitiesLoader {
 
-    public ActivitiesByFriendsLoader(final Context context, final long[] accountIds, long[] sinceIds,
-                                     long[] maxIds, final List<ParcelableActivity> data,
-                                     final String[] saveFileArgs, final boolean useCache) {
-        super(context, accountIds, sinceIds, maxIds, data, saveFileArgs, useCache);
+
+    public ActivitiesByFriendsLoader(final Context context, final long accountId, long sinceId,
+                                     long maxId, final List<ParcelableActivity> data,
+                                     final String[] saveFileArgs, final int position) {
+        super(context, accountId, sinceId, maxId, data, saveFileArgs, position);
 	}
 
 	@Override
@@ -46,5 +48,11 @@ public class ActivitiesByFriendsLoader extends Twitter4JActivitiesLoaderOld {
 		if (twitter == null) return null;
 		return twitter.getActivitiesByFriends(paging);
 	}
+
+    @Override
+    protected boolean shouldFilterActivity(SQLiteDatabase database, ParcelableActivity activity) {
+        return false;
+    }
+
 
 }
