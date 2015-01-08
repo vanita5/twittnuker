@@ -25,11 +25,11 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
+
+import java.util.List;
 
 public abstract class ParcelableActivitiesLoader extends AsyncTaskLoader<List<ParcelableActivity>> implements Constants {
 

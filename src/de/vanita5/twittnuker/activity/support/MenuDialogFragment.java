@@ -40,7 +40,6 @@ import android.widget.ListView;
 
 import org.mariotaku.menucomponent.internal.menu.MenuAdapter;
 import org.mariotaku.menucomponent.internal.menu.MenuUtils;
-
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.util.ThemeUtils;
 

@@ -34,11 +34,11 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.support.v4.content.AsyncTaskLoader;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.ArrayUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IntentActivitiesLoader extends AsyncTaskLoader<List<ResolveInfo>> implements Constants {
 

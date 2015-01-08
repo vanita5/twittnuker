@@ -32,7 +32,6 @@ import android.view.MenuItem;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

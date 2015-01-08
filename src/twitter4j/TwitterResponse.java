@@ -46,9 +46,9 @@ public interface TwitterResponse extends Serializable {
 	int getAccessLevel();
 
 	/**
-	 * Returns the current rate limit fragment_status if available.
+	 * Returns the current rate limit status if available.
 	 * 
-	 * @return current rate limit fragment_status
+	 * @return current rate limit status
 	 * @since Twitter4J 2.1.0
 	 */
 	RateLimitStatus getRateLimitStatus();

@@ -149,8 +149,8 @@ public class ParcelableMedia implements Parcelable, JSONParcelable {
         final MediaEntity[] mediaEntities;
         if (entities instanceof ExtendedEntitySupport) {
             final ExtendedEntitySupport extendedEntities = (ExtendedEntitySupport) entities;
-            final MediaEntity[] extendedMedias = extendedEntities.getExtendedMediaEntities();
-            mediaEntities = extendedMedias != null ? extendedMedias : entities.getMediaEntities();
+            final MediaEntity[] extendedMediaEntities = extendedEntities.getExtendedMediaEntities();
+            mediaEntities = extendedMediaEntities != null ? extendedMediaEntities : entities.getMediaEntities();
         } else {
             mediaEntities = entities.getMediaEntities();
         }

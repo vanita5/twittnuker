@@ -12,4 +12,5 @@ public interface PrivateFriendsFollowersResources extends PrivateResources {
 	public User denyFriendship(long userId) throws TwitterException;
 
 	public User denyFriendship(String screenName) throws TwitterException;
+
 }

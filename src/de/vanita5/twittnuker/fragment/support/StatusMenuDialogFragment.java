@@ -28,12 +28,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 
-import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.MenuDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.Utils;
+
+import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
 
 public class StatusMenuDialogFragment extends MenuDialogFragment {
 

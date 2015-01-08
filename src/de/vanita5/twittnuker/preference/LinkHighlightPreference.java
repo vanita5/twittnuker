@@ -69,5 +69,4 @@ public class LinkHighlightPreference extends AutoInvalidateListPreference implem
 		str.setSpan(new TwidereHighLightStyle(option), 0, str.length(), 0);
 		return str;
 	}
-
 }

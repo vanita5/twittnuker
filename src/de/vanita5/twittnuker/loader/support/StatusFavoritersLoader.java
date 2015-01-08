@@ -24,13 +24,14 @@ package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.model.ParcelableUser;
+
 import twitter4j.CursorPaging;
 import twitter4j.IDs;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+
+import java.util.List;
 
 public class StatusFavoritersLoader extends IDsUsersLoader {
 

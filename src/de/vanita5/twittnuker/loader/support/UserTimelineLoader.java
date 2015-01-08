@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.loader.support;
 
-import static de.vanita5.twittnuker.util.Utils.getAccountId;
-import static de.vanita5.twittnuker.util.Utils.isFiltered;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -37,6 +34,9 @@ import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+
+import static de.vanita5.twittnuker.util.Utils.getAccountId;
+import static de.vanita5.twittnuker.util.Utils.isFiltered;
 
 public class UserTimelineLoader extends Twitter4JStatusesLoader {
 

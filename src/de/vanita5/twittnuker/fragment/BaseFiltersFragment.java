@@ -55,8 +55,6 @@ import de.vanita5.twittnuker.fragment.support.BaseSupportListFragment;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 
-import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
-
 public abstract class BaseFiltersFragment extends BaseSupportListFragment implements LoaderManager.LoaderCallbacks<Cursor>,
 		MultiChoiceModeListener {
 

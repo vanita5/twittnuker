@@ -27,6 +27,9 @@ import android.content.SharedPreferences;
 import android.support.v4.content.AsyncTaskLoader;
 
 import org.mariotaku.jsonserializer.JSONFileIO;
+import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,10 +42,6 @@ import twitter4j.Activity;
 import twitter4j.Paging;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-
-import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.model.ParcelableActivity;
-import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 

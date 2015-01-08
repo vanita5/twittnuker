@@ -430,7 +430,7 @@ import java.util.Date;
 				+ ", location='" + location + '\'' + ", description='" + description + '\''
 				+ ", isContributorsEnabled=" + isContributorsEnabled + ", profileImageUrl='" + profileImageUrl + '\''
 				+ ", profileImageUrlHttps='" + profileImageUrlHttps + '\'' + ", url='" + url + '\'' + ", isProtected="
-				+ isProtected + ", followersCount=" + followersCount + ", fragment_status=" + status
+				+ isProtected + ", followersCount=" + followersCount + ", status=" + status
 				+ ", profileBackgroundColor='" + profileBackgroundColor + '\'' + ", profileTextColor='"
 				+ profileTextColor + '\'' + ", profileLinkColor='" + profileLinkColor + '\''
 				+ ", profileSidebarFillColor='" + profileSidebarFillColor + '\'' + ", profileSidebarBorderColor='"

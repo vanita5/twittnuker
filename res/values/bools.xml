@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
 
 	<bool name="default_display_tab_label">false</bool>
 	<bool name="home_display_icon">false</bool>

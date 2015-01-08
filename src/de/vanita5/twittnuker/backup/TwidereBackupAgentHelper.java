@@ -29,7 +29,6 @@ import android.os.Build;
 
 import de.vanita5.twittnuker.Constants;
 
-
 @TargetApi(Build.VERSION_CODES.FROYO)
 public class TwidereBackupAgentHelper extends BackupAgentHelper implements Constants {
 

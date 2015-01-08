@@ -107,6 +107,7 @@ public class DataImportActivity extends BaseSupportActivity implements FileSelec
 		}
 		df.setArguments(args);
 		df.show(getSupportFragmentManager(), "select_import_type");
+
 	}
 
 	@Override

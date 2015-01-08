@@ -29,7 +29,6 @@ import android.util.AttributeSet;
 import de.vanita5.twittnuker.fragment.AccountNotificationSettingsFragment;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 
-
 public class NotificationAccountsListPreference extends AccountsListPreference {
 
 	public NotificationAccountsListPreference(final Context context) {

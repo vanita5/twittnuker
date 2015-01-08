@@ -11,12 +11,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
 import de.vanita5.twittnuker.util.ArrayUtils;
 import de.vanita5.twittnuker.util.Utils;
+
+import java.util.List;
 
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 
@@ -48,6 +48,7 @@ public class TwitterLinkHandlerActivity extends Activity implements Constants {
     private static final int URI_CODE_TWITTER_USER_LIST_SUBSCRIBERS = 42;
 	private static final int URI_CODE_TWITTER_INTENT_TWEET = 101;
 	private static final int URI_CODE_TWITTER_REDIRECT = 201;
+
 
 	static {
 		URI_MATCHER.addURI(AUTHORITY_TWITTER_COM, "/i/redirect", URI_CODE_TWITTER_REDIRECT);

@@ -376,7 +376,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		mEditText = (EditText) findViewById(R.id.edit_text);
 		mTitleView = (TextView) findViewById(R.id.actionbar_title);
 		mSubtitleView = (TextView) findViewById(R.id.actionbar_subtitle);
-		mMediaPreviewGrid = (GridView) findViewById(R.id.medias_thumbnail_preview);
+        mMediaPreviewGrid = (GridView) findViewById(R.id.medias_thumbnail_preview);
         mMenuBar = (TwidereMenuBar) findViewById(R.id.menu_bar);
 		mProgress = (ProgressBar) findViewById(R.id.actionbar_progress_indeterminate);
 		final View composeActionBar = findViewById(R.id.compose_actionbar);

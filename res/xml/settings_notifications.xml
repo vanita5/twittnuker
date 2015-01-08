@@ -12,7 +12,6 @@
     <PreferenceCategory
         android:key="cat_general"
         android:title="@string/general">
-
         <de.vanita5.twittnuker.preference.SilentNotificationsPreference
             android:key="silent_notifications"
             android:summary="@string/silent_notifications_summary"

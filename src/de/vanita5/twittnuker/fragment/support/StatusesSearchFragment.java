@@ -25,10 +25,10 @@ package de.vanita5.twittnuker.fragment.support;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.loader.support.TweetSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+
+import java.util.List;
 
 public class StatusesSearchFragment extends ParcelableStatusesFragment {
 

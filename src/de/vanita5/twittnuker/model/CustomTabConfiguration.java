@@ -24,10 +24,10 @@ package de.vanita5.twittnuker.model;
 
 import android.support.v4.app.Fragment;
 
+import de.vanita5.twittnuker.TwittnukerConstants;
+
 import java.util.Comparator;
 import java.util.Map.Entry;
-
-import de.vanita5.twittnuker.TwittnukerConstants;
 
 public final class CustomTabConfiguration {
 

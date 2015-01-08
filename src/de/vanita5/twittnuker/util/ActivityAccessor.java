@@ -28,7 +28,7 @@ public class ActivityAccessor {
 	}
 
 	/**
-	 * Information you can set and retrieve about the current activity within the recent task list.
+     * Information you can set and retrieve about the current context within the recent task list.
 	 */
 	public static class TaskDescriptionCompat implements Parcelable {
 
@@ -56,8 +56,8 @@ public class ActivityAccessor {
 		/**
 		 * Creates the TaskDescription to the specified values.
 		 *
-		 * @param label A label and description of the current state of this activity.
-		 * @param icon  An icon that represents the current state of this activity.
+         * @param label A label and description of the current state of this context.
+         * @param icon  An icon that represents the current state of this context.
 		 */
 		public TaskDescriptionCompat(String label, Bitmap icon) {
 			this(label, icon, 0);
@@ -66,7 +66,7 @@ public class ActivityAccessor {
 		/**
 		 * Creates the TaskDescription to the specified values.
 		 *
-		 * @param label A label and description of the current state of this activity.
+         * @param label A label and description of the current state of this context.
 		 */
 		public TaskDescriptionCompat(String label) {
 			this(label, null, 0);

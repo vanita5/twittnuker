@@ -27,7 +27,6 @@ import android.webkit.WebView;
 
 import de.vanita5.twittnuker.util.ParseUtils;
 
-
 public class BrowserFragment extends BaseWebViewFragment {
 
 	@Override

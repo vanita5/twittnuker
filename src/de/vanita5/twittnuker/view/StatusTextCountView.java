@@ -30,7 +30,6 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 

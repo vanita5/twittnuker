@@ -22,12 +22,13 @@
 
 package de.vanita5.twittnuker.loader.support;
 
+import static de.vanita5.twittnuker.util.Utils.isFiltered;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.model.ParcelableStatus;
+
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
@@ -35,7 +36,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
-import static de.vanita5.twittnuker.util.Utils.isFiltered;
+import java.util.List;
 
 public class RetweetsOfMeLoader extends Twitter4JStatusesLoader {
 

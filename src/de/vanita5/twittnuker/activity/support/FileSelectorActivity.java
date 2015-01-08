@@ -77,6 +77,7 @@ public class FileSelectorActivity extends BaseSupportDialogActivity implements F
 			finish();
 			return;
 		}
+
 		final FileSelectorDialogFragment f = new FileSelectorDialogFragment();
 		final Bundle args = new Bundle();
 		args.putString(EXTRA_ACTION, action);

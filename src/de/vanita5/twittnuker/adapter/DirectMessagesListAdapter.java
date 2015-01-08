@@ -30,8 +30,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
 
-import java.util.Locale;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IDirectMessagesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -40,6 +38,8 @@ import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.view.holder.DirectMessageConversationViewHolder;
+
+import java.util.Locale;
 
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.findDirectMessageInDatabases;

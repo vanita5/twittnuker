@@ -117,7 +117,7 @@ public class CardMediaContainer extends ViewGroup implements Constants {
 					moreIndicator.setVisibility(j < k ? VISIBLE : GONE);
 					if (k > j) {
 						final int extraMediaCount = k - j;
-						moreIndicator.setText(getResources().getQuantityString(R.plurals.N_medias,
+                        moreIndicator.setText(getResources().getQuantityString(R.plurals.N_media,
 								extraMediaCount, extraMediaCount));
 					} else {
 						moreIndicator.setText(null);

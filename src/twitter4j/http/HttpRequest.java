@@ -54,9 +54,9 @@ public final class HttpRequest {
 			final Map<String, String> requestHeaders) {
 		this.method = method;
 		if (method != RequestMethod.POST && parameters != null && parameters.length != 0) {
-			final String param_string = HttpParameter.encodeParameters(parameters);
-			this.url = url + "?" + param_string;
-			this.signUrl = signUrl + "?" + param_string;
+			final String paramString = HttpParameter.encodeParameters(parameters);
+			this.url = url + "?" + paramString;
+			this.signUrl = signUrl + "?" + paramString;
 			this.parameters = NULL_PARAMETERS;
 		} else {
 			this.url = url;

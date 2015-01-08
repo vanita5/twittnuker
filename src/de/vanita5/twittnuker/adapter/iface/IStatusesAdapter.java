@@ -22,7 +22,6 @@
 package de.vanita5.twittnuker.adapter.iface;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.StatusClickListener;
 
 public interface IStatusesAdapter<Data> extends IContentCardAdapter, StatusClickListener {

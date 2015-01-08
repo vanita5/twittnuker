@@ -474,8 +474,8 @@
 	<string name="link_highlight_option">Link highlight option</string>
 	<string name="users_statuses">User\'s tweets</string>
 	<string name="card_animation">Card animation</string>
-	<string name="name_first">Prefer name</string>
-    <string name="name_first_summary">Show user name instead of the @screenname</string>
+	<string name="name_first">Prefer display name</string>
+    <string name="name_first_summary">Show user name preferred to @screenname</string>
 	<string name="next">Next</string>
 	<string name="settings_wizard">Settings wizard</string>
 	<string name="wizard_page_welcome_title">Welcome</string>
@@ -619,8 +619,8 @@
     <string name="new_direct_message">New direct message</string>
     <string name="plain_list_style">Plain list style</string>
     <string name="add">Add</string>
-    <string name="N_medias_quantity_one"><xliff:g id="items">%d</xliff:g> media</string>
-    <string name="N_medias_quantity_other"><xliff:g id="items">%d</xliff:g> medias</string>
+    <string name="N_media_quantity_one"><xliff:g id="items">%d</xliff:g> media</string>
+    <string name="N_media_quantity_other"><xliff:g id="items">%d</xliff:g> media</string>
     <string name="delete_drafts_confirm">Delete selcted drafts?</string>
     <string name="extra_configurations">Extra configurations</string>
     <string name="click_item_to_config">Click an item to config</string>
@@ -633,7 +633,7 @@
     <string name="api_url_format_help">[DOMAIN]: Twitter API domain.\nExample: https://[DOMAIN].twitter.com/ will be replaced to https://api.twitter.com/.</string>
     <string name="no_version_suffix">No version suffix</string>
     <string name="inverse_selection">Inverse selection</string>
-    <string name="medias">Medias</string>
+    <string name="media">Media</string>
     <string name="mute_user">Mute <xliff:g id="name">%s</xliff:g></string>
     <string name="muted_user">Muted <xliff:g id="name">%s</xliff:g></string>
     <string name="unmute_user">Unmute <xliff:g id="name">%s</xliff:g></string>
@@ -654,6 +654,7 @@
     <string name="replies">Replies</string>
     <string name="profile_banner">Profile banner</string>
     <string name="profile">Profile</string>
+    <string name="listed">Listed</string>
     <string name="state_blocking">Blocking</string>
     <string name="load_more">Load more</string>
     <string name="photo">Photo</string>

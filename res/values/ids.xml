@@ -17,7 +17,7 @@
 	<item name="add" type="id"/>
 	<item name="toggle" type="id"/>
 	<item name="pick_from_gallery" type="id"/>
-	<item name="pick_from_map" type="id"/>i
+    <item name="pick_from_map" type="id"/>
 	<item name="reply" type="id"/>
 	<item name="retweet" type="id"/>
 	<item name="favorite" type="id"/>
@@ -75,6 +75,4 @@
     <item name="open_with_account" type="id"/>
     <item name="accounts" type="id"/>
     <item name="inverse_selection" type="id"/>
-    <item name="muted_users" type="id">(D) muted_users</item>
-    <item name="blocked_users" type="id">(D) blocked_users</item>
 </resources>

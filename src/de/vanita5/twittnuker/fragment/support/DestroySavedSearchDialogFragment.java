@@ -22,16 +22,16 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ThemeUtils;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class DestroySavedSearchDialogFragment extends BaseSupportDialogFragment implements
 		DialogInterface.OnClickListener {

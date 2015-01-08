@@ -1,5 +1,6 @@
 Test media upload
 Settings export/import: action bar color
+DMs: action bar color
 Fix push toast messages
 check if url has subdirs (port, push)
 Add new compact cards

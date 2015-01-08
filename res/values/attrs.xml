@@ -70,12 +70,11 @@
         <attr name="sivBorder" format="boolean"/>
         <attr name="sivBorderWidth" format="dimension"/>
         <attr name="sivBorderColor" format="color"/>
+        <attr name="sivBackgroundColor" format="color"/>
         <attr name="sivElevation" format="dimension"/>
         <attr name="sivCornerRadius" format="dimension"/>
         <attr name="sivCornerRadiusRatio" format="fraction"/>
         <attr name="sivShape"/>
-
-        <attr name="sivBackgroundColor" format="color"/>
     </declare-styleable>
     <declare-styleable name="HeaderDrawerLayout">
         <attr name="headerLayout" format="reference"/>

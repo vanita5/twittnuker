@@ -216,9 +216,9 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(DirectMessages.RECIPIENT_SCREEN_NAME, message.recipient_screen_name);
 		values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL, message.sender_profile_image_url);
 		values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, message.recipient_profile_image_url);
-		if (message.medias != null) {
-			values.put(Statuses.MEDIA, JSONSerializer.toJSONArrayString(message.medias));
-			values.put(Statuses.FIRST_MEDIA, message.medias[0].url);
+        if (message.media != null) {
+            values.put(Statuses.MEDIA, JSONSerializer.toJSONArrayString(message.media));
+            values.put(Statuses.FIRST_MEDIA, message.media[0].url);
 		}
 		return values;
 	}

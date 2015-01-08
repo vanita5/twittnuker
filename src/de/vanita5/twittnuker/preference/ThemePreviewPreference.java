@@ -33,6 +33,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.mariotaku.menucomponent.widget.MenuBar;
@@ -41,7 +42,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
-import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.iface.IExtendedView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.TouchInterceptor;
 
@@ -119,7 +119,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 			ViewAccessor.setBackground(statusContentView, ThemeUtils.getWindowBackground(context));
 
 			final View profileView = statusContentView.findViewById(R.id.profile_container);
-			final ShapedImageView profileImageView = (ShapedImageView) statusContentView.findViewById(R.id.profile_image);
+            final ImageView profileImageView = (ImageView) statusContentView.findViewById(R.id.profile_image);
 			final TextView nameView = (TextView) statusContentView.findViewById(R.id.name);
 			final TextView screenNameView = (TextView) statusContentView.findViewById(R.id.screen_name);
 			final TextView textView = (TextView) statusContentView.findViewById(R.id.text);

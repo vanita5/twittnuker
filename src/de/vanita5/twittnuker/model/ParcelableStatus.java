@@ -346,7 +346,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
         final User retweet_user = retweeted != null ? orig.getUser() : null;
         retweet_id = retweeted != null ? retweeted.getId() : -1;
 		//NOTE getTime(orig.getCreatedAt())
-		retweet_timestamp = retweeted != null ? getTime(retweeted.getCreatedAt()) : -1;
+		retweet_timestamp = retweeted != null ? getTime(orig.getCreatedAt()) : -1;
 		retweeted_by_id = retweet_user != null ? retweet_user.getId() : -1;
 		retweeted_by_name = retweet_user != null ? retweet_user.getName() : null;
 		retweeted_by_screen_name = retweet_user != null ? retweet_user.getScreenName() : null;

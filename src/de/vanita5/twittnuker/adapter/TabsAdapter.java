@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconDrawable;
-import static de.vanita5.twittnuker.util.Utils.announceForAccessibilityCompat;
-
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -41,6 +38,9 @@ import de.vanita5.twittnuker.view.iface.PagerIndicator.TabProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconDrawable;
+import static de.vanita5.twittnuker.util.Utils.announceForAccessibilityCompat;
 
 public class TabsAdapter extends FragmentStatePagerAdapter implements TabProvider, TabListener, Constants {
 

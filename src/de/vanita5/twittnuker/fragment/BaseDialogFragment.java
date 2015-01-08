@@ -34,6 +34,10 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 
 public class BaseDialogFragment extends DialogFragment implements Constants {
 
+	public BaseDialogFragment() {
+
+	}
+
     public TwittnukerApplication getApplication() {
 		final Activity activity = getActivity();
 		if (activity != null) return (TwittnukerApplication) activity.getApplication();

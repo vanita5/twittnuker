@@ -21,12 +21,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-
-<!-- NOTE: on change, see bg_rectangle_black.xml -->
-
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="oval">
     <solid android:color="@android:color/black"/>
 </shape>
-
-<!-- NOTE: on change, see bg_rectangle_black.xml -->

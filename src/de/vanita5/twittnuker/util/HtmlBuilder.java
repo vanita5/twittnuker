@@ -27,16 +27,12 @@ import static de.vanita5.twittnuker.util.HtmlEscapeHelper.escape;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toHtml;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.unescape;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
 
 public class HtmlBuilder {
-
-	private static final String LOGTAG = "HtmlBuilder";
 
 	private final String source;
 	private final int[] codePoints;

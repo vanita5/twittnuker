@@ -72,7 +72,6 @@ public class CursorStatusesAdapter extends AbsStatusesAdapter<Cursor> {
         mIndices = data != null ? new CursorIndices(data) : null;
         notifyDataSetChanged();
     }
-
 	@Override
     public Cursor getData() {
         return mCursor;

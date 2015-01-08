@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +40,8 @@ import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserList;
+
+import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 
 public class UserListMembersFragment extends CursorSupportUsersListFragment implements OnMenuItemClickListener {
 
