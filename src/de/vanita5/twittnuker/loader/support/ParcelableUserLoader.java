@@ -41,7 +41,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeCachedUserContentValues;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.createCachedUser;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.isMyAccount;
 
@@ -95,7 +95,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
 		}
 		try {
             final User user = TwitterWrapper.tryShowUser(twitter, mUserId, mScreenName);
-            final ContentValues cachedUserValues = makeCachedUserContentValues(user);
+            final ContentValues cachedUserValues = createCachedUser(user);
             final long userId = user.getId();
             final String cachedUserWhere = Expression.equals(CachedUsers.USER_ID, userId).getSQL();
             resolver.delete(CachedUsers.CONTENT_URI, cachedUserWhere, null);

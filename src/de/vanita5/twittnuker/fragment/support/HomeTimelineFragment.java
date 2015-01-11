@@ -22,15 +22,11 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
@@ -57,6 +53,9 @@ public class HomeTimelineFragment extends CursorStatusesFragment {
     public int getStatuses(long[] accountIds, long[] maxIds, long[] sinceIds) {
         final AsyncTwitterWrapper twitter = getTwitterWrapper();
         if (twitter == null) return -1;
+        if (maxIds == null) {
+            return twitter.refreshAll(accountIds);
+        }
         return twitter.getHomeTimelineAsync(accountIds, maxIds, sinceIds);
     }
 

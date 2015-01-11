@@ -182,6 +182,7 @@ import de.vanita5.twittnuker.provider.TweetStore.Mentions;
 import de.vanita5.twittnuker.provider.TweetStore.Notifications;
 import de.vanita5.twittnuker.provider.TweetStore.Preferences;
 import de.vanita5.twittnuker.provider.TweetStore.PushNotifications;
+import de.vanita5.twittnuker.provider.TweetStore.SavedSearches;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.provider.TweetStore.Tabs;
 import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
@@ -190,6 +191,8 @@ import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.util.net.TwidereHttpClientFactory;
+import de.vanita5.twittnuker.view.ShapedImageView;
+import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
 import java.io.Closeable;
 import java.io.File;
@@ -217,8 +220,6 @@ import java.util.zip.CRC32;
 
 import javax.net.ssl.SSLException;
 
-import de.vanita5.twittnuker.view.ShapedImageView;
-import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 import twitter4j.DirectMessage;
 import twitter4j.EntitySupport;
 import twitter4j.MediaEntity;
@@ -303,6 +304,8 @@ public final class Utils implements Constants, TwitterConstants {
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, DNS.CONTENT_PATH + "/*", VIRTUAL_TABLE_ID_DNS);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, CachedImages.CONTENT_PATH,
 				VIRTUAL_TABLE_ID_CACHED_IMAGES);
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, SavedSearches.CONTENT_PATH,
+                TABLE_ID_SAVED_SEARCHES);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, CacheFiles.CONTENT_PATH + "/*",
 				VIRTUAL_TABLE_ID_CACHE_FILES);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Preferences.CONTENT_PATH,
@@ -1090,7 +1093,7 @@ public final class Utils implements Constants, TwitterConstants {
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.delete(CachedStatuses.CONTENT_URI, where, null);
         resolver.insert(CachedStatuses.CONTENT_URI,
-                ContentValuesCreator.makeStatusContentValues(status, accountId));
+                ContentValuesCreator.createStatus(status, accountId));
         return new ParcelableStatus(status, accountId, false);
 	}
 
@@ -2214,6 +2217,8 @@ public final class Utils implements Constants, TwitterConstants {
 				return CachedUsers.TABLE_NAME;
 			case TABLE_ID_CACHED_HASHTAGS:
 				return CachedHashtags.TABLE_NAME;
+            case TABLE_ID_SAVED_SEARCHES:
+                return SavedSearches.TABLE_NAME;
 			default:
 				return null;
 		}
@@ -3028,15 +3033,15 @@ public final class Utils implements Constants, TwitterConstants {
         activity.startActivity(intent);
 	}
 
-	public static void openStatusRetweeters(final Activity activity, final long accountId, final long statusId) {
-		if (activity == null) return;
+    public static void openStatusRetweeters(final Context context, final long accountId, final long statusId) {
+        if (context == null) return;
 		final Uri.Builder builder = new Uri.Builder();
 		builder.scheme(SCHEME_TWITTNUKER);
 		builder.authority(AUTHORITY_STATUS_RETWEETERS);
 		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
 		builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(statusId));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        activity.startActivity(intent);
+        context.startActivity(intent);
 	}
 
     public static void openTweetSearch(final Context context, final long accountId, final String query) {
@@ -3959,7 +3964,7 @@ public final class Utils implements Constants, TwitterConstants {
      */
     public static int getContrastYIQ(int color, int threshold, int colorDark, int colorLight) {
         final int r = Color.red(color), g = Color.green(color), b = Color.blue(color);
-        int yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+        final int yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
         return (yiq >= threshold) ? colorDark : colorLight;
     }
 

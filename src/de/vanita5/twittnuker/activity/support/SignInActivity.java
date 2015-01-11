@@ -54,6 +54,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
+import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticationException;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticityTokenException;
@@ -79,9 +80,7 @@ import twitter4j.http.HttpClientWrapper;
 import twitter4j.http.HttpResponse;
 
 import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeAccountContentValuesBasic;
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeAccountContentValuesOAuth;
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeAccountContentValuesTWIP;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.createAccount;
 import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
 import static de.vanita5.twittnuker.util.Utils.isUserLoggedIn;
@@ -436,21 +435,21 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 				final ContentValues values;
 				switch (result.auth_type) {
 					case Accounts.AUTH_TYPE_BASIC: {
-						values = makeAccountContentValuesBasic(result.conf, result.basic_username,
-                                result.basic_password, result.user, result.color,
-                                result.api_url_format, result.no_version_suffix);
+                        values = createAccount(result.conf, result.basic_username,
+								result.basic_password, result.user, result.color,
+								result.api_url_format, result.no_version_suffix);
 						break;
 					}
 					case Accounts.AUTH_TYPE_TWIP_O_MODE: {
-						values = makeAccountContentValuesTWIP(result.conf, result.user, result.color,
-                                result.api_url_format, result.no_version_suffix);
+                        values = createAccount(result.conf, result.user, result.color,
+								result.api_url_format, result.no_version_suffix);
 						break;
 					}
 					case Accounts.AUTH_TYPE_OAUTH:
 					case Accounts.AUTH_TYPE_XAUTH: {
-                        values = makeAccountContentValuesOAuth(result.conf, result.access_token,
-                                result.user, result.auth_type, result.color, result.api_url_format,
-                                result.same_oauth_signing_url, result.no_version_suffix);
+                        values = createAccount(result.conf, result.access_token,
+								result.user, result.auth_type, result.color, result.api_url_format,
+								result.same_oauth_signing_url, result.no_version_suffix);
 						break;
 					}
 					default: {

@@ -22,34 +22,33 @@
 
 package de.vanita5.twittnuker.util.net;
 
-import static android.text.TextUtils.isEmpty;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import org.apache.http.conn.util.InetAddressUtilsHC4;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.HostsFileParser;
 import de.vanita5.twittnuker.util.Utils;
-
-import org.apache.http.conn.util.InetAddressUtilsHC4;
 import org.xbill.DNS.AAAARecord;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.CNAMERecord;
 import org.xbill.DNS.DClass;
-import org.xbill.DNS.Message;
+import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.Resolver;
-import org.xbill.DNS.Section;
 import org.xbill.DNS.SimpleResolver;
 import org.xbill.DNS.Type;
 
-import twitter4j.http.HostAddressResolver;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.LinkedHashMap;
+
+import twitter4j.http.HostAddressResolver;
+
+import static android.text.TextUtils.isEmpty;
 
 public class TwidereHostAddressResolver implements Constants, HostAddressResolver {
 
@@ -69,12 +68,12 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 		this(context, false);
 	}
 
-	public TwidereHostAddressResolver(final Context context, final boolean local_only) {
+    public TwidereHostAddressResolver(final Context context, final boolean localOnly) {
 		mHostMapping = context.getSharedPreferences(HOST_MAPPING_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final String address = mPreferences.getString(KEY_DNS_SERVER, DEFAULT_DNS_SERVER_ADDRESS);
 		mDnsAddress = isValidIpAddress(address) ? address : DEFAULT_DNS_SERVER_ADDRESS;
-		mLocalMappingOnly = local_only;
+        mLocalMappingOnly = localOnly;
 	}
 
 	public synchronized void removeCachedHost(final String host) {
@@ -122,18 +121,15 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 		initDns();
 		// Use TCP DNS Query if enabled.
 		if (mDns != null && mPreferences.getBoolean(KEY_TCP_DNS_QUERY, false)) {
-			final Name name = new Name(host);
-			final Record query = Record.newRecord(name, Type.A, DClass.IN);
-			if (query == null) return host;
-			final Message response;
-			try {
-				response = mDns.send(Message.newQuery(query));
-			} catch (final IOException e) {
-				return host;
+            final Lookup lookup = new Lookup(new Name(host), Type.A, DClass.IN);
+            final Record[] records;
+            lookup.setResolver(mDns);
+            lookup.run();
+            final int result = lookup.getResult();
+            if (result != Lookup.SUCCESSFUL) {
+                throw new IOException("Could not find " + host);
 			}
-			if (response == null) return host;
-			final Record[] records = response.getSectionArray(Section.ANSWER);
-			if (records == null || records.length < 1) throw new IOException("Could not find " + host);
+            records = lookup.getAnswers();
 			String hostAddr = null;
 			// Test each IP address resolved.
 			for (final Record record : records) {
@@ -186,11 +182,9 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 
 	private void initDns() throws IOException {
 		if (mDns != null) return;
-		mDns = mLocalMappingOnly ? null : new SimpleResolver(mDnsAddress);
-		if (mDns != null) {
+        mDns = new SimpleResolver(mDnsAddress);
 			mDns.setTCP(true);
-		}
-	}
+    }
 
 	private static boolean hostMatches(final String host, final String rule) {
 		if (rule == null || host == null) return false;
@@ -213,7 +207,7 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 
 		@Override
 		public String put(final String key, final String value) {
-			if (value == null) return value;
+            if (value == null) return null;
 			return super.put(key, value);
 		}
 	}

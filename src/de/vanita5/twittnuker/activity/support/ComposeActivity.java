@@ -490,7 +490,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		if (hasMedia()) {
 			builder.media(getMedia());
 		}
-		final ContentValues values = ContentValuesCreator.makeStatusDraftContentValues(builder.build());
+        final ContentValues values = ContentValuesCreator.createStatusDraft(builder.build());
 		mResolver.insert(Drafts.CONTENT_URI, values);
 	}
 

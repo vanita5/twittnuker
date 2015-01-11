@@ -68,7 +68,7 @@ import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.AccountsManagerActivity;
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
 import de.vanita5.twittnuker.activity.support.DraftsActivity;
-import de.vanita5.twittnuker.activity.support.GlobalSearchBoxActivity;
+import de.vanita5.twittnuker.activity.support.QuickSearchBoxActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
@@ -197,7 +197,7 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 //                    } else {
 //                        getActivity().onSearchRequested();
 //                    }
-                    final Intent intent = new Intent(getActivity(), GlobalSearchBoxActivity.class);
+                    final Intent intent = new Intent(getActivity(), QuickSearchBoxActivity.class);
                     intent.putExtra(EXTRA_ACCOUNT_ID, account.account_id);
                     startActivity(intent);
 					closeAccountsDrawer();

@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TweetStore.Drafts;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
+import de.vanita5.twittnuker.provider.TweetStore.SavedSearches;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ import java.util.List;
 
 import twitter4j.DirectMessage;
 import twitter4j.GeoLocation;
+import twitter4j.SavedSearch;
 import twitter4j.Status;
 import twitter4j.Trend;
 import twitter4j.Trends;
@@ -63,8 +65,9 @@ import static de.vanita5.twittnuker.util.Utils.getBiggerTwitterProfileImage;
 
 public final class ContentValuesCreator implements TwittnukerConstants {
 
-	public static ContentValues makeAccountContentValuesBasic(final Configuration conf, final String basicUsername,
-                                                              final String basicPassword, final User user, final int color, final String apiUrlFormat,
+    public static ContentValues createAccount(final Configuration conf, final String basicUsername,
+                                              final String basicPassword, final User user,
+                                              final int color, final String apiUrlFormat,
                                                               final boolean noVersionSuffix) {
 		if (user == null || user.getId() <= 0) return null;
 		final ContentValues values = new ContentValues();
@@ -84,9 +87,10 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-	public static ContentValues makeAccountContentValuesOAuth(final Configuration conf, final AccessToken accessToken,
-			                                                  final User user, final int authType, final int color, final String apiUrlFormat,
-                                                              final boolean sameOAuthSigningUrl, final boolean noVersionSuffix) {
+    public static ContentValues createAccount(final Configuration conf, final AccessToken accessToken,
+                                              final User user, final int authType, final int color,
+                                              final String apiUrlFormat, final boolean sameOAuthSigningUrl,
+                                              final boolean noVersionSuffix) {
 		if (user == null || user.getId() <= 0 || accessToken == null || user.getId() != accessToken.getUserId())
 			return null;
 		final ContentValues values = new ContentValues();
@@ -108,8 +112,8 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-	public static ContentValues makeAccountContentValuesTWIP(final Configuration conf, final User user,
-                                                             final int color, final String apiUrlFormat, final boolean noVersionSuffix) {
+    public static ContentValues createAccount(final Configuration conf, final User user, final int color,
+                                              final String apiUrlFormat, final boolean noVersionSuffix) {
 		if (user == null || user.getId() <= 0) return null;
 		final ContentValues values = new ContentValues();
 		values.put(Accounts.AUTH_TYPE, Accounts.AUTH_TYPE_TWIP_O_MODE);
@@ -125,7 +129,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-	public static ContentValues makeCachedUserContentValues(final User user) {
+    public static ContentValues createCachedUser(final User user) {
 		if (user == null || user.getId() <= 0) return null;
 		final String profile_image_url = ParseUtils.parseString(user.getProfileImageUrlHttps());
 		final String url = ParseUtils.parseString(user.getURL());
@@ -159,20 +163,20 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-	public static ContentValues makeDirectMessageContentValues(final DirectMessage message, final long account_id,
-															   final boolean is_outgoing) {
-		return makeDirectMessageContentValues(message, account_id, is_outgoing, false);
+	public static ContentValues createDirectMessage(final DirectMessage message, final long accountId,
+                                                    final boolean isOutgoing) {
+		return createDirectMessage(message, accountId, isOutgoing, false);
 	}
 
-	public static ContentValues makeDirectMessageContentValues(final DirectMessage message, final long account_id,
-															   final boolean is_outgoing, final boolean large_profile_image) {
-		if (message == null || message.getId() <= 0) return null;
+	public static ContentValues createDirectMessage(final DirectMessage message, final long accountId,
+                                                    final boolean isOutgoing, final boolean large_profile_image) {
+		if (message == null) return null;
 		final ContentValues values = new ContentValues();
 		final User sender = message.getSender(), recipient = message.getRecipient();
 		if (sender == null || recipient == null) return null;
 		final String sender_profile_image_url = ParseUtils.parseString(sender.getProfileImageUrlHttps());
 		final String recipient_profile_image_url = ParseUtils.parseString(recipient.getProfileImageUrlHttps());
-		values.put(DirectMessages.ACCOUNT_ID, account_id);
+        values.put(DirectMessages.ACCOUNT_ID, accountId);
 		values.put(DirectMessages.MESSAGE_ID, message.getId());
 		values.put(DirectMessages.MESSAGE_TIMESTAMP, message.getCreatedAt().getTime());
 		values.put(DirectMessages.SENDER_ID, sender.getId());
@@ -181,7 +185,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(DirectMessages.TEXT_HTML, text_html);
 		values.put(DirectMessages.TEXT_PLAIN, message.getText());
 		values.put(DirectMessages.TEXT_UNESCAPED, toPlainText(text_html));
-		values.put(DirectMessages.IS_OUTGOING, is_outgoing);
+        values.put(DirectMessages.IS_OUTGOING, isOutgoing);
 		values.put(DirectMessages.SENDER_NAME, sender.getName());
 		values.put(DirectMessages.SENDER_SCREEN_NAME, sender.getScreenName());
 		values.put(DirectMessages.RECIPIENT_NAME, recipient.getName());
@@ -199,8 +203,8 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-	public static ContentValues makeDirectMessageContentValues(final ParcelableDirectMessage message) {
-		if (message == null || message.id <= 0) return null;
+    public static ContentValues createDirectMessage(final ParcelableDirectMessage message) {
+        if (message == null) return null;
 		final ContentValues values = new ContentValues();
 		values.put(DirectMessages.ACCOUNT_ID, message.account_id);
 		values.put(DirectMessages.MESSAGE_ID, message.id);
@@ -223,7 +227,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-	public static ContentValues makeDirectMessageDraftContentValues(final long accountId, final long recipientId,
+    public static ContentValues createMessageDraft(final long accountId, final long recipientId,
 			final String text, final String imageUri) {
 		final ContentValues values = new ContentValues();
 		values.put(Drafts.ACTION_TYPE, Drafts.ACTION_SEND_DIRECT_MESSAGE);
@@ -244,7 +248,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-    public static ContentValues makeFilteredUserContentValues(final ParcelableStatus status) {
+    public static ContentValues createFilteredUser(final ParcelableStatus status) {
 		if (status == null) return null;
 		final ContentValues values = new ContentValues();
 		values.put(Filters.Users.USER_ID, status.user_id);
@@ -253,7 +257,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-    public static ContentValues makeFilteredUserContentValues(final ParcelableUser user) {
+    public static ContentValues createFilteredUser(final ParcelableUser user) {
 		if (user == null) return null;
 		final ContentValues values = new ContentValues();
 		values.put(Filters.Users.USER_ID, user.id);
@@ -262,7 +266,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-    public static ContentValues makeFilteredUserContentValues(final ParcelableUserMention user) {
+    public static ContentValues createFilteredUser(final ParcelableUserMention user) {
 		if (user == null) return null;
 		final ContentValues values = new ContentValues();
 		values.put(Filters.Users.USER_ID, user.id);
@@ -271,12 +275,12 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-	public static ContentValues makeStatusContentValues(final Status orig, final long accountId) {
-		return makeStatusContentValues(orig, accountId, false);
+	public static ContentValues createStatus(final Status orig, final long accountId) {
+		return createStatus(orig, accountId, false);
 	}
 
-	public static ContentValues makeStatusContentValues(final Status orig, final long accountId,
-														final boolean largeProfileImage) {
+	public static ContentValues createStatus(final Status orig, final long accountId,
+                                             final boolean largeProfileImage) {
 		if (orig == null || orig.getId() <= 0) return null;
 		final ContentValues values = new ContentValues();
         values.put(Statuses.ACCOUNT_ID, accountId);
@@ -347,12 +351,12 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-	public static ContentValues makeStatusDraftContentValues(final ParcelableStatusUpdate status) {
-        return makeStatusDraftContentValues(status, ParcelableAccount.getAccountIds(status.accounts));
+    public static ContentValues createStatusDraft(final ParcelableStatusUpdate status) {
+        return createStatusDraft(status, ParcelableAccount.getAccountIds(status.accounts));
 	}
 
-	public static ContentValues makeStatusDraftContentValues(final ParcelableStatusUpdate status,
-			final long[] accountIds) {
+    public static ContentValues createStatusDraft(final ParcelableStatusUpdate status,
+			                                      final long[] accountIds) {
 		final ContentValues values = new ContentValues();
 		values.put(Drafts.ACTION_TYPE, Drafts.ACTION_UPDATE_STATUS);
 		values.put(Drafts.TEXT, status.text);
@@ -367,13 +371,30 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-    public static ContentValues[] makeTrendsContentValues(final List<Trends> trendsList) {
+
+    public static ContentValues createSavedSearch(final SavedSearch savedSearch, final long accountId) {
+        final ContentValues values = new ContentValues();
+        values.put(SavedSearches.ACCOUNT_ID, accountId);
+        values.put(SavedSearches.SEARCH_ID, savedSearch.getId());
+        values.put(SavedSearches.CREATED_AT, savedSearch.getCreatedAt().getTime());
+        values.put(SavedSearches.NAME, savedSearch.getName());
+        values.put(SavedSearches.QUERY, savedSearch.getQuery());
+        return values;
+    }
+
+
+    public static ContentValues[] createSavedSearches(final List<SavedSearch> savedSearches, long accountId) {
+        final ContentValues[] resultValuesArray = new ContentValues[savedSearches.size()];
+        for (int i = 0, j = savedSearches.size(); i < j; i++) {
+            resultValuesArray[i] = createSavedSearch(savedSearches.get(i), accountId);
+        }
+        return resultValuesArray;
+    }
+
+    public static ContentValues[] createTrends(final List<Trends> trendsList) {
         if (trendsList == null) return new ContentValues[0];
         final List<ContentValues> resultList = new ArrayList<>();
         for (final Trends trends : trendsList) {
-			if (trends == null) {
-				continue;
-			}
 			final long timestamp = trends.getTrendAt().getTime();
 			for (final Trend trend : trends.getTrends()) {
 				final ContentValues values = new ContentValues();

@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.util.content;
 
-import static de.vanita5.twittnuker.util.content.DatabaseUpgradeHelper.safeUpgrade;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -43,12 +41,15 @@ import de.vanita5.twittnuker.provider.TweetStore.Drafts;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.provider.TweetStore.Mentions;
 import de.vanita5.twittnuker.provider.TweetStore.PushNotifications;
+import de.vanita5.twittnuker.provider.TweetStore.SavedSearches;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.provider.TweetStore.Tabs;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder.ConversationsEntryQueryBuilder;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder.DirectMessagesQueryBuilder;
 
 import java.util.HashMap;
+
+import static de.vanita5.twittnuker.util.content.DatabaseUpgradeHelper.safeUpgrade;
 
 public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements Constants {
 
@@ -80,6 +81,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 		db.execSQL(createTable(CachedTrends.Local.TABLE_NAME, CachedTrends.Local.COLUMNS, CachedTrends.Local.TYPES,
 				true));
 		db.execSQL(createTable(Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, true));
+		db.execSQL(createTable(SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true));
 		db.execSQL(createTable(PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES, true));
 		db.execSQL(createDirectMessagesView().getSQL());
 		db.execSQL(createDirectMessageConversationEntriesView().getSQL());
@@ -140,6 +142,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 				true, null);
 		safeUpgrade(db, CachedTrends.Local.TABLE_NAME, CachedTrends.Local.COLUMNS, CachedTrends.Local.TYPES, true, null);
 		safeUpgrade(db, Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, false, null);
+		safeUpgrade(db, SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true, null);
 		safeUpgrade(db, PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES, false, null);
         db.beginTransaction();
 		db.execSQL(createDirectMessagesView().getSQL());

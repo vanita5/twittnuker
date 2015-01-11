@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.ContentValuesCreator.makeFilteredUserContentValues;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.createFilteredUser;
 import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
@@ -76,11 +76,11 @@ public class AddStatusFilterDialogFragment extends BaseSupportDialogFragment imp
 			if (value instanceof ParcelableUserMention) {
 				final ParcelableUserMention mention = (ParcelableUserMention) value;
 				user_ids.add(mention.id);
-				user_values.add(makeFilteredUserContentValues(mention));
+				user_values.add(createFilteredUser(mention));
 			} else if (value instanceof ParcelableStatus) {
 				final ParcelableStatus status = (ParcelableStatus) value;
 				user_ids.add(status.user_id);
-				user_values.add(ContentValuesCreator.makeFilteredUserContentValues(status));
+				user_values.add(ContentValuesCreator.createFilteredUser(status));
 			} else if (info.type == FilterItemInfo.FILTER_TYPE_KEYWORD) {
 				if (value != null) {
 					final String keyword = ParseUtils.parseString(value);

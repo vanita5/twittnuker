@@ -333,14 +333,14 @@ public class StreamingService extends Service implements Constants {
 			}
 			final User sender = directMessage.getSender(), recipient = directMessage.getRecipient();
 			if (sender.getId() == account_id) {
-				final ContentValues values = ContentValuesCreator.makeDirectMessageContentValues(directMessage, account_id, true,
+				final ContentValues values = ContentValuesCreator.createDirectMessage(directMessage, account_id, true,
 						large_profile_image);
 				if (values != null) {
 					resolver.insert(DirectMessages.Outbox.CONTENT_URI, values);
 				}
 			}
 			if (recipient.getId() == account_id) {
-				final ContentValues values = ContentValuesCreator.makeDirectMessageContentValues(directMessage, account_id, false,
+				final ContentValues values = ContentValuesCreator.createDirectMessage(directMessage, account_id, false,
 						large_profile_image);
 				final Uri.Builder builder = DirectMessages.Inbox.CONTENT_URI.buildUpon();
 				builder.appendQueryParameter(QUERY_PARAM_NOTIFY, "true");
@@ -452,7 +452,7 @@ public class StreamingService extends Service implements Constants {
 
 		@Override
 		public void onStatus(Status status) {
-			final ContentValues values = ContentValuesCreator.makeStatusContentValues(status, account_id, large_profile_image);
+			final ContentValues values = ContentValuesCreator.createStatus(status, account_id, large_profile_image);
 			if (values != null) {
 				final String where = Statuses.ACCOUNT_ID + " = " + account_id + " AND " + Statuses.STATUS_ID + " = "
 						+ status.getId();
