@@ -210,6 +210,7 @@ public interface IntentConstants {
 	public static final String EXTRA_EXTRAS = "extras";
 	public static final String EXTRA_MY_FOLLOWING_ONLY = "my_following_only";
 	public static final String EXTRA_RESTART_ACTIVITY = "restart_activity";
+	public static final String EXTRA_FROM_USER = "from_user";
 
 	/* Twittnuker */
 	public static final String EXTRA_HOTOTIN_EXPANDED_TEXT = "hototin_expanded_text";

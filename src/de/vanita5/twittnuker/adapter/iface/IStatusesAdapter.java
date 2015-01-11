@@ -30,6 +30,8 @@ public interface IStatusesAdapter<Data> extends IContentCardAdapter, StatusClick
 
     int getStatusCount();
 
+    long getStatusId(int position);
+
     void setData(Data data);
 
 }

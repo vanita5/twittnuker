@@ -48,6 +48,7 @@ import de.vanita5.twittnuker.adapter.AbsStatusesAdapter.StatusAdapterListener;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
+import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.SimpleDrawerCallback;
@@ -62,18 +63,15 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
         OnRefreshListener, DrawerCallback, RefreshScrollTopInterface, StatusAdapterListener {
 
 
+    private AbsStatusesAdapter<Data> mAdapter;
+    private LinearLayoutManager mLayoutManager;
+
     private final Object mStatusesBusCallback;
-
-    protected AbsStatusesFragment() {
-        mStatusesBusCallback = createMessageBusCallback();
-    }
-
     private View mContentView;
     private SharedPreferences mPreferences;
     private View mProgressContainer;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
-    private AbsStatusesAdapter<Data> mAdapter;
     private SimpleDrawerCallback mDrawerCallback;
     private OnScrollListener mOnScrollListener = new OnScrollListener() {
 
@@ -95,6 +93,10 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 	        }
         }
     };
+
+    protected AbsStatusesFragment() {
+        mStatusesBusCallback = createMessageBusCallback();
+    }
 
 	@Override
 	public boolean canScroll(float dy) {
@@ -151,6 +153,60 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
     }
 
     @Override
+    public final Loader<Data> onCreateLoader(int id, Bundle args) {
+        final boolean fromUser = args.getBoolean(EXTRA_FROM_USER);
+        args.remove(EXTRA_FROM_USER);
+        return onCreateStatusesLoader(getActivity(), args, fromUser);
+    }
+
+    @Override
+    public final void onLoadFinished(Loader<Data> loader, Data data) {
+        setRefreshing(false);
+        final SharedPreferences preferences = getSharedPreferences();
+        final boolean readFromBottom = preferences.getBoolean(KEY_READ_FROM_BOTTOM, false);
+        final long lastReadId;
+        final int lastVisiblePos, lastVisibleTop;
+        if (readFromBottom) {
+            lastVisiblePos = mLayoutManager.findLastVisibleItemPosition();
+        } else {
+            lastVisiblePos = mLayoutManager.findFirstVisibleItemPosition();
+        }
+        if (lastVisiblePos != -1) {
+            lastReadId = mAdapter.getItemId(lastVisiblePos);
+            if (readFromBottom) {
+                lastVisibleTop = mLayoutManager.getChildAt(mLayoutManager.getChildCount() - 1).getTop();
+            } else {
+                lastVisibleTop = mLayoutManager.getChildAt(0).getTop();
+            }
+        } else {
+            lastReadId = -1;
+            lastVisibleTop = 0;
+        }
+        mAdapter.setData(data);
+        if (!(data instanceof IExtendedLoader) || ((IExtendedLoader) data).isFromUser()) {
+            mAdapter.setLoadMoreIndicatorEnabled(hasMoreData(data));
+            int pos = -1;
+            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                if (lastReadId == mAdapter.getItemId(i)) {
+                    pos = i;
+                    break;
+                }
+            }
+            if (pos != -1 && mAdapter.isStatus(pos) && (readFromBottom || lastVisiblePos == 0)) {
+                mLayoutManager.scrollToPositionWithOffset(pos, lastVisibleTop);
+            }
+        }
+        setListShown(true);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Data> loader) {
+    }
+
+    public abstract Loader<Data> onCreateStatusesLoader(final Context context, final Bundle args,
+                                                        final boolean fromUser);
+
+    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_recycler_view, container, false);
     }
@@ -166,11 +222,11 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 		mSwipeRefreshLayout.setOnRefreshListener(this);
 		mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getUserAccentColor(context));
 		mAdapter = onCreateAdapter(context, compact);
-		final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-		layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-		mRecyclerView.setLayoutManager(layoutManager);
+        mLayoutManager = new LinearLayoutManager(context);
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 		if (compact) {
-			mRecyclerView.addItemDecoration(new DividerItemDecoration(context, layoutManager.getOrientation()));
+            mRecyclerView.addItemDecoration(new DividerItemDecoration(context, mLayoutManager.getOrientation()));
 		}
 		mRecyclerView.setAdapter(mAdapter);
 		mRecyclerView.setOnScrollListener(mOnScrollListener);
@@ -194,25 +250,16 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 	}
 
     @Override
-    public void onLoadFinished(Loader<Data> loader, Data data) {
-        setRefreshing(false);
-        mAdapter.setData(data);
-        mAdapter.setLoadMoreIndicatorEnabled(hasMoreData(data));
-        setListShown(true);
+    public void onGapClick(GapViewHolder holder, int position) {
+        final ParcelableStatus status = mAdapter.getStatus(position);
+        final long sinceId = position + 1 < mAdapter.getStatusCount() ? mAdapter.getStatus(position + 1).id : -1;
+        final long[] accountIds = {status.account_id};
+        final long[] maxIds = {status.id};
+        final long[] sinceIds = {sinceId};
+        getStatuses(accountIds, maxIds, sinceIds);
     }
-
-    protected abstract boolean hasMoreData(Data data);
 
 	@Override
-    public void onLoaderReset(Loader<Data> loader) {
-    }
-
-    @Override
-    public void onRefresh() {
-        triggerRefresh();
-    }
-
-    @Override
     public void onStatusActionClick(StatusViewHolder holder, int id, int position) {
         final ParcelableStatus status = mAdapter.getStatus(position);
         if (status == null) return;
@@ -248,22 +295,17 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
     }
 
     @Override
-    public void onGapClick(GapViewHolder holder, int position) {
-        final ParcelableStatus status = mAdapter.getStatus(position);
-        final long sinceId = position + 1 < mAdapter.getStatusCount() ? mAdapter.getStatus(position + 1).id : -1;
-        final long[] accountIds = {status.account_id};
-        final long[] maxIds = {status.id};
-        final long[] sinceIds = {sinceId};
-        getStatuses(accountIds, maxIds, sinceIds);
-    }
-
-    @Override
     public void onStatusMenuClick(StatusViewHolder holder, int position) {
         final Bundle args = new Bundle();
         args.putParcelable(EXTRA_STATUS, mAdapter.getStatus(position));
         final StatusMenuDialogFragment f = new StatusMenuDialogFragment();
         f.setArguments(args);
         f.show(getActivity().getSupportFragmentManager(), "status_menu");
+    }
+
+    @Override
+    public void onRefresh() {
+        triggerRefresh();
     }
 
     @Override
@@ -292,6 +334,10 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
         return true;
     }
 
+    protected Object createMessageBusCallback() {
+        return new StatusesBusCallback();
+    }
+
     protected abstract long[] getAccountIds();
 
 	protected Data getAdapterData() {
@@ -302,9 +348,7 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 		mAdapter.setData(data);
 	}
 
-    protected Object createMessageBusCallback() {
-        return new StatusesBusCallback();
-    }
+    protected abstract boolean hasMoreData(Data data);
 
     protected abstract AbsStatusesAdapter<Data> onCreateAdapter(Context context, boolean compact);
 

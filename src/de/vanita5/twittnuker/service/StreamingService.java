@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -109,6 +110,7 @@ public class StreamingService extends Service implements Constants {
 				initStreaming();
 			}
 		}
+
 	};
 
 	@Override
@@ -119,7 +121,7 @@ public class StreamingService extends Service implements Constants {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+		mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		mResolver = getContentResolver();
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mTwitterWrapper = TwittnukerApplication.getInstance(this).getTwitterWrapper();
@@ -266,6 +268,7 @@ public class StreamingService extends Service implements Constants {
 			if (stream == null) return;
 			stream.shutdown();
 		}
+
 	}
 
 	static class UserStreamListenerImpl implements UserStreamListener {
@@ -311,12 +314,14 @@ public class StreamingService extends Service implements Constants {
 		}
 
 		@Override
-		public void onBlock(User source, User blockedUser) {
-
+		public void onBlock(final User source, final User blockedUser) {
+			final String message = String.format("%s blocked %s", source.getScreenName(), blockedUser.getScreenName());
+			//Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+			//TODO Notification?
 		}
 
 		@Override
-		public void onDeletionNotice(long directMessageId, long userId) {
+		public void onDeletionNotice(final long directMessageId, final long userId) {
 			final String where = DirectMessages.MESSAGE_ID + " = " + directMessageId;
 			for (final Uri uri : MESSAGES_URIS) {
 				resolver.delete(uri, where, null);
@@ -324,7 +329,16 @@ public class StreamingService extends Service implements Constants {
 		}
 
 		@Override
-		public void onDirectMessage(DirectMessage directMessage) {
+		public void onDeletionNotice(final StatusDeletionNotice statusDeletionNotice) {
+			final long status_id = statusDeletionNotice.getStatusId();
+			final String where = Statuses.STATUS_ID + " = " + status_id;
+			for (final Uri uri : STATUSES_URIS) {
+				resolver.delete(uri, where, null);
+			}
+		}
+
+		@Override
+		public void onDirectMessage(final DirectMessage directMessage) {
 			if (directMessage == null || directMessage.getId() <= 0) return;
 			for (final Uri uri : MESSAGES_URIS) {
 				final String where = DirectMessages.ACCOUNT_ID + " = " + account_id + " AND "
@@ -348,10 +362,18 @@ public class StreamingService extends Service implements Constants {
 					resolver.insert(builder.build(), values);
 				}
 			}
+
 		}
 
 		@Override
-		public void onFavorite(User source, User target, Status favoritedStatus) {
+		public void onException(final Exception ex) {
+			if (Utils.isDebugBuild()) {
+				Log.w(LOGTAG, ex);
+			}
+		}
+
+		@Override
+		public void onFavorite(final User source, final User target, final Status favoritedStatus) {
 			if (favoritedStatus.getUser().getId() == account_id) {
 				createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
 						Utils.parseURLEntities(favoritedStatus.getText(), favoritedStatus.getURLEntities()),
@@ -361,7 +383,7 @@ public class StreamingService extends Service implements Constants {
 		}
 
 		@Override
-		public void onFollow(User source, User followedUser) {
+		public void onFollow(final User source, final User followedUser) {
 			if (followedUser.getId() == account_id) {
 				createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FOLLOWER,
 						null, null, source);
@@ -369,71 +391,12 @@ public class StreamingService extends Service implements Constants {
 		}
 
 		@Override
-		public void onFriendList(long[] friendIds) {
+		public void onFriendList(final long[] friendIds) {
 
 		}
 
 		@Override
-		public void onUnblock(User source, User unblockedUser) {
-
-		}
-
-		@Override
-		public void onUnfavorite(User source, User target, Status unfavoritedStatus) {
-
-		}
-
-		@Override
-		public void onUserListCreation(User listOwner, UserList list) {
-
-		}
-
-		@Override
-		public void onUserListDeletion(User listOwner, UserList list) {
-
-		}
-
-		@Override
-		public void onUserListMemberAddition(User addedMember, User listOwner, UserList list) {
-
-		}
-
-		@Override
-		public void onUserListMemberDeletion(User deletedMember, User listOwner, UserList list) {
-
-		}
-
-		@Override
-		public void onUserListSubscription(User subscriber, User listOwner, UserList list) {
-
-		}
-
-		@Override
-		public void onUserListUnsubscription(User subscriber, User listOwner, UserList list) {
-
-		}
-
-		@Override
-		public void onUserListUpdate(User listOwner, UserList list) {
-
-		}
-
-		@Override
-		public void onUserProfileUpdate(User updatedUser) {
-
-		}
-
-		@Override
-		public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
-			final long status_id = statusDeletionNotice.getStatusId();
-			final String where = Statuses.STATUS_ID + " = " + status_id;
-			for (final Uri uri : STATUSES_URIS) {
-				resolver.delete(uri, where, null);
-			}
-		}
-
-		@Override
-		public void onScrubGeo(long userId, long upToStatusId) {
+		public void onScrubGeo(final long userId, final long upToStatusId) {
 			final String where = Statuses.USER_ID + " = " + userId + " AND " + Statuses.STATUS_ID + " >= "
 					+ upToStatusId;
 			final ContentValues values = new ContentValues();
@@ -444,14 +407,14 @@ public class StreamingService extends Service implements Constants {
 		}
 
 		@Override
-		public void onStallWarning(StallWarning warning) {
-			if ("420".equals(warning.getCode())) {
+		public void onStallWarning(final StallWarning warn) {
+			if ("420".equals(warn.getCode())) {
 				createNotification(null, NotificationContent.NOTIFICATION_TYPE_ERROR_420, null, null, null);
 			}
 		}
 
 		@Override
-		public void onStatus(Status status) {
+		public void onStatus(final Status status) {
 			final ContentValues values = ContentValuesCreator.createStatus(status, account_id, large_profile_image);
 			if (values != null) {
 				final String where = Statuses.ACCOUNT_ID + " = " + account_id + " AND " + Statuses.STATUS_ID + " = "
@@ -480,15 +443,65 @@ public class StreamingService extends Service implements Constants {
 		}
 
 		@Override
-		public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
+		public void onTrackLimitationNotice(final int numberOfLimitedStatuses) {
 
 		}
 
 		@Override
-		public void onException(Exception ex) {
-			if (Utils.isDebugBuild()) {
-				Log.w(LOGTAG, ex);
-			}
+		public void onUnblock(final User source, final User unblockedUser) {
+			final String message = String.format("%s unblocked %s", source.getScreenName(),
+					unblockedUser.getScreenName());
+			//Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+			//TODO Notification?
+		}
+
+		@Override
+		public void onUnfavorite(final User source, final User target, final Status unfavoritedStatus) {
+			final String message = String.format("%s unfavorited %s's tweet: %s", source.getScreenName(),
+					target.getScreenName(), unfavoritedStatus.getText());
+			//Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            //TODO notification?
+		}
+
+		@Override
+		public void onUserListCreation(final User listOwner, final UserList list) {
+
+		}
+
+		@Override
+		public void onUserListDeletion(final User listOwner, final UserList list) {
+
+		}
+
+		@Override
+		public void onUserListMemberAddition(final User addedMember, final User listOwner, final UserList list) {
+
+		}
+
+		@Override
+		public void onUserListMemberDeletion(final User deletedMember, final User listOwner, final UserList list) {
+
+		}
+
+		@Override
+		public void onUserListSubscription(final User subscriber, final User listOwner, final UserList list) {
+
+		}
+
+		@Override
+		public void onUserListUnsubscription(final User subscriber, final User listOwner, final UserList list) {
+
+		}
+
+		@Override
+		public void onUserListUpdate(final User listOwner, final UserList list) {
+
+		}
+
+		@Override
+		public void onUserProfileUpdate(final User updatedUser) {
+
 		}
 	}
+
 }

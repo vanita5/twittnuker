@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -23,24 +23,32 @@
 package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
+import android.net.Uri;
+import android.support.v4.content.CursorLoader;
 
-import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 
-import java.util.List;
+public class ExtendedCursorLoader extends CursorLoader implements IExtendedLoader {
 
-public class UserMentionsLoader extends TweetSearchLoader {
+	private boolean mFromUser;
 
-    public UserMentionsLoader(final Context context, final long accountId, final String screenName,
-                              final long maxId, final long sinceId, final List<ParcelableStatus> data,
-                              final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {
-        super(context, accountId, screenName, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
+	public ExtendedCursorLoader(Context context) {
+		super(context);
+	}
+
+	public ExtendedCursorLoader(Context context, Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder, boolean fromUser) {
+		super(context, uri, projection, selection, selectionArgs, sortOrder);
+		setFromUser(fromUser);
 	}
 
 	@Override
-	protected String processQuery(final String query) {
-		if (query == null) return null;
-		final String screenName = query.startsWith("@") ? query : String.format("@%s", query);
-		return String.format("%s exclude:retweets", screenName);
+	public boolean isFromUser() {
+		return mFromUser;
+	}
+
+	@Override
+	public void setFromUser(boolean fromUser) {
+		mFromUser = fromUser;
 	}
 
 }

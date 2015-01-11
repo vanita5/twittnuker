@@ -22,18 +22,11 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
-
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TweetStore.Mentions;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
 public class MentionsTimelineFragment extends CursorStatusesFragment {
 
@@ -43,6 +36,13 @@ public class MentionsTimelineFragment extends CursorStatusesFragment {
     }
 
 	@Override
+    protected void updateRefreshState() {
+        final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        if (twitter == null) return;
+        setRefreshing(twitter.isMentionsTimelineRefreshing());
+    }
+
+    @Override
     protected int getNotificationType() {
         return NOTIFICATION_ID_MENTIONS_TIMELINE;
 	}
@@ -58,31 +58,6 @@ public class MentionsTimelineFragment extends CursorStatusesFragment {
         final AsyncTwitterWrapper twitter = getTwitterWrapper();
         if (twitter == null) return -1;
         return twitter.getMentionsTimelineAsync(accountIds, maxIds, sinceIds);
-	}
-
-	@Override
-    public void onStart() {
-        super.onStart();
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        bus.register(this);
-    }
-
-    @Override
-    public void onStop() {
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        bus.unregister(this);
-        super.onStop();
-	    }
-
-    @Subscribe
-    public void notifyTaskStateChanged(TaskStateChangedEvent event) {
-        updateRefreshState();
-	}
-
-    private void updateRefreshState() {
-		final AsyncTwitterWrapper twitter = getTwitterWrapper();
-        if (twitter == null) return;
-        setRefreshing(twitter.isMentionsTimelineRefreshing());
 	}
 
 }

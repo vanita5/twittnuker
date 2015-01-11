@@ -33,6 +33,7 @@ import org.mariotaku.querybuilder.query.SQLCreateViewQuery;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.CachedHashtags;
+import de.vanita5.twittnuker.provider.TweetStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TweetStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TweetStore.CachedTrends;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
@@ -42,6 +43,7 @@ import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.provider.TweetStore.Mentions;
 import de.vanita5.twittnuker.provider.TweetStore.PushNotifications;
 import de.vanita5.twittnuker.provider.TweetStore.SavedSearches;
+import de.vanita5.twittnuker.provider.TweetStore.SearchHistory;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.provider.TweetStore.Tabs;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder.ConversationsEntryQueryBuilder;
@@ -70,6 +72,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 		db.execSQL(createTable(CachedUsers.TABLE_NAME, CachedUsers.COLUMNS, CachedUsers.TYPES, true));
 		db.execSQL(createTable(CachedStatuses.TABLE_NAME, CachedStatuses.COLUMNS, CachedStatuses.TYPES, true));
 		db.execSQL(createTable(CachedHashtags.TABLE_NAME, CachedHashtags.COLUMNS, CachedHashtags.TYPES, true));
+        db.execSQL(createTable(CachedRelationships.TABLE_NAME, CachedRelationships.COLUMNS, CachedRelationships.TYPES, true));
 		db.execSQL(createTable(Filters.Users.TABLE_NAME, Filters.Users.COLUMNS, Filters.Users.TYPES, true));
 		db.execSQL(createTable(Filters.Keywords.TABLE_NAME, Filters.Keywords.COLUMNS, Filters.Keywords.TYPES, true));
 		db.execSQL(createTable(Filters.Sources.TABLE_NAME, Filters.Sources.COLUMNS, Filters.Sources.TYPES, true));
@@ -82,6 +85,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 				true));
 		db.execSQL(createTable(Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, true));
 		db.execSQL(createTable(SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true));
+		db.execSQL(createTable(SearchHistory.TABLE_NAME, SearchHistory.COLUMNS, SearchHistory.TYPES, true));
 		db.execSQL(createTable(PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES, true));
 		db.execSQL(createDirectMessagesView().getSQL());
 		db.execSQL(createDirectMessageConversationEntriesView().getSQL());
@@ -121,14 +125,19 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 		accountsAlias.put(Accounts.ACCOUNT_ID, "user_id");
 		accountsAlias.put(Accounts.COLOR, "user_color");
 		accountsAlias.put(Accounts.OAUTH_TOKEN_SECRET, "token_secret");
+        accountsAlias.put(Accounts.API_URL_FORMAT, "rest_base_url");
         draftsAlias.put(Drafts.MEDIA, "medias");
 		safeUpgrade(db, Accounts.TABLE_NAME, Accounts.COLUMNS, Accounts.TYPES, false, accountsAlias);
 		safeUpgrade(db, Statuses.TABLE_NAME, Statuses.COLUMNS, Statuses.TYPES, true, null);
 		safeUpgrade(db, Mentions.TABLE_NAME, Mentions.COLUMNS, Mentions.TYPES, true, null);
         safeUpgrade(db, Drafts.TABLE_NAME, Drafts.COLUMNS, Drafts.TYPES, false, draftsAlias);
 		safeUpgrade(db, CachedUsers.TABLE_NAME, CachedUsers.COLUMNS, CachedUsers.TYPES, true, null);
-		safeUpgrade(db, CachedStatuses.TABLE_NAME, CachedStatuses.COLUMNS, CachedStatuses.TYPES, false, null);
-		safeUpgrade(db, CachedHashtags.TABLE_NAME, CachedHashtags.COLUMNS, CachedHashtags.TYPES, false, null);
+		safeUpgrade(db, CachedStatuses.TABLE_NAME, CachedStatuses.COLUMNS, CachedStatuses.TYPES,
+				false, null);
+		safeUpgrade(db, CachedHashtags.TABLE_NAME, CachedHashtags.COLUMNS, CachedHashtags.TYPES,
+				false, null);
+		safeUpgrade(db, CachedRelationships.TABLE_NAME, CachedRelationships.COLUMNS, CachedRelationships.TYPES,
+				true, null);
 		safeUpgrade(db, Filters.Users.TABLE_NAME, Filters.Users.COLUMNS, Filters.Users.TYPES, oldVersion < 49, null);
 		safeUpgrade(db, Filters.Keywords.TABLE_NAME, Filters.Keywords.COLUMNS, Filters.Keywords.TYPES, oldVersion < 49,
 				filtersAlias);
@@ -143,6 +152,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 		safeUpgrade(db, CachedTrends.Local.TABLE_NAME, CachedTrends.Local.COLUMNS, CachedTrends.Local.TYPES, true, null);
 		safeUpgrade(db, Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, false, null);
 		safeUpgrade(db, SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true, null);
+		safeUpgrade(db, SearchHistory.TABLE_NAME, SearchHistory.COLUMNS, SearchHistory.TYPES, true, null);
 		safeUpgrade(db, PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES, false, null);
         db.beginTransaction();
 		db.execSQL(createDirectMessagesView().getSQL());

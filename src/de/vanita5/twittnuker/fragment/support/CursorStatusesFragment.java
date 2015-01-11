@@ -22,21 +22,28 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.CursorLoader;
+import android.os.Handler;
 import android.support.v4.content.Loader;
+
+import com.squareup.otto.Subscribe;
 
 import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.adapter.CursorStatusesAdapter;
+import de.vanita5.twittnuker.loader.support.ExtendedCursorLoader;
+import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
 import static de.vanita5.twittnuker.util.Utils.buildStatusFilterWhereClause;
 import static de.vanita5.twittnuker.util.Utils.getNewestStatusIdsFromDatabase;
@@ -46,12 +53,14 @@ import static de.vanita5.twittnuker.util.Utils.shouldEnableFiltersForRTs;
 
 public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor> {
 
+    private ContentObserver mContentObserver;
 
     public abstract Uri getContentUri();
 
 	@Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        final Context context = getActivity();
+    public Loader<Cursor> onCreateStatusesLoader(final Context context,
+                                                 final Bundle args,
+                                                 final boolean fromUser) {
         final Uri uri = getContentUri();
         final String table = getTableNameByUri(uri);
         final String sortOrder = getSortOrder();
@@ -64,33 +73,19 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
             where = accountWhere;
         }
         final String selection = processWhere(where).getSQL();
-        return new CursorLoader(context, uri, Statuses.COLUMNS, selection, null, sortOrder);
+        return new ExtendedCursorLoader(context, uri, Statuses.COLUMNS, selection, null, sortOrder, fromUser);
     }
 
     @Override
-    public boolean triggerRefresh() {
-        new TwidereAsyncTask<Void, Void, long[][]>() {
+    protected Object createMessageBusCallback() {
+        return new Object() {
 
-            @Override
-            protected long[][] doInBackground(final Void... params) {
-                final long[][] result = new long[3][];
-                result[0] = getAccountIds();
-                result[2] = getNewestStatusIds(result[0]);
-                return result;
+
+            @Subscribe
+            public void notifyTaskStateChanged(TaskStateChangedEvent event) {
+                updateRefreshState();
             }
-
-            @Override
-            protected void onPostExecute(final long[][] result) {
-                getStatuses(result[0], result[1], result[2]);
-            }
-
-        }.executeTask();
-        return true;
-    }
-
-    @Override
-    protected boolean hasMoreData(Cursor cursor) {
-        return true;
+        };
     }
 
     @Override
@@ -102,7 +97,34 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
         return Utils.getActivatedAccountIds(getActivity());
     }
 
-    protected abstract int getNotificationType();
+    @Override
+    public void onStart() {
+        super.onStart();
+        final ContentResolver cr = getContentResolver();
+        mContentObserver = new ContentObserver(new Handler()) {
+            @Override
+            public void onChange(boolean selfChange) {
+                reloadStatuses();
+            }
+        };
+        cr.registerContentObserver(Accounts.CONTENT_URI, true, mContentObserver);
+    }
+
+    protected void reloadStatuses() {
+        getLoaderManager().restartLoader(0, getArguments(), this);
+    }
+
+    @Override
+    public void onStop() {
+        final ContentResolver cr = getContentResolver();
+        cr.unregisterContentObserver(mContentObserver);
+        super.onStop();
+    }
+
+    @Override
+    protected boolean hasMoreData(final Cursor cursor) {
+        return cursor != null && cursor.getCount() != 0;
+    }
 
     @Override
 	protected CursorStatusesAdapter onCreateAdapter(final Context context, final boolean compact) {
@@ -129,24 +151,49 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
         }.executeTask();
     }
 
+    @Override
+    public boolean triggerRefresh() {
+        new TwidereAsyncTask<Void, Void, long[][]>() {
+
+            @Override
+            protected long[][] doInBackground(final Void... params) {
+                final long[][] result = new long[3][];
+                result[0] = getAccountIds();
+                result[2] = getNewestStatusIds(result[0]);
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(final long[][] result) {
+                getStatuses(result[0], result[1], result[2]);
+            }
+
+        }.executeTask();
+        return true;
+    }
+
     protected Expression getFiltersWhere(String table) {
         if (!isFilterEnabled()) return null;
         return buildStatusFilterWhereClause(table, null, shouldEnableFiltersForRTs(getActivity()));
     }
 
-    protected abstract boolean isFilterEnabled();
-
     protected long[] getNewestStatusIds(long[] accountIds) {
         return getNewestStatusIdsFromDatabase(getActivity(), getContentUri(), accountIds);
     }
+
+    protected abstract int getNotificationType();
 
     protected long[] getOldestStatusIds(long[] accountIds) {
         return getOldestStatusIdsFromDatabase(getActivity(), getContentUri(), accountIds);
     }
 
+    protected abstract boolean isFilterEnabled();
+
     protected Expression processWhere(final Expression where) {
         return where;
     }
+
+    protected abstract void updateRefreshState();
 
     private String getSortOrder() {
         final SharedPreferences preferences = getSharedPreferences();

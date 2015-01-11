@@ -23,6 +23,8 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.app.ActionBar;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
@@ -44,6 +46,7 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCal
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.provider.RecentSearchProvider;
+import de.vanita5.twittnuker.provider.TweetStore.SearchHistory;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
@@ -98,6 +101,10 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
 			final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),
 					RecentSearchProvider.AUTHORITY, RecentSearchProvider.MODE);
 			suggestions.saveRecentQuery(query, null);
+            final ContentResolver cr = getContentResolver();
+            final ContentValues values = new ContentValues();
+            values.put(SearchHistory.QUERY, query);
+            cr.insert(SearchHistory.CONTENT_URI, values);
 			if (activity instanceof LinkHandlerActivity) {
 				final ActionBar ab = activity.getActionBar();
 				if (ab != null) {

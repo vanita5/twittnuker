@@ -22,11 +22,6 @@
 
 package de.vanita5.twittnuker.task;
 
-import static de.vanita5.twittnuker.util.ContentValuesCreator.createCachedUser;
-import static de.vanita5.twittnuker.util.ContentValuesCreator.createStatus;
-import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
-import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
-
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -41,11 +36,16 @@ import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TweetStore.Filters;
 import de.vanita5.twittnuker.util.TwitterWrapper.TwitterListResponse;
 
-import twitter4j.User;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import twitter4j.User;
+
+import static de.vanita5.twittnuker.util.ContentValuesCreator.createCachedUser;
+import static de.vanita5.twittnuker.util.ContentValuesCreator.createStatus;
+import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
+import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
 
 public class CacheUsersStatusesTask extends TwidereAsyncTask<Void, Void, Void> implements Constants {
 
@@ -61,13 +61,13 @@ public class CacheUsersStatusesTask extends TwidereAsyncTask<Void, Void, Void> i
 	protected Void doInBackground(final Void... args) {
 		if (all_statuses == null || all_statuses.length == 0) return null;
 		final Extractor extractor = new Extractor();
-		final Set<ContentValues> cachedUsersValues = new HashSet<ContentValues>();
-		final Set<ContentValues> cached_statuses_values = new HashSet<ContentValues>();
-		final Set<ContentValues> hashtag_values = new HashSet<ContentValues>();
-		final Set<Long> userIds = new HashSet<Long>();
-		final Set<Long> status_ids = new HashSet<Long>();
-		final Set<String> hashtags = new HashSet<String>();
-		final Set<User> users = new HashSet<User>();
+        final Set<ContentValues> cachedUsersValues = new HashSet<>();
+        final Set<ContentValues> cached_statuses_values = new HashSet<>();
+        final Set<ContentValues> hashtag_values = new HashSet<>();
+        final Set<Long> userIds = new HashSet<>();
+        final Set<Long> status_ids = new HashSet<>();
+        final Set<String> hashtags = new HashSet<>();
+        final Set<User> users = new HashSet<>();
 
 		for (final TwitterListResponse<twitter4j.Status> values : all_statuses) {
 			if (values == null || values.list == null) {
@@ -108,7 +108,7 @@ public class CacheUsersStatusesTask extends TwidereAsyncTask<Void, Void, Void> i
 			userIds.add(user.getId());
 			cachedUsersValues.add(createCachedUser(user));
 		}
-		bulkDelete(resolver, CachedUsers.CONTENT_URI, CachedUsers.USER_ID, userIds, null, false);
+//        bulkDelete(resolver, CachedUsers.CONTENT_URI, CachedUsers.USER_ID, userIds, null, false);
 		bulkInsert(resolver, CachedUsers.CONTENT_URI, cachedUsersValues);
 		return null;
 	}

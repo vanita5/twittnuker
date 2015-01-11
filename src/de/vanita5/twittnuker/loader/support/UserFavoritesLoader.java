@@ -27,13 +27,13 @@ import android.database.sqlite.SQLiteDatabase;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
+import java.util.List;
+
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-
-import java.util.List;
 
 public class UserFavoritesLoader extends Twitter4JStatusesLoader {
 
@@ -41,11 +41,11 @@ public class UserFavoritesLoader extends Twitter4JStatusesLoader {
 	private final String mUserScreenName;
 	private int mTotalItemsCount;
 
-	public UserFavoritesLoader(final Context context, final long account_id, final long user_id,
-			final String screen_name, final long max_id, final long since_id, final List<ParcelableStatus> data,
-			final String[] saved_statuses_args, final int tab_position) {
-		super(context, account_id, max_id, since_id, data, saved_statuses_args, tab_position);
-		mUserId = user_id;
+    public UserFavoritesLoader(final Context context, final long accountId, final long userId,
+                               final String screen_name, final long sinceId, final long maxId, final List<ParcelableStatus> data,
+                               final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {
+        super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
+        mUserId = userId;
 		mUserScreenName = screen_name;
 	}
 

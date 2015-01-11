@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.provider.TweetStore.Accounts;
+import de.vanita5.twittnuker.provider.TweetStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TweetStore.CachedTrends;
 import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
@@ -51,6 +52,7 @@ import java.util.List;
 
 import twitter4j.DirectMessage;
 import twitter4j.GeoLocation;
+import twitter4j.Relationship;
 import twitter4j.SavedSearch;
 import twitter4j.Status;
 import twitter4j.Trend;
@@ -128,6 +130,19 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         values.put(Accounts.NO_VERSION_SUFFIX, noVersionSuffix);
 		return values;
 	}
+
+    public static ContentValues createCachedRelationship(final Relationship relationship,
+                                                         final long accountId) {
+        final ContentValues values = new ContentValues();
+        values.put(CachedRelationships.ACCOUNT_ID, accountId);
+        values.put(CachedRelationships.USER_ID, relationship.getTargetUserId());
+        values.put(CachedRelationships.FOLLOWING, relationship.isSourceFollowingTarget());
+        values.put(CachedRelationships.FOLLOWED_BY, relationship.isSourceFollowedByTarget());
+        values.put(CachedRelationships.BLOCKING, relationship.isSourceBlockingTarget());
+        values.put(CachedRelationships.BLOCKED_BY, relationship.isSourceBlockedByTarget());
+        values.put(CachedRelationships.MUTING, relationship.isSourceMutingTarget());
+        return values;
+    }
 
     public static ContentValues createCachedUser(final User user) {
 		if (user == null || user.getId() <= 0) return null;
@@ -227,6 +242,33 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
+    public static ContentValues createFilteredUser(final ParcelableStatus status) {
+        if (status == null) return null;
+        final ContentValues values = new ContentValues();
+        values.put(Filters.Users.USER_ID, status.user_id);
+        values.put(Filters.Users.NAME, status.user_name);
+        values.put(Filters.Users.SCREEN_NAME, status.user_screen_name);
+        return values;
+    }
+
+    public static ContentValues createFilteredUser(final ParcelableUser user) {
+        if (user == null) return null;
+        final ContentValues values = new ContentValues();
+        values.put(Filters.Users.USER_ID, user.id);
+        values.put(Filters.Users.NAME, user.name);
+        values.put(Filters.Users.SCREEN_NAME, user.screen_name);
+        return values;
+    }
+
+    public static ContentValues createFilteredUser(final ParcelableUserMention user) {
+        if (user == null) return null;
+        final ContentValues values = new ContentValues();
+        values.put(Filters.Users.USER_ID, user.id);
+        values.put(Filters.Users.NAME, user.name);
+        values.put(Filters.Users.SCREEN_NAME, user.screen_name);
+        return values;
+    }
+
     public static ContentValues createMessageDraft(final long accountId, final long recipientId,
 			final String text, final String imageUri) {
 		final ContentValues values = new ContentValues();
@@ -248,31 +290,22 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-    public static ContentValues createFilteredUser(final ParcelableStatus status) {
-		if (status == null) return null;
+    public static ContentValues createSavedSearch(final SavedSearch savedSearch, final long accountId) {
 		final ContentValues values = new ContentValues();
-		values.put(Filters.Users.USER_ID, status.user_id);
-		values.put(Filters.Users.NAME, status.user_name);
-		values.put(Filters.Users.SCREEN_NAME, status.user_screen_name);
+        values.put(SavedSearches.ACCOUNT_ID, accountId);
+        values.put(SavedSearches.SEARCH_ID, savedSearch.getId());
+        values.put(SavedSearches.CREATED_AT, savedSearch.getCreatedAt().getTime());
+        values.put(SavedSearches.NAME, savedSearch.getName());
+        values.put(SavedSearches.QUERY, savedSearch.getQuery());
 		return values;
 	}
 
-    public static ContentValues createFilteredUser(final ParcelableUser user) {
-		if (user == null) return null;
-		final ContentValues values = new ContentValues();
-		values.put(Filters.Users.USER_ID, user.id);
-		values.put(Filters.Users.NAME, user.name);
-		values.put(Filters.Users.SCREEN_NAME, user.screen_name);
-		return values;
+    public static ContentValues[] createSavedSearches(final List<SavedSearch> savedSearches, long accountId) {
+        final ContentValues[] resultValuesArray = new ContentValues[savedSearches.size()];
+        for (int i = 0, j = savedSearches.size(); i < j; i++) {
+            resultValuesArray[i] = createSavedSearch(savedSearches.get(i), accountId);
 	}
-
-    public static ContentValues createFilteredUser(final ParcelableUserMention user) {
-		if (user == null) return null;
-		final ContentValues values = new ContentValues();
-		values.put(Filters.Users.USER_ID, user.id);
-		values.put(Filters.Users.NAME, user.name);
-		values.put(Filters.Users.SCREEN_NAME, user.screen_name);
-		return values;
+        return resultValuesArray;
 	}
 
 	public static ContentValues createStatus(final Status orig, final long accountId) {
@@ -369,26 +402,6 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 			values.put(Drafts.MEDIA, JSONSerializer.toJSONArrayString(status.media));
 		}
 		return values;
-	}
-
-
-    public static ContentValues createSavedSearch(final SavedSearch savedSearch, final long accountId) {
-        final ContentValues values = new ContentValues();
-        values.put(SavedSearches.ACCOUNT_ID, accountId);
-        values.put(SavedSearches.SEARCH_ID, savedSearch.getId());
-        values.put(SavedSearches.CREATED_AT, savedSearch.getCreatedAt().getTime());
-        values.put(SavedSearches.NAME, savedSearch.getName());
-        values.put(SavedSearches.QUERY, savedSearch.getQuery());
-        return values;
-    }
-
-
-    public static ContentValues[] createSavedSearches(final List<SavedSearch> savedSearches, long accountId) {
-        final ContentValues[] resultValuesArray = new ContentValues[savedSearches.size()];
-        for (int i = 0, j = savedSearches.size(); i < j; i++) {
-            resultValuesArray[i] = createSavedSearch(savedSearches.get(i), accountId);
-        }
-        return resultValuesArray;
     }
 
     public static ContentValues[] createTrends(final List<Trends> trendsList) {

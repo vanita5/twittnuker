@@ -36,6 +36,7 @@ public class CursorStatusesAdapter extends AbsStatusesAdapter<Cursor> {
 
     public CursorStatusesAdapter(Context context, boolean compact) {
         super(context, compact);
+        setHasStableIds(true);
 	}
 
 	@Override
@@ -44,7 +45,24 @@ public class CursorStatusesAdapter extends AbsStatusesAdapter<Cursor> {
         return c != null && c.moveToPosition(position) && c.getInt(mIndices.is_gap) == 1;
 			}
 
+
 	@Override
+    public long getItemId(int position) {
+        if (position == getStatusCount()) return -1;
+        final Cursor c = mCursor;
+        if (c != null && !c.isClosed() && c.moveToPosition(position)) {
+            final long account_id = c.getLong(mIndices.account_id);
+            final long id = c.getLong(mIndices.status_id);
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (int) (account_id ^ account_id >>> 32);
+            result = prime * result + (int) (id ^ id >>> 32);
+            return result;
+        }
+        return -1;
+    }
+
+    @Override
     protected void bindStatus(StatusViewHolder holder, int position) {
         mCursor.moveToPosition(position);
         holder.displayStatus(mCursor, mIndices);
@@ -67,11 +85,22 @@ public class CursorStatusesAdapter extends AbsStatusesAdapter<Cursor> {
 			}
 
 	@Override
+    public long getStatusId(int position) {
+        if (position == getStatusCount()) return position;
+        final Cursor c = mCursor;
+        if (c != null && !c.isClosed() && c.moveToPosition(position)) {
+            return c.getLong(mIndices.status_id);
+        }
+        return position;
+    }
+
+    @Override
     public void setData(Cursor data) {
         mCursor = data;
         mIndices = data != null ? new CursorIndices(data) : null;
         notifyDataSetChanged();
     }
+
 	@Override
     public Cursor getData() {
         return mCursor;

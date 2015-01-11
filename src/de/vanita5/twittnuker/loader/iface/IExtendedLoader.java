@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -20,30 +20,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.loader.support;
+package de.vanita5.twittnuker.loader.iface;
 
-import android.content.Context;
+public interface IExtendedLoader {
+	boolean isFromUser();
 
-import de.vanita5.twittnuker.model.ParcelableStatus;
-
-import java.util.Collections;
-import java.util.List;
-
-public final class DummyParcelableStatusesLoader extends ParcelableStatusesLoader {
-
-	public DummyParcelableStatusesLoader(final Context context) {
-        this(context, null, false);
-	}
-
-    public DummyParcelableStatusesLoader(final Context context, final List<ParcelableStatus> data, boolean fromUser) {
-        super(context, data, -1, fromUser);
-	}
-
-	@Override
-	public List<ParcelableStatus> loadInBackground() {
-		final List<ParcelableStatus> data = getData();
-		if (data != null) return data;
-		return Collections.emptyList();
-	}
-
+	void setFromUser(boolean fromUser);
 }

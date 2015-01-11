@@ -649,6 +649,7 @@
     <string name="no_user_found">Niemanden gefunden</string>
     <string name="members">(D) Members</string>
     <string name="subscribers">(D) Follower</string>
+    <string name="read_from_bottom">Von unten lese</string>
 
 
     <!-- Twittnuker -->

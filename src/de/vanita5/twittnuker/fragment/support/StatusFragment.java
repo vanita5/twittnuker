@@ -153,7 +153,7 @@ public class StatusFragment extends BaseSupportFragment
             final long maxId = args.getLong(EXTRA_MAX_ID, -1);
             final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
             final StatusRepliesLoader loader = new StatusRepliesLoader(getActivity(), accountId,
-                    screenName, statusId, maxId, sinceId, null, null, 0);
+                    screenName, statusId, maxId, sinceId, null, null, 0, false);
             loader.setComparator(ParcelableStatus.REVERSE_ID_COMPARATOR);
             return loader;
 					}
@@ -471,6 +471,12 @@ public class StatusFragment extends BaseSupportFragment
         public int getStatusCount() {
             return getConversationCount() + 1 + getRepliesCount() + 1;
 	    }
+
+        @Override
+        public long getStatusId(int position) {
+            final ParcelableStatus status = getStatus(position);
+            return status != null ? status.hashCode() : position;
+        }
 
         @Override
         public int getProfileImageStyle() {

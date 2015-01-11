@@ -37,6 +37,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.twitter.Extractor;
@@ -311,11 +312,13 @@ public class BackgroundOperationService extends IntentService implements Constan
 					for (final ParcelableMediaUpdate media : item.media) {
 						final String path = getImagePathFromUri(this, Uri.parse(media.uri));
 						if (path != null) {
-							new File(path).delete();
-						}
-					}
-				}
-			}
+                            if (!new File(path).delete()) {
+                                Log.d(LOGTAG, String.format("unable to delete %s", path));
+						    }
+					    }
+				    }
+			    }
+            }
 			if (mPreferences.getBoolean(KEY_REFRESH_AFTER_TWEET, false)) {
 				mTwitter.refreshAll();
 			}
@@ -338,7 +341,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 	}
 
 	private SingleResponse<ParcelableDirectMessage> sendDirectMessage(final NotificationCompat.Builder builder,
-			final long accountId, final long recipientId, final String text, final String imageUri) {
+                                                                      final long accountId, final long recipientId,
+                                                                      final String text, final String imageUri) {
 		final Twitter twitter = getTwitterInstance(this, accountId, true, true);
 		try {
 			final ParcelableDirectMessage directMessage;
@@ -355,11 +359,14 @@ public class BackgroundOperationService extends IntentService implements Constan
 				final MediaUploadResponse uploadResp = twitter.uploadMedia(file.getName(), is, o.outMimeType);
 				directMessage = new ParcelableDirectMessage(twitter.sendDirectMessage(recipientId, text,
 						uploadResp.getId()), accountId, true);
-				file.delete();
+                if (!file.delete()) {
+                    Log.d(LOGTAG, String.format("unable to delete %s", path));
+                }
 			} else {
 				directMessage = new ParcelableDirectMessage(twitter.sendDirectMessage(recipientId, text), accountId,
 						true);
 			}
+            Utils.setLastSeen(this, recipientId, System.currentTimeMillis());
 			return SingleResponse.getInstance(directMessage);
 		} catch (final IOException e) {
 			return SingleResponse.getInstance(e);
@@ -374,18 +381,18 @@ public class BackgroundOperationService extends IntentService implements Constan
 
     private List<SingleResponse<ParcelableStatus>> updateStatus(final Builder builder,
                                                                 final ParcelableStatusUpdate statusUpdate) {
-		final ArrayList<ContentValues> hashtag_values = new ArrayList<ContentValues>();
-		final Collection<String> hashtags = extractor.extractHashtags(statusUpdate.text);
-		for (final String hashtag : hashtags) {
+        final ArrayList<ContentValues> hashTagValues = new ArrayList<>();
+        final Collection<String> hashTags = extractor.extractHashtags(statusUpdate.text);
+        for (final String hashTag : hashTags) {
 			final ContentValues values = new ContentValues();
-			values.put(CachedHashtags.NAME, hashtag);
-			hashtag_values.add(values);
+            values.put(CachedHashtags.NAME, hashTag);
+            hashTagValues.add(values);
 		}
 		boolean notReplyToOther = false;
 		mResolver.bulkInsert(CachedHashtags.CONTENT_URI,
-				hashtag_values.toArray(new ContentValues[hashtag_values.size()]));
+                hashTagValues.toArray(new ContentValues[hashTagValues.size()]));
 
-		final List<SingleResponse<ParcelableStatus>> results = new ArrayList<SingleResponse<ParcelableStatus>>();
+        final List<SingleResponse<ParcelableStatus>> results = new ArrayList<>();
 
 		if (statusUpdate.accounts.length == 0) return Collections.emptyList();
 
@@ -466,7 +473,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                             mediaIds[i] = uploadResp.getId();
 						}
                     } catch (final FileNotFoundException e) {
-
+                        Log.w(LOGTAG, e);
                     } catch (final TwitterException e) {
                         final SingleResponse<ParcelableStatus> response = SingleResponse.getInstance(e);
                         results.add(response);
@@ -481,21 +488,21 @@ public class BackgroundOperationService extends IntentService implements Constan
 					continue;
 				}
 				try {
-					final Status twitter_result = twitter.updateStatus(status);
+                    final Status resultStatus = twitter.updateStatus(status);
 
 					//Update Twitlonger statuses
 					if (shouldShorten && mUseShortener && mShortener.equals(SERVICE_SHORTENER_TWITLONGER)) {
-						TweetShortenerUtils.updateTwitlonger(shortenedStatusModel, twitter_result.getId(), twitter);
+						TweetShortenerUtils.updateTwitlonger(shortenedStatusModel, resultStatus.getId(), twitter);
 					}
-
+					Utils.setLastSeen(this, resultStatus.getUserMentionEntities(), System.currentTimeMillis());
 					if (!notReplyToOther) {
-						final long inReplyToUserId = twitter_result.getInReplyToUserId();
+                        final long inReplyToUserId = resultStatus.getInReplyToUserId();
 						if (inReplyToUserId <= 0) {
 							notReplyToOther = true;
 						}
 					}
-                    final ParcelableStatus result = new ParcelableStatus(twitter_result, account.account_id, false);
-					results.add(new SingleResponse<ParcelableStatus>(result, null));
+                    final ParcelableStatus result = new ParcelableStatus(resultStatus, account.account_id, false);
+                    results.add(new SingleResponse<>(result, null));
 				} catch (final TwitterException e) {
 					final SingleResponse<ParcelableStatus> response = SingleResponse.getInstance(e);
 					results.add(response);

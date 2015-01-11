@@ -22,12 +22,12 @@
 
 package de.vanita5.twittnuker.loader.support;
 
-import static de.vanita5.twittnuker.util.Utils.isFiltered;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
+
+import java.util.List;
 
 import twitter4j.Paging;
 import twitter4j.ResponseList;
@@ -36,15 +36,16 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
-import java.util.List;
+import static de.vanita5.twittnuker.util.Utils.isFiltered;
 
 public class RetweetsOfMeLoader extends Twitter4JStatusesLoader {
 
 	private int mTotalItemsCount;
 
-	public RetweetsOfMeLoader(final Context context, final long accountId, final long maxId, final long sinceId,
-							  final List<ParcelableStatus> data, final String[] savedStatusesArgs, final int tabPosition) {
-		super(context, accountId, maxId, sinceId, data, savedStatusesArgs, tabPosition);
+    public RetweetsOfMeLoader(final Context context, final long accountId, final long sinceId, final long maxId,
+                              final List<ParcelableStatus> data, final String[] savedStatusesArgs,
+                              final int tabPosition, boolean fromUser) {
+        super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
 	}
 
 	public int getTotalItemsCount() {

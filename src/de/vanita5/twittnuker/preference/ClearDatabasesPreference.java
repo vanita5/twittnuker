@@ -22,10 +22,6 @@
 
 package de.vanita5.twittnuker.preference;
 
-import static de.vanita5.twittnuker.provider.TweetStore.CACHE_URIS;
-import static de.vanita5.twittnuker.provider.TweetStore.DIRECT_MESSAGES_URIS;
-import static de.vanita5.twittnuker.provider.TweetStore.STATUSES_URIS;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
@@ -35,7 +31,12 @@ import android.util.AttributeSet;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.provider.TweetStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TweetStore.Notifications;
+import de.vanita5.twittnuker.provider.TweetStore.SavedSearches;
 import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
+
+import static de.vanita5.twittnuker.provider.TweetStore.CACHE_URIS;
+import static de.vanita5.twittnuker.provider.TweetStore.DIRECT_MESSAGES_URIS;
+import static de.vanita5.twittnuker.provider.TweetStore.STATUSES_URIS;
 
 public class ClearDatabasesPreference extends AsyncTaskPreference implements Constants, OnPreferenceClickListener {
 
@@ -70,6 +71,7 @@ public class ClearDatabasesPreference extends AsyncTaskPreference implements Con
 		}
 		resolver.delete(Notifications.CONTENT_URI, null, null);
 		resolver.delete(UnreadCounts.CONTENT_URI, null, null);
+        resolver.delete(SavedSearches.CONTENT_URI, null, null);
 	}
 
 }

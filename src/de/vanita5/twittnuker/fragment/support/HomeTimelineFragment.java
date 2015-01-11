@@ -25,17 +25,21 @@ package de.vanita5.twittnuker.fragment.support;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
-import com.squareup.otto.Subscribe;
-
 import de.vanita5.twittnuker.provider.TweetStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
 public class HomeTimelineFragment extends CursorStatusesFragment {
 
     @Override
     public Uri getContentUri() {
         return Statuses.CONTENT_URI;
+    }
+
+    @Override
+    protected void updateRefreshState() {
+        final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        if (twitter == null) return;
+        setRefreshing(twitter.isHomeTimelineRefreshing());
     }
 
     @Override
@@ -57,18 +61,6 @@ public class HomeTimelineFragment extends CursorStatusesFragment {
             return twitter.refreshAll(accountIds);
         }
         return twitter.getHomeTimelineAsync(accountIds, maxIds, sinceIds);
-    }
-
-    @Subscribe
-    public void notifyTaskStateChanged(TaskStateChangedEvent event) {
-        updateRefreshState();
-    }
-
-
-    private void updateRefreshState() {
-        final AsyncTwitterWrapper twitter = getTwitterWrapper();
-        if (twitter == null) return;
-        setRefreshing(twitter.isHomeTimelineRefreshing());
     }
 
 }

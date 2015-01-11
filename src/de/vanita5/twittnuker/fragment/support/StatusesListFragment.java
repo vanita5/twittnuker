@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
@@ -33,8 +34,10 @@ import java.util.List;
 public class StatusesListFragment extends ParcelableStatusesFragment {
 
 	@Override
-    public Loader<List<ParcelableStatus>> onCreateLoader(final int id, final Bundle args) {
-        return new IntentExtrasStatusesLoader(getActivity(), getArguments(), getAdapterData());
+    public Loader<List<ParcelableStatus>> onCreateStatusesLoader(final Context context,
+                                                                 final Bundle args,
+                                                                 final boolean fromUser) {
+        return new IntentExtrasStatusesLoader(context, getArguments(), getAdapterData(), fromUser);
 	}
 
 	@Override

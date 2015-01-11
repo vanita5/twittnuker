@@ -22,12 +22,12 @@
 
 package de.vanita5.twittnuker.loader.support;
 
-import static de.vanita5.twittnuker.util.Utils.isOfficialConsumerKeySecret;
-import static de.vanita5.twittnuker.util.Utils.shouldForceUsingPrivateAPIs;
-
 import android.content.Context;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
+
+import java.util.Collections;
+import java.util.List;
 
 import twitter4j.Paging;
 import twitter4j.Status;
@@ -38,17 +38,18 @@ import twitter4j.auth.OAuthAuthorization;
 import twitter4j.auth.XAuthAuthorization;
 import twitter4j.conf.Configuration;
 
-import java.util.Collections;
-import java.util.List;
+import static de.vanita5.twittnuker.util.Utils.isOfficialConsumerKeySecret;
+import static de.vanita5.twittnuker.util.Utils.shouldForceUsingPrivateAPIs;
 
 public class StatusConversationLoader extends UserMentionsLoader {
 
 	private final long mInReplyToStatusId;
 
 	public StatusConversationLoader(final Context context, final long accountId, final String screenName,
-									final long statusId, final long maxId, final long sinceId, final List<ParcelableStatus> data,
-									final String[] savedStatusesArgs, final int tabPosition) {
-		super(context, accountId, screenName, maxId, sinceId, data, savedStatusesArgs, tabPosition);
+                                    final long statusId, final long maxId, final long sinceId,
+                                    final List<ParcelableStatus> data, final String[] savedStatusesArgs,
+                                    final int tabPosition, boolean fromUser) {
+        super(context, accountId, screenName, maxId, sinceId, data, savedStatusesArgs, tabPosition, fromUser);
 		mInReplyToStatusId = statusId;
 	}
 
