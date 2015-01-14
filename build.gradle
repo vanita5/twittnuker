@@ -1,51 +1,3 @@
-apply plugin: 'com.android.application'
-
-//check for updates every build
-//configurations.all {
-//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-//}
-
-android {
-    compileSdkVersion 21
-    buildToolsVersion '21.1.2'
-
-    defaultConfig {
-        applicationId "de.vanita5.twittnuker"
-        minSdkVersion 14
-        targetSdkVersion 21
-        versionCode 12
-        versionName "0.6.0"
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
-        }
-
-        debug.setRoot('build-types/debug')
-        release.setRoot('build-types/release')
-    }
-    lintOptions {
-        abortOnError false
-    }
-    //Workaround
-    //https://code.google.com/p/android/issues/detail?id=61573
-    packagingOptions {
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-    }
-}
 
 buildscript {
     repositories {
@@ -62,42 +14,7 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
-//        maven {
-//            url 'https://github.com/vanita5/mvn-repo/raw/master/'
-//        }
-        //com.commonsware
-        maven {
-            url "https://repo.commonsware.com.s3.amazonaws.com"
-        }
     }
 }
 
-dependencies {
-    compile 'com.android.support:support-annotations:21.0.3'
-    compile 'org.apache.commons:commons-lang3:3.3.2'
-    compile 'com.android.support:support-v13:21.0.3'
-    compile 'com.android.support:support-v4:21.0.3'
-    compile 'com.android.support:cardview-v7:21.0.3'
-    compile 'com.android.support:recyclerview-v7:21.0.3'
-    compile 'com.android.support:palette-v7:21.0.3'
-    compile 'com.google.android.gms:play-services:6.5.87'
-    compile 'com.sothree.slidinguppanel:library:2.0.4'
-    compile 'it.sephiroth.android.library.imagezoom:imagezoom:2.1.1'
-    compile 'com.twitter:twitter-text:1.9.9'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
-    compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
-    compile 'org.apache.httpcomponents:httpmime:4.3.5'
-    compile 'ch.acra:acra:4.5.0'
-    compile 'com.google.android.apps.dashclock:dashclock-api:2.0.0'
-    compile 'com.commonsware.cwac:merge:1.1.1'
-    compile 'com.commonsware.cwac:sacklist:1.0.0'
-    compile 'com.squareup.retrofit:retrofit:1.2.2'
-    compile 'com.squareup:otto:1.3.5'
-    compile 'dnsjava:dnsjava:2.1.6'
-    compile project(':SlidingMenu')
-    compile project(':DragSortListView')
-    compile project(':MenuComponent')
-    compile project(':PullToRefresh')
-    compile project(':MessageBubbleView')
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-}
+
