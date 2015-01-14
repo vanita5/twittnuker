@@ -692,7 +692,7 @@
             android:exported="true" />
         <provider
             android:name=".provider.RecentSearchProvider"
-            android:authorities="de.vanita5.twittnuker.provider.SearchRecentSuggestions" />
+            android:authorities="de.vanita5.de.vanita5.twittnuker.provider.SearchRecentSuggestions" />
 
         <receiver android:name=".receiver.ConnectivityStateReceiver">
             <intent-filter>
