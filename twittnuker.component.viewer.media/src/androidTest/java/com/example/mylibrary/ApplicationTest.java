@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -20,10 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.viewer.media;
+package com.example.mylibrary;
 
-import android.app.Activity;
-import android.support.v4.app.FragmentActivity;
+import android.app.Application;
+import android.test.ApplicationTestCase;
 
-public class MediaViewerActivity extends FragmentActivity {
+/**
+ * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
+ */
+public class ApplicationTest extends ApplicationTestCase<Application> {
+	public ApplicationTest() {
+		super(Application.class);
+	}
 }

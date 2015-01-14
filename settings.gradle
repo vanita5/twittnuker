@@ -17,9 +17,10 @@ include 'services:webservice'
 */
 
 rootProject.name = 'twittnuker'
-include ':twittnuker', ':twittnuker.component.common'
+include ':twittnuker', ':twittnuker.component.common', ':twittnuker.component.viewer.media'
 include ':twittnuker.component.twitter4j'
 include ':twittnuker.component.common'
+include ':twittnuker.component.viewer.media'
 include ':twittnuker.component.jsonserializer'
 include ':twittnuker.component.querybuilder'
 include ':SlidingMenu', ':DragSortListView', ':MenuComponent', ':PullToRefresh', ':MessageBubbleView'
