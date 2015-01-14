@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 
 import twitter4j.CursorSupport;
-import twitter4j.PagableResponseList;
+import twitter4j.PageableResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserList;
@@ -82,7 +82,7 @@ public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<Parcelabl
 		}
 		if (list_loaded != null) {
 			final int list_size = list_loaded.size();
-			if (list_loaded instanceof PagableResponseList) {
+			if (list_loaded instanceof PageableResponseList) {
 				mNextCursor = ((CursorSupport) list_loaded).getNextCursor();
 				mPrevCursor = ((CursorSupport) list_loaded).getPreviousCursor();
 				for (int i = 0; i < list_size; i++) {

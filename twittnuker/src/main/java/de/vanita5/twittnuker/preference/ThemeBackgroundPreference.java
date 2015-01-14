@@ -77,7 +77,7 @@ public class ThemeBackgroundPreference extends DialogPreference implements Const
 
 	@Override
 	protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-		setValue(restorePersistedValue ? getPersistedString(mValue) : (String) defaultValue);
+        setValue(restorePersistedValue ? getPersistedString(null) : (String) defaultValue);
         updateSummary();
 	}
 
@@ -93,7 +93,7 @@ public class ThemeBackgroundPreference extends DialogPreference implements Const
 
 	private void persistValue(String value) {
 		// Always persist/notify the first time.
-		if (!TextUtils.equals(getPersistedString(mValue), value)) {
+        if (!TextUtils.equals(getPersistedString(null), value)) {
 			persistString(value);
 			notifyChanged();
 		}
@@ -155,7 +155,7 @@ public class ThemeBackgroundPreference extends DialogPreference implements Const
 		final Dialog dialog = getDialog();
 		final SharedPreferences preferences = getSharedPreferences();
 		if (dialog instanceof AlertDialog && preferences != null) {
-            mValue = getPersistedString(mValue);
+            mValue = getPersistedString(null);
 			final Resources res = dialog.getContext().getResources();
 			final LayoutInflater inflater = dialog.getLayoutInflater();
 			final ListView listView = ((AlertDialog) dialog).getListView();

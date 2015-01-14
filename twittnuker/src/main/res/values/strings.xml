@@ -11,7 +11,7 @@
 	<string name="remove_location">Remove location</string>
 	<string name="remove_image">Remove image</string>
 	<string name="remove_photo">Remove photo</string>
-	<string name="status_hint">What\'s happening ?</string>
+	<string name="status_hint">What\'s happening?</string>
 	<string name="sign_up">Sign up</string>
 	<string name="sign_in">Sign in</string>
 	<string name="rest_base_url">REST Base URL</string>
@@ -559,6 +559,8 @@
 	<string name="N_new_mentions_quantity_other"><xliff:g id="items">%d</xliff:g> new mentions</string>
 	<string name="N_new_messages_quantity_one"><xliff:g id="items">%d</xliff:g> new conversation</string>
 	<string name="N_new_messages_quantity_other"><xliff:g id="items">%d</xliff:g> new conversations</string>
+    <string name="status_share_subject_format_with_time">Tweet from <xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>), at <xliff:g id="time">%3$s</xliff:g></string>
+    <string name="status_share_text_format_with_link"><xliff:g id="text">%1$s</xliff:g>\n\n<xliff:g id="link">%2$s</xliff:g></string>
 	<string name="share_subject_format"><xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>), at <xliff:g id="time">%3$s</xliff:g></string>
 	<string name="rate_limit">Rate limit</string>
 	<string name="wizard_hint_rate_limit">If you encounter rate limit problems, please don\'t blame me, that\'s Twitter\'s policy.</string>
@@ -683,6 +685,9 @@
     <string name="members">Members</string>
     <string name="subscribers">Subscriber</string>
     <string name="read_from_bottom">Read from bottom</string>
+    <string name="register">Register</string>
+    <string name="follows">Follows</string>
+    <string name="belongs_to">Belongs to</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

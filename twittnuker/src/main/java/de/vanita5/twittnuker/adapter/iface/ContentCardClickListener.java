@@ -23,9 +23,10 @@
 package de.vanita5.twittnuker.adapter.iface;
 
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.view.View;
 
 public interface ContentCardClickListener {
     void onItemActionClick(ViewHolder holder, int id, int position);
 
-    void onItemMenuClick(ViewHolder holder, int position);
+    void onItemMenuClick(ViewHolder holder, View menuView, int position);
 }

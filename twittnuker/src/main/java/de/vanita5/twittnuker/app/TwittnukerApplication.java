@@ -43,9 +43,7 @@ import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.nostra13.universalimageloader.utils.L;
 import com.squareup.otto.Bus;
 
-import org.mariotaku.gallery3d.util.GalleryUtils;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
@@ -182,7 +180,6 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mPreferences.registerOnSharedPreferenceChangeListener(this);
 		initializeAsyncTask();
-		GalleryUtils.initialize(this);
 		initAccountColor(this);
 		initUserColor(this);
 
@@ -240,7 +237,7 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		// So we load it here to comply the rule.
 		try {
 			Class.forName(AsyncTask.class.getName());
-		} catch (final ClassNotFoundException e) {
+        } catch (final ClassNotFoundException ignore) {
 		}
 	}
 

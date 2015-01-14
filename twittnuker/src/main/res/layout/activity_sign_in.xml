@@ -72,24 +72,25 @@
 				android:padding="8dp">
 
 				<Button
-					android:id="@+id/sign_in"
+                    android:id="@+id/sign_up"
 					style="?android:buttonStyleSmall"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:layout_weight="1"
 					android:minHeight="48dp"
 					android:onClick="onClick"
-					android:text="@string/sign_in"/>
+                    android:text="@string/register"/>
 
 				<Button
-					android:id="@+id/sign_up"
+                    android:id="@+id/sign_in"
 					style="?android:buttonStyleSmall"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:layout_weight="1"
 					android:minHeight="48dp"
 					android:onClick="onClick"
-					android:text="@string/sign_up"/>
+                    android:text="@string/sign_in"/>
+
 			</LinearLayout>
 
 			<Button

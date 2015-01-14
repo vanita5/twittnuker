@@ -96,6 +96,6 @@
 		android:padding="2dp"
 		android:visibility="gone"/>
 
-    <include layout="@layout/action_item_compose_account"/>
+    <!--<include layout="@layout/action_item_compose_account"/>-->
 
 </LinearLayout>

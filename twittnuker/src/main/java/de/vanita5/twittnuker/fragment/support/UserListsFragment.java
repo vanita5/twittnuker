@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
@@ -62,13 +63,15 @@ public class UserListsFragment extends BaseSupportFragment implements RefreshScr
 		final Bundle args = getArguments();
 		final FragmentActivity activity = getActivity();
 		mAdapter = new SupportTabsAdapter(activity, getChildFragmentManager(), null, 1);
-        mAdapter.addTab(UserListsListFragment.class, args, getString(R.string.lists), null, 0);
-		mAdapter.addTab(UserListMembershipsListFragment.class, args,
-                getString(R.string.lists_following_user), 0, 1);
+        mAdapter.addTab(UserListsListFragment.class, args, getString(R.string.follows), null, 0);
+        mAdapter.addTab(UserListMembershipsListFragment.class, args, getString(R.string.belongs_to), 0, 1);
 		mViewPager.setAdapter(mAdapter);
 		mViewPager.setOffscreenPageLimit(2);
 		mPagerIndicator.setViewPager(mViewPager);
         mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
+        if (activity instanceof IThemedActivity) {
+            mPagerIndicator.setStripColor(((IThemedActivity) activity).getCurrentThemeColor());
+        }
 	}
 
 

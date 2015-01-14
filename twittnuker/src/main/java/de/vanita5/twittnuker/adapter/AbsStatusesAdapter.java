@@ -60,11 +60,11 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 	private final LayoutInflater mInflater;
 	private final ImageLoaderWrapper mImageLoader;
 	private final ImageLoadingHandler mLoadingHandler;
-	private final int mCardLayoutResource;
     private final AsyncTwitterWrapper mTwitterWrapper;
     private final int mCardBackgroundColor;
     private final int mTextSize;
     private final int mProfileImageStyle, mMediaPreviewStyle;
+    private final boolean mCompactCards;
 	private boolean mLoadMoreIndicatorEnabled;
     private StatusAdapterListener mStatusAdapterListener;
 
@@ -78,11 +78,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
         mTwitterWrapper = app.getTwitterWrapper();
         final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mTextSize = preferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
-		if (compact) {
-            mCardLayoutResource = R.layout.card_item_status_compact;
-		} else {
-            mCardLayoutResource = R.layout.card_item_status;
-		}
+        mCompactCards = compact;
         mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
         mMediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
     }
@@ -161,9 +157,14 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		switch (viewType) {
 			case ITEM_VIEW_TYPE_STATUS: {
-				final View view = mInflater.inflate(mCardLayoutResource, parent, false);
-                final CardView cardView = (CardView) view.findViewById(R.id.card);
-                if (cardView != null) {
+                final View view;
+                if (mCompactCards) {
+                    view = mInflater.inflate(R.layout.card_item_status_compact, parent, false);
+                    final View itemContent = view.findViewById(R.id.item_content);
+                    itemContent.setBackgroundColor(mCardBackgroundColor);
+                } else {
+                    view = mInflater.inflate(R.layout.card_item_status, parent, false);
+                    final CardView cardView = (CardView) view.findViewById(R.id.card);
                     cardView.setCardBackgroundColor(mCardBackgroundColor);
                 }
                 final StatusViewHolder holder = new StatusViewHolder(this, view);
@@ -223,9 +224,9 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     }
 
     @Override
-    public void onItemMenuClick(ViewHolder holder, int position) {
+    public void onItemMenuClick(ViewHolder holder, View menuView, int position) {
         if (mStatusAdapterListener != null) {
-            mStatusAdapterListener.onStatusMenuClick((StatusViewHolder) holder, position);
+            mStatusAdapterListener.onStatusMenuClick((StatusViewHolder) holder, menuView, position);
         }
     }
 
@@ -248,7 +249,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 
         void onStatusClick(StatusViewHolder holder, int position);
 
-        void onStatusMenuClick(StatusViewHolder holder, int position);
+        void onStatusMenuClick(StatusViewHolder holder, View menuView, int position);
     }
 
 }

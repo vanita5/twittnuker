@@ -82,7 +82,7 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <TextView
+                    <de.vanita5.twittnuker.view.themed.ThemedTextView
                         android:id="@+id/name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
                         android:textColor="?android:textColorPrimary"
                         android:textStyle="bold"/>
 
-                    <TextView
+                    <de.vanita5.twittnuker.view.themed.ThemedTextView
                         android:id="@+id/screen_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
 
                 </LinearLayout>
 
-                <Switch
+                <de.vanita5.twittnuker.view.themed.ThemedSwitch
                     android:id="@+id/toggle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

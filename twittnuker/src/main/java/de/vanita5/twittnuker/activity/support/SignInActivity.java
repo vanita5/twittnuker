@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.activity.support;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentResolver;
@@ -29,6 +30,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -58,7 +61,9 @@ import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticityTokenEx
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.WrongUserPassException;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.util.net.TwidereHttpClientFactory;
 
@@ -286,7 +291,10 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 		setContentView(R.layout.activity_sign_in);
 		setProgressBarIndeterminateVisibility(false);
 		final long[] account_ids = getActivatedAccountIds(this);
-		getActionBar().setDisplayHomeAsUpEnabled(account_ids.length > 0);
+        final ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(account_ids.length > 0);
+        }
 
 		if (savedInstanceState != null) {
 			mAPIUrlFormat = savedInstanceState.getString(Accounts.API_URL_FORMAT);
@@ -308,6 +316,9 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 		mEditUsername.addTextChangedListener(this);
 		mEditPassword.setText(mPassword);
 		mEditPassword.addTextChangedListener(this);
+        final Resources resources = getResources();
+        final ColorStateList color = ColorStateList.valueOf(resources.getColor(R.color.material_light_green));
+        ViewAccessor.setBackgroundTintList(mSignInButton, color);
 		setSignInButton();
 	}
 
@@ -346,7 +357,7 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 		final boolean enable_proxy = mPreferences.getBoolean(KEY_ENABLE_PROXY, false);
 		cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(mApplication));
 		cb.setHttpClientFactory(new TwidereHttpClientFactory(mApplication));
-        if (Utils.isOfficialConsumerKeySecret(this, mConsumerKey, mConsumerSecret)) {
+        if (TwitterContentUtils.isOfficialKey(this, mConsumerKey, mConsumerSecret)) {
             Utils.setMockOfficialUserAgent(this, cb);
         } else {
             Utils.setUserAgent(this, cb);

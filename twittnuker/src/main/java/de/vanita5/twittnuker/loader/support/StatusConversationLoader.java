@@ -29,6 +29,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import java.util.Collections;
 import java.util.List;
 
+import de.vanita5.twittnuker.util.TwitterContentUtils;
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -38,7 +39,6 @@ import twitter4j.auth.OAuthAuthorization;
 import twitter4j.auth.XAuthAuthorization;
 import twitter4j.conf.Configuration;
 
-import static de.vanita5.twittnuker.util.Utils.isOfficialConsumerKeySecret;
 import static de.vanita5.twittnuker.util.Utils.shouldForceUsingPrivateAPIs;
 
 public class StatusConversationLoader extends UserMentionsLoader {
@@ -61,7 +61,7 @@ public class StatusConversationLoader extends UserMentionsLoader {
 		final boolean isOAuth = auth instanceof OAuthAuthorization || auth instanceof XAuthAuthorization;
 		final String consumerKey = conf.getOAuthConsumerKey(), consumerSecret = conf.getOAuthConsumerSecret();
 		if (shouldForceUsingPrivateAPIs(context) || isOAuth
-				&& isOfficialConsumerKeySecret(context, consumerKey, consumerSecret))
+				&& TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret))
 			return twitter.showConversation(mInReplyToStatusId, paging);
 		return Collections.emptyList();
 	}

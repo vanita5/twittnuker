@@ -96,7 +96,7 @@
                                     android:orientation="horizontal"
                                     android:splitMotionEvents="false">
 
-                                    <de.vanita5.twittnuker.view.ActionIconTextView
+                                    <de.vanita5.twittnuker.view.ActionIconThemedTextView
                                         android:id="@+id/profile_image_camera"
                                         style="?android:borderlessButtonStyle"
                                         android:layout_width="0dp"
@@ -109,7 +109,7 @@
                                         android:paddingTop="0dp"
                                         android:text="@string/photo"/>
 
-                                    <de.vanita5.twittnuker.view.ActionIconTextView
+                                    <de.vanita5.twittnuker.view.ActionIconThemedTextView
                                         android:id="@+id/profile_image_gallery"
                                         style="?android:borderlessButtonStyle"
                                         android:layout_width="0dp"
@@ -165,7 +165,7 @@
                                     android:orientation="horizontal"
                                     android:splitMotionEvents="false">
 
-                                    <de.vanita5.twittnuker.view.ActionIconTextView
+                                    <de.vanita5.twittnuker.view.ActionIconThemedTextView
                                         android:id="@+id/profile_banner_gallery"
                                         style="?android:borderlessButtonStyle"
                                         android:layout_width="0dp"
@@ -178,7 +178,7 @@
                                         android:paddingTop="0dp"
                                         android:text="@string/gallery"/>
 
-                                    <de.vanita5.twittnuker.view.ActionIconTextView
+                                    <de.vanita5.twittnuker.view.ActionIconThemedTextView
                                         android:id="@+id/profile_banner_remove"
                                         style="?android:borderlessButtonStyle"
                                         android:layout_width="0dp"

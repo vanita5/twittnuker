@@ -48,6 +48,7 @@ import com.squareup.otto.Bus;
 
 import org.mariotaku.jsonserializer.JSONFileIO;
 import org.mariotaku.querybuilder.Expression;
+import org.mariotaku.querybuilder.query.SQLSelectQuery;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -58,6 +59,7 @@ import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.model.UnreadItem;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
@@ -74,6 +76,8 @@ import de.vanita5.twittnuker.util.NotificationHelper;
 import de.vanita5.twittnuker.util.SQLiteDatabaseWrapper;
 import de.vanita5.twittnuker.util.SQLiteDatabaseWrapper.LazyLoadCallback;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.TwidereQueryBuilder.CachedUsersQueryBuilder;
+import de.vanita5.twittnuker.util.TwidereQueryBuilder.ConversationQueryBuilder;
 import de.vanita5.twittnuker.util.collection.NoDuplicatesCopyOnWriteArrayList;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder;
@@ -264,6 +268,27 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 mDatabaseWrapper.update(table, values, where.getSQL(), args);
                 rowId = mDatabaseWrapper.insertWithOnConflict(table, null, values,
                         SQLiteDatabase.CONFLICT_IGNORE);
+            } else if (tableId == TABLE_ID_CACHED_RELATIONSHIPS) {
+                final long accountId = values.getAsLong(CachedRelationships.ACCOUNT_ID);
+                final long userId = values.getAsLong(CachedRelationships.USER_ID);
+                final Expression where = Expression.and(
+                        Expression.equals(CachedRelationships.ACCOUNT_ID, accountId),
+                        Expression.equals(CachedRelationships.USER_ID, userId)
+                );
+                if (mDatabaseWrapper.update(table, values, where.getSQL(), null) > 0) {
+                    final String[] projection = {CachedRelationships._ID};
+                    final Cursor c = mDatabaseWrapper.query(table, projection, where.getSQL(), null,
+                            null, null, null);
+                    if (c.moveToFirst()) {
+                        rowId = c.getLong(0);
+                    } else {
+                        rowId = 0;
+                    }
+                    c.close();
+                } else {
+                    rowId = mDatabaseWrapper.insertWithOnConflict(table, null, values,
+                            SQLiteDatabase.CONFLICT_IGNORE);
+                }
             } else if (shouldReplaceOnConflict(tableId)) {
                 rowId = mDatabaseWrapper.insertWithOnConflict(table, null, values,
                         SQLiteDatabase.CONFLICT_REPLACE);
@@ -365,9 +390,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 					if (segments.size() != 4) return null;
 					final long accountId = ParseUtils.parseLong(segments.get(2));
 					final long conversationId = ParseUtils.parseLong(segments.get(3));
-					final String query = TwidereQueryBuilder.ConversationQueryBuilder.buildByConversationId(projection,
+                    final SQLSelectQuery query = ConversationQueryBuilder.buildByConversationId(projection,
 							accountId, conversationId, selection, sortOrder);
-					final Cursor c = mDatabaseWrapper.rawQuery(query, selectionArgs);
+                    final Cursor c = mDatabaseWrapper.rawQuery(query.getSQL(), selectionArgs);
 					setNotificationUri(c, DirectMessages.CONTENT_URI);
 					return c;
 				}
@@ -376,13 +401,29 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 					if (segments.size() != 4) return null;
 					final long accountId = ParseUtils.parseLong(segments.get(2));
 					final String screenName = segments.get(3);
-					final String query = TwidereQueryBuilder.ConversationQueryBuilder.buildByScreenName(projection,
+                    final SQLSelectQuery query = ConversationQueryBuilder.buildByScreenName(projection,
 							accountId, screenName, selection, sortOrder);
-					final Cursor c = mDatabaseWrapper.rawQuery(query, selectionArgs);
+                    final Cursor c = mDatabaseWrapper.rawQuery(query.getSQL(), selectionArgs);
 					setNotificationUri(c, DirectMessages.CONTENT_URI);
 					return c;
 				}
-			}
+                case VIRTUAL_TABLE_ID_CACHED_USERS_WITH_RELATIONSHIP: {
+                    final long accountId = ParseUtils.parseLong(uri.getLastPathSegment(), -1);
+                    final SQLSelectQuery query = CachedUsersQueryBuilder.buildWithRelationship(projection,
+							selection, sortOrder, accountId);
+                    final Cursor c = mDatabaseWrapper.rawQuery(query.getSQL(), selectionArgs);
+                    setNotificationUri(c, CachedUsers.CONTENT_URI);
+                    return c;
+			    }
+                case VIRTUAL_TABLE_ID_CACHED_USERS_WITH_SCORE: {
+                    final long accountId = ParseUtils.parseLong(uri.getLastPathSegment(), -1);
+                    final SQLSelectQuery query = CachedUsersQueryBuilder.buildWithScore(projection,
+                            selection, sortOrder, accountId);
+                    final Cursor c = mDatabaseWrapper.rawQuery(query.getSQL(), selectionArgs);
+                    setNotificationUri(c, CachedUsers.CONTENT_URI);
+                    return c;
+                }
+            }
 			if (table == null) return null;
 			final Cursor c = mDatabaseWrapper.query(table, projection, selection, selectionArgs, null, null, sortOrder);
 			setNotificationUri(c, getNotificationUri(tableId, uri));

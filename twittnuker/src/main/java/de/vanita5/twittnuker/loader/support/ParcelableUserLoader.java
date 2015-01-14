@@ -32,6 +32,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import org.mariotaku.querybuilder.Expression;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.ParcelableUser.CachedIndices;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
@@ -85,8 +86,9 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
 			final int count = cur.getCount();
 			try {
 				if (count > 0) {
+                    final CachedIndices indices = new CachedIndices(cur);
 					cur.moveToFirst();
-                    return SingleResponse.getInstance(new ParcelableUser(cur, mAccountId));
+                    return SingleResponse.getInstance(new ParcelableUser(cur, indices, mAccountId));
 				}
 			} finally {
 				cur.close();

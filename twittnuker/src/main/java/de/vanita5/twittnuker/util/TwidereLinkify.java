@@ -42,9 +42,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static de.vanita5.twittnuker.util.MediaPreviewUtils.AVAILABLE_IMAGE_SHUFFIX;
-import static de.vanita5.twittnuker.util.Utils.matcherEnd;
-import static de.vanita5.twittnuker.util.Utils.matcherGroup;
-import static de.vanita5.twittnuker.util.Utils.matcherStart;
+import static de.vanita5.twittnuker.util.RegexUtils.matcherEnd;
+import static de.vanita5.twittnuker.util.RegexUtils.matcherGroup;
+import static de.vanita5.twittnuker.util.RegexUtils.matcherStart;
 
 /**
  * Linkify take a piece of text and a regular expression and turns all of the

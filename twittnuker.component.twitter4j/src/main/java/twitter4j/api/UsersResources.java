@@ -23,7 +23,7 @@ import twitter4j.AccountSettings;
 import twitter4j.Category;
 import twitter4j.CursorPaging;
 import twitter4j.IDs;
-import twitter4j.PagableResponseList;
+import twitter4j.PageableResponseList;
 import twitter4j.ResponseList;
 import twitter4j.SettingsUpdate;
 import twitter4j.TwitterException;
@@ -146,9 +146,9 @@ public interface UsersResources {
 	 *      blocks/blocking | Twitter Developers</a>
 	 * @since Twitter4J 2.0.4
 	 */
-	PagableResponseList<User> getBlocksList() throws TwitterException;
+    PageableResponseList<User> getBlocksList() throws TwitterException;
 
-	PagableResponseList<User> getBlocksList(CursorPaging paging) throws TwitterException;
+    PageableResponseList<User> getBlocksList(CursorPaging paging) throws TwitterException;
 
 	/**
 	 * Access the users in a given category of the Twitter suggested user list
@@ -172,9 +172,9 @@ public interface UsersResources {
 
 	IDs getMutesUsersIDs(CursorPaging paging) throws TwitterException;
 
-	PagableResponseList<User> getMutesUsersList() throws TwitterException;
+    PageableResponseList<User> getMutesUsersList() throws TwitterException;
 
-	PagableResponseList<User> getMutesUsersList(CursorPaging paging) throws TwitterException;
+    PageableResponseList<User> getMutesUsersList(CursorPaging paging) throws TwitterException;
 
 	/**
 	 * Access to Twitter's suggested user list. This returns the list of

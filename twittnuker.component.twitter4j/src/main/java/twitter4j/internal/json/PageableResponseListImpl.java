@@ -18,7 +18,7 @@ package twitter4j.internal.json;
 
 import org.json.JSONObject;
 
-import twitter4j.PagableResponseList;
+import twitter4j.PageableResponseList;
 import twitter4j.http.HttpResponse;
 import twitter4j.internal.util.InternalParseUtil;
 
@@ -27,12 +27,12 @@ import twitter4j.internal.util.InternalParseUtil;
  * @since Twitter4J 2.1.3
  */
 @SuppressWarnings("rawtypes")
-class PagableResponseListImpl<T> extends ResponseListImpl implements PagableResponseList {
+class PageableResponseListImpl<T> extends ResponseListImpl implements PageableResponseList {
 	private static final long serialVersionUID = 9098876089678648404L;
 	private final long previousCursor;
 	private final long nextCursor;
 
-	PagableResponseListImpl(final int size, final JSONObject json, final HttpResponse res) {
+	PageableResponseListImpl(final int size, final JSONObject json, final HttpResponse res) {
 		super(size, res);
 		this.previousCursor = InternalParseUtil.getLong("previous_cursor", json);
 		this.nextCursor = InternalParseUtil.getLong("next_cursor", json);

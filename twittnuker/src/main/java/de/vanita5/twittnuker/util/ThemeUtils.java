@@ -53,6 +53,7 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.menucomponent.internal.Utils;
 import org.mariotaku.menucomponent.widget.MenuBar.MenuBarMenuInfo;
 import de.vanita5.twittnuker.Constants;
@@ -162,7 +163,7 @@ public class ThemeUtils implements Constants {
             final MenuItem item = menu.getItem(i);
             final Drawable icon = item.getIcon();
             final ContextMenuInfo info = item.getMenuInfo();
-            if (icon != null && !TwidereArrayUtils.contains(excludedGroups, item.getGroupId())) {
+            if (icon != null && !ArrayUtils.contains(excludedGroups, item.getGroupId())) {
                 icon.mutate();
                 if (info instanceof MenuBarMenuInfo) {
                     final MenuBarMenuInfo mbInfo = (MenuBarMenuInfo) info;
@@ -251,11 +252,6 @@ public class ThemeUtils implements Constants {
             ViewAccessor.setProgressTintList(progressBar, tintList);
             ViewAccessor.setProgressBackgroundTintList(progressBar, tintList);
             ViewAccessor.setIndeterminateTintList(progressBar, tintList);
-        } else if (view instanceof Switch) {
-//            final ColorStateList tintList = ColorStateList.valueOf(tintColor);
-//            final Switch switchView = (Switch) view;
-//            DrawableCompat.setTintList(switchView.getThumbDrawable(), tintList);
-//            DrawableCompat.setTintList(switchView.getTrackDrawable(), tintList);
         } else if (view instanceof CompoundButton) {
             final ColorStateList tintList = ColorStateList.valueOf(tintColor);
             final CompoundButton compoundButton = (CompoundButton) view;
@@ -902,8 +898,8 @@ public class ThemeUtils implements Constants {
     public static void initTextView(TextView view) {
         if (view.isInEditMode()) return;
         final Context context = view.getContext();
-        view.setLinkTextColor(ThemeUtils.getUserLinkTextColor(context));
-        view.setHighlightColor(ThemeUtils.getUserHighlightColor(context));
+//        view.setLinkTextColor(ThemeUtils.getUserLinkTextColor(context));
+//        view.setHighlightColor(ThemeUtils.getUserHighlightColor(context));
         view.setTypeface(ThemeUtils.getUserTypeface(context, view.getTypeface()));
     }
 

@@ -104,6 +104,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.NameValuePair;
 import org.json.JSONException;
 import org.mariotaku.menucomponent.internal.menu.MenuUtils;
@@ -162,6 +163,7 @@ import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
@@ -227,6 +229,7 @@ import twitter4j.DirectMessage;
 import twitter4j.EntitySupport;
 import twitter4j.MediaEntity;
 import twitter4j.RateLimitStatus;
+import twitter4j.Relationship;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
@@ -260,9 +263,9 @@ public final class Utils implements Constants, TwitterConstants {
 
 	private static final String UA_TEMPLATE = "Mozilla/5.0 (Linux; Android %s; %s Build/%s) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.111 Safari/537.36";
 
-	public static final Pattern PATTERN_XML_RESOURCE_IDENTIFIER = Pattern.compile("res\\/xml\\/([\\w_]+)\\.xml");
+    public static final Pattern PATTERN_XML_RESOURCE_IDENTIFIER = Pattern.compile("res/xml/([\\w_]+)\\.xml");
 
-	public static final Pattern PATTERN_RESOURCE_IDENTIFIER = Pattern.compile("@([\\w_]+)\\/([\\w_]+)");
+    public static final Pattern PATTERN_RESOURCE_IDENTIFIER = Pattern.compile("@([\\w_]+)/([\\w_]+)");
 	private static final UriMatcher CONTENT_PROVIDER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 	private static final UriMatcher LINK_HANDLER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -292,12 +295,12 @@ public final class Utils implements Constants, TwitterConstants {
 				TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedTrends.Local.CONTENT_PATH,
 				TABLE_ID_TRENDS_LOCAL);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Tabs.CONTENT_PATH, TABLE_ID_TABS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, PushNotifications.CONTENT_PATH, TABLE_ID_PUSH_NOTIFICATIONS);
-		CONTENT_PROVIDER_URI_MATCHER
-				.addURI(TwidereDataStore.AUTHORITY, CachedStatuses.CONTENT_PATH, TABLE_ID_CACHED_STATUSES);
-		CONTENT_PROVIDER_URI_MATCHER
-				.addURI(TwidereDataStore.AUTHORITY, CachedHashtags.CONTENT_PATH, TABLE_ID_CACHED_HASHTAGS);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Tabs.CONTENT_PATH,
+				TABLE_ID_TABS);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedStatuses.CONTENT_PATH,
+				TABLE_ID_CACHED_STATUSES);
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedHashtags.CONTENT_PATH,
+				TABLE_ID_CACHED_HASHTAGS);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedRelationships.CONTENT_PATH,
                 TABLE_ID_CACHED_RELATIONSHIPS);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, SavedSearches.CONTENT_PATH,
@@ -311,7 +314,8 @@ public final class Utils implements Constants, TwitterConstants {
 				VIRTUAL_TABLE_ID_NOTIFICATIONS);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Notifications.CONTENT_PATH + "/#/#",
 				VIRTUAL_TABLE_ID_NOTIFICATIONS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DNS.CONTENT_PATH + "/*", VIRTUAL_TABLE_ID_DNS);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DNS.CONTENT_PATH + "/*",
+				VIRTUAL_TABLE_ID_DNS);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedImages.CONTENT_PATH,
 				VIRTUAL_TABLE_ID_CACHED_IMAGES);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CacheFiles.CONTENT_PATH + "/*",
@@ -330,6 +334,12 @@ public final class Utils implements Constants, TwitterConstants {
 				VIRTUAL_TABLE_ID_UNREAD_COUNTS_BY_TYPE);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, TwidereDataStore.CONTENT_PATH_DATABASE_READY,
 				VIRTUAL_TABLE_ID_DATABASE_READY);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedUsers.CONTENT_PATH_WITH_RELATIONSHIP + "/#",
+				VIRTUAL_TABLE_ID_CACHED_USERS_WITH_RELATIONSHIP);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedUsers.CONTENT_PATH_WITH_SCORE + "/#",
+				VIRTUAL_TABLE_ID_CACHED_USERS_WITH_SCORE);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, PushNotifications.CONTENT_PATH,
+				TABLE_ID_PUSH_NOTIFICATIONS);
 
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_STATUS, null, LINK_ID_STATUS);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER, null, LINK_ID_USER);
@@ -483,17 +493,17 @@ public final class Utils implements Constants, TwitterConstants {
                 .select(true, new Columns(new Column(new Table(table), Statuses._ID)))
                 .from(new Tables(table, Filters.Sources.TABLE_NAME))
                 .where(Expression.likeRaw(new Column(new Table(table), Statuses.SOURCE),
-                        "'%>'||" + Filters.Sources.TABLE_NAME + "" + Filters.Sources.VALUE + "||'</a>%'"))
+                        "'%>'||" + Filters.Sources.TABLE_NAME + "." + Filters.Sources.VALUE + "||'</a>%'"))
                 .union()
                 .select(true, new Columns(new Column(new Table(table), Statuses._ID)))
                 .from(new Tables(table, Filters.Keywords.TABLE_NAME))
                 .where(Expression.likeRaw(new Column(new Table(table), Statuses.TEXT_PLAIN),
-                        "'%'||" + Filters.Keywords.TABLE_NAME + "" + Filters.Keywords.VALUE + "||'%'"))
+                        "'%'||" + Filters.Keywords.TABLE_NAME + "." + Filters.Keywords.VALUE + "||'%'"))
                 .union()
                 .select(true, new Columns(new Column(new Table(table), Statuses._ID)))
                 .from(new Tables(table, Filters.Links.TABLE_NAME))
                 .where(Expression.likeRaw(new Column(new Table(table), Statuses.SOURCE),
-                        "'%>%'||" + Filters.Links.TABLE_NAME + "" + Filters.Links.VALUE + "||'%</a>%'"));
+                        "'%>%'||" + Filters.Links.TABLE_NAME + "." + Filters.Links.VALUE + "||'%</a>%'"));
         final Expression filterExpression = Expression.or(
                 Expression.notIn(new Column(new Table(table), Statuses._ID), filteredIdsQueryBuilder.build()),
                 Expression.equals(new Column(new Table(table), Statuses.IS_GAP), 1)
@@ -553,6 +563,7 @@ public final class Utils implements Constants, TwitterConstants {
 		// Clean cached values.
 		for (final Uri uri : CACHE_URIS) {
 			final String table = getTableNameByUri(uri);
+            if (table == null) continue;
 			final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
             qb.select(new Column(BaseColumns._ID));
             qb.from(new Tables(table));
@@ -971,11 +982,15 @@ public final class Utils implements Constants, TwitterConstants {
 	public static Intent createStatusShareIntent(final Context context, final ParcelableStatus status) {
 		final Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/plain");
-		final String name = status.user_name, screenName = status.user_screen_name;
 		final String timeString = formatToLongTimeString(context, status.timestamp);
-		final String subject = context.getString(R.string.share_subject_format, name, screenName, timeString);
+        final String link = String.format(Locale.ROOT, "https://twitter.com/%s/status/%d",
+                status.user_screen_name, status.id);
+        final String text = context.getString(R.string.status_share_text_format_with_link,
+                status.text_plain, link);
+        final String subject = context.getString(R.string.status_share_subject_format_with_time,
+                status.user_name, status.user_screen_name, timeString);
 		intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-		intent.putExtra(Intent.EXTRA_TEXT, status.text_plain);
+        intent.putExtra(Intent.EXTRA_TEXT, text);
 		intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 		return intent;
 	}
@@ -1125,32 +1140,6 @@ public final class Utils implements Constants, TwitterConstants {
 		return status;
 	}
 
-	public static String formatDirectMessageText(final DirectMessage message) {
-		if (message == null) return null;
-		final String text = message.getRawText();
-		if (text == null) return null;
-		final HtmlBuilder builder = new HtmlBuilder(text, false, true, true);
-		parseEntities(builder, message);
-		return builder.build().replace("\n", "<br/>");
-	}
-
-	public static String formatExpandedUserDescription(final User user) {
-		if (user == null) return null;
-		final String text = user.getDescription();
-		if (text == null) return null;
-		final HtmlBuilder builder = new HtmlBuilder(text, false, true, true);
-		final URLEntity[] urls = user.getDescriptionEntities();
-		if (urls != null) {
-			for (final URLEntity url : urls) {
-				final String expanded_url = ParseUtils.parseString(url.getExpandedURL());
-				if (expanded_url != null) {
-					builder.addLink(expanded_url, expanded_url, url.getStart(), url.getEnd());
-				}
-			}
-		}
-		return toPlainText(builder.build().replace("\n", "<br/>"));
-	}
-
 	@SuppressWarnings("deprecation")
 	public static String formatSameDayTime(final Context context, final long timestamp) {
 		if (context == null) return null;
@@ -1159,15 +1148,6 @@ public final class Utils implements Constants, TwitterConstants {
 					DateFormat.is24HourFormat(context) ? DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_24HOUR
 							: DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_12HOUR);
 		return DateUtils.formatDateTime(context, timestamp, DateUtils.FORMAT_SHOW_DATE);
-	}
-
-	public static String formatStatusText(final Status status) {
-		if (status == null) return null;
-		final String text = status.getRawText();
-		if (text == null) return null;
-		final HtmlBuilder builder = new HtmlBuilder(text, false, true, true);
-		parseEntities(builder, status);
-		return builder.build().replace("\n", "<br/>");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -1212,24 +1192,6 @@ public final class Utils implements Constants, TwitterConstants {
 		return DateUtils.formatDateTime(context, timestamp, format_flags);
 	}
 
-	public static String formatUserDescription(final User user) {
-		if (user == null) return null;
-		final String text = user.getDescription();
-		if (text == null) return null;
-		final HtmlBuilder builder = new HtmlBuilder(text, false, true, true);
-		final URLEntity[] urls = user.getDescriptionEntities();
-		if (urls != null) {
-			for (final URLEntity url : urls) {
-				final URL expanded_url = url.getExpandedURL();
-				if (expanded_url != null) {
-					builder.addLink(ParseUtils.parseString(expanded_url), url.getDisplayURL(), url.getStart(),
-							url.getEnd());
-				}
-			}
-		}
-		return builder.build().replace("\n", "<br/>");
-	}
-
 	public static String generateBrowserUserAgent() {
 		return String.format(UA_TEMPLATE, Build.VERSION.RELEASE, Build.MODEL, Build.ID);
 	}
@@ -1264,7 +1226,7 @@ public final class Utils implements Constants, TwitterConstants {
 			final int[] colors = new int[cur.getCount()];
             for (int i = 0, j = cur.getCount(); i < j; i++) {
                 cur.moveToPosition(i);
-                colors[TwidereArrayUtils.indexOf(accountIds, cur.getLong(0))] = cur.getInt(1);
+                colors[ArrayUtils.indexOf(accountIds, cur.getLong(0))] = cur.getInt(1);
 			}
 			return colors;
 		} finally {
@@ -1492,6 +1454,14 @@ public final class Utils implements Constants, TwitterConstants {
 		return ids;
 	}
 
+    public static boolean isOfficialCredentials(final Context context, final ParcelableCredentials account) {
+        if (account == null) return false;
+        final boolean isOAuth = account.auth_type == Accounts.AUTH_TYPE_OAUTH
+                || account.auth_type == Accounts.AUTH_TYPE_XAUTH;
+        final String consumerKey = account.consumer_key, consumerSecret = account.consumer_secret;
+        return isOAuth && TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret);
+    }
+
     public static boolean setLastSeen(Context context, UserMentionEntity[] entities, long time) {
         if (entities == null) return false;
         boolean result = false;
@@ -1615,23 +1585,15 @@ public final class Utils implements Constants, TwitterConstants {
 		return def;
 	}
 
-	public static int getCardHighlightColor(final Resources res, ParcelableStatus status, boolean isMention) {
-		return getCardHighlightColor(res, isMention, status.is_favorite, isMyRetweet(status));
-	}
-
-	public static int getCardHighlightColor(final Resources res, ParcelableStatus status, boolean isMention, boolean favoritesHighlightEnabled) {
-		return getCardHighlightColor(res, isMention, favoritesHighlightEnabled && status.is_favorite, isMyRetweet(status));
-	}
-
-	public static int getCardHighlightColor(final Resources res, final boolean is_mention, final boolean is_favorite,
-											final boolean is_retweet) {
-		if (is_mention) {
+    public static int getCardHighlightColor(final Resources res, final boolean isMention, final boolean isFavorite,
+                                            final boolean isRetweet) {
+        if (isMention) {
 			return res.getColor(R.color.highlight_reply);
 		}
-		else if (is_retweet) {
+		else if (isRetweet) {
 			return res.getColor(R.color.highlight_retweet);
 		}
-		else if (is_favorite) {
+		else if (isFavorite) {
 			return res.getColor(R.color.highlight_favorite);
 		}
 		return Color.TRANSPARENT;
@@ -1815,18 +1777,6 @@ public final class Utils implements Constants, TwitterConstants {
 		final String imageUploadFormat = DEFAULT_IMAGE_UPLOAD_FORMAT;
 		return imageUploadFormat.replace(FORMAT_PATTERN_LINK, TwidereArrayUtils.toString(links, ' ', false)).replace(
 				FORMAT_PATTERN_TEXT, text);
-	}
-
-    @NonNull
-    public static String getInReplyToName(@NonNull final Status status) {
-		final Status orig = status.isRetweet() ? status.getRetweetedStatus() : status;
-        final long inReplyToUserId = status.getInReplyToUserId();
-		final UserMentionEntity[] entities = status.getUserMentionEntities();
-		if (entities == null) return orig.getInReplyToScreenName();
-		for (final UserMentionEntity entity : entities) {
-            if (inReplyToUserId == entity.getId()) return entity.getName();
-		}
-		return orig.getInReplyToScreenName();
 	}
 
 	public static File getInternalCacheDir(final Context context, final String cacheDirName) {
@@ -2509,7 +2459,7 @@ public final class Utils implements Constants, TwitterConstants {
 					cb.setSigningUploadBaseURL(DEFAULT_SIGNING_UPLOAD_BASE_URL);
 				}
 			}
-			if (isOfficialConsumerKeySecret(context, consumerKey, consumerSecret)) {
+            if (TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret)) {
 				setMockOfficialUserAgent(context, cb);
 			} else {
 				setUserAgent(context, cb);
@@ -2706,7 +2656,7 @@ public final class Utils implements Constants, TwitterConstants {
 		builder.append("SELECT NULL WHERE");
 		if (text_plain != null) {
 			selection_args.add(text_plain);
-			builder.append("(SELECT 1 IN (SELECT ? LIKE '%'||" + Filters.Keywords.TABLE_NAME + "" + Filters.VALUE
+            builder.append("(SELECT 1 IN (SELECT ? LIKE '%'||" + Filters.Keywords.TABLE_NAME + "." + Filters.VALUE
 					+ "||'%' FROM " + Filters.Keywords.TABLE_NAME + "))");
 		}
 		if (text_html != null) {
@@ -2714,7 +2664,7 @@ public final class Utils implements Constants, TwitterConstants {
 				builder.append(" OR ");
 			}
 			selection_args.add(text_html);
-			builder.append("(SELECT 1 IN (SELECT ? LIKE '%<a href=\"%'||" + Filters.Links.TABLE_NAME + ""
+            builder.append("(SELECT 1 IN (SELECT ? LIKE '%<a href=\"%'||" + Filters.Links.TABLE_NAME + "."
 					+ Filters.VALUE + "||'%\">%' FROM " + Filters.Links.TABLE_NAME + "))");
 		}
 		if (user_id > 0) {
@@ -2734,7 +2684,7 @@ public final class Utils implements Constants, TwitterConstants {
 				builder.append(" OR ");
 			}
 			selection_args.add(source);
-			builder.append("(SELECT 1 IN (SELECT ? LIKE '%>'||" + Filters.Sources.TABLE_NAME + "" + Filters.VALUE
+            builder.append("(SELECT 1 IN (SELECT ? LIKE '%>'||" + Filters.Sources.TABLE_NAME + "." + Filters.VALUE
 					+ "||'</a>%' FROM " + Filters.Sources.TABLE_NAME + "))");
 		}
 		final Cursor cur = database.rawQuery(builder.toString(),
@@ -2805,21 +2755,6 @@ public final class Utils implements Constants, TwitterConstants {
 		return prefs.getBoolean("silent_notifications_at_" + now.get(Calendar.HOUR_OF_DAY), false);
 	}
 
-	public static boolean isOfficialConsumerKeySecret(final Context context, final String consumerKey,
-			final String consumerSecret) {
-		if (context == null || consumerKey == null || consumerSecret == null) return false;
-        final String[] keySecrets = context.getResources().getStringArray(R.array.values_official_consumer_secret_crc32);
-        final CRC32 crc32 = new CRC32();
-        final byte[] consumerSecretBytes = consumerSecret.getBytes(Charset.forName("UTF-8"));
-        crc32.update(consumerSecretBytes, 0, consumerSecretBytes.length);
-        final long value = crc32.getValue();
-        crc32.reset();
-		for (final String keySecret : keySecrets) {
-            if (Long.parseLong(keySecret, 16) == value) return true;
-		}
-		return false;
-	}
-
 	public static boolean isOfficialKeyAccount(final Context context, final long accountId) {
 		if (context == null) return false;
 		final String[] projection = {Accounts.CONSUMER_KEY, Accounts.CONSUMER_SECRET};
@@ -2827,7 +2762,7 @@ public final class Utils implements Constants, TwitterConstants {
 		final Cursor c = context.getContentResolver().query(Accounts.CONTENT_URI, projection, selection, null, null);
 		try {
 			if (c.moveToPosition(0))
-				return isOfficialConsumerKeySecret(context, c.getString(0), c.getString(1));
+                return TwitterContentUtils.isOfficialKey(context, c.getString(0), c.getString(1));
 		} finally {
 			c.close();
 		}
@@ -2840,7 +2775,7 @@ public final class Utils implements Constants, TwitterConstants {
         final Authorization auth = twitter.getAuthorization();
         final boolean isOAuth = auth instanceof OAuthAuthorization || auth instanceof XAuthAuthorization;
         final String consumerKey = conf.getOAuthConsumerKey(), consumerSecret = conf.getOAuthConsumerSecret();
-        return isOAuth && isOfficialConsumerKeySecret(context, consumerKey, consumerSecret);
+        return isOAuth && TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret);
     }
 
 	public static boolean isOnWifi(final Context context) {
@@ -2872,33 +2807,6 @@ public final class Utils implements Constants, TwitterConstants {
             if (id == accountId) return true;
 		}
 		return false;
-	}
-
-    public static int matcherEnd(final Matcher matcher, final int group) {
-		try {
-			return matcher.end(group);
-		} catch (final IllegalStateException e) {
-			// Ignore.
-		}
-		return -1;
-	}
-
-    public static String matcherGroup(final Matcher matcher, final int group) {
-		try {
-			return matcher.group(group);
-		} catch (final IllegalStateException e) {
-			// Ignore.
-		}
-		return null;
-	}
-
-    public static int matcherStart(final Matcher matcher, final int group) {
-		try {
-			return matcher.start(group);
-		} catch (final IllegalStateException e) {
-			// Ignore.
-		}
-		return -1;
 	}
 
 	public static int matchLinkId(final Uri uri) {
@@ -3547,7 +3455,7 @@ public final class Utils implements Constants, TwitterConstants {
         }
 		final MenuItem translate = menu.findItem(MENU_TRANSLATE);
 		if (translate != null) {
-            final boolean isOfficialKey = TwitterContentUtils.isOfficialKey(context, account.consumer_key, account.consumer_secret);
+            final boolean isOfficialKey = isOfficialCredentials(context, account);
 		    setMenuItemAvailability(menu, MENU_TRANSLATE, isOfficialKey);
 		}
 		final MenuItem shareItem = menu.findItem(R.id.share);
@@ -3812,7 +3720,7 @@ public final class Utils implements Constants, TwitterConstants {
 		intent.setType("text/plain");
 		final String name = status.user_name, screenName = status.user_screen_name;
 		final String timeString = formatToLongTimeString(context, status.timestamp);
-		final String subject = context.getString(R.string.share_subject_format, name, screenName, timeString);
+        final String subject = context.getString(R.string.status_share_subject_format_with_time, name, screenName, timeString);
 		intent.putExtra(Intent.EXTRA_SUBJECT, subject);
 		intent.putExtra(Intent.EXTRA_TEXT, status.text_plain);
 		intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -3877,6 +3785,12 @@ public final class Utils implements Constants, TwitterConstants {
         return in.size() != out.size();
     }
 
+    public static void updateRelationship(Context context, Relationship relationship, long accountId) {
+        final ContentResolver resolver = context.getContentResolver();
+        final ContentValues values = ContentValuesCreator.createCachedRelationship(relationship, accountId);
+        resolver.insert(CachedRelationships.CONTENT_URI, values);
+    }
+
 	private static Drawable getMetadataDrawable(final PackageManager pm, final ActivityInfo info, final String key) {
 		if (pm == null || info == null || info.metaData == null || key == null || !info.metaData.containsKey(key))
 			return null;
@@ -3888,32 +3802,6 @@ public final class Utils implements Constants, TwitterConstants {
 		if (te == null) return false;
 		return StatusCodeMessageUtils.containsHttpStatus(te.getStatusCode())
 				|| StatusCodeMessageUtils.containsTwitterError(te.getErrorCode());
-	}
-
-	private static void parseEntities(final HtmlBuilder builder, final EntitySupport entities) {
-		// Format media.
-        final MediaEntity[] mediaEntities = entities.getMediaEntities();
-        if (mediaEntities != null) {
-            for (final MediaEntity mediaEntity : mediaEntities) {
-                final int start = mediaEntity.getStart(), end = mediaEntity.getEnd();
-                final URL mediaUrl = mediaEntity.getMediaURL();
-				if (mediaUrl != null && start >= 0 && end >= 0) {
-                    builder.addLink(ParseUtils.parseString(mediaUrl), mediaEntity.getDisplayURL(),
-                            start, end);
-				}
-			}
-		}
-        final URLEntity[] urlEntities = entities.getURLEntities();
-        if (urlEntities != null) {
-            for (final URLEntity urlEntity : urlEntities) {
-                final int start = urlEntity.getStart(), end = urlEntity.getEnd();
-                final URL expandedUrl = urlEntity.getExpandedURL();
-				if (expandedUrl != null && start >= 0 && end >= 0) {
-                    builder.addLink(ParseUtils.parseString(expandedUrl), urlEntity.getDisplayURL(),
-                            start, end);
-				}
-			}
-		}
 	}
 
 	public static String parseURLEntities(String text, final URLEntity[] entities) {
@@ -4057,6 +3945,10 @@ public final class Utils implements Constants, TwitterConstants {
         UtilsL.setSharedElementTransition(context, window, transitionRes);
     }
 
+    public interface OnMediaClickListener {
+        void onMediaClick(View view, ParcelableMedia media, long accountId);
+    }
+
     static class UtilsL {
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -4068,5 +3960,22 @@ public final class Utils implements Constants, TwitterConstants {
             window.setSharedElementEnterTransition(transition);
             window.setSharedElementExitTransition(transition);
         }
+    }
+
+    private static class ImageGridClickListener implements View.OnClickListener {
+        private final OnMediaClickListener mListener;
+        private final long mAccountId;
+
+        ImageGridClickListener(final OnMediaClickListener listener, final long accountId) {
+            mListener = listener;
+            mAccountId = accountId;
+        }
+
+        @Override
+        public void onClick(final View v) {
+            if (mListener == null) return;
+            mListener.onMediaClick(v, (ParcelableMedia) v.getTag(), mAccountId);
+        }
+
 	}
 }

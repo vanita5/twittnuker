@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.view.themed;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -47,6 +48,9 @@ public class ThemedTextView extends TextView implements IThemedView {
 
     @Override
     public void setThemeTintColor(ColorStateList color) {
-        setLinkTextColor(ThemeUtils.getOptimalLinkColor(color.getDefaultColor(), getCurrentTextColor()));
+        final int linkTextColor = ThemeUtils.getOptimalLinkColor(color.getDefaultColor(), getCurrentTextColor());
+        final int red = Color.red(linkTextColor), green = Color.green(linkTextColor), blue = Color.blue(linkTextColor);
+        setLinkTextColor(linkTextColor);
+        setHighlightColor(Color.argb(0x66, red, green, blue));
     }
 }

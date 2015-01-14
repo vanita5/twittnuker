@@ -46,6 +46,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.util.net.TwidereHttpClientFactory;
@@ -237,7 +238,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 					TWITTER_CONSUMER_SECRET_2);
 			cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(mApplication));
 			cb.setHttpClientFactory(new TwidereHttpClientFactory(mApplication));
-            if (Utils.isOfficialConsumerKeySecret(mActivity, consumerKey, consumerSecret)) {
+            if (TwitterContentUtils.isOfficialKey(mActivity, consumerKey, consumerSecret)) {
                 Utils.setMockOfficialUserAgent(mActivity, cb);
             } else {
                 Utils.setUserAgent(mActivity, cb);

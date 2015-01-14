@@ -22,7 +22,7 @@
     android:layout_height="match_parent"
     android:layout_weight="1">
 
-    <de.vanita5.twittnuker.view.ActionIconTextView
+    <de.vanita5.twittnuker.view.ActionIconThemedTextView
         style="?android:actionBarTabTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

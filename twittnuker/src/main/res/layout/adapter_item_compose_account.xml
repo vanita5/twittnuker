@@ -21,16 +21,14 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<de.vanita5.twittnuker.view.SquareFrameLayout
+<de.vanita5.twittnuker.view.SquareShapedImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:padding="@dimen/element_spacing_small">
-
-    <de.vanita5.twittnuker.view.ShapedImageView
-        android:id="@android:id/icon"
-        style="?profileImageStyle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-</de.vanita5.twittnuker.view.SquareFrameLayout>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@android:id/icon"
+    style="?profileImageStyle"
+    tools:layout_width="48dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:sivBorder="true"
+    app:sivBorderWidth="1.5dp"/>

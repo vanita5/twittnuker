@@ -562,6 +562,7 @@
     <string name="N_new_mentions_quantity_other"><xliff:g id="items">%d</xliff:g> neue Erwähnungen</string>
     <string name="N_new_messages_quantity_one"><xliff:g id="items">%d</xliff:g> neue Unterhaltung</string>
     <string name="N_new_messages_quantity_other"><xliff:g id="items">%d</xliff:g> neue Unterhaltungen</string>
+    <string name="status_share_subject_format_with_time">Tweet von <xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>) um <xliff:g id="time">%3$s</xliff:g></string>
     <string name="share_subject_format"><xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>), um <xliff:g id="time">%3$s</xliff:g></string>
     <string name="rate_limit">Rate limit</string>
     <string name="wizard_hint_rate_limit">Falls Rate Limit Probleme auftreten liegt das an Twitter\'s API Beschränkungen.</string>
@@ -649,7 +650,10 @@
     <string name="no_user_found">Niemanden gefunden</string>
     <string name="members">(D) Members</string>
     <string name="subscribers">(D) Follower</string>
-    <string name="read_from_bottom">Von unten lese</string>
+    <string name="read_from_bottom">Von unten lesen</string>
+    <string name="register">Registrieren</string>
+    <string name="follows">(D) Follows</string>
+    <string name="belongs_to">(D) Gehört zu</string>
 
 
     <!-- Twittnuker -->

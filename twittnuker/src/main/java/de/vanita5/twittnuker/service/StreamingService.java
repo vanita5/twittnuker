@@ -33,6 +33,8 @@ import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
+import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -193,29 +195,15 @@ public class StreamingService extends Service implements Constants {
 
 	private boolean setTwitterInstances(final SharedPreferencesWrapper prefs) {
 		if (prefs == null) return false;
-		final String[] cols = new String[] { Accounts.OAUTH_TOKEN, Accounts.OAUTH_TOKEN_SECRET, Accounts.ACCOUNT_ID,
-				Accounts.CONSUMER_KEY, Accounts.CONSUMER_SECRET };
-		final String where = Accounts.IS_ACTIVATED + " = 1 AND " + Accounts.AUTH_TYPE + " = " + Accounts.AUTH_TYPE_OAUTH;
-		final Cursor cur = mResolver.query(Accounts.CONTENT_URI, cols, where, null, null);
-		if (cur == null) return false;
-		final int count = cur.getCount();
-		if (count == 0) {
-			cur.close();
-			return false;
-		}
-		mAccountIds = new long[count];
-		cur.moveToFirst();
+		final List<ParcelableCredentials> accountsList = ParcelableAccount.getCredentialsList(this, true);
+		mAccountIds = new long[accountsList.size()];
 		clearTwitterInstances();
-		final int token_idx = cur.getColumnIndex(Accounts.OAUTH_TOKEN);
-		final int secret_idx = cur.getColumnIndex(Accounts.OAUTH_TOKEN_SECRET);
-		final int account_id_idx = cur.getColumnIndex(Accounts.ACCOUNT_ID);
-		final int consumer_key_idx = cur.getColumnIndex(Accounts.CONSUMER_KEY);
-		final int consumer_secret_idx = cur.getColumnIndex(Accounts.CONSUMER_SECRET);
-		while(!cur.isAfterLast()) {
-			final String token = cur.getString(token_idx);
-			final String secret = cur.getString(secret_idx);
-			final long account_id = cur.getLong(account_id_idx);
-			mAccountIds[cur.getPosition()] = account_id;
+		for (int i = 0, j = accountsList.size(); i < j; i++) {
+			final ParcelableCredentials account = accountsList.get(i);
+			final String token = account.oauth_token;
+			final String secret = account.oauth_token_secret;
+			final long account_id = account.account_id;
+			mAccountIds[i] = account_id;
 			final StreamConfigurationBuilder cb = new StreamConfigurationBuilder();
 			cb.setGZIPEnabled(prefs.getBoolean(KEY_GZIP_COMPRESSING, true));
 			cb.setIncludeEntitiesEnabled(true);
@@ -228,8 +216,7 @@ public class StreamingService extends Service implements Constants {
 					KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
 			final String default_consumer_secret = Utils.getNonEmptyString(prefs.getSharedPreferences(),
 					KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
-			final String consumer_key = cur.getString(consumer_key_idx), consumer_secret = cur
-					.getString(consumer_secret_idx);
+			final String consumer_key = account.consumer_key, consumer_secret = account.consumer_secret;
 			if (!isEmpty(consumer_key) && !isEmpty(consumer_secret)) {
 				cb.setOAuthConsumerKey(consumer_key);
 				cb.setOAuthConsumerSecret(consumer_secret);
@@ -242,9 +229,7 @@ public class StreamingService extends Service implements Constants {
 			refreshBefore(new long[]{ account_id });
 			stream.user();
 			mTwitterInstances.add(new WeakReference<TwitterStream>(stream));
-			cur.moveToNext();
 		}
-		cur.close();
 		isStreaming = true;
 		return true;
 	}
