@@ -98,7 +98,6 @@ public abstract class Logger {
 	/**
 	 * Returns a Logger instance associated with the specified class.
 	 * 
-	 * @param clazz class
 	 * @return logger instance
 	 */
 	@Deprecated

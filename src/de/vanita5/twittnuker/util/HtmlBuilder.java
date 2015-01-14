@@ -22,15 +22,17 @@
 
 package de.vanita5.twittnuker.util;
 
-import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.escape;
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toHtml;
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.unescape;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
+
+import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.HtmlEscapeHelper.escape;
+import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toHtml;
+import static de.vanita5.twittnuker.util.HtmlEscapeHelper.unescape;
 
 public class HtmlBuilder {
 
@@ -39,7 +41,7 @@ public class HtmlBuilder {
 	private final int codePointsLength;
 	private final boolean throwExceptions, sourceIsEscaped, shouldReEscape;
 
-	private final ArrayList<LinkSpec> links = new ArrayList<LinkSpec>();
+    private final ArrayList<LinkSpec> links = new ArrayList<>();
 
 	public HtmlBuilder(final String source, final boolean strict, final boolean sourceIsEscaped,
 			final boolean shouldReEscape) {
@@ -173,7 +175,7 @@ public class HtmlBuilder {
 		}
 
 		@Override
-		public int compareTo(final LinkSpec that) {
+        public int compareTo(@NonNull final LinkSpec that) {
 			return start - that.start;
 		}
 

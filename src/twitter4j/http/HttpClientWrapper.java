@@ -16,18 +16,19 @@
 
 package twitter4j.http;
 
-import static twitter4j.http.RequestMethod.DELETE;
-import static twitter4j.http.RequestMethod.GET;
-import static twitter4j.http.RequestMethod.HEAD;
-import static twitter4j.http.RequestMethod.POST;
-import static twitter4j.http.RequestMethod.PUT;
+import java.util.HashMap;
+import java.util.Map;
+
 import twitter4j.TwitterException;
 import twitter4j.auth.Authorization;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationContext;
 
-import java.util.HashMap;
-import java.util.Map;
+import static twitter4j.http.RequestMethod.DELETE;
+import static twitter4j.http.RequestMethod.GET;
+import static twitter4j.http.RequestMethod.HEAD;
+import static twitter4j.http.RequestMethod.POST;
+import static twitter4j.http.RequestMethod.PUT;
 
 /**
  * HTTP Client wrapper with handy request methods, ResponseListener mechanism
@@ -188,7 +189,7 @@ public final class HttpClientWrapper {
 	}
 
 	public HttpResponse post(String url, HttpParameter[] parameters, Map<String, String> requestHeaders) throws TwitterException {
-		Map<String, String> headers = new HashMap<String, String>(this.requestHeaders);
+		Map<String, String> headers = new HashMap<>(this.requestHeaders);
 		if (requestHeaders != null)
 			headers.putAll(requestHeaders);
 

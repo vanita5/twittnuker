@@ -52,7 +52,7 @@ import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.support.BaseSupportListFragment;
-import de.vanita5.twittnuker.provider.TweetStore.Filters;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 
 public abstract class BaseFiltersFragment extends BaseSupportListFragment implements LoaderManager.LoaderCallbacks<Cursor>,

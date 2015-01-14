@@ -32,7 +32,7 @@ public interface FavoritesResources {
 	 * 
 	 * @param id the ID of the status to favorite
 	 * @return Status
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/favorites/create/:id">POST
 	 *      favorites/create/:id | Twitter Developers</a>
@@ -47,7 +47,7 @@ public interface FavoritesResources {
 	 * 
 	 * @param id the ID of the status to un-favorite
 	 * @return Status
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/favorites/destroy/:id">POST
 	 *      favorites/destroy/:id | Twitter Developers</a>
@@ -60,7 +60,7 @@ public interface FavoritesResources {
 	 * This method calls http://api.twitter.com/1.1/favorites/list.json
 	 * 
 	 * @return ResponseList&lt;Status&gt;
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/favorites/list">GET
 	 *      favorites | Twitter Developers</a>
@@ -75,7 +75,7 @@ public interface FavoritesResources {
 	 * @param userId the ID of the user for whom to request a list of favorite
 	 *            statuses
 	 * @return ResponseList&lt;Status&gt;
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/favorites/list">GET
 	 *      favorites | Twitter Developers</a>
@@ -91,7 +91,7 @@ public interface FavoritesResources {
 	 *            statuses
 	 * @param paging controls pagination. Supports sinceId and page parameters.
 	 * @return ResponseList&lt;Status&gt;
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/favorites/list">GET
 	 *      favorites | Twitter Developers</a>
@@ -106,7 +106,7 @@ public interface FavoritesResources {
 	 * 
 	 * @param paging controls pagination. Supports sinceId and page parameters.
 	 * @return ResponseList&lt;Status&gt;
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/favorites/list">GET
 	 *      favorites | Twitter Developers</a>
@@ -121,7 +121,7 @@ public interface FavoritesResources {
 	 * @param screenName the screen name of the user for whom to request a list
 	 *            of favorite statuses
 	 * @return ResponseList&lt;Status&gt;
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/favorites/list">GET
 	 *      favorites | Twitter Developers</a>
@@ -138,7 +138,7 @@ public interface FavoritesResources {
 	 *            of favorite statuses
 	 * @param paging controls pagination. Supports sinceId and page parameters.
 	 * @return ResponseList&lt;Status&gt;
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/favorites/list">GET
 	 *      favorites | Twitter Developers</a>

@@ -34,7 +34,7 @@ import org.mariotaku.querybuilder.OnConflict;
 import org.mariotaku.querybuilder.Tables;
 import org.mariotaku.querybuilder.query.SQLInsertQuery;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
-import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,7 +81,7 @@ public final class DatabaseUpgradeHelper {
 				}
 			}
 			if (!differenct) return;
-		} else if (oldCols == null || ArrayUtils.contentMatch(newColNames, oldCols)) return;
+		} else if (oldCols == null || TwidereArrayUtils.contentMatch(newColNames, oldCols)) return;
 		if (dropDirectly) {
 			db.beginTransaction();
 			db.execSQL(dropTable(true, table).getSQL());
@@ -117,19 +117,19 @@ public final class DatabaseUpgradeHelper {
 		final List<String> newInsertColsList = new ArrayList<String>();
 		for (final String newCol : newCols) {
 			final String oldAliasedCol = colAliases != null ? colAliases.get(newCol) : null;
-			if (ArrayUtils.contains(oldCols, newCol) || oldAliasedCol != null
-					&& ArrayUtils.contains(oldCols, oldAliasedCol)) {
+			if (TwidereArrayUtils.contains(oldCols, newCol) || oldAliasedCol != null
+					&& TwidereArrayUtils.contains(oldCols, oldAliasedCol)) {
 				newInsertColsList.add(newCol);
 			}
 		}
 		final String[] newInsertCols = newInsertColsList.toArray(new String[newInsertColsList.size()]);
-		if (!ArrayUtils.contains(newInsertCols, notNullCols)) return null;
+		if (!TwidereArrayUtils.contains(newInsertCols, notNullCols)) return null;
 		qb.columns(newInsertCols);
 		final Columns.Column[] oldDataCols = new Columns.Column[newInsertCols.length];
 		for (int i = 0, j = oldDataCols.length; i < j; i++) {
 			final String newCol = newInsertCols[i];
 			final String oldAliasedCol = colAliases != null ? colAliases.get(newCol) : null;
-			if (oldAliasedCol != null && ArrayUtils.contains(oldCols, oldAliasedCol)) {
+			if (oldAliasedCol != null && TwidereArrayUtils.contains(oldCols, oldAliasedCol)) {
 				oldDataCols[i] = new Columns.Column(oldAliasedCol, newCol);
 			} else {
 				oldDataCols[i] = new Columns.Column(newCol);
@@ -175,7 +175,7 @@ public final class DatabaseUpgradeHelper {
 				notNullCols[count++] = column.getName();
 			}
 		}
-		return ArrayUtils.subArray(notNullCols, 0, count);
+		return TwidereArrayUtils.subArray(notNullCols, 0, count);
 	}
 
 	private static Map<String, String> getTypeMapByCreateQuery(final String query) {

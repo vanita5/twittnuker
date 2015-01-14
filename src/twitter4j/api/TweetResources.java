@@ -38,7 +38,7 @@ public interface TweetResources {
 	 * 
 	 * @param statusId The ID of the status to destroy.
 	 * @return the deleted status
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/statuses/destroy/:id">POST
 	 *      statuses/destroy/:id | Twitter Developers</a>
@@ -62,7 +62,7 @@ public interface TweetResources {
 	 * @param req request
 	 * @return information allowing the creation of an embedded representation
 	 *         of a Tweet on third party sites
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/oembed">GET
 	 *      statuses/oembed | Twitter Developers</a>
@@ -80,7 +80,7 @@ public interface TweetResources {
 	 * 
 	 * @param statusId The numerical ID of the tweet you want the retweets of.
 	 * @return the retweets of a given tweet
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/retweets/:id">Tweets
 	 *      Resources › statuses/retweets/:id</a>
@@ -96,7 +96,7 @@ public interface TweetResources {
 	 * @param count Specifies the number of records to retrieve. Must be less
 	 *            than or equal to 100.
 	 * @return the retweets of a given tweet
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/retweets/:id">Tweets
 	 *      Resources › statuses/retweets/:id</a>
@@ -113,7 +113,7 @@ public interface TweetResources {
 	 * 
 	 * @param statusId The ID of the status to retweet.
 	 * @return the retweeted status
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/statuses/retweet/:id">POST
 	 *      statuses/retweet/:id | Twitter Developers</a>
@@ -147,7 +147,7 @@ public interface TweetResources {
 	 * 
 	 * @param latestStatus the latest status to be updated.
 	 * @return the latest status
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/statuses/update">POST
 	 *      statuses/update | Twitter Developers</a>
@@ -164,7 +164,7 @@ public interface TweetResources {
 	 * 
 	 * @param status the text of your status update
 	 * @return the latest status
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/statuses/update">POST
 	 *      statuses/update | Twitter Developers</a>

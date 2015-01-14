@@ -43,7 +43,7 @@ import android.widget.Toast;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.BaseDialogFragment;
-import de.vanita5.twittnuker.provider.TweetStore.Accounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 import twitter4j.TwitterConstants;

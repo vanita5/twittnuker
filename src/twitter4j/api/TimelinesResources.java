@@ -38,7 +38,7 @@ public interface TimelinesResources {
 	 * This method calls http://api.twitter.com/1.1/statuses/home_timeline
 	 * 
 	 * @return list of the home Timeline
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline">GET
 	 *      statuses/home_timeline | Twitter Developers</a>
@@ -61,7 +61,7 @@ public interface TimelinesResources {
 	 * @param paging controls pagination. Supports since_id, max_id, count and
 	 *            page parameters.
 	 * @return list of the home Timeline
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline">GET
 	 *      statuses/home_timeline | Twitter Developers</a>
@@ -75,7 +75,7 @@ public interface TimelinesResources {
 	 * This method calls http://api.twitter.com/1.1/statuses/mentions_timeline
 	 * 
 	 * @return the 20 most recent replies
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/mentions_timeline">GET
 	 *      statuses/mentions | Twitter Developers</a>
@@ -91,7 +91,7 @@ public interface TimelinesResources {
 	 * @param paging controls pagination. Supports since_id, max_id, count and
 	 *            page parameters.
 	 * @return the 20 most recent replies
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/mentions_timeline">GET
 	 *      statuses/mentions | Twitter Developers</a>
@@ -106,7 +106,7 @@ public interface TimelinesResources {
 	 * 
 	 * @return the 20 most recent tweets of the authenticated user that have
 	 *         been retweeted by others.
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/retweets_of_me">GET
 	 *      statuses/retweets_of_me | Twitter Developers</a>
@@ -123,7 +123,7 @@ public interface TimelinesResources {
 	 *            page parameters.
 	 * @return the 20 most recent tweets of the authenticated user that have
 	 *         been retweeted by others.
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/retweets_of_me">GET
 	 *      statuses/retweets_of_me | Twitter Developers</a>
@@ -146,7 +146,7 @@ public interface TimelinesResources {
 	 * 
 	 * @return the 20 most recent statuses posted in the last 24 hours from the
 	 *         user
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline">GET
 	 *      statuses/user_timeline | Twitter Developers</a>
@@ -170,7 +170,7 @@ public interface TimelinesResources {
 	 *            user_timeline
 	 * @return the 20 most recent statuses posted in the last 24 hours from the
 	 *         user
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline">GET
 	 *      statuses/user_timeline | Twitter Developers</a>
@@ -196,7 +196,7 @@ public interface TimelinesResources {
 	 * @param paging controls pagination. Supports since_id, max_id, count and
 	 *            page parameters.
 	 * @return list of the user Timeline
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline">GET
 	 *      statuses/user_timeline | Twitter Developers</a>
@@ -221,7 +221,7 @@ public interface TimelinesResources {
 	 *            page parameters.
 	 * @return the 20 most recent statuses posted in the last 24 hours from the
 	 *         user
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline">GET
 	 *      statuses/user_timeline | Twitter Developers</a>
@@ -246,7 +246,7 @@ public interface TimelinesResources {
 	 *            return the user_timeline
 	 * @return the 20 most recent statuses posted in the last 24 hours from the
 	 *         user
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline">GET
 	 *      statuses/user_timeline | Twitter Developers</a>
@@ -271,7 +271,7 @@ public interface TimelinesResources {
 	 * @param paging controls pagination. Supports since_id, max_id, count and
 	 *            page parameters.
 	 * @return list of the user Timeline
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline">GET
 	 *      statuses/user_timeline | Twitter Developers</a>

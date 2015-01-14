@@ -16,16 +16,11 @@
 
 package twitter4j.internal.json;
 
-import static twitter4j.internal.util.InternalParseUtil.getDouble;
-import static twitter4j.internal.util.InternalParseUtil.getHTMLUnescapedString;
-import static twitter4j.internal.util.InternalParseUtil.getInt;
-import static twitter4j.internal.util.InternalParseUtil.getLong;
-import static twitter4j.internal.util.InternalParseUtil.getRawString;
-import static twitter4j.internal.util.InternalParseUtil.getURLDecodedString;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -33,7 +28,12 @@ import twitter4j.Status;
 import twitter4j.TwitterException;
 import twitter4j.http.HttpResponse;
 
-import java.util.Arrays;
+import static twitter4j.internal.util.InternalParseUtil.getDouble;
+import static twitter4j.internal.util.InternalParseUtil.getHTMLUnescapedString;
+import static twitter4j.internal.util.InternalParseUtil.getInt;
+import static twitter4j.internal.util.InternalParseUtil.getLong;
+import static twitter4j.internal.util.InternalParseUtil.getRawString;
+import static twitter4j.internal.util.InternalParseUtil.getURLDecodedString;
 
 /**
  * A data class representing search API response

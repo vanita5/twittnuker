@@ -50,7 +50,7 @@ import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.ExtraConfiguration;
 import de.vanita5.twittnuker.model.SupportTabSpec;
-import de.vanita5.twittnuker.provider.TweetStore.Tabs;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 
 import java.io.File;
 import java.util.ArrayList;

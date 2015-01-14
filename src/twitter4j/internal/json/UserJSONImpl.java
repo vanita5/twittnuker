@@ -16,15 +16,13 @@
 
 package twitter4j.internal.json;
 
-import static twitter4j.internal.util.InternalParseUtil.getBoolean;
-import static twitter4j.internal.util.InternalParseUtil.getDate;
-import static twitter4j.internal.util.InternalParseUtil.getInt;
-import static twitter4j.internal.util.InternalParseUtil.getLong;
-import static twitter4j.internal.util.InternalParseUtil.getRawString;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Date;
 
 import twitter4j.PagableResponseList;
 import twitter4j.ResponseList;
@@ -35,9 +33,11 @@ import twitter4j.User;
 import twitter4j.conf.Configuration;
 import twitter4j.http.HttpResponse;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Date;
+import static twitter4j.internal.util.InternalParseUtil.getBoolean;
+import static twitter4j.internal.util.InternalParseUtil.getDate;
+import static twitter4j.internal.util.InternalParseUtil.getInt;
+import static twitter4j.internal.util.InternalParseUtil.getLong;
+import static twitter4j.internal.util.InternalParseUtil.getRawString;
 
 /**
  * A data class representing Basic user information element

@@ -135,7 +135,7 @@ abstract class TwitterBaseImpl implements OAuthSupport, HttpResponseListener, Tw
 	 * login and password again before exchanging the credentials for an access
 	 * token.
 	 * 
-	 * @throws TwitterException When Twitter service or network is unavailable,
+     * @throws twitter4j.TwitterException When Twitter service or network is unavailable,
 	 *             when the user has not authorized, or when the client
 	 *             application is not permitted to use xAuth
 	 * @see <a href="https://dev.twitter.com/docs/oauth/xauth">xAuth | Twitter
@@ -382,7 +382,7 @@ abstract class TwitterBaseImpl implements OAuthSupport, HttpResponseListener, Tw
 	 * Check the existence, and the type of the specified file.
 	 * 
 	 * @param image image to be uploaded
-	 * @throws TwitterException when the specified file is not found
+     * @throws twitter4j.TwitterException when the specified file is not found
 	 *             (FileNotFoundException will be nested) , or when the
 	 *             specified file object is not representing a file(IOException
 	 *             will be nested).

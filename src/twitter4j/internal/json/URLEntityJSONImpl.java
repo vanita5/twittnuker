@@ -20,11 +20,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import twitter4j.TwitterException;
-import twitter4j.URLEntity;
-
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import twitter4j.TwitterException;
+import twitter4j.URLEntity;
 
 /**
  * A data class representing one single URL entity.

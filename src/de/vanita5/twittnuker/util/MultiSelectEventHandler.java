@@ -42,7 +42,7 @@ import de.vanita5.twittnuker.menu.AccountActionProvider;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.provider.TweetStore.Filters;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -16,10 +16,10 @@
 
 package twitter4j.http;
 
-import twitter4j.auth.Authorization;
-
 import java.util.Arrays;
 import java.util.Map;
+
+import twitter4j.auth.Authorization;
 
 /**
  * HTTP Request parameter object

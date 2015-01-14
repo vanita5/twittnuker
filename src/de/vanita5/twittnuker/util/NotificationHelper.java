@@ -16,8 +16,6 @@ import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.text.Spanned;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -32,7 +30,7 @@ import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
-import de.vanita5.twittnuker.provider.TweetStore.PushNotifications;
+import de.vanita5.twittnuker.provider.TwidereDataStore.PushNotifications;
 import de.vanita5.twittnuker.receiver.ClearNotificationReceiver;
 
 import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;

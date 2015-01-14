@@ -28,8 +28,6 @@
 package org.mariotaku.querybuilder;
 
 
-import de.vanita5.twittnuker.util.ArrayUtils;
-
 public class OrderBy implements SQLLang {
 
     private final String[] orderBy;
@@ -40,7 +38,7 @@ public class OrderBy implements SQLLang {
 
     @Override
     public String getSQL() {
-        return ArrayUtils.toString(orderBy, ',', false);
+        return Utils.toString(orderBy, ',', false);
     }
 
 }

@@ -37,15 +37,15 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
-import de.vanita5.twittnuker.provider.TweetStore.Accounts;
-import de.vanita5.twittnuker.provider.TweetStore.CachedRelationships;
-import de.vanita5.twittnuker.provider.TweetStore.CachedTrends;
-import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
-import de.vanita5.twittnuker.provider.TweetStore.Drafts;
-import de.vanita5.twittnuker.provider.TweetStore.Filters;
-import de.vanita5.twittnuker.provider.TweetStore.SavedSearches;
-import de.vanita5.twittnuker.provider.TweetStore.Statuses;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
+import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,8 +166,8 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         values.put(CachedUsers.LISTED_COUNT, user.getListedCount());
 		values.put(CachedUsers.LOCATION, user.getLocation());
 		values.put(CachedUsers.DESCRIPTION_PLAIN, user.getDescription());
-		values.put(CachedUsers.DESCRIPTION_HTML, Utils.formatUserDescription(user));
-		values.put(CachedUsers.DESCRIPTION_EXPANDED, Utils.formatExpandedUserDescription(user));
+        values.put(CachedUsers.DESCRIPTION_HTML, TwitterContentUtils.formatUserDescription(user));
+        values.put(CachedUsers.DESCRIPTION_EXPANDED, TwitterContentUtils.formatExpandedUserDescription(user));
 		values.put(CachedUsers.URL, url);
         if (url != null && urls != null && urls.length > 0) {
             values.put(CachedUsers.URL_EXPANDED, ParseUtils.parseString(urls[0].getExpandedURL()));
@@ -196,7 +196,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(DirectMessages.MESSAGE_TIMESTAMP, message.getCreatedAt().getTime());
 		values.put(DirectMessages.SENDER_ID, sender.getId());
 		values.put(DirectMessages.RECIPIENT_ID, recipient.getId());
-		final String text_html = Utils.formatDirectMessageText(message);
+        final String text_html = TwitterContentUtils.formatDirectMessageText(message);
 		values.put(DirectMessages.TEXT_HTML, text_html);
 		values.put(DirectMessages.TEXT_PLAIN, message.getText());
 		values.put(DirectMessages.TEXT_UNESCAPED, toPlainText(text_html));
@@ -274,7 +274,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		final ContentValues values = new ContentValues();
 		values.put(Drafts.ACTION_TYPE, Drafts.ACTION_SEND_DIRECT_MESSAGE);
 		values.put(Drafts.TEXT, text);
-		values.put(Drafts.ACCOUNT_IDS, ArrayUtils.toString(new long[] { accountId }, ',', false));
+        values.put(Drafts.ACCOUNT_IDS, TwidereArrayUtils.toString(new long[]{accountId}, ',', false));
 		values.put(Drafts.TIMESTAMP, System.currentTimeMillis());
 		if (imageUri != null) {
             final ParcelableMediaUpdate[] mediaArray = {new ParcelableMediaUpdate(imageUri, 0)};
@@ -353,7 +353,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         values.put(Statuses.USER_PROFILE_IMAGE_URL,
                 largeProfileImage ? getBiggerTwitterProfileImage(profileImageUrl) : profileImageUrl);
         values.put(CachedUsers.IS_FOLLOWING, user.isFollowing());
-		final String text_html = Utils.formatStatusText(status);
+        final String text_html = TwitterContentUtils.formatStatusText(status);
 		values.put(Statuses.TEXT_HTML, text_html);
 		values.put(Statuses.TEXT_PLAIN, status.getText());
 		values.put(Statuses.TEXT_UNESCAPED, toPlainText(text_html));
@@ -362,7 +362,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Statuses.DESCENDENT_REPLY_COUNT, status.getDescendentReplyCount());
 		values.put(Statuses.IN_REPLY_TO_STATUS_ID, status.getInReplyToStatusId());
 		values.put(Statuses.IN_REPLY_TO_USER_ID, status.getInReplyToUserId());
-		values.put(Statuses.IN_REPLY_TO_USER_NAME, Utils.getInReplyToName(status));
+        values.put(Statuses.IN_REPLY_TO_USER_NAME, TwitterContentUtils.getInReplyToName(status));
 		values.put(Statuses.IN_REPLY_TO_USER_SCREEN_NAME, status.getInReplyToScreenName());
 		values.put(Statuses.SOURCE, status.getSource());
 		values.put(Statuses.IS_POSSIBLY_SENSITIVE, status.isPossiblySensitive());
@@ -393,7 +393,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		final ContentValues values = new ContentValues();
 		values.put(Drafts.ACTION_TYPE, Drafts.ACTION_UPDATE_STATUS);
 		values.put(Drafts.TEXT, status.text);
-		values.put(Drafts.ACCOUNT_IDS, ArrayUtils.toString(accountIds, ',', false));
+        values.put(Drafts.ACCOUNT_IDS, TwidereArrayUtils.toString(accountIds, ',', false));
 		values.put(Drafts.IN_REPLY_TO_STATUS_ID, status.in_reply_to_status_id);
 		values.put(Drafts.LOCATION, ParcelableLocation.toString(status.location));
 		values.put(Drafts.IS_POSSIBLY_SENSITIVE, status.is_possibly_sensitive);

@@ -22,29 +22,27 @@
 
 package de.vanita5.twittnuker.model;
 
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
-import static de.vanita5.twittnuker.util.Utils.formatDirectMessageText;
-import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsBoolean;
-import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsLong;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.util.ParseUtils;
 
-import twitter4j.DirectMessage;
-import twitter4j.User;
-
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Date;
 
-public class ParcelableDirectMessage implements Parcelable, Serializable, Comparable<ParcelableDirectMessage> {
+import de.vanita5.twittnuker.util.TwitterContentUtils;
+import twitter4j.DirectMessage;
+import twitter4j.User;
 
-	private static final long serialVersionUID = -3721836808981416526L;
+import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
+import static de.vanita5.twittnuker.util.Utils.formatDirectMessageText;
+import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsBoolean;
+import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsLong;
+
+public class ParcelableDirectMessage implements Parcelable, Comparable<ParcelableDirectMessage> {
 
 	public static final Parcelable.Creator<ParcelableDirectMessage> CREATOR = new Parcelable.Creator<ParcelableDirectMessage>() {
 		@Override
@@ -138,7 +136,7 @@ public class ParcelableDirectMessage implements Parcelable, Serializable, Compar
 		timestamp = getTime(message.getCreatedAt());
 		sender_id = sender != null ? sender.getId() : -1;
 		recipient_id = recipient != null ? recipient.getId() : -1;
-		text_html = formatDirectMessageText(message);
+        text_html = TwitterContentUtils.formatDirectMessageText(message);
 		text_plain = message.getText();
 		sender_name = sender != null ? sender.getName() : null;
 		recipient_name = recipient != null ? recipient.getName() : null;

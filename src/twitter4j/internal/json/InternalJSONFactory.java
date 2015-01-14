@@ -19,6 +19,8 @@ package twitter4j.internal.json;
 
 import org.json.JSONObject;
 
+import java.util.Map;
+
 import twitter4j.AccountSettings;
 import twitter4j.AccountTotals;
 import twitter4j.Activity;
@@ -48,8 +50,6 @@ import twitter4j.User;
 import twitter4j.UserList;
 import twitter4j.api.HelpResources;
 import twitter4j.http.HttpResponse;
-
-import java.util.Map;
 
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com

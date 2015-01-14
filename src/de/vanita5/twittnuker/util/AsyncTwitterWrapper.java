@@ -51,14 +51,13 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.preference.HomeRefreshContentPreference;
-import de.vanita5.twittnuker.provider.TweetStore;
-import de.vanita5.twittnuker.provider.TweetStore.CachedHashtags;
-import de.vanita5.twittnuker.provider.TweetStore.CachedTrends;
-import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
-import de.vanita5.twittnuker.provider.TweetStore.Mentions;
-import de.vanita5.twittnuker.provider.TweetStore.SavedSearches;
-import de.vanita5.twittnuker.provider.TweetStore.Statuses;
+import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
+import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
@@ -91,7 +90,7 @@ import twitter4j.User;
 import twitter4j.UserList;
 import twitter4j.http.HttpResponseCode;
 
-import static de.vanita5.twittnuker.provider.TweetStore.STATUSES_URIS;
+import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createDirectMessage;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createStatus;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createTrends;
@@ -878,7 +877,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 final Expression where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, account_id),
                         Expression.or(Expression.equals(Statuses.STATUS_ID, status_id),
                                 Expression.equals(Statuses.RETWEET_ID, status_id)));
-                for (final Uri uri : TweetStore.STATUSES_URIS) {
+                for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
                     mResolver.update(uri, values, where.getSQL(), null);
                 }
 				return SingleResponse.getInstance(new ParcelableStatus(status, account_id, false));
@@ -1406,7 +1405,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 					values.put(Statuses.IS_FAVORITE, 0);
                     final Expression where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, account_id),
                             Expression.or(Expression.equals(Statuses.STATUS_ID, status_id), Expression.equals(Statuses.RETWEET_ID, status_id)));
-					for (final Uri uri : TweetStore.STATUSES_URIS) {
+					for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
                         mResolver.update(uri, values, where.getSQL(), null);
 					}
                     return SingleResponse.getInstance(new ParcelableStatus(status, account_id, false));
@@ -1557,7 +1556,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (status != null || (exception != null && exception.getErrorCode() == HttpResponseCode.NOT_FOUND)) {
                 final ContentValues values = new ContentValues();
                 values.put(Statuses.MY_RETWEET_ID, -1);
-                for (final Uri uri : TweetStore.STATUSES_URIS) {
+                for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
                     mResolver.delete(uri, Statuses.STATUS_ID + " = " + status_id, null);
                     mResolver.update(uri, values, Statuses.MY_RETWEET_ID + " = " + status_id, null);
                 }
@@ -2374,8 +2373,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 				bulkInsert(mResolver, insertUri, values);
 
 				// Insert a gap.
-                final long minId = statusIds.length != 0 ? ArrayUtils.min(statusIds) : -1;
-				final boolean deletedOldGap = rowsDeleted > 0 && ArrayUtils.contains(statusIds, response.max_id);
+                final long minId = statusIds.length != 0 ? TwidereArrayUtils.min(statusIds) : -1;
+				final boolean deletedOldGap = rowsDeleted > 0 && TwidereArrayUtils.contains(statusIds, response.max_id);
 				final boolean noRowsDeleted = rowsDeleted == 0;
                 final boolean insertGap = minId > 0 && (noRowsDeleted || deletedOldGap) && !response.truncated
 						&& !noItemsBefore && statuses.size() > 1;

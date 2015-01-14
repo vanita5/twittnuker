@@ -96,9 +96,9 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
-import de.vanita5.twittnuker.provider.TweetStore.Drafts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
-import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
@@ -362,7 +362,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
                 listView.setOnItemClickListener(this);
                 for (int i = 0, j = listView.getCount(); i < j; i++) {
                     final long itemId = listView.getItemIdAtPosition(i);
-                    listView.setItemChecked(i, ArrayUtils.contains(mSendAccountIds, itemId));
+                    listView.setItemChecked(i, TwidereArrayUtils.contains(mSendAccountIds, itemId));
                 }
                 break;
             }
@@ -564,9 +564,9 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 				handleDefaultIntent(intent);
 			}
 			if (mSendAccountIds == null || mSendAccountIds.length == 0) {
-                final long[] idsInPrefs = ArrayUtils.parseLongArray(
+                final long[] idsInPrefs = TwidereArrayUtils.parseLongArray(
 						mPreferences.getString(KEY_COMPOSE_ACCOUNTS, null), ',');
-                final long[] intersection = ArrayUtils.intersection(idsInPrefs, defaultAccountIds);
+                final long[] intersection = TwidereArrayUtils.intersection(idsInPrefs, defaultAccountIds);
                 mSendAccountIds = intersection.length > 0 ? intersection : defaultAccountIds;
 			}
 			mOriginalText = ParseUtils.parseString(mEditText.getText());
@@ -965,7 +965,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		if (mSendAccountIds == null) return;
 		if (mShouldSaveAccounts) {
 			final SharedPreferences.Editor editor = mPreferences.edit();
-			editor.putString(KEY_COMPOSE_ACCOUNTS, ArrayUtils.toString(mSendAccountIds, ',', false));
+			editor.putString(KEY_COMPOSE_ACCOUNTS, TwidereArrayUtils.toString(mSendAccountIds, ',', false));
             editor.apply();
 		}
         mSelectAccountAccounts.setSelectedAccounts(mSendAccountIds);

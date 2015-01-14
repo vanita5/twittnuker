@@ -29,7 +29,7 @@ import android.util.AttributeSet;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
-import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class MessageCardItemFrameLayout extends FrameLayout {
@@ -58,7 +58,7 @@ public class MessageCardItemFrameLayout extends FrameLayout {
 			final Drawable current = d.getCurrent();
 			if (current instanceof TransitionDrawable) {
 				final TransitionDrawable td = (TransitionDrawable) current;
-				if (ArrayUtils.contains(state, android.R.attr.state_pressed)) {
+				if (TwidereArrayUtils.contains(state, android.R.attr.state_pressed)) {
 					td.startTransition(ViewConfiguration.getLongPressTimeout());
 				} else {
 					td.resetTransition();

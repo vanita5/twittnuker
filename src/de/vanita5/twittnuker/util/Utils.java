@@ -165,30 +165,30 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.provider.TweetStore;
-import de.vanita5.twittnuker.provider.TweetStore.Accounts;
-import de.vanita5.twittnuker.provider.TweetStore.CacheFiles;
-import de.vanita5.twittnuker.provider.TweetStore.CachedHashtags;
-import de.vanita5.twittnuker.provider.TweetStore.CachedImages;
-import de.vanita5.twittnuker.provider.TweetStore.CachedRelationships;
-import de.vanita5.twittnuker.provider.TweetStore.CachedStatuses;
-import de.vanita5.twittnuker.provider.TweetStore.CachedTrends;
-import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
-import de.vanita5.twittnuker.provider.TweetStore.DNS;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries;
-import de.vanita5.twittnuker.provider.TweetStore.Drafts;
-import de.vanita5.twittnuker.provider.TweetStore.Filters;
-import de.vanita5.twittnuker.provider.TweetStore.Filters.Users;
-import de.vanita5.twittnuker.provider.TweetStore.Mentions;
-import de.vanita5.twittnuker.provider.TweetStore.Notifications;
-import de.vanita5.twittnuker.provider.TweetStore.Preferences;
-import de.vanita5.twittnuker.provider.TweetStore.PushNotifications;
-import de.vanita5.twittnuker.provider.TweetStore.SavedSearches;
-import de.vanita5.twittnuker.provider.TweetStore.SearchHistory;
-import de.vanita5.twittnuker.provider.TweetStore.Statuses;
-import de.vanita5.twittnuker.provider.TweetStore.Tabs;
-import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CacheFiles;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedImages;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DNS;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Filters.Users;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Preferences;
+import de.vanita5.twittnuker.provider.TwidereDataStore.PushNotifications;
+import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
+import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
+import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
@@ -249,9 +249,9 @@ import twitter4j.http.HttpResponse;
 
 import static android.text.TextUtils.isEmpty;
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
-import static de.vanita5.twittnuker.provider.TweetStore.CACHE_URIS;
-import static de.vanita5.twittnuker.provider.TweetStore.DIRECT_MESSAGES_URIS;
-import static de.vanita5.twittnuker.provider.TweetStore.STATUSES_URIS;
+import static de.vanita5.twittnuker.provider.TwidereDataStore.CACHE_URIS;
+import static de.vanita5.twittnuker.provider.TwidereDataStore.DIRECT_MESSAGES_URIS;
+import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
 import static de.vanita5.twittnuker.util.TwidereLinkify.TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES;
@@ -267,68 +267,68 @@ public final class Utils implements Constants, TwitterConstants {
 	private static final UriMatcher LINK_HANDLER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
 	static {
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Accounts.CONTENT_PATH, TABLE_ID_ACCOUNTS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Statuses.CONTENT_PATH, TABLE_ID_STATUSES);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Mentions.CONTENT_PATH, TABLE_ID_MENTIONS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Drafts.CONTENT_PATH, TABLE_ID_DRAFTS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, CachedUsers.CONTENT_PATH, TABLE_ID_CACHED_USERS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Filters.Users.CONTENT_PATH, TABLE_ID_FILTERED_USERS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Filters.Keywords.CONTENT_PATH,
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Accounts.CONTENT_PATH, TABLE_ID_ACCOUNTS);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Statuses.CONTENT_PATH, TABLE_ID_STATUSES);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Mentions.CONTENT_PATH, TABLE_ID_MENTIONS);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Drafts.CONTENT_PATH, TABLE_ID_DRAFTS);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedUsers.CONTENT_PATH, TABLE_ID_CACHED_USERS);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Filters.Users.CONTENT_PATH, TABLE_ID_FILTERED_USERS);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Filters.Keywords.CONTENT_PATH,
 				TABLE_ID_FILTERED_KEYWORDS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Filters.Sources.CONTENT_PATH,
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Filters.Sources.CONTENT_PATH,
 				TABLE_ID_FILTERED_SOURCES);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Filters.Links.CONTENT_PATH, TABLE_ID_FILTERED_LINKS);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Filters.Links.CONTENT_PATH, TABLE_ID_FILTERED_LINKS);
 		CONTENT_PROVIDER_URI_MATCHER
-				.addURI(TweetStore.AUTHORITY, DirectMessages.CONTENT_PATH, TABLE_ID_DIRECT_MESSAGES);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, DirectMessages.Inbox.CONTENT_PATH,
+				.addURI(TwidereDataStore.AUTHORITY, DirectMessages.CONTENT_PATH, TABLE_ID_DIRECT_MESSAGES);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.Inbox.CONTENT_PATH,
 				TABLE_ID_DIRECT_MESSAGES_INBOX);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, DirectMessages.Outbox.CONTENT_PATH,
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.Outbox.CONTENT_PATH,
 				TABLE_ID_DIRECT_MESSAGES_OUTBOX);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, DirectMessages.Conversation.CONTENT_PATH + "/#/#",
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.Conversation.CONTENT_PATH + "/#/#",
 				TABLE_ID_DIRECT_MESSAGES_CONVERSATION);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, DirectMessages.Conversation.CONTENT_PATH_SCREEN_NAME
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.Conversation.CONTENT_PATH_SCREEN_NAME
 				+ "/#/*", TABLE_ID_DIRECT_MESSAGES_CONVERSATION_SCREEN_NAME);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, DirectMessages.ConversationEntries.CONTENT_PATH,
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.ConversationEntries.CONTENT_PATH,
 				TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, CachedTrends.Local.CONTENT_PATH,
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedTrends.Local.CONTENT_PATH,
 				TABLE_ID_TRENDS_LOCAL);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Tabs.CONTENT_PATH, TABLE_ID_TABS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, PushNotifications.CONTENT_PATH, TABLE_ID_PUSH_NOTIFICATIONS);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Tabs.CONTENT_PATH, TABLE_ID_TABS);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, PushNotifications.CONTENT_PATH, TABLE_ID_PUSH_NOTIFICATIONS);
 		CONTENT_PROVIDER_URI_MATCHER
-				.addURI(TweetStore.AUTHORITY, CachedStatuses.CONTENT_PATH, TABLE_ID_CACHED_STATUSES);
+				.addURI(TwidereDataStore.AUTHORITY, CachedStatuses.CONTENT_PATH, TABLE_ID_CACHED_STATUSES);
 		CONTENT_PROVIDER_URI_MATCHER
-				.addURI(TweetStore.AUTHORITY, CachedHashtags.CONTENT_PATH, TABLE_ID_CACHED_HASHTAGS);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, CachedRelationships.CONTENT_PATH,
+				.addURI(TwidereDataStore.AUTHORITY, CachedHashtags.CONTENT_PATH, TABLE_ID_CACHED_HASHTAGS);
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedRelationships.CONTENT_PATH,
                 TABLE_ID_CACHED_RELATIONSHIPS);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, SavedSearches.CONTENT_PATH,
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, SavedSearches.CONTENT_PATH,
                 TABLE_ID_SAVED_SEARCHES);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, SearchHistory.CONTENT_PATH,
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, SearchHistory.CONTENT_PATH,
                 TABLE_ID_SEARCH_HISTORY);
 
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Notifications.CONTENT_PATH,
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Notifications.CONTENT_PATH,
 				VIRTUAL_TABLE_ID_NOTIFICATIONS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Notifications.CONTENT_PATH + "/#",
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Notifications.CONTENT_PATH + "/#",
 				VIRTUAL_TABLE_ID_NOTIFICATIONS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Notifications.CONTENT_PATH + "/#/#",
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Notifications.CONTENT_PATH + "/#/#",
 				VIRTUAL_TABLE_ID_NOTIFICATIONS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, DNS.CONTENT_PATH + "/*", VIRTUAL_TABLE_ID_DNS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, CachedImages.CONTENT_PATH,
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DNS.CONTENT_PATH + "/*", VIRTUAL_TABLE_ID_DNS);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedImages.CONTENT_PATH,
 				VIRTUAL_TABLE_ID_CACHED_IMAGES);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, CacheFiles.CONTENT_PATH + "/*",
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CacheFiles.CONTENT_PATH + "/*",
 				VIRTUAL_TABLE_ID_CACHE_FILES);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Preferences.CONTENT_PATH,
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Preferences.CONTENT_PATH,
 				VIRTUAL_TABLE_ID_ALL_PREFERENCES);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, Preferences.CONTENT_PATH + "/*",
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Preferences.CONTENT_PATH + "/*",
 				VIRTUAL_TABLE_ID_PREFERENCES);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, UnreadCounts.CONTENT_PATH,
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, UnreadCounts.CONTENT_PATH,
 				VIRTUAL_TABLE_ID_UNREAD_COUNTS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, UnreadCounts.CONTENT_PATH + "/#",
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, UnreadCounts.CONTENT_PATH + "/#",
 				VIRTUAL_TABLE_ID_UNREAD_COUNTS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, UnreadCounts.CONTENT_PATH + "/#/#/*",
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, UnreadCounts.CONTENT_PATH + "/#/#/*",
 				VIRTUAL_TABLE_ID_UNREAD_COUNTS);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, UnreadCounts.ByType.CONTENT_PATH + "/*",
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, UnreadCounts.ByType.CONTENT_PATH + "/*",
 				VIRTUAL_TABLE_ID_UNREAD_COUNTS_BY_TYPE);
-		CONTENT_PROVIDER_URI_MATCHER.addURI(TweetStore.AUTHORITY, TweetStore.CONTENT_PATH_DATABASE_READY,
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, TwidereDataStore.CONTENT_PATH_DATABASE_READY,
 				VIRTUAL_TABLE_ID_DATABASE_READY);
 
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_STATUS, null, LINK_ID_STATUS);
@@ -452,7 +452,7 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static Uri buildDirectMessageConversationUri(final long account_id, final long conversation_id,
 			final String screen_name) {
-		if (conversation_id <= 0 && screen_name == null) return TweetStore.CONTENT_URI_NULL;
+		if (conversation_id <= 0 && screen_name == null) return TwidereDataStore.CONTENT_URI_NULL;
 		final Uri.Builder builder = conversation_id > 0 ? DirectMessages.Conversation.CONTENT_URI.buildUpon()
 				: DirectMessages.Conversation.CONTENT_URI_SCREEN_NAME.buildUpon();
 		builder.appendPath(String.valueOf(account_id));
@@ -1264,7 +1264,7 @@ public final class Utils implements Constants, TwitterConstants {
 			final int[] colors = new int[cur.getCount()];
             for (int i = 0, j = cur.getCount(); i < j; i++) {
                 cur.moveToPosition(i);
-                colors[ArrayUtils.indexOf(accountIds, cur.getLong(0))] = cur.getInt(1);
+                colors[TwidereArrayUtils.indexOf(accountIds, cur.getLong(0))] = cur.getInt(1);
 			}
 			return colors;
 		} finally {
@@ -1813,7 +1813,7 @@ public final class Utils implements Constants, TwitterConstants {
 	public static String getImageUploadStatus(final CharSequence[] links, final CharSequence text) {
 		if (links == null || links.length == 0) return ParseUtils.parseString(text);
 		final String imageUploadFormat = DEFAULT_IMAGE_UPLOAD_FORMAT;
-		return imageUploadFormat.replace(FORMAT_PATTERN_LINK, ArrayUtils.toString(links, ' ', false)).replace(
+		return imageUploadFormat.replace(FORMAT_PATTERN_LINK, TwidereArrayUtils.toString(links, ' ', false)).replace(
 				FORMAT_PATTERN_TEXT, text);
 	}
 
@@ -2266,7 +2266,7 @@ public final class Utils implements Constants, TwitterConstants {
 
 	public static int getTextCount(final String string) {
 		if (string == null) return 0;
-		return ArrayUtils.toStringArray(string).length;
+		return TwidereArrayUtils.toStringArray(string).length;
 	}
 
 	public static int getTextCount(final TextView view) {
@@ -2666,7 +2666,7 @@ public final class Utils implements Constants, TwitterConstants {
 	}
 
 	public static boolean isDatabaseReady(final Context context) {
-		final Cursor c = context.getContentResolver().query(TweetStore.CONTENT_URI_DATABASE_READY, null, null, null,
+		final Cursor c = context.getContentResolver().query(TwidereDataStore.CONTENT_URI_DATABASE_READY, null, null, null,
 				null);
 		try {
 			return c != null;
@@ -3547,7 +3547,7 @@ public final class Utils implements Constants, TwitterConstants {
         }
 		final MenuItem translate = menu.findItem(MENU_TRANSLATE);
 		if (translate != null) {
-            final boolean isOfficialKey = ParcelableCredentials.isOfficialCredentials(context, account);
+            final boolean isOfficialKey = TwitterContentUtils.isOfficialKey(context, account.consumer_key, account.consumer_secret);
 		    setMenuItemAvailability(menu, MENU_TRANSLATE, isOfficialKey);
 		}
 		final MenuItem shareItem = menu.findItem(R.id.share);

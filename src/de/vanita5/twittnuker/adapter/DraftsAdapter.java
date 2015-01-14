@@ -34,8 +34,8 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
-import de.vanita5.twittnuker.provider.TweetStore.Drafts;
-import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.Utils;
@@ -60,7 +60,7 @@ public class DraftsAdapter extends SimpleCursorAdapter {
 	@Override
 	public void bindView(final View view, final Context context, final Cursor cursor) {
 		final DraftViewHolder holder = (DraftViewHolder) view.getTag();
-		final long[] accountIds = ArrayUtils.parseLongArray(cursor.getString(mIndices.account_ids), ',');
+		final long[] accountIds = TwidereArrayUtils.parseLongArray(cursor.getString(mIndices.account_ids), ',');
 		final String text = cursor.getString(mIndices.text);
         final ParcelableMediaUpdate[] media = ParcelableMediaUpdate.fromJSONString(cursor.getString(mIndices.media));
 		final long timestamp = cursor.getLong(mIndices.timestamp);

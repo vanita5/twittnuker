@@ -32,7 +32,7 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 
 import java.util.Map;
@@ -89,7 +89,7 @@ public class ValueDependencyDialogPreference extends DialogPreference implements
 		if (prefs == null || mDependencyKey == null || mDependencyValues == null) return;
 		final Map<String, ?> all = prefs.getAll();
 		final String valueString = ParseUtils.parseString(all.get(mDependencyKey), mDependencyValueDefault);
-		setEnabled(ArrayUtils.contains(mDependencyValues, valueString));
+		setEnabled(TwidereArrayUtils.contains(mDependencyValues, valueString));
 	}
 
 }

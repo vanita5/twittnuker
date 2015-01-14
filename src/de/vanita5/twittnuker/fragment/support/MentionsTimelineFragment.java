@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.fragment.support;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
-import de.vanita5.twittnuker.provider.TweetStore.Mentions;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
 public class MentionsTimelineFragment extends CursorStatusesFragment {

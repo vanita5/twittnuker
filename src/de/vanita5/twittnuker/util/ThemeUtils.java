@@ -162,7 +162,7 @@ public class ThemeUtils implements Constants {
             final MenuItem item = menu.getItem(i);
             final Drawable icon = item.getIcon();
             final ContextMenuInfo info = item.getMenuInfo();
-            if (icon != null && !ArrayUtils.contains(excludedGroups, item.getGroupId())) {
+            if (icon != null && !TwidereArrayUtils.contains(excludedGroups, item.getGroupId())) {
                 icon.mutate();
                 if (info instanceof MenuBarMenuInfo) {
                     final MenuBarMenuInfo mbInfo = (MenuBarMenuInfo) info;

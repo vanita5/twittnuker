@@ -31,16 +31,14 @@ import android.support.annotation.Nullable;
 
 import org.mariotaku.jsonserializer.JSONParcel;
 import org.mariotaku.jsonserializer.JSONParcelable;
-import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
+import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.ParseUtils;
 
+import de.vanita5.twittnuker.util.TwitterContentUtils;
 import twitter4j.URLEntity;
 import twitter4j.User;
-
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
-import static de.vanita5.twittnuker.util.Utils.formatExpandedUserDescription;
-import static de.vanita5.twittnuker.util.Utils.formatUserDescription;
 
 public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableUser> {
 
@@ -142,7 +140,7 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
         url_expanded = indices.url_expanded != -1 ? cursor.getString(indices.url_expanded) : null;
         profile_banner_url = indices.profile_banner_url != -1 ? cursor.getString(indices.profile_banner_url) : null;
 		is_cache = true;
-		description_unescaped = toPlainText(description_html);
+        description_unescaped = HtmlEscapeHelper.toPlainText(description_html);
         is_following = indices.is_following != -1 && cursor.getInt(indices.is_following) == 1;
         background_color = indices.background_color != -1 ? cursor.getInt(indices.background_color) : 0;
         link_color = indices.link_color != -1 ? cursor.getInt(indices.link_color) : 0;
@@ -226,9 +224,9 @@ public class ParcelableUser implements TwidereParcelable, Comparable<ParcelableU
 		name = user.getName();
 		screen_name = user.getScreenName();
 		description_plain = user.getDescription();
-		description_html = formatUserDescription(user);
-		description_expanded = formatExpandedUserDescription(user);
-        description_unescaped = toPlainText(description_html);
+        description_html = TwitterContentUtils.formatUserDescription(user);
+        description_expanded = TwitterContentUtils.formatExpandedUserDescription(user);
+        description_unescaped = HtmlEscapeHelper.toPlainText(description_html);
 		location = user.getLocation();
 		profile_image_url = ParseUtils.parseString(user.getProfileImageUrlHttps());
 		profile_banner_url = user.getProfileBannerImageUrl();

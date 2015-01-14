@@ -22,15 +22,15 @@
 
 package de.vanita5.twittnuker.constant;
 
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.annotation.Preference;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+
 import static de.vanita5.twittnuker.annotation.Preference.Type.BOOLEAN;
 import static de.vanita5.twittnuker.annotation.Preference.Type.INT;
 import static de.vanita5.twittnuker.annotation.Preference.Type.LONG;
 import static de.vanita5.twittnuker.annotation.Preference.Type.STRING;
-
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.annotation.Preference;
-import de.vanita5.twittnuker.provider.TweetStore.Accounts;
 
 public interface SharedPreferenceConstants {
 
@@ -137,7 +137,7 @@ public interface SharedPreferenceConstants {
 	public static final String KEY_DATABASE_ITEM_LIMIT = "database_item_limit";
 	@Preference(type = INT, hasDefault = true, defaultInt = DEFAULT_LOAD_ITEM_LIMIT)
 	public static final String KEY_LOAD_ITEM_LIMIT = "load_item_limit";
-    @Preference(type = INT, hasDefault = true, defaultResource = R.integer.default_text_size)
+    @Preference(type = INT, hasDefault = true, defaultInt = 15)
 	public static final String KEY_TEXT_SIZE = "text_size_int";
 	@Preference(type = STRING, hasDefault = true, defaultString = DEFAULT_THEME)
 	public static final String KEY_THEME = "theme";

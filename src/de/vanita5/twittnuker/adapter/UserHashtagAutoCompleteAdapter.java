@@ -40,9 +40,9 @@ import org.mariotaku.querybuilder.OrderBy;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.provider.TweetStore.CachedHashtags;
-import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
-import de.vanita5.twittnuker.provider.TweetStore.CachedValues;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedValues;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 
 public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implements Constants {

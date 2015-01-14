@@ -13,7 +13,7 @@ import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
-import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.util.List;
@@ -165,7 +165,7 @@ public class TwitterLinkHandlerActivity extends Activity implements Constants {
 				} else if ("favorites".equals(pathSegment)) {
 					builder.authority(AUTHORITY_USER_FAVORITES);
 					builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(getDefaultAccountId(this)));
-				} else if (!ArrayUtils.contains(TWITTER_RESERVED_PATHS, pathSegment)) {
+				} else if (!TwidereArrayUtils.contains(TWITTER_RESERVED_PATHS, pathSegment)) {
 					builder.authority(AUTHORITY_USER);
 					builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, pathSegment);
 				} else
@@ -195,7 +195,7 @@ public class TwitterLinkHandlerActivity extends Activity implements Constants {
             }
             case URI_CODE_TWITTER_USER_LIST: {
                 final String firstSegment = pathSegments.get(0);
-                if (ArrayUtils.contains(TWITTER_RESERVED_PATHS, firstSegment)) {
+                if (TwidereArrayUtils.contains(TWITTER_RESERVED_PATHS, firstSegment)) {
                     return null;
                 }
                 final Uri.Builder builder = new Uri.Builder();
@@ -207,7 +207,7 @@ public class TwitterLinkHandlerActivity extends Activity implements Constants {
             }
             case URI_CODE_TWITTER_USER_LIST_MEMBERS: {
                 final String firstSegment = pathSegments.get(0);
-                if (ArrayUtils.contains(TWITTER_RESERVED_PATHS, firstSegment)) {
+                if (TwidereArrayUtils.contains(TWITTER_RESERVED_PATHS, firstSegment)) {
                     return null;
                 }
                 final Uri.Builder builder = new Uri.Builder();
@@ -219,7 +219,7 @@ public class TwitterLinkHandlerActivity extends Activity implements Constants {
             }
             case URI_CODE_TWITTER_USER_LIST_SUBSCRIBERS: {
                 final String firstSegment = pathSegments.get(0);
-                if (ArrayUtils.contains(TWITTER_RESERVED_PATHS, firstSegment)) {
+                if (TwidereArrayUtils.contains(TWITTER_RESERVED_PATHS, firstSegment)) {
                     return null;
                 }
                 final Uri.Builder builder = new Uri.Builder();

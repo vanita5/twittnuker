@@ -204,52 +204,6 @@ public class MediaPreviewUtils {
 
 	private static final String URL_PHOTOZOU_PHOTO_INFO = "https://api.photozou.jp/rest/photo_info.json";
 
-    public static void addToLinearLayout(final LinearLayout container, final ImageLoaderWrapper loader,
-                                         final List<ParcelableMedia> mediaList, final long accountId,
-                                         final int maxColumnCount, final OnMediaClickListener mediaClickListener) {
-        if (container.getOrientation() != LinearLayout.VERTICAL)
-            throw new IllegalArgumentException();
-        final Context context = container.getContext();
-        final ImageLoadingHandler loadingHandler = new ImageLoadingHandler(R.id.media_preview_progress);
-        final LayoutInflater inflater = LayoutInflater.from(context);
-        final ListIterator<ParcelableMedia> iterator = mediaList.listIterator();
-        final int imageCount = mediaList.size();
-        final double imageCountSqrt = Math.sqrt(imageCount);
-        final int bestColumnCount = imageCountSqrt % 1 == 0 ? (int) imageCountSqrt : maxColumnCount;
-        final int firstColumn = imageCount % bestColumnCount, fullRowCount = imageCount / bestColumnCount;
-        final int rowCount = fullRowCount + (firstColumn > 0 ? 1 : 0);
-        final View.OnClickListener clickListener = new ImageGridClickListener(mediaClickListener, accountId);
-        container.setMotionEventSplittingEnabled(false);
-        for (int currentRow = 0; currentRow < rowCount; currentRow++) {
-            final LinearLayout rowContainer = new LinearLayout(context);
-            rowContainer.setOrientation(LinearLayout.HORIZONTAL);
-            rowContainer.setMotionEventSplittingEnabled(false);
-            container.addView(rowContainer, LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            final int columnCount = currentRow == 0 && firstColumn > 0 ? firstColumn : bestColumnCount;
-            for (int currentColumn = 0; currentColumn < columnCount; currentColumn++) {
-                final ParcelableMedia media = iterator.next();
-                final View item = inflater.inflate(R.layout.grid_item_media_preview, rowContainer, false);
-                item.setTag(media);
-				if (mediaClickListener != null) {
-                    item.setOnClickListener(clickListener);
-                }
-                final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) item.getLayoutParams();
-                lp.weight = 1.0f;
-                rowContainer.addView(item, lp);
-                final ImageView imageView = (ImageView) item.findViewById(R.id.media_preview_item);
-                loader.displayPreviewImage(imageView, media.url, loadingHandler);
-            }
-        }
-    }
-
-    public static void addToLinearLayout(final LinearLayout container, final ImageLoaderWrapper loader,
-                                         final ParcelableMedia[] mediaArray, final long accountId,
-                                         final int maxColumnCount, final OnMediaClickListener listener) {
-        addToLinearLayout(container, loader, Arrays.asList(mediaArray), accountId, maxColumnCount,
-                listener);
-    }
-
 	public static ParcelableMedia getAllAvailableImage(final String link, final boolean fullImage) {
 		try {
 			return getAllAvailableImage(link, fullImage, null);
@@ -261,46 +215,57 @@ public class MediaPreviewUtils {
 	public static ParcelableMedia getAllAvailableImage(final String link, final boolean fullImage,
 				final HttpClientWrapper client) throws IOException {
 		if (link == null) return null;
-		StrictModeUtils.checkLengthyOperation();
 		Matcher m;
 		m = PATTERN_TWITTER_IMAGES.matcher(link);
 		if (m.matches()) return getTwitterImage(link, fullImage);
 		m = PATTERN_INSTAGRAM.matcher(link);
-		if (m.matches()) return getInstagramImage(matcherGroup(m, INSTAGRAM_GROUP_ID), link, fullImage);
+        if (m.matches())
+            return getInstagramImage(RegexUtils.matcherGroup(m, INSTAGRAM_GROUP_ID), link, fullImage);
 		m = PATTERN_GOOGLE_IMAGES.matcher(link);
 		if (m.matches())
-			return getGoogleImage(matcherGroup(m, GOOGLE_IMAGES_GROUP_SERVER), matcherGroup(m, GOOGLE_IMAGES_GROUP_ID),
+            return getGoogleImage(RegexUtils.matcherGroup(m, GOOGLE_IMAGES_GROUP_SERVER), RegexUtils.matcherGroup(m, GOOGLE_IMAGES_GROUP_ID),
 					fullImage);
 		m = PATTERN_GOOGLE_PROXY_IMAGES.matcher(link);
 		if (m.matches())
-			return getGoogleProxyImage(matcherGroup(m, GOOGLE_PROXY_IMAGES_GROUP_SERVER),
-					matcherGroup(m, GOOGLE_PROXY_IMAGES_GROUP_ID), fullImage);
+            return getGoogleProxyImage(RegexUtils.matcherGroup(m, GOOGLE_PROXY_IMAGES_GROUP_SERVER),
+					RegexUtils.matcherGroup(m, GOOGLE_PROXY_IMAGES_GROUP_ID), fullImage);
 		m = PATTERN_TWITPIC.matcher(link);
-		if (m.matches()) return getTwitpicImage(matcherGroup(m, TWITPIC_GROUP_ID), link, fullImage);
+        if (m.matches())
+            return getTwitpicImage(RegexUtils.matcherGroup(m, TWITPIC_GROUP_ID), link, fullImage);
 		m = PATTERN_IMGUR.matcher(link);
-		if (m.matches()) return getImgurImage(matcherGroup(m, IMGUR_GROUP_ID), link, fullImage);
+        if (m.matches())
+            return getImgurImage(RegexUtils.matcherGroup(m, IMGUR_GROUP_ID), link, fullImage);
 		m = PATTERN_IMGLY.matcher(link);
-		if (m.matches()) return getImglyImage(matcherGroup(m, IMGLY_GROUP_ID), link, fullImage);
+        if (m.matches())
+            return getImglyImage(RegexUtils.matcherGroup(m, IMGLY_GROUP_ID), link, fullImage);
 		m = PATTERN_YFROG.matcher(link);
-		if (m.matches()) return getYfrogImage(matcherGroup(m, YFROG_GROUP_ID), link, fullImage);
+		if (m.matches())
+			return getYfrogImage(RegexUtils.matcherGroup(m, YFROG_GROUP_ID), link, fullImage);
 		m = PATTERN_TWIPPLE.matcher(link);
-		if (m.matches()) return getTwippleImage(matcherGroup(m, TWIPPLE_GROUP_ID), link);
+		if (m.matches())
+			return getTwippleImage(matcherGroup(m, TWIPPLE_GROUP_ID), link);
 		m = PATTERN_LOCKERZ.matcher(link);
 		if (m.matches()) return getLockerzAndPlixiImage(link, fullImage);
 		m = PATTERN_PLIXI.matcher(link);
 		if (m.matches()) return getLockerzAndPlixiImage(link, fullImage);
 		m = PATTERN_TWITGOO.matcher(link);
-		if (m.matches()) return getTwitgooImage(matcherGroup(m, TWITGOO_GROUP_ID), link, fullImage);
+        if (m.matches())
+            return getTwitgooImage(RegexUtils.matcherGroup(m, TWITGOO_GROUP_ID), link, fullImage);
 		m = PATTERN_MOBYPICTURE.matcher(link);
-		if (m.matches()) return getMobyPictureImage(matcherGroup(m, MOBYPICTURE_GROUP_ID), link, fullImage);
+        if (m.matches())
+            return getMobyPictureImage(RegexUtils.matcherGroup(m, MOBYPICTURE_GROUP_ID), link, fullImage);
 		m = PATTERN_PHOTOZOU.matcher(link);
-		if (m.matches()) return getPhotozouImage(client, matcherGroup(m, PHOTOZOU_GROUP_ID), link, fullImage);
+        if (m.matches())
+            return getPhotozouImage(client, RegexUtils.matcherGroup(m, PHOTOZOU_GROUP_ID), link, fullImage);
         m = PATTERN_ABLOAD.matcher(link);
-        if (m.matches()) return getAbloadImage(matcherGroup(m, ABLOAD_GROUP_ID), link);
+        if (m.matches())
+			return getAbloadImage(RegexUtils.matcherGroup(m, ABLOAD_GROUP_ID), link);
 		m = PATTERN_SINA_WEIBO_IMAGES.matcher(link);
-		if (m.matches()) return getSinaWeiboImage(link, fullImage);
+		if (m.matches())
+			return getSinaWeiboImage(link, fullImage);
 		m = PATTERN_GENERIC.matcher(link);
-		if (m.matches()) return getGenericImage(link);
+		if (m.matches())
+			return getGenericImage(link);
 		return null;
 	}
 
@@ -522,5 +487,5 @@ public class MediaPreviewUtils {
             mListener.onMediaClick(v, (ParcelableMedia) v.getTag(), mAccountId);
         }
 
-    }
+	}
 }

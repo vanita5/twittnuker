@@ -42,7 +42,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment.TrendsAdapter;
-import de.vanita5.twittnuker.provider.TweetStore.CachedTrends;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 

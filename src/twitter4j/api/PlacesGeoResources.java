@@ -55,7 +55,7 @@ public interface PlacesGeoResources {
 
 	/**
 	 * Find out more details of a place that was returned from the
-	 * {@link twitter4j.api.PlacesGeoResources#reverseGeoCode(twitter4j.GeoQuery)}
+	 * {@link PlacesGeoResources#reverseGeoCode(twitter4j.GeoQuery)}
 	 * method. <br>
 	 * This method calls http://api.twitter.com/1.1/geo/id/:id.json
 	 * 

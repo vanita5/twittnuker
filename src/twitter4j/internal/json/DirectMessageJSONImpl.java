@@ -16,14 +16,12 @@
 
 package twitter4j.internal.json;
 
-import static twitter4j.internal.util.InternalParseUtil.getDate;
-import static twitter4j.internal.util.InternalParseUtil.getLong;
-import static twitter4j.internal.util.InternalParseUtil.getRawString;
-import static twitter4j.internal.util.InternalParseUtil.getUnescapedString;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.Date;
 
 import twitter4j.DirectMessage;
 import twitter4j.HashtagEntity;
@@ -36,8 +34,10 @@ import twitter4j.UserMentionEntity;
 import twitter4j.conf.Configuration;
 import twitter4j.http.HttpResponse;
 
-import java.util.Arrays;
-import java.util.Date;
+import static twitter4j.internal.util.InternalParseUtil.getDate;
+import static twitter4j.internal.util.InternalParseUtil.getLong;
+import static twitter4j.internal.util.InternalParseUtil.getRawString;
+import static twitter4j.internal.util.InternalParseUtil.getUnescapedString;
 
 /**
  * A data class representing sent/received direct message.

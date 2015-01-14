@@ -29,8 +29,8 @@ import android.text.TextUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import de.vanita5.twittnuker.provider.TweetStore.Drafts;
-import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 
 public class DraftItem implements Parcelable {
 
@@ -59,7 +59,7 @@ public class DraftItem implements Parcelable {
 		_id = cursor.getLong(indices._id);
 		text = cursor.getString(indices.text);
         media = ParcelableMediaUpdate.fromJSONString(cursor.getString(indices.media));
-		account_ids = ArrayUtils.parseLongArray(cursor.getString(indices.account_ids), ',');
+        account_ids = TwidereArrayUtils.parseLongArray(cursor.getString(indices.account_ids), ',');
 		in_reply_to_status_id = cursor.getLong(indices.in_reply_to_status_id);
 		is_possibly_sensitive = cursor.getShort(indices.is_possibly_sensitive) == 1;
 		location = new ParcelableLocation(cursor.getString(indices.location));

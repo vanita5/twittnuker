@@ -20,12 +20,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
 import twitter4j.IDs;
 import twitter4j.TwitterException;
 import twitter4j.http.HttpResponse;
 import twitter4j.internal.util.InternalParseUtil;
-
-import java.util.Arrays;
 
 /**
  * A data class representing array of numeric IDs.

@@ -23,9 +23,9 @@ import java.io.Serializable;
  * limit status is avaialble.
  * 
  * @author Yusuke Yamamoto - yusuke at mac.com
- * @see twitter4j.DirectMessage
+ * @see DirectMessage
  * @see twitter4j.Status
- * @see twitter4j.User
+ * @see User
  */
 public interface TwitterResponse extends Serializable {
 	int NONE = 0;

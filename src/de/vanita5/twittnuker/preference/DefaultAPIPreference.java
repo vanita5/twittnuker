@@ -41,7 +41,7 @@ import android.widget.Toast;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.provider.TweetStore.Accounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 
 import twitter4j.TwitterConstants;
 

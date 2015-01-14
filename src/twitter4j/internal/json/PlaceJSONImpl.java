@@ -16,12 +16,11 @@
 
 package twitter4j.internal.json;
 
-import static twitter4j.internal.util.InternalParseUtil.getHTMLUnescapedString;
-import static twitter4j.internal.util.InternalParseUtil.getRawString;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
 
 import twitter4j.GeoLocation;
 import twitter4j.Place;
@@ -30,7 +29,8 @@ import twitter4j.TwitterException;
 import twitter4j.conf.Configuration;
 import twitter4j.http.HttpResponse;
 
-import java.util.Arrays;
+import static twitter4j.internal.util.InternalParseUtil.getHTMLUnescapedString;
+import static twitter4j.internal.util.InternalParseUtil.getRawString;
 
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com

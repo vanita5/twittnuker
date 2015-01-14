@@ -26,7 +26,7 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-public interface TweetStore {
+public interface TwidereDataStore {
 
 	public static final String AUTHORITY = "twittnuker";
 

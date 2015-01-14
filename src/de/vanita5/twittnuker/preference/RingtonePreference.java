@@ -33,7 +33,7 @@ import android.net.Uri;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 
 public class RingtonePreference extends AutoInvalidateListPreference {
 
@@ -74,7 +74,7 @@ public class RingtonePreference extends AutoInvalidateListPreference {
 	@Override
 	protected void onPrepareDialogBuilder(final Builder builder) {
 		loadRingtones(getContext());
-		setSelectedItem(ArrayUtils.indexOf(mValues, getPersistedString(null)));
+		setSelectedItem(TwidereArrayUtils.indexOf(mValues, getPersistedString(null)));
 		builder.setSingleChoiceItems(getEntries(), getSelectedItem(), new OnClickListener() {
 			@Override
 			public void onClick(final DialogInterface dialog, final int which) {

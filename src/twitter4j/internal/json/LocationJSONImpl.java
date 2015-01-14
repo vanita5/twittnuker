@@ -16,10 +16,6 @@
 
 package twitter4j.internal.json;
 
-import static twitter4j.internal.util.InternalParseUtil.getHTMLUnescapedString;
-import static twitter4j.internal.util.InternalParseUtil.getInt;
-import static twitter4j.internal.util.InternalParseUtil.getRawString;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +25,10 @@ import twitter4j.ResponseList;
 import twitter4j.TwitterException;
 import twitter4j.conf.Configuration;
 import twitter4j.http.HttpResponse;
+
+import static twitter4j.internal.util.InternalParseUtil.getHTMLUnescapedString;
+import static twitter4j.internal.util.InternalParseUtil.getInt;
+import static twitter4j.internal.util.InternalParseUtil.getRawString;
 
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com

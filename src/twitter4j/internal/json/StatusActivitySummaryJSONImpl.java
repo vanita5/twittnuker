@@ -1,7 +1,5 @@
 package twitter4j.internal.json;
 
-import static twitter4j.internal.util.InternalParseUtil.getLong;
-
 import org.json.JSONObject;
 
 import twitter4j.IDs;
@@ -9,6 +7,8 @@ import twitter4j.StatusActivitySummary;
 import twitter4j.TwitterException;
 import twitter4j.conf.Configuration;
 import twitter4j.http.HttpResponse;
+
+import static twitter4j.internal.util.InternalParseUtil.getLong;
 
 public class StatusActivitySummaryJSONImpl extends TwitterResponseImpl implements StatusActivitySummary {
 

@@ -40,8 +40,8 @@ import android.widget.Toast;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
-import de.vanita5.twittnuker.provider.TweetStore.Accounts;
-import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 
 public class AccountSelectorActivity extends BaseSupportDialogActivity implements LoaderCallbacks<Cursor>,
 		OnClickListener, OnItemClickListener {
@@ -111,7 +111,7 @@ public class AccountSelectorActivity extends BaseSupportDialogActivity implement
 		if (cursor != null && mFirstCreated) {
 			final long[] activatedIds = getIntentExtraIds();
 			for (int i = 0, j = mAdapter.getCount(); i < j; i++) {
-				mListView.setItemChecked(i, ArrayUtils.contains(activatedIds, mAdapter.getItemId(i)));
+				mListView.setItemChecked(i, TwidereArrayUtils.contains(activatedIds, mAdapter.getItemId(i)));
 			}
 		}
 	}

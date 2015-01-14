@@ -33,8 +33,8 @@ import org.mariotaku.querybuilder.Expression;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
-import de.vanita5.twittnuker.provider.TweetStore.Accounts;
-import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 
 import twitter4j.Twitter;

@@ -16,13 +16,13 @@
 
 package twitter4j.internal.json;
 
-import static twitter4j.internal.util.InternalParseUtil.getInt;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import twitter4j.TimeZone;
 import twitter4j.TwitterException;
+
+import static twitter4j.internal.util.InternalParseUtil.getInt;
 
 /**
  * @author Alessandro Bahgat - ale.bahgat at gmail.com

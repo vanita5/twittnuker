@@ -75,7 +75,7 @@ public final class TwitterFactory {
 	 * Returns a OAuth Authenticated instance.<br>
 	 * consumer key and consumer Secret must be provided by
 	 * twitter4j.properties, or system properties.<br>
-	 * Unlike {@link Twitter#setOAuthAccessToken(twitter4j.auth.AccessToken)} ,
+	 * Unlike {@link twitter4j.Twitter#setOAuthAccessToken(twitter4j.auth.AccessToken)} ,
 	 * this factory method potentially returns a cached instance.
 	 * 
 	 * @param accessToken access token

@@ -16,12 +16,12 @@
 
 package twitter4j.api;
 
+import java.util.Map;
+
 import twitter4j.RateLimitStatus;
 import twitter4j.ResponseList;
 import twitter4j.TwitterAPIConfiguration;
 import twitter4j.TwitterException;
-
-import java.util.Map;
 
 /**
  * @author Joern Huxhorn - jhuxhorn at googlemail.com

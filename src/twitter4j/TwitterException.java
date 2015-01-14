@@ -16,10 +16,11 @@
 
 package twitter4j;
 
-import static twitter4j.internal.util.InternalParseUtil.getInt;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
+import java.util.Locale;
 
 import twitter4j.http.HttpRequest;
 import twitter4j.http.HttpResponse;
@@ -27,8 +28,7 @@ import twitter4j.http.HttpResponseCode;
 import twitter4j.internal.json.InternalJSONFactoryImpl;
 import twitter4j.internal.util.InternalParseUtil;
 
-import java.util.List;
-import java.util.Locale;
+import static twitter4j.internal.util.InternalParseUtil.getInt;
 
 /**
  * An exception class that will be thrown when TwitterAPI calls are failed.<br>

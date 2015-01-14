@@ -16,10 +16,10 @@
 
 package twitter4j;
 
-import twitter4j.http.HttpParameter;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import twitter4j.http.HttpParameter;
 
 /**
  * Controls pagination.<br>
@@ -197,7 +197,7 @@ public final class Paging {
 	 * @return list of PostParameter
 	 */
 	/* package */HttpParameter[] asPostParameterArray(final char[] supportedParams, final String perPageParamName) {
-		final java.util.List<HttpParameter> pagingParams = new ArrayList<HttpParameter>(supportedParams.length);
+		final List<HttpParameter> pagingParams = new ArrayList<HttpParameter>(supportedParams.length);
 		addPostParameter(supportedParams, 's', pagingParams, "since_id", getSinceId());
 		addPostParameter(supportedParams, 'm', pagingParams, "max_id", getMaxId());
 		addPostParameter(supportedParams, 'c', pagingParams, perPageParamName, getCount());
@@ -227,7 +227,7 @@ public final class Paging {
 	 * @return list of PostParameter
 	 */
 	/* package */List<HttpParameter> asPostParameterList(final char[] supportedParams, final String perPageParamName) {
-		final java.util.List<HttpParameter> pagingParams = new ArrayList<HttpParameter>(supportedParams.length);
+		final List<HttpParameter> pagingParams = new ArrayList<HttpParameter>(supportedParams.length);
 		addPostParameter(supportedParams, 's', pagingParams, "since_id", getSinceId());
 		addPostParameter(supportedParams, 'm', pagingParams, "max_id", getMaxId());
 		addPostParameter(supportedParams, 'c', pagingParams, perPageParamName, getCount());

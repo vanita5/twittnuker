@@ -16,11 +16,11 @@
 
 package twitter4j;
 
-import twitter4j.http.HttpParameter;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import twitter4j.http.HttpParameter;
 
 /**
  * A data class represents search query.<br>

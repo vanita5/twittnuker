@@ -16,7 +16,6 @@
 
 package twitter4j.conf;
 
-import twitter4j.http.HostAddressResolver;
 import twitter4j.http.HostAddressResolverFactory;
 
 /**
@@ -255,6 +254,12 @@ public final class StreamConfigurationBuilder {
 	public StreamConfigurationBuilder setUser(final String user) {
 		checkNotBuilt();
 		configuration.setUser(user);
+        return this;
+    }
+
+    public StreamConfigurationBuilder setHttpUserAgent(final String userAgent) {
+        checkNotBuilt();
+        configuration.setHttpUserAgent(userAgent);
 		return this;
 	}
 

@@ -30,11 +30,11 @@ import org.mariotaku.querybuilder.SQLQueryBuilder;
 import org.mariotaku.querybuilder.Selectable;
 import org.mariotaku.querybuilder.Tables;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.Conversation;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.ConversationEntries;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.Inbox;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.Outbox;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Conversation;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox;
 
 public class TwidereQueryBuilder {
 

@@ -1,9 +1,9 @@
 package twitter4j.http;
 
-import twitter4j.internal.logging.Logger;
-
 import java.io.DataOutputStream;
 import java.io.IOException;
+
+import twitter4j.internal.logging.Logger;
 
 public class HttpClientBase {
 

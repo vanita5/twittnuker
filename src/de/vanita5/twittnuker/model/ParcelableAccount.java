@@ -32,15 +32,13 @@ import android.support.annotation.NonNull;
 import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
-import de.vanita5.twittnuker.provider.TweetStore.Accounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static de.vanita5.twittnuker.util.Utils.isOfficialConsumerKeySecret;
-import static de.vanita5.twittnuker.util.Utils.shouldForceUsingPrivateAPIs;
 
 public class ParcelableAccount implements Parcelable {
 
@@ -190,8 +188,7 @@ public class ParcelableAccount implements Parcelable {
             } else {
                 final String consumerKey = cur.getString(indices.consumer_key);
                 final String consumerSecret = cur.getString(indices.consumer_secret);
-                if (shouldForceUsingPrivateAPIs(context)
-                        || isOfficialConsumerKeySecret(context, consumerKey, consumerSecret)) {
+                if (TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret)) {
                     accounts.add(new ParcelableAccount(cur, indices));
                 }
             }
@@ -297,8 +294,7 @@ public class ParcelableAccount implements Parcelable {
                 } else {
                     final String consumerKey = cur.getString(indices.consumer_key);
                     final String consumerSecret = cur.getString(indices.consumer_secret);
-                    if (shouldForceUsingPrivateAPIs(context)
-                            || isOfficialConsumerKeySecret(context, consumerKey, consumerSecret)) {
+                    if (TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret)) {
                         accounts.add(new ParcelableCredentials(cur, indices));
                     }
                 }
@@ -306,14 +302,6 @@ public class ParcelableAccount implements Parcelable {
             }
             cur.close();
             return accounts;
-        }
-
-        public static boolean isOfficialCredentials(final Context context, final ParcelableCredentials account) {
-			if (account == null) return false;
-			final boolean isOAuth = account.auth_type == Accounts.AUTH_TYPE_OAUTH
-			          || account.auth_type == Accounts.AUTH_TYPE_XAUTH;
-			final String consumerKey = account.consumer_key, consumerSecret = account.consumer_secret;
-			return isOAuth && isOfficialConsumerKeySecret(context, consumerKey, consumerSecret);
         }
 
         @Override

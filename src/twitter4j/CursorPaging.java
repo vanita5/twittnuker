@@ -16,10 +16,10 @@
 
 package twitter4j;
 
-import twitter4j.http.HttpParameter;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import twitter4j.http.HttpParameter;
 
 /**
  * Controls pagination.<br>

@@ -16,8 +16,6 @@
 
 package twitter4j.internal.json;
 
-import static twitter4j.internal.util.InternalParseUtil.getBoolean;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +26,8 @@ import twitter4j.TimeZone;
 import twitter4j.TwitterException;
 import twitter4j.conf.Configuration;
 import twitter4j.http.HttpResponse;
+
+import static twitter4j.internal.util.InternalParseUtil.getBoolean;
 
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com

@@ -59,7 +59,7 @@ import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.preference.WizardPageHeaderPreference;
 import de.vanita5.twittnuker.preference.WizardPageNavPreference;
-import de.vanita5.twittnuker.provider.TweetStore.Tabs;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.MathUtils;

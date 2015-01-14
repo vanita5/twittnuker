@@ -63,7 +63,7 @@ import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredSourcesFragmen
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredUsersFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.provider.TweetStore.Filters;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;

@@ -40,7 +40,7 @@ public interface FriendsFollowersResources {
 	 * 
 	 * @param userId the ID of the user to be befriended
 	 * @return the befriended user
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/friendships/create">POST
 	 *      friendships/create | Twitter Developers</a>
@@ -60,7 +60,7 @@ public interface FriendsFollowersResources {
 	 * @param follow Enable notifications for the target user in addition to
 	 *            becoming friends.
 	 * @return the befriended user
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/friendships/create">POST
 	 *      friendships/create | Twitter Developers</a>
@@ -99,7 +99,7 @@ public interface FriendsFollowersResources {
 	 * @param follow Enable notifications for the target user in addition to
 	 *            becoming friends.
 	 * @return the befriended user
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/friendships/create">POST
 	 *      friendships/create | Twitter Developers</a>
@@ -117,7 +117,7 @@ public interface FriendsFollowersResources {
 	 * 
 	 * @param userId the ID of the user for whom to request a list of friends
 	 * @return User
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/friendships/destroy">POST
 	 *      friendships/destroy | Twitter Developers</a>
@@ -136,7 +136,7 @@ public interface FriendsFollowersResources {
 	 * @param screenName the screen name of the user for whom to request a list
 	 *            of friends
 	 * @return User
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/post/friendships/destroy">POST
 	 *      friendships/destroy | Twitter Developers</a>
@@ -173,11 +173,11 @@ public interface FriendsFollowersResources {
 	 * to follow the authenticating user. <br>
 	 * This method calls http://api.twitter.com/1.1/friendships/incoming.json
 	 * 
-	 * @param cursor Breaks the results into pages. A single page contains 5000
+	 * @param paging Breaks the results into pages. A single page contains 5000
 	 *            identifiers. Provide a value of -1 to begin paging.
 	 * @return an array of numeric IDs for every user who has a pending request
 	 *         to follow the authenticating user.
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/friendships/incoming">GET
 	 *      friendships/incoming | Twitter Developers</a>
@@ -190,11 +190,11 @@ public interface FriendsFollowersResources {
 	 * authenticating user has a pending follow request. <br>
 	 * This method calls http://api.twitter.com/1.1/friendships/outgoing.json
 	 * 
-	 * @param cursor Breaks the results into pages. A single page contains 5000
+	 * @param paging Breaks the results into pages. A single page contains 5000
 	 *            identifiers. Provide a value of -1 to begin paging.
 	 * @return an array of numeric IDs for every protected user for whom the
 	 *         authenticating user has a pending follow request.
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/friendships/outgoing">GET
 	 *      friendships/outgoing | Twitter Developers</a>
@@ -211,7 +211,7 @@ public interface FriendsFollowersResources {
 	 * 
 	 * @param ids array of the ids to lookup
 	 * @return list of Relationships
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="http://groups.google.com/group/twitter-api-announce/msg/34909da7c399169e">#newtwitter
 	 *      and the API - Twitter API Announcements | Google Group</a>
@@ -228,7 +228,7 @@ public interface FriendsFollowersResources {
 	 * 
 	 * @param screenNames array of the screen names to lookup
 	 * @return list of Relationships
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="http://groups.google.com/group/twitter-api-announce/msg/34909da7c399169e">#newtwitter
 	 *      and the API - Twitter API Announcements | Google Group</a>
@@ -243,7 +243,7 @@ public interface FriendsFollowersResources {
 	 * @param sourceId the ID of the source user
 	 * @param targetId the ID of the target user
 	 * @return Relationship
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/friendships/show">GET
 	 *      friendships/show | Twitter Developers</a>
@@ -258,7 +258,7 @@ public interface FriendsFollowersResources {
 	 * @param sourceScreenName the screen name of the source user
 	 * @param targetScreenName the screen name of the target user
 	 * @return Relationship
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="https://dev.twitter.com/docs/api/1.1/get/friendships/show">GET
 	 *      friendships/show | Twitter Developers</a>
@@ -277,7 +277,7 @@ public interface FriendsFollowersResources {
 	 * @param enableDeviceNotification set true to enable device notification
 	 * @param retweets set true to enable retweets
 	 * @return Relationship
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="http://groups.google.com/group/twitter-api-announce/msg/34909da7c399169e">#newtwitter
 	 *      and the API - Twitter API Announcements | Google Group</a>
@@ -297,7 +297,7 @@ public interface FriendsFollowersResources {
 	 * @param enableDeviceNotification set true to enable device notification
 	 * @param retweets set true to enable retweets
 	 * @return Relationship
-	 * @throws TwitterException when Twitter service or network is unavailable
+	 * @throws twitter4j.TwitterException when Twitter service or network is unavailable
 	 * @see <a
 	 *      href="http://groups.google.com/group/twitter-api-announce/msg/34909da7c399169e">#newtwitter
 	 *      and the API - Twitter API Announcements | Google Group</a>

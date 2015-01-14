@@ -39,7 +39,7 @@ public final class StreamingGZIPInputStream extends GZIPInputStream {
 	 * bytes that could be read without blocking.
 	 * 
 	 * @return - whatever the wrapped InputStream returns
-	 * @exception IOException if an I/O error occurs.
+	 * @exception java.io.IOException if an I/O error occurs.
 	 */
 	@Override
 	public int available() throws IOException {

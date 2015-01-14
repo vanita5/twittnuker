@@ -16,14 +16,14 @@
 
 package twitter4j;
 
-import twitter4j.http.HttpParameter;
-import twitter4j.internal.util.InternalStringUtil;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+
+import twitter4j.http.HttpParameter;
+import twitter4j.internal.util.InternalStringUtil;
 
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com

@@ -30,7 +30,7 @@ import android.net.Uri;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableLocation;
-import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 
 public class TwidereCommands {
@@ -101,7 +101,7 @@ public class TwidereCommands {
 				final ParcelableLocation location, final Uri image_uri, final long in_reply_to_status_id,
 				final boolean is_possibly_sensitive, final boolean delete_image) {
 			final ContentValues values = new ContentValues();
-			values.put(Constants.EXTRA_ACCOUNT_IDS, ArrayUtils.toString(account_ids, ',', false));
+			values.put(Constants.EXTRA_ACCOUNT_IDS, TwidereArrayUtils.toString(account_ids, ',', false));
 			values.put(Constants.EXTRA_TEXT, content);
 			values.put(Constants.EXTRA_LOCATION, ParcelableLocation.toString(location));
 			values.put(Constants.EXTRA_URI, ParseUtils.parseString(image_uri));

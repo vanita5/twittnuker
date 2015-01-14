@@ -24,12 +24,14 @@ package de.vanita5.twittnuker.util;
 
 import android.support.annotation.NonNull;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ArrayUtils {
+public final class TwidereArrayUtils {
 
-	private ArrayUtils() {
+	private TwidereArrayUtils() {
 		throw new AssertionError("You are trying to create an instance for this utility class!");
 	}
 
@@ -48,7 +50,7 @@ public final class ArrayUtils {
 		}
 		return false;
 	}
-	
+
 	public static boolean contains(final Object[] array, final Object value) {
 		if (array == null || value == null) return false;
 		return contains(array, new Object[] { value });
@@ -56,24 +58,18 @@ public final class ArrayUtils {
 
 	public static boolean contains(final Object[] array, final Object[] values) {
 		if (array == null || values == null) return false;
-		for (final Object item : array) {
-			for (final Object value : values) {
-				if (item == null || value == null) {
-					if (item == value) return true;
-					continue;
-				}
-				if (item.equals(value)) return true;
-			}
-		}
-		return false;
-	}
+        for (final Object value : values) {
+            if (!ArrayUtils.contains(array, value)) return false;
+        }
+        return true;
+    }
 
-	public static boolean contentMatch(long[] array1, long[] array2) {
+    public static boolean contentMatch(final long[] array1, final long[] array2) {
 		if (array1 == null || array2 == null) return array1 == array2;
 		if (array1.length != array2.length) return false;
 		final int length = array1.length;
 		for (int i = 0; i < length; i++) {
-			if (!contains(array2, array1[i])) return false;
+            if (!ArrayUtils.contains(array2, array1[i])) return false;
 		}
 		return true;
 	}
@@ -83,7 +79,7 @@ public final class ArrayUtils {
 		if (array1.length != array2.length) return false;
 		final int length = array1.length;
 		for (int i = 0; i < length; i++) {
-			if (!contains(array2, array1[i])) return false;
+            if (!ArrayUtils.contains(array2, array1[i])) return false;
 		}
 		return true;
 	}
@@ -233,13 +229,11 @@ public final class ArrayUtils {
 		final StringBuilder builder = new StringBuilder();
 		final int length = array.length;
 		for (int i = 0; i < length; i++) {
-			final String id_string = String.valueOf(array[i]);
-			if (id_string != null) {
-				if (i > 0) {
-					builder.append(include_space ? token + " " : token);
-				}
-				builder.append(id_string);
-			}
+            final String idString = String.valueOf(array[i]);
+            if (i > 0) {
+                builder.append(include_space ? token + " " : token);
+            }
+            builder.append(idString);
 		}
 		return builder.toString();
 	}

@@ -29,6 +29,8 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.constant.IntentConstants;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -39,7 +41,7 @@ import java.util.Set;
 
 import static android.text.TextUtils.isEmpty;
 
-public final class ParseUtils implements Constants {
+public final class ParseUtils {
 
 	public static String bundleToJSON(final Bundle args) {
 		final Set<String> keys = args.keySet();
@@ -59,7 +61,7 @@ public final class ParseUtils implements Constants {
 				} else if (value instanceof String) {
 					json.put(key, args.getString(key));
 				} else {
-					if (Utils.isDebugBuild()) Log.w(LOGTAG, "Unknown type " + value.getClass().getSimpleName() + " in arguments key " + key);
+					if (Utils.isDebugBuild()) Log.w(TwittnukerConstants.LOGTAG, "Unknown type " + value.getClass().getSimpleName() + " in arguments key " + key);
 				}
 			} catch (final JSONException e) {
 				e.printStackTrace();
@@ -95,7 +97,7 @@ public final class ParseUtils implements Constants {
 				} else if (value instanceof String) {
 					bundle.putString(key, json.optString(key));
 				} else {
-					Log.w(LOGTAG, "Unknown type " + value.getClass().getSimpleName() + " in arguments key " + key);
+					Log.w(TwittnukerConstants.LOGTAG, "Unknown type " + value.getClass().getSimpleName() + " in arguments key " + key);
 				}
 			}
 		} catch (final JSONException e) {
@@ -192,8 +194,8 @@ public final class ParseUtils implements Constants {
 	}
 
 	private static boolean shouldPutLong(final String key) {
-		return EXTRA_ACCOUNT_ID.equals(key) || EXTRA_USER_ID.equals(key) || EXTRA_STATUS_ID.equals(key)
-				|| EXTRA_LIST_ID.equals(key);
+        return IntentConstants.EXTRA_ACCOUNT_ID.equals(key) || IntentConstants.EXTRA_USER_ID.equals(key) || IntentConstants.EXTRA_STATUS_ID.equals(key)
+                || IntentConstants.EXTRA_LIST_ID.equals(key);
 	}
 
     public static int parseColor(String str, int def) {

@@ -81,12 +81,12 @@ import de.vanita5.twittnuker.gcm.GCMHelper;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
-import de.vanita5.twittnuker.provider.TweetStore.Accounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.ActivityAccessor;
 import de.vanita5.twittnuker.util.ActivityAccessor.TaskDescriptionCompat;
-import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.HotKeyHandler;
@@ -195,7 +195,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		final long default_id = mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1);
 		if (account_ids == null || account_ids.length == 0) {
 			finish();
-		} else if (account_ids.length > 0 && !ArrayUtils.contains(account_ids, default_id)) {
+		} else if (account_ids.length > 0 && !TwidereArrayUtils.contains(account_ids, default_id)) {
 			mPreferences.edit().putLong(KEY_DEFAULT_ACCOUNT_ID, account_ids[0]).apply();
 		}
 	}

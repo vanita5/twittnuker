@@ -19,11 +19,6 @@ package twitter4j.internal.util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import twitter4j.TwitterException;
-import twitter4j.TwitterResponse;
-import twitter4j.http.HTMLEntity;
-import twitter4j.http.HttpResponse;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.NumberFormat;
@@ -34,6 +29,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+
+import twitter4j.TwitterException;
+import twitter4j.TwitterResponse;
+import twitter4j.http.HTMLEntity;
+import twitter4j.http.HttpResponse;
 
 /**
  * A tiny parse utility class.

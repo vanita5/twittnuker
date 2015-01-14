@@ -31,13 +31,13 @@ import org.json.JSONException;
 import org.mariotaku.jsonserializer.JSONParcel;
 import org.mariotaku.jsonserializer.JSONParcelable;
 import org.mariotaku.jsonserializer.JSONSerializer;
+import de.vanita5.twittnuker.util.MediaPreviewUtils;
+import de.vanita5.twittnuker.util.ParseUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.vanita5.twittnuker.util.MediaPreviewUtils;
-import de.vanita5.twittnuker.util.ParseUtils;
 import twitter4j.EntitySupport;
 import twitter4j.ExtendedEntitySupport;
 import twitter4j.MediaEntity;

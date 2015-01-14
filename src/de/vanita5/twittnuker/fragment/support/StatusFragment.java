@@ -92,6 +92,7 @@ import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
+import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.StatusTextView;
@@ -924,7 +925,7 @@ public class StatusFragment extends BaseSupportFragment
                 case MENU_TRANSLATE: {
                     final ParcelableCredentials account
                             = ParcelableAccount.getCredentials(activity, status.account_id);
-                    if (ParcelableCredentials.isOfficialCredentials(activity, account)) {
+                    if (TwitterContentUtils.isOfficialKey(activity, account.consumer_key, account.consumer_secret)) {
                         StatusTranslateDialogFragment.show(fragment.getFragmentManager(), status);
                     } else {
                         final Resources resources = fragment.getResources();
@@ -1023,8 +1024,8 @@ public class StatusFragment extends BaseSupportFragment
                 mediaPreviewGrid.setVisibility(View.VISIBLE);
                 mediaPreviewGrid.removeAllViews();
                 final int maxColumns = resources.getInteger(R.integer.grid_column_image_preview);
-                MediaPreviewUtils.addToLinearLayout(mediaPreviewGrid, loader, status.media,
-						status.account_id, maxColumns, adapter.getFragment());
+//                MediaPreviewUtils.addToLinearLayout(mediaPreviewGrid, loader, status.media,
+//						status.account_id, maxColumns, adapter.getFragment());
             }
 
             if (TwitterCardUtils.isCardSupported(status.card)) {

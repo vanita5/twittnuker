@@ -53,10 +53,10 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
-import de.vanita5.twittnuker.provider.TweetStore.CachedHashtags;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
-import de.vanita5.twittnuker.provider.TweetStore.Drafts;
-import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ListUtils;
@@ -329,7 +329,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 
 	private void saveDrafts(final ParcelableStatusUpdate status, final List<Long> account_ids, boolean showNotification) {
         final ContentValues values = ContentValuesCreator.createStatusDraft(status,
-				ArrayUtils.fromList(account_ids));
+				TwidereArrayUtils.fromList(account_ids));
 		mResolver.insert(Drafts.CONTENT_URI, values);
 		final String title = getString(R.string.status_not_updated);
 		if (showNotification) {

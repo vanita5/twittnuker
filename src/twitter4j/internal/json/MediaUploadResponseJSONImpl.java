@@ -1,15 +1,15 @@
 package twitter4j.internal.json;
 
-import static twitter4j.internal.util.InternalParseUtil.getInt;
-import static twitter4j.internal.util.InternalParseUtil.getLong;
-import static twitter4j.internal.util.InternalParseUtil.getRawString;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import twitter4j.MediaUploadResponse;
 import twitter4j.TwitterException;
 import twitter4j.http.HttpResponse;
+
+import static twitter4j.internal.util.InternalParseUtil.getInt;
+import static twitter4j.internal.util.InternalParseUtil.getLong;
+import static twitter4j.internal.util.InternalParseUtil.getRawString;
 
 final class MediaUploadResponseJSONImpl extends TwitterResponseImpl implements MediaUploadResponse {
 

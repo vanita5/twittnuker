@@ -16,15 +16,6 @@
 
 package twitter4j.auth;
 
-import twitter4j.TwitterException;
-import twitter4j.conf.Configuration;
-import twitter4j.http.BASE64Encoder;
-import twitter4j.http.HttpClientWrapper;
-import twitter4j.http.HttpParameter;
-import twitter4j.http.HttpRequest;
-import twitter4j.internal.logging.Logger;
-import twitter4j.internal.util.InternalStringUtil;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.InvalidKeyException;
@@ -38,6 +29,15 @@ import java.util.Random;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
+import twitter4j.TwitterException;
+import twitter4j.conf.Configuration;
+import twitter4j.http.BASE64Encoder;
+import twitter4j.http.HttpClientWrapper;
+import twitter4j.http.HttpParameter;
+import twitter4j.http.HttpRequest;
+import twitter4j.internal.logging.Logger;
+import twitter4j.internal.util.InternalStringUtil;
 
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com

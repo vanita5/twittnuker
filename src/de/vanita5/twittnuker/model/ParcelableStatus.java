@@ -34,13 +34,16 @@ import org.json.JSONObject;
 import org.mariotaku.jsonserializer.JSONParcel;
 import org.mariotaku.jsonserializer.JSONParcelable;
 import org.mariotaku.jsonserializer.JSONSerializer;
-import de.vanita5.twittnuker.provider.TweetStore.Statuses;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
+import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.ParseUtils;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 
+import de.vanita5.twittnuker.util.TwitterContentUtils;
+import de.vanita5.twittnuker.util.content.ContentValuesUtils;
 import twitter4j.CardEntity;
 import twitter4j.CardEntity.BindingValue;
 import twitter4j.CardEntity.ImageValue;
@@ -48,13 +51,6 @@ import twitter4j.CardEntity.StringValue;
 import twitter4j.CardEntity.UserValue;
 import twitter4j.Status;
 import twitter4j.User;
-
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
-import static de.vanita5.twittnuker.util.Utils.formatStatusText;
-import static de.vanita5.twittnuker.util.Utils.getInReplyToName;
-import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsBoolean;
-import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsInteger;
-import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsLong;
 
 public class ParcelableStatus implements TwidereParcelable, Comparable<ParcelableStatus> {
 
@@ -128,41 +124,41 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
     public final ParcelableCardEntity card;
 
 	public ParcelableStatus(final ContentValues values) {
-		id = getAsLong(values, Statuses.STATUS_ID, -1);
-		account_id = getAsLong(values, Statuses.ACCOUNT_ID, -1);
-		timestamp = getAsLong(values, Statuses.STATUS_TIMESTAMP, -1);
-		user_id = getAsLong(values, Statuses.USER_ID, -1);
-		retweet_id = getAsLong(values, Statuses.RETWEET_ID, -1);
-		retweet_timestamp = getAsLong(values, Statuses.RETWEET_TIMESTAMP, -1);
-		retweeted_by_id = getAsLong(values, Statuses.RETWEETED_BY_USER_ID, -1);
+        id = ContentValuesUtils.getAsLong(values, Statuses.STATUS_ID, -1);
+        account_id = ContentValuesUtils.getAsLong(values, Statuses.ACCOUNT_ID, -1);
+        timestamp = ContentValuesUtils.getAsLong(values, Statuses.STATUS_TIMESTAMP, -1);
+        user_id = ContentValuesUtils.getAsLong(values, Statuses.USER_ID, -1);
+        retweet_id = ContentValuesUtils.getAsLong(values, Statuses.RETWEET_ID, -1);
+        retweet_timestamp = ContentValuesUtils.getAsLong(values, Statuses.RETWEET_TIMESTAMP, -1);
+        retweeted_by_id = ContentValuesUtils.getAsLong(values, Statuses.RETWEETED_BY_USER_ID, -1);
 		user_name = values.getAsString(Statuses.USER_NAME);
 		user_screen_name = values.getAsString(Statuses.USER_SCREEN_NAME);
 		text_html = values.getAsString(Statuses.TEXT_HTML);
 		text_plain = values.getAsString(Statuses.TEXT_PLAIN);
 		user_profile_image_url = values.getAsString(Statuses.USER_PROFILE_IMAGE_URL);
-		is_favorite = getAsBoolean(values, Statuses.IS_FAVORITE, false);
-		is_retweet = getAsBoolean(values, Statuses.IS_RETWEET, false);
-		is_gap = getAsBoolean(values, Statuses.IS_GAP, false);
+        is_favorite = ContentValuesUtils.getAsBoolean(values, Statuses.IS_FAVORITE, false);
+        is_retweet = ContentValuesUtils.getAsBoolean(values, Statuses.IS_RETWEET, false);
+        is_gap = ContentValuesUtils.getAsBoolean(values, Statuses.IS_GAP, false);
 		location = ParcelableLocation.fromString(values.getAsString(Statuses.LOCATION));
-		user_is_protected = getAsBoolean(values, Statuses.IS_PROTECTED, false);
-		user_is_verified = getAsBoolean(values, Statuses.IS_VERIFIED, false);
-		in_reply_to_status_id = getAsLong(values, Statuses.IN_REPLY_TO_STATUS_ID, -1);
-		in_reply_to_user_id = getAsLong(values, Statuses.IN_REPLY_TO_USER_ID, -1);
+        user_is_protected = ContentValuesUtils.getAsBoolean(values, Statuses.IS_PROTECTED, false);
+        user_is_verified = ContentValuesUtils.getAsBoolean(values, Statuses.IS_VERIFIED, false);
+        in_reply_to_status_id = ContentValuesUtils.getAsLong(values, Statuses.IN_REPLY_TO_STATUS_ID, -1);
+        in_reply_to_user_id = ContentValuesUtils.getAsLong(values, Statuses.IN_REPLY_TO_USER_ID, -1);
 		in_reply_to_name = values.getAsString(Statuses.IN_REPLY_TO_USER_NAME);
 		in_reply_to_screen_name = values.getAsString(Statuses.IN_REPLY_TO_USER_SCREEN_NAME);
-		my_retweet_id = getAsLong(values, Statuses.MY_RETWEET_ID, -1);
+        my_retweet_id = ContentValuesUtils.getAsLong(values, Statuses.MY_RETWEET_ID, -1);
 		retweeted_by_name = values.getAsString(Statuses.RETWEETED_BY_USER_NAME);
 		retweeted_by_screen_name = values.getAsString(Statuses.RETWEETED_BY_USER_SCREEN_NAME);
         retweeted_by_profile_image = values.getAsString(Statuses.RETWEETED_BY_USER_PROFILE_IMAGE);
 		source = values.getAsString(Statuses.SOURCE);
-		retweet_count = getAsInteger(values, Statuses.RETWEET_COUNT, 0);
-		favorite_count = getAsInteger(values, Statuses.FAVORITE_COUNT, 0);
-        reply_count = getAsInteger(values, Statuses.REPLY_COUNT, 0);
-        descendent_reply_count = getAsInteger(values, Statuses.DESCENDENT_REPLY_COUNT, 0);
+        retweet_count = ContentValuesUtils.getAsInteger(values, Statuses.RETWEET_COUNT, 0);
+        favorite_count = ContentValuesUtils.getAsInteger(values, Statuses.FAVORITE_COUNT, 0);
+        reply_count = ContentValuesUtils.getAsInteger(values, Statuses.REPLY_COUNT, 0);
+        descendent_reply_count = ContentValuesUtils.getAsInteger(values, Statuses.DESCENDENT_REPLY_COUNT, 0);
 		text_unescaped = values.getAsString(Statuses.TEXT_UNESCAPED);
         media = ParcelableMedia.fromJSONString(values.getAsString(Statuses.MEDIA));
-		is_possibly_sensitive = getAsBoolean(values, Statuses.IS_POSSIBLY_SENSITIVE, false);
-		user_is_following = getAsBoolean(values, Statuses.IS_FOLLOWING, false);
+        is_possibly_sensitive = ContentValuesUtils.getAsBoolean(values, Statuses.IS_POSSIBLY_SENSITIVE, false);
+        user_is_following = ContentValuesUtils.getAsBoolean(values, Statuses.IS_FOLLOWING, false);
 		mentions = ParcelableUserMention.fromJSONString(values.getAsString(Statuses.MENTIONS));
         first_media = values.getAsString(Statuses.FIRST_MEDIA);
         card = ParcelableCardEntity.fromJSONString(values.getAsString(Statuses.CARD));
@@ -361,21 +357,21 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		user_is_protected = user.isProtected();
 		user_is_verified = user.isVerified();
 		user_is_following = user.isFollowing();
-		text_html = formatStatusText(status);
+        text_html = TwitterContentUtils.formatStatusText(status);
         media = ParcelableMedia.fromEntities(status);
 		text_plain = status.getText();
 		retweet_count = status.getRetweetCount();
 		favorite_count = status.getFavoriteCount();
         reply_count = status.getReplyCount();
         descendent_reply_count = status.getDescendentReplyCount();
-		in_reply_to_name = getInReplyToName(status);
+        in_reply_to_name = TwitterContentUtils.getInReplyToName(status);
 		in_reply_to_screen_name = status.getInReplyToScreenName();
 		in_reply_to_status_id = status.getInReplyToStatusId();
 		in_reply_to_user_id = status.getInReplyToUserId();
 		source = status.getSource();
 		location = new ParcelableLocation(status.getGeoLocation());
 		is_favorite = status.isFavorited();
-		text_unescaped = toPlainText(text_html);
+        text_unescaped = HtmlEscapeHelper.toPlainText(text_html);
         my_retweet_id = retweeted_by_id == account_id ? id : status.getCurrentUserRetweet();
 		is_possibly_sensitive = status.isPossiblySensitive();
 		mentions = ParcelableUserMention.fromUserMentionEntities(status.getUserMentionEntities());
@@ -786,21 +782,19 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
             public ParcelableValueItem(JSONParcel in) {
                 this.name = in.readString("name");
                 this.type = in.readString("type");
-                if ("STRING".equals(type)) {
-                    value = in.readString("value");
-                } else if ("IMAGE".equals(type)) {
-                    value = in.readParcelable("value", ParcelableImageValue.JSON_CREATOR);
-                } else if ("USER".equals(type)) {
-                    value = in.readParcelable("value", ParcelableUserValue.JSON_CREATOR);
-                } else {
-                    throw new UnsupportedOperationException();
+                switch (type) {
+                    case "STRING":
+                        value = in.readString("value");
+                        break;
+                    case "IMAGE":
+                        value = in.readParcelable("value", ParcelableImageValue.JSON_CREATOR);
+                        break;
+                    case "USER":
+                        value = in.readParcelable("value", ParcelableUserValue.JSON_CREATOR);
+                        break;
+                    default:
+                        throw new UnsupportedOperationException();
                 }
-            }
-
-            public ParcelableValueItem(String name, String type, Object value) {
-                this.name = name;
-                this.type = type;
-                this.value = value;
             }
 
             public ParcelableValueItem(Parcel in) {
@@ -812,14 +806,19 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
             public ParcelableValueItem(BindingValue bindingValue) {
                 name = bindingValue.getName();
                 type = bindingValue.getType();
-                if ("STRING".equals(type)) {
-                    value = ((StringValue) bindingValue).getValue();
-                } else if ("IMAGE".equals(type)) {
-                    value = new ParcelableImageValue((ImageValue) bindingValue);
-                } else if ("USER".equals(type)) {
-                    value = new ParcelableUserValue((UserValue) bindingValue);
-                } else {
-                    value = null;
+                switch (type) {
+                    case "STRING":
+                        value = ((StringValue) bindingValue).getValue();
+                        break;
+                    case "IMAGE":
+                        value = new ParcelableImageValue((ImageValue) bindingValue);
+                        break;
+                    case "USER":
+                        value = new ParcelableUserValue((UserValue) bindingValue);
+                        break;
+                    default:
+                        value = null;
+                        break;
                 }
             }
 

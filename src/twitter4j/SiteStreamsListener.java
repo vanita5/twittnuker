@@ -39,7 +39,7 @@ public interface SiteStreamsListener extends StreamListener {
 	void onDirectMessage(long forUser, DirectMessage directMessage);
 
 	/**
-	 * callback method for {@link StreamController#removeUsers(long[])}
+	 * callback method for {@link twitter4j.StreamController#removeUsers(long[])}
 	 */
 	void onDisconnectionNotice(String line);
 

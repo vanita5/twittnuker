@@ -33,7 +33,7 @@ public class CompareUtils {
 		final Iterator<String> keys = bundle1.keySet().iterator();
 		while (keys.hasNext()) {
 			final String key = keys.next();
-			if (!ArrayUtils.contains(ignoredKeys, key) && !objectEquals(bundle1.get(key), bundle2.get(key)))
+			if (!TwidereArrayUtils.contains(ignoredKeys, key) && !objectEquals(bundle1.get(key), bundle2.get(key)))
 				return false;
 		}
 		return true;

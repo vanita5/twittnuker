@@ -16,11 +16,11 @@
 
 package twitter4j.auth;
 
+import javax.crypto.spec.SecretKeySpec;
+
 import twitter4j.TwitterException;
 import twitter4j.http.HttpResponse;
 import twitter4j.internal.util.InternalStringUtil;
-
-import javax.crypto.spec.SecretKeySpec;
 
 abstract class OAuthToken {
 

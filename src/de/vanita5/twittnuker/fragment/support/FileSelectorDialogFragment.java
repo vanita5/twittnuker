@@ -48,7 +48,7 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.fragment.iface.ISupportDialogFragmentCallback;
-import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.io.File;
@@ -260,7 +260,7 @@ public class FileSelectorDialogFragment extends BaseSupportDialogFragment implem
 			super(context);
 			this.path = path;
 			this.extensions = extensions;
-			extensions_regex = extensions != null ? Pattern.compile(ArrayUtils.toString(extensions, '|', false),
+			extensions_regex = extensions != null ? Pattern.compile(TwidereArrayUtils.toString(extensions, '|', false),
 					Pattern.CASE_INSENSITIVE) : null;
 		}
 

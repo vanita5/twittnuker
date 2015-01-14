@@ -29,14 +29,14 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.provider.TweetStore.CachedStatuses;
-import de.vanita5.twittnuker.provider.TweetStore.Notifications;
-import de.vanita5.twittnuker.provider.TweetStore.SavedSearches;
-import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
+import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
+import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 
-import static de.vanita5.twittnuker.provider.TweetStore.CACHE_URIS;
-import static de.vanita5.twittnuker.provider.TweetStore.DIRECT_MESSAGES_URIS;
-import static de.vanita5.twittnuker.provider.TweetStore.STATUSES_URIS;
+import static de.vanita5.twittnuker.provider.TwidereDataStore.CACHE_URIS;
+import static de.vanita5.twittnuker.provider.TwidereDataStore.DIRECT_MESSAGES_URIS;
+import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 
 public class ClearDatabasesPreference extends AsyncTaskPreference implements Constants, OnPreferenceClickListener {
 

@@ -16,12 +16,12 @@
 
 package twitter4j.internal.json;
 
+import java.util.ArrayList;
+
 import twitter4j.RateLimitStatus;
 import twitter4j.ResponseList;
 import twitter4j.http.HttpResponse;
 import twitter4j.internal.util.InternalParseUtil;
-
-import java.util.ArrayList;
 
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com

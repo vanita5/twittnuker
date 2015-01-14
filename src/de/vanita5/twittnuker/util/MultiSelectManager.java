@@ -131,7 +131,7 @@ public class MultiSelectManager implements Constants {
 				ids_list.add(((ParcelableStatus) item).user_id);
 			}
 		}
-		return ArrayUtils.fromList(ids_list);
+		return TwidereArrayUtils.fromList(ids_list);
 	}
 
 	public static interface Callback {

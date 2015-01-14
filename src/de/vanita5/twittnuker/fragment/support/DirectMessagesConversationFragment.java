@@ -67,7 +67,7 @@ import org.mariotaku.menucomponent.widget.PopupMenu;
 import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.OrderBy;
-import org.mariotaku.querybuilder.RawItemArray;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ImagePickerActivity;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
@@ -80,10 +80,10 @@ import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUser.CachedIndices;
-import de.vanita5.twittnuker.provider.TweetStore;
-import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages.Conversation;
+import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Conversation;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
@@ -415,7 +415,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 		mConversationContainer.setVisibility(isValid ? View.VISIBLE : View.GONE);
 		mRecipientSelectorContainer.setVisibility(isValid ? View.GONE : View.VISIBLE);
 		if (!isValid)
-			return new CursorLoader(getActivity(), TweetStore.CONTENT_URI_NULL, cols, null, null, null);
+			return new CursorLoader(getActivity(), TwidereDataStore.CONTENT_URI_NULL, cols, null, null, null);
 		final Uri uri = buildDirectMessageConversationUri(accountId, recipientId, null);
 		return new CursorLoader(getActivity(), uri, cols, null, null, Conversation.DEFAULT_SORT_ORDER);
 	}

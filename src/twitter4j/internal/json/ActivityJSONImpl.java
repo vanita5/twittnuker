@@ -1,13 +1,11 @@
 package twitter4j.internal.json;
 
-import static twitter4j.internal.util.InternalParseUtil.getDate;
-import static twitter4j.internal.util.InternalParseUtil.getInt;
-import static twitter4j.internal.util.InternalParseUtil.getLong;
-import static twitter4j.internal.util.InternalParseUtil.getRawString;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.Date;
 
 import twitter4j.Activity;
 import twitter4j.ResponseList;
@@ -18,8 +16,10 @@ import twitter4j.UserList;
 import twitter4j.conf.Configuration;
 import twitter4j.http.HttpResponse;
 
-import java.util.Arrays;
-import java.util.Date;
+import static twitter4j.internal.util.InternalParseUtil.getDate;
+import static twitter4j.internal.util.InternalParseUtil.getInt;
+import static twitter4j.internal.util.InternalParseUtil.getLong;
+import static twitter4j.internal.util.InternalParseUtil.getRawString;
 
 class ActivityJSONImpl extends TwitterResponseImpl implements Activity {
 
@@ -56,7 +56,7 @@ class ActivityJSONImpl extends TwitterResponseImpl implements Activity {
 	}
 
 	@Override
-	public Activity.Action getAction() {
+	public Action getAction() {
 		return action;
 	}
 

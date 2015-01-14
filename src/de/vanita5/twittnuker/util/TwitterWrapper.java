@@ -32,8 +32,8 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
-import de.vanita5.twittnuker.provider.TweetStore.Notifications;
-import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
+import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -87,7 +87,7 @@ public class TwitterWrapper implements Constants {
 		final Uri.Builder builder = UnreadCounts.CONTENT_URI.buildUpon();
 		builder.appendPath(String.valueOf(position));
 		builder.appendPath(String.valueOf(account_id));
-		builder.appendPath(ArrayUtils.toString(status_ids, ',', false));
+		builder.appendPath(TwidereArrayUtils.toString(status_ids, ',', false));
 		result += context.getContentResolver().delete(builder.build(), null, null);
 		return result;
 	}

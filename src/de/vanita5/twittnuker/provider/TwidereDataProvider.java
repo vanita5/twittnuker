@@ -58,15 +58,15 @@ import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.model.UnreadItem;
-import de.vanita5.twittnuker.provider.TweetStore.CachedUsers;
-import de.vanita5.twittnuker.provider.TweetStore.DirectMessages;
-import de.vanita5.twittnuker.provider.TweetStore.Drafts;
-import de.vanita5.twittnuker.provider.TweetStore.Preferences;
-import de.vanita5.twittnuker.provider.TweetStore.SearchHistory;
-import de.vanita5.twittnuker.provider.TweetStore.Statuses;
-import de.vanita5.twittnuker.provider.TweetStore.UnreadCounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Preferences;
+import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
+import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
-import de.vanita5.twittnuker.util.ArrayUtils;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.ImagePreloader;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
@@ -218,7 +218,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 						return clearUnreadCount(ParseUtils.parseInt(segments.get(1)));
 					else if (segmentsSize == 4)
 						return removeUnreadItems(ParseUtils.parseInt(segments.get(1)),
-								ParseUtils.parseLong(segments.get(2)), ArrayUtils.parseLongArray(segments.get(3), ','));
+								ParseUtils.parseLong(segments.get(2)), TwidereArrayUtils.parseLongArray(segments.get(3), ','));
 					return 0;
 				}
 			}
@@ -528,7 +528,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (Utils.isDebugBuild()) {
 			Log.d(LOGTAG, String.format("getCachedImageCursor(%s)", url));
 		}
-		final MatrixCursor c = new MatrixCursor(TweetStore.CachedImages.MATRIX_COLUMNS);
+		final MatrixCursor c = new MatrixCursor(TwidereDataStore.CachedImages.MATRIX_COLUMNS);
 		final File file = mImagePreloader.getCachedImageFile(url);
 		if (url != null && file != null) {
 			c.addRow(new String[] { url, file.getPath() });
@@ -561,7 +561,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     }
 
 	private Cursor getDNSCursor(final String host) {
-		final MatrixCursor c = new MatrixCursor(TweetStore.DNS.MATRIX_COLUMNS);
+		final MatrixCursor c = new MatrixCursor(TwidereDataStore.DNS.MATRIX_COLUMNS);
 		try {
 			final String address = mHostAddressResolver.resolve(host);
 			if (host != null && address != null) {
@@ -580,7 +580,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     }
 
 	private Cursor getNotificationsCursor() {
-		final MatrixCursor c = new MatrixCursor(TweetStore.Notifications.MATRIX_COLUMNS);
+		final MatrixCursor c = new MatrixCursor(TwidereDataStore.Notifications.MATRIX_COLUMNS);
 		c.addRow(new Integer[] { NOTIFICATION_ID_HOME_TIMELINE, mUnreadStatuses.size() });
 		c.addRow(new Integer[] {NOTIFICATION_ID_MENTIONS_TIMELINE, mNewMentions.size() });
 		c.addRow(new Integer[] { NOTIFICATION_ID_DIRECT_MESSAGES, mNewMessages.size() });
@@ -588,7 +588,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	}
 
 	private Cursor getNotificationsCursor(final int id) {
-		final MatrixCursor c = new MatrixCursor(TweetStore.Notifications.MATRIX_COLUMNS);
+		final MatrixCursor c = new MatrixCursor(TwidereDataStore.Notifications.MATRIX_COLUMNS);
 		if (id == NOTIFICATION_ID_HOME_TIMELINE) {
 			c.addRow(new Integer[] { id, mNewStatuses.size() });
 		} else if (id == NOTIFICATION_ID_MENTIONS_TIMELINE) {
@@ -600,12 +600,12 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	}
 
 	private Cursor getUnreadCountsCursor() {
-		final MatrixCursor c = new MatrixCursor(TweetStore.UnreadCounts.MATRIX_COLUMNS);
+		final MatrixCursor c = new MatrixCursor(TwidereDataStore.UnreadCounts.MATRIX_COLUMNS);
 		return c;
 	}
 
 	private Cursor getUnreadCountsCursor(final int position) {
-		final MatrixCursor c = new MatrixCursor(TweetStore.UnreadCounts.MATRIX_COLUMNS);
+		final MatrixCursor c = new MatrixCursor(TwidereDataStore.UnreadCounts.MATRIX_COLUMNS);
 		final Context context = getContext();
 		final SupportTabSpec tab = CustomTabUtils.getAddedTabAt(context, position);
         if (tab == null) return c;
@@ -632,7 +632,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	}
 
 	private Cursor getUnreadCountsCursorByType(final String type) {
-		final MatrixCursor c = new MatrixCursor(TweetStore.UnreadCounts.MATRIX_COLUMNS);
+		final MatrixCursor c = new MatrixCursor(TwidereDataStore.UnreadCounts.MATRIX_COLUMNS);
 		final int count;
 		if (TAB_TYPE_HOME_TIMELINE.equals(type) || TAB_TYPE_STAGGERED_HOME_TIMELINE.equals(type)) {
 			count = mUnreadStatuses.size();
@@ -931,7 +931,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (accountIds == null) return 0;
 		int count = 0;
 		for (final UnreadItem item : set.toArray(new UnreadItem[set.size()])) {
-            if (item != null && ArrayUtils.contains(accountIds, item.account_id) && set.remove(item)) {
+            if (item != null && TwidereArrayUtils.contains(accountIds, item.account_id) && set.remove(item)) {
 				count++;
 			}
 		}
@@ -951,7 +951,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	}
 
     private static Cursor getPreferencesCursor(final SharedPreferencesWrapper preferences, final String key) {
-		final MatrixCursor c = new MatrixCursor(TweetStore.Preferences.MATRIX_COLUMNS);
+		final MatrixCursor c = new MatrixCursor(TwidereDataStore.Preferences.MATRIX_COLUMNS);
 		final Map<String, Object> map = new HashMap<String, Object>();
 		final Map<String, ?> all = preferences.getAll();
 		if (key == null) {
@@ -998,7 +998,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (set == null || set.isEmpty()) return 0;
 		int count = 0;
 		for (final UnreadItem item : set.toArray(new UnreadItem[set.size()])) {
-			if (item != null && ArrayUtils.contains(accountIds, item.account_id)) {
+			if (item != null && TwidereArrayUtils.contains(accountIds, item.account_id)) {
 				count++;
 			}
 		}

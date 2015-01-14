@@ -1,15 +1,15 @@
 package twitter4j.internal.json;
 
-import static twitter4j.internal.util.InternalParseUtil.getLong;
-import static twitter4j.internal.util.InternalParseUtil.getRawString;
-import static twitter4j.internal.util.InternalParseUtil.getUnescapedString;
-
 import org.json.JSONObject;
 
 import twitter4j.TranslationResult;
 import twitter4j.TwitterException;
 import twitter4j.conf.Configuration;
 import twitter4j.http.HttpResponse;
+
+import static twitter4j.internal.util.InternalParseUtil.getLong;
+import static twitter4j.internal.util.InternalParseUtil.getRawString;
+import static twitter4j.internal.util.InternalParseUtil.getUnescapedString;
 
 public class TranslationResultJSONImpl extends TwitterResponseImpl implements TranslationResult {
 
