@@ -50,9 +50,9 @@ class ActivityJSONImpl extends TwitterResponseImpl implements Activity {
 	@Override
 	public int compareTo(final Activity another) {
 		if (another == null) return 0;
-		final Date this_date = getCreatedAt(), that_date = another.getCreatedAt();
-		if (this_date == null || that_date == null) return 0;
-		return -this_date.compareTo(that_date);
+        final Date thisDate = getCreatedAt(), thatDate = another.getCreatedAt();
+        if (thisDate == null || thatDate == null) return 0;
+        return thisDate.compareTo(thatDate);
 	}
 
 	@Override
@@ -187,8 +187,6 @@ class ActivityJSONImpl extends TwitterResponseImpl implements Activity {
 				}
 			}
 			targetObjectsSize = getInt("target_objects_size", json);
-		} catch (final TwitterException te) {
-			throw te;
 		} catch (final JSONException jsone) {
 			throw new TwitterException(jsone);
 		}
@@ -214,8 +212,6 @@ class ActivityJSONImpl extends TwitterResponseImpl implements Activity {
 			return users;
 		} catch (final JSONException jsone) {
 			throw new TwitterException(jsone);
-		} catch (final TwitterException te) {
-			throw te;
 		}
 	}
 }

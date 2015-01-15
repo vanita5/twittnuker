@@ -35,6 +35,7 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -160,6 +161,7 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
     public final Loader<Data> onCreateLoader(int id, Bundle args) {
         final boolean fromUser = args.getBoolean(EXTRA_FROM_USER);
         args.remove(EXTRA_FROM_USER);
+        Log.d(LOGTAG, String.format("Creating loader for %s, fromUser: %b", getClass(), fromUser));
         return onCreateStatusesLoader(getActivity(), args, fromUser);
     }
 
@@ -234,7 +236,7 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 		}
 		mRecyclerView.setAdapter(mAdapter);
 		mRecyclerView.setOnScrollListener(mOnScrollListener);
-        mAdapter.setEventListener(this);
+        mAdapter.setListener(this);
 		getLoaderManager().initLoader(0, getArguments(), this);
 		setListShown(false);
 	}

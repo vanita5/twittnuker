@@ -22,9 +22,11 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+import de.vanita5.twittnuker.adapter.CursorStatusesAdapter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
@@ -33,6 +35,13 @@ public class MentionsTimelineFragment extends CursorStatusesFragment {
     @Override
     public Uri getContentUri() {
         return Mentions.CONTENT_URI;
+    }
+
+    @Override
+    protected CursorStatusesAdapter onCreateAdapter(Context context, boolean compact) {
+        final CursorStatusesAdapter adapter = super.onCreateAdapter(context, compact);
+        adapter.setShowInReplyTo(false);
+        return adapter;
     }
 
 	@Override

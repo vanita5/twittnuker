@@ -43,7 +43,7 @@ public class CursorStatusesAdapter extends AbsStatusesAdapter<Cursor> {
     public boolean isGapItem(int position) {
         final Cursor c = mCursor;
         return c != null && c.moveToPosition(position) && c.getInt(mIndices.is_gap) == 1;
-			}
+	}
 
 
 	@Override
@@ -65,7 +65,7 @@ public class CursorStatusesAdapter extends AbsStatusesAdapter<Cursor> {
     @Override
     protected void bindStatus(StatusViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        holder.displayStatus(mCursor, mIndices, true);
+        holder.displayStatus(mCursor, mIndices, isShowInReplyTo());
 		}
 
 	@Override

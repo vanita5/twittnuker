@@ -42,17 +42,20 @@ import com.squareup.otto.Bus;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
+import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter.ActivityAdapterListener;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
+import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.SimpleDrawerCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
+import de.vanita5.twittnuker.view.holder.GapViewHolder;
 
 public abstract class AbsActivitiesFragment<Data> extends BaseSupportFragment implements LoaderCallbacks<Data>,
-		OnRefreshListener, DrawerCallback, RefreshScrollTopInterface {
+        OnRefreshListener, DrawerCallback, RefreshScrollTopInterface, ActivityAdapterListener {
 
 
 	private final Object mStatusesBusCallback;
@@ -110,6 +113,14 @@ public abstract class AbsActivitiesFragment<Data> extends BaseSupportFragment im
 	}
 
 	@Override
+    public void onGapClick(GapViewHolder holder, int position) {
+        final ParcelableActivity activity = mAdapter.getActivity(position);
+        final long[] accountIds = {activity.account_id};
+        final long[] maxIds = {activity.min_position};
+        getActivities(accountIds, maxIds, null);
+    }
+
+    @Override
 	public void scrollBy(float dy) {
 		mDrawerCallback.scrollBy(dy);
 	}
@@ -133,7 +144,7 @@ public abstract class AbsActivitiesFragment<Data> extends BaseSupportFragment im
 		return mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 	}
 
-	public abstract int getStatuses(long[] accountIds, long[] maxIds, long[] sinceIds);
+    public abstract int getActivities(long[] accountIds, long[] maxIds, long[] sinceIds);
 
 	public boolean isRefreshing() {
 		return mSwipeRefreshLayout.isRefreshing();
@@ -160,6 +171,7 @@ public abstract class AbsActivitiesFragment<Data> extends BaseSupportFragment im
 		mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getUserAccentColor(context));
 		mAdapter = onCreateAdapter(context, compact);
 		mAdapter.setLoadMoreIndicatorEnabled(true);
+        mAdapter.setListener(this);
 		final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
 		layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 		mRecyclerView.setLayoutManager(layoutManager);

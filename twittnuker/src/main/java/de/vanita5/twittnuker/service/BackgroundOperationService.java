@@ -43,7 +43,6 @@ import android.widget.Toast;
 import com.twitter.Extractor;
 
 import org.mariotaku.querybuilder.Expression;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -188,12 +187,16 @@ public class BackgroundOperationService extends IntentService implements Constan
 	protected void onHandleIntent(final Intent intent) {
 		if (intent == null) return;
 		final String action = intent.getAction();
-		if (INTENT_ACTION_UPDATE_STATUS.equals(action)) {
+        switch (action) {
+            case INTENT_ACTION_UPDATE_STATUS:
 			handleUpdateStatusIntent(intent);
-		} else if (INTENT_ACTION_SEND_DIRECT_MESSAGE.equals(action)) {
+                break;
+            case INTENT_ACTION_SEND_DIRECT_MESSAGE:
 			handleSendDirectMessageIntent(intent);
-        } else if (INTENT_ACTION_DISCARD_DRAFT.equals(action)) {
+                break;
+            case INTENT_ACTION_DISCARD_DRAFT:
             handleDiscardDraftIntent(intent);
+                break;
 		}
 	}
 
