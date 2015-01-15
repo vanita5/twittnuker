@@ -101,7 +101,7 @@ public class Columns implements Selectable {
 
         @Override
         public String getSQL() {
-            final String col = table != null ? table.getSQL() + "" + columnName : columnName;
+            final String col = table != null ? table.getSQL() + "." + columnName : columnName;
             return alias != null ? col + " AS " + alias : col;
         }
     }
