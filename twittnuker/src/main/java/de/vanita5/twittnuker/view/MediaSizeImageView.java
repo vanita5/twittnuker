@@ -2,7 +2,6 @@ package de.vanita5.twittnuker.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 

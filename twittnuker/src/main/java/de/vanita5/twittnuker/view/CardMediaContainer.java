@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
-import de.vanita5.twittnuker.util.MediaPreviewUtils.OnMediaClickListener;
+import de.vanita5.twittnuker.util.Utils.OnMediaClickListener;
 
 public class CardMediaContainer extends ViewGroup implements Constants {
 
@@ -178,11 +178,13 @@ public class CardMediaContainer extends ViewGroup implements Constants {
 			for (int i = 0; i < rowCount; i++) {
 				final int currColumnCount = i == 0 ? firstRowColumnCount : columnCount;
 				final int columnWidth = (contentWidth - (mHorizontalSpacing * (currColumnCount - 1))) / currColumnCount;
-				heightSum = heightSum + columnWidth;
-				final int childMeasureSpec = MeasureSpec.makeMeasureSpec(columnWidth, MeasureSpec.EXACTLY);
+                final int columnHeight = columnWidth / 2;
+                heightSum = heightSum + columnHeight;
+                final int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(columnWidth, MeasureSpec.EXACTLY);
+                final int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(columnHeight, MeasureSpec.EXACTLY);
 				for (int j = 0; j < currColumnCount; j++) {
 					final int childIdx = i == 0 ? j : firstRowColumnCount + columnCount * (i - 1) + j;
-					getChildAt(childIndices[childIdx]).measure(childMeasureSpec, childMeasureSpec);
+                    getChildAt(childIndices[childIdx]).measure(childWidthMeasureSpec, childHeightMeasureSpec);
 				}
 			}
 			heightSum = heightSum + (mVerticalSpacing * rowCount - 1);
