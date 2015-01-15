@@ -209,7 +209,6 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.SocketAddress;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.text.NumberFormat;
@@ -226,8 +225,6 @@ import java.util.zip.CRC32;
 import javax.net.ssl.SSLException;
 
 import twitter4j.DirectMessage;
-import twitter4j.EntitySupport;
-import twitter4j.MediaEntity;
 import twitter4j.RateLimitStatus;
 import twitter4j.Relationship;
 import twitter4j.Status;
@@ -255,7 +252,6 @@ import static android.text.format.DateUtils.getRelativeTimeSpanString;
 import static de.vanita5.twittnuker.provider.TwidereDataStore.CACHE_URIS;
 import static de.vanita5.twittnuker.provider.TwidereDataStore.DIRECT_MESSAGES_URIS;
 import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
 import static de.vanita5.twittnuker.util.TwidereLinkify.TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES;
 
@@ -338,6 +334,8 @@ public final class Utils implements Constants, TwitterConstants {
 				VIRTUAL_TABLE_ID_CACHED_USERS_WITH_RELATIONSHIP);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedUsers.CONTENT_PATH_WITH_SCORE + "/#",
 				VIRTUAL_TABLE_ID_CACHED_USERS_WITH_SCORE);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Drafts.CONTENT_PATH_UNSENT,
+				VIRTUAL_TABLE_ID_DRAFTS_UNSENT);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, PushNotifications.CONTENT_PATH,
 				TABLE_ID_PUSH_NOTIFICATIONS);
 

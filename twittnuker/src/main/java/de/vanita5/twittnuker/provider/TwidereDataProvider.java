@@ -41,15 +41,16 @@ import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.Action;
 import android.util.Log;
 
 import com.squareup.otto.Bus;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.jsonserializer.JSONFileIO;
+import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
+import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -67,7 +68,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Preferences;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
-import de.vanita5.twittnuker.service.BackgroundOperationService;
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.ImagePreloader;
@@ -80,8 +81,8 @@ import de.vanita5.twittnuker.util.TwidereQueryBuilder.CachedUsersQueryBuilder;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder.ConversationQueryBuilder;
 import de.vanita5.twittnuker.util.collection.NoDuplicatesCopyOnWriteArrayList;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.TwidereQueryBuilder;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -95,7 +96,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
+
 import twitter4j.http.HostAddressResolver;
 
 import static de.vanita5.twittnuker.util.Utils.clearAccountColor;
@@ -143,6 +144,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 					return 0;
 			}
 			int result = 0;
+            final long[] newIds = new long[valuesArray.length];
             if (table != null) {
 				mDatabaseWrapper.beginTransaction();
                 if (tableId == TABLE_ID_CACHED_USERS) {
@@ -150,9 +152,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                         final Expression where = Expression.equals(CachedUsers.USER_ID,
                                 values.getAsLong(CachedUsers.USER_ID));
                         mDatabaseWrapper.update(table, values, where.getSQL(), null);
-                        mDatabaseWrapper.insertWithOnConflict(table, null, values,
-                                SQLiteDatabase.CONFLICT_IGNORE);
-                        result++;
+                        newIds[result++] = mDatabaseWrapper.insertWithOnConflict(table, null,
+                                values, SQLiteDatabase.CONFLICT_IGNORE);
                     }
                 } else if (tableId == TABLE_ID_SEARCH_HISTORY) {
                     for (final ContentValues values : valuesArray) {
@@ -160,20 +161,17 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                         final Expression where = Expression.equalsArgs(SearchHistory.QUERY);
                         final String[] args = {values.getAsString(SearchHistory.QUERY)};
                         mDatabaseWrapper.update(table, values, where.getSQL(), args);
-                        mDatabaseWrapper.insertWithOnConflict(table, null, values,
-                                SQLiteDatabase.CONFLICT_IGNORE);
-                        result++;
+                        newIds[result++] = mDatabaseWrapper.insertWithOnConflict(table, null,
+                                values, SQLiteDatabase.CONFLICT_IGNORE);
                     }
                 } else if (shouldReplaceOnConflict(tableId)) {
                     for (final ContentValues values : valuesArray) {
-                        mDatabaseWrapper.insertWithOnConflict(table, null, values,
-								SQLiteDatabase.CONFLICT_REPLACE);
-                        result++;
+                        newIds[result++] = mDatabaseWrapper.insertWithOnConflict(table, null,
+                                values, SQLiteDatabase.CONFLICT_REPLACE);
                     }
                 } else {
                     for (final ContentValues values : valuesArray) {
-                        mDatabaseWrapper.insert(table, null, values);
-					    result++;
+                        newIds[result++] = mDatabaseWrapper.insert(table, null, values);
 				    }
                 }
 				mDatabaseWrapper.setTransactionSuccessful();
@@ -182,7 +180,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 			if (result > 0) {
 				onDatabaseUpdated(tableId, uri);
 			}
-            onNewItemsInserted(uri, tableId, valuesArray);
+            onNewItemsInserted(uri, tableId, valuesArray, newIds);
 			return result;
 		} catch (final SQLException e) {
 			throw new IllegalStateException(e);
@@ -296,7 +294,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				rowId = mDatabaseWrapper.insert(table, null, values);
 			}
 			onDatabaseUpdated(tableId, uri);
-            onNewItemsInserted(uri, tableId, values);
+            onNewItemsInserted(uri, tableId, values, rowId);
 			return Uri.withAppendedPath(uri, String.valueOf(rowId));
 		} catch (final SQLException e) {
 			throw new IllegalStateException(e);
@@ -421,6 +419,22 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                             selection, sortOrder, accountId);
                     final Cursor c = mDatabaseWrapper.rawQuery(query.getSQL(), selectionArgs);
                     setNotificationUri(c, CachedUsers.CONTENT_URI);
+                    return c;
+                }
+                case VIRTUAL_TABLE_ID_DRAFTS_UNSENT: {
+                    final TwittnukerApplication app = TwittnukerApplication.getInstance(getContext());
+                    final AsyncTwitterWrapper twitter = app.getTwitterWrapper();
+                    final RawItemArray sendingIds = new RawItemArray(twitter.getSendingDraftIds());
+                    final Expression where;
+                    if (selection != null) {
+                        where = Expression.and(new Expression(selection),
+                                Expression.notIn(new Column(Drafts._ID), sendingIds));
+                    } else {
+                        where = Expression.and(Expression.notIn(new Column(Drafts._ID), sendingIds));
+                    }
+                    final Cursor c = mDatabaseWrapper.query(Drafts.TABLE_NAME, projection,
+                            where.getSQL(), selectionArgs, null, null, sortOrder);
+                    setNotificationUri(c, getNotificationUri(tableId, uri));
                     return c;
                 }
             }
@@ -798,7 +812,13 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		notifyContentObserver(getNotificationUri(tableId, uri));
 	}
 
-    private void onNewItemsInserted(final Uri uri, final int tableId, final ContentValues... valuesArray) {
+
+    private void onNewItemsInserted(final Uri uri, final int tableId, final ContentValues values, final long newId) {
+        onNewItemsInserted(uri, tableId, new ContentValues[]{values}, new long[]{newId});
+
+    }
+
+    private void onNewItemsInserted(final Uri uri, final int tableId, final ContentValues[] valuesArray, final long[] newIds) {
         if (uri == null || valuesArray == null || valuesArray.length == 0) return;
         preloadImages(valuesArray);
 		if (!uri.getBooleanQueryParameter(QUERY_PARAM_NOTIFY, true)) return;
@@ -824,29 +844,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				break;
 			}
             case TABLE_ID_DRAFTS: {
-                for (ContentValues values : valuesArray) {
-                    displayNewDraftNotification(values);
-		        }
                 break;
 	        }
         }
-    }
-
-    private void displayNewDraftNotification(ContentValues values) {
-        final Context context = getContext();
-        final NotificationManager nm = getNotificationManager();
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        builder.setTicker(context.getString(R.string.draft_saved));
-        builder.setContentTitle(context.getString(R.string.draft_saved));
-        builder.setContentText(values.getAsString(Drafts.TEXT));
-        builder.setSmallIcon(R.drawable.ic_stat_info);
-        final Intent service = new Intent(context, BackgroundOperationService.class);
-        service.setAction(INTENT_ACTION_DISCARD_DRAFT);
-        final PendingIntent discardIntent = PendingIntent.getService(context, 0, service, 0);
-        final Action.Builder actionBuilder = new Action.Builder(R.drawable.ic_action_delete,
-                context.getString(R.string.discard), discardIntent);
-        builder.addAction(actionBuilder.build());
-        nm.notify(16, builder.build());
     }
 
 	private void preloadImages(final ContentValues... values) {
@@ -972,7 +972,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (accountIds == null) return 0;
 		int count = 0;
 		for (final UnreadItem item : set.toArray(new UnreadItem[set.size()])) {
-            if (item != null && TwidereArrayUtils.contains(accountIds, item.account_id) && set.remove(item)) {
+            if (item != null && ArrayUtils.contains(accountIds, item.account_id) && set.remove(item)) {
 				count++;
 			}
 		}
@@ -982,7 +982,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	private static List<ParcelableDirectMessage> getMessagesForAccounts(final List<ParcelableDirectMessage> items,
 			final long accountId) {
 		if (items == null) return Collections.emptyList();
-		final List<ParcelableDirectMessage> result = new ArrayList<ParcelableDirectMessage>();
+        final List<ParcelableDirectMessage> result = new ArrayList<>();
 		for (final ParcelableDirectMessage item : items.toArray(new ParcelableDirectMessage[items.size()])) {
 			if (item.account_id == accountId) {
 				result.add(item);
@@ -993,7 +993,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
     private static Cursor getPreferencesCursor(final SharedPreferencesWrapper preferences, final String key) {
 		final MatrixCursor c = new MatrixCursor(TwidereDataStore.Preferences.MATRIX_COLUMNS);
-		final Map<String, Object> map = new HashMap<String, Object>();
+        final Map<String, Object> map = new HashMap<>();
 		final Map<String, ?> all = preferences.getAll();
 		if (key == null) {
 			map.putAll(all);
@@ -1026,7 +1026,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	private static List<ParcelableStatus> getStatusesForAccounts(final List<ParcelableStatus> items,
 			final long accountId) {
 		if (items == null) return Collections.emptyList();
-		final List<ParcelableStatus> result = new ArrayList<ParcelableStatus>();
+        final List<ParcelableStatus> result = new ArrayList<>();
 		for (final ParcelableStatus item : items.toArray(new ParcelableStatus[items.size()])) {
 			if (item.account_id == accountId) {
 				result.add(item);
@@ -1039,7 +1039,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (set == null || set.isEmpty()) return 0;
 		int count = 0;
 		for (final UnreadItem item : set.toArray(new UnreadItem[set.size()])) {
-			if (item != null && TwidereArrayUtils.contains(accountIds, item.account_id)) {
+            if (item != null && ArrayUtils.contains(accountIds, item.account_id)) {
 				count++;
 			}
 		}
