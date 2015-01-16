@@ -1,6 +1,5 @@
 package de.vanita5.twittnuker.service;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -12,7 +11,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -174,17 +172,18 @@ public class StreamingService extends Service implements Constants {
 
 			final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 			if (setTwitterInstances(prefs)) {
-				if (!mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, false)) return;
+				if (!mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, true)) return;
 				final Intent intent = new Intent(this, HomeActivity.class);
-				final Notification.Builder builder = new Notification.Builder(this);
-				builder.setOngoing(true);
-				builder.setOnlyAlertOnce(true);
-				builder.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
-				builder.setSmallIcon(R.drawable.ic_stat_twittnuker);
-				builder.setContentTitle(getString(R.string.app_name));
-				builder.setContentText(getString(R.string.streaming_service_running));
-				builder.setTicker(getString(R.string.streaming_service_running));
-				builder.setPriority(NotificationCompat.PRIORITY_MIN);
+				NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+				builder.setOngoing(true)
+						.setOnlyAlertOnce(true)
+						.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT))
+						.setSmallIcon(R.drawable.ic_stat_twittnuker)
+						.setContentTitle(getString(R.string.app_name))
+						.setContentText(getString(R.string.streaming_service_running))
+						.setTicker(getString(R.string.streaming_service_running))
+						.setPriority(NotificationCompat.PRIORITY_MIN)
+						.setCategory(NotificationCompat.CATEGORY_SERVICE);
 				mNotificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
 			} else {
 				isStreaming = false;
