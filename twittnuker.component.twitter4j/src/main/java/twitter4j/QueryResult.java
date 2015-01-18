@@ -21,7 +21,7 @@ package twitter4j;
  * 
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
-public interface QueryResult {
+public interface QueryResult extends ResponseList<Status> {
 	double getCompletedIn();
 
 	long getMaxId();
@@ -35,8 +35,6 @@ public interface QueryResult {
 	int getResultsPerPage();
 
 	long getSinceId();
-
-	Status[] getStatuses();
 
 	String getWarning();
 }

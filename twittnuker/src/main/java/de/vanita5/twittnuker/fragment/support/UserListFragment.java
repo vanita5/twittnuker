@@ -59,6 +59,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
@@ -74,7 +75,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
+import de.vanita5.twittnuker.view.ColorLabelLinearLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
@@ -99,7 +100,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 	private ImageView mProfileImageView;
 	private TextView mListNameView, mCreatedByView, mDescriptionView, mErrorMessageView;
     private View mErrorRetryContainer, mProgressContainer;
-	private ColorLabelRelativeLayout mProfileContainer;
+    private ColorLabelLinearLayout mUserListDetails;
 	private Button mRetryButton;
     private HeaderDrawerLayout mHeaderDrawerLayout;
     private ViewPager mViewPager;
@@ -187,17 +188,16 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 	public void displayUserList(final ParcelableUserList userList) {
 		if (userList == null || getActivity() == null) return;
 		getLoaderManager().destroyLoader(0);
-        final boolean isMyself = userList.account_id == userList.user_id;
 		mErrorRetryContainer.setVisibility(View.GONE);
         mProgressContainer.setVisibility(View.GONE);
 		mUserList = userList;
-		mProfileContainer.drawEnd(getAccountColor(getActivity(), userList.account_id));
+        mUserListDetails.drawEnd(getAccountColor(getActivity(), userList.account_id));
 		mListNameView.setText(userList.name);
-        final String display_name = UserColorNameUtils.getDisplayName(getActivity(), userList.user_name,
+        final String displayName = UserColorNameUtils.getDisplayName(getActivity(), userList.user_name,
 				userList.user_screen_name);
-		mCreatedByView.setText(getString(R.string.created_by, display_name));
+		mCreatedByView.setText(getString(R.string.created_by, displayName));
 		final String description = userList.description;
-        mDescriptionView.setVisibility(isMyself || !isEmpty(description) ? View.VISIBLE : View.GONE);
+        mDescriptionView.setVisibility(isEmpty(description) ? View.GONE : View.VISIBLE);
 		mDescriptionView.setText(description);
         final TwidereLinkify linkify = new TwidereLinkify(new OnLinkClickHandler(getActivity(), getMultiSelectManager()));
 		linkify.applyAllLinks(mDescriptionView, userList.account_id, false);
@@ -277,11 +277,16 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         mViewPager.setAdapter(mPagerAdapter);
         mPagerIndicator.setViewPager(mViewPager);
         mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
+        if (activity instanceof IThemedActivity) {
+            mPagerIndicator.setStripColor(((IThemedActivity) activity).getCurrentThemeColor());
+        } else {
+
+        }
 
         mTwitterWrapper = getApplication().getTwitterWrapper();
         mProfileImageLoader = getApplication().getImageLoaderWrapper();
         mProfileImageView.setOnClickListener(this);
-        mProfileContainer.setOnClickListener(this);
+        mUserListDetails.setOnClickListener(this);
         mRetryButton.setOnClickListener(this);
         getUserListInfo(false);
 
@@ -471,7 +476,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         final View headerView = mHeaderDrawerLayout.getHeader();
         final View contentView = mHeaderDrawerLayout.getContent();
         mCardView = (CardView) headerView.findViewById(R.id.card);
-        mProfileContainer = (ColorLabelRelativeLayout) headerView.findViewById(R.id.profile);
+        mUserListDetails = (ColorLabelLinearLayout) headerView.findViewById(R.id.user_list_details);
         mListNameView = (TextView) headerView.findViewById(R.id.list_name);
         mCreatedByView = (TextView) headerView.findViewById(R.id.created_by);
         mDescriptionView = (TextView) headerView.findViewById(R.id.description);

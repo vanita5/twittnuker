@@ -188,8 +188,8 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 	}
 
 	@Override
-	public void onContentChanged() {
-		super.onContentChanged();
+	public void onSupportContentChanged() {
+		super.onSupportContentChanged();
 		mAccountContainer = findViewById(R.id.account_container);
 		mSecondaryFieldContainer = findViewById(R.id.secondary_field_container);
 		mExtraConfigurationsContainer = findViewById(R.id.extra_configurations_container);

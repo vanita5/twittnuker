@@ -37,6 +37,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
+import android.support.v7.widget.PopupMenu;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -45,7 +46,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -63,11 +63,9 @@ import android.widget.TextView.OnEditorActionListener;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-import org.mariotaku.menucomponent.widget.PopupMenu;
 import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.OrderBy;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ImagePickerActivity;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
@@ -105,8 +103,8 @@ import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 
 public class DirectMessagesConversationFragment extends BaseSupportFragment implements
-		LoaderCallbacks<Cursor>, OnMenuItemClickListener, TextWatcher, OnClickListener,
-		OnItemSelectedListener, OnEditorActionListener, MenuButtonClickListener {
+        LoaderCallbacks<Cursor>, TextWatcher, OnClickListener, OnItemSelectedListener,
+        OnEditorActionListener, MenuButtonClickListener, PopupMenu.OnMenuItemClickListener {
 
     private static final int LOADER_ID_SEARCH_USERS = 1;
 
@@ -697,11 +695,11 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 	}
 
 	private void showMenu(final View view, final ParcelableDirectMessage dm) {
-		if (mPopupMenu != null && mPopupMenu.isShowing()) {
+        if (mPopupMenu != null) {
 			mPopupMenu.dismiss();
 		}
         final Context context = getActivity();
-		mPopupMenu = PopupMenu.getInstance(context, view);
+        mPopupMenu = new PopupMenu(context, view);
 		mPopupMenu.inflate(R.menu.action_direct_message);
 		final Menu menu = mPopupMenu.getMenu();
 		final MenuItem view_profile_item = menu.findItem(MENU_VIEW_PROFILE);

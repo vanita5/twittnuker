@@ -154,8 +154,8 @@ public class QuickSearchBarActivity extends BaseSupportActivity implements OnCli
 	}
 
 	@Override
-	public void onContentChanged() {
-		super.onContentChanged();
+	public void onSupportContentChanged() {
+		super.onSupportContentChanged();
 		mAccountSpinner = (Spinner) findViewById(R.id.account_spinner);
 		mSearchQuery = (EditText) findViewById(R.id.search_query);
 		mSearchSubmit = findViewById(R.id.search_submit);

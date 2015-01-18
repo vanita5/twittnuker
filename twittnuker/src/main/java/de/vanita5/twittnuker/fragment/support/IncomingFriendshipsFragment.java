@@ -31,7 +31,6 @@ import de.vanita5.twittnuker.loader.support.IncomingFriendshipsLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
-
 public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment {
 
 	@Override
@@ -60,11 +59,6 @@ public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment 
 			}
 		}
 		return super.onMenuItemClick(item);
-	}
-
-	@Override
-    protected UserMenuDialogFragment createMenuDialog() {
-        return new IncomingFriendshipsMenuDialogFragment();
 	}
 
 }

@@ -652,8 +652,10 @@
     <string name="subscribers">(D) Follower</string>
     <string name="read_from_bottom">Von unten lesen</string>
     <string name="register">Registrieren</string>
-    <string name="follows">(D) Follows</string>
-    <string name="belongs_to">(D) Gehört zu</string>
+    <string name="follows">Folgen</string>
+    <string name="belongs_to">Mitglied</string>
+    <string name="blocked_by_user_summary">Du wurdest von <xliff:g id="name">%s</xliff:g> geblockt</string>
+    <string name="select_accounts">Accounts auswählen</string>
 
 
     <!-- Twittnuker -->
@@ -706,8 +708,6 @@
     <string name="notification_new_retweet_single">Retweeted</string>
     <string name="notification_new_follower">folgt dir jetzt.</string>
     <string name="notification_new_direct_message">Direktnachricht</string>
-
-    <string name="circular_profile_images">Runde Profilbilder</string>
 
     <string name="shortening">Tweet kürzen</string>
     <string name="error_hototin">...but I failed :(\nDer Tweet wurde zu den Entwürfen hinzugefügt.</string>

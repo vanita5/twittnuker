@@ -68,6 +68,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 	private boolean mLoadMoreIndicatorEnabled;
     private StatusAdapterListener mStatusAdapterListener;
     private boolean mShowInReplyTo;
+    private boolean mShowAccountsColor;
 
 	public AbsStatusesAdapter(Context context, boolean compact) {
 		mContext = context;
@@ -181,6 +182,17 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 				break;
 			}
 		}
+    }
+
+    @Override
+    public boolean shouldShowAccountsColor() {
+        return mShowAccountsColor;
+    }
+
+    public void setShowAccountsColor(boolean showAccountsColor) {
+        if (mShowAccountsColor == showAccountsColor) return;
+        mShowAccountsColor = showAccountsColor;
+        notifyDataSetChanged();
 	}
 
 	@Override

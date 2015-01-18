@@ -33,9 +33,10 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,6 @@ import android.view.ViewGroup;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-import org.mariotaku.menucomponent.widget.PopupMenu;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter.StatusAdapterListener;
@@ -161,7 +161,6 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
     public final Loader<Data> onCreateLoader(int id, Bundle args) {
         final boolean fromUser = args.getBoolean(EXTRA_FROM_USER);
         args.remove(EXTRA_FROM_USER);
-        Log.d(LOGTAG, String.format("Creating loader for %s, fromUser: %b", getClass(), fromUser));
         return onCreateStatusesLoader(getActivity(), args, fromUser);
     }
 
@@ -237,7 +236,9 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 		mRecyclerView.setAdapter(mAdapter);
 		mRecyclerView.setOnScrollListener(mOnScrollListener);
         mAdapter.setListener(this);
-		getLoaderManager().initLoader(0, getArguments(), this);
+        final Bundle loaderArgs = new Bundle(getArguments());
+        loaderArgs.putBoolean(EXTRA_FROM_USER, true);
+        getLoaderManager().initLoader(0, loaderArgs, this);
 		setListShown(false);
 	}
 
@@ -313,7 +314,8 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
         if (mPopupMenu != null) {
             mPopupMenu.dismiss();
         }
-        final PopupMenu popupMenu = PopupMenu.getInstance(mAdapter.getContext(), menuView);
+        final PopupMenu popupMenu = new PopupMenu(mAdapter.getContext(), menuView,
+                Gravity.NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0);
         popupMenu.inflate(R.menu.action_status);
         setMenuForStatus(mAdapter.getContext(), popupMenu.getMenu(), mAdapter.getStatus(position));
         popupMenu.show();

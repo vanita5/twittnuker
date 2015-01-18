@@ -38,10 +38,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
-import de.vanita5.twittnuker.util.TwidereArrayUtils;
 
 public class AccountSelectorActivity extends BaseSupportDialogActivity implements LoaderCallbacks<Cursor>,
 		OnClickListener, OnItemClickListener {
@@ -69,8 +70,6 @@ public class AccountSelectorActivity extends BaseSupportDialogActivity implement
 
 	private boolean mFirstCreated;
 
-	private View mSelectAccountDivider;
-
 	private View mSelectAccountButtons;
 
 	@Override
@@ -92,10 +91,9 @@ public class AccountSelectorActivity extends BaseSupportDialogActivity implement
 	}
 
 	@Override
-	public void onContentChanged() {
-		super.onContentChanged();
+    public void onSupportContentChanged() {
+        super.onSupportContentChanged();
 		mListView = (ListView) findViewById(android.R.id.list);
-		mSelectAccountDivider = findViewById(R.id.select_account_divider);
 		mSelectAccountButtons = findViewById(R.id.select_account_buttons);
 	}
 
@@ -111,7 +109,7 @@ public class AccountSelectorActivity extends BaseSupportDialogActivity implement
 		if (cursor != null && mFirstCreated) {
 			final long[] activatedIds = getIntentExtraIds();
 			for (int i = 0, j = mAdapter.getCount(); i < j; i++) {
-				mListView.setItemChecked(i, TwidereArrayUtils.contains(activatedIds, mAdapter.getItemId(i)));
+                mListView.setItemChecked(i, ArrayUtils.contains(activatedIds, mAdapter.getItemId(i)));
 			}
 		}
 	}
@@ -143,7 +141,6 @@ public class AccountSelectorActivity extends BaseSupportDialogActivity implement
 		if (isSingleSelection) {
 			mListView.setOnItemClickListener(this);
 		}
-		mSelectAccountDivider.setVisibility(isSingleSelection ? View.GONE : View.VISIBLE);
 		mSelectAccountButtons.setVisibility(isSingleSelection ? View.GONE : View.VISIBLE);
 		mListView.setAdapter(mAdapter);
 		getLoaderManager().initLoader(0, null, this);

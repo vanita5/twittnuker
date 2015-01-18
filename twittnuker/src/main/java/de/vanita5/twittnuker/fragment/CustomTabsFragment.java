@@ -53,7 +53,6 @@ import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.DragSortListView.DropListener;
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
-import org.mariotaku.menucomponent.widget.PopupMenu;
 import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
@@ -86,8 +85,6 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 	private ContentResolver mResolver;
 
 	private DragSortListView mListView;
-
-	private PopupMenu mPopupMenu;
 
 	private CustomTabsAdapter mAdapter;
 
@@ -284,9 +281,6 @@ public class CustomTabsFragment extends BaseListFragment implements LoaderCallba
 
 	@Override
 	public void onStop() {
-		if (mPopupMenu != null) {
-			mPopupMenu.dismiss();
-		}
 		super.onStop();
 	}
 

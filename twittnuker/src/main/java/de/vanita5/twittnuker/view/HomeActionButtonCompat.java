@@ -21,8 +21,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.iface.IHomeActionButton;
 
@@ -58,7 +58,7 @@ public class HomeActionButtonCompat extends FrameLayout implements IHomeActionBu
         if (child instanceof FrameLayout) {
             final Drawable foreground = ((FrameLayout) child).getForeground();
             if (foreground != null) {
-                foreground.setColorFilter(Utils.getContrastYIQ(color, 192), Mode.MULTIPLY);
+                foreground.setColorFilter(ColorUtils.getContrastYIQ(color, 192), Mode.MULTIPLY);
 			}
         }
 

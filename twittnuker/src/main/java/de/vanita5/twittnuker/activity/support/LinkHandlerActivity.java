@@ -123,8 +123,8 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
 	}
 
 	@Override
-    public void onContentChanged() {
-        super.onContentChanged();
+    public void onSupportContentChanged() {
+        super.onSupportContentChanged();
         mMainContent = (TintedStatusFrameLayout) findViewById(R.id.main_content);
     }
 

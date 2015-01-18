@@ -184,7 +184,7 @@ public class InternalJSONFactoryImpl implements InternalJSONFactory {
 			return new QueryResultJSONImpl(res);
 		} catch (final TwitterException te) {
 			if (404 == te.getStatusCode())
-				return new QueryResultJSONImpl(query);
+				return new QueryResultJSONImpl(res, query);
 			else
 				throw te;
 		}

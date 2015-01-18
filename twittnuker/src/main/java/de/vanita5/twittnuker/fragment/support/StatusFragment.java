@@ -41,6 +41,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -51,8 +52,8 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -86,17 +87,15 @@ import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
-import de.vanita5.twittnuker.util.MediaPreviewUtils.OnMediaClickListener;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.StatisticUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
-import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.Utils.OnMediaClickListener;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.StatusTextView;
-import de.vanita5.twittnuker.view.TwidereMenuBar;
 import de.vanita5.twittnuker.view.TwitterCardContainer;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
@@ -123,7 +122,6 @@ import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.openStatus;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 import static de.vanita5.twittnuker.util.Utils.retweet;
-import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 import static de.vanita5.twittnuker.util.Utils.startStatusShareChooser;
@@ -155,7 +153,7 @@ public class StatusFragment extends BaseSupportFragment
             final long maxId = args.getLong(EXTRA_MAX_ID, -1);
             final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
             final StatusRepliesLoader loader = new StatusRepliesLoader(getActivity(), accountId,
-                    screenName, statusId, maxId, sinceId, null, null, 0, false);
+                    screenName, statusId, maxId, sinceId, null, null, 0, true);
             loader.setComparator(ParcelableStatus.REVERSE_ID_COMPARATOR);
             return loader;
 					}
@@ -271,11 +269,7 @@ public class StatusFragment extends BaseSupportFragment
 
     @Override
     public void onStatusMenuClick(StatusViewHolder holder, View itemView, int position) {
-        final Bundle args = new Bundle();
-        args.putParcelable(EXTRA_STATUS, mStatusAdapter.getStatus(position));
-        final StatusMenuDialogFragment f = new StatusMenuDialogFragment();
-        f.setArguments(args);
-        f.show(getActivity().getSupportFragmentManager(), "status_menu");
+        //TODO show status menu
     }
 
     @Override
@@ -524,6 +518,11 @@ public class StatusFragment extends BaseSupportFragment
         public void setData(List<ParcelableStatus> data) {
 
 	    }
+
+        @Override
+        public boolean shouldShowAccountsColor() {
+            return false;
+        }
 
         @Override
         public AsyncTwitterWrapper getTwitterWrapper() {
@@ -797,13 +796,14 @@ public class StatusFragment extends BaseSupportFragment
         }
     }
 
-    private static class DetailStatusViewHolder extends ViewHolder implements OnClickListener, OnMenuItemClickListener {
+    private static class DetailStatusViewHolder extends ViewHolder implements OnClickListener,
+            ActionMenuView.OnMenuItemClickListener {
 
         private final StatusAdapter adapter;
 
         private final CardView cardView;
 
-        private final TwidereMenuBar menuBar;
+        private final ActionMenuView menuBar;
         private final TextView nameView, screenNameView;
         private final StatusTextView textView;
         private final ShapedImageView profileImageView;
@@ -824,7 +824,7 @@ public class StatusFragment extends BaseSupportFragment
             super(itemView);
             this.adapter = adapter;
             cardView = (CardView) itemView.findViewById(R.id.card);
-            menuBar = (TwidereMenuBar) itemView.findViewById(R.id.menu_bar);
+            menuBar = (ActionMenuView) itemView.findViewById(R.id.menu_bar);
             nameView = (TextView) itemView.findViewById(R.id.name);
             screenNameView = (TextView) itemView.findViewById(R.id.screen_name);
             textView = (StatusTextView) itemView.findViewById(R.id.text);
@@ -937,7 +937,7 @@ public class StatusFragment extends BaseSupportFragment
                 case MENU_TRANSLATE: {
                     final ParcelableCredentials account
                             = ParcelableAccount.getCredentials(activity, status.account_id);
-                    if (TwitterContentUtils.isOfficialKey(activity, account.consumer_key, account.consumer_secret)) {
+                    if (Utils.isOfficialCredentials(activity, account)) {
                         StatusTranslateDialogFragment.show(fragment.getFragmentManager(), status);
                     } else {
                         final Resources resources = fragment.getResources();
@@ -1036,8 +1036,8 @@ public class StatusFragment extends BaseSupportFragment
                 mediaPreviewGrid.setVisibility(View.VISIBLE);
                 mediaPreviewGrid.removeAllViews();
                 final int maxColumns = resources.getInteger(R.integer.grid_column_image_preview);
-//                MediaPreviewUtils.addToLinearLayout(mediaPreviewGrid, loader, status.media,
-//						status.account_id, maxColumns, adapter.getFragment());
+                Utils.addToLinearLayout(mediaPreviewGrid, loader, status.media, status.account_id,
+                        maxColumns, adapter.getFragment());
             }
 
             if (TwitterCardUtils.isCardSupported(status.card)) {
@@ -1059,13 +1059,16 @@ public class StatusFragment extends BaseSupportFragment
 //                final FragmentTransaction ft = fm.beginTransaction();
             }
 
-            setMenuForStatus(context, menuBar.getMenu(), status, adapter.getStatusAccount());
-            menuBar.show();
+            Utils.setMenuForStatus(context, menuBar.getMenu(), status, adapter.getStatusAccount());
 		}
 
         private void initViews() {
+//            menuBar.setOnMenuItemClickListener(this);
             menuBar.setOnMenuItemClickListener(this);
-            menuBar.inflate(R.menu.menu_status);
+            final FragmentActivity activity = adapter.getFragment().getActivity();
+            final MenuInflater inflater = activity.getMenuInflater();
+            inflater.inflate(R.menu.menu_status, menuBar.getMenu());
+            ThemeUtils.wrapMenuIcon(menuBar, MENU_GROUP_STATUS_SHARE);
             profileContainer.setOnClickListener(this);
 
             retweetsContainer.setOnClickListener(this);

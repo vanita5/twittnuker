@@ -66,6 +66,7 @@ import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.DialogFragment;
@@ -75,7 +76,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.util.LongSparseArray;
 import android.support.v4.util.Pair;
+import android.support.v4.view.ActionProvider;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -87,8 +92,8 @@ import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.ActionProvider;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -99,6 +104,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.webkit.MimeTypeMap;
 import android.widget.AbsListView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -107,7 +114,6 @@ import android.widget.Toast;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.NameValuePair;
 import org.json.JSONException;
-import org.mariotaku.menucomponent.internal.menu.MenuUtils;
 import org.mariotaku.querybuilder.AllColumns;
 import org.mariotaku.querybuilder.Columns;
 import org.mariotaku.querybuilder.Columns.Column;
@@ -156,6 +162,7 @@ import de.vanita5.twittnuker.fragment.support.UserMediaTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserMentionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UsersListFragment;
+import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
 import de.vanita5.twittnuker.menu.StatusShareProvider;
 import de.vanita5.twittnuker.model.AccountPreferences;
@@ -217,6 +224,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -255,6 +263,7 @@ import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
 import static de.vanita5.twittnuker.util.TwidereLinkify.TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES;
 
+@SuppressWarnings("unused")
 public final class Utils implements Constants, TwitterConstants {
 
 	private static final String UA_TEMPLATE = "Mozilla/5.0 (Linux; Android %s; %s Build/%s) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.111 Safari/537.36";
@@ -405,6 +414,52 @@ public final class Utils implements Constants, TwitterConstants {
 			}
 		}
 	}
+
+    public static void addToLinearLayout(final LinearLayout container, final ImageLoaderWrapper loader,
+                                         final List<ParcelableMedia> mediaList, final long accountId,
+                                         final int maxColumnCount, final OnMediaClickListener mediaClickListener) {
+        if (container.getOrientation() != LinearLayout.VERTICAL)
+            throw new IllegalArgumentException();
+        final Context context = container.getContext();
+        final ImageLoadingHandler loadingHandler = new ImageLoadingHandler(R.id.media_preview_progress);
+        final LayoutInflater inflater = LayoutInflater.from(context);
+        final ListIterator<ParcelableMedia> iterator = mediaList.listIterator();
+        final int imageCount = mediaList.size();
+        final double imageCountSqrt = Math.sqrt(imageCount);
+        final int bestColumnCount = imageCountSqrt % 1 == 0 ? (int) imageCountSqrt : maxColumnCount;
+        final int firstColumn = imageCount % bestColumnCount, fullRowCount = imageCount / bestColumnCount;
+        final int rowCount = fullRowCount + (firstColumn > 0 ? 1 : 0);
+        final View.OnClickListener clickListener = new ImageGridClickListener(mediaClickListener, accountId);
+        container.setMotionEventSplittingEnabled(false);
+        for (int currentRow = 0; currentRow < rowCount; currentRow++) {
+            final LinearLayout rowContainer = new LinearLayout(context);
+            rowContainer.setOrientation(LinearLayout.HORIZONTAL);
+            rowContainer.setMotionEventSplittingEnabled(false);
+            container.addView(rowContainer, LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            final int columnCount = currentRow == 0 && firstColumn > 0 ? firstColumn : bestColumnCount;
+            for (int currentColumn = 0; currentColumn < columnCount; currentColumn++) {
+                final ParcelableMedia media = iterator.next();
+                final View item = inflater.inflate(R.layout.grid_item_media_preview, rowContainer, false);
+                item.setTag(media);
+                if (mediaClickListener != null) {
+                    item.setOnClickListener(clickListener);
+                }
+                final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) item.getLayoutParams();
+                lp.weight = 1.0f;
+                rowContainer.addView(item, lp);
+                final ImageView imageView = (ImageView) item.findViewById(R.id.media_preview_item);
+                loader.displayPreviewImage(imageView, media.url, loadingHandler);
+            }
+        }
+    }
+
+    public static void addToLinearLayout(final LinearLayout container, final ImageLoaderWrapper loader,
+                                         final ParcelableMedia[] mediaArray, final long accountId,
+                                         final int maxColumnCount, final OnMediaClickListener listener) {
+        addToLinearLayout(container, loader, Arrays.asList(mediaArray), accountId, maxColumnCount,
+                listener);
+    }
 
 	public static void announceForAccessibilityCompat(final Context context, final View view, final CharSequence text,
 			final Class<?> cls) {
@@ -637,6 +692,15 @@ public final class Utils implements Constants, TwitterConstants {
 		}
 	}
 
+    public static int[] getAccountColors(@Nullable final ParcelableAccount[] accounts) {
+        if (accounts == null) return null;
+        final int[] colors = new int[accounts.length];
+        for (int i = 0, j = accounts.length; i < j; i++) {
+            colors[i] = accounts[i].color;
+        }
+        return colors;
+    }
+
     public static Bitmap getCircleBitmap(Bitmap bitmap) {
         final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(),
                 Bitmap.Config.ARGB_8888);
@@ -665,7 +729,6 @@ public final class Utils implements Constants, TwitterConstants {
     }
 
     public static Fragment createFragmentForIntent(final Context context, final int linkId, final Intent intent) {
-		final long start = System.currentTimeMillis();
 		intent.setExtrasClassLoader(context.getClassLoader());
 		final Bundle extras = intent.getExtras();
 		final Uri uri = intent.getData();
@@ -946,9 +1009,6 @@ public final class Utils implements Constants, TwitterConstants {
 			}
 		}
         fragment.setArguments(args);
-		if (isDebugBuild()) {
-			Log.d(LOGTAG, String.format("createFragmentForIntent used %d ms", System.currentTimeMillis() - start));
-		}
 		return fragment;
 	}
 
@@ -3256,9 +3316,16 @@ public final class Utils implements Constants, TwitterConstants {
     }
 
     public static int getInsetsTopWithoutActionBarHeight(Context context, int top) {
-        if (context instanceof Activity) {
-            final ActionBar actionBar = ((Activity) context).getActionBar();
-            if (actionBar != null) return top - getActionBarHeight(actionBar);
+        final int actionBarHeight;
+        if (context instanceof ActionBarActivity) {
+            actionBarHeight = getActionBarHeight(((ActionBarActivity) context).getSupportActionBar());
+        } else if (context instanceof Activity) {
+            actionBarHeight = getActionBarHeight(((Activity) context).getActionBar());
+        } else {
+            return top;
+        }
+        if (actionBarHeight < top) {
+            return top - actionBarHeight;
         }
         return top;
     }
@@ -3434,22 +3501,22 @@ public final class Utils implements Constants, TwitterConstants {
 		final MenuItem retweet = menu.findItem(MENU_RETWEET);
 		if (retweet != null) {
 			retweet.setVisible(!status.user_is_protected || isMyRetweet);
-            MenuUtils.setMenuInfo(retweet, new TwidereMenuInfo(isMyRetweet, retweetHighlight));
+            ActionIconDrawable.setMenuHighlight(retweet, new TwidereMenuInfo(isMyRetweet, retweetHighlight));
             retweet.setTitle(isMyRetweet ? R.string.cancel_retweet : R.string.retweet);
 		}
         final MenuItem retweetSubItem = menu.findItem(R.id.retweet_submenu);
         if (retweetSubItem != null) {
-            MenuUtils.setMenuInfo(retweetSubItem, new TwidereMenuInfo(isMyRetweet,
-                    retweetHighlight));
+            ActionIconDrawable.setMenuHighlight(retweetSubItem, new TwidereMenuInfo(isMyRetweet,
+					retweetHighlight));
 		}
 		final MenuItem favorite = menu.findItem(MENU_FAVORITE);
 		if (favorite != null) {
-            MenuUtils.setMenuInfo(favorite, new TwidereMenuInfo(status.is_favorite, favoriteHighlight));
+            ActionIconDrawable.setMenuHighlight(favorite, new TwidereMenuInfo(status.is_favorite, favoriteHighlight));
             favorite.setTitle(status.is_favorite ? R.string.unfavorite : R.string.favorite);
 		}
 		final MenuItem love = menu.findItem(MENU_LOVE);
 	    if (love != null) {
-		    MenuUtils.setMenuInfo(love, new TwidereMenuInfo(isMyRetweet && status.is_favorite, loveHighlight));
+			ActionIconDrawable.setMenuHighlight(love, new TwidereMenuInfo(isMyRetweet && status.is_favorite, loveHighlight));
         }
 		final MenuItem translate = menu.findItem(MENU_TRANSLATE);
 		if (translate != null) {
@@ -3457,19 +3524,21 @@ public final class Utils implements Constants, TwitterConstants {
 		    setMenuItemAvailability(menu, MENU_TRANSLATE, isOfficialKey);
 		}
 		final MenuItem shareItem = menu.findItem(R.id.share);
-		final ActionProvider shareProvider = shareItem.getActionProvider();
+        final ActionProvider shareProvider = MenuItemCompat.getActionProvider(shareItem);
 		if (shareProvider instanceof StatusShareProvider) {
 			((StatusShareProvider) shareProvider).setStatus(status);
-		} else {
-			if (shareItem.hasSubMenu()) {
-				final Menu shareSubMenu = shareItem.getSubMenu();
-				final Intent shareIntent = createStatusShareIntent(context, status);
-				shareSubMenu.removeGroup(MENU_GROUP_STATUS_SHARE);
-				addIntentToMenu(context, shareSubMenu, shareIntent, MENU_GROUP_STATUS_SHARE);
-			}
-		}
-	}
-	
+        } else if (shareProvider instanceof ShareActionProvider) {
+            final Intent shareIntent = createStatusShareIntent(context, status);
+            ((ShareActionProvider) shareProvider).setShareIntent(shareIntent);
+        } else if (shareItem.hasSubMenu()) {
+            final Menu shareSubMenu = shareItem.getSubMenu();
+            final Intent shareIntent = createStatusShareIntent(context, status);
+            shareSubMenu.removeGroup(MENU_GROUP_STATUS_SHARE);
+            addIntentToMenu(context, shareSubMenu, shareIntent, MENU_GROUP_STATUS_SHARE);
+        }
+
+    }
+
 	public static void setMenuItemAvailability(final Menu menu, final int id, final boolean available) {
 		if (menu == null) return;
 		final MenuItem item = menu.findItem(id);
@@ -3505,7 +3574,7 @@ public final class Utils implements Constants, TwitterConstants {
 			cb.setHttpUserAgent(APP_NAME + " " + APP_PROJECT_URL + " / " + version_name
                     + (gzipCompressing ? " (gzip)" : ""));
 		} catch (final PackageManager.NameNotFoundException e) {
-
+            throw new AssertionError(e);
 		}
 	}
 
@@ -3792,8 +3861,7 @@ public final class Utils implements Constants, TwitterConstants {
 	private static Drawable getMetadataDrawable(final PackageManager pm, final ActivityInfo info, final String key) {
 		if (pm == null || info == null || info.metaData == null || key == null || !info.metaData.containsKey(key))
 			return null;
-		final Drawable d = pm.getDrawable(info.packageName, info.metaData.getInt(key), info.applicationInfo);
-		return d;
+        return pm.getDrawable(info.packageName, info.metaData.getInt(key), info.applicationInfo);
 	}
 
 	private static boolean isErrorCodeMessageSupported(final TwitterException te) {
@@ -3847,6 +3915,18 @@ public final class Utils implements Constants, TwitterConstants {
 		return 0;
 	}
 
+    public static int getActionBarHeight(android.support.v7.app.ActionBar actionBar) {
+		if (actionBar == null) return 0;
+		final Context context = actionBar.getThemedContext();
+		final TypedValue tv = new TypedValue();
+		final int height = actionBar.getHeight();
+		if (height > 0) return height;
+        if (context.getTheme().resolveAttribute(R.attr.actionBarSize, tv, true)) {
+			return TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
+		}
+		return 0;
+	}
+
 	public static int getActionBarHeight(Context context) {
         final TypedValue tv = new TypedValue();
         if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
@@ -3865,31 +3945,6 @@ public final class Utils implements Constants, TwitterConstants {
         }
     }
 
-    public static int getContrastYIQ(int color) {
-        return getContrastYIQ(color, 128);
-    }
-
-
-    public static int getContrastYIQ(int color, int threshold) {
-        return getContrastYIQ(color, threshold, Color.BLACK, Color.WHITE);
-    }
-
-    public static int getContrastYIQ(int color, int colorDark, int colorLight) {
-        return getContrastYIQ(color, 128, colorDark, colorLight);
-    }
-
-    /**
-     * Get most contrasting color
-     *
-     * @param color Input color, alpha channel will be disposed.
-     * @return {@link Color#WHITE} or {@link Color#BLACK}
-     * @see <a href='http://24ways.org/2010/calculating-color-contrast/'>Calculating Color Contrast</a>
-     */
-    public static int getContrastYIQ(int color, int threshold, int colorDark, int colorLight) {
-        final int r = Color.red(color), g = Color.green(color), b = Color.blue(color);
-        final int yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-        return (yiq >= threshold) ? colorDark : colorLight;
-    }
 
     public static void makeListFragmentFitsSystemWindows(ListFragment fragment, Rect insets) {
 			final ListView listView = fragment.getListView();

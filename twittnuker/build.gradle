@@ -51,6 +51,7 @@ repositories {
 dependencies {
     //compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-v13:21.0.3'
+    compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:cardview-v7:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.3'
     compile 'com.android.support:palette-v7:21.0.3'
@@ -70,10 +71,8 @@ dependencies {
     compile 'com.google.maps.android:android-maps-utils:0.3.4'
     compile 'com.squareup.retrofit:retrofit:1.2.2'
     compile project(':twittnuker.component.common')
-    compile project(':twittnuker.component.viewer.media')
     compile project(':SlidingMenu')
     compile project(':DragSortListView')
-    compile project(':MenuComponent')
     compile project(':PullToRefresh')
     compile project(':MessageBubbleView')
     compile fileTree(dir: 'libs', include: ['*.jar'])

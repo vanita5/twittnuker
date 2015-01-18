@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -42,8 +41,10 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -66,6 +67,8 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
@@ -86,6 +89,7 @@ import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.ActivityAccessor;
 import de.vanita5.twittnuker.util.ActivityAccessor.TaskDescriptionCompat;
+import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.FlymeUtils;
@@ -163,6 +167,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
 	private boolean mPushEnabled;
 	private float mPagerPosition;
+    private Toolbar mActionBar;
 
 	public void closeAccountsDrawer() {
 		if (mSlidingMenu == null) return;
@@ -195,7 +200,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		final long default_id = mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1);
 		if (account_ids == null || account_ids.length == 0) {
 			finish();
-		} else if (account_ids.length > 0 && !TwidereArrayUtils.contains(account_ids, default_id)) {
+        } else if (account_ids.length > 0 && !ArrayUtils.contains(account_ids, default_id)) {
 			mPreferences.edit().putLong(KEY_DEFAULT_ACCOUNT_ID, account_ids[0]).apply();
 		}
 	}
@@ -245,8 +250,10 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
 	@Override
-	public void onContentChanged() {
-		super.onContentChanged();
+    public void onSupportContentChanged() {
+        super.onSupportContentChanged();
+        mActionBar = (Toolbar) findViewById(R.id.actionbar);
+        mTabIndicator = (TabPagerIndicator) findViewById(R.id.main_tabs);
 		mSlidingMenu = (HomeSlidingMenu) findViewById(R.id.home_menu);
 		mViewPager = (ExtendedViewPager) findViewById(R.id.main_pager);
 		mEmptyTab = findViewById(R.id.empty_tab);
@@ -262,7 +269,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_home, menu);
         final MenuItem itemProgress = menu.findItem(MENU_PROGRESS);
-        mSmartBarProgress = (ProgressBar) itemProgress.getActionView().findViewById(android.R.id.progress);
+        mSmartBarProgress = (ProgressBar) MenuItemCompat.getActionView(itemProgress).findViewById(android.R.id.progress);
 		updateActionsButton();
 		return true;
 	}
@@ -400,11 +407,15 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
 	@Override
 	public boolean onSearchRequested() {
-		final Bundle appSearchData = new Bundle();
-		if (mSelectedAccountToSearch != null) {
-			appSearchData.putLong(EXTRA_ACCOUNT_ID, mSelectedAccountToSearch.account_id);
-		}
-		startSearch(null, false, appSearchData, false);
+//        final Bundle appSearchData = new Bundle();
+//        if (mSelectedAccountToSearch != null) {
+//            appSearchData.putLong(EXTRA_ACCOUNT_ID, mSelectedAccountToSearch.account_id);
+//            openSearch(this, mSelectedAccountToSearch.accountId, query);
+//        }
+//        startSearch(null, false, appSearchData, false);
+        final Intent intent = new Intent(this, QuickSearchBarActivity.class);
+//        intent.putExtra(EXTRA_ACCOUNT_ID, account.account_id);
+        startActivity(intent);
 		return true;
 	}
 
@@ -478,6 +489,11 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
+    @Override
+    public int getThemeResourceId() {
+        return ThemeUtils.getNoActionBarThemeResource(this);
+    }
+
     /**
      * Called when the context is first created.
      */
@@ -488,9 +504,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-        window.requestFeature(Window.FEATURE_NO_TITLE);
-        window.requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-        window.requestFeature(Window.FEATURE_ACTION_MODE_OVERLAY);
 		super.onCreate(savedInstanceState);
 		if (!isDatabaseReady(this)) {
 			Toast.makeText(this, R.string.preparing_database_toast, Toast.LENGTH_SHORT).show();
@@ -517,11 +530,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			finish();
 			return;
 		}
-        final ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
 		setContentView(R.layout.activity_home);
+        setSupportActionBar(mActionBar);
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONCREATE));
 //		final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
 		final boolean refreshOnStart = false; //FIXME workaround
@@ -572,8 +582,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         final IHomeActionButton homeActionButton = (IHomeActionButton) mActionsButton;
         mTabIndicator.setItemContext(ThemeUtils.getActionBarContext(this));
         if (ThemeUtils.isColoredActionBar(themeResId)) {
-            final int contrastColor = Utils.getContrastYIQ(actionBarColor, 192);
-            ViewAccessor.setBackground(mTabIndicator, new ColorDrawable(actionBarColor));
+            final int contrastColor = ColorUtils.getContrastYIQ(actionBarColor, 192);
+            ViewAccessor.setBackground(mActionBar, new ColorDrawable(actionBarColor));
             homeActionButton.setButtonColor(actionBarColor);
             homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
             mTabIndicator.setStripColor(themeColor);
@@ -586,7 +596,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		} else {
             final int backgroundColor = ThemeUtils.getThemeBackgroundColor(mTabIndicator.getItemContext());
             final int foregroundColor = ThemeUtils.getThemeForegroundColor(mTabIndicator.getItemContext());
-            ViewAccessor.setBackground(mTabIndicator, ThemeUtils.getActionBarBackground(this, themeResId));
+            ViewAccessor.setBackground(mActionBar, ThemeUtils.getActionBarBackground(this, themeResId));
             homeActionButton.setButtonColor(backgroundColor);
             homeActionButton.setIconColor(foregroundColor, Mode.SRC_ATOP);
             mTabIndicator.setStripColor(themeColor);

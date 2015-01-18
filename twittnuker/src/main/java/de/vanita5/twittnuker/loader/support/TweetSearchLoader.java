@@ -27,7 +27,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
-import java.util.Arrays;
 import java.util.List;
 
 import twitter4j.Paging;
@@ -60,7 +59,7 @@ public class TweetSearchLoader extends Twitter4JStatusesLoader {
 		if (paging.getMaxId() > 0) {
 			query.setMaxId(paging.getMaxId());
 		}
-		return Arrays.asList(twitter.search(query).getStatuses());
+        return twitter.search(query);
 	}
 
 	protected String processQuery(final String query) {

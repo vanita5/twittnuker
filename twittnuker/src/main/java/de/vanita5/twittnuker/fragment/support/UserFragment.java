@@ -1,7 +1,6 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
@@ -19,20 +18,24 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
@@ -55,7 +58,6 @@ import android.widget.TextView;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-import org.mariotaku.menucomponent.internal.menu.MenuUtils;
 import org.mariotaku.querybuilder.Expression;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
@@ -69,6 +71,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
+import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -100,6 +103,7 @@ import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
+import java.util.List;
 import java.util.Locale;
 
 import twitter4j.Relationship;
@@ -164,6 +168,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private View mProfileBannerContainer;
     private Button mFollowButton;
     private ProgressBar mFollowProgress;
+    private View mPagesContent, mPagesErrorContainer;
+    private ImageView mPagesErrorIcon;
+    private TextView mPagesErrorText;
 
 	private SupportTabsAdapter mPagerAdapter;
 
@@ -298,7 +305,16 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             } else if (relationship != null) {
                 final int drawableRes;
                 mFollowButton.setEnabled(!relationship.isSourceBlockedByTarget());
-                getView().findViewById(R.id.pages_error).setVisibility(relationship.isSourceBlockedByTarget() ? View.VISIBLE : View.GONE);
+                if (relationship.isSourceBlockedByTarget()) {
+                    mPagesErrorContainer.setVisibility(View.VISIBLE);
+                    final String displayName = UserColorNameUtils.getDisplayName(getActivity(), user);
+                    mPagesErrorText.setText(getString(R.string.blocked_by_user_summary, displayName));
+                    mPagesContent.setVisibility(View.GONE);
+                } else {
+                    mPagesErrorContainer.setVisibility(View.GONE);
+                    mPagesErrorText.setText(null);
+                    mPagesContent.setVisibility(View.VISIBLE);
+                }
                 if (relationship.isSourceBlockingTarget()) {
                     mFollowButton.setText(R.string.unblock);
                     drawableRes = R.drawable.ic_follow_blocked;
@@ -343,7 +359,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 			} else {
                 mFollowButton.setText(null);
                 mFollowButton.setVisibility(View.GONE);
-                getView().findViewById(R.id.pages_error).setVisibility(View.GONE);
+                mPagesErrorContainer.setVisibility(View.GONE);
+                mPagesContent.setVisibility(View.VISIBLE);
 //                mFollowingYouIndicator.setVisibility(View.GONE);
 			}
 		}
@@ -376,32 +393,29 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 			mProfileTypeView.setVisibility(View.GONE);
 		}
 		mScreenNameView.setText("@" + user.screen_name);
-		mDescriptionContainer.setVisibility(userIsMe || !isEmpty(user.description_html) ? View.VISIBLE : View.GONE);
-		mDescriptionView.setText(user.description_html != null ? Html.fromHtml(user.description_html) : null);
+        mDescriptionContainer.setVisibility(isEmpty(user.description_html) ? View.GONE : View.VISIBLE);
+        mDescriptionView.setText(user.description_html != null ? Html.fromHtml(user.description_html) : user.description_plain);
 		final TwidereLinkify linkify = new TwidereLinkify(this);
 		linkify.applyAllLinks(mDescriptionView, user.account_id, false);
 		mDescriptionView.setMovementMethod(null);
-		mLocationContainer.setVisibility(userIsMe || !isEmpty(user.location) ? View.VISIBLE : View.GONE);
+        mLocationContainer.setVisibility(isEmpty(user.location) ? View.GONE : View.VISIBLE);
 		mLocationView.setText(user.location);
-		mURLContainer.setVisibility(userIsMe || !isEmpty(user.url) || !isEmpty(user.url_expanded) ? View.VISIBLE
-				: View.GONE);
+        mURLContainer.setVisibility(isEmpty(user.url) && isEmpty(user.url_expanded) ? View.GONE : View.VISIBLE);
 		mURLView.setText(isEmpty(user.url_expanded) ? user.url : user.url_expanded);
 		mURLView.setMovementMethod(null);
         final String createdAt = formatToLongTimeString(activity, user.created_at);
-		final float daysSinceCreated = (System.currentTimeMillis() - user.created_at) / 1000 / 60 / 60 / 24;
-		final int dailyTweets = Math.round(user.statuses_count / Math.max(1, daysSinceCreated));
+        final float daysSinceCreation = (System.currentTimeMillis() - user.created_at) / 1000 / 60 / 60 / 24;
+        final int dailyTweets = Math.round(user.statuses_count / Math.max(1, daysSinceCreation));
 		mCreatedAtView.setText(res.getQuantityString(R.plurals.created_at_with_N_tweets_per_day, dailyTweets,
 				createdAt, dailyTweets));
 		mTweetCount.setText(getLocalizedNumber(mLocale, user.statuses_count));
 		mFollowersCount.setText(getLocalizedNumber(mLocale, user.followers_count));
 		mFriendsCount.setText(getLocalizedNumber(mLocale, user.friends_count));
+
+        mProfileImageLoader.displayProfileImage(mProfileImageView, getOriginalTwitterProfileImage(user.profile_image_url));
 		if (userColor != 0) {
-			mProfileImageLoader.displayProfileImage(mProfileImageView,
-					getOriginalTwitterProfileImage(user.profile_image_url));
             setUserColor(userColor);
 		} else {
-			mProfileImageLoader.displayProfileImage(mProfileImageView,
-                    getOriginalTwitterProfileImage(user.profile_image_url));
             setUserColor(user.link_color);
 		}
 		final int defWidth = res.getDisplayMetrics().widthPixels;
@@ -569,8 +583,17 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_user, container, false);
+        final View view = inflater.inflate(R.layout.fragment_user, container, false);
+        final ViewGroup profileDetailsContainer = (ViewGroup) view.findViewById(R.id.profile_details_container);
+        final boolean isCompact = Utils.isCompactCards(getActivity());
+        if (isCompact) {
+            inflater.inflate(R.layout.layout_user_details_compact, profileDetailsContainer);
+        } else {
+            inflater.inflate(R.layout.layout_user_details, profileDetailsContainer);
+        }
+        return view;
     }
+
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
@@ -591,6 +614,44 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         }
         mProfileImageLoader = getApplication().getImageLoaderWrapper();
         final FragmentActivity activity = getActivity();
+
+        activity.setEnterSharedElementCallback(new SharedElementCallback() {
+
+            @Override
+            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+                int idx = sharedElementNames.indexOf(TRANSITION_NAME_PROFILE_IMAGE);
+                if (idx != -1) {
+                    final View view = sharedElements.get(idx);
+                    int[] location = new int[2];
+                    final RectF bounds = new RectF(0, 0, view.getWidth(), view.getHeight());
+                    view.getLocationOnScreen(location);
+                    bounds.offsetTo(location[0], location[1]);
+                    mProfileImageView.setTransitionDestination(bounds);
+                }
+                super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
+            }
+
+            @Override
+            public View onCreateSnapshotView(Context context, Parcelable snapshot) {
+                final View view = super.onCreateSnapshotView(context, snapshot);
+                return view;
+            }
+
+            @Override
+            public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+                final int idx = sharedElementNames.indexOf(TRANSITION_NAME_PROFILE_IMAGE);
+                if (idx != -1) {
+                    final View view = sharedElements.get(idx);
+                    int[] location = new int[2];
+                    final RectF bounds = new RectF(0, 0, view.getWidth(), view.getHeight());
+                    view.getLocationOnScreen(location);
+                    bounds.offsetTo(location[0], location[1]);
+                    mProfileImageView.setTransitionSource(bounds);
+                }
+                super.onSharedElementStart(sharedElementNames, sharedElements, sharedElementSnapshots);
+            }
+
+        });
 
         ViewCompat.setTransitionName(mProfileImageView, TRANSITION_NAME_PROFILE_IMAGE);
         ViewCompat.setTransitionName(mProfileTypeView, TRANSITION_NAME_PROFILE_TYPE);
@@ -702,19 +763,19 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 			final MenuItem blockItem = menu.findItem(MENU_BLOCK);
 			if (blockItem != null) {
 				final boolean blocking = relationship.isSourceBlockingTarget();
-				MenuUtils.setMenuInfo(blockItem, new TwidereMenuInfo(blocking));
+                ActionIconDrawable.setMenuHighlight(blockItem, new TwidereMenuInfo(blocking));
 				blockItem.setTitle(blocking ? R.string.unblock : R.string.block);
 			}
 			final MenuItem muteItem = menu.findItem(MENU_MUTE_USER);
 			if (muteItem != null) {
 				final boolean muting = relationship.isSourceMutingTarget();
-				MenuUtils.setMenuInfo(muteItem, new TwidereMenuInfo(muting));
+                ActionIconDrawable.setMenuHighlight(muteItem, new TwidereMenuInfo(muting));
 				muteItem.setTitle(muting ? R.string.unmute : R.string.mute);
 			}
 			final MenuItem filterItem = menu.findItem(MENU_ADD_TO_FILTER);
 			if (filterItem != null) {
 				final boolean filtering = Utils.isFilteringUser(getActivity(), user.id);
-				MenuUtils.setMenuInfo(filterItem, new TwidereMenuInfo(filtering));
+                ActionIconDrawable.setMenuHighlight(filterItem, new TwidereMenuInfo(filtering));
 				filterItem.setTitle(filtering ? R.string.remove_from_filter : R.string.add_to_filter);
 			}
 		} else {
@@ -1015,6 +1076,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mPagerIndicator = (TabPagerIndicator) contentView.findViewById(R.id.view_pager_tabs);
         mFollowButton = (Button) headerView.findViewById(R.id.follow);
         mFollowProgress = (ProgressBar) headerView.findViewById(R.id.follow_progress);
+        mPagesContent = view.findViewById(R.id.pages_content);
+        mPagesErrorContainer = view.findViewById(R.id.pages_error_container);
+        mPagesErrorText = (TextView) view.findViewById(R.id.pages_error_text);
 	}
 
     @Override
@@ -1094,7 +1158,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final FragmentActivity activity = getActivity();
         if (!(activity instanceof LinkHandlerActivity)) return;
         final LinkHandlerActivity linkHandler = (LinkHandlerActivity) activity;
-        final ActionBar actionBar = linkHandler.getActionBar();
+        final ActionBar actionBar = linkHandler.getSupportActionBar();
         if (actionBar == null) return;
         final int themeResId = linkHandler.getCurrentThemeResourceId();
         final Drawable shadow = activity.getResources().getDrawable(R.drawable.shadow_user_banner_action_bar);
@@ -1236,7 +1300,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 								 boolean colorLineOnly) {
 			super(new Drawable[]{shadow, background, new LineBackgroundDrawable(resources, 2.0f),
                     new ActionBarColorDrawable()});
-			mShadowDrawable = shadow;
+            mShadowDrawable = getDrawable(0);
 			mBackgroundDrawable = getDrawable(1);
 			mLineDrawable = (LineBackgroundDrawable) getDrawable(2);
 			mColorDrawable = (ColorDrawable) getDrawable(3);
@@ -1374,4 +1438,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
 		}
 	}
+
+
 }

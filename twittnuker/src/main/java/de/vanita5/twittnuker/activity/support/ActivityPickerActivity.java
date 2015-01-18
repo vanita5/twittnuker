@@ -22,10 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.ResolveInfoListAdapter;
-import de.vanita5.twittnuker.loader.support.IntentActivitiesLoader;
-
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -35,6 +31,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.adapter.ResolveInfoListAdapter;
+import de.vanita5.twittnuker.loader.support.IntentActivitiesLoader;
 
 import java.util.List;
 
@@ -46,8 +46,8 @@ public class ActivityPickerActivity extends BaseSupportDialogActivity implements
 	private ListView mListView;
 
 	@Override
-	public void onContentChanged() {
-		super.onContentChanged();
+    public void onSupportContentChanged() {
+        super.onSupportContentChanged();
 		mListView = (ListView) findViewById(android.R.id.list);
 	}
 

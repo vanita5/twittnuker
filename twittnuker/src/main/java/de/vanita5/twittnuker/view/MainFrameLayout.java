@@ -15,6 +15,11 @@ public class MainFrameLayout extends TintedStatusFrameLayout {
 
 	public MainFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        super.setPadding(left, top, right, bottom);
 	}
 
 	@Override

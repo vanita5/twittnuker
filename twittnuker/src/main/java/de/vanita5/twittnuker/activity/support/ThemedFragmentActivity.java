@@ -26,8 +26,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBarActivity;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -36,6 +36,7 @@ import android.view.View;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -44,7 +45,7 @@ import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
 import static de.vanita5.twittnuker.util.Utils.restartActivity;
 
-public abstract class ThemedFragmentActivity extends FragmentActivity implements Constants, IThemedActivity {
+public abstract class ThemedFragmentActivity extends ActionBarActivity implements Constants, IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor,
 			mCurrentThemeBackgroundAlpha, mCurrentActionBarColor;
@@ -110,7 +111,7 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     protected void onTitleChanged(CharSequence title, int color) {
         final SpannableStringBuilder builder = new SpannableStringBuilder(title);
         final int themeResId = getCurrentThemeResourceId();
-        final int themeColor = getThemeColor(), contrastColor = Utils.getContrastYIQ(themeColor, 192);
+        final int themeColor = getThemeColor(), contrastColor = ColorUtils.getContrastYIQ(themeColor, 192);
         if (!ThemeUtils.isDarkTheme(themeResId)) {
             builder.setSpan(new ForegroundColorSpan(contrastColor), 0, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
