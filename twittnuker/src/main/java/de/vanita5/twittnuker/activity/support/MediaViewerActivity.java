@@ -16,19 +16,17 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import android.app.ActionBar;
-import android.app.ActionBar.OnMenuVisibilityListener;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBar.OnMenuVisibilityListener;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
-import android.view.View.OnLayoutChangeListener;
 import android.widget.ProgressBar;
 
 import com.diegocarloslima.byakugallery.lib.TileBitmapDrawable;
@@ -46,7 +44,7 @@ import java.io.File;
 
 public final class MediaViewerActivity extends BaseSupportActivity implements Constants,
 		TileImageLoader.DownloadListener, LoaderManager.LoaderCallbacks<TileImageLoader.Result>,
-        OnMenuVisibilityListener {
+		OnMenuVisibilityListener {
 
 
 	private ActionBar mActionBar;
@@ -236,7 +234,7 @@ public final class MediaViewerActivity extends BaseSupportActivity implements Co
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.image_viewer);
-		mActionBar = getActionBar();
+		mActionBar = getSupportActionBar();
 		mActionBar.setDisplayHomeAsUpEnabled(true);
 		mActionBar.addOnMenuVisibilityListener(this);
 		if (savedInstanceState == null) {
