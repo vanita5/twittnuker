@@ -118,7 +118,7 @@ public class InternalJSONFactoryImpl implements InternalJSONFactory {
 
 	@Override
 	public <T> ResponseList<T> createEmptyResponseList() {
-		return new ResponseListImpl<T>(0, null);
+        return new ResponseListImpl<>(0, null);
 	}
 
 	@Override
@@ -172,7 +172,7 @@ public class InternalJSONFactoryImpl implements InternalJSONFactory {
 			return PlaceJSONImpl.createPlaceList(res, conf);
 		} catch (final TwitterException te) {
 			if (te.getStatusCode() == 404)
-				return new ResponseListImpl<Place>(0, null);
+                return new ResponseListImpl<>(0, null);
 			else
 				throw te;
 		}

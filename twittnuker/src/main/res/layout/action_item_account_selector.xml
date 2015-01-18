@@ -42,6 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        app:sivBackgroundColor="?android:colorBackground"
         app:sivBorder="true"
         app:sivBorderWidth="1.5dp"
         tools:src="@drawable/ic_profile_image_default"/>
@@ -51,6 +52,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:textColor="?android:textColorPrimary"/>
+        android:textColor="?android:colorForeground"/>
 
 </de.vanita5.twittnuker.view.SquareFrameLayout>

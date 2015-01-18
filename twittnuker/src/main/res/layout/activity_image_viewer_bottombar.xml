@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 
-<de.vanita5.twittnuker.view.TwidereMenuBar
+<android.support.v7.widget.ActionMenuView
     android:id="@+id/menu_bar"
     style="?android:actionBarSplitStyle"
     xmlns:android="http://schemas.android.com/apk/res/android"

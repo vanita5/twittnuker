@@ -49,13 +49,13 @@
             app:contentInsetEnd="0dp"
             app:contentInsetStart="0dp">
 
-            <org.mariotaku.twidere.view.TabPagerIndicator
-            android:id="@+id/main_tabs"
-            android:layout_width="match_parent"
+            <de.vanita5.twittnuker.view.TabPagerIndicator
+                android:id="@+id/main_tabs"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-            app:tabExpandEnabled="true"
-            app:tabHorizontalPadding="@dimen/element_spacing_normal"/>
+                app:tabExpandEnabled="true"
+                app:tabHorizontalPadding="@dimen/element_spacing_normal"/>
 
         </de.vanita5.twittnuker.view.TwidereToolbar>
 

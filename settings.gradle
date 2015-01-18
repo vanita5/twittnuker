@@ -23,9 +23,8 @@ include ':twittnuker.component.common'
 include ':twittnuker.component.viewer.media'
 include ':twittnuker.component.jsonserializer'
 include ':twittnuker.component.querybuilder'
-include ':SlidingMenu', ':DragSortListView', ':MenuComponent', ':PullToRefresh', ':MessageBubbleView'
+include ':SlidingMenu', ':DragSortListView', ':PullToRefresh', ':MessageBubbleView'
 project(':SlidingMenu').projectDir = file('libraries/SlidingMenu/library')
 project(':DragSortListView').projectDir = file('libraries/DragSortListView/library')
-project(':MenuComponent').projectDir = file('libraries/MenuComponent/library')
 project(':PullToRefresh').projectDir = file('libraries/PullToRefresh/library')
 project(':MessageBubbleView').projectDir = file('libraries/MessageBubbleView/library')
