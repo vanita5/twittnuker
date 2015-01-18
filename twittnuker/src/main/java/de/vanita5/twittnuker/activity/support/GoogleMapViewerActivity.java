@@ -1,10 +1,10 @@
 package de.vanita5.twittnuker.activity.support;
 
-import android.app.ActionBar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -73,7 +73,7 @@ public class GoogleMapViewerActivity extends BaseSupportActivity implements Cons
 			finish();
 			return;
 		}
-		final ActionBar actionBar = getActionBar();
+		final ActionBar actionBar = getSupportActionBar();
 		if (actionBar != null) {
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}

@@ -1,11 +1,11 @@
 package de.vanita5.twittnuker.activity.support;
 
-import android.app.ActionBar;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
 import de.vanita5.twittnuker.R;
@@ -28,7 +28,7 @@ public class AccountsManagerActivity extends BaseSupportActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		final ActionBar actionBar = getActionBar();
+		final ActionBar actionBar = getSupportActionBar();
 		if (actionBar != null) {
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}

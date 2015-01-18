@@ -49,9 +49,9 @@ public class BrowserActivity extends BaseSupportActivity {
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		mUri = getIntent().getData();
 		if (mUri == null) {
             Toast.makeText(this, R.string.error_occurred, Toast.LENGTH_SHORT).show();

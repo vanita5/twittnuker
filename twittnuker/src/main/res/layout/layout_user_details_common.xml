@@ -189,7 +189,7 @@
                 android:padding="@dimen/element_spacing_small">
 
                 <de.vanita5.twittnuker.view.themed.ThemedTextView
-                    android:id="@+id/tweets_count"
+                    android:id="@+id/statuses_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
