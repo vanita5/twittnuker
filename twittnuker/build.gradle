@@ -67,6 +67,7 @@ dependencies {
     compile 'com.commonsware.cwac:merge:1.1.1'
     compile 'com.commonsware.cwac:sacklist:1.0.0'
     compile 'com.diegocarloslima:byakugallery:0.1.0'
+    compile 'com.rengwuxian.materialedittext:library:1.8.2'
     compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.google.maps.android:android-maps-utils:0.3.4'
     compile 'com.squareup.retrofit:retrofit:1.2.2'

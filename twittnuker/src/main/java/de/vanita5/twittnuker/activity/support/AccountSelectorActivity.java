@@ -39,7 +39,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import org.apache.commons.lang3.ArrayUtils;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -91,8 +90,8 @@ public class AccountSelectorActivity extends BaseSupportDialogActivity implement
 	}
 
 	@Override
-    public void onSupportContentChanged() {
-        super.onSupportContentChanged();
+    public void onContentChanged() {
+        super.onContentChanged();
 		mListView = (ListView) findViewById(android.R.id.list);
 		mSelectAccountButtons = findViewById(R.id.select_account_buttons);
 	}

@@ -150,7 +150,7 @@ import static de.vanita5.twittnuker.util.Utils.getShareStatus;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
-public class ComposeActivity extends BaseSupportDialogActivity implements TextWatcher, LocationListener,
+public class ComposeActivity extends ThemedActionBarActivity implements TextWatcher, LocationListener,
         OnMenuItemClickListener, OnClickListener, OnEditorActionListener, OnLongClickListener, InvokedListener {
 
 	private static final String FAKE_IMAGE_LINK = "https://www.example.com/fake_image.jpg";
@@ -484,7 +484,7 @@ public class ComposeActivity extends BaseSupportDialogActivity implements TextWa
 		super.onCreate(savedInstanceState);
 		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		mPreferences = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mTwitterWrapper = getTwittnukerApplication().getTwitterWrapper();
+        mTwitterWrapper = TwittnukerApplication.getInstance(this).getTwitterWrapper();
 		mResolver = getContentResolver();
 		mValidator = new TwidereValidator(this);
         setContentView(R.layout.activity_compose);

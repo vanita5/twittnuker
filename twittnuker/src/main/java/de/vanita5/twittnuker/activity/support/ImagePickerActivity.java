@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class ImagePickerActivity extends ThemedFragmentActivity {
+public class ImagePickerActivity extends ThemedActionBarActivity {
 
 	public static final int REQUEST_PICK_IMAGE = 101;
 	public static final int REQUEST_TAKE_PHOTO = 102;
@@ -209,7 +209,7 @@ public class ImagePickerActivity extends ThemedFragmentActivity {
 				opts.inJustDecodeBounds = true;
 				BitmapFactory.decodeStream(cr.openInputStream(mUri), null, opts);
 				final String mimeType = opts.outMimeType;
-				final String suffix = mimeType != null ? ""
+				final String suffix = mimeType != null ? "."
 						+ MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) : null;
 				final File outFile = File.createTempFile("temp_image_", suffix, cacheDir);
 				os = new FileOutputStream(outFile);

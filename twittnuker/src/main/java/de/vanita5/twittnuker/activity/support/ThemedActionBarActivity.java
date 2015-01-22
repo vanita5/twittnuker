@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -26,8 +26,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBarActivity;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -45,7 +45,7 @@ import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
 import static de.vanita5.twittnuker.util.Utils.restartActivity;
 
-public abstract class ThemedFragmentActivity extends FragmentActivity implements Constants, IThemedActivity {
+public abstract class ThemedActionBarActivity extends ActionBarActivity implements Constants, IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor,
 			mCurrentThemeBackgroundAlpha, mCurrentActionBarColor;
@@ -57,27 +57,27 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
 		return super.getResources();
 	}
 
-    @Override
-    public final int getCurrentThemeResourceId() {
-        return mCurrentThemeResource;
+	@Override
+	public final int getCurrentThemeResourceId() {
+		return mCurrentThemeResource;
 	}
 
-    @Override
-    public int getThemeBackgroundAlpha() {
-        return ThemeUtils.isTransparentBackground(this) ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xff;
-    }
+	@Override
+	public int getThemeBackgroundAlpha() {
+		return ThemeUtils.isTransparentBackground(this) ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xff;
+	}
 
-    @Override
-    public int getCurrentThemeBackgroundAlpha() {
-        return mCurrentThemeBackgroundAlpha;
-    }
+	@Override
+	public int getCurrentThemeBackgroundAlpha() {
+		return mCurrentThemeBackgroundAlpha;
+	}
 
-    @Override
-    public int getCurrentThemeColor() {
-        return mCurrentThemeColor;
-    }
+	@Override
+	public int getCurrentThemeColor() {
+		return mCurrentThemeColor;
+	}
 
-    @Override
+	@Override
 	public String getThemeFontFamily() {
 		return ThemeUtils.getThemeFontFamily(this);
 	}
@@ -103,40 +103,40 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
 	}
 
 	@Override
-    protected void onStart() {
-        super.onStart();
-    }
+	protected void onStart() {
+		super.onStart();
+	}
 
-    @Override
-    protected void onTitleChanged(CharSequence title, int color) {
-        final SpannableStringBuilder builder = new SpannableStringBuilder(title);
-        final int themeResId = getCurrentThemeResourceId();
-        final int themeColor = getThemeColor(), contrastColor = ColorUtils.getContrastYIQ(themeColor, 192);
-        if (!ThemeUtils.isDarkTheme(themeResId)) {
-            builder.setSpan(new ForegroundColorSpan(contrastColor), 0, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        super.onTitleChanged(title, color);
-    }
+	@Override
+	protected void onTitleChanged(CharSequence title, int color) {
+		final SpannableStringBuilder builder = new SpannableStringBuilder(title);
+		final int themeResId = getCurrentThemeResourceId();
+		final int themeColor = getThemeColor(), contrastColor = ColorUtils.getContrastYIQ(themeColor, 192);
+		if (!ThemeUtils.isDarkTheme(themeResId)) {
+			builder.setSpan(new ForegroundColorSpan(contrastColor), 0, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		}
+		super.onTitleChanged(title, color);
+	}
 
-    @Override
-    public View onCreateView(String name, @NonNull Context context, @NonNull AttributeSet attrs) {
-        final View view = ThemeUtils.createView(name, context, attrs, mCurrentThemeColor);
-        if (view instanceof ShapedImageView) {
-            final ShapedImageView shapedImageView = (ShapedImageView) view;
-            shapedImageView.setStyle(mProfileImageStyle);
-        }
-        if (view != null) return view;
-        return super.onCreateView(name, context, attrs);
-    }
+	@Override
+	public View onCreateView(String name, @NonNull Context context, @NonNull AttributeSet attrs) {
+		final View view = ThemeUtils.createView(name, context, attrs, mCurrentThemeColor);
+		if (view instanceof ShapedImageView) {
+			final ShapedImageView shapedImageView = (ShapedImageView) view;
+			shapedImageView.setStyle(mProfileImageStyle);
+		}
+		if (view != null) return view;
+		return super.onCreateView(name, context, attrs);
+	}
 
-    @Override
+	@Override
 	protected void onResume() {
 		super.onResume();
-		}
+	}
 
-    protected boolean shouldSetWindowBackground() {
-        return true;
-    }
+	protected boolean shouldSetWindowBackground() {
+		return true;
+	}
 
 	public int getActionBarColor() {
 		return ThemeUtils.getActionBarColor(this);
@@ -146,13 +146,13 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
 		mCurrentThemeResource = getThemeResourceId();
 		mCurrentThemeColor = getThemeColor();
 		mCurrentActionBarColor = getActionBarColor();
-        mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
+		mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		mProfileImageStyle = Utils.getProfileImageStyle(this);
 		ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentActionBarColor,
 				mCurrentThemeBackgroundAlpha);
 		setTheme(mCurrentThemeResource);
-        if (shouldSetWindowBackground() && ThemeUtils.isTransparentBackground(mCurrentThemeResource)) {
-            getWindow().setBackgroundDrawable(ThemeUtils.getWindowBackground(this));
-        }
+		if (shouldSetWindowBackground() && ThemeUtils.isTransparentBackground(mCurrentThemeResource)) {
+			getWindow().setBackgroundDrawable(ThemeUtils.getWindowBackground(this));
+		}
 	}
 }

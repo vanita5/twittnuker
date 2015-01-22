@@ -260,8 +260,16 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 
 	@Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_user_list, container, false);
-	}
+        final View view = inflater.inflate(R.layout.fragment_user_list, container, false);
+        final ViewGroup listDetailsContainer = (ViewGroup) view.findViewById(R.id.list_details_container);
+        final boolean isCompact = Utils.isCompactCards(getActivity());
+        if (isCompact) {
+            inflater.inflate(R.layout.layout_user_list_details_compact, listDetailsContainer);
+        } else {
+            inflater.inflate(R.layout.layout_user_list_details, listDetailsContainer);
+	    }
+        return view;
+    }
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {

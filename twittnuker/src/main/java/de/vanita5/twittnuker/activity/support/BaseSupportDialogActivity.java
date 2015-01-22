@@ -49,6 +49,11 @@ public class BaseSupportDialogActivity extends ThemedFragmentActivity implements
         return (TwittnukerApplication) getApplication();
     }
 
+    @Override
+    protected final boolean shouldSetWindowBackground() {
+        return false;
+    }
+
 	protected boolean isStateSaved() {
 		return mInstanceStateSaved;
 	}

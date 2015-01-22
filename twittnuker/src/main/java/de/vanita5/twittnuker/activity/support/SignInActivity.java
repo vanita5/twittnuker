@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.activity.support;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentResolver;
@@ -35,7 +36,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -283,15 +283,15 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-		supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mResolver = getContentResolver();
 		mApplication = TwittnukerApplication.getInstance(this);
 		setContentView(R.layout.activity_sign_in);
-		setSupportProgressBarIndeterminateVisibility(false);
+        setProgressBarIndeterminateVisibility(false);
 		final long[] account_ids = getActivatedAccountIds(this);
-        final ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(account_ids.length > 0);
         }
@@ -487,7 +487,7 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 				}
 			}
 		}
-		setSupportProgressBarIndeterminateVisibility(false);
+        setProgressBarIndeterminateVisibility(false);
 		mEditPassword.setEnabled(true);
 		mEditUsername.setEnabled(true);
 		mSignInButton.setEnabled(true);
@@ -496,7 +496,7 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 	}
 
 	void onSignInStart() {
-		setSupportProgressBarIndeterminateVisibility(true);
+        setProgressBarIndeterminateVisibility(true);
 		mEditPassword.setEnabled(false);
 		mEditUsername.setEnabled(false);
 		mSignInButton.setEnabled(false);
@@ -690,7 +690,7 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 
     @Override
     public int getThemeResourceId() {
-        return ThemeUtils.getSettingsThemeResource(this);
+        return ThemeUtils.getThemeResource(this);
 	}
 
     static class SignInResponse {

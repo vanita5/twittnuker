@@ -1,6 +1,7 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -26,7 +27,7 @@ public class StatusTextView extends ThemedTextView implements IExtendedView {
 	}
 
 	@Override
-	public final boolean dispatchTouchEvent(final MotionEvent event) {
+    public final boolean dispatchTouchEvent(@NonNull final MotionEvent event) {
 		if (mTouchInterceptor != null) {
 			final boolean ret = mTouchInterceptor.dispatchTouchEvent(this, event);
 			if (ret) return true;
@@ -35,7 +36,7 @@ public class StatusTextView extends ThemedTextView implements IExtendedView {
 	}
 
 	@Override
-	public final boolean onTouchEvent(final MotionEvent event) {
+    public final boolean onTouchEvent(@NonNull final MotionEvent event) {
 		if (mTouchInterceptor != null) {
 			final boolean ret = mTouchInterceptor.onTouchEvent(this, event);
 			if (ret) return true;

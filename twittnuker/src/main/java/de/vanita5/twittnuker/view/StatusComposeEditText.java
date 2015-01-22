@@ -69,13 +69,23 @@ public class StatusComposeEditText extends ThemedMultiAutoCompleteTextView imple
 			mAdapter.closeCursor();
 			mAdapter = null;
 		}
-		setAdapter(mAdapter);
+//        setAdapter(null);
 	}
 
     @Override
     protected void replaceText(final CharSequence text) {
         super.replaceText(text);
         append(" ");
+    }
+
+    @Override
+    protected int computeVerticalScrollRange() {
+        return super.computeVerticalScrollRange();
+    }
+
+    @Override
+    protected int computeVerticalScrollExtent() {
+        return super.computeVerticalScrollExtent();
     }
 
     private static class ScreenNameTokenizer implements Tokenizer {
@@ -142,4 +152,5 @@ public class StatusComposeEditText extends ThemedMultiAutoCompleteTextView imple
 			return false;
 		}
 	}
+
 }
