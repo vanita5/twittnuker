@@ -213,7 +213,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         final ParcelableMedia[] mediaArray = ParcelableMedia.fromEntities(message);
         if (mediaArray != null) {
             values.put(DirectMessages.MEDIA, JSONSerializer.toJSONArrayString(mediaArray));
-            values.put(DirectMessages.FIRST_MEDIA, mediaArray[0].url);
+            values.put(DirectMessages.FIRST_MEDIA, mediaArray[0].page_url);
 		}
 		return values;
 	}
@@ -237,7 +237,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, message.recipient_profile_image_url);
         if (message.media != null) {
             values.put(Statuses.MEDIA, JSONSerializer.toJSONArrayString(message.media));
-            values.put(Statuses.FIRST_MEDIA, message.media[0].url);
+            values.put(Statuses.FIRST_MEDIA, message.media[0].page_url);
 		}
 		return values;
 	}
@@ -375,7 +375,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         final ParcelableMedia[] media = ParcelableMedia.fromEntities(status);
         if (media != null) {
             values.put(Statuses.MEDIA, JSONSerializer.toJSONArrayString(media));
-            values.put(Statuses.FIRST_MEDIA, media[0].url);
+            values.put(Statuses.FIRST_MEDIA, media[0].page_url);
         }
 		final ParcelableUserMention[] mentions = ParcelableUserMention.fromStatus(status);
         if (mentions != null) {

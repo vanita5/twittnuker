@@ -76,6 +76,12 @@
 -keepclasseswithmembers class * {
     @retrofit.http.* <methods>;
 }
+-keep class java.util.regex.Pattern { *; }
+-keep class sun.misc.Unsafe { *; }
+-dontwarn java.nio.file.*
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+-dontwarn com.twitter.Autolink
+
 
 # dnsjava
 -dontnote org.xbill.DNS.spi.DNSJavaNameServiceDescriptor

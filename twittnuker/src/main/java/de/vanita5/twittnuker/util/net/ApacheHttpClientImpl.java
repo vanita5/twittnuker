@@ -1,22 +1,26 @@
 /*
- * Copyright 2007 Yusuke Yamamoto
+ * Twittnuker - Twitter client for Android
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * This program incorporates a modified version of Twidere.
+ * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package de.vanita5.twittnuker.util.net;
-
-import static android.text.TextUtils.isEmpty;
 
 import android.content.Context;
 
@@ -52,11 +56,15 @@ import org.apache.http.protocol.BasicHttpContextHC4;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.TextUtils;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.util.Map;
+
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.ssl.HostResolvedSSLConnectionSocketFactory;
 import de.vanita5.twittnuker.util.net.ssl.TwidereSSLSocketFactory;
-
 import twitter4j.TwitterException;
 import twitter4j.auth.Authorization;
 import twitter4j.http.FactoryUtils;
@@ -68,10 +76,7 @@ import twitter4j.http.RequestMethod;
 import twitter4j.internal.logging.Logger;
 import twitter4j.internal.util.InternalStringUtil;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.util.Map;
+import static android.text.TextUtils.isEmpty;
 
 /**
  * HttpClient implementation for Apache HttpClient 4.0.x
@@ -79,12 +84,12 @@ import java.util.Map;
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.1.2
  */
-public class TwidereHttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCode {
-	private static final Logger logger = Logger.getLogger(TwidereHttpClientImpl.class);
+public class ApacheHttpClientImpl implements twitter4j.http.HttpClient, HttpResponseCode {
+	private static final Logger logger = Logger.getLogger(ApacheHttpClientImpl.class);
 	private final HttpClientConfiguration conf;
 	private final CloseableHttpClient client;
 
-	public TwidereHttpClientImpl(final Context context, final HttpClientConfiguration conf) {
+	public ApacheHttpClientImpl(final Context context, final HttpClientConfiguration conf) {
 		this.conf = conf;
 		final HttpClientBuilder clientBuilder = HttpClients.custom();
 		final LayeredConnectionSocketFactory factory = TwidereSSLSocketFactory.getSocketFactory(context,
@@ -125,23 +130,30 @@ public class TwidereHttpClientImpl implements twitter4j.http.HttpClient, HttpRes
 			final String resolvedUrl = !isEmpty(resolvedHost) ? urlString.replace("://" + host, "://" + resolvedHost)
 					: urlString;
 			final RequestMethod method = req.getMethod();
-			if (method == RequestMethod.GET) {
-				commonsRequest = new HttpGetHC4(resolvedUrl);
-			} else if (method == RequestMethod.POST) {
-				final HttpPostHC4 post = new HttpPostHC4(resolvedUrl);
-				post.setEntity(getAsEntity(req.getParameters()));
-				post.getParams().setBooleanParameter(CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
-				commonsRequest = post;
-			} else if (method == RequestMethod.DELETE) {
-				commonsRequest = new HttpDeleteHC4(resolvedUrl);
-			} else if (method == RequestMethod.HEAD) {
-				commonsRequest = new HttpHeadHC4(resolvedUrl);
-			} else if (method == RequestMethod.PUT) {
-				final HttpPutHC4 put = new HttpPutHC4(resolvedUrl);
-				put.setEntity(getAsEntity(req.getParameters()));
-				commonsRequest = put;
-			} else
-				throw new TwitterException("Unsupported request method " + method);
+			switch (method) {
+				case GET:
+					commonsRequest = new HttpGetHC4(resolvedUrl);
+					break;
+				case POST:
+					final HttpPostHC4 post = new HttpPostHC4(resolvedUrl);
+					post.setEntity(getAsEntity(req.getParameters()));
+					post.getParams().setBooleanParameter(CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
+					commonsRequest = post;
+					break;
+				case DELETE:
+					commonsRequest = new HttpDeleteHC4(resolvedUrl);
+					break;
+				case HEAD:
+					commonsRequest = new HttpHeadHC4(resolvedUrl);
+					break;
+				case PUT:
+					final HttpPutHC4 put = new HttpPutHC4(resolvedUrl);
+					put.setEntity(getAsEntity(req.getParameters()));
+					commonsRequest = put;
+					break;
+				default:
+					throw new TwitterException("Unsupported request method " + method);
+			}
 			final HttpParams httpParams = commonsRequest.getParams();
 			HttpClientParams.setRedirecting(httpParams, false);
 			final Map<String, String> headers = req.getRequestHeaders();

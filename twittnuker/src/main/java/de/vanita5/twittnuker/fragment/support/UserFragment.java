@@ -74,6 +74,7 @@ import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -122,7 +123,6 @@ import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.getOriginalTwitterProfileImage;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
-import static de.vanita5.twittnuker.util.Utils.openImage;
 import static de.vanita5.twittnuker.util.Utils.openIncomingFriendships;
 import static de.vanita5.twittnuker.util.Utils.openMutesUsers;
 import static de.vanita5.twittnuker.util.Utils.openStatus;
@@ -949,14 +949,16 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 break;
             }
 			case R.id.profile_image: {
-				final String profile_image_url_string = getOriginalTwitterProfileImage(mUser.profile_image_url);
-				openImage(activity, user.account_id, profile_image_url_string, false);
+                final String url = getOriginalTwitterProfileImage(user.profile_image_url);
+                final ParcelableMedia[] media = {ParcelableMedia.newImage(url, url)};
+                Utils.openMedia(activity, user.account_id, false, null, media);
 				break;
 			}
 			case R.id.profile_banner: {
-				final String profile_banner_url = mUser.profile_banner_url;
-				if (profile_banner_url == null) return;
-				openImage(getActivity(), user.account_id, profile_banner_url + "/ipad_retina", false);
+                if (user.profile_banner_url == null) return;
+                final String url = user.profile_banner_url + "/ipad_retina";
+                final ParcelableMedia[] media = {ParcelableMedia.newImage(url, url)};
+                Utils.openMedia(activity, user.account_id, false, null, media);
 				break;
 			}
 			case R.id.tweets_container: {
@@ -982,7 +984,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
 	@Override
 	public void onLinkClick(final String link, final String orig, final long account_id, final int type,
-							final boolean sensitive) {
+                            final boolean sensitive, int start, int end) {
 		final ParcelableUser user = mUser;
 		if (user == null) return;
 		switch (type) {

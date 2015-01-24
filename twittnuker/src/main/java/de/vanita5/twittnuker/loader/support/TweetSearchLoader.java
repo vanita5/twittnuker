@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
@@ -51,9 +52,9 @@ public class TweetSearchLoader extends Twitter4JStatusesLoader {
 				KEY_FILTERS_FOR_RTS, true);
 	}
 
+    @NonNull
 	@Override
-	public List<Status> getStatuses(final Twitter twitter, final Paging paging) throws TwitterException {
-		if (twitter == null) return null;
+    public List<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
 		final Query query = new Query(processQuery(mQuery));
 		query.setRpp(paging.getCount());
 		if (paging.getMaxId() > 0) {

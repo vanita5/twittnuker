@@ -87,7 +87,7 @@ import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
-import de.vanita5.twittnuker.util.OnLinkClickHandler;
+import de.vanita5.twittnuker.util.StatusLinkClickHandler;
 import de.vanita5.twittnuker.util.StatisticUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -125,7 +125,6 @@ import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 import static de.vanita5.twittnuker.util.Utils.retweet;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
-import static de.vanita5.twittnuker.util.Utils.startStatusShareChooser;
 
 public class StatusFragment extends BaseSupportFragment
         implements LoaderCallbacks<SingleResponse<ParcelableStatus>>, OnMediaClickListener, StatusAdapterListener {
@@ -283,7 +282,9 @@ public class StatusFragment extends BaseSupportFragment
 
     @Override
     public void onMediaClick(View view, ParcelableMedia media, long accountId) {
-        Utils.openImageDirectly(getActivity(), accountId, media.url);
+        final ParcelableStatus status = mStatusAdapter.getStatus();
+        if (status == null) return;
+        Utils.openMediaDirectly(getActivity(), accountId, media, status.media);
     }
 
     @Override
@@ -1016,7 +1017,9 @@ public class StatusFragment extends BaseSupportFragment
             screenNameView.setText("@" + status.user_screen_name);
 
             textView.setText(Html.fromHtml(status.text_html));
-            final TwidereLinkify linkify = new TwidereLinkify(new OnLinkClickHandler(context, null));
+            final StatusLinkClickHandler linkClickHandler = new StatusLinkClickHandler(context, null);
+            linkClickHandler.setStatus(status);
+            final TwidereLinkify linkify = new TwidereLinkify(linkClickHandler);
             linkify.applyAllLinks(textView, status.account_id, status.is_possibly_sensitive);
             ThemeUtils.applyParagraphSpacing(textView, 1.1f);
 

@@ -49,7 +49,7 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
-import de.vanita5.twittnuker.util.net.TwidereHttpClientFactory;
+import de.vanita5.twittnuker.util.net.ApacheHttpClientFactory;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -237,7 +237,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 			final String consumerSecret = getNonEmptyString(mPreferences, KEY_CONSUMER_SECRET,
 					TWITTER_CONSUMER_SECRET_2);
 			cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(mApplication));
-			cb.setHttpClientFactory(new TwidereHttpClientFactory(mApplication));
+            cb.setHttpClientFactory(new ApacheHttpClientFactory(mApplication));
             if (TwitterContentUtils.isOfficialKey(mActivity, consumerKey, consumerSecret)) {
                 Utils.setMockOfficialUserAgent(mActivity, cb);
             } else {

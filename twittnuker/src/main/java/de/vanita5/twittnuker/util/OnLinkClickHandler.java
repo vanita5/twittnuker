@@ -28,9 +28,9 @@ import android.content.Intent;
 import android.net.Uri;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 
-import static de.vanita5.twittnuker.util.Utils.openImage;
 import static de.vanita5.twittnuker.util.Utils.openStatus;
 import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
 import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
@@ -50,44 +50,44 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 
 	@Override
 	public void onLinkClick(final String link, final String orig, final long account_id, final int type,
-			final boolean sensitive) {
-        if (context == null || (manager != null && manager.isActive())) return;
-		
+                            final boolean sensitive, int start, int end) {
+		if (context == null || (manager != null && manager.isActive())) return;
+
 		switch (type) {
 			case TwidereLinkify.LINK_TYPE_MENTION: {
-                openUserProfile(context, account_id, -1, link, null);
+				openUserProfile(context, account_id, -1, link, null);
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_HASHTAG: {
-                openTweetSearch(context, account_id, "#" + link);
+				openTweetSearch(context, account_id, "#" + link);
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_LINK: {
 				if (MediaPreviewUtils.isLinkSupported(link)) {
-                    openImage(context, account_id, link, sensitive);
+					openMedia(account_id, sensitive, link, start, end);
 				} else {
 					openLink(link);
 				}
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_LIST: {
-                final String[] mentionList = link.split("/");
-                if (mentionList.length != 2) {
+				final String[] mentionList = link.split("/");
+				if (mentionList.length != 2) {
 					break;
 				}
-                openUserListDetails(context, account_id, -1, -1, mentionList[0], mentionList[1]);
+				openUserListDetails(context, account_id, -1, -1, mentionList[0], mentionList[1]);
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_CASHTAG: {
-                openTweetSearch(context, account_id, link);
+				openTweetSearch(context, account_id, link);
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_USER_ID: {
-                openUserProfile(context, account_id, ParseUtils.parseLong(link), null, null);
+				openUserProfile(context, account_id, ParseUtils.parseLong(link), null, null);
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_STATUS: {
-                openStatus(context, account_id, ParseUtils.parseLong(link));
+				openStatus(context, account_id, ParseUtils.parseLong(link));
 				break;
 			}
 			case TwidereLinkify.LINK_TYPE_HOTOTIN: {
@@ -101,6 +101,11 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 				break;
 			}
 		}
+	}
+
+    protected void openMedia(long account_id, boolean sensitive, String link, int start, int end) {
+        final ParcelableMedia[] media = {ParcelableMedia.newImage(link, link)};
+        Utils.openMedia(context, account_id, sensitive, null, media);
 	}
 
 	protected void openLink(final String link) {

@@ -32,12 +32,12 @@ import android.support.v4.app.FragmentManager;
 
 import de.vanita5.twittnuker.fragment.support.PhishingLinkWarningDialogFragment;
 
-public class OnDirectMessageLinkClickHandler extends OnLinkClickHandler {
+public class DirectMessageOnLinkClickHandler extends OnLinkClickHandler {
 
 	private static final String[] SHORT_LINK_SERVICES = new String[] { "bit.ly", "ow.ly", "tinyurl.com", "goo.gl",
 			"k6.kz", "is.gd", "tr.im", "x.co", "weepp.ru" };
 
-    public OnDirectMessageLinkClickHandler(final Context context, final MultiSelectManager manager) {
+    public DirectMessageOnLinkClickHandler(final Context context, final MultiSelectManager manager) {
          super(context, manager);
 	}
 

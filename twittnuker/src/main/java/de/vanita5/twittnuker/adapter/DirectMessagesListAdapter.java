@@ -44,7 +44,7 @@ import java.util.Locale;
 import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.findDirectMessageInDatabases;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
-import static de.vanita5.twittnuker.util.Utils.openImage;
+import static de.vanita5.twittnuker.util.Utils.openMedia;
 
 public class DirectMessagesListAdapter extends BaseCursorAdapter implements IDirectMessagesAdapter,
 		OnClickListener {
@@ -142,8 +142,8 @@ public class DirectMessagesListAdapter extends BaseCursorAdapter implements IDir
 		switch (view.getId()) {
 			case R.id.media_preview: {
 				final ParcelableDirectMessage message = getDirectMessage(position);
-				if (message == null || message.first_media == null) return;
-				openImage(mContext, message.account_id, message.first_media, false);
+                if (message == null || message.media == null) return;
+                openMedia(mContext, message.account_id, false, null, message.media);
 			}
 		}
 	}

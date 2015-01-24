@@ -22,18 +22,19 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.Utils.openImageDirectly;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.Utils;
+
+import static de.vanita5.twittnuker.util.Utils.openMediaDirectly;
 
 public class SensitiveContentWarningDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
 
@@ -44,15 +45,18 @@ public class SensitiveContentWarningDialogFragment extends BaseSupportDialogFrag
 				final Context context = getActivity();
 				final Bundle args = getArguments();
 				if (args == null || context == null) return;
-				final Uri uri = args.getParcelable(EXTRA_URI);
 				final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
-				openImageDirectly(context, accountId, ParseUtils.parseString(uri));
+                final ParcelableMedia current = args.getParcelable(EXTRA_CURRENT_MEDIA);
+                final ParcelableMedia[] media = Utils.newParcelableArray(args.getParcelableArray(EXTRA_MEDIA),
+						ParcelableMedia.CREATOR);
+                openMediaDirectly(context, accountId, current, media);
 				break;
 			}
 		}
 
 	}
 
+    @NonNull
 	@Override
 	public Dialog onCreateDialog(final Bundle savedInstanceState) {
         final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());

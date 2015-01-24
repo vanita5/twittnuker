@@ -63,6 +63,7 @@ import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
@@ -202,8 +203,9 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
+import de.vanita5.twittnuker.util.net.ApacheHttpClientFactory;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
-import de.vanita5.twittnuker.util.net.TwidereHttpClientFactory;
+import de.vanita5.twittnuker.util.net.ssl.OkHttpClientFactory;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
@@ -450,7 +452,7 @@ public final class Utils implements Constants, TwitterConstants {
                 lp.weight = 1.0f;
                 rowContainer.addView(item, lp);
                 final ImageView imageView = (ImageView) item.findViewById(R.id.media_preview_item);
-                loader.displayPreviewImage(imageView, media.url, loadingHandler);
+                loader.displayPreviewImage(imageView, media.page_url, loadingHandler);
             }
         }
     }
@@ -556,7 +558,7 @@ public final class Utils implements Constants, TwitterConstants {
                 .union()
                 .select(true, new Columns(new Column(new Table(table), Statuses._ID)))
                 .from(new Tables(table, Filters.Links.TABLE_NAME))
-                .where(Expression.likeRaw(new Column(new Table(table), Statuses.SOURCE),
+                .where(Expression.likeRaw(new Column(new Table(table), Statuses.TEXT_HTML),
                         "'%>%'||" + Filters.Links.TABLE_NAME + "." + Filters.Links.VALUE + "||'%</a>%'"));
         final Expression filterExpression = Expression.or(
                 Expression.notIn(new Column(new Table(table), Statuses._ID), filteredIdsQueryBuilder.build()),
@@ -1773,7 +1775,8 @@ public final class Utils implements Constants, TwitterConstants {
 		if (userAgent != null) {
 			cb.setHttpUserAgent(userAgent);
 		}
-		cb.setHttpClientFactory(new TwidereHttpClientFactory(context));
+        cb.setHttpClientFactory(new ApacheHttpClientFactory(context));
+//        cb.setHttpClientFactory(new OkHttpClientFactory());
 		return new HttpClientWrapper(cb.build());
 	}
 
@@ -2448,11 +2451,13 @@ public final class Utils implements Constants, TwitterConstants {
         return getTwitterInstance(context, accountId, includeEntities, true, !MIUIUtils.isMIUI());
 	}
 
+    @Nullable
 	public static Twitter getTwitterInstance(final Context context, final long accountId,
 			final boolean includeEntities, final boolean includeRetweets) {
 		return getTwitterInstance(context, accountId, includeEntities, includeRetweets, !MIUIUtils.isMIUI());
 	}
 
+    @Nullable
 	public static Twitter getTwitterInstance(final Context context, final long accountId,
 			final String mediaProvider, final String mediaProviderKey) {
 		return getTwitterInstance(context, accountId, false, false, true, mediaProvider, mediaProviderKey);
@@ -2484,7 +2489,8 @@ public final class Utils implements Constants, TwitterConstants {
 			final ConfigurationBuilder cb = new ConfigurationBuilder();
 			cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(app));
 			if (apacheHttp) {
-				cb.setHttpClientFactory(new TwidereHttpClientFactory(app));
+//                cb.setHttpClientFactory(new ApacheHttpClientFactory(app));
+                cb.setHttpClientFactory(new OkHttpClientFactory());
 			}
 			cb.setHttpConnectionTimeout(connection_timeout);
 			cb.setGZIPEnabled(enableGzip);
@@ -2886,9 +2892,9 @@ public final class Utils implements Constants, TwitterConstants {
         activity.startActivity(intent);
 	}
 
-	public static void openImage(final Context context, final long accountId, final String uri,
-								 final boolean isPossiblySensitive) {
-		if (context == null || uri == null) return;
+    public static void openMedia(final Context context, final long accountId, final boolean isPossiblySensitive,
+                                 final ParcelableMedia current, final ParcelableMedia[] media) {
+        if (context == null || media == null) return;
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		if (context instanceof FragmentActivity && isPossiblySensitive
 				&& !prefs.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, true)) {
@@ -2897,19 +2903,30 @@ public final class Utils implements Constants, TwitterConstants {
 			final DialogFragment fragment = new SensitiveContentWarningDialogFragment();
 			final Bundle args = new Bundle();
 			args.putLong(EXTRA_ACCOUNT_ID, accountId);
-			args.putParcelable(EXTRA_URI, Uri.parse(uri));
+            args.putParcelable(EXTRA_CURRENT_MEDIA, current);
+            args.putParcelableArray(EXTRA_MEDIA, media);
 			fragment.setArguments(args);
 			fragment.show(fm, "sensitive_content_warning");
 		} else {
-			openImageDirectly(context, accountId, uri);
+            openMediaDirectly(context, accountId, current, media);
 		}
 	}
 
-	public static void openImageDirectly(final Context context, final long accountId, final String uri) {
-		if (context == null || uri == null) return;
-		final Intent intent = new Intent(INTENT_ACTION_VIEW_IMAGE);
-		intent.setData(Uri.parse(uri));
+
+    public static <T extends Parcelable> T[] newParcelableArray(Parcelable[] array, Parcelable.Creator<T> creator) {
+        if (array == null) return null;
+        final T[] result = creator.newArray(array.length);
+        System.arraycopy(array, 0, result, 0, array.length);
+        return result;
+    }
+
+    public static void openMediaDirectly(final Context context, final long accountId,
+                                         final ParcelableMedia current, final ParcelableMedia[] media) {
+        if (context == null || media == null) return;
+        final Intent intent = new Intent(INTENT_ACTION_VIEW_MEDIA);
 		intent.putExtra(EXTRA_ACCOUNT_ID, accountId);
+        intent.putExtra(EXTRA_CURRENT_MEDIA, current);
+        intent.putExtra(EXTRA_MEDIA, media);
 		intent.setClass(context, MediaViewerActivity.class);
 			context.startActivity(intent);
 	}

@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -20,16 +20,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.example.mylibrary;
+package de.vanita5.twittnuker.util.net;
 
-import android.app.Application;
-import android.test.ApplicationTestCase;
+import android.content.Context;
 
-/**
- * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
- */
-public class ApplicationTest extends ApplicationTestCase<Application> {
-	public ApplicationTest() {
-		super(Application.class);
+import twitter4j.http.HttpClient;
+import twitter4j.http.HttpClientConfiguration;
+import twitter4j.http.HttpClientFactory;
+
+public class ApacheHttpClientFactory implements HttpClientFactory {
+
+	private final Context context;
+
+	public ApacheHttpClientFactory(final Context context) {
+		this.context = context;
 	}
+
+	@Override
+	public HttpClient getInstance(final HttpClientConfiguration conf) {
+		return new ApacheHttpClientImpl(context, conf);
+	}
+
 }

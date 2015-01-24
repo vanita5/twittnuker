@@ -125,12 +125,12 @@ public final class HttpParameter implements Comparable<HttpParameter> {
 		if (overrideFileType != null) return overrideFileType;
 		String contentType;
 		String extensions = getFileName();
-		final int index = extensions.lastIndexOf("");
+        final int index = extensions.lastIndexOf(".");
 		if (-1 == index) {
 			// no extension
 			contentType = OCTET;
 		} else {
-			extensions = extensions.substring(extensions.lastIndexOf("") + 1).toLowerCase(Locale.US);
+            extensions = extensions.substring(extensions.lastIndexOf(".") + 1).toLowerCase(Locale.US);
 			if (extensions.length() == 3) {
 				if ("gif".equals(extensions)) {
 					contentType = GIF;
@@ -227,7 +227,7 @@ public final class HttpParameter implements Comparable<HttpParameter> {
 		} catch (final UnsupportedEncodingException ignore) {
             return null;
 		}
-		final StringBuffer buf = new StringBuffer(encoded.length());
+        final StringBuilder buf = new StringBuilder(encoded.length());
 		char focus;
 		for (int i = 0; i < encoded.length(); i++) {
 			focus = encoded.charAt(i);
@@ -248,7 +248,7 @@ public final class HttpParameter implements Comparable<HttpParameter> {
 
 	public static String encodeParameters(final HttpParameter[] httpParams) {
 		if (null == httpParams) return "";
-		final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
 		for (int j = 0; j < httpParams.length; j++) {
 			if (httpParams[j].isFile())
 				throw new IllegalArgumentException("parameter [" + httpParams[j].name + "]should be text");

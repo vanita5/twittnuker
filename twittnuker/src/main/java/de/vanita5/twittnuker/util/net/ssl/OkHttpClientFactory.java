@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -20,9 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.viewer.media;
+package de.vanita5.twittnuker.util.net.ssl;
 
-import android.support.v4.app.FragmentActivity;
+import de.vanita5.twittnuker.util.net.OkHttpClientImpl;
 
-public class MediaViewerActivity extends FragmentActivity {
+import twitter4j.http.HttpClient;
+import twitter4j.http.HttpClientConfiguration;
+import twitter4j.http.HttpClientFactory;
+
+public class OkHttpClientFactory implements HttpClientFactory {
+	@Override
+	public HttpClient getInstance(HttpClientConfiguration conf) {
+		return new OkHttpClientImpl(conf);
+	}
 }

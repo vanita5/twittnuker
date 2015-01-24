@@ -411,9 +411,9 @@
             android:hardwareAccelerated="true"
             android:label="@string/view_image"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.Blank">
+            android:theme="@style/Theme.Twidere.Viewer">
             <intent-filter>
-                <action android:name="de.vanita5.twittnuker.VIEW_IMAGE" />
+                <action android:name="de.vanita5.twittnuker.VIEW_MEDIA" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
