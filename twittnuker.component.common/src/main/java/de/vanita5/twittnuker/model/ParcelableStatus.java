@@ -37,13 +37,13 @@ import org.mariotaku.jsonserializer.JSONSerializer;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.TwitterContentUtils;
+import de.vanita5.twittnuker.util.content.ContentValuesUtils;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 
-import de.vanita5.twittnuker.util.TwitterContentUtils;
-import de.vanita5.twittnuker.util.content.ContentValuesUtils;
 import twitter4j.CardEntity;
 import twitter4j.CardEntity.BindingValue;
 import twitter4j.CardEntity.ImageValue;
@@ -52,6 +52,7 @@ import twitter4j.CardEntity.UserValue;
 import twitter4j.Status;
 import twitter4j.User;
 
+@SuppressWarnings("unused")
 public class ParcelableStatus implements TwidereParcelable, Comparable<ParcelableStatus> {
 
 	public static final Parcelable.Creator<ParcelableStatus> CREATOR = new Parcelable.Creator<ParcelableStatus>() {
@@ -109,7 +110,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 
     public final String retweeted_by_name, retweeted_by_screen_name, retweeted_by_profile_image,
             text_html, text_plain, user_name, user_screen_name, in_reply_to_name, in_reply_to_screen_name,
-            source, user_profile_image_url, text_unescaped, first_media;
+            source, user_profile_image_url, text_unescaped, first_media, card_name;
 
     /*Variables for custom status media*/
     private boolean hasCustomMedia;
@@ -162,6 +163,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		mentions = ParcelableUserMention.fromJSONString(values.getAsString(Statuses.MENTIONS));
         first_media = values.getAsString(Statuses.FIRST_MEDIA);
         card = ParcelableCardEntity.fromJSONString(values.getAsString(Statuses.CARD));
+        card_name = card != null ? card.name : null;
 	}
 
 	public ParcelableStatus(final Cursor c, final CursorIndices idx) {
@@ -206,6 +208,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		mentions = idx.mentions != -1 ? ParcelableUserMention.fromJSONString(c.getString(idx.mentions)) : null;
 		first_media = idx.first_media != -1 ? c.getString(idx.first_media) : null;
         card = idx.card != -1 ? ParcelableCardEntity.fromJSONString(c.getString(idx.card)) : null;
+        card_name = card != null ? card.name : null;
 	}
 
 	public ParcelableStatus(final JSONParcel in) {
@@ -247,6 +250,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		mentions = in.readParcelableArray("mentions", ParcelableUserMention.JSON_CREATOR);
         first_media = media != null && media.length > 0 ? media[0].url : null;
         card = in.readParcelable("card", ParcelableCardEntity.JSON_CREATOR);
+        card_name = card != null ? card.name : null;
 	}
 
 	public ParcelableStatus(final Parcel in) {
@@ -288,6 +292,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
         mentions = in.createTypedArray(ParcelableUserMention.CREATOR);
         first_media = media != null && media.length > 0 ? media[0].url : null;
         card = in.readParcelable(ParcelableCardEntity.class.getClassLoader());
+        card_name = card != null ? card.name : null;
 	}
 
     public ParcelableStatus(final ParcelableStatus orig, final long override_my_retweet_id,
@@ -330,6 +335,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
         mentions = orig.mentions;
         first_media = orig.first_media;
         card = orig.card;
+        card_name = card != null ? card.name : null;
     }
 
 	public ParcelableStatus(final Status orig, final long account_id, final boolean is_gap) {
@@ -377,6 +383,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		mentions = ParcelableUserMention.fromUserMentionEntities(status.getUserMentionEntities());
         first_media = media != null && media.length > 0 ? media[0].url : null;
         card = ParcelableCardEntity.fromCardEntity(status.getCard(), account_id);
+        card_name = card != null ? card.name : null;
 	}
 
 	@Override
@@ -564,7 +571,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
                 retweeted_by_user_screen_name, retweeted_by_user_profile_image, retweet_id, retweet_timestamp,
                 retweeted_by_user_id, user_id, source, retweet_count, favorite_count, reply_count,
                 descendent_reply_count, is_possibly_sensitive, is_following, media, first_media, mentions,
-                card;
+                card_name, card;
 
 			@Override
 			public String toString() {
@@ -648,6 +655,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
             media = cursor.getColumnIndex(Statuses.MEDIA);
             first_media = cursor.getColumnIndex(Statuses.FIRST_MEDIA);
 			mentions = cursor.getColumnIndex(Statuses.MENTIONS);
+            card_name = cursor.getColumnIndex(Statuses.CARD_NAME);
             card = cursor.getColumnIndex(Statuses.MENTIONS);
 		}
 
@@ -698,7 +706,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 
         public ParcelableCardEntity(JSONParcel src) {
             name = src.readString("name");
-            values = src.readParcelableArray("build/intermediates/exploded-aar/com.sothree.slidinguppanel/library/2.0.4/res/values", ParcelableValueItem.JSON_CREATOR);
+            values = src.readParcelableArray("values", ParcelableValueItem.JSON_CREATOR);
             users = src.readParcelableArray("users", ParcelableUser.JSON_CREATOR);
         }
 
@@ -736,7 +744,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
         @Override
         public void writeToParcel(JSONParcel dest) {
             dest.writeString("name", name);
-            dest.writeParcelableArray("build/intermediates/exploded-aar/com.sothree.slidinguppanel/library/2.0.4/res/values", values);
+            dest.writeParcelableArray("values", values);
             dest.writeParcelableArray("users", users);
         }
 

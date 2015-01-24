@@ -16,6 +16,11 @@
 		android:order="22"
 		android:title="@string/name_first"
         android:summary="@string/name_first_summary"/>
+    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        android:defaultValue="false"
+        android:key="media_preview"
+        android:order="24"
+        android:title="@string/media_preview"/>
 
 	<de.vanita5.twittnuker.preference.LinkHighlightPreference
 		android:defaultValue="highlight"

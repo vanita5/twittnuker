@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
@@ -61,6 +62,8 @@ import twitter4j.URLEntity;
 import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
+
+import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 
 public final class ContentValuesCreator implements TwittnukerConstants {
 
@@ -196,7 +199,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         final String text_html = TwitterContentUtils.formatDirectMessageText(message);
 		values.put(DirectMessages.TEXT_HTML, text_html);
 		values.put(DirectMessages.TEXT_PLAIN, message.getText());
-		values.put(DirectMessages.TEXT_UNESCAPED, HtmlEscapeHelper.toPlainText(text_html));
+        values.put(DirectMessages.TEXT_UNESCAPED, toPlainText(text_html));
         values.put(DirectMessages.IS_OUTGOING, isOutgoing);
 		values.put(DirectMessages.SENDER_NAME, sender.getName());
 		values.put(DirectMessages.SENDER_SCREEN_NAME, sender.getScreenName());
@@ -353,7 +356,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         final String text_html = TwitterContentUtils.formatStatusText(status);
 		values.put(Statuses.TEXT_HTML, text_html);
 		values.put(Statuses.TEXT_PLAIN, status.getText());
-		values.put(Statuses.TEXT_UNESCAPED, HtmlEscapeHelper.toPlainText(text_html));
+		values.put(Statuses.TEXT_UNESCAPED, toPlainText(text_html));
 		values.put(Statuses.RETWEET_COUNT, status.getRetweetCount());
 		values.put(Statuses.REPLY_COUNT, status.getReplyCount());
 		values.put(Statuses.DESCENDENT_REPLY_COUNT, status.getDescendentReplyCount());
@@ -377,6 +380,11 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		final ParcelableUserMention[] mentions = ParcelableUserMention.fromStatus(status);
         if (mentions != null) {
 			values.put(Statuses.MENTIONS, JSONSerializer.toJSONArrayString(mentions));
+        }
+        final ParcelableCardEntity card = ParcelableCardEntity.fromCardEntity(status.getCard(), accountId);
+        if (card != null) {
+            values.put(Statuses.CARD_NAME, card.name);
+            values.put(Statuses.CARD, JSONSerializer.toJSONObjectString(card));
 		}
 		return values;
 	}

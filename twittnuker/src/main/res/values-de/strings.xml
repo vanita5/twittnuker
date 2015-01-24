@@ -629,7 +629,7 @@
     <string name="state_blocking">(D) Blocking</string>
     <string name="load_more">Mehr laden</string>
     <string name="photo">Kamera</string>
-    <string name="gallery">Gallerie</string>
+    <string name="gallery">Galerie</string>
     <string name="remove">Entfernen</string>
     <string name="load_media">Bilder laden</string>
     <string name="profile_text_color">Textfarbe</string>
@@ -656,6 +656,7 @@
     <string name="belongs_to">Mitglied</string>
     <string name="blocked_by_user_summary">Du wurdest von <xliff:g id="name">%s</xliff:g> geblockt</string>
     <string name="select_accounts">Accounts auswählen</string>
+    <string name="media_preview">Medien Vorschau</string>
 
 
     <!-- Twittnuker -->

@@ -72,7 +72,6 @@ import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 public class TwittnukerApplication extends Application implements Constants, OnSharedPreferenceChangeListener {
 
 	private Handler mHandler;
-
 	private ImageLoaderWrapper mImageLoaderWrapper;
 	private ImageLoader mImageLoader;
 	private AsyncTaskManager mAsyncTaskManager;
@@ -140,6 +139,16 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		if (mImageLoaderWrapper != null) return mImageLoaderWrapper;
 		return mImageLoaderWrapper = new ImageLoaderWrapper(getImageLoader());
 	}
+
+    public static TwittnukerApplication getInstance(final Context context) {
+        if (context == null) return null;
+        final Context app = context.getApplicationContext();
+        return app instanceof TwittnukerApplication ? (TwittnukerApplication) app : null;
+    }
+
+    public Bus getMessageBus() {
+        return mMessageBus;
+    }
 
 	public MessagesManager getMessagesManager() {
 		if (mCroutonsManager != null) return mCroutonsManager;
@@ -239,16 +248,6 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 			Class.forName(AsyncTask.class.getName());
         } catch (final ClassNotFoundException ignore) {
 		}
-	}
-
-    public Bus getMessageBus() {
-        return mMessageBus;
-    }
-
-    public static TwittnukerApplication getInstance(final Context context) {
-		if (context == null) return null;
-		final Context app = context.getApplicationContext();
-        return app instanceof TwittnukerApplication ? (TwittnukerApplication) app : null;
 	}
 
 }

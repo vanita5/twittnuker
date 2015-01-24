@@ -65,6 +65,8 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     private final int mTextSize;
     private final int mProfileImageStyle, mMediaPreviewStyle;
     private final boolean mCompactCards;
+    private final boolean mNameFirst;
+    private final boolean mDisplayMediaPreview;
 	private boolean mLoadMoreIndicatorEnabled;
     private StatusAdapterListener mStatusAdapterListener;
     private boolean mShowInReplyTo;
@@ -83,6 +85,8 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
         mCompactCards = compact;
         mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
         mMediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
+        mNameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
+        mDisplayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
         setShowInReplyTo(true);
     }
 
@@ -91,6 +95,11 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     public abstract void setData(D data);
 
 	@Override
+    public boolean shouldShowAccountsColor() {
+        return mShowAccountsColor;
+    }
+
+    @Override
     public ImageLoaderWrapper getImageLoader() {
         return mImageLoader;
     }
@@ -127,6 +136,16 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 
     public boolean hasLoadMoreIndicator() {
         return mLoadMoreIndicatorEnabled;
+    }
+
+    @Override
+    public boolean isMediaPreviewEnabled() {
+        return mDisplayMediaPreview;
+    }
+
+    @Override
+    public boolean isNameFirst() {
+        return mNameFirst;
     }
 
     public boolean isShowInReplyTo() {
@@ -185,17 +204,6 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     }
 
     @Override
-    public boolean shouldShowAccountsColor() {
-        return mShowAccountsColor;
-    }
-
-    public void setShowAccountsColor(boolean showAccountsColor) {
-        if (mShowAccountsColor == showAccountsColor) return;
-        mShowAccountsColor = showAccountsColor;
-        notifyDataSetChanged();
-	}
-
-	@Override
 	public int getItemViewType(int position) {
         if (position == getStatusCount()) {
 			return ITEM_VIEW_TYPE_LOAD_INDICATOR;
@@ -261,6 +269,12 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     public void setLoadMoreIndicatorEnabled(boolean enabled) {
         if (mLoadMoreIndicatorEnabled == enabled) return;
         mLoadMoreIndicatorEnabled = enabled;
+        notifyDataSetChanged();
+    }
+
+    public void setShowAccountsColor(boolean showAccountsColor) {
+        if (mShowAccountsColor == showAccountsColor) return;
+        mShowAccountsColor = showAccountsColor;
         notifyDataSetChanged();
     }
 
