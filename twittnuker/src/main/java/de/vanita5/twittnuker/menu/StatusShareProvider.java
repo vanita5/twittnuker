@@ -53,6 +53,11 @@ public class StatusShareProvider extends ActionProvider implements Constants {
 	@Override
     public View onCreateActionView(MenuItem forItem) {
 		return null;
+    }
+
+    @Override
+    public boolean onPerformDefaultAction() {
+        return true;
 	}
 
 	@Override

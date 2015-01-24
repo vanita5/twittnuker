@@ -27,7 +27,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
@@ -41,14 +40,12 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -59,7 +56,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -68,7 +64,6 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ArrayUtils;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
@@ -90,7 +85,6 @@ import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.ActivityAccessor;
 import de.vanita5.twittnuker.util.ActivityAccessor.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.ColorUtils;
-import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.HotKeyHandler;
@@ -122,13 +116,11 @@ import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
 import static de.vanita5.twittnuker.util.Utils.isPushEnabled;
 import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
-import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
 public class HomeActivity extends BaseSupportActivity implements OnClickListener, OnPageChangeListener,
 		SupportFragmentCallback, SlidingMenu.OnOpenedListener, SlidingMenu.OnClosedListener,
         OnLongClickListener {
-
 
 	private final Handler mHandler = new Handler();
 
@@ -151,7 +143,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private HomeSlidingMenu mSlidingMenu;
 	private View mEmptyTab;
 	private View mEmptyTabHint;
-    private ProgressBar mSmartBarProgress;
     private View mActionsButton;
     private View mTabsContainer;
     private View mActionBarOverlay;
@@ -179,146 +170,41 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		return mCurrentVisibleFragment;
 	}
 
-	public SlidingMenu getSlidingMenu() {
-		return mSlidingMenu;
-	}
-
-	public ViewPager getViewPager() {
-		return mViewPager;
+	@Override
+    public void onDetachFragment(final Fragment fragment) {
+		if (fragment instanceof IBaseFragment && ((IBaseFragment) fragment).getTabPosition() != -1) {
+            mAttachedFragments.remove(((IBaseFragment) fragment).getTabPosition());
+		}
 	}
 
 	@Override
-	public void setControlBarOffset(float offset) {
+    public void onSetUserVisibleHint(final Fragment fragment, final boolean isVisibleToUser) {
+        if (isVisibleToUser) {
+            mCurrentVisibleFragment = fragment;
+		}
+	}
+
+	@Override
+    public boolean triggerRefresh(final int position) {
+        final Fragment f = mAttachedFragments.get(position);
+        return f instanceof RefreshScrollTopInterface && !f.isDetached()
+                && ((RefreshScrollTopInterface) f).triggerRefresh();
+    }
+
+	@Override
+    public void setControlBarOffset(float offset) {
         mTabsContainer.setTranslationY(getControlBarHeight() * (offset - 1));
         mActionsButton.setTranslationY(mActionsButton.getHeight() * (1 - offset));
         notifyControlBarOffsetChanged();
 	}
 
-	public void notifyAccountsChanged() {
-		if (mPreferences == null) return;
-		final long[] account_ids = getAccountIds(this);
-		final long default_id = mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1);
-		if (account_ids == null || account_ids.length == 0) {
-			finish();
-        } else if (account_ids.length > 0 && !ArrayUtils.contains(account_ids, default_id)) {
-			mPreferences.edit().putLong(KEY_DEFAULT_ACCOUNT_ID, account_ids[0]).apply();
-		}
+    public SlidingMenu getSlidingMenu() {
+        return mSlidingMenu;
 	}
 
 	@Override
-	public void onAttachFragment(final Fragment fragment) {
-		if (fragment instanceof IBaseFragment && ((IBaseFragment) fragment).getTabPosition() != -1) {
-			mAttachedFragments.put(((IBaseFragment) fragment).getTabPosition(), fragment);
-		}
-	}
-
-	@Override
-	public void onBackPressed() {
-		if (mSlidingMenu != null && mSlidingMenu.isMenuShowing()) {
-			mSlidingMenu.showContent();
-			return;
-		}
-		super.onBackPressed();
-	}
-
-	@Override
-	public void onClick(final View v) {
-		switch (v.getId()) {
-            case R.id.action_buttons: {
-                triggerActionsClick();
-				break;
-			}
-		}
-	}
-
-
-    @Subscribe
-    public void notifyTaskStateChanged(TaskStateChangedEvent event) {
-        updateActionsButton();
-        updateSmartBar();
-    }
-
-    @Subscribe
-    public void notifyUnreadCountUpdated(UnreadCountUpdatedEvent event) {
-        updateUnreadCount();
-    }
-
-
-	@Override
-	public void onClosed() {
-		updateDrawerPercentOpen(0, true);
-	}
-
-	@Override
-    public void onSupportContentChanged() {
-        super.onSupportContentChanged();
-        mActionBar = (Toolbar) findViewById(R.id.actionbar);
-        mTabIndicator = (TabPagerIndicator) findViewById(R.id.main_tabs);
-		mSlidingMenu = (HomeSlidingMenu) findViewById(R.id.home_menu);
-		mViewPager = (ExtendedViewPager) findViewById(R.id.main_pager);
-		mEmptyTab = findViewById(R.id.empty_tab);
-		mEmptyTabHint = findViewById(R.id.empty_tab_hint);
-        mActionsButton = findViewById(R.id.action_buttons);
-        mTabsContainer = findViewById(R.id.tabs_container);
-        mTabIndicator = (TabPagerIndicator) findViewById(R.id.main_tabs);
-        mActionBarOverlay = findViewById(R.id.actionbar_overlay);
-        mColorStatusFrameLayout = (TintedStatusFrameLayout) findViewById(R.id.home_content);
-	}
-
-	@Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_home, menu);
-        final MenuItem itemProgress = menu.findItem(MENU_PROGRESS);
-        mSmartBarProgress = (ProgressBar) MenuItemCompat.getActionView(itemProgress).findViewById(android.R.id.progress);
-		updateActionsButton();
-		return true;
-	}
-
-	@Override
-	public void onDetachFragment(final Fragment fragment) {
-		if (fragment instanceof IBaseFragment && ((IBaseFragment) fragment).getTabPosition() != -1) {
-			mAttachedFragments.remove(((IBaseFragment) fragment).getTabPosition());
-		}
-	}
-
-	@Override
-	public boolean getSystemWindowsInsets(Rect insets) {
-        final int height = mTabIndicator != null ? mTabIndicator.getHeight() : 0;
-		insets.top = height != 0 ? height : Utils.getActionBarHeight(this);
-		return true;
-	}
-
-	@Override
-	public boolean onKeyUp(final int keyCode, @NonNull final KeyEvent event) {
-		switch (keyCode) {
-			case KeyEvent.KEYCODE_MENU: {
-				if (mSlidingMenu != null) {
-					mSlidingMenu.toggle(true);
-					return true;
-				}
-				break;
-			}
-			default: {
-				if (mHotKeyHandler.handleKey(keyCode, event)) return true;
-			}
-		}
-		return super.onKeyUp(keyCode, event);
-	}
-
-	@Override
-	public boolean onLongClick(final View v) {
-		switch (v.getId()) {
-            case R.id.action_buttons: {
-				showMenuItemToast(v, v.getContentDescription(), true);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public void onOpened() {
-		updateDrawerPercentOpen(1, true);
+    public int getThemeResourceId() {
+        return ThemeUtils.getNoActionBarThemeResource(this);
 	}
 
 	@Override
@@ -350,124 +236,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
 	@Override
-	public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
-		final float pagerPosition = position + positionOffset;
-		if (!Float.isNaN(mPagerPosition)) {
-			setControlBarOffset(MathUtils.clamp(getControlBarOffset() + Math.abs(pagerPosition - mPagerPosition), 1, 0));
-		}
-		mPagerPosition = pagerPosition;
-	}
-
-	@Override
-	public void onPageScrollStateChanged(final int state) {
-
-	}
-
-	@Override
-	public void onPageSelected(final int position) {
-		if (mSlidingMenu.isMenuShowing()) {
-			mSlidingMenu.showContent();
-		}
-		updateSlidingMenuTouchMode();
-		updateActionsButton();
-        updateSmartBar();
-	}
-
-	@Override
-	public boolean onPrepareOptionsMenu(final Menu menu) {
-        if (mViewPager == null || mPagerAdapter == null) return false;
-		final boolean useBottomActionItems = FlymeUtils.hasSmartBar();
-        setMenuItemAvailability(menu, MENU_ACTIONS, useBottomActionItems);
-        setMenuItemAvailability(menu, MENU_PROGRESS, useBottomActionItems);
-        if (useBottomActionItems) {
-            final int icon, title;
-            final int position = mViewPager.getCurrentItem();
-            final SupportTabSpec tab = mPagerAdapter.getTab(position);
-            if (tab == null) {
-                title = R.string.compose;
-				icon = R.drawable.ic_action_status_compose;
-            } else {
-                if (classEquals(DirectMessagesFragment.class, tab.cls)) {
-                    icon = R.drawable.ic_action_add;
-                    title = R.string.new_direct_message;
-                } else if (classEquals(TrendsSuggectionsFragment.class, tab.cls)) {
-					icon = R.drawable.ic_action_search;
-                    title = android.R.string.search_go;
-                } else {
-					icon = R.drawable.ic_action_status_compose;
-                    title = R.string.compose;
-                }
-            }
-            final MenuItem actionsItem = menu.findItem(MENU_ACTIONS);
-            actionsItem.setIcon(icon);
-            actionsItem.setTitle(title);
-        }
-		return true;
-	}
-
-	@Override
-	public boolean onSearchRequested() {
-//        final Bundle appSearchData = new Bundle();
-//        if (mSelectedAccountToSearch != null) {
-//            appSearchData.putLong(EXTRA_ACCOUNT_ID, mSelectedAccountToSearch.account_id);
-//            openSearch(this, mSelectedAccountToSearch.accountId, query);
-//        }
-//        startSearch(null, false, appSearchData, false);
-        final Intent intent = new Intent(this, QuickSearchBarActivity.class);
-//        intent.putExtra(EXTRA_ACCOUNT_ID, account.account_id);
-        startActivity(intent);
-		return true;
-	}
-
-	@Override
-	public void onSetUserVisibleHint(final Fragment fragment, final boolean isVisibleToUser) {
-		if (isVisibleToUser) {
-			mCurrentVisibleFragment = fragment;
-		}
-	}
-
-	@Override
-	public void onWindowFocusChanged(final boolean hasFocus) {
-		super.onWindowFocusChanged(hasFocus);
-		if (mSlidingMenu != null && mSlidingMenu.isMenuShowing()) {
-			updateDrawerPercentOpen(1, false);
-		} else {
-			updateDrawerPercentOpen(0, false);
-		}
-	}
-
-    public void openSearchView(final ParcelableAccount account) {
-		mSelectedAccountToSearch = account;
-		onSearchRequested();
-	}
-
-	@Override
-	public float getControlBarOffset() {
-		final float totalHeight = getControlBarHeight();
-        return 1 + mTabsContainer.getTranslationY() / totalHeight;
-	}
-
-	@Override
-	public int getControlBarHeight() {
-        return mTabIndicator.getHeight() - mTabIndicator.getStripHeight();
-	}
-
-	@Override
-	public boolean triggerRefresh(final int position) {
-		final Fragment f = mAttachedFragments.get(position);
-		return f instanceof RefreshScrollTopInterface && !f.isDetached()
-				&& ((RefreshScrollTopInterface) f).triggerRefresh();
-	}
-
-	public void updateUnreadCount() {
-        if (mTabIndicator == null || mUpdateUnreadCountTask != null
-                && mUpdateUnreadCountTask.getStatus() == TwidereAsyncTask.Status.RUNNING) return;
-        mUpdateUnreadCountTask = new UpdateUnreadCountTask(mTabIndicator);
-        mUpdateUnreadCountTask.executeTask();
-		mTabIndicator.setDisplayBadge(mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
-	}
-
-	@Override
 	protected IBasePullToRefreshFragment getCurrentPullToRefreshFragment() {
 		if (mCurrentVisibleFragment instanceof IBasePullToRefreshFragment)
 			return (IBasePullToRefreshFragment) mCurrentVisibleFragment;
@@ -478,28 +246,11 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		return null;
 	}
 
-	@Override
-	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-		switch (requestCode) {
-			case REQUEST_SWIPEBACK_ACTIVITY: {
-				// closeAccountsDrawer();
-				return;
-			}
-		}
-		super.onActivityResult(requestCode, resultCode, data);
-	}
-
-    @Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getNoActionBarThemeResource(this);
-    }
-
     /**
      * Called when the context is first created.
      */
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-		setUiOptions(getWindow());
         final Window window = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -573,60 +324,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         setupHomeTabs();
     }
 
-    private void setupBars() {
-        final int themeColor = getThemeColor();
-        final int actionBarColor = getActionBarColor();
-		final int themeResId = getCurrentThemeResourceId();
-        final boolean isTransparent = ThemeUtils.isTransparentBackground(themeResId);
-        final int actionBarAlpha = isTransparent ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xFF;
-        final IHomeActionButton homeActionButton = (IHomeActionButton) mActionsButton;
-        mTabIndicator.setItemContext(ThemeUtils.getActionBarContext(this));
-        if (ThemeUtils.isColoredActionBar(themeResId)) {
-            final int contrastColor = ColorUtils.getContrastYIQ(actionBarColor, 192);
-            ViewAccessor.setBackground(mActionBar, new ColorDrawable(actionBarColor));
-            homeActionButton.setButtonColor(actionBarColor);
-            homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
-            mTabIndicator.setStripColor(themeColor);
-            mTabIndicator.setIconColor(contrastColor);
-            ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
-            mColorStatusFrameLayout.setDrawColor(true);
-            mColorStatusFrameLayout.setDrawShadow(false);
-            mColorStatusFrameLayout.setColor(actionBarColor, actionBarAlpha);
-            mColorStatusFrameLayout.setFactor(1);
-		} else {
-            final int backgroundColor = ThemeUtils.getThemeBackgroundColor(mTabIndicator.getItemContext());
-            final int foregroundColor = ThemeUtils.getThemeForegroundColor(mTabIndicator.getItemContext());
-            ViewAccessor.setBackground(mActionBar, ThemeUtils.getActionBarBackground(this, themeResId));
-            homeActionButton.setButtonColor(backgroundColor);
-            homeActionButton.setIconColor(foregroundColor, Mode.SRC_ATOP);
-            mTabIndicator.setStripColor(themeColor);
-            mTabIndicator.setIconColor(foregroundColor);
-            mColorStatusFrameLayout.setDrawColor(false);
-            mColorStatusFrameLayout.setDrawShadow(false);
-	    }
-        mTabIndicator.setAlpha(actionBarAlpha / 255f);
-        mActionsButton.setAlpha(actionBarAlpha / 255f);
-        ViewAccessor.setBackground(mActionBarOverlay, ThemeUtils.getWindowContentOverlay(this));
-    }
-
 	@Override
-	protected void onDestroy() {
-		stopStreamingService();
-		// Delete unused items in databases.
-		cleanDatabasesByItemLimit(this);
-		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONDESTROY));
-		super.onDestroy();
-	}
-
-	@Override
-	protected void onNewIntent(final Intent intent) {
-		final int tab_position = handleIntent(intent, false);
-		if (tab_position >= 0) {
-			mViewPager.setCurrentItem(MathUtils.clamp(tab_position, mPagerAdapter.getCount(), 0));
-		}
-	}
-
-    @Override
     protected void onPause() {
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONPAUSE));
         super.onPause();
@@ -692,6 +390,220 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	}
 
     @Override
+    public boolean getSystemWindowsInsets(Rect insets) {
+        final int height = mTabIndicator != null ? mTabIndicator.getHeight() : 0;
+        insets.top = height != 0 ? height : Utils.getActionBarHeight(this);
+        return true;
+    }
+
+    public ViewPager getViewPager() {
+        return mViewPager;
+    }
+
+    public void notifyAccountsChanged() {
+        if (mPreferences == null) return;
+        final long[] account_ids = getAccountIds(this);
+        final long default_id = mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1);
+        if (account_ids == null || account_ids.length == 0) {
+            finish();
+        } else if (account_ids.length > 0 && !ArrayUtils.contains(account_ids, default_id)) {
+            mPreferences.edit().putLong(KEY_DEFAULT_ACCOUNT_ID, account_ids[0]).apply();
+        }
+    }
+
+    @Subscribe
+    public void notifyTaskStateChanged(TaskStateChangedEvent event) {
+        updateActionsButton();
+        updateSmartBar();
+    }
+
+    @Subscribe
+    public void notifyUnreadCountUpdated(UnreadCountUpdatedEvent event) {
+        updateUnreadCount();
+    }
+
+    @Override
+    public void onClick(final View v) {
+        switch (v.getId()) {
+            case R.id.action_buttons: {
+                triggerActionsClick();
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onClosed() {
+        updateDrawerPercentOpen(0, true);
+    }
+
+    @Override
+    public boolean onKeyUp(final int keyCode, @NonNull final KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_MENU: {
+                if (mSlidingMenu != null) {
+                    mSlidingMenu.toggle(true);
+                    return true;
+                }
+                break;
+            }
+            default: {
+                if (mHotKeyHandler.handleKey(keyCode, event)) return true;
+            }
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void onWindowFocusChanged(final boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (mSlidingMenu != null && mSlidingMenu.isMenuShowing()) {
+            updateDrawerPercentOpen(1, false);
+        } else {
+            updateDrawerPercentOpen(0, false);
+        }
+    }
+
+    @Override
+    public boolean onSearchRequested() {
+        startActivity(new Intent(this, QuickSearchBarActivity.class));
+        return true;
+    }
+
+    @Override
+    public boolean onLongClick(final View v) {
+        switch (v.getId()) {
+            case R.id.action_buttons: {
+                showMenuItemToast(v, v.getContentDescription(), true);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onOpened() {
+        updateDrawerPercentOpen(1, true);
+    }
+
+    @Override
+    public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
+        final float pagerPosition = position + positionOffset;
+        if (!Float.isNaN(mPagerPosition)) {
+            setControlBarOffset(MathUtils.clamp(getControlBarOffset() + Math.abs(pagerPosition - mPagerPosition), 1, 0));
+        }
+        mPagerPosition = pagerPosition;
+    }
+
+    @Override
+    public float getControlBarOffset() {
+        final float totalHeight = getControlBarHeight();
+        return 1 + mTabsContainer.getTranslationY() / totalHeight;
+    }
+
+    @Override
+    public void onPageSelected(final int position) {
+        if (mSlidingMenu.isMenuShowing()) {
+            mSlidingMenu.showContent();
+        }
+        updateSlidingMenuTouchMode();
+        updateActionsButton();
+        updateSmartBar();
+    }
+
+    @Override
+    public int getControlBarHeight() {
+        return mTabIndicator.getHeight() - mTabIndicator.getStripHeight();
+    }
+
+    @Override
+    public void onPageScrollStateChanged(final int state) {
+
+    }
+
+    public void openSearchView(final ParcelableAccount account) {
+        mSelectedAccountToSearch = account;
+        onSearchRequested();
+    }
+
+    public void setSystemWindowInsets(Rect insets) {
+        final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.left_drawer);
+        if (fragment instanceof AccountsDashboardFragment) {
+            ((AccountsDashboardFragment) fragment).setStatusBarHeight(insets.top);
+        }
+        //TODO
+        mColorStatusFrameLayout.setStatusBarHeight(insets.top);
+    }
+
+    public void updateUnreadCount() {
+        if (mTabIndicator == null || mUpdateUnreadCountTask != null
+                && mUpdateUnreadCountTask.getStatus() == TwidereAsyncTask.Status.RUNNING) return;
+        mUpdateUnreadCountTask = new UpdateUnreadCountTask(mTabIndicator);
+        mUpdateUnreadCountTask.executeTask();
+        mTabIndicator.setDisplayBadge(mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
+    }
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        switch (requestCode) {
+            case REQUEST_SWIPEBACK_ACTIVITY: {
+                // closeAccountsDrawer();
+                return;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onNewIntent(final Intent intent) {
+        final int tab_position = handleIntent(intent, false);
+        if (tab_position >= 0) {
+            mViewPager.setCurrentItem(MathUtils.clamp(tab_position, mPagerAdapter.getCount(), 0));
+        }
+    }
+
+    @Override
+    public void onAttachFragment(final Fragment fragment) {
+        if (fragment instanceof IBaseFragment && ((IBaseFragment) fragment).getTabPosition() != -1) {
+            mAttachedFragments.put(((IBaseFragment) fragment).getTabPosition(), fragment);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+		stopStreamingService();
+        // Delete unused items in databases.
+        cleanDatabasesByItemLimit(this);
+        sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONDESTROY));
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mSlidingMenu != null && mSlidingMenu.isMenuShowing()) {
+            mSlidingMenu.showContent();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onSupportContentChanged() {
+        super.onSupportContentChanged();
+        mActionBar = (Toolbar) findViewById(R.id.actionbar);
+        mTabIndicator = (TabPagerIndicator) findViewById(R.id.main_tabs);
+        mSlidingMenu = (HomeSlidingMenu) findViewById(R.id.home_menu);
+        mViewPager = (ExtendedViewPager) findViewById(R.id.main_pager);
+		mEmptyTab = findViewById(R.id.empty_tab);
+        mEmptyTabHint = findViewById(R.id.empty_tab_hint);
+        mActionsButton = findViewById(R.id.action_buttons);
+        mTabsContainer = findViewById(R.id.tabs_container);
+        mTabIndicator = (TabPagerIndicator) findViewById(R.id.main_tabs);
+        mActionBarOverlay = findViewById(R.id.actionbar_overlay);
+        mColorStatusFrameLayout = (TintedStatusFrameLayout) findViewById(R.id.home_content);
+    }
+
+    @Override
     protected boolean shouldSetWindowBackground() {
         return false;
     }
@@ -741,15 +653,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		return mTwitterWrapper.hasActivatedTask();
 	}
 
-    private void setupHomeTabs() {
-		mPagerAdapter.clear();
-        mPagerAdapter.addTabs(getHomeTabs(this));
-		final boolean hasNoTab = mPagerAdapter.getCount() == 0;
-		mEmptyTab.setVisibility(hasNoTab ? View.VISIBLE : View.GONE);
-        mEmptyTabHint.setVisibility(hasNoTab ? View.VISIBLE : View.GONE);
-        mViewPager.setVisibility(hasNoTab ? View.GONE : View.VISIBLE);
-	}
-
 	private void initUnreadCount() {
         for (int i = 0, j = mTabIndicator.getCount(); i < j; i++) {
             mTabIndicator.setBadge(i, 0);
@@ -782,11 +685,50 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 		}
 	}
 
-	private void setUiOptions(final Window window) {
-		if (FlymeUtils.hasSmartBar()) {
-			window.setUiOptions(ActivityInfo.UIOPTION_SPLIT_ACTION_BAR_WHEN_NARROW);
+    private void setupBars() {
+        final int themeColor = getThemeColor();
+		final int actionBarColor = getActionBarColor();
+        final int themeResId = getCurrentThemeResourceId();
+        final boolean isTransparent = ThemeUtils.isTransparentBackground(themeResId);
+        final int actionBarAlpha = isTransparent ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xFF;
+        final IHomeActionButton homeActionButton = (IHomeActionButton) mActionsButton;
+        mTabIndicator.setItemContext(ThemeUtils.getActionBarContext(this));
+        if (ThemeUtils.isColoredActionBar(themeResId)) {
+            final int contrastColor = ColorUtils.getContrastYIQ(actionBarColor, 192);
+            ViewAccessor.setBackground(mActionBar, new ColorDrawable(actionBarColor));
+            homeActionButton.setButtonColor(actionBarColor);
+            homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
+            mTabIndicator.setStripColor(themeColor);
+            mTabIndicator.setIconColor(contrastColor);
+            ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
+            mColorStatusFrameLayout.setDrawColor(true);
+            mColorStatusFrameLayout.setDrawShadow(false);
+            mColorStatusFrameLayout.setColor(actionBarColor, actionBarAlpha);
+            mColorStatusFrameLayout.setFactor(1);
+        } else {
+            final int backgroundColor = ThemeUtils.getThemeBackgroundColor(mTabIndicator.getItemContext());
+            final int foregroundColor = ThemeUtils.getThemeForegroundColor(mTabIndicator.getItemContext());
+            ViewAccessor.setBackground(mActionBar, ThemeUtils.getActionBarBackground(this, themeResId));
+            homeActionButton.setButtonColor(backgroundColor);
+            homeActionButton.setIconColor(foregroundColor, Mode.SRC_ATOP);
+            mTabIndicator.setStripColor(themeColor);
+            mTabIndicator.setIconColor(foregroundColor);
+            mColorStatusFrameLayout.setDrawColor(false);
+            mColorStatusFrameLayout.setDrawShadow(false);
 		}
+        mTabIndicator.setAlpha(actionBarAlpha / 255f);
+        mActionsButton.setAlpha(actionBarAlpha / 255f);
+        ViewAccessor.setBackground(mActionBarOverlay, ThemeUtils.getWindowContentOverlay(this));
 	}
+
+    private void setupHomeTabs() {
+        mPagerAdapter.clear();
+        mPagerAdapter.addTabs(getHomeTabs(this));
+        final boolean hasNoTab = mPagerAdapter.getCount() == 0;
+		mEmptyTab.setVisibility(hasNoTab ? View.VISIBLE : View.GONE);
+        mEmptyTabHint.setVisibility(hasNoTab ? View.VISIBLE : View.GONE);
+        mViewPager.setVisibility(hasNoTab ? View.GONE : View.VISIBLE);
+    }
 
 	private void setupSlidingMenu() {
 		if (mSlidingMenu == null) return;
@@ -860,12 +802,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
             final IHomeActionButton hab = (IHomeActionButton) mActionsButton;
             hab.setIcon(icon);
             hab.setTitle(title);
-//            hab.setShowProgress(hasActivatedTask);
         }
-        if (mSmartBarProgress != null) {
-            mSmartBarProgress.setVisibility(hasActivatedTask ? View.VISIBLE : View.INVISIBLE);
-        }
-	}
+    }
 
 	private void updateActionsButtonStyle() {
 		final boolean leftsideComposeButton = mPreferences.getBoolean(KEY_LEFTSIDE_COMPOSE_BUTTON, false);
@@ -896,30 +834,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
             invalidateOptionsMenu();
         }
     }
-
-    public void moveControlBarBy(float delta) {
-		final int min = -getControlBarHeight(), max = 0;
-		mTabsContainer.setTranslationY(MathUtils.clamp(mTabsContainer.getTranslationY() + delta, max, min));
-		final ViewGroup.LayoutParams ablp = mActionsButton.getLayoutParams();
-		final int totalHeight;
-		if (ablp instanceof MarginLayoutParams) {
-			final MarginLayoutParams mlp = (MarginLayoutParams) ablp;
-			totalHeight = mActionsButton.getHeight() + mlp.topMargin + mlp.bottomMargin;
-		} else {
-			totalHeight = mActionsButton.getHeight();
-		}
-		mActionsButton.setTranslationY(MathUtils.clamp(mActionsButton.getTranslationY() - delta, totalHeight, 0));
-		notifyControlBarOffsetChanged();
-	}
-
-	public void setSystemWindowInsets(Rect insets) {
-		final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.left_drawer);
-		if (fragment instanceof AccountsDashboardFragment) {
-			((AccountsDashboardFragment) fragment).setStatusBarHeight(insets.top);
-		}
-        //TODO
-        mColorStatusFrameLayout.setStatusBarHeight(insets.top);
-	}
 
 	private void startStreamingService() {
 		if (!isStreamingServiceRunning) {
@@ -1000,6 +914,21 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 			}
 		}
 
+    }
+
+    public void moveControlBarBy(float delta) {
+        final int min = -getControlBarHeight(), max = 0;
+        mTabsContainer.setTranslationY(MathUtils.clamp(mTabsContainer.getTranslationY() + delta, max, min));
+        final ViewGroup.LayoutParams ablp = mActionsButton.getLayoutParams();
+        final int totalHeight;
+        if (ablp instanceof MarginLayoutParams) {
+            final MarginLayoutParams mlp = (MarginLayoutParams) ablp;
+            totalHeight = mActionsButton.getHeight() + mlp.topMargin + mlp.bottomMargin;
+        } else {
+            totalHeight = mActionsButton.getHeight();
+        }
+        mActionsButton.setTranslationY(MathUtils.clamp(mActionsButton.getTranslationY() - delta, totalHeight, 0));
+        notifyControlBarOffsetChanged();
 	}
 
 }

@@ -174,7 +174,7 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
             }
             default: {
                 ThemeUtils.applyActionBarBackground(actionBar, this, getCurrentThemeResourceId(),
-                        getCurrentThemeColor());
+                        getActionBarColor());
                 break;
             }
         }

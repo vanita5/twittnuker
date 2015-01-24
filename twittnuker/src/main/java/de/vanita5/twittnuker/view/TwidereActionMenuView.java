@@ -23,30 +23,34 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.internal.view.menu.MenuPopupHelper;
+import android.support.v7.widget.ActionMenuView;
 import android.util.AttributeSet;
 
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.util.ThemeUtils;
+import java.lang.reflect.Field;
 
-public class TwidereToolbar extends Toolbar {
-	public TwidereToolbar(Context context) {
-		super(context, null);
+public class TwidereActionMenuView extends ActionMenuView {
+
+	public TwidereActionMenuView(Context context) {
+		super(context);
 	}
 
-	public TwidereToolbar(Context context, AttributeSet attrs) {
-		this(context, attrs, R.attr.toolbarStyle);
+	public TwidereActionMenuView(Context context, AttributeSet attrs) {
+		super(context, attrs);
 	}
 
-	public TwidereToolbar(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(getThemedContext(context, attrs, defStyleAttr), attrs, defStyleAttr);
-        final TypedArray a = getContext().obtainStyledAttributes(attrs, new int[]{R.attr.elevation}, defStyleAttr, 0);
-		ViewCompat.setElevation(this, a.getDimension(0, 0));
-    }
-
-    private static Context getThemedContext(Context context, AttributeSet attrs, int defStyleAttr) {
-        return ThemeUtils.getActionBarContext(context);
-	}
+//    @Override
+//    public boolean post(Runnable action) {
+//        try {
+//            final Class<?> actionCls = action.getClass();
+//            final Field popupField = actionCls.getField("mPopup");
+//            popupField.setAccessible(true);
+//            final Object popupObject = popupField.get(action);
+//            if (popupObject instanceof MenuPopupHelper) {
+//                ((MenuPopupHelper) popupObject).setForceShowIcon(true);
+//            }
+//        } catch (NoSuchFieldException | IllegalAccessException ignore) {
+//        }
+//        return super.post(action);
+//    }
 }

@@ -49,5 +49,7 @@ public class ThemedMultiAutoCompleteTextView extends MultiAutoCompleteTextView  
     @Override
     public void setThemeTintColor(ColorStateList color) {
         ViewAccessor.setBackgroundTintList(this, color);
+        setLinkTextColor(color);
+        setHighlightColor(color.getDefaultColor());
     }
 }
