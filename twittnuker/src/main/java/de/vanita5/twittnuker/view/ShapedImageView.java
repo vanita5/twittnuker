@@ -33,7 +33,6 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
-import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
@@ -50,10 +49,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.util.accessor.ViewAccessor.OutlineCompat;
+import de.vanita5.twittnuker.util.accessor.ViewAccessor.ViewOutlineProviderCompat;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -272,7 +273,6 @@ public class ShapedImageView extends ImageView {
 
 	@Override
 	protected void onDraw(@NonNull Canvas canvas) {
-
 		mDestination.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(),
 				getHeight() - getPaddingBottom());
 
@@ -384,6 +384,7 @@ public class ShapedImageView extends ImageView {
     }
 
     private void drawBorder(@NonNull final Canvas canvas, @NonNull final RectF dest) {
+        if (mBorderColors == null) return;
         final RectF transitionSrc = mTransitionSource, transitionDst = mTransitionDestination;
         final float strokeWidth;
         if (transitionSrc != null && transitionDst != null) {
@@ -424,11 +425,9 @@ public class ShapedImageView extends ImageView {
     }
 
 	private void initOutlineProvider() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			setClipToOutline(true);
-			setOutlineProvider(new CircularOutlineProvider());
-		}
-	}
+        ViewAccessor.setClipToOutline(this, true);
+        ViewAccessor.setOutlineProvider(this, new CircularOutlineProvider());
+    }
 
     private void setBorderColorsInternal(int alpha, int... colors) {
         mBorderAlpha = alpha;
@@ -440,7 +439,6 @@ public class ShapedImageView extends ImageView {
     private void updateBorderShader() {
         final int[] colors = mBorderColors;
         if (colors == null || colors.length == 0) {
-            mBorderPaint.setShader(null);
             mBorderAlpha = 0;
             return;
         }
@@ -503,10 +501,9 @@ public class ShapedImageView extends ImageView {
     public @interface ShapeStyle {
     }
 
-	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-	private static class CircularOutlineProvider extends ViewOutlineProvider {
+    private static class CircularOutlineProvider extends ViewOutlineProviderCompat {
 		@Override
-		public void getOutline(View view, Outline outline) {
+        public void getOutline(View view, OutlineCompat outline) {
 			final int contentLeft = view.getPaddingLeft(), contentTop = view.getPaddingTop(),
 					contentRight = view.getWidth() - view.getPaddingRight(),
 					contentBottom = view.getHeight() - view.getPaddingBottom();

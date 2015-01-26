@@ -24,112 +24,145 @@ package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.text.Html;
+import android.support.v7.widget.RecyclerView.Adapter;
+import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IDirectMessagesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
+import de.vanita5.twittnuker.model.ParcelableDirectMessage.CursorIndices;
+import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.holder.DirectMessageConversationViewHolder;
+import de.vanita5.twittnuker.view.holder.MessageConversationViewHolder;
 
-import static de.vanita5.twittnuker.util.Utils.configBaseCardAdapter;
 import static de.vanita5.twittnuker.util.Utils.findDirectMessageInDatabases;
-import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
 import static de.vanita5.twittnuker.util.Utils.openMedia;
 
-public class DirectMessagesConversationAdapter extends BaseCursorAdapter implements IDirectMessagesAdapter,
-		OnClickListener {
+public class MessageConversationAdapter extends Adapter<ViewHolder>
+        implements Constants, IDirectMessagesAdapter, OnClickListener {
+
+    private static final int ITEM_VIEW_TYPE_MESSAGE_OUTGOING = 1;
+    private static final int ITEM_VIEW_TYPE_MESSAGE_INCOMING = 2;
+    private final int mOutgoingMessageColor;
+    private final int mIncomingMessageColor;
+
 	private ScaleType mImagePreviewScaleType;
 
+    private final Context mContext;
+    private final LayoutInflater mInflater;
 	private final ImageLoaderWrapper mImageLoader;
-	private final Context mContext;
 	private final MultiSelectManager mMultiSelectManager;
 	private final ImageLoadingHandler mImageLoadingHandler;
 
-	private ParcelableDirectMessage.CursorIndices mIndices;
+    private Cursor mCursor;
+    private CursorIndices mIndices;
+    private TwidereLinkify mLinkify;
 
-	public DirectMessagesConversationAdapter(final Context context) {
-		super(context, R.layout.card_item_message_conversation, null, new String[0], new int[0], 0);
+	public MessageConversationAdapter(final Context context) {
 		mContext = context;
-		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
+        mInflater = LayoutInflater.from(context);
+        final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
+        mLinkify = new TwidereLinkify(new DirectMessageOnLinkClickHandler(context, null));
 		mMultiSelectManager = app.getMultiSelectManager();
 		mImageLoader = app.getImageLoaderWrapper();
         mImageLoadingHandler = new ImageLoadingHandler(R.id.media_preview_progress);
-		configBaseCardAdapter(context, this);
+        mIncomingMessageColor = ThemeUtils.getUserAccentColor(context);
+        mOutgoingMessageColor = ThemeUtils.getCardBackgroundColor(context);
 	}
 
-	@Override
-	public void bindView(final View view, final Context context, final Cursor cursor) {
-		final int position = cursor.getPosition();
-		final DirectMessageConversationViewHolder holder = (DirectMessageConversationViewHolder) view.getTag();
 
-		final String firstMedia = cursor.getString(mIndices.first_media);
+    public Context getContext() {
+        return mContext;
+    }
 
-		final long accountId = cursor.getLong(mIndices.account_id);
-		final long timestamp = cursor.getLong(mIndices.message_timestamp);
-		final boolean is_outgoing = cursor.getInt(mIndices.is_outgoing) == 1;
+    public ImageLoaderWrapper getImageLoader() {
+        return mImageLoader;
+    }
 
-        holder.setOutgoing(is_outgoing);
-		holder.setTextSize(getTextSize());
-        holder.text.setText(Html.fromHtml(cursor.getString(mIndices.text)));
-        getLinkify().applyAllLinks(holder.text, accountId, false);
-        holder.text.setMovementMethod(null);
-        holder.time.setText(formatToLongTimeString(mContext, timestamp));
+    public TwidereLinkify getLinkify() {
+        return mLinkify;
+    }
 
-		if (firstMedia == null) {
-            mImageLoader.cancelDisplayTask(holder.media_preview);
-            holder.media_preview_container.setVisibility(View.GONE);
-		} else {
-            mImageLoader.cancelDisplayTask(holder.media_preview);
-            holder.media_preview_container.setVisibility(View.VISIBLE);
-			if (mImagePreviewScaleType != null) {
-                holder.media_preview.setScaleType(mImagePreviewScaleType);
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case ITEM_VIEW_TYPE_MESSAGE_INCOMING: {
+                final View view = mInflater.inflate(R.layout.card_item_message_conversation_incoming, parent, false);
+                final MessageConversationViewHolder holder = new MessageConversationViewHolder(this, view);
+                holder.setMessageColor(mIncomingMessageColor);
+                return holder;
 			}
-            if (!firstMedia.equals(mImageLoadingHandler.getLoadingUri(holder.media_preview))) {
-                holder.media_preview.setBackgroundResource(0);
-                mImageLoader.displayPreviewImageWithCredentials(holder.media_preview, firstMedia,
-                        accountId, mImageLoadingHandler);
+            case ITEM_VIEW_TYPE_MESSAGE_OUTGOING: {
+                final View view = mInflater.inflate(R.layout.card_item_message_conversation_outgoing, parent, false);
+                final MessageConversationViewHolder holder = new MessageConversationViewHolder(this, view);
+                holder.setMessageColor(mOutgoingMessageColor);
+                return holder;
 			}
-            holder.media_preview.setTag(position);
 		}
-		super.bindView(view, context, cursor);
+        return null;
 	}
 
 	@Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        switch (getItemViewType(position)) {
+            case ITEM_VIEW_TYPE_MESSAGE_INCOMING:
+            case ITEM_VIEW_TYPE_MESSAGE_OUTGOING: {
+                final Cursor c = mCursor;
+                c.moveToPosition(getCursorPosition(position));
+                ((MessageConversationViewHolder) holder).displayMessage(c, mIndices);
+            }
+        }
+    }
+
+    private int getCursorPosition(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        final Cursor c = mCursor;
+        c.moveToPosition(position);
+        if (c.getInt(mIndices.is_outgoing) == 1) {
+            return ITEM_VIEW_TYPE_MESSAGE_OUTGOING;
+        } else {
+            return ITEM_VIEW_TYPE_MESSAGE_INCOMING;
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        final Cursor c = mCursor;
+        if (c == null) return 0;
+        return c.getCount();
+    }
+
+    @Override
 	public ParcelableDirectMessage findItem(final long id) {
-		for (int i = 0, count = getCount(); i < count; i++) {
+        for (int i = 0, count = getItemCount(); i < count; i++) {
 			if (getItemId(i) == id) return getDirectMessage(i);
 		}
 		return null;
 	}
 
 	public ParcelableDirectMessage getDirectMessage(final int position) {
-		final Cursor c = getCursor();
+        final Cursor c = mCursor;
 		if (c == null || c.isClosed()) return null;
 		c.moveToPosition(position);
 		final long account_id = c.getLong(mIndices.account_id);
 		final long message_id = c.getLong(mIndices.message_id);
 		return findDirectMessageInDatabases(mContext, account_id, message_id);
-	}
-
-	@Override
-	public View newView(final Context context, final Cursor cursor, final ViewGroup parent) {
-		final View view = super.newView(context, cursor, parent);
-		final Object tag = view.getTag();
-		if (!(tag instanceof DirectMessageConversationViewHolder)) {
-			final DirectMessageConversationViewHolder holder = new DirectMessageConversationViewHolder(view);
-            holder.media_preview.setOnClickListener(this);
-			view.setTag(holder);
-		}
-		return view;
 	}
 
 	@Override
@@ -171,13 +204,13 @@ public class DirectMessagesConversationAdapter extends BaseCursorAdapter impleme
 		mImagePreviewScaleType = scaleType;
 	}
 
-	@Override
-	public Cursor swapCursor(final Cursor cursor) {
+    public void setCursor(final Cursor cursor) {
 		if (cursor != null) {
-			mIndices = new ParcelableDirectMessage.CursorIndices(cursor);
+            mIndices = new CursorIndices(cursor);
 		} else {
 			mIndices = null;
 		}
-		return super.swapCursor(cursor);
+        mCursor = cursor;
+        notifyDataSetChanged();
 	}
 }

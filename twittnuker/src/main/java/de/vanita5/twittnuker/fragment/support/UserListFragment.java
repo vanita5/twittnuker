@@ -193,8 +193,8 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 		mUserList = userList;
         mUserListDetails.drawEnd(getAccountColor(getActivity(), userList.account_id));
 		mListNameView.setText(userList.name);
-        final String displayName = UserColorNameUtils.getDisplayName(getActivity(), userList.user_name,
-				userList.user_screen_name);
+        final String displayName = UserColorNameUtils.getDisplayName(getActivity(),
+				userList.user_name, userList.user_screen_name);
 		mCreatedByView.setText(getString(R.string.created_by, displayName));
 		final String description = userList.description;
         mDescriptionView.setVisibility(isEmpty(description) ? View.GONE : View.VISIBLE);
@@ -475,8 +475,8 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
     }
 
     @Override
-	public void onViewCreated(final View view, final Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
+    public void onBaseViewCreated(final View view, final Bundle savedInstanceState) {
+        super.onBaseViewCreated(view, savedInstanceState);
         mHeaderDrawerLayout = (HeaderDrawerLayout) view.findViewById(R.id.details_container);
         mErrorRetryContainer = view.findViewById(R.id.error_retry_container);
         mProgressContainer = view.findViewById(R.id.progress_container);

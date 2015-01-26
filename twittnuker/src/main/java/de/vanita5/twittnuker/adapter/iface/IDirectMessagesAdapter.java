@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.adapter.iface;
 
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 
-public interface IDirectMessagesAdapter extends IBaseCardAdapter {
+public interface IDirectMessagesAdapter {
 
 	public ParcelableDirectMessage findItem(long id);
 

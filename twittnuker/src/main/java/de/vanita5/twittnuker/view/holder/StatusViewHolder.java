@@ -317,7 +317,6 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
 
         final ParcelableMedia[] media = ParcelableMedia.fromJSONString(cursor.getString(indices.media));
 
-        replyRetweetIcon.setColorFilter(replyRetweetView.getCurrentTextColor(), Mode.SRC_ATOP);
         if (retweet_id > 0) {
             final String retweetedBy = UserColorNameUtils.getDisplayName(
                     retweeted_by_name, retweeted_by_screen_name, nameFirst);
@@ -333,7 +332,6 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
             replyRetweetView.setVisibility(View.VISIBLE);
             replyRetweetIcon.setVisibility(View.VISIBLE);
         } else {
-            replyRetweetView.setText(null);
             replyRetweetView.setVisibility(View.GONE);
             replyRetweetIcon.setVisibility(View.GONE);
         }

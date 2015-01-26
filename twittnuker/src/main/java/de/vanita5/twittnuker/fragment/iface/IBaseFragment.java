@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.fragment.iface;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.View;
 
 public interface IBaseFragment {
 	Bundle getExtraConfiguration();
@@ -31,6 +32,8 @@ public interface IBaseFragment {
 	int getTabPosition();
 
 	void requestFitSystemWindows();
+
+    void onBaseViewCreated(View view, Bundle savedInstanceState);
 
 	public interface SystemWindowsInsetsCallback {
 		boolean getSystemWindowsInsets(Rect insets);

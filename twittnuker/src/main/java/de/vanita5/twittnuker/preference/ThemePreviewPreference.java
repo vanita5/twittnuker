@@ -31,6 +31,7 @@ import android.support.v7.widget.ActionMenuView;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MotionEvent;
@@ -46,6 +47,8 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.iface.IExtendedView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.TouchInterceptor;
+
+import java.lang.reflect.InvocationTargetException;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
@@ -82,10 +85,17 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		final int themeResource = ThemeUtils.getThemeResource(context);
         final Context theme = new ContextThemeWrapper(context, themeResource);
 		final LayoutInflater inflater = LayoutInflater.from(theme);
-		final View view = inflater.inflate(R.layout.theme_preview, parent, false);
-		setPreviewView(theme, view.findViewById(R.id.theme_preview_content), themeResource);
-		return view;
-	}
+        try {
+            final View view = inflater.inflate(R.layout.theme_preview, parent, false);
+            setPreviewView(theme, view.findViewById(R.id.theme_preview_content), themeResource);
+            return view;
+        } catch (InflateException e) {
+            if (e.getCause() instanceof InvocationTargetException) {
+                e.getCause().getCause().printStackTrace();
+	        }
+            throw e;
+        }
+    }
 
 	private static void setPreviewView(final Context context, final View view, final int themeRes) {
 		if (view instanceof IExtendedView) {

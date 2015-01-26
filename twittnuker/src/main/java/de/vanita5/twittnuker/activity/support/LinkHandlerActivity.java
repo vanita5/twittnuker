@@ -41,12 +41,13 @@ import android.view.WindowManager.LayoutParams;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
-import de.vanita5.twittnuker.util.ActivityAccessor;
-import de.vanita5.twittnuker.util.ActivityAccessor.TaskDescriptionCompat;
+import de.vanita5.twittnuker.util.accessor.ActivityAccessor;
+import de.vanita5.twittnuker.util.accessor.ActivityAccessor.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -160,16 +161,19 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
     @Override
     public boolean getSystemWindowsInsets(Rect insets) {
         final boolean result = super.getSystemWindowsInsets(insets);
-        if (result) {
-            insets.bottom = 0;
-        }
+//        if (result) {
+//            insets.bottom = 0;
+//        }
         return result;
     }
 
     @Override
     public void fitSystemWindows(Rect insets) {
         super.fitSystemWindows(insets);
-        mMainContent.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_content);
+        if (fragment instanceof IBaseFragment) {
+            ((IBaseFragment) fragment).requestFitSystemWindows();
+        }
     }
 
     @Override

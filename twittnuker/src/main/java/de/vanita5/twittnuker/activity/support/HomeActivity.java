@@ -84,8 +84,8 @@ import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
-import de.vanita5.twittnuker.util.ActivityAccessor;
-import de.vanita5.twittnuker.util.ActivityAccessor.TaskDescriptionCompat;
+import de.vanita5.twittnuker.util.accessor.ActivityAccessor;
+import de.vanita5.twittnuker.util.accessor.ActivityAccessor.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.CustomTabUtils;
@@ -116,7 +116,7 @@ import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
 import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
 import static de.vanita5.twittnuker.util.Utils.isPushEnabled;
-import static de.vanita5.twittnuker.util.Utils.openDirectMessagesConversation;
+import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
@@ -775,7 +775,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
             startActivity(new Intent(INTENT_ACTION_COMPOSE));
         } else {
             if (classEquals(DirectMessagesFragment.class, tab.cls)) {
-                openDirectMessagesConversation(this, -1, -1);
+                openMessageConversation(this, -1, -1);
             } else if (classEquals(TrendsSuggectionsFragment.class, tab.cls)) {
                 openSearchView(null);
             } else {

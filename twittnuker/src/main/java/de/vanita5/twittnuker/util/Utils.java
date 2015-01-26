@@ -2878,7 +2878,7 @@ public final class Utils implements Constants, TwitterConstants {
 		return LINK_HANDLER_URI_MATCHER.match(uri);
 	}
 
-	public static void openDirectMessagesConversation(final FragmentActivity activity, final long accountId,
+    public static void openMessageConversation(final FragmentActivity activity, final long accountId,
 			final long recipientId) {
 		if (activity == null) return;
 		final Uri.Builder builder = new Uri.Builder();
