@@ -65,9 +65,11 @@ import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.fragment.CustomTabsFragment;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
@@ -86,6 +88,7 @@ import de.vanita5.twittnuker.util.ActivityAccessor;
 import de.vanita5.twittnuker.util.ActivityAccessor.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.HotKeyHandler;
 import de.vanita5.twittnuker.util.MathUtils;
@@ -107,7 +110,6 @@ import de.vanita5.twittnuker.view.iface.IHomeActionButton;
 
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 import static de.vanita5.twittnuker.util.CustomTabUtils.getAddedTabPosition;
-import static de.vanita5.twittnuker.util.CustomTabUtils.getHomeTabs;
 import static de.vanita5.twittnuker.util.Utils.cleanDatabasesByItemLimit;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
@@ -141,7 +143,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 	private ExtendedViewPager mViewPager;
     private TabPagerIndicator mTabIndicator;
 	private HomeSlidingMenu mSlidingMenu;
-	private View mEmptyTab;
 	private View mEmptyTabHint;
     private View mActionsButton;
     private View mTabsContainer;
@@ -304,6 +305,7 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         mTabIndicator.setDisplayBadge(mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
         mActionsButton.setOnClickListener(this);
         mActionsButton.setOnLongClickListener(this);
+        mEmptyTabHint.setOnClickListener(this);
 		setTabPosition(initialTabPosition);
 		setupSlidingMenu();
         setupBars();
@@ -427,6 +429,13 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         switch (v.getId()) {
             case R.id.action_buttons: {
                 triggerActionsClick();
+                break;
+            }
+            case R.id.empty_tab_hint: {
+                final Intent intent = new Intent(this, SettingsActivity.class);
+                intent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT, CustomTabsFragment.class.getName());
+                intent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT_TITLE, R.string.tabs);
+                startActivityForResult(intent, REQUEST_SETTINGS);
                 break;
             }
         }
@@ -594,7 +603,6 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
         mTabIndicator = (TabPagerIndicator) findViewById(R.id.main_tabs);
         mSlidingMenu = (HomeSlidingMenu) findViewById(R.id.home_menu);
         mViewPager = (ExtendedViewPager) findViewById(R.id.main_pager);
-		mEmptyTab = findViewById(R.id.empty_tab);
         mEmptyTabHint = findViewById(R.id.empty_tab_hint);
         mActionsButton = findViewById(R.id.action_buttons);
         mTabsContainer = findViewById(R.id.tabs_container);
@@ -723,9 +731,8 @@ public class HomeActivity extends BaseSupportActivity implements OnClickListener
 
     private void setupHomeTabs() {
         mPagerAdapter.clear();
-        mPagerAdapter.addTabs(getHomeTabs(this));
+        mPagerAdapter.addTabs(CustomTabUtils.getHomeTabs(this));
         final boolean hasNoTab = mPagerAdapter.getCount() == 0;
-		mEmptyTab.setVisibility(hasNoTab ? View.VISIBLE : View.GONE);
         mEmptyTabHint.setVisibility(hasNoTab ? View.VISIBLE : View.GONE);
         mViewPager.setVisibility(hasNoTab ? View.GONE : View.VISIBLE);
     }

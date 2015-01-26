@@ -21,9 +21,10 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<manifest
     package="de.vanita5.twittnuker"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto">
 
     <uses-sdk />
@@ -182,10 +183,10 @@
         </activity>
         <activity
             android:name=".activity.support.QuickSearchBarActivity"
+            android:label="@android:string/search_go"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Blank.Dialog"
-            android:windowSoftInputMode="adjustResize"
-            android:label="@android:string/search_go">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.GLOBAL_SEARCH"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -604,11 +605,17 @@
    		</activity>
         <activity
             android:name=".activity.TestActivity"
+            android:enabled="false"
             android:icon="@drawable/ic_action_twittnuker"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Test"
-            android:windowSoftInputMode="adjustResize"/>
-
+            android:label="Twittnuker test"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
         <service
             android:name=".service.RefreshService"
             android:label="@string/label_refresh_service"

@@ -748,7 +748,7 @@
     <string name="error_twitlonger">...I can\'t handle it :(\nYour Tweet has not been send and saved to draft.</string>
     <string name="action_shortening">shortening tweet</string>
     <string name="uploading_image">Uploading...</string>
-    <string name="no_tab_hint">You can add tabs in the settings</string>
+    <string name="no_tab_hint">Add Tabs</string>
 
     <string name="refresh_on_start_workaround">Use "Refresh before streaming" instead</string>
 </resources>

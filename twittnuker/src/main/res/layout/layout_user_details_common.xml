@@ -105,7 +105,7 @@
                 android:layout_width="@dimen/element_size_small"
                 android:layout_height="@dimen/element_size_small"
                 android:color="?android:textColorPrimary"
-                android:src="@drawable/ic_action_web"/>
+                android:src="@drawable/ic_action_link"/>
 
             <de.vanita5.twittnuker.view.HandleSpanClickTextView
                 android:id="@+id/url"
@@ -134,7 +134,7 @@
                 android:layout_width="@dimen/element_size_small"
                 android:layout_height="@dimen/element_size_small"
                 android:color="?android:textColorPrimary"
-                android:src="@drawable/ic_action_time"/>
+                android:src="@drawable/ic_action_portal_cake"/>
 
             <de.vanita5.twittnuker.view.themed.ThemedTextView
                 android:id="@+id/created_at"

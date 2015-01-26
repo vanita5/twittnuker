@@ -249,6 +249,7 @@ public class DirectMessagesFragment extends BasePullToRefreshListFragment implem
 		}
 	}
 
+
 	protected long getAccountId() {
 		final Bundle args = getArguments();
 		return args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;

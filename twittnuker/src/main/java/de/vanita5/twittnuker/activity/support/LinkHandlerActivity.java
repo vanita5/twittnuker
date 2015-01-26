@@ -41,7 +41,6 @@ import android.view.WindowManager.LayoutParams;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
-import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
@@ -170,10 +169,7 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
     @Override
     public void fitSystemWindows(Rect insets) {
         super.fitSystemWindows(insets);
-        final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_content);
-        if (fragment instanceof IBaseFragment) {
-            ((IBaseFragment) fragment).requestFitSystemWindows();
-        }
+        mMainContent.setPadding(insets.left, insets.top, insets.right, insets.bottom);
     }
 
     @Override
