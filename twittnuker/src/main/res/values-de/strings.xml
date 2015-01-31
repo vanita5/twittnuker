@@ -385,7 +385,7 @@
     <string name="disable_tab_swipe">Deaktiviere Tab Swipe</string>
     <string name="disable_tab_swipe_summary">Deaktiviert das wechseln zwischen Tabs durch wischen</string>
     <string name="sign_in_method_introduction_title">Wie funktioniert das?</string>
-    <string name="sign_in_method_introduction">Die meisten Anwendungen öffnen einen externen Browser, um dort nach dem Benutzernamen und demPasswort zu fragen. Dies ist manchmal sehr umständlich.\n\nTwittnuker öffnet keinen externen Browser, sondern verwendet einfacherere Methoden, um sich anzumelden. Twittnuker speichert niemals das Passwort, es ist daher völlig sicher!</string>
+    <string name="sign_in_method_introduction">Die meisten Anwendungen öffnen einen externen Browser, um dort nach dem Benutzernamen und dem Passwort zu fragen. Dies ist manchmal sehr umständlich.\n\nTwittnuker öffnet keinen externen Browser, sondern verwendet einfacherere Methoden, um sich anzumelden. Twittnuker speichert niemals das Passwort, es ist daher völlig sicher!</string>
     <string name="quote_protected_status_notice">Es ist nicht empfohlen einen geschützten Tweet zu zitieren.</string>
     <string name="edit_draft">Bearbeite Entwurf</string>
     <string name="profile_image">Profilbild</string>
