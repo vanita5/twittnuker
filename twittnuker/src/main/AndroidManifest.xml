@@ -733,7 +733,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="de.vanita5.twittnuker.receiver.ClearNotificationReceiver">
+            android:name=".receiver.NotificationActionReceiver">
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.PUSHNOTIFICATION_CLEARED"/>
             </intent-filter>
