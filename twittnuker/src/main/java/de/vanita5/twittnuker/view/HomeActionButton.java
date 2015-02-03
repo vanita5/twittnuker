@@ -55,12 +55,6 @@ public class HomeActionButton extends FrameLayout implements IHomeActionButton {
 	}
 
     @Override
-    public void setIconColor(int color, Mode mode) {
-        mIconView.setColorFilter(color, mode);
-        mProgressBar.setIndeterminateTintList(ColorStateList.valueOf(color));
-	}
-
-	@Override
 	public void setIcon(final Bitmap bm) {
 		mIconView.setImageBitmap(bm);
 	}
@@ -73,6 +67,12 @@ public class HomeActionButton extends FrameLayout implements IHomeActionButton {
 	@Override
 	public void setIcon(final int resId) {
 		mIconView.setImageResource(resId);
+    }
+
+    @Override
+    public void setIconColor(int color, Mode mode) {
+        mIconView.setColorFilter(color, mode);
+        mProgressBar.setIndeterminateTintList(ColorStateList.valueOf(color));
 	}
 
 	@Override

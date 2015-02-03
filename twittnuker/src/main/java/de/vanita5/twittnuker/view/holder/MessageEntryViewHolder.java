@@ -40,11 +40,10 @@ import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 
 public class MessageEntryViewHolder extends ViewHolder implements OnClickListener {
 
-	private final MessageEntriesAdapter adapter;
-
 	public final ImageView profileImageView;
 	public final TextView nameView, screenNameView, textView;
 	public final ShortTimeView timeView;
+    private final MessageEntriesAdapter adapter;
 	private float text_size;
 	private boolean account_color_enabled;
 

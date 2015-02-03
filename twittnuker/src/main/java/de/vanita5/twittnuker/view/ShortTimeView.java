@@ -42,11 +42,9 @@ public class ShortTimeView extends ThemedTextView implements Constants, OnShared
 	private static final long TICKER_DURATION = 5000L;
 
 	private final Runnable mTicker;
-
+    private final SharedPreferences mPreferences;
 	private boolean mShowAbsoluteTime;
 	private long mTime;
-
-	private final SharedPreferences mPreferences;
 
 	public ShortTimeView(final Context context) {
 		this(context, null);
@@ -95,7 +93,6 @@ public class ShortTimeView extends ThemedTextView implements Constants, OnShared
 		if (mShowAbsoluteTime) {
 			setText(formatSameDayTime(getContext(), mTime));
 		} else {
-			//NOTE display seconds
             final long current = System.currentTimeMillis();
             if (Math.abs(current - mTime) > 60 * 1000) {
                 setText(getRelativeTimeSpanString(mTime, System.currentTimeMillis(),

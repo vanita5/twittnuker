@@ -42,14 +42,10 @@ public class ForegroundColorView extends View implements IForegroundView {
 
     private final Rect mAlphaRect, mColorRect;
     private final Paint mPaint;
-
-    private boolean mAlphaPattern;
-
-    private int mNumRectanglesHorizontal;
-
-    private int mNumRectanglesVertical;
-
     private final int mAlphaPatternSize;
+    private boolean mAlphaPattern;
+    private int mNumRectanglesHorizontal;
+    private int mNumRectanglesVertical;
 
     public ForegroundColorView(final Context context) {
         this(context, null);
@@ -75,33 +71,14 @@ public class ForegroundColorView extends View implements IForegroundView {
         return mPaint.getColor();
     }
 
-    @Override
-    public Drawable getForeground() {
-        return mForegroundViewHelper.getForeground();
-    }
-
-    @Override
-    public void jumpDrawablesToCurrentState() {
-        super.jumpDrawablesToCurrentState();
-        mForegroundViewHelper.jumpDrawablesToCurrentState();
-    }
-
-    public void setAlphaPatternEnable(final boolean alphaPattern) {
-        if (mAlphaPattern == alphaPattern) return;
-        mAlphaPattern = alphaPattern;
-        invalidate();
-    }
-
     public void setColor(final int color) {
         mPaint.setColor(color);
         invalidate();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public void drawableHotspotChanged(float x, float y) {
-        super.drawableHotspotChanged(x, y);
-        mForegroundViewHelper.dispatchDrawableHotspotChanged(x, y);
+    public Drawable getForeground() {
+        return mForegroundViewHelper.getForeground();
     }
 
     /**
@@ -129,10 +106,19 @@ public class ForegroundColorView extends View implements IForegroundView {
         mForegroundViewHelper.setForegroundGravity(foregroundGravity);
     }
 
+    public void setAlphaPatternEnable(final boolean alphaPattern) {
+        if (mAlphaPattern == alphaPattern) return;
+        mAlphaPattern = alphaPattern;
+        invalidate();
+    }
+
     @Override
-    protected void drawableStateChanged() {
-        super.drawableStateChanged();
-        mForegroundViewHelper.drawableStateChanged();
+    protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mForegroundViewHelper.dispatchOnSizeChanged(w, h, oldw, oldh);
+        mColorRect.set(getPaddingLeft(), getPaddingTop(), w - getPaddingRight(), h - getPaddingBottom());
+        mNumRectanglesHorizontal = (int) Math.ceil(w / mAlphaPatternSize);
+        mNumRectanglesVertical = (int) Math.ceil(h / mAlphaPatternSize);
     }
 
     @Override
@@ -149,17 +135,27 @@ public class ForegroundColorView extends View implements IForegroundView {
     }
 
     @Override
-    protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-		mForegroundViewHelper.dispatchOnSizeChanged(w, h, oldw, oldh);
-        mColorRect.set(getPaddingLeft(), getPaddingTop(), w - getPaddingRight(), h - getPaddingBottom());
-        mNumRectanglesHorizontal = (int) Math.ceil(w / mAlphaPatternSize);
-        mNumRectanglesVertical = (int) Math.ceil(h / mAlphaPatternSize);
+    protected boolean verifyDrawable(final Drawable who) {
+        return super.verifyDrawable(who) || mForegroundViewHelper.verifyDrawable(who);
     }
 
     @Override
-    protected boolean verifyDrawable(final Drawable who) {
-        return super.verifyDrawable(who) || mForegroundViewHelper.verifyDrawable(who);
+    protected void drawableStateChanged() {
+        super.drawableStateChanged();
+        mForegroundViewHelper.drawableStateChanged();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void drawableHotspotChanged(float x, float y) {
+        super.drawableHotspotChanged(x, y);
+        mForegroundViewHelper.dispatchDrawableHotspotChanged(x, y);
+    }
+
+    @Override
+    public void jumpDrawablesToCurrentState() {
+        super.jumpDrawablesToCurrentState();
+        mForegroundViewHelper.jumpDrawablesToCurrentState();
     }
 
     private void drawAlphaPattern(final Canvas canvas) {

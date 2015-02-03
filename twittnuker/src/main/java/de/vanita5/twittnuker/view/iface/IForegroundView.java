@@ -93,6 +93,11 @@ public interface IForegroundView {
             a.recycle();
         }
 
+        public void dispatchDrawableHotspotChanged(float x, float y) {
+            if (mForeground == null) return;
+            DrawableCompat.setHotspot(mForeground, x, y);
+        }
+
 		public void dispatchOnDraw(final Canvas canvas) {
             if (mForeground != null) {
                 final Drawable foreground = mForeground;
@@ -170,12 +175,6 @@ public interface IForegroundView {
 			return mForeground;
 		}
 
-		public void jumpDrawablesToCurrentState() {
-			if (mForeground != null) {
-				mForeground.jumpToCurrentState();
-			}
-        }
-
         public void setForeground(final Drawable drawable) {
             if (mForeground != drawable) {
                 if (mForeground != null) {
@@ -198,6 +197,12 @@ public interface IForegroundView {
                 }
                 mView.requestLayout();
                 mView.invalidate();
+            }
+        }
+
+        public void jumpDrawablesToCurrentState() {
+            if (mForeground != null) {
+                mForeground.jumpToCurrentState();
             }
         }
 
@@ -226,11 +231,6 @@ public interface IForegroundView {
 
         public boolean verifyDrawable(final Drawable who) {
             return who == mForeground;
-        }
-
-        public void dispatchDrawableHotspotChanged(float x, float y) {
-            if (mForeground == null) return;
-            DrawableCompat.setHotspot(mForeground, x, y);
         }
     }
 }

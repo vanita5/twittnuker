@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.view;
 
-import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -34,6 +32,8 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 
 import java.util.Locale;
+
+import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 
 public class StatusTextCountView extends TextView {
 

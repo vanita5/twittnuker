@@ -34,7 +34,7 @@ public interface PagerIndicator extends ViewPager.OnPageChangeListener {
 	 * <p>
 	 * Set the current page of both the ViewPager and indicator.
 	 * </p>
-	 * 
+     * <p/>
 	 * <p>
 	 * This <strong>must</strong> be used if you need to set the page before the
 	 * views are drawn on screen (e.g., default start page).
@@ -66,6 +66,15 @@ public interface PagerIndicator extends ViewPager.OnPageChangeListener {
 	 */
 	void setViewPager(ViewPager view, int initialPosition);
 
+    interface TabListener {
+
+        public void onPageReselected(int position);
+
+        public void onPageSelected(int position);
+
+        public boolean onTabLongClick(int position);
+    }
+
     /**
      * A TitleProvider provides the title to display according to a view.
      */
@@ -90,14 +99,5 @@ public interface PagerIndicator extends ViewPager.OnPageChangeListener {
         public CharSequence getPageTitle(int position);
 
         public float getPageWidth(int position);
-    }
-
-    interface TabListener {
-
-        public void onPageReselected(int position);
-
-        public void onPageSelected(int position);
-
-        public boolean onTabLongClick(int position);
     }
 }

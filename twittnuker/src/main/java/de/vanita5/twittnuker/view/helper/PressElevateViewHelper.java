@@ -46,18 +46,9 @@ public class PressElevateViewHelper implements Animator.AnimatorListener {
 		return mView.isPressed();
 	}
 
-	public void updateButtonState() {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
-		final boolean state = getState();
-		final AnimatorRunnable runnable = new AnimatorRunnable(this, state);
-		if (mCurrentAnimator != null) {
-			mAnimatorRunnable = runnable;
-			mCurrentAnimator = null;
-			return;
-		}
-		runnable.run();
-		mAnimatorRunnable = null;
-	}
+    public View getView() {
+        return mView;
+    }
 
 	@Override
 	public void onAnimationStart(Animator animation) {
@@ -91,8 +82,17 @@ public class PressElevateViewHelper implements Animator.AnimatorListener {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
 	}
 
-	public View getView() {
-		return mView;
+    public void updateButtonState() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+        final boolean state = getState();
+        final AnimatorRunnable runnable = new AnimatorRunnable(this, state);
+        if (mCurrentAnimator != null) {
+            mAnimatorRunnable = runnable;
+            mCurrentAnimator = null;
+            return;
+        }
+        runnable.run();
+        mAnimatorRunnable = null;
 	}
 
 	@TargetApi(Build.VERSION_CODES.LOLLIPOP)

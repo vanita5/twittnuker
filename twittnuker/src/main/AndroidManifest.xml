@@ -608,7 +608,7 @@
             android:enabled="false"
             android:icon="@drawable/ic_action_twittnuker"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.Test"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog"
             android:label="Twittnuker test"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

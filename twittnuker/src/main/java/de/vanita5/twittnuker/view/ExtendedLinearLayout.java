@@ -23,6 +23,8 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
+import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
@@ -33,6 +35,7 @@ public class ExtendedLinearLayout extends LinearLayout implements IExtendedView 
 
 	private TouchInterceptor mTouchInterceptor;
 	private OnSizeChangedListener mOnSizeChangedListener;
+    private OnFitSystemWindowsListener mOnFitSystemWindowsListener;
 
 	public ExtendedLinearLayout(final Context context) {
 		super(context);
@@ -43,8 +46,7 @@ public class ExtendedLinearLayout extends LinearLayout implements IExtendedView 
 	}
 
 	public ExtendedLinearLayout(final Context context, final AttributeSet attrs, final int defStyle) {
-		// Workaround for pre-Honeycomb devices.
-		super(context, attrs);
+        super(context, attrs, defStyle);
 	}
 
 	@Override
@@ -66,13 +68,9 @@ public class ExtendedLinearLayout extends LinearLayout implements IExtendedView 
 	}
 
 	@Override
-	public final boolean onTouchEvent(final MotionEvent event) {
-		if (mTouchInterceptor != null) {
-			final boolean ret = mTouchInterceptor.onTouchEvent(this, event);
-			if (ret) return true;
-		}
-		return super.onTouchEvent(event);
-	}
+    public void setOnFitSystemWindowsListener(OnFitSystemWindowsListener listener) {
+        mOnFitSystemWindowsListener = listener;
+    }
 
 	@Override
 	public final void setOnSizeChangedListener(final OnSizeChangedListener listener) {
@@ -82,6 +80,23 @@ public class ExtendedLinearLayout extends LinearLayout implements IExtendedView 
 	@Override
 	public final void setTouchInterceptor(final TouchInterceptor listener) {
 		mTouchInterceptor = listener;
+    }
+
+    @Override
+    protected boolean fitSystemWindows(@NonNull Rect insets) {
+        if (mOnFitSystemWindowsListener != null) {
+            mOnFitSystemWindowsListener.onFitSystemWindows(insets);
+        }
+        return super.fitSystemWindows(insets);
+    }
+
+    @Override
+    public final boolean onTouchEvent(@NonNull final MotionEvent event) {
+        if (mTouchInterceptor != null) {
+            final boolean ret = mTouchInterceptor.onTouchEvent(this, event);
+            if (ret) return true;
+        }
+        return super.onTouchEvent(event);
 	}
 
 	@Override

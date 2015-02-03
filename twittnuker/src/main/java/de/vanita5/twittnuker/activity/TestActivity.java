@@ -26,12 +26,14 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
 
 public class TestActivity extends Activity implements Constants {
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_test);
 	}
 
 }

@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -34,6 +35,7 @@ public class ProfileBannerImageView extends ForegroundImageView implements IExte
 
 	private OnSizeChangedListener mOnSizeChangedListener;
 	private TouchInterceptor mTouchInterceptor;
+    private OnFitSystemWindowsListener mOnFitSystemWindowsListener;
 
 	public ProfileBannerImageView(final Context context) {
 		this(context, null);
@@ -50,6 +52,29 @@ public class ProfileBannerImageView extends ForegroundImageView implements IExte
     }
 
 	@Override
+    public void setOnFitSystemWindowsListener(OnFitSystemWindowsListener listener) {
+        mOnFitSystemWindowsListener = listener;
+    }
+
+    @Override
+    public final void setOnSizeChangedListener(final OnSizeChangedListener listener) {
+        mOnSizeChangedListener = listener;
+    }
+
+    @Override
+    public final void setTouchInterceptor(final TouchInterceptor listener) {
+        mTouchInterceptor = listener;
+    }
+
+    @Override
+    protected boolean fitSystemWindows(@NonNull Rect insets) {
+        if (mOnFitSystemWindowsListener != null) {
+            mOnFitSystemWindowsListener.onFitSystemWindows(insets);
+        }
+        return super.fitSystemWindows(insets);
+    }
+
+    @Override
     public final boolean dispatchTouchEvent(@NonNull final MotionEvent event) {
 		if (mTouchInterceptor != null) {
 			final boolean ret = mTouchInterceptor.dispatchTouchEvent(this, event);
@@ -65,16 +90,6 @@ public class ProfileBannerImageView extends ForegroundImageView implements IExte
 			if (ret) return true;
 		}
 		return super.onTouchEvent(event);
-	}
-
-	@Override
-	public final void setOnSizeChangedListener(final OnSizeChangedListener listener) {
-		mOnSizeChangedListener = listener;
-	}
-
-	@Override
-	public final void setTouchInterceptor(final TouchInterceptor listener) {
-		mTouchInterceptor = listener;
 	}
 
 	@Override

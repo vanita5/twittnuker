@@ -153,6 +153,10 @@ public class HeaderDrawerLayout extends ViewGroup {
         return mContainer.getHeader();
     }
 
+    public int getHeaderTop() {
+        return mContainer.getTop();
+    }
+
 	@Override
 	public void computeScroll() {
 		boolean invalidate = mDragHelper.continueSettling(true);
@@ -166,10 +170,6 @@ public class HeaderDrawerLayout extends ViewGroup {
 		if (invalidate) {
 			ViewCompat.postInvalidateOnAnimation(this);
 		}
-	}
-
-    public int getHeaderTop() {
-        return mContainer.getTop();
 	}
 
     public int getHeaderTopMaximum() {
@@ -186,20 +186,20 @@ public class HeaderDrawerLayout extends ViewGroup {
         return true;
     }
 
-    @Override
-    protected void onFinishInflate() {
-        if (getChildCount() != 1) {
-            throw new IllegalArgumentException("Add subview by XML is not allowed.");
-        }
-    }
-
     public void setDrawerCallback(DrawerCallback callback) {
         mDrawerCallback = callback;
     }
 
 	private boolean canScrollCallback(float dy) {
 		return mDrawerCallback.canScroll(dy);
-	}
+    }
+
+	@Override
+    protected void onFinishInflate() {
+        if (getChildCount() != 1) {
+            throw new IllegalArgumentException("Add subview by XML is not allowed.");
+	    }
+    }
 
     private void cancelTouchCallback() {
         mDrawerCallback.cancelTouch();
@@ -256,17 +256,6 @@ public class HeaderDrawerLayout extends ViewGroup {
         mDrawerCallback.topChanged(top);
 	}
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        final View child = getChildAt(0);
-
-        final int childWidthMeasureSpec = makeChildMeasureSpec(widthMeasureSpec, getPaddingLeft() + getPaddingRight());
-        final int childHeightMeasureSpec = makeChildMeasureSpec(heightMeasureSpec, getPaddingTop() + getPaddingBottom());
-
-        child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
     private void offsetHeaderBy(int dy) {
         final int prevTop = mContainer.getTop();
         final int clampedDy = MathUtils.clamp(prevTop + dy, getHeaderTopMinimum(), getHeaderTopMaximum()) - prevTop;
@@ -281,6 +270,17 @@ public class HeaderDrawerLayout extends ViewGroup {
 
     private void setScrollingHeaderByGesture(boolean scrolling) {
         mScrollingHeaderByGesture = scrolling;
+    }
+
+	@Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final View child = getChildAt(0);
+
+        final int childWidthMeasureSpec = makeChildMeasureSpec(widthMeasureSpec, getPaddingLeft() + getPaddingRight());
+        final int childHeightMeasureSpec = makeChildMeasureSpec(heightMeasureSpec, getPaddingTop() + getPaddingBottom());
+
+        child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
 
     private boolean shouldLayoutHeaderBottomCallback() {

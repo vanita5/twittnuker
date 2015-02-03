@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.preference;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.provider.SearchRecentSuggestions;
@@ -29,6 +30,7 @@ import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.provider.RecentSearchProvider;
+import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 
 public class ClearSearchHistoryPreference extends AsyncTaskPreference implements Constants, OnPreferenceClickListener {
 
@@ -51,6 +53,8 @@ public class ClearSearchHistoryPreference extends AsyncTaskPreference implements
 		final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(context,
 				RecentSearchProvider.AUTHORITY, RecentSearchProvider.MODE);
 		suggestions.clearHistory();
+        final ContentResolver cr = context.getContentResolver();
+        cr.delete(SearchHistory.CONTENT_URI, null, null);
 	}
 
 }

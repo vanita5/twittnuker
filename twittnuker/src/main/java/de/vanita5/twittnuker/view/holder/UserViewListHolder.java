@@ -36,9 +36,9 @@ public class UserViewListHolder extends ViewListHolder {
 	public final ImageView profile_image, profile_type;
 	public final TextView name, screen_name, description, location, url, statuses_count, followers_count,
 			friends_count;
+    public int position;
 	private boolean account_color_enabled;
 	private float text_size;
-	public int position;
 
 	public UserViewListHolder(final View view) {
 		super(view);

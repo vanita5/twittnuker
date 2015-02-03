@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.view.iface.PagerIndicator;
  */
 public class LinePageIndicator extends View implements PagerIndicator {
 	private static final int INVALID_POINTER = -1;
-
+    private int mActivePointerId = INVALID_POINTER;
 	private final Paint mPaintUnselected = new Paint(Paint.ANTI_ALIAS_FLAG);
 	private final Paint mPaintSelected = new Paint(Paint.ANTI_ALIAS_FLAG);
 	private ViewPager mViewPager;
@@ -50,10 +50,8 @@ public class LinePageIndicator extends View implements PagerIndicator {
 	private boolean mCentered;
 	private float mLineWidth;
 	private float mGapWidth;
-
 	private int mTouchSlop;
 	private float mLastMotionX = -1;
-	private int mActivePointerId = INVALID_POINTER;
 	private boolean mIsDragging;
 
 	public LinePageIndicator(final Context context) {
@@ -99,25 +97,56 @@ public class LinePageIndicator extends View implements PagerIndicator {
 		return mGapWidth;
 	}
 
+    public void setGapWidth(final float gapWidth) {
+        mGapWidth = gapWidth;
+        invalidate();
+    }
+
 	public float getLineWidth() {
 		return mLineWidth;
 	}
+
+    public void setLineWidth(final float lineWidth) {
+        mLineWidth = lineWidth;
+        invalidate();
+    }
 
 	public int getSelectedColor() {
 		return mPaintSelected.getColor();
 	}
 
+    public void setSelectedColor(final int selectedColor) {
+        mPaintSelected.setColor(selectedColor);
+        invalidate();
+    }
+
 	public float getStrokeWidth() {
 		return mPaintSelected.getStrokeWidth();
 	}
+
+    public void setStrokeWidth(final float lineHeight) {
+        mPaintSelected.setStrokeWidth(lineHeight);
+        mPaintUnselected.setStrokeWidth(lineHeight);
+        invalidate();
+    }
 
 	public int getUnselectedColor() {
 		return mPaintUnselected.getColor();
 	}
 
+    public void setUnselectedColor(final int unselectedColor) {
+        mPaintUnselected.setColor(unselectedColor);
+        invalidate();
+    }
+
 	public boolean isCentered() {
 		return mCentered;
 	}
+
+    public void setCentered(final boolean centered) {
+        mCentered = centered;
+        invalidate();
+    }
 
 	@Override
 	public void notifyDataSetChanged() {
@@ -125,16 +154,42 @@ public class LinePageIndicator extends View implements PagerIndicator {
 	}
 
 	@Override
-	public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
-		if (mListener != null) {
-			mListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
-		}
+    public void setCurrentItem(final int item) {
+        if (mViewPager == null) throw new IllegalStateException("ViewPager has not been bound.");
+        mViewPager.setCurrentItem(item);
+        mCurrentPage = item;
+        invalidate();
+    }
+
+    @Override
+    public void setOnPageChangeListener(final ViewPager.OnPageChangeListener listener) {
+        mListener = listener;
 	}
 
 	@Override
-	public void onPageScrollStateChanged(final int state) {
+    public void setViewPager(final ViewPager viewPager) {
+        if (mViewPager == viewPager) return;
+        if (mViewPager != null) {
+            // Clear us from the old pager.
+            mViewPager.setOnPageChangeListener(null);
+        }
+        if (viewPager.getAdapter() == null)
+            throw new IllegalStateException("ViewPager does not have adapter instance.");
+        mViewPager = viewPager;
+        mViewPager.setOnPageChangeListener(this);
+        invalidate();
+    }
+
+    @Override
+    public void setViewPager(final ViewPager view, final int initialPosition) {
+        setViewPager(view);
+        setCurrentItem(initialPosition);
+    }
+
+    @Override
+    public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
 		if (mListener != null) {
-			mListener.onPageScrollStateChanged(state);
+            mListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
 		}
 	}
 
@@ -149,19 +204,10 @@ public class LinePageIndicator extends View implements PagerIndicator {
 	}
 
 	@Override
-	public void onRestoreInstanceState(final Parcelable state) {
-		final SavedState savedState = (SavedState) state;
-		super.onRestoreInstanceState(savedState.getSuperState());
-		mCurrentPage = savedState.currentPage;
-		requestLayout();
-	}
-
-	@Override
-	public Parcelable onSaveInstanceState() {
-		final Parcelable superState = super.onSaveInstanceState();
-		final SavedState savedState = new SavedState(superState);
-		savedState.currentPage = mCurrentPage;
-		return savedState;
+    public void onPageScrollStateChanged(final int state) {
+        if (mListener != null) {
+            mListener.onPageScrollStateChanged(state);
+	    }
 	}
 
 	@Override
@@ -246,70 +292,6 @@ public class LinePageIndicator extends View implements PagerIndicator {
 		return true;
 	}
 
-	public void setCentered(final boolean centered) {
-		mCentered = centered;
-		invalidate();
-	}
-
-	@Override
-	public void setCurrentItem(final int item) {
-		if (mViewPager == null) throw new IllegalStateException("ViewPager has not been bound.");
-		mViewPager.setCurrentItem(item);
-		mCurrentPage = item;
-		invalidate();
-	}
-
-	public void setGapWidth(final float gapWidth) {
-		mGapWidth = gapWidth;
-		invalidate();
-	}
-
-	public void setLineWidth(final float lineWidth) {
-		mLineWidth = lineWidth;
-		invalidate();
-	}
-
-	@Override
-	public void setOnPageChangeListener(final ViewPager.OnPageChangeListener listener) {
-		mListener = listener;
-	}
-
-	public void setSelectedColor(final int selectedColor) {
-		mPaintSelected.setColor(selectedColor);
-		invalidate();
-	}
-
-	public void setStrokeWidth(final float lineHeight) {
-		mPaintSelected.setStrokeWidth(lineHeight);
-		mPaintUnselected.setStrokeWidth(lineHeight);
-		invalidate();
-	}
-
-	public void setUnselectedColor(final int unselectedColor) {
-		mPaintUnselected.setColor(unselectedColor);
-		invalidate();
-	}
-
-	@Override
-	public void setViewPager(final ViewPager viewPager) {
-		if (mViewPager == viewPager) return;
-		if (mViewPager != null) {
-			// Clear us from the old pager.
-			mViewPager.setOnPageChangeListener(null);
-		}
-		if (viewPager.getAdapter() == null)
-			throw new IllegalStateException("ViewPager does not have adapter instance.");
-		mViewPager = viewPager;
-		mViewPager.setOnPageChangeListener(this);
-		invalidate();
-	}
-
-	@Override
-	public void setViewPager(final ViewPager view, final int initialPosition) {
-		setViewPager(view);
-		setCurrentItem(initialPosition);
-	}
-
 	@Override
 	protected void onDraw(final Canvas canvas) {
 		super.onDraw(canvas);
@@ -345,6 +327,22 @@ public class LinePageIndicator extends View implements PagerIndicator {
 	}
 
 	@Override
+    public Parcelable onSaveInstanceState() {
+        final Parcelable superState = super.onSaveInstanceState();
+        final SavedState savedState = new SavedState(superState);
+        savedState.currentPage = mCurrentPage;
+        return savedState;
+    }
+
+    @Override
+    public void onRestoreInstanceState(final Parcelable state) {
+        final SavedState savedState = (SavedState) state;
+        super.onRestoreInstanceState(savedState.getSuperState());
+        mCurrentPage = savedState.currentPage;
+        requestLayout();
+    }
+
+    @Override
 	protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
 		setMeasuredDimension(measureWidth(widthMeasureSpec), measureHeight(heightMeasureSpec));
 	}
@@ -403,8 +401,6 @@ public class LinePageIndicator extends View implements PagerIndicator {
 	}
 
 	static class SavedState extends BaseSavedState {
-		int currentPage;
-
 		public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
 			@Override
 			public SavedState createFromParcel(final Parcel in) {
@@ -416,6 +412,7 @@ public class LinePageIndicator extends View implements PagerIndicator {
 				return new SavedState[size];
 			}
 		};
+        int currentPage;
 
 		public SavedState(final Parcelable superState) {
 			super(superState);

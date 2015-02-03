@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.view.iface;
 
-import static de.vanita5.twittnuker.util.Utils.isRTL;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -33,6 +31,8 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import de.vanita5.twittnuker.R;
+
+import static de.vanita5.twittnuker.util.Utils.isRTL;
 
 public interface IColorLabelView {
 

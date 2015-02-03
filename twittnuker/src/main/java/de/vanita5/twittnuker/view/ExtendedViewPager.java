@@ -45,14 +45,14 @@ public class ExtendedViewPager extends ViewPager {
     }
 
     @Override
-    protected boolean fitSystemWindows(Rect insets) {
-        return super.fitSystemWindows(insets);
+    public boolean onTouchEvent(final MotionEvent event) {
+        if (!isEnabled()) return false;
+        return super.onTouchEvent(event);
 	}
 
 	@Override
-	public boolean onTouchEvent(final MotionEvent event) {
-		if (!isEnabled()) return false;
-		return super.onTouchEvent(event);
+    protected boolean fitSystemWindows(Rect insets) {
+        return super.fitSystemWindows(insets);
 	}
 
 }

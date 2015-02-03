@@ -23,6 +23,8 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
+import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
@@ -33,6 +35,7 @@ public class ExtendedFrameLayout extends FrameLayout implements IExtendedView {
 
 	private TouchInterceptor mTouchInterceptor;
 	private OnSizeChangedListener mOnSizeChangedListener;
+    private OnFitSystemWindowsListener mOnFitSystemWindowsListener;
 
 	public ExtendedFrameLayout(final Context context) {
 		super(context);
@@ -65,13 +68,9 @@ public class ExtendedFrameLayout extends FrameLayout implements IExtendedView {
 	}
 
 	@Override
-	public final boolean onTouchEvent(final MotionEvent event) {
-		if (mTouchInterceptor != null) {
-			final boolean ret = mTouchInterceptor.onTouchEvent(this, event);
-			if (ret) return true;
-		}
-		return super.onTouchEvent(event);
-	}
+    public void setOnFitSystemWindowsListener(OnFitSystemWindowsListener listener) {
+        mOnFitSystemWindowsListener = listener;
+    }
 
 	@Override
 	public final void setOnSizeChangedListener(final OnSizeChangedListener listener) {
@@ -81,6 +80,23 @@ public class ExtendedFrameLayout extends FrameLayout implements IExtendedView {
 	@Override
 	public final void setTouchInterceptor(final TouchInterceptor listener) {
 		mTouchInterceptor = listener;
+    }
+
+    @Override
+    protected boolean fitSystemWindows(@NonNull Rect insets) {
+        if (mOnFitSystemWindowsListener != null) {
+            mOnFitSystemWindowsListener.onFitSystemWindows(insets);
+        }
+        return super.fitSystemWindows(insets);
+    }
+
+    @Override
+    public final boolean onTouchEvent(final MotionEvent event) {
+        if (mTouchInterceptor != null) {
+            final boolean ret = mTouchInterceptor.onTouchEvent(this, event);
+            if (ret) return true;
+        }
+        return super.onTouchEvent(event);
 	}
 
 	@Override

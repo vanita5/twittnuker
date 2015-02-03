@@ -23,11 +23,8 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
-import android.support.v7.internal.view.menu.MenuPopupHelper;
 import android.support.v7.widget.ActionMenuView;
 import android.util.AttributeSet;
-
-import java.lang.reflect.Field;
 
 public class TwidereActionMenuView extends ActionMenuView {
 

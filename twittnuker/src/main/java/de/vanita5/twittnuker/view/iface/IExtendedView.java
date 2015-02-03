@@ -22,14 +22,21 @@
 
 package de.vanita5.twittnuker.view.iface;
 
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 
 public interface IExtendedView {
 
+    public void setOnFitSystemWindowsListener(final OnFitSystemWindowsListener listener);
+
 	public void setOnSizeChangedListener(final OnSizeChangedListener listener);
 
 	public void setTouchInterceptor(final TouchInterceptor listener);
+
+    public static interface OnFitSystemWindowsListener {
+        void onFitSystemWindows(Rect insets);
+    }
 
 	public static interface OnSizeChangedListener {
 		void onSizeChanged(View view, int w, int h, int oldw, int oldh);

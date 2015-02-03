@@ -36,8 +36,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.oshkimaadziig.george.androidutils.SpanFormatter;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
 import de.vanita5.twittnuker.model.ParcelableActivity;
@@ -45,6 +43,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.view.ActionIconView;
+import org.oshkimaadziig.george.androidutils.SpanFormatter;
 
 public class ActivityTitleSummaryViewHolder extends ViewHolder {
 
@@ -151,6 +150,45 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder {
         }
     }
 
+    public void setTextSize(float textSize) {
+        titleView.setTextSize(textSize);
+        summaryView.setTextSize(textSize * 0.85f);
+    }
+
+    private void displayUserProfileImages(final ParcelableUser[] statuses) {
+        final ImageLoaderWrapper imageLoader = adapter.getImageLoader();
+        if (statuses == null) {
+            for (final ImageView view : profileImageViews) {
+                imageLoader.cancelDisplayTask(view);
+                view.setVisibility(View.GONE);
+            }
+            return;
+        }
+        final int length = Math.min(profileImageViews.length, statuses.length);
+        final boolean shouldDisplayImages = true;
+        profileImagesContainer.setVisibility(shouldDisplayImages ? View.VISIBLE : View.GONE);
+        if (!shouldDisplayImages) return;
+        for (int i = 0, j = profileImageViews.length; i < j; i++) {
+            final ImageView view = profileImageViews[i];
+            view.setImageDrawable(null);
+            if (i < length) {
+                view.setVisibility(View.VISIBLE);
+                imageLoader.displayProfileImage(view, statuses[i].profile_image_url);
+            } else {
+                imageLoader.cancelDisplayTask(view);
+                view.setVisibility(View.GONE);
+            }
+        }
+        if (statuses.length > profileImageViews.length) {
+            final Context context = adapter.getContext();
+            final int moreNumber = statuses.length - profileImageViews.length;
+            profileImageMoreNumber.setVisibility(View.VISIBLE);
+            profileImageMoreNumber.setText(context.getString(R.string.and_more, moreNumber));
+        } else {
+            profileImageMoreNumber.setVisibility(View.GONE);
+        }
+    }
+
     private Spanned getTitleStringAboutMe(int stringRes, int stringResMulti, ParcelableUser[] sources) {
         if (sources == null || sources.length == 0) return null;
         final Context context = adapter.getContext();
@@ -176,7 +214,6 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder {
             return SpanFormatter.format(configuration.locale, format, firstDisplayName, nOthers);
         }
     }
-
 
     private Spanned getTitleStringByFriends(int stringRes, int stringResMulti, ParcelableUser[] sources, ParcelableUser[] targets) {
         if (sources == null || sources.length == 0) return null;
@@ -204,45 +241,6 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder {
             nOthers.setSpan(new StyleSpan(Typeface.BOLD), 0, nOthers.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             final String format = context.getString(stringResMulti);
             return SpanFormatter.format(configuration.locale, format, firstSourceName, nOthers, firstTargetName);
-		}
-	}
-
-	public void setTextSize(float textSize) {
-		titleView.setTextSize(textSize);
-		summaryView.setTextSize(textSize * 0.85f);
-	}
-
-	private void displayUserProfileImages(final ParcelableUser[] statuses) {
-		final ImageLoaderWrapper imageLoader = adapter.getImageLoader();
-		if (statuses == null) {
-			for (final ImageView view : profileImageViews) {
-				imageLoader.cancelDisplayTask(view);
-				view.setVisibility(View.GONE);
-			}
-			return;
-		}
-		final int length = Math.min(profileImageViews.length, statuses.length);
-		final boolean shouldDisplayImages = true;
-		profileImagesContainer.setVisibility(shouldDisplayImages ? View.VISIBLE : View.GONE);
-		if (!shouldDisplayImages) return;
-		for (int i = 0, j = profileImageViews.length; i < j; i++) {
-			final ImageView view = profileImageViews[i];
-			view.setImageDrawable(null);
-			if (i < length) {
-				view.setVisibility(View.VISIBLE);
-				imageLoader.displayProfileImage(view, statuses[i].profile_image_url);
-			} else {
-				imageLoader.cancelDisplayTask(view);
-				view.setVisibility(View.GONE);
-			}
-		}
-		if (statuses.length > profileImageViews.length) {
-			final Context context = adapter.getContext();
-			final int moreNumber = statuses.length - profileImageViews.length;
-			profileImageMoreNumber.setVisibility(View.VISIBLE);
-			profileImageMoreNumber.setText(context.getString(R.string.and_more, moreNumber));
-		} else {
-			profileImageMoreNumber.setVisibility(View.GONE);
 		}
 	}
 

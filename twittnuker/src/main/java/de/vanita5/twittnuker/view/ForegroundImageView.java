@@ -54,19 +54,6 @@ public class ForegroundImageView extends ImageView implements IForegroundView {
         return mForegroundViewHelper.getForeground();
 	}
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-	@Override
-    public void drawableHotspotChanged(float x, float y) {
-        super.drawableHotspotChanged(x, y);
-        mForegroundViewHelper.dispatchDrawableHotspotChanged(x, y);
-    }
-
-    @Override
-	public void jumpDrawablesToCurrentState() {
-		super.jumpDrawablesToCurrentState();
-        mForegroundViewHelper.jumpDrawablesToCurrentState();
-	}
-
 	/**
 	 * Supply a Drawable that is to be rendered on top of all of the child views
 	 * in the frame layout. Any padding in the Drawable will be taken into
@@ -93,15 +80,9 @@ public class ForegroundImageView extends ImageView implements IForegroundView {
     }
 
 	@Override
-	protected void drawableStateChanged() {
-		super.drawableStateChanged();
-        mForegroundViewHelper.drawableStateChanged();
-	}
-
-	@Override
-	protected void onDraw(final Canvas canvas) {
-		super.onDraw(canvas);
-		mForegroundViewHelper.dispatchOnDraw(canvas);
+    protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mForegroundViewHelper.dispatchOnSizeChanged(w, h, oldw, oldh);
 	}
 
 	@Override
@@ -111,14 +92,33 @@ public class ForegroundImageView extends ImageView implements IForegroundView {
 	}
 
 	@Override
-	protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
-		super.onSizeChanged(w, h, oldw, oldh);
-		mForegroundViewHelper.dispatchOnSizeChanged(w, h, oldw, oldh);
+    protected boolean verifyDrawable(final Drawable who) {
+        return super.verifyDrawable(who) || mForegroundViewHelper.verifyDrawable(who);
 	}
 
 	@Override
-	protected boolean verifyDrawable(final Drawable who) {
-        return super.verifyDrawable(who) || mForegroundViewHelper.verifyDrawable(who);
+    public void jumpDrawablesToCurrentState() {
+        super.jumpDrawablesToCurrentState();
+        mForegroundViewHelper.jumpDrawablesToCurrentState();
+    }
+
+    @Override
+    protected void drawableStateChanged() {
+        super.drawableStateChanged();
+        mForegroundViewHelper.drawableStateChanged();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void drawableHotspotChanged(float x, float y) {
+        super.drawableHotspotChanged(x, y);
+        mForegroundViewHelper.dispatchDrawableHotspotChanged(x, y);
+    }
+
+    @Override
+    protected void onDraw(final Canvas canvas) {
+        super.onDraw(canvas);
+        mForegroundViewHelper.dispatchOnDraw(canvas);
 	}
 
 }
