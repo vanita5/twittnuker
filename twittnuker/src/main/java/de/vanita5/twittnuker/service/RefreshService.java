@@ -71,11 +71,7 @@ public class RefreshService extends Service implements Constants {
 			if (isDebugBuild()) {
 				Log.d(LOGTAG, String.format("Refresh service received action %s", action));
 			}
-			if (BROADCAST_NOTIFICATION_DELETED.equals(action)) {
-				final int notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1);
-				final long accountId = intent.getLongExtra(EXTRA_NOTIFICATION_ACCOUNT, -1);
-				clearNotification(notificationId, accountId);
-			} else if (BROADCAST_RESCHEDULE_HOME_TIMELINE_REFRESHING.equals(action)) {
+			if (BROADCAST_RESCHEDULE_HOME_TIMELINE_REFRESHING.equals(action)) {
 				rescheduleHomeTimelineRefreshing();
 			} else if (BROADCAST_RESCHEDULE_MENTIONS_REFRESHING.equals(action)) {
 				rescheduleMentionsRefreshing();
@@ -146,8 +142,7 @@ public class RefreshService extends Service implements Constants {
 		mPendingRefreshDirectMessagesIntent = PendingIntent.getBroadcast(this, 0, new Intent(
 				BROADCAST_REFRESH_DIRECT_MESSAGES), 0);
 		mPendingRefreshTrendsIntent = PendingIntent.getBroadcast(this, 0, new Intent(BROADCAST_REFRESH_TRENDS), 0);
-		final IntentFilter filter = new IntentFilter(BROADCAST_NOTIFICATION_DELETED);
-		filter.addAction(BROADCAST_REFRESH_HOME_TIMELINE);
+		final IntentFilter filter = new IntentFilter(BROADCAST_REFRESH_HOME_TIMELINE);
 		filter.addAction(BROADCAST_REFRESH_MENTIONS);
 		filter.addAction(BROADCAST_REFRESH_DIRECT_MESSAGES);
 		filter.addAction(BROADCAST_RESCHEDULE_HOME_TIMELINE_REFRESHING);
@@ -170,10 +165,6 @@ public class RefreshService extends Service implements Constants {
 
 	protected boolean isAutoRefreshAllowed() {
 		return isNetworkAvailable(this) && (isBatteryOkay(this) || !shouldStopAutoRefreshOnBatteryLow(this));
-	}
-
-	private void clearNotification(final int notificationId, final long notificationAccount) {
-		mTwitterWrapper.clearNotificationAsync(notificationId, notificationAccount);
 	}
 
 	private int getHomeTimeline(final long[] accountIds, final long[] maxIds, final long[] sinceIds) {

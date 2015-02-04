@@ -1,5 +1,6 @@
 package de.vanita5.twittnuker.receiver;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,20 +25,32 @@ public class NotificationActionReceiver extends BroadcastReceiver implements Con
 			}
 			case INTENT_ACTION_RETWEET: {
 				AsyncTwitterWrapper twitter = AsyncTwitterWrapper.getInstance(context);
-				ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
+				final ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
 				if (twitter == null || status == null) return;
 				Utils.retweet(status, twitter);
+
+				cancelNotificationById(context, intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1));
 				break;
 			}
 			case INTENT_ACTION_FAVORITE: {
 				AsyncTwitterWrapper twitter = AsyncTwitterWrapper.getInstance(context);
-				ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
+				final ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
 				if (twitter == null || status == null) return;
 				Utils.favorite(status, twitter);
+
+				cancelNotificationById(context, intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1));
 				break;
 			}
 			default:
 				break;
+		}
+	}
+
+	private void cancelNotificationById(final Context context, final int notificationId) {
+		NotificationManager notificationManager =
+				(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		if (notificationManager != null) {
+			notificationManager.cancel(notificationId);
 		}
 	}
 }

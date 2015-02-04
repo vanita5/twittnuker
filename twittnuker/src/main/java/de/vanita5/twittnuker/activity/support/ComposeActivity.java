@@ -575,9 +575,12 @@ public class ComposeActivity extends ThemedActionBarActivity implements TextWatc
 		} else {
             // The context was first created
 			final int notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1);
-			final long notificationAccount = intent.getLongExtra(EXTRA_NOTIFICATION_ACCOUNT, -1);
 			if (notificationId != -1) {
-				mTwitterWrapper.clearNotificationAsync(notificationId, notificationAccount);
+				NotificationManager notificationManager =
+						(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				if (notificationManager != null) {
+					notificationManager.cancel(notificationId);
+				}
 			}
 			if (!handleIntent(intent)) {
 				handleDefaultIntent(intent);

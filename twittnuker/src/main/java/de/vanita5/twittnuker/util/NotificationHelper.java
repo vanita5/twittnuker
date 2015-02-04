@@ -157,132 +157,148 @@ public class NotificationHelper implements Constants {
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
 		builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
+		builder.setPriority(NotificationCompat.PRIORITY_HIGH);
 
-		if (NotificationContent.NOTIFICATION_TYPE_MENTION.equals(type)) {
-			contentText = stripMentionText(notification.getMessage(),
-					getAccountScreenName(mContext, notification.getAccountId()));
-			ticker = notification.getMessage();
-			smallicon = R.drawable.ic_stat_mention;
+		switch (type) {
+			case NotificationContent.NOTIFICATION_TYPE_MENTION: {
+				contentText = stripMentionText(notification.getMessage(),
+						getAccountScreenName(mContext, notification.getAccountId()));
+				ticker = notification.getMessage();
+				smallicon = R.drawable.ic_stat_mention;
 
-			if (notificationCount == 1 && notification.getOriginalStatus() != null) {
-				final Uri.Builder uriBuilder = new Uri.Builder();
-				uriBuilder.scheme(SCHEME_TWITTNUKER);
-				uriBuilder.authority(AUTHORITY_STATUS);
-				uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
-				uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getOriginalStatus().id));
-				mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
-				mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
-				mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
-				mainActionIntent.putExtra(EXTRA_TAB_TYPE, TAB_TYPE_MENTIONS_TIMELINE);
+				if (notificationCount == 1 && notification.getOriginalStatus() != null) {
+					final Uri.Builder uriBuilder = new Uri.Builder();
+					uriBuilder.scheme(SCHEME_TWITTNUKER);
+					uriBuilder.authority(AUTHORITY_STATUS);
+					uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
+					uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getOriginalStatus().id));
+					mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
+					mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
+					mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
+					mainActionIntent.putExtra(EXTRA_TAB_TYPE, TAB_TYPE_MENTIONS_TIMELINE);
 
-				//Reply Intent
-				final Intent replyIntent = new Intent(INTENT_ACTION_REPLY);
-				replyIntent.setExtrasClassLoader(mContext.getClassLoader());
-				replyIntent.putExtra(EXTRA_NOTIFICATION_ID, notificationType);
-				replyIntent.putExtra(EXTRA_NOTIFICATION_ACCOUNT, pref.getAccountId());
-				replyIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
-				replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				builder.addAction(R.drawable.ic_action_reply, mContext.getString(R.string.reply),
-						PendingIntent.getActivity(mContext, 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+					//Reply Intent
+					final Intent replyIntent = new Intent(INTENT_ACTION_REPLY);
+					replyIntent.setExtrasClassLoader(mContext.getClassLoader());
+					replyIntent.putExtra(EXTRA_NOTIFICATION_ID, getAccountNotificationId(NOTIFICATION_ID_PUSH,
+							notification.getAccountId()));
+					replyIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
+					replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					builder.addAction(R.drawable.ic_action_reply, mContext.getString(R.string.reply),
+							PendingIntent.getActivity(mContext, 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
-				if (status != null) {
-					//Retweet Intent
-					builder.addAction(R.drawable.ic_action_retweet, mContext.getString(R.string.retweet),
-							getRetweetIntent(status));
+					if (status != null) {
+						//Retweet Intent
+						builder.addAction(R.drawable.ic_action_retweet, mContext.getString(R.string.retweet),
+								getRetweetIntent(status));
 
-					//Favorite Intent
-					builder.addAction(R.drawable.ic_action_star, mContext.getString(R.string.favorite),
-							getFavoriteIntent(status));
+						//Favorite Intent
+						builder.addAction(R.drawable.ic_action_star, mContext.getString(R.string.favorite),
+								getFavoriteIntent(status));
+					}
 				}
+				break;
 			}
-		} else if (NotificationContent.NOTIFICATION_TYPE_RETWEET.equals(type)) {
-			contentText = mContext.getString(R.string.notification_new_retweet_single)
-					+ ": " + notification.getMessage();
-			ticker = contentText;
-			smallicon = R.drawable.ic_stat_retweet;
+			case NotificationContent.NOTIFICATION_TYPE_RETWEET: {
+				contentText = mContext.getString(R.string.notification_new_retweet_single)
+						+ ": " + notification.getMessage();
+				ticker = contentText;
+				smallicon = R.drawable.ic_stat_retweet;
 
-			if (notificationCount == 1 && notification.getOriginalStatus() != null) {
-				final Uri.Builder uriBuilder = new Uri.Builder();
-				uriBuilder.scheme(SCHEME_TWITTNUKER);
-				uriBuilder.authority(AUTHORITY_STATUS);
-				uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
-				uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getOriginalStatus().id));
-				mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
-				mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
-				mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
+				if (notificationCount == 1 && notification.getOriginalStatus() != null) {
+					final Uri.Builder uriBuilder = new Uri.Builder();
+					uriBuilder.scheme(SCHEME_TWITTNUKER);
+					uriBuilder.authority(AUTHORITY_STATUS);
+					uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
+					uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getOriginalStatus().id));
+					mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
+					mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
+					mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
 
-				//Profile Intent
-				final Uri.Builder viewProfileBuilder = new Uri.Builder();
-				viewProfileBuilder.scheme(SCHEME_TWITTNUKER);
-				viewProfileBuilder.authority(AUTHORITY_USER);
-				viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
-				viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(notification.getOriginalStatus().retweeted_by_id));
-				final Intent viewProfileIntent = new Intent(Intent.ACTION_VIEW, viewProfileBuilder.build());
-				viewProfileIntent.setPackage(APP_PACKAGE_NAME);
-				builder.addAction(R.drawable.ic_action_profile, mContext.getString(R.string.view_user_profile),
-						PendingIntent.getActivity(mContext, 0, viewProfileIntent, PendingIntent.FLAG_UPDATE_CURRENT));
-			}
-		} else if (NotificationContent.NOTIFICATION_TYPE_FAVORITE.equals(type)) {
-			contentText = mContext.getString(R.string.notification_new_favorite_single)
-					+ ": " + notification.getMessage();
-			ticker = contentText;
-			smallicon = R.drawable.ic_stat_favorite;
-
-			if (notificationCount == 1 && notification.getOriginalStatus() != null) {
-				final Uri.Builder uriBuilder = new Uri.Builder();
-				uriBuilder.scheme(SCHEME_TWITTNUKER);
-				uriBuilder.authority(AUTHORITY_STATUS);
-				uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
-				uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getOriginalStatus().id));
-				mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
-				mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
-				mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
-
-				//Profile Intent
-				if (notification.getSourceUser() != null) {
+					//Profile Intent
 					final Uri.Builder viewProfileBuilder = new Uri.Builder();
 					viewProfileBuilder.scheme(SCHEME_TWITTNUKER);
 					viewProfileBuilder.authority(AUTHORITY_USER);
 					viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
-					viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(notification.getSourceUser().getId()));
+					viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(notification.getOriginalStatus().retweeted_by_id));
 					final Intent viewProfileIntent = new Intent(Intent.ACTION_VIEW, viewProfileBuilder.build());
 					viewProfileIntent.setPackage(APP_PACKAGE_NAME);
 					builder.addAction(R.drawable.ic_action_profile, mContext.getString(R.string.view_user_profile),
 							PendingIntent.getActivity(mContext, 0, viewProfileIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 				}
+				break;
 			}
-		} else if (NotificationContent.NOTIFICATION_TYPE_FOLLOWER.equals(type)) {
-			contentText = "@" + notification.getFromUser() + " " + mContext.getString(R.string.notification_new_follower);
-			ticker = contentText;
-			smallicon = R.drawable.ic_stat_follower;
+			case NotificationContent.NOTIFICATION_TYPE_FAVORITE: {
+				contentText = mContext.getString(R.string.notification_new_favorite_single)
+						+ ": " + notification.getMessage();
+				ticker = contentText;
+				smallicon = R.drawable.ic_stat_favorite;
 
-			if (notificationCount == 1 && notification.getSourceUser() != null) {
-				final Uri.Builder uriBuilder = new Uri.Builder();
-				uriBuilder.scheme(SCHEME_TWITTNUKER);
-				uriBuilder.authority(AUTHORITY_STATUS);
-				uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(pref.getAccountId()));
-				uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getSourceUser().getId()));
-				mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
-				mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
-				mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
-			}
-		} else if (NotificationContent.NOTIFICATION_TYPE_DIRECT_MESSAGE.equals(type)) {
-			contentText = notification.getMessage();
-			ticker = contentText;
-			smallicon = R.drawable.ic_stat_direct_message;
+				if (notificationCount == 1 && notification.getOriginalStatus() != null) {
+					final Uri.Builder uriBuilder = new Uri.Builder();
+					uriBuilder.scheme(SCHEME_TWITTNUKER);
+					uriBuilder.authority(AUTHORITY_STATUS);
+					uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
+					uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getOriginalStatus().id));
+					mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
+					mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
+					mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
 
-			if (notificationCount == 1 && notification.getOriginalMessage() != null) {
-				final Uri.Builder uriBuilder = new Uri.Builder();
-				uriBuilder.scheme(SCHEME_TWITTNUKER);
-				uriBuilder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
-				uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalMessage().account_id));
-				uriBuilder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(notification.getOriginalMessage().sender_id));
-				mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
-				mainActionIntent.putExtra(EXTRA_TAB_TYPE, TAB_TYPE_DIRECT_MESSAGES);
-				mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
+					//Profile Intent
+					if (notification.getSourceUser() != null) {
+						final Uri.Builder viewProfileBuilder = new Uri.Builder();
+						viewProfileBuilder.scheme(SCHEME_TWITTNUKER);
+						viewProfileBuilder.authority(AUTHORITY_USER);
+						viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
+						viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(notification.getSourceUser().getId()));
+						final Intent viewProfileIntent = new Intent(Intent.ACTION_VIEW, viewProfileBuilder.build());
+						viewProfileIntent.setPackage(APP_PACKAGE_NAME);
+						builder.addAction(R.drawable.ic_action_profile, mContext.getString(R.string.view_user_profile),
+								PendingIntent.getActivity(mContext, 0, viewProfileIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+					}
+				}
+				break;
 			}
-		} else if (NotificationContent.NOTIFICATION_TYPE_ERROR_420.equals(type)) {
-			buildErrorNotification(420, pref);
+			case NotificationContent.NOTIFICATION_TYPE_FOLLOWER: {
+				contentText = "@" + notification.getFromUser() + " " + mContext.getString(R.string.notification_new_follower);
+				ticker = contentText;
+				smallicon = R.drawable.ic_stat_follower;
+
+				if (notificationCount == 1 && notification.getSourceUser() != null) {
+					final Uri.Builder uriBuilder = new Uri.Builder();
+					uriBuilder.scheme(SCHEME_TWITTNUKER);
+					uriBuilder.authority(AUTHORITY_STATUS);
+					uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(pref.getAccountId()));
+					uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getSourceUser().getId()));
+					mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
+					mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
+					mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
+				}
+				break;
+			}
+			case NotificationContent.NOTIFICATION_TYPE_DIRECT_MESSAGE: {
+				contentText = notification.getMessage();
+				ticker = contentText;
+				smallicon = R.drawable.ic_stat_direct_message;
+
+				if (notificationCount == 1 && notification.getOriginalMessage() != null) {
+					final Uri.Builder uriBuilder = new Uri.Builder();
+					uriBuilder.scheme(SCHEME_TWITTNUKER);
+					uriBuilder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
+					uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalMessage().account_id));
+					uriBuilder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(notification.getOriginalMessage().sender_id));
+					mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
+					mainActionIntent.putExtra(EXTRA_TAB_TYPE, TAB_TYPE_DIRECT_MESSAGES);
+					mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
+				}
+				break;
+			}
+			case NotificationContent.NOTIFICATION_TYPE_ERROR_420: {
+				buildErrorNotification(420, pref);
+				break;
+			}
+			default:
+				return;
 		}
 		if (contentText == null && ticker == null) return;
 
@@ -338,7 +354,7 @@ public class NotificationHelper implements Constants {
 		if (!isNotificationsSilent(mContext)) {
 			if (AccountPreferences.isNotificationHasRingtone(notificationType)) {
 				final Uri ringtone = pref.getNotificationRingtone();
-				builder.setSound(ringtone, Notification.STREAM_DEFAULT);
+				builder.setSound(ringtone);
 			}
 			if (AccountPreferences.isNotificationHasVibration(notificationType)) {
 				defaults |= Notification.DEFAULT_VIBRATE;
@@ -455,6 +471,8 @@ public class NotificationHelper implements Constants {
 		Intent intent = new Intent(mContext, NotificationActionReceiver.class);
 		intent.setAction(INTENT_ACTION_RETWEET);
 		intent.putExtra(EXTRA_STATUS, status);
+		intent.putExtra(EXTRA_NOTIFICATION_ID, getAccountNotificationId(NOTIFICATION_ID_PUSH,
+				status.account_id));
 		return PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 	}
 
@@ -462,6 +480,8 @@ public class NotificationHelper implements Constants {
 		Intent intent = new Intent(mContext, NotificationActionReceiver.class);
 		intent.setAction(INTENT_ACTION_FAVORITE);
 		intent.putExtra(EXTRA_STATUS, status);
+		intent.putExtra(EXTRA_NOTIFICATION_ID, getAccountNotificationId(NOTIFICATION_ID_PUSH,
+				status.account_id));
 		return PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 	}
 
