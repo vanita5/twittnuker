@@ -267,12 +267,12 @@ public class NotificationHelper implements Constants {
 				if (notificationCount == 1 && notification.getSourceUser() != null) {
 					final Uri.Builder uriBuilder = new Uri.Builder();
 					uriBuilder.scheme(SCHEME_TWITTNUKER);
-					uriBuilder.authority(AUTHORITY_STATUS);
+					uriBuilder.authority(AUTHORITY_USER);
 					uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(pref.getAccountId()));
-					uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getSourceUser().getId()));
+					uriBuilder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, notification.getFromUser());
 					mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
 					mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
-					mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
+					mainActionIntent.putExtra(EXTRA_ACCOUNT_ID, notification.getAccountId());
 				}
 				break;
 			}
