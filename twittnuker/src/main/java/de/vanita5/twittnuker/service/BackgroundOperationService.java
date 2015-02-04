@@ -298,11 +298,7 @@ public class BackgroundOperationService extends IntentService implements Constan
             final Uri draftUri = mResolver.insert(Drafts.CONTENT_URI, draftValues);
             final long draftId = ParseUtils.parseLong(draftUri.getLastPathSegment(), -1);
             mTwitter.addSendingDraftId(draftId);
-            try {
-                Thread.sleep(15000L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
             final List<SingleResponse<ParcelableStatus>> result = updateStatus(builder, item);
 			boolean failed = false;
 			Exception exception = null;

@@ -26,7 +26,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import org.apache.http.conn.util.InetAddressUtilsHC4;
+import org.apache.http.conn.util.InetAddressUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.HostsFileParser;
 import de.vanita5.twittnuker.util.Utils;
@@ -40,7 +40,6 @@ import org.xbill.DNS.Record;
 import org.xbill.DNS.Resolver;
 import org.xbill.DNS.SimpleResolver;
 import org.xbill.DNS.Type;
-
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -188,13 +187,13 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 
 	private static boolean hostMatches(final String host, final String rule) {
 		if (rule == null || host == null) return false;
-		if (rule.startsWith("")) return host.toLowerCase().endsWith(rule.toLowerCase());
+        if (rule.startsWith(".")) return host.toLowerCase().endsWith(rule.toLowerCase());
 		return host.equalsIgnoreCase(rule);
 	}
 
 	private static boolean isValidIpAddress(final String address) {
 		if (isEmpty(address)) return false;
-		return InetAddressUtilsHC4.isIPv4Address(address) || InetAddressUtilsHC4.isIPv6Address(address);
+        return InetAddressUtils.isIPv4Address(address) || InetAddressUtils.isIPv6Address(address);
 	}
 
 	private static class HostCache extends LinkedHashMap<String, String> {

@@ -203,9 +203,8 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
-import de.vanita5.twittnuker.util.net.ApacheHttpClientFactory;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
-import de.vanita5.twittnuker.util.net.ssl.OkHttpClientFactory;
+import de.vanita5.twittnuker.util.net.OkHttpClientFactory;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
@@ -1775,8 +1774,7 @@ public final class Utils implements Constants, TwitterConstants {
 		if (userAgent != null) {
 			cb.setHttpUserAgent(userAgent);
 		}
-        cb.setHttpClientFactory(new ApacheHttpClientFactory(context));
-//        cb.setHttpClientFactory(new OkHttpClientFactory());
+        cb.setHttpClientFactory(new OkHttpClientFactory(context));
 		return new HttpClientWrapper(cb.build());
 	}
 
@@ -2489,8 +2487,7 @@ public final class Utils implements Constants, TwitterConstants {
 			final ConfigurationBuilder cb = new ConfigurationBuilder();
 			cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(app));
 			if (apacheHttp) {
-                cb.setHttpClientFactory(new ApacheHttpClientFactory(app));
-//                cb.setHttpClientFactory(new OkHttpClientFactory());
+                cb.setHttpClientFactory(new OkHttpClientFactory(context));
 			}
 			cb.setHttpConnectionTimeout(connection_timeout);
 			cb.setGZIPEnabled(enableGzip);

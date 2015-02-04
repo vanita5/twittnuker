@@ -69,7 +69,7 @@
 -keep interface com.squareup.okhttp.** { *; }
 -dontwarn com.squareup.okhttp.**
 
-#-dontwarn rx.**
+-dontwarn rx.**
 #-dontwarn retrofit.**
 #-dontwarn okio.**
 -keep class retrofit.** { *; }
@@ -81,6 +81,7 @@
 -dontwarn java.nio.file.*
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -dontwarn com.twitter.Autolink
+-dontwarn com.google.appengine.api.urlfetch.*
 
 
 # dnsjava

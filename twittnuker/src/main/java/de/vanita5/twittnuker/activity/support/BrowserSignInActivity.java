@@ -30,6 +30,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -49,7 +50,7 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
-import de.vanita5.twittnuker.util.net.ApacheHttpClientFactory;
+import de.vanita5.twittnuker.util.net.OkHttpClientFactory;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -137,9 +138,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 	private String readOAuthPin(final String html) {
 		try {
 			return OAuthPasswordAuthenticator.readOAuthPINFromHtml(new StringReader(html));
-		} catch (final XmlPullParserException e) {
-			e.printStackTrace();
-		} catch (final IOException e) {
+        } catch (final XmlPullParserException | IOException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -182,7 +181,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 		}
 
 		@Override
-		public void onReceivedSslError(final WebView view, final SslErrorHandler handler, final SslError error) {
+        public void onReceivedSslError(final WebView view, @NonNull final SslErrorHandler handler, final SslError error) {
 			if (mActivity.mPreferences.getBoolean(KEY_IGNORE_SSL_ERROR, false)) {
 				handler.proceed();
 			} else {
@@ -237,7 +236,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 			final String consumerSecret = getNonEmptyString(mPreferences, KEY_CONSUMER_SECRET,
 					TWITTER_CONSUMER_SECRET_2);
 			cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(mApplication));
-            cb.setHttpClientFactory(new ApacheHttpClientFactory(mApplication));
+            cb.setHttpClientFactory(new OkHttpClientFactory(mApplication));
             if (TwitterContentUtils.isOfficialKey(mActivity, consumerKey, consumerSecret)) {
                 Utils.setMockOfficialUserAgent(mActivity, cb);
             } else {
@@ -304,13 +303,13 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 
 		@JavascriptInterface
 		public void processHTML(final String html) {
-			final String oauth_verifier = mActivity.readOAuthPin(html);
-			final RequestToken request_token = mActivity.mRequestToken;
-			if (oauth_verifier != null && request_token != null) {
+            final String oauthVerifier = mActivity.readOAuthPin(html);
+            final RequestToken requestToken = mActivity.mRequestToken;
+            if (oauthVerifier != null && requestToken != null) {
 				final Intent intent = new Intent();
-				intent.putExtra(EXTRA_OAUTH_VERIFIER, oauth_verifier);
-				intent.putExtra(EXTRA_REQUEST_TOKEN, request_token.getToken());
-				intent.putExtra(EXTRA_REQUEST_TOKEN_SECRET, request_token.getTokenSecret());
+                intent.putExtra(EXTRA_OAUTH_VERIFIER, oauthVerifier);
+                intent.putExtra(EXTRA_REQUEST_TOKEN, requestToken.getToken());
+                intent.putExtra(EXTRA_REQUEST_TOKEN_SECRET, requestToken.getTokenSecret());
 				mActivity.setResult(RESULT_OK, intent);
 				mActivity.finish();
 			}

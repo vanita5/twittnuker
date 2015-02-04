@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -20,23 +20,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.net.ssl;
+package de.vanita5.twittnuker.util.net;
 
-import java.security.cert.X509Certificate;
+import android.content.Context;
 
-import javax.net.ssl.X509TrustManager;
+import de.vanita5.twittnuker.util.net.OkHttpClientImpl;
 
-public final class TrustAllX509TrustManager implements X509TrustManager {
+import twitter4j.http.HttpClient;
+import twitter4j.http.HttpClientConfiguration;
+import twitter4j.http.HttpClientFactory;
+
+public class OkHttpClientFactory implements HttpClientFactory {
+    public OkHttpClientFactory(Context context) {
+
+    }
+
 	@Override
-	public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
-	}
-
-	@Override
-	public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
-	}
-
-	@Override
-	public X509Certificate[] getAcceptedIssuers() {
-		return new X509Certificate[0];
+	public HttpClient getInstance(HttpClientConfiguration conf) {
+		return new OkHttpClientImpl(conf);
 	}
 }

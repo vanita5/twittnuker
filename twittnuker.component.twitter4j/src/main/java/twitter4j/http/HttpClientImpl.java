@@ -71,8 +71,7 @@ public class HttpClientImpl extends HttpClientBase implements HttpClient, HttpRe
 			final SSLContext sc = SSLContext.getInstance("TLS");
 			sc.init(null, TRUST_ALL_CERTS, new SecureRandom());
 			factory = sc.getSocketFactory();
-		} catch (final KeyManagementException e) {
-		} catch (final NoSuchAlgorithmException e) {
+        } catch (final KeyManagementException | NoSuchAlgorithmException e) {
 		}
 		IGNORE_ERROR_SSL_FACTORY = factory;
 	}
@@ -84,7 +83,7 @@ public class HttpClientImpl extends HttpClientBase implements HttpClient, HttpRe
 
 	public HttpClientImpl() {
 		super(ConfigurationContext.getInstance());
-	};
+    }
 
 	public HttpClientImpl(final HttpClientConfiguration conf) {
 		super(conf);

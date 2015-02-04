@@ -20,17 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.net.ssl;
+package de.vanita5.twittnuker.api;
 
-import de.vanita5.twittnuker.util.net.OkHttpClientImpl;
+public interface TwitterMediaAPI {
 
-import twitter4j.http.HttpClient;
-import twitter4j.http.HttpClientConfiguration;
-import twitter4j.http.HttpClientFactory;
-
-public class OkHttpClientFactory implements HttpClientFactory {
-	@Override
-	public HttpClient getInstance(HttpClientConfiguration conf) {
-		return new OkHttpClientImpl(conf);
-	}
 }

@@ -365,4 +365,5 @@ public class ParcelableAccount implements Parcelable {
 					+ ", same_oauth_signing_url=" + same_oauth_signing_url + "}";
 		}
 	}
+
 }

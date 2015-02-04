@@ -43,6 +43,7 @@ android {
 dependencies {
     compile 'com.android.support:support-annotations:21.0.3'
     compile 'org.apache.commons:commons-lang3:3.3.2'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile project(':twittnuker.component.jsonserializer')
     compile project(':twittnuker.component.querybuilder')
     compile project(':twittnuker.component.twitter4j')

@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -22,20 +22,16 @@
 
 package de.vanita5.twittnuker.util.net;
 
-import org.apache.http.Consts;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntityHC4;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
 
-import java.io.UnsupportedEncodingException;
+public final class HostResolvedHostnameVerifier implements HostnameVerifier {
+	public HostResolvedHostnameVerifier(boolean ignoreSSLError) {
 
-import twitter4j.http.HttpParameter;
-
-public class HttpParameterFormEntity extends StringEntityHC4 {
-
-	public static final ContentType CONTENT_TYPE = ContentType.APPLICATION_FORM_URLENCODED.withCharset(Consts.UTF_8);
-
-	public HttpParameterFormEntity(final HttpParameter[] params) throws UnsupportedEncodingException {
-		super(HttpParameter.encodeParameters(params), CONTENT_TYPE);
 	}
 
+	@Override
+	public boolean verify(String hostname, SSLSession session) {
+		return true;
+	}
 }

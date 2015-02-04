@@ -14,6 +14,7 @@ import java.io.IOException;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.gcm.backend.PushBackendServer;
 import retrofit.RestAdapter;
+import retrofit.RestAdapter.Builder;
 
 public class PushBackendHelper implements TwittnukerConstants {
 
@@ -31,7 +32,7 @@ public class PushBackendHelper implements TwittnukerConstants {
 	}
 
 	public static PushBackendServer getRESTAdapter(final Context context) {
-		RestAdapter restAdapter = new RestAdapter.Builder().setServer(getApiURL(context)).build();
+		RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(getApiURL(context)).build();
 		return restAdapter.create(PushBackendServer.class);
 	}
 

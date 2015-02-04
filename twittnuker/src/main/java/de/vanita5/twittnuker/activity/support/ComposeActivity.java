@@ -65,7 +65,6 @@ import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ItemDecoration;
 import android.support.v7.widget.RecyclerView.State;
 import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -92,7 +91,6 @@ import org.mariotaku.dynamicgridview.DraggableArrayAdapter;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableLocation;
@@ -197,7 +195,6 @@ public class ComposeActivity extends ThemedActionBarActivity implements TextWatc
     private View mLocationContainer;
     private ActionIconView mLocationIcon;
     private SupportMenuInflater mMenuInflater;
-    private Toolbar mToolbar;
 
 	@Override
     public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
@@ -477,7 +474,6 @@ public class ComposeActivity extends ThemedActionBarActivity implements TextWatc
     @Override
     public void onSupportContentChanged() {
         super.onSupportContentChanged();
-        mToolbar = (Toolbar) findViewById(R.id.compose_actionbar);
         mEditText = (EditText) findViewById(R.id.edit_text);
         mMediaPreviewGrid = (GridView) findViewById(R.id.media_thumbnail_preview);
         mMenuBar = (ActionMenuView) findViewById(R.id.menu_bar);
@@ -528,7 +524,6 @@ public class ComposeActivity extends ThemedActionBarActivity implements TextWatc
 		mValidator = new TwidereValidator(this);
         mImageLoader = app.getImageLoaderWrapper();
         setContentView(R.layout.activity_compose);
-        setSupportActionBar(mToolbar);
         setSupportProgressBarIndeterminateVisibility(false);
 		setFinishOnTouchOutside(false);
         final long[] defaultAccountIds = getAccountIds(this);
