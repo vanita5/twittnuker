@@ -597,7 +597,97 @@
   <string name="add">Agregar</string>
   <string name="delete_drafts_confirm">¿Está seguro de que quiere eliminar los borradores?</string>
   <string name="extra_configurations">Configuraciones Extra</string>
-  <string name="click_item_to_config">Selecciona un ítem para configurar</string>
+  <string name="click_item_to_config">Selecciona una opción para configurar</string>
   <string name="dark_drawer">Cajón oscuro</string>
   <string name="retweets_of_me">Mis Retweets</string>
+    <string name="from_gallery">Desde la galería</string>
+    <string name="from_camera">Desde la cámara</string>
+    <string name="excluded">Excluídos</string>
+    <string name="exclude_this_host">Excluir este host</string>
+    <string name="api_url_format_help">[DOMAIN]: Twitter API domain.\nExample: https://[DOMAIN].twitter.com/ será reemplazado por https://api.twitter.com/.</string>
+    <string name="no_version_suffix">No version suffix</string>
+    <string name="inverse_selection">Invertir selección</string>
+    <string name="medias">Archivos</string>
+    <string name="mute_user">Silenciar a <xliff:g id="name">%s</xliff:g></string>
+    <string name="muted_user"><xliff:g id="name">%s</xliff:g> silenciado</string>
+    <string name="unmute_user">Quitar silencio a <xliff:g id="name">%s</xliff:g></string>
+    <string name="unmuted_user">Silencio a <xliff:g id="name">%s</xliff:g> eliminado</string>
+    <string name="mute">Silenciar</string>
+    <string name="unmute">Quitar silencio</string>
+    <string name="action_muting">silenciando</string>
+    <string name="action_unmuting">quitando silencio</string>
+    <string name="mute_user_confirm_message">¿Silenciar a <xliff:g id="name">%s</xliff:g>? No verás más tweets de esta persona aunque la sigas.</string>
+    <string name="remove_from_filter">Eliminar filtro</string>
+    <string name="sort_timeline_by_id">Ordenar cronología por ID</string>
+    <string name="sort_timeline_by_id_summary">Puede ser útil para otros servicios (Status.net)</string>
+    <string name="style">Estilo</string>
+    <string name="color">Color</string>
+    <string name="font_family">Fuente</string>
+    <string name="appearance">Apariencia</string>
+    <string name="function">Función</string>
+    <string name="replies">Respuestas</string>
+    <string name="profile_banner">Encabezado</string>
+    <string name="profile">Perfil</string>
+
+    <!-- Twittnuker -->
+    <string name="unread_count_summary">Contador en pestaña para tweets y mensajes no leídos</string>
+    <string name="link_to_quoted_status_summary">Agragar link al tweet original al citar</string>
+    <string name="stop_auto_refresh_when_battery_low_summary">Deshabilitar actualización automática en batería baja</string>
+
+    <string name="donate_twidere_via_paypal">Donar a Twidere vía PayPal</string>
+    <string name="donate_twidere_via_paypal_summary">Donar al proyecto original de Twidere vía PayPal</string>
+
+    <string name="contact">Contacto</string>
+    <string name="mail">E-mail</string>
+    <string name="mail_summary">Envía un e-mail a mail@twittnuker.org para reportar un bug o solicitar alguna característica</string>
+    <string name="twidere_developed_by">Basado en Twidere</string>
+
+    <string name="streaming">Actualización automática</string>
+    <string name="stream_enabled">Habilitar actualización automática</string>
+    <string name="stream_enabled_summary">Recargar tweets automáticamente mientras estés conectado a una red Wi-Fi</string>
+    <string name="stream_notification">Recarga automática de notificaciones</string>
+    <string name="stream_notification_summary">Muestra una notificación estática mientras estés conectado</string>
+    <string name="streaming_service_running">Actualizaciones automáticas</string><string name="stream_on_mobile">Actualizaciones automáticas en redes móviles</string>
+    <string name="stream_on_mobile_summary">Stream on mobile network. This is NOT recommended!</string>
+    <string name="stream_autoscroll">Autoscroll</string>
+    <string name="stream_autoscroll_summary">Always stay at the top of the timeline</string>
+    <string name="label_streaming_service">Servicio de streaming</string>
+    <string name="refresh_before_streaming">Refrescar al empezar laa actualización automática</string>
+    <string name="refresh_before_streaming_summary">La cronología y las menciones se refrescarán automáticamente tras empezar la actualización automática</string>
+    <string name="stream_notifications">Notificaciones</string>
+    <string name="stream_notifications_summary">Notificaciones push</string>
+    <string name="pebble_notifications">Pebble</string>
+    <string name="pebble_notifications_summary">Enviar notificaciones a Pebble</string>
+
+    <string name="love">Con amor</string>
+    <string name="load_conversations_automatically">Cargar conversaciones automáticamente</string>
+    <string name="load_conversations_automatically_summary">Carga la conversación automáticamente al abrir el tweet</string>
+    <string name="standard_notifications">Notificaciones estándar</string>
+    <string name="push_notifications">Notificaciones Push</string>
+    <string name="enable_push_notifications">Habilitar notificaciones Push</string>
+    <string name="enable_push_notifications_summary">Usa tu propio servidor para notificaciones Push</string>
+    <string name="push_api_url">Push API URL</string>
+    <string name="push_api_port">Push API Port</string>
+    <string name="push_api_url_summary">La URL\IP que escucha tu servidor</string>
+    <string name="push_api_port_summary">El puerto que escucha tu servidor</string>
+    <string name="label_push_service">Servicio Push</string>
+
+    <string name="notification_new_interactions">interacciones nuevas</string>
+    <string name="notification_new_favorite">marcaron como favorito</string>
+    <string name="notification_new_favorite_single">marcó como favorito</string>
+    <string name="notification_new_retweet">te retweetearon</string>
+    <string name="notification_new_retweet_single">Te retwitteó</string>
+    <string name="notification_new_follower">te sigue ahora</string>
+    <string name="notification_new_direct_message">Mensaje directo</string>
+
+    <string name="circular_profile_images">Imágenes de perfil circulares</string>
+
+    <string name="shortening">Acortando...</string>
+    <string name="error_hototin">...fallido \nTu tweet ha sido guardado en borradores</string>
+    <string name="error_twitlonger">...fallido \nTu tweet ha sido guardado en borradores.</string>
+    <string name="action_shortening">Acortando tweet...</string>
+    <string name="uploading_image">Subiendo...</string>
+    <string name="no_tab_hint">Puedes añadir pestañas en los ajustes</string>
+
+    <string name="refresh_on_start_workaround">Usar "Refrescar después de activar el streaming"</string>
 </resources>
