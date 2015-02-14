@@ -1027,7 +1027,7 @@ public class StatusFragment extends BaseSupportFragment
 //            textView.setCustomSelectionActionModeCallback(this);
 
 
-            final String timeString = formatToLongTimeString(context, status.retweet_id > -1 ? status.retweet_timestamp : status.timestamp);
+            final String timeString = formatToLongTimeString(context, status.is_retweet ? status.retweet_timestamp : status.timestamp);
             final String sourceHtml = status.source;
             if (!isEmpty(timeString) && !isEmpty(sourceHtml)) {
                 timeSourceView.setText(Html.fromHtml(context.getString(R.string.time_source,
