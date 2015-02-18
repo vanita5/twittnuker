@@ -1,6 +1,6 @@
-#Twittnuker - Android 4.0+ Twitter Client#
+#Twittnuker - Android 4.0+ and 5.0+ Twitter Client#
 
-Twittnuker is a [free](https://www.gnu.org/philosophy/free-sw.html) Twitter Client for Android 4.0+ Smartphones, based on the [Twidere Project](https://github.com/mariotaku/twidere) (Version 0.2.9.12) with various improvements.
+Twittnuker is a [free](https://www.gnu.org/philosophy/free-sw.html) Twitter Client for Android 4+ Smartphones with Android 5 (Lollipop) support and Material design, based on the [Twidere Project](https://github.com/mariotaku/twidere) with various improvements.
 
 Twidere updates will almost always be merged, so you can expect the latest features and bug fixes from Twidere in this fork, too!
 
@@ -9,23 +9,25 @@ Twidere updates will almost always be merged, so you can expect the latest featu
        src="https://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
 </a>
 
-## Features (Twittnuker only) ##
+## Features (Twittnuker exclusive) ##
 
 * Streaming
 * Additional image preview for various image hosters (If you are missing your favorite hoster, contact me!)
 * Tweet shortening via Hotot.in (more services may follow)
 * Hotot.in link expand (view Tweets shortened with hotot.in in full length!)
 * Love Button (Retweet + Favorite in one action)
+* Experimental Push Notifications. Documentation and installation guide will follow soon!
 
 
 ### Features (via Twidere) ###
 
-* Pure & Clean Holo design works for both ICS and pre-ICS devices
-* Four themes (Light theme with colored ActionBar, Dark theme, Light theme, Light theme with dark ActionBar), theme color will change if you're using CM9+/AOKP
-* Dual pane layout for Tablets
-* Image preview
-* Built in image viewer and map viewer
+* Android L Material Design
 * Custom tabs
+* Themes and many design customization options
+* Image preview (support for multiple images)
+* Image viewer gallery and map viewer
+* Twitter Card support (YouTube, Vine, Soundcloud, GIF,... in-app preview)
+* Dual pane layout for Tablets
 * Profile banner (header) image support
 * Direct messages with conversation style
 * Filters (mute unwanted tweets)
@@ -39,12 +41,6 @@ Twidere updates will almost always be merged, so you can expect the latest featu
 * TCP DNS query and custom host mapping to fight against censorship
 * Many many many other configurations to fit your habit
 * Free, open source, NO ads, forever!
-
-
-#### FUTURE RELEASES ####
-* Push Notifications (It's a long road...)
-* Video Upload/Preview
-* ...more to come!
 
 Do you have more ideas on how to improve the app? Please let me know!
 
@@ -84,10 +80,10 @@ Do you have more ideas on how to improve the app? Please let me know!
     /*
      * Twittnuker - Twitter client for Android
      *
-     * Copyright (C) 2013-2014 vanita5 <mail@vanita5.de>
+     * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
      *
      * This program incorporates a modified version of Twidere.
-     * Copyright (C) 2012-2014 Mariotaku Lee <mariotaku.lee@gmail.com>
+     * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
      *
      * This program is free software: you can redistribute it and/or modify
      * it under the terms of the GNU General Public License as published by
