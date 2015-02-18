@@ -20,15 +20,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api;
+package de.vanita5.twittnuker.api.twitter;
 
-import de.vanita5.twittnuker.model.ParcelableUser;
+public class KeyValuePair implements Comparable<KeyValuePair> {
 
-import retrofit.http.GET;
+	private String key, value;
 
-public interface TwitterAPI {
+	public String getKey() {
+		return key;
+	}
 
-	@GET("/account/verify_credentials.json")
-	ParcelableUser verifyCredentials();
+	public void setKey(String key) {
+		this.key = key;
+	}
 
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public KeyValuePair(String key, String value) {
+		this.key = key;
+		this.value = value;
+	}
+
+	@Override
+	public String toString() {
+		return "KeyValuePair{" +
+				"key='" + key + '\'' +
+				", value='" + value + '\'' +
+				'}';
+	}
+
+	@Override
+	public int compareTo(KeyValuePair o) {
+		int keyDiff = key.compareTo(o.key);
+		if (keyDiff != 0) return keyDiff;
+		if (value == null) return o.value == null ? 0 : Integer.MIN_VALUE;
+		return value.compareTo(o.value);
+	}
 }

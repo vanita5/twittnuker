@@ -20,15 +20,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api;
+package de.vanita5.twittnuker.api.twitter;
 
-import de.vanita5.twittnuker.model.ParcelableUser;
+import android.util.JsonReader;
 
-import retrofit.http.GET;
+import java.io.IOException;
 
-public interface TwitterAPI {
+public class ModelCreator {
 
-	@GET("/account/verify_credentials.json")
-	ParcelableUser verifyCredentials();
+
+
+	public static Status readStatus(JsonReader reader) throws IOException {
+		final Status status = new Status();
+		reader.beginObject();
+		while (reader.hasNext()) {
+			switch (reader.nextName()) {
+				case "id": {
+					status.setId(reader.nextLong());
+					break;
+				}
+				default: {
+					reader.skipValue();
+				}
+			}
+		}
+		reader.endObject();
+		return status;
+	}
 
 }

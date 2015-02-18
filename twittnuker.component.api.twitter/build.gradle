@@ -20,15 +20,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api;
+apply plugin: 'com.android.library'
 
-import de.vanita5.twittnuker.model.ParcelableUser;
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
 
-import retrofit.http.GET;
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
 
-public interface TwitterAPI {
-
-	@GET("/account/verify_credentials.json")
-	ParcelableUser verifyCredentials();
-
+dependencies {
+    compile 'com.android.support:support-annotations:21.0.3'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 }

@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.api;
 
+import de.vanita5.twittnuker.model.ParcelableUser;
+
 import java.lang.reflect.Type;
 
 import retrofit.RestAdapter;
@@ -43,8 +45,10 @@ public class APIFactory {
 	private static class ParcelableDataConverter implements Converter {
 		@Override
 		public Object fromBody(TypedInput typedInput, Type type) throws ConversionException {
-//            Class<?> typeClass = (Class<?>) type;
-//            typeClass.isAssignableFrom();
+            Class<?> typeClass = (Class<?>) type;
+            if (typeClass.isAssignableFrom(ParcelableUser.class)) {
+
+            }
 			return null;
 		}
 

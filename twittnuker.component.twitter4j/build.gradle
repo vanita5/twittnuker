@@ -41,5 +41,6 @@ android {
 }
 
 dependencies {
+    compile project(':twittnuker.component.api.twitter')
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }

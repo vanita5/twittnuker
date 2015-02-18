@@ -203,8 +203,8 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
-import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.util.net.OkHttpClientFactory;
+import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
@@ -3139,7 +3139,7 @@ public final class Utils implements Constants, TwitterConstants {
 
 	}
 
-    public static void openUserListDetails(final Context context, final long accountId, final int listId,
+    public static void openUserListDetails(final Context context, final long accountId, final long listId,
 			final long userId, final String screenName, final String listName) {
         if (context == null) return;
 		final Uri.Builder builder = new Uri.Builder();

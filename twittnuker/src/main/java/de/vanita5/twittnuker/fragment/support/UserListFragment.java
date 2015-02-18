@@ -60,6 +60,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
@@ -87,6 +88,7 @@ import twitter4j.UserList;
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
 
@@ -254,7 +256,18 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 				mTwitterWrapper.addUserListMembersAsync(mUserList.account_id, mUserList.id, user);
 				return;
 			}
-		}
+            case REQUEST_SELECT_ACCOUNT: {
+                final ParcelableUserList userList = mUserList;
+                if (userList == null) return;
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data == null || !data.hasExtra(EXTRA_ID)) return;
+                    final long accountId = data.getLongExtra(EXTRA_ID, -1);
+                    openUserListDetails(getActivity(), accountId, userList.id, userList.user_id,
+                            userList.user_screen_name, userList.name);
+		        }
+                break;
+            }
+        }
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
@@ -396,6 +409,13 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 				}
 				return true;
 			}
+            case MENU_OPEN_WITH_ACCOUNT: {
+                final Intent intent = new Intent(INTENT_ACTION_SELECT_ACCOUNT);
+                intent.setClass(getActivity(), AccountSelectorActivity.class);
+                intent.putExtra(EXTRA_SINGLE_SELECTION, true);
+                startActivityForResult(intent, REQUEST_SELECT_ACCOUNT);
+                break;
+            }
 			default: {
 				if (item.getIntent() != null) {
 					try {

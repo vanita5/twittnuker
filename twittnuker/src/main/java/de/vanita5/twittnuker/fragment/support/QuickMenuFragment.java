@@ -39,6 +39,7 @@ import android.widget.ListView;
 
 import com.commonsware.cwac.merge.MergeAdapter;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment.TrendsAdapter;
@@ -107,7 +108,7 @@ public class QuickMenuFragment extends BaseSupportFragment {
 	public void onDestroy() {
 		super.onDestroy();
 		final SharedPreferences.Editor editor = mPreferences.edit();
-		editor.putBoolean(KEY_QUICK_MENU_EXPANDED, mSlidingUpPanel.isPanelExpanded());
+        editor.putBoolean(KEY_QUICK_MENU_EXPANDED, mSlidingUpPanel.getPanelState() == PanelState.EXPANDED);
 		editor.apply();
 	}
 

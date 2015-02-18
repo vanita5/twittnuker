@@ -194,6 +194,7 @@ public class ComposeActivity extends ThemedActionBarActivity implements TextWatc
     private ImageLoaderWrapper mImageLoader;
     private View mLocationContainer;
     private ActionIconView mLocationIcon;
+    private TextView mLocationText;
     private SupportMenuInflater mMenuInflater;
 
 	@Override
@@ -307,8 +308,10 @@ public class ComposeActivity extends ThemedActionBarActivity implements TextWatc
         final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
         if (attachLocation) {
             mLocationIcon.setColorFilter(getCurrentThemeColor(), Mode.SRC_ATOP);
+            mLocationText.setText(R.string.getting_location);
         } else {
             mLocationIcon.setColorFilter(mLocationIcon.getDefaultColor(), Mode.SRC_ATOP);
+            mLocationText.setText(R.string.no_location);
         }
     }
 
@@ -487,6 +490,7 @@ public class ComposeActivity extends ThemedActionBarActivity implements TextWatc
         mAccountSelectorButton = findViewById(R.id.account_selector_button);
         mLocationContainer = findViewById(R.id.location_container);
         mLocationIcon = (ActionIconView) findViewById(R.id.location_icon);
+        mLocationText = (TextView) findViewById(R.id.location_text);
         ViewAccessor.setBackground(findViewById(R.id.compose_content), getWindowContentOverlayForCompose(this));
     }
 

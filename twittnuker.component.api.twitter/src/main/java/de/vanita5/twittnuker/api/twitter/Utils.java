@@ -20,15 +20,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api;
+package de.vanita5.twittnuker.api.twitter;
 
-import de.vanita5.twittnuker.model.ParcelableUser;
+import java.util.ArrayList;
+import java.util.List;
 
-import retrofit.http.GET;
+public class Utils {
+	public static String[] split(final String str, final String separator) {
+		String[] returnValue;
+		int index = str.indexOf(separator);
+		if (index == -1) {
+			returnValue = new String[]{str};
+		} else {
+			final List<String> strList = new ArrayList<>();
+			int oldIndex = 0;
+			while (index != -1) {
+				final String subStr = str.substring(oldIndex, index);
+				strList.add(subStr);
+				oldIndex = index + separator.length();
+				index = str.indexOf(separator, oldIndex);
+			}
+			if (oldIndex != str.length()) {
+				strList.add(str.substring(oldIndex));
+			}
+			returnValue = strList.toArray(new String[strList.size()]);
+		}
 
-public interface TwitterAPI {
-
-	@GET("/account/verify_credentials.json")
-	ParcelableUser verifyCredentials();
-
+		return returnValue;
+	}
 }

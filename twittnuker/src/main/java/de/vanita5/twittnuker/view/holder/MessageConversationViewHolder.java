@@ -32,13 +32,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.mariotaku.messagebubbleview.library.MessageBubbleView;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage.CursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.SimpleValueSerializer;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.CardMediaContainer;
@@ -79,7 +79,7 @@ public class MessageConversationViewHolder extends ViewHolder {
 
 		final long accountId = cursor.getLong(indices.account_id);
 		final long timestamp = cursor.getLong(indices.message_timestamp);
-		final ParcelableMedia[] media = ParcelableMedia.fromJSONString(cursor.getString(indices.media));
+        final ParcelableMedia[] media = SimpleValueSerializer.fromSerializedString(cursor.getString(indices.media), ParcelableMedia.SIMPLE_CREATOR);
 		text.setText(Html.fromHtml(cursor.getString(indices.text)));
 		linkify.applyAllLinks(text, accountId, false);
 		text.setMovementMethod(null);

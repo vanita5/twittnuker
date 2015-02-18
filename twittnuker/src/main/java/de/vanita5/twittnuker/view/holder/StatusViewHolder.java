@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus.CursorIndices;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.SimpleValueSerializer;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -267,7 +268,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         final String in_reply_to_screen_name = cursor.getString(indices.in_reply_to_user_screen_name);
         final String card_name = cursor.getString(indices.card_name);
 
-        final ParcelableMedia[] media = ParcelableMedia.fromJSONString(cursor.getString(indices.media));
+        final ParcelableMedia[] media = SimpleValueSerializer.fromSerializedString(cursor.getString(indices.media), ParcelableMedia.SIMPLE_CREATOR);
 
         if (retweet_id > 0) {
             final String retweetedBy = UserColorNameUtils.getDisplayName(

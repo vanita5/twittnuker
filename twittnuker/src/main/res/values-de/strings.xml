@@ -18,8 +18,8 @@
     <string name="oauth_base_url">OAuth Basis URL</string>
     <string name="signing_oauth_base_url">Signierende OAuth Basis URL</string>
     <string name="signing_rest_base_url">Signierende REST Basis URL</string>
-  <string name="api_url_format">API URL Format</string>
-  <string name="same_oauth_signing_url">Benutze dieselbe URL für die OAuth Authentifizierung</string>
+    <string name="api_url_format">API URL Format</string>
+    <string name="same_oauth_signing_url">Benutze dieselbe URL für die OAuth Authentifizierung</string>
     <string name="auth_type">Authentifizierungtyp</string>
     <string name="oauth">OAuth</string>
     <string name="xauth">xAuth</string>
@@ -301,7 +301,7 @@
     <string name="activity_by_friends_list_created"><xliff:g id="user">%1$s</xliff:g> hat die Liste <xliff:g id="target">%2$s</xliff:g> erstellt.</string>
     <string name="activity_by_friends_list_created_multi"><xliff:g id="user">%1$s</xliff:g> hat die Liste <xliff:g id="target">%2$s</xliff:g> und <xliff:g id="other">%1$s</xliff:g> erstellt.</string>
     <string name="status_not_updated">Tweet nicht gesendet.</string>
-  <string name="status_not_updated_summary">Tweet wurde nicht gesendet und als Entwurf gespeichert.</string>
+    <string name="status_not_updated_summary">Tweet wurde nicht gesendet und als Entwurf gespeichert.</string>
     <string name="incoming_friendships">Ausstehende Folgen-Anfragen</string>
     <string name="send_follow_request">Folgen-Anfrage senden</string>
     <string name="follow_request_sent">Folgen-Anfrage gesendet</string>
@@ -657,6 +657,8 @@
     <string name="blocked_by_user_summary">Du wurdest von <xliff:g id="name">%s</xliff:g> geblockt</string>
     <string name="select_accounts">Accounts auswählen</string>
     <string name="media_preview">Medien Vorschau</string>
+    <string name="no_location">(D) No location</string>
+    <string name="getting_location">(D) Getting location</string>
 
 
     <!-- Twittnuker -->

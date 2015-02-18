@@ -20,15 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api;
+package de.vanita5.twittnuker.api.twitter;
 
-import de.vanita5.twittnuker.model.ParcelableUser;
+public class Status {
 
-import retrofit.http.GET;
+	private long id;
 
-public interface TwitterAPI {
+	public long getId() {
+		return id;
+	}
 
-	@GET("/account/verify_credentials.json")
-	ParcelableUser verifyCredentials();
-
+	public void setId(long id) {
+		this.id = id;
+	}
 }

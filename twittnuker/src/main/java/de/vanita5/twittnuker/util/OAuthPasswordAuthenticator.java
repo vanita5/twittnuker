@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.util;
 
-import static android.text.TextUtils.isEmpty;
-
 import android.text.TextUtils;
 import android.util.Xml;
 
@@ -31,6 +29,9 @@ import de.vanita5.twittnuker.Constants;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.IOException;
+import java.io.Reader;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -40,15 +41,12 @@ import twitter4j.conf.Configuration;
 import twitter4j.http.HttpClientWrapper;
 import twitter4j.http.HttpParameter;
 
-import java.io.IOException;
-import java.io.Reader;
+import static android.text.TextUtils.isEmpty;
 
 public class OAuthPasswordAuthenticator implements Constants {
 
 	private final Twitter twitter;
     private final HttpClientWrapper client;
-
-    private static final String REFRESH_URL_PREFIX = "url=";
 
 	public OAuthPasswordAuthenticator(final Twitter twitter) {
 		final Configuration conf = twitter.getConfiguration();
@@ -57,7 +55,6 @@ public class OAuthPasswordAuthenticator implements Constants {
 	}
 
     public AccessToken getOAuthAccessToken(final String username, final String password) throws AuthenticationException {
-        if (twitter == null) return null;
 		final RequestToken requestToken;
 		try {
 			requestToken = twitter.getOAuthRequestToken(OAUTH_CALLBACK_OOB);
@@ -107,29 +104,6 @@ public class OAuthPasswordAuthenticator implements Constants {
 			if (in != null) in.close();
 		}
 	}
-
-    public static String readCallbackUrlFromHtml(final Reader in) throws IOException, XmlPullParserException {
-        final XmlPullParserFactory f = XmlPullParserFactory.newInstance();
-        final XmlPullParser parser = f.newPullParser();
-        parser.setFeature(Xml.FEATURE_RELAXED, true);
-        parser.setInput(in);
-        while (parser.next() != XmlPullParser.END_DOCUMENT) {
-            final String tag = parser.getName();
-                switch (parser.getEventType()) {
-                    case XmlPullParser.START_TAG: {
-                        if ("meta".equals(tag) && "refresh".equals(parser.getAttributeValue(null, "http-equiv"))) {
-                            final String content = parser.getAttributeValue(null, "content");
-                            int idx;
-                            if (!TextUtils.isEmpty(content) && (idx = content.indexOf(REFRESH_URL_PREFIX)) != -1) {
-                                final String url = content.substring(idx + REFRESH_URL_PREFIX.length());
-                                if (!TextUtils.isEmpty(url)) return url;
-                            }
-                        }
-                    }
-                }
-            }
-        return null;
-    }
 
 	public static String readOAuthPINFromHtml(final Reader in) throws XmlPullParserException, IOException {
 		try {

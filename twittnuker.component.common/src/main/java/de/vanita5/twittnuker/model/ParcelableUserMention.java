@@ -31,11 +31,16 @@ import org.json.JSONException;
 import org.mariotaku.jsonserializer.JSONParcel;
 import org.mariotaku.jsonserializer.JSONParcelable;
 import org.mariotaku.jsonserializer.JSONSerializer;
+import de.vanita5.twittnuker.util.SimpleValueSerializer;
+import de.vanita5.twittnuker.util.SimpleValueSerializer.Reader;
+import de.vanita5.twittnuker.util.SimpleValueSerializer.SerializationException;
+import de.vanita5.twittnuker.util.SimpleValueSerializer.SimpleValueSerializable;
+import de.vanita5.twittnuker.util.SimpleValueSerializer.Writer;
 
 import twitter4j.Status;
 import twitter4j.UserMentionEntity;
 
-public class ParcelableUserMention implements Parcelable, JSONParcelable {
+public class ParcelableUserMention implements Parcelable, JSONParcelable, SimpleValueSerializable {
 
 	public static final Parcelable.Creator<ParcelableUserMention> CREATOR = new Parcelable.Creator<ParcelableUserMention>() {
 		@Override
@@ -59,6 +64,17 @@ public class ParcelableUserMention implements Parcelable, JSONParcelable {
 			return new ParcelableUserMention[size];
 		}
 	};
+    public static final SimpleValueSerializer.Creator<ParcelableUserMention> SIMPLE_CREATOR = new SimpleValueSerializer.Creator<ParcelableUserMention>() {
+        @Override
+        public ParcelableUserMention create(final SimpleValueSerializer.Reader reader) throws SerializationException {
+            return new ParcelableUserMention(reader);
+        }
+
+        @Override
+        public ParcelableUserMention[] newArray(final int size) {
+            return new ParcelableUserMention[size];
+        }
+    };
 	public long id;
 
 	public String name, screen_name;
@@ -80,6 +96,29 @@ public class ParcelableUserMention implements Parcelable, JSONParcelable {
 		name = entity.getName();
 		screen_name = entity.getScreenName();
 	}
+
+    public ParcelableUserMention(Reader reader) throws SerializationException {
+        while (reader.hasKeyValue()) {
+            switch (reader.nextKey()) {
+                case "id": {
+                    id = reader.nextLong();
+                    break;
+                }
+                case "name": {
+                    name = reader.nextString();
+                    break;
+                }
+                case "screen_name": {
+                    screen_name = reader.nextString();
+                    break;
+                }
+                default: {
+                    reader.skipValue();
+                    break;
+                }
+            }
+        }
+    }
 
 	@Override
 	public int describeContents() {
@@ -107,6 +146,13 @@ public class ParcelableUserMention implements Parcelable, JSONParcelable {
 	@Override
 	public String toString() {
 		return "ParcelableUserMention{id=" + id + ", name=" + name + ", screen_name=" + screen_name + "}";
+    }
+
+    @Override
+    public void write(Writer writer) {
+        writer.write("id", id);
+        writer.write("name", name);
+        writer.write("screen_name", screen_name);
 	}
 
 	@Override
