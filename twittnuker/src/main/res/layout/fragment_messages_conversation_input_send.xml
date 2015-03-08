@@ -25,10 +25,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    tools:showIn="@layout/fragment_messages_conversation"
     android:layout_height="wrap_content"
     android:gravity="bottom"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    tools:showIn="@layout/fragment_messages_conversation">
 
     <de.vanita5.twittnuker.view.ActionIconView
         android:id="@+id/add_image"
@@ -38,6 +38,7 @@
         android:layout_weight="0"
         android:color="?android:textColorSecondary"
         android:contentDescription="@string/add_image"
+        android:padding="0dp"
         android:scaleType="centerInside"
         android:src="@drawable/ic_action_gallery"/>
 
@@ -60,7 +61,8 @@
         style="?android:borderlessButtonStyle"
 		android:layout_width="?android:actionBarSize"
 		android:layout_height="?android:actionBarSize"
-		android:layout_weight="0">
+        android:layout_weight="0"
+        android:padding="0dp">
 
         <de.vanita5.twittnuker.view.ActionIconView
         android:layout_width="match_parent"
@@ -76,13 +78,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
 			android:fontFamily="sans-serif-light"
-			android:paddingBottom="@dimen/element_spacing_small"
-			android:paddingRight="@dimen/element_spacing_small"
+            android:layout_marginBottom="@dimen/element_spacing_small"
+            android:layout_marginRight="@dimen/element_spacing_small"
             android:singleLine="true"
             android:textAllCaps="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:textColorPrimary"
-			android:textSize="@dimen/text_size_extra_small"/>
+            android:textSize="@dimen/text_size_extra_small"
+            tools:text="140"/>
 	</FrameLayout>
 
 </LinearLayout>
