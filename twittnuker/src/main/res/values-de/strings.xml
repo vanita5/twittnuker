@@ -659,6 +659,7 @@
     <string name="media_preview">Medien Vorschau</string>
     <string name="no_location">(D) No location</string>
     <string name="getting_location">(D) Getting location</string>
+    <string name="save_to_gallery">Speichern</string>
 
 
     <!-- Twittnuker -->
