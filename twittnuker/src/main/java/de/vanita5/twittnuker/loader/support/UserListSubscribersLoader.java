@@ -26,28 +26,28 @@ import android.content.Context;
 
 import de.vanita5.twittnuker.model.ParcelableUser;
 
+import java.util.List;
+
 import twitter4j.CursorPaging;
 import twitter4j.PageableResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
-import java.util.List;
-
 public class UserListSubscribersLoader extends CursorSupportUsersLoader {
 
-	private final int mListId;
+    private final long mListId;
 	private final long mUserId;
 	private final String mScreenName, mListName;
 
-	public UserListSubscribersLoader(final Context context, final long account_id, final int list_id,
-			final long user_id, final String screen_name, final String list_name, final long cursor,
+    public UserListSubscribersLoader(final Context context, final long account_id, final long listId,
+                                     final long userId, final String screenName, final String listName, final long cursor,
 			final List<ParcelableUser> data) {
 		super(context, account_id, cursor, data);
-		mListId = list_id;
-		mUserId = user_id;
-		mScreenName = screen_name;
-		mListName = list_name;
+        mListId = listId;
+        mUserId = userId;
+        mScreenName = screenName;
+        mListName = listName;
 	}
 
 	@Override

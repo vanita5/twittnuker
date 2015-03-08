@@ -43,6 +43,11 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
+import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
+import de.vanita5.twittnuker.util.message.StatusDestroyedEvent;
+import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
+import de.vanita5.twittnuker.util.message.StatusRetweetedEvent;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
 import static de.vanita5.twittnuker.util.Utils.buildStatusFilterWhereClause;
@@ -79,14 +84,37 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
 
     @Override
     protected Object createMessageBusCallback() {
-        return new Object() {
+        return new ParcelableStatusesBusCallback();
+    }
 
+
+    protected class ParcelableStatusesBusCallback {
 
             @Subscribe
             public void notifyTaskStateChanged(TaskStateChangedEvent event) {
                 updateRefreshState();
             }
-        };
+
+        @Subscribe
+        public void notifyFavoriteCreated(FavoriteCreatedEvent event) {
+        }
+
+        @Subscribe
+        public void notifyFavoriteDestroyed(FavoriteDestroyedEvent event) {
+        }
+
+        @Subscribe
+        public void notifyStatusDestroyed(StatusDestroyedEvent event) {
+        }
+
+        @Subscribe
+        public void notifyStatusListChanged(StatusListChangedEvent event) {
+        }
+
+        @Subscribe
+        public void notifyStatusRetweeted(StatusRetweetedEvent event) {
+        }
+
     }
 
     @Override
