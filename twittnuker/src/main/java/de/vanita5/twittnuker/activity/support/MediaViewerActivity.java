@@ -19,6 +19,7 @@ package de.vanita5.twittnuker.activity.support;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -51,6 +52,7 @@ import de.vanita5.twittnuker.loader.support.TileImageLoader;
 import de.vanita5.twittnuker.loader.support.TileImageLoader.DownloadListener;
 import de.vanita5.twittnuker.loader.support.TileImageLoader.Result;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.util.SaveImageTask;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.TouchImageView;
@@ -157,6 +159,7 @@ public final class MediaViewerActivity extends ThemedActionBarActivity implement
         private ProgressBar mProgressBar;
         private boolean mLoaderInitialized;
         private long mContentLength;
+        private SaveImageTask mSaveImageTask;
 
 	    @Override
         public void onBaseViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -270,6 +273,30 @@ public final class MediaViewerActivity extends ThemedActionBarActivity implement
         public boolean onOptionsItemSelected(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.open_in_browser: {
+                    openInBrowser();
+                    return true;
+                }
+                case R.id.save: {
+                    saveToGallery();
+                    return true;
+                }
+            }
+            return super.onOptionsItemSelected(item);
+        }
+
+        private void saveToGallery() {
+            if (mSaveImageTask != null && mSaveImageTask.getStatus() == Status.RUNNING) return;
+            final Object imageTag = mImageView.getTag();
+            final boolean hasImage = imageTag instanceof File;
+            if (hasImage) {
+                mSaveImageTask = new SaveImageTask(getActivity(), (File) imageTag);
+                mSaveImageTask.execute();
+            } else {
+
+            }
+        }
+
+        private void openInBrowser() {
                     final ParcelableMedia media = getMedia();
                     final Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.addCategory(Intent.CATEGORY_BROWSABLE);
@@ -279,10 +306,6 @@ public final class MediaViewerActivity extends ThemedActionBarActivity implement
                         intent.setData(Uri.parse(media.media_url));
                     }
                     startActivity(intent);
-                    return true;
-                }
-            }
-            return super.onOptionsItemSelected(item);
         }
 
         private ParcelableMedia getMedia() {
