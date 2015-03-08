@@ -82,6 +82,7 @@ dependencies {
     compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.google.maps.android:android-maps-utils:0.3.4'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.+'
     compile project(':twittnuker.component.common')
     compile project(':SlidingMenu')
     compile project(':DragSortListView')

@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.util;
 
-import static de.vanita5.twittnuker.util.Utils.isOnWifi;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
@@ -34,6 +32,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import de.vanita5.twittnuker.Constants;
 
 import java.io.File;
+
+import static de.vanita5.twittnuker.util.Utils.isOnWifi;
 
 /**
  * @author mariotaku
@@ -57,11 +57,12 @@ public class ImagePreloader implements Constants {
 	public File getCachedImageFile(final String url) {
 		if (url == null) return null;
 		final File cache = mDiskCache.get(url);
-
-		if (!ImageValidator.checkImageValidity(cache)) {
+        if (ImageValidator.isValid(ImageValidator.checkImageValidity(cache)))
+            return cache;
+        else {
 			preloadImage(url);
 		}
-		return cache;
+        return null;
 	}
 
 	public void preloadImage(final String url) {
