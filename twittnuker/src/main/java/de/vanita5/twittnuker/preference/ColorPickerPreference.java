@@ -35,10 +35,10 @@ import android.widget.ImageView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.dialog.ColorPickerDialog;
+import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.ShapedImageView;
-import de.vanita5.twittnuker.view.ColorPickerView;
+
+import me.uucky.colorpicker.ColorPickerDialog;
 
 public class ColorPickerPreference extends Preference implements DialogInterface.OnClickListener, Constants {
 
@@ -116,13 +116,20 @@ public class ColorPickerPreference extends Preference implements DialogInterface
     protected void onBindView(@NonNull final View view) {
 		super.onBindView(view);
         final ImageView imageView = (ImageView) view.findViewById(R.id.color);
-		imageView.setImageBitmap(ColorPickerView.getColorPreviewBitmap(getContext(), getValue(), false));
+        imageView.setImageBitmap(ColorUtils.getColorPreviewBitmap(getContext(), getValue(), false));
 	}
 
 	@Override
     protected void onClick() {
         if (mDialog != null && mDialog.isShowing()) return;
-        mDialog = new ColorPickerDialog(getContext(), getValue(), mAlphaSliderEnabled);
+        final Context context = getContext();
+        mDialog = new ColorPickerDialog(context);
+        final Resources res = context.getResources();
+        for (int presetColor : PRESET_COLORS) {
+            mDialog.addColor(res.getColor(presetColor));
+        }
+        mDialog.setInitialColor(getValue());
+        mDialog.setAlphaEnabled(mAlphaSliderEnabled);
         mDialog.setButton(DialogInterface.BUTTON_POSITIVE, mResources.getString(android.R.string.ok), this);
         mDialog.setButton(DialogInterface.BUTTON_NEGATIVE, mResources.getString(android.R.string.cancel), this);
         mDialog.show();

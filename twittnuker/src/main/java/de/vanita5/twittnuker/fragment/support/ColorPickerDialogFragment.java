@@ -24,13 +24,16 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.dialog.ColorPickerDialog;
 import de.vanita5.twittnuker.fragment.iface.IDialogFragmentCallback;
+
+import me.uucky.colorpicker.ColorPickerDialog;
 
 public final class ColorPickerDialogFragment extends BaseSupportDialogFragment implements
 	DialogInterface.OnClickListener {
@@ -62,6 +65,7 @@ public final class ColorPickerDialogFragment extends BaseSupportDialogFragment i
 		}
 	}
 
+    @NonNull
 	@Override
 	public Dialog onCreateDialog(final Bundle savedInstanceState) {
 		final int color;
@@ -72,7 +76,13 @@ public final class ColorPickerDialogFragment extends BaseSupportDialogFragment i
 			color = args.getInt(EXTRA_COLOR, Color.WHITE);
 		}
 		final boolean showAlphaSlider = args.getBoolean(EXTRA_ALPHA_SLIDER, true);
-		final ColorPickerDialog d = new ColorPickerDialog(getActivity(), color, showAlphaSlider);
+        final ColorPickerDialog d = new ColorPickerDialog(getActivity());
+        final Resources res = getResources();
+        for (int presetColor : PRESET_COLORS) {
+            d.addColor(res.getColor(presetColor));
+        }
+        d.setInitialColor(color);
+        d.setAlphaEnabled(showAlphaSlider);
 		d.setButton(DialogInterface.BUTTON_POSITIVE, getString(android.R.string.ok), this);
         if (args.getBoolean(EXTRA_CLEAR_BUTTON, false)) {
             d.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.clear), this);
