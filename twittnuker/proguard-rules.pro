@@ -100,3 +100,6 @@
 -keep class twitter4j.** { public protected private *; }
 -keep class de.vanita5.twittnuker.** { public protected private *; }
 -keep class org.mariotaku.** { public protected private *; }
+
+#android-gif-drawable
+-keep class pl.droidsonroids.gif.GifInfoHandle{<init>(long,int,int,int);}
