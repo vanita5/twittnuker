@@ -482,6 +482,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 					final BitmapFactory.Options o = new BitmapFactory.Options();
 					o.inJustDecodeBounds = true;
                     final long[] mediaIds = new long[statusUpdate.media.length];
+					ContentLengthInputStream is = null;
 					try {
 						for (int i = 0, j = mediaIds.length; i < j; i++) {
 							final ParcelableMediaUpdate media = statusUpdate.media[i];
@@ -489,7 +490,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 							if (path == null) throw new FileNotFoundException();
 							BitmapFactory.decodeFile(path, o);
 							final File file = new File(path);
-							final ContentLengthInputStream is = new ContentLengthInputStream(file);
+							is = new ContentLengthInputStream(file);
 							is.setReadListener(new StatusMediaUploadListener(this, mNotificationManager, builder,
 									statusUpdate));
                             final MediaUploadResponse uploadResp = twitter.uploadMedia(file.getName(), is,
@@ -502,8 +503,16 @@ public class BackgroundOperationService extends IntentService implements Constan
                         final SingleResponse<ParcelableStatus> response = SingleResponse.getInstance(e);
                         results.add(response);
                         continue;
-                    }
-                    status.mediaIds(mediaIds);
+                    } finally {
+						if (is != null) {
+							try {
+								is.close();
+							} catch (IOException e) {
+								Log.w(LOGTAG, e);
+							}
+						}
+					}
+					status.mediaIds(mediaIds);
 				}
 				status.setPossiblySensitive(statusUpdate.is_possibly_sensitive);
 
