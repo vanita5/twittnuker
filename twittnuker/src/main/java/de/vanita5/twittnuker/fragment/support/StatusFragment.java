@@ -88,7 +88,6 @@ import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.StatusLinkClickHandler;
-import de.vanita5.twittnuker.util.StatisticUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
@@ -102,7 +101,6 @@ import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -152,11 +150,13 @@ public class StatusFragment extends BaseSupportFragment
             final long statusId = args.getLong(EXTRA_STATUS_ID, -1);
             final long maxId = args.getLong(EXTRA_MAX_ID, -1);
             final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
+
             final StatusRepliesLoader loader = new StatusRepliesLoader(getActivity(), accountId,
                     screenName, statusId, maxId, sinceId, null, null, 0, true);
             loader.setComparator(ParcelableStatus.REVERSE_ID_COMPARATOR);
+
             return loader;
-					}
+        }
 
         @Override
         public void onLoadFinished(Loader<List<ParcelableStatus>> loader, List<ParcelableStatus> data) {
@@ -322,11 +322,6 @@ public class StatusFragment extends BaseSupportFragment
             } else {
                 final int position = mStatusAdapter.findPositionById(itemId);
                 mLayoutManager.scrollToPositionWithOffset(position, top);
-            }
-            try {
-                StatisticUtils.writeStatusOpen(status, null, 0);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
             setState(STATE_LOADED);
         } else {
