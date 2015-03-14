@@ -46,12 +46,12 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCal
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
-import de.vanita5.twittnuker.util.accessor.ActivityAccessor;
-import de.vanita5.twittnuker.util.accessor.ActivityAccessor.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.accessor.ActivityAccessor;
+import de.vanita5.twittnuker.util.accessor.ActivityAccessor.TaskDescriptionCompat;
 import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 
 import static de.vanita5.twittnuker.util.Utils.createFragmentForIntent;
@@ -405,8 +405,4 @@ public class LinkHandlerActivity extends BaseSupportActivity implements OnClickL
         return actionBar != null ? actionBar.getHeight() : 0;
     }
 
-    @Override
-    public void moveControlBarBy(float delta) {
-
-    }
 }

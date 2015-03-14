@@ -10,8 +10,6 @@ public interface IControlBarActivity {
 
 	public int getControlBarHeight();
 
-    public void moveControlBarBy(float delta);
-
     public void notifyControlBarOffsetChanged();
 
     public void registerControlBarOffsetListener(ControlBarOffsetListener listener);
