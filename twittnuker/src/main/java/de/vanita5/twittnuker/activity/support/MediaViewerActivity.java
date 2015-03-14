@@ -146,6 +146,8 @@ public final class MediaViewerActivity extends ThemedActionBarActivity implement
         } else {
             mActionBar.hide();
         }
+
+        findViewById(R.id.media_status).setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     private void toggleBar() {

@@ -617,6 +617,7 @@ public class StatusFragment extends BaseSupportFragment
                         cardView.setCardBackgroundColor(mCardBackgroundColor);
                     }
                     final StatusViewHolder holder = new StatusViewHolder(this, view);
+					holder.setupViewOptions();
                     holder.setOnClickListeners();
                     return holder;
 			    }
