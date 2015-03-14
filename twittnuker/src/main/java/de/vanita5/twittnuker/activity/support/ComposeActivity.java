@@ -68,6 +68,8 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.ActionMode.Callback;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -78,6 +80,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -151,7 +154,7 @@ import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
 public class ComposeActivity extends ThemedFragmentActivity implements TextWatcher, LocationListener,
-        OnMenuItemClickListener, View.OnClickListener, OnEditorActionListener, OnLongClickListener {
+        OnMenuItemClickListener, OnClickListener, OnEditorActionListener, OnLongClickListener, Callback {
 
 	private static final String FAKE_IMAGE_LINK = "https://www.example.com/fake_image.jpg";
 
@@ -203,9 +206,36 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 
 	}
 
-    public void onInvoked() {
-        final boolean isVisible = mAccountSelectorContainer.getVisibility() == View.VISIBLE;
-        mAccountSelectorContainer.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        final Window window = getWindow();
+        final Rect rect = new Rect();
+        window.getDecorView().getWindowVisibleDisplayFrame(rect);
+        final View contentView = window.findViewById(android.R.id.content);
+        final int statusBarHeight = rect.top;
+        contentView.getWindowVisibleDisplayFrame(rect);
+        final int paddingTop = statusBarHeight + Utils.getActionBarHeight(this) - rect.top;
+        contentView.setPadding(contentView.getPaddingLeft(), paddingTop,
+                contentView.getPaddingRight(), contentView.getPaddingBottom());
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return true;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        final Window window = getWindow();
+        final View contentView = window.findViewById(android.R.id.content);
+        contentView.setPadding(contentView.getPaddingLeft(), 0,
+                contentView.getPaddingRight(), contentView.getPaddingBottom());
     }
 
     @Override
@@ -564,6 +594,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
         mMenuBar.setOnMenuItemClickListener(this);
 		mEditText.setOnEditorActionListener(mPreferences.getBoolean(KEY_QUICK_SEND, false) ? this : null);
 		mEditText.addTextChangedListener(this);
+        mEditText.setCustomSelectionActionModeCallback(this);
         mAccountSelectorContainer.setOnClickListener(this);
         mAccountSelectorButton.setOnClickListener(this);
         mLocationContainer.setOnClickListener(this);
