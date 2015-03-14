@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.view.holder;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,7 +35,10 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.UserColorNameUtils;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShortTimeView;
+import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 
@@ -44,19 +48,20 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
 	public final TextView nameView, screenNameView, textView;
 	public final ShortTimeView timeView;
     private final MessageEntriesAdapter adapter;
-	private float text_size;
+    private final IColorLabelView content;
 	private boolean account_color_enabled;
 
 	public MessageEntryViewHolder(final MessageEntriesAdapter adapter, final View itemView) {
 		super(itemView);
 		this.adapter = adapter;
-		final Context context = itemView.getContext();
+        content = (IColorLabelView) itemView.findViewById(R.id.content);
 		profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
 		nameView = (TextView) itemView.findViewById(R.id.name);
 		screenNameView = (TextView) itemView.findViewById(R.id.screen_name);
 		textView = (TextView) itemView.findViewById(R.id.text);
 		timeView = (ShortTimeView) itemView.findViewById(R.id.time);
 
+        setTextSize(adapter.getTextSize());
 		itemView.setOnClickListener(this);
 	}
 
@@ -77,6 +82,10 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
 		textView.setText(toPlainText(cursor.getString(ConversationEntries.IDX_TEXT)));
 		timeView.setTime(timestamp);
 		setIsOutgoing(isOutgoing);
+        if (account_color_enabled) {
+            content.drawEnd(Utils.getAccountColor(context, accountId));
+        }
+        content.drawStart(UserColorNameUtils.getUserColor(context, conversationId));
 
 		final String profileImage = cursor.getString(ConversationEntries.IDX_PROFILE_IMAGE_URL);
 		loader.displayProfileImage(profileImageView, profileImage);
@@ -97,15 +106,11 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
 		}
 	}
 
-	public void setAccountColor(final int color) {
-//        content.drawEnd(account_color_enabled ? color : Color.TRANSPARENT);
-	}
-
 	public void setAccountColorEnabled(final boolean enabled) {
 		if (account_color_enabled == enabled) return;
 		account_color_enabled = enabled;
 		if (!account_color_enabled) {
-//            content.drawEnd(Color.TRANSPARENT);
+            content.drawEnd(Color.TRANSPARENT);
 		}
 	}
 
@@ -113,11 +118,11 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
 		timeView.setCompoundDrawablesWithIntrinsicBounds(0, 0, is_outgoing ? R.drawable.ic_indicator_sent : 0, 0);
 	}
 
-	public void setTextSize(final float text_size) {
-		if (this.text_size == text_size) return;
-		this.text_size = text_size;
-		textView.setTextSize(text_size);
-		nameView.setTextSize(text_size);
+    public void setTextSize(final float textSize) {
+        nameView.setTextSize(textSize * 1.1f);
+        screenNameView.setTextSize(textSize);
+        textView.setTextSize(textSize);
+        timeView.setTextSize(textSize);
 	}
 
 	public void setUserColor(final int color) {

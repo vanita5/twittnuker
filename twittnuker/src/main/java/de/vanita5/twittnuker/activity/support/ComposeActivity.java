@@ -1491,7 +1491,6 @@ public class ComposeActivity extends ThemedActionBarActivity implements TextWatc
                     true, nameFirst, profileImageStyle, mediaPreviewStyle, status, null);
             mStatusContainer.findViewById(R.id.item_menu).setVisibility(View.GONE);
             mStatusContainer.findViewById(R.id.action_buttons).setVisibility(View.GONE);
-            mStatusContainer.findViewById(R.id.reply_retweet_status).setVisibility(View.GONE);
         }
 
 

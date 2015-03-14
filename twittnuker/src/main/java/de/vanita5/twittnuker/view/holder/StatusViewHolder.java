@@ -136,24 +136,25 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
 
         replyRetweetIcon.setColorFilter(replyRetweetView.getCurrentTextColor(), Mode.SRC_ATOP);
         if (status.retweet_id > 0) {
+			replyRetweetView.setVisibility(View.VISIBLE);
+			replyRetweetIcon.setVisibility(View.VISIBLE);
             final String retweetedBy = UserColorNameUtils.getDisplayName(
                     status.retweeted_by_name, status.retweeted_by_screen_name, nameFirst);
             replyRetweetView.setText(context.getString(R.string.name_retweeted, retweetedBy));
             replyRetweetIcon.setImageResource(R.drawable.ic_activity_action_retweet);
+        } else if (status.in_reply_to_status_id > 0 && status.in_reply_to_user_id > 0 && displayInReplyTo) {
             replyRetweetView.setVisibility(View.VISIBLE);
             replyRetweetIcon.setVisibility(View.VISIBLE);
-        } else if (status.in_reply_to_status_id > 0 && status.in_reply_to_user_id > 0 && displayInReplyTo) {
             final String inReplyTo = UserColorNameUtils.getDisplayName(
                     status.in_reply_to_name, status.in_reply_to_screen_name, nameFirst);
             replyRetweetView.setText(context.getString(R.string.in_reply_to_name, inReplyTo));
             replyRetweetIcon.setImageResource(R.drawable.ic_activity_action_reply);
-            replyRetweetView.setVisibility(View.VISIBLE);
-            replyRetweetIcon.setVisibility(View.VISIBLE);
         } else {
-            replyRetweetView.setText(null);
             replyRetweetView.setVisibility(View.GONE);
             replyRetweetIcon.setVisibility(View.GONE);
+            replyRetweetView.setText(null);
 	    }
+
 
         final int typeIconRes = getUserTypeIconRes(status.user_is_verified, status.user_is_protected);
         if (typeIconRes != 0) {

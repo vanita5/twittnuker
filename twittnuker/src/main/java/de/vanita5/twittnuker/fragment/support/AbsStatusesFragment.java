@@ -84,6 +84,7 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
     private OnScrollListener mOnScrollListener = new OnScrollListener() {
 
         private int mScrollState;
+        private int mScrollSum;
 
 	    @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -93,9 +94,14 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 
 	    @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-
-            if (Math.abs(dy) > mTouchSlop) {
+            //Reset mScrollSum when scrolling in reverse direction
+            if (dy * mScrollSum < 0) {
+                mScrollSum = 0;
+            }
+            mScrollSum += dy;
+            if (Math.abs(mScrollSum) > mTouchSlop) {
                 setControlVisible(dy < 0);
+                mScrollSum = 0;
             }
             final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
             if (!isRefreshing() && mAdapter.hasLoadMoreIndicator() && mScrollState != RecyclerView.SCROLL_STATE_IDLE
@@ -170,6 +176,7 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
     }
 
     public void setRefreshing(boolean refreshing) {
+        if (refreshing == mSwipeRefreshLayout.isRefreshing()) return;
         mSwipeRefreshLayout.setRefreshing(refreshing);
     }
 

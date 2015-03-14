@@ -31,19 +31,28 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.MessageEntryViewHolder;
 
-public class MessageEntriesAdapter extends Adapter<ViewHolder> implements OnClickListener {
+public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Constants, IContentCardAdapter, OnClickListener {
 
 	private final Context mContext;
 	private final LayoutInflater mInflater;
 	private final ImageLoaderWrapper mImageLoader;
 	private final MultiSelectManager mMultiSelectManager;
+    private final int mTextSize;
+    private final int mProfileImageStyle;
+    private final int mMediaPreviewStyle;
 	private Cursor mCursor;
 	private MessageEntriesAdapterListener mListener;
 
@@ -51,11 +60,46 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements OnClic
 		return mContext;
 	}
 
+    @Override
+    public ImageLoadingHandler getImageLoadingHandler() {
+        return null;
+    }
+
+    @Override
+    public int getProfileImageStyle() {
+        return mProfileImageStyle;
+    }
+
+    @Override
+    public int getMediaPreviewStyle() {
+        return mMediaPreviewStyle;
+    }
+
+    @Override
+    public AsyncTwitterWrapper getTwitterWrapper() {
+        return null;
+    }
+
+    @Override
+    public float getTextSize() {
+        return mTextSize;
+    }
+
 	public ImageLoaderWrapper getImageLoader() {
 		return mImageLoader;
 	}
 
 	@Override
+    public boolean isGapItem(int position) {
+        return false;
+    }
+
+    @Override
+    public void onGapClick(ViewHolder holder, int position) {
+
+    }
+
+    @Override
 	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		final View view = mInflater.inflate(R.layout.list_item_message_entry, parent, false);
 		return new MessageEntryViewHolder(this, view);
@@ -67,6 +111,16 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements OnClic
 		c.moveToPosition(position);
 		((MessageEntryViewHolder) holder).displayMessage(c);
 	}
+
+    @Override
+    public void onItemActionClick(ViewHolder holder, int id, int position) {
+
+    }
+
+    @Override
+    public void onItemMenuClick(ViewHolder holder, View menuView, int position) {
+
+    }
 
 	public void onMessageClick(int position) {
 		if (mListener == null) return;
@@ -91,6 +145,11 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements OnClic
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mMultiSelectManager = app.getMultiSelectManager();
 		mImageLoader = app.getImageLoaderWrapper();
+		final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
+				SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
+        mMediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
+        mTextSize = preferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
 	}
 
 	public static class DirectMessageEntry {

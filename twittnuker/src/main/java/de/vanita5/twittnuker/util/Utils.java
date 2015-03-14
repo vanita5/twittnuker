@@ -1909,18 +1909,18 @@ public final class Utils implements Constants, TwitterConstants {
 	}
 
 	public static long[] getNewestMessageIdsFromDatabase(final Context context, final Uri uri) {
-		final long[] account_ids = getActivatedAccountIds(context);
-		return getNewestMessageIdsFromDatabase(context, uri, account_ids);
+        final long[] accountIds = getActivatedAccountIds(context);
+        return getNewestMessageIdsFromDatabase(context, uri, accountIds);
 	}
 
-	public static long[] getNewestMessageIdsFromDatabase(final Context context, final Uri uri, final long[] account_ids) {
-		if (context == null || uri == null || account_ids == null) return null;
+    public static long[] getNewestMessageIdsFromDatabase(final Context context, final Uri uri, final long[] accountIds) {
+        if (context == null || uri == null || accountIds == null) return null;
 		final String[] cols = new String[] { DirectMessages.MESSAGE_ID };
 		final ContentResolver resolver = context.getContentResolver();
-		final long[] status_ids = new long[account_ids.length];
+        final long[] messageIds = new long[accountIds.length];
 		int idx = 0;
-		for (final long account_id : account_ids) {
-			final String where = Statuses.ACCOUNT_ID + " = " + account_id;
+        for (final long accountId : accountIds) {
+            final String where = Statuses.ACCOUNT_ID + " = " + accountId;
 			final Cursor cur = ContentResolverUtils.query(resolver, uri, cols, where, null,
 					DirectMessages.DEFAULT_SORT_ORDER);
 			if (cur == null) {
@@ -1929,12 +1929,12 @@ public final class Utils implements Constants, TwitterConstants {
 
 			if (cur.getCount() > 0) {
 				cur.moveToFirst();
-				status_ids[idx] = cur.getLong(cur.getColumnIndexOrThrow(DirectMessages.MESSAGE_ID));
+                messageIds[idx] = cur.getLong(cur.getColumnIndexOrThrow(DirectMessages.MESSAGE_ID));
 			}
 			cur.close();
 			idx++;
 		}
-		return status_ids;
+        return messageIds;
 	}
 
 	public static long[] getNewestStatusIdsFromDatabase(final Context context, final Uri uri) {

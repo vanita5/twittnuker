@@ -44,7 +44,7 @@ import static de.vanita5.twittnuker.util.Utils.announceForAccessibilityCompat;
 
 public class TabsAdapter extends FragmentStatePagerAdapter implements TabProvider, TabListener, Constants {
 
-	private final ArrayList<TabSpec> mTabs = new ArrayList<TabSpec>();
+    private final ArrayList<TabSpec> mTabs = new ArrayList<>();
 
 	private final Context mContext;
     private final PagerIndicator mIndicator;

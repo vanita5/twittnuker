@@ -108,8 +108,27 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 
 	@Override
     public void onRefresh() {
+        if (isRefreshing()) return;
+        new TwidereAsyncTask<Void, Void, long[][]>() {
 
-	}
+            @Override
+            protected long[][] doInBackground(final Void... params) {
+                final long[][] result = new long[2][];
+                result[0] = Utils.getActivatedAccountIds(getActivity());
+                result[1] = Utils.getNewestMessageIdsFromDatabase(getActivity(), DirectMessages.Inbox.CONTENT_URI);
+                return result;
+	        }
+
+            @Override
+            protected void onPostExecute(final long[][] result) {
+                final AsyncTwitterWrapper twitter = getTwitterWrapper();
+                if (twitter == null) return;
+                twitter.getReceivedDirectMessagesAsync(result[0], null, result[1]);
+                twitter.getSentDirectMessagesAsync(result[0], null, null);
+            }
+
+        }.executeTask();
+    }
 
     private void setListShown(boolean shown) {
         mProgressContainer.setVisibility(shown ? View.GONE : View.VISIBLE);
@@ -207,27 +226,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 	}
 
 //    @Override
-//    public void onRefresh() {
-//        if (isRefreshing()) return;
-//        new TwidereAsyncTask<Void, Void, long[][]>() {
-//
-//            @Override
-//            protected long[][] doInBackground(final Void... params) {
-//                final long[][] result = new long[2][];
-//                result[0] = getActivatedAccountIds(getActivity());
-//                result[1] = getNewestMessageIdsFromDatabase(getActivity(), DirectMessages.Inbox.CONTENT_URI);
-//                return result;
-//            }
-//
-//            @Override
-//            protected void onPostExecute(final long[][] result) {
-//                final AsyncTwitterWrapper twitter = getTwitterWrapper();
-//                if (twitter == null) return;
-//                twitter.getReceivedDirectMessagesAsync(result[0], null, result[1]);
-//                twitter.getSentDirectMessagesAsync(result[0], null, null);
-//            }
-//
-//        }.executeTask();
+//        public void onRefresh() {
 //    }
 
 
@@ -328,6 +327,10 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 //        if (twitter == null || !getUserVisibleHint()) return;
 //        setRefreshing(twitter.isReceivedDirectMessagesRefreshing() || twitter.isSentDirectMessagesRefreshing());
 //    }
+
+    public boolean isRefreshing() {
+        return mSwipeRefreshLayout.isRefreshing();
+    }
 
 	private void addReadPosition(final int firstVisibleItem) {
 		if (mFirstVisibleItem != firstVisibleItem) {
