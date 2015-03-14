@@ -30,6 +30,7 @@ import android.support.v7.internal.view.SupportMenuInflater;
 import android.support.v7.widget.ActionMenuView;
 import android.text.Html;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.InflateException;
@@ -43,6 +44,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
@@ -104,8 +106,8 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		}
 		final View windowBackgroundView = view.findViewById(R.id.theme_preview_window_background);
 		final View windowContentOverlayView = view.findViewById(R.id.theme_preview_window_content_overlay);
-		final View actionBarView = view.findViewById(R.id.actionbar);
-		final TextView actionBarTitleView = (TextView) view.findViewById(R.id.actionbar_title);
+        final View actionBarOverlay = view.findViewById(R.id.actionbar_overlay);
+        final Toolbar actionBarView = (Toolbar) view.findViewById(R.id.actionbar);
         final ActionMenuView menuBar = (ActionMenuView) view.findViewById(R.id.menu_bar);
 		final View statusContentView = view.findViewById(R.id.theme_preview_status_content);
 		final TextView retweetsCountView = (TextView) view.findViewById(R.id.retweets_count);
@@ -114,19 +116,22 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		final CardView cardView = (CardView) view.findViewById(R.id.card);
 
 		final int defaultTextSize = getDefaultTextSize(context);
-		final int titleTextAppearance = ThemeUtils.getTitleTextAppearance(context);
         final int cardBackgroundColor = ThemeUtils.getCardBackgroundColor(context);
+        final int accentColor = ThemeUtils.getUserAccentColor(context);
 
 		ViewAccessor.setBackground(windowBackgroundView, ThemeUtils.getWindowBackground(context));
-		ViewAccessor.setBackground(windowContentOverlayView, ThemeUtils.getWindowContentOverlay(context));
-		ViewAccessor.setBackground(actionBarView, ThemeUtils.getActionBarBackground(context, themeRes));
+//        ViewAccessor.setBackground(windowContentOverlayView, ThemeUtils.getWindowContentOverlay(context));
+        ViewAccessor.setBackground(actionBarView, ThemeUtils.getActionBarBackground(context, themeRes, accentColor));
+        ViewAccessor.setBackground(actionBarOverlay, ThemeUtils.getWindowContentOverlay(context));
         cardView.setCardBackgroundColor(cardBackgroundColor);
 
 		final int highlightOption = getLinkHighlightOptionInt(context);
 		TwidereLinkify linkify = new TwidereLinkify(null);
 		linkify.setHighlightOption(highlightOption);
 
-		actionBarTitleView.setTextAppearance(context, titleTextAppearance);
+
+		actionBarView.setTitle(R.string.app_name);
+		actionBarView.setTitleTextColor(ColorUtils.getContrastYIQ(accentColor, 192));
         menuBar.setEnabled(false);
         final MenuInflater inflater = new SupportMenuInflater(context);
         inflater.inflate(R.menu.menu_status, menuBar.getMenu());
@@ -140,6 +145,9 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 			final TextView screenNameView = (TextView) statusContentView.findViewById(R.id.screen_name);
 			final TextView textView = (TextView) statusContentView.findViewById(R.id.text);
 			final TextView timeSourceView = (TextView) statusContentView.findViewById(R.id.time_source);
+            final View retweetedByContainer = statusContentView.findViewById(R.id.retweeted_by_container);
+
+            retweetedByContainer.setVisibility(View.GONE);
 
 			nameView.setTextSize(defaultTextSize * 1.25f);
 			textView.setTextSize(defaultTextSize * 1.25f);

@@ -46,12 +46,12 @@
 		android:layout_alignParentTop="true"
 		android:orientation="vertical">
 
-		<LinearLayout
+        <de.vanita5.twittnuker.view.TwidereToolbar
 			android:id="@+id/actionbar"
+            style="?actionBarStyle"
 			android:layout_width="match_parent"
-			android:layout_height="?android:actionBarSize"
-			android:gravity="center_vertical"
-			android:orientation="horizontal">
+            android:layout_height="?actionBarSize"
+            android:gravity="center_vertical"/>
 
             <ImageView
 				android:layout_width="wrap_content"
@@ -64,16 +64,19 @@
 				android:scaleType="centerInside"
                 android:src="@drawable/ic_action_twittnuker" />
 
-            <de.vanita5.twittnuker.view.ActionBarTitleView
-				android:id="@+id/actionbar_title"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:singleLine="true"
-				android:text="@string/app_name"
-				android:textAppearance="?android:textAppearanceMedium"/>
-		</LinearLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-		<include layout="@layout/theme_preview_status_content"/>
+            <include layout="@layout/theme_preview_status_content"/>
+
+            <View
+                android:id="@+id/actionbar_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </FrameLayout>
+
 	</LinearLayout>
 
 </merge>
