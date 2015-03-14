@@ -284,7 +284,7 @@ public class StatusFragment extends BaseSupportFragment
     public void onMediaClick(View view, ParcelableMedia media, long accountId) {
         final ParcelableStatus status = mStatusAdapter.getStatus();
         if (status == null) return;
-        Utils.openMediaDirectly(getActivity(), accountId, media, status.media);
+        Utils.openMediaDirectly(getActivity(), accountId, status, media, status.media);
     }
 
     @Override

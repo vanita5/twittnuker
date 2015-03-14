@@ -692,8 +692,9 @@
     <string name="select_accounts">Select accounts</string>
     <string name="media_preview">Media preview</string>
     <string name="no_location">No location</string>
-    <string name="getting_location">Getting location</string>
+    <string name="getting_location">Getting location...</string>
     <string name="save_to_gallery">Save to gallery</string>
+    <string name="unknown_location">Unknown Location</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

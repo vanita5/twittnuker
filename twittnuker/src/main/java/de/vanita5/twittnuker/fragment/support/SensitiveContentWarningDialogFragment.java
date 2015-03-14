@@ -31,6 +31,7 @@ import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 
@@ -47,9 +48,10 @@ public class SensitiveContentWarningDialogFragment extends BaseSupportDialogFrag
 				if (args == null || context == null) return;
 				final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
                 final ParcelableMedia current = args.getParcelable(EXTRA_CURRENT_MEDIA);
+                final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
                 final ParcelableMedia[] media = Utils.newParcelableArray(args.getParcelableArray(EXTRA_MEDIA),
 						ParcelableMedia.CREATOR);
-                openMediaDirectly(context, accountId, current, media);
+                openMediaDirectly(context, accountId, status, current, media);
 				break;
 			}
 		}

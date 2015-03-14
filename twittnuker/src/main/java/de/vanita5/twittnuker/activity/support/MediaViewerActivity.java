@@ -23,6 +23,7 @@ import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
@@ -46,12 +47,14 @@ import com.diegocarloslima.byakugallery.lib.TileBitmapDrawable.OnInitializeListe
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.support.ComposeActivity.ViewStatusDialogFragment;
 import de.vanita5.twittnuker.adapter.support.SupportFixedFragmentStatePagerAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
 import de.vanita5.twittnuker.loader.support.TileImageLoader;
 import de.vanita5.twittnuker.loader.support.TileImageLoader.DownloadListener;
 import de.vanita5.twittnuker.loader.support.TileImageLoader.Result;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.SaveImageTask;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -70,6 +73,8 @@ public final class MediaViewerActivity extends ThemedActionBarActivity implement
     private ViewPager mViewPager;
     private MediaPagerAdapter mAdapter;
     private ActionBar mActionBar;
+    private View mMediaStatusContainer;
+
 
 	@Override
     public int getThemeColor() {
@@ -111,6 +116,7 @@ public final class MediaViewerActivity extends ThemedActionBarActivity implement
     public void onSupportContentChanged() {
         super.onSupportContentChanged();
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mMediaStatusContainer = findViewById(R.id.media_status_container);
     }
 
     @Override
@@ -132,6 +138,18 @@ public final class MediaViewerActivity extends ThemedActionBarActivity implement
         if (currentIndex != -1) {
             mViewPager.setCurrentItem(currentIndex, false);
         }
+        if (intent.hasExtra(EXTRA_STATUS)) {
+            mMediaStatusContainer.setVisibility(View.VISIBLE);
+            final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            final Fragment f = new ViewStatusDialogFragment();
+            final Bundle args = new Bundle();
+            args.putParcelable(EXTRA_STATUS, intent.getParcelableExtra(EXTRA_STATUS));
+            f.setArguments(args);
+            ft.replace(R.id.media_status, f);
+            ft.commit();
+        } else {
+            mMediaStatusContainer.setVisibility(View.GONE);
+        }
     }
 
     private boolean isBarShowing() {
@@ -147,11 +165,15 @@ public final class MediaViewerActivity extends ThemedActionBarActivity implement
             mActionBar.hide();
         }
 
-        findViewById(R.id.media_status).setVisibility(visible ? View.VISIBLE : View.GONE);
+        mMediaStatusContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     private void toggleBar() {
         setBarVisibility(!isBarShowing());
+    }
+
+    public boolean hasStatus() {
+        return getIntent().hasExtra(EXTRA_STATUS);
     }
 
     public static final class ImagePageFragment extends BaseSupportFragment
@@ -265,6 +287,12 @@ public final class MediaViewerActivity extends ThemedActionBarActivity implement
                 final Uri fileUri = Uri.fromFile(file);
                 intent.setDataAndType(fileUri, Utils.getImageMimeType(file));
                 intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+				final MediaViewerActivity activity = (MediaViewerActivity) getActivity();
+				if (activity.hasStatus()) {
+					final ParcelableStatus status = activity.getStatus();
+					intent.putExtra(Intent.EXTRA_TEXT, Utils.getStatusShareText(activity, status));
+					intent.putExtra(Intent.EXTRA_SUBJECT, Utils.getStatusShareSubject(activity, status));
+				}
                 if (shareProvider != null) shareProvider.setShareIntent(intent); //FIXME
             }
         }
@@ -405,6 +433,10 @@ public final class MediaViewerActivity extends ThemedActionBarActivity implement
             mImageView.setMaxScale(Math.max(1, Math.max(heightRatio, widthRatio)));
             mImageView.resetScale();
         }
+    }
+
+    private ParcelableStatus getStatus() {
+        return getIntent().getParcelableExtra(EXTRA_STATUS);
     }
 
     private static class MediaPagerAdapter extends SupportFixedFragmentStatePagerAdapter {

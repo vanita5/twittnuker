@@ -657,9 +657,10 @@
     <string name="blocked_by_user_summary">Du wurdest von <xliff:g id="name">%s</xliff:g> geblockt</string>
     <string name="select_accounts">Accounts auswählen</string>
     <string name="media_preview">Medien Vorschau</string>
-    <string name="no_location">(D) No location</string>
-    <string name="getting_location">(D) Getting location</string>
+    <string name="no_location">Kein Standort</string>
+    <string name="getting_location">Standortsuche...</string>
     <string name="save_to_gallery">Speichern</string>
+    <string name="unknown_location">Unbekannt</string>
 
 
     <!-- Twittnuker -->
