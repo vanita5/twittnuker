@@ -71,6 +71,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -149,7 +150,7 @@ import static de.vanita5.twittnuker.util.Utils.getShareStatus;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
-public class ComposeActivity extends ThemedActionBarActivity implements TextWatcher, LocationListener,
+public class ComposeActivity extends ThemedFragmentActivity implements TextWatcher, LocationListener,
         OnMenuItemClickListener, View.OnClickListener, OnEditorActionListener, OnLongClickListener {
 
 	private static final String FAKE_IMAGE_LINK = "https://www.example.com/fake_image.jpg";
@@ -451,7 +452,16 @@ public class ComposeActivity extends ThemedActionBarActivity implements TextWatc
     public void onProviderEnabled(final String provider) {
 	}
 
+    @NonNull
 	@Override
+    public MenuInflater getMenuInflater() {
+        if (mMenuInflater == null) {
+            mMenuInflater = new SupportMenuInflater(this);
+        }
+        return mMenuInflater;
+    }
+
+    @Override
 	public void onProviderDisabled(final String provider) {
 	}
 
@@ -487,8 +497,8 @@ public class ComposeActivity extends ThemedActionBarActivity implements TextWatc
 	}
 
     @Override
-    public void onSupportContentChanged() {
-        super.onSupportContentChanged();
+    public void onContentChanged() {
+        super.onContentChanged();
         mEditText = (EditText) findViewById(R.id.edit_text);
         mMediaPreviewGrid = (GridView) findViewById(R.id.media_thumbnail_preview);
         mMenuBar = (ActionMenuView) findViewById(R.id.menu_bar);
@@ -540,7 +550,7 @@ public class ComposeActivity extends ThemedActionBarActivity implements TextWatc
 		mValidator = new TwidereValidator(this);
         mImageLoader = app.getImageLoaderWrapper();
         setContentView(R.layout.activity_compose);
-        setSupportProgressBarIndeterminateVisibility(false);
+//        setSupportProgressBarIndeterminateVisibility(false);
 		setFinishOnTouchOutside(false);
         final long[] defaultAccountIds = getAccountIds(this);
         if (defaultAccountIds.length <= 0) {

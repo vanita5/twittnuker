@@ -50,7 +50,7 @@ import com.squareup.otto.Subscribe;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffsetListener;
-import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
+import de.vanita5.twittnuker.activity.support.BaseActionBarActivity;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter.StatusAdapterListener;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
@@ -433,8 +433,8 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 
     private void setControlVisible(boolean visible) {
         final FragmentActivity activity = getActivity();
-        if (activity instanceof BaseSupportActivity) {
-            ((BaseSupportActivity) activity).setControlBarVisibleAnimate(visible);
+        if (activity instanceof BaseActionBarActivity) {
+            ((BaseActionBarActivity) activity).setControlBarVisibleAnimate(visible);
         }
     }
 

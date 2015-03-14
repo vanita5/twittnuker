@@ -52,7 +52,7 @@ import android.widget.AutoCompleteTextView;
 
 import org.mariotaku.querybuilder.Expression;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
+import de.vanita5.twittnuker.activity.support.BaseActionBarActivity;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.SourceAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
@@ -71,7 +71,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 
-public class FiltersActivity extends BaseSupportActivity implements TabListener, OnPageChangeListener {
+public class FiltersActivity extends BaseActionBarActivity implements TabListener, OnPageChangeListener {
 
 	private static final String EXTRA_AUTO_COMPLETE_TYPE = "auto_complete_type";
 	private static final int AUTO_COMPLETE_TYPE_SOURCES = 2;

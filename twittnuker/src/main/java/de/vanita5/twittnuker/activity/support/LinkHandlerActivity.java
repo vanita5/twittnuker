@@ -57,7 +57,7 @@ import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import static de.vanita5.twittnuker.util.Utils.createFragmentForIntent;
 import static de.vanita5.twittnuker.util.Utils.matchLinkId;
 
-public class LinkHandlerActivity extends BaseSupportActivity implements OnClickListener,
+public class LinkHandlerActivity extends BaseActionBarActivity implements OnClickListener,
         OnLongClickListener, SystemWindowsInsetsCallback, IControlBarActivity {
 
 	private MultiSelectEventHandler mMultiSelectHandler;

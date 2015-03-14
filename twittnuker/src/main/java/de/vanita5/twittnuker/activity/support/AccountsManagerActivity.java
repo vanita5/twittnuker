@@ -12,7 +12,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.support.AccountsManagerFragment;
 
-public class AccountsManagerActivity extends BaseSupportActivity {
+public class AccountsManagerActivity extends BaseActionBarActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {

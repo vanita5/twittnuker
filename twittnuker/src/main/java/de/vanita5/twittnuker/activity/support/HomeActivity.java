@@ -127,7 +127,7 @@ import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
-public class HomeActivity extends BaseSupportActivity implements OnClickListener, OnPageChangeListener,
+public class HomeActivity extends BaseActionBarActivity implements OnClickListener, OnPageChangeListener,
         SupportFragmentCallback, OnOpenedListener, OnClosedListener,
         OnLongClickListener, AnimatorListener {
 

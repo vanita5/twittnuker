@@ -70,7 +70,7 @@ import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.OrderBy;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
+import de.vanita5.twittnuker.activity.support.BaseActionBarActivity;
 import de.vanita5.twittnuker.activity.support.ImagePickerActivity;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
@@ -198,7 +198,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
         if (view == null) throw new AssertionError();
         final Context viewContext = view.getContext();
         setHasOptionsMenu(true);
-        final BaseSupportActivity activity = (BaseSupportActivity) getActivity();
+        final BaseActionBarActivity activity = (BaseActionBarActivity) getActivity();
         final ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar == null) throw new NullPointerException();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
@@ -634,7 +634,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 	}
 
     private void updateActionBar() {
-        final BaseSupportActivity activity = (BaseSupportActivity) getActivity();
+        final BaseActionBarActivity activity = (BaseActionBarActivity) getActivity();
         final ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar == null) return;
         actionBar.setDisplayOptions(mRecipient != null ? ActionBar.DISPLAY_SHOW_TITLE : ActionBar.DISPLAY_SHOW_CUSTOM,

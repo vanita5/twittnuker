@@ -35,7 +35,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.support.BaseSupportActivity;
+import de.vanita5.twittnuker.activity.support.BaseActionBarActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
@@ -101,8 +101,8 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
 
 	public void setProgressBarIndeterminateVisibility(final boolean visible) {
 		final Activity activity = getActivity();
-		if (activity instanceof BaseSupportActivity) {
-			((BaseSupportActivity) activity).setProgressBarIndeterminateVisibility(visible);
+		if (activity instanceof BaseActionBarActivity) {
+			((BaseActionBarActivity) activity).setProgressBarIndeterminateVisibility(visible);
 		}
 	}
 

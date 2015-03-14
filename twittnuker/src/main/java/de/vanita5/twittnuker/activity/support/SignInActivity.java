@@ -87,7 +87,7 @@ import static de.vanita5.twittnuker.util.Utils.isUserLoggedIn;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.trim;
 
-public class SignInActivity extends BaseSupportActivity implements TwitterConstants, OnClickListener,
+public class SignInActivity extends BaseActionBarActivity implements TwitterConstants, OnClickListener,
         TextWatcher {
 
 	private static final String TWITTER_SIGNUP_URL = "https://twitter.com/signup";
@@ -141,7 +141,7 @@ public class SignInActivity extends BaseSupportActivity implements TwitterConsta
 				break;
 			}
 			case REQUEST_BROWSER_SIGN_IN: {
-				if (resultCode == BaseSupportActivity.RESULT_OK && data != null) {
+				if (resultCode == BaseActionBarActivity.RESULT_OK && data != null) {
 					doLogin(data);
 				}
 				break;

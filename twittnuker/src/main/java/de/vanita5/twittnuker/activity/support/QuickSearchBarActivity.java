@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -75,18 +76,23 @@ import de.vanita5.twittnuker.util.SwipeDismissListViewTouchListener.DismissCallb
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
+import de.vanita5.twittnuker.view.ExtendedRelativeLayout;
+import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuickSearchBarActivity extends BaseSupportActivity implements OnClickListener,
-        OnEditorActionListener, LoaderCallbacks<List<SuggestionItem>>, TextWatcher, OnItemSelectedListener, OnItemClickListener, DismissCallbacks {
+public class QuickSearchBarActivity extends ThemedFragmentActivity implements OnClickListener,
+		OnEditorActionListener, LoaderCallbacks<List<SuggestionItem>>, TextWatcher,
+		OnItemSelectedListener, OnItemClickListener, DismissCallbacks, OnFitSystemWindowsListener {
 
 	private Spinner mAccountSpinner;
 	private EditText mSearchQuery;
 	private View mSearchSubmit;
 	private ListView mSuggestionsList;
 	private SuggestionsAdapter mUsersSearchAdapter;
+    private ExtendedRelativeLayout mMainContent;
+    private Rect mSystemWindowsInsets = new Rect();
 
 	@Override
 	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -115,6 +121,12 @@ public class QuickSearchBarActivity extends BaseSupportActivity implements OnCli
     }
 
     @Override
+    public void onFitSystemWindows(Rect insets) {
+        mSystemWindowsInsets.set(insets);
+        updateWindowAttributes();
+    }
+
+    @Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		final SuggestionItem item = mUsersSearchAdapter.getItem(position);
 		item.onItemClick(this, position);
@@ -131,6 +143,11 @@ public class QuickSearchBarActivity extends BaseSupportActivity implements OnCli
 	}
 
 	@Override
+    public int getThemeColor() {
+        return ThemeUtils.getUserAccentColor(this, getThemeResourceId());
+    }
+
+    @Override
 	public int getThemeResourceId() {
 		return ThemeUtils.getQuickSearchBarThemeResource(this);
 	}
@@ -152,6 +169,7 @@ public class QuickSearchBarActivity extends BaseSupportActivity implements OnCli
 				mAccountSpinner.setSelection(index);
 			}
 		}
+        mMainContent.setOnFitSystemWindowsListener(this);
 		mUsersSearchAdapter = new SuggestionsAdapter(this);
 		mSuggestionsList.setAdapter(mUsersSearchAdapter);
 		mSuggestionsList.setOnItemClickListener(this);
@@ -182,8 +200,9 @@ public class QuickSearchBarActivity extends BaseSupportActivity implements OnCli
 	}
 
 	@Override
-	public void onSupportContentChanged() {
-		super.onSupportContentChanged();
+    public void onContentChanged() {
+        super.onContentChanged();
+        mMainContent = (ExtendedRelativeLayout) findViewById(R.id.main_content);
 		mAccountSpinner = (Spinner) findViewById(R.id.account_spinner);
 		mSearchQuery = (EditText) findViewById(R.id.search_query);
 		mSearchSubmit = findViewById(R.id.search_submit);
@@ -244,6 +263,7 @@ public class QuickSearchBarActivity extends BaseSupportActivity implements OnCli
 		final Window window = getWindow();
 		final WindowManager.LayoutParams attributes = window.getAttributes();
 		attributes.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+        attributes.y = mSystemWindowsInsets.top;
 		window.setAttributes(attributes);
 	}
 
