@@ -25,15 +25,16 @@ package de.vanita5.twittnuker.model;
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import de.vanita5.twittnuker.util.ParseUtils;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.mariotaku.jsonserializer.JSONParcel;
 import org.mariotaku.jsonserializer.JSONParcelable;
-
-import twitter4j.GeoLocation;
+import de.vanita5.twittnuker.util.ParseUtils;
 
 import java.io.Serializable;
+
+import twitter4j.GeoLocation;
 
 public class ParcelableLocation implements Serializable, Parcelable, JSONParcelable {
 
@@ -70,17 +71,17 @@ public class ParcelableLocation implements Serializable, Parcelable, JSONParcela
 		this.longitude = longitude;
 	}
 
-	public ParcelableLocation(final GeoLocation location) {
+    public ParcelableLocation(@Nullable final GeoLocation location) {
 		latitude = location != null ? location.getLatitude() : -1;
 		longitude = location != null ? location.getLongitude() : -1;
 	}
 
-	public ParcelableLocation(final JSONParcel in) {
+    public ParcelableLocation(@NonNull final JSONParcel in) {
 		latitude = in.readDouble("latitude", -1);
 		longitude = in.readDouble("longutude", -1);
 	}
 
-	public ParcelableLocation(final Location location) {
+    public ParcelableLocation(@Nullable final Location location) {
 		latitude = location != null ? location.getLatitude() : -1;
 		longitude = location != null ? location.getLongitude() : -1;
 	}
@@ -90,14 +91,14 @@ public class ParcelableLocation implements Serializable, Parcelable, JSONParcela
 		longitude = in.readDouble();
 	}
 
-	public ParcelableLocation(final String location_string) {
-		if (location_string == null) {
+    public ParcelableLocation(final String locationString) {
+        if (locationString == null) {
 			latitude = -1;
 			longitude = -1;
 			return;
 		}
-		final String[] longlat = location_string.split(",");
-		if (longlat == null || longlat.length != 2) {
+        final String[] longlat = locationString.split(",");
+        if (longlat.length != 2) {
 			latitude = -1;
 			longitude = -1;
 		} else {
@@ -117,10 +118,24 @@ public class ParcelableLocation implements Serializable, Parcelable, JSONParcela
 		if (obj == null) return false;
 		if (!(obj instanceof ParcelableLocation)) return false;
 		final ParcelableLocation other = (ParcelableLocation) obj;
-		if (Double.doubleToLongBits(latitude) != Double.doubleToLongBits(other.latitude)) return false;
-		if (Double.doubleToLongBits(longitude) != Double.doubleToLongBits(other.longitude)) return false;
+		if (Double.doubleToLongBits(latitude) != Double.doubleToLongBits(other.latitude))
+			return false;
+		if (Double.doubleToLongBits(longitude) != Double.doubleToLongBits(other.longitude))
+			return false;
 		return true;
 	}
+
+    @Nullable
+    public static ParcelableLocation fromLocation(@Nullable Location location) {
+        if (location == null) return null;
+        return new ParcelableLocation(location);
+    }
+
+    public String getHumanReadableString(int decimalDigits) {
+        return String.format("%s,%s", ParseUtils.parsePrettyDecimal(latitude, decimalDigits),
+                ParseUtils.parsePrettyDecimal(longitude, decimalDigits));
+    }
+
 
 	@Override
 	public int hashCode() {

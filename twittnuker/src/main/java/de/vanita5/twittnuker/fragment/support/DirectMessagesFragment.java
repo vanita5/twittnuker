@@ -293,9 +293,6 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
     @Override
 	public void setUserVisibleHint(final boolean isVisibleToUser) {
 		super.setUserVisibleHint(isVisibleToUser);
-		if (isVisibleToUser) {
-            updateRefreshState();
-		}
 	}
 
     @Override
@@ -324,8 +321,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 
     protected void updateRefreshState() {
         final AsyncTwitterWrapper twitter = getTwitterWrapper();
-        if (twitter == null || !getUserVisibleHint()) return;
-        setRefreshing(twitter.isReceivedDirectMessagesRefreshing() || twitter.isSentDirectMessagesRefreshing());
+        setRefreshing(twitter != null && (twitter.isReceivedDirectMessagesRefreshing() || twitter.isSentDirectMessagesRefreshing()));
     }
 
     public void setRefreshing(boolean refreshing) {
