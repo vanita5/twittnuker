@@ -234,7 +234,7 @@ public class TwidereQueryBuilder {
 			}
 			qb.where(where);
 			qb.groupBy(Utils.getColumnsFromProjection(ConversationEntries.CONVERSATION_ID, DirectMessages.ACCOUNT_ID));
-			qb.orderBy(new OrderBy(ConversationEntries.MESSAGE_TIMESTAMP + " DESC"));
+            qb.orderBy(new OrderBy(ConversationEntries.MESSAGE_TIMESTAMP ,false));
 			return qb.build();
 		}
 

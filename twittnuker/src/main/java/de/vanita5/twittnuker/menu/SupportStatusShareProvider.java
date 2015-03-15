@@ -35,12 +35,12 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import static de.vanita5.twittnuker.util.Utils.addIntentToMenu;
 import static de.vanita5.twittnuker.util.Utils.createStatusShareIntent;
 
-public class StatusShareProvider extends ActionProvider implements Constants {
+public class SupportStatusShareProvider extends ActionProvider implements Constants {
 
 	private final Context mContext;
 	private ParcelableStatus mStatus;
 
-	public StatusShareProvider(Context context) {
+	public SupportStatusShareProvider(Context context) {
 		super(context);
 		mContext = context;
 	}

@@ -533,7 +533,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                     cr.delete(SavedSearches.CONTENT_URI, where.getSQL(), null);
                     ContentResolverUtils.bulkInsert(cr, SavedSearches.CONTENT_URI, values);
                 } catch (TwitterException e) {
-                    e.printStackTrace();
+                    Log.w(LOGTAG, e);
                 }
             }
             return SingleResponse.getInstance();

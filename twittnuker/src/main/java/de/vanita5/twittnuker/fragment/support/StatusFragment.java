@@ -32,6 +32,11 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcAdapter.CreateNdefMessageCallback;
+import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -87,6 +92,7 @@ import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.StatusLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -125,7 +131,8 @@ import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 
 public class StatusFragment extends BaseSupportFragment
-        implements LoaderCallbacks<SingleResponse<ParcelableStatus>>, OnMediaClickListener, StatusAdapterListener {
+        implements LoaderCallbacks<SingleResponse<ParcelableStatus>>, OnMediaClickListener,
+        StatusAdapterListener, CreateNdefMessageCallback {
 
     private static final int LOADER_ID_DETAIL_STATUS = 1;
     private static final int LOADER_ID_STATUS_REPLIES = 2;
@@ -170,6 +177,19 @@ public class StatusFragment extends BaseSupportFragment
 	};
 
     @Override
+    public NdefMessage createNdefMessage(NfcEvent event) {
+        final ParcelableStatus status = getStatus();
+        if (status == null) return null;
+        return new NdefMessage(new NdefRecord[]{
+                NdefRecord.createUri(LinkCreator.getStatusTwitterLink(status.user_screen_name, status.id)),
+        });
+    }
+
+    private ParcelableStatus getStatus() {
+        return mStatusAdapter.getStatus();
+    }
+
+    @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         switch (requestCode) {
             case REQUEST_SET_COLOR: {
@@ -210,6 +230,7 @@ public class StatusFragment extends BaseSupportFragment
         if (view == null) throw new AssertionError();
         final Context context = view.getContext();
         final boolean compact = Utils.isCompactCards(context);
+        initNdefCallback();
         mLayoutManager = new StatusListLinearLayoutManager(context, mRecyclerView);
         mItemDecoration = new DividerItemDecoration(context, mLayoutManager.getOrientation());
         if (compact) {
@@ -1108,6 +1129,18 @@ public class StatusFragment extends BaseSupportFragment
 
 
     }
+
+
+    private void initNdefCallback() {
+        try {
+            final NfcAdapter adapter = NfcAdapter.getDefaultAdapter(getActivity());
+            if (adapter == null) return;
+            adapter.setNdefPushMessageCallback(this, getActivity());
+        } catch (SecurityException e) {
+            Log.w(LOGTAG, e);
+        }
+    }
+
 
     private static class StatusListLinearLayoutManager extends LinearLayoutManager {
 

@@ -1,3 +1,25 @@
+/*
+ * Twittnuker - Twitter client for Android
+ *
+ * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ *
+ * This program incorporates a modified version of Twidere.
+ * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package de.vanita5.twittnuker.fragment.support;
 
 import android.annotation.TargetApi;
@@ -23,6 +45,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcAdapter.CreateNdefMessageCallback;
+import android.nfc.NfcEvent;
+import android.nfc.tech.Ndef;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -84,6 +112,7 @@ import de.vanita5.twittnuker.text.TextAlphaSpan;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -137,7 +166,8 @@ import static de.vanita5.twittnuker.util.Utils.showInfoMessage;
 
 public class UserFragment extends BaseSupportFragment implements OnClickListener,
 		OnLinkClickListener, OnSizeChangedListener, OnSharedPreferenceChangeListener,
-		OnTouchListener, DrawerCallback, SupportFragmentCallback, SystemWindowsInsetsCallback {
+        OnTouchListener, DrawerCallback, SupportFragmentCallback, SystemWindowsInsetsCallback,
+        CreateNdefMessageCallback {
 
 	public static final String TRANSITION_NAME_PROFILE_IMAGE = "profile_image";
 	public static final String TRANSITION_NAME_PROFILE_TYPE = "profile_type";
@@ -196,7 +226,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     private void updateRefreshState() {
-        final ParcelableUser user = mUser;
+        final ParcelableUser user = getUser();
         if (user == null) return;
         final AsyncTwitterWrapper twitter = getTwitterWrapper();
         final boolean is_creating_friendship = twitter != null
@@ -293,7 +323,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		public void onLoadFinished(final Loader<SingleResponse<Relationship>> loader,
 								   final SingleResponse<Relationship> data) {
             mFollowProgress.setVisibility(View.GONE);
-			final ParcelableUser user = mUser;
+            final ParcelableUser user = getUser();
             final Relationship relationship = data.getData();
             mRelationship = relationship;
 			if (user == null) return;
@@ -539,7 +569,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
 	@Override
 	public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-		final ParcelableUser user = mUser;
+        final ParcelableUser user = getUser();
 		switch (requestCode) {
 			case REQUEST_SET_COLOR: {
 				if (user == null) return;
@@ -615,6 +645,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mProfileImageLoader = getApplication().getImageLoaderWrapper();
         final FragmentActivity activity = getActivity();
 
+        initNdefCallback();
+
         activity.setEnterSharedElementCallback(new SharedElementCallback() {
 
             @Override
@@ -686,6 +718,25 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         setupUserPages();
     }
 
+    private void initNdefCallback() {
+        try {
+            final NfcAdapter adapter = NfcAdapter.getDefaultAdapter(getActivity());
+            if (adapter == null) return;
+            adapter.setNdefPushMessageCallback(this, getActivity());
+        } catch (SecurityException e) {
+            Log.w(LOGTAG, e);
+        }
+    }
+
+    @Override
+    public NdefMessage createNdefMessage(NfcEvent event) {
+        final ParcelableUser user = getUser();
+        if (user == null) return null;
+        return new NdefMessage(new NdefRecord[]{
+                NdefRecord.createUri(LinkCreator.getUserTwitterLink(user.screen_name)),
+        });
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -696,9 +747,13 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     @Subscribe
     public void notifyProfileUpdated(ProfileUpdatedEvent event) {
-        final ParcelableUser user = mUser;
+        final ParcelableUser user = getUser();
         if (user == null || !user.equals(event.user)) return;
         displayUser(event.user);
+    }
+
+    public ParcelableUser getUser() {
+        return mUser;
     }
 
     @Override
@@ -710,7 +765,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     @Override
     public void onSaveInstanceState(final Bundle outState) {
-        outState.putParcelable(EXTRA_USER, mUser);
+        outState.putParcelable(EXTRA_USER, getUser());
         super.onSaveInstanceState(outState);
     }
 
@@ -734,7 +789,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     public void onPrepareOptionsMenu(final Menu menu) {
         if (!shouldUseNativeMenu() || !menu.hasVisibleItems()) return;
 		final AsyncTwitterWrapper twitter = getTwitterWrapper();
-		final ParcelableUser user = mUser;
+        final ParcelableUser user = getUser();
 		final Relationship relationship = mRelationship;
 		if (twitter == null || user == null) return;
 		final boolean isMyself = user.account_id == user.id;
@@ -792,7 +847,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
 		final AsyncTwitterWrapper twitter = getTwitterWrapper();
-		final ParcelableUser user = mUser;
+        final ParcelableUser user = getUser();
 		final Relationship relationship = mRelationship;
 		if (user == null || twitter == null) return false;
 		switch (item.getItemId()) {
@@ -920,7 +975,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     @Override
 	public void onClick(final View view) {
 		final FragmentActivity activity = getActivity();
-		final ParcelableUser user = mUser;
+        final ParcelableUser user = getUser();
 		if (activity == null || user == null) return;
 		switch (view.getId()) {
 			case R.id.retry: {
@@ -986,7 +1041,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 	@Override
 	public void onLinkClick(final String link, final String orig, final long account_id, final int type,
                             final boolean sensitive, int start, int end) {
-		final ParcelableUser user = mUser;
+        final ParcelableUser user = getUser();
 		if (user == null) return;
 		switch (type) {
 			case TwidereLinkify.LINK_TYPE_MENTION: {
@@ -1111,7 +1166,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
 	private void getFriendship() {
         mRelationship = null;
-		final ParcelableUser user = mUser;
+        final ParcelableUser user = getUser();
 		final LoaderManager lm = getLoaderManager();
 		lm.destroyLoader(LOADER_ID_FRIENDSHIP);
 		final Bundle args = new Bundle();
@@ -1133,7 +1188,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
 	private void updateFollowProgressState() {
 		final AsyncTwitterWrapper twitter = getTwitterWrapper();
-		final ParcelableUser user = mUser;
+        final ParcelableUser user = getUser();
 		if (twitter == null || user == null) {
 			mFollowButton.setVisibility(View.GONE);
 			mFollowProgress.setVisibility(View.GONE);

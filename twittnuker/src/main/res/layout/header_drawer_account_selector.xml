@@ -24,6 +24,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -89,23 +90,33 @@
                         android:id="@+id/name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:singleLine="true"
                         android:textAppearance="?android:textAppearanceSmall"
                         android:textColor="?android:textColorPrimary"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        tools:text="Name"/>
 
                     <de.vanita5.twittnuker.view.themed.ThemedTextView
                         android:id="@+id/screen_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:textAppearanceSmall"/>
+                        android:singleLine="true"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        tools:text="\@username"/>
 
                 </LinearLayout>
 
-                <de.vanita5.twittnuker.view.themed.ThemedSwitch
-                    android:id="@+id/toggle"
+                <FrameLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"/>
+                    android:layout_height="@dimen/element_size_normal">
+
+                    <de.vanita5.twittnuker.view.TwidereActionMenuView
+                        android:id="@+id/toggle_menu"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </FrameLayout>
+
+
             </LinearLayout>
         </RelativeLayout>
     </FrameLayout>

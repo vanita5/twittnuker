@@ -28,6 +28,8 @@
         <!--<item name="android:colorPrimaryDark">@color/material_light_blue_700</item>-->
         <!--<item name="android:colorAccent">@color/material_light_blue_a200</item>-->
         <!--<item name="android:colorAccent">#ccc</item>-->
+        <item name="android:textColorTertiary">@color/tertiary_text_mtrl_dark</item>
+        <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_light</item>
     </style>
 
     <style name="Theme.Compat.Base.NoActionBar" parent="Theme.AppCompat.NoActionBar">
@@ -35,6 +37,8 @@
         <!--<item name="android:colorPrimaryDark">@color/material_light_blue_700</item>-->
         <!--<item name="android:colorAccent">@color/material_light_blue_a200</item>-->
         <!--<item name="android:colorAccent">#ccc</item>-->
+        <item name="android:textColorTertiary">@color/tertiary_text_mtrl_dark</item>
+        <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_light</item>
     </style>
 
     <style name="Theme.Compat.Base.Dialog" parent="Theme.AppCompat.Dialog">
@@ -42,6 +46,8 @@
         <!--<item name="android:colorPrimaryDark">@color/material_light_blue_700</item>-->
         <!--<item name="android:colorAccent">@color/material_light_blue_a200</item>-->
         <!--<item name="android:colorAccent">#ccc</item>-->
+        <item name="android:textColorTertiary">@color/tertiary_text_mtrl_dark</item>
+        <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_light</item>
     </style>
 
     <style name="Theme.Compat.Base.Light" parent="Theme.AppCompat.Light">
@@ -49,6 +55,8 @@
         <!--<item name="android:colorPrimaryDark">@color/material_light_blue_700</item>-->
         <!--<item name="android:colorAccent">@color/material_light_blue_a200</item>-->
         <!--<item name="android:colorAccent">#aaa</item>-->
+        <item name="android:textColorTertiary">@color/tertiary_text_mtrl_light</item>
+        <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_dark</item>
     </style>
 
     <style name="Theme.Compat.Base.Light.DarkActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -56,6 +64,8 @@
         <!--<item name="android:colorPrimaryDark">@color/material_light_blue_700</item>-->
         <!--<item name="android:colorAccent">@color/material_light_blue_a200</item>-->
         <!--<item name="android:colorAccent">#aaa</item>-->
+        <item name="android:textColorTertiary">@color/tertiary_text_mtrl_light</item>
+        <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_dark</item>
     </style>
 
     <style name="Theme.Compat.Base.Light.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
@@ -63,6 +73,8 @@
         <!--<item name="android:colorPrimaryDark">@color/material_light_blue_700</item>-->
         <!--<item name="android:colorAccent">@color/material_light_blue_a200</item>-->
         <!--<item name="android:colorAccent">#aaa</item>-->
+        <item name="android:textColorTertiary">@color/tertiary_text_mtrl_light</item>
+        <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_dark</item>
     </style>
 
     <style name="Theme.Compat.Base.Light.Dialog" parent="Theme.AppCompat.Light.Dialog">
@@ -70,5 +82,7 @@
         <!--<item name="android:colorPrimaryDark">@color/material_light_blue_700</item>-->
         <!--<item name="android:colorAccent">@color/material_light_blue_a200</item>-->
         <!--<item name="android:colorAccent">#aaa</item>-->
+        <item name="android:textColorTertiary">@color/tertiary_text_mtrl_light</item>
+        <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_dark</item>
     </style>
 </resources>

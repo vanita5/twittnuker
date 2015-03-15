@@ -37,7 +37,7 @@
 		android:id="@id/share"
 		android:icon="@drawable/ic_action_share"
         android:title="@string/share"
-        android:actionProviderClass="de.vanita5.twittnuker.menu.StatusShareProvider"
+        android:actionProviderClass="de.vanita5.twittnuker.menu.SupportStatusShareProvider"
         app:showAsAction="always"/>
 	<item
 		android:id="@id/copy"

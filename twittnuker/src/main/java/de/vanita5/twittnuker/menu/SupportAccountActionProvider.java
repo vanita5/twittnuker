@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.menu;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.ActionProvider;
+import android.support.v4.view.ActionProvider;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -33,23 +33,23 @@ import android.view.View;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 
-public class AccountActionProvider extends ActionProvider implements TwittnukerConstants {
+public class SupportAccountActionProvider extends ActionProvider implements TwittnukerConstants {
 
 	public static final int MENU_GROUP = 201;
 
-    private ParcelableAccount[] mAccounts;
+	private ParcelableAccount[] mAccounts;
 
 	private long mAccountId;
+	private boolean mExclusive;
 
-    public AccountActionProvider(final Context context, final ParcelableAccount[] accounts) {
-        super(context);
-        setAccounts(accounts);
-    }
-
-	public AccountActionProvider(final Context context) {
-        this(context, ParcelableAccount.getAccounts(context, false, false));
+	public SupportAccountActionProvider(final Context context, final ParcelableAccount[] accounts) {
+		super(context);
+		mAccounts = accounts;
 	}
 
+	public SupportAccountActionProvider(final Context context) {
+		this(context, ParcelableAccount.getAccounts(context, false, false));
+	}
 
 	@Override
 	public boolean hasSubMenu() {
@@ -61,13 +61,17 @@ public class AccountActionProvider extends ActionProvider implements TwittnukerC
 		return null;
 	}
 
-    public void setAccounts(ParcelableAccount[] accounts) {
-        mAccounts = accounts;
-    }
+	public void setAccounts(ParcelableAccount[] accounts) {
+		mAccounts = accounts;
+	}
+
+	public void setExclusive(boolean exclusive) {
+		mExclusive = exclusive;
+	}
 
 	@Override
 	public void onPrepareSubMenu(final SubMenu subMenu) {
-        if (mAccounts == null) return;
+		if (mAccounts == null) return;
 		subMenu.removeGroup(MENU_GROUP);
 		for (final ParcelableAccount account : mAccounts) {
 			final MenuItem item = subMenu.add(MENU_GROUP, Menu.NONE, 0, account.name);
@@ -75,7 +79,7 @@ public class AccountActionProvider extends ActionProvider implements TwittnukerC
 			intent.putExtra(EXTRA_ACCOUNT, account);
 			item.setIntent(intent);
 		}
-		subMenu.setGroupCheckable(MENU_GROUP, true, true);
+		subMenu.setGroupCheckable(MENU_GROUP, true, mExclusive);
 		for (int i = 0, j = subMenu.size(); i < j; i++) {
 			final MenuItem item = subMenu.getItem(i);
 			final Intent intent = item.getIntent();

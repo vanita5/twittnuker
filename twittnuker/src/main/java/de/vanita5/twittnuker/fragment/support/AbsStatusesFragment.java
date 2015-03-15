@@ -173,6 +173,7 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 
     public void setRefreshing(boolean refreshing) {
         if (refreshing == mSwipeRefreshLayout.isRefreshing()) return;
+        if (!refreshing)
         updateRefreshProgressOffset();
         mSwipeRefreshLayout.setRefreshing(refreshing);
     }
@@ -266,7 +267,6 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
         super.fitSystemWindows(insets);
         mRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
         mSystemWindowsInsets.set(insets);
-
         updateRefreshProgressOffset();
     }
 

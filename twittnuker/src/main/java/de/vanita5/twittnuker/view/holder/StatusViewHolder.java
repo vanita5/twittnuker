@@ -37,6 +37,7 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.ContentCardClickListener;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatus.CursorIndices;
@@ -234,7 +235,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         } else {
             favoriteCountView.setText(null);
         }
-        displayExtraTypeIcon(status.card_name, status.media != null ? status.media.length : 0);
+        displayExtraTypeIcon(status.card_name, status.media, status.location);
     }
 
     public void displayStatus(@NonNull Cursor cursor, @NonNull CursorIndices indices,
@@ -269,7 +270,10 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         final String in_reply_to_screen_name = cursor.getString(indices.in_reply_to_user_screen_name);
         final String card_name = cursor.getString(indices.card_name);
 
-        final ParcelableMedia[] media = SimpleValueSerializer.fromSerializedString(cursor.getString(indices.media), ParcelableMedia.SIMPLE_CREATOR);
+        final ParcelableMedia[] media = SimpleValueSerializer.fromSerializedString(
+                cursor.getString(indices.media), ParcelableMedia.SIMPLE_CREATOR);
+        final ParcelableLocation location = ParcelableLocation.fromString(
+                cursor.getString(indices.location));
 
         if (retweet_id > 0) {
             final String retweetedBy = UserColorNameUtils.getDisplayName(
@@ -364,7 +368,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         } else {
             favoriteCountView.setText(null);
         }
-        displayExtraTypeIcon(card_name, media != null ? media.length : 0);
+        displayExtraTypeIcon(card_name, media, location);
     }
 
     public CardView getCardView() {
@@ -437,7 +441,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         setTextSize(adapter.getTextSize());
     }
 
-    private void displayExtraTypeIcon(String cardName, int mediaLength) {
+    private void displayExtraTypeIcon(String cardName, ParcelableMedia[] media, ParcelableLocation location) {
         if (TwitterCardUtils.CARD_NAME_AUDIO.equals(cardName)) {
             extraTypeView.setImageResource(R.drawable.ic_action_music);
             extraTypeView.setVisibility(View.VISIBLE);
@@ -447,8 +451,11 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         } else if (TwitterCardUtils.CARD_NAME_PLAYER.equals(cardName)) {
             extraTypeView.setImageResource(R.drawable.ic_action_play_circle);
             extraTypeView.setVisibility(View.VISIBLE);
-        } else if (mediaLength > 0) {
+        } else if (media != null && media.length > 0) {
             extraTypeView.setImageResource(R.drawable.ic_action_gallery);
+            extraTypeView.setVisibility(View.VISIBLE);
+        } else if (location != null && location.isValid()) {
+            extraTypeView.setImageResource(R.drawable.ic_action_location);
             extraTypeView.setVisibility(View.VISIBLE);
         } else {
             extraTypeView.setVisibility(View.GONE);
