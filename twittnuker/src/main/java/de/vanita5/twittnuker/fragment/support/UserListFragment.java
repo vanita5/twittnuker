@@ -32,6 +32,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Rect;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter.CreateNdefMessageCallback;
+import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -70,6 +74,7 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -201,7 +206,8 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 		final String description = userList.description;
         mDescriptionView.setVisibility(isEmpty(description) ? View.GONE : View.VISIBLE);
 		mDescriptionView.setText(description);
-        final TwidereLinkify linkify = new TwidereLinkify(new OnLinkClickHandler(getActivity(), getMultiSelectManager()));
+        final TwidereLinkify linkify = new TwidereLinkify(new OnLinkClickHandler(getActivity(),
+                getMultiSelectManager()));
 		linkify.applyAllLinks(mDescriptionView, userList.account_id, false);
 		mDescriptionView.setMovementMethod(LinkMovementMethod.getInstance());
 		mProfileImageLoader.displayProfileImage(mProfileImageView, userList.user_profile_image_url);
@@ -291,6 +297,18 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 
         final FragmentActivity activity = getActivity();
 
+        Utils.setNdefPushMessageCallback(activity, new CreateNdefMessageCallback() {
+
+            @Override
+            public NdefMessage createNdefMessage(NfcEvent event) {
+                final ParcelableUserList userList = getUserList();
+                if (userList == null) return null;
+                return new NdefMessage(new NdefRecord[]{
+                        NdefRecord.createUri(LinkCreator.getTwitterUserListLink(userList.user_screen_name, userList.name)),
+                });
+            }
+        });
+
         mHeaderDrawerLayout.setDrawerCallback(this);
 
         mPagerAdapter = new SupportTabsAdapter(activity, getChildFragmentManager());
@@ -313,6 +331,10 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 
         setupUserPages();
 	}
+
+    private ParcelableUserList getUserList() {
+        return mUserList;
+    }
 
 	@Override
     public void onStart() {

@@ -42,6 +42,7 @@ import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.MessageEntryViewHolder;
 
 public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Constants, IContentCardAdapter, OnClickListener {
@@ -50,6 +51,7 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
 	private final LayoutInflater mInflater;
 	private final ImageLoaderWrapper mImageLoader;
 	private final MultiSelectManager mMultiSelectManager;
+    private boolean mLoadMoreIndicatorEnabled;
     private final int mTextSize;
     private final int mProfileImageStyle;
     private final int mMediaPreviewStyle;
@@ -85,6 +87,19 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
         return mTextSize;
     }
 
+    @Override
+    public void setLoadMoreIndicatorEnabled(boolean enabled) {
+        if (mLoadMoreIndicatorEnabled == enabled) return;
+        mLoadMoreIndicatorEnabled = enabled;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean hasLoadMoreIndicator() {
+        return mLoadMoreIndicatorEnabled;
+    }
+
+
 	public ImageLoaderWrapper getImageLoader() {
 		return mImageLoader;
 	}
@@ -99,17 +114,48 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
 
     }
 
+    public static final int ITEM_VIEW_TYPE_MESSAGE = 0;
+    public static final int ITEM_VIEW_TYPE_LOAD_INDICATOR = 1;
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == getMessagesCount()) {
+            return ITEM_VIEW_TYPE_LOAD_INDICATOR;
+        }
+        return ITEM_VIEW_TYPE_MESSAGE;
+    }
+
+    private int getMessagesCount() {
+        final Cursor c = mCursor;
+        if (c == null || c.isClosed()) return 0;
+        return c.getCount();
+    }
+
     @Override
 	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-		final View view = mInflater.inflate(R.layout.list_item_message_entry, parent, false);
-		return new MessageEntryViewHolder(this, view);
-	}
+        switch (viewType) {
+            case ITEM_VIEW_TYPE_MESSAGE: {
+				final View view = mInflater.inflate(R.layout.list_item_message_entry, parent, false);
+				return new MessageEntryViewHolder(this, view);
+			}
+            case ITEM_VIEW_TYPE_LOAD_INDICATOR: {
+                final View view = mInflater.inflate(R.layout.card_item_load_indicator, parent, false);
+                return new LoadIndicatorViewHolder(view);
+            }
+        }
+        throw new IllegalStateException("Unknown view type " + viewType);
+    }
 
 	@Override
 	public void onBindViewHolder(ViewHolder holder, int position) {
-		final Cursor c = mCursor;
-		c.moveToPosition(position);
-		((MessageEntryViewHolder) holder).displayMessage(c);
+        switch (getItemViewType(position)) {
+            case ITEM_VIEW_TYPE_MESSAGE: {
+				final Cursor c = mCursor;
+				c.moveToPosition(position);
+				((MessageEntryViewHolder) holder).displayMessage(c);
+                break;
+            }
+        }
 	}
 
     @Override
@@ -133,10 +179,8 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
 	}
 
 	@Override
-	public int getItemCount() {
-		final Cursor c = mCursor;
-		if (c == null) return 0;
-		return c.getCount();
+    public final int getItemCount() {
+        return getMessagesCount() + (mLoadMoreIndicatorEnabled ? 1 : 0);
 	}
 
 	public MessageEntriesAdapter(final Context context) {

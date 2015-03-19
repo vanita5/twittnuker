@@ -34,7 +34,6 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
-import android.nfc.NfcAdapter;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
 import android.nfc.NfcEvent;
 import android.os.Bundle;
@@ -132,7 +131,7 @@ import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 
 public class StatusFragment extends BaseSupportFragment
         implements LoaderCallbacks<SingleResponse<ParcelableStatus>>, OnMediaClickListener,
-        StatusAdapterListener, CreateNdefMessageCallback {
+        StatusAdapterListener {
 
     private static final int LOADER_ID_DETAIL_STATUS = 1;
     private static final int LOADER_ID_STATUS_REPLIES = 2;
@@ -176,14 +175,6 @@ public class StatusFragment extends BaseSupportFragment
         }
 	};
 
-    @Override
-    public NdefMessage createNdefMessage(NfcEvent event) {
-        final ParcelableStatus status = getStatus();
-        if (status == null) return null;
-        return new NdefMessage(new NdefRecord[]{
-                NdefRecord.createUri(LinkCreator.getStatusTwitterLink(status.user_screen_name, status.id)),
-        });
-    }
 
     private ParcelableStatus getStatus() {
         return mStatusAdapter.getStatus();
@@ -230,7 +221,16 @@ public class StatusFragment extends BaseSupportFragment
         if (view == null) throw new AssertionError();
         final Context context = view.getContext();
         final boolean compact = Utils.isCompactCards(context);
-        initNdefCallback();
+        Utils.setNdefPushMessageCallback(getActivity(), new CreateNdefMessageCallback() {
+            @Override
+            public NdefMessage createNdefMessage(NfcEvent event) {
+                final ParcelableStatus status = getStatus();
+                if (status == null) return null;
+                return new NdefMessage(new NdefRecord[]{
+                        NdefRecord.createUri(LinkCreator.getTwitterStatusLink(status.user_screen_name, status.id)),
+                });
+            }
+        });
         mLayoutManager = new StatusListLinearLayoutManager(context, mRecyclerView);
         mItemDecoration = new DividerItemDecoration(context, mLayoutManager.getOrientation());
         if (compact) {
@@ -493,7 +493,7 @@ public class StatusFragment extends BaseSupportFragment
 		}
 
 	    @Override
-        public int getStatusCount() {
+        public int getStatusesCount() {
             return getConversationCount() + 1 + getRepliesCount() + 1;
 	    }
 
@@ -558,6 +558,16 @@ public class StatusFragment extends BaseSupportFragment
 
         public float getTextSize() {
             return mTextSize;
+        }
+
+        @Override
+        public boolean hasLoadMoreIndicator() {
+            return false;
+        }
+
+        @Override
+        public void setLoadMoreIndicatorEnabled(boolean enabled) {
+
         }
 
         public ParcelableStatus getStatus() {
@@ -705,7 +715,7 @@ public class StatusFragment extends BaseSupportFragment
 
         @Override
         public int getItemCount() {
-            return getStatusCount();
+            return getStatusesCount();
 	    }
 
         @Override
@@ -1128,17 +1138,6 @@ public class StatusFragment extends BaseSupportFragment
     	}
 
 
-    }
-
-
-    private void initNdefCallback() {
-        try {
-            final NfcAdapter adapter = NfcAdapter.getDefaultAdapter(getActivity());
-            if (adapter == null) return;
-            adapter.setNdefPushMessageCallback(this, getActivity());
-        } catch (SecurityException e) {
-            Log.w(LOGTAG, e);
-        }
     }
 
 

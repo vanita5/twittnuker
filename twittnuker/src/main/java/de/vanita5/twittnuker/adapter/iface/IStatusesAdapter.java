@@ -28,7 +28,7 @@ public interface IStatusesAdapter<Data> extends IContentCardAdapter, StatusClick
 
     ParcelableStatus getStatus(int position);
 
-    int getStatusCount();
+    int getStatusesCount();
 
     long getStatusId(int position);
 

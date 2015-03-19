@@ -134,6 +134,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
         return mTextSize;
     }
 
+    @Override
     public boolean hasLoadMoreIndicator() {
         return mLoadMoreIndicatorEnabled;
     }
@@ -159,7 +160,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     }
 
     public boolean isStatus(int position) {
-        return position < getStatusCount();
+        return position < getStatusesCount();
     }
 
     @Override
@@ -205,7 +206,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 
     @Override
 	public int getItemViewType(int position) {
-        if (position == getStatusCount()) {
+        if (position == getStatusesCount()) {
 			return ITEM_VIEW_TYPE_LOAD_INDICATOR;
         } else if (isGapItem(position)) {
             return ITEM_VIEW_TYPE_GAP;
@@ -215,7 +216,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 
 	@Override
 	public final int getItemCount() {
-		return getStatusCount() + (mLoadMoreIndicatorEnabled ? 1 : 0);
+        return getStatusesCount() + (mLoadMoreIndicatorEnabled ? 1 : 0);
 	}
 
 	@Override
@@ -266,6 +267,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
         mStatusAdapterListener = listener;
     }
 
+    @Override
     public void setLoadMoreIndicatorEnabled(boolean enabled) {
         if (mLoadMoreIndicatorEnabled == enabled) return;
         mLoadMoreIndicatorEnabled = enabled;

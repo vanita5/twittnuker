@@ -37,7 +37,6 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +59,8 @@ import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ColorUtils;
+import de.vanita5.twittnuker.util.ContentListScrollListener;
+import de.vanita5.twittnuker.util.ContentListScrollListener.ContentListAware;
 import de.vanita5.twittnuker.util.SimpleDrawerCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -72,47 +73,16 @@ import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
 
 public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment implements LoaderCallbacks<Data>,
         OnRefreshListener, DrawerCallback, RefreshScrollTopInterface, StatusAdapterListener,
-		ControlBarOffsetListener {
+        ControlBarOffsetListener, ContentListAware {
 
     private final Object mStatusesBusCallback;
     private AbsStatusesAdapter<Data> mAdapter;
     private LinearLayoutManager mLayoutManager;
-    private View mContentView;
     private SharedPreferences mPreferences;
     private View mProgressContainer;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private SimpleDrawerCallback mDrawerCallback;
-    private int mTouchSlop;
-    private OnScrollListener mOnScrollListener = new OnScrollListener() {
-
-        private int mScrollState;
-        private int mScrollSum;
-
-	    @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            mScrollState = newState;
-	    }
-
-	    @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            //Reset mScrollSum when scrolling in reverse direction
-            if (dy * mScrollSum < 0) {
-                mScrollSum = 0;
-            }
-            mScrollSum += dy;
-            if (Math.abs(mScrollSum) > mTouchSlop) {
-                setControlVisible(dy < 0);
-                mScrollSum = 0;
-            }
-            final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-            if (!isRefreshing() && mAdapter.hasLoadMoreIndicator() && mScrollState != RecyclerView.SCROLL_STATE_IDLE
-                    && layoutManager.findLastVisibleItemPosition() == mAdapter.getItemCount() - 1) {
-                onLoadMoreStatuses();
-	        }
-        }
-    };
     private Rect mSystemWindowsInsets = new Rect();
     private int mControlBarOffsetPixels;
     private PopupMenu mPopupMenu;
@@ -198,7 +168,6 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 		if (view == null) throw new AssertionError();
 		final Context context = view.getContext();
 		final boolean compact = Utils.isCompactCards(context);
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 		mDrawerCallback = new SimpleDrawerCallback(mRecyclerView);
 		mSwipeRefreshLayout.setOnRefreshListener(this);
 		mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getUserAccentColor(context));
@@ -214,7 +183,10 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
             mRecyclerView.addItemDecoration(new DividerItemDecoration(context, mLayoutManager.getOrientation()));
 		}
 		mRecyclerView.setAdapter(mAdapter);
-		mRecyclerView.setOnScrollListener(mOnScrollListener);
+
+        final ContentListScrollListener scrollListener = new ContentListScrollListener(this);
+        scrollListener.setTouchSlop(ViewConfiguration.get(context).getScaledTouchSlop());
+        mRecyclerView.setOnScrollListener(scrollListener);
         mAdapter.setListener(this);
         final Bundle loaderArgs = new Bundle(getArguments());
         loaderArgs.putBoolean(EXTRA_FROM_USER, true);
@@ -247,7 +219,6 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
     @Override
     public void onBaseViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onBaseViewCreated(view, savedInstanceState);
-        mContentView = view.findViewById(R.id.fragment_content);
         mProgressContainer = view.findViewById(R.id.progress_container);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -339,7 +310,7 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
     @Override
     public void onGapClick(GapViewHolder holder, int position) {
         final ParcelableStatus status = mAdapter.getStatus(position);
-        final long sinceId = position + 1 < mAdapter.getStatusCount() ? mAdapter.getStatus(position + 1).id : -1;
+        final long sinceId = position + 1 < mAdapter.getStatusesCount() ? mAdapter.getStatus(position + 1).id : -1;
         final long[] accountIds = {status.account_id};
         final long[] maxIds = {status.id};
         final long[] sinceIds = {sinceId};
@@ -429,9 +400,7 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 
     protected abstract AbsStatusesAdapter<Data> onCreateAdapter(Context context, boolean compact);
 
-    protected abstract void onLoadMoreStatuses();
-
-    private void setControlVisible(boolean visible) {
+    public void setControlVisible(boolean visible) {
         final FragmentActivity activity = getActivity();
         if (activity instanceof BaseActionBarActivity) {
             ((BaseActionBarActivity) activity).setControlBarVisibleAnimate(visible);
