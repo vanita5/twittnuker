@@ -50,9 +50,7 @@ import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Action;
 import android.support.v4.util.LongSparseArray;
@@ -124,7 +122,6 @@ import de.vanita5.twittnuker.view.ActionIconView;
 import de.vanita5.twittnuker.view.BadgeView;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.StatusTextCountView;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -792,7 +789,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
             new AddMediaTask(this, extraStream, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false).executeTask();
 		} else if (data != null) {
             new AddMediaTask(this, data, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false).executeTask();
-        } else if (intent.hasExtra(EXTRA_SHARE_SCREENSHOT)) {
+        } else if (intent.hasExtra(EXTRA_SHARE_SCREENSHOT) && Utils.useShareScreenshot()) {
             final Bitmap bitmap = intent.getParcelableExtra(EXTRA_SHARE_SCREENSHOT);
             if (bitmap != null) {
                 try {
@@ -1492,54 +1489,4 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
         }
     }
 
-    public static class ViewStatusDialogFragment extends BaseSupportDialogFragment {
-
-        private StatusViewHolder mHolder;
-        private View mStatusContainer;
-
-        public ViewStatusDialogFragment() {
-            setStyle(STYLE_NO_TITLE, 0);
-        }
-
-        @Override
-        public View onCreateView(final LayoutInflater inflater, final ViewGroup parent, final Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.dialog_scrollable_status, parent, false);
-        }
-
-        @Override
-        public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-            mStatusContainer = view.findViewById(R.id.status_container);
-            mHolder = new StatusViewHolder(view);
-        }
-
-        @Override
-        public void onActivityCreated(final Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-            final Bundle args = getArguments();
-            if (args == null || args.getParcelable(EXTRA_STATUS) == null) {
-                dismiss();
-                return;
-            }
-            final TwittnukerApplication application = getApplication();
-            final FragmentActivity activity = getActivity();
-            final ImageLoaderWrapper loader = application.getImageLoaderWrapper();
-            final ImageLoadingHandler handler = new ImageLoadingHandler(R.id.media_preview_progress);
-            final AsyncTwitterWrapper twitter = getTwitterWrapper();
-            final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(activity,
-                    SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-            final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
-            final int profileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
-            final int mediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
-            final boolean nameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
-            final boolean displayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
-
-            mHolder.displayStatus(activity, loader, handler, twitter, displayMediaPreview, true,
-                    true, nameFirst, profileImageStyle, mediaPreviewStyle, status, null);
-            mStatusContainer.findViewById(R.id.item_menu).setVisibility(View.GONE);
-            mStatusContainer.findViewById(R.id.action_buttons).setVisibility(View.GONE);
-        }
-
-
-    }
 }

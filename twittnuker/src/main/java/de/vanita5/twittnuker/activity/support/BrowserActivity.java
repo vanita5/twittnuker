@@ -26,6 +26,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
@@ -51,7 +52,10 @@ public class BrowserActivity extends BaseActionBarActivity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 		mUri = getIntent().getData();
 		if (mUri == null) {
             Toast.makeText(this, R.string.error_occurred, Toast.LENGTH_SHORT).show();

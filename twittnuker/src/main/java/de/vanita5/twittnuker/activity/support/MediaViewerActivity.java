@@ -47,9 +47,9 @@ import com.diegocarloslima.byakugallery.lib.TileBitmapDrawable.OnInitializeListe
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.ComposeActivity.ViewStatusDialogFragment;
 import de.vanita5.twittnuker.adapter.support.SupportFixedFragmentStatePagerAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
+import de.vanita5.twittnuker.fragment.support.ViewStatusDialogFragment;
 import de.vanita5.twittnuker.loader.support.TileImageLoader;
 import de.vanita5.twittnuker.loader.support.TileImageLoader.DownloadListener;
 import de.vanita5.twittnuker.loader.support.TileImageLoader.Result;
@@ -144,6 +144,7 @@ public final class MediaViewerActivity extends ThemedActionBarActivity implement
             final Fragment f = new ViewStatusDialogFragment();
             final Bundle args = new Bundle();
             args.putParcelable(EXTRA_STATUS, intent.getParcelableExtra(EXTRA_STATUS));
+            args.putBoolean(EXTRA_SHOW_MEDIA_PREVIEW, false);
             f.setArguments(args);
             ft.replace(R.id.media_status, f);
             ft.commit();

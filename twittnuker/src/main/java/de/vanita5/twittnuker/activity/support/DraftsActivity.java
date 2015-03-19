@@ -101,7 +101,7 @@ public class DraftsActivity extends BaseActionBarActivity implements LoaderCallb
 				final Cursor c = mAdapter.getCursor();
 				if (c == null || c.isClosed()) return false;
 				final SparseBooleanArray checked = mListView.getCheckedItemPositions();
-				final List<DraftItem> list = new ArrayList<DraftItem>();
+                final List<DraftItem> list = new ArrayList<>();
 				final DraftItem.CursorIndices indices = new DraftItem.CursorIndices(c);
 				for (int i = 0, j = checked.size(); i < j; i++) {
 					if (checked.valueAt(i) && c.moveToPosition(checked.keyAt(i))) {

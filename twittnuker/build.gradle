@@ -72,7 +72,7 @@ dependencies {
     compile 'com.diegocarloslima:byakugallery:0.1.0'
     compile 'com.rengwuxian.materialedittext:library:1.8.3'
     compile 'com.pnikosis:materialish-progress:1.4'
-    compile 'com.squareup.okhttp:okhttp:2.2.0'
+    compile 'com.squareup.okhttp:okhttp:2.3.0'
     compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.google.maps.android:android-maps-utils:0.3.4'
     compile 'com.squareup.retrofit:retrofit:1.9.0'

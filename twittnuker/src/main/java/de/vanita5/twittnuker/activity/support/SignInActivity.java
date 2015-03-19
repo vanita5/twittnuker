@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentResolver;
@@ -36,6 +35,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -64,8 +64,8 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
-import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.util.net.OkHttpClientFactory;
+import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
@@ -217,13 +217,15 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 				break;
 			}
 			case MENU_SETTINGS: {
-                if (mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING) return false;
+                if (mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING)
+                    return false;
 				final Intent intent = new Intent(this, SettingsActivity.class);
 				startActivity(intent);
 				break;
 			}
 			case MENU_EDIT_API: {
-                if (mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING) return false;
+                if (mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING)
+                    return false;
 				setDefaultAPI();
 				final Intent intent = new Intent(this, APIEditorActivity.class);
 				intent.putExtra(Accounts.API_URL_FORMAT, mAPIUrlFormat);
@@ -283,15 +285,15 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mResolver = getContentResolver();
 		mApplication = TwittnukerApplication.getInstance(this);
 		setContentView(R.layout.activity_sign_in);
-        setProgressBarIndeterminateVisibility(false);
+        setSupportProgressBarIndeterminateVisibility(false);
 		final long[] account_ids = getActivatedAccountIds(this);
-        final ActionBar actionBar = getActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(account_ids.length > 0);
         }
@@ -487,7 +489,7 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 				}
 			}
 		}
-        setProgressBarIndeterminateVisibility(false);
+        setSupportProgressBarIndeterminateVisibility(false);
 		mEditPassword.setEnabled(true);
 		mEditUsername.setEnabled(true);
 		mSignInButton.setEnabled(true);
@@ -496,7 +498,7 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 	}
 
 	void onSignInStart() {
-        setProgressBarIndeterminateVisibility(true);
+        setSupportProgressBarIndeterminateVisibility(true);
 		mEditPassword.setEnabled(false);
 		mEditUsername.setEnabled(false);
 		mSignInButton.setEnabled(false);

@@ -1335,7 +1335,7 @@ public final class Utils implements Constants, TwitterConstants {
 	public static long[] getAccountIds(final Context context) {
 		if (context == null) return new long[0];
 		final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-				new String[] { Accounts.ACCOUNT_ID }, null, null, null);
+				new String[]{Accounts.ACCOUNT_ID}, null, null, null);
 		if (cur == null) return new long[0];
 		try {
 			cur.moveToFirst();
@@ -3935,6 +3935,10 @@ public final class Utils implements Constants, TwitterConstants {
         final ContentValues values = ContentValuesCreator.createCachedRelationship(relationship, accountId);
         resolver.insert(CachedRelationships.CONTENT_URI, values);
     }
+
+	public static boolean useShareScreenshot() {
+		return false;
+	}
 
 	private static Drawable getMetadataDrawable(final PackageManager pm, final ActivityInfo info, final String key) {
 		if (pm == null || info == null || info.metaData == null || key == null || !info.metaData.containsKey(key))
