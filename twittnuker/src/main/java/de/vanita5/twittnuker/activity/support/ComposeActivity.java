@@ -93,6 +93,7 @@ import org.mariotaku.dynamicgridview.DraggableArrayAdapter;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.support.ViewStatusDialogFragment;
 import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableLocation;
