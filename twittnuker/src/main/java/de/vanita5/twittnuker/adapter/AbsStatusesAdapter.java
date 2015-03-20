@@ -80,7 +80,8 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
         mImageLoader = app.getImageLoaderWrapper();
 		mLoadingHandler = new ImageLoadingHandler(R.id.media_preview_progress);
         mTwitterWrapper = app.getTwitterWrapper();
-        final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
+                SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mTextSize = preferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
         mCompactCards = compact;
         mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
@@ -100,37 +101,37 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     }
 
     @Override
-    public ImageLoaderWrapper getImageLoader() {
+    public final ImageLoaderWrapper getImageLoader() {
         return mImageLoader;
     }
 
     @Override
-    public Context getContext() {
+    public final Context getContext() {
         return mContext;
     }
 
     @Override
-    public ImageLoadingHandler getImageLoadingHandler() {
+    public final ImageLoadingHandler getImageLoadingHandler() {
         return mLoadingHandler;
     }
 
     @Override
-    public int getProfileImageStyle() {
+    public final int getProfileImageStyle() {
         return mProfileImageStyle;
     }
 
     @Override
-    public int getMediaPreviewStyle() {
+    public final int getMediaPreviewStyle() {
         return mMediaPreviewStyle;
     }
 
     @Override
-    public AsyncTwitterWrapper getTwitterWrapper() {
+    public final AsyncTwitterWrapper getTwitterWrapper() {
         return mTwitterWrapper;
     }
 
     @Override
-    public float getTextSize() {
+    public final float getTextSize() {
         return mTextSize;
     }
 

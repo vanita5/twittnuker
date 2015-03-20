@@ -21,7 +21,8 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical"
@@ -33,12 +34,11 @@
 		android:text="@string/phishing_link_warning_message_1"
 		android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-	<de.vanita5.twittnuker.view.AutoAdjustHeightImageView
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginBottom="8dp"
-		android:layout_marginTop="8dp"
-		android:src="@drawable/phishing_site_warning_example"/>
+	<!--<de.vanita5.twittnuker.view.AutoAdjustHeightImageView-->
+		<!--android:layout_width="match_parent"-->
+		<!--android:layout_height="wrap_content"-->
+		<!--android:layout_marginBottom="8dp"-->
+        <!--android:layout_marginTop="8dp"/>-->
 
 	<TextView
 		android:layout_width="wrap_content"
