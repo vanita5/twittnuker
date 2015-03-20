@@ -35,9 +35,9 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.support.v7.widget.ActionMenuView;
 import android.text.SpannableStringBuilder;
@@ -319,7 +319,6 @@ public class ThemeUtils implements Constants {
     }
 
     private static void applyColorTintForView(View view, int tintColor) {
-        //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
         if (view instanceof IThemedView) {
             final ColorStateList tintList = ColorStateList.valueOf(tintColor);
             ((IThemedView) view).setThemeTintColor(tintList);
@@ -334,6 +333,7 @@ public class ThemeUtils implements Constants {
             final CompoundButton compoundButton = (CompoundButton) view;
             ViewAccessor.setButtonTintList(compoundButton, tintList);
         }
+        // TODO support TintableBackgroundView
     }
 
 
@@ -827,7 +827,8 @@ public class ThemeUtils implements Constants {
 	}
 
 	public static Typeface getUserTypeface(final Context context, final Typeface defTypeface) {
-		if (context == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return Typeface.DEFAULT;
+        if (context == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
+            return Typeface.DEFAULT;
 		final int fontStyle = defTypeface != null ? defTypeface.getStyle() : Typeface.NORMAL;
 		final String fontFamily = getThemeFontFamily(context);
 		final Typeface tf = Typeface.create(fontFamily, fontStyle);
@@ -993,13 +994,7 @@ public class ThemeUtils implements Constants {
 	private static Drawable applyActionBarDrawable(final Context context, final Drawable d, final boolean applyAlpha) {
 		if (d == null) return null;
         d.mutate();
-        if (d instanceof LayerDrawable) {
-            final Drawable colorLayer = ((LayerDrawable) d).findDrawableByLayerId(R.id.color_layer);
-			if (colorLayer != null) {
-                final int color = getActionBarColor(context);
-				colorLayer.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
-			}
-		}
+//        DrawableCompat.setTint(d, getUserAccentColor(context));
 		if (applyAlpha) {
             d.setAlpha(getThemeAlpha(context));
 		}
