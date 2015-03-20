@@ -109,7 +109,6 @@ import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ImageLoaderWrapper;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -140,7 +139,6 @@ import static android.os.Environment.getExternalStorageState;
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ParseUtils.parseString;
 import static de.vanita5.twittnuker.util.ThemeUtils.getComposeThemeResource;
-import static de.vanita5.twittnuker.util.ThemeUtils.getWindowContentOverlayForCompose;
 import static de.vanita5.twittnuker.util.Utils.copyStream;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
@@ -531,7 +529,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
         mLocationContainer = findViewById(R.id.location_container);
         mLocationIcon = (ActionIconView) findViewById(R.id.location_icon);
         mLocationText = (TextView) findViewById(R.id.location_text);
-        ViewAccessor.setBackground(findViewById(R.id.compose_content), getWindowContentOverlayForCompose(this));
     }
 
 	public void removeAllMedia(final List<ParcelableMediaUpdate> list) {
