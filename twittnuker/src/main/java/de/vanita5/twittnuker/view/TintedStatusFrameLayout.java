@@ -29,13 +29,11 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
 
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.MainFrameLayout.FitSystemWindowsCallback;
 
-public class TintedStatusFrameLayout extends FrameLayout {
+public class TintedStatusFrameLayout extends ExtendedFrameLayout {
 
 	private final Paint mBlackPaint, mShadowPaint, mColorPaint;
 
@@ -112,10 +110,6 @@ public class TintedStatusFrameLayout extends FrameLayout {
     @Override
     protected boolean fitSystemWindows(@NonNull Rect insets) {
         setStatusBarHeight(Utils.getInsetsTopWithoutActionBarHeight(getContext(), insets.top));
-        final Context context = getContext();
-        if (context instanceof FitSystemWindowsCallback) {
-            ((FitSystemWindowsCallback) context).fitSystemWindows(insets);
-	    }
         return super.fitSystemWindows(insets);
 	}
 

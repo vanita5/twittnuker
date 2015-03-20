@@ -1,7 +1,6 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 
 public class MainFrameLayout extends TintedStatusFrameLayout {
@@ -28,7 +27,4 @@ public class MainFrameLayout extends TintedStatusFrameLayout {
         super.setStatusBarHeight(height);
 	}
 
-	public static interface FitSystemWindowsCallback {
-		void fitSystemWindows(Rect insets);
-	}
 }

@@ -36,13 +36,13 @@ import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.view.MainFrameLayout.FitSystemWindowsCallback;
+import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
 
 import java.util.ArrayList;
 
 @SuppressLint("Registered")
 public class BaseActionBarActivity extends ThemedActionBarActivity implements Constants,
-        FitSystemWindowsCallback, SystemWindowsInsetsCallback, IControlBarActivity {
+        OnFitSystemWindowsListener, SystemWindowsInsetsCallback, IControlBarActivity {
 
 	private boolean mInstanceStateSaved, mIsVisible, mIsOnTop;
 
@@ -161,7 +161,7 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
     }
 
     @Override
-    public void fitSystemWindows(Rect insets) {
+    public void onFitSystemWindows(Rect insets) {
         mSystemWindowsInsets = new Rect(insets);
     }
 
