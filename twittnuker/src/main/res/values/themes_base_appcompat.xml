@@ -27,6 +27,10 @@
         <!--<item name="colorPrimary">@color/material_light_blue</item>-->
         <!--<item name="colorPrimaryDark">@color/material_light_blue_700</item>-->
         <!--<item name="colorAccent">@color/material_light_blue_a200</item>-->
+
+        <!-- fix for https://github.com/TwidereProject/Twidere-Android/issues/76-->
+        <item name="actionModeBackground">?android:colorBackground</item>
+
         <item name="android:textColorTertiary">@color/tertiary_text_mtrl_dark</item>
         <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_light</item>
     </style>
@@ -35,6 +39,10 @@
         <!--<item name="colorPrimary">@color/material_light_blue</item>-->
         <!--<item name="colorPrimaryDark">@color/material_light_blue_700</item>-->
         <!--<item name="colorAccent">@color/material_light_blue_a200</item>-->
+
+        <!-- fix for https://github.com/TwidereProject/Twidere-Android/issues/76-->
+        <item name="actionModeBackground">?android:colorBackground</item>
+
         <item name="android:textColorTertiary">@color/tertiary_text_mtrl_dark</item>
         <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_light</item>
     </style>
@@ -43,6 +51,10 @@
         <!--<item name="colorPrimary">@color/material_light_blue</item>-->
         <!--<item name="colorPrimaryDark">@color/material_light_blue_700</item>-->
         <!--<item name="colorAccent">@color/material_light_blue_a200</item>-->
+
+        <!-- fix for https://github.com/TwidereProject/Twidere-Android/issues/76-->
+        <item name="actionModeBackground">?android:colorBackground</item>
+
         <item name="android:textColorTertiary">@color/tertiary_text_mtrl_dark</item>
         <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_light</item>
     </style>
@@ -51,6 +63,10 @@
         <!--<item name="colorPrimary">@color/material_light_blue</item>-->
         <!--<item name="colorPrimaryDark">@color/material_light_blue_700</item>-->
         <!--<item name="colorAccent">@color/material_light_blue_a200</item>-->
+
+        <!-- fix for https://github.com/TwidereProject/Twidere-Android/issues/76-->
+        <item name="actionModeBackground">?android:colorBackground</item>
+
         <item name="android:textColorTertiary">@color/tertiary_text_mtrl_light</item>
         <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_dark</item>
     </style>
@@ -59,6 +75,10 @@
         <!--<item name="colorPrimary">@color/material_light_blue</item>-->
         <!--<item name="colorPrimaryDark">@color/material_light_blue_700</item>-->
         <!--<item name="colorAccent">@color/material_light_blue_a200</item>-->
+
+        <!-- fix for https://github.com/TwidereProject/Twidere-Android/issues/76-->
+        <item name="actionModeBackground">?android:colorBackground</item>
+
         <item name="android:textColorTertiary">@color/tertiary_text_mtrl_light</item>
         <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_dark</item>
     </style>
@@ -67,6 +87,10 @@
         <!--<item name="colorPrimary">@color/material_light_blue</item>-->
         <!--<item name="colorPrimaryDark">@color/material_light_blue_700</item>-->
         <!--<item name="colorAccent">@color/material_light_blue_a200</item>-->
+
+        <!-- fix for https://github.com/TwidereProject/Twidere-Android/issues/76-->
+        <item name="actionModeBackground">?android:colorBackground</item>
+
         <item name="android:textColorTertiary">@color/tertiary_text_mtrl_light</item>
         <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_dark</item>
     </style>
@@ -75,6 +99,10 @@
         <!--<item name="colorPrimary">@color/material_light_blue</item>-->
         <!--<item name="colorPrimaryDark">@color/material_light_blue_700</item>-->
         <!--<item name="colorAccent">@color/material_light_blue_a200</item>-->
+
+        <!-- fix for https://github.com/TwidereProject/Twidere-Android/issues/76-->
+        <item name="actionModeBackground">?android:colorBackground</item>
+
         <item name="android:textColorTertiary">@color/tertiary_text_mtrl_light</item>
         <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_dark</item>
     </style>

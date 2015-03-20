@@ -128,24 +128,19 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 		super.onResume();
 		if (isThemeChanged()) {
 			restart();
-		} else {
-			ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentActionBarColor,
-					mCurrentThemeBackgroundAlpha);
 		}
 	}
 
-	private final void setActionBarBackground() {
+    private void setActionBarBackground() {
         ThemeUtils.applyActionBarBackground(getActionBar(), this, mCurrentThemeResource);
     }
 
-	private final void setTheme() {
+    private void setTheme() {
 		mCurrentThemeResource = getThemeResourceId();
 		mCurrentThemeColor = getThemeColor();
 		mCurrentActionBarColor = getActionBarColor();
 		mCurrentThemeFontFamily = getThemeFontFamily();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
-		ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentThemeColor,
-				mCurrentThemeBackgroundAlpha);
 		setTheme(mCurrentThemeResource);
         if (ThemeUtils.isTransparentBackground(mCurrentThemeResource)) {
             getWindow().setBackgroundDrawable(ThemeUtils.getWindowBackground(this));

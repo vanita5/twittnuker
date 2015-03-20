@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static android.os.Environment.getExternalStorageDirectory;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -33,10 +31,12 @@ import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils.TruncateAt;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,8 +48,8 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.fragment.iface.ISupportDialogFragmentCallback;
-import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,6 +58,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
+
+import static android.os.Environment.getExternalStorageDirectory;
 
 public class FileSelectorDialogFragment extends BaseSupportDialogFragment implements LoaderCallbacks<List<File>>,
 		OnClickListener, OnItemClickListener {
@@ -92,16 +94,16 @@ public class FileSelectorDialogFragment extends BaseSupportDialogFragment implem
 				break;
 			}
 		}
-		return;
-
 	}
 
+    @NonNull
 	@Override
 	public Dialog onCreateDialog(final Bundle savedInstanceState) {
 		mAdapter = new FilesAdapter(getActivity());
 		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setAdapter(mAdapter, this);
 		builder.setTitle(R.string.pick_file);
+        builder.setNegativeButton(android.R.string.cancel, null);
 		if (isPickDirectory()) {
 			builder.setPositiveButton(android.R.string.ok, this);
 		}
@@ -217,15 +219,15 @@ public class FileSelectorDialogFragment extends BaseSupportDialogFragment implem
 			final File file = getItem(position);
 			if (file == null || text == null) return view;
 			if (mCurrentPath != null && file.equals(mCurrentPath.getParentFile())) {
-				text.setText("twittnuker/src/main");
+                text.setText("..");
 			} else {
 				text.setText(file.getName());
 			}
 			text.setSingleLine(true);
 			text.setEllipsize(TruncateAt.MARQUEE);
 			text.setPadding(mPadding, mPadding, position, mPadding);
-			final Drawable icon = mResources
-					.getDrawable(file.isDirectory() ? R.drawable.ic_folder : R.drawable.ic_file);
+            final Drawable icon = ResourcesCompat.getDrawable(mResources,
+                    file.isDirectory() ? R.drawable.ic_folder : R.drawable.ic_file, null);
 			icon.mutate();
 			icon.setColorFilter(mActionIconColor, PorterDuff.Mode.SRC_ATOP);
 			text.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
@@ -269,8 +271,8 @@ public class FileSelectorDialogFragment extends BaseSupportDialogFragment implem
 			if (path == null || !path.isDirectory()) return Collections.emptyList();
 			final File[] listed_files = path.listFiles();
 			if (listed_files == null) return Collections.emptyList();
-			final List<File> dirs = new ArrayList<File>();
-			final List<File> files = new ArrayList<File>();
+            final List<File> dirs = new ArrayList<>();
+            final List<File> files = new ArrayList<>();
 			for (final File file : listed_files) {
 				if (!file.canRead() || file.isHidden()) {
 					continue;
@@ -279,7 +281,7 @@ public class FileSelectorDialogFragment extends BaseSupportDialogFragment implem
 					dirs.add(file);
 				} else if (file.isFile()) {
 					final String name = file.getName();
-					final int idx = name.lastIndexOf("");
+                    final int idx = name.lastIndexOf(".");
 					if (extensions == null || extensions.length == 0 || idx == -1 || idx > -1
 							&& extensions_regex.matcher(name.substring(idx + 1)).matches()) {
 						files.add(file);
@@ -288,7 +290,7 @@ public class FileSelectorDialogFragment extends BaseSupportDialogFragment implem
 			}
 			Collections.sort(dirs, NAME_COMPARATOR);
 			Collections.sort(files, NAME_COMPARATOR);
-			final List<File> list = new ArrayList<File>();
+            final List<File> list = new ArrayList<>();
 			final File parent = path.getParentFile();
 			if (path.getParentFile() != null) {
 				list.add(parent);

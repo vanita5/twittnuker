@@ -148,8 +148,6 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
 		mCurrentActionBarColor = getActionBarColor();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		mProfileImageStyle = Utils.getProfileImageStyle(this);
-		ThemeUtils.notifyStatusBarColorChanged(this, mCurrentThemeResource, mCurrentActionBarColor,
-				mCurrentThemeBackgroundAlpha);
 		setTheme(mCurrentThemeResource);
         if (shouldSetWindowBackground() && ThemeUtils.isTransparentBackground(mCurrentThemeResource)) {
             getWindow().setBackgroundDrawable(ThemeUtils.getWindowBackground(this));

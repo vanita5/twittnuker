@@ -39,7 +39,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-annotations:21.0.3'
+    compile 'com.android.support:support-annotations:22.0.0'
     compile 'org.apache.commons:commons-lang3:3.3.2'
     compile project(':twittnuker.component.jsonserializer')
     compile project(':twittnuker.component.querybuilder')
