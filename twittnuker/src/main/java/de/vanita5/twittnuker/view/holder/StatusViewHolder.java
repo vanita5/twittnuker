@@ -110,9 +110,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
 		screenNameView.setText("@twittnuker");
 		timeView.setTime(System.currentTimeMillis());
 		textView.setText(R.string.sample_status_text);
-		mediaPreviewContainer.displayMedia(R.drawable.ic_profile_image_default,
-				R.drawable.ic_profile_image_default);
-		//TODO sample preview images
+        mediaPreviewContainer.displayMedia(R.drawable.nyan_stars_background);
 	}
 
     public void displayStatus(final ParcelableStatus status, final boolean displayInReplyTo) {
