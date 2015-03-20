@@ -77,7 +77,7 @@
         android:allowBackup="true"
         android:backupAgent=".backup.TwidereBackupAgentHelper"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Blank"
         tools:replace="allowBackup">
@@ -115,7 +115,7 @@
 
         <activity
             android:name=".activity.MainActivity"
-            android:icon="@drawable/ic_launcher"
+            android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Launcher"
@@ -154,7 +154,7 @@
         </activity>
         <activity
             android:name=".activity.support.ComposeActivity"
-            android:icon="@drawable/ic_launcher"
+            android:icon="@mipmap/ic_launcher"
             android:excludeFromRecents="true"
             android:label="@string/compose"
             android:launchMode="singleTop"
