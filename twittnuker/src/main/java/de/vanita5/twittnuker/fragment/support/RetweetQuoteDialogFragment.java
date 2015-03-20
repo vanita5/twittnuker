@@ -105,7 +105,7 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
 		builder.setNegativeButton(android.R.string.cancel, null);
 
         holder.displayStatus(context, loader, handler, twitter, displayMediaPreview, true,
-                true, nameFirst, profileImageStyle, mediaPreviewStyle, status, null);
+                true, nameFirst, profileImageStyle, mediaPreviewStyle, status, null, true);
 
 		view.findViewById(R.id.item_menu).setVisibility(View.GONE);
 		view.findViewById(R.id.action_buttons).setVisibility(View.GONE);

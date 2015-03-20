@@ -80,6 +80,7 @@ public class ViewStatusDialogFragment extends BaseSupportDialogFragment {
 		final int profileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
 		final int mediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
 		final boolean nameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
+        final boolean displayExtraType = args.getBoolean(EXTRA_SHOW_EXTRA_TYPE, true);
 		final boolean displayMediaPreview;
 		if (args.containsKey(EXTRA_SHOW_MEDIA_PREVIEW)) {
 			displayMediaPreview = args.getBoolean(EXTRA_SHOW_MEDIA_PREVIEW);
@@ -87,7 +88,8 @@ public class ViewStatusDialogFragment extends BaseSupportDialogFragment {
 			displayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
 		}
 		mHolder.displayStatus(activity, loader, handler, twitter, displayMediaPreview, true,
-				true, nameFirst, profileImageStyle, mediaPreviewStyle, status, null);
+				true, nameFirst, profileImageStyle, mediaPreviewStyle, status, null,
+                displayExtraType);
 		mStatusContainer.findViewById(R.id.item_menu).setVisibility(View.GONE);
 		mStatusContainer.findViewById(R.id.action_buttons).setVisibility(View.GONE);
 	}

@@ -142,7 +142,7 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
         final boolean displayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
 
         mHolder.displayStatus(activity, loader, handler, twitter, displayMediaPreview, true,
-                true, nameFirst, profileImageStyle, mediaPreviewStyle, status, null);
+                true, nameFirst, profileImageStyle, mediaPreviewStyle, status, null, true);
 
         mStatusContainer.findViewById(R.id.item_menu).setVisibility(View.GONE);
         mStatusContainer.findViewById(R.id.action_buttons).setVisibility(View.GONE);
