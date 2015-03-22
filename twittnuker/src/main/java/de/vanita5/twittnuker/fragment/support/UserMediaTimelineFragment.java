@@ -22,7 +22,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.loader.support.MediaTimelineLoader;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.SimpleDrawerCallback;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
@@ -158,7 +158,7 @@ public class UserMediaTimelineFragment extends BaseSupportFragment
 	private static class MediaTimelineAdapter extends Adapter<MediaTimelineViewHolder> {
 
 		private final LayoutInflater mInflater;
-		private final ImageLoaderWrapper mImageLoader;
+		private final MediaLoaderWrapper mImageLoader;
 		private final ImageLoadingHandler mLoadingHandler;
 		private List<ParcelableStatus> mData;
 
@@ -205,7 +205,7 @@ public class UserMediaTimelineFragment extends BaseSupportFragment
 			mediaTextView = (TextView) itemView.findViewById(R.id.media_text);
 		}
 
-		public void setMedia(ImageLoaderWrapper loader, ImageLoadingHandler loadingHandler, ParcelableStatus status) {
+		public void setMedia(MediaLoaderWrapper loader, ImageLoadingHandler loadingHandler, ParcelableStatus status) {
             final ParcelableMedia[] media = status.media;
             if (media == null || media.length < 1) return;
             final ParcelableMedia firstMedia = media[0];

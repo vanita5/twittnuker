@@ -40,7 +40,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.view.ActionIconView;
 import org.oshkimaadziig.george.androidutils.SpanFormatter;
@@ -156,7 +156,7 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder {
     }
 
     private void displayUserProfileImages(final ParcelableUser[] statuses) {
-        final ImageLoaderWrapper imageLoader = adapter.getImageLoader();
+        final MediaLoaderWrapper imageLoader = adapter.getImageLoader();
         if (statuses == null) {
             for (final ImageView view : profileImageViews) {
                 imageLoader.cancelDisplayTask(view);

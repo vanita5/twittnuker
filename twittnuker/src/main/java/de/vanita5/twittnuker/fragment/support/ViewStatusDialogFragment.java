@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
@@ -71,7 +71,7 @@ public class ViewStatusDialogFragment extends BaseSupportDialogFragment {
 		}
 		final TwittnukerApplication application = getApplication();
 		final FragmentActivity activity = getActivity();
-		final ImageLoaderWrapper loader = application.getImageLoaderWrapper();
+		final MediaLoaderWrapper loader = application.getImageLoaderWrapper();
 		final ImageLoadingHandler handler = new ImageLoadingHandler(R.id.media_preview_progress);
 		final AsyncTwitterWrapper twitter = getTwitterWrapper();
 		final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(activity,

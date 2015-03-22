@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +50,12 @@ public class MediaEntityJSONImpl implements MediaEntity {
 	private URL expandedURL;
 	private String displayURL;
 	private Map<Integer, MediaEntity.Size> sizes;
-	private String type;
+    private Type type;
+    private VideoInfoJSONImpl videoInfo;
+
+    public VideoInfo getVideoInfo() {
+        return videoInfo;
+    }
 
 	public MediaEntityJSONImpl(final JSONObject json) throws TwitterException {
 		try {
@@ -84,6 +90,9 @@ public class MediaEntityJSONImpl implements MediaEntity {
 			if (!json.isNull("display_url")) {
 				displayURL = json.getString("display_url");
 			}
+            if (!json.isNull("video_info")) {
+                videoInfo = new VideoInfoJSONImpl(json.getJSONObject("video_info"));
+            }
 			final JSONObject sizes = json.getJSONObject("sizes");
 			this.sizes = new HashMap<Integer, MediaEntity.Size>(4);
 			// thumbworkarounding API side issue
@@ -92,7 +101,7 @@ public class MediaEntityJSONImpl implements MediaEntity {
 			addMediaEntitySizeIfNotNull(this.sizes, sizes, MediaEntity.Size.SMALL, "small");
 			addMediaEntitySizeIfNotNull(this.sizes, sizes, MediaEntity.Size.THUMB, "thumb");
 			if (!json.isNull("type")) {
-				type = json.getString("type");
+                type = Type.parse(json.getString("type"));
 			}
 		} catch (final JSONException jsone) {
 			throw new TwitterException(jsone);
@@ -181,7 +190,7 @@ public class MediaEntityJSONImpl implements MediaEntity {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getType() {
+    public Type getType() {
 		return type;
 	}
 
@@ -271,4 +280,86 @@ public class MediaEntityJSONImpl implements MediaEntity {
 			return "Size{" + "width=" + width + ", height=" + height + ", resize=" + resize + '}';
 		}
 	}
+
+    private static class VideoInfoJSONImpl implements VideoInfo {
+
+        private final VariantJSONImpl[] variants;
+        private final long[] aspectRatio;
+        private final long duration;
+
+        VideoInfoJSONImpl(JSONObject json) throws JSONException {
+            variants = VariantJSONImpl.fromJSONArray(json.getJSONArray("variants"));
+            final JSONArray aspectRatioJson = json.getJSONArray("aspect_ratio");
+            aspectRatio = new long[]{aspectRatioJson.getLong(0), aspectRatioJson.getLong(1)};
+            duration = json.getLong("duration_millis");
+		}
+
+        @Override
+        public Variant[] getVariants() {
+            return variants;
+        }
+
+        @Override
+        public long[] getAspectRatio() {
+            return aspectRatio;
+        }
+
+        @Override
+        public String toString() {
+            return "VideoInfoJSONImpl{" +
+                    "variants=" + Arrays.toString(variants) +
+                    ", aspectRatio=" + Arrays.toString(aspectRatio) +
+                    ", duration=" + duration +
+                    '}';
+        }
+
+        @Override
+        public long getDuration() {
+            return duration;
+        }
+
+        private static class VariantJSONImpl implements Variant {
+            private final String contentType;
+            private final String url;
+            private final long bitrate;
+
+            @Override
+            public String toString() {
+                return "VariantJSONImpl{" +
+                        "contentType='" + contentType + '\'' +
+                        ", url='" + url + '\'' +
+                        ", bitrate=" + bitrate +
+                        '}';
+            }
+
+            public VariantJSONImpl(JSONObject json) throws JSONException {
+                contentType = json.getString("content_type");
+                url = json.getString("url");
+                bitrate = json.optLong("bitrate", -1);
+            }
+
+            public static VariantJSONImpl[] fromJSONArray(JSONArray json) throws JSONException {
+                final VariantJSONImpl[] variant = new VariantJSONImpl[json.length()];
+                for (int i = 0, j = variant.length; i < j; i++) {
+                    variant[i] = new VariantJSONImpl(json.getJSONObject(i));
+                }
+                return variant;
+            }
+
+            @Override
+            public String getContentType() {
+                return contentType;
+            }
+
+            @Override
+            public String getUrl() {
+                return url;
+            }
+
+            @Override
+            public long getBitrate() {
+                return bitrate;
+            }
+        }
+    }
 }

@@ -69,7 +69,7 @@ import de.vanita5.twittnuker.model.ParcelableUser.CachedIndices;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SwipeDismissListViewTouchListener;
 import de.vanita5.twittnuker.util.SwipeDismissListViewTouchListener.DismissCallbacks;
@@ -427,7 +427,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 		@Override
 		public void bindView(SuggestionsAdapter adapter, View view, int position) {
 			final ParcelableUser user = mUser;
-			final ImageLoaderWrapper loader = adapter.getImageLoader();
+			final MediaLoaderWrapper loader = adapter.getImageLoader();
 			final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
 			final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
 			final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
@@ -444,7 +444,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 
 		private final Context mContext;
 		private final LayoutInflater mInflater;
-		private final ImageLoaderWrapper mImageLoader;
+		private final MediaLoaderWrapper mImageLoader;
 		private List<SuggestionItem> mData;
 
 		SuggestionsAdapter(Context context) {
@@ -487,7 +487,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 			return view;
 		}
 
-		public ImageLoaderWrapper getImageLoader() {
+		public MediaLoaderWrapper getImageLoader() {
 			return mImageLoader;
 		}
 

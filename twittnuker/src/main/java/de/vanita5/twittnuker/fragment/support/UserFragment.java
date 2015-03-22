@@ -109,7 +109,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.text.TextAlphaSpan;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -173,7 +173,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 	private static final int LOADER_ID_USER = 1;
 	private static final int LOADER_ID_FRIENDSHIP = 2;
 
-	private ImageLoaderWrapper mProfileImageLoader;
+	private MediaLoaderWrapper mProfileImageLoader;
 
     private ShapedImageView mProfileImageView;
 	private ImageView mProfileTypeView;

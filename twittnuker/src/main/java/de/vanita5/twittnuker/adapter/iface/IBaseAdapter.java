@@ -25,11 +25,11 @@ package de.vanita5.twittnuker.adapter.iface;
 import android.widget.ListAdapter;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 
 public interface IBaseAdapter extends Constants, ListAdapter {
 	
-	public ImageLoaderWrapper getImageLoader();
+	public MediaLoaderWrapper getImageLoader();
 
 	public int getLinkHighlightOption();
 

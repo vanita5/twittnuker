@@ -73,7 +73,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -101,7 +101,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         LoaderCallbacks<SingleResponse<ParcelableUserList>>, DrawerCallback,
         SystemWindowsInsetsCallback, SupportFragmentCallback {
 
-	private ImageLoaderWrapper mProfileImageLoader;
+	private MediaLoaderWrapper mProfileImageLoader;
 	private AsyncTwitterWrapper mTwitterWrapper;
 
 	private ImageView mProfileImageView;

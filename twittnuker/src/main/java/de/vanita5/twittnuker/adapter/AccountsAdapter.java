@@ -38,12 +38,12 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccount.Indices;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.view.holder.AccountViewHolder;
 
 public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Constants, IBaseAdapter {
 
-	private final ImageLoaderWrapper mImageLoader;
+	private final MediaLoaderWrapper mImageLoader;
 	private final SharedPreferences mPreferences;
 
 	private boolean mDisplayProfileImage;
@@ -93,7 +93,7 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
 	}
 
 	@Override
-    public ImageLoaderWrapper getImageLoader() {
+    public MediaLoaderWrapper getImageLoader() {
         return mImageLoader;
     }
 

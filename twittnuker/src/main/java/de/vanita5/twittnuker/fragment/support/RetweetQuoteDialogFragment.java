@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -86,7 +86,7 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
 		final Context context = builder.getContext();
 		final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
 				SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final ImageLoaderWrapper loader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
+		final MediaLoaderWrapper loader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
 		final ImageLoadingHandler handler = new ImageLoadingHandler(R.id.media_preview_progress);
         final AsyncTwitterWrapper twitter = getTwitterWrapper();
 		final LayoutInflater inflater = LayoutInflater.from(context);

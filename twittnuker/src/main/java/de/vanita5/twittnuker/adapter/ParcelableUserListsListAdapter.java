@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -50,7 +50,7 @@ public class ParcelableUserListsListAdapter extends BaseArrayAdapter<ParcelableU
         OnClickListener {
 
 	private final Context mContext;
-    private final ImageLoaderWrapper mImageLoader;
+    private final MediaLoaderWrapper mImageLoader;
 	private final MultiSelectManager mMultiSelectManager;
 	private final Locale mLocale;
 

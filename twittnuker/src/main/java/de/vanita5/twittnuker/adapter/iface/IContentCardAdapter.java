@@ -25,12 +25,12 @@ package de.vanita5.twittnuker.adapter.iface;
 import android.content.Context;
 
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
 public interface IContentCardAdapter extends IGapSupportedAdapter, ContentCardClickListener {
-	ImageLoaderWrapper getImageLoader();
+	MediaLoaderWrapper getImageLoader();
 
 	Context getContext();
 

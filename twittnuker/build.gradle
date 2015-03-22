@@ -48,6 +48,9 @@ repositories {
     jcenter()
     mavenCentral()
     maven {
+        url "https://jitpack.io"
+    }
+    maven {
         url "https://repo.commonsware.com.s3.amazonaws.com"
     }
 }
@@ -77,10 +80,10 @@ dependencies {
     compile 'com.google.maps.android:android-maps-utils:0.3.4'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.2'
+    compile 'com.github.mariotaku:MessageBubbleView:1.0'
+    compile 'com.github.mariotaku:DragSortListView:0.6.1'
+    compile 'com.github.mariotaku:SlidingMenu:1.3'
     compile project(':twittnuker.component.common')
-    compile project(':SlidingMenu')
-    compile project(':DragSortListView')
-    compile project(':MessageBubbleView')
     compile project(':ColorPicker')
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }

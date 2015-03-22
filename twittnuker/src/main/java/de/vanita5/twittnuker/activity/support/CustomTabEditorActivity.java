@@ -56,7 +56,7 @@ import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.ExtraConfiguration;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
@@ -73,7 +73,7 @@ import static de.vanita5.twittnuker.util.CustomTabUtils.getTabTypeName;
 
 public class CustomTabEditorActivity extends BaseSupportDialogActivity implements OnClickListener {
 
-	private ImageLoaderWrapper mImageLoader;
+	private MediaLoaderWrapper mImageLoader;
 	private SharedPreferences mPreferences;
 
 	private AccountsSpinnerAdapter mAccountsAdapter;

@@ -20,29 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'com.android.library'
-apply from: rootProject.file('global.gradle')
+package de.vanita5.twittnuker.util.message;
 
-android {
-    defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
-
-dependencies {
-    compile 'com.android.support:support-annotations:22.0.0'
-    compile 'org.apache.commons:commons-lang3:3.3.2'
-    compile project(':twittnuker.component.jsonserializer')
-    compile project(':twittnuker.component.querybuilder')
-    compile project(':twittnuker.component.twitter4j')
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+public class VideoLoadFinishedEvent {
 }

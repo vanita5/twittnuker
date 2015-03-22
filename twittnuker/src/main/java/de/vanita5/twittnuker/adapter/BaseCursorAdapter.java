@@ -32,7 +32,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 
@@ -47,7 +47,7 @@ public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapt
 	private boolean mDisplayProfileImage, mDisplayNameFirst, mShowAccountColor;
 
 	private final SharedPreferences mColorPrefs;
-	private final ImageLoaderWrapper mImageLoader;
+	private final MediaLoaderWrapper mImageLoader;
 
 	public BaseCursorAdapter(final Context context, final int layout, final Cursor c, final String[] from,
 			final int[] to) {
@@ -65,7 +65,7 @@ public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapt
 	}
 	
 	@Override
-	public ImageLoaderWrapper getImageLoader() {
+	public MediaLoaderWrapper getImageLoader() {
 		return mImageLoader;
 	}
 

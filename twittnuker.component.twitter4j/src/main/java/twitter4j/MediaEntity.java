@@ -58,7 +58,41 @@ public interface MediaEntity extends URLEntity, Serializable {
 	 * 
 	 * @return the media type ("photo").
 	 */
-	String getType();
+    Type getType();
+
+    enum Type {
+        PHOTO, VIDEO, UNKNOWN;
+
+        public static Type parse(String typeString) {
+            if ("photo".equalsIgnoreCase(typeString)) {
+                return PHOTO;
+            } else if ("video".equalsIgnoreCase(typeString)) {
+                return VIDEO;
+            }
+            return UNKNOWN;
+        }
+    }
+
+    VideoInfo getVideoInfo();
+
+    interface VideoInfo extends Serializable {
+
+        Variant[] getVariants();
+
+        long[] getAspectRatio();
+
+        long getDuration();
+
+        interface Variant extends Serializable {
+
+            String getContentType();
+
+            String getUrl();
+
+            long getBitrate();
+        }
+
+    }
 
 	interface Size extends Serializable {
 		Integer THUMB = 0;

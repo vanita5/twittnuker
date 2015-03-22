@@ -28,7 +28,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 
@@ -46,7 +46,7 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
 	private boolean mDisplayProfileImage, mDisplayNameFirst, mShowAccountColor;
 
 	private final SharedPreferences mColorPrefs;
-	private final ImageLoaderWrapper mImageLoader;
+	private final MediaLoaderWrapper mImageLoader;
 
 	public BaseArrayAdapter(final Context context, final int layoutRes) {
 		this(context, layoutRes, null);
@@ -62,7 +62,7 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
 	}
 	
 	@Override
-	public ImageLoaderWrapper getImageLoader() {
+	public MediaLoaderWrapper getImageLoader() {
 		return mImageLoader;
 	}
 

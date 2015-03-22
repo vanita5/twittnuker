@@ -89,7 +89,7 @@ import de.vanita5.twittnuker.text.method.StatusContentMovementMethod;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.CompareUtils;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.StatusLinkClickHandler;
@@ -414,7 +414,7 @@ public class StatusFragment extends BaseSupportFragment
         private final Context mContext;
         private final StatusFragment mFragment;
         private final LayoutInflater mInflater;
-        private final ImageLoaderWrapper mImageLoader;
+        private final MediaLoaderWrapper mImageLoader;
         private final ImageLoadingHandler mImageLoadingHandler;
 
         private final boolean mNameFirst;
@@ -465,7 +465,7 @@ public class StatusFragment extends BaseSupportFragment
             return mFragment;
         }
 
-        public ImageLoaderWrapper getImageLoader() {
+        public MediaLoaderWrapper getImageLoader() {
             return mImageLoader;
         }
 
@@ -1026,7 +1026,7 @@ public class StatusFragment extends BaseSupportFragment
             final StatusFragment fragment = adapter.getFragment();
             final Context context = adapter.getContext();
             final Resources resources = context.getResources();
-            final ImageLoaderWrapper loader = adapter.getImageLoader();
+            final MediaLoaderWrapper loader = adapter.getImageLoader();
 			final boolean nameFirst = adapter.isNameFirst();
 
 			if (status.retweet_id > 0) {

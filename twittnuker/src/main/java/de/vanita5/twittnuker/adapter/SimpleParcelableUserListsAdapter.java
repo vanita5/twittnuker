@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
@@ -42,7 +42,7 @@ import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
 public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserList> implements IBaseAdapter {
 
 	private final Context mContext;
-    private final ImageLoaderWrapper mImageLoader;
+    private final MediaLoaderWrapper mImageLoader;
 
 	public SimpleParcelableUserListsAdapter(final Context context) {
 		super(context, R.layout.list_item_two_line);

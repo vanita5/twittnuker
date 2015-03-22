@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage.CursorIndices;
 import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -62,7 +62,7 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
 
     private final Context mContext;
     private final LayoutInflater mInflater;
-	private final ImageLoaderWrapper mImageLoader;
+	private final MediaLoaderWrapper mImageLoader;
 	private final MultiSelectManager mMultiSelectManager;
 	private final ImageLoadingHandler mImageLoadingHandler;
 
@@ -87,7 +87,7 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
         return mContext;
     }
 
-    public ImageLoaderWrapper getImageLoader() {
+    public MediaLoaderWrapper getImageLoader() {
         return mImageLoader;
     }
 

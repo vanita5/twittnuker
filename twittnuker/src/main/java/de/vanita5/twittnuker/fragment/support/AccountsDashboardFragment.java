@@ -94,7 +94,7 @@ import de.vanita5.twittnuker.menu.SupportAccountActionProvider;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.CompareUtils;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TransitionUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -136,7 +136,7 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
     private View mAccountProfileContainer;
 
 	private Context mThemedContext;
-    private ImageLoaderWrapper mImageLoader;
+    private MediaLoaderWrapper mImageLoader;
     private SupportAccountActionProvider mAccountActionProvider;
     private boolean mSwitchAccountAnimationPlaying;
 
@@ -605,7 +605,7 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
     private static class AccountSelectorAdapter extends Adapter<AccountProfileImageViewHolder> {
 
         private final LayoutInflater mInflater;
-        private final ImageLoaderWrapper mImageLoader;
+        private final MediaLoaderWrapper mImageLoader;
         private final AccountsDashboardFragment mFragment;
         private ParcelableAccount[] mAccounts;
         private ParcelableAccount[] mInternalAccounts;

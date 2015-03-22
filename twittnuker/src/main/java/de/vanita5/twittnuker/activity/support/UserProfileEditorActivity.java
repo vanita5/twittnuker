@@ -51,7 +51,7 @@ import de.vanita5.twittnuker.task.TwidereAsyncTask.Status;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileBannerImageTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper;
@@ -82,7 +82,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
     private static final int REQUEST_PICK_LINK_COLOR = 3;
     private static final int REQUEST_PICK_BACKGROUND_COLOR = 4;
 
-	private ImageLoaderWrapper mLazyImageLoader;
+	private MediaLoaderWrapper mLazyImageLoader;
 	private AsyncTaskManager mAsyncTaskManager;
     private TwidereAsyncTask<Void, Void, ?> mTask;
 

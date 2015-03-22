@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -49,7 +49,7 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
 
 	private final Context mContext;
 	private final LayoutInflater mInflater;
-	private final ImageLoaderWrapper mImageLoader;
+	private final MediaLoaderWrapper mImageLoader;
 	private final MultiSelectManager mMultiSelectManager;
     private boolean mLoadMoreIndicatorEnabled;
     private final int mTextSize;
@@ -100,7 +100,7 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
     }
 
 
-	public ImageLoaderWrapper getImageLoader() {
+	public MediaLoaderWrapper getImageLoader() {
 		return mImageLoader;
 	}
 

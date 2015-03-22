@@ -48,12 +48,13 @@ import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.VideoLoader;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
 import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator;
@@ -69,10 +70,11 @@ import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
 import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
-public class TwittnukerApplication extends Application implements Constants, OnSharedPreferenceChangeListener {
+public class TwittnukerApplication extends Application implements Constants,
+		OnSharedPreferenceChangeListener {
 
 	private Handler mHandler;
-	private ImageLoaderWrapper mImageLoaderWrapper;
+    private MediaLoaderWrapper mMediaLoaderWrapper;
 	private ImageLoader mImageLoader;
 	private AsyncTaskManager mAsyncTaskManager;
 	private SharedPreferences mPreferences;
@@ -85,6 +87,7 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 	private HostAddressResolver mResolver;
 	private SQLiteDatabase mDatabase;
     private Bus mMessageBus;
+    private VideoLoader mVideoLoader;
 
 	public AsyncTaskManager getAsyncTaskManager() {
 		if (mAsyncTaskManager != null) return mAsyncTaskManager;
@@ -135,10 +138,16 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		return mImageLoader = loader;
 	}
 
-	public ImageLoaderWrapper getImageLoaderWrapper() {
-		if (mImageLoaderWrapper != null) return mImageLoaderWrapper;
-		return mImageLoaderWrapper = new ImageLoaderWrapper(getImageLoader());
+    public VideoLoader getVideoLoader() {
+        if (mVideoLoader != null) return mVideoLoader;
+        final VideoLoader loader = new VideoLoader(this);
+        return mVideoLoader = loader;
 	}
+
+    public MediaLoaderWrapper getImageLoaderWrapper() {
+        if (mMediaLoaderWrapper != null) return mMediaLoaderWrapper;
+        return mMediaLoaderWrapper = new MediaLoaderWrapper(getImageLoader(), getVideoLoader());
+    }
 
     public static TwittnukerApplication getInstance(final Context context) {
         if (context == null) return null;
@@ -184,6 +193,7 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		}
         setTheme(ThemeUtils.getThemeResource(this));
 		super.onCreate();
+//        TwidereOkHttpPlatform.applyHack(this);
         mHandler = new Handler();
         mMessageBus = new Bus();
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
@@ -202,8 +212,8 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 
 	@Override
 	public void onLowMemory() {
-		if (mImageLoaderWrapper != null) {
-			mImageLoaderWrapper.clearMemoryCache();
+        if (mMediaLoaderWrapper != null) {
+            mMediaLoaderWrapper.clearMemoryCache();
 		}
 		super.onLowMemory();
 	}
@@ -213,11 +223,11 @@ public class TwittnukerApplication extends Application implements Constants, OnS
 		if (KEY_REFRESH_INTERVAL.equals(key)) {
 			stopService(new Intent(this, RefreshService.class));
 			startRefreshServiceIfNeeded(this);
-		} else if (KEY_ENABLE_PROXY.equals(key) || KEY_CONNECTION_TIMEOUT.equals(key)
-				|| KEY_PROXY_HOST.equals(key) || KEY_PROXY_PORT.equals(key)
-				|| KEY_FAST_IMAGE_LOADING.equals(key)) {
+		} else if (KEY_ENABLE_PROXY.equals(key) || KEY_CONNECTION_TIMEOUT.equals(key) || KEY_PROXY_HOST.equals(key)
+				|| KEY_PROXY_PORT.equals(key) || KEY_FAST_IMAGE_LOADING.equals(key)) {
 			reloadConnectivitySettings();
-		} else if (KEY_CONSUMER_KEY.equals(key) || KEY_CONSUMER_SECRET.equals(key) || KEY_API_URL_FORMAT.equals(key)
+		}
+		else if (KEY_CONSUMER_KEY.equals(key) || KEY_CONSUMER_SECRET.equals(key) || KEY_API_URL_FORMAT.equals(key)
 				|| KEY_AUTH_TYPE.equals(key) || KEY_SAME_OAUTH_SIGNING_URL.equals(key)) {
 			final SharedPreferences.Editor editor = preferences.edit();
 			editor.putLong(KEY_API_LAST_CHANGE, System.currentTimeMillis());

@@ -34,7 +34,7 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShortTimeView;
@@ -67,7 +67,7 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
 
 	public void displayMessage(Cursor cursor) {
 		final Context context = adapter.getContext();
-		final ImageLoaderWrapper loader = adapter.getImageLoader();
+		final MediaLoaderWrapper loader = adapter.getImageLoader();
 
 		final long accountId = cursor.getLong(ConversationEntries.IDX_ACCOUNT_ID);
 		final long conversationId = cursor.getLong(ConversationEntries.IDX_CONVERSATION_ID);

@@ -32,13 +32,13 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesConversationFragment;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 
 import java.util.Collection;
 
 public class AccountsSpinnerAdapter extends ArrayAdapter<ParcelableAccount> {
 
-	private final ImageLoaderWrapper mImageLoader;
+	private final MediaLoaderWrapper mImageLoader;
 	private final boolean mDisplayProfileImage;
 
 	public AccountsSpinnerAdapter(final Context context) {

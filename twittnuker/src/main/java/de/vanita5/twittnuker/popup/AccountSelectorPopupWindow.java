@@ -46,7 +46,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.ThemedViewFactory;
 import de.vanita5.twittnuker.util.Utils;
@@ -147,7 +147,7 @@ public class AccountSelectorPopupWindow {
 
 	private static class AccountsGridAdapter extends ArrayAdapter<ParcelableAccount> {
 
-		private final ImageLoaderWrapper mImageLoader;
+		private final MediaLoaderWrapper mImageLoader;
 
 		public AccountsGridAdapter(Context context) {
 			super(context, R.layout.grid_item_selector_account);

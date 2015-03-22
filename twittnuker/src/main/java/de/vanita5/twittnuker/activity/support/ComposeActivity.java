@@ -108,7 +108,7 @@ import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -117,7 +117,6 @@ import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.ActionIconView;
 import de.vanita5.twittnuker.view.BadgeView;
 import de.vanita5.twittnuker.view.ShapedImageView;
@@ -191,7 +190,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
     private ShapedImageView mProfileImageView;
     private BadgeView mCountView;
     private View mAccountSelectorButton;
-    private ImageLoaderWrapper mImageLoader;
+    private MediaLoaderWrapper mImageLoader;
     private View mLocationContainer;
     private ActionIconView mLocationIcon;
     private TextView mLocationText;
@@ -1134,7 +1133,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 
         public void showAccount(AccountIconsAdapter adapter, ParcelableAccount account, boolean isSelected) {
             itemView.setAlpha(isSelected ? 1 : 0.33f);
-            final ImageLoaderWrapper loader = adapter.getImageLoader();
+            final MediaLoaderWrapper loader = adapter.getImageLoader();
             loader.displayProfileImage(iconView, account.profile_image_url);
             iconView.setBorderColor(account.color);
         }
@@ -1151,7 +1150,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 
         private final ComposeActivity mActivity;
         private final LayoutInflater mInflater;
-        private final ImageLoaderWrapper mImageLoader;
+        private final MediaLoaderWrapper mImageLoader;
         private final LongSparseArray<Boolean> mSelection;
 
         private ParcelableAccount[] mAccounts;
@@ -1163,7 +1162,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
             mSelection = new LongSparseArray<>();
         }
 
-        public ImageLoaderWrapper getImageLoader() {
+        public MediaLoaderWrapper getImageLoader() {
             return mImageLoader;
 		}
 
@@ -1413,7 +1412,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 
 	private static class MediaPreviewAdapter extends DraggableArrayAdapter<ParcelableMediaUpdate> {
 
-		private final ImageLoaderWrapper mImageLoader;
+		private final MediaLoaderWrapper mImageLoader;
 
 		public MediaPreviewAdapter(final Context context) {
 			super(context, R.layout.grid_item_media_editor);

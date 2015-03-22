@@ -39,16 +39,18 @@ import de.vanita5.twittnuker.util.imageloader.OvalBitmapDisplayer;
 
 import static de.vanita5.twittnuker.util.Utils.getBestBannerUrl;
 
-public class ImageLoaderWrapper implements Constants {
+public class MediaLoaderWrapper implements Constants {
 
 	private final ImageLoader mImageLoader;
     private final DisplayImageOptions mProfileImageDisplayOptions;
     private final DisplayImageOptions mDashboardProfileImageDisplayOptions;
     private final DisplayImageOptions mOvalProfileImageDisplayOptions;
     private final DisplayImageOptions mImageDisplayOptions, mBannerDisplayOptions;
+    private final VideoLoader mVideoLoader;
 
-	public ImageLoaderWrapper(final ImageLoader loader) {
-		mImageLoader = loader;
+    public MediaLoaderWrapper(final ImageLoader imageLoader, VideoLoader videoLoader) {
+        mImageLoader = imageLoader;
+        mVideoLoader = videoLoader;
         final DisplayImageOptions.Builder profileOptsBuilder = new DisplayImageOptions.Builder();
         profileOptsBuilder.cacheInMemory(true);
         profileOptsBuilder.cacheOnDisk(true);

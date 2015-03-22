@@ -42,7 +42,7 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatus.CursorIndices;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.SimpleValueSerializer;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
@@ -106,10 +106,11 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
     }
 
 	public void displaySampleStatus() {
+        profileImageView.setImageResource(R.mipmap.ic_launcher);
 		nameView.setText("Twittnuker Project");
 		screenNameView.setText("@twittnuker");
+        textView.setText(R.string.sample_status_text);
 		timeView.setTime(System.currentTimeMillis());
-		textView.setText(R.string.sample_status_text);
         mediaPreviewContainer.displayMedia(R.drawable.nyan_stars_background);
 	}
 
@@ -123,7 +124,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
     }
 
     public void displayStatus(@NonNull final Context context,
-                              @NonNull final ImageLoaderWrapper loader,
+                              @NonNull final MediaLoaderWrapper loader,
                               @NonNull final ImageLoadingHandler handler,
                               @NonNull final AsyncTwitterWrapper twitter,
                               final boolean displayMediaPreview, final boolean displayAccountsColor,
@@ -242,7 +243,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
 
     public void displayStatus(@NonNull Cursor cursor, @NonNull CursorIndices indices,
                               final boolean displayInReplyTo) {
-        final ImageLoaderWrapper loader = adapter.getImageLoader();
+        final MediaLoaderWrapper loader = adapter.getImageLoader();
         final AsyncTwitterWrapper twitter = adapter.getTwitterWrapper();
         final Context context = adapter.getContext();
         final boolean nameFirst = adapter.isNameFirst();
@@ -455,7 +456,11 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
             extraTypeView.setImageResource(R.drawable.ic_action_play_circle);
             extraTypeView.setVisibility(View.VISIBLE);
         } else if (media != null && media.length > 0) {
-            extraTypeView.setImageResource(R.drawable.ic_action_gallery);
+            if (hasVideo(media)) {
+                extraTypeView.setImageResource(R.drawable.ic_action_movie);
+            } else {
+            	extraTypeView.setImageResource(R.drawable.ic_action_gallery);
+            }
             extraTypeView.setVisibility(View.VISIBLE);
         } else if (location != null && location.isValid()) {
             extraTypeView.setImageResource(R.drawable.ic_action_location);
@@ -463,6 +468,13 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         } else {
             extraTypeView.setVisibility(View.GONE);
         }
+    }
+
+    private boolean hasVideo(ParcelableMedia[] media) {
+        for (ParcelableMedia mediaItem : media) {
+            if (mediaItem.type == ParcelableMedia.TYPE_VIDEO) return true;
+        }
+        return false;
     }
 
     public static interface StatusClickListener extends ContentCardClickListener {

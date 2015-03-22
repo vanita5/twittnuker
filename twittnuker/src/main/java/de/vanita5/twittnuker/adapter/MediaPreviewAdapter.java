@@ -31,14 +31,14 @@ import android.widget.ImageView;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 
 import java.util.Collection;
 
 public class MediaPreviewAdapter extends ArrayAdapter<String> implements Constants {
 
-	private final ImageLoaderWrapper mImageLoader;
+	private final MediaLoaderWrapper mImageLoader;
 	private final SharedPreferences mPreferences;
 	private final ImageLoadingHandler mImageLoadingHandler;
 

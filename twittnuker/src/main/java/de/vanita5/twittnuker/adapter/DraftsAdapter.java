@@ -36,7 +36,7 @@ import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.DraftViewHolder;
@@ -45,7 +45,7 @@ import static de.vanita5.twittnuker.util.Utils.getAccountColors;
 
 public class DraftsAdapter extends SimpleCursorAdapter {
 
-	private final ImageLoaderWrapper mImageLoader;
+	private final MediaLoaderWrapper mImageLoader;
 	private final ImageLoadingHandler mImageLoadingHandler;
 
 	private float mTextSize;

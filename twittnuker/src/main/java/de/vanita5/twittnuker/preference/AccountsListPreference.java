@@ -50,7 +50,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.util.List;
@@ -103,7 +103,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 
 		private final ParcelableAccount mAccount;
 		private final SharedPreferences mSwitchPreference;
-        private final ImageLoaderWrapper mImageLoader;
+        private final MediaLoaderWrapper mImageLoader;
 
 		private final String mSwitchKey;
 		private final boolean mSwitchDefault;

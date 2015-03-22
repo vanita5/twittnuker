@@ -43,7 +43,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedValues;
-import de.vanita5.twittnuker.util.ImageLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 
 public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implements Constants {
 
@@ -52,7 +52,7 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 
 	private final ContentResolver mResolver;
 	private final SQLiteDatabase mDatabase;
-	private final ImageLoaderWrapper mProfileImageLoader;
+	private final MediaLoaderWrapper mProfileImageLoader;
 	private final SharedPreferences mPreferences;
 
 	private final EditText mEditText;
