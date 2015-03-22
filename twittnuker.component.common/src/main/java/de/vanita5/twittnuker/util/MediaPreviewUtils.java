@@ -22,24 +22,17 @@
 
 package de.vanita5.twittnuker.util;
 
-import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import de.vanita5.twittnuker.common.R;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.HtmlLinkExtractor.HtmlLink;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,6 +58,7 @@ public class MediaPreviewUtils {
 
 	private static final String STRING_PATTERN_GENERIC_DOMAIN = "[^:\\/\\/].+?\\.";
 	private static final String STRING_PATTERN_TWITTER_IMAGES_DOMAIN = "(p|pbs)\\.twimg\\.com";
+    private static final String STRING_PATTERN_TWITTER_TON_DOMAIN = "(ton)\\.twitter\\.com";
 	private static final String STRING_PATTERN_SINA_WEIBO_IMAGES_DOMAIN = "[\\w\\d]+\\.sinaimg\\.cn|[\\w\\d]+\\.sina\\.cn";
 	private static final String STRING_PATTERN_LOCKERZ_DOMAIN = "lockerz\\.com";
 	private static final String STRING_PATTERN_PLIXI_DOMAIN = "plixi\\.com";
@@ -138,6 +132,8 @@ public class MediaPreviewUtils {
 			+ STRING_PATTERN_GOOGLE_IMAGES_NO_SCHEME;
 	private static final String STRING_PATTERN_GOOGLE_PROXY_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
 			+ STRING_PATTERN_GOOGLE_PROXY_IMAGES_NO_SCHEME;
+	private static final String STRING_PATTERN_TWITTER_DM_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
+			+ STRING_PATTERN_TWITTER_IMAGES_NO_SCHEME;
     private static final String STRING_PATTERN_ABLOAD_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
             + STRING_PATTERN_ABLOAD_NO_SCHEME;
 	private static final String STRING_PATTERN_TWIPPLE_IMAGES = AVAILABLE_URL_SCHEME_PREFIX
@@ -148,6 +144,8 @@ public class MediaPreviewUtils {
 	public static final Pattern PATTERN_GENERIC = Pattern.compile(STRING_PATTERN_GENERIC, Pattern.CASE_INSENSITIVE);
 	public static final Pattern PATTERN_TWITTER_IMAGES = Pattern.compile(STRING_PATTERN_TWITTER_IMAGES,
 			Pattern.CASE_INSENSITIVE);
+    public static final Pattern PATTERN_TWITTER_DM_IMAGES = Pattern.compile(STRING_PATTERN_TWITTER_DM_IMAGES,
+            Pattern.CASE_INSENSITIVE);
 	public static final Pattern PATTERN_SINA_WEIBO_IMAGES = Pattern.compile(STRING_PATTERN_SINA_WEIBO_IMAGES,
 			Pattern.CASE_INSENSITIVE);
 	public static final Pattern PATTERN_LOCKERZ = Pattern.compile(STRING_PATTERN_LOCKERZ, Pattern.CASE_INSENSITIVE);
@@ -199,7 +197,7 @@ public class MediaPreviewUtils {
 	private static final Pattern[] SUPPORTED_PATTERNS = { PATTERN_GENERIC, PATTERN_TWITTER_IMAGES, PATTERN_INSTAGRAM,
 			PATTERN_GOOGLE_IMAGES, PATTERN_GOOGLE_PROXY_IMAGES, PATTERN_SINA_WEIBO_IMAGES, PATTERN_TWITPIC,
 			PATTERN_IMGUR, PATTERN_IMGLY, PATTERN_YFROG, PATTERN_LOCKERZ, PATTERN_PLIXI, PATTERN_TWITGOO,
-			PATTERN_MOBYPICTURE, PATTERN_PHOTOZOU, PATTERN_ABLOAD, PATTERN_TWIPPLE };
+			PATTERN_MOBYPICTURE, PATTERN_PHOTOZOU, PATTERN_TWITTER_DM_IMAGES, PATTERN_ABLOAD, PATTERN_TWIPPLE };
 
 	private static final String URL_PHOTOZOU_PHOTO_INFO = "https://api.photozou.jp/rest/photo_info.json";
 
@@ -470,21 +468,4 @@ public class MediaPreviewUtils {
     public interface OnMediaClickListener {
         void onMediaClick(View view, ParcelableMedia media, long accountId);
     }
-
-    private static class ImageGridClickListener implements View.OnClickListener {
-        private final OnMediaClickListener mListener;
-        private final long mAccountId;
-
-        ImageGridClickListener(final OnMediaClickListener listener, final long accountId) {
-            mListener = listener;
-            mAccountId = accountId;
-        }
-
-        @Override
-        public void onClick(final View v) {
-            if (mListener == null) return;
-            mListener.onMediaClick(v, (ParcelableMedia) v.getTag(), mAccountId);
-        }
-
-	}
 }

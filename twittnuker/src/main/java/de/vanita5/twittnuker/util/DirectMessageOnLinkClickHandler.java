@@ -41,9 +41,13 @@ public class DirectMessageOnLinkClickHandler extends OnLinkClickHandler {
          super(context, manager);
 	}
 
+    protected boolean isPrivateData() {
+        return true;
+    }
+
 	@Override
 	protected void openLink(final String link) {
-		if (link == null || context == null || manager.isActive()) return;
+        if (link == null || manager != null && manager.isActive()) return;
 		if (!hasShortenedLinks(link)) {
 			super.openLink(link);
 			return;
