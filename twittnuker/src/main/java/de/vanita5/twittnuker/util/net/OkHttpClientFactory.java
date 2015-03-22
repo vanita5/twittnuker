@@ -24,8 +24,6 @@ package de.vanita5.twittnuker.util.net;
 
 import android.content.Context;
 
-import de.vanita5.twittnuker.util.net.OkHttpClientImpl;
-
 import twitter4j.http.HttpClient;
 import twitter4j.http.HttpClientConfiguration;
 import twitter4j.http.HttpClientFactory;
