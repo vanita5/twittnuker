@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.NotificationHelper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import twitter4j.DirectMessage;
 import twitter4j.StallWarning;
 import twitter4j.Status;
@@ -154,42 +155,43 @@ public class StreamingService extends Service implements Constants {
 	}
 
 	private void initStreaming() {
-		if (!mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) return;
-
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-		if (isStreaming) {
-			if (!(mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
-					|| wifi.isConnected())) {
-				clearTwitterInstances();
-			}
-			return;
-		}
-
-		if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
-				|| wifi.isConnected()) {
-
-			final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-			if (setTwitterInstances(prefs)) {
-				if (!mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, true)) return;
-				final Intent intent = new Intent(this, HomeActivity.class);
-				NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-				builder.setOngoing(true)
-						.setOnlyAlertOnce(true)
-						.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT))
-						.setSmallIcon(R.drawable.ic_stat_twittnuker)
-						.setContentTitle(getString(R.string.app_name))
-						.setContentText(getString(R.string.streaming_service_running))
-						.setTicker(getString(R.string.streaming_service_running))
-						.setPriority(NotificationCompat.PRIORITY_MIN)
-						.setCategory(NotificationCompat.CATEGORY_SERVICE);
-				mNotificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
-			} else {
-				isStreaming = false;
-				mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
-			}
-		}
+		//FIXME disable streaming while HostAddressResolver is not fixed
+//		if (!mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) return;
+//
+//		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+//		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+//
+//		if (isStreaming) {
+//			if (!(mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
+//					|| wifi.isConnected())) {
+//				clearTwitterInstances();
+//			}
+//			return;
+//		}
+//
+//		if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
+//				|| wifi.isConnected()) {
+//
+//			final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+//			if (setTwitterInstances(prefs)) {
+//				if (!mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, true)) return;
+//				final Intent intent = new Intent(this, HomeActivity.class);
+//				NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+//				builder.setOngoing(true)
+//						.setOnlyAlertOnce(true)
+//						.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT))
+//						.setSmallIcon(R.drawable.ic_stat_twittnuker)
+//						.setContentTitle(getString(R.string.app_name))
+//						.setContentText(getString(R.string.streaming_service_running))
+//						.setTicker(getString(R.string.streaming_service_running))
+//						.setPriority(NotificationCompat.PRIORITY_MIN)
+//						.setCategory(NotificationCompat.CATEGORY_SERVICE);
+//				mNotificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
+//			} else {
+//				isStreaming = false;
+//				mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
+//			}
+//		}
 	}
 
 	private boolean setTwitterInstances(final SharedPreferencesWrapper prefs) {
@@ -208,7 +210,7 @@ public class StreamingService extends Service implements Constants {
 			cb.setIncludeEntitiesEnabled(true);
 			if (prefs.getBoolean(KEY_IGNORE_SSL_ERROR, false)) {
 				final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
-				cb.setHostAddressResolverFactory(new TwidereStreamingHostAddressResolverFactory(app));
+				cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(app));
 				cb.setIgnoreSSLError(true);
 			}
 			final String default_consumer_key = Utils.getNonEmptyString(prefs.getSharedPreferences(),
