@@ -32,6 +32,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -495,6 +496,9 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
             }
 
             private void finishAnimation() {
+                final Editor editor = mPreferences.edit();
+                editor.putLong(KEY_DEFAULT_ACCOUNT_ID, account.account_id);
+                editor.apply();
         		mAccountsAdapter.setSelectedAccountId(account.account_id);
                 updateAccountOptionsSeparatorLabel(clickedDrawable);
                 snapshotView.setVisibility(View.INVISIBLE);

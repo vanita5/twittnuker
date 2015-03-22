@@ -1776,8 +1776,10 @@ public final class Utils implements Constants, TwitterConstants {
         return child.getTop();
 	}
 
+
 	public static HttpClientWrapper getHttpClient(final Context context, final int timeoutMillis,
-												  final boolean ignoreSslError, final Proxy proxy, final HostAddressResolverFactory resolverFactory,
+												  final boolean ignoreSslError, final Proxy proxy,
+												  final HostAddressResolverFactory resolverFactory,
 												  final String userAgent, final boolean twitterClientHeader) {
 		final ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setHttpConnectionTimeout(timeoutMillis);
@@ -1797,6 +1799,17 @@ public final class Utils implements Constants, TwitterConstants {
         cb.setHttpClientFactory(new OkHttpClientFactory(context));
 		return new HttpClientWrapper(cb.build());
 	}
+
+    public static HttpClientWrapper getDefaultHttpClient(final Context context) {
+        if (context == null) return null;
+        final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        final int timeoutMillis = prefs.getInt(KEY_CONNECTION_TIMEOUT, 10000) * 1000;
+        final Proxy proxy = getProxy(context);
+        final String userAgent = generateBrowserUserAgent();
+        final HostAddressResolverFactory resolverFactory = new TwidereHostResolverFactory(
+                TwittnukerApplication.getInstance(context));
+        return getHttpClient(context, timeoutMillis, true, proxy, resolverFactory, userAgent, false);
+    }
 
 	public static HttpClientWrapper getImageLoaderHttpClient(final Context context) {
 		if (context == null) return null;

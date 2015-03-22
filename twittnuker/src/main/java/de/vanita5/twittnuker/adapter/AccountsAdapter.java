@@ -46,8 +46,6 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
 	private final ImageLoaderWrapper mImageLoader;
 	private final SharedPreferences mPreferences;
 
-	private long mDefaultAccountId;
-
 	private boolean mDisplayProfileImage;
 	private int mChoiceMode;
     private boolean mSortEnabled;
@@ -73,7 +71,6 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
 		final AccountViewHolder holder = (AccountViewHolder) view.getTag();
         holder.screen_name.setText("@" + cursor.getString(mIndices.screen_name));
 		holder.setAccountColor(color);
-        holder.setIsDefault(mDefaultAccountId != -1 && mDefaultAccountId == cursor.getLong(mIndices.account_id));
 		if (mDisplayProfileImage) {
             mImageLoader.displayProfileImage(holder.profile_image, cursor.getString(mIndices.profile_image_url));
 		} else {
@@ -124,12 +121,6 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
     public boolean isShowAccountColor() {
         return false;
     }
-
-    @Override
-	public void notifyDataSetChanged() {
-		mDefaultAccountId = mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1);
-		super.notifyDataSetChanged();
-	}
 
     @Override
     public void setDisplayNameFirst(boolean nameFirst) {

@@ -80,7 +80,6 @@ dependencies {
     compile project(':twittnuker.component.common')
     compile project(':SlidingMenu')
     compile project(':DragSortListView')
-    compile project(':PullToRefresh')
     compile project(':MessageBubbleView')
     compile project(':ColorPicker')
     compile fileTree(dir: 'libs', include: ['*.jar'])

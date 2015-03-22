@@ -662,6 +662,7 @@
     <string name="save_to_gallery">Speichern</string>
     <string name="unknown_location">Unbekannt</string>
     <string name="import_export_settings">Import/Export</string>
+    <string name="no_account">Keine Accounts</string>
 
 
     <!-- Twittnuker -->
