@@ -484,9 +484,9 @@ public class StatusFragment extends BaseSupportFragment
             if (position == getItemCount() - 1) {
                 return null;
             } else if (position < conversationCount) {
-                return mConversation.get(position);
+                return mConversation != null ? mConversation.get(position) : null;
             } else if (position > conversationCount) {
-                return mReplies.get(position - conversationCount - 1);
+                return mReplies != null ? mReplies.get(position - conversationCount - 1) : null;
             } else {
                 return mStatus;
 			}
@@ -582,11 +582,9 @@ public class StatusFragment extends BaseSupportFragment
 			final DividerItemDecoration decoration = mFragment.getItemDecoration();
 			decoration.setDecorationStart(0);
 			if (mReplies != null) {
-//                decoration.setDecorationEndOffset(2);
-				decoration.setDecorationEnd(getItemCount() - 2);
+                decoration.setDecorationEndOffset(2);
 			} else {
-//                decoration.setDecorationEndOffset(3);
-				decoration.setDecorationEnd(getItemCount() - 3);
+                decoration.setDecorationEndOffset(3);
 			}
 			mFragment.mRecyclerView.invalidateItemDecorations();
 		}
