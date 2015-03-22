@@ -38,13 +38,13 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
+import de.vanita5.twittnuker.streaming.util.TwidereStreamingHostAddressResolverFactory;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.NotificationHelper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import twitter4j.DirectMessage;
 import twitter4j.StallWarning;
 import twitter4j.Status;
@@ -208,7 +208,7 @@ public class StreamingService extends Service implements Constants {
 			cb.setIncludeEntitiesEnabled(true);
 			if (prefs.getBoolean(KEY_IGNORE_SSL_ERROR, false)) {
 				final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
-				cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(app));
+				cb.setHostAddressResolverFactory(new TwidereStreamingHostAddressResolverFactory(app));
 				cb.setIgnoreSSLError(true);
 			}
 			final String default_consumer_key = Utils.getNonEmptyString(prefs.getSharedPreferences(),
