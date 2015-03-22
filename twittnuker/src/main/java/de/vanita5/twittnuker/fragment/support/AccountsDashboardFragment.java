@@ -101,7 +101,6 @@ import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
 import de.vanita5.twittnuker.view.ShapedImageView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -617,7 +616,10 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
                 final ParcelableAccount[] previousAccounts = mInternalAccounts;
                 mInternalAccounts = new ParcelableAccount[accounts.length];
                 int tempIdx = 0;
-                final List<ParcelableAccount> tempList = Arrays.asList(accounts);
+                final List<ParcelableAccount> tempList = new ArrayList<>();
+                for (ParcelableAccount account : accounts) {
+                    tempList.add(account);
+                }
                 if (previousAccounts != null) {
                     for (ParcelableAccount previousAccount : previousAccounts) {
                         final int idx = indexOfAccount(tempList, previousAccount.account_id);
