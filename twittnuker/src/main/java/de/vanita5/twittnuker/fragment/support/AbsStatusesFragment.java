@@ -34,9 +34,11 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.widget.FixedLinearLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +62,8 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.ContentListScrollListener;
-import de.vanita5.twittnuker.util.ContentListScrollListener.ContentListAware;
+import de.vanita5.twittnuker.util.ContentListScrollListener.ContentListSupport;
+import de.vanita5.twittnuker.util.PositionManager;
 import de.vanita5.twittnuker.util.SimpleDrawerCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -73,7 +76,7 @@ import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
 
 public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment implements LoaderCallbacks<Data>,
         OnRefreshListener, DrawerCallback, RefreshScrollTopInterface, StatusAdapterListener,
-        ControlBarOffsetListener, ContentListAware {
+        ControlBarOffsetListener, ContentListSupport {
 
     private final Object mStatusesBusCallback;
     private AbsStatusesAdapter<Data> mAdapter;
@@ -86,6 +89,7 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
     private Rect mSystemWindowsInsets = new Rect();
     private int mControlBarOffsetPixels;
     private PopupMenu mPopupMenu;
+    private PositionManager mPositionManager;
 
     protected AbsStatusesFragment() {
         mStatusesBusCallback = createMessageBusCallback();
@@ -126,10 +130,6 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 		mDrawerCallback.topChanged(offset);
 	}
 
-    public AbsStatusesAdapter<Data> getAdapter() {
-        return mAdapter;
-    }
-
     public SharedPreferences getSharedPreferences() {
         if (mPreferences != null) return mPreferences;
         return mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -141,10 +141,20 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
         return mSwipeRefreshLayout.isRefreshing();
     }
 
+    public AbsStatusesAdapter<Data> getAdapter() {
+        return mAdapter;
+    }
+
+    public void setControlVisible(boolean visible) {
+        final FragmentActivity activity = getActivity();
+        if (activity instanceof BaseActionBarActivity) {
+            ((BaseActionBarActivity) activity).setControlBarVisibleAnimate(visible);
+        }
+    }
+
     public void setRefreshing(boolean refreshing) {
         if (refreshing == mSwipeRefreshLayout.isRefreshing()) return;
-        if (!refreshing)
-        updateRefreshProgressOffset();
+        if (!refreshing) updateRefreshProgressOffset();
         mSwipeRefreshLayout.setRefreshing(refreshing);
     }
 
@@ -164,6 +174,7 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 	@Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+        mPositionManager = new PositionManager(getActivity());
 		final View view = getView();
 		if (view == null) throw new AssertionError();
 		final Context context = view.getContext();
@@ -176,9 +187,10 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 				R.color.bg_refresh_progress_color_light, R.color.bg_refresh_progress_color_dark);
         mSwipeRefreshLayout.setProgressBackgroundColorSchemeResource(colorRes);
 		mAdapter = onCreateAdapter(context, compact);
-        mLayoutManager = new LinearLayoutManager(context);
+        mLayoutManager = new FixedLinearLayoutManager(context);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
 		if (compact) {
             mRecyclerView.addItemDecoration(new DividerItemDecoration(context, mLayoutManager.getOrientation()));
 		}
@@ -186,6 +198,14 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 
         final ContentListScrollListener scrollListener = new ContentListScrollListener(this);
         scrollListener.setTouchSlop(ViewConfiguration.get(context).getScaledTouchSlop());
+        scrollListener.setOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    saveReadPosition();
+                }
+            }
+        });
         mRecyclerView.setOnScrollListener(scrollListener);
         mAdapter.setListener(this);
         final Bundle loaderArgs = new Bundle(getArguments());
@@ -396,15 +416,22 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 		mAdapter.setData(data);
 	}
 
+    protected String getReadPositionTag() {
+        return null;
+    }
+
     protected abstract boolean hasMoreData(Data data);
 
     protected abstract AbsStatusesAdapter<Data> onCreateAdapter(Context context, boolean compact);
 
-    public void setControlVisible(boolean visible) {
-        final FragmentActivity activity = getActivity();
-        if (activity instanceof BaseActionBarActivity) {
-            ((BaseActionBarActivity) activity).setControlBarVisibleAnimate(visible);
-        }
+    protected void saveReadPosition() {
+        final String readPositionTag = getReadPositionTag();
+        if (readPositionTag == null) return;
+        final int position = mLayoutManager.findFirstVisibleItemPosition();
+        if (position == RecyclerView.NO_POSITION) return;
+        final ParcelableStatus status = mAdapter.getStatus(position);
+        if (status == null) return;
+        mPositionManager.setPosition(readPositionTag, status.id);
     }
 
     private void setListShown(boolean shown) {

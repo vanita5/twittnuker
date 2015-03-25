@@ -32,6 +32,8 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
 public class MentionsTimelineFragment extends CursorStatusesFragment {
 
+    public static final String KEY_READ_POSITION_TAG = "mentions_timeline";
+
     @Override
     public Uri getContentUri() {
         return Mentions.CONTENT_URI;
@@ -45,13 +47,6 @@ public class MentionsTimelineFragment extends CursorStatusesFragment {
     }
 
 	@Override
-    protected void updateRefreshState() {
-        final AsyncTwitterWrapper twitter = getTwitterWrapper();
-        if (twitter == null) return;
-        setRefreshing(twitter.isMentionsTimelineRefreshing());
-    }
-
-    @Override
     protected int getNotificationType() {
         return NOTIFICATION_ID_MENTIONS_TIMELINE;
 	}
@@ -63,10 +58,22 @@ public class MentionsTimelineFragment extends CursorStatusesFragment {
 	}
 
 	@Override
+    protected void updateRefreshState() {
+        final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        if (twitter == null) return;
+        setRefreshing(twitter.isMentionsTimelineRefreshing());
+    }
+
+    @Override
     public int getStatuses(long[] accountIds, long[] maxIds, long[] sinceIds) {
         final AsyncTwitterWrapper twitter = getTwitterWrapper();
         if (twitter == null) return -1;
         return twitter.getMentionsTimelineAsync(accountIds, maxIds, sinceIds);
 	}
+
+    @Override
+    protected String getReadPositionTag() {
+        return KEY_READ_POSITION_TAG;
+    }
 
 }

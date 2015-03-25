@@ -23,51 +23,60 @@
 package de.vanita5.twittnuker.provider;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.InboxStyle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.util.Log;
 
 import com.squareup.otto.Bus;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.mariotaku.jsonserializer.JSONFileIO;
 import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.fragment.support.MentionsTimelineFragment;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.model.UnreadItem;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Preferences;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.TwidereArrayUtils;
-import de.vanita5.twittnuker.util.CustomTabUtils;
+import de.vanita5.twittnuker.util.PositionManager;
 import de.vanita5.twittnuker.util.ImagePreloader;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
 import de.vanita5.twittnuker.util.NotificationHelper;
@@ -76,7 +85,6 @@ import de.vanita5.twittnuker.util.SQLiteDatabaseWrapper.LazyLoadCallback;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder.CachedUsersQueryBuilder;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder.ConversationQueryBuilder;
-import de.vanita5.twittnuker.util.collection.NoDuplicatesCopyOnWriteArrayList;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
@@ -85,49 +93,31 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import twitter4j.http.HostAddressResolver;
 
 import static de.vanita5.twittnuker.util.Utils.clearAccountColor;
 import static de.vanita5.twittnuker.util.Utils.clearAccountName;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getNotificationUri;
 import static de.vanita5.twittnuker.util.Utils.getTableId;
 import static de.vanita5.twittnuker.util.Utils.getTableNameById;
-import static de.vanita5.twittnuker.util.Utils.isFiltered;
 
 public final class TwidereDataProvider extends ContentProvider implements Constants,
 		LazyLoadCallback {
 
-	private static final String UNREAD_STATUSES_FILE_NAME = "unread_statuses";
-	private static final String UNREAD_MENTIONS_FILE_NAME = "unread_mentions";
-	private static final String UNREAD_MESSAGES_FILE_NAME = "unread_messages";
-
 	private ContentResolver mContentResolver;
 	private SQLiteDatabaseWrapper mDatabaseWrapper;
 	private NotificationManager mNotificationManager;
+    private PositionManager mPositionManager;
 	private SharedPreferencesWrapper mPreferences;
 	private ImagePreloader mImagePreloader;
 	private HostAddressResolver mHostAddressResolver;
 	private NotificationHelper mNotificationHelper;
 	private Handler mHandler;
-
-    private final List<ParcelableStatus> mNewStatuses = new CopyOnWriteArrayList<>();
-    private final List<ParcelableStatus> mNewMentions = new CopyOnWriteArrayList<>();
-    private final List<ParcelableDirectMessage> mNewMessages = new CopyOnWriteArrayList<>();
-
-    private final List<UnreadItem> mUnreadStatuses = new NoDuplicatesCopyOnWriteArrayList<>();
-    private final List<UnreadItem> mUnreadMentions = new NoDuplicatesCopyOnWriteArrayList<>();
-    private final List<UnreadItem> mUnreadMessages = new NoDuplicatesCopyOnWriteArrayList<>();
 
 	@Override
 	public int bulkInsert(final Uri uri, @NonNull final ContentValues[] valuesArray) {
@@ -209,15 +199,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 					return 1;
 				}
 				case VIRTUAL_TABLE_ID_UNREAD_COUNTS: {
-					final List<String> segments = uri.getPathSegments();
-					final int segmentsSize = segments.size();
-					if (segmentsSize == 1)
-						return clearUnreadCount();
-					else if (segmentsSize == 2)
-						return clearUnreadCount(ParseUtils.parseInt(segments.get(1)));
-					else if (segmentsSize == 4)
-						return removeUnreadItems(ParseUtils.parseInt(segments.get(1)),
-								ParseUtils.parseLong(segments.get(2)), TwidereArrayUtils.parseLongArray(segments.get(3), ','));
 					return 0;
 				}
 			}
@@ -306,8 +287,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         mDatabaseWrapper = new SQLiteDatabaseWrapper(this);
 		mHostAddressResolver = app.getHostAddressResolver();
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+		mPositionManager = new PositionManager(context);
 		mImagePreloader = new ImagePreloader(context, app.getImageLoader());
-		restoreUnreadItems();
 		mNotificationHelper = new NotificationHelper(context);
 		// final GetWritableDatabaseTask task = new
 		// GetWritableDatabaseTask(context, helper, mDatabaseWrapper);
@@ -469,76 +450,15 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	}
 
 	private void clearNotification() {
-		mNewStatuses.clear();
-		mNewMentions.clear();
-		mNewMessages.clear();
 	}
 
 	private void clearNotification(final int notificationType, final long accountId) {
-		switch (notificationType) {
-			case NOTIFICATION_ID_HOME_TIMELINE: {
-				mNewStatuses.clear();
-				break;
-			}
-			case NOTIFICATION_ID_MENTIONS_TIMELINE: {
-				mNewMentions.clear();
-				break;
-			}
-			case NOTIFICATION_ID_DIRECT_MESSAGES: {
-				mNewMessages.clear();
-				break;
-			}
-			default: {
-			}
-		}
-	}
 
-	private int clearUnreadCount() {
-		int result = 0;
-		result += mUnreadStatuses.size();
-		result += mUnreadMentions.size();
-		result += mUnreadMentions.size();
-		mUnreadStatuses.clear();
-		mUnreadMentions.clear();
-		mUnreadMessages.clear();
-		saveUnreadItemsFile(mUnreadStatuses, UNREAD_STATUSES_FILE_NAME);
-		saveUnreadItemsFile(mUnreadMentions, UNREAD_MENTIONS_FILE_NAME);
-		saveUnreadItemsFile(mUnreadMessages, UNREAD_MESSAGES_FILE_NAME);
-		notifyContentObserver(UnreadCounts.CONTENT_URI);
-		return result;
-	}
-
-	private int clearUnreadCount(final int position) {
-		final Context context = getContext();
-		final int result;
-		final SupportTabSpec tab = CustomTabUtils.getAddedTabAt(context, position);
-		final String type = tab.type;
-		if (TAB_TYPE_HOME_TIMELINE.equals(type) || TAB_TYPE_STAGGERED_HOME_TIMELINE.equals(type)) {
-			final long account_id = tab.args != null ? tab.args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-			final long[] account_ids = account_id > 0 ? new long[] { account_id } : getActivatedAccountIds(context);
-			result = clearUnreadCount(mUnreadStatuses, account_ids);
-			saveUnreadItemsFile(mUnreadStatuses, UNREAD_STATUSES_FILE_NAME);
-		} else if (TAB_TYPE_MENTIONS_TIMELINE.equals(type)) {
-			final long account_id = tab.args != null ? tab.args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-			final long[] account_ids = account_id > 0 ? new long[] { account_id } : getActivatedAccountIds(context);
-			result = clearUnreadCount(mUnreadMentions, account_ids);
-			mUnreadMentions.clear();
-			saveUnreadItemsFile(mUnreadMentions, UNREAD_MENTIONS_FILE_NAME);
-		} else if (TAB_TYPE_DIRECT_MESSAGES.equals(type)) {
-			final long account_id = tab.args != null ? tab.args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-			final long[] account_ids = account_id > 0 ? new long[] { account_id } : getActivatedAccountIds(context);
-			result = clearUnreadCount(mUnreadMessages, account_ids);
-			mUnreadMessages.clear();
-			saveUnreadItemsFile(mUnreadMessages, UNREAD_MESSAGES_FILE_NAME);
-		} else
-			return 0;
-		if (result > 0) {
-			notifyUnreadCountChanged(position);
-		}
-		return result;
 	}
 
 	/**
+	 * //TODO
+	 *
 	 * Creates notifications for mentions and DMs
 	 * @param pref
 	 * @param type
@@ -635,21 +555,11 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
 	private Cursor getNotificationsCursor() {
 		final MatrixCursor c = new MatrixCursor(TwidereDataStore.Notifications.MATRIX_COLUMNS);
-		c.addRow(new Integer[] { NOTIFICATION_ID_HOME_TIMELINE, mUnreadStatuses.size() });
-		c.addRow(new Integer[] {NOTIFICATION_ID_MENTIONS_TIMELINE, mNewMentions.size() });
-		c.addRow(new Integer[] { NOTIFICATION_ID_DIRECT_MESSAGES, mNewMessages.size() });
 		return c;
 	}
 
 	private Cursor getNotificationsCursor(final int id) {
 		final MatrixCursor c = new MatrixCursor(TwidereDataStore.Notifications.MATRIX_COLUMNS);
-		if (id == NOTIFICATION_ID_HOME_TIMELINE) {
-			c.addRow(new Integer[] { id, mNewStatuses.size() });
-		} else if (id == NOTIFICATION_ID_MENTIONS_TIMELINE) {
-			c.addRow(new Integer[] { id, mNewMentions.size() });
-		} else if (id == NOTIFICATION_ID_DIRECT_MESSAGES) {
-			c.addRow(new Integer[] { id, mNewMessages.size() });
-		}
 		return c;
 	}
 
@@ -660,46 +570,12 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
 	private Cursor getUnreadCountsCursor(final int position) {
 		final MatrixCursor c = new MatrixCursor(TwidereDataStore.UnreadCounts.MATRIX_COLUMNS);
-		final Context context = getContext();
-		final SupportTabSpec tab = CustomTabUtils.getAddedTabAt(context, position);
-        if (tab == null) return c;
-		final int count;
-        if (TAB_TYPE_HOME_TIMELINE.equals(tab.type) || TAB_TYPE_STAGGERED_HOME_TIMELINE.equals(tab.type)) {
-			final long account_id = tab.args != null ? tab.args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-			final long[] account_ids = account_id > 0 ? new long[] { account_id } : getActivatedAccountIds(context);
-			count = getUnreadCount(mUnreadStatuses, account_ids);
-        } else if (TAB_TYPE_MENTIONS_TIMELINE.equals(tab.type)) {
-			final long account_id = tab.args != null ? tab.args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-			final long[] account_ids = account_id > 0 ? new long[] { account_id } : getActivatedAccountIds(context);
-			count = getUnreadCount(mUnreadMentions, account_ids);
-        } else if (TAB_TYPE_DIRECT_MESSAGES.equals(tab.type)) {
-			final long account_id = tab.args != null ? tab.args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-			final long[] account_ids = account_id > 0 ? new long[] { account_id } : getActivatedAccountIds(context);
-			count = getUnreadCount(mUnreadMessages, account_ids);
-		} else {
-			count = 0;
-		}
-        if (tab.type != null) {
-            c.addRow(new Object[] { position, tab.type, count });
-		}
+
 		return c;
 	}
 
 	private Cursor getUnreadCountsCursorByType(final String type) {
 		final MatrixCursor c = new MatrixCursor(TwidereDataStore.UnreadCounts.MATRIX_COLUMNS);
-		final int count;
-		if (TAB_TYPE_HOME_TIMELINE.equals(type) || TAB_TYPE_STAGGERED_HOME_TIMELINE.equals(type)) {
-			count = mUnreadStatuses.size();
-		} else if (TAB_TYPE_MENTIONS_TIMELINE.equals(type)) {
-			count = mUnreadMentions.size();
-		} else if (TAB_TYPE_DIRECT_MESSAGES.equals(type)) {
-			count = mUnreadMessages.size();
-		} else {
-			count = 0;
-		}
-		if (type != null) {
-			c.addRow(new Object[] { -1, type, count });
-		}
 		return c;
 	}
 
@@ -709,83 +585,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         cr.notifyChange(uri, null);
 	}
 
-	private int notifyIncomingMessagesInserted(final ContentValues... values) {
-		if (values == null || values.length == 0) return 0;
-		// Add statuses that not filtered to list for future use.
-		int result = 0;
-		int i = 1;
-		for (final ContentValues value : values) {
-			final ParcelableDirectMessage message = new ParcelableDirectMessage(value);
-			mNewMessages.add(message);
-			if (mUnreadMessages.add(new UnreadItem(message.sender_id, message.account_id))) { //we got a new dm
-				//DM Notification
-				final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
-						getAccountIds(getContext()));
-				final AccountPreferences pref = AccountPreferences.getAccountPreferences(prefs, message.account_id);
-				if (pref != null && pref.isDirectMessagesNotificationEnabled()) {
-					createNotifications(pref, NotificationContent.NOTIFICATION_TYPE_MENTION,
-							message, i >= values.length);
-				}
-				result++;
-			}
-		}
-		if (result > 0) {
-			saveUnreadItemsFile(mUnreadMessages, UNREAD_MESSAGES_FILE_NAME);
-		}
-		return result;
-	}
-
-    private int notifyMentionsInserted(final AccountPreferences[] prefs, final ContentValues... values) {
-		if (values == null || values.length == 0) return 0;
-		// Add statuses that not filtered to list for future use.
-		int result = 0;
-		final boolean enabled = mPreferences.getBoolean(KEY_FILTERS_IN_MENTIONS_TIMELINE, true);
-		final boolean filtersForRts = mPreferences.getBoolean(KEY_FILTERS_FOR_RTS, true);
-		int i = 1;
-		for (final ContentValues value : values) {
-			final ParcelableStatus status = new ParcelableStatus(value);
-			if (!enabled || !isFiltered(mDatabaseWrapper.getSQLiteDatabase(), status, filtersForRts)) {
-                final AccountPreferences pref = AccountPreferences.getAccountPreferences(prefs, status.account_id);
-				if (pref == null || status.user_is_following || !pref.isNotificationFollowingOnly()) {
-                    mNewMentions.add(status);
-                }
-				if (mUnreadMentions.add(new UnreadItem(status.id, status.account_id))) { //we got a new mention
-					//Mention Notification
-					if (pref != null && pref.isMentionsNotificationEnabled()) {
-						createNotifications(pref, NotificationContent.NOTIFICATION_TYPE_MENTION,
-								status, i >= values.length);
-					}
-					result++;
-				}
-			}
-			i++;
-		}
-		if (result > 0) {
-			saveUnreadItemsFile(mUnreadMentions, UNREAD_MENTIONS_FILE_NAME);
-		}
-		return result;
-	}
-
-	private int notifyStatusesInserted(final ContentValues... values) {
-		if (values == null || values.length == 0) return 0;
-		// Add statuses that not filtered to list for future use.
-		int result = 0;
-		final boolean enabled = mPreferences.getBoolean(KEY_FILTERS_IN_HOME_TIMELINE, true);
-		final boolean filtersForRts = mPreferences.getBoolean(KEY_FILTERS_FOR_RTS, true);
-		for (final ContentValues value : values) {
-			final ParcelableStatus status = new ParcelableStatus(value);
-			if (!enabled || !isFiltered(mDatabaseWrapper.getSQLiteDatabase(), status, filtersForRts)) {
-				mNewStatuses.add(status);
-				if (mUnreadStatuses.add(new UnreadItem(status.id, status.account_id))) {
-					result++;
-				}
-			}
-		}
-		if (result > 0) {
-			saveUnreadItemsFile(mUnreadStatuses, UNREAD_STATUSES_FILE_NAME);
-		}
-		return result;
-	}
 
 	private void notifyUnreadCountChanged(final int position) {
 		final Context context = getContext();
@@ -823,28 +622,176 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (!uri.getBooleanQueryParameter(QUERY_PARAM_NOTIFY, true)) return;
         switch (tableId) {
 			case TABLE_ID_STATUSES: {
-				notifyStatusesInserted(valuesArray);
-				final List<ParcelableStatus> items = new ArrayList<>(mNewStatuses);
-				Collections.sort(items);
-				//TODO Notifications for new tweets in timeline
 				notifyUnreadCountChanged(NOTIFICATION_ID_HOME_TIMELINE);
 				break;
 			}
 			case TABLE_ID_MENTIONS: {
 				final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
 						getAccountIds(getContext()));
-                notifyMentionsInserted(prefs, valuesArray);
+                for (final AccountPreferences pref : prefs) {
+                    if (!pref.isMentionsNotificationEnabled()) continue;
+                    showMentionsNotification(pref, mPositionManager.getPosition(MentionsTimelineFragment.KEY_READ_POSITION_TAG));
+                }
 				notifyUnreadCountChanged(NOTIFICATION_ID_MENTIONS_TIMELINE);
 				break;
 			}
 			case TABLE_ID_DIRECT_MESSAGES_INBOX: {
-				notifyIncomingMessagesInserted(valuesArray);
+                final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
+                        getAccountIds(getContext()));
+                for (final AccountPreferences pref : prefs) {
+                    if (pref.isDirectMessagesNotificationEnabled()) {
+                        final long accountId = pref.getAccountId();
+                    }
+                }
 				notifyUnreadCountChanged(NOTIFICATION_ID_DIRECT_MESSAGES);
 				break;
 			}
             case TABLE_ID_DRAFTS: {
                 break;
 	        }
+        }
+    }
+
+    private void showTimelineNotification(AccountPreferences pref, long position) {
+        final long accountId = pref.getAccountId();
+        final Context context = getContext();
+        final Resources resources = context.getResources();
+        final NotificationManager nm = getNotificationManager();
+        final Expression selection = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
+                Expression.greaterThan(Statuses.STATUS_ID, position));
+        final String filteredSelection = Utils.buildStatusFilterWhereClause(Statuses.TABLE_NAME,
+                selection, true).getSQL();
+        final String[] userProjection = {Statuses.USER_ID, Statuses.USER_NAME, Statuses.USER_SCREEN_NAME};
+        final String[] statusProjection = new String[0];
+        final Cursor statusCursor = mDatabaseWrapper.query(Statuses.TABLE_NAME, statusProjection,
+                filteredSelection, null, null, null, Statuses.SORT_ORDER_TIMESTAMP_DESC);
+        final Cursor userCursor = mDatabaseWrapper.query(Statuses.TABLE_NAME, userProjection,
+                filteredSelection, null, Statuses.USER_ID, null, Statuses.SORT_ORDER_TIMESTAMP_DESC);
+        try {
+            final int usersCount = userCursor.getCount();
+            final int statusesCount = statusCursor.getCount();
+            if (statusesCount == 0 || usersCount == 0) return;
+            final int idxUserName = userCursor.getColumnIndex(Statuses.USER_NAME),
+                    idxUserScreenName = userCursor.getColumnIndex(Statuses.USER_NAME),
+                    idxUserId = userCursor.getColumnIndex(Statuses.USER_NAME);
+            final String notificationTitle = resources.getQuantityString(R.plurals.N_new_statuses,
+                    statusesCount, statusesCount);
+            final String notificationContent;
+            userCursor.moveToFirst();
+            final String displayName = userCursor.getString(idxUserScreenName);
+            if (usersCount == 1) {
+                notificationContent = context.getString(R.string.from_name, displayName);
+            } else if (usersCount == 2) {
+                userCursor.moveToPosition(1);
+                final String othersName = userCursor.getString(idxUserScreenName);
+                notificationContent = resources.getQuantityString(R.plurals.from_name_and_N_others,
+                        usersCount - 1, othersName, usersCount - 1);
+            } else {
+                userCursor.moveToPosition(1);
+                final String othersName = userCursor.getString(idxUserScreenName);
+                notificationContent = resources.getString(R.string.from_name_and_N_others, othersName, usersCount - 1);
+            }
+
+            // Setup on click intent
+            final Intent homeIntent = new Intent(context, HomeActivity.class);
+            final PendingIntent clickIntent = PendingIntent.getActivity(context, 0, homeIntent, 0);
+
+            // Setup notification
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            builder.setSmallIcon(R.drawable.ic_stat_twitter);
+            builder.setTicker(notificationTitle);
+            builder.setContentTitle(notificationTitle);
+            builder.setContentText(notificationContent);
+            builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
+            builder.setContentIntent(clickIntent);
+            builder.setNumber(statusesCount);
+            builder.setColor(pref.getNotificationLightColor());
+            nm.notify("home_" + accountId, NOTIFICATION_ID_HOME_TIMELINE, builder.build());
+        } finally {
+            statusCursor.close();
+            userCursor.close();
+        }
+    }
+
+    private void showMentionsNotification(AccountPreferences pref, long position) {
+        final long accountId = pref.getAccountId();
+        final Context context = getContext();
+        final Resources resources = context.getResources();
+        final NotificationManager nm = getNotificationManager();
+        final Expression selection = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
+                Expression.greaterThan(Statuses.STATUS_ID, position));
+        final String filteredSelection = Utils.buildStatusFilterWhereClause(Mentions.TABLE_NAME,
+                selection, true).getSQL();
+        final String[] userProjection = {Statuses.USER_ID, Statuses.USER_NAME, Statuses.USER_SCREEN_NAME};
+        final String[] statusProjection = {Statuses.USER_ID, Statuses.USER_NAME, Statuses.USER_SCREEN_NAME,
+                Statuses.TEXT_UNESCAPED, Statuses.STATUS_TIMESTAMP};
+        final Cursor statusCursor = mDatabaseWrapper.query(Mentions.TABLE_NAME, statusProjection,
+                filteredSelection, null, null, null, Statuses.SORT_ORDER_TIMESTAMP_DESC);
+        final Cursor userCursor = mDatabaseWrapper.query(Mentions.TABLE_NAME, userProjection,
+                filteredSelection, null, Statuses.USER_ID, null, Statuses.SORT_ORDER_TIMESTAMP_DESC);
+        try {
+            final int usersCount = userCursor.getCount();
+            final int statusesCount = statusCursor.getCount();
+            if (statusesCount == 0 || usersCount == 0) return;
+            final String accountName = Utils.getAccountName(context, accountId);
+            final String accountScreenName = Utils.getAccountScreenName(context, accountId);
+            final int idxStatusText = statusCursor.getColumnIndex(Statuses.TEXT_UNESCAPED),
+                    idxStatusTimestamp = statusCursor.getColumnIndex(Statuses.STATUS_TIMESTAMP),
+                    idxStatusUserName = statusCursor.getColumnIndex(Statuses.USER_NAME),
+                    idxStatusUserScreenName = statusCursor.getColumnIndex(Statuses.USER_SCREEN_NAME),
+                    idxUserName = userCursor.getColumnIndex(Statuses.USER_NAME),
+                    idxUserScreenName = userCursor.getColumnIndex(Statuses.USER_NAME),
+                    idxUserId = userCursor.getColumnIndex(Statuses.USER_NAME);
+
+            final CharSequence notificationTitle = resources.getQuantityString(R.plurals.N_new_mentions,
+                    statusesCount, statusesCount);
+            final String notificationContent;
+            userCursor.moveToFirst();
+            final String displayName = userCursor.getString(idxUserScreenName);
+            if (usersCount == 1) {
+                notificationContent = context.getString(R.string.notification_mention, displayName);
+            } else {
+                notificationContent = context.getString(R.string.notification_mention_multiple,
+                        displayName, usersCount - 1);
+            }
+
+            // Add rich notification and get latest tweet timestamp
+            long when = -1;
+            final InboxStyle style = new InboxStyle();
+            for (int i = 0, j = Math.min(statusesCount, 5); statusCursor.moveToPosition(i) && i < j; i++) {
+                if (when < 0) {
+                    when = statusCursor.getLong(idxStatusTimestamp);
+                }
+                final SpannableStringBuilder sb = new SpannableStringBuilder();
+                sb.append(statusCursor.getString(idxStatusUserScreenName));
+                sb.setSpan(new StyleSpan(Typeface.BOLD), 0, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                sb.append(' ');
+                sb.append(statusCursor.getString(idxStatusText));
+                style.addLine(sb);
+            }
+			style.setSummaryText("@" + accountScreenName);
+
+            // Setup on click intent
+            final Intent homeIntent = new Intent(context, HomeActivity.class);
+            final PendingIntent clickIntent = PendingIntent.getActivity(context, 0, homeIntent, 0);
+
+            // Setup notification
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            builder.setSmallIcon(R.drawable.ic_stat_mention);
+            builder.setTicker(notificationTitle);
+            builder.setContentTitle(notificationTitle);
+            builder.setContentText(notificationContent);
+            builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
+            builder.setContentIntent(clickIntent);
+            builder.setNumber(statusesCount);
+            builder.setWhen(when);
+            builder.setStyle(style);
+            builder.setColor(pref.getNotificationLightColor());
+            nm.notify("mentions_" + accountId, NOTIFICATION_ID_MENTIONS_TIMELINE,
+                    builder.build());
+        } finally {
+            statusCursor.close();
+            userCursor.close();
         }
     }
 
@@ -865,129 +812,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		}
 	}
 
-	private int removeUnreadItems(final int tab_position, final long account_id, final long... ids) {
-		if (tab_position < 0 || account_id == 0 || ids == null || ids.length == 0) return 0;
-		final UnreadItem[] items = new UnreadItem[ids.length];
-		for (int i = 0, j = ids.length; i < j; i++) {
-			items[i] = new UnreadItem(ids[i], account_id);
-		}
-		return removeUnreadItems(tab_position, items);
-	}
-
-	private synchronized int removeUnreadItems(final int tab_position, final UnreadItem... items) {
-		if (tab_position < 0 || items == null || items.length == 0) return 0;
-		final int result;
-		String notificationType = null;
-		final String type = CustomTabUtils.getAddedTabTypeAt(getContext(), tab_position);
-		final List<UnreadItem> arrItems = Arrays.asList(items);
-		if (TAB_TYPE_HOME_TIMELINE.equals(type)) {
-			final int size = mUnreadStatuses.size();
-			mUnreadStatuses.removeAll(arrItems);
-			result = size - mUnreadStatuses.size();
-			if (result != 0) {
-				saveUnreadItemsFile(mUnreadStatuses, UNREAD_STATUSES_FILE_NAME);
-			}
-		} else if (TAB_TYPE_MENTIONS_TIMELINE.equals(type)) {
-			notificationType = NotificationContent.NOTIFICATION_TYPE_MENTION;
-			final int size = mUnreadMentions.size();
-			mUnreadMentions.removeAll(arrItems);
-			result = size - mUnreadMentions.size();
-			if (result != 0) {
-				saveUnreadItemsFile(mUnreadMentions, UNREAD_MENTIONS_FILE_NAME);
-			}
-		} else if (TAB_TYPE_DIRECT_MESSAGES.equals(type)) {
-			notificationType = NotificationContent.NOTIFICATION_TYPE_DIRECT_MESSAGE;
-			final int size = mUnreadMessages.size();
-			mUnreadMessages.removeAll(arrItems);
-			result = size - mUnreadMessages.size();
-			if (result != 0) {
-				saveUnreadItemsFile(mUnreadMessages, UNREAD_MESSAGES_FILE_NAME);
-			}
-		} else
-			return 0;
-		if (result != 0) {
-			notifyUnreadCountChanged(tab_position);
-		}
-
-		if (notificationType != null) {
-			//get unique account ids from removed items
-			List<Long> accountIds = new ArrayList<>();
-			for (UnreadItem unreadItem : arrItems) {
-				if (!accountIds.contains(unreadItem.account_id) && unreadItem.account_id > 0) {
-					accountIds.add(unreadItem.account_id);
-				}
-			}
-
-			if (!accountIds.isEmpty()) {
-				for (Long accountId : accountIds) {
-					mNotificationHelper.deleteCachedNotifications(accountId, notificationType);
-				}
-			} else { //remove for all accounts
-				for (final long id : getAccountIds(getContext())) {
-					mNotificationHelper.deleteCachedNotifications(id, notificationType);
-				}
-			}
-		}
-
-		return result;
-	}
-
-	private void restoreUnreadItems() {
-		restoreUnreadItemsFile(mUnreadStatuses, UNREAD_STATUSES_FILE_NAME);
-		restoreUnreadItemsFile(mUnreadMentions, UNREAD_MENTIONS_FILE_NAME);
-		restoreUnreadItemsFile(mUnreadMessages, UNREAD_MESSAGES_FILE_NAME);
-	}
-
-	private void restoreUnreadItemsFile(final Collection<UnreadItem> items, final String name) {
-		if (items == null || name == null) return;
-		try {
-			final File file = JSONFileIO.getSerializationFile(getContext(), name);
-			final List<UnreadItem> restored = JSONFileIO.readArrayList(file);
-			if (restored != null) {
-				items.addAll(restored);
-			}
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void saveUnreadItemsFile(final Collection<UnreadItem> items, final String name) {
-		if (items == null || name == null) return;
-		try {
-			final File file = JSONFileIO.getSerializationFile(getContext(), name);
-			JSONFileIO.writeArray(file, items.toArray(new UnreadItem[items.size()]));
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	private void setNotificationUri(final Cursor c, final Uri uri) {
         final ContentResolver cr = getContentResolver();
         if (cr == null || c == null || uri == null) return;
         c.setNotificationUri(cr, uri);
-	}
-
-	private static int clearUnreadCount(final List<UnreadItem> set, final long[] accountIds) {
-		if (accountIds == null) return 0;
-		int count = 0;
-		for (final UnreadItem item : set.toArray(new UnreadItem[set.size()])) {
-            if (item != null && ArrayUtils.contains(accountIds, item.account_id) && set.remove(item)) {
-				count++;
-			}
-		}
-		return count;
-	}
-
-	private static List<ParcelableDirectMessage> getMessagesForAccounts(final List<ParcelableDirectMessage> items,
-			final long accountId) {
-		if (items == null) return Collections.emptyList();
-        final List<ParcelableDirectMessage> result = new ArrayList<>();
-		for (final ParcelableDirectMessage item : items.toArray(new ParcelableDirectMessage[items.size()])) {
-			if (item.account_id == accountId) {
-				result.add(item);
-			}
-		}
-		return result;
 	}
 
     private static Cursor getPreferencesCursor(final SharedPreferencesWrapper preferences, final String key) {
@@ -1022,17 +850,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		return Preferences.TYPE_INVALID;
 	}
 
-	private static List<ParcelableStatus> getStatusesForAccounts(final List<ParcelableStatus> items,
-			final long accountId) {
-		if (items == null) return Collections.emptyList();
-        final List<ParcelableStatus> result = new ArrayList<>();
-		for (final ParcelableStatus item : items.toArray(new ParcelableStatus[items.size()])) {
-			if (item.account_id == accountId) {
-				result.add(item);
-			}
-		}
-		return result;
-	}
 
 	private static int getUnreadCount(final List<UnreadItem> set, final long... accountIds) {
 		if (set == null || set.isEmpty()) return 0;

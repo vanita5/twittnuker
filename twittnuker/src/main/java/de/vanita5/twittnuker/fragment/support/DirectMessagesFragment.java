@@ -39,6 +39,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.util.LongSparseArray;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.widget.FixedLinearLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -69,7 +70,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentListScrollListener;
-import de.vanita5.twittnuker.util.ContentListScrollListener.ContentListAware;
+import de.vanita5.twittnuker.util.ContentListScrollListener.ContentListSupport;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -85,7 +86,7 @@ import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 
 public class DirectMessagesFragment extends BaseSupportFragment implements LoaderCallbacks<Cursor>,
         RefreshScrollTopInterface, OnRefreshListener, MessageEntriesAdapterListener,
-        ControlBarOffsetListener, ContentListAware {
+        ControlBarOffsetListener, ContentListSupport {
 
 	private final SupportFragmentReloadCursorObserver mReloadContentObserver = new SupportFragmentReloadCursorObserver(
 			this, 0, this);
@@ -243,7 +244,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
         mMultiSelectManager = getMultiSelectManager();
         mAdapter = new MessageEntriesAdapter(viewContext);
         mAdapter.setListener(this);
-        mLayoutManager = new LinearLayoutManager(viewContext);
+        mLayoutManager = new FixedLinearLayoutManager(viewContext);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getUserAccentColor(viewContext));
@@ -259,6 +260,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
         final int decorPaddingLeft = res.getDimensionPixelSize(R.dimen.element_spacing_normal) * 3
                 + res.getDimensionPixelSize(R.dimen.icon_size_status_profile_image);
         itemDecoration.setPadding(decorPaddingLeft, 0, 0, 0);
+        itemDecoration.setDecorationEndOffset(1);
         mRecyclerView.addItemDecoration(itemDecoration);
         getLoaderManager().initLoader(0, null, this);
         setListShown(false);

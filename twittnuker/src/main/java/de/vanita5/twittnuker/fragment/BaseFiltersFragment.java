@@ -32,6 +32,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -276,10 +277,9 @@ public abstract class BaseFiltersFragment extends BaseSupportListFragment implem
 			}
 
 			@Override
-			public void bindView(final View view, final Context context, final Cursor cursor) {
+            public void bindView(@NonNull final View view, final Context context, @NonNull final Cursor cursor) {
 				super.bindView(view, context, cursor);
 				final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-				final long user_id = cursor.getLong(mUserIdIdx);
 				final String name = cursor.getString(mNameIdx);
 				final String screen_name = cursor.getString(mScreenNameIdx);
                 final String display_name = UserColorNameUtils.getDisplayName(name, screen_name, mNameFirst);

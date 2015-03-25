@@ -22,25 +22,21 @@
 
 package de.vanita5.twittnuker.util;
 
-import org.apache.http.NameValuePair;
+import android.net.Uri;
 
-public class NameValuePairImpl implements NameValuePair {
+public class UriUtils {
 
-	private final String name, value;
-
-	public NameValuePairImpl(final String name, final Object value) {
-		this.name = name;
-		this.value = ParseUtils.parseString(value);
+	public static Uri appendQueryParameters(final Uri uri, final String key, long value) {
+		return appendQueryParameters(uri, key, ParseUtils.parseString(value));
 	}
 
-	@Override
-	public String getName() {
-		return name;
+	public static Uri appendQueryParameters(final Uri uri, final String key, String value) {
+		final Uri.Builder builder = uri.buildUpon();
+		builder.appendQueryParameter(key, value);
+		return builder.build();
 	}
 
-	@Override
-	public String getValue() {
-		return value;
+	public static Uri appendQueryParameters(Uri uri, String key, boolean value) {
+		return appendQueryParameters(uri, key, ParseUtils.parseString(value));
 	}
-
 }

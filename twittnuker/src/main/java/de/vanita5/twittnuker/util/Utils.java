@@ -502,16 +502,6 @@ public final class Utils implements Constants, TwitterConstants {
 		accessibilityManager.sendAccessibilityEvent(event);
 	}
 
-	public static Uri appendQueryParameters(final Uri uri, final NameValuePair... params) {
-		final Uri.Builder builder = uri.buildUpon();
-		if (params != null) {
-			for (final NameValuePair param : params) {
-				builder.appendQueryParameter(param.getName(), param.getValue());
-			}
-		}
-		return builder.build();
-	}
-
 	public static String buildActivatedStatsWhereClause(final Context context, final String selection) {
 		if (context == null) return null;
 		final long[] account_ids = getActivatedAccountIds(context);
@@ -711,27 +701,6 @@ public final class Utils implements Constants, TwitterConstants {
             colors[i] = accounts[i].color;
         }
         return colors;
-    }
-
-    public static Bitmap getCircleBitmap(Bitmap bitmap) {
-        final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(),
-                Bitmap.Config.ARGB_8888);
-        final Canvas canvas = new Canvas(output);
-
-        final int color = Color.RED;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        final RectF rectF = new RectF(rect);
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        canvas.drawOval(rectF, paint);
-
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-
-        return output;
     }
 
 
@@ -1092,47 +1061,6 @@ public final class Utils implements Constants, TwitterConstants {
 		return intent;
 	}
 
-	public static boolean downscaleImageIfNeeded(final File imageFile, final int quality) {
-		if (imageFile == null || !imageFile.isFile()) return false;
-		final String path = imageFile.getAbsolutePath();
-		final BitmapFactory.Options o = new BitmapFactory.Options();
-		o.inJustDecodeBounds = true;
-		BitmapFactory.decodeFile(path, o);
-		// Corrupted image, so return now.
-		if (o.outWidth <= 0 || o.outHeight <= 0) return false;
-		o.inJustDecodeBounds = false;
-		if (o.outWidth > TWITTER_MAX_IMAGE_WIDTH || o.outHeight > TWITTER_MAX_IMAGE_HEIGHT) {
-			// The image dimension is larger than Twitter's limit.
-			o.inSampleSize = calculateInSampleSize(o.outWidth, o.outHeight, TWITTER_MAX_IMAGE_WIDTH,
-					TWITTER_MAX_IMAGE_HEIGHT);
-			try {
-				final Bitmap b = BitmapDecodeHelper.decode(path, o);
-				final Bitmap.CompressFormat format = getBitmapCompressFormatByMimetype(o.outMimeType,
-						Bitmap.CompressFormat.PNG);
-				final FileOutputStream fos = new FileOutputStream(imageFile);
-				return b.compress(format, quality, fos);
-			} catch (final OutOfMemoryError e) {
-				return false;
-			} catch (final FileNotFoundException e) {
-				// This shouldn't happen.
-            } catch (final IllegalArgumentException e) {
-                return false;
-			}
-		} else if (imageFile.length() > TWITTER_MAX_IMAGE_SIZE) {
-			// The file size is larger than Twitter's limit.
-			try {
-				final Bitmap b = BitmapDecodeHelper.decode(path, o);
-				final FileOutputStream fos = new FileOutputStream(imageFile);
-				return b.compress(Bitmap.CompressFormat.JPEG, 80, fos);
-			} catch (final OutOfMemoryError e) {
-				return false;
-			} catch (final FileNotFoundException e) {
-				// This shouldn't happen.
-			}
-		}
-		return true;
-	}
-
 	public static String encodeQueryParams(final String value) throws IOException {
 		final String encoded = URLEncoder.encode(value, "UTF-8");
 		final StringBuilder buf = new StringBuilder();
@@ -1190,7 +1118,7 @@ public final class Utils implements Constants, TwitterConstants {
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.delete(CachedStatuses.CONTENT_URI, where, null);
         resolver.insert(CachedStatuses.CONTENT_URI,
-                ContentValuesCreator.createStatus(status, accountId));
+				ContentValuesCreator.createStatus(status, accountId));
         return new ParcelableStatus(status, accountId, false);
 	}
 
@@ -2176,6 +2104,7 @@ public final class Utils implements Constants, TwitterConstants {
 		return 0;
 	}
 
+
 	public static String getSenderUserName(final Context context, final ParcelableDirectMessage user) {
 		if (context == null || user == null) return null;
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -2936,8 +2865,12 @@ public final class Utils implements Constants, TwitterConstants {
 			final Bundle args = new Bundle();
 			args.putLong(EXTRA_ACCOUNT_ID, accountId);
             args.putParcelable(EXTRA_CURRENT_MEDIA, current);
-            args.putParcelable(EXTRA_STATUS, status);
-            args.putParcelable(EXTRA_MESSAGE, message);
+            if (status != null) {
+            	args.putParcelable(EXTRA_STATUS, status);
+            }
+            if (message != null) {
+            	args.putParcelable(EXTRA_MESSAGE, message);
+            }
             args.putParcelableArray(EXTRA_MEDIA, media);
 			fragment.setArguments(args);
 			fragment.show(fm, "sensitive_content_warning");
@@ -2975,7 +2908,12 @@ public final class Utils implements Constants, TwitterConstants {
 		intent.putExtra(EXTRA_ACCOUNT_ID, accountId);
         intent.putExtra(EXTRA_CURRENT_MEDIA, current);
         intent.putExtra(EXTRA_MEDIA, media);
-        intent.putExtra(EXTRA_STATUS, status);
+        if (status != null) {
+        	intent.putExtra(EXTRA_STATUS, status);
+        }
+        if (message != null) {
+            intent.putExtra(EXTRA_MESSAGE, message);
+        }
 		intent.setClass(context, MediaViewerActivity.class);
 			context.startActivity(intent);
 	}
@@ -3473,38 +3411,6 @@ public final class Utils implements Constants, TwitterConstants {
 		return text.replaceFirst("(?s)" + regex + "(?!.*?" + regex + ")", replacement);
 	}
 
-	/**
-	 * Resizes specific a Bitmap with keeping ratio.
-	 */
-	public static Bitmap resizeBitmap(Bitmap orig, final int desireWidth, final int desireHeight) {
-		final int width = orig.getWidth();
-		final int height = orig.getHeight();
-
-		if (0 < width && 0 < height && desireWidth < width || desireHeight < height) {
-			// Calculate scale
-			float scale;
-			if (width < height) {
-				scale = (float) desireHeight / (float) height;
-				if (desireWidth < width * scale) {
-					scale = (float) desireWidth / (float) width;
-				}
-			} else {
-				scale = (float) desireWidth / (float) width;
-			}
-
-			// Draw resized image
-			final Matrix matrix = new Matrix();
-			matrix.postScale(scale, scale);
-			final Bitmap bitmap = Bitmap.createBitmap(orig, 0, 0, width, height, matrix, true);
-			final Canvas canvas = new Canvas(bitmap);
-			canvas.drawBitmap(bitmap, 0, 0, null);
-
-			orig = bitmap;
-		}
-
-		return orig;
-	}
-
 	public static void restartActivity(final Activity activity) {
 		if (activity == null) return;
 		final int enter_anim = android.R.anim.fade_in;
@@ -3660,7 +3566,7 @@ public final class Utils implements Constants, TwitterConstants {
                 Build.MODEL, Build.VERSION.RELEASE, Build.MANUFACTURER, Build.MODEL, Build.BRAND,
                 Build.PRODUCT);
         cb.setHttpUserAgent(String.format(Locale.ROOT, "TwitterAndroid/%s (%d-%c-%d) %s",
-                "5.32.0", 3030745, 'r', 692, deviceInfo));
+				"5.32.0", 3030745, 'r', 692, deviceInfo));
     }
 
 	public static boolean shouldEnableFiltersForRTs(final Context context) {
@@ -3940,6 +3846,18 @@ public final class Utils implements Constants, TwitterConstants {
 				|| StatusCodeMessageUtils.containsTwitterError(te.getErrorCode());
 	}
 
+    public static int getActionBarHeight(@Nullable ActionBar actionBar) {
+		if (actionBar == null) return 0;
+		final Context context = actionBar.getThemedContext();
+		final TypedValue tv = new TypedValue();
+		final int height = actionBar.getHeight();
+		if (height > 0) return height;
+		if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+			return TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
+		}
+		return 0;
+	}
+
 	public static String parseURLEntities(String text, final URLEntity[] entities) {
 		for (URLEntity entity : entities) {
 			final int start = entity.getStart(), end = entity.getEnd();
@@ -3971,18 +3889,6 @@ public final class Utils implements Constants, TwitterConstants {
 		} else {
 			twitter.createFavoriteAsync(status.account_id, status.id);
 		}
-	}
-
-    public static int getActionBarHeight(@Nullable ActionBar actionBar) {
-		if (actionBar == null) return 0;
-		final Context context = actionBar.getThemedContext();
-		final TypedValue tv = new TypedValue();
-		final int height = actionBar.getHeight();
-		if (height > 0) return height;
-		if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-			return TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
-		}
-		return 0;
 	}
 
     public static int getActionBarHeight(@Nullable android.support.v7.app.ActionBar actionBar) {

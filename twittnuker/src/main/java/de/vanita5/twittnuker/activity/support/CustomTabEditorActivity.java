@@ -51,9 +51,9 @@ import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.ExtraConfiguration;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -215,29 +215,29 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 		final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
 		final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
 		final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
-		final boolean display_profile_image = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-		final boolean display_name = mPreferences.getBoolean(KEY_NAME_FIRST, true);
+        final boolean displayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
+        final boolean displayName = mPreferences.getBoolean(KEY_NAME_FIRST, true);
 		text1.setVisibility(View.VISIBLE);
 		text2.setVisibility(View.VISIBLE);
-		icon.setVisibility(display_profile_image ? View.VISIBLE : View.GONE);
+        icon.setVisibility(displayProfileImage ? View.VISIBLE : View.GONE);
 		if (value instanceof ParcelableUser) {
 			final ParcelableUser user = (ParcelableUser) value;
 			text1.setText(user.name);
 			text2.setText("@" + user.screen_name);
-			if (display_profile_image) {
+            if (displayProfileImage) {
 				mImageLoader.displayProfileImage(icon, user.profile_image_url);
 			}
 		} else if (value instanceof ParcelableUserList) {
 			final ParcelableUserList user_list = (ParcelableUserList) value;
 			final String created_by;
-			if (display_name) {
+            if (displayName) {
 				created_by = "@" + user_list.user_screen_name;
 			} else {
 				created_by = user_list.user_name;
 			}
 			text1.setText(user_list.name);
 			text2.setText(getString(R.string.created_by, created_by));
-			if (display_profile_image) {
+            if (displayProfileImage) {
 				mImageLoader.displayProfileImage(icon, user_list.user_profile_image_url);
 			}
 		} else if (value instanceof CharSequence) {
@@ -397,13 +397,15 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 
 	private long getAccountId() {
 		final int pos = mAccountSpinner.getSelectedItemPosition();
-		if (mAccountSpinner.getCount() > pos && pos >= 0) return mAccountsAdapter.getItem(pos).account_id;
+        if (mAccountSpinner.getCount() > pos && pos >= 0)
+            return mAccountsAdapter.getItem(pos).account_id;
 		return -1;
 	}
 
 	private String getIconKey() {
 		final int pos = mTabIconSpinner.getSelectedItemPosition();
-		if (mTabIconsAdapter.getCount() > pos && pos >= 0) return mTabIconsAdapter.getItem(pos).getKey();
+        if (mTabIconsAdapter.getCount() > pos && pos >= 0)
+            return mTabIconsAdapter.getItem(pos).getKey();
 		return null;
 	}
 

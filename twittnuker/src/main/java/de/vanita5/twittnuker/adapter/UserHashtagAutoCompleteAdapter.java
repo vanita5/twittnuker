@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.widget.EditText;
@@ -44,16 +45,21 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedValues;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 
 public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implements Constants {
 
 	private static final String[] FROM = new String[0];
 	private static final int[] TO = new int[0];
 
+    @NonNull
 	private final ContentResolver mResolver;
+    @NonNull
 	private final SQLiteDatabase mDatabase;
+    @NonNull
 	private final MediaLoaderWrapper mProfileImageLoader;
-	private final SharedPreferences mPreferences;
+	@NonNull
+	private final SharedPreferencesWrapper mPreferences;
 
 	private final EditText mEditText;
 
@@ -69,12 +75,12 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 	public UserHashtagAutoCompleteAdapter(final Context context, final EditText view) {
 		super(context, R.layout.list_item_two_line_small, null, FROM, TO, 0);
 		mEditText = view;
-		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mResolver = context.getContentResolver();
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-		mProfileImageLoader = app != null ? app.getImageLoaderWrapper() : null;
-		mDatabase = app != null ? app.getSQLiteDatabase() : null;
-		mDisplayProfileImage = mPreferences != null && mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
+        mProfileImageLoader = app.getImageLoaderWrapper();
+        mDatabase = app.getSQLiteDatabase();
+        mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
 	}
 
 	public UserHashtagAutoCompleteAdapter(final EditText view) {
@@ -92,8 +98,7 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 		icon.setImageDrawable(null);
 
 		if (mScreenNameIdx != -1 && mNameIdx != -1 && mUserIdIdx != -1) {
-			final String name = cursor.getString(mNameIdx);
-			text1.setText(name);
+			text1.setText(cursor.getString(mNameIdx));
 			text2.setText("@" + cursor.getString(mScreenNameIdx));
 		} else {
 			text1.setText("#" + cursor.getString(mNameIdx));
@@ -101,10 +106,11 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 		}
 		icon.setVisibility(mDisplayProfileImage ? View.VISIBLE : View.GONE);
 		if (mProfileImageUrlIdx != -1) {
-			if (mDisplayProfileImage && mProfileImageLoader != null) {
-				final String profile_image_url_string = cursor.getString(mProfileImageUrlIdx);
-				mProfileImageLoader.displayProfileImage(icon, profile_image_url_string);
+            if (mDisplayProfileImage) {
+                final String profileImageUrl = cursor.getString(mProfileImageUrlIdx);
+                mProfileImageLoader.displayProfileImage(icon, profileImageUrl);
 			} else {
+                mProfileImageLoader.cancelDisplayTask(icon);
 //                icon.setImageResource(R.drawable.ic_profile_image_default);
 			}
 		} else {

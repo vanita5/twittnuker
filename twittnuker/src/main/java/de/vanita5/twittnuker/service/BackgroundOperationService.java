@@ -58,6 +58,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ListUtils;
 import de.vanita5.twittnuker.util.MessagesManager;
@@ -187,6 +188,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 	protected void onHandleIntent(final Intent intent) {
 		if (intent == null) return;
 		final String action = intent.getAction();
+
         switch (action) {
             case INTENT_ACTION_UPDATE_STATUS:
 			handleUpdateStatusIntent(intent);
@@ -258,6 +260,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		startForeground(NOTIFICATION_ID_SEND_DIRECT_MESSAGE, notification);
 		final SingleResponse<ParcelableDirectMessage> result = sendDirectMessage(builder, accountId, recipientId, text,
 				imageUri);
+
 		if (result.getData() != null && result.getData().id > 0) {
             final ContentValues values = ContentValuesCreator.createDirectMessage(result.getData());
 			final String delete_where = DirectMessages.ACCOUNT_ID + " = " + accountId + " AND "
@@ -265,6 +268,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 			mResolver.delete(DirectMessages.Outbox.CONTENT_URI, delete_where, null);
 			mResolver.insert(DirectMessages.Outbox.CONTENT_URI, values);
 			showOkMessage(R.string.direct_message_sent, false);
+
+
 		} else {
             final ContentValues values = createMessageDraft(accountId, recipientId, text, imageUri);
 			mResolver.insert(Drafts.CONTENT_URI, values);
@@ -302,11 +307,13 @@ public class BackgroundOperationService extends IntentService implements Constan
             final List<SingleResponse<ParcelableStatus>> result = updateStatus(builder, item);
 			boolean failed = false;
 			Exception exception = null;
-
             final Expression where = Expression.equals(Drafts._ID, draftId);
             final List<Long> failedAccountIds = ListUtils.fromArray(ParcelableAccount.getAccountIds(item.accounts));
 
+
+
 			for (final SingleResponse<ParcelableStatus> response : result) {
+
 				if (response.getData() == null) {
 					failed = true;
 					if (exception == null) {
@@ -316,6 +323,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                     failedAccountIds.remove(response.getData().account_id);
 				}
 			}
+
 			if (result.isEmpty()) {
 				showErrorMessage(R.string.action_updating_status, getString(R.string.no_account_selected), false);
 			} else if (failed) {
@@ -324,8 +332,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 				if (exception instanceof TwitterException
 						&& ((TwitterException) exception).getErrorCode() == StatusCodeMessageUtils.STATUS_IS_DUPLICATE) {
 					showErrorMessage(getString(R.string.status_is_duplicate), false);
-				} else if (exception instanceof  ShortenException) {
-					//saveDrafts(item, failed_account_ids, false);
+//				} else if (exception instanceof  ShortenException) {
+//					//saveDrafts(item, failed_account_ids, false);
 				} else {
                     final ContentValues accountIdsValues = new ContentValues();
                     accountIdsValues.put(Drafts.ACCOUNT_IDS, ListUtils.toString(failedAccountIds, ',', false));
@@ -377,7 +385,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 				o.inJustDecodeBounds = true;
 				BitmapFactory.decodeFile(path, o);
 				final File file = new File(path);
-				Utils.downscaleImageIfNeeded(file, 100);
+                BitmapUtils.downscaleImageIfNeeded(file, 100);
 				final ContentLengthInputStream is = new ContentLengthInputStream(file);
 				is.setReadListener(new MessageMediaUploadListener(this, mNotificationManager, builder, text));
 				final MediaUploadResponse uploadResp = twitter.uploadMedia(file.getName(), is, o.outMimeType);
@@ -391,6 +399,10 @@ public class BackgroundOperationService extends IntentService implements Constan
 						true);
 			}
             Utils.setLastSeen(this, recipientId, System.currentTimeMillis());
+
+
+
+
 			return SingleResponse.getInstance(directMessage);
 		} catch (final IOException e) {
 			return SingleResponse.getInstance(e);
@@ -459,7 +471,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 					final String path = getImagePathFromUri(this, Uri.parse(media.uri));
 					final File file = path != null ? new File(path) : null;
 					if (file != null && file.exists()) {
-						Utils.downscaleImageIfNeeded(file, 95);
+                        BitmapUtils.downscaleImageIfNeeded(file, 95);
 					}
 				}
 			}

@@ -961,7 +961,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 		protected int[] doInBackground(final Void... params) {
             final int tabCount = mIndicator.getCount();
             final int[] result = new int[tabCount];
-            for (int i = 0, j = tabCount; i < j; i++) {
+            for (int i = 0; i < tabCount; i++) {
 				result[i] = UnreadCountUtils.getUnreadCount(mContext, i);
 			}
 			return result;

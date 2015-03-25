@@ -33,6 +33,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -149,10 +150,9 @@ public class TwittnukerApplication extends Application implements Constants,
         return mMediaLoaderWrapper = new MediaLoaderWrapper(getImageLoader(), getVideoLoader());
     }
 
-    public static TwittnukerApplication getInstance(final Context context) {
-        if (context == null) return null;
-        final Context app = context.getApplicationContext();
-        return app instanceof TwittnukerApplication ? (TwittnukerApplication) app : null;
+    @NonNull
+    public static TwittnukerApplication getInstance(@NonNull final Context context) {
+        return (TwittnukerApplication) context.getApplicationContext();
     }
 
     public Bus getMessageBus() {

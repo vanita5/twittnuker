@@ -47,6 +47,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.FixedLinearLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -89,9 +90,9 @@ import de.vanita5.twittnuker.text.method.StatusContentMovementMethod;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.CompareUtils;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.LinkCreator;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.StatusLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -1038,6 +1039,7 @@ public class StatusFragment extends BaseSupportFragment
 				retweetedByView.setText(null);
 				retweetedByContainer.setVisibility(View.GONE);
 			}
+
             nameView.setText(status.user_name);
             screenNameView.setText("@" + status.user_screen_name);
 
@@ -1139,7 +1141,7 @@ public class StatusFragment extends BaseSupportFragment
     }
 
 
-    private static class StatusListLinearLayoutManager extends LinearLayoutManager {
+    private static class StatusListLinearLayoutManager extends FixedLinearLayoutManager {
 
         private final RecyclerView recyclerView;
 

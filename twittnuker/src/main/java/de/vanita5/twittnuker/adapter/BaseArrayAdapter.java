@@ -97,8 +97,8 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
 
 	@Override
     public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
-        if (KEY_DISPLAY_PROFILE_IMAGE.equals(key)
-                || KEY_MEDIA_PREVIEW_STYLE.equals(key) || KEY_DISPLAY_SENSITIVE_CONTENTS.equals(key)) {
+        if (KEY_DISPLAY_PROFILE_IMAGE.equals(key) || KEY_MEDIA_PREVIEW_STYLE.equals(key)
+                || KEY_DISPLAY_SENSITIVE_CONTENTS.equals(key)) {
 		notifyDataSetChanged();
 	    }
     }

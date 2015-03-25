@@ -28,17 +28,15 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
 import android.support.v4.util.LongSparseArray;
 
-import java.util.Map;
-
-import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
-import twitter4j.TwitterConstants;
+
+import java.util.Map;
 
 import static android.text.TextUtils.isEmpty;
 
-public class UserColorNameUtils implements Constants {
+public class UserColorNameUtils implements TwittnukerConstants {
 
 	private static LongSparseArray<Integer> sUserColors = new LongSparseArray<>();
 
@@ -46,12 +44,12 @@ public class UserColorNameUtils implements Constants {
 		throw new AssertionError();
 	}
 
-	public static void clearUserColor(final Context context, final long user_id) {
+    public static void clearUserColor(final Context context, final long userId) {
 		if (context == null) return;
-		sUserColors.remove(user_id);
+        sUserColors.remove(userId);
 		final SharedPreferences prefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final SharedPreferences.Editor editor = prefs.edit();
-		editor.remove(Long.toString(user_id));
+        editor.remove(Long.toString(userId));
 		editor.apply();
 	}
 
@@ -119,10 +117,6 @@ public class UserColorNameUtils implements Constants {
 
 	public static interface OnUserColorChangedListener {
 		void onUserColorChanged(long userId, int color);
-	}
-
-	public static interface OnUserNicknameChangedListener {
-		void onUserNicknameChanged(long userId, String nick);
 	}
 
 	private static final class OnColorPreferenceChangeListener implements OnSharedPreferenceChangeListener {

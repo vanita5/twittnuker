@@ -37,7 +37,6 @@ import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 import java.util.List;
 
 import static de.vanita5.twittnuker.util.Utils.configBaseAdapter;
-import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
 
 public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserList> implements IBaseAdapter {
 

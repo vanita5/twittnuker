@@ -97,7 +97,6 @@ import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createDirectMessage;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createStatus;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createTrends;
-import static de.vanita5.twittnuker.util.Utils.appendQueryParameters;
 import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
@@ -1813,12 +1812,11 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             // Delete all rows conflicting before new data inserted.
             final Expression deleteWhere = Expression.and(Expression.equals(DirectMessages.ACCOUNT_ID, accountId),
                     Expression.in(new Column(DirectMessages.MESSAGE_ID), new RawItemArray(messageIds)));
-            final Uri deleteUri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY,
-                    false));
+            final Uri deleteUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, false);
             mResolver.delete(deleteUri, deleteWhere.getSQL(), null);
 
             // Insert previously fetched items.
-            final Uri insertUri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY, notify));
+            final Uri insertUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, notify);
             bulkInsert(mResolver, insertUri, valuesArray);
             return false;
         }
@@ -2061,11 +2059,11 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             final Expression accountWhere = Expression.equals(Statuses.ACCOUNT_ID, accountId);
             final Expression statusWhere = Expression.in(new Column(Statuses.STATUS_ID), new RawItemArray(statusIds));
             final String deleteWhere = Expression.and(accountWhere, statusWhere).getSQL();
-            final Uri deleteUri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY, false));
+            final Uri deleteUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, false);
             final int rowsDeleted = mResolver.delete(deleteUri, deleteWhere, null);
 
             // Insert previously fetched items.
-            final Uri insertUri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY, notify));
+            final Uri insertUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, notify);
             bulkInsert(mResolver, insertUri, values);
 
             // Insert a gap.
@@ -2079,7 +2077,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 gapValue.put(Statuses.IS_GAP, 1);
                 final Expression where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
                         Expression.equals(Statuses.STATUS_ID, minId));
-                final Uri updateUri = appendQueryParameters(uri, new NameValuePairImpl(QUERY_PARAM_NOTIFY, true));
+                final Uri updateUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, true);
                 mResolver.update(updateUri, gapValue, where.getSQL(), null);
             }
             return false;

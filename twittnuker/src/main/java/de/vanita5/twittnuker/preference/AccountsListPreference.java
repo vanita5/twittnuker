@@ -50,8 +50,8 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.task.TwidereAsyncTask;
+import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.Utils;
 
 import java.util.List;
 
@@ -139,7 +139,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 
 		@Override
 		public void onLoadingComplete(final String imageUri, final View view, final Bitmap loadedImage) {
-			final Bitmap roundedBitmap = Utils.getCircleBitmap(loadedImage);
+            final Bitmap roundedBitmap = BitmapUtils.getCircleBitmap(loadedImage);
             setIcon(new BitmapDrawable(getContext().getResources(), roundedBitmap));
 		}
 

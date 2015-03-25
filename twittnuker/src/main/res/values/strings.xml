@@ -697,6 +697,12 @@
     <string name="unknown_location">Unknown Location</string>
 	<string name="import_export_settings">Import/Export settings</string>
 
+	<string name="hello_world">Hello world!</string>
+	<string name="action_settings">Settings</string>
+	<string name="from_name">From <xliff:g id="name">%1$s</xliff:g></string>
+	<string name="from_name_and_name">From <xliff:g id="name">%1$s</xliff:g> and <xliff:g id="name">%2$s</xliff:g></string>
+	<string name="from_name_and_N_others">From <xliff:g id="name">%1$s</xliff:g> and <xliff:g id="name">%2$d</xliff:g> others</string>
+
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
     <string name="link_to_quoted_status_summary">Adds a link to the original Tweet on quotes</string>

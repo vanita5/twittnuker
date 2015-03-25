@@ -54,6 +54,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.internal.view.SupportMenuInflater;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.ActionMenuView.OnMenuItemClickListener;
+import android.support.v7.widget.FixedLinearLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -352,7 +353,8 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
         mAppMenuSectionView = Utils.newSectionView(context, R.string.more);
         mAccountSelectorView = inflater.inflate(R.layout.header_drawer_account_selector, listView, false);
         mAccountsSelector = (RecyclerView) mAccountSelectorView.findViewById(R.id.other_accounts_list);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        final LinearLayoutManager layoutManager = new FixedLinearLayoutManager(context);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         layoutManager.setStackFromEnd(true);
         mAccountsSelector.setLayoutManager(layoutManager);
         mAccountsSelector.setAdapter(mAccountsAdapter);

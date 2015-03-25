@@ -42,8 +42,8 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatus.CursorIndices;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SimpleValueSerializer;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
@@ -118,9 +118,8 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         displayStatus(adapter.getContext(), adapter.getImageLoader(),
                 adapter.getImageLoadingHandler(), adapter.getTwitterWrapper(),
                 adapter.isMediaPreviewEnabled(), adapter.shouldShowAccountsColor(),
-                displayInReplyTo, adapter.isNameFirst(),
-                adapter.getProfileImageStyle(), adapter.getMediaPreviewStyle(),
-                status, null, displayInReplyTo);
+                displayInReplyTo, adapter.isNameFirst(), adapter.getProfileImageStyle(),
+                adapter.getMediaPreviewStyle(), status, null, displayInReplyTo);
     }
 
     public void displayStatus(@NonNull final Context context,
@@ -389,7 +388,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
     @Override
     public void onClick(View v) {
         if (statusClickListener == null) return;
-        final int position = getPosition();
+        final int position = getAdapterPosition();
         switch (v.getId()) {
             case R.id.item_content: {
                 statusClickListener.onStatusClick(this, position);

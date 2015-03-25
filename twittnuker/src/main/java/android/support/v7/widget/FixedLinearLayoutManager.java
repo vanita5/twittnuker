@@ -20,36 +20,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface;
+package android.support.v7.widget;
 
-import android.widget.ListAdapter;
+import android.content.Context;
+import android.view.View;
 
-import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+public class FixedLinearLayoutManager extends LinearLayoutManager {
 
-public interface IBaseAdapter extends Constants, ListAdapter {
-	
-	public MediaLoaderWrapper getImageLoader();
+	public FixedLinearLayoutManager(Context context) {
+		super(context);
+	}
 
-	public int getLinkHighlightOption();
+	public FixedLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
+		super(context, orientation, reverseLayout);
+	}
 
-	public float getTextSize();
+	@Override
+	View findOneVisibleChild(int fromIndex, int toIndex, boolean completelyVisible, boolean acceptPartiallyVisible) {
+		// XXX Fixed NPE by add a simple check to child view count
+		if (getChildCount() < 0) return null;
+		return super.findOneVisibleChild(fromIndex, toIndex, completelyVisible, acceptPartiallyVisible);
+	}
 
-	public boolean isDisplayNameFirst();
-
-	public boolean isDisplayProfileImage();
-
-	public boolean isShowAccountColor();
-
-	public void notifyDataSetChanged();
-
-	public void setDisplayNameFirst(boolean nameFirst);
-
-	public void setDisplayProfileImage(boolean display);
-
-	public void setLinkHighlightOption(String option);
-
-	public void setShowAccountColor(boolean show);
-
-	public void setTextSize(float textSize);
 }

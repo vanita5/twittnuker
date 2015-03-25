@@ -38,6 +38,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.FixedLinearLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -239,7 +240,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 		mTwitterWrapper = getTwitterWrapper();
 		mValidator = new TwidereValidator(getActivity());
 		mAdapter = new MessageConversationAdapter(getActivity());
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(viewContext);
+        final LinearLayoutManager layoutManager = new FixedLinearLayoutManager(viewContext);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         layoutManager.setStackFromEnd(true);
         mMessagesListView.setLayoutManager(layoutManager);

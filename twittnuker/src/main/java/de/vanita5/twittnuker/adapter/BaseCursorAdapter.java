@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -35,6 +33,8 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
+
+import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
 
 public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapter, OnSharedPreferenceChangeListener {
 

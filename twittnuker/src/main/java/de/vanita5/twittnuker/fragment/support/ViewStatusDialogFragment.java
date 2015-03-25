@@ -34,8 +34,8 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
@@ -88,8 +88,7 @@ public class ViewStatusDialogFragment extends BaseSupportDialogFragment {
 			displayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
 		}
 		mHolder.displayStatus(activity, loader, handler, twitter, displayMediaPreview, true,
-				true, nameFirst, profileImageStyle, mediaPreviewStyle, status, null,
-                displayExtraType);
+				true, nameFirst, profileImageStyle, mediaPreviewStyle, status, null, displayExtraType);
 		mStatusContainer.findViewById(R.id.item_menu).setVisibility(View.GONE);
 		mStatusContainer.findViewById(R.id.action_buttons).setVisibility(View.GONE);
 	}

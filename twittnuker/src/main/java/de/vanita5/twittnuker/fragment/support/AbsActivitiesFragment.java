@@ -31,6 +31,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.widget.FixedLinearLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
@@ -172,7 +173,7 @@ public abstract class AbsActivitiesFragment<Data> extends BaseSupportFragment im
 		mAdapter = onCreateAdapter(context, compact);
 		mAdapter.setLoadMoreIndicatorEnabled(true);
         mAdapter.setListener(this);
-		final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        final LinearLayoutManager layoutManager = new FixedLinearLayoutManager(context);
 		layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 		mRecyclerView.setLayoutManager(layoutManager);
         if (compact) {

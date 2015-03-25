@@ -117,6 +117,7 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
         return mDisplayProfileImage;
     }
 
+
     @Override
     public boolean isShowAccountColor() {
         return false;

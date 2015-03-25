@@ -42,10 +42,15 @@ public class PositionManager implements Constants {
 		return mPreferences.getLong(key, -1);
 	}
 
-	public boolean setPosition(final String key, final long status_id) {
-		if (TextUtils.isEmpty(key)) return false;
+
+    public boolean setPosition(final String key, final long id) {
+        return setPosition(key, id, false);
+    }
+
+    public boolean setPosition(final String key, final long id, boolean acceptOlder) {
+        if (TextUtils.isEmpty(key) || !acceptOlder && getPosition(key) > id) return false;
 		final SharedPreferences.Editor editor = mPreferences.edit();
-		editor.putLong(key, status_id);
+        editor.putLong(key, id);
 		editor.apply();
         return true;
 	}

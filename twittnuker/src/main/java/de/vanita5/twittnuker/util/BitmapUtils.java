@@ -17,8 +17,20 @@
 package de.vanita5.twittnuker.util;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
+
+import de.vanita5.twittnuker.TwittnukerConstants;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 public class BitmapUtils {
 
@@ -37,6 +49,68 @@ public class BitmapUtils {
 
 		return initialSize <= 8 ? MathUtils.prevPowerOf2(initialSize) : initialSize / 8 * 8;
 	}
+
+    public static boolean downscaleImageIfNeeded(final File imageFile, final int quality) {
+        if (imageFile == null || !imageFile.isFile()) return false;
+        final String path = imageFile.getAbsolutePath();
+        final BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, o);
+        // Corrupted image, so return now.
+        if (o.outWidth <= 0 || o.outHeight <= 0) return false;
+        o.inJustDecodeBounds = false;
+        if (o.outWidth > TwittnukerConstants.TWITTER_MAX_IMAGE_WIDTH || o.outHeight > TwittnukerConstants.TWITTER_MAX_IMAGE_HEIGHT) {
+            // The image dimension is larger than Twitter's limit.
+            o.inSampleSize = Utils.calculateInSampleSize(o.outWidth, o.outHeight, TwittnukerConstants.TWITTER_MAX_IMAGE_WIDTH,
+					TwittnukerConstants.TWITTER_MAX_IMAGE_HEIGHT);
+            try {
+                final Bitmap b = BitmapDecodeHelper.decode(path, o);
+                final Bitmap.CompressFormat format = Utils.getBitmapCompressFormatByMimetype(o.outMimeType,
+                        Bitmap.CompressFormat.PNG);
+                final FileOutputStream fos = new FileOutputStream(imageFile);
+                return b.compress(format, quality, fos);
+            } catch (final OutOfMemoryError e) {
+                return false;
+            } catch (final FileNotFoundException e) {
+                // This shouldn't happen.
+            } catch (final IllegalArgumentException e) {
+                return false;
+            }
+        } else if (imageFile.length() > TwittnukerConstants.TWITTER_MAX_IMAGE_SIZE) {
+            // The file size is larger than Twitter's limit.
+            try {
+                final Bitmap b = BitmapDecodeHelper.decode(path, o);
+                final FileOutputStream fos = new FileOutputStream(imageFile);
+                return b.compress(Bitmap.CompressFormat.JPEG, 80, fos);
+            } catch (final OutOfMemoryError e) {
+                return false;
+            } catch (final FileNotFoundException e) {
+                // This shouldn't happen.
+            }
+        }
+        return true;
+    }
+
+    public static Bitmap getCircleBitmap(Bitmap bitmap) {
+        final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(),
+				Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(output);
+
+        final int color = Color.RED;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawOval(rectF, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        return output;
+    }
 
 	// Resize the bitmap if each side is >= targetSize * 2
 	public static Bitmap resizeDownIfTooBig(final Bitmap bitmap, final int targetSize, final boolean recycle) {
