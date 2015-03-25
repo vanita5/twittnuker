@@ -49,8 +49,7 @@ public class AccountsSpinnerAdapter extends ArrayAdapter<ParcelableAccount> {
         super(context, itemViewResource);
 		mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
 		mDisplayProfileImage = context.getSharedPreferences(DirectMessagesConversationFragment.SHARED_PREFERENCES_NAME,
-				Context.MODE_PRIVATE).getBoolean(
-				DirectMessagesConversationFragment.KEY_DISPLAY_PROFILE_IMAGE, true);
+                Context.MODE_PRIVATE).getBoolean(DirectMessagesConversationFragment.KEY_DISPLAY_PROFILE_IMAGE, true);
 	}
 
     public AccountsSpinnerAdapter(final Context context, final Collection<ParcelableAccount> accounts) {
@@ -99,7 +98,7 @@ public class AccountsSpinnerAdapter extends ArrayAdapter<ParcelableAccount> {
                     mImageLoader.displayProfileImage(icon, item.profile_image_url);
                 } else {
                     mImageLoader.cancelDisplayTask(icon);
-                    icon.setImageResource(R.drawable.ic_profile_image_default);
+//                    icon.setImageResource(R.drawable.ic_profile_image_default);
                 }
             }
         } else if (text1 != null) {

@@ -74,8 +74,7 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mProfileImageLoader = app != null ? app.getImageLoaderWrapper() : null;
 		mDatabase = app != null ? app.getSQLiteDatabase() : null;
-		mDisplayProfileImage = mPreferences != null
-				&& mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
+		mDisplayProfileImage = mPreferences != null && mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
 	}
 
 	public UserHashtagAutoCompleteAdapter(final EditText view) {
@@ -106,7 +105,7 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 				final String profile_image_url_string = cursor.getString(mProfileImageUrlIdx);
 				mProfileImageLoader.displayProfileImage(icon, profile_image_url_string);
 			} else {
-				icon.setImageResource(R.drawable.ic_profile_image_default);
+//                icon.setImageResource(R.drawable.ic_profile_image_default);
 			}
 		} else {
             icon.setImageResource(R.drawable.ic_action_hashtag);

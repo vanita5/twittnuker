@@ -21,6 +21,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
+
 <de.vanita5.twittnuker.view.ColorLabelLinearLayout
     android:id="@+id/user_list_details"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -65,7 +66,6 @@
         <de.vanita5.twittnuker.view.ShapedImageView
             android:id="@+id/profile_image"
             style="?profileImageStyle"
-            tools:src="@drawable/ic_profile_image_default"
             android:layout_width="@dimen/icon_size_card_details"
             android:layout_height="@dimen/icon_size_card_details"
             android:layout_weight="0"

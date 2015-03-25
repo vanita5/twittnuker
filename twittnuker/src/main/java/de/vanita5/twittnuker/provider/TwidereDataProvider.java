@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.provider;
 
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -40,7 +39,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.squareup.otto.Bus;
@@ -52,7 +50,6 @@ import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
@@ -827,7 +824,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         switch (tableId) {
 			case TABLE_ID_STATUSES: {
 				notifyStatusesInserted(valuesArray);
-				final List<ParcelableStatus> items = new ArrayList<ParcelableStatus>(mNewStatuses);
+				final List<ParcelableStatus> items = new ArrayList<>(mNewStatuses);
 				Collections.sort(items);
 				//TODO Notifications for new tweets in timeline
 				notifyUnreadCountChanged(NOTIFICATION_ID_HOME_TIMELINE);
