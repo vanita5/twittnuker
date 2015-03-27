@@ -303,14 +303,11 @@ public class BackgroundOperationService extends IntentService implements Constan
             final Uri draftUri = mResolver.insert(Drafts.CONTENT_URI, draftValues);
             final long draftId = ParseUtils.parseLong(draftUri.getLastPathSegment(), -1);
             mTwitter.addSendingDraftId(draftId);
-
             final List<SingleResponse<ParcelableStatus>> result = updateStatus(builder, item);
 			boolean failed = false;
 			Exception exception = null;
             final Expression where = Expression.equals(Drafts._ID, draftId);
             final List<Long> failedAccountIds = ListUtils.fromArray(ParcelableAccount.getAccountIds(item.accounts));
-
-
 
 			for (final SingleResponse<ParcelableStatus> response : result) {
 
@@ -376,6 +373,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                                                                       final long accountId, final long recipientId,
                                                                       final String text, final String imageUri) {
 		final Twitter twitter = getTwitterInstance(this, accountId, true, true);
+        if (twitter == null) return SingleResponse.getInstance();
 		try {
 			final ParcelableDirectMessage directMessage;
 			if (imageUri != null) {
@@ -399,8 +397,6 @@ public class BackgroundOperationService extends IntentService implements Constan
 						true);
 			}
             Utils.setLastSeen(this, recipientId, System.currentTimeMillis());
-
-
 
 
 			return SingleResponse.getInstance(directMessage);

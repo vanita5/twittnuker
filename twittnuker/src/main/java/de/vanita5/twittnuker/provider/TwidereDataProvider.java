@@ -300,7 +300,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
         updatePreferences();
-		mReadStateManager = new ReadStateManager(context);
+		mReadStateManager = app.getReadStateManager();
 		mImagePreloader = new ImagePreloader(context, app.getImageLoader());
 		mNotificationHelper = new NotificationHelper(context);
 		// final GetWritableDatabaseTask task = new

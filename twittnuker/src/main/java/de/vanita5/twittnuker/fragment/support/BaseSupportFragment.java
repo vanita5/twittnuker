@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.ReadStateManager;
 
 public class BaseSupportFragment extends Fragment implements IBaseFragment, Constants {
 
@@ -86,6 +87,10 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
 	public AsyncTwitterWrapper getTwitterWrapper() {
 		return getApplication() != null ? getApplication().getTwitterWrapper() : null;
 	}
+
+    public ReadStateManager getReadStateManager() {
+        return getApplication() != null ? getApplication().getReadStateManager() : null;
+    }
 
 	public void invalidateOptionsMenu() {
         final FragmentActivity activity = getActivity();

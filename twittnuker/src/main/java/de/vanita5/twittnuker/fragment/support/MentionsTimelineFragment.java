@@ -46,6 +46,12 @@ public class MentionsTimelineFragment extends CursorStatusesFragment {
         return adapter;
     }
 
+    @Override
+    public boolean isRefreshing() {
+        final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        return twitter != null && twitter.isMentionsTimelineRefreshing();
+    }
+
 	@Override
     protected int getNotificationType() {
         return NOTIFICATION_ID_MENTIONS_TIMELINE;

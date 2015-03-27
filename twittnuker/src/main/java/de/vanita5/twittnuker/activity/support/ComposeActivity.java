@@ -1059,12 +1059,15 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 		final int tweetLength = mValidator.getTweetLength(text), maxLength = mValidator.getMaxTweetLength();
 		if (!mStatusShortenerUsed && tweetLength > maxLength) {
 			mEditText.setError(getString(R.string.error_message_status_too_long));
-			final int text_length = mEditText.length();
-			mEditText.setSelection(text_length - (tweetLength - maxLength), text_length);
+            final int textLength = mEditText.length();
+            mEditText.setSelection(textLength - (tweetLength - maxLength), textLength);
 			return;
 		} else if (!hasMedia && (isEmpty(text) || noReplyContent(text))) {
 			mEditText.setError(getString(R.string.error_message_no_content));
 			return;
+        } else if (mAccountsAdapter.isSelectionEmpty()) {
+            mEditText.setError(getString(R.string.no_account_selected));
+            return;
 		}
         final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
 //        if (mRecentLocation == null && attachLocation) {
@@ -1195,6 +1198,10 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
             final ParcelableAccount[] result = new ParcelableAccount[selectedCount];
             System.arraycopy(temp, 0, result, 0, result.length);
             return result;
+        }
+
+        public boolean isSelectionEmpty() {
+            return getSelectedAccountIds().length == 0;
         }
 
         public void setSelectedAccountIds(long... accountIds) {

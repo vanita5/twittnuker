@@ -27,7 +27,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -35,7 +34,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -54,6 +52,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -91,6 +90,7 @@ public class TwittnukerApplication extends Application implements Constants,
 	private SQLiteDatabase mDatabase;
     private Bus mMessageBus;
     private VideoLoader mVideoLoader;
+    private ReadStateManager mReadStateManager;
 
 	public AsyncTaskManager getAsyncTaskManager() {
 		if (mAsyncTaskManager != null) return mAsyncTaskManager;
@@ -120,6 +120,11 @@ public class TwittnukerApplication extends Application implements Constants,
 		if (mResolver != null) return mResolver;
 		return mResolver = new TwidereHostAddressResolver(this);
 	}
+
+    public ReadStateManager getReadStateManager() {
+        if (mReadStateManager != null) return mReadStateManager;
+        return mReadStateManager = new ReadStateManager(this);
+    }
 
 	public ImageDownloader getImageDownloader() {
 		if (mImageDownloader != null) return mImageDownloader;
