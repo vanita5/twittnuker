@@ -29,6 +29,8 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -111,9 +113,10 @@ import static de.vanita5.twittnuker.util.Utils.getNotificationUri;
 import static de.vanita5.twittnuker.util.Utils.getTableId;
 import static de.vanita5.twittnuker.util.Utils.getTableNameById;
 
-public final class TwidereDataProvider extends ContentProvider implements Constants,
+public final class TwidereDataProvider extends ContentProvider implements Constants, OnSharedPreferenceChangeListener,
 		LazyLoadCallback {
 
+    public static final String TAG_OLDEST_MESSAGES = "oldest_messages";
 	private ContentResolver mContentResolver;
 	private SQLiteDatabaseWrapper mDatabaseWrapper;
 	private NotificationManager mNotificationManager;
@@ -123,6 +126,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	private HostAddressResolver mHostAddressResolver;
 	private NotificationHelper mNotificationHelper;
 	private Handler mHandler;
+
+	private boolean mNameFirst;
 
 	@Override
 	public int bulkInsert(final Uri uri, @NonNull final ContentValues[] valuesArray) {
@@ -178,6 +183,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 			throw new IllegalStateException(e);
 		}
 	}
+
 
 	@Override
 	public int delete(final Uri uri, final String selection, final String[] selectionArgs) {
@@ -292,6 +298,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         mDatabaseWrapper = new SQLiteDatabaseWrapper(this);
 		mHostAddressResolver = app.getHostAddressResolver();
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mPreferences.registerOnSharedPreferenceChangeListener(this);
+        updatePreferences();
 		mReadStateManager = new ReadStateManager(context);
 		mImagePreloader = new ImagePreloader(context, app.getImageLoader());
 		mNotificationHelper = new NotificationHelper(context);
@@ -309,6 +317,11 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     }
 
 	@Override
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
+        updatePreferences();
+    }
+
+    @Override
 	public ParcelFileDescriptor openFile(final Uri uri, final String mode) throws FileNotFoundException {
 		if (uri == null || mode == null) throw new IllegalArgumentException();
 		final int table_id = getTableId(uri);
@@ -627,6 +640,12 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 		if (!uri.getBooleanQueryParameter(QUERY_PARAM_NOTIFY, true)) return;
         switch (tableId) {
 			case TABLE_ID_STATUSES: {
+//                final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(getContext(),
+//                        getAccountIds(getContext()));
+//                for (final AccountPreferences pref : prefs) {
+//                    if (!pref.isHomeTimelineNotificationEnabled()) continue;
+//                    showTimelineNotification(pref, mReadStateManager.getPosition(HomeTimelineFragment.KEY_READ_POSITION_TAG));
+//                }
 				notifyUnreadCountChanged(NOTIFICATION_ID_HOME_TIMELINE);
 				break;
 			}
@@ -646,7 +665,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 for (final AccountPreferences pref : prefs) {
                     if (!pref.isDirectMessagesNotificationEnabled()) continue;
                     final StringLongPair[] pairs = mReadStateManager.getPositionPairs(DirectMessagesFragment.KEY_READ_POSITION_TAG);
-                    showMessagesNotification(pref, pairs);
+                    showMessagesNotification(pref, pairs, valuesArray);
                 }
 				notifyUnreadCountChanged(NOTIFICATION_ID_DIRECT_MESSAGES);
 				break;
@@ -680,20 +699,20 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     idxUserScreenName = userCursor.getColumnIndex(Statuses.USER_NAME),
                     idxUserId = userCursor.getColumnIndex(Statuses.USER_NAME);
             final String notificationTitle = resources.getQuantityString(R.plurals.N_new_statuses,
-                    statusesCount, statusesCount);
+					statusesCount, statusesCount);
             final String notificationContent;
             userCursor.moveToFirst();
-            final String displayName = userCursor.getString(idxUserScreenName);
+            final String displayName = mNameFirst ? userCursor.getString(idxUserName) : "@" + userCursor.getString(idxUserScreenName);
             if (usersCount == 1) {
                 notificationContent = context.getString(R.string.from_name, displayName);
             } else if (usersCount == 2) {
                 userCursor.moveToPosition(1);
-                final String othersName = userCursor.getString(idxUserScreenName);
+                final String othersName = mNameFirst ? userCursor.getString(idxUserName) : "@" + userCursor.getString(idxUserScreenName);
                 notificationContent = resources.getQuantityString(R.plurals.from_name_and_N_others,
                         usersCount - 1, othersName, usersCount - 1);
             } else {
                 userCursor.moveToPosition(1);
-                final String othersName = userCursor.getString(idxUserScreenName);
+                final String othersName = mNameFirst ? userCursor.getString(idxUserName) : "@" + userCursor.getString(idxUserScreenName);
                 notificationContent = resources.getString(R.string.from_name_and_N_others, othersName, usersCount - 1);
             }
 
@@ -738,7 +757,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             final int usersCount = userCursor.getCount();
             final int statusesCount = statusCursor.getCount();
             if (statusesCount == 0 || usersCount == 0) return;
-            final String accountName = Utils.getAccountName(context, accountId);
+			final String accountName = Utils.getAccountName(context, accountId);
             final String accountScreenName = Utils.getAccountScreenName(context, accountId);
             final int idxStatusText = statusCursor.getColumnIndex(Statuses.TEXT_UNESCAPED),
                     idxStatusTimestamp = statusCursor.getColumnIndex(Statuses.STATUS_TIMESTAMP),
@@ -752,7 +771,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     statusesCount, statusesCount);
             final String notificationContent;
             userCursor.moveToFirst();
-            final String displayName = userCursor.getString(idxUserScreenName);
+            final String displayName = mNameFirst ? userCursor.getString(idxUserName) : "@" + userCursor.getString(idxUserScreenName);
             if (usersCount == 1) {
                 notificationContent = context.getString(R.string.notification_mention, displayName);
             } else {
@@ -768,13 +787,17 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     when = statusCursor.getLong(idxStatusTimestamp);
                 }
                 final SpannableStringBuilder sb = new SpannableStringBuilder();
-                sb.append(statusCursor.getString(idxStatusUserScreenName));
+                sb.append(mNameFirst ? statusCursor.getString(idxStatusUserName) : "@" + statusCursor.getString(idxStatusUserScreenName));
                 sb.setSpan(new StyleSpan(Typeface.BOLD), 0, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 sb.append(' ');
                 sb.append(statusCursor.getString(idxStatusText));
                 style.addLine(sb);
             }
-			style.setSummaryText("@" + accountScreenName);
+            if (mNameFirst) {
+                style.setSummaryText(accountName);
+            } else {
+				style.setSummaryText("@" + accountScreenName);
+            }
 
             // Setup on click intent
             final Intent homeIntent = new Intent(context, HomeActivity.class);
@@ -784,10 +807,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
             builder.setSmallIcon(R.drawable.ic_stat_mention);
             builder.setTicker(notificationTitle);
-            builder.setContentTitle(notificationTitle);
-            builder.setContentText(notificationContent);
-            builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
-            builder.setContentIntent(clickIntent);
+			builder.setContentTitle(notificationTitle);
+			builder.setContentText(notificationContent);
+			builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
+			builder.setContentIntent(clickIntent);
             builder.setNumber(statusesCount);
             builder.setWhen(when);
             builder.setStyle(style);
@@ -800,8 +823,16 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         }
     }
 
-    private void showMessagesNotification(AccountPreferences pref, StringLongPair[] pairs) {
+    private void showMessagesNotification(AccountPreferences pref, StringLongPair[] pairs, ContentValues[] valuesArray) {
         final long accountId = pref.getAccountId();
+        final long prevOldestId = mReadStateManager.getPosition(TAG_OLDEST_MESSAGES, String.valueOf(accountId));
+        long oldestId = -1;
+        for (final ContentValues contentValues : valuesArray) {
+            final long messageId = contentValues.getAsLong(DirectMessages.MESSAGE_ID);
+            oldestId = oldestId < 0 ? messageId : Math.min(oldestId, messageId);
+            if (messageId <= prevOldestId) return;
+        }
+        mReadStateManager.setPosition(TAG_OLDEST_MESSAGES, String.valueOf(accountId), oldestId, false);
         final Context context = getContext();
         final Resources resources = context.getResources();
         final NotificationManager nm = getNotificationManager();
@@ -822,9 +853,12 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             }
         }
         orExpressions.add(Expression.notIn(new Column(DirectMessages.SENDER_ID), new RawItemArray(senderIds.toArray())));
-        final Expression selection = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
-                Expression.or(orExpressions.toArray(new Expression[orExpressions.size()])));
-        final String filteredSelection = selection.getSQL();
+        final Expression selection = Expression.and(
+                Expression.equals(DirectMessages.ACCOUNT_ID, accountId),
+				Expression.greaterThan(DirectMessages.MESSAGE_ID, prevOldestId),
+				Expression.or(orExpressions.toArray(new Expression[orExpressions.size()]))
+        );
+		final String filteredSelection = selection.getSQL();
         final String[] userProjection = {DirectMessages.SENDER_ID, DirectMessages.SENDER_NAME,
                 DirectMessages.SENDER_SCREEN_NAME};
         final String[] messageProjection = {DirectMessages.SENDER_ID, DirectMessages.SENDER_NAME,
@@ -852,7 +886,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     messagesCount, messagesCount);
             final String notificationContent;
             userCursor.moveToFirst();
-            final String displayName = userCursor.getString(idxUserScreenName);
+            final String displayName =  mNameFirst ? userCursor.getString(idxUserName) : "@" + userCursor.getString(idxUserScreenName);
             if (usersCount == 1) {
                 if (messagesCount == 1) {
                     notificationContent = context.getString(R.string.notification_direct_message, displayName);
@@ -873,13 +907,17 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     when = messageCursor.getLong(idxMessageTimestamp);
                 }
                 final SpannableStringBuilder sb = new SpannableStringBuilder();
-                sb.append(messageCursor.getString(idxMessageUserScreenName));
+                sb.append(mNameFirst ? messageCursor.getString(idxMessageUserName) : "@" + messageCursor.getString(idxMessageUserScreenName));
                 sb.setSpan(new StyleSpan(Typeface.BOLD), 0, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 sb.append(' ');
                 sb.append(messageCursor.getString(idxMessageText));
                 style.addLine(sb);
             }
-			style.setSummaryText("@" + accountScreenName);
+            if (mNameFirst) {
+                style.setSummaryText(accountName);
+            } else {
+				style.setSummaryText("@" + accountScreenName);
+            }
 
             // Setup on click intent
             final Intent homeIntent = new Intent(context, HomeActivity.class);
@@ -926,6 +964,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         if (cr == null || c == null || uri == null) return;
         c.setNotificationUri(cr, uri);
 	}
+
+    private void updatePreferences() {
+        mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, false);
+    }
 
     private static Cursor getPreferencesCursor(final SharedPreferencesWrapper preferences, final String key) {
 		final MatrixCursor c = new MatrixCursor(TwidereDataStore.Preferences.MATRIX_COLUMNS);

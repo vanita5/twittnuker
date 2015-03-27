@@ -75,6 +75,19 @@ public class SQLiteDatabaseWrapper {
         mDatabase.setTransactionSuccessful();
     }
 
+
+    public Cursor query(boolean distinct, String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
+        tryCreateDatabase();
+        if (mDatabase == null) return null;
+        return mDatabase.query(distinct, table, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
+    }
+
+    public Cursor query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
+        tryCreateDatabase();
+        if (mDatabase == null) return null;
+        return mDatabase.query(table, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
+    }
+
     public int update(final String table, final ContentValues values, final String whereClause, final String[] whereArgs) {
         tryCreateDatabase();
         if (mDatabase == null) return 0;
@@ -84,7 +97,8 @@ public class SQLiteDatabaseWrapper {
     private void tryCreateDatabase() {
         if (mLazyLoadCallback == null || mDatabase != null) return;
         mDatabase = mLazyLoadCallback.onCreateSQLiteDatabase();
-        if (mDatabase == null) throw new IllegalStateException("Callback must not return null instance!");
+        if (mDatabase == null)
+            throw new IllegalStateException("Callback must not return null instance!");
     }
 
     public static interface LazyLoadCallback {
