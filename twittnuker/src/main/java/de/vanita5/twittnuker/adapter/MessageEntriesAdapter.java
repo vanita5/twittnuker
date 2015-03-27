@@ -23,6 +23,8 @@
 package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -35,17 +37,22 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
+import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.ReadStateManager;
+import de.vanita5.twittnuker.util.ReadStateManager.OnReadStateChangeListener;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.MessageEntryViewHolder;
 
-public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Constants, IContentCardAdapter, OnClickListener {
+public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Constants,
+        IContentCardAdapter, OnClickListener, OnReadStateChangeListener {
 
     public static final int ITEM_VIEW_TYPE_MESSAGE = 0;
     public static final int ITEM_VIEW_TYPE_LOAD_INDICATOR = 1;
@@ -57,9 +64,12 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
     private final int mTextSize;
     private final int mProfileImageStyle;
     private final int mMediaPreviewStyle;
+    private final ReadStateManager mReadStateManager;
+    private final OnSharedPreferenceChangeListener mReadStateChangeListener;
     private boolean mLoadMoreIndicatorEnabled;
 	private Cursor mCursor;
 	private MessageEntriesAdapterListener mListener;
+    private StringLongPair[] mPositionPairs;
 
     public MessageEntriesAdapter(final Context context) {
         mContext = context;
@@ -72,6 +82,19 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
         mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
         mMediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
         mTextSize = preferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
+        mReadStateManager = new ReadStateManager(context);
+        mReadStateChangeListener = new OnSharedPreferenceChangeListener() {
+
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                updateReadState();
+            }
+        };
+    }
+
+    public void updateReadState() {
+        mPositionPairs = mReadStateManager.getPositionPairs(DirectMessagesFragment.KEY_READ_POSITION_TAG);
+        notifyDataSetChanged();
     }
 
     public DirectMessageEntry getEntry(final int position) {
@@ -116,6 +139,11 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
     @Override
     public boolean hasLoadMoreIndicator() {
         return mLoadMoreIndicatorEnabled;
+    }
+
+    @Override
+    public void onReadStateChanged() {
+
     }
 
     @Override
@@ -175,11 +203,23 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
             case ITEM_VIEW_TYPE_MESSAGE: {
 				final Cursor c = mCursor;
 				c.moveToPosition(position);
-				((MessageEntryViewHolder) holder).displayMessage(c);
+                ((MessageEntryViewHolder) holder).displayMessage(c, isUnread(c));
                 break;
             }
         }
 	}
+
+    private boolean isUnread(Cursor c) {
+        if (mPositionPairs == null) return true;
+        final long accountId = c.getLong(ConversationEntries.IDX_ACCOUNT_ID);
+        final long conversationId = c.getLong(ConversationEntries.IDX_CONVERSATION_ID);
+        final long messageId = c.getLong(ConversationEntries.IDX_MESSAGE_ID);
+        final String key = accountId + "-" + conversationId;
+        for (StringLongPair pair : mPositionPairs) {
+            if (key.equals(pair.getKey())) return messageId > pair.getValue();
+        }
+        return true;
+    }
 
     @Override
     public int getItemViewType(int position) {
@@ -211,6 +251,11 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
 
 	public void setCursor(Cursor cursor) {
 		mCursor = cursor;
+        mReadStateManager.unregisterOnSharedPreferenceChangeListener(mReadStateChangeListener);
+        if (cursor != null) {
+            updateReadState();
+            mReadStateManager.registerOnSharedPreferenceChangeListener(mReadStateChangeListener);
+        }
 		notifyDataSetChanged();
 	}
 

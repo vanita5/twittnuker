@@ -76,7 +76,6 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:textColor="?android:attr/textColorPrimary"
-                android:textStyle="bold"
                 tools:text="Mariotaku Lee"/>
 
             <de.vanita5.twittnuker.view.HandleSpanClickTextView

@@ -275,6 +275,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 		resolver.registerContentObserver(Accounts.CONTENT_URI, true, mReloadContentObserver);
         final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
         bus.register(this);
+        mAdapter.updateReadState();
 	}
 
 

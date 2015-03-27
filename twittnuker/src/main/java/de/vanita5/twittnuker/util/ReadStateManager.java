@@ -24,16 +24,17 @@ package de.vanita5.twittnuker.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.util.collection.CompactHashSet;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ReadStateManager implements Constants {
 
@@ -76,6 +77,14 @@ public class ReadStateManager implements Constants {
 		}
 		return -1;
 	}
+
+    public void registerOnSharedPreferenceChangeListener(OnSharedPreferenceChangeListener listener) {
+        mPreferences.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public void unregisterOnSharedPreferenceChangeListener(OnSharedPreferenceChangeListener listener) {
+        mPreferences.unregisterOnSharedPreferenceChangeListener(listener);
+    }
 
 	public boolean setPosition(final String key, final String keyId, final long position, boolean acceptOlder) {
 		if (TextUtils.isEmpty(key)) return false;
@@ -136,5 +145,9 @@ public class ReadStateManager implements Constants {
 		editor.apply();
 		return true;
 	}
+
+    public interface OnReadStateChangeListener {
+        void onReadStateChanged();
+    }
 
 }
