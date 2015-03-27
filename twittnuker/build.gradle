@@ -83,7 +83,7 @@ dependencies {
     compile 'com.github.mariotaku:MessageBubbleView:1.0'
     compile 'com.github.mariotaku:DragSortListView:0.6.1'
     compile 'com.github.mariotaku:SlidingMenu:1.3'
+    compile 'com.github.uucky:ColorPicker-Android:0.9.1'
     compile project(':twittnuker.component.common')
-    compile project(':ColorPicker')
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }

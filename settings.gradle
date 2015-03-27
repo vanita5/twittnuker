@@ -22,5 +22,3 @@ include ':twittnuker.component.twitter4j'
 include ':twittnuker.component.common'
 include ':twittnuker.component.jsonserializer'
 include ':twittnuker.component.querybuilder'
-include ':ColorPicker'
-project(':ColorPicker').projectDir = file('libraries/ColorPicker/library')
