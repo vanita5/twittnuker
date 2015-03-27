@@ -859,7 +859,6 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 				title = R.string.compose;
 			}
 		}
-		final boolean hasActivatedTask = hasActivatedTask();
         if (mActionsButton instanceof IHomeActionButton) {
             final IHomeActionButton hab = (IHomeActionButton) mActionsButton;
             hab.setIcon(icon);

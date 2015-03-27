@@ -63,7 +63,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.ContentListScrollListener;
 import de.vanita5.twittnuker.util.ContentListScrollListener.ContentListSupport;
-import de.vanita5.twittnuker.util.PositionManager;
+import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SimpleDrawerCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -89,7 +89,7 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
     private Rect mSystemWindowsInsets = new Rect();
     private int mControlBarOffsetPixels;
     private PopupMenu mPopupMenu;
-    private PositionManager mPositionManager;
+    private ReadStateManager mReadStateManager;
 
     protected AbsStatusesFragment() {
         mStatusesBusCallback = createMessageBusCallback();
@@ -174,7 +174,7 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
 	@Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-        mPositionManager = new PositionManager(getActivity());
+        mReadStateManager = new ReadStateManager(getActivity());
 		final View view = getView();
 		if (view == null) throw new AssertionError();
 		final Context context = view.getContext();
@@ -431,7 +431,7 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
         if (position == RecyclerView.NO_POSITION) return;
         final ParcelableStatus status = mAdapter.getStatus(position);
         if (status == null) return;
-        mPositionManager.setPosition(readPositionTag, status.id);
+        mReadStateManager.setPosition(readPositionTag, status.id);
     }
 
     private void setListShown(boolean shown) {
