@@ -27,6 +27,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -34,6 +35,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -193,7 +195,6 @@ public class TwittnukerApplication extends Application implements Constants,
 		}
         setTheme(ThemeUtils.getThemeResource(this));
 		super.onCreate();
-//        TwidereOkHttpPlatform.applyHack(this);
         mHandler = new Handler();
         mMessageBus = new Bus();
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);

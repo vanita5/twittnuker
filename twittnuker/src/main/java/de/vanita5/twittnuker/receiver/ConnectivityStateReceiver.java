@@ -44,5 +44,6 @@ public class ConnectivityStateReceiver extends BroadcastReceiver implements Cons
 		}
 		if (!ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) return;
 		startRefreshServiceIfNeeded(context);
+		//TODO start streaming here
 	}
 }

@@ -33,7 +33,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.util.collection.CompactHashSet;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class ReadStateManager implements Constants {
@@ -69,7 +68,7 @@ public class ReadStateManager implements Constants {
 
 	public long getPosition(final String key, final String keyId) {
 		if (TextUtils.isEmpty(key)) return -1;
-		final Set<String> set = mPreferences.getStringSet(key, new HashSet<String>());
+        final Set<String> set = mPreferences.getStringSet(key, null);
 		if (set == null) return -1;
 		final String prefix = keyId + ":";
 		for (String entry : set) {
