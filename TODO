@@ -1,14 +1,15 @@
-Test media upload
-Settings export/import: action bar color
-DMs: action bar color
-Fix push toast messages
-check if url has subdirs (port, push)
-Fix loading indicator on shortened tweet expand
-cache image preview if downloading full image (generic)
-Fix default streaming settings (notification, streaming enabled)
-Fix Twitlonger
+* Test media upload
+* Settings export/import: action bar color
+* Fix push toast messages
+* check if url has subdirs (port, push)
+* Fix loading indicator on shortened tweet expand
+* cache image preview if downloading full image (generic)
+* Fix default streaming settings (notification, streaming enabled)
+* Fix Twitlonger
 
-add Strings with no default translation:
+* Fix/Merge Twittnuker/Twidere notifications
+
+* add Strings with no default translation:
     warning: string 'home_refresh_summary' has no default translation.
     warning: string 'indicate_my_status' has no default translation.
     warning: string 'lists_following_me' has no default translation.

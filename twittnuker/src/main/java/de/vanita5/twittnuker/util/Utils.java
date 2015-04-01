@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.util;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -111,6 +112,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.mariotaku.querybuilder.AllColumns;
 import org.mariotaku.querybuilder.Columns;
@@ -128,12 +130,16 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.CameraCropActivity;
+import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
+import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.GoogleMapViewerActivity;
 import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
+import de.vanita5.twittnuker.fragment.support.AddStatusFilterDialogFragment;
+import de.vanita5.twittnuker.fragment.support.DestroyStatusDialogFragment;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesConversationFragment;
 import de.vanita5.twittnuker.fragment.support.IncomingFriendshipsFragment;
 import de.vanita5.twittnuker.fragment.support.MutesUsersListFragment;
@@ -144,6 +150,7 @@ import de.vanita5.twittnuker.fragment.support.StatusFavoritersListFragment;
 import de.vanita5.twittnuker.fragment.support.StatusFragment;
 import de.vanita5.twittnuker.fragment.support.StatusRepliesListFragment;
 import de.vanita5.twittnuker.fragment.support.StatusRetweetersListFragment;
+import de.vanita5.twittnuker.fragment.support.StatusTranslateDialogFragment;
 import de.vanita5.twittnuker.fragment.support.StatusesListFragment;
 import de.vanita5.twittnuker.fragment.support.UserBlocksListFragment;
 import de.vanita5.twittnuker.fragment.support.UserFavoritesFragment;
@@ -209,6 +216,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.SocketAddress;
@@ -258,6 +266,7 @@ import static de.vanita5.twittnuker.provider.TwidereDataStore.DIRECT_MESSAGES_UR
 import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
 import static de.vanita5.twittnuker.util.TwidereLinkify.TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES;
+import static de.vanita5.twittnuker.util.UserColorNameUtils.getUserColor;
 
 @SuppressWarnings("unused")
 public final class Utils implements Constants, TwitterConstants {
@@ -3585,8 +3594,8 @@ public final class Utils implements Constants, TwitterConstants {
         cb.setClientName("TwitterAndroid");
         cb.setClientURL(null);
         final String deviceInfo = String.format(Locale.ROOT, "%s/%s (%s;%s;%s;%s;)",
-                Build.MODEL, Build.VERSION.RELEASE, Build.MANUFACTURER, Build.MODEL, Build.BRAND,
-                Build.PRODUCT);
+				Build.MODEL, Build.VERSION.RELEASE, Build.MANUFACTURER, Build.MODEL, Build.BRAND,
+				Build.PRODUCT);
         cb.setHttpUserAgent(String.format(Locale.ROOT, "TwitterAndroid/%s (%d-%c-%d) %s",
 				"5.32.0", 3030745, 'r', 692, deviceInfo));
     }
@@ -3861,6 +3870,103 @@ public final class Utils implements Constants, TwitterConstants {
 			return null;
         return pm.getDrawable(info.packageName, info.metaData.getInt(key), info.applicationInfo);
 	}
+
+    public static boolean handleMenuItemClick(FragmentActivity activity, FragmentManager fm, AsyncTwitterWrapper twitter, ParcelableStatus status, MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_COPY: {
+                if (ClipboardUtils.setText(activity, status.text_plain)) {
+                    showOkMessage(activity, R.string.text_copied, false);
+                }
+                break;
+            }
+            case MENU_RETWEET: {
+				retweet(status, twitter);
+                break;
+            }
+            case MENU_QUOTE: {
+                final Intent intent = new Intent(INTENT_ACTION_QUOTE);
+                intent.putExtra(EXTRA_STATUS, status);
+                activity.startActivity(intent);
+                break;
+            }
+            case MENU_REPLY: {
+                final Intent intent = new Intent(INTENT_ACTION_REPLY);
+                intent.putExtra(EXTRA_STATUS, status);
+                activity.startActivity(intent);
+                break;
+            }
+            case MENU_FAVORITE: {
+				favorite(status, twitter);
+                break;
+            }
+			case MENU_LOVE: {
+				retweet(status, twitter);
+				favorite(status, twitter);
+				break;
+			}
+            case MENU_DELETE: {
+                DestroyStatusDialogFragment.show(fm, status);
+                break;
+            }
+            case MENU_ADD_TO_FILTER: {
+                AddStatusFilterDialogFragment.show(fm, status);
+                break;
+            }
+            case MENU_SET_COLOR: {
+                final Intent intent = new Intent(activity, ColorPickerDialogActivity.class);
+                final int color = getUserColor(activity, status.user_id, true);
+                if (color != 0) {
+                    intent.putExtra(EXTRA_COLOR, color);
+                }
+                intent.putExtra(EXTRA_CLEAR_BUTTON, color != 0);
+                intent.putExtra(EXTRA_ALPHA_SLIDER, false);
+                activity.startActivityForResult(intent, REQUEST_SET_COLOR);
+                break;
+            }
+            case MENU_TRANSLATE: {
+                final ParcelableCredentials account
+                        = ParcelableAccount.getCredentials(activity, status.account_id);
+                if (isOfficialCredentials(activity, account)) {
+                    StatusTranslateDialogFragment.show(fm, status);
+                } else {
+                    final Resources resources = activity.getResources();
+                    final Locale locale = resources.getConfiguration().locale;
+                    try {
+                        final String template = "http://translate.google.com/#%s|%s|%s";
+                        final String sourceLang = "auto";
+                        final String targetLang = URLEncoder.encode(locale.getLanguage(), HTTP.UTF_8);
+                        final String text = URLEncoder.encode(status.text_unescaped, HTTP.UTF_8);
+                        final Uri uri = Uri.parse(String.format(Locale.ROOT, template, sourceLang, targetLang, text));
+                        final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                        activity.startActivity(intent);
+                    } catch (UnsupportedEncodingException ignore) {
+
+                    }
+                }
+                break;
+            }
+            case MENU_OPEN_WITH_ACCOUNT: {
+                final Intent intent = new Intent(INTENT_ACTION_SELECT_ACCOUNT);
+                intent.setClass(activity, AccountSelectorActivity.class);
+                intent.putExtra(EXTRA_SINGLE_SELECTION, true);
+                activity.startActivityForResult(intent, REQUEST_SELECT_ACCOUNT);
+                break;
+            }
+            default: {
+                if (item.getIntent() != null) {
+                    try {
+                        activity.startActivity(item.getIntent());
+                    } catch (final ActivityNotFoundException e) {
+                        Log.w(LOGTAG, e);
+                        return false;
+                    }
+                }
+                break;
+            }
+        }
+        return true;
+    }
 
 	private static boolean isErrorCodeMessageSupported(final TwitterException te) {
 		if (te == null) return false;

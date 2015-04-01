@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,7 +30,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
@@ -55,7 +53,6 @@ import android.support.v7.widget.RecyclerView.LayoutParams;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -67,9 +64,7 @@ import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
-import org.apache.http.protocol.HTTP;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter.StatusAdapterListener;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
@@ -88,7 +83,6 @@ import de.vanita5.twittnuker.task.TwidereAsyncTask;
 import de.vanita5.twittnuker.task.TwidereAsyncTask.Status;
 import de.vanita5.twittnuker.text.method.StatusContentMovementMethod;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.LinkCreator;
@@ -454,6 +448,15 @@ public class StatusFragment extends BaseSupportFragment
                 mCardLayoutResource = R.layout.card_item_status;
 		    }
 		}
+
+        public void addConversation(ParcelableStatus status, int position) {
+            if (mConversation == null) {
+                mConversation = new ArrayList<>();
+            }
+            mConversation.add(position, status);
+            notifyDataSetChanged();
+            updateItemDecoration();
+        }
 
         public int findPositionById(long itemId) {
             for (int i = 0, j = getItemCount(); i < j; i++) {
@@ -821,9 +824,15 @@ public class StatusFragment extends BaseSupportFragment
 
         @Override
         protected void onProgressUpdate(ParcelableStatus... values) {
-            super.onProgressUpdate(values);
+            for (ParcelableStatus status : values) {
+//                fragment.addConversation(status, 0);
+        	}
         }
 
+    }
+
+    private void addConversation(ParcelableStatus status, int position) {
+        mStatusAdapter.addConversation(status, position);
     }
 
     private static class SpaceViewHolder extends ViewHolder {
@@ -926,100 +935,8 @@ public class StatusFragment extends BaseSupportFragment
             if (status == null || fragment == null) return false;
             final AsyncTwitterWrapper twitter = fragment.getTwitterWrapper();
             final FragmentActivity activity = fragment.getActivity();
-            switch (item.getItemId()) {
-                case MENU_COPY: {
-                    if (ClipboardUtils.setText(activity, status.text_plain)) {
-                        showOkMessage(activity, R.string.text_copied, false);
-                    }
-                    break;
-                }
-                case MENU_RETWEET: {
-                    retweet(status, twitter);
-                    break;
-                }
-                case MENU_QUOTE: {
-                    final Intent intent = new Intent(INTENT_ACTION_QUOTE);
-                    intent.putExtra(EXTRA_STATUS, status);
-                    fragment.startActivity(intent);
-                    break;
-                }
-                case MENU_REPLY: {
-                    final Intent intent = new Intent(INTENT_ACTION_REPLY);
-                    intent.putExtra(EXTRA_STATUS, status);
-                    fragment.startActivity(intent);
-                    break;
-                }
-                case MENU_FAVORITE: {
-                    favorite(status, twitter);
-                    break;
-                }
-				case MENU_LOVE: {
-					retweet(status, twitter);
-					favorite(status, twitter);
-					break;
-				}
-                case MENU_DELETE: {
-                    DestroyStatusDialogFragment.show(fragment.getFragmentManager(), status);
-                    break;
-                }
-                case MENU_ADD_TO_FILTER: {
-                    AddStatusFilterDialogFragment.show(fragment.getFragmentManager(), status);
-                    break;
-                }
-                case MENU_SET_COLOR: {
-                    final Intent intent = new Intent(activity, ColorPickerDialogActivity.class);
-                    final int color = getUserColor(activity, status.user_id, true);
-                    if (color != 0) {
-                        intent.putExtra(EXTRA_COLOR, color);
-                    }
-                    intent.putExtra(EXTRA_CLEAR_BUTTON, color != 0);
-                    intent.putExtra(EXTRA_ALPHA_SLIDER, false);
-                    fragment.startActivityForResult(intent, REQUEST_SET_COLOR);
-                    break;
-                }
-                case MENU_TRANSLATE: {
-                    final ParcelableCredentials account
-                            = ParcelableAccount.getCredentials(activity, status.account_id);
-                    if (Utils.isOfficialCredentials(activity, account)) {
-                        StatusTranslateDialogFragment.show(fragment.getFragmentManager(), status);
-                    } else {
-                        final Resources resources = fragment.getResources();
-                        final Locale locale = resources.getConfiguration().locale;
-                        try {
-                            final String template = "http://translate.google.com/#%s|%s|%s";
-                            final String sourceLang = "auto";
-                            final String targetLang = URLEncoder.encode(locale.getLanguage(), HTTP.UTF_8);
-                            final String text = URLEncoder.encode(status.text_unescaped, HTTP.UTF_8);
-                            final Uri uri = Uri.parse(String.format(Locale.ROOT, template, sourceLang, targetLang, text));
-                            final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                            intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                            fragment.startActivity(intent);
-                        } catch (UnsupportedEncodingException ignore) {
-
-                        }
-                    }
-                    break;
-                }
-                case MENU_OPEN_WITH_ACCOUNT: {
-                    final Intent intent = new Intent(INTENT_ACTION_SELECT_ACCOUNT);
-                    intent.setClass(activity, AccountSelectorActivity.class);
-                    intent.putExtra(EXTRA_SINGLE_SELECTION, true);
-                    fragment.startActivityForResult(intent, REQUEST_SELECT_ACCOUNT);
-                    break;
-                }
-                default: {
-                    if (item.getIntent() != null) {
-                        try {
-                            fragment.startActivity(item.getIntent());
-                        } catch (final ActivityNotFoundException e) {
-                            Log.w(LOGTAG, e);
-                            return false;
-                        }
-                    }
-                    break;
-                }
-            }
-            return true;
+            final FragmentManager fm = fragment.getFragmentManager();
+            return Utils.handleMenuItemClick(activity, fm, twitter, status, item);
         }
 
         public void showStatus(ParcelableStatus status) {
