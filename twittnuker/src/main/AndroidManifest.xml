@@ -720,7 +720,7 @@
                 <action android:name="android.provider.Telephony.SECRET_CODE"/>
 
                 <data
-                    android:host="8943373"
+                    android:host="8948868537"
                     android:scheme="android_secret_code"/>
             </intent-filter>
         </receiver>
