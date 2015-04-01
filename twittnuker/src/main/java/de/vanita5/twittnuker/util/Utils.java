@@ -45,14 +45,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -117,7 +111,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.http.NameValuePair;
 import org.json.JSONException;
 import org.mariotaku.querybuilder.AllColumns;
 import org.mariotaku.querybuilder.Columns;
@@ -213,8 +206,6 @@ import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -278,6 +269,7 @@ public final class Utils implements Constants, TwitterConstants {
     public static final Pattern PATTERN_RESOURCE_IDENTIFIER = Pattern.compile("@([\\w_]+)/([\\w_]+)");
 	private static final UriMatcher CONTENT_PROVIDER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 	private static final UriMatcher LINK_HANDLER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
+    private static final UriMatcher HOME_TABS_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
 	static {
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Accounts.CONTENT_PATH,
@@ -387,6 +379,9 @@ public final class Utils implements Constants, TwitterConstants {
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_SEARCH, null, LINK_ID_SEARCH);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_MUTES_USERS, null, LINK_ID_MUTES_USERS);
 
+        HOME_TABS_URI_MATCHER.addURI(AUTHORITY_HOME, null, CustomTabUtils.TAB_CODE_HOME_TIMELINE);
+        HOME_TABS_URI_MATCHER.addURI(AUTHORITY_MENTIONS, null, CustomTabUtils.TAB_CODE_MENTIONS_TIMELINE);
+        HOME_TABS_URI_MATCHER.addURI(AUTHORITY_DIRECT_MESSAGES, null, CustomTabUtils.TAB_CODE_DIRECT_MESSAGES);
 	}
 
     private static LongSparseArray<Integer> sAccountColors = new LongSparseArray<>();
@@ -2400,9 +2395,11 @@ public final class Utils implements Constants, TwitterConstants {
 
     public static Twitter getTwitterInstance(final Context context, final long accountId,
                                              final boolean includeEntities) {
-        return getTwitterInstance(context, accountId, includeEntities, true, null, null);
+        return getTwitterInstance(context, accountId, includeEntities, true);
 	}
 
+
+    @Nullable
 	public static Twitter getTwitterInstance(final Context context, final long accountId,
 											 final boolean includeEntities,
 											 final boolean includeRetweets) {
@@ -2820,6 +2817,31 @@ public final class Utils implements Constants, TwitterConstants {
 	public static int matchLinkId(final Uri uri) {
 		return LINK_HANDLER_URI_MATCHER.match(uri);
 	}
+
+
+    public static int matchTabCode(final Uri uri) {
+        return HOME_TABS_URI_MATCHER.match(uri);
+    }
+
+
+    public static String matchTabType(final Uri uri) {
+        return getTabType(matchTabCode(uri));
+    }
+
+    public static String getTabType(final int code) {
+        switch (code) {
+            case TAB_CODE_HOME_TIMELINE: {
+                return TAB_TYPE_HOME_TIMELINE;
+            }
+            case TAB_CODE_MENTIONS_TIMELINE: {
+                return TAB_TYPE_MENTIONS_TIMELINE;
+            }
+            case TAB_CODE_DIRECT_MESSAGES: {
+                return TAB_TYPE_DIRECT_MESSAGES;
+            }
+        }
+        return null;
+    }
 
     public static void openMessageConversation(final FragmentActivity activity, final long accountId,
 			final long recipientId) {

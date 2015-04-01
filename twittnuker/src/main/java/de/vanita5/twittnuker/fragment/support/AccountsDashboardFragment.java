@@ -103,6 +103,7 @@ import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
 import de.vanita5.twittnuker.view.ShapedImageView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -210,9 +211,7 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 			}
 		}
         mAccountsAdapter.setAccounts(accounts);
-		if (mAccountsAdapter.getSelectedAccountId() <= 0) {
-			mAccountsAdapter.setSelectedAccountId(mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, defaultId));
-		}
+		mAccountsAdapter.setSelectedAccountId(mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, defaultId));
         mAccountActionProvider.setAccounts(accounts);
         mAccountActionProvider.setSelectedAccountIds(ArrayUtils.toPrimitive(activatedIds.toArray(new Long[activatedIds.size()])));
 
@@ -609,7 +608,6 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
         private final LayoutInflater mInflater;
         private final MediaLoaderWrapper mImageLoader;
         private final AccountsDashboardFragment mFragment;
-        private ParcelableAccount[] mAccounts;
         private ParcelableAccount[] mInternalAccounts;
 
         AccountSelectorAdapter(Context context, AccountsDashboardFragment fragment) {
@@ -627,15 +625,12 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
         }
 
         public void setAccounts(ParcelableAccount[] accounts) {
-            mAccounts = accounts;
             if (accounts != null) {
                 final ParcelableAccount[] previousAccounts = mInternalAccounts;
                 mInternalAccounts = new ParcelableAccount[accounts.length];
                 int tempIdx = 0;
                 final List<ParcelableAccount> tempList = new ArrayList<>();
-                for (ParcelableAccount account : accounts) {
-                    tempList.add(account);
-                }
+                Collections.addAll(tempList, accounts);
                 if (previousAccounts != null) {
                     for (ParcelableAccount previousAccount : previousAccounts) {
                         final int idx = indexOfAccount(tempList, previousAccount.account_id);

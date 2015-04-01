@@ -64,6 +64,9 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 	public static final String PROTOCOL_TWITTNUKER = SCHEME_TWITTNUKER + "://";
 
 	public static final String AUTHORITY_USER = "user";
+	public static final String AUTHORITY_HOME = "home";
+	public static final String AUTHORITY_MENTIONS = "mentions";
+	public static final String AUTHORITY_DIRECT_MESSAGES = "direct_messages";
 	public static final String AUTHORITY_USERS = "users";
 	public static final String AUTHORITY_USER_TIMELINE = "user_timeline";
 	public static final String AUTHORITY_USER_MEDIA_TIMELINE = "user_media_timeline";
@@ -218,7 +221,10 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 	public static final String TAB_TYPE_ACTIVITIES_ABOUT_ME = "activities_about_me";
 	public static final String TAB_TYPE_ACTIVITIES_BY_FRIENDS = "activities_by_friends";
 	public static final String TAB_TYPE_RETWEETS_OF_ME = "retweets_of_me";
-	public static final String TAB_TYPE_STAGGERED_HOME_TIMELINE = "staggered_home_timeline";
+
+	public static final int TAB_CODE_HOME_TIMELINE = 1;
+	public static final int TAB_CODE_MENTIONS_TIMELINE = 2;
+	public static final int TAB_CODE_DIRECT_MESSAGES = 4;
 
 	public static final int TWITTER_MAX_IMAGE_SIZE = 3145728;
 	public static final int TWITTER_MAX_IMAGE_WIDTH = 1024;

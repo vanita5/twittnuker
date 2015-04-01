@@ -468,6 +468,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	}
 
 	private void clearNotification() {
+        getNotificationManager().cancelAll();
 	}
 
 	private void clearNotification(final int notificationType, final long accountId) {
@@ -718,10 +719,16 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
             // Setup on click intent
             final Intent homeIntent = new Intent(context, HomeActivity.class);
+            final Uri.Builder homeLinkBuilder = new Uri.Builder();
+            homeLinkBuilder.scheme(SCHEME_TWITTNUKER);
+            homeLinkBuilder.authority(AUTHORITY_HOME);
+            homeLinkBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
+            homeIntent.setData(homeLinkBuilder.build());
             final PendingIntent clickIntent = PendingIntent.getActivity(context, 0, homeIntent, 0);
 
             // Setup notification
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            builder.setAutoCancel(true);
             builder.setSmallIcon(R.drawable.ic_stat_twitter);
             builder.setTicker(notificationTitle);
             builder.setContentTitle(notificationTitle);
@@ -801,10 +808,16 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
             // Setup on click intent
             final Intent homeIntent = new Intent(context, HomeActivity.class);
+            final Uri.Builder homeLinkBuilder = new Uri.Builder();
+            homeLinkBuilder.scheme(SCHEME_TWITTNUKER);
+            homeLinkBuilder.authority(AUTHORITY_MENTIONS);
+            homeLinkBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
+            homeIntent.setData(homeLinkBuilder.build());
             final PendingIntent clickIntent = PendingIntent.getActivity(context, 0, homeIntent, 0);
 
             // Setup notification
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            builder.setAutoCancel(true);
             builder.setSmallIcon(R.drawable.ic_stat_mention);
             builder.setTicker(notificationTitle);
 			builder.setContentTitle(notificationTitle);
@@ -921,10 +934,16 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
             // Setup on click intent
             final Intent homeIntent = new Intent(context, HomeActivity.class);
+            final Uri.Builder homeLinkBuilder = new Uri.Builder();
+            homeLinkBuilder.scheme(SCHEME_TWITTNUKER);
+            homeLinkBuilder.authority(AUTHORITY_DIRECT_MESSAGES);
+            homeLinkBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
+            homeIntent.setData(homeLinkBuilder.build());
             final PendingIntent clickIntent = PendingIntent.getActivity(context, 0, homeIntent, 0);
 
             // Setup notification
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            builder.setAutoCancel(true);
             builder.setSmallIcon(R.drawable.ic_stat_direct_message);
             builder.setTicker(notificationTitle);
             builder.setContentTitle(notificationTitle);

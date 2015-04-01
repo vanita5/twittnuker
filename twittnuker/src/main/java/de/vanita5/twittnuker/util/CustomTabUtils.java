@@ -32,6 +32,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -62,8 +63,8 @@ import java.util.Map.Entry;
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 
 public class CustomTabUtils implements Constants {
-	private static final HashMap<String, CustomTabConfiguration> CUSTOM_TABS_CONFIGURATION_MAP = new HashMap<String, CustomTabConfiguration>();
-	private static final HashMap<String, Integer> CUSTOM_TABS_ICON_NAME_MAP = new HashMap<String, Integer>();
+    private static final HashMap<String, CustomTabConfiguration> CUSTOM_TABS_CONFIGURATION_MAP = new HashMap<>();
+    private static final HashMap<String, Integer> CUSTOM_TABS_ICON_NAME_MAP = new HashMap<>();
 
 	static {
 		CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_HOME_TIMELINE, new CustomTabConfiguration(
@@ -222,7 +223,7 @@ public class CustomTabUtils implements Constants {
 	}
 
 	public static HashMap<String, CustomTabConfiguration> getConfiguraionMap() {
-		return new HashMap<String, CustomTabConfiguration>(CUSTOM_TABS_CONFIGURATION_MAP);
+        return new HashMap<>(CUSTOM_TABS_CONFIGURATION_MAP);
 	}
 
 	public static List<SupportTabSpec> getHomeTabs(final Context context) {
@@ -230,7 +231,7 @@ public class CustomTabUtils implements Constants {
 		final ContentResolver resolver = context.getContentResolver();
 		final Cursor cur = resolver.query(Tabs.CONTENT_URI, Tabs.COLUMNS, null, null, Tabs.DEFAULT_SORT_ORDER);
 		if (cur == null) return Collections.emptyList();
-		final ArrayList<SupportTabSpec> tabs = new ArrayList<SupportTabSpec>();
+        final ArrayList<SupportTabSpec> tabs = new ArrayList<>();
 		cur.moveToFirst();
         final int idxName = cur.getColumnIndex(Tabs.NAME), idxIcon = cur.getColumnIndex(Tabs.ICON), idxType = cur
 				.getColumnIndex(Tabs.TYPE), idxArguments = cur.getColumnIndex(Tabs.ARGUMENTS), idxExtras = cur
@@ -255,7 +256,7 @@ public class CustomTabUtils implements Constants {
 	}
 
 	public static HashMap<String, Integer> getIconMap() {
-		return new HashMap<String, Integer>(CUSTOM_TABS_ICON_NAME_MAP);
+        return new HashMap<>(CUSTOM_TABS_ICON_NAME_MAP);
 	}
 
 	public static CustomTabConfiguration getTabConfiguration(final String key) {
@@ -271,7 +272,7 @@ public class CustomTabUtils implements Constants {
 		if (res == null) return null;
 		if (iconObj instanceof Integer) {
 			try {
-				return res.getDrawable((Integer) iconObj);
+                return ResourcesCompat.getDrawable(res, (Integer) iconObj, null);
 			} catch (final Resources.NotFoundException e) {
 				// Ignore.
 			}
@@ -283,7 +284,7 @@ public class CustomTabUtils implements Constants {
 			final Bitmap b = getTabIconFromFile((File) iconObj, res);
 			if (b != null) return new BitmapDrawable(res, b);
 		}
-		return res.getDrawable(R.drawable.ic_action_list);
+        return ResourcesCompat.getDrawable(res, R.drawable.ic_action_list, null);
 	}
 
 	public static Bitmap getTabIconFromFile(final File file, final Resources res) {

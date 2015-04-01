@@ -22,15 +22,7 @@
 
 package de.vanita5.twittnuker.util;
 
-import android.net.Uri;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayer.OnInitializedListener;
-import com.google.android.youtube.player.YouTubePlayer.Provider;
-import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity;
 

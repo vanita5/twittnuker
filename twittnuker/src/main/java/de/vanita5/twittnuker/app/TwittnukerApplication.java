@@ -198,7 +198,7 @@ public class TwittnukerApplication extends Application implements Constants,
 		if (Utils.isDebugBuild()) {
 			StrictModeUtils.detectAllVmPolicy();
 		}
-        setTheme(ThemeUtils.getThemeResource(this));
+//        setTheme(ThemeUtils.getThemeResource(this));
 		super.onCreate();
         mHandler = new Handler();
         mMessageBus = new Bus();
