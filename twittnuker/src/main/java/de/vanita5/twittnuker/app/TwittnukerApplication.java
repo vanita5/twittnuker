@@ -54,7 +54,6 @@ import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
-import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.VideoLoader;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
@@ -198,7 +197,6 @@ public class TwittnukerApplication extends Application implements Constants,
 		if (Utils.isDebugBuild()) {
 			StrictModeUtils.detectAllVmPolicy();
 		}
-//        setTheme(ThemeUtils.getThemeResource(this));
 		super.onCreate();
         mHandler = new Handler();
         mMessageBus = new Bus();

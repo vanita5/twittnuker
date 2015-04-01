@@ -1,10 +1,10 @@
 package twitter4j.api;
 
-import twitter4j.MediaUploadResponse;
-import twitter4j.TwitterException;
-
 import java.io.File;
 import java.io.InputStream;
+
+import twitter4j.MediaUploadResponse;
+import twitter4j.TwitterException;
 
 public interface MediaResources {
 

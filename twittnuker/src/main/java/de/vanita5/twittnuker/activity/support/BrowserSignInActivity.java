@@ -29,6 +29,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.MenuItem;
@@ -44,13 +45,13 @@ import android.widget.Toast;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
-import de.vanita5.twittnuker.task.TwidereAsyncTask;
+import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.util.net.OkHttpClientFactory;
+import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -124,10 +125,10 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 	}
 
 	private void getRequestToken() {
-        if (mRequestToken != null || mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING)
+        if (mRequestToken != null || mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING)
             return;
 		mTask = new GetRequestTokenTask(this);
-        mTask.executeTask();
+        AsyncTaskUtils.executeTask(mTask);
 	}
 
 	private void loadUrl(final String url) {
@@ -210,7 +211,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 
 	}
 
-    static class GetRequestTokenTask extends TwidereAsyncTask<Void, Void, RequestToken> {
+    static class GetRequestTokenTask extends AsyncTask<Void, Void, RequestToken> {
 
 		private final String mConsumerKey, mConsumerSecret;
 		private final TwittnukerApplication mApplication;

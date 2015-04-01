@@ -34,6 +34,7 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
 import android.nfc.NfcEvent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -79,9 +80,8 @@ import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
-import de.vanita5.twittnuker.task.TwidereAsyncTask;
-import de.vanita5.twittnuker.task.TwidereAsyncTask.Status;
 import de.vanita5.twittnuker.text.method.StatusContentMovementMethod;
+import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
@@ -348,11 +348,11 @@ public class StatusFragment extends BaseSupportFragment
     }
 
     private void loadConversation(ParcelableStatus status) {
-        if (mLoadConversationTask != null && mLoadConversationTask.getStatus() == Status.RUNNING) {
+        if (AsyncTaskUtils.isTaskRunning(mLoadConversationTask)) {
             mLoadConversationTask.cancel(true);
         }
         mLoadConversationTask = new LoadConversationTask(this);
-        mLoadConversationTask.executeTask(status);
+        AsyncTaskUtils.executeTask(mLoadConversationTask, status);
     }
 
     private void loadReplies(ParcelableStatus status) {
@@ -789,7 +789,7 @@ public class StatusFragment extends BaseSupportFragment
 
     }
 
-    static class LoadConversationTask extends TwidereAsyncTask<ParcelableStatus, ParcelableStatus,
+    static class LoadConversationTask extends AsyncTask<ParcelableStatus, ParcelableStatus,
 			ListResponse<ParcelableStatus>> {
 
         final Context context;

@@ -30,6 +30,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -67,7 +68,7 @@ import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
-import de.vanita5.twittnuker.task.TwidereAsyncTask;
+import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentListScrollListener;
 import de.vanita5.twittnuker.util.ContentListScrollListener.ContentListSupport;
@@ -168,7 +169,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 
 	@Override
     public void onRefresh() {
-        new TwidereAsyncTask<Void, Void, long[][]>() {
+        AsyncTaskUtils.executeTask(new AsyncTask<Void, Void, long[][]>() {
 
             @Override
             protected long[][] doInBackground(final Void... params) {
@@ -186,7 +187,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
                 twitter.getSentDirectMessagesAsync(result[0], null, null);
             }
 
-        }.executeTask();
+        });
     }
 
     private void setListShown(boolean shown) {
@@ -360,7 +361,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 //
     private void loadMoreMessages() {
         if (isRefreshing()) return;
-        new TwidereAsyncTask<Void, Void, long[][]>() {
+        AsyncTaskUtils.executeTask(new AsyncTask<Void, Void, long[][]>() {
 
             @Override
             protected long[][] doInBackground(final Void... params) {
@@ -379,7 +380,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
                 twitter.getSentDirectMessagesAsync(result[0], result[2], null);
             }
 
-        }.executeTask();
+        });
     }
 
     public MessageEntriesAdapter getAdapter() {
@@ -400,13 +401,13 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
     }
 
 	private void removeUnreadCounts() {
-        if (mRemoveUnreadCountsTask != null && mRemoveUnreadCountsTask.getStatus() == TwidereAsyncTask.Status.RUNNING)
+        if (mRemoveUnreadCountsTask != null && mRemoveUnreadCountsTask.getStatus() == AsyncTask.Status.RUNNING)
             return;
 		mRemoveUnreadCountsTask = new RemoveUnreadCountsTask(mReadPositions, this);
-        mRemoveUnreadCountsTask.executeTask();
+        AsyncTaskUtils.executeTask(mRemoveUnreadCountsTask);
 	}
 
-    static class RemoveUnreadCountsTask extends TwidereAsyncTask<Void, Void, Void> {
+    static class RemoveUnreadCountsTask extends AsyncTask<Void, Void, Void> {
 		private final Set<Integer> read_positions;
         private final MessageEntriesAdapter adapter;
 		private final DirectMessagesFragment fragment;

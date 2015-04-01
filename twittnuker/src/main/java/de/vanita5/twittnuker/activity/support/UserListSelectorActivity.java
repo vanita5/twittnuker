@@ -26,6 +26,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -45,11 +46,11 @@ import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
-import de.vanita5.twittnuker.task.TwidereAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -206,11 +207,11 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 		return getIntent().getLongExtra(EXTRA_ACCOUNT_ID, -1);
 	}
 
-	private void getUserLists(final String screen_name) {
-		if (screen_name == null) return;
-		mScreenName = screen_name;
-		final GetUserListsTask task = new GetUserListsTask(this, getAccountId(), screen_name);
-		task.executeTask();
+    private void getUserLists(final String screenName) {
+        if (screenName == null) return;
+        mScreenName = screenName;
+        final GetUserListsTask task = new GetUserListsTask(this, getAccountId(), screenName);
+        AsyncTaskUtils.executeTask(task);
 	}
 
 	private boolean isSelectingUser() {
@@ -219,17 +220,17 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 
 	private void searchUser(final String name) {
 		final SearchUsersTask task = new SearchUsersTask(this, getAccountId(), name);
-		task.executeTask();
+        AsyncTaskUtils.executeTask(task);
 	}
 
-	private void setUserListsData(final List<ParcelableUserList> data, final boolean is_my_account) {
+    private void setUserListsData(final List<ParcelableUserList> data, final boolean isMyAccount) {
 		mUserListsAdapter.setData(data, true);
 		mUsersListContainer.setVisibility(View.GONE);
 		mUserListsContainer.setVisibility(View.VISIBLE);
-		mCreateUserListContainer.setVisibility(is_my_account ? View.VISIBLE : View.GONE);
+        mCreateUserListContainer.setVisibility(isMyAccount ? View.VISIBLE : View.GONE);
 	}
 
-	private static class GetUserListsTask extends TwidereAsyncTask<Void, Void, SingleResponse<List<ParcelableUserList>>> {
+    private static class GetUserListsTask extends AsyncTask<Void, Void, SingleResponse<List<ParcelableUserList>>> {
 
 		private static final String FRAGMENT_TAG_GET_USER_LISTS = "get_user_lists";
 		private final UserListSelectorActivity mActivity;
@@ -291,7 +292,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 
 	}
 
-	private static class SearchUsersTask extends TwidereAsyncTask<Void, Void, SingleResponse<List<ParcelableUser>>> {
+    private static class SearchUsersTask extends AsyncTask<Void, Void, SingleResponse<List<ParcelableUser>>> {
 
 		private static final String FRAGMENT_TAG_SEARCH_USERS = "search_users";
 		private final UserListSelectorActivity mActivity;

@@ -33,6 +33,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -64,7 +65,7 @@ import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
-import de.vanita5.twittnuker.task.TwidereAsyncTask;
+import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
@@ -272,8 +273,7 @@ public class DraftsActivity extends BaseActionBarActivity implements LoaderCallb
 				case DialogInterface.BUTTON_POSITIVE: {
 					final Bundle args = getArguments();
 					if (args == null) return;
-					final DeleteDraftsTask task = new DeleteDraftsTask(getActivity(), args.getLongArray(EXTRA_IDS));
-                    task.executeTask();
+                    AsyncTaskUtils.executeTask(new DeleteDraftsTask(getActivity(), args.getLongArray(EXTRA_IDS)));
 					break;
 				}
 			}
@@ -292,7 +292,7 @@ public class DraftsActivity extends BaseActionBarActivity implements LoaderCallb
 
 	}
 
-    private static class DeleteDraftsTask extends TwidereAsyncTask<Void, Void, Integer> {
+    private static class DeleteDraftsTask extends AsyncTask<Void, Void, Integer> {
 
 		private static final String FRAGMENT_TAG_DELETING_DRAFTS = "deleting_drafts";
 		private final FragmentActivity mActivity;

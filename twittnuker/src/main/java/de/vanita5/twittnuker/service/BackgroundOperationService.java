@@ -354,8 +354,13 @@ public class BackgroundOperationService extends IntentService implements Constan
             }
             mTwitter.removeSendingDraftId(draftId);
 			if (mPreferences.getBoolean(KEY_REFRESH_AFTER_TWEET, false)) {
-				mTwitter.refreshAll();
-			}
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+						mTwitter.refreshAll();
+					}
+                });
+            }
 		}
         stopForeground(false);
         mNotificationManager.cancel(NOTIFICATION_ID_UPDATE_STATUS);

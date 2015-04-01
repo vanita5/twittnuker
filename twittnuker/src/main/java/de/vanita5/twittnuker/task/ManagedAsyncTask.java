@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.task;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 import com.squareup.otto.Bus;
 
@@ -31,7 +32,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
-public abstract class ManagedAsyncTask<Params, Progress, Result> extends TwidereAsyncTask<Params, Progress, Result> implements
+public abstract class ManagedAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> implements
 		Constants {
 
 	private final AsyncTaskManager manager;
@@ -43,7 +44,6 @@ public abstract class ManagedAsyncTask<Params, Progress, Result> extends Twidere
 	}
 
 	public ManagedAsyncTask(final Context context, final AsyncTaskManager manager, final String tag) {
-		super(manager.getHandler());
 		this.manager = manager;
 		this.context = context;
 		this.tag = tag;

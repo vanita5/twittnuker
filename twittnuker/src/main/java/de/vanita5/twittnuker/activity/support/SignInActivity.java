@@ -33,6 +33,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
@@ -53,7 +54,7 @@ import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
-import de.vanita5.twittnuker.task.TwidereAsyncTask;
+import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticationException;
@@ -152,12 +153,12 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 
 	@Override
 	public void onBackPressed() {
-        if (mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING && !mBackPressed) {
+        if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING && !mBackPressed) {
             final Toast toast = Toast.makeText(this, R.string.signing_in_please_wait, Toast.LENGTH_SHORT);
             toast.show();
 			return;
 		}
-        if (mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING) {
+        if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING) {
 			mTask.cancel(false);
 		}
 		super.onBackPressed();
@@ -217,14 +218,14 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 				break;
 			}
 			case MENU_SETTINGS: {
-                if (mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING)
+                if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING)
                     return false;
 				final Intent intent = new Intent(this, SettingsActivity.class);
 				startActivity(intent);
 				break;
 			}
 			case MENU_EDIT_API: {
-                if (mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING)
+                if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING)
                     return false;
 				setDefaultAPI();
 				final Intent intent = new Intent(this, APIEditorActivity.class);
@@ -239,7 +240,7 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 			}
 			case MENU_OPEN_IN_BROWSER: {
 				if (mAuthType != Accounts.AUTH_TYPE_OAUTH || mTask != null
-                        && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING) return false;
+                        && mTask.getStatus() == AsyncTask.Status.RUNNING) return false;
 				saveEditedText();
 				final Intent intent = new Intent(this, BrowserSignInActivity.class);
 				intent.putExtra(Accounts.CONSUMER_KEY, mConsumerKey);
@@ -325,7 +326,7 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 	}
 
 	private void doLogin() {
-        if (mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING) {
+        if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING) {
 			mTask.cancel(true);
 		}
 		saveEditedText();
@@ -333,12 +334,12 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 		final Configuration conf = getConfiguration();
         mTask = new SignInTask(this, conf, mUsername, mPassword, mAuthType, mAPIUrlFormat,
                 mSameOAuthSigningUrl, mNoVersionSuffix);
-        mTask.executeTask();
+        AsyncTaskUtils.executeTask(mTask);
 	}
 
 	private void doLogin(final Intent intent) {
 		if (intent == null) return;
-        if (mTask != null && mTask.getStatus() == TwidereAsyncTask.Status.RUNNING) {
+        if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING) {
 			mTask.cancel(true);
 		}
 		saveEditedText();
@@ -349,7 +350,7 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 		final String verifier = intent.getStringExtra(EXTRA_OAUTH_VERIFIER);
         mTask = new BrowserSignInTask(this, conf, token, secret, verifier, mAPIUrlFormat,
                 mSameOAuthSigningUrl, mNoVersionSuffix);
-        mTask.executeTask();
+        AsyncTaskUtils.executeTask(mTask);
 	}
 
 	private Configuration getConfiguration() {
@@ -505,7 +506,7 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 		mSignUpButton.setEnabled(false);
 	}
 
-    public static abstract class AbstractSignInTask extends TwidereAsyncTask<Void, Void, SignInResponse> {
+    public static abstract class AbstractSignInTask extends AsyncTask<Void, Void, SignInResponse> {
 
 		protected final Configuration conf;
 		protected final SignInActivity callback;

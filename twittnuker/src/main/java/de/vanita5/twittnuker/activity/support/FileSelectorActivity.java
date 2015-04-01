@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import static android.os.Environment.getExternalStorageDirectory;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,6 +31,8 @@ import de.vanita5.twittnuker.fragment.support.FileSelectorDialogFragment;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.io.File;
+
+import static android.os.Environment.getExternalStorageDirectory;
 
 public class FileSelectorActivity extends BaseSupportDialogActivity implements FileSelectorDialogFragment.Callback {
 

@@ -26,6 +26,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -35,7 +36,7 @@ import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.loader.support.UserListMembersLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.task.TwidereAsyncTask;
+import de.vanita5.twittnuker.util.AsyncTaskUtils;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -89,7 +90,7 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment impl
             final long userId = args.getLong(EXTRA_USER_ID, -1);
             final String screenName = args.getString(EXTRA_SCREEN_NAME);
             final String listName = args.getString(EXTRA_LIST_NAME);
-            new GetUserListTask(accountId, listId, listName, userId, screenName).executeTask();
+            AsyncTaskUtils.executeTask(new GetUserListTask(accountId, listId, listName, userId, screenName));
 		}
 	}
 
@@ -133,7 +134,7 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment impl
 		return R.menu.action_user_list_member;
 	}
 
-	private class GetUserListTask extends TwidereAsyncTask<Void, Void, ParcelableUserList> {
+    private class GetUserListTask extends AsyncTask<Void, Void, ParcelableUserList> {
 
         private final long accountId, userId;
         private final long listId;

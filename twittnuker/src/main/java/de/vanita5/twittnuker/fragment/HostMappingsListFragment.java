@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -56,8 +57,6 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
-import de.vanita5.twittnuker.task.TwidereAsyncTask;
-import de.vanita5.twittnuker.util.HostsFileParser;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
@@ -207,6 +206,7 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
 		public Dialog onCreateDialog(final Bundle savedInstanceState) {
             final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
             final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+            @SuppressLint("InflateParams")
 			final View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_host_mapping, null);
 			builder.setView(view);
 			mEditHost = (EditText) view.findViewById(R.id.host);
@@ -300,45 +300,4 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
 
 	}
 
-	static class ImportHostsTask extends TwidereAsyncTask<Void, Void, Boolean> {
-
-		private final SharedPreferences mPreferences;
-		private final HostMappingsListFragment mActivity;
-		private final String mPath;
-
-		ImportHostsTask(final HostMappingsListFragment activity, final String path) {
-			mActivity = activity;
-			mPath = path;
-			mPreferences = activity.getSharedPreferences(HOST_MAPPING_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		}
-
-		@Override
-		protected Boolean doInBackground(final Void... params) {
-			final HostsFileParser hosts = new HostsFileParser(mPath);
-			final boolean result = hosts.reload();
-			final SharedPreferences.Editor editor = mPreferences.edit();
-			for (final Map.Entry<String, String> entry : hosts.getAll().entrySet()) {
-				editor.putString(entry.getKey(), entry.getValue());
-			}
-			return result && editor.commit();
-		}
-
-		@Override
-		protected void onPostExecute(final Boolean result) {
-			final FragmentManager fm = mActivity.getFragmentManager();
-			final Fragment f = fm.findFragmentByTag("import_hosts_progress");
-			if (f instanceof DialogFragment) {
-				((DialogFragment) f).dismiss();
-			}
-			mActivity.reloadHostMappings();
-		}
-
-		@Override
-		protected void onPreExecute() {
-			final FragmentManager fm = mActivity.getFragmentManager();
-			final DialogFragment f = new ProgressDialogFragment();
-			f.setCancelable(false);
-			f.show(fm, "import_hosts_progress");
-		}
-	}
 }

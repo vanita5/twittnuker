@@ -38,6 +38,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -92,7 +93,7 @@ import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.service.StreamingService;
-import de.vanita5.twittnuker.task.TwidereAsyncTask;
+import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
@@ -599,9 +600,9 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 
     public void updateUnreadCount() {
         if (mTabIndicator == null || mUpdateUnreadCountTask != null
-                && mUpdateUnreadCountTask.getStatus() == TwidereAsyncTask.Status.RUNNING) return;
+                && mUpdateUnreadCountTask.getStatus() == AsyncTask.Status.RUNNING) return;
         mUpdateUnreadCountTask = new UpdateUnreadCountTask(mTabIndicator);
-        mUpdateUnreadCountTask.executeTask();
+        AsyncTaskUtils.executeTask(mUpdateUnreadCountTask);
         mTabIndicator.setDisplayBadge(mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
     }
 
@@ -974,7 +975,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 
 	}
 
-    private static class UpdateUnreadCountTask extends TwidereAsyncTask<Void, Void, int[]> {
+    private static class UpdateUnreadCountTask extends AsyncTask<Object, Object, int[]> {
 		private final Context mContext;
 		private final TabPagerIndicator mIndicator;
 
@@ -984,7 +985,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 		}
 
 		@Override
-		protected int[] doInBackground(final Void... params) {
+		protected int[] doInBackground(final Object... params) {
             final int tabCount = mIndicator.getCount();
             final int[] result = new int[tabCount];
             for (int i = 0; i < tabCount; i++) {
