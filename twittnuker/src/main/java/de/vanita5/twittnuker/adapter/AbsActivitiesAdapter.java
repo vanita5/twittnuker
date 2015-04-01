@@ -40,6 +40,7 @@ import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
@@ -254,6 +255,13 @@ public abstract class AbsActivitiesAdapter<Data> extends Adapter<ViewHolder> imp
             mActivityAdapterListener.onGapClick((GapViewHolder) holder, position);
         }
     }
+
+
+    @Override
+    public void onMediaClick(StatusViewHolder holder, ParcelableMedia media, int position) {
+
+    }
+
 
     @Override
     public void onItemActionClick(ViewHolder holder, int id, int position) {

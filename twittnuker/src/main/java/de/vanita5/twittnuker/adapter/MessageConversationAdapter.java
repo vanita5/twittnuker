@@ -39,8 +39,8 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage.CursorIndices;
 import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -175,7 +175,7 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
             case R.id.media_preview: {
 				final ParcelableDirectMessage message = getDirectMessage(position);
                 if (message == null || message.media == null) return;
-                openMedia(mContext, message.account_id, false, message, null, message.media);
+                openMedia(mContext, message, null);
 			}
 		}
 	}

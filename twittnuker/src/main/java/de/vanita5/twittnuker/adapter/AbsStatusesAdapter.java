@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.UserFragment;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
@@ -264,6 +265,14 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
         }
     }
 
+
+    @Override
+    public void onMediaClick(StatusViewHolder holder, ParcelableMedia media, int position) {
+        if (mStatusAdapterListener != null) {
+            mStatusAdapterListener.onMediaClick(holder, media, position);
+        }
+    }
+
     public void setListener(StatusAdapterListener listener) {
         mStatusAdapterListener = listener;
     }
@@ -285,6 +294,8 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 
     public static interface StatusAdapterListener {
         void onGapClick(GapViewHolder holder, int position);
+
+        void onMediaClick(StatusViewHolder holder, ParcelableMedia media, int position);
 
         void onStatusActionClick(StatusViewHolder holder, int id, int position);
 

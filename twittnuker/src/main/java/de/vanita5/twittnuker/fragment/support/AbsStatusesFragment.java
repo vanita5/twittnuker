@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ColorUtils;
@@ -449,6 +450,13 @@ public abstract class AbsStatusesFragment<Data> extends BaseSupportFragment impl
     private void setListShown(boolean shown) {
         mProgressContainer.setVisibility(shown ? View.GONE : View.VISIBLE);
         mSwipeRefreshLayout.setVisibility(shown ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onMediaClick(StatusViewHolder holder, ParcelableMedia media, int position) {
+        final ParcelableStatus status = mAdapter.getStatus(position);
+        if (status == null) return;
+        Utils.openMedia(getActivity(), status, media);
     }
 
     private void updateRefreshProgressOffset() {

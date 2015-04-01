@@ -48,6 +48,7 @@ import de.vanita5.twittnuker.util.SimpleValueSerializer;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.Utils.OnMediaClickListener;
 import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShortTimeView;
@@ -59,7 +60,8 @@ import twitter4j.TranslationResult;
 
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 
-public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
+public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClickListener,
+        OnMediaClickListener {
 
     private final IStatusesAdapter<?> adapter;
 
@@ -187,7 +189,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
             } else {
                 mediaPreviewContainer.setVisibility(View.GONE);
             }
-            mediaPreviewContainer.displayMedia(media, loader, status.account_id, null, handler);
+            mediaPreviewContainer.displayMedia(media, loader, status.account_id, this, handler);
         } else {
             mediaPreviewContainer.setVisibility(View.GONE);
         }
@@ -327,7 +329,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         if (adapter.isMediaPreviewEnabled()) {
             mediaPreviewContainer.setStyle(adapter.getMediaPreviewStyle());
             mediaPreviewContainer.setVisibility(media != null && media.length > 0 ? View.VISIBLE : View.GONE);
-            mediaPreviewContainer.displayMedia(media, loader, account_id, null,
+            mediaPreviewContainer.displayMedia(media, loader, account_id, this,
                     adapter.getImageLoadingHandler());
         } else {
             mediaPreviewContainer.setVisibility(View.GONE);
@@ -411,6 +413,13 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         }
     }
 
+    @Override
+    public void onMediaClick(View view, ParcelableMedia media, long accountId) {
+        if (statusClickListener == null) return;
+        final int position = getAdapterPosition();
+        statusClickListener.onMediaClick(this, media, position);
+    }
+
     public void setOnClickListeners() {
         setStatusClickListener(adapter);
     }
@@ -422,7 +431,6 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
 
         itemView.setOnClickListener(this);
         profileImageView.setOnClickListener(this);
-        mediaPreviewContainer.setOnClickListener(this);
         replyCountView.setOnClickListener(this);
         retweetCountView.setOnClickListener(this);
         favoriteCountView.setOnClickListener(this);
@@ -479,6 +487,8 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
     public static interface StatusClickListener extends ContentCardClickListener {
 
         void onStatusClick(StatusViewHolder holder, int position);
+
+        void onMediaClick(StatusViewHolder holder, ParcelableMedia media, int position);
 
         void onUserProfileClick(StatusViewHolder holder, int position);
     }

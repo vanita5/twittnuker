@@ -41,9 +41,10 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SimpleValueSerializer;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.Utils.OnMediaClickListener;
 import de.vanita5.twittnuker.view.CardMediaContainer;
 
-public class MessageConversationViewHolder extends ViewHolder {
+public class MessageConversationViewHolder extends ViewHolder implements OnMediaClickListener {
 
 	public final CardMediaContainer mediaContainer;
 	public final TextView text, time;
@@ -86,7 +87,12 @@ public class MessageConversationViewHolder extends ViewHolder {
 		text.setMovementMethod(null);
 		time.setText(Utils.formatToLongTimeString(context, timestamp));
 		mediaContainer.setVisibility(media != null && media.length > 0 ? View.VISIBLE : View.GONE);
-		mediaContainer.displayMedia(media, loader, accountId, null, null);
+        mediaContainer.displayMedia(media, loader, accountId, this, null);
+    }
+
+    @Override
+    public void onMediaClick(View view, ParcelableMedia media, long accountId) {
+        Utils.openMedia(adapter.getContext(), adapter.getDirectMessage(getAdapterPosition()), media);
 	}
 
 	public void setMessageColor(int color) {

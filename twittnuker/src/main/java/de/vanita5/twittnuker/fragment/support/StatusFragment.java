@@ -101,8 +101,6 @@ import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -111,18 +109,14 @@ import twitter4j.TwitterException;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.UserColorNameUtils.clearUserColor;
-import static de.vanita5.twittnuker.util.UserColorNameUtils.getUserColor;
 import static de.vanita5.twittnuker.util.UserColorNameUtils.setUserColor;
-import static de.vanita5.twittnuker.util.Utils.favorite;
 import static de.vanita5.twittnuker.util.Utils.findStatus;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
 import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 import static de.vanita5.twittnuker.util.Utils.openStatus;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-import static de.vanita5.twittnuker.util.Utils.retweet;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
-import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 
 public class StatusFragment extends BaseSupportFragment
         implements LoaderCallbacks<SingleResponse<ParcelableStatus>>, OnMediaClickListener,
@@ -246,6 +240,13 @@ public class StatusFragment extends BaseSupportFragment
     @Override
     public void onGapClick(GapViewHolder holder, int position) {
 
+    }
+
+    @Override
+    public void onMediaClick(StatusViewHolder holder, ParcelableMedia media, int position) {
+        final ParcelableStatus status = mStatusAdapter.getStatus(position);
+        if (status == null) return;
+        Utils.openMedia(getActivity(), status, media);
     }
 
     @Override
@@ -526,6 +527,13 @@ public class StatusFragment extends BaseSupportFragment
         public final void onStatusClick(StatusViewHolder holder, int position) {
             if (mStatusAdapterListener != null) {
                 mStatusAdapterListener.onStatusClick(holder, position);
+            }
+        }
+
+        @Override
+        public void onMediaClick(StatusViewHolder holder, ParcelableMedia media, int position) {
+            if (mStatusAdapterListener != null) {
+                mStatusAdapterListener.onMediaClick(holder, media, position);
             }
         }
 
