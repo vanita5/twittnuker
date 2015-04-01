@@ -664,8 +664,6 @@
     <string name="import_export_settings">Import/Export</string>
     <string name="no_account">Keine Accounts</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Einstellungen</string>
     <string name="from_name">Von <xliff:g id="name">%1$s</xliff:g></string>
     <string name="from_name_and_name">Von <xliff:g id="name">%1$s</xliff:g> und <xliff:g id="name">%2$s</xliff:g></string>
     <string name="from_name_and_N_others">Von <xliff:g id="name">%1$s</xliff:g> und <xliff:g id="name">%2$d</xliff:g> anderen</string>
