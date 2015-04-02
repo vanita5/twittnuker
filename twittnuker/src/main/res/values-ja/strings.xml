@@ -90,8 +90,8 @@
     <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> さんがリツイート</string>
     <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g>さんと他<xliff:g id="retweet_count">%2$d</xliff:g>人がリツイートしました</string>
     <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g>件のリツイート</string>
-  <string name="users_retweeted_this">リツイートしたユーザーを表示</string>
-  <string name="users_favorited_this">お気に入りに登録したユーザーを表示</string>
+    <string name="users_retweeted_this">リツイートしたユーザーを表示</string>
+    <string name="users_favorited_this">お気に入りに登録したユーザーを表示</string>
     <string name="reply_to"><xliff:g id="user_name">%s</xliff:g>さんへの返信</string>
     <string name="quote_user"><xliff:g id="user_name">%s</xliff:g>さんのツイートを引用</string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g><xliff:g id="source">%2$s</xliff:g>から</string>
@@ -161,9 +161,10 @@
     <string name="unblock">ブロックを解除</string>
     <string name="report_for_spam">スパム報告</string>
     <string name="twitter_mute_user">ミュートする</string>
-  <string name="twitter_muted_users">ミュートしたユーザー</string>
-  <string name="message_user_muted">このユーザーをフィルターリストに追加しました。ホームタイムラインやつながりでこのユーザーのツイートを表示しないようにします。</string>
-  <string name="message_users_muted">このユーザーをフィルターリストに追加しました。ホームタイムラインやつながりでこのユーザーのツイートを表示しないようにします。</string>
+    <string name="twitter_muted_users">ミュートしたユーザー</string>
+    <string name="message_user_muted">このユーザーをフィルターリストに追加しました。ホームタイムラインやつながりでこのユーザーのツイートを表示しないようにします。</string>
+    <string name="message_users_muted">このユーザーをフィルターリストに追加しました。ホームタイムラインやつながりでこのユーザーのツイートを表示しないようにします。</string>
+    <string name="message_user_unmuted">フィルターリストから削除しました。</string>
     <string name="inbox">受信箱</string>
     <string name="load_images">画像を読み込む</string>
     <string name="other_settings">その他の設定</string>
@@ -188,7 +189,6 @@
     <string name="type_to_compose">メッセージを入力</string>
     <string name="users_lists">保存したリスト</string>
     <string name="lists_following_user">追加されたリスト</string>
-    <string name="lists_following_me">フォロワーリスト</string>
     <string name="item_3_minutes">3分</string>
     <string name="item_5_minutes">5分</string>
     <string name="item_10_minutes">10分</string>
@@ -207,6 +207,7 @@
     <string name="accounts">アカウント</string>
     <string name="account">アカウント</string>
     <string name="mention_this_user">この人へツイート</string>
+    <string name="mention_user_name"><xliff:g id="name">%1$s</xliff:g>さんにメンション</string>
     <string name="signing_in_please_wait">ログイン中です。しばらくお待ちください。もう一度戻るボタンを押すと終了します。</string>
     <string name="connectivity">接続</string>
     <string name="add_member">ユーザーを追加</string>
@@ -372,7 +373,6 @@
     <string name="quote_protected_status_notice">非公開ツイートを引用するのはおすすめできません。</string>
     <string name="edit_draft">下書きを編集</string>
     <string name="profile_image">プロフィール画像</string>
-    <string name="my_profile_image">プロフィール画像</string>
     <string name="mention_user"><xliff:g id="user">%s</xliff:g>宛にツイート</string>
     <string name="theme_color">テーマ色</string>
     <string name="wrong_url_format">不正なURL形式です。</string>
@@ -428,8 +428,8 @@
     <string name="no_close_after_status_updated_summary">ツイート編集画面の動作を変更します。</string>
     <string name="status_saved_to_draft">ツイートは下書きに保存されました。</string>
     <string name="default_account">デフォルト</string>
-  <string name="created_at_with_N_tweets_per_day_quantity_one"><xliff:g id="created_at">%1$s</xliff:g> (一日平均<xliff:g id="daily_tweet">%2$d</xliff:g>回ツイート)</string>
-  <string name="created_at_with_N_tweets_per_day_quantity_other"><xliff:g id="created_at">%1$s</xliff:g> (一日平均<xliff:g id="daily_tweet">%2$d</xliff:g>回ツイート)</string>
+    <string name="created_at_with_N_tweets_per_day_quantity_one"><xliff:g id="created_at">%1$s</xliff:g> (一日平均<xliff:g id="daily_tweet">%2$d</xliff:g>回ツイート)</string>
+    <string name="created_at_with_N_tweets_per_day_quantity_other"><xliff:g id="created_at">%1$s</xliff:g> (一日平均<xliff:g id="daily_tweet">%2$d</xliff:g>回ツイート)</string>
     <string name="empty_content">コンテンツなし</string>
     <string name="fast_image_loading">高速画像読み込み</string>
     <string name="fast_image_loading_summary">有効にすると画像を高速に読み込みます。\n画像が読み込めない場合は無効にしてください。</string>
@@ -518,6 +518,7 @@
     <string name="general">基本</string>
     <string name="hints">ヒント</string>
     <string name="finish">終了</string>
+    <string name="background">背景</string>
     <string name="theme_background_default">デフォルト</string>
     <string name="theme_background_solid">白/黒一色</string>
     <string name="theme_background_transparent">背景透過</string>
@@ -600,7 +601,8 @@
     <string name="new_direct_message">新規メッセージ</string>
     <string name="plain_list_style">プレーンリスト表示</string>
     <string name="add">追加</string>
-    <string name="N_medias_quantity_other"><xliff:g id="items">%d</xliff:g>個のメディア</string>
+    <string name="N_media_quantity_one"><xliff:g id="items">%d</xliff:g>個のメディア</string>
+    <string name="N_media_quantity_other"><xliff:g id="items">%d</xliff:g>個のメディア</string>
     <string name="delete_drafts_confirm">選択した下書きを削除しますか?</string>
     <string name="extra_configurations">追加設定</string>
     <string name="click_item_to_config">アイテムをタップすると設定します</string>
@@ -608,6 +610,23 @@
     <string name="retweets_of_me">自分のリツイート</string>
     <string name="from_gallery">ギャラリー</string>
     <string name="from_camera">カメラ</string>
+    <string name="excluded">除外済み</string>
+    <string name="exclude_this_host">このホストを除外する</string>
+    <string name="api_url_format_help">[DOMAIN]: Twitter APIのドメイン\n例: https://[DOMAIN].twitter.com/ は https://api.twitter.com/ のように置き換えられます。</string>
+    <string name="no_version_suffix">バージョンサフィックスなし</string>
+    <string name="inverse_selection">選択を反転</string>
+    <string name="media">メディア</string>
+    <string name="mute_user"><xliff:g id="name">%s</xliff:g>さんをミュート</string>
+    <string name="muted_user"><xliff:g id="name">%s</xliff:g>さんをミュートしました</string>
+    <string name="unmute_user"><xliff:g id="name">%s</xliff:g>さんのミュートを解除</string>
+    <string name="unmuted_user"><xliff:g id="name">%s</xliff:g>さんのミュートを解除しました</string>
+    <string name="mute">ミュート</string>
+    <string name="unmute">ミュートの解除</string>
+    <string name="action_muting">ミュート中</string>
+    <string name="action_unmuting">ミュート解除中</string>
+    <string name="mute_user_confirm_message"><xliff:g id="name">%s</xliff:g>さんをミュートしますか? フォローしたままにしますが、このユーザーのツイートを表示しないようにします。</string>
+    <string name="remove_from_filter">フィルタから削除</string>
+    <string name="sort_timeline_by_id">IDでタイムラインを並び替え</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">タブに未読ツイート/メッセージ数を表示します。</string>
@@ -627,7 +646,8 @@
     <string name="stream_enabled_summary">Wi-Fi接続時にタイムラインでストリーミングを有効化します。</string>
     <string name="stream_notification">ストリーミングの通知</string>
     <string name="stream_notification_summary">ストリーミングが有効な時に通知を表示するようにします。</string>
-    <string name="streaming_service_running">ストリーミング開始...</string><string name="stream_on_mobile">モバイルストリーミング</string>
+    <string name="streaming_service_running">ストリーミング開始...</string>
+    <string name="stream_on_mobile">モバイルストリーミング</string>
     <string name="stream_on_mobile_summary">モバイルデータ通信でストリーミングを有効にします。おすすめしません!</string>
     <string name="stream_autoscroll">自動スクロール</string>
     <string name="stream_autoscroll_summary">常にタイムラインの一番上を表示します。</string>

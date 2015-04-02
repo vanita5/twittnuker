@@ -19,7 +19,7 @@
     <string name="signing_oauth_base_url">Signierende OAuth Basis URL</string>
     <string name="signing_rest_base_url">Signierende REST Basis URL</string>
     <string name="api_url_format">API URL Format</string>
-    <string name="same_oauth_signing_url">Benutze dieselbe URL für die OAuth Authentifizierung</string>
+    <string name="same_oauth_signing_url">Benutze die selbe URL für die OAuth Authentifizierung</string>
     <string name="auth_type">Authentifizierungtyp</string>
     <string name="oauth">OAuth</string>
     <string name="xauth">xAuth</string>
@@ -87,13 +87,11 @@
     <string name="display_profile_image">Zeige Profilbilder</string>
     <string name="image_load_summary">Deaktivieren um die Scroll-Geschwindigkeit zu erhöhen und den Datenverbrauch zu verringern</string>
     <string name="in_reply_to_name">Als Antwort auf <xliff:g id="user_name">%s</xliff:g></string>
-
     <string name="name_retweeted">Retweetet von <xliff:g id="user_name">%s</xliff:g></string>
     <string name="name_and_another_retweeted">Retweetet von <xliff:g id="user_name">%1$s</xliff:g> und einer weiteren Person</string>
     <string name="name_and_count_retweeted">Retweetet von <xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> anderen</string>
     <string name="N_retweeted_quantity_one"><xliff:g id="retweet_count">%d</xliff:g> Retweet</string>
     <string name="N_retweeted_quantity_other"><xliff:g id="retweet_count">%d</xliff:g> Retweets</string>
-
     <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> retweetete das</string>
     <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> weitere haben das retweetet</string>
     <string name="retweeted_by_count">Von <xliff:g id="retweet_count">%d</xliff:g> Benutzern retweetet</string>
@@ -372,7 +370,7 @@
     <string name="clear_search_history">Suchbegriffe löschen</string>
     <string name="no_thanks">Nein, danke</string>
     <string name="fast_scroll_thumb">Schnelles scrollen</string>
-    <string name="indicate_your_status">Kennzeichne deine Tweets</string>
+    <string name="indicate_my_status">Kennzeichne deine Tweets</string>
     <string name="default_ringtone">Standard Klingelton</string>
     <string name="phishing_link_warning">Warnung vor Phishing Links</string>
     <string name="phishing_link_warning_summary">Warnung beim Öffnen eines möglichen Phishing Links in Direktnachrichten</string>
@@ -617,12 +615,12 @@
     <string name="following_only">Nur Freunde</string>
     <string name="following_only_summary">Zeigt nur Notifications von Benutzern an, denen du folgst</string>
     <string name="new_direct_message">Neue Direktnachricht</string>
-    <string name="N_medias_quantity_one"><xliff:g id="items">%d</xliff:g> Medien</string>
-    <string name="N_medias_quantity_other"><xliff:g id="items">%d</xliff:g> Medien</string>
+    <string name="N_media_quantity_one"><xliff:g id="items">%d</xliff:g> Medien</string>
+    <string name="N_media_quantity_other"><xliff:g id="items">%d</xliff:g> Medien</string>
     <string name="from_camera">Von der Kamera</string>
     <string name="excluded">Ausgeschlossen</string>
     <string name="api_url_format_help">[DOMAIN]: API Domain.\nBeispiel: https://[DOMAIN].twitter.com/ wird ersetzt durch https://api.twitter.com/.</string>
-    <string name="medias">Medien</string>
+    <string name="media">Medien</string>
     <string name="remove_from_filter">Aus dem Filter entfernen</string>
     <string name="sort_timeline_by_id">Timeline nach ID sortieren</string>
     <string name="profile">Profil</string>

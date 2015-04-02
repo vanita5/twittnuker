@@ -18,6 +18,8 @@
     <string name="oauth_base_url">OAuth Base URL</string>
     <string name="signing_oauth_base_url">Varmennetaan OAuth Base URL:ää</string>
     <string name="signing_rest_base_url">Varmennetaan REST Base URL:ää</string>
+    <string name="api_url_format">API-URL:n muoto</string>
+    <string name="same_oauth_signing_url">Käytä samaa URL-osoitetta OAuth-kirjautumiseen</string>
     <string name="auth_type">Varmennuslaji</string>
     <string name="oauth">OAuth</string>
     <string name="xauth">xAuth</string>
@@ -48,7 +50,7 @@
     <string name="tap_to_load_more">Lataa lisää napauttamalla</string>
     <string name="delete">Poista</string>
     <string name="retweet">Uudelleentwiittaa</string>
-  <string name="retweets">Uudelleentwiittaukset</string>
+    <string name="retweets">Uudelleentwiittaukset</string>
     <string name="cancel_retweet">Peru uudelleentwiittaus</string>
     <string name="favorite">Suosikki</string>
     <string name="unfavorite">Poista suosikeista</string>
@@ -84,12 +86,17 @@
     <string name="look_and_feel">Käyttötuntuma</string>
     <string name="display_profile_image">Näytä profiilikuva</string>
     <string name="image_load_summary">Kun tämä otetaan pois käytöstä, vieritysnopeus nopeutuu ja verkkoliikenne vähenee.</string>
-    <string name="in_reply_to_name">Vastauksena käyttäjälle <xliff:g id="user_name">%s</xliff:g></string>
-    <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> uudelleentwiittasi tämän</string>
-    <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> ja <xliff:g id="retweet_count">%2$d</xliff:g> muuta uudelleentwiittasivat tämän</string>
-    <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> käyttäjää uudelleentwiittasivat tämän</string>
+    <string name="in_reply_to_name">Vastaukseksi käyttäjälle <xliff:g id="user_name">%s</xliff:g></string>
+    <string name="name_retweeted"><xliff:g id="user_name">%s</xliff:g> uudelleentwiittasi</string>
+    <string name="name_and_another_retweeted"><xliff:g id="user_name">%1$s</xliff:g> sekä toinen käyttäjä uudelleentwiittasivat</string>
+    <string name="name_and_count_retweeted"><xliff:g id="user_name">%1$s</xliff:g> ja <xliff:g id="retweet_count">%2$d</xliff:g> muuta uudelleentwiittasivat</string>
+    <string name="N_retweeted_quantity_one"><xliff:g id="retweet_count">%d</xliff:g> uudelleentwiittaus</string>
+    <string name="N_retweeted_quantity_other"><xliff:g id="retweet_count">%d</xliff:g> uudelleentwiittausta</string>
+    <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> uudelleentwiittasi</string>
+    <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> ja <xliff:g id="retweet_count">%2$d</xliff:g> muuta uudelleentwiittasivat</string>
+    <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> käyttäjää uudelleentwiittasivat</string>
     <string name="users_retweeted_this">Uudelleentwiitanneet käyttäjät</string>
-  <string name="users_favorited_this">Käyttäjä lisäsi tämän suosikkeihinsa</string>
+    <string name="users_favorited_this">Käyttäjä lisäsi tämän suosikkeihinsa</string>
     <string name="reply_to">Vastaa käyttäjälle <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Lainaa käyttäjää <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g>, via <xliff:g id="source">%2$s</xliff:g></string>
@@ -114,11 +121,11 @@
     <string name="load_item_limit">Kohteiden latausrajoitus</string>
     <string name="load_item_limit_summary">Aseta rajoitus kohteiden latausmäärälle.</string>
     <string name="load_more_automatically">Lataa automaattisesti lisää sisältöä</string>
-    <string name="load_more_automatically_summary">Lataa automaattisesti lisää sisältöä (kuten kuvia, karttoja, tilapäivityksiä)</string>
+    <string name="load_more_automatically_summary">Lataa lisää sisältöä automaattisesti (esim. valokuvia, karttoja, twiittejä)</string>
     <string name="quote">Lainaus</string>
     <string name="add_rule">Lisää sääntö</string>
     <string name="text_size">Tekstin koko</string>
-    <string name="text_size_summary">Tilapäivityksen koko.</string>
+    <string name="text_size_summary">Twiittien tekstikoko.</string>
     <string name="cannot_get_location">Sijaintiasi ei voida määrittää.</string>
     <string name="drafts">Luonnokset</string>
     <string name="description">Kuvaus</string>
@@ -150,6 +157,7 @@
     <string name="save_as">Tallenna nimellä</string>
     <string name="please_wait">Odota.</string>
     <string name="file_saved_to">Tiedosto tallennettu kohteeseen <xliff:g id="filename">%s</xliff:g>.</string>
+    <string name="saved_to_gallery">Tallennettu galleriaan.</string>
     <string name="proxy">Välityspalvelin</string>
     <string name="http_proxy">HTTP-välityspalvelin</string>
     <string name="http_proxy_summary">Käytä HTTP-välityspalvelinta kaikessa verkkoliikenteessä.</string>
@@ -159,9 +167,10 @@
     <string name="unblock">Älä estä</string>
     <string name="report_for_spam">Ilmoita roskapostista</string>
     <string name="twitter_mute_user">Vaienna käyttäjä</string>
-  <string name="twitter_muted_users">Vaiennetut käyttäjät</string>
+    <string name="twitter_muted_users">Vaiennetut käyttäjät</string>
     <string name="message_user_muted">Käyttäjä lisättiin suodatusluetteloon. Et näe tämän käyttäjän twiittejä omalla aikajanallasi tai maininnoissasi.</string>
     <string name="message_users_muted">Käyttäjät lisättiin suodatusluetteloon. Et näe näiden käyttäjien twiittejä omalla aikajanallasi tai maininnoissasi.</string>
+    <string name="message_user_unmuted">Tämä käyttäjä poistettiin suodatuslistasta.</string>
     <string name="inbox">Saapuneet</string>
     <string name="load_images">Lataa kuvat</string>
     <string name="other_settings">Muut asetukset</string>
@@ -184,9 +193,10 @@
     <string name="list_members">Listan jäsenet</string>
     <string name="list_subscribers">Listan tilaajat</string>
     <string name="type_to_compose">Kirjoita</string>
+    <string name="lists">Listat</string>
     <string name="users_lists">Käyttäjän listat</string>
     <string name="lists_following_user">Käyttäjää seuraavat listat</string>
-    <string name="lists_following_you">Käyttäjää seuraavat listat</string>
+    <string name="lists_following_you">Listat, jotka seuraavat sinua</string>
     <string name="item_3_minutes">3 minuuttia</string>
     <string name="item_5_minutes">5 minuuttia</string>
     <string name="item_10_minutes">10 minuuttia</string>
@@ -205,6 +215,7 @@
     <string name="accounts">Tilit</string>
     <string name="account">Tili</string>
     <string name="mention_this_user">Mainitse tämä käyttäjä</string>
+    <string name="mention_user_name">Mainitse <xliff:g id="name">%1$s</xliff:g></string>
     <string name="signing_in_please_wait">Kirjaudutaan. Odota hetki tai lopeta siirtymällä takaisin.</string>
     <string name="connectivity">Yhteydet</string>
     <string name="add_member">Lisää jäsen</string>
@@ -354,7 +365,7 @@
     <string name="clear_search_history">Tyhjennä hakuhistoria</string>
     <string name="no_thanks">Ei kiitos</string>
     <string name="fast_scroll_thumb">Peukalon nopea vieritys</string>
-    <string name="indicate_your_status">Osoita oma twiitti</string>
+    <string name="indicate_my_status">Ilmoita tilasi</string>
     <string name="default_ringtone">Oletus merkkiääni</string>
     <string name="phishing_link_warning">Huijauslinkin varoitus</string>
     <string name="phishing_link_warning_summary">Varoittaa, kun yrität avata yksityisviestin mahdollista huijauslinkkiä.</string>
@@ -370,7 +381,7 @@
     <string name="quote_protected_status_notice">Ei ole suositeltavaa lainata suojattua twiittiä.</string>
     <string name="edit_draft">Muokkaa luonnosta</string>
     <string name="profile_image">Profiilikuva</string>
-    <string name="your_profile_image">Profiilikuvani</string>
+    <string name="your_profile_image">Profiilikuvasi</string>
     <string name="mention_user">Mainitse <xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">Teeman väri</string>
     <string name="wrong_url_format">Virheellinen URL-muoto.</string>
@@ -426,8 +437,8 @@
     <string name="no_close_after_status_updated_summary">Pieni lisä chatterboxiin</string>
     <string name="status_saved_to_draft">Twiitti tallennettu luonnoksiin.</string>
     <string name="default_account">Oletustili</string>
-  <string name="created_at_with_N_tweets_per_day_quantity_one"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> twiitti päivää kohden)</string>
-  <string name="created_at_with_N_tweets_per_day_quantity_other"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> twiittiä päivää kohden)</string>
+    <string name="created_at_with_N_tweets_per_day_quantity_one"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> twiitti päivää kohden)</string>
+    <string name="created_at_with_N_tweets_per_day_quantity_other"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> twiittiä päivää kohden)</string>
     <string name="empty_content">Tyhjennä sisältö</string>
     <string name="fast_image_loading">Kuvien nopea lataus</string>
     <string name="fast_image_loading_summary">Ota käyttöön, jotta kuvat latautuvat nopeammin. Ota pois käytöstä, jos jotkin kuvat eivät näy.</string>
@@ -516,6 +527,7 @@
     <string name="general">Yleiset</string>
     <string name="hints">Vinkit</string>
     <string name="finish">Valmis</string>
+    <string name="background">Tausta</string>
     <string name="theme_background_default">Oletus</string>
     <string name="theme_background_solid">Pelkkä valkoinen/musta</string>
     <string name="theme_background_transparent">Läpinäkyvä</string>
@@ -593,12 +605,49 @@
     <string name="image_preview_scale_type_fit_center">Sovita keskusta</string>
     <string name="quote_protected_status_warning_message">Twiitti on suojattu.\n\nSuojatut käyttäjät eivät yleensä halua twiittejään julkisiksi.</string>
     <string name="send_anyway">Lähetä joka tapauksessa</string>
-  <string name="new_direct_message">Uusi yksityisviesti</string>
-  <string name="plain_list_style">Pelkistetty listatyyli</string>
-  <string name="add">Lisää</string>
-  <string name="delete_drafts_confirm">Poistetaanko valittu luonnos?</string>
-  <string name="extra_configurations">Lisäasetukset</string>
-  <string name="click_item_to_config">Määritä napauttamalla</string>
-  <string name="dark_drawer">Tumma vetolaatikko</string>
-  <string name="retweets_of_me">Twiittieni uudelleentwiittaukset</string>
+    <string name="following_only">Vain seuraajat</string>
+    <string name="following_only_summary">Näytä ilmoitukset vain käyttäjiltä, joita seuraat.</string>
+    <string name="new_direct_message">Uusi yksityisviesti</string>
+    <string name="plain_list_style">Pelkistetty listatyyli</string>
+    <string name="add">Lisää</string>
+    <string name="N_media_quantity_one"><xliff:g id="items">%d</xliff:g> media</string>
+    <string name="N_media_quantity_other"><xliff:g id="items">%d</xliff:g> media</string>
+    <string name="delete_drafts_confirm">Poistetaanko valittu luonnos?</string>
+    <string name="extra_configurations">Lisäasetukset</string>
+    <string name="click_item_to_config">Määritä napauttamalla</string>
+    <string name="dark_drawer">Tumma vetolaatikko</string>
+    <string name="retweets_of_me">Twiittieni uudelleentwiittaukset</string>
+    <string name="from_gallery">Galleriasta</string>
+    <string name="from_camera">Kamerasta</string>
+    <string name="excluded">Pois jätettävät</string>
+    <string name="exclude_this_host">Jätä pois tämä palvelin</string>
+    <string name="api_url_format_help">[DOMAIN]: Twitter-API:n verkkoalue.\nEsimerkki: https://[DOMAIN].twitter.com/ korvataan osoitteella https://api.twitter.com/.</string>
+    <string name="no_version_suffix">Ei versiojälkiliitettä</string>
+    <string name="inverse_selection">Käänteinen valinta</string>
+    <string name="media">Media</string>
+    <string name="mute_user">Hiljennä <xliff:g id="name">%s</xliff:g></string>
+    <string name="muted_user"><xliff:g id="name">%s</xliff:g> hiljennetty</string>
+    <string name="unmute_user">Poista käyttäjän <xliff:g id="name">%s</xliff:g> hiljennys</string>
+    <string name="unmuted_user">Käyttäjän <xliff:g id="name">%s</xliff:g> hiljennys poistettu</string>
+    <string name="mute">Hiljennä</string>
+    <string name="unmute">Poista hiljennys</string>
+    <string name="action_muting">hiljennetään</string>
+    <string name="action_unmuting">poistetaan hiljennystä</string>
+    <string name="mute_user_confirm_message">Hiljennetäänkö <xliff:g id="name">%s</xliff:g>? Et näe enää twiittejä tältä käyttäjältä, vaikka seuraatkin häntä.</string>
+    <string name="remove_from_filter">Poista suodattimesta</string>
+    <string name="sort_timeline_by_id">Lajittele aikajana tunnuksen mukaan</string>
+    <string name="style">Tyyli</string>
+    <string name="color">Väri</string>
+    <string name="font_family">Fonttiperhe</string>
+    <string name="appearance">Ulkonäkö</string>
+    <string name="function">Toiminto</string>
+    <string name="replies">Vastaukset</string>
+    <string name="profile_banner">Profiilin banneri</string>
+    <string name="profile">Profiili</string>
+    <string name="listed">Listaan lisätyt</string>
+    <string name="state_blocking">Estetään</string>
+    <string name="load_more">Lataa lisää</string>
+    <string name="photo">Valokuva</string>
+    <string name="gallery">Galleria</string>
+    <string name="remove">Poista</string>
 </resources>

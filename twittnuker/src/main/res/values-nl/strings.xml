@@ -118,7 +118,7 @@
   <string name="quote">Citeer</string>
   <string name="add_rule">Regel toevoegen</string>
   <string name="text_size">lettergrootte</string>
-  <string name="text_size_summary">Lettergrootte van statussen.</string>
+  <string name="text_size_summary">Textgrootte van tweets.</string>
   <string name="cannot_get_location">Kan uw locatie niet verkrijgen.</string>
   <string name="drafts">Concepten</string>
   <string name="description">Beschrijving</string>
@@ -186,7 +186,6 @@
   <string name="type_to_compose">Typ om op te stellen</string>
   <string name="users_lists">Gebruikers lijst</string>
   <string name="lists_following_user">Lijsten die deze gebruiker volgen</string>
-  <string name="lists_following_me">Lijsten die mij volgen</string>
   <string name="item_3_minutes">3 minuten</string>
   <string name="item_5_minutes">5 minuten</string>
   <string name="item_10_minutes">10 minuten</string>
@@ -370,7 +369,6 @@
   <string name="quote_protected_status_notice">Het is niet aangeraden om beschermde tweets te citeren.</string>
   <string name="edit_draft">Wijzig concept</string>
   <string name="profile_image">Profielfoto</string>
-  <string name="my_profile_image">Mijn profielfoto</string>
   <string name="mention_user">Vermeldt <xliff:g id="user">%s</xliff:g></string>
   <string name="theme_color">Themakleur</string>
   <string name="wrong_url_format">Verkeerde URL-indeling.</string>
@@ -516,6 +514,7 @@
   <string name="general">Algemeen</string>
   <string name="hints">Hints</string>
   <string name="finish">Voltooi</string>
+  <string name="background">Achtergrond</string>
   <string name="theme_background_default">Standaard</string>
   <string name="theme_background_solid">Zuiver wit/zwart</string>
   <string name="theme_background_transparent">Transparant</string>
@@ -605,4 +604,8 @@
   <string name="click_item_to_config">Klik op een item om in te stellen</string>
   <string name="dark_drawer">Donker schuifpaneel</string>
   <string name="retweets_of_me">Retweets van mij</string>
+  <string name="media">Media</string>
+  <string name="color">Kleur</string>
+  <string name="profile">Profiel</string>
+  <string name="remove">Verwijder</string>
 </resources>

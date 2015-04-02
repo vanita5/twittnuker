@@ -18,6 +18,8 @@
     <string name="oauth_base_url">Base de la URL per OAuth</string>
     <string name="signing_oauth_base_url">Base de la URL per signatures OAuth</string>
     <string name="signing_rest_base_url">Base de la URL per signatures REST</string>
+    <string name="api_url_format">Format de la URL de l\'API</string>
+    <string name="same_oauth_signing_url">Utilitza la mateixa URL per l\'inici de sessió amb OAuth</string>
     <string name="auth_type">Tipus d\'autenticació</string>
     <string name="oauth">OAuth</string>
     <string name="xauth">xAuth</string>
@@ -48,7 +50,7 @@
     <string name="tap_to_load_more">Feu un toc per carregar-ne més</string>
     <string name="delete">Esborra</string>
     <string name="retweet">Retweet</string>
-  <string name="retweets">Repiulades</string>
+    <string name="retweets">Repiulades</string>
     <string name="cancel_retweet">Cancel·la la repiulada</string>
     <string name="favorite">Marca com a preferit</string>
     <string name="unfavorite">Desmarca com a preferit</string>
@@ -73,7 +75,7 @@
     <string name="ignore_ssl_error">Ignora error d\'SSL</string>
     <string name="ignore_ssl_error_summary">Ignora els errors d\'SSL. Activeu-ho si teniu problemes amb servidors API personalitzats.</string>
     <string name="gzip_compressing">Compressió gzip</string>
-  <string name="gzip_compressing_summary">Comprimeix totes les peticions API per reduir l\'ús de dades. Pot ser que no funcioni amb tots els servidors API.</string>
+    <string name="gzip_compressing_summary">Comprimeix totes les peticions API per reduir l\'ús de dades. Pot ser que no funcioni amb tots els servidors API.</string>
     <string name="storage">Emmagatzematge</string>
     <string name="database_item_limit">Mida límit de la base de dades</string>
     <string name="database_item_limit_summary">Límit màxim d\'elements desats a les bases de dades per cada compta, establir un valor més baix per utilitzar menys espai i incrementar la velocitat de carrega.</string>
@@ -85,11 +87,17 @@
     <string name="display_profile_image">Mostra la imatge del perfil</string>
     <string name="image_load_summary">Desactivant aquesta opció s\'incrementarà la velocitat del desplaçament i es reduirà l\'ús de dades.</string>
     <string name="in_reply_to_name">En resposta a <xliff:g id="user_name">%s</xliff:g></string>
-    <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> ho ha repiulat</string>
-    <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> i <xliff:g id="retweet_count">%2$d</xliff:g> més ho han repiulat</string>
-    <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> usuaris ho han repiulat</string>
+    <string name="name_retweeted"><xliff:g id="user_name">%s</xliff:g> ho ha repiulat</string>
+    <string name="name_and_another_retweeted"><xliff:g id="user_name">%1$s</xliff:g> i un altre han repiulat</string>
+    <string name="name_and_count_retweeted"><xliff:g id="user_name">%1$s</xliff:g> i <xliff:g id="retweet_count">%2$d</xliff:g> altres ho han repiulat</string>
+  <string name="N_retweeted_quantity_one"><xliff:g id="retweet_count">%d</xliff:g> repiulada
+</string>
+    <string name="N_retweeted_quantity_other"><xliff:g id="retweet_count">%d</xliff:g> repiulades</string>
+    <string name="retweeted_by_name">Repiulat per <xliff:g id="user_name">%s</xliff:g></string>
+    <string name="retweeted_by_name_with_count">Repiulat per <xliff:g id="user_name">%1$s</xliff:g> i <xliff:g id="retweet_count">%2$d</xliff:g> altres</string>
+    <string name="retweeted_by_count">Repiulat per <xliff:g id="retweet_count">%d</xliff:g> usuaris</string>
     <string name="users_retweeted_this">Usuaris que han repiulat</string>
-  <string name="users_favorited_this">Usuaris que ho han marcat com a preferit</string>
+    <string name="users_favorited_this">Usuaris que ho han marcat com a preferit</string>
     <string name="reply_to">Respon a <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Cita a <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g>, via <xliff:g id="source">%2$s</xliff:g></string>
@@ -108,7 +116,7 @@
     <string name="unfollow">Deixa de seguir</string>
     <string name="bottom_compose_button">Botó «redacta» a sota</string>
     <string name="bottom_compose_button_summary">Mostra el botó de redactar a la part de baix. Activeu-ho si teniu una pantalla gran.</string>
-  <string name="leftside_compose_button">Botó de redactar al costat esquerre</string>
+    <string name="leftside_compose_button">Botó de redactar al costat esquerre</string>
     <string name="leftside_compose_button_summary">Mostra el botó de redactar a la part esquerra.</string>
     <string name="bottom_send_button">Botó «envia» a sota</string>
     <string name="load_item_limit">Límit d\'elements per càrrega</string>
@@ -118,7 +126,7 @@
     <string name="quote">Cita</string>
     <string name="add_rule">Afegeix una regla</string>
     <string name="text_size">Mida del text</string>
-    <string name="text_size_summary">Mida del text dels estats.</string>
+    <string name="text_size_summary">Mida del text de les piulades.</string>
     <string name="cannot_get_location">No es pot obtenir la vostra localització.</string>
     <string name="drafts">Esborranys</string>
     <string name="description">Descripció</string>
@@ -150,6 +158,7 @@
     <string name="save_as">Anomena i desa</string>
     <string name="please_wait">Espereu, si us plau.</string>
     <string name="file_saved_to">Fitxer desat com a <xliff:g id="filename">%s</xliff:g> .</string>
+    <string name="saved_to_gallery">Desat a la galeria.</string>
     <string name="proxy">Servidor intermediari</string>
     <string name="http_proxy">Servidor HTTP intermediari</string>
     <string name="http_proxy_summary">Utilitza un servidor HTTP intermediari per a totes les peticions de la xarxa.</string>
@@ -159,9 +168,10 @@
     <string name="unblock">Desbloqueja</string>
     <string name="report_for_spam">Informa d\'abús</string>
     <string name="twitter_mute_user">Silencia l\'usuari</string>
-  <string name="twitter_muted_users">Usuaris silenciats</string>
-  <string name="message_user_muted">S\'ha afegit aquest usuari al filtre. No veureu les piulades d\'aquest usuari a la vostra cronologia ni a la llista de mencions.</string>
-  <string name="message_users_muted">S\'han afegit usuaris al filtre. No veureu les piulades d\'aquests usuaris a la vostra cronologia ni a la llista de mencions.</string>
+    <string name="twitter_muted_users">Usuaris silenciats</string>
+    <string name="message_user_muted">S\'ha afegit aquest usuari al filtre. No veureu les piulades d\'aquest usuari a la vostra cronologia ni a la llista de mencions.</string>
+    <string name="message_users_muted">S\'han afegit usuaris al filtre. No veureu les piulades d\'aquests usuaris a la vostra cronologia ni a la llista de mencions.</string>
+    <string name="message_user_unmuted">Usuari eliminat de la llista de filtres.</string>
     <string name="inbox">Safata d\'entrada</string>
     <string name="load_images">Carrega les imatges</string>
     <string name="other_settings">Altres paràmetres</string>
@@ -184,9 +194,9 @@
     <string name="list_members">Llista de membres</string>
     <string name="list_subscribers">Llista de seguidors</string>
     <string name="type_to_compose">Escriu per redactar</string>
+    <string name="lists">Llistes</string>
     <string name="users_lists">Llistes de l\'usuari</string>
     <string name="lists_following_user">Llistes que segueixen a aquest usuari</string>
-    <string name="lists_following_me">Llistes que em segueixen</string>
     <string name="item_3_minutes">3 minuts</string>
     <string name="item_5_minutes">5 minuts</string>
     <string name="item_10_minutes">10 minuts</string>
@@ -205,6 +215,7 @@
     <string name="accounts">Comptes</string>
     <string name="account">Compte</string>
     <string name="mention_this_user">Menciona aquest usuari</string>
+    <string name="mention_user_name">Menció <xliff:g id="name">%1$s</xliff:g></string>
     <string name="signing_in_please_wait">S\'està iniciant la sessió, premeu «enrere» per sortir.</string>
     <string name="connectivity">Conectivitat</string>
     <string name="add_member">Afegeix un membre</string>
@@ -230,13 +241,13 @@
     <string name="network">Xarxa</string>
     <string name="content_and_storage">Contingut i emmagatzematge</string>
     <string name="image_uploader">Servei per pujar imatges</string>
-  <string name="media_uploader">Carregador de fitxers</string>
+    <string name="media_uploader">Carregador de fitxers</string>
     <string name="image_uploader_default">Per defecte (Twitter)</string>
     <string name="home_refresh">Actualitza a la cronologia d\'inici</string>
     <string name="error_message_image_upload_failed">Error en carregar la imatge.</string>
     <string name="tweet_shortener">Servei per escurçar piulades</string>
-  <string name="status_shortener">Escurçador de piulades</string>
-  <string name="status_shortener_default">Cap (Atura l\'enviament)</string>
+    <string name="status_shortener">Escurçador de piulades</string>
+    <string name="status_shortener_default">Cap (Atura l\'enviament)</string>
     <string name="error_message_status_too_long">Piulada massa llarga.</string>
     <string name="error_message_no_content">Sense contingut</string>
     <string name="error_message_tweet_shorten_failed">Ha fallat l\'escurçador de piulades.</string>
@@ -370,7 +381,6 @@
     <string name="quote_protected_status_notice">No és recomanable citar piulades protegides.</string>
     <string name="edit_draft">Edita l\'esborrany</string>
     <string name="profile_image">Imatge de perfil</string>
-    <string name="my_profile_image">La meva imatge de perfil</string>
     <string name="mention_user">Menciona a <xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">Color del tema</string>
     <string name="wrong_url_format">El format de la URL és incorrecte.</string>
@@ -426,8 +436,8 @@
     <string name="no_close_after_status_updated_summary">Un regalet per a «chatterbox»</string>
     <string name="status_saved_to_draft">S\'ha desat la piulada com a esborrany.</string>
     <string name="default_account">Compte per defecte</string>
-  <string name="created_at_with_N_tweets_per_day_quantity_one"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> piulada per dia)</string>
-  <string name="created_at_with_N_tweets_per_day_quantity_other"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> piulades per dia)</string>
+    <string name="created_at_with_N_tweets_per_day_quantity_one"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> piulada per dia)</string>
+    <string name="created_at_with_N_tweets_per_day_quantity_other"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> piulades per dia)</string>
     <string name="empty_content">No hi ha contingut</string>
     <string name="fast_image_loading">Càrrega ràpida de les imatges</string>
     <string name="fast_image_loading_summary">Habilita-ho per a carregar més ràpidament les imatges, però inhabilita-ho si no se\'t mostra alguna imatge.</string>
@@ -480,13 +490,13 @@
     <string name="block_user">Bloqueja l\'usuari <xliff:g id="name">%s</xliff:g></string>
     <string name="block_user_confirm_message">Voleu bloquejar l\'usuari <xliff:g id="name">%s</xliff:g>? Si ho feu, no podrà seguir-vos, mencionar-vos ni enviar-vos missatges directes.</string>
     <string name="unfollow_user">Deixa de seguir <xliff:g id="name">%s</xliff:g></string>
-  <string name="unfollow_user_confirm_message">Voleu deixar de seguir l\'usuari <xliff:g id="name">%s</xliff:g>? Si ho feu, no veureu més piulades d\'aquest usuari.</string>
+    <string name="unfollow_user_confirm_message">Voleu deixar de seguir l\'usuari <xliff:g id="name">%s</xliff:g>? Si ho feu, no veureu més piulades d\'aquest usuari.</string>
     <string name="delete_user_list">Elimina la llista <xliff:g id="name">%s</xliff:g></string>
     <string name="delete_user_list_confirm_message">Voleu esborrar la llista <xliff:g id="name">%s</xliff:g>? Aquesta acció no es pot desfer.</string>
     <string name="unsubscribe_from_user_list">Canceŀla la subscripció a la llista <xliff:g id="name">%s</xliff:g></string>
     <string name="unsubscribe_from_user_list_confirm_message">Voleu canceŀlar la subscripció a la llista <xliff:g id="name">%s</xliff:g>? Podreu tornar a subscriure-us-hi més endavant.</string>
-  <string name="destroy_status">Esborra la piulada</string>
-  <string name="destroy_status_confirm_message">Voleu esborrar aquesta piulada?</string>
+    <string name="destroy_status">Esborra la piulada</string>
+    <string name="destroy_status_confirm_message">Voleu esborrar aquesta piulada?</string>
     <string name="destroy_saved_search">Esborra la cerca desada «<xliff:g id="name">%s</xliff:g>»</string>
     <string name="destroy_saved_search_confirm_message">Voleu esborrar la cerca desada «<xliff:g id="name">%s</xliff:g>»? Podeu tornar a desar-la quan vulgueu.</string>
   <string name="signing_in_error_browser_sign_in_hint">Hi ha hagut un error mentre s\'accedia. Proveu el mètode d\'accedir a través d\'un navegador.
@@ -506,6 +516,7 @@
     <string name="translate">Ajudeu a traduir el Twittnuker</string>
     <string name="sponsored_by">Patrocinat per</string>
     <string name="special_thanks_to">Agraïments especials a</string>
+    <string name="contributors_list_summary">Si no hi veieu el vostre nom aviseu-nos al compte del projecte.</string>
     <string name="account_options">Paràmetres del compte</string>
     <string name="show_in_timeline">Mostra a la cronologia</string>
     <string name="cards">Targetes</string>
@@ -517,6 +528,7 @@
     <string name="general">General</string>
     <string name="hints">Consells</string>
     <string name="finish">Acabar</string>
+    <string name="background">Fons</string>
     <string name="theme_background_default">Per defecte</string>
     <string name="theme_background_solid">Blanc i negre pur</string>
     <string name="theme_background_transparent">Transparent</string>
@@ -580,26 +592,63 @@
     <string name="status_text_limit">Límit de llargària del tuit</string>
     <string name="load_more_from_top">Carrega piulades amagades per sobre</string>
     <string name="load_more_from_top_summary">Útil si t\'estimes més llegir d\'avall cap amunt</string>
-  <string name="twitter_link_handler">Gestor d\'enllaços de Twitter</string>
-  <string name="compose_now">Redacta ara</string>
-  <string name="compose_now_summary">Reemplaça la drecera de Google Now per la pantalla «Composa»</string>
-  <string name="compose_now_action">Acció «Redacta ara»</string>
-  <string name="open_with_account">Obre amb un altre compte</string>
-  <string name="card_highlight_option">Opció de ressaltament de targetes</string>
-  <string name="card_highlight_option_highlight">Ressalta</string>
-  <string name="card_highlight_option_line">Línia</string>
-  <string name="timeline_sync_service">Servei de sincronització de la cronologia</string>
-  <string name="image_preview_scale_type">Tipus d\'escala per la previsualització d\'imatges</string>
-  <string name="image_preview_scale_type_crop">Retalla</string>
-  <string name="image_preview_scale_type_fit_center">Centra</string>
-  <string name="quote_protected_status_warning_message">Aquesta piulada és protegida.\n\nEls usuaris protegits normalment no volen compartir públicament llurs piulades.</string>
-  <string name="send_anyway">Envia igualment</string>
-  <string name="new_direct_message">Nou missatge directe</string>
-  <string name="plain_list_style">Estil simple de llista</string>
-  <string name="add">Afegeix</string>
-  <string name="delete_drafts_confirm">Voleu eliminar els esborranys seleccionats?</string>
-  <string name="extra_configurations">Paràmetres addicionals</string>
-  <string name="click_item_to_config">Feu clic en un element per configurar-lo</string>
-  <string name="dark_drawer">Calaix fosc</string>
-  <string name="retweets_of_me">Repiulades meves</string>
+    <string name="twitter_link_handler">Gestor d\'enllaços de Twitter</string>
+    <string name="compose_now">Redacta ara</string>
+    <string name="compose_now_summary">Reemplaça la drecera de Google Now per la pantalla «Composa»</string>
+    <string name="compose_now_action">Acció «Redacta ara»</string>
+    <string name="open_with_account">Obre amb un altre compte</string>
+    <string name="card_highlight_option">Opció de ressaltament de targetes</string>
+    <string name="card_highlight_option_highlight">Ressalta</string>
+    <string name="card_highlight_option_line">Línia</string>
+    <string name="timeline_sync_service">Servei de sincronització de la cronologia</string>
+    <string name="image_preview_scale_type">Tipus d\'escala per la previsualització d\'imatges</string>
+    <string name="image_preview_scale_type_crop">Retalla</string>
+    <string name="image_preview_scale_type_fit_center">Centra</string>
+    <string name="quote_protected_status_warning_message">Aquesta piulada és protegida.\n\nEls usuaris protegits normalment no volen compartir públicament llurs piulades.</string>
+    <string name="send_anyway">Envia igualment</string>
+    <string name="following_only">Només de qui segueixes</string>
+    <string name="following_only_summary">Mostra només notificacions dels usuaris que segueixes.</string>
+    <string name="new_direct_message">Nou missatge directe</string>
+    <string name="plain_list_style">Estil simple de llista</string>
+    <string name="add">Afegeix</string>
+    <string name="N_media_quantity_one"><xliff:g id="items">%d</xliff:g> mèdies</string>
+    <string name="N_media_quantity_other"><xliff:g id="items">%d</xliff:g> mèdies</string>
+    <string name="delete_drafts_confirm">Voleu eliminar els esborranys seleccionats?</string>
+    <string name="extra_configurations">Paràmetres addicionals</string>
+    <string name="click_item_to_config">Feu clic en un element per configurar-lo</string>
+    <string name="dark_drawer">Calaix fosc</string>
+    <string name="retweets_of_me">Repiulades meves</string>
+    <string name="from_gallery">Des de la galeria</string>
+    <string name="from_camera">Des de la càmera</string>
+    <string name="excluded">Exclòs</string>
+    <string name="exclude_this_host">Exclou aquest servidor</string>
+    <string name="api_url_format_help">[DOMAIN]: Twitter API domain.\nExample: https://[DOMAIN].twitter.com/ serà reempalçat a https://api.twitter.com/.</string>
+    <string name="no_version_suffix">Versió sense sufix</string>
+    <string name="inverse_selection">Inverteix sel·lecció</string>
+    <string name="media">Mèdies</string>
+    <string name="mute_user">Silenciar <xliff:g id="name">%s</xliff:g></string>
+    <string name="muted_user">Silenciar <xliff:g id="name">%s</xliff:g></string>
+    <string name="unmute_user">Silenciar <xliff:g id="name">%s</xliff:g></string>
+    <string name="unmuted_user">Silenciar <xliff:g id="name">%s</xliff:g></string>
+    <string name="mute">Silencia</string>
+    <string name="unmute">Desimmuta</string>
+    <string name="action_muting">silenciant</string>
+    <string name="action_unmuting">immuta</string>
+    <string name="mute_user_confirm_message">Emmudeix <xliff:g id="name">%s</xliff:g>? No veureu pas més piulades d\'aquest usuari mentre continueu de seguir aquest usuari.</string>
+    <string name="remove_from_filter">Elimina del filtre</string>
+    <string name="sort_timeline_by_id">Ordena la cronologia per ID</string>
+    <string name="style">Estil</string>
+    <string name="color">Color</string>
+    <string name="font_family">Tipus de lletra</string>
+    <string name="appearance">Aparença</string>
+    <string name="function">Funció</string>
+    <string name="replies">Respostes</string>
+    <string name="profile_banner">Bàner de perfil</string>
+    <string name="profile">Perfil</string>
+    <string name="listed">Llistat</string>
+    <string name="state_blocking">Blocatge</string>
+    <string name="load_more">Carrega\'n més</string>
+    <string name="photo">Foto</string>
+    <string name="gallery">Galeria</string>
+    <string name="remove">Suprimeix</string>
 </resources>

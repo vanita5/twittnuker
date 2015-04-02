@@ -18,8 +18,8 @@
     <string name="oauth_base_url">OAuth Base URL</string>
     <string name="signing_oauth_base_url">Signing OAuth Base URL</string>
     <string name="signing_rest_base_url">Signing REST Base URL</string>
-  <string name="api_url_format">API URL 格式</string>
-  <string name="same_oauth_signing_url">OAuth 签名时使用相同 URL</string>
+    <string name="api_url_format">API URL 格式</string>
+    <string name="same_oauth_signing_url">OAuth 签名时使用相同 URL</string>
     <string name="auth_type">验证方式</string>
     <string name="oauth">OAuth</string>
     <string name="xauth">xAuth</string>
@@ -87,9 +87,14 @@
     <string name="display_profile_image">显示个人资料图片</string>
     <string name="image_load_summary">关闭可以加快列表的滚动速度，以及减少数据流量</string>
     <string name="in_reply_to_name">回复<xliff:g id="user_name">%s</xliff:g></string>
-    <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g>转推了这个</string>
-    <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g>和其他<xliff:g id="retweet_count">%2$d</xliff:g>人转推了这个</string>
-    <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g>人转推了这条推文</string>
+    <string name="name_retweeted"><xliff:g id="user_name">%s</xliff:g>转推了</string>
+    <string name="name_and_another_retweeted"><xliff:g id="user_name">%1$s</xliff:g>和另一人转推了</string>
+    <string name="name_and_count_retweeted"><xliff:g id="user_name">%1$s</xliff:g>和其他<xliff:g id="retweet_count">%2$d</xliff:g>人转推了</string>
+    <string name="N_retweeted_quantity_one"><xliff:g id="retweet_count">%d</xliff:g>转推</string>
+    <string name="N_retweeted_quantity_other"><xliff:g id="retweet_count">%d</xliff:g>转推</string>
+    <string name="retweeted_by_name">由<xliff:g id="user_name">%s</xliff:g>转推</string>
+    <string name="retweeted_by_name_with_count">由<xliff:g id="user_name">%1$s</xliff:g>和其他<xliff:g id="retweet_count">%2$d</xliff:g>人转推</string>
+    <string name="retweeted_by_count">由<xliff:g id="retweet_count">%d</xliff:g>人转推</string>
     <string name="users_retweeted_this">转推了这条推文的用户</string>
     <string name="users_favorited_this">收藏这条推文的用户</string>
     <string name="reply_to">回复<xliff:g id="user_name">%s</xliff:g></string>
@@ -120,7 +125,7 @@
     <string name="quote">引用</string>
     <string name="add_rule">添加规则</string>
     <string name="text_size">文字尺寸</string>
-    <string name="text_size_summary">推文的文字尺寸</string>
+    <string name="text_size_summary">推文的字号</string>
     <string name="cannot_get_location">不能获得你的位置</string>
     <string name="drafts">草稿</string>
     <string name="description">简介</string>
@@ -141,7 +146,7 @@
     <string name="created_at">创建日期</string>
     <string name="search_hint">搜索推文或用户</string>
     <string name="remember_position">记住位置</string>
-  <string name="remember_position_summary">打开Twittnuker时，恢复到退出前列表/页面的位置</string>
+    <string name="remember_position_summary">打开Twittnuker时，恢复到退出前列表/页面的位置</string>
     <string name="user_blocked">你阻止了这个用户</string>
     <string name="users_blocked">你阻止了这些用户</string>
     <string name="user_unblocked">你解除了对这个用户的阻止</string>
@@ -152,6 +157,7 @@
     <string name="save_as">保存为</string>
     <string name="please_wait">请稍等</string>
     <string name="file_saved_to">文件已经保存到 <xliff:g id="filename">%s</xliff:g></string>
+    <string name="saved_to_gallery">已保存到相册</string>
     <string name="proxy">代理服务器</string>
     <string name="http_proxy">HTTP代理</string>
     <string name="http_proxy_summary">为API请求使用HTTP代理</string>
@@ -160,11 +166,11 @@
     <string name="block">阻止</string>
     <string name="unblock">取消阻止</string>
     <string name="report_for_spam">报告垃圾信息</string>
-  <string name="twitter_mute_user">静音用户</string>
+    <string name="twitter_mute_user">静音用户</string>
     <string name="twitter_muted_users">已静音的用户</string>
     <string name="message_user_muted">你过滤了这个用户，你将不会在主页/提及中看到这个用户的推文</string>
     <string name="message_users_muted">你过滤了这些用户，你将不会在主页/提及中看到这些用户的推文</string>
-  <string name="message_user_unmuted">从过滤器列表中删除了这个用户</string>
+    <string name="message_user_unmuted">从过滤器列表中删除了这个用户</string>
     <string name="inbox">收件箱</string>
     <string name="load_images">载入图片</string>
     <string name="other_settings">其他设定</string>
@@ -180,16 +186,17 @@
     <string name="notifications">通知</string>
     <string name="screen_name">用户名</string>
     <string name="refresh_on_start">启动时刷新</string>
-  <string name="refresh_on_start_summary">启动时刷新时间轴和提及</string>
+    <string name="refresh_on_start_summary">启动时刷新时间轴和提及</string>
     <string name="refresh_after_status_updated">发送推文后刷新</string>
-  <string name="refresh_after_status_updated_summary">在发送推文后刷新时间轴</string>
-  <string name="list_timeline">列表时间轴</string>
+    <string name="refresh_after_status_updated_summary">在发送推文后刷新时间轴</string>
+    <string name="list_timeline">列表时间轴</string>
     <string name="list_members">列表成员</string>
     <string name="list_subscribers">订阅列表的用户</string>
     <string name="type_to_compose">键入信息</string>
+    <string name="lists">列表</string>
     <string name="users_lists">列表</string>
     <string name="lists_following_user">关注这个用户的列表</string>
-    <string name="lists_following_you">关注我的列表</string>
+    <string name="lists_following_you">关注你的列表</string>
     <string name="item_3_minutes">3分钟</string>
     <string name="item_5_minutes">5分钟</string>
     <string name="item_10_minutes">10分钟</string>
@@ -208,7 +215,7 @@
     <string name="accounts">帐号</string>
     <string name="account">帐号</string>
     <string name="mention_this_user">提及这个用户</string>
-  <string name="mention_user_name">提及<xliff:g id="name">%1$s</xliff:g></string>
+    <string name="mention_user_name">提及<xliff:g id="name">%1$s</xliff:g></string>
     <string name="signing_in_please_wait">正在登录，请稍等或按BACK退出</string>
     <string name="connectivity">连接性</string>
     <string name="add_member">添加成员</string>
@@ -226,7 +233,7 @@
     <string name="invalid_settings">发现无效设定</string>
     <string name="icon">图标</string>
     <string name="pick_file">选取文件</string>
-  <string name="user_timeline">时间轴</string>
+    <string name="user_timeline">时间轴</string>
     <string name="notification_ringtone">铃声</string>
     <string name="notification_light_color">灯光颜色</string>
     <string name="share_format">分享格式</string>
@@ -236,7 +243,7 @@
     <string name="image_uploader">图片上传服务</string>
     <string name="media_uploader">媒体上传服务</string>
     <string name="image_uploader_default">默认（Twitter）</string>
-  <string name="home_refresh">在主页时间轴刷新</string>
+    <string name="home_refresh">在主页时间轴刷新</string>
     <string name="error_message_image_upload_failed">图像上传失败</string>
     <string name="tweet_shortener">推文缩短服务</string>
     <string name="status_shortener">推文缩短服务</string>
@@ -270,22 +277,26 @@
     <string name="activities_about_me">关于我的活动</string>
     <string name="activities_by_friends">好友的活动</string>
     <string name="activity_about_me_favorite"><xliff:g id="user">%s</xliff:g> 收藏了你的推文</string>
-    <string name="activity_about_me_favorite_multi"><xliff:g id="user">%s</xliff:g> 和其他 <xliff:g id="count">%d</xliff:g> 人收藏了你的推文</string>
+    <string name="activity_about_me_favorite_multi"><xliff:g id="user">%1$s</xliff:g>和<xliff:g id="other">%2$s</xliff:g>收藏了你的推文</string>
+    <string name="activity_about_me_favorited_retweet"><xliff:g id="user">%s</xliff:g>收藏了你的转推</string>
+    <string name="activity_about_me_favorited_retweet_multi"><xliff:g id="user">%1$s</xliff:g>和<xliff:g id="other">%2$s</xliff:g>收藏了你的转推</string>
     <string name="activity_about_me_follow"><xliff:g id="user">%s</xliff:g> 正在关注你</string>
-    <string name="activity_about_me_follow_multi"><xliff:g id="user">%s</xliff:g> 和其他 <xliff:g id="count">%d</xliff:g> 人正在关注你</string>
+    <string name="activity_about_me_follow_multi"><xliff:g id="user">%1$s</xliff:g>和<xliff:g id="other">%2$s</xliff:g>正在关注你</string>
     <string name="activity_about_me_retweet"><xliff:g id="user">%s</xliff:g> 转推了你的推文</string>
-    <string name="activity_about_me_retweet_multi"><xliff:g id="user">%s</xliff:g> 和其他 <xliff:g id="count">%d</xliff:g> 人转推了你的推文</string>
+    <string name="activity_about_me_retweet_multi"><xliff:g id="user">%1$s</xliff:g>和<xliff:g id="other">%2$s</xliff:g>转了你的推文</string>
+    <string name="activity_about_me_retweeted_retweet"><xliff:g id="user">%s</xliff:g>转了你的转推</string>
+    <string name="activity_about_me_retweeted_retweet_multi"><xliff:g id="user">%1$s</xliff:g>和<xliff:g id="other">%2$s</xliff:g>转了你的转推</string>
     <string name="activity_about_me_list_member_added"><xliff:g id="user">%s</xliff:g> 把你添加到了列表</string>
-    <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g>把你添加到了列表“<xliff:g id="list">%2$s</xliff:g>”</string>
-    <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%s</xliff:g>和其他<xliff:g id="count">%d</xliff:g>人把你加到了他们的列表</string>
+    <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g>把你添加到了列表<xliff:g id="list">%2$s</xliff:g>中</string>
+    <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%1$s</xliff:g>和<xliff:g id="other">%2$s</xliff:g>把你添加到了他们的列表</string>
     <string name="activity_by_friends_favorite"><xliff:g id="user">%1$s</xliff:g>收藏了<xliff:g id="target">%2$s</xliff:g>的推文</string>
-    <string name="activity_by_friends_favorite_multi"><xliff:g id="user">%1$s</xliff:g>收藏了<xliff:g id="target">%2$s</xliff:g>和其他<xliff:g id="count">%3$d</xliff:g>人的推文</string>
+    <string name="activity_by_friends_favorite_multi"><xliff:g id="user">%1$s</xliff:g>收藏了<xliff:g id="target">%2$s</xliff:g>和<xliff:g id="other">%3$s</xliff:g>的推文</string>
     <string name="activity_by_friends_follow"><xliff:g id="user">%1$s</xliff:g>关注了<xliff:g id="target">%2$s</xliff:g></string>
-    <string name="activity_by_friends_follow_multi"><xliff:g id="user">%1$s</xliff:g>关注了<xliff:g id="target">%2$s</xliff:g>和其他<xliff:g id="count">%3$d</xliff:g>人</string>
+    <string name="activity_by_friends_follow_multi"><xliff:g id="user">%1$s</xliff:g>正在关注<xliff:g id="target">%2$s</xliff:g>和<xliff:g id="other">%3$s</xliff:g></string>
     <string name="activity_by_friends_retweet"><xliff:g id="user">%1$s</xliff:g>转推了<xliff:g id="target">%2$s</xliff:g>的推文</string>
     <string name="activity_by_friends_list_member_added"><xliff:g id="user">%1$s</xliff:g>把<xliff:g id="target">%2$s</xliff:g>加入了列表</string>
     <string name="activity_by_friends_list_created"><xliff:g id="user">%1$s</xliff:g> 创建了列表 <xliff:g id="target">%2$s</xliff:g></string>
-    <string name="activity_by_friends_list_created_multi"><xliff:g id="user">%1$s</xliff:g> 创建了 <xliff:g id="target">%2$s</xliff:g> 和其他<xliff:g id="count">%3$d</xliff:g>个列表</string>
+    <string name="activity_by_friends_list_created_multi"><xliff:g id="user">%1$s</xliff:g>创建了列表<xliff:g id="target">%2$s</xliff:g>和<xliff:g id="other">%1$s</xliff:g></string>
     <string name="status_not_updated">推文未发送</string>
     <string name="status_not_updated_summary">推文未发送，并被保存到草稿箱</string>
     <string name="incoming_friendships">待定的关注请求</string>
@@ -339,7 +350,7 @@
     <string name="silent_notifications">静默通知</string>
     <string name="silent_notifications_summary">在特定时间为通知禁用铃声和震动</string>
     <string name="disable_background_service">禁用后台服务</string>
-  <string name="disable_background_service_summary">别傻了，Twittnuker在关闭自动刷新和数据统计之后是没有后台服务的。</string>
+    <string name="disable_background_service_summary">别傻了，Twittnuker在关闭自动刷新和数据统计之后是没有后台服务的。</string>
     <string name="text_copied">文本已复制到剪贴板</string>
     <string name="amount_usd">总额（美元）</string>
     <string name="donate">捐助</string>
@@ -358,7 +369,7 @@
     <string name="clear_search_history">清除搜索历史</string>
     <string name="no_thanks">不用了，谢谢</string>
     <string name="fast_scroll_thumb">快速滚动条</string>
-    <string name="indicate_your_status">区别我的推文</string>
+    <string name="indicate_my_status">指示你的推文</string>
     <string name="default_ringtone">默认铃声</string>
     <string name="phishing_link_warning">钓鱼链接警告</string>
     <string name="phishing_link_warning_summary">在你试图打开私信中可能的钓鱼链接时发出警告</string>
@@ -374,7 +385,7 @@
     <string name="quote_protected_status_notice">不建议引用受保护的推文</string>
     <string name="edit_draft">编辑草稿</string>
     <string name="profile_image">个人资料图片</string>
-    <string name="your_profile_image">我的个人资料图片</string>
+    <string name="your_profile_image">你的头像</string>
     <string name="mention_user">提及<xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">主题颜色</string>
     <string name="wrong_url_format">URL格式错误</string>
@@ -447,7 +458,7 @@
     <string name="settings_interface">界面</string>
     <string name="no_rule">没有规则</string>
     <string name="enable_in_mentions">在提及启用</string>
-  <string name="enable_in_home_timeline">在主页时间轴启用</string>
+    <string name="enable_in_home_timeline">在主页时间轴启用</string>
     <string name="enable_for_rts">在转推启用</string>
     <string name="safety">安全</string>
     <string name="updating_status_notification">正在发送推文&#8230;</string>
@@ -484,7 +495,7 @@
     <string name="block_user">阻止<xliff:g id="name">%s</xliff:g></string>
     <string name="block_user_confirm_message">阻止<xliff:g id="name">%s</xliff:g>？这个用户将不能关注你、提及你，或者给你发送私信。</string>
     <string name="unfollow_user">取消关注<xliff:g id="name">%s</xliff:g></string>
-  <string name="unfollow_user_confirm_message">取消关注<xliff:g id="name">%s</xliff:g>吗？你将不会在时间轴中看到这个用户的推文。</string>
+    <string name="unfollow_user_confirm_message">取消关注<xliff:g id="name">%s</xliff:g>吗？你将不会在时间轴中看到这个用户的推文。</string>
     <string name="delete_user_list">删除列表<xliff:g id="name">%s</xliff:g></string>
     <string name="delete_user_list_confirm_message">删除列表<xliff:g id="name">%s</xliff:g>吗？这个操作不能撤销。</string>
     <string name="unsubscribe_from_user_list">从列表<xliff:g id="name">%s</xliff:g>退订</string>
@@ -509,11 +520,10 @@
     <string name="translate">翻译</string>
     <string name="sponsored_by">赞助</string>
     <string name="special_thanks_to">特别感谢</string>
-  <string name="contributors_list_summary">如果你没有看到你的名字，请联系我们的项目帐号</string>
+    <string name="contributors_list_summary">如果你没有看到你的名字，请联系我们的项目帐号</string>
     <string name="account_options">帐号选项</string>
-  <string name="show_in_timeline">在时间轴中显示</string>
+    <string name="show_in_timeline">在时间轴中显示</string>
     <string name="cards">卡片</string>
-    <string name="no_tab">没有标签页</string>
     <string name="delete_user">删除用户<xliff:g id="name">%s</xliff:g></string>
     <string name="delete_users">删除用户</string>
     <string name="delete_user_confirm_message">删除<xliff:g id="name">%s</xliff:g>吗？这个操作不能撤销。</string>
@@ -521,7 +531,7 @@
     <string name="general">通用</string>
     <string name="hints">提示</string>
     <string name="finish">完成</string>
-  <string name="background">背景</string>
+    <string name="background">背景</string>
     <string name="theme_background_default">默认</string>
     <string name="theme_background_solid">纯白/纯黑</string>
     <string name="theme_background_transparent">透明</string>
@@ -544,7 +554,8 @@
     <string name="N_new_mentions_quantity_other"><xliff:g id="items">%d</xliff:g>条提及</string>
     <string name="N_new_messages_quantity_one"><xliff:g id="items">%d</xliff:g>个新对话</string>
     <string name="N_new_messages_quantity_other"><xliff:g id="items">%d</xliff:g>个新对话</string>
-    <string name="share_subject_format"><xliff:g id="name">%1$s</xliff:g>（@<xliff:g id="screen_name">%2$s</xliff:g>），写于<xliff:g id="time">%3$s</xliff:g></string>
+    <string name="status_share_subject_format_with_time">来自<xliff:g id="name">%1$s</xliff:g>（@<xliff:g id="screen_name">%2$s</xliff:g>）的推文，写于<xliff:g id="time">%3$s</xliff:g></string>
+    <string name="status_share_text_format_with_link"><xliff:g id="text">%1$s</xliff:g>\n\n<xliff:g id="link">%2$s</xliff:g></string>
     <string name="rate_limit">调用限制</string>
     <string name="wizard_hint_rate_limit">如果你遇到调用限制问题，请不要埋怨我，那是Twitter的政策所限</string>
     <string name="preparing_database">正在准备数据库</string>
@@ -593,41 +604,94 @@
     <string name="card_highlight_option">卡片高亮选项</string>
     <string name="card_highlight_option_highlight">高亮</string>
     <string name="card_highlight_option_line">线条</string>
-  <string name="timeline_sync_service">时间轴同步服务</string>
+    <string name="timeline_sync_service">时间轴同步服务</string>
     <string name="image_preview_scale_type">图像预览缩放模式</string>
     <string name="image_preview_scale_type_crop">裁剪</string>
     <string name="image_preview_scale_type_fit_center">居中</string>
     <string name="quote_protected_status_warning_message">这条推文受保护。\n\n受保护的用户通常不希望他们的推文被公开分享。</string>
     <string name="send_anyway">仍然发送</string>
-  <string name="following_only">仅你关注的</string>
+    <string name="following_only">仅你关注的</string>
     <string name="following_only_summary">只显示来自你关注的用户的通知</string>
     <string name="new_direct_message">新私信</string>
     <string name="plain_list_style">简单列表样式</string>
     <string name="add">添加</string>
-  <string name="N_medias_quantity_one"><xliff:g id="items">%d</xliff:g>媒体</string>
-  <string name="N_medias_quantity_other"><xliff:g id="items">%d</xliff:g>媒体</string>
+    <string name="N_media_quantity_one"><xliff:g id="items">%d</xliff:g>媒体</string>
+    <string name="N_media_quantity_other"><xliff:g id="items">%d</xliff:g>媒体</string>
     <string name="delete_drafts_confirm">删除选择的草稿？</string>
     <string name="extra_configurations">额外设定</string>
     <string name="click_item_to_config">点击一项以设定</string>
     <string name="dark_drawer">暗色侧栏</string>
     <string name="retweets_of_me">转推我的内容</string>
-  <string name="from_gallery">来自相册</string>
-  <string name="from_camera">来自相机</string>
-  <string name="excluded">排除</string>
-  <string name="exclude_this_host">排除这个主机</string>
-  <string name="api_url_format_help">[DOMAIN]：Twitter API 域名\n举例： https://[DOMAIN].twitter.com/ 会被替换成 https://api.twitter.com/ 。</string>
-  <string name="no_version_suffix">没有版本后缀</string>
-  <string name="inverse_selection">反选</string>
-  <string name="medias">媒体</string>
-  <string name="mute_user">静音<xliff:g id="name">%s</xliff:g></string>
-  <string name="muted_user">已静音<xliff:g id="name">%s</xliff:g></string>
-  <string name="unmute_user">取消静音<xliff:g id="name">%s</xliff:g></string>
-  <string name="unmuted_user">已取消静音<xliff:g id="name">%s</xliff:g></string>
-  <string name="mute">静音</string>
-  <string name="unmute">取消静音</string>
-  <string name="action_muting">静音</string>
-  <string name="action_unmuting">取消静音</string>
-  <string name="mute_user_confirm_message">静音<xliff:g id="name">%s</xliff:g>？你将在保持关注这个用户的情况下，在首页看不到这个用户的推文。</string>
-  <string name="remove_from_filter">从过滤器中删除</string>
-  <string name="sort_timeline_by_id">以ID排序时间轴</string>
+    <string name="from_gallery">来自相册</string>
+    <string name="from_camera">来自相机</string>
+    <string name="excluded">排除</string>
+    <string name="exclude_this_host">排除这个主机</string>
+    <string name="api_url_format_help">[DOMAIN]：Twitter API 域名\n举例： https://[DOMAIN].twitter.com/ 会被替换成 https://api.twitter.com/ 。</string>
+    <string name="no_version_suffix">没有版本后缀</string>
+    <string name="inverse_selection">反选</string>
+    <string name="media">媒体</string>
+    <string name="mute_user">静音<xliff:g id="name">%s</xliff:g></string>
+    <string name="muted_user">已静音<xliff:g id="name">%s</xliff:g></string>
+    <string name="unmute_user">取消静音<xliff:g id="name">%s</xliff:g></string>
+    <string name="unmuted_user">已取消静音<xliff:g id="name">%s</xliff:g></string>
+    <string name="mute">静音</string>
+    <string name="unmute">取消静音</string>
+    <string name="action_muting">静音</string>
+    <string name="action_unmuting">取消静音</string>
+    <string name="mute_user_confirm_message">静音<xliff:g id="name">%s</xliff:g>？你将在保持关注这个用户的情况下，在首页看不到这个用户的推文。</string>
+    <string name="remove_from_filter">从过滤器中删除</string>
+    <string name="sort_timeline_by_id">以ID排序时间轴</string>
+    <string name="style">风格</string>
+    <string name="color">颜色</string>
+    <string name="font_family">字体族</string>
+    <string name="appearance">外观</string>
+    <string name="function">功能</string>
+    <string name="replies">回复</string>
+    <string name="profile_banner">横幅</string>
+    <string name="profile">资料</string>
+    <string name="listed">列表中</string>
+    <string name="state_blocking">正在阻止</string>
+    <string name="load_more">加载更多</string>
+    <string name="photo">照片</string>
+    <string name="gallery">相册</string>
+    <string name="remove">移除</string>
+    <string name="load_media">载入媒体</string>
+    <string name="profile_text_color">文字颜色</string>
+    <string name="profile_background_color">背景色</string>
+    <string name="profile_link_color_main_color">链接颜色（主色调）</string>
+    <string name="retweet_quote_confirm_title">转推给你的关注者？</string>
+    <string name="font">字体</string>
+    <string name="size">尺寸</string>
+    <string name="just_now">刚刚</string>
+    <string name="requested">已请求</string>
+    <string name="round">圆形</string>
+    <string name="square">方形</string>
+    <string name="profile_image_style">个人资料图片样式</string>
+    <string name="media_preview_style">媒体预览样式</string>
+    <string name="draft_saved">草稿已保存</string>
+    <string name="open_twitter_links">打开Twitter链接</string>
+    <string name="N_others_quantity_one">其他</string>
+    <string name="N_others_quantity_other">其他<xliff:g id="retweet_count">%d</xliff:g></string>
+    <string name="type_name_to_search">输入姓名搜索</string>
+    <string name="no_user_found">没有找到用户</string>
+    <string name="members">成员</string>
+    <string name="subscribers">订阅者</string>
+    <string name="read_from_bottom">从底部阅读</string>
+    <string name="register">注册</string>
+    <string name="follows">关注</string>
+    <string name="belongs_to">属于</string>
+    <string name="blocked_by_user_summary">你被<xliff:g id="name">%s</xliff:g>阻止关注</string>
+    <string name="select_accounts">选择帐号</string>
+    <string name="media_preview">媒体预览</string>
+    <string name="no_location">没有位置</string>
+    <string name="getting_location">获取位置</string>
+    <string name="save_to_gallery">保存到相册</string>
+    <string name="unknown_location">未知位置</string>
+    <string name="import_export_settings">导入/导出设定</string>
+    <string name="no_tab">没有标签页</string>
+    <string name="no_account">没有帐号</string>
+    <string name="from_name">来自<xliff:g id="name">%1$s</xliff:g></string>
+    <string name="from_name_and_name">来自<xliff:g id="name">%1$s</xliff:g>和<xliff:g id="name">%2$s</xliff:g></string>
+    <string name="from_name_and_N_others">来自<xliff:g id="name">%1$s</xliff:g>和其他<xliff:g id="name">%2$d</xliff:g>人</string>
+    <string name="activated_accounts">已启用的帐号</string>
 </resources>

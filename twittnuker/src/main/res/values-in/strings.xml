@@ -18,6 +18,8 @@
     <string name="oauth_base_url">OAuth Base URL</string>
     <string name="signing_oauth_base_url">Menandai OAuth Base URL</string>
     <string name="signing_rest_base_url">Menandai REST Base URL</string>
+  <string name="api_url_format">Format URL API</string>
+  <string name="same_oauth_signing_url">Gunakan URL yang sama untuk penandatanganan OAuth</string>
     <string name="auth_type">Tipe otentikasi</string>
     <string name="oauth">OAuth</string>
     <string name="xauth">xAuth</string>
@@ -84,10 +86,15 @@
     <string name="look_and_feel">Tampilan dan nuansa</string>
     <string name="display_profile_image">Tampilkan gambar profil</string>
     <string name="image_load_summary">Mematikan fitur ini akan meningkatkan kecepatan menggulung daftar dan mengurangi beban data.</string>
-    <string name="in_reply_to_name">Balasan untuk <xliff:g id="username">%s</xliff:g></string>
-    <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> retweet ini</string>
-    <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> dan <xliff:g id="retweet_count">%2$d</xliff:g> lainnya me-retweet ini</string>
-    <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> pengguna me-retweet ini</string>
+  <string name="in_reply_to_name">Balasan untuk <xliff:g id="user_name">%s</xliff:g></string>
+  <string name="name_retweeted"><xliff:g id="user_name">%s</xliff:g> me-retweet</string>
+  <string name="name_and_another_retweeted"><xliff:g id="user_name">%1$s</xliff:g> dan lainnya me-retweet</string>
+  <string name="name_and_count_retweeted"><xliff:g id="user_name">%1$s</xliff:g> dan <xliff:g id="retweet_count">%2$d</xliff:g> lainnya me-retweet</string>
+  <string name="N_retweeted_quantity_one"><xliff:g id="retweet_count">%d</xliff:g> retweet</string>
+  <string name="N_retweeted_quantity_other"><xliff:g id="retweet_count">%d</xliff:g> retweet</string>
+  <string name="retweeted_by_name">Di-retweet oleh <xliff:g id="user_name">%s</xliff:g></string>
+  <string name="retweeted_by_name_with_count">Di-retweet oleh <xliff:g id="user_name">%1$s</xliff:g> dan <xliff:g id="retweet_count">%2$d</xliff:g> lainnya</string>
+  <string name="retweeted_by_count">Di-retweet oleh <xliff:g id="retweet_count">%d</xliff:g> pengguna</string>
     <string name="users_retweeted_this">Pengguna yang me-retweet ini</string>
   <string name="users_favorited_this">Disukai para pengguna</string>
     <string name="reply_to">Balasan untuk <xliff:g id="user_name">%s</xliff:g></string>
@@ -114,11 +121,11 @@
     <string name="load_item_limit">Memuat batas item</string>
     <string name="load_item_limit_summary">Tetapkan batas item per pengambilan.</string>
     <string name="load_more_automatically">Muat konten selanjutnya secara otomatis</string>
-    <string name="load_more_automatically_summary">Muat lebih banyak konten (gambar, peta, status) secara otomatis</string>
+  <string name="load_more_automatically_summary">Muat lebih banyak konten (seperti foto, peta, cuit) secara otomatis</string>
     <string name="quote">Kutip</string>
     <string name="add_rule">Tambah aturan</string>
     <string name="text_size">Ukuran teks</string>
-    <string name="text_size_summary">Ukuran teks status.</string>
+  <string name="text_size_summary">Ukuran teks untuk cuit.</string>
     <string name="cannot_get_location">Tidak bisa mendapatkan lokasi anda.</string>
     <string name="drafts">Konsep</string>
     <string name="description">Deskripsi</string>
@@ -150,6 +157,7 @@
     <string name="save_as">Simpan sebagai</string>
     <string name="please_wait">Tunggu sebentar.</string>
     <string name="file_saved_to">File disimpan ke <xliff:g id="filename">%s</xliff:g>.</string>
+  <string name="saved_to_gallery">Simpan ke galeri.</string>
     <string name="proxy">Proxy</string>
     <string name="http_proxy">Proxy HTTP</string>
     <string name="http_proxy_summary">Gunakan Proxy HTTP untuk semua permintaan jaringan.</string>
@@ -162,6 +170,7 @@
   <string name="twitter_muted_users">Pengguna yang dibungkam</string>
   <string name="message_user_muted">Menambahkan pengguna ini ke daftar saring. Anda tidak akan melihat kicauan dari pengguna ini pada home/timeline/daftar mention.</string>
   <string name="message_users_muted">Pengguna telah ditambah ke daftar saringan. Anda tidak akan melihat kicauannya di timeline/mention.</string>
+  <string name="message_user_unmuted">Hapus pengguna ini dari daftar saring.</string>
     <string name="inbox">Kotak masuk</string>
     <string name="load_images">Memuat gambar</string>
     <string name="other_settings">Pengaturan lainnya</string>
@@ -184,9 +193,9 @@
     <string name="list_members">Daftarkan anggota</string>
     <string name="list_subscribers">Daftarkan pelanggan</string>
     <string name="type_to_compose">Ketik untuk membuat baru</string>
-    <string name="users_lists">Daftar pengguna ini</string>
+  <string name="lists">Daftar</string>
+  <string name="users_lists">Daftar pengguna</string>
     <string name="lists_following_user">Daftar mengikuti pengguna ini</string>
-    <string name="lists_following_me">Daftar mengikuti saya</string>
     <string name="item_3_minutes">3 menit</string>
     <string name="item_5_minutes">5 menit</string>
     <string name="item_10_minutes">10 menit</string>
@@ -205,6 +214,7 @@
     <string name="accounts">Akun</string>
     <string name="account">Akun</string>
     <string name="mention_this_user">Mention pengguna ini</string>
+  <string name="mention_user_name">Sebut <xliff:g id="name">%1$s</xliff:g></string>
   <string name="signing_in_please_wait">Sign in, silakan menunggu atau tekan KEMBALI untuk berhenti.</string>
     <string name="connectivity">Konektifitas</string>
     <string name="add_member">Tambah Anggota</string>
@@ -370,7 +380,6 @@
     <string name="quote_protected_status_notice">Tidak direkomendasikan untuk mengutip twit terproteksi.</string>
     <string name="edit_draft">Ubah draf</string>
     <string name="profile_image">Gambar Profil</string>
-    <string name="my_profile_image">Gambar profile saya</string>
     <string name="mention_user">Menyebut <xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">Warna tema</string>
     <string name="wrong_url_format">Format URL salah.</string>
@@ -516,6 +525,7 @@
     <string name="general">Umum</string>
     <string name="hints">Petunjuk</string>
     <string name="finish">Selesai</string>
+  <string name="background">Latarbelakang</string>
     <string name="theme_background_default">Awal</string>
     <string name="theme_background_solid">Putih/hitam murni</string>
     <string name="theme_background_transparent">Transparan</string>
@@ -593,12 +603,49 @@
   <string name="image_preview_scale_type_fit_center">Menetapkan pusat</string>
   <string name="quote_protected_status_warning_message">Tweet ini dilindungi.\n\nPengguna yang dilindungi biasanya tidak ingin tweet mereka dipublikasikan.</string>
   <string name="send_anyway">Kirim saja</string>
+  <string name="following_only">Pengikut Anda saja</string>
+  <string name="following_only_summary">Tampilkan notifikasi dari pengguna yang Anda ikuti saja.</string>
   <string name="new_direct_message">Pesan baru</string>
   <string name="plain_list_style">List dengan gaya polos</string>
   <string name="add">Tambahkan</string>
+  <string name="N_media_quantity_one"><xliff:g id="items">%d</xliff:g> media</string>
+  <string name="N_media_quantity_other"><xliff:g id="items">%d</xliff:g> media</string>
   <string name="delete_drafts_confirm">Hapus draft?</string>
   <string name="extra_configurations">Pengaturan Ekstra</string>
   <string name="click_item_to_config">Klik item untuk mengatur</string>
   <string name="dark_drawer">Drawer gelap</string>
   <string name="retweets_of_me">Retweet oleh saya</string>
+  <string name="from_gallery">Dari galeri</string>
+  <string name="from_camera">Dari kamera</string>
+  <string name="excluded">Dikecualikan</string>
+  <string name="exclude_this_host">Kecualikan host ini</string>
+  <string name="api_url_format_help">[DOMAIN]: Domain Twitter API.\nContoh: https://[DOMAIN].twitter.com/ akan diganti dengan https://api.twitter.com/.</string>
+  <string name="no_version_suffix">Tidak ada akhiran versi</string>
+  <string name="inverse_selection">Membalikkan pilihan</string>
+  <string name="media">Media</string>
+  <string name="mute_user">Senyapkan <xliff:g id="name">%s</xliff:g></string>
+  <string name="muted_user"><xliff:g id="name">%s</xliff:g> disenyapkan</string>
+  <string name="unmute_user">Bunyikan <xliff:g id="name">%s</xliff:g></string>
+  <string name="unmuted_user"><xliff:g id="name">%s</xliff:g> dibunyikan</string>
+  <string name="mute">Senyapkan</string>
+  <string name="unmute">Bunyikan</string>
+  <string name="action_muting">menyenyapkan</string>
+  <string name="action_unmuting">membunyikan</string>
+  <string name="mute_user_confirm_message">Mute <xliff:g id="name">%s</xliff:g>? Anda tidak akan lagi melihat tweet dari pengguna ini selama anda mengikuti pengguna ini.</string>
+  <string name="remove_from_filter">Hapus dari filter</string>
+  <string name="sort_timeline_by_id">Urutkan timeline berdasarkan ID</string>
+  <string name="style">Gaya</string>
+  <string name="color">Warna</string>
+  <string name="font_family">Keluarga fonta</string>
+  <string name="appearance">Tampilan</string>
+  <string name="function">Fungsi</string>
+  <string name="replies">Balasan</string>
+  <string name="profile_banner">Profil banner</string>
+  <string name="profile">Profil</string>
+  <string name="listed">Tercantum</string>
+  <string name="state_blocking">Memblokir</string>
+  <string name="load_more">Memuat lainnya</string>
+  <string name="photo">Foto</string>
+  <string name="gallery">Galeri</string>
+  <string name="remove">Hapus</string>
 </resources>

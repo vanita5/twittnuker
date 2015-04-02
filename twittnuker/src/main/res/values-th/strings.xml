@@ -48,7 +48,7 @@
     <string name="tap_to_load_more">แตะเพื่อโหลดเพิ่ม</string>
     <string name="delete">ลบ</string>
     <string name="retweet">รีทวีต</string>
-  <string name="retweets">รีทวีต</string>
+    <string name="retweets">รีทวีต</string>
     <string name="cancel_retweet">ยกเลิกทวีต</string>
     <string name="favorite">ถูกใจ</string>
     <string name="unfavorite">เลิกถูกใจ</string>
@@ -181,7 +181,6 @@
     <string name="type_to_compose">พิมพ์เพื่อเริ่มทวีต</string>
     <string name="users_lists">รายการของผู้ใช้</string>
     <string name="lists_following_user">รายการที่ติดตามผู้ใช้นี้</string>
-    <string name="lists_following_me">รายการที่มีฉัน</string>
     <string name="item_3_minutes">3 นาที</string>
     <string name="item_5_minutes">5 นาที</string>
     <string name="item_10_minutes">10 นาที</string>
@@ -336,7 +335,6 @@
     <string name="sign_in_method_introduction_title">มันทำงานอย่างไร?</string>
     <string name="edit_draft">แก้ไขแบบร่าง</string>
     <string name="profile_image">ภาพโปรไฟล์</string>
-    <string name="my_profile_image">ภาพโปรไฟล์ของฉัน</string>
     <string name="theme_color">สีของธีม</string>
     <string name="wrong_url_format">รูปแบบ URL ผิด</string>
     <string name="wrong_username_password">username/password ไม่ถูกต้อง</string>

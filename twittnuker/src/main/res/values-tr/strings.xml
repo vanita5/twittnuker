@@ -150,6 +150,7 @@
   <string name="save_as">Şu adla kaydet</string>
   <string name="please_wait">Lütfen bekleyin.</string>
   <string name="file_saved_to">Dosya <xliff:g id="filename">%s</xliff:g> adıyla kaydedildi.</string>
+  <string name="saved_to_gallery">Galeriye kaydet.</string>
   <string name="proxy">Proxy</string>
   <string name="http_proxy">HTTP proxy</string>
   <string name="http_proxy_summary">Bütün ağ bağlantıları için HTTP proxy kullan.</string>
@@ -184,9 +185,9 @@
   <string name="list_members">Liste üyeleri</string>
   <string name="list_subscribers">Abone listesini göster</string>
   <string name="type_to_compose">Tweet yazınız</string>
+  <string name="lists">Listeler</string>
   <string name="users_lists">Kullanıcının listeleri</string>
   <string name="lists_following_user">Bu kullanıcıyı takip eden listeler</string>
-  <string name="lists_following_me">Beni takip eden listeler</string>
   <string name="item_3_minutes">3 dakika</string>
   <string name="item_5_minutes">5 dakika</string>
   <string name="item_10_minutes">10 dakika</string>
@@ -367,7 +368,6 @@
   <string name="quote_protected_status_notice">Korunan tweet\'i alıntı yapmak önerilmez.</string>
   <string name="edit_draft">Taslağı düzenle</string>
   <string name="profile_image">Profil resmi</string>
-  <string name="my_profile_image">Profil resmim</string>
   <string name="mention_user">dahil et: <xliff:g id="user">%s</xliff:g></string>
   <string name="theme_color">Tema rengi</string>
   <string name="wrong_url_format">Yanlış URL biçimi.</string>
@@ -404,11 +404,15 @@
   <string name="subscribed_to_list">\"<xliff:g id="list">%s</xliff:g>\" listesine abone olundu.</string>
   <string name="unsubscribed_from_list">\"<xliff:g id="list">%s</xliff:g>\" listesine abonelik iptal edildi.</string>
   <string name="added_N_users_to_list_quantity_one"><xliff:g id="items">%1$d</xliff:g> kullanıcısı "<xliff:g id="list">%2$s</xliff:g>\" listesine eklendi.</string>
+  <string name="added_N_users_to_list_quantity_other"><xliff:g id="items">%1$d</xliff:g> kullanıcı <xliff:g id="list">%2$s</xliff:g> listesine eklendi.</string>
   <string name="added_user_to_list"><xliff:g id="user">%1$s</xliff:g> listeye eklendi "<xliff:g id="list">%2$s</xliff:g>\".</string>
   <string name="deleted_user_from_list"><xliff:g id="user">%1$s</xliff:g> listeden silindi "<xliff:g id="list">%2$s</xliff:g>\".</string>
+  <string name="deleted_N_users_from_list_quantity_one"><xliff:g id="items">%1$d</xliff:g> kullanıcısı <xliff:g id="list">%2$s</xliff:g> listesinden silindi.</string>
+  <string name="deleted_N_users_from_list_quantity_other"><xliff:g id="items">%1$d</xliff:g> kullanıcı <xliff:g id="list">%2$s</xliff:g> listesinden silindi.</string>
   <string name="subscribe">Abone ol</string>
   <string name="unsubscribe">Abonelikten çık</string>
   <string name="background_toast_notification">Arkaplan Toast bildirimi</string>
+  <string name="background_toast_notification_summary">Arkaplanda çalışırken Tost mesajlarını göster</string>
   <string name="original_status">Orijinal tweet</string>
   <string name="ask">Sor</string>
   <string name="status_saved_to_draft">Tweet taslaklara kaydedildi.</string>
@@ -452,13 +456,17 @@
   <string name="wizard_page_finished_title">Bitti</string>
   <string name="wizard_page_finished_text">Twittnuker artık kullanıma hazır.</string>
   <string name="invalid_tab">Geçersiz sekme</string>
+  <string name="send_crash_report">Twittnuker çökme raporunu gönder</string>
   <string name="add_to_filter">Filtre ekle</string>
   <string name="user_filter_name">Kullanıcı: <xliff:g id="name">%s</xliff:g></string>
   <string name="keyword_filter_name">Anahtar Kelime: <xliff:g id="name">%s</xliff:g></string>
   <string name="source_filter_name">Kaynak: <xliff:g id="name">%s</xliff:g></string>
   <string name="block_user">Blok <xliff:g id="name">%s</xliff:g></string>
   <string name="unfollow_user">Unfollow <xliff:g id="name">%s</xliff:g></string>
+  <string name="unfollow_user_confirm_message"><xliff:g id="name">%s</xliff:g>\'i takibi bırak? Artık bu kullanıcının tweetlerini görmeyeceksiniz.</string>
   <string name="delete_user_list">Listeyi sil <xliff:g id="name">%s</xliff:g></string>
+  <string name="delete_user_list_confirm_message"><xliff:g id="name">%s</xliff:g> listesini sil? Bu işlem geri alınamaz.</string>
+  <string name="unsubscribe_from_user_list"><xliff:g id="name">%s</xliff:g> listesinin aboneliğinden çık</string>
   <string name="unsubscribe_from_user_list_confirm_message"><xliff:g id="name">%s</xliff:g> listesi üyeliğinden çıkılsın mı? Daha sonra tekrar üye olabilirsiniz.</string>
   <string name="destroy_status">Tweeti sil</string>
   <string name="destroy_status_confirm_message">Bu tweeti sil?</string>
@@ -481,11 +489,13 @@
   <string name="general">Genel</string>
   <string name="hints">İpuçları</string>
   <string name="finish">Bitir</string>
+  <string name="background">Arkaplan</string>
   <string name="theme_background_default">Varsayılan</string>
   <string name="theme_background_solid">Tamamen beyaz/siyah</string>
   <string name="theme_background_transparent">Transparan</string>
   <string name="theme_dark_actionbar">Koyu AksiyonBarı</string>
   <string name="wizard_hint_compose_select_account">Tweet yazarken hesap seçmek için bu ikona basın.</string>
+  <string name="view_replies">Yanıtlara bak</string>
   <string name="N_new_statuses_quantity_one"><xliff:g id="items">%d</xliff:g> yeni tweet</string>
   <string name="N_new_statuses_quantity_other"><xliff:g id="items">%d</xliff:g> yeni tweetler</string>
   <string name="N_new_mentions_quantity_one"><xliff:g id="items">%d</xliff:g> yeni mention</string>
@@ -512,6 +522,7 @@
   <string name="back">Geri</string>
   <string name="theme_font_family">Tema font ailesi</string>
   <string name="accept">Kabul Et</string>
+  <string name="deny">Reddet</string>
   <string name="import_settings">Ayarları içe aktar</string>
   <string name="export_settings">Ayarları dışa aktar</string>
   <string name="export_settings_type_dialog_title">Ayarları dışa aktar&#8230;</string>
@@ -520,6 +531,25 @@
   <string name="import_export">İçe aktar/Dışa aktar</string>
   <string name="hidden_settings">Gizli ayarlar</string>
   <string name="hidden_settings_warning_title">UYARI: Bu ayarları değiştirmek uygulamaya zarar verebilir!</string>
+  <string name="open_with_account">Hesap ile aç</string>
+  <string name="card_highlight_option_highlight">Vurgula</string>
   <string name="image_preview_scale_type_crop">Kes</string>
   <string name="new_direct_message">Yeni direkt mesaj</string>
+  <string name="add">Ekle</string>
+  <string name="delete_drafts_confirm">Seçili taslağı sil?</string>
+  <string name="retweets_of_me">Benim retweet ettiklerim</string>
+  <string name="from_gallery">Galeriden</string>
+  <string name="from_camera">Kameradan</string>
+  <string name="mute">Sessize al</string>
+  <string name="unmute">Sesini aç</string>
+  <string name="action_muting">sessize alınıyor</string>
+  <string name="action_unmuting">sesi açılıyor</string>
+  <string name="mute_user_confirm_message"><xliff:g id="name">%s</xliff:g>\'i sessize al? Artık zaman akışınızda bu kişinin Tweetlerini görmeyeceksiniz.</string>
+  <string name="color">Renk</string>
+  <string name="font_family">Yazı tipi ailesi</string>
+  <string name="appearance">Görünüm</string>
+  <string name="function">Fonksiyon</string>
+  <string name="replies">Yanıtlar</string>
+  <string name="photo">Fotoğraf</string>
+  <string name="gallery">Galeri</string>
 </resources>

@@ -245,6 +245,7 @@
     <string name="media_uploader">Media uploader</string>
 	<string name="image_uploader_default">Default (Twitter)</string>
 	<string name="home_refresh">Refresh in home timeline</string>
+	<string name="home_refresh_summary">Timelines that should be refreshed</string>
 	<string name="error_message_image_upload_failed">Image upload failed.</string>
 	<string name="tweet_shortener">Tweet shortener</string>
     <string name="status_shortener">Tweet shortener</string>
@@ -370,7 +371,7 @@
 	<string name="clear_search_history">Clear search history</string>
 	<string name="no_thanks">No, thanks</string>
 	<string name="fast_scroll_thumb">Fast scroll thumb</string>
-	<string name="indicate_your_status">Indicate your tweet</string>
+	<string name="indicate_my_status">Indicate your tweet</string>
 	<string name="default_ringtone">Default ringtone</string>
 	<string name="phishing_link_warning">Phishing link warning</string>
 	<string name="phishing_link_warning_summary">Warn you when are trying to open a possibly phishing link in a direct message.</string>
@@ -475,7 +476,7 @@
 	<string name="users_statuses">User\'s tweets</string>
 	<string name="card_animation">Card animation</string>
 	<string name="name_first">Prefer display name</string>
-    <string name="name_first_summary">Show user name preferred to @screenname</string>
+    <string name="name_first_summary">Show the username rather than the @screenname</string>
 	<string name="next">Next</string>
 	<string name="settings_wizard">Settings wizard</string>
 	<string name="wizard_page_welcome_title">Welcome</string>
@@ -574,6 +575,7 @@
 	<string name="center">Center</string>
 	<string name="multi_select">Multi select</string>
 	<string name="long_click_to_open_menu">Long click to open menu</string>
+	<string name="long_click_to_open_menu_summary"></string>
 	<string name="swipe_back">Swipe to close</string>
     <string name="tab_display_option_icon">Icon</string>
     <string name="tab_display_option_label">Label</string>
@@ -679,7 +681,7 @@
     <string name="draft_saved">Draft saved</string>
     <string name="open_twitter_links">Open Twitter links</string>
     <string name="N_others_quantity_one">another</string>
-    <string name="N_others_quantity_other"><xliff:g id="retweet_count">%d</xliff:g> others</string>
+    <string name="N_others_quantity_other"><xliff:g id="count">%d</xliff:g> others</string>
     <string name="type_name_to_search">Type name to search</string>
     <string name="no_user_found">No user found</string>
     <string name="members">Members</string>
@@ -703,6 +705,8 @@
 	<string name="activated_accounts">Activated accounts</string>
 	<string name="crop">Crop</string>
 	<string name="scale">Scale</string>
+	<string name="user_type_verified">Verified</string>
+	<string name="user_type_protected">Protected</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
