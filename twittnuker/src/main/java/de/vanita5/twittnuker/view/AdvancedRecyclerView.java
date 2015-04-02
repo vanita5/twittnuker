@@ -23,29 +23,41 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
+import android.util.Log;
+import android.view.MotionEvent;
 
-public class ImagePreviewContainer extends FrameLayout {
+import de.vanita5.twittnuker.Constants;
 
-	public ImagePreviewContainer(final Context context) {
-		this(context, null);
+public class AdvancedRecyclerView extends RecyclerView {
+	public AdvancedRecyclerView(Context context) {
+		super(context);
 	}
 
-	public ImagePreviewContainer(final Context context, final AttributeSet attrs) {
-		this(context, attrs, 0);
+	public AdvancedRecyclerView(Context context, AttributeSet attrs) {
+		super(context, attrs);
 	}
 
-	public ImagePreviewContainer(final Context context, final AttributeSet attrs, final int defStyle) {
+	public AdvancedRecyclerView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
 	@Override
-	protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-		final int width = MeasureSpec.getSize(widthMeasureSpec), height = width / 2;
-		final int hSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
-		super.onMeasure(widthMeasureSpec, hSpec);
-		setMeasuredDimension(width, height);
+	public boolean dispatchTrackballEvent(MotionEvent event) {
+		Log.d(Constants.LOGTAG, event.toString());
+		return super.dispatchTrackballEvent(event);
+	}
+
+	@Override
+	public boolean onTrackballEvent(MotionEvent event) {
+		final LayoutManager lm = getLayoutManager();
+		if (!(lm instanceof LinearLayoutManager)) return false;
+		final LinearLayoutManager llm = (LinearLayoutManager) lm;
+		Log.d(Constants.LOGTAG, event.toString());
+		return true;
 	}
 
 }

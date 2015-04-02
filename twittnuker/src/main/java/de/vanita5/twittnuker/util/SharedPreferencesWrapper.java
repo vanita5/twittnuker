@@ -28,18 +28,31 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.util.Log;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.annotation.Preference;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class SharedPreferencesWrapper implements Constants {
 
 	private final SharedPreferences mPreferences;
-    private final Class<?> mKeysClass;
+    private final HashMap<String, Preference> mMap;
 
     private SharedPreferencesWrapper(final SharedPreferences preferences, final Class<?> keysClass) {
 		mPreferences = preferences;
-        mKeysClass = keysClass;
+        mMap = new HashMap<>();
+        if (keysClass != null) {
+            for (Field field : keysClass.getFields()) {
+                final Preference preference = field.getAnnotation(Preference.class);
+                if (preference == null) continue;
+                try {
+                    mMap.put((String) field.get(null), preference);
+                } catch (Exception ignore) {
+                }
+            }
+        }
 	}
 
     public boolean contains(final String key) {
@@ -63,6 +76,12 @@ public class SharedPreferencesWrapper implements Constants {
 			return defValue;
 		}
 	}
+
+    public boolean getBoolean(final String key) {
+        final Preference preference = mMap.get(key);
+        if (preference == null || !preference.hasDefault()) return getBoolean(key, false);
+        return getBoolean(key, preference.defaultBoolean());
+    }
 
     public float getFloat(final String key, final float defValue) {
         try {

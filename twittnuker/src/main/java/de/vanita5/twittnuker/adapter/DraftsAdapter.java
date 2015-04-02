@@ -30,11 +30,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.DraftItem;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
@@ -43,10 +46,11 @@ import de.vanita5.twittnuker.view.holder.DraftViewHolder;
 
 import static de.vanita5.twittnuker.util.Utils.getAccountColors;
 
-public class DraftsAdapter extends SimpleCursorAdapter {
+public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
 
 	private final MediaLoaderWrapper mImageLoader;
 	private final ImageLoadingHandler mImageLoadingHandler;
+    private final int mMediaPreviewStyle;
 
 	private float mTextSize;
 	private DraftItem.CursorIndices mIndices;
@@ -55,6 +59,9 @@ public class DraftsAdapter extends SimpleCursorAdapter {
         super(context, R.layout.list_item_draft, null, new String[0], new int[0], 0);
 		mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
         mImageLoadingHandler = new ImageLoadingHandler(R.id.media_preview_progress);
+        final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
+                SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mMediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
 	}
 
 	@Override
@@ -62,21 +69,17 @@ public class DraftsAdapter extends SimpleCursorAdapter {
 		final DraftViewHolder holder = (DraftViewHolder) view.getTag();
 		final long[] accountIds = TwidereArrayUtils.parseLongArray(cursor.getString(mIndices.account_ids), ',');
 		final String text = cursor.getString(mIndices.text);
-        final ParcelableMediaUpdate[] media = ParcelableMediaUpdate.fromJSONString(cursor.getString(mIndices.media));
+        final ParcelableMediaUpdate[] mediaUpdates = ParcelableMediaUpdate.fromJSONString(cursor.getString(mIndices.media));
 		final long timestamp = cursor.getLong(mIndices.timestamp);
 		final int actionType = cursor.getInt(mIndices.action_type);
 		final String actionName = getActionName(context, actionType);
+        holder.media_preview_container.setStyle(mMediaPreviewStyle);
 		if (actionType == Drafts.ACTION_UPDATE_STATUS) {
-            final String mediaUri = media != null && media.length > 0 ? media[0].uri : null;
-			holder.image_preview_container.setVisibility(TextUtils.isEmpty(mediaUri) ? View.GONE : View.VISIBLE);
-			if (mediaUri != null && !mediaUri.equals(mImageLoadingHandler.getLoadingUri(holder.image_preview))) {
-				mImageLoader.displayPreviewImage(holder.image_preview, mediaUri, mImageLoadingHandler);
-			} else {
-				mImageLoader.cancelDisplayTask(holder.image_preview);
-			}
+            final ParcelableMedia[] media = ParcelableMedia.fromMediaUpdates(mediaUpdates);
+            holder.media_preview_container.setVisibility(View.VISIBLE);
+            holder.media_preview_container.displayMedia(media, mImageLoader, -1L, null, mImageLoadingHandler);
 		} else {
-			mImageLoader.cancelDisplayTask(holder.image_preview);
-			holder.image_preview_container.setVisibility(View.GONE);
+            holder.media_preview_container.setVisibility(View.GONE);
 		}
 		holder.content.drawEnd(getAccountColors(context, accountIds));
 		holder.setTextSize(mTextSize);

@@ -18,6 +18,11 @@
         android:summary="@string/name_first_summary"/>
     <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
         android:defaultValue="false"
+        android:key="display_profile_image"
+        android:order="23"
+        android:title="@string/profile_image"/>
+    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        android:defaultValue="false"
         android:key="media_preview"
         android:order="24"
         android:title="@string/media_preview"/>
@@ -41,7 +46,7 @@
 		android:defaultValue="true"
 		android:key="indicate_my_status"
 		android:order="28"
-		android:title="@string/indicate_your_status"/>
+		android:title="@string/indicate_my_status"/>
 	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
 		android:defaultValue="false"
 		android:key="show_absolute_time"

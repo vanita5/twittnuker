@@ -91,6 +91,9 @@ public class ImageLoadingHandler implements ImageLoadingListener, ImageLoadingPr
 	@Override
 	public void onLoadingStarted(final String imageUri, final View view) {
 		if (view == null || imageUri == null || imageUri.equals(mLoadingUris.get(view))) return;
+        if (view instanceof ImageView) {
+            view.setBackgroundResource(0);
+        }
 		mLoadingUris.put(view, imageUri);
 		final ProgressBar progress = findProgressBar(view.getParent());
 		if (progress != null) {

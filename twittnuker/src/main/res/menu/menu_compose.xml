@@ -23,7 +23,7 @@
     <item
         android:id="@+id/medias_menu"
         android:icon="@drawable/ic_action_gallery"
-        android:title="@string/medias"
+        android:title="@string/media"
         android:visible="false"
         app:showAsAction="always">
         <menu>

@@ -20,36 +20,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface;
+package org.mariotaku.querybuilder;
 
-import android.widget.ListAdapter;
-
-import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-
-public interface IBaseAdapter extends Constants, ListAdapter {
-	
-	public MediaLoaderWrapper getImageLoader();
-
-	public int getLinkHighlightOption();
-
-	public float getTextSize();
-
-	public boolean isDisplayNameFirst();
-
-    public boolean isProfileImageDisplayed();
-
-	public boolean isShowAccountColor();
-
-	public void notifyDataSetChanged();
-
-	public void setDisplayNameFirst(boolean nameFirst);
-
-	public void setDisplayProfileImage(boolean display);
-
-	public void setLinkHighlightOption(String option);
-
-	public void setShowAccountColor(boolean show);
-
-	public void setTextSize(float textSize);
+public class Constraint implements SQLLang {
+	@Override
+	public String getSQL() {
+		return null;
+	}
 }

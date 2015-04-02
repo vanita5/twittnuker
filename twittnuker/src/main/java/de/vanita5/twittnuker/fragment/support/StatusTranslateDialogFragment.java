@@ -44,8 +44,8 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
@@ -139,10 +139,11 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
         final int profileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
         final int mediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
         final boolean nameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
+        final boolean displayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
         final boolean displayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
 
-        mHolder.displayStatus(activity, loader, handler, twitter, displayMediaPreview, true,
-                true, nameFirst, profileImageStyle, mediaPreviewStyle, status, null, true);
+        mHolder.displayStatus(activity, loader, handler, twitter, displayProfileImage, displayMediaPreview,
+                true, true, nameFirst, profileImageStyle, mediaPreviewStyle, status, null, true);
 
         mStatusContainer.findViewById(R.id.item_menu).setVisibility(View.GONE);
         mStatusContainer.findViewById(R.id.action_buttons).setVisibility(View.GONE);

@@ -113,7 +113,7 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
     }
 
     @Override
-    public boolean isDisplayProfileImage() {
+    public boolean isProfileImageDisplayed() {
         return mDisplayProfileImage;
     }
 

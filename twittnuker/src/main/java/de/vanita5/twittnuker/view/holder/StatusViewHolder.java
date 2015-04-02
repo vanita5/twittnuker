@@ -119,6 +119,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
     public void displayStatus(final ParcelableStatus status, final boolean displayInReplyTo) {
         displayStatus(adapter.getContext(), adapter.getImageLoader(),
                 adapter.getImageLoadingHandler(), adapter.getTwitterWrapper(),
+                adapter.isProfileImageEnabled(),
                 adapter.isMediaPreviewEnabled(), adapter.shouldShowAccountsColor(),
                 displayInReplyTo, adapter.isNameFirst(), adapter.getProfileImageStyle(),
                 adapter.getMediaPreviewStyle(), status, null, displayInReplyTo);
@@ -128,11 +129,11 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
                               @NonNull final MediaLoaderWrapper loader,
                               @NonNull final ImageLoadingHandler handler,
                               @NonNull final AsyncTwitterWrapper twitter,
-                              final boolean displayMediaPreview, final boolean displayAccountsColor,
-                              final boolean displayInReplyTo, boolean nameFirst,
-                              final int profileImageStyle, final int mediaPreviewStyle,
-                              @NonNull final ParcelableStatus status,
-                              @Nullable final TranslationResult translation, boolean shouldDisplayExtraType) {
+                              final boolean displayProfileImage, final boolean displayMediaPreview,
+                              final boolean displayAccountsColor, final boolean displayInReplyTo,
+                              final boolean nameFirst, final int profileImageStyle, final int mediaPreviewStyle,
+                              @NonNull final ParcelableStatus status, @Nullable final TranslationResult translation,
+                              boolean shouldDisplayExtraType) {
         final ParcelableMedia[] media = status.media;
 
         replyRetweetIcon.setColorFilter(replyRetweetView.getCurrentTextColor(), Mode.SRC_ATOP);
@@ -180,7 +181,15 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
         }
         profileImageView.setStyle(profileImageStyle);
 
-        loader.displayProfileImage(profileImageView, status.user_profile_image_url);
+        if (displayProfileImage) {
+            profileTypeView.setVisibility(View.VISIBLE);
+            profileImageView.setVisibility(View.VISIBLE);
+        	loader.displayProfileImage(profileImageView, status.user_profile_image_url);
+        } else {
+            profileTypeView.setVisibility(View.GONE);
+            profileImageView.setVisibility(View.GONE);
+            loader.cancelDisplayTask(profileImageView);
+        }
 
         if (displayMediaPreview) {
             mediaPreviewContainer.setStyle(mediaPreviewStyle);
@@ -323,7 +332,15 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
 
         profileImageView.setStyle(adapter.getProfileImageStyle());
 
-        loader.displayProfileImage(profileImageView, user_profile_image_url);
+        if (adapter.isProfileImageEnabled()) {
+            profileTypeView.setVisibility(View.VISIBLE);
+            profileImageView.setVisibility(View.VISIBLE);
+        	loader.displayProfileImage(profileImageView, user_profile_image_url);
+        } else {
+            profileTypeView.setVisibility(View.GONE);
+            profileImageView.setVisibility(View.GONE);
+            loader.cancelDisplayTask(profileImageView);
+        }
 
             final String text_unescaped = cursor.getString(indices.text_unescaped);
         if (adapter.isMediaPreviewEnabled()) {
@@ -485,6 +502,8 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements OnClick
     }
 
     public static interface StatusClickListener extends ContentCardClickListener {
+
+        boolean isProfileImageEnabled();
 
         void onStatusClick(StatusViewHolder holder, int position);
 

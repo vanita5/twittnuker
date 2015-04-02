@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.fragment.support;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -88,6 +87,7 @@ import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.StatusLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -421,6 +421,7 @@ public class StatusFragment extends BaseSupportFragment
         private final boolean mIsCompact;
         private final int mProfileImageStyle;
         private final boolean mDisplayMediaPreview;
+        private final boolean mDisplayProfileImage;
 
         private ParcelableStatus mStatus;
         private ParcelableCredentials mStatusAccount;
@@ -431,8 +432,8 @@ public class StatusFragment extends BaseSupportFragment
         public StatusAdapter(StatusFragment fragment, boolean compact) {
             final Context context = fragment.getActivity();
             final Resources res = context.getResources();
-            final SharedPreferences preferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
-                    Context.MODE_PRIVATE);
+            final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
+                    SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
             mFragment = fragment;
             mContext = context;
             mInflater = LayoutInflater.from(context);
@@ -443,6 +444,7 @@ public class StatusFragment extends BaseSupportFragment
             mTextSize = preferences.getInt(KEY_TEXT_SIZE, res.getInteger(R.integer.default_text_size));
             mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
             mIsCompact = compact;
+            mDisplayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
             mDisplayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
             if (compact) {
                 mCardLayoutResource = R.layout.card_item_status_compact;
@@ -525,6 +527,11 @@ public class StatusFragment extends BaseSupportFragment
 	    }
 
 	    @Override
+        public boolean isProfileImageEnabled() {
+            return mDisplayProfileImage;
+        }
+
+        @Override
         public final void onStatusClick(StatusViewHolder holder, int position) {
             if (mStatusAdapterListener != null) {
                 mStatusAdapterListener.onStatusClick(holder, position);
@@ -1012,11 +1019,14 @@ public class StatusFragment extends BaseSupportFragment
             loader.displayProfileImage(profileImageView, status.user_profile_image_url);
 
             final int typeIconRes = getUserTypeIconRes(status.user_is_verified, status.user_is_protected);
-            if (typeIconRes != 0) {
+            final int typeDescriptionRes = Utils.getUserTypeDescriptionRes(status.user_is_verified, status.user_is_protected);
+            if (typeIconRes != 0 && typeDescriptionRes != 0) {
                 profileTypeView.setImageResource(typeIconRes);
+                profileTypeView.setContentDescription(context.getString(typeDescriptionRes));
                 profileTypeView.setVisibility(View.VISIBLE);
             } else {
                 profileTypeView.setImageDrawable(null);
+                profileTypeView.setContentDescription(null);
                 profileTypeView.setVisibility(View.GONE);
             }
 

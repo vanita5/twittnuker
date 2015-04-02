@@ -55,7 +55,7 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
 
     @Override
     public int getThemeColor() {
-        return ThemeUtils.getUserAccentColor(this, getThemeResourceId());
+        return ThemeUtils.getUserAccentColor(this);
     }
 
     @Override
