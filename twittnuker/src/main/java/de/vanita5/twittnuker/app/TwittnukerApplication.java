@@ -45,6 +45,7 @@ import com.nostra13.universalimageloader.utils.L;
 import com.squareup.otto.Bus;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.activity.AssistLauncherActivity;
 import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
@@ -210,7 +211,11 @@ public class TwittnukerApplication extends Application implements Constants,
 		final ComponentName main = new ComponentName(this, MainActivity.class);
 		pm.setComponentEnabledSetting(main, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
 					PackageManager.DONT_KILL_APP);
-
+		if (!Utils.isComposeNowSupported()) {
+			final ComponentName assist = new ComponentName(this, AssistLauncherActivity.class);
+			pm.setComponentEnabledSetting(assist, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+					PackageManager.DONT_KILL_APP);
+		}
 		startRefreshServiceIfNeeded(this);
 	}
 

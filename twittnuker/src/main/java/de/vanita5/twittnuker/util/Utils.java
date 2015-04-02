@@ -93,6 +93,8 @@ import android.transition.TransitionInflater;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -392,6 +394,7 @@ public final class Utils implements Constants, TwitterConstants {
         HOME_TABS_URI_MATCHER.addURI(AUTHORITY_MENTIONS, null, CustomTabUtils.TAB_CODE_MENTIONS_TIMELINE);
         HOME_TABS_URI_MATCHER.addURI(AUTHORITY_DIRECT_MESSAGES, null, CustomTabUtils.TAB_CODE_DIRECT_MESSAGES);
 	}
+
 
     private static LongSparseArray<Integer> sAccountColors = new LongSparseArray<>();
     private static LongSparseArray<String> sAccountScreenNames = new LongSparseArray<>();
@@ -1460,6 +1463,11 @@ public final class Utils implements Constants, TwitterConstants {
 		cur.close();
 		return ids;
 	}
+
+    public static boolean isComposeNowSupported() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return false;
+        return !KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_HOME);
+    }
 
     public static boolean isOfficialCredentials(final Context context, final ParcelableCredentials account) {
         if (account == null) return false;

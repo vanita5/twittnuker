@@ -29,7 +29,6 @@
     	android:title="@string/open_twitter_links"/>
 
     <de.vanita5.twittnuker.preference.ComponentStatePreference
-    	android:name="de.vanita5.twittnuker.activity.AssistLauncherActivity"
     	android:key="compose_now"
     	android:summary="@string/compose_now_summary"
     	android:title="@string/compose_now"/>
