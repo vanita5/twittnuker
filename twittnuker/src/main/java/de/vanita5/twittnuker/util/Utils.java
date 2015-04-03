@@ -3904,11 +3904,11 @@ public final class Utils implements Constants, TwitterConstants {
         return pm.getDrawable(info.packageName, info.metaData.getInt(key), info.applicationInfo);
 	}
 
-    public static boolean handleMenuItemClick(FragmentActivity activity, FragmentManager fm, AsyncTwitterWrapper twitter, ParcelableStatus status, MenuItem item) {
+    public static boolean handleMenuItemClick(Context context, Fragment fragment, FragmentManager fm, AsyncTwitterWrapper twitter, ParcelableStatus status, MenuItem item) {
         switch (item.getItemId()) {
             case MENU_COPY: {
-                if (ClipboardUtils.setText(activity, status.text_plain)) {
-                    showOkMessage(activity, R.string.text_copied, false);
+                if (ClipboardUtils.setText(context, status.text_plain)) {
+                    showOkMessage(context, R.string.text_copied, false);
                 }
                 break;
             }
@@ -3919,13 +3919,13 @@ public final class Utils implements Constants, TwitterConstants {
             case MENU_QUOTE: {
                 final Intent intent = new Intent(INTENT_ACTION_QUOTE);
                 intent.putExtra(EXTRA_STATUS, status);
-                activity.startActivity(intent);
+                context.startActivity(intent);
                 break;
             }
             case MENU_REPLY: {
                 final Intent intent = new Intent(INTENT_ACTION_REPLY);
                 intent.putExtra(EXTRA_STATUS, status);
-                activity.startActivity(intent);
+                context.startActivity(intent);
                 break;
             }
             case MENU_FAVORITE: {
@@ -3946,23 +3946,27 @@ public final class Utils implements Constants, TwitterConstants {
                 break;
             }
             case MENU_SET_COLOR: {
-                final Intent intent = new Intent(activity, ColorPickerDialogActivity.class);
-                final int color = getUserColor(activity, status.user_id, true);
+                final Intent intent = new Intent(context, ColorPickerDialogActivity.class);
+                final int color = getUserColor(context, status.user_id, true);
                 if (color != 0) {
                     intent.putExtra(EXTRA_COLOR, color);
                 }
                 intent.putExtra(EXTRA_CLEAR_BUTTON, color != 0);
                 intent.putExtra(EXTRA_ALPHA_SLIDER, false);
-                activity.startActivityForResult(intent, REQUEST_SET_COLOR);
+                if (fragment != null) {
+                    fragment.startActivityForResult(intent, REQUEST_SET_COLOR);
+                } else if (context instanceof Activity) {
+                    ((Activity) context).startActivityForResult(intent, REQUEST_SET_COLOR);
+                }
                 break;
             }
             case MENU_TRANSLATE: {
                 final ParcelableCredentials account
-                        = ParcelableAccount.getCredentials(activity, status.account_id);
-                if (isOfficialCredentials(activity, account)) {
+                        = ParcelableAccount.getCredentials(context, status.account_id);
+                if (isOfficialCredentials(context, account)) {
                     StatusTranslateDialogFragment.show(fm, status);
                 } else {
-                    final Resources resources = activity.getResources();
+                    final Resources resources = context.getResources();
                     final Locale locale = resources.getConfiguration().locale;
                     try {
                         final String template = "http://translate.google.com/#%s|%s|%s";
@@ -3972,7 +3976,7 @@ public final class Utils implements Constants, TwitterConstants {
                         final Uri uri = Uri.parse(String.format(Locale.ROOT, template, sourceLang, targetLang, text));
                         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                        activity.startActivity(intent);
+                        context.startActivity(intent);
                     } catch (UnsupportedEncodingException ignore) {
 
                     }
@@ -3981,15 +3985,19 @@ public final class Utils implements Constants, TwitterConstants {
             }
             case MENU_OPEN_WITH_ACCOUNT: {
                 final Intent intent = new Intent(INTENT_ACTION_SELECT_ACCOUNT);
-                intent.setClass(activity, AccountSelectorActivity.class);
+                intent.setClass(context, AccountSelectorActivity.class);
                 intent.putExtra(EXTRA_SINGLE_SELECTION, true);
-                activity.startActivityForResult(intent, REQUEST_SELECT_ACCOUNT);
+                if (fragment != null) {
+                    fragment.startActivityForResult(intent, REQUEST_SELECT_ACCOUNT);
+                } else if (context instanceof Activity) {
+                    ((Activity) context).startActivityForResult(intent, REQUEST_SELECT_ACCOUNT);
+                }
                 break;
             }
             default: {
                 if (item.getIntent() != null) {
                     try {
-                        activity.startActivity(item.getIntent());
+                        context.startActivity(item.getIntent());
                     } catch (final ActivityNotFoundException e) {
                         Log.w(LOGTAG, e);
                         return false;

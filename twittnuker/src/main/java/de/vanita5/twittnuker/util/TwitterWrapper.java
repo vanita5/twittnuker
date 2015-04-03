@@ -82,7 +82,8 @@ public class TwitterWrapper implements Constants {
 
 	public static int removeUnreadCounts(final Context context, final int position, final long account_id,
 			final long... status_ids) {
-		if (context == null || position < 0 || status_ids == null || status_ids.length == 0) return 0;
+        if (context == null || position < 0 || status_ids == null || status_ids.length == 0)
+            return 0;
 		int result = 0;
 		final Uri.Builder builder = UnreadCounts.CONTENT_URI.buildUpon();
 		builder.appendPath(String.valueOf(position));
@@ -109,9 +110,13 @@ public class TwitterWrapper implements Constants {
 
     @NonNull
     public static User showUser(final Twitter twitter, final long id, final String screenName) throws TwitterException {
-        if (id != -1)
+        if (twitter.getId() == id || twitter.getScreenName().equalsIgnoreCase(screenName)) {
+            return twitter.verifyCredentials();
+        } else if (id != -1) {
             return twitter.showUser(id);
-        else if (screenName != null) return twitter.showUser(screenName);
+        } else if (screenName != null) {
+            return twitter.showUser(screenName);
+        }
         throw new IllegalArgumentException();
     }
 
@@ -142,7 +147,8 @@ public class TwitterWrapper implements Constants {
             }
         }
         for (final User user : twitter.searchUsers(searchScreenName, 1)) {
-            if (user.getId() == id || searchScreenName.equalsIgnoreCase(user.getScreenName())) return user;
+            if (user.getId() == id || searchScreenName.equalsIgnoreCase(user.getScreenName()))
+                return user;
         }
         throw new TwitterException("can't find user");
     }

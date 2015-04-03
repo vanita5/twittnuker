@@ -954,12 +954,12 @@ public class StatusFragment extends BaseSupportFragment
 		@Override
         public boolean onMenuItemClick(MenuItem item) {
             final StatusFragment fragment = adapter.getFragment();
-            final ParcelableStatus status = adapter.getStatus(getPosition());
+            final ParcelableStatus status = adapter.getStatus(getAdapterPosition());
             if (status == null || fragment == null) return false;
             final AsyncTwitterWrapper twitter = fragment.getTwitterWrapper();
             final FragmentActivity activity = fragment.getActivity();
             final FragmentManager fm = fragment.getFragmentManager();
-            return Utils.handleMenuItemClick(activity, fm, twitter, status, item);
+            return Utils.handleMenuItemClick(activity, fragment, fm, twitter, status, item);
         }
 
         public void showStatus(ParcelableStatus status) {
