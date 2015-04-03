@@ -542,7 +542,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         }
     }
 
-    public static class UpdateProfileBannerImageTask extends ManagedAsyncTask<Void, Void, SingleResponse<ParcelableUser>> {
+    public static class UpdateProfileBannerImageTask extends ManagedAsyncTask<Object, Void, SingleResponse<ParcelableUser>> {
 
 		private final long mAccountId;
 		private final Uri mImageUri;
@@ -559,7 +559,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 		@Override
-        protected SingleResponse<ParcelableUser> doInBackground(final Void... params) {
+        protected SingleResponse<ParcelableUser> doInBackground(final Object... params) {
             try {
                 final Twitter twitter = getTwitterInstance(mContext, mAccountId, true);
                 TwitterWrapper.updateProfileBannerImage(mContext, twitter, mImageUri, mDeleteImage);
@@ -592,7 +592,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
-	public static class UpdateProfileImageTask extends ManagedAsyncTask<Void, Void, SingleResponse<ParcelableUser>> {
+	public static class UpdateProfileImageTask extends ManagedAsyncTask<Object, Void, SingleResponse<ParcelableUser>> {
 
         private final long mAccountId;
         private final Uri mImageUri;
@@ -609,7 +609,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 		@Override
-		protected SingleResponse<ParcelableUser> doInBackground(final Void... params) {
+		protected SingleResponse<ParcelableUser> doInBackground(final Object... params) {
             try {
                 final Twitter twitter = getTwitterInstance(mContext, mAccountId, true);
                 TwitterWrapper.updateProfileImage(mContext, twitter, mImageUri, mDeleteImage);

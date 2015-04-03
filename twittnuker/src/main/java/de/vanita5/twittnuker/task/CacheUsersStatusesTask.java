@@ -49,7 +49,7 @@ import static de.vanita5.twittnuker.util.ContentValuesCreator.createStatus;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
 
-public class CacheUsersStatusesTask extends AsyncTask<Void, Void, Void> implements Constants {
+public class CacheUsersStatusesTask extends AsyncTask<Object, Void, Void> implements Constants {
 
     private final TwitterListResponse<twitter4j.Status>[] responses;
     private final Context context;
@@ -61,7 +61,7 @@ public class CacheUsersStatusesTask extends AsyncTask<Void, Void, Void> implemen
 	}
 
 	@Override
-	protected Void doInBackground(final Void... args) {
+	protected Void doInBackground(final Object... args) {
         if (responses == null || responses.length == 0) return null;
         final ContentResolver resolver = context.getContentResolver();
 		final Extractor extractor = new Extractor();

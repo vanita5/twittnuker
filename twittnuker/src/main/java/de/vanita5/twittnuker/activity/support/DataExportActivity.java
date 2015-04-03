@@ -112,7 +112,7 @@ public class DataExportActivity extends BaseActionBarActivity implements FileSel
 		}
 	}
 
-	static class ExportSettingsTask extends AsyncTask<Void, Void, Boolean> {
+	static class ExportSettingsTask extends AsyncTask<Object, Void, Boolean> {
 		private static final String FRAGMENT_TAG = "import_settings_dialog";
 
 		private final DataExportActivity mActivity;
@@ -126,7 +126,7 @@ public class DataExportActivity extends BaseActionBarActivity implements FileSel
 		}
 
 		@Override
-		protected Boolean doInBackground(final Void... params) {
+		protected Boolean doInBackground(final Object... params) {
 			if (mPath == null) return false;
 			final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US);
 			final String fileName = String.format("Twittnuker_Settings_%s.zip", sdf.format(new Date()));

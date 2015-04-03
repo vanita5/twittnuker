@@ -18,7 +18,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
 
-public class GetGCMTokenTask extends AsyncTask<Void, Void, String> implements Constants {
+public class GetGCMTokenTask extends AsyncTask<Object, Void, String> implements Constants {
 
 	private static final String TAG = "GetGCMTokenTask";
 
@@ -40,7 +40,7 @@ public class GetGCMTokenTask extends AsyncTask<Void, Void, String> implements Co
 	}
 
 	@Override
-	protected String doInBackground(Void... params) {
+	protected String doInBackground(Object... params) {
 		String token = null;
 		try {
 			token = fetchToken();

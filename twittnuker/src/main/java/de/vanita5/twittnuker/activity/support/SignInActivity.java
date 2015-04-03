@@ -506,7 +506,7 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 		mSignUpButton.setEnabled(false);
 	}
 
-    public static abstract class AbstractSignInTask extends AsyncTask<Void, Void, SignInResponse> {
+    public static abstract class AbstractSignInTask extends AsyncTask<Object, Void, SignInResponse> {
 
 		protected final Configuration conf;
 		protected final SignInActivity callback;
@@ -562,7 +562,7 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 		}
 
 		@Override
-        protected SignInResponse doInBackground(final Void... params) {
+        protected SignInResponse doInBackground(final Object... params) {
 			try {
 				final Twitter twitter = new TwitterFactory(conf).getInstance();
 				final AccessToken access_token = twitter.getOAuthAccessToken(new RequestToken(conf, request_token,
@@ -621,7 +621,7 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 		}
 
 		@Override
-        protected SignInResponse doInBackground(final Void... params) {
+        protected SignInResponse doInBackground(final Object... params) {
 			try {
 				switch (auth_type) {
 					case Accounts.AUTH_TYPE_OAUTH:

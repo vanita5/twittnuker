@@ -171,7 +171,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 	private SharedPreferencesWrapper mPreferences;
 	private ParcelableLocation mRecentLocation;
 	private ContentResolver mResolver;
-    private AsyncTask<Void, Void, ?> mTask;
+    private AsyncTask<Object, Void, ?> mTask;
     private GridView mMediaPreviewGrid;
     private ActionMenuView mMenuBar;
 	private EditText mEditText;
@@ -1263,7 +1263,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Boolean doInBackground(Object... params) {
             if (mBitmap == null || mBitmap.isRecycled()) return false;
             FileOutputStream os = null;
             try {
@@ -1280,7 +1280,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 
     }
 
-    private static class AddMediaTask extends AsyncTask<Void, Void, Boolean> {
+    private static class AddMediaTask extends AsyncTask<Object, Void, Boolean> {
 
 		private final ComposeActivity activity;
 		private final int media_type;
@@ -1297,7 +1297,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 		}
 
 		@Override
-		protected Boolean doInBackground(final Void... params) {
+		protected Boolean doInBackground(final Object... params) {
 			try {
 				final ContentResolver resolver = activity.getContentResolver();
 				final InputStream is = resolver.openInputStream(src);
@@ -1338,7 +1338,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 		}
 	}
 
-    private static class DeleteImageTask extends AsyncTask<Void, Void, Boolean> {
+    private static class DeleteImageTask extends AsyncTask<Object, Void, Boolean> {
 
 		final ComposeActivity mActivity;
         private final ParcelableMediaUpdate[] mMedia;
@@ -1349,7 +1349,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 		}
 
 		@Override
-		protected Boolean doInBackground(final Void... params) {
+		protected Boolean doInBackground(final Object... params) {
             if (mMedia == null) return false;
 			try {
                 for (final ParcelableMediaUpdate media : mMedia) {
@@ -1384,7 +1384,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 		}
 	}
 
-    private static class DiscardTweetTask extends AsyncTask<Void, Void, Void> {
+    private static class DiscardTweetTask extends AsyncTask<Object, Void, Void> {
 
         final ComposeActivity mActivity;
 
@@ -1393,7 +1393,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 		}
 
 		@Override
-		protected Void doInBackground(final Void... params) {
+		protected Void doInBackground(final Object... params) {
             for (final ParcelableMediaUpdate media : mActivity.getMediaList()) {
                 if (media.uri == null) continue;
                 final Uri uri = Uri.parse(media.uri);

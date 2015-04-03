@@ -43,7 +43,7 @@ import java.io.IOException;
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.Utils.getImageMimeType;
 
-public class SaveImageTask extends AsyncTask<Void, Void, File> implements Constants {
+public class SaveImageTask extends AsyncTask<Object, Void, File> implements Constants {
 
 	private static final String PROGRESS_FRAGMENT_TAG = "progress";
 
@@ -56,7 +56,7 @@ public class SaveImageTask extends AsyncTask<Void, Void, File> implements Consta
 	}
 
 	@Override
-	protected File doInBackground(final Void... args) {
+	protected File doInBackground(final Object... args) {
 		if (src == null) return null;
 		return saveImage(activity, src);
 	}

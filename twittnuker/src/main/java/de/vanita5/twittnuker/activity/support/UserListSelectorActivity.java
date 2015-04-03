@@ -230,7 +230,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
         mCreateUserListContainer.setVisibility(isMyAccount ? View.VISIBLE : View.GONE);
 	}
 
-    private static class GetUserListsTask extends AsyncTask<Void, Void, SingleResponse<List<ParcelableUserList>>> {
+    private static class GetUserListsTask extends AsyncTask<Object, Void, SingleResponse<List<ParcelableUserList>>> {
 
 		private static final String FRAGMENT_TAG_GET_USER_LISTS = "get_user_lists";
 		private final UserListSelectorActivity mActivity;
@@ -244,7 +244,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 		}
 
 		@Override
-		protected SingleResponse<List<ParcelableUserList>> doInBackground(final Void... params) {
+		protected SingleResponse<List<ParcelableUserList>> doInBackground(final Object... params) {
 			final Twitter twitter = getTwitterInstance(mActivity, mAccountId, false);
 			if (twitter == null) return SingleResponse.getInstance();
 			try {
@@ -292,7 +292,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 
 	}
 
-    private static class SearchUsersTask extends AsyncTask<Void, Void, SingleResponse<List<ParcelableUser>>> {
+    private static class SearchUsersTask extends AsyncTask<Object, Void, SingleResponse<List<ParcelableUser>>> {
 
 		private static final String FRAGMENT_TAG_SEARCH_USERS = "search_users";
 		private final UserListSelectorActivity mActivity;
@@ -306,7 +306,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 		}
 
 		@Override
-		protected SingleResponse<List<ParcelableUser>> doInBackground(final Void... params) {
+		protected SingleResponse<List<ParcelableUser>> doInBackground(final Object... params) {
 			final Twitter twitter = getTwitterInstance(mActivity, mAccountId, false);
 			if (twitter == null) return SingleResponse.getInstance();
 			try {

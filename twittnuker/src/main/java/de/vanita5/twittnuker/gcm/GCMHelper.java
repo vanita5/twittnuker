@@ -168,12 +168,12 @@ public class GCMHelper implements TwittnukerConstants {
 	 ***************/
 
 	private static void registerForGCM(final Context context) {
-		new AsyncTask<Void, Void, Void>() {
+		new AsyncTask<Object, Void, Void>() {
 
 			private String msg;
 
 			@Override
-			protected Void doInBackground(Void... params) {
+			protected Void doInBackground(Object... params) {
 				try {
 					GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
 					final String regid = gcm.register(GCMConfig.SENDER_ID);
@@ -216,12 +216,12 @@ public class GCMHelper implements TwittnukerConstants {
 	private static void unregisterFromGCM(final Context context) {
 		//You can unregister from GMC directly.
 		//However, it is recommended to unregister from the backend server ONLY!
-		new AsyncTask<Void, Void, Void>() {
+		new AsyncTask<Object, Void, Void>() {
 
 			private String msg;
 
 			@Override
-			protected Void doInBackground(Void... voids) {
+			protected Void doInBackground(Object... voids) {
 				try {
 					String regid = getRegistrationId(context);
 					if (regid == null || regid.isEmpty()) {
@@ -250,12 +250,12 @@ public class GCMHelper implements TwittnukerConstants {
 	}
 
 	private static void addAccount(final Context context, final String accountId) {
-		new AsyncTask<Void, Void, Void>() {
+		new AsyncTask<Object, Void, Void>() {
 
 			private String msg;
 
 			@Override
-			protected Void doInBackground(Void... voids) {
+			protected Void doInBackground(Object... voids) {
 				try {
 					PushBackendServer.AccountMSG item = addAccountToBackend(context, accountId);
 					if (item != null) {
@@ -278,13 +278,13 @@ public class GCMHelper implements TwittnukerConstants {
 	}
 
 	private static void removeAccount(final Context context, final String accountId) {
-		new AsyncTask<Void, Void, Void>() {
+		new AsyncTask<Object, Void, Void>() {
 
 			private String msg;
 
 
 			@Override
-			protected Void doInBackground(Void... voids) {
+			protected Void doInBackground(Object... voids) {
 				try {
 					if(removeAccountFromBackend(context, accountId)) {
 						msg = "Account successfully removed";

@@ -84,7 +84,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
 
 	private MediaLoaderWrapper mLazyImageLoader;
 	private AsyncTaskManager mAsyncTaskManager;
-    private AsyncTask<Void, Void, ?> mTask;
+    private AsyncTask<Object, Void, ?> mTask;
 
     private ImageView mProfileImageView;
     private ImageView mProfileBannerView;
@@ -424,7 +424,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
         mDoneButton.setEnabled(isProfileChanged());
     }
 
-    static class UpdateProfileTaskInternal extends AsyncTask<Void, Void, SingleResponse<ParcelableUser>> {
+    static class UpdateProfileTaskInternal extends AsyncTask<Object, Void, SingleResponse<ParcelableUser>> {
 
         private static final String DIALOG_FRAGMENT_TAG = "updating_user_profile";
         private final UserProfileEditorActivity mActivity;
@@ -454,7 +454,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
         }
 
         @Override
-        protected SingleResponse<ParcelableUser> doInBackground(final Void... params) {
+        protected SingleResponse<ParcelableUser> doInBackground(final Object... params) {
             final Twitter twitter = getTwitterInstance(mActivity, mAccountId, true);
             try {
                 User user = null;
@@ -514,7 +514,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
 
     }
 
-    class RemoveProfileBannerTaskInternal extends AsyncTask<Void, Void, SingleResponse<Boolean>> {
+    class RemoveProfileBannerTaskInternal extends AsyncTask<Object, Void, SingleResponse<Boolean>> {
 
         private final long account_id;
 
@@ -523,7 +523,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
 		}
 
 		@Override
-        protected SingleResponse<Boolean> doInBackground(final Void... params) {
+        protected SingleResponse<Boolean> doInBackground(final Object... params) {
             return TwitterWrapper.deleteProfileBannerImage(UserProfileEditorActivity.this, account_id);
         }
 

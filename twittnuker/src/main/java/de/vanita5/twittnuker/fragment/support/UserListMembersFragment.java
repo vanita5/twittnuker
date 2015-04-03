@@ -134,7 +134,7 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment impl
 		return R.menu.action_user_list_member;
 	}
 
-    private class GetUserListTask extends AsyncTask<Void, Void, ParcelableUserList> {
+    private class GetUserListTask extends AsyncTask<Object, Void, ParcelableUserList> {
 
         private final long accountId, userId;
         private final long listId;
@@ -150,7 +150,7 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment impl
 		}
 
 		@Override
-		protected ParcelableUserList doInBackground(final Void... params) {
+		protected ParcelableUserList doInBackground(final Object... params) {
             final Twitter twitter = getTwitterInstance(getActivity(), accountId, true);
 			if (twitter == null) return null;
 			try {

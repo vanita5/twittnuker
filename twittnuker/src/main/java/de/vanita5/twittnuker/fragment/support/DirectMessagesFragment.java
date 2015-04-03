@@ -169,10 +169,10 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 
 	@Override
     public void onRefresh() {
-        AsyncTaskUtils.executeTask(new AsyncTask<Void, Void, long[][]>() {
+        AsyncTaskUtils.executeTask(new AsyncTask<Object, Void, long[][]>() {
 
             @Override
-            protected long[][] doInBackground(final Void... params) {
+            protected long[][] doInBackground(final Object... params) {
                 final long[][] result = new long[2][];
                 result[0] = Utils.getActivatedAccountIds(getActivity());
                 result[1] = Utils.getNewestMessageIdsFromDatabase(getActivity(), DirectMessages.Inbox.CONTENT_URI);
@@ -362,10 +362,10 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 //
     private void loadMoreMessages() {
         if (isRefreshing()) return;
-        AsyncTaskUtils.executeTask(new AsyncTask<Void, Void, long[][]>() {
+        AsyncTaskUtils.executeTask(new AsyncTask<Object, Void, long[][]>() {
 
             @Override
-            protected long[][] doInBackground(final Void... params) {
+            protected long[][] doInBackground(final Object... params) {
                 final long[][] result = new long[3][];
                 result[0] = Utils.getActivatedAccountIds(getActivity());
                 result[1] = Utils.getOldestMessageIdsFromDatabase(getActivity(), DirectMessages.Inbox.CONTENT_URI);
@@ -408,7 +408,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
         AsyncTaskUtils.executeTask(mRemoveUnreadCountsTask);
 	}
 
-    static class RemoveUnreadCountsTask extends AsyncTask<Void, Void, Void> {
+    static class RemoveUnreadCountsTask extends AsyncTask<Object, Void, Void> {
 		private final Set<Integer> read_positions;
         private final MessageEntriesAdapter adapter;
 		private final DirectMessagesFragment fragment;
@@ -420,7 +420,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 		}
 
 		@Override
-		protected Void doInBackground(final Void... params) {
+		protected Void doInBackground(final Object... params) {
 			for (final int pos : read_positions) {
                 final DirectMessageEntry entry = adapter.getEntry(pos);
                 final long id = entry.conversation_id, account_id = entry.account_id;

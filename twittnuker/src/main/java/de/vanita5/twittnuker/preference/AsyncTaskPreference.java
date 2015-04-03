@@ -61,7 +61,7 @@ public abstract class AsyncTaskPreference extends Preference implements Constant
 
 	protected abstract void doInBackground();
 
-	private static class Task extends AsyncTask<Void, Void, Void> {
+	private static class Task extends AsyncTask<Object, Void, Void> {
 
 		private final AsyncTaskPreference mPreference;
 		private final Context mContext;
@@ -74,7 +74,7 @@ public abstract class AsyncTaskPreference extends Preference implements Constant
 		}
 
 		@Override
-		protected Void doInBackground(final Void... args) {
+		protected Void doInBackground(final Object... args) {
 			mPreference.doInBackground();
 			return null;
 		}

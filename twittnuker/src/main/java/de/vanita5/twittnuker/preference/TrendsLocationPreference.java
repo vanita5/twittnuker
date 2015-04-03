@@ -159,7 +159,7 @@ public class TrendsLocationPreference extends Preference implements Constants, O
 
 	}
 
-	class GetAvailableTrendsTask extends AsyncTask<Void, Void, ResponseList<Location>> implements OnCancelListener {
+	class GetAvailableTrendsTask extends AsyncTask<Object, Void, ResponseList<Location>> implements OnCancelListener {
 
 		private final ProgressDialog mProgress;
 
@@ -173,7 +173,7 @@ public class TrendsLocationPreference extends Preference implements Constants, O
 		}
 
 		@Override
-		protected ResponseList<Location> doInBackground(final Void... args) {
+		protected ResponseList<Location> doInBackground(final Object... args) {
 			final Twitter twitter = getDefaultTwitterInstance(getContext(), false);
 			if (twitter == null) return null;
 			try {
