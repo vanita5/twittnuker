@@ -677,8 +677,8 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
         }
 
         public ParcelableAccount getSelectedAccount() {
-            if (mInternalAccounts == null || mInternalAccounts.length < 0) {
-            return null;
+            if (mInternalAccounts == null || mInternalAccounts.length == 0) {
+            	return null;
         	}
             return mInternalAccounts[0];
         }

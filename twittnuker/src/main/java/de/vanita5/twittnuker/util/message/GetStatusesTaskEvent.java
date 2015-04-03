@@ -20,24 +20,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.accessor;
+package de.vanita5.twittnuker.util.message;
 
-import android.app.FragmentManager;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 
-import java.lang.reflect.Field;
+public class GetStatusesTaskEvent {
 
-public class FragmentManagerAccessor {
+	@NonNull
+	public final Uri uri;
+	public final boolean running;
 
-	public static boolean isStateSaved(final FragmentManager fm) {
-		try {
-			final Field mStateSavedField = FragmentManager.class.getField("mStateSaved");
-			final Object mStateSaved = mStateSavedField.get(fm);
-			if (mStateSaved instanceof Boolean) return (Boolean) mStateSaved;
-		} catch (final NoSuchFieldException e) {
-		} catch (final IllegalArgumentException e) {
-		} catch (final IllegalAccessException e) {
-		}
-		return false;
+	public GetStatusesTaskEvent(@NonNull Uri uri, boolean running) {
+		this.uri = uri;
+		this.running = running;
 	}
-
 }

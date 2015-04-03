@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -35,6 +36,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.support.annotation.NonNull;
 import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.support.v7.widget.ActionMenuView;
@@ -103,18 +105,18 @@ public class ThemeUtils implements Constants {
 
 
     public static void applyActionBarBackground(final ActionBar actionBar, final Context context,
-                                                final int themeRes, final int actionBarColor) {
+                                                final int themeRes, final int actionBarColor, boolean outlineEnabled) {
         if (actionBar == null || context == null) return;
-        actionBar.setBackgroundDrawable(getActionBarBackground(context, themeRes, actionBarColor));
+        actionBar.setBackgroundDrawable(getActionBarBackground(context, themeRes, actionBarColor, outlineEnabled));
         actionBar.setSplitBackgroundDrawable(getActionBarSplitBackground(context, themeRes));
         actionBar.setStackedBackgroundDrawable(getActionBarStackedBackground(context, themeRes));
     }
 
 
     public static void applyActionBarBackground(final android.support.v7.app.ActionBar actionBar, final Context context,
-                                                final int themeRes, final int actionBarColor) {
+                                                final int themeRes, final int actionBarColor, boolean outlineEnabled) {
         if (actionBar == null || context == null) return;
-        actionBar.setBackgroundDrawable(getActionBarBackground(context, themeRes, actionBarColor));
+        actionBar.setBackgroundDrawable(getActionBarBackground(context, themeRes, actionBarColor, outlineEnabled));
         actionBar.setSplitBackgroundDrawable(getActionBarSplitBackground(context, themeRes));
         actionBar.setStackedBackgroundDrawable(getActionBarStackedBackground(context, themeRes));
     }
@@ -357,6 +359,24 @@ public class ThemeUtils implements Constants {
         // TODO support TintableBackgroundView
     }
 
+    public static float getSupportActionBarElevation(final Context context) {
+        final TypedArray a = context.obtainStyledAttributes(null, new int[]{R.attr.elevation}, R.attr.actionBarStyle, 0);
+        try {
+            return a.getDimension(0, 0);
+        } finally {
+            a.recycle();
+        }
+    }
+
+    @TargetApi(VERSION_CODES.LOLLIPOP)
+    public static float getActionBarElevation(final Context context) {
+        final TypedArray a = context.obtainStyledAttributes(null, new int[]{android.R.attr.elevation}, android.R.attr.actionBarStyle, 0);
+        try {
+            return a.getDimension(0, 0);
+        } finally {
+            a.recycle();
+        }
+    }
 
     @Deprecated
     public static Drawable getActionBarBackground(final Context context, final boolean applyAlpha) {
@@ -390,9 +410,9 @@ public class ThemeUtils implements Constants {
     }
 
     public static Drawable getActionBarBackground(final Context context, final int themeRes,
-                                                  final int accentColor) {
+                                                  final int accentColor, boolean outlineEnabled) {
         if (!isDarkTheme(themeRes)) {
-            final ColorDrawable d = new ActionBarColorDrawable(accentColor);
+            final ColorDrawable d = new ActionBarColorDrawable(accentColor, outlineEnabled);
             return applyActionBarDrawable(context, d, isTransparentBackground(themeRes));
         }
         final TypedArray a = context.obtainStyledAttributes(null, new int[]{android.R.attr.background},
@@ -810,7 +830,7 @@ public class ThemeUtils implements Constants {
 		if (context == null) return Color.TRANSPARENT;
         final Resources res = getResources(context);
         final SharedPreferencesWrapper pref = getSharedPreferencesWrapper(context);
-        final int def = res.getColor(R.color.material_light_blue);
+        final int def = res.getColor(R.color.branding_color);
         return pref.getInt(KEY_THEME_COLOR, def);
 	}
 

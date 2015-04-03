@@ -163,6 +163,7 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
     @Override
     public void onFitSystemWindows(Rect insets) {
         mSystemWindowsInsets = new Rect(insets);
+        notifyControlBarOffsetChanged();
     }
 
     @Override

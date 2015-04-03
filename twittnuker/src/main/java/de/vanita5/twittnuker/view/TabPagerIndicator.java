@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.iface.PagerIndicator;
 
 import java.lang.annotation.Retention;
@@ -66,6 +67,7 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator {
         setVerticalPadding(a.getDimensionPixelSize(R.styleable.TabPagerIndicator_tabHorizontalPadding, 0));
         setStripColor(a.getColor(R.styleable.TabPagerIndicator_tabStripColor, 0));
         setIconColor(a.getColor(R.styleable.TabPagerIndicator_tabIconColor, 0));
+        setLabelColor(a.getColor(R.styleable.TabPagerIndicator_tabLabelColor, ThemeUtils.getTextColorPrimary(context)));
         setTabDisplayOption(a.getInt(R.styleable.TabPagerIndicator_tabDisplayOption, ICON));
         setTabShowDivider(a.getBoolean(R.styleable.TabPagerIndicator_tabShowDivider, false));
         final int dividerVerticalPadding = a.getDimensionPixelSize(R.styleable.TabPagerIndicator_tabDividerVerticalPadding, 0);
@@ -314,12 +316,12 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator {
 
         @Override
         public void onClick(View v) {
-            indicator.dispatchTabClick(getPosition());
+            indicator.dispatchTabClick(getAdapterPosition());
         }
 
         @Override
         public boolean onLongClick(View v) {
-            return indicator.dispatchTabLongClick(getPosition());
+            return indicator.dispatchTabLongClick(getAdapterPosition());
         }
 
         public void setBadge(int count, boolean display) {

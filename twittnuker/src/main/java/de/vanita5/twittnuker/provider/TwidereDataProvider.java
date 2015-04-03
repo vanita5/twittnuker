@@ -38,6 +38,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Typeface;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -746,6 +747,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setContentIntent(clickIntent);
             builder.setNumber(statusesCount);
             builder.setColor(pref.getNotificationLightColor());
+            setNotificationPreferences(builder, pref, pref.getHomeTimelineNotificationType());
             nm.notify("home_" + accountId, NOTIFICATION_ID_HOME_TIMELINE, builder.build());
         } finally {
             statusCursor.close();
@@ -758,8 +760,15 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         final Context context = getContext();
         final Resources resources = context.getResources();
         final NotificationManager nm = getNotificationManager();
-        final Expression selection = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
-                Expression.greaterThan(Statuses.STATUS_ID, position));
+        final Expression selection;
+        if (pref.isNotificationFollowingOnly()) {
+            selection = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
+                    Expression.greaterThan(Statuses.STATUS_ID, position),
+                    Expression.equals(Statuses.IS_FOLLOWING, 1));
+        } else {
+            selection = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
+                	Expression.greaterThan(Statuses.STATUS_ID, position));
+        }
         final String filteredSelection = Utils.buildStatusFilterWhereClause(Mentions.TABLE_NAME,
                 selection, true).getSQL();
         final String[] userProjection = {Statuses.USER_ID, Statuses.USER_NAME, Statuses.USER_SCREEN_NAME};
@@ -837,12 +846,28 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setWhen(when);
             builder.setStyle(style);
             builder.setColor(pref.getNotificationLightColor());
+            setNotificationPreferences(builder, pref, pref.getMentionsNotificationType());
             nm.notify("mentions_" + accountId, NOTIFICATION_ID_MENTIONS_TIMELINE,
                     builder.build());
         } finally {
             statusCursor.close();
             userCursor.close();
         }
+    }
+
+    private void setNotificationPreferences(NotificationCompat.Builder builder, AccountPreferences pref, int defaultFlags) {
+        int notificationDefaults = 0;
+        if (AccountPreferences.isNotificationHasLight(defaultFlags)) {
+            notificationDefaults |= NotificationCompat.DEFAULT_LIGHTS;
+        }
+        if (AccountPreferences.isNotificationHasVibration(defaultFlags)) {
+            notificationDefaults |= NotificationCompat.DEFAULT_VIBRATE;
+        }
+        if (AccountPreferences.isNotificationHasRingtone(defaultFlags)) {
+            notificationDefaults |= NotificationCompat.DEFAULT_SOUND;
+            builder.setSound(pref.getNotificationRingtone(), AudioManager.STREAM_NOTIFICATION);
+        }
+        builder.setDefaults(notificationDefaults);
     }
 
     private void showMessagesNotification(AccountPreferences pref, StringLongPair[] pairs, ContentValues[] valuesArray) {
@@ -963,6 +988,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setWhen(when);
             builder.setStyle(style);
             builder.setColor(pref.getNotificationLightColor());
+            setNotificationPreferences(builder, pref, pref.getDirectMessagesNotificationType());
             nm.notify("messages_" + accountId, NOTIFICATION_ID_DIRECT_MESSAGES, builder.build());
         } finally {
             messageCursor.close();

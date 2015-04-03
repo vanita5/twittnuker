@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
@@ -46,6 +47,11 @@ public class StatusesSearchFragment extends ParcelableStatusesFragment {
         return new TweetSearchLoader(getActivity(), accountId, query, sinceId, maxId, getAdapterData(),
                 getSavedStatusesFileArgs(), tabPosition, fromUser);
 	}
+
+    @Override
+    protected void fitSystemWindows(Rect insets) {
+        super.fitSystemWindows(insets);
+    }
 
 	@Override
 	protected String[] getSavedStatusesFileArgs() {

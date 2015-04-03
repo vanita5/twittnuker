@@ -46,10 +46,10 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
+import de.vanita5.twittnuker.util.message.GetStatusesTaskEvent;
 import de.vanita5.twittnuker.util.message.StatusDestroyedEvent;
 import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.util.message.StatusRetweetedEvent;
-import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
 import static de.vanita5.twittnuker.util.Utils.buildStatusFilterWhereClause;
 import static de.vanita5.twittnuker.util.Utils.getNewestStatusIdsFromDatabase;
@@ -85,15 +85,16 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
 
     @Override
     protected Object createMessageBusCallback() {
-        return new ParcelableStatusesBusCallback();
+        return new CursorStatusesBusCallback();
     }
 
 
-    protected class ParcelableStatusesBusCallback {
+    protected class CursorStatusesBusCallback {
 
             @Subscribe
-            public void notifyTaskStateChanged(TaskStateChangedEvent event) {
-                updateRefreshState();
+        public void notifyGetStatusesTaskChanged(GetStatusesTaskEvent event) {
+            if (!event.uri.equals(getContentUri())) return;
+            setRefreshing(event.running);
             }
 
         @Subscribe
@@ -138,6 +139,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
             }
         };
         cr.registerContentObserver(Accounts.CONTENT_URI, true, mContentObserver);
+        updateRefreshState();
     }
 
     protected void reloadStatuses() {

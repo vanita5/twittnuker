@@ -43,7 +43,6 @@ import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.SQLFunctions;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ListResponse;
@@ -73,6 +72,7 @@ import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
+import de.vanita5.twittnuker.util.message.GetStatusesTaskEvent;
 import de.vanita5.twittnuker.util.message.ProfileUpdatedEvent;
 import de.vanita5.twittnuker.util.message.StatusDestroyedEvent;
 import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
@@ -2096,7 +2096,22 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         }
 
+        @NonNull
         protected abstract Uri getDatabaseUri();
+
+        @Override
+        protected void onPostExecute(List<StatusListResponse> statusListResponses) {
+            super.onPostExecute(statusListResponses);
+            final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
+            bus.post(new GetStatusesTaskEvent(getDatabaseUri(), false));
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
+            bus.post(new GetStatusesTaskEvent(getDatabaseUri(), true));
+        }
 
         @Override
 		protected List<StatusListResponse> doInBackground(final Void... params) {
