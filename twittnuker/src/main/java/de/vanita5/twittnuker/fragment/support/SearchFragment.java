@@ -178,7 +178,7 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
             mPagerIndicator.setLabelColor(contrastColor);
             mPagerIndicator.setStripColor(themeColor);
         } else {
-            mPagerIndicator.setBackgroundColor(ThemeUtils.getThemeColor(activity));
+            mPagerIndicator.setBackgroundColor(ThemeUtils.getActionBarColor(activity));
         }
         final float supportActionBarElevation = ThemeUtils.getSupportActionBarElevation(activity);
         ViewCompat.setElevation(mPagerIndicator, supportActionBarElevation);
