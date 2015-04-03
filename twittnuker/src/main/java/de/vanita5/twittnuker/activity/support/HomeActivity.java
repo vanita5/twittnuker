@@ -786,6 +786,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
             homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
             mTabIndicator.setStripColor(themeColor);
             mTabIndicator.setIconColor(contrastColor);
+            mTabIndicator.setLabelColor(contrastColor);
             ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
             mColorStatusFrameLayout.setDrawColor(true);
             mColorStatusFrameLayout.setDrawShadow(false);
@@ -799,6 +800,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
             homeActionButton.setIconColor(foregroundColor, Mode.SRC_ATOP);
             mTabIndicator.setStripColor(themeColor);
             mTabIndicator.setIconColor(foregroundColor);
+            mTabIndicator.setLabelColor(foregroundColor);
             mColorStatusFrameLayout.setDrawColor(false);
             mColorStatusFrameLayout.setDrawShadow(false);
 		}
