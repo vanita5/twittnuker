@@ -55,7 +55,7 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
 		super(context, R.layout.list_item_account, null, new String[] { Accounts.NAME },
 				new int[] { android.R.id.text1 }, 0);
 		final TwittnukerApplication application = TwittnukerApplication.getInstance(context);
-		mImageLoader = application.getImageLoaderWrapper();
+		mImageLoader = application.getMediaLoaderWrapper();
 		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 	}
 

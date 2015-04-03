@@ -39,9 +39,6 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 
 import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.List;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -50,6 +47,8 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.ThemedViewFactory;
 import de.vanita5.twittnuker.util.Utils;
+
+import java.util.List;
 
 public class AccountSelectorPopupWindow {
 
@@ -151,7 +150,7 @@ public class AccountSelectorPopupWindow {
 
 		public AccountsGridAdapter(Context context) {
 			super(context, R.layout.grid_item_selector_account);
-			mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
+			mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
 		}
 
 		@Override

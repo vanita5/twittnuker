@@ -24,19 +24,27 @@ package de.vanita5.twittnuker.util.net;
 
 import android.content.Context;
 
-import twitter4j.http.HttpClient;
-import twitter4j.http.HttpClientConfiguration;
-import twitter4j.http.HttpClientFactory;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
-public class OkHttpClientFactory implements HttpClientFactory {
-    private final Context context;
+import javax.net.ssl.X509TrustManager;
 
-    public OkHttpClientFactory(Context context) {
-        this.context = context;
-    }
+public class TwidereTrustManager implements X509TrustManager {
+	public TwidereTrustManager(Context context) {
+
+	}
 
 	@Override
-	public HttpClient getInstance(HttpClientConfiguration conf) {
-        return new OkHttpClientImpl(context, conf);
+	public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+
+	}
+
+	@Override
+	public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+	}
+
+	@Override
+	public X509Certificate[] getAcceptedIssuers() {
+		return new X509Certificate[0];
 	}
 }

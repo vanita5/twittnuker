@@ -51,7 +51,7 @@ public class SimpleParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUse
         super(context, layoutRes);
 		mContext = context;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-        mImageLoader = app.getImageLoaderWrapper();
+        mImageLoader = app.getMediaLoaderWrapper();
 		configBaseAdapter(context, this);
 	}
 

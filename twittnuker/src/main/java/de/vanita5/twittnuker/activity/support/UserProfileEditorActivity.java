@@ -48,7 +48,6 @@ import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
-import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileBannerImageTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
@@ -134,7 +133,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
             return;
         }
         mAsyncTaskManager = TwittnukerApplication.getInstance(this).getAsyncTaskManager();
-        mLazyImageLoader = TwittnukerApplication.getInstance(this).getImageLoaderWrapper();
+        mLazyImageLoader = TwittnukerApplication.getInstance(this).getMediaLoaderWrapper();
         mAccountId = accountId;
 
 

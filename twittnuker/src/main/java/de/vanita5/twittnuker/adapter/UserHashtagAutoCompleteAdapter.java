@@ -78,7 +78,7 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mResolver = context.getContentResolver();
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-        mProfileImageLoader = app.getImageLoaderWrapper();
+        mProfileImageLoader = app.getMediaLoaderWrapper();
         mDatabase = app.getSQLiteDatabase();
         mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
 	}

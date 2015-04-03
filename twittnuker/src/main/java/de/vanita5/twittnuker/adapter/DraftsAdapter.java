@@ -37,10 +37,10 @@ import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.DraftViewHolder;
 
@@ -57,7 +57,7 @@ public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
 
 	public DraftsAdapter(final Context context) {
         super(context, R.layout.list_item_draft, null, new String[0], new int[0], 0);
-		mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
+		mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
         mImageLoadingHandler = new ImageLoadingHandler(R.id.media_preview_progress);
         final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
                 SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);

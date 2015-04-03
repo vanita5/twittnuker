@@ -272,7 +272,7 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-		mImageLoader = TwittnukerApplication.getInstance(this).getImageLoaderWrapper();
+		mImageLoader = TwittnukerApplication.getInstance(this).getMediaLoaderWrapper();
 		final Intent intent = getIntent();
 		final String type = mTabType = intent.getStringExtra(EXTRA_TYPE);
 		final CustomTabConfiguration conf = getTabConfiguration(type);

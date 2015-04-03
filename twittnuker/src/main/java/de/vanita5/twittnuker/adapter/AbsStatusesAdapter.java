@@ -79,7 +79,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context);
 		mInflater = LayoutInflater.from(context);
-        mImageLoader = app.getImageLoaderWrapper();
+        mImageLoader = app.getMediaLoaderWrapper();
 		mLoadingHandler = new ImageLoadingHandler(R.id.media_preview_progress);
         mTwitterWrapper = app.getTwitterWrapper();
         final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,

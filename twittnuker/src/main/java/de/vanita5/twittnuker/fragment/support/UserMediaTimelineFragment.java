@@ -22,8 +22,8 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.loader.support.MediaTimelineLoader;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SimpleDrawerCallback;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.MediaSizeImageView;
@@ -164,7 +164,7 @@ public class UserMediaTimelineFragment extends BaseSupportFragment
 
 		MediaTimelineAdapter(Context context) {
 			mInflater = LayoutInflater.from(context);
-			mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
+			mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
 			mLoadingHandler = new ImageLoadingHandler(R.id.media_image_progress);
 		}
 

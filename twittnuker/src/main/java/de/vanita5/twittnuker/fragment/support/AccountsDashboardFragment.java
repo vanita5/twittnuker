@@ -340,7 +340,7 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
         final View view = getView();
         if (view == null) throw new AssertionError();
         final Context context = view.getContext();
-        mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
+        mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
         final LayoutInflater inflater = LayoutInflater.from(context);
         final ListView listView = getListView();
         listView.setHorizontalScrollBarEnabled(false);
@@ -612,7 +612,7 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 
         AccountSelectorAdapter(Context context, AccountsDashboardFragment fragment) {
             mInflater = LayoutInflater.from(context);
-            mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
+            mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
             mFragment = fragment;
             setHasStableIds(true);
 		}

@@ -437,7 +437,7 @@ public class StatusFragment extends BaseSupportFragment
             mFragment = fragment;
             mContext = context;
             mInflater = LayoutInflater.from(context);
-            mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
+            mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
             mImageLoadingHandler = new ImageLoadingHandler(R.id.media_preview_progress);
             mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context);
             mNameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);

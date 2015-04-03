@@ -206,7 +206,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
         final BaseActionBarActivity activity = (BaseActionBarActivity) getActivity();
         mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mMessageDrafts = getSharedPreferences(MESSAGE_DRAFTS_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        mImageLoader = TwittnukerApplication.getInstance(activity).getImageLoaderWrapper();
+        mImageLoader = TwittnukerApplication.getInstance(activity).getMediaLoaderWrapper();
         mReadStateManager = getReadStateManager();
         mTwitterWrapper = getTwitterWrapper();
         mValidator = new TwidereValidator(activity);

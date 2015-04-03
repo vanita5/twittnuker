@@ -119,7 +119,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 			mAccount = account;
 			mSwitchPreference = context.getSharedPreferences(switchPreferenceName, Context.MODE_PRIVATE);
             final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-            mImageLoader = app.getImageLoaderWrapper();
+            mImageLoader = app.getMediaLoaderWrapper();
 			mSwitchKey = switchKey;
 			mSwitchDefault = switchDefault;
 			mSwitchPreference.registerOnSharedPreferenceChangeListener(this);

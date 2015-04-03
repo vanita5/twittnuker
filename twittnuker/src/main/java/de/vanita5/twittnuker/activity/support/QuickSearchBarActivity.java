@@ -463,7 +463,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 		SuggestionsAdapter(Context context) {
 			mContext = context;
 			mInflater = LayoutInflater.from(context);
-			mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
+			mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
         }
 
         public boolean canDismiss(int position) {

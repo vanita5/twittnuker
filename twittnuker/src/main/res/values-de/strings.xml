@@ -530,6 +530,7 @@
     <string name="show_in_timeline">Anzeigen</string>
     <string name="cards">Tweets</string>
     <string name="no_tab">Kein Tab</string>
+    <string name="user_protected_summary">Du musst anfragen dem Benutzer zu folgen, um seine Tweets lesen zu können</string>
     <string name="delete_user"><xliff:g id="name">%s</xliff:g> löschen</string>
     <string name="delete_users">Benutzer entfernen</string>
     <string name="delete_user_confirm_message"><xliff:g id="name">%s</xliff:g> löschen? Das kann nicht rückgängig gemacht werden.</string>

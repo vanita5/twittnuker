@@ -59,7 +59,7 @@ public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapt
 		super(context, layout, c, from, to, flags);
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mLinkify = new TwidereLinkify(new OnLinkClickHandler(context, app.getMultiSelectManager()));
-		mImageLoader = app.getImageLoaderWrapper();
+		mImageLoader = app.getMediaLoaderWrapper();
 		mColorPrefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mColorPrefs.registerOnSharedPreferenceChangeListener(this);
 	}

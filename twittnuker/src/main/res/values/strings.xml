@@ -530,6 +530,7 @@
 	<string name="show_in_timeline">Show in timeline</string>
 	<string name="cards">Cards</string>
     <string name="no_tab">No tab</string>
+	<string name="user_protected_summary">You need to send follow request to this protected user to see tweets</string>
 	<string name="delete_user">Delete user <xliff:g id="name">%s</xliff:g></string>
 	<string name="delete_users">Delete users</string>
 	<string name="delete_user_confirm_message">Delete <xliff:g id="name">%s</xliff:g>? This can\'t be undone.</string>

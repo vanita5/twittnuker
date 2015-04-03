@@ -31,8 +31,8 @@ import android.widget.ImageView;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 
 import java.util.Collection;
 
@@ -46,7 +46,7 @@ public class MediaPreviewAdapter extends ArrayAdapter<String> implements Constan
 
 	public MediaPreviewAdapter(final Context context) {
 		super(context, R.layout.gallery_item_image_preview);
-		mImageLoader = ((TwittnukerApplication) context.getApplicationContext()).getImageLoaderWrapper();
+		mImageLoader = ((TwittnukerApplication) context.getApplicationContext()).getMediaLoaderWrapper();
 		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mImageLoadingHandler = new ImageLoadingHandler();
 	}

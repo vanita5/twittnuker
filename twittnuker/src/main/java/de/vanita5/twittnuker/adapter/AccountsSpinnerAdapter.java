@@ -50,7 +50,7 @@ public class AccountsSpinnerAdapter extends ArrayAdapter<ParcelableAccount> {
     public AccountsSpinnerAdapter(final Context context, int itemViewResource) {
         super(context, itemViewResource);
         mContext = context;
-		mImageLoader = TwittnukerApplication.getInstance(context).getImageLoaderWrapper();
+		mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
 		mDisplayProfileImage = context.getSharedPreferences(DirectMessagesConversationFragment.SHARED_PREFERENCES_NAME,
                 Context.MODE_PRIVATE).getBoolean(DirectMessagesConversationFragment.KEY_DISPLAY_PROFILE_IMAGE, true);
 	}

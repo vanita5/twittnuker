@@ -152,7 +152,7 @@ public class TwittnukerApplication extends Application implements Constants,
         return mVideoLoader = loader;
 	}
 
-    public MediaLoaderWrapper getImageLoaderWrapper() {
+    public MediaLoaderWrapper getMediaLoaderWrapper() {
         if (mMediaLoaderWrapper != null) return mMediaLoaderWrapper;
         return mMediaLoaderWrapper = new MediaLoaderWrapper(getImageLoader(), getVideoLoader());
     }
@@ -248,6 +248,9 @@ public class TwittnukerApplication extends Application implements Constants,
 		if (mImageDownloader != null) {
 			mImageDownloader.reloadConnectivitySettings();
 		}
+        if (mFullImageDownloader != null) {
+            mFullImageDownloader.reloadConnectivitySettings();
+        }
 	}
 
     private DiskCache createDiskCache(final String dirName) {

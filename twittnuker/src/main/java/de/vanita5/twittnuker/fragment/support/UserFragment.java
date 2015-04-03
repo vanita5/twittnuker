@@ -109,9 +109,9 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.text.TextAlphaSpan;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MathUtils;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -336,6 +336,13 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                     mPagesErrorContainer.setVisibility(View.VISIBLE);
                     final String displayName = UserColorNameUtils.getDisplayName(getActivity(), user);
                     mPagesErrorText.setText(getString(R.string.blocked_by_user_summary, displayName));
+                    mPagesErrorIcon.setImageResource(R.drawable.ic_info_error_generic);
+                    mPagesContent.setVisibility(View.GONE);
+                } else if (!relationship.isSourceFollowingTarget() && user.is_protected) {
+                    mPagesErrorContainer.setVisibility(View.VISIBLE);
+                    final String displayName = UserColorNameUtils.getDisplayName(getActivity(), user);
+                    mPagesErrorText.setText(getString(R.string.user_protected_summary, displayName));
+                    mPagesErrorIcon.setImageResource(R.drawable.ic_info_locked);
                     mPagesContent.setVisibility(View.GONE);
                 } else {
                     mPagesErrorContainer.setVisibility(View.GONE);
@@ -639,7 +646,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             userId = args.getLong(EXTRA_USER_ID, -1);
             screenName = args.getString(EXTRA_SCREEN_NAME);
         }
-        mProfileImageLoader = getApplication().getImageLoaderWrapper();
+        mProfileImageLoader = getApplication().getMediaLoaderWrapper();
         final FragmentActivity activity = getActivity();
 
         Utils.setNdefPushMessageCallback(activity, new CreateNdefMessageCallback() {
@@ -668,12 +675,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                     mProfileImageView.setTransitionDestination(bounds);
                 }
                 super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
-            }
-
-            @Override
-            public View onCreateSnapshotView(Context context, Parcelable snapshot) {
-                final View view = super.onCreateSnapshotView(context, snapshot);
-                return view;
             }
 
             @Override
@@ -1124,6 +1125,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mFollowProgress = (ProgressBar) headerView.findViewById(R.id.follow_progress);
         mPagesContent = view.findViewById(R.id.pages_content);
         mPagesErrorContainer = view.findViewById(R.id.pages_error_container);
+        mPagesErrorIcon = (ImageView) view.findViewById(R.id.pages_error_icon);
         mPagesErrorText = (TextView) view.findViewById(R.id.pages_error_text);
 	}
 

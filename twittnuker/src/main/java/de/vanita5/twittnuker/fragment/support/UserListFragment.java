@@ -73,8 +73,8 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.LinkCreator;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -323,7 +323,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         }
 
         mTwitterWrapper = getApplication().getTwitterWrapper();
-        mProfileImageLoader = getApplication().getImageLoaderWrapper();
+        mProfileImageLoader = getApplication().getMediaLoaderWrapper();
         mProfileImageView.setOnClickListener(this);
         mUserListDetails.setOnClickListener(this);
         mRetryButton.setOnClickListener(this);

@@ -62,7 +62,7 @@ public class ParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> imp
 		mContext = context;
 		mLocale = context.getResources().getConfiguration().locale;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-		mProfileImageLoader = app.getImageLoaderWrapper();
+        mProfileImageLoader = app.getMediaLoaderWrapper();
 		mMultiSelectManager = app.getMultiSelectManager();
 		configBaseCardAdapter(context, this);
 	}
