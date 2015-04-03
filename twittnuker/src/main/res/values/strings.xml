@@ -354,8 +354,6 @@
 	<string name="disable_background_service">Disable background service</string>
 	<string name="disable_background_service_summary">Twittnuker won\'t have background service if you disable auto refresh, don\'t be silly!</string>
 	<string name="text_copied">Text copied to clipboard.</string>
-	<string name="amount_usd">Amount (USD)</string>
-	<string name="donate">Donate</string>
 	<string name="hashtag">Hashtag</string>
 	<string name="links">Links</string>
 	<string name="edit_profile">Edit profile</string>
@@ -517,7 +515,6 @@
 	<string name="unread_count">Unread count</string>
 	<string name="developed_by">Developer</string>
 	<string name="project_account">Project account</string>
-	<string name="donators">Donators</string>
 	<string name="translators">Translators</string>
 	<string name="translate">Translate</string>
 	<string name="sponsored_by">Sponsored by</string>

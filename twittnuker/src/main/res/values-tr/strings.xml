@@ -18,6 +18,8 @@
   <string name="oauth_base_url">OAuth tabanlı URL</string>
   <string name="signing_oauth_base_url">OAuth tabanlı URL ile bağlanılıyor</string>
   <string name="signing_rest_base_url">REST tabanlı URL ile bağlanılıyor</string>
+  <string name="api_url_format">API URL Format</string>
+  <string name="same_oauth_signing_url">Otomatik giriş için aynı url\'yi kullan</string>
   <string name="auth_type">Yetkilendirme tipi</string>
   <string name="oauth">OAuth</string>
   <string name="xauth">xAuth</string>
@@ -84,7 +86,8 @@
   <string name="look_and_feel">Görünüş ve kullanışlılık</string>
   <string name="display_profile_image">Profil resmini göster</string>
   <string name="image_load_summary">Bunu pasif yapmak listenin kaydırılma hızını artırır ve kullanılan veri miktarını azaltır.</string>
-  <string name="in_reply_to_name"><xliff:g id="user_name">%s</xliff:g>\'e cevap olarak</string>
+  <string name="in_reply_to_name"><xliff:g id="user_name">%s</xliff:g> adlı kişiye cevap ver</string>
+  <string name="name_retweeted"><xliff:g id="user_name">%s</xliff:g> bunu retweet etti</string>
   <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> bunu retweet etti</string>
   <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> ve <xliff:g id="retweet_count">%2$d</xliff:g> kişi daha bunu retweet etti</string>
   <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> kişi bunu retweet etti</string>
@@ -188,6 +191,7 @@
   <string name="lists">Listeler</string>
   <string name="users_lists">Kullanıcının listeleri</string>
   <string name="lists_following_user">Bu kullanıcıyı takip eden listeler</string>
+  <string name="lists_following_you">Sizi takip eden listeler</string>
   <string name="item_3_minutes">3 dakika</string>
   <string name="item_5_minutes">5 dakika</string>
   <string name="item_10_minutes">10 dakika</string>
@@ -335,8 +339,6 @@
   <string name="disable_background_service">Arkaplan hizmetini kapat</string>
   <string name="disable_background_service_summary">Eğer otomatik güncelle ve veri profillemeyi kapatırsanız Twittnuker arkaplan servisine sahip olmaz, aptal olmayın!</string>
   <string name="text_copied">Metin panoya kopyalandı.</string>
-  <string name="amount_usd">Miktar (USD)</string>
-  <string name="donate">Bağış yap</string>
   <string name="hashtag">Etiket</string>
   <string name="links">Kısayollar</string>
   <string name="edit_profile">Profil düzenle</string>
@@ -368,6 +370,7 @@
   <string name="quote_protected_status_notice">Korunan tweet\'i alıntı yapmak önerilmez.</string>
   <string name="edit_draft">Taslağı düzenle</string>
   <string name="profile_image">Profil resmi</string>
+  <string name="your_profile_image">Profil fotoğrafınız</string>
   <string name="mention_user">dahil et: <xliff:g id="user">%s</xliff:g></string>
   <string name="theme_color">Tema rengi</string>
   <string name="wrong_url_format">Yanlış URL biçimi.</string>
@@ -470,12 +473,10 @@
   <string name="unsubscribe_from_user_list_confirm_message"><xliff:g id="name">%s</xliff:g> listesi üyeliğinden çıkılsın mı? Daha sonra tekrar üye olabilirsiniz.</string>
   <string name="destroy_status">Tweeti sil</string>
   <string name="destroy_status_confirm_message">Bu tweeti sil?</string>
-  <string name="pay_via_paypal">PayPal aracılığıyla doğrudan öde</string>
-  <string name="donate_via_alipay">Alipay aracılığıyla bağış yap</string>
+  <string name="twidere_test">Twidere test</string>
   <string name="unread_count">Okunmamış sayısı</string>
   <string name="developed_by">Tarafından geliştirildi</string>
   <string name="project_account">Proje şifresi</string>
-  <string name="donators">Bağış yapanlar</string>
   <string name="translators">Çevirmenler</string>
   <string name="translate">Çevir</string>
   <string name="sponsored_by">Sponsored by</string>
@@ -552,4 +553,5 @@
   <string name="replies">Yanıtlar</string>
   <string name="photo">Fotoğraf</string>
   <string name="gallery">Galeri</string>
+  <string name="unknown_location">Bilinmeyen konum</string>
 </resources>

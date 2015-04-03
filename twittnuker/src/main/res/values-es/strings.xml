@@ -338,8 +338,6 @@
     <string name="disable_background_service">Desactivar servicio en segundo plano</string>
     <string name="disable_background_service_summary">Twittnuker no dispondrá de un servicio en segundo plano si deshabilitas las actualizaciones automáticas, ¡no seas tonto!</string>
     <string name="text_copied">Texto copiado al portapapeles.</string>
-    <string name="amount_usd">Cantidad (USD)</string>
-    <string name="donate">Donar</string>
     <string name="hashtag">Hashtag</string>
     <string name="links">Enlaces</string>
     <string name="edit_profile">Editar perfil</string>
@@ -492,14 +490,10 @@
     <string name="signing_in_error_browser_sign_in_hint">Error al iniciar sesión, es posible que debas utilizar el logueo en el navegador. (Esto ignorará la configuración de la API modificada durante el inicio de sesión)</string>
     <string name="report_user">Reportar a <xliff:g id="name">%s</xliff:g></string>
     <string name="report_user_confirm_message">¿Reportar a <xliff:g id="name">%s</xliff:g> por spam? Esto bloqueará al usuario.</string>
-    <string name="pay_via_paypal">Pagar vía PayPal directamente</string>
-    <string name="pay_via_paypal_summary">Cuando vea «Esto no es elegible para recibir fondos»</string>
-    <string name="donate_via_alipay">Donación vía Alipay</string>
     <string name="staggered_home_timeline">Cronología escalonada</string>
     <string name="unread_count">Contador de No leídos</string>
     <string name="developed_by">Desarrollado por</string>
     <string name="project_account">Cuenta del proyecto</string>
-    <string name="donators">Donantes</string>
     <string name="translators">Traductores</string>
     <string name="translate">Traducir</string>
     <string name="sponsored_by">Patrocinado por</string>
