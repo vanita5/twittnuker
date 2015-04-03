@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 import de.vanita5.twittnuker.BuildConfig;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DNS;
 import twitter4j.http.HostAddressResolver;
 

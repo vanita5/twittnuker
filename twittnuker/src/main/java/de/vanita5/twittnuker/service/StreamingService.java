@@ -45,7 +45,7 @@ import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.NotificationHelper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
+import de.vanita5.twittnuker.util.net.OkHttpClientFactory;
 import twitter4j.DirectMessage;
 import twitter4j.StallWarning;
 import twitter4j.Status;
@@ -62,7 +62,7 @@ import static android.text.TextUtils.isEmpty;
 
 public class StreamingService extends Service implements Constants {
 
-	private final List<WeakReference<TwitterStream>> mTwitterInstances = new ArrayList<WeakReference<TwitterStream>>();
+	private final List<WeakReference<TwitterStream>> mTwitterInstances = new ArrayList<>();
 	private ContentResolver mResolver;
 
 	private SharedPreferences mPreferences;
@@ -155,43 +155,42 @@ public class StreamingService extends Service implements Constants {
 	}
 
 	private void initStreaming() {
-		//FIXME disable streaming while HostAddressResolver is not fixed
-//		if (!mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) return;
-//
-//		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-//		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-//
-//		if (isStreaming) {
-//			if (!(mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
-//					|| wifi.isConnected())) {
-//				clearTwitterInstances();
-//			}
-//			return;
-//		}
-//
-//		if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
-//				|| wifi.isConnected()) {
-//
-//			final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-//			if (setTwitterInstances(prefs)) {
-//				if (!mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, true)) return;
-//				final Intent intent = new Intent(this, HomeActivity.class);
-//				NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-//				builder.setOngoing(true)
-//						.setOnlyAlertOnce(true)
-//						.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT))
-//						.setSmallIcon(R.drawable.ic_stat_twittnuker)
-//						.setContentTitle(getString(R.string.app_name))
-//						.setContentText(getString(R.string.streaming_service_running))
-//						.setTicker(getString(R.string.streaming_service_running))
-//						.setPriority(NotificationCompat.PRIORITY_MIN)
-//						.setCategory(NotificationCompat.CATEGORY_SERVICE);
-//				mNotificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
-//			} else {
-//				isStreaming = false;
-//				mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
-//			}
-//		}
+		if (!mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) return;
+
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+		if (isStreaming) {
+			if (!(mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
+					|| wifi.isConnected())) {
+				clearTwitterInstances();
+			}
+			return;
+		}
+
+		if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
+				|| wifi.isConnected()) {
+
+			final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+			if (setTwitterInstances(prefs)) {
+				if (!mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, true)) return;
+				final Intent intent = new Intent(this, HomeActivity.class);
+				NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+				builder.setOngoing(true)
+						.setOnlyAlertOnce(true)
+						.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT))
+						.setSmallIcon(R.drawable.ic_stat_twittnuker)
+						.setContentTitle(getString(R.string.app_name))
+						.setContentText(getString(R.string.streaming_service_running))
+						.setTicker(getString(R.string.streaming_service_running))
+						.setPriority(NotificationCompat.PRIORITY_MIN)
+						.setCategory(NotificationCompat.CATEGORY_SERVICE);
+				mNotificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
+			} else {
+				isStreaming = false;
+				mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
+			}
+		}
 	}
 
 	private boolean setTwitterInstances(final SharedPreferencesWrapper prefs) {
@@ -206,17 +205,18 @@ public class StreamingService extends Service implements Constants {
 			final long account_id = account.account_id;
 			mAccountIds[i] = account_id;
 			final StreamConfigurationBuilder cb = new StreamConfigurationBuilder();
+            cb.setHttpClientFactory(new OkHttpClientFactory(this));
+			cb.setHostAddressResolverFactory(new TwidereStreamingHostAddressResolverFactory(this));
 			cb.setGZIPEnabled(prefs.getBoolean(KEY_GZIP_COMPRESSING, true));
 			cb.setIncludeEntitiesEnabled(true);
 			if (prefs.getBoolean(KEY_IGNORE_SSL_ERROR, false)) {
-				final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
-				cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(app));
 				cb.setIgnoreSSLError(true);
+                cb.setHostAddressResolverFactory(new TwidereStreamingHostAddressResolverFactory(this));
 			}
-			final String default_consumer_key = Utils.getNonEmptyString(prefs.getSharedPreferences(),
-					KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
-			final String default_consumer_secret = Utils.getNonEmptyString(prefs.getSharedPreferences(),
-					KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
+			final String default_consumer_key = Utils
+					.getNonEmptyString(prefs.getSharedPreferences(), KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
+			final String default_consumer_secret = Utils
+					.getNonEmptyString(prefs.getSharedPreferences(), KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
 			final String consumer_key = account.consumer_key, consumer_secret = account.consumer_secret;
 			if (!isEmpty(consumer_key) && !isEmpty(consumer_secret)) {
 				cb.setOAuthConsumerKey(consumer_key);
@@ -225,11 +225,12 @@ public class StreamingService extends Service implements Constants {
 				cb.setOAuthConsumerKey(default_consumer_key);
 				cb.setOAuthConsumerSecret(default_consumer_secret);
 			}
-			final TwitterStream stream = new TwitterStreamFactory(cb.build()).getInstance(new AccessToken(token, secret));
+			final TwitterStream stream = new TwitterStreamFactory(cb.build()).getInstance(new AccessToken(token,
+					secret));
 			stream.addListener(new UserStreamListenerImpl(this, mPreferences, account_id));
 			refreshBefore(new long[]{ account_id });
 			stream.user();
-			mTwitterInstances.add(new WeakReference<TwitterStream>(stream));
+			mTwitterInstances.add(new WeakReference<>(stream));
 		}
 		isStreaming = true;
 		return true;
@@ -242,7 +243,6 @@ public class StreamingService extends Service implements Constants {
 	}
 
 	static class ShutdownStreamTwitterRunnable implements Runnable {
-
 		private final TwitterStream stream;
 
 		ShutdownStreamTwitterRunnable(final TwitterStream stream) {
