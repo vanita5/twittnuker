@@ -33,22 +33,12 @@
 		android:title="@string/donate">
 		<Preference 
 		    android:title="@string/donate_twidere_via_paypal"
-		    android:summary="@string/donate_twidere_via_paypal_summary">
+		    android:summary="@string/donate_summary">
 			<intent
 				android:action="android.intent.action.VIEW"
-				android:data="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=mariotaku.lee%40gmail%2ecom&amp;item_name=Donate%20to%20Twidere"/>
+				android:data="https://github.com/TwidereProject/Twidere-Android#donation"/>
 		</Preference>
 <!-- 		Twidere Donations / Auskommentiert -->
-<!-- 		<Preference -->
-<!-- 			android:fragment="de.vanita5.twittnuker.fragment.PayPalDonateFragment" -->
-<!-- 			android:summary="@string/pay_via_paypal_summary" -->
-<!-- 			android:title="@string/pay_via_paypal"> -->
-<!-- 		</Preference> -->
-<!-- 		<Preference android:title="@string/donate_via_alipay"> -->
-<!-- 			<intent -->
-<!-- 				android:action="android.intent.action.VIEW" -->
-<!-- 				android:data="https://me.alipay.com/mariotaku"/> -->
-<!-- 		</Preference> -->
 <!-- 		<Preference -->
 <!-- 			android:summary="@string/contributors_list_summary" -->
 <!-- 			android:title="@string/donators"> -->

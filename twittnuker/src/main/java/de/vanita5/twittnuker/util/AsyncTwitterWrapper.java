@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,6 +42,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
+import org.mariotaku.querybuilder.SQLFunctions;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ListResponse;
@@ -2045,45 +2048,52 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 //            new CacheUsersStatusesTask(mContext, responses.toArray(array)).executeTask();
         }
 
-        private boolean storeStatus(long accountId, List<twitter4j.Status> statuses, long maxId, boolean truncated, boolean notify) {
-            if (statuses == null || statuses.isEmpty()) {
-                return true;
+        private void storeStatus(long accountId, List<twitter4j.Status> statuses, long maxId, boolean truncated, boolean notify) {
+            if (statuses == null || statuses.isEmpty() || accountId <= 0) {
+                return;
             }
             final Uri uri = getDatabaseUri();
             final boolean noItemsBefore = getStatusCountInDatabase(mContext, uri, accountId) <= 0;
             final ContentValues[] values = new ContentValues[statuses.size()];
             final long[] statusIds = new long[statuses.size()];
+            long minId = -1;
+            int minIdx = -1;
             for (int i = 0, j = statuses.size(); i < j; i++) {
                 final twitter4j.Status status = statuses.get(i);
                 values[i] = createStatus(status, accountId);
-                statusIds[i] = status.getId();
+                final long id = status.getId();
+                if (minId == -1 || id < minId) {
+                    minId = id;
+                    minIdx = i;
+                }
+                statusIds[i] = id;
             }
             // Delete all rows conflicting before new data inserted.
             final Expression accountWhere = Expression.equals(Statuses.ACCOUNT_ID, accountId);
             final Expression statusWhere = Expression.in(new Column(Statuses.STATUS_ID), new RawItemArray(statusIds));
-            final String deleteWhere = Expression.and(accountWhere, statusWhere).getSQL();
-            final Uri deleteUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, false);
-            final int rowsDeleted = mResolver.delete(deleteUri, deleteWhere, null);
-
-            // Insert previously fetched items.
-            final Uri insertUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, notify);
-            bulkInsert(mResolver, insertUri, values);
+            final String countWhere = Expression.and(accountWhere, statusWhere).getSQL();
+            final String[] projection = {SQLFunctions.COUNT()};
+            final int rowsDeleted;
+            final Cursor countCur = mResolver.query(uri, projection, countWhere, null, null);
+            if (countCur.moveToFirst()) {
+                rowsDeleted = countCur.getInt(0);
+            } else {
+                rowsDeleted = 0;
+            }
+            countCur.close();
 
             // Insert a gap.
-            final long minId = statusIds.length != 0 ? TwidereArrayUtils.min(statusIds) : -1;
             final boolean deletedOldGap = rowsDeleted > 0 && ArrayUtils.contains(statusIds, maxId);
             final boolean noRowsDeleted = rowsDeleted == 0;
             final boolean insertGap = minId > 0 && (noRowsDeleted || deletedOldGap) && !truncated
                     && !noItemsBefore && statuses.size() > 1;
-            if (insertGap) {
-                final ContentValues gapValue = new ContentValues();
-                gapValue.put(Statuses.IS_GAP, 1);
-                final Expression where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
-                        Expression.equals(Statuses.STATUS_ID, minId));
-                final Uri updateUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, true);
-                mResolver.update(updateUri, gapValue, where.getSQL(), null);
+            if (insertGap && minIdx != -1) {
+                values[minIdx].put(Statuses.IS_GAP, true);
             }
-            return false;
+            // Insert previously fetched items.
+            final Uri insertUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, notify);
+            bulkInsert(mResolver, insertUri, values);
+
         }
 
         protected abstract Uri getDatabaseUri();

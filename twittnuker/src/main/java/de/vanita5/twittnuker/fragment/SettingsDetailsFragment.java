@@ -22,7 +22,12 @@
 
 package de.vanita5.twittnuker.fragment;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceScreen;
 
 import de.vanita5.twittnuker.util.Utils;
@@ -32,10 +37,15 @@ public class SettingsDetailsFragment extends BasePreferenceFragment {
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		final PreferenceScreen screen = getPreferenceScreen();
-		if (screen != null) {
-			screen.removeAll();
+        final PreferenceScreen defaultScreen = getPreferenceScreen();
+        final PreferenceScreen preferenceScreen;
+        if (defaultScreen != null) {
+            defaultScreen.removeAll();
+            preferenceScreen = defaultScreen;
+        } else {
+            preferenceScreen = getPreferenceManager().createPreferenceScreen(getActivity());
 		}
+        setPreferenceScreen(preferenceScreen);
 		final Bundle args = getArguments();
 		final Object rawResId = args.get(EXTRA_RESID);
 		final int resId;
@@ -49,6 +59,18 @@ public class SettingsDetailsFragment extends BasePreferenceFragment {
 		if (resId != 0) {
 			addPreferencesFromResource(resId);
 		}
-	}
+        final Context context = preferenceScreen.getContext();
+        final Intent hiddenEntryIntent = new Intent(INTENT_ACTION_HIDDEN_SETTINGS_ENTRY);
+        final PackageManager pm = context.getPackageManager();
+        for (ResolveInfo info : pm.queryIntentActivities(hiddenEntryIntent, PackageManager.MATCH_DEFAULT_ONLY)) {
+            final Preference preference = new Preference(context);
+            final Intent intent = new Intent(INTENT_ACTION_HIDDEN_SETTINGS_ENTRY);
+            intent.setPackage(info.resolvePackageName);
+            intent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
+            preference.setIntent(intent);
+            preference.setTitle(info.loadLabel(pm));
+            preferenceScreen.addPreference(preference);
+		}
+    }
 
 }
