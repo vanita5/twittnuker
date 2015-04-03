@@ -217,7 +217,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
         }
 	}
 
-    private static class LoadAccountsTask extends AsyncTask<Void, Void, List<ParcelableAccount>> {
+    private static class LoadAccountsTask extends AsyncTask<Object, Object, List<ParcelableAccount>> {
 
 		private final AccountsListPreference mPreference;
 
@@ -226,7 +226,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 		}
 
 		@Override
-		protected List<ParcelableAccount> doInBackground(final Void... params) {
+		protected List<ParcelableAccount> doInBackground(final Object... params) {
             return ParcelableAccount.getAccountsList(mPreference.getContext(), false);
 		}
 
