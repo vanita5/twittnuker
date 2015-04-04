@@ -625,8 +625,7 @@
 
         <service
             android:name=".service.RefreshService"
-            android:label="@string/label_refresh_service"
-            android:settingsActivity=".activity.SettingsActivity"/>
+            android:label="@string/label_refresh_service"/>
         <service
             android:name=".service.PushService"
             android:label="@string/label_refresh_service"/>

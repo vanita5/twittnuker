@@ -549,7 +549,6 @@
     <string name="tab_display_option_label">Etiqueta</string>
     <string name="tab_display_option_icon_and_label">Icono y etiqueta</string>
     <string name="highlight_and_underline">Resaltar y subrayar</string>
-    <string name="twip_api_version_notice_message">TWIP no puede manejar correctamente \"REST Base URL\" que no terminen en \"/1.1/\" correctly.\n\n Necesita agregar  \"/1.1/\" al final de la dirección para evitar este error al subir una imagen.</string>
     <string name="back">Volver</string>
     <string name="theme_font_family">Familia tipográfica del tema</string>
     <string name="translation_destination">Destino de la traducción</string>

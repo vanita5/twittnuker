@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.constant.IntentConstants;
@@ -42,10 +41,7 @@ public class SecretCodeBroadcastReceiver extends BroadcastReceiver implements In
         final String title = context.getString(R.string.hidden_settings);
         final Bundle args = new Bundle();
         args.putInt(EXTRA_RESID, R.xml.settings_hidden);
-        final Intent hiddenEntryIntent = new Intent(INTENT_ACTION_HIDDEN_SETTINGS_ENTRY);
-        hiddenEntryIntent.setPackage(BuildConfig.APPLICATION_ID);
-        hiddenEntryIntent.addCategory(Intent.CATEGORY_DEFAULT);
-        args.putParcelable(EXTRA_INTENT, hiddenEntryIntent);
+        args.putString(EXTRA_SETTINGS_INTENT_ACTION, INTENT_ACTION_HIDDEN_SETTINGS_ENTRY);
         testIntent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT, cls);
         testIntent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS, args);
         testIntent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT_TITLE, title);

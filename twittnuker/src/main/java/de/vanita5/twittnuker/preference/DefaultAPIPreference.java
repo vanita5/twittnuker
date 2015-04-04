@@ -32,6 +32,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -50,7 +51,7 @@ import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
 import static de.vanita5.twittnuker.util.Utils.trim;
 
 public class DefaultAPIPreference extends DialogPreference implements Constants, TwitterConstants,
-		OnCheckedChangeListener, OnClickListener {
+        OnCheckedChangeListener, OnClickListener, CompoundButton.OnCheckedChangeListener {
 
 	private EditText mEditAPIUrlFormat;
     private CheckBox mEditSameOAuthSigningUrl, mEditNoVersionSuffix;
@@ -58,6 +59,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 	private RadioGroup mEditAuthType;
 	private RadioButton mButtonOAuth, mButtonxAuth, mButtonBasic, mButtonTwipOMode;
     private View mAPIFormatHelpButton;
+    private boolean mEditNoVersionSuffixChanged;
 
 	public DefaultAPIPreference(final Context context, final AttributeSet attrs) {
 		this(context, attrs, android.R.attr.preferenceStyle);
@@ -76,9 +78,17 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
         mEditSameOAuthSigningUrl.setVisibility(isOAuth ? View.VISIBLE : View.GONE);
         mEditConsumerKey.setVisibility(isOAuth ? View.VISIBLE : View.GONE);
         mEditConsumerSecret.setVisibility(isOAuth ? View.VISIBLE : View.GONE);
+        if (!mEditNoVersionSuffixChanged) {
+            mEditNoVersionSuffix.setChecked(authType == Accounts.AUTH_TYPE_TWIP_O_MODE);
+        }
 	}
 
 	@Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        mEditNoVersionSuffixChanged = true;
+    }
+
+    @Override
 	public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.api_url_format_help: {
@@ -115,6 +125,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 		mEditConsumerSecret = (EditText) view.findViewById(R.id.consumer_secret);
         mAPIFormatHelpButton = view.findViewById(R.id.api_url_format_help);
 
+        mEditNoVersionSuffix.setOnCheckedChangeListener(this);
 		mEditAuthType.setOnCheckedChangeListener(this);
         mAPIFormatHelpButton.setOnClickListener(this);
 

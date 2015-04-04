@@ -567,7 +567,6 @@
     <string name="tab_display_option_label">标签</string>
     <string name="tab_display_option_icon_and_label">图标和标签</string>
     <string name="highlight_and_underline">高亮和下划线</string>
-    <string name="twip_api_version_notice_message">TWIP无法正确处理没有以\"/1.1/\"结尾的Rest Base URL。\n\n你可能需要在Rest Base URL的结尾加上\"/1.1/\"以避免上传图片时发生问题。</string>
     <string name="back">返回</string>
     <string name="theme_font_family">主题字体族</string>
     <string name="translation_destination">翻译结果语言</string>

@@ -36,6 +36,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -53,6 +56,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
@@ -93,6 +97,7 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 
 	private static final String TWITTER_SIGNUP_URL = "https://twitter.com/signup";
 	private static final String EXTRA_API_LAST_CHANGE = "api_last_change";
+    public static final String FRAGMENT_TAG_SIGN_IN_PROGRESS = "sign_in_progress";
 
 	private String mAPIUrlFormat;
 	private int mAuthType;
@@ -439,6 +444,11 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 	}
 
     void onSignInResult(final SignInResponse result) {
+        final FragmentManager fm = getSupportFragmentManager();
+        final Fragment f = fm.findFragmentByTag(FRAGMENT_TAG_SIGN_IN_PROGRESS);
+        if (f instanceof DialogFragment) {
+            ((DialogFragment) f).dismiss();
+        }
 		if (result != null) {
 			if (result.succeed) {
 				final ContentValues values;
@@ -490,20 +500,12 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 				}
 			}
 		}
-        setSupportProgressBarIndeterminateVisibility(false);
-		mEditPassword.setEnabled(true);
-		mEditUsername.setEnabled(true);
-		mSignInButton.setEnabled(true);
-		mSignUpButton.setEnabled(true);
 		setSignInButton();
 	}
 
 	void onSignInStart() {
-        setSupportProgressBarIndeterminateVisibility(true);
-		mEditPassword.setEnabled(false);
-		mEditUsername.setEnabled(false);
-		mSignInButton.setEnabled(false);
-		mSignUpButton.setEnabled(false);
+        final SupportProgressDialogFragment fragment = SupportProgressDialogFragment.show(this, FRAGMENT_TAG_SIGN_IN_PROGRESS);
+        fragment.setCancelable(false);
 	}
 
     public static abstract class AbstractSignInTask extends AsyncTask<Object, Void, SignInResponse> {

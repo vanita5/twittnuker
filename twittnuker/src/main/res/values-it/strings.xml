@@ -561,7 +561,6 @@
     <string name="tab_display_option_label">Label</string>
     <string name="tab_display_option_icon_and_label">Icon and label</string>
     <string name="highlight_and_underline">Evidenziare e sottolineare</string>
-    <string name="twip_api_version_notice_message">TWIP non riesce a usare correttamente le Rest Base URL che non finiscono con \"/1.1/\".\n\n Dovresti poter aggiungere \"/1.1/\" alla fine del Rest Base URL per evitare problemi durante l\'upload di immagini.</string>
     <string name="back">Indietro</string>
     <string name="theme_font_family">Tema font</string>
     <string name="translation_destination">Lingua</string>

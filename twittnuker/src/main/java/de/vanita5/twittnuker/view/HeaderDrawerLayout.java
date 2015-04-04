@@ -61,6 +61,7 @@ public class HeaderDrawerLayout extends ViewGroup {
 	private boolean mTouchDown, mTouchingScrollableContent;
 
 	private int mHeaderOffset;
+    private int mTop;
 
 	public HeaderDrawerLayout(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
@@ -252,8 +253,10 @@ public class HeaderDrawerLayout extends ViewGroup {
 
     private void notifyOffsetChanged() {
         final int top = getHeaderTop();
+        if (mTop == top) return;
         mHeaderOffset = top - getPaddingTop();
         mDrawerCallback.topChanged(top);
+        mTop = top;
 	}
 
     private void offsetHeaderBy(int dy) {

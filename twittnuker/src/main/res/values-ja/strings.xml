@@ -553,7 +553,6 @@
     <string name="tab_display_option_label">ラベル</string>
     <string name="tab_display_option_icon_and_label">アイコンとラベル</string>
     <string name="highlight_and_underline">ハイライトと下線</string>
-    <string name="twip_api_version_notice_message">TWIPは\"/1.1/\"で終わっていないRest Base URLを正しく扱えません。\n\n 画像のアップロードの問題を解決するためには\"/1.1/\"をRest Base URLの最後に追記してください。</string>
     <string name="back">戻る</string>
     <string name="theme_font_family">使用するフォント</string>
     <string name="translation_destination">翻訳先の言語</string>

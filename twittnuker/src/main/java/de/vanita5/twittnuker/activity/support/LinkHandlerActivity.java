@@ -46,6 +46,7 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCal
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
+import de.vanita5.twittnuker.fragment.support.SearchFragment;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -397,6 +398,8 @@ public class LinkHandlerActivity extends BaseActionBarActivity implements OnClic
 
     @Override
     public void setControlBarVisibleAnimate(boolean visible) {
+        // Currently only search page needs this pattern, so we only enable this feature for it.
+        if (!(getCurrentVisibleFragment() instanceof SearchFragment)) return;
         mControlBarShowHideHelper.setControlBarVisibleAnimate(visible);
     }
 

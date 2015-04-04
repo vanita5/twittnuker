@@ -109,6 +109,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.text.TextAlphaSpan;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MathUtils;
@@ -119,10 +120,12 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
 import de.vanita5.twittnuker.util.message.ProfileUpdatedEvent;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.ProfileBannerImageView;
@@ -184,7 +187,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 	private View mDescriptionContainer, mLocationContainer, mURLContainer, mTweetsContainer, mFollowersContainer,
 			mFriendsContainer;
 	private Button mRetryButton;
-    private IColorLabelView mProfileNameContainer;
+    private ColorLabelRelativeLayout mProfileNameContainer;
 	private View mProgressContainer, mErrorRetryContainer;
     private View mCardContent;
 	private View mProfileBannerSpace;
@@ -199,6 +202,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private View mPagesContent, mPagesErrorContainer;
     private ImageView mPagesErrorIcon;
     private TextView mPagesErrorText;
+    private View mProfileNameBackground;
+    private View mProfileDetailsContainer;
 
 	private SupportTabsAdapter mPagerAdapter;
 
@@ -718,9 +723,12 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mProfileBannerSpace.setOnTouchListener(this);
 
 
-        mCardView.setCardBackgroundColor(ThemeUtils.getCardBackgroundColor(getActivity()));
+        mCardView.setCardBackgroundColor(ThemeUtils.getCardBackgroundColor(activity));
 
         getUserInfo(accountId, userId, screenName, false);
+
+        final float actionBarElevation = ThemeUtils.getActionBarElevation(activity);
+        ViewCompat.setElevation(mPagerIndicator, actionBarElevation);
 
         setupBaseActionBar();
 
@@ -1113,7 +1121,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		mFollowersCount = (TextView) headerView.findViewById(R.id.followers_count);
 		mFriendsContainer = headerView.findViewById(R.id.friends_container);
 		mFriendsCount = (TextView) headerView.findViewById(R.id.friends_count);
-        mProfileNameContainer = (IColorLabelView) headerView.findViewById(R.id.profile_name_container);
+        mProfileNameContainer = (ColorLabelRelativeLayout) headerView.findViewById(R.id.profile_name_container);
         mProfileImageView = (ShapedImageView) headerView.findViewById(R.id.profile_image);
 		mProfileTypeView = (ImageView) headerView.findViewById(R.id.profile_type);
 		mDescriptionContainer = headerView.findViewById(R.id.description_container);
@@ -1128,6 +1136,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mPagesErrorContainer = view.findViewById(R.id.pages_error_container);
         mPagesErrorIcon = (ImageView) view.findViewById(R.id.pages_error_icon);
         mPagesErrorText = (TextView) view.findViewById(R.id.pages_error_text);
+        mProfileNameBackground = view.findViewById(R.id.profile_name_background);
+        mProfileDetailsContainer = view.findViewById(R.id.profile_details_container);
 	}
 
     @Override
@@ -1223,11 +1233,23 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             setupBaseActionBar();
 	    }
         mActionBarBackground.setColor(color);
-        mTintedStatusContent.setColor(color, ThemeUtils.getThemeAlpha(getActivity()));
-        mPagerIndicator.setStripColor(color);
+        final FragmentActivity activity = getActivity();
+        mTintedStatusContent.setColor(color, ThemeUtils.getThemeAlpha(activity));
         mDescriptionView.setLinkTextColor(color);
+        mProfileBannerView.setBackgroundColor(color);
         mLocationView.setLinkTextColor(color);
         mURLView.setLinkTextColor(color);
+        if (activity instanceof IThemedActivity) {
+            final int themeRes = ((IThemedActivity) activity).getCurrentThemeResourceId();
+            if (ThemeUtils.isDarkTheme(themeRes)) {
+                ViewAccessor.setBackground(mPagerIndicator, ThemeUtils.getActionBarBackground(activity, themeRes));
+                mPagerIndicator.setStripColor(color);
+            } else {
+                mPagerIndicator.setBackgroundColor(color);
+            }
+        } else {
+            mPagerIndicator.setBackgroundColor(color);
+        }
 	}
 
     private void setupUserPages() {
@@ -1268,6 +1290,24 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         if (mActionBarBackground != null && mTintedStatusContent != null) {
 			mActionBarBackground.setFactor(factor);
             mTintedStatusContent.setFactor(factor);
+
+            final float profileContentHeight = mProfileNameContainer.getHeight() + mProfileDetailsContainer.getHeight();
+            final float outlineAlphaFactor;
+            if ((offset - spaceHeight) > 0) {
+                outlineAlphaFactor = 1f - MathUtils.clamp((offset - spaceHeight) / profileContentHeight, 0, 1);
+            } else {
+                outlineAlphaFactor = 1f;
+            }
+            mActionBarBackground.setOutlineAlphaFactor(outlineAlphaFactor);
+            final Drawable drawable = mPagerIndicator.getBackground();
+            if (drawable != null) {
+                drawable.setAlpha(Math.round(255 * (1 - outlineAlphaFactor)));
+            }
+            final int color = mActionBarBackground.getColor();
+            final int contrastColor = ColorUtils.getContrastYIQ(color, 192);
+            mPagerIndicator.setIconColor(contrastColor);
+            mPagerIndicator.setLabelColor(contrastColor);
+            mPagerIndicator.setStripColor(contrastColor);
 		}
         updateTitleColor();
     }
@@ -1337,24 +1377,29 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
 		private final Drawable mShadowDrawable;
 		private final Drawable mBackgroundDrawable;
-		private final LineBackgroundDrawable mLineDrawable;
+        //        private final LineBackgroundDrawable mLineDrawable;
 		private final ColorDrawable mColorDrawable;
 		private final boolean mColorLineOnly;
 
 		private float mFactor;
 		private int mColor;
         private int mAlpha;
+        private float mOutlineAlphaFactor;
 
 		public ActionBarDrawable(Resources resources, Drawable shadow, Drawable background,
 								 boolean colorLineOnly) {
-			super(new Drawable[]{shadow, background, new LineBackgroundDrawable(resources, 2.0f),
-                    new ActionBarColorDrawable(true)});
+            super(new Drawable[]{shadow, background, new ActionBarColorDrawable(true)});
             mShadowDrawable = getDrawable(0);
 			mBackgroundDrawable = getDrawable(1);
-			mLineDrawable = (LineBackgroundDrawable) getDrawable(2);
-			mColorDrawable = (ColorDrawable) getDrawable(3);
+//            mLineDrawable = (LineBackgroundDrawable) getDrawable(2);
+            mColorDrawable = (ColorDrawable) getDrawable(2);
 			mColorLineOnly = colorLineOnly;
             setAlpha(0xFF);
+            setOutlineAlphaFactor(1);
+        }
+
+        public int getColor() {
+            return mColor;
 		}
 
 		@TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -1366,13 +1411,18 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 			} else {
 				mBackgroundDrawable.getOutline(outline);
 			}
-            outline.setAlpha(mFactor * 0.99f);
+            outline.setAlpha(mFactor * mOutlineAlphaFactor * 0.99f);
 		}
 
 		@Override
         public void setAlpha(int alpha) {
             mAlpha = alpha;
             setFactor(mFactor);
+        }
+
+        public void setOutlineAlphaFactor(float f) {
+            mOutlineAlphaFactor = f;
+            invalidateSelf();
         }
 
         @Override
@@ -1398,7 +1448,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         public void setColor(int color) {
             mColor = color;
             mColorDrawable.setColor(color);
-            mLineDrawable.setColor(color);
+//            mLineDrawable.setColor(color);
             setFactor(mFactor);
         }
 
@@ -1410,7 +1460,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 			final boolean showLine = mColorLineOnly && hasColor;
 			final boolean showColor = !mColorLineOnly && hasColor;
             mBackgroundDrawable.setAlpha(showBackground ? Math.round(mAlpha * MathUtils.clamp(f, 0, 1)) : 0);
-            mLineDrawable.setAlpha(showLine ? Math.round(mAlpha * MathUtils.clamp(f, 0, 1)) : 0);
+//            mLineDrawable.setAlpha(showLine ? Math.round(mAlpha * MathUtils.clamp(f, 0, 1)) : 0);
             mColorDrawable.setAlpha(showColor ? Math.round(mAlpha * MathUtils.clamp(f, 0, 1)) : 0);
 		}
 
