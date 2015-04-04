@@ -29,115 +29,71 @@ import android.os.AsyncTask;
 
 import com.twitter.Extractor;
 
-import org.mariotaku.querybuilder.Expression;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
-import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper.TwitterListResponse;
+import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import twitter4j.User;
-
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createCachedUser;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createStatus;
-import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
 
-public class CacheUsersStatusesTask extends AsyncTask<Object, Void, Void> implements Constants {
+public class CacheUsersStatusesTask extends AsyncTask<TwitterListResponse<twitter4j.Status>, Void, Void> implements Constants {
 
-    private final TwitterListResponse<twitter4j.Status>[] responses;
     private final Context context;
 
-    @SafeVarargs
-    public CacheUsersStatusesTask(final Context context, final TwitterListResponse<twitter4j.Status>... responses) {
+    public CacheUsersStatusesTask(final Context context) {
         this.context = context;
-        this.responses = responses;
-	}
+    }
 
+    @SafeVarargs
 	@Override
-	protected Void doInBackground(final Object... args) {
-        if (responses == null || responses.length == 0) return null;
+    protected final Void doInBackground(final TwitterListResponse<twitter4j.Status>... args) {
+        if (args == null || args.length == 0) return null;
         final ContentResolver resolver = context.getContentResolver();
 		final Extractor extractor = new Extractor();
-        final Set<ContentValues> usersValues = new HashSet<>();
-        final Set<ContentValues> statusesValues = new HashSet<>();
-        final Set<ContentValues> hashTagValues = new HashSet<>();
-        final Set<Long> allStatusIds = new HashSet<>();
-        final Set<String> allHashTags = new HashSet<>();
-        final Set<User> users = new HashSet<>();
 
-        for (final TwitterListResponse<twitter4j.Status> response : responses) {
+        for (final TwitterListResponse<twitter4j.Status> response : args) {
             if (response == null || response.list == null) {
 				continue;
 			}
             final List<twitter4j.Status> list = response.list;
-            final Set<Long> userIds = new HashSet<>();
-			for (final twitter4j.Status status : list) {
-				if (status == null || status.getId() <= 0) {
-					continue;
-				}
-                if (status.isRetweet()) {
-                    final User retweetUser = status.getRetweetedStatus().getUser();
-                    userIds.add(retweetUser.getId());
+            for (int bulkIdx = 0, totalSize = list.size(); bulkIdx < totalSize; bulkIdx += 100) {
+                for (int idx = bulkIdx, end = Math.min(totalSize, bulkIdx + ContentResolverUtils.MAX_BULK_COUNT); idx < end; idx++) {
+                    final twitter4j.Status status = list.get(idx);
+					if (status == null || status.getId() <= 0) {
+						continue;
+					}
+
+                    final Set<ContentValues> usersValues = new HashSet<>();
+                    final Set<ContentValues> statusesValues = new HashSet<>();
+                    final Set<ContentValues> hashTagValues = new HashSet<>();
+
+                    statusesValues.add(createStatus(status, response.accountId));
+                    for (final String hashtag : extractor.extractHashtags(status.getText())) {
+						final ContentValues values = new ContentValues();
+						values.put(CachedHashtags.NAME, hashtag);
+						hashTagValues.add(values);
+					}
+                    usersValues.add(createCachedUser(status.getUser()));
+                    if (status.isRetweet()) {
+                        usersValues.add(createCachedUser(status.getRetweetedStatus().getUser()));
+                    }
+
+                    bulkInsert(resolver, CachedStatuses.CONTENT_URI, statusesValues);
+        			bulkInsert(resolver, CachedHashtags.CONTENT_URI, hashTagValues);
+        			bulkInsert(resolver, CachedUsers.CONTENT_URI, usersValues);
                 }
-                allStatusIds.add(status.getId());
-                statusesValues.add(createStatus(status, response.account_id));
-                allHashTags.addAll(extractor.extractHashtags(status.getText()));
-				final User user = status.getUser();
-                users.add(user);
-                userIds.add(user.getId());
-                final ContentValues filtered_users_values = new ContentValues();
-                filtered_users_values.put(Filters.Users.NAME, user.getName());
-                filtered_users_values.put(Filters.Users.SCREEN_NAME, user.getScreenName());
-                final String filtered_users_where = Expression.equals(Filters.Users.USER_ID, user.getId()).getSQL();
-                resolver.update(Filters.Users.CONTENT_URI, filtered_users_values, filtered_users_where, null);
             }
         }
 
-        bulkDelete(resolver, CachedStatuses.CONTENT_URI, CachedStatuses.STATUS_ID, allStatusIds, null, false);
-        bulkInsert(resolver, CachedStatuses.CONTENT_URI, statusesValues);
-
-        for (final String hashtag : allHashTags) {
-            final ContentValues values = new ContentValues();
-            values.put(CachedHashtags.NAME, hashtag);
-            hashTagValues.add(values);
-		}
-        bulkDelete(resolver, CachedHashtags.CONTENT_URI, CachedHashtags.NAME, allHashTags, null, true);
-        bulkInsert(resolver, CachedHashtags.CONTENT_URI, hashTagValues);
-
-		for (final User user : users) {
-            usersValues.add(createCachedUser(user));
-		}
-        bulkInsert(resolver, CachedUsers.CONTENT_URI, usersValues);
 		return null;
 	}
 
-    @SafeVarargs
-	public static Runnable getRunnable(final Context context,
-			final TwitterListResponse<twitter4j.Status>... all_statuses) {
-		return new ExecuteCacheUserStatusesTaskRunnable(context, all_statuses);
-	}
-
-	static class ExecuteCacheUserStatusesTaskRunnable implements Runnable {
-		final Context context;
-		final TwitterListResponse<twitter4j.Status>[] all_statuses;
-
-        @SafeVarargs
-		ExecuteCacheUserStatusesTaskRunnable(final Context context,
-				final TwitterListResponse<twitter4j.Status>... all_statuses) {
-			this.context = context;
-			this.all_statuses = all_statuses;
-		}
-
-		@Override
-		public void run() {
-            AsyncTaskUtils.executeTask(new CacheUsersStatusesTask(context, all_statuses));
-		}
-	}
 }

@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
@@ -48,8 +49,9 @@ public class StatusRepliesLoader extends UserMentionsLoader {
 		mInReplyToStatusId = statusId;
 	}
 
+    @NonNull
 	@Override
-	public List<Status> getStatuses(final Twitter twitter, final Paging paging) throws TwitterException {
+    public List<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
 		final Context context = getContext();
         final List<Status> result = new ArrayList<>();
 		if (shouldForceUsingPrivateAPIs(context) || isOfficialTwitterInstance(context, twitter)) {

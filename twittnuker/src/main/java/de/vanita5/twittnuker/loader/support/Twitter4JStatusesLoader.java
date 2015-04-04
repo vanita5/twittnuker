@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -33,8 +32,6 @@ import android.util.Log;
 import org.mariotaku.jsonserializer.JSONFileIO;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
-import de.vanita5.twittnuker.util.TwitterWrapper.StatusListResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +55,6 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
 	private final long mAccountId;
 	private final long mMaxId, mSinceId;
 	private final SQLiteDatabase mDatabase;
-	private final Handler mHandler;
 	private final Object[] mSavedStatusesFileArgs;
     private Comparator<ParcelableStatus> mComparator;
 
@@ -71,7 +67,6 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
         mMaxId = maxId;
         mSinceId = sinceId;
 		mDatabase = TwittnukerApplication.getInstance(context).getSQLiteDatabase();
-		mHandler = new Handler();
         mSavedStatusesFileArgs = savedStatusesArgs;
 	}
 
@@ -120,7 +115,6 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
 		}
         final long minStatusId = statuses.isEmpty() ? -1 : Collections.min(statuses).getId();
         final boolean insertGap = minStatusId > 0 && statuses.size() > 1 && !data.isEmpty() && !truncated;
-        mHandler.post(CacheUsersStatusesTask.getRunnable(context, new StatusListResponse(mAccountId, statuses)));
         for (final Status status : statuses) {
             final long id = status.getId();
             final boolean deleted = deleteStatus(data, id);
@@ -145,6 +139,7 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
     public final void setComparator(Comparator<ParcelableStatus> comparator) {
         mComparator = comparator;
     }
+
 
     @NonNull
     protected abstract List<Status> getStatuses(@NonNull Twitter twitter, Paging paging) throws TwitterException;
@@ -179,8 +174,7 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
     private void saveCachedData(final File file, final List<ParcelableStatus> data) {
         if (file == null || data == null) return;
         final SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        final int databaseItemLimit = prefs.getInt(KEY_DATABASE_ITEM_LIMIT,
-                DEFAULT_DATABASE_ITEM_LIMIT);
+        final int databaseItemLimit = prefs.getInt(KEY_DATABASE_ITEM_LIMIT, DEFAULT_DATABASE_ITEM_LIMIT);
         try {
             final List<ParcelableStatus> activities = data.subList(0, Math.min(databaseItemLimit, data.size()));
 			JSONFileIO.writeArray(file, activities.toArray(new ParcelableStatus[activities.size()]));

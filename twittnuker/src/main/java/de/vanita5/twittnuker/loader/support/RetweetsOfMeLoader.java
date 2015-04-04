@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
@@ -52,8 +53,9 @@ public class RetweetsOfMeLoader extends Twitter4JStatusesLoader {
 		return mTotalItemsCount;
 	}
 
+    @NonNull
 	@Override
-	protected ResponseList<Status> getStatuses(final Twitter twitter, final Paging paging) throws TwitterException {
+    protected ResponseList<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
 		if (twitter == null) return null;
 		final ResponseList<Status> statuses = twitter.getRetweetsOfMe(paging);
 		if (mTotalItemsCount == -1 && !statuses.isEmpty()) {

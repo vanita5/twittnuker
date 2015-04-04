@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
@@ -54,8 +55,9 @@ public class UserTimelineLoader extends Twitter4JStatusesLoader {
 		mIsMyTimeline = userId > 0 ? accountId == userId : accountId == getAccountId(context, screenName);
 	}
 
+    @NonNull
 	@Override
-	protected ResponseList<Status> getStatuses(final Twitter twitter, final Paging paging) throws TwitterException {
+    protected ResponseList<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
 		if (twitter == null) return null;
         if (mUserId != -1)
             return twitter.getUserTimeline(mUserId, paging);
