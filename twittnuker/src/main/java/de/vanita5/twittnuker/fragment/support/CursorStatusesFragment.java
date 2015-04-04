@@ -59,6 +59,11 @@ import static de.vanita5.twittnuker.util.Utils.shouldEnableFiltersForRTs;
 
 public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor> {
 
+    @Override
+    protected void onLoadingFinished() {
+
+    }
+
     private ContentObserver mContentObserver;
 
     public abstract Uri getContentUri();
@@ -91,11 +96,15 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
 
     protected class CursorStatusesBusCallback {
 
-            @Subscribe
+		@Subscribe
         public void notifyGetStatusesTaskChanged(GetStatusesTaskEvent event) {
             if (!event.uri.equals(getContentUri())) return;
             setRefreshing(event.running);
+            if (!event.running) {
+                setLoadMoreIndicatorVisible(false);
+                setRefreshEnabled(true);
             }
+		}
 
         @Subscribe
         public void notifyFavoriteCreated(FavoriteCreatedEvent event) {
@@ -175,6 +184,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
 
     @Override
     public void onLoadMoreContents() {
+        super.onLoadMoreContents();
         AsyncTaskUtils.executeTask(new AsyncTask<Object, Void, long[][]>() {
 
             @Override

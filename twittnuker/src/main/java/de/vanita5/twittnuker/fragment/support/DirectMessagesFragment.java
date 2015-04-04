@@ -67,6 +67,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -76,6 +77,7 @@ import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
+import de.vanita5.twittnuker.util.message.GetMessagesTaskEvent;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
 import java.util.Collections;
@@ -155,13 +157,6 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
         super.onDetach();
     }
 
-
-    @Subscribe
-    public void notifyTaskStateChanged(TaskStateChangedEvent event) {
-        updateRefreshState();
-    }
-
-
     @Override
     public void onEntryClick(int position, DirectMessageEntry entry) {
         Utils.openMessageConversation(getActivity(), entry.account_id, entry.conversation_id);
@@ -177,7 +172,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
                 result[0] = Utils.getActivatedAccountIds(getActivity());
                 result[1] = Utils.getNewestMessageIdsFromDatabase(getActivity(), DirectMessages.Inbox.CONTENT_URI);
                 return result;
-	        }
+            }
 
             @Override
             protected void onPostExecute(final long[][] result) {
@@ -222,7 +217,9 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 		if (getActivity() == null) return;
 		mFirstVisibleItem = -1;
         mAdapter.setCursor(cursor);
-        mAdapter.setLoadMoreIndicatorEnabled(cursor != null && cursor.getCount() > 0);
+        mAdapter.setLoadMoreIndicatorVisible(false);
+        mAdapter.setLoadMoreSupported(cursor != null && cursor.getCount() > 0);
+        mSwipeRefreshLayout.setEnabled(true);
 //        mAdapter.setShowAccountColor(getActivatedAccountIds(getActivity()).length > 1);
 		setListShown(true);
 	}
@@ -277,8 +274,18 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
         final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
         bus.register(this);
         mAdapter.updateReadState();
+        updateRefreshState();
 	}
 
+
+    @Subscribe
+    public void onGetMessagesTaskChanged(GetMessagesTaskEvent event) {
+        if (event.uri.equals(Inbox.CONTENT_URI) && !event.running) {
+            setRefreshing(false);
+            mAdapter.setLoadMoreIndicatorVisible(false);
+            mSwipeRefreshLayout.setEnabled(true);
+        }
+    }
 
 	@Override
 	public void onStop() {
@@ -333,12 +340,13 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
     }
 
     public void setRefreshing(boolean refreshing) {
-        if (refreshing == mSwipeRefreshLayout.isRefreshing()) return;
-        mSwipeRefreshLayout.setRefreshing(refreshing);
+        if (mAdapter == null || refreshing == mSwipeRefreshLayout.isRefreshing()) return;
+        mSwipeRefreshLayout.setRefreshing(refreshing && !mAdapter.isLoadMoreIndicatorVisible());
     }
 
     public boolean isRefreshing() {
-        return mSwipeRefreshLayout.isRefreshing();
+        if (mSwipeRefreshLayout == null || mAdapter == null) return false;
+        return mSwipeRefreshLayout.isRefreshing() || mAdapter.isLoadMoreIndicatorVisible();
     }
 
 	private void addReadPosition(final int firstVisibleItem) {
@@ -362,6 +370,8 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 //
     private void loadMoreMessages() {
         if (isRefreshing()) return;
+        mAdapter.setLoadMoreIndicatorVisible(true);
+        mSwipeRefreshLayout.setEnabled(false);
         AsyncTaskUtils.executeTask(new AsyncTask<Object, Void, long[][]>() {
 
             @Override

@@ -72,6 +72,7 @@ import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
+import de.vanita5.twittnuker.util.message.GetMessagesTaskEvent;
 import de.vanita5.twittnuker.util.message.GetStatusesTaskEvent;
 import de.vanita5.twittnuker.util.message.ProfileUpdatedEvent;
 import de.vanita5.twittnuker.util.message.StatusDestroyedEvent;
@@ -1816,10 +1817,12 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             }
 
             // Delete all rows conflicting before new data inserted.
-            final Expression deleteWhere = Expression.and(Expression.equals(DirectMessages.ACCOUNT_ID, accountId),
-                    Expression.in(new Column(DirectMessages.MESSAGE_ID), new RawItemArray(messageIds)));
-            final Uri deleteUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, false);
-            mResolver.delete(deleteUri, deleteWhere.getSQL(), null);
+//            final Expression deleteWhere = Expression.and(Expression.equals(DirectMessages.ACCOUNT_ID, accountId),
+//                    Expression.in(new Column(DirectMessages.MESSAGE_ID), new RawItemArray(messageIds)));
+//            final Uri deleteUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, false);
+//            mResolver.delete(deleteUri, deleteWhere.getSQL(), null);
+
+
 
             // Insert previously fetched items.
             final Uri insertUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, notify);
@@ -1834,8 +1837,17 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         }
 
 		@Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            final Bus bus = TwittnukerApplication.getInstance(getContext()).getMessageBus();
+            bus.post(new GetMessagesTaskEvent(getDatabaseUri(), true));
+        }
+
+        @Override
 		protected void onPostExecute(final List<MessageListResponse> result) {
 			super.onPostExecute(result);
+            final Bus bus = TwittnukerApplication.getInstance(getContext()).getMessageBus();
+            bus.post(new GetMessagesTaskEvent(getDatabaseUri(), false));
 			for (final TwitterListResponse<DirectMessage> response : result) {
 				if (response.list == null) {
 					mMessagesManager.showErrorMessage(R.string.action_refreshing_direct_messages,

@@ -20,38 +20,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface;
+package de.vanita5.twittnuker.util.message;
 
-import android.content.Context;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
+public class GetMessagesTaskEvent {
 
-public interface IContentCardAdapter extends IGapSupportedAdapter, ContentCardClickListener {
-	MediaLoaderWrapper getImageLoader();
+	@NonNull
+	public final Uri uri;
+	public final boolean running;
 
-	Context getContext();
-
-	ImageLoadingHandler getImageLoadingHandler();
-
-    int getItemCount();
-
-    @ShapeStyle
-	int getProfileImageStyle();
-
-	int getMediaPreviewStyle();
-
-	AsyncTwitterWrapper getTwitterWrapper();
-
-	float getTextSize();
-
-    boolean isLoadMoreIndicatorVisible();
-
-    boolean isLoadMoreSupported();
-
-    void setLoadMoreSupported(boolean supported);
-
-    void setLoadMoreIndicatorVisible(boolean enabled);
+	public GetMessagesTaskEvent(@NonNull Uri uri, boolean running) {
+		this.uri = uri;
+		this.running = running;
+	}
 }

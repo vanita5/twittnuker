@@ -423,6 +423,9 @@ public class StatusFragment extends BaseSupportFragment
         private final boolean mDisplayMediaPreview;
         private final boolean mDisplayProfileImage;
 
+        private boolean mLoadMoreSupported;
+        private boolean mLoadMoreIndicatorVisible;
+
         private ParcelableStatus mStatus;
         private ParcelableCredentials mStatusAccount;
         private List<ParcelableStatus> mConversation, mReplies;
@@ -580,14 +583,31 @@ public class StatusFragment extends BaseSupportFragment
             return mTextSize;
         }
 
+
         @Override
-        public boolean hasLoadMoreIndicator() {
-            return false;
+        public boolean isLoadMoreIndicatorVisible() {
+            return mLoadMoreIndicatorVisible;
         }
 
         @Override
-        public void setLoadMoreIndicatorEnabled(boolean enabled) {
+        public boolean isLoadMoreSupported() {
+            return mLoadMoreSupported;
+        }
 
+        @Override
+        public void setLoadMoreSupported(boolean supported) {
+            mLoadMoreSupported = supported;
+            if (!supported) {
+                mLoadMoreIndicatorVisible = false;
+            }
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public void setLoadMoreIndicatorVisible(boolean enabled) {
+            if (mLoadMoreIndicatorVisible == enabled) return;
+            mLoadMoreIndicatorVisible = enabled && mLoadMoreSupported;
+            notifyDataSetChanged();
         }
 
         public ParcelableStatus getStatus() {
