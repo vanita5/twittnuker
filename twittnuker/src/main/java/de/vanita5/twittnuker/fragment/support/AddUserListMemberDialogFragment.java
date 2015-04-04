@@ -27,6 +27,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
@@ -49,19 +50,20 @@ public class AddUserListMemberDialogFragment extends BaseSupportDialogFragment i
 	@Override
 	public void onClick(final DialogInterface dialog, final int which) {
 		final Bundle args = getArguments();
-		if (args == null || !args.containsKey(EXTRA_ACCOUNT_ID) || !args.containsKey(EXTRA_LIST_ID)) return;
+        if (args == null || !args.containsKey(EXTRA_ACCOUNT_ID) || !args.containsKey(EXTRA_LIST_ID) || !args.containsKey(EXTRA_USERS))
+            return;
 		switch (which) {
 			case DialogInterface.BUTTON_POSITIVE: {
 				final String mText = ParseUtils.parseString(mEditText.getText());
 				final AsyncTwitterWrapper twitter = getTwitterWrapper();
 				if (mText == null || mText.length() <= 0 || twitter == null) return;
-				// twitter.addUserListMembersAsync(args.getLong(EXTRA_ACCOUNT_ID),
-				// args.getInt(EXTRA_LIST_ID), mText);
+                twitter.addUserListMembersAsync(args.getLong(EXTRA_ACCOUNT_ID), args.getLong(EXTRA_LIST_ID));
 				break;
 			}
 		}
 	}
 
+    @NonNull
 	@Override
 	public Dialog onCreateDialog(final Bundle savedInstanceState) {
         final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
@@ -73,6 +75,8 @@ public class AddUserListMemberDialogFragment extends BaseSupportDialogFragment i
 			mEditText.setText(savedInstanceState.getCharSequence(EXTRA_TEXT));
 		}
         mUserAutoCompleteAdapter = new UserHashtagAutoCompleteAdapter(wrapped);
+        final Bundle args = getArguments();
+        mUserAutoCompleteAdapter.setAccountId(args.getLong(EXTRA_ACCOUNT_ID));
 		mEditText.setAdapter(mUserAutoCompleteAdapter);
 		mEditText.setThreshold(1);
 		mEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(20) });

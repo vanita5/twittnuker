@@ -144,7 +144,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.support.AddStatusFilterDialogFragment;
 import de.vanita5.twittnuker.fragment.support.DestroyStatusDialogFragment;
-import de.vanita5.twittnuker.fragment.support.DirectMessagesConversationFragment;
+import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
 import de.vanita5.twittnuker.fragment.support.IncomingFriendshipsFragment;
 import de.vanita5.twittnuker.fragment.support.MutesUsersListFragment;
 import de.vanita5.twittnuker.fragment.support.SavedSearchesListFragment;
@@ -836,7 +836,7 @@ public final class Utils implements Constants, TwitterConstants {
 				break;
 			}
 			case LINK_ID_DIRECT_MESSAGES_CONVERSATION: {
-				fragment = new DirectMessagesConversationFragment();
+				fragment = new MessagesConversationFragment();
 				final String paramRecipientId = uri.getQueryParameter(QUERY_PARAM_RECIPIENT_ID);
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
 				final long conversationId = ParseUtils.parseLong(paramRecipientId);

@@ -46,11 +46,11 @@ import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.util.AsyncTaskUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -169,7 +169,9 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 				getUserLists(mScreenName);
 			}
 		}
-		mEditScreenName.setAdapter(new UserHashtagAutoCompleteAdapter(this));
+        final UserHashtagAutoCompleteAdapter adapter = new UserHashtagAutoCompleteAdapter(this);
+        adapter.setAccountId(getAccountId());
+        mEditScreenName.setAdapter(adapter);
 		mEditScreenName.setText(mScreenName);
 		mUserListsListView.setAdapter(mUserListsAdapter = new SimpleParcelableUserListsAdapter(this));
 		mUsersListView.setAdapter(mUsersAdapter = new SimpleParcelableUsersAdapter(this));

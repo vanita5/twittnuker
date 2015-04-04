@@ -100,6 +100,7 @@ import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.view.StatusComposeEditText;
 import de.vanita5.twittnuker.view.StatusTextCountView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
@@ -112,7 +113,7 @@ import java.util.Locale;
 import static de.vanita5.twittnuker.util.Utils.buildDirectMessageConversationUri;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 
-public class DirectMessagesConversationFragment extends BaseSupportFragment implements
+public class MessagesConversationFragment extends BaseSupportFragment implements
         LoaderCallbacks<Cursor>, TextWatcher, OnClickListener, OnItemSelectedListener,
         OnEditorActionListener, MenuButtonClickListener, PopupMenu.OnMenuItemClickListener {
 
@@ -128,7 +129,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 
     private RecyclerView mMessagesListView;
     private ListView mUsersSearchList;
-	private EditText mEditText;
+    private StatusComposeEditText mEditText;
 	private StatusTextCountView mTextCountView;
 	private View mSendButton;
 	private ImageView mAddImageButton;
@@ -240,6 +241,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				final ParcelableAccount account = (ParcelableAccount) mAccountSpinner.getSelectedItem();
+                mEditText.setAccountId(account.account_id);
 				searchUsers(account.account_id, ParseUtils.parseString(s), true);
 			}
 
@@ -613,7 +615,7 @@ public class DirectMessagesConversationFragment extends BaseSupportFragment impl
 		final View inputSendContainer = view.findViewById(R.id.input_send_container);
 		mConversationContainer = view.findViewById(R.id.conversation_container);
 		mRecipientSelectorContainer = view.findViewById(R.id.recipient_selector_container);
-		mEditText = (EditText) inputSendContainer.findViewById(R.id.edit_text);
+        mEditText = (StatusComposeEditText) inputSendContainer.findViewById(R.id.edit_text);
 		mTextCountView = (StatusTextCountView) inputSendContainer.findViewById(R.id.text_count);
 		mSendButton = inputSendContainer.findViewById(R.id.send);
 		mAddImageButton = (ImageView) inputSendContainer.findViewById(R.id.add_image);

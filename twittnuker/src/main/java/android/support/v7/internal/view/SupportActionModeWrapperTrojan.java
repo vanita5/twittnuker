@@ -20,18 +20,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package android.support.v7.internal.view;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
+import android.support.v7.view.ActionMode;
 
-public final class ClipboardUtils {
+public class SupportActionModeWrapperTrojan {
 
-	public static boolean setText(final Context context, final CharSequence text) {
-		if (context == null) return false;
-        final ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        clipboardManager.setPrimaryClip(ClipData.newPlainText(text, text));
-		return true;
+	public static ActionMode getWrappedObject(SupportActionModeWrapper wrapper) {
+		return wrapper.mWrappedObject;
 	}
+
 }

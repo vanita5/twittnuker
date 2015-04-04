@@ -115,6 +115,7 @@ public final class TwidereLinkify implements Constants {
 
 	private final OnLinkClickListener mOnLinkClickListener;
 	private final Extractor mExtractor = new Extractor();
+    private final boolean mAddMovementMethod;
     private int mHighlightOption;
 
 	public TwidereLinkify(final OnLinkClickListener listener) {
@@ -122,7 +123,12 @@ public final class TwidereLinkify implements Constants {
 	}
 
     public TwidereLinkify(final OnLinkClickListener listener, final int highlightOption) {
+        this(listener, highlightOption, true);
+    }
+
+    public TwidereLinkify(final OnLinkClickListener listener, final int highlightOption, boolean addMovementMethod) {
 		mOnLinkClickListener = listener;
+        mAddMovementMethod = addMovementMethod;
 		setHighlightOption(highlightOption);
 	}
 
@@ -347,20 +353,4 @@ public final class TwidereLinkify implements Constants {
 		public void onLinkClick(String link, String orig, long account_id, int type,
 								boolean sensitive, int start, int end);
 	}
-
-    public boolean hasExtraMediaLink() {
-        return hasExtraMediaLink;
-    }
-
-    public void setHasExtraMediaLink(boolean hasExtraMediaLink) {
-        this.hasExtraMediaLink = hasExtraMediaLink;
-    }
-
-    public String getCustomMediaUrl() {
-        return customMediaUrl;
-    }
-
-    public void setCustomMediaUrl(String customMediaUrl) {
-        this.customMediaUrl = customMediaUrl;
-    }
 }

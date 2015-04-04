@@ -52,20 +52,27 @@ import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.LayoutParams;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
+import android.view.ActionMode;
+import android.view.ActionMode.Callback;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter.StatusAdapterListener;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
@@ -84,6 +91,7 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.text.method.StatusContentMovementMethod;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.LinkCreator;
@@ -120,9 +128,8 @@ import static de.vanita5.twittnuker.util.Utils.openStatus;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 
-public class StatusFragment extends BaseSupportFragment
-        implements LoaderCallbacks<SingleResponse<ParcelableStatus>>, OnMediaClickListener,
-        StatusAdapterListener {
+public class StatusFragment extends BaseSupportFragment implements LoaderCallbacks<SingleResponse<ParcelableStatus>>,
+        OnMediaClickListener, StatusAdapterListener {
 
     private static final int LOADER_ID_DETAIL_STATUS = 1;
     private static final int LOADER_ID_STATUS_REPLIES = 2;
@@ -787,6 +794,10 @@ public class StatusFragment extends BaseSupportFragment
             updateItemDecoration();
 	    }
 
+        private int getStatusPosition() {
+            return getConversationCount();
+        }
+
         public boolean setStatus(ParcelableStatus status) {
             final ParcelableStatus old = mStatus;
             mStatus = status;
@@ -1007,13 +1018,9 @@ public class StatusFragment extends BaseSupportFragment
             textView.setText(Html.fromHtml(status.text_html));
             final StatusLinkClickHandler linkClickHandler = new StatusLinkClickHandler(context, null);
             linkClickHandler.setStatus(status);
-            final TwidereLinkify linkify = new TwidereLinkify(linkClickHandler);
+            final TwidereLinkify linkify = new TwidereLinkify(linkClickHandler, VALUE_LINK_HIGHLIGHT_OPTION_CODE_BOTH, false);
             linkify.applyAllLinks(textView, status.account_id, status.is_possibly_sensitive);
             ThemeUtils.applyParagraphSpacing(textView, 1.1f);
-
-            textView.setMovementMethod(StatusContentMovementMethod.getInstance());
-//            textView.setCustomSelectionActionModeCallback(this);
-
 
             final String timeString = formatToLongTimeString(context, status.is_retweet ? status.retweet_timestamp : status.timestamp);
             final String sourceHtml = status.source;
@@ -1098,7 +1105,8 @@ public class StatusFragment extends BaseSupportFragment
         private void initViews() {
 //            menuBar.setOnMenuItemClickListener(this);
             menuBar.setOnMenuItemClickListener(this);
-            final FragmentActivity activity = adapter.getFragment().getActivity();
+            final StatusFragment fragment = adapter.getFragment();
+            final FragmentActivity activity = fragment.getActivity();
             final MenuInflater inflater = activity.getMenuInflater();
             inflater.inflate(R.menu.menu_status, menuBar.getMenu());
             ThemeUtils.wrapMenuIcon(menuBar, MENU_GROUP_STATUS_SHARE);
@@ -1113,6 +1121,52 @@ public class StatusFragment extends BaseSupportFragment
             screenNameView.setTextSize(defaultTextSize * 0.85f);
             locationView.setTextSize(defaultTextSize * 0.85f);
             timeSourceView.setTextSize(defaultTextSize * 0.85f);
+
+            textView.setMovementMethod(StatusContentMovementMethod.getInstance());
+            textView.setCustomSelectionActionModeCallback(new Callback() {
+                @Override
+                public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                    final FragmentActivity activity = fragment.getActivity();
+                    if (activity instanceof IThemedActivity) {
+                        final int themeRes = ((IThemedActivity) activity).getCurrentThemeResourceId();
+                        final int actionBarColor = ((IThemedActivity) activity).getActionBarColor();
+                        ThemeUtils.applySupportActionModeBackground(mode, fragment.getActivity(), themeRes, actionBarColor, true);
+                    }
+                    mode.getMenuInflater().inflate(R.menu.action_status_text_selection, menu);
+                    return true;
+                }
+
+                @Override
+                public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                    final int start = textView.getSelectionStart(), end = textView.getSelectionEnd();
+                    final SpannableString string = SpannableString.valueOf(textView.getText());
+                    final URLSpan[] spans = string.getSpans(start, end, URLSpan.class);
+                    final boolean avail = spans.length == 1 && URLUtil.isValidUrl(spans[0].getURL());
+                    Utils.setMenuItemAvailability(menu, android.R.id.copyUrl, avail);
+                    return true;
+                }
+
+                @Override
+                public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                    switch (item.getItemId()) {
+                        case android.R.id.copyUrl: {
+                            final int start = textView.getSelectionStart(), end = textView.getSelectionEnd();
+                            final SpannableString string = SpannableString.valueOf(textView.getText());
+                            final URLSpan[] spans = string.getSpans(start, end, URLSpan.class);
+                            if (spans.length != 1) return true;
+                            ClipboardUtils.setText(activity, spans[0].getURL());
+                            mode.finish();
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                @Override
+                public void onDestroyActionMode(ActionMode mode) {
+
+                }
+            });
     	}
 
 
