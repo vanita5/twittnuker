@@ -786,7 +786,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
-    final class ClearNotificationTask extends AsyncTask<Void, Void, Integer> {
+    final class ClearNotificationTask extends AsyncTask<Object, Void, Integer> {
 		private final int notificationType;
 		private final long accountId;
 
@@ -796,13 +796,13 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 		@Override
-		protected Integer doInBackground(final Void... params) {
+		protected Integer doInBackground(final Object... params) {
 			return clearNotification(mContext, notificationType, accountId);
 		}
 
 	}
 
-    final class ClearUnreadCountTask extends AsyncTask<Void, Void, Integer> {
+    final class ClearUnreadCountTask extends AsyncTask<Object, Void, Integer> {
 		private final int position;
 
 		ClearUnreadCountTask(final int position) {
@@ -810,7 +810,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 		@Override
-		protected Integer doInBackground(final Void... params) {
+		protected Integer doInBackground(final Object... params) {
 			return clearUnreadCount(mContext, position);
 		}
 
@@ -2185,7 +2185,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 	}
 
-    final class RemoveUnreadCountsTask extends AsyncTask<Void, Void, Integer> {
+    final class RemoveUnreadCountsTask extends AsyncTask<Object, Void, Integer> {
 		private final int position;
         private final LongSparseArray<Set<Long>> counts;
 
@@ -2195,7 +2195,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 		@Override
-		protected Integer doInBackground(final Void... params) {
+		protected Integer doInBackground(final Object... params) {
 			return removeUnreadCounts(mContext, position, counts);
 		}
 
