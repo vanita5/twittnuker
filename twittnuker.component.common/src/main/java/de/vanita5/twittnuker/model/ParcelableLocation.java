@@ -72,18 +72,18 @@ public class ParcelableLocation implements Serializable, Parcelable, JSONParcela
 	}
 
     public ParcelableLocation(@Nullable final GeoLocation location) {
-		latitude = location != null ? location.getLatitude() : -1;
-		longitude = location != null ? location.getLongitude() : -1;
+        latitude = location != null ? location.getLatitude() : Double.NaN;
+        longitude = location != null ? location.getLongitude() : Double.NaN;
 	}
 
     public ParcelableLocation(@NonNull final JSONParcel in) {
-		latitude = in.readDouble("latitude", -1);
-		longitude = in.readDouble("longutude", -1);
+        latitude = in.readDouble("latitude", Double.NaN);
+        longitude = in.readDouble("longutude", Double.NaN);
 	}
 
     public ParcelableLocation(@Nullable final Location location) {
-		latitude = location != null ? location.getLatitude() : -1;
-		longitude = location != null ? location.getLongitude() : -1;
+        latitude = location != null ? location.getLatitude() : Double.NaN;
+        longitude = location != null ? location.getLongitude() : Double.NaN;
 	}
 
 	public ParcelableLocation(final Parcel in) {
@@ -93,14 +93,14 @@ public class ParcelableLocation implements Serializable, Parcelable, JSONParcela
 
     public ParcelableLocation(final String locationString) {
         if (locationString == null) {
-			latitude = -1;
-			longitude = -1;
+            latitude = Double.NaN;
+            longitude = Double.NaN;
 			return;
 		}
         final String[] longlat = locationString.split(",");
         if (longlat.length != 2) {
-			latitude = -1;
-			longitude = -1;
+            latitude = Double.NaN;
+            longitude = Double.NaN;
 		} else {
 			latitude = ParseUtils.parseDouble(longlat[0]);
 			longitude = ParseUtils.parseDouble(longlat[1]);
@@ -124,6 +124,12 @@ public class ParcelableLocation implements Serializable, Parcelable, JSONParcela
 			return false;
 		return true;
 	}
+
+    @Nullable
+    public static ParcelableLocation fromGeoLocation(@Nullable GeoLocation geoLocation) {
+        if (geoLocation == null) return null;
+        return new ParcelableLocation(geoLocation);
+    }
 
     @Nullable
     public static ParcelableLocation fromLocation(@Nullable Location location) {
@@ -150,7 +156,7 @@ public class ParcelableLocation implements Serializable, Parcelable, JSONParcela
 	}
 
 	public boolean isValid() {
-		return latitude >= 0 || longitude >= 0;
+        return Double.isNaN(latitude) && Double.isNaN(longitude);
 	}
 
 	public GeoLocation toGeoLocation() {
@@ -189,7 +195,7 @@ public class ParcelableLocation implements Serializable, Parcelable, JSONParcela
 	}
 
 	public static String toString(final ParcelableLocation location) {
-		if (location == null) return null;
+        if (!isValidLocation(location)) return null;
 		return location.latitude + "," + location.longitude;
 	}
 }
