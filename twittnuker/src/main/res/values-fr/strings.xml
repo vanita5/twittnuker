@@ -525,6 +525,7 @@
     <string name="general">Général</string>
     <string name="hints">Indices</string>
     <string name="finish">Terminer</string>
+    <string name="background">Arrière plan</string>
     <string name="theme_background_default">Par défaut</string>
     <string name="theme_background_solid">Blanc/noir pur</string>
     <string name="theme_background_transparent">Transparent</string>
@@ -547,7 +548,8 @@
     <string name="N_new_mentions_quantity_other"><xliff:g id="items">%d</xliff:g> nouvelles mentions</string>
     <string name="N_new_messages_quantity_one"><xliff:g id="items">%d</xliff:g> nouvelle conversation</string>
     <string name="N_new_messages_quantity_other"><xliff:g id="items">%d</xliff:g> nouvelles conversations</string>
-    <string name="share_subject_format"><xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>), à <xliff:g id="time">%3$s</xliff:g></string>
+    <string name="status_share_subject_format_with_time">Tweet de <xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>), à <xliff:g id="time">%3$s</xliff:g></string>
+    <string name="status_share_text_format_with_link"><xliff:g id="text">%1$s</xliff:g>\n\n<xliff:g id="link">%2$s</xliff:g></string>
     <string name="rate_limit">Taux limite</string>
     <string name="wizard_hint_rate_limit">Si vous rencontrez des limites, elles sont liées à la politique de Twitter, ne me blâmez pas s\'il-vous-plaît.</string>
     <string name="preparing_database">Préparation de la base de données</string>
@@ -601,12 +603,89 @@
     <string name="image_preview_scale_type_fit_center">Centre de remise en forme</string>
     <string name="quote_protected_status_warning_message">Ce tweet est protégé.\n\nLes utilisateurs protégés ne souhaitent généralement pas que leurs tweets soient partagés publiquement.</string>
     <string name="send_anyway">Envoyer quand même</string>
+    <string name="following_only">Vos abonnements seulement</string>
+    <string name="following_only_summary">N\'afficher que les notifications des utilisateurs que vous suivez.</string>
     <string name="new_direct_message">Nouveau message privé</string>
     <string name="plain_list_style">Style liste simple</string>
     <string name="add">Ajouter</string>
+    <string name="N_media_quantity_one"><xliff:g id="items">%d</xliff:g> media</string>
+    <string name="N_media_quantity_other"><xliff:g id="items">%d</xliff:g> media</string>
     <string name="delete_drafts_confirm">Supprimer les brouillons sélectionnés ?</string>
     <string name="extra_configurations">Configurations supplémentaires</string>
     <string name="click_item_to_config">Cliquez sur un élément à configurer</string>
     <string name="dark_drawer">Tiroir sombre</string>
     <string name="retweets_of_me">Retweets de moi</string>
+    <string name="from_gallery">Depuis la galerie</string>
+    <string name="from_camera">Depuis l\'appareil photo</string>
+    <string name="excluded">Exclu</string>
+    <string name="exclude_this_host">Exclure cet hôte</string>
+    <string name="api_url_format_help">[DOMAIN]: Domaine de l\'API Twitter.\nExemple: https://[DOMAIN].twitter.com/ doit être remplacé par https://api.twitter.com/.</string>
+    <string name="no_version_suffix">Pas de suffixe de version</string>
+    <string name="inverse_selection">Sélection inversée</string>
+    <string name="media">Media</string>
+    <string name="mute_user">Taire <xliff:g id="name">%s</xliff:g></string>
+    <string name="muted_user"><xliff:g id="name">%s</xliff:g> muet</string>
+    <string name="unmute_user">Enlevez la sourdine de <xliff:g id="name">%s</xliff:g></string>
+    <string name="unmuted_user"><xliff:g id="name">%s</xliff:g> sourdine enlevée</string>
+    <string name="mute">Taire</string>
+    <string name="unmute">Enlever la sourdine</string>
+    <string name="action_muting">mettre en sourdine</string>
+    <string name="action_unmuting">enlevez la sourdine</string>
+    <string name="mute_user_confirm_message">Mettre en sourdine <xliff:g id="name">%s</xliff:g>? Vous ne verrez plus les tweets de cet utilisateur tout en continuant de le suivre.</string>
+    <string name="remove_from_filter">Enlever des filtres</string>
+    <string name="sort_timeline_by_id">Organiser la timeline par identifiant</string>
+    <string name="style">Style</string>
+    <string name="color">Couleur</string>
+    <string name="font_family">Police de caractères</string>
+    <string name="appearance">Apparence</string>
+    <string name="function">Fonction</string>
+    <string name="replies">Réponses</string>
+    <string name="profile_banner">Bannière de profil</string>
+    <string name="profile">Profil</string>
+    <string name="listed">Listé</string>
+    <string name="state_blocking">Bloquant</string>
+    <string name="load_more">Plus de contenu</string>
+    <string name="photo">Photo</string>
+    <string name="gallery">Gallerie</string>
+    <string name="remove">Supprimer</string>
+    <string name="load_media">Charger le média</string>
+    <string name="profile_text_color">Couleur du texte</string>
+    <string name="profile_background_color">Couleur du fond</string>
+    <string name="profile_link_color_main_color">Couleur des liens (couleur principale)</string>
+    <string name="retweet_quote_confirm_title">Retweeter à vos followers ?</string>
+    <string name="font">Police</string>
+    <string name="size">Taille</string>
+    <string name="just_now">À l\'instant</string>
+    <string name="requested">Demandé</string>
+    <string name="round">Rond</string>
+    <string name="square">Carré</string>
+    <string name="profile_image_style">Style de l\'image de profil</string>
+    <string name="media_preview_style">Style de prévisualisation du média</string>
+    <string name="draft_saved">Brouillon sauvegardé</string>
+    <string name="open_twitter_links">Ouvrir les liens Twitter</string>
+    <string name="N_others_quantity_one">autre</string>
+    <string name="N_others_quantity_other"><xliff:g id="retweet_count">%d</xliff:g> autres</string>
+    <string name="type_name_to_search">Écrivez un nom pour rechercher</string>
+    <string name="no_user_found">Aucun utilisateur trouvé</string>
+    <string name="members">Membres</string>
+    <string name="subscribers">Abonné</string>
+    <string name="read_from_bottom">Lire depuis le bas</string>
+    <string name="register">S\'inscrire</string>
+    <string name="follows">Suit</string>
+    <string name="belongs_to">Appartient à</string>
+    <string name="blocked_by_user_summary">Vous avez été bloqué par <xliff:g id="name">%s</xliff:g></string>
+    <string name="select_accounts">Sélectionner des comptes</string>
+    <string name="media_preview">Prévisualisation du média</string>
+    <string name="no_location">Aucune localisation</string>
+    <string name="getting_location">Obtenir la localisation</string>
+    <string name="save_to_gallery">Enregistrer dans la galerie</string>
+    <string name="unknown_location">Localisation inconnue</string>
+    <string name="import_export_settings">Importer/Exporter des paramètres</string>
+    <string name="user_protected_summary">Vous devez envoyer une demande de suivi pour voir les tweets de cet utilisateur</string>
+    <string name="no_account">Pas de compte</string>
+    <string name="activated_accounts">Comptes activés</string>
+    <string name="crop">Rogner</string>
+    <string name="scale">Mise à l\'echelle</string>
+    <string name="user_type_verified">Vérifié</string>
+    <string name="user_type_protected">Protégé</string>
 </resources>

@@ -196,6 +196,7 @@
     <string name="lists">Liste</string>
     <string name="users_lists">Liste utente</string>
     <string name="lists_following_user">Questo utente è incluso nelle seguenti liste</string>
+    <string name="lists_following_you">Liste che ti stanno seguendo</string>
     <string name="item_3_minutes">3 minuti</string>
     <string name="item_5_minutes">5 minuti</string>
     <string name="item_10_minutes">10 minuti</string>
@@ -278,16 +279,18 @@
     <string name="activity_about_me_favorite"><xliff:g id="user">%s</xliff:g> ha inserito il tuo tweet tra i preferiti.</string>
     <string name="activity_about_me_favorite_multi"><xliff:g id="user">%s</xliff:g> e altri <xliff:g id="count">%d</xliff:g> hanno inserito il tuo tweet tra i preferiti.</string>
     <string name="activity_about_me_follow"><xliff:g id="user">%s</xliff:g> ti sta seguendo.</string>
-    <string name="activity_about_me_follow_multi"><xliff:g id="user">%s</xliff:g> e altri <xliff:g id="count">%d</xliff:g> ti stanno seguendo.</string>
+    <string name="activity_about_me_follow_multi"><xliff:g id="user">%1$s</xliff:g> e <xliff:g id="other">%2$s</xliff:g> ti stanno seguendo.</string>
     <string name="activity_about_me_retweet"><xliff:g id="user">%s</xliff:g> ha retwittato il tuo tweet.</string>
-    <string name="activity_about_me_retweet_multi"><xliff:g id="user">%s</xliff:g> e altri <xliff:g id="count">%d</xliff:g>  hanno retwittato il tuo twit.</string>
+    <string name="activity_about_me_retweet_multi"><xliff:g id="user">%1$s</xliff:g> e <xliff:g id="other">%2$s</xliff:g> hanno retweettato il tuo tweet.</string>
+    <string name="activity_about_me_retweeted_retweet"><xliff:g id="user">%s</xliff:g> ha retweettato il tuo tweet.</string>
+    <string name="activity_about_me_retweeted_retweet_multi"><xliff:g id="user">%1$s</xliff:g> e <xliff:g id="other">%2$s</xliff:g> hanno retweettato il tuo retweet.</string>
     <string name="activity_about_me_list_member_added"><xliff:g id="user">%s</xliff:g> ti ha aggiunto a una lista.</string>
     <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g> ti ha aggiunto alla lista "<xliff:g id="list">%2$s</xliff:g>\"\".</string>
-    <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%s</xliff:g> e <xliff:g id="count">%d</xliff:g> altri ti hanno aggiunto alle loro liste.</string>
+    <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> ti ha aggiunto alle sue liste.</string>
     <string name="activity_by_friends_favorite"><xliff:g id="user">%1$s</xliff:g> ha inserito nei preferiti il tweet di<xliff:g id="target">%2$s</xliff:g>.</string>
     <string name="activity_by_friends_favorite_multi"><xliff:g id="user">%1$s</xliff:g> ha inserito tra i preferiti i tweet di <xliff:g id="target">%2$s</xliff:g> e di altri<xliff:g id="count">%3$d</xliff:g>.</string>
     <string name="activity_by_friends_follow"><xliff:g id="user">%1$s</xliff:g> sta seguendo <xliff:g id="target">%2$s</xliff:g>.</string>
-    <string name="activity_by_friends_follow_multi"><xliff:g id="user">%1$s</xliff:g> sta seguendo <xliff:g id="target">%2$s</xliff:g> e altri <xliff:g id="count">%3$d</xliff:g>.</string>
+    <string name="activity_by_friends_follow_multi"><xliff:g id="user">%1$s</xliff:g> sta seguendo <xliff:g id="target">%2$s</xliff:g> e <xliff:g id="other">%3$s</xliff:g>.</string>
     <string name="activity_by_friends_retweet"><xliff:g id="user">%1$s</xliff:g> ha ritwittato il tweet di <xliff:g id="target">%2$s</xliff:g>.</string>
     <string name="activity_by_friends_list_member_added"><xliff:g id="user">%1$s</xliff:g> ha aggiunto <xliff:g id="target">%2$s</xliff:g> ad una lista.</string>
     <string name="activity_by_friends_list_created"><xliff:g id="user">%1$s</xliff:g> ha creato la lista <xliff:g id="target">%2$s</xliff:g>.</string>
@@ -378,6 +381,7 @@
     <string name="quote_protected_status_notice">Non è raccomandato quotare un tweet protetto.</string>
     <string name="edit_draft">Modifica bozza</string>
     <string name="profile_image">Immagine del profilo</string>
+    <string name="your_profile_image">La tua immagine profilo</string>
     <string name="mention_user">Menziona <xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">Colore del tema</string>
     <string name="wrong_url_format">Formato URL sbagliato.</string>
@@ -543,7 +547,8 @@
     <string name="N_new_mentions_quantity_other"><xliff:g id="items">%d</xliff:g> nuove menzioni</string>
     <string name="N_new_messages_quantity_one"><xliff:g id="items">%d</xliff:g> nuova conversazione</string>
     <string name="N_new_messages_quantity_other"><xliff:g id="items">%d</xliff:g> nuove conversazioni</string>
-    <string name="share_subject_format"><xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>), alle <xliff:g id="time">%3$s</xliff:g></string>
+    <string name="status_share_subject_format_with_time">Tweet da <xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>), a <xliff:g id="time">%3$s</xliff:g></string>
+    <string name="status_share_text_format_with_link"><xliff:g id="text">%1$s</xliff:g>\n\n<xliff:g id="link">%2$s</xliff:g></string>
     <string name="rate_limit">Rate limit</string>
     <string name="wizard_hint_rate_limit">Se riscontri problemi di rate limit, purtroppo è colpa delle policy di Twitter, non di Twittnuker.</string>
     <string name="preparing_database">Preparazione database</string>
@@ -642,4 +647,42 @@
     <string name="photo">Foto</string>
     <string name="gallery">Galleria</string>
     <string name="remove">Rimuovi</string>
+    <string name="load_media">Carica media</string>
+    <string name="profile_text_color">Colore testo</string>
+    <string name="profile_background_color">Colore sfondo</string>
+    <string name="profile_link_color_main_color">Colore del link (colore principale)</string>
+    <string name="retweet_quote_confirm_title">Retweet ai tuoi followers?</string>
+    <string name="font">Carattere</string>
+    <string name="size">Dimensione</string>
+    <string name="just_now">Ora</string>
+    <string name="requested">Richiesta</string>
+    <string name="round">Tonda</string>
+    <string name="square">Quadrata</string>
+    <string name="profile_image_style">Stile immagine profilo</string>
+    <string name="media_preview_style">Stile anteprima media</string>
+    <string name="draft_saved">Progetto salvato</string>
+    <string name="open_twitter_links">Apri i link di Twitter</string>
+    <string name="type_name_to_search">Digita un nome da cercare</string>
+    <string name="no_user_found">Nessun utente trovato</string>
+    <string name="members">Membri</string>
+    <string name="read_from_bottom">Leggi dal basso</string>
+    <string name="belongs_to">Appartiene a</string>
+    <string name="blocked_by_user_summary">Sei stato bloccato da <xliff:g id="name">%s</xliff:g></string>
+    <string name="select_accounts">Seleziona gli account</string>
+    <string name="media_preview">Anteprima media</string>
+    <string name="no_location">Nessuna posizione</string>
+    <string name="getting_location">Ottiene la posizione</string>
+    <string name="save_to_gallery">Salva nella galleria</string>
+    <string name="unknown_location">Posizione sconosciuta</string>
+    <string name="import_export_settings">Importa/Esporta le impostazioni</string>
+    <string name="user_protected_summary">Hai bisogno di inviare una richiesta di follow per leggere i tweet di questo utente protetto</string>
+    <string name="no_account">Nessun account</string>
+    <string name="from_name">Da <xliff:g id="name">%1$s</xliff:g></string>
+    <string name="from_name_and_name">Da <xliff:g id="name">%1$s</xliff:g> e <xliff:g id="name">%2$s</xliff:g></string>
+    <string name="from_name_and_N_others">Da <xliff:g id="name">%1$s</xliff:g> e <xliff:g id="name">%2$d</xliff:g> altri</string>
+    <string name="activated_accounts">Account attivati</string>
+    <string name="crop">Ritaglia</string>
+    <string name="scale">Scala</string>
+    <string name="user_type_verified">Verificato</string>
+    <string name="user_type_protected">Protetto</string>
 </resources>

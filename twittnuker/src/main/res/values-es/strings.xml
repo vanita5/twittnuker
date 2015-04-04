@@ -87,6 +87,11 @@
     <string name="display_profile_image">Imagen de perfil para mostrar</string>
     <string name="image_load_summary">Desactivarlo aumentará la velocidad de desplazamiento en la lista y reducirá el uso de datos.</string>
     <string name="in_reply_to_name">En respuesta a <xliff:g id="user_name">%s</xliff:g></string>
+  <string name="name_retweeted"><xliff:g id="user_name">%s</xliff:g> retwitteó</string>
+  <string name="name_and_another_retweeted"><xliff:g id="user_name">%1$s</xliff:g> y otros retwittearon</string>
+  <string name="name_and_count_retweeted"><xliff:g id="user_name">%1$s</xliff:g> y <xliff:g id="retweet_count">%2$d</xliff:g> otros retwittearon</string>
+  <string name="N_retweeted_quantity_one"><xliff:g id="retweet_count">%d</xliff:g> retweet</string>
+  <string name="N_retweeted_quantity_other"><xliff:g id="retweet_count">%d</xliff:g> retweets</string>
     <string name="retweeted_by_name">Retuiteado por <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> y otros <xliff:g id="retweet_count">%2$d</xliff:g> han retuiteado esto</string>
     <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> han retuiteado esto</string>
@@ -152,6 +157,7 @@
     <string name="save_as">Guardar como</string>
     <string name="please_wait">Por favor espera.</string>
     <string name="file_saved_to">Guardar archivo a <xliff:g id="filename">%s</xliff:g> .</string>
+  <string name="saved_to_gallery">Guardado en la galería.</string>
     <string name="proxy">Proxy</string>
     <string name="http_proxy">HTTP Proxy</string>
     <string name="http_proxy_summary">Usar HTTP Proxy para todas las peticiones de la red.</string>
@@ -164,6 +170,7 @@
     <string name="twitter_muted_users">Usuarios silenciados</string>
     <string name="message_user_muted">Usuario añadido a la lista de filtros. No verás tweets de estos usuarios en tu cronología ni en tu lista de menciones.</string>
     <string name="message_users_muted">Usuarios añadidos a la lista de filtros. No verás tweets de estos usuarios en tu cronología ni en tu lista de menciones.</string>
+  <string name="message_user_unmuted">Eliminar este usuario de la lista filtrada.</string>
     <string name="inbox">Mensaje</string>
     <string name="load_images">Cargar imágenes</string>
     <string name="other_settings">Otras configuraciones</string>
@@ -186,8 +193,10 @@
     <string name="list_members">Lista de miembros</string>
     <string name="list_subscribers">Lista de subscriptores</string>
     <string name="type_to_compose">Escriba para componer</string>
+  <string name="lists">Listas</string>
     <string name="users_lists">Listas del usuario</string>
     <string name="lists_following_user">Listas que sigue este usuario</string>
+  <string name="lists_following_you">Listas siguiéndote</string>
     <string name="item_3_minutes">3 minutos</string>
     <string name="item_5_minutes">5 minutos</string>
     <string name="item_10_minutes">10 minutos</string>
@@ -206,6 +215,7 @@
     <string name="accounts">Cuentas</string>
     <string name="account">Cuenta</string>
     <string name="mention_this_user">Mencionar a este usuario</string>
+  <string name="mention_user_name">Mencionar <xliff:g id="name">%1$s</xliff:g></string>
     <string name="signing_in_please_wait">Iniciando sesión, por favor espere o pulse atrás para salir.</string>
     <string name="connectivity">Conectividad</string>
     <string name="add_member">Agregar un miembro</string>
@@ -267,22 +277,26 @@
     <string name="activities_about_me">Actividades sobre mí</string>
     <string name="activities_by_friends">Actividades de amigos</string>
     <string name="activity_about_me_favorite"><xliff:g id="user">%s</xliff:g> marcó tu tweet como favorito.</string>
-    <string name="activity_about_me_favorite_multi"><xliff:g id="user">%s</xliff:g> y otros <xliff:g id="count">%d</xliff:g> marcaron tu tuit como favorito.</string>
+  <string name="activity_about_me_favorite_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> marcaron como favorito tu tweet.</string>
+    <string name="activity_about_me_favorited_retweet"><xliff:g id="user">%s</xliff:g> marcó como favorito tu retweet.</string>
+    <string name="activity_about_me_favorited_retweet_multi"><xliff:g id="user">%1$s</xliff:g> y <xliff:g id="other">%2$s</xliff:g> marcaron como favorito tu retweet.</string>
     <string name="activity_about_me_follow"><xliff:g id="user">%s</xliff:g> te está siguiendo.</string>
-    <string name="activity_about_me_follow_multi"><xliff:g id="user">%s</xliff:g> y otros <xliff:g id="count">%d</xliff:g> te están siguiendo.</string>
+  <string name="activity_about_me_follow_multi"><xliff:g id="user">%1$s</xliff:g> y <xliff:g id="other">%2$s</xliff:g> te están siguiendo.</string>
     <string name="activity_about_me_retweet"><xliff:g id="user">%s</xliff:g> te retwitteó.</string>
-    <string name="activity_about_me_retweet_multi"><xliff:g id="user">%s</xliff:g> y otros <xliff:g id="count">%d</xliff:g> retuitearon tu tuit.</string>
+  <string name="activity_about_me_retweet_multi"><xliff:g id="user">%1$s</xliff:g> y <xliff:g id="other">%2$s</xliff:g> te han retweedteado.</string>
+  <string name="activity_about_me_retweeted_retweet"><xliff:g id="user">%s</xliff:g> han retweedteado tu retweet.</string>
+  <string name="activity_about_me_retweeted_retweet_multi"><xliff:g id="user">%1$s</xliff:g> y <xliff:g id="other">%2$s</xliff:g> te han retweedteado.</string>
     <string name="activity_about_me_list_member_added"><xliff:g id="usuario">%s</xliff:g> te añadió a una lista.</string>
-    <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g> te agregaron a la lista  "<xliff:g id="list">%2$s</xliff:g>\"\".</string>
-    <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%s</xliff:g> y otros <xliff:g id="count">%d</xliff:g> te añadieron a una lista.</string>
+  <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g> te agregaron a la lista  "<xliff:g id="list">%2$s</xliff:g>\".</string>
+  <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%1$s</xliff:g> y <xliff:g id="other">%2$s</xliff:g> te han agregado a sus listas.</string>
     <string name="activity_by_friends_favorite"><xliff:g id="user">%1$s</xliff:g> marcó como favorito el tweet de <xliff:g id="target">%2$s</xliff:g>.</string>
-    <string name="activity_by_friends_favorite_multi"><xliff:g id="user">%1$s</xliff:g> marcó como favoritos <xliff:g id="target">%2$s</xliff:g> y <xliff:g id="count">%3$d</xliff:g> tweets más.</string>
+  <string name="activity_by_friends_favorite_multi"><xliff:g id="user">%1$s</xliff:g> marcó como favorito <xliff:g id="target">%2$s</xliff:g> y <xliff:g id="other">%3$s</xliff:g>\'s tweet.</string>
     <string name="activity_by_friends_follow"><xliff:g id="user">%1$s</xliff:g> ahora sigue a <xliff:g id="target">%2$s</xliff:g>.</string>
-    <string name="activity_by_friends_follow_multi"><xliff:g id="user">%1$s</xliff:g> ahora sigue a <xliff:g id="target">%2$s</xliff:g> y <xliff:g id="count">%3$d</xliff:g> más.</string>
+  <string name="activity_by_friends_follow_multi"><xliff:g id="user">%1$s</xliff:g> está siguiendo <xliff:g id="target">%2$s</xliff:g> y <xliff:g id="other">%3$s</xliff:g>.</string>
     <string name="activity_by_friends_retweet"><xliff:g id="user">%1$s</xliff:g> ha retuiteado el tuit de <xliff:g id="target">%2$s</xliff:g>.</string>
-    <string name="activity_by_friends_list_member_added"><xliff:g id="user">%1$s</xliff:g> añadió a <xliff:g id="target">%2$s</xliff:g> a una lista.</string>
+  <string name="activity_by_friends_list_member_added"><xliff:g id="user">%1$s</xliff:g> añadio a <xliff:g id="target">%2$s</xliff:g> a una lista.</string>
     <string name="activity_by_friends_list_created"><xliff:g id="user">%1$s</xliff:g> ha creado la lista <xliff:g id="target">%2$s</xliff:g>.</string>
-    <string name="activity_by_friends_list_created_multi"><xliff:g id="user">%1$s</xliff:g> ha creado la lista <xliff:g id="target">%2$s</xliff:g> y <xliff:g id="count">%3$d</xliff:g> más.</string>
+  <string name="activity_by_friends_list_created_multi"><xliff:g id="user">%1$s</xliff:g> creó la lista <xliff:g id="target">%2$s</xliff:g> y <xliff:g id="other">%1$s</xliff:g>.</string>
     <string name="status_not_updated">Tweet no enviado.</string>
     <string name="status_not_updated_summary">Tweet no enviado y guardado en borradores.</string>
     <string name="incoming_friendships">Solicitudes de seguimiento pendientes</string>
@@ -369,6 +383,7 @@
     <string name="quote_protected_status_notice">No se recomienda citar tweets protegidos.</string>
     <string name="edit_draft">Editar borrador</string>
     <string name="profile_image">Imagen de perfil</string>
+  <string name="your_profile_image">Tu imagen de perfil</string>
     <string name="mention_user">Mención <xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">Color del tema</string>
     <string name="wrong_url_format">El formato del URL es incorrecto.</string>
