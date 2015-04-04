@@ -32,7 +32,6 @@ import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
@@ -45,7 +44,6 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffsetListener;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
 import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
@@ -55,7 +53,6 @@ import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.provider.RecentSearchProvider;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
@@ -169,19 +166,7 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
 		mPagerIndicator.setViewPager(mViewPager);
         mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
         mPagerIndicator.setOnPageChangeListener(this);
-        if (activity instanceof IThemedActivity) {
-            final int themeColor = ((IThemedActivity) activity).getCurrentThemeColor();
-            final int actionBarColor = ((IThemedActivity) activity).getActionBarColor();
-            final int contrastColor = ColorUtils.getContrastYIQ(actionBarColor, 192);
-            mPagerIndicator.setBackgroundColor(actionBarColor);
-            mPagerIndicator.setIconColor(contrastColor);
-            mPagerIndicator.setLabelColor(contrastColor);
-            mPagerIndicator.setStripColor(themeColor);
-        } else {
-            mPagerIndicator.setBackgroundColor(ThemeUtils.getActionBarColor(activity));
-        }
-        final float supportActionBarElevation = ThemeUtils.getSupportActionBarElevation(activity);
-        ViewCompat.setElevation(mPagerIndicator, supportActionBarElevation);
+        ThemeUtils.initPagerIndicatorAsActionBarTab(activity,mPagerIndicator);
 		if (savedInstanceState == null && args != null && args.containsKey(EXTRA_QUERY)) {
 			final String query = args.getString(EXTRA_QUERY);
 			final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),

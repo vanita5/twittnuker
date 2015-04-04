@@ -27,7 +27,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
@@ -46,7 +48,7 @@ import static de.vanita5.twittnuker.util.Utils.announceForAccessibilityCompat;
 public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter implements TabProvider, TabListener,
 		Constants {
 
-	private final ArrayList<SupportTabSpec> mTabs = new ArrayList<SupportTabSpec>();
+    private final ArrayList<SupportTabSpec> mTabs = new ArrayList<>();
 
 	private final Context mContext;
 	private final PagerIndicator mIndicator;
@@ -98,9 +100,17 @@ public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter im
 	@Override
 	public Fragment getItem(final int position) {
 		final Fragment fragment = Fragment.instantiate(mContext, mTabs.get(position).cls.getName());
-		fragment.setArguments(mTabs.get(position).args);
+        fragment.setArguments(getPageArguments(mTabs.get(position).args, position));
 		return fragment;
 	}
+
+    private Bundle getPageArguments(Bundle args, int position) {
+        if (args == null) {
+            args = new Bundle();
+        }
+        args.putInt(EXTRA_TAB_POSITION, position);
+        return args;
+    }
 
 	@Override
 	public Drawable getPageIcon(final int position) {
@@ -139,7 +149,21 @@ public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter im
 	}
 
 	@Override
+    public void startUpdate(ViewGroup container) {
+        super.startUpdate(container);
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        if (!(object instanceof Fragment)) return POSITION_NONE;
+        final Bundle args = ((Fragment) object).getArguments();
+        if (args == null) return POSITION_NONE;
+        return args.getInt(EXTRA_TAB_POSITION, POSITION_NONE);
+    }
+
+    @Override
 	public void onPageSelected(final int position) {
+        Log.d(LOGTAG, "onPageSelected " + position);
 		if (mIndicator == null) return;
 		announceForAccessibilityCompat(mContext, (View) mIndicator, getPageTitle(position), getClass());
 	}
@@ -149,7 +173,8 @@ public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter im
 		if (!(mContext instanceof SupportFragmentCallback)) return false;
 		if (((SupportFragmentCallback) mContext).triggerRefresh(position)) return true;
 		final Fragment f = ((SupportFragmentCallback) mContext).getCurrentVisibleFragment();
-		if (f instanceof RefreshScrollTopInterface) return ((RefreshScrollTopInterface) f).triggerRefresh();
+        if (f instanceof RefreshScrollTopInterface)
+            return ((RefreshScrollTopInterface) f).triggerRefresh();
 		return false;
 	}
 }

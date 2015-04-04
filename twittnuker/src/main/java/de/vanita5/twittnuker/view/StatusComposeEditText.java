@@ -48,11 +48,6 @@ public class StatusComposeEditText extends ThemedMultiAutoCompleteTextView imple
 
 	public StatusComposeEditText(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
-        if (isInEditMode()) {
-            mAdapter = null;
-        } else {
-			mAdapter = new UserHashtagAutoCompleteAdapter(this);
-        }
 		setTokenizer(new ScreenNameTokenizer());
 		setMovementMethod(ArrowKeyMovementMethod.getInstance());
         setRawInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
@@ -72,7 +67,7 @@ public class StatusComposeEditText extends ThemedMultiAutoCompleteTextView imple
     @Override
 	protected void onAttachedToWindow() {
 		super.onAttachedToWindow();
-		if (mAdapter == null || mAdapter.isCursorClosed()) {
+        if (!isInEditMode() && mAdapter == null || mAdapter.isCursorClosed()) {
 			mAdapter = new UserHashtagAutoCompleteAdapter(this);
 		}
 		setAdapter(mAdapter);

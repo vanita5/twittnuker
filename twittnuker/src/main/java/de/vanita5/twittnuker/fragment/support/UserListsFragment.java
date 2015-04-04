@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
 public class UserListsFragment extends BaseSupportFragment implements RefreshScrollTopInterface,
@@ -69,9 +70,7 @@ public class UserListsFragment extends BaseSupportFragment implements RefreshScr
 		mViewPager.setOffscreenPageLimit(2);
 		mPagerIndicator.setViewPager(mViewPager);
         mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
-        if (activity instanceof IThemedActivity) {
-            mPagerIndicator.setStripColor(((IThemedActivity) activity).getCurrentThemeColor());
-        }
+        ThemeUtils.initPagerIndicatorAsActionBarTab(activity, mPagerIndicator);
 	}
 
 

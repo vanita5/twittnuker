@@ -21,7 +21,8 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
@@ -77,7 +78,7 @@
 				android:textAppearance="?android:attr/textAppearanceLarge"
 				android:textColor="?android:colorActivatedHighlight"
 				android:textSize="@dimen/text_size_wizard_nav_item"
-				android:textStyle="bold|italic"/>
+                android:textStyle="bold"/>
 		</FrameLayout>
 	</LinearLayout>
 
