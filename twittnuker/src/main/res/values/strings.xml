@@ -703,7 +703,7 @@
 	<string name="user_type_protected">Protected</string>
 	<string name="donate_summary">See project page</string>
 	<string name="tweet_hashtag">Tweet #<xliff:g id="text">%1$s</xliff:g></string>
-	<string name="tweet_with_name">Tweet with <xliff:g id="text">%1$s</xliff:g></string>
+	<string name="tweet_from_name">Tweet from <xliff:g id="text">%1$s</xliff:g></string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
