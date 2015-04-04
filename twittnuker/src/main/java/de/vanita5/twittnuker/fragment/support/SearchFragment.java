@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
+import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.provider.RecentSearchProvider;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -62,6 +63,7 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
         OnPageChangeListener {
 
     private ViewPager mViewPager;
+    private View mPagerWindowOverlay;
 
 	private SupportTabsAdapter mAdapter;
     private TabPagerIndicator mPagerIndicator;
@@ -114,8 +116,14 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
     }
 
     private void updateTabOffset() {
-        int controlBarHeight = getControlBarHeight();
-        mPagerIndicator.setTranslationY(controlBarHeight - mControlBarOffsetPixels);
+        final int controlBarHeight = getControlBarHeight();
+        final int translationY = controlBarHeight - mControlBarOffsetPixels;
+        final View view = getActivity().getWindow().findViewById(android.support.v7.appcompat.R.id.action_bar);
+        if (view != null && controlBarHeight != 0) {
+            view.setAlpha(translationY / (float) controlBarHeight);
+        }
+        mPagerIndicator.setTranslationY(translationY);
+        mPagerWindowOverlay.setTranslationY(translationY);
     }
 
     private int getControlBarHeight() {
@@ -166,7 +174,8 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
 		mPagerIndicator.setViewPager(mViewPager);
         mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
         mPagerIndicator.setOnPageChangeListener(this);
-        ThemeUtils.initPagerIndicatorAsActionBarTab(activity,mPagerIndicator);
+        ThemeUtils.initPagerIndicatorAsActionBarTab(activity, mPagerIndicator);
+        ThemeUtils.setCompatToolbarOverlay(activity, new EmptyDrawable());
 		if (savedInstanceState == null && args != null && args.containsKey(EXTRA_QUERY)) {
 			final String query = args.getString(EXTRA_QUERY);
 			final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),
@@ -249,6 +258,7 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
     public void onBaseViewCreated(final View view, final Bundle savedInstanceState) {
         super.onBaseViewCreated(view, savedInstanceState);
         mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
+        mPagerWindowOverlay = view.findViewById(R.id.pager_window_overlay);
         mPagerIndicator = (TabPagerIndicator) view.findViewById(R.id.view_pager_tabs);
 	}
 

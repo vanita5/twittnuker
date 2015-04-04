@@ -62,10 +62,6 @@ import static de.vanita5.twittnuker.util.RegexUtils.matcherStart;
 
 public final class TwidereLinkify implements Constants {
 
-    //Set flag for media urls not recognized by Twitter
-    private boolean hasExtraMediaLink;
-    private String customMediaUrl;
-
 	public static final int LINK_TYPE_MENTION = 1;
 	public static final int LINK_TYPE_HASHTAG = 2;
 	public static final int LINK_TYPE_LINK = 4;
@@ -144,8 +140,10 @@ public final class TwidereLinkify implements Constants {
             addLinks(string, account_id, type, sensitive, listener, highlightOption);
 		}
 		view.setText(string);
-		addLinkMovementMethod(view);
-	}
+        if (mAddMovementMethod) {
+			addLinkMovementMethod(view);
+		}
+    }
 
     public final void applyUserProfileLink(final TextView view, final long accountId, final long userId,
                                            final String screenName) {
@@ -167,8 +165,10 @@ public final class TwidereLinkify implements Constants {
             applyLink(screenName, 0, string.length(), string, accountId, LINK_TYPE_MENTION, false, listener);
 		}
 		view.setText(string);
-		addLinkMovementMethod(view);
-	}
+        if (mAddMovementMethod) {
+			addLinkMovementMethod(view);
+		}
+    }
 
 	public void setHighlightOption(final int style) {
 		mHighlightOption = style;

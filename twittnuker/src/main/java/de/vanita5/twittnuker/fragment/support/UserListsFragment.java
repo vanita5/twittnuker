@@ -32,11 +32,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
+import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
@@ -71,6 +71,7 @@ public class UserListsFragment extends BaseSupportFragment implements RefreshScr
 		mPagerIndicator.setViewPager(mViewPager);
         mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
         ThemeUtils.initPagerIndicatorAsActionBarTab(activity, mPagerIndicator);
+        ThemeUtils.setCompatToolbarOverlay(activity, new EmptyDrawable());
 	}
 
 
