@@ -416,13 +416,13 @@ abstract class TwitterBaseImpl implements OAuthSupport, HttpResponseListener, Tw
 		return user;
 	}
 
-	protected HttpResponse get(final String url, final String sign_url, final HttpParameter... parameters)
+    protected HttpResponse get(final String url, final String signUrl, final HttpParameter... parameters)
 			throws TwitterException {
 		// intercept HTTP call for monitoring purposes
 		HttpResponse response = null;
 		final long start = System.currentTimeMillis();
 		try {
-			response = http.get(url, sign_url, parameters, auth);
+            response = http.get(url, signUrl, parameters, auth);
 		} finally {
 			final long elapsedTime = System.currentTimeMillis() - start;
 			TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
