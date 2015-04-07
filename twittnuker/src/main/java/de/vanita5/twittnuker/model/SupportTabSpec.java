@@ -40,14 +40,15 @@ public class SupportTabSpec implements Comparable<SupportTabSpec>, TwittnukerCon
 	public final Class<? extends Fragment> cls;
 	public final Bundle args;
 	public final int position;
+    public final String tag;
 
 	public SupportTabSpec(final String name, final Object icon, final Class<? extends Fragment> cls, final Bundle args,
-			final int position) {
-		this(name, icon, null, cls, args, position);
+                          final int position, String tag) {
+        this(name, icon, null, cls, args, position, tag);
 	}
 
 	public SupportTabSpec(final String name, final Object icon, final String type, final Class<? extends Fragment> cls,
-			final Bundle args, final int position) {
+                          final Bundle args, final int position, final String tag) {
 		if (cls == null) throw new IllegalArgumentException("Fragment cannot be null!");
 		if (name == null && icon == null)
 			throw new IllegalArgumentException("You must specify a name or icon for this tab!");
@@ -57,7 +58,7 @@ public class SupportTabSpec implements Comparable<SupportTabSpec>, TwittnukerCon
 		this.cls = cls;
 		this.args = args;
 		this.position = position;
-
+        this.tag = tag;
 	}
 
 	@Override
@@ -75,8 +76,15 @@ public class SupportTabSpec implements Comparable<SupportTabSpec>, TwittnukerCon
 
 	@Override
 	public String toString() {
-		return "SupportTabSpec{name=" + name + ", icon=" + icon + ", type=" + type + ", cls=" + cls + ", args=" + args
-				+ ", position=" + position + "}";
+        return "SupportTabSpec{" +
+                "name='" + name + '\'' +
+                ", icon=" + icon +
+                ", type='" + type + '\'' +
+                ", cls=" + cls +
+                ", args=" + args +
+                ", position=" + position +
+                ", tag='" + tag + '\'' +
+                '}';
 	}
 
 }

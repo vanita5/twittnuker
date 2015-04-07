@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.view.iface.PagerIndicator.TabProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconDrawable;
 import static de.vanita5.twittnuker.util.Utils.announceForAccessibilityCompat;
@@ -75,8 +76,8 @@ public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter im
 	}
 
 	public void addTab(final Class<? extends Fragment> cls, final Bundle args, final String name, final Integer icon,
-			final int position) {
-		addTab(new SupportTabSpec(name, icon, cls, args, position));
+                       final int position, final String tag) {
+        addTab(new SupportTabSpec(name, icon, cls, args, position, tag));
 	}
 
 	public void addTab(final SupportTabSpec spec) {
@@ -100,46 +101,55 @@ public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter im
 	}
 
 	@Override
+    public int getItemPosition(Object object) {
+        if (!(object instanceof Fragment)) return POSITION_NONE;
+        final Bundle args = ((Fragment) object).getArguments();
+        if (args == null) return POSITION_NONE;
+        return args.getInt(EXTRA_ADAPTER_POSITION, POSITION_NONE);
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        if (mIndicator != null) {
+            mIndicator.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public CharSequence getPageTitle(final int position) {
+        return mTabs.get(position).name;
+    }
+
+    @Override
+    public float getPageWidth(final int position) {
+        return 1.0f / mColumns;
+    }
+
+    @Override
 	public Fragment getItem(final int position) {
 		final Fragment fragment = Fragment.instantiate(mContext, mTabs.get(position).cls.getName());
         fragment.setArguments(getPageArguments(mTabs.get(position).args, position));
 		return fragment;
 	}
 
-    private Bundle getPageArguments(Bundle args, int position) {
-        if (args == null) {
-            args = new Bundle();
-        }
-        args.putInt(EXTRA_ADAPTER_POSITION, position);
-        return args;
+	@Override
+    public void startUpdate(ViewGroup container) {
+        super.startUpdate(container);
     }
 
-	@Override
+    @Override
 	public Drawable getPageIcon(final int position) {
 		return getTabIconDrawable(mContext, mTabs.get(position).icon);
-	}
-
-	@Override
-	public CharSequence getPageTitle(final int position) {
-		return mTabs.get(position).name;
-	}
-
-	@Override
-	public float getPageWidth(final int position) {
-		return 1.0f / mColumns;
 	}
 
 	public SupportTabSpec getTab(final int position) {
 		return position >= 0 && position < mTabs.size() ? mTabs.get(position) : null;
 	}
 
-	@Override
-	public void notifyDataSetChanged() {
-		super.notifyDataSetChanged();
-		if (mIndicator != null) {
-			mIndicator.notifyDataSetChanged();
-		}
-	}
+    public List<SupportTabSpec> getTabs() {
+        return mTabs;
+    }
 
 	@Override
 	public void onPageReselected(final int position) {
@@ -151,19 +161,6 @@ public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter im
 	}
 
 	@Override
-    public void startUpdate(ViewGroup container) {
-        super.startUpdate(container);
-    }
-
-    @Override
-    public int getItemPosition(Object object) {
-        if (!(object instanceof Fragment)) return POSITION_NONE;
-        final Bundle args = ((Fragment) object).getArguments();
-        if (args == null) return POSITION_NONE;
-        return args.getInt(EXTRA_ADAPTER_POSITION, POSITION_NONE);
-    }
-
-    @Override
 	public void onPageSelected(final int position) {
         Log.d(LOGTAG, "onPageSelected " + position);
 		if (mIndicator == null) return;
@@ -179,4 +176,12 @@ public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter im
             return ((RefreshScrollTopInterface) f).triggerRefresh();
 		return false;
 	}
+
+    private Bundle getPageArguments(Bundle args, int position) {
+        if (args == null) {
+            args = new Bundle();
+        }
+        args.putInt(EXTRA_ADAPTER_POSITION, position);
+        return args;
+    }
 }

@@ -648,8 +648,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 //                        getAccountIds(getContext()));
 //                for (final AccountPreferences pref : prefs) {
 //                    if (!pref.isHomeTimelineNotificationEnabled()) continue;
-//                    showTimelineNotification(pref, getPositionTag(HomeTimelineFragment.KEY_READ_POSITION_TAG,
-//                            pref.getAccountId()));
+//                    showTimelineNotification(pref, getPositionTag(TAB_TYPE_HOME_TIMELINE, pref.getAccountId()));
 //                }
 				notifyUnreadCountChanged(NOTIFICATION_ID_HOME_TIMELINE);
 				break;
@@ -659,8 +658,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 						getAccountIds(getContext()));
                 for (final AccountPreferences pref : prefs) {
                     if (!pref.isMentionsNotificationEnabled()) continue;
-                    showMentionsNotification(pref, getPositionTag(MentionsTimelineFragment.KEY_READ_POSITION_TAG,
-                            pref.getAccountId()));
+                    showMentionsNotification(pref, getPositionTag(TAB_TYPE_MENTIONS_TIMELINE, pref.getAccountId()));
                 }
 				notifyUnreadCountChanged(NOTIFICATION_ID_MENTIONS_TIMELINE);
 				break;
@@ -670,7 +668,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                         getAccountIds(getContext()));
                 for (final AccountPreferences pref : prefs) {
                     if (!pref.isDirectMessagesNotificationEnabled()) continue;
-                    final StringLongPair[] pairs = mReadStateManager.getPositionPairs(DirectMessagesFragment.KEY_READ_POSITION_TAG);
+                    final StringLongPair[] pairs = mReadStateManager.getPositionPairs(TAB_TYPE_DIRECT_MESSAGES);
                     showMessagesNotification(pref, pairs, valuesArray);
                 }
 				notifyUnreadCountChanged(NOTIFICATION_ID_DIRECT_MESSAGES);

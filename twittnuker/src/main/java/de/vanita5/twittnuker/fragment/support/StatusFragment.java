@@ -101,10 +101,10 @@ import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler;
 import de.vanita5.twittnuker.util.StatusLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
-import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -790,7 +790,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
     }
 
-    private static class StatusAdapter extends Adapter<ViewHolder> implements IStatusesAdapter<List<ParcelableStatus>>, OnLinkClickListener {
+    private static class StatusAdapter extends Adapter<ViewHolder> implements IStatusesAdapter<List<ParcelableStatus>> {
 
         private static final int VIEW_TYPE_DETAIL_STATUS = 0;
         private static final int VIEW_TYPE_LIST_STATUS = 1;
@@ -803,7 +803,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final LayoutInflater mInflater;
         private final MediaLoaderWrapper mImageLoader;
         private final ImageLoadingHandler mImageLoadingHandler;
-        private final TwidereLinkify mLinkify;
+        private final TwidereLinkify mTwidereLinkify;
 
         private final boolean mNameFirst;
         private final int mCardLayoutResource;
@@ -812,6 +812,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final boolean mIsCompact;
         private final int mProfileImageStyle;
         private final int mMediaPreviewStyle;
+        private final int mLinkHighligingStyle;
         private final boolean mDisplayMediaPreview;
         private final boolean mDisplayProfileImage;
 
@@ -839,6 +840,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             mTextSize = preferences.getInt(KEY_TEXT_SIZE, res.getInteger(R.integer.default_text_size));
             mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
             mMediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
+            mLinkHighligingStyle = Utils.getLinkHighlightingStyleInt(preferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));
             mIsCompact = compact;
             mDisplayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
             mDisplayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
@@ -847,7 +849,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 		    } else {
                 mCardLayoutResource = R.layout.card_item_status;
 		    }
-            mLinkify = new TwidereLinkify(this);
+            mTwidereLinkify = new TwidereLinkify(new StatusAdapterLinkClickHandler<>(this));
 		}
 
         public void addConversation(ParcelableStatus status, int position) {
@@ -913,11 +915,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         }
 
         @Override
-        public void onLinkClick(String link, String orig, long accountId, long extraId, int type, boolean sensitive, int start, int end) {
-
-        }
-
-        @Override
         public void setLoadMoreSupported(boolean supported) {
             mLoadMoreSupported = supported;
             if (!supported) {
@@ -960,7 +957,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
         @Override
         public TwidereLinkify getTwidereLinkify() {
-            return mLinkify;
+            return mTwidereLinkify;
         }
 
         @Override
@@ -970,7 +967,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
         @Override
         public int getLinkHighlightingStyle() {
-            return 0;
+            return mLinkHighligingStyle;
         }
 
         public boolean isNameFirst() {

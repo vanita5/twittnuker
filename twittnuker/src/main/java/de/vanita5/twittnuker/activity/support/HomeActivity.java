@@ -27,6 +27,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Canvas;
@@ -67,6 +68,13 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
@@ -85,6 +93,8 @@ import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -95,6 +105,7 @@ import de.vanita5.twittnuker.util.HotKeyHandler;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UnreadCountUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -139,6 +150,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 
 	private MultiSelectEventHandler mMultiSelectHandler;
 	private HotKeyHandler mHotKeyHandler;
+    private ReadStateManager mReadStateManager;
 
 	private SupportTabsAdapter mPagerAdapter;
 
@@ -162,6 +174,13 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 	private boolean mPushEnabled;
 	private float mPagerPosition;
     private Toolbar mActionBar;
+
+    private OnSharedPreferenceChangeListener mReadStateChangeListener = new OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            updateUnreadCount();
+        }
+    };
 
 	public void closeAccountsDrawer() {
 		if (mSlidingMenu == null) return;
@@ -280,6 +299,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 		}
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mTwitterWrapper = getTwitterWrapper();
+        mReadStateManager = TwittnukerApplication.getInstance(this).getReadStateManager();
 		mMultiSelectHandler = new MultiSelectEventHandler(this);
 		mHotKeyHandler = new HotKeyHandler(this);
 		mMultiSelectHandler.dispatchOnCreate();
@@ -400,6 +420,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 	@Override
 	protected void onStop() {
 		mMultiSelectHandler.dispatchOnStop();
+        mReadStateManager.unregisterOnSharedPreferenceChangeListener(mReadStateChangeListener);
         final Bus bus = TwittnukerApplication.getInstance(this).getMessageBus();
         bus.unregister(this);
 		final ContentResolver resolver = getContentResolver();
@@ -560,7 +581,8 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
     public void updateUnreadCount() {
         if (mTabIndicator == null || mUpdateUnreadCountTask != null
                 && mUpdateUnreadCountTask.getStatus() == AsyncTask.Status.RUNNING) return;
-        mUpdateUnreadCountTask = new UpdateUnreadCountTask(mTabIndicator);
+        mUpdateUnreadCountTask = new UpdateUnreadCountTask(this, mReadStateManager, mTabIndicator,
+                mPagerAdapter.getTabs());
         AsyncTaskUtils.executeTask(mUpdateUnreadCountTask);
         mTabIndicator.setDisplayBadge(mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
     }
@@ -924,31 +946,52 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 
 	}
 
-    private static class UpdateUnreadCountTask extends AsyncTask<Object, Object, int[]> {
+    private static class UpdateUnreadCountTask extends AsyncTask<Object, Void, Map<SupportTabSpec, Integer>> {
 		private final Context mContext;
+        private final ReadStateManager mReadStateManager;
 		private final TabPagerIndicator mIndicator;
+        private final List<SupportTabSpec> mTabs;
 
-        UpdateUnreadCountTask(final TabPagerIndicator indicator) {
+        UpdateUnreadCountTask(final Context context, final ReadStateManager manager, final TabPagerIndicator indicator, final List<SupportTabSpec> tabs) {
+            mContext = context;
+            mReadStateManager = manager;
 			mIndicator = indicator;
-			mContext = indicator.getContext();
+            mTabs = Collections.unmodifiableList(tabs);
 		}
 
 		@Override
-		protected int[] doInBackground(final Object... params) {
-            final int tabCount = mIndicator.getCount();
-            final int[] result = new int[tabCount];
-            for (int i = 0; i < tabCount; i++) {
-				result[i] = UnreadCountUtils.getUnreadCount(mContext, i);
+        protected Map<SupportTabSpec, Integer> doInBackground(final Object... params) {
+            final Map<SupportTabSpec, Integer> result = new HashMap<>();
+            for (SupportTabSpec spec : mTabs) {
+                switch (spec.type) {
+                    case TAB_TYPE_HOME_TIMELINE: {
+                        final long[] accountIds = Utils.getAccountIds(spec.args);
+                        final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext, true, spec.tag, accountIds);
+                        final long position = mReadStateManager.getPosition(tagWithAccounts);
+                        result.put(spec, Utils.getStatusesCount(mContext, Statuses.CONTENT_URI, position, accountIds));
+                        break;
+                    }
+                    case TAB_TYPE_MENTIONS_TIMELINE: {
+                        final long[] accountIds = Utils.getAccountIds(spec.args);
+                        final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext, true, spec.tag, accountIds);
+                        final long position = mReadStateManager.getPosition(tagWithAccounts);
+                        result.put(spec, Utils.getStatusesCount(mContext, Mentions.CONTENT_URI, position, accountIds));
+                        break;
+                    }
+                    case TAB_TYPE_DIRECT_MESSAGES: {
+                        break;
+                    }
+                }
 			}
 			return result;
 		}
 
 		@Override
-		protected void onPostExecute(final int[] result) {
-			final int tabCount = mIndicator.getCount();
-			if (result == null || result.length != tabCount) return;
-			for (int i = 0; i < tabCount; i++) {
-				mIndicator.setBadge(i, result[i]);
+        protected void onPostExecute(final Map<SupportTabSpec, Integer> result) {
+            mIndicator.clearBadge();
+            for (Entry<SupportTabSpec, Integer> entry : result.entrySet()) {
+                final SupportTabSpec key = entry.getKey();
+                mIndicator.setBadge(key.position, entry.getValue());
 			}
 		}
 

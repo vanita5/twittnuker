@@ -22,10 +22,7 @@
 
 package de.vanita5.twittnuker.adapter;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.Pair;
@@ -46,13 +43,11 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
-import de.vanita5.twittnuker.util.StatusLinkClickHandler;
+import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.HighlightStyle;
-import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
@@ -61,7 +56,7 @@ import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
 public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implements Constants,
-        IStatusesAdapter<D>, OnLinkClickListener {
+        IStatusesAdapter<D> {
     public static final int ITEM_VIEW_TYPE_STATUS = 0;
     public static final int ITEM_VIEW_TYPE_GAP = 1;
     public static final int ITEM_VIEW_TYPE_LOAD_INDICATOR = 2;
@@ -111,8 +106,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
         mNameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
         mDisplayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
         mDisplayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
-        mLinkify = new TwidereLinkify(new InternalOnLinkClickListener(this));
-        mLinkify.setHighlightOption(mLinkHighlightingStyle);
+        mLinkify = new TwidereLinkify(new StatusAdapterLinkClickHandler<>(this));
         setShowInReplyTo(true);
     }
 
@@ -219,16 +213,17 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     }
 
     @Override
-    public void onMediaClick(StatusViewHolder holder, ParcelableMedia media, int position) {
+    public void onMediaClick(StatusViewHolder holder, final ParcelableMedia media, int position) {
         if (mStatusAdapterListener != null) {
             mStatusAdapterListener.onMediaClick(holder, media, position);
         }
     }
 
     @Override
-    public void onUserProfileClick(StatusViewHolder holder, int position) {
-        final Context context = getContext();
+    public void onUserProfileClick(final StatusViewHolder holder, final int position) {
         final ParcelableStatus status = getStatus(position);
+        if (status == null) return;
+        final Context context = getContext();
         final View profileImageView = holder.getProfileImageView();
         final View profileTypeView = holder.getProfileTypeView();
         if (context instanceof FragmentActivity) {
@@ -332,18 +327,6 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
         }
     }
 
-    @Override
-    public void onLinkClick(String link, String orig, long accountId, long extraId, int type, boolean sensitive, int start, int end) {
-        final Context context = getContext();
-        final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        try {
-            context.startActivity(intent);
-        } catch (final ActivityNotFoundException e) {
-            // TODO
-        }
-    }
-
     public void setListener(StatusAdapterListener listener) {
         mStatusAdapterListener = listener;
     }
@@ -368,21 +351,4 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
         void onStatusMenuClick(StatusViewHolder holder, View menuView, int position);
     }
 
-    private static class InternalOnLinkClickListener<D> extends OnLinkClickHandler {
-
-        private final AbsStatusesAdapter<D> adapter;
-
-        public InternalOnLinkClickListener(AbsStatusesAdapter<D> adapter) {
-            super(adapter.getContext(), null);
-            this.adapter = adapter;
-        }
-
-        @Override
-        protected void openMedia(long accountId, long extraId, boolean sensitive, String link, int start, int end) {
-            final ParcelableStatus status = adapter.getStatus((int) extraId);
-            final ParcelableMedia current = StatusLinkClickHandler.findByLink(status.media, link);
-            Utils.openMedia(context, status, current);
-        }
-
-    }
 }

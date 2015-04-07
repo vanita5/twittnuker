@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -31,14 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
 
@@ -54,8 +46,11 @@ public class ViewStatusDialogFragment extends BaseSupportDialogFragment {
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup parent, final Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.dialog_scrollable_status, parent, false);
-	}
+        if (getShowsDialog()) {
+			return inflater.inflate(R.layout.dialog_scrollable_status, parent, false);
+		}
+        return inflater.inflate(R.layout.card_item_status_common, parent, false);
+    }
 
 	@Override
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -76,12 +71,6 @@ public class ViewStatusDialogFragment extends BaseSupportDialogFragment {
 		final FragmentActivity activity = getActivity();
         mAdapter = new DummyStatusHolderAdapter(activity);
         mHolder = new StatusViewHolder(mAdapter, getView());
-        final TwittnukerApplication application = getApplication();
-        final MediaLoaderWrapper loader = application.getMediaLoaderWrapper();
-		final ImageLoadingHandler handler = new ImageLoadingHandler(R.id.media_preview_progress);
-		final AsyncTwitterWrapper twitter = getTwitterWrapper();
-		final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(activity,
-				SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE, SharedPreferenceConstants.class);
 		final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
 		if (args.containsKey(EXTRA_SHOW_MEDIA_PREVIEW)) {
             mAdapter.setMediaPreviewEnabled(args.getBoolean(EXTRA_SHOW_MEDIA_PREVIEW));
