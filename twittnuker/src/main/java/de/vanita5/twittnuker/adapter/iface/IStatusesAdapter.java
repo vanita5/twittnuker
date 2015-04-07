@@ -22,6 +22,7 @@
 package de.vanita5.twittnuker.adapter.iface;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.StatusClickListener;
 
 public interface IStatusesAdapter<Data> extends IContentCardAdapter, StatusClickListener {
@@ -32,7 +33,11 @@ public interface IStatusesAdapter<Data> extends IContentCardAdapter, StatusClick
 
     long getStatusId(int position);
 
+    TwidereLinkify getTwidereLinkify();
+
     boolean isMediaPreviewEnabled();
+
+    int getLinkHighlightingStyle();
 
     boolean isNameFirst();
 

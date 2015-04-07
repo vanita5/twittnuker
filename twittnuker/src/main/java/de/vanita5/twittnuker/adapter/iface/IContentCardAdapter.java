@@ -27,6 +27,7 @@ import android.content.Context;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
 public interface IContentCardAdapter extends IGapSupportedAdapter, ContentCardClickListener {
@@ -41,6 +42,7 @@ public interface IContentCardAdapter extends IGapSupportedAdapter, ContentCardCl
     @ShapeStyle
 	int getProfileImageStyle();
 
+    @PreviewStyle
 	int getMediaPreviewStyle();
 
 	AsyncTwitterWrapper getTwitterWrapper();

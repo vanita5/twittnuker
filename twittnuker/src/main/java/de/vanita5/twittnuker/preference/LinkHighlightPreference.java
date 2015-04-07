@@ -39,8 +39,9 @@ public class LinkHighlightPreference extends AutoInvalidateListPreference implem
             R.string.highlight_and_underline };
 	private static final String[] VALUES = { VALUE_LINK_HIGHLIGHT_OPTION_NONE, VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT,
 			VALUE_LINK_HIGHLIGHT_OPTION_UNDERLINE, VALUE_LINK_HIGHLIGHT_OPTION_BOTH };
-	private static final int[] OPTIONS = { VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE, VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT,
-			VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE, VALUE_LINK_HIGHLIGHT_OPTION_CODE_BOTH };
+	private static final int[] OPTIONS = { VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE,
+			VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT, VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE,
+			VALUE_LINK_HIGHLIGHT_OPTION_CODE_BOTH };
 
 	public LinkHighlightPreference(final Context context) {
 		this(context, null);
@@ -61,7 +62,7 @@ public class LinkHighlightPreference extends AutoInvalidateListPreference implem
 		super.onBindView(view);
 		final TextView summary = (TextView) view.findViewById(android.R.id.summary);
 		summary.setVisibility(View.VISIBLE);
-		summary.setText(getStyledEntry(Utils.getLinkHighlightOptionInt(getValue()), getEntry()));
+		summary.setText(getStyledEntry(Utils.getLinkHighlightingStyleInt(getValue()), getEntry()));
 	}
 
 	private static CharSequence getStyledEntry(final int option, final CharSequence entry) {

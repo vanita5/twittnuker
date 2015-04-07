@@ -31,10 +31,9 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
+import de.vanita5.twittnuker.util.Utils;
 
 import java.util.Collection;
-
-import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
 
 public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter, OnSharedPreferenceChangeListener {
 
@@ -115,7 +114,7 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
 
 	@Override
 	public final void setLinkHighlightOption(final String option) {
-		final int optionInt = getLinkHighlightOptionInt(option);
+        final int optionInt = Utils.getLinkHighlightingStyleInt(option);
 		mLinkify.setHighlightOption(optionInt);
 		if (optionInt == mLinkHighlightOption) return;
 		mLinkHighlightOption = optionInt;

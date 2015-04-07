@@ -35,15 +35,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
+import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
 
 import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 
@@ -84,19 +80,9 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
 		final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
 		final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 		final Context context = builder.getContext();
-		final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
-				SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final MediaLoaderWrapper loader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
-		final ImageLoadingHandler handler = new ImageLoadingHandler(R.id.media_preview_progress);
-        final AsyncTwitterWrapper twitter = getTwitterWrapper();
 		final LayoutInflater inflater = LayoutInflater.from(context);
 		@SuppressLint("InflateParams") final View view = inflater.inflate(R.layout.dialog_scrollable_status, null);
-		final StatusViewHolder holder = new StatusViewHolder(view.findViewById(R.id.item_content));
-        final int profileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
-        final int mediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
-        final boolean nameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
-        final boolean displayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-        final boolean displayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
+        final StatusViewHolder holder = new StatusViewHolder(new DummyStatusHolderAdapter(context), view.findViewById(R.id.item_content));
 		final ParcelableStatus status = getStatus();
 
 		builder.setView(view);
@@ -105,8 +91,7 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
 		builder.setNeutralButton(R.string.quote, this);
 		builder.setNegativeButton(android.R.string.cancel, null);
 
-        holder.displayStatus(context, loader, handler, twitter, displayProfileImage, displayMediaPreview,
-                true, true, nameFirst, profileImageStyle, mediaPreviewStyle, status, null, true);
+        holder.displayStatus(status, null, false, true);
 
 		view.findViewById(R.id.item_menu).setVisibility(View.GONE);
 		view.findViewById(R.id.action_buttons).setVisibility(View.GONE);

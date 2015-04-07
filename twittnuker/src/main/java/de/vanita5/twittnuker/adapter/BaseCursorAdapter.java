@@ -33,8 +33,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
-
-import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
+import de.vanita5.twittnuker.util.Utils;
 
 public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapter, OnSharedPreferenceChangeListener {
 
@@ -119,7 +118,7 @@ public class BaseCursorAdapter extends SimpleCursorAdapter implements IBaseAdapt
 
 	@Override
 	public final void setLinkHighlightOption(final String option) {
-		final int option_int = getLinkHighlightOptionInt(option);
+        final int option_int = Utils.getLinkHighlightingStyleInt(option);
 		if (option_int == mLinkHighlightOption) return;
 		mLinkHighlightOption = option_int;
 		mLinkify.setHighlightOption(option_int);

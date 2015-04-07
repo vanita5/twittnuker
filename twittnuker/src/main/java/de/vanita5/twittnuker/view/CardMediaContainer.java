@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -33,11 +34,14 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableMedia;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.Utils.OnMediaClickListener;
 
 public class CardMediaContainer extends ViewGroup implements Constants {
@@ -287,4 +291,10 @@ public class CardMediaContainer extends ViewGroup implements Constants {
 		}
 
 	}
+
+    @IntDef({VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE, VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP})
+    @Retention(RetentionPolicy.SOURCE)
+    public static @interface PreviewStyle {
+
+    }
 }

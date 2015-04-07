@@ -208,10 +208,12 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 import de.vanita5.twittnuker.service.RefreshService;
+import de.vanita5.twittnuker.util.TwidereLinkify.HighlightStyle;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.net.OkHttpClientFactory;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
+import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
@@ -1863,17 +1865,19 @@ public final class Utils implements Constants, TwitterConstants {
 		return sb;
 	}
 
-	public static String getLinkHighlightOption(final Context context) {
+    public static String getLinkHighlightingStyleName(final Context context) {
 		if (context == null) return null;
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		return prefs.getString(KEY_LINK_HIGHLIGHT_OPTION, VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT);
 	}
 
-	public static int getLinkHighlightOptionInt(final Context context) {
-		return getLinkHighlightOptionInt(getLinkHighlightOption(context));
+    @HighlightStyle
+    public static int getLinkHighlightingStyle(final Context context) {
+        return getLinkHighlightingStyleInt(getLinkHighlightingStyleName(context));
 	}
 
-	public static int getLinkHighlightOptionInt(final String option) {
+    @HighlightStyle
+    public static int getLinkHighlightingStyleInt(final String option) {
 		if (VALUE_LINK_HIGHLIGHT_OPTION_BOTH.equals(option))
 			return VALUE_LINK_HIGHLIGHT_OPTION_CODE_BOTH;
 		else if (VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT.equals(option))
@@ -2060,6 +2064,7 @@ public final class Utils implements Constants, TwitterConstants {
         return ShapedImageView.SHAPE_CIRCLE;
     }
 
+    @PreviewStyle
     public static int getMediaPreviewStyle(String style) {
         if (VALUE_MEDIA_PREVIEW_STYLE_SCALE.equalsIgnoreCase(style)) {
             return VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE;

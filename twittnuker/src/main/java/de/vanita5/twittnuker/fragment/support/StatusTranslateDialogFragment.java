@@ -27,7 +27,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
@@ -40,16 +39,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
+import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
 import twitter4j.TranslationResult;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -58,6 +53,8 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 		LoaderCallbacks<SingleResponse<TranslationResult>> {
 
     private StatusViewHolder mHolder;
+    private DummyStatusHolderAdapter mAdapter;
+
 	private ProgressBar mProgressBar;
 	private TextView mMessageView;
 	private View mProgressContainer;
@@ -75,6 +72,8 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 			dismiss();
 			return;
 		}
+        mAdapter = new DummyStatusHolderAdapter(getActivity());
+        mHolder = new StatusViewHolder(mAdapter, mStatusContainer);
 		getLoaderManager().initLoader(0, args, this);
 	}
 
@@ -96,7 +95,6 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 		mProgressBar = (ProgressBar) mProgressContainer.findViewById(android.R.id.progress);
 		mMessageView = (TextView) mProgressContainer.findViewById(android.R.id.message);
 		mStatusContainer = view.findViewById(R.id.status_container);
-        mHolder = new StatusViewHolder(mStatusContainer);
 	}
 
 	@Override
@@ -129,21 +127,7 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 
 	private void displayTranslatedStatus(final ParcelableStatus status, final TranslationResult translated) {
 		if (status == null || translated == null) return;
-        final FragmentActivity activity = getActivity();
-        final TwittnukerApplication application = getApplication();
-        final MediaLoaderWrapper loader = application.getMediaLoaderWrapper();
-        final ImageLoadingHandler handler = new ImageLoadingHandler(R.id.media_preview_progress);
-        final AsyncTwitterWrapper twitter = getTwitterWrapper();
-        final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(activity,
-				SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        final int profileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
-        final int mediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
-        final boolean nameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
-        final boolean displayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-        final boolean displayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
-
-        mHolder.displayStatus(activity, loader, handler, twitter, displayProfileImage, displayMediaPreview,
-                true, true, nameFirst, profileImageStyle, mediaPreviewStyle, status, null, true);
+        mHolder.displayStatus(status, null, false, true);
 
         mStatusContainer.findViewById(R.id.item_menu).setVisibility(View.GONE);
         mStatusContainer.findViewById(R.id.action_buttons).setVisibility(View.GONE);

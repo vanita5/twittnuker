@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.view.iface.IExtendedView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.TouchInterceptor;
@@ -56,7 +57,6 @@ import java.lang.reflect.InvocationTargetException;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.formatToLongTimeString;
 import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
-import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
 
 public class ThemePreviewPreference extends Preference implements Constants, OnSharedPreferenceChangeListener {
 
@@ -125,7 +125,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
         ViewAccessor.setBackground(actionBarOverlay, ThemeUtils.getWindowContentOverlay(context));
         cardView.setCardBackgroundColor(cardBackgroundColor);
 
-		final int highlightOption = getLinkHighlightOptionInt(context);
+		final int highlightOption = Utils.getLinkHighlightingStyle(context);
 		TwidereLinkify linkify = new TwidereLinkify(null);
 		linkify.setHighlightOption(highlightOption);
 

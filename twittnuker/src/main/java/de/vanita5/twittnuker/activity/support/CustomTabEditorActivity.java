@@ -304,7 +304,8 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
                 mAccountsAdapter.add(ParcelableAccount.dummyInstance());
 			}
 			final boolean officialKeyOnly = intent.getBooleanExtra(EXTRA_OFFICIAL_KEY_ONLY, false);
-            mAccountsAdapter.addAll(ParcelableAccount.getAccountsList(this, false, officialKeyOnly));
+            final boolean forcePrivateAPIs = intent.getBooleanExtra(KEY_FORCE_USING_PRIVATE_APIS, false);
+            mAccountsAdapter.addAll(ParcelableAccount.getAccountsList(this, false, !forcePrivateAPIs && officialKeyOnly));
             mAccountsAdapter.setDummyItemText(R.string.activated_accounts);
 			switch (conf.getSecondaryFieldType()) {
 				case CustomTabConfiguration.FIELD_TYPE_USER: {

@@ -35,9 +35,9 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.TwidereLinkify;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
-
-import static de.vanita5.twittnuker.util.Utils.getLinkHighlightOptionInt;
+import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
 
 public class CardPreviewPreference extends Preference implements Constants, OnSharedPreferenceChangeListener {
 
@@ -46,6 +46,7 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
 	private final TwidereLinkify mLinkify;
     private StatusViewHolder mHolder;
 	private boolean mCompactModeChanged;
+    private DummyStatusHolderAdapter mAdapter;
 
 	public CardPreviewPreference(final Context context) {
 		this(context, null);
@@ -61,6 +62,7 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
 		mLinkify = new TwidereLinkify(null);
 		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mPreferences.registerOnSharedPreferenceChangeListener(this);
+        mAdapter = new DummyStatusHolderAdapter(context);
 	}
 
 	@Override
@@ -83,8 +85,8 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
 		if (mPreferences == null) return;
 		mCompactModeChanged = false;
 		final Context context = getContext();
-		final int highlightOption = getLinkHighlightOptionInt(context);
-		mHolder = new StatusViewHolder(view);
+        final int highlightOption = Utils.getLinkHighlightingStyle(context);
+        mHolder = new StatusViewHolder(mAdapter, view);
         mHolder.displaySampleStatus();
 		mLinkify.setHighlightOption(highlightOption);
 		super.onBindView(view);
