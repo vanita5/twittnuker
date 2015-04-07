@@ -25,6 +25,7 @@ package twitter4j.media;
 import twitter4j.TwitterException;
 import twitter4j.auth.OAuthAuthorization;
 import twitter4j.conf.Configuration;
+import twitter4j.http.HeaderMap;
 import twitter4j.http.HttpClientWrapper;
 import twitter4j.http.HttpParameter;
 import twitter4j.http.HttpResponse;
@@ -58,7 +59,7 @@ abstract class AbstractImageUploadImpl implements ImageUpload {
     protected HttpParameter[] appendParameter = null;
     protected HttpParameter image = null;
     protected HttpParameter message = null;
-    protected Map<String, String> headers = new HashMap<String, String>();
+    protected HeaderMap headers = new HeaderMap();
     protected HttpResponse httpResponse = null;
     protected static final Logger logger = Logger.getLogger(AbstractImageUploadImpl.class);
 

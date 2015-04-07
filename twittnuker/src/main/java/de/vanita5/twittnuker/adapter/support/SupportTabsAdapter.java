@@ -48,6 +48,8 @@ import static de.vanita5.twittnuker.util.Utils.announceForAccessibilityCompat;
 public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter implements TabProvider, TabListener,
 		Constants {
 
+    private static final String EXTRA_ADAPTER_POSITION = "adapter_position";
+
     private final ArrayList<SupportTabSpec> mTabs = new ArrayList<>();
 
 	private final Context mContext;
@@ -108,7 +110,7 @@ public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter im
         if (args == null) {
             args = new Bundle();
         }
-        args.putInt(EXTRA_TAB_POSITION, position);
+        args.putInt(EXTRA_ADAPTER_POSITION, position);
         return args;
     }
 
@@ -158,7 +160,7 @@ public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter im
         if (!(object instanceof Fragment)) return POSITION_NONE;
         final Bundle args = ((Fragment) object).getArguments();
         if (args == null) return POSITION_NONE;
-        return args.getInt(EXTRA_TAB_POSITION, POSITION_NONE);
+        return args.getInt(EXTRA_ADAPTER_POSITION, POSITION_NONE);
     }
 
     @Override

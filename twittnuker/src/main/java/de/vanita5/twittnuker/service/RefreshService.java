@@ -22,17 +22,6 @@
 
 package de.vanita5.twittnuker.service;
 
-import static de.vanita5.twittnuker.util.ParseUtils.parseInt;
-import static de.vanita5.twittnuker.util.Utils.getAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
-import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
-import static de.vanita5.twittnuker.util.Utils.getNewestStatusIdsFromDatabase;
-import static de.vanita5.twittnuker.util.Utils.hasAutoRefreshAccounts;
-import static de.vanita5.twittnuker.util.Utils.isBatteryOkay;
-import static de.vanita5.twittnuker.util.Utils.isDebugBuild;
-import static de.vanita5.twittnuker.util.Utils.isNetworkAvailable;
-import static de.vanita5.twittnuker.util.Utils.shouldStopAutoRefreshOnBatteryLow;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -53,6 +42,17 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 
 import java.util.Arrays;
+
+import static de.vanita5.twittnuker.util.ParseUtils.parseInt;
+import static de.vanita5.twittnuker.util.Utils.getAccountIds;
+import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
+import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
+import static de.vanita5.twittnuker.util.Utils.getNewestStatusIdsFromDatabase;
+import static de.vanita5.twittnuker.util.Utils.hasAutoRefreshAccounts;
+import static de.vanita5.twittnuker.util.Utils.isBatteryOkay;
+import static de.vanita5.twittnuker.util.Utils.isDebugBuild;
+import static de.vanita5.twittnuker.util.Utils.isNetworkAvailable;
+import static de.vanita5.twittnuker.util.Utils.shouldStopAutoRefreshOnBatteryLow;
 
 public class RefreshService extends Service implements Constants {
 
@@ -142,7 +142,8 @@ public class RefreshService extends Service implements Constants {
 		mPendingRefreshDirectMessagesIntent = PendingIntent.getBroadcast(this, 0, new Intent(
 				BROADCAST_REFRESH_DIRECT_MESSAGES), 0);
 		mPendingRefreshTrendsIntent = PendingIntent.getBroadcast(this, 0, new Intent(BROADCAST_REFRESH_TRENDS), 0);
-		final IntentFilter filter = new IntentFilter(BROADCAST_REFRESH_HOME_TIMELINE);
+        final IntentFilter filter = new IntentFilter(BROADCAST_NOTIFICATION_DELETED);
+        filter.addAction(BROADCAST_REFRESH_HOME_TIMELINE);
 		filter.addAction(BROADCAST_REFRESH_MENTIONS);
 		filter.addAction(BROADCAST_REFRESH_DIRECT_MESSAGES);
 		filter.addAction(BROADCAST_RESCHEDULE_HOME_TIMELINE_REFRESHING);

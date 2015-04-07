@@ -18,13 +18,12 @@ package twitter4j.conf;
 
 import java.io.ObjectStreamException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import twitter4j.TwitterConstants;
 import twitter4j.Version;
+import twitter4j.http.HeaderMap;
 import twitter4j.http.HostAddressResolverFactory;
 import twitter4j.http.HttpClientFactory;
 
@@ -103,7 +102,7 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 	private HostAddressResolverFactory hostAddressResolverFactory;
 
 	// method for HttpRequestFactoryConfiguration
-	Map<String, String> requestHeaders;
+    HeaderMap requestHeaders;
 
 	private static final List<ConfigurationBase> instances = new ArrayList<ConfigurationBase>();
     private boolean includeCards;
@@ -175,7 +174,8 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 		if (gzipEnabled != other.gzipEnabled) return false;
 		if (hostAddressResolverFactory == null) {
 			if (other.hostAddressResolverFactory != null) return false;
-		} else if (!hostAddressResolverFactory.equals(other.hostAddressResolverFactory)) return false;
+        } else if (!hostAddressResolverFactory.equals(other.hostAddressResolverFactory))
+            return false;
 		if (httpClientFactory == null) {
 			if (other.httpClientFactory != null) return false;
 		} else if (!httpClientFactory.equals(other.httpClientFactory)) return false;
@@ -241,19 +241,23 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 		} else if (!restBaseURL.equals(other.restBaseURL)) return false;
 		if (signingOAuthAccessTokenURL == null) {
 			if (other.signingOAuthAccessTokenURL != null) return false;
-		} else if (!signingOAuthAccessTokenURL.equals(other.signingOAuthAccessTokenURL)) return false;
+        } else if (!signingOAuthAccessTokenURL.equals(other.signingOAuthAccessTokenURL))
+            return false;
 		if (signingOAuthAuthenticationURL == null) {
 			if (other.signingOAuthAuthenticationURL != null) return false;
-		} else if (!signingOAuthAuthenticationURL.equals(other.signingOAuthAuthenticationURL)) return false;
+        } else if (!signingOAuthAuthenticationURL.equals(other.signingOAuthAuthenticationURL))
+            return false;
 		if (signingOAuthAuthorizationURL == null) {
 			if (other.signingOAuthAuthorizationURL != null) return false;
-		} else if (!signingOAuthAuthorizationURL.equals(other.signingOAuthAuthorizationURL)) return false;
+        } else if (!signingOAuthAuthorizationURL.equals(other.signingOAuthAuthorizationURL))
+            return false;
 		if (signingOAuthBaseURL == null) {
 			if (other.signingOAuthBaseURL != null) return false;
 		} else if (!signingOAuthBaseURL.equals(other.signingOAuthBaseURL)) return false;
 		if (signingOAuthRequestTokenURL == null) {
 			if (other.signingOAuthRequestTokenURL != null) return false;
-		} else if (!signingOAuthRequestTokenURL.equals(other.signingOAuthRequestTokenURL)) return false;
+		} else if (!signingOAuthRequestTokenURL.equals(other.signingOAuthRequestTokenURL))
+			return false;
 		if (mediaProviderParameters != null ? !mediaProviderParameters.equals(other.mediaProviderParameters) : other.mediaProviderParameters != null)
 			return false;
 		if (signingRestBaseURL == null) {
@@ -404,7 +408,7 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 	}
 
 	@Override
-	public Map<String, String> getRequestHeaders() {
+    public HeaderMap getRequestHeaders() {
 		return requestHeaders;
 	}
 
@@ -757,6 +761,10 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 		oAuthAccessTokenSecret = accessTokenSecret;
 	}
 
+    public void setOAuthAuthorizationURL(String oAuthAuthorizationURL) {
+//        this.oAuthAuthorizationURL = oAuthAuthorizationURL;
+    }
+
 	protected final void setOAuthBaseURL(String oAuthBaseURL) {
 		if (isNullOrEmpty(oAuthBaseURL)) {
 			oAuthBaseURL = DEFAULT_OAUTH_BASE_URL;
@@ -912,23 +920,23 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 	}
 
 	final void initRequestHeaders() {
-		requestHeaders = new HashMap<String, String>();
+        requestHeaders = new HeaderMap();
 		if (includeTwitterClientHeader) {
-			requestHeaders.put("X-Twitter-Client-Version", getClientVersion());
-			requestHeaders.put("X-Twitter-Client-URL", getClientURL());
-			requestHeaders.put("X-Twitter-Client", getClientName());
+            requestHeaders.addHeader("X-Twitter-Client-Version", getClientVersion());
+            requestHeaders.addHeader("X-Twitter-Client-URL", getClientURL());
+            requestHeaders.addHeader("X-Twitter-Client", getClientName());
 		}
 
-		requestHeaders.put("User-Agent", getHttpUserAgent());
+        requestHeaders.addHeader("User-Agent", getHttpUserAgent());
 		if (gzipEnabled) {
-			requestHeaders.put("Accept-Encoding", "gzip");
+            requestHeaders.addHeader("Accept-Encoding", "gzip");
 		}
 		// I found this may cause "Socket is closed" error in Android, so I
 		// changed it to "keep-alive".
 		if (!isNullOrEmpty(httpProxyHost) && httpProxyPort > 0) {
-			requestHeaders.put("Connection", "keep-alive");
+            requestHeaders.addHeader("Connection", "keep-alive");
 		} else {
-			requestHeaders.put("Connection", "close");
+            requestHeaders.addHeader("Connection", "close");
 		}
 	}
 

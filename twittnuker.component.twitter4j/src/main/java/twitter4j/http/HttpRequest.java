@@ -17,6 +17,7 @@
 package twitter4j.http;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import twitter4j.auth.Authorization;
@@ -36,7 +37,7 @@ public final class HttpRequest {
 
 	private final Authorization authorization;
 
-	private final Map<String, String> requestHeaders;
+    private final Map<String, List<String>> requestHeaders;
 
 	private static final HttpParameter[] NULL_PARAMETERS = new HttpParameter[0];
 
@@ -50,8 +51,8 @@ public final class HttpRequest {
 	 * @param requestHeaders
 	 */
 	public HttpRequest(final RequestMethod method, final String url, final String signUrl,
-			final HttpParameter[] parameters, final Authorization authorization,
-			final Map<String, String> requestHeaders) {
+					   final HttpParameter[] parameters, final Authorization authorization,
+                       final Map<String, List<String>> requestHeaders) {
 		this.method = method;
 		if (method != RequestMethod.POST && parameters != null && parameters.length != 0) {
 			final String paramString = HttpParameter.encodeParameters(parameters);
@@ -75,7 +76,7 @@ public final class HttpRequest {
 	 * @param requestHeaders
 	 */
 	public HttpRequest(RequestMethod method, String url, HttpParameter[] parameters
-			, Authorization authorization, Map<String, String> requestHeaders) {
+			, Authorization authorization, Map<String, List<String>> requestHeaders) {
 		this.method = method;
 		if (method != RequestMethod.POST && parameters != null && parameters.length != 0) {
 			this.url = url + "?" + HttpParameter.encodeParameters(parameters);
@@ -120,7 +121,7 @@ public final class HttpRequest {
 		return parameters;
 	}
 
-	public Map<String, String> getRequestHeaders() {
+    public Map<String, List<String>> getRequestHeaders() {
 		return requestHeaders;
 	}
 

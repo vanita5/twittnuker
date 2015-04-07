@@ -65,8 +65,8 @@ class MobypictureUpload extends AbstractImageUploadImpl {
         uploadUrl = "https://api.mobypicture.com/2.0/upload.json";
         String verifyCredentialsAuthorizationHeader = generateVerifyCredentialsAuthorizationHeader(TWITTER_VERIFY_CREDENTIALS_JSON_V1_1);
 
-        headers.put("X-Auth-Service-Provider", TWITTER_VERIFY_CREDENTIALS_JSON_V1_1);
-        headers.put("X-Verify-Credentials-Authorization", verifyCredentialsAuthorizationHeader);
+        headers.addHeader("X-Auth-Service-Provider", TWITTER_VERIFY_CREDENTIALS_JSON_V1_1);
+        headers.addHeader("X-Verify-Credentials-Authorization", verifyCredentialsAuthorizationHeader);
 
         if (null == apiKey) {
             throw new IllegalStateException("No API Key for Mobypic specified. put media.providerAPIKey in twitter4j.properties.");

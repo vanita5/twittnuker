@@ -20,32 +20,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.activity.iface;
+package twitter4j.http;
 
-import android.content.res.Resources;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-public interface IThemedActivity {
+public class HeaderMap extends HashMap<String, List<String>> {
 
-	public int getCurrentThemeResourceId();
-	
-	public Resources getDefaultResources();
-
-    public int getThemeBackgroundAlpha();
-
-    public int getCurrentThemeBackgroundAlpha();
-
-    public int getThemeColor();
-
-	public int getCurrentThemeColor();
-
-	public int getActionBarColor();
-
-	public String getThemeFontFamily();
-
-    int getThemeResourceId();
-
-	public void navigateUpFromSameTask();
-
-	public void restart();
+	public void addHeader(String key, String value) {
+		List<String> values = get(key);
+		if (values == null) values = new ArrayList<>();
+		values.add(value);
+		put(key, values);
+	}
 
 }

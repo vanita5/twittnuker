@@ -17,6 +17,7 @@
 package twitter4j.http;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import twitter4j.TwitterException;
@@ -39,7 +40,7 @@ public final class HttpClientWrapper {
 	private final Configuration wrapperConf;
 	private final HttpClient http;
 
-	private final Map<String, String> requestHeaders;
+    private final Map<String, List<String>> requestHeaders;
 
 	private HttpResponseListener httpResponseListener;
 
@@ -156,8 +157,8 @@ public final class HttpClientWrapper {
 	}
 
 	public HttpResponse post(final String url, final String signUrl, final HttpParameter[] parameters,
-			final Authorization authorization, final Map<String, String> requestHeaders) throws TwitterException {
-		final Map<String, String> headers = new HashMap<String, String>(this.requestHeaders);
+                             final Authorization authorization, final Map<String, List<String>> requestHeaders) throws TwitterException {
+        final Map<String, List<String>> headers = new HashMap<>(this.requestHeaders);
 		if (requestHeaders != null) {
 			headers.putAll(requestHeaders);
 		}
@@ -165,7 +166,7 @@ public final class HttpClientWrapper {
 	}
 
 	public HttpResponse post(final String url, final String signUrl, final HttpParameter[] parameters,
-			final Map<String, String> requestHeaders) throws TwitterException {
+                             final Map<String, List<String>> requestHeaders) throws TwitterException {
 		return post(url, signUrl, parameters, null, requestHeaders);
 	}
 
@@ -188,8 +189,8 @@ public final class HttpClientWrapper {
 		return request(new HttpRequest(PUT, url, signUrl, parameters, authorization, requestHeaders));
 	}
 
-	public HttpResponse post(String url, HttpParameter[] parameters, Map<String, String> requestHeaders) throws TwitterException {
-		Map<String, String> headers = new HashMap<>(this.requestHeaders);
+	public HttpResponse post(String url, HttpParameter[] parameters, Map<String, List<String>> requestHeaders) throws TwitterException {
+		Map<String, List<String>> headers = new HashMap<>(this.requestHeaders);
 		if (requestHeaders != null)
 			headers.putAll(requestHeaders);
 

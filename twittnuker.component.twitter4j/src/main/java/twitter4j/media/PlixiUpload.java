@@ -65,8 +65,8 @@ class PlixiUpload extends AbstractImageUploadImpl {
     protected void preUpload() throws TwitterException {
         String verifyCredentialsAuthorizationHeader = generateVerifyCredentialsAuthorizationHeader(TWITTER_VERIFY_CREDENTIALS_JSON_V1_1);
 
-        headers.put("X-Auth-Service-Provider", TWITTER_VERIFY_CREDENTIALS_JSON_V1_1);
-        headers.put("X-Verify-Credentials-Authorization", verifyCredentialsAuthorizationHeader);
+        headers.addHeader("X-Auth-Service-Provider", TWITTER_VERIFY_CREDENTIALS_JSON_V1_1);
+        headers.addHeader("X-Verify-Credentials-Authorization", verifyCredentialsAuthorizationHeader);
 
         if (null == apiKey) {
             throw new IllegalStateException("No API Key for Plixi specified. put media.providerAPIKey in twitter4j.properties.");

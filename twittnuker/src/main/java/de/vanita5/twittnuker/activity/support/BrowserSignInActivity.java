@@ -37,6 +37,8 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -174,6 +176,11 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 		}
 
 		@Override
+        public void onLoadResource(WebView view, String url) {
+            super.onLoadResource(view, url);
+        }
+
+        @Override
 		public void onReceivedError(final WebView view, final int errorCode, final String description,
 				final String failingUrl) {
 			super.onReceivedError(view, errorCode, description, failingUrl);

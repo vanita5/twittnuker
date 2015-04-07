@@ -55,7 +55,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
 import javax.net.SocketFactory;
-import javax.net.ssl.TrustManager;
 
 import okio.BufferedSink;
 import twitter4j.TwitterException;
@@ -86,8 +85,11 @@ public class OkHttpClientImpl implements HttpClient, TwittnukerConstants {
 	@Override
 	public HttpResponse request(HttpRequest req) throws TwitterException {
 		final Builder builder = new Builder();
-		for (Entry<String, String> headerEntry : req.getRequestHeaders().entrySet()) {
-			builder.header(headerEntry.getKey(), headerEntry.getValue());
+        for (Entry<String, List<String>> headerEntry : req.getRequestHeaders().entrySet()) {
+            final String name = headerEntry.getKey();
+            for (String value : headerEntry.getValue()) {
+                builder.addHeader(name, value);
+            }
 		}
 		final Authorization authorization = req.getAuthorization();
 		if (authorization != null) {
@@ -113,15 +115,11 @@ public class OkHttpClientImpl implements HttpClient, TwittnukerConstants {
     private OkHttpClient createHttpClient(HttpClientConfiguration conf) {
         final OkHttpClient client = new OkHttpClient();
         final boolean ignoreSSLError = conf.isSSLErrorIgnored();
-        final SSLCertificateSocketFactory sslSocketFactory;
         if (ignoreSSLError) {
-            sslSocketFactory = (SSLCertificateSocketFactory) SSLCertificateSocketFactory.getInsecure(0, null);
+            client.setSslSocketFactory(SSLCertificateSocketFactory.getInsecure(0, null));
         } else {
-            sslSocketFactory = (SSLCertificateSocketFactory) SSLCertificateSocketFactory.getDefault(0, null);
+            client.setSslSocketFactory(SSLCertificateSocketFactory.getDefault(0, null));
         }
-//        sslSocketFactory.setTrustManagers(new TrustManager[]{new TwidereTrustManager(context)});
-//        client.setHostnameVerifier(new HostResolvedHostnameVerifier(context, ignoreSSLError));
-        client.setSslSocketFactory(sslSocketFactory);
         client.setSocketFactory(SocketFactory.getDefault());
         client.setConnectTimeout(conf.getHttpConnectionTimeout(), TimeUnit.MILLISECONDS);
 
@@ -267,7 +265,7 @@ public class OkHttpClientImpl implements HttpClient, TwittnukerConstants {
 			return response.header(name);
 		}
 
-		@Override
+        @Override
 		public Map<String, List<String>> getResponseHeaderFields() {
 			final Headers headers = response.headers();
 			final Map<String, List<String>> maps = new HashMap<>();
@@ -280,5 +278,10 @@ public class OkHttpClientImpl implements HttpClient, TwittnukerConstants {
 			}
 			return maps;
 		}
+
+        @Override
+        public List<String> getResponseHeaders(String name) {
+            return response.headers(name);
+        }
 	}
 }

@@ -144,8 +144,8 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.support.AddStatusFilterDialogFragment;
 import de.vanita5.twittnuker.fragment.support.DestroyStatusDialogFragment;
-import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
 import de.vanita5.twittnuker.fragment.support.IncomingFriendshipsFragment;
+import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
 import de.vanita5.twittnuker.fragment.support.MutesUsersListFragment;
 import de.vanita5.twittnuker.fragment.support.SavedSearchesListFragment;
 import de.vanita5.twittnuker.fragment.support.SearchFragment;
@@ -1030,8 +1030,8 @@ public final class Utils implements Constants, TwitterConstants {
 	public static Intent createStatusShareIntent(final Context context, final ParcelableStatus status) {
 		final Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_SUBJECT, getStatusShareText(context, status));
-        intent.putExtra(Intent.EXTRA_TEXT, getStatusShareSubject(context, status));
+        intent.putExtra(Intent.EXTRA_SUBJECT, getStatusShareSubject(context, status));
+        intent.putExtra(Intent.EXTRA_TEXT, getStatusShareText(context, status));
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         return intent;
     }
@@ -2293,6 +2293,7 @@ public final class Utils implements Constants, TwitterConstants {
                     cb.setRestBaseURL(getApiUrl(account.api_url_format, "api", versionSuffix));
 					cb.setOAuthBaseURL(getApiUrl(account.api_url_format, "api", "/oauth/"));
                     cb.setUploadBaseURL(getApiUrl(account.api_url_format, "upload", versionSuffix));
+                    cb.setOAuthAuthorizationURL(getApiUrl(account.api_url_format, null, null));
 					if (!account.same_oauth_signing_url) {
 						cb.setSigningRestBaseURL(DEFAULT_SIGNING_REST_BASE_URL);
 						cb.setSigningOAuthBaseURL(DEFAULT_SIGNING_OAUTH_BASE_URL);
@@ -2352,6 +2353,7 @@ public final class Utils implements Constants, TwitterConstants {
 						cb.setRestBaseURL(getApiUrl(apiUrlFormat, "api", "/1.1/"));
 						cb.setOAuthBaseURL(getApiUrl(apiUrlFormat, "api", "/oauth/"));
 						cb.setUploadBaseURL(getApiUrl(apiUrlFormat, "upload", "/1.1/"));
+                        cb.setOAuthAuthorizationURL(getApiUrl(apiUrlFormat, null, null));
 						if (!sameOAuthSigningUrl) {
 							cb.setSigningRestBaseURL(DEFAULT_SIGNING_REST_BASE_URL);
 							cb.setSigningOAuthBaseURL(DEFAULT_SIGNING_OAUTH_BASE_URL);
@@ -2496,6 +2498,7 @@ public final class Utils implements Constants, TwitterConstants {
 			cb.setRestBaseURL(getApiUrl(apiUrlFormat, "api", versionSuffix));
 			cb.setOAuthBaseURL(getApiUrl(apiUrlFormat, "api", "/oauth/"));
 			cb.setUploadBaseURL(getApiUrl(apiUrlFormat, "upload", versionSuffix));
+            cb.setOAuthAuthorizationURL(getApiUrl(apiUrlFormat, null, null));
 			if (!sameOAuthSigningUrl) {
 				cb.setSigningRestBaseURL(DEFAULT_SIGNING_REST_BASE_URL);
 				cb.setSigningOAuthBaseURL(DEFAULT_SIGNING_OAUTH_BASE_URL);
