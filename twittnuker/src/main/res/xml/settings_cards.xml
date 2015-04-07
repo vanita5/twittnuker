@@ -17,7 +17,7 @@
 		android:title="@string/name_first"
         android:summary="@string/name_first_summary"/>
     <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="display_profile_image"
         android:order="23"
         android:title="@string/profile_image"/>
