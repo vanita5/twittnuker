@@ -71,6 +71,12 @@ public class TwitterException extends Exception implements TwitterResponse, Http
 		response = res;
 		request = req;
 		statusCode = res != null ? res.getStatusCode() : -1;
+        if (response != null) {
+            try {
+                decode(response.asString());
+            } catch (TwitterException ignore) {
+            }
+        }
 	}
 
 	public TwitterException(final String message, final HttpResponse res) {
@@ -92,10 +98,12 @@ public class TwitterException extends Exception implements TwitterResponse, Http
 		if (errorCode != that.errorCode) return false;
 		if (nested != that.nested) return false;
 		if (statusCode != that.statusCode) return false;
-		if (errorMessage != null ? !errorMessage.equals(that.errorMessage) : that.errorMessage != null) return false;
+        if (errorMessage != null ? !errorMessage.equals(that.errorMessage) : that.errorMessage != null)
+            return false;
 		if (exceptionDiagnosis != null ? !exceptionDiagnosis.equals(that.exceptionDiagnosis)
 				: that.exceptionDiagnosis != null) return false;
-		if (response != null ? !response.equals(that.response) : that.response != null) return false;
+        if (response != null ? !response.equals(that.response) : that.response != null)
+            return false;
 
 		return true;
 	}

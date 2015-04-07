@@ -9,6 +9,7 @@
     <string name="error_twitter_130">Twitter ist temporär überlastet.</string>
     <string name="error_twitter_131">Twitter-Server nicht erreichbar, bitte später noch einmal versuchen.</string>
     <string name="error_twitter_135">Bitte überprüfe deine System-Zeit.</string>
+    <string name="error_twitter_139">Du hast diesen Tweet bereits favorisiert.</string>
     <string name="error_twitter_161">Du hast bereits angefragt, diesem Benutzer zu folgen.</string>
     <string name="error_twitter_162">Sie wurden von diesem Benutzer gesperrt.</string>
     <string name="error_twitter_172">Du hast diese Suche bereits gespeichert.</string>

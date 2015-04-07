@@ -895,6 +895,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 }
 				return SingleResponse.getInstance(new ParcelableStatus(status, account_id, false));
             } catch (final TwitterException e) {
+                Log.w(LOGTAG, e);
 				return SingleResponse.getInstance(e);
             }
         }

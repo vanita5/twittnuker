@@ -68,13 +68,6 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
@@ -107,7 +100,6 @@ import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.UnreadCountUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.accessor.ActivityAccessor;
 import de.vanita5.twittnuker.util.accessor.ActivityAccessor.TaskDescriptionCompat;
@@ -121,6 +113,12 @@ import de.vanita5.twittnuker.view.RightDrawerFrameLayout;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import de.vanita5.twittnuker.view.iface.IHomeActionButton;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
@@ -680,7 +678,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 
         final Uri uri = intent.getData();
         final String tabType = uri != null ? Utils.matchTabType(uri) : null;
-        int initialTab = -1, initalTabFallback;
+        int initialTab = -1;
         if (tabType != null) {
             final long accountId = ParseUtils.parseLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID));
             for (int i = mPagerAdapter.getCount() - 1; i > -1; i--) {
