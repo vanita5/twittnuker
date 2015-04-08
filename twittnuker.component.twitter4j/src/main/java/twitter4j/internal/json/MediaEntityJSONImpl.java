@@ -20,8 +20,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,10 +42,10 @@ public class MediaEntityJSONImpl implements MediaEntity {
 	private long id;
 	private int start = -1;
 	private int end = -1;
-	private URL url;
-	private URL mediaURL;
-	private URL mediaURLHttps;
-	private URL expandedURL;
+    private String url;
+    private String mediaURL;
+    private String mediaURLHttps;
+    private String expandedURL;
 	private String displayURL;
 	private Map<Integer, MediaEntity.Size> sizes;
     private Type type;
@@ -64,28 +62,16 @@ public class MediaEntityJSONImpl implements MediaEntity {
 			end = indicesArray.getInt(1);
 			id = getLong("id", json);
 
-			try {
-				url = new URL(json.getString("url"));
-			} catch (final MalformedURLException ignore) {
-			}
+            url = (json.getString("url"));
 
 			if (!json.isNull("expanded_url")) {
-				try {
-					expandedURL = new URL(json.getString("expanded_url"));
-				} catch (final MalformedURLException ignore) {
-				}
+                expandedURL = json.getString("expanded_url");
 			}
 			if (!json.isNull("media_url")) {
-				try {
-					mediaURL = new URL(json.getString("media_url"));
-				} catch (final MalformedURLException ignore) {
-				}
+                mediaURL = (json.getString("media_url"));
 			}
 			if (!json.isNull("media_url_https")) {
-				try {
-					mediaURLHttps = new URL(json.getString("media_url_https"));
-				} catch (final MalformedURLException ignore) {
-				}
+                mediaURLHttps = (json.getString("media_url_https"));
 			}
 			if (!json.isNull("display_url")) {
 				displayURL = json.getString("display_url");
@@ -145,7 +131,7 @@ public class MediaEntityJSONImpl implements MediaEntity {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public URL getExpandedURL() {
+    public String getExpandedURL() {
 		return expandedURL;
 	}
 
@@ -161,7 +147,7 @@ public class MediaEntityJSONImpl implements MediaEntity {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public URL getMediaURL() {
+    public String getMediaURL() {
 		return mediaURL;
 	}
 
@@ -169,7 +155,7 @@ public class MediaEntityJSONImpl implements MediaEntity {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public URL getMediaURLHttps() {
+    public String getMediaURLHttps() {
 		return mediaURLHttps;
 	}
 
@@ -198,7 +184,7 @@ public class MediaEntityJSONImpl implements MediaEntity {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public URL getURL() {
+    public String getURL() {
 		return url;
 	}
 

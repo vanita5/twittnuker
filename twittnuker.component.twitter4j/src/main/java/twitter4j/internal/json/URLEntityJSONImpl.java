@@ -20,9 +20,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import twitter4j.TwitterException;
 import twitter4j.URLEntity;
 
@@ -40,8 +37,8 @@ import twitter4j.URLEntity;
 	private static final long serialVersionUID = 1326410198426703277L;
 	private int start = -1;
 	private int end = -1;
-	private URL url;
-	private URL expandedURL;
+    private String url;
+    private String expandedURL;
 	private String displayURL;
 
 	/* For serialization purposes only. */
@@ -54,22 +51,8 @@ import twitter4j.URLEntity;
 		super();
 		this.start = start;
 		this.end = end;
-		try {
-			this.url = new URL(url);
-		} catch (final MalformedURLException e) {
-			try {
-				this.url = new URL("http://example.com/");
-			} catch (final MalformedURLException ignore) {
-			}
-		}
-		try {
-			this.expandedURL = new URL(expandedURL);
-		} catch (final MalformedURLException e) {
-			try {
-				this.expandedURL = new URL("http://example.com/");
-			} catch (final MalformedURLException ignore) {
-			}
-		}
+        this.url = url;
+        this.expandedURL = expandedURL;
 		this.displayURL = displayURL;
 	}
 
@@ -87,10 +70,12 @@ import twitter4j.URLEntity;
 
 		if (end != that.end) return false;
 		if (start != that.start) return false;
-		if (displayURL != null ? !displayURL.equals(that.displayURL) : that.displayURL != null) return false;
-		if (expandedURL != null ? !expandedURL.toString().equalsIgnoreCase(that.expandedURL.toString())
+        if (displayURL != null ? !displayURL.equals(that.displayURL) : that.displayURL != null)
+            return false;
+        if (expandedURL != null ? !expandedURL.equalsIgnoreCase(that.expandedURL)
 				: that.expandedURL != null) return false;
-		if (url != null ? !url.toString().equalsIgnoreCase(that.url.toString()) : that.url != null) return false;
+        if (url != null ? !url.equalsIgnoreCase(that.url) : that.url != null)
+            return false;
 
 		return true;
 	}
@@ -115,7 +100,7 @@ import twitter4j.URLEntity;
 	 * {@inheritDoc}
 	 */
 	@Override
-	public URL getExpandedURL() {
+    public String getExpandedURL() {
 		return expandedURL;
 	}
 
@@ -131,7 +116,7 @@ import twitter4j.URLEntity;
 	 * {@inheritDoc}
 	 */
 	@Override
-	public URL getURL() {
+    public String getURL() {
 		return url;
 	}
 
@@ -139,8 +124,8 @@ import twitter4j.URLEntity;
 	public int hashCode() {
 		int result = start;
 		result = 31 * result + end;
-		result = 31 * result + (url != null ? url.toString().hashCode() : 0);
-		result = 31 * result + (expandedURL != null ? expandedURL.toString().hashCode() : 0);
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        result = 31 * result + (expandedURL != null ? expandedURL.hashCode() : 0);
 		result = 31 * result + (displayURL != null ? displayURL.hashCode() : 0);
 		return result;
 	}
@@ -157,16 +142,10 @@ import twitter4j.URLEntity;
 			start = indicesArray.getInt(0);
 			end = indicesArray.getInt(1);
 
-			try {
-				url = new URL(json.getString("url"));
-			} catch (final MalformedURLException ignore) {
-			}
+            url = json.getString("url");
 
 			if (!json.isNull("expanded_url")) {
-				try {
-					expandedURL = new URL(json.getString("expanded_url"));
-				} catch (final MalformedURLException ignore) {
-				}
+                expandedURL = json.getString("expanded_url");
 			}
 			if (!json.isNull("display_url")) {
 				displayURL = json.getString("display_url");

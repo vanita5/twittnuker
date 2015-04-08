@@ -30,14 +30,12 @@ import android.support.annotation.Nullable;
 import org.mariotaku.jsonserializer.JSONParcel;
 import org.mariotaku.jsonserializer.JSONParcelable;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
-import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SimpleValueSerializer;
 import de.vanita5.twittnuker.util.SimpleValueSerializer.Reader;
 import de.vanita5.twittnuker.util.SimpleValueSerializer.SerializationException;
 import de.vanita5.twittnuker.util.SimpleValueSerializer.SimpleValueSerializable;
 import de.vanita5.twittnuker.util.SimpleValueSerializer.Writer;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -118,8 +116,8 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
     }
 
     public ParcelableMedia(final MediaEntity entity) {
-        page_url = ParseUtils.parseString(entity.getMediaURL());
-        media_url = ParseUtils.parseString(entity.getMediaURL());
+        page_url = entity.getMediaURL();
+        media_url = entity.getMediaURL();
         start = entity.getStart();
         end = entity.getEnd();
         type = getTypeInt(entity.getType());
@@ -306,7 +304,7 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
         }
         if (mediaEntities != null) {
             for (final MediaEntity media : mediaEntities) {
-                final URL mediaURL = media.getMediaURL();
+                final String mediaURL = media.getMediaURL();
                 if (mediaURL != null) {
 					list.add(new ParcelableMedia(media));
                 }
@@ -315,7 +313,7 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
         final URLEntity[] urlEntities = entities.getURLEntities();
         if (urlEntities != null) {
             for (final URLEntity url : urlEntities) {
-				final String expanded = ParseUtils.parseString(url.getExpandedURL());
+                final String expanded = url.getExpandedURL();
 				final String media_url = MediaPreviewUtils.getSupportedLink(expanded);
 				if (expanded != null && media_url != null) {
                     list.add(new ParcelableMedia(media_url, expanded, url.getStart(), url.getEnd(), TYPE_IMAGE));

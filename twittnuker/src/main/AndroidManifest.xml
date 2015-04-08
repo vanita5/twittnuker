@@ -641,18 +641,28 @@
             android:authorities="twittnuker"
             android:exported="true"
             android:grantUriPermissions="true"
-            android:label="@string/label_tweetstore_provider"/>
+            android:label="@string/label_tweetstore_provider"
+            tools:ignore="ExportedContentProvider"/>
         <provider
             android:name=".provider.TwidereCommandProvider"
             android:authorities="twittnuker.command"
-            android:exported="true"/>
+            android:exported="true"
+            tools:ignore="ExportedContentProvider"/>
         <provider
             android:name=".provider.RecentSearchProvider"
-            android:authorities="de.vanita5.de.vanita5.twittnuker.provider.SearchRecentSuggestions"/>
+            android:authorities="de.vanita5.de.vanita5.twittnuker.provider.SearchRecentSuggestions"
+            tools:ignore="ExportedContentProvider"/>
 
         <receiver android:name=".receiver.ConnectivityStateReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".receiver.NotificationReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="de.vanita5.twittnuker.NOTIFICATION_DELETED"/>
             </intent-filter>
         </receiver>
         <receiver

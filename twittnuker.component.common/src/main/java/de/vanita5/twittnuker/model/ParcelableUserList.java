@@ -24,8 +24,7 @@ package de.vanita5.twittnuker.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import de.vanita5.twittnuker.util.ParseUtils;
+import android.support.annotation.NonNull;
 
 import org.mariotaku.jsonserializer.JSONParcel;
 import org.mariotaku.jsonserializer.JSONParcelable;
@@ -120,14 +119,13 @@ public class ParcelableUserList implements Parcelable, JSONParcelable, Comparabl
 		user_id = user.getId();
 		user_name = user.getName();
 		user_screen_name = user.getScreenName();
-		user_profile_image_url = ParseUtils.parseString(user.getProfileImageUrlHttps());
+        user_profile_image_url = user.getProfileImageUrlHttps();
 		members_count = list.getMemberCount();
 		subscribers_count = list.getSubscriberCount();
 	}
 
 	@Override
-	public int compareTo(final ParcelableUserList another) {
-		if (another == null) return 0;
+    public int compareTo(@NonNull final ParcelableUserList another) {
 		final long diff = position - another.position;
 		if (diff > Integer.MAX_VALUE) return Integer.MAX_VALUE;
 		if (diff < Integer.MIN_VALUE) return Integer.MIN_VALUE;

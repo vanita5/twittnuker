@@ -284,14 +284,14 @@ public class MediaPreviewUtils {
         final MediaEntity[] mediaEntities = status.getMediaEntities();
         if (mediaEntities != null) {
             for (final MediaEntity mediaEntity : mediaEntities) {
-                final String expanded = ParseUtils.parseString(mediaEntity.getMediaURLHttps());
+                final String expanded = mediaEntity.getMediaURLHttps();
 				if (getSupportedLink(expanded) != null) return expanded;
 			}
 		}
         final URLEntity[] urlEntities = status.getURLEntities();
         if (urlEntities != null) {
             for (final URLEntity urlEntity : urlEntities) {
-                final String expanded = ParseUtils.parseString(urlEntity.getExpandedURL());
+                final String expanded = urlEntity.getExpandedURL();
 				if (getSupportedLink(expanded) != null) return expanded;
 			}
 		}
@@ -412,8 +412,8 @@ public class MediaPreviewUtils {
 
 	private static ParcelableMedia getSinaWeiboImage(final String url, final boolean fullImage) {
 		if (isEmpty(url)) return null;
-		final String full = url.replaceAll("\\/" + SINA_WEIBO_IMAGES_AVAILABLE_SIZES + "\\/", "/woriginal/");
-		final String preview = fullImage ? full : url.replaceAll("\\/" + SINA_WEIBO_IMAGES_AVAILABLE_SIZES + "\\/",
+        final String full = url.replaceAll("/" + SINA_WEIBO_IMAGES_AVAILABLE_SIZES + "/", "/woriginal/");
+        final String preview = fullImage ? full : url.replaceAll("/" + SINA_WEIBO_IMAGES_AVAILABLE_SIZES + "/",
 				"/bmiddle/");
 		return ParcelableMedia.newImage(preview, full);
 	}
@@ -463,9 +463,7 @@ public class MediaPreviewUtils {
 		if (isEmpty(id)) return null;
 		final String preview = String.format("http://p.twipple.jp/show/large/%s", id);
 		return ParcelableMedia.newImage(preview, orig);
+
 	}
 
-    public interface OnMediaClickListener {
-        void onMediaClick(View view, ParcelableMedia media, long accountId);
-    }
 }

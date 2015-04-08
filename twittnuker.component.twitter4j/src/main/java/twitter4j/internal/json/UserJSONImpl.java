@@ -20,8 +20,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 
 import twitter4j.PageableResponseList;
@@ -230,25 +228,16 @@ import static twitter4j.internal.util.InternalParseUtil.getRawString;
 	 * {@inheritDoc}
 	 */
 	@Override
-	public URL getProfileImageURL() {
-		try {
-			return new URL(profileImageUrl);
-		} catch (final MalformedURLException ex) {
-			return null;
-		}
+    public String getProfileImageURL() {
+        return profileImageUrl;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public URL getProfileImageUrlHttps() {
-		if (null == profileImageUrlHttps) return null;
-		try {
-			return new URL(profileImageUrlHttps);
-		} catch (final MalformedURLException ex) {
-			return null;
-		}
+    public String getProfileImageUrlHttps() {
+        return profileImageUrlHttps;
 	}
 
 	/**
@@ -316,12 +305,8 @@ import static twitter4j.internal.util.InternalParseUtil.getRawString;
 	 * {@inheritDoc}
 	 */
 	@Override
-	public URL getURL() {
-		try {
-			return new URL(url);
-		} catch (final MalformedURLException ex) {
-			return null;
-		}
+    public String getURL() {
+        return url;
 	}
 
 	@Override

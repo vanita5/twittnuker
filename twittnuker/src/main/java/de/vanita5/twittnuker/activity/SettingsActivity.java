@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.activity;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -72,6 +73,17 @@ public class SettingsActivity extends BasePreferenceActivity {
     private String mThemeFontFamily;
     private String mThemeBackground;
 
+    private boolean mShouldNotifyChange;
+
+    public static void setShouldNotifyChange(Activity activity) {
+        if (!(activity instanceof SettingsActivity)) return;
+        ((SettingsActivity) activity).setShouldNotifyChange(true);
+    }
+
+    private void setShouldNotifyChange(boolean notify) {
+        mShouldNotifyChange = notify;
+    }
+
 	@Override
 	public void finish() {
 		if (shouldNotifyThemeChange()) {
@@ -82,12 +94,34 @@ public class SettingsActivity extends BasePreferenceActivity {
 		super.finish();
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void startWithFragment(String fragmentName, Bundle args,
+                                  Fragment resultTo, int resultRequestCode, int titleRes, int shortTitleRes) {
+        Intent intent = onBuildStartFragmentIntent(fragmentName, args, titleRes, shortTitleRes);
+        if (resultTo == null) {
+            startActivityForResult(intent, resultRequestCode);
+        } else {
+            resultTo.startActivityForResult(intent, resultRequestCode);
+        }
+    }
+
 	public HeaderAdapter getHeaderAdapter() {
 		if (mAdapter != null) return mAdapter;
         return mAdapter = new HeaderAdapter(this);
 	}
 
 	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && data != null && data.getBooleanExtra(EXTRA_RESTART_ACTIVITY, false)) {
+            setShouldNotifyChange(true);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
 	public void onBuildHeaders(final List<Header> target) {
 		loadHeadersFromResource(R.xml.settings_headers, target);
 		final HeaderAdapter adapter = getHeaderAdapter();
@@ -195,6 +229,7 @@ public class SettingsActivity extends BasePreferenceActivity {
     }
 
 	private boolean shouldNotifyThemeChange() {
+        if (mShouldNotifyChange) return true;
 		return !CompareUtils.objectEquals(mTheme, mPreferences.getString(KEY_THEME, DEFAULT_THEME))
 				|| !CompareUtils.objectEquals(mThemeFontFamily, mPreferences.getString(KEY_THEME_FONT_FAMILY, DEFAULT_THEME_FONT_FAMILY))
 				|| !CompareUtils.objectEquals(mThemeBackground, mPreferences.getString(KEY_THEME_BACKGROUND, DEFAULT_THEME_BACKGROUND))

@@ -116,6 +116,8 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.accessor.ActivityAccessor;
+import de.vanita5.twittnuker.util.accessor.ActivityAccessor.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
@@ -717,6 +719,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
         mProfileNameBackground.setBackgroundColor(mCardBackgroundColor);
         mProfileDetailsContainer.setBackgroundColor(mCardBackgroundColor);
+        mPagerIndicator.setBackgroundColor(mCardBackgroundColor);
 
         getUserInfo(accountId, userId, screenName, false);
 
@@ -1221,9 +1224,10 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final FragmentActivity activity = getActivity();
         final IThemedActivity themed = (IThemedActivity) activity;
         final int themeRes = themed.getCurrentThemeResourceId();
-        //custom action bar color and stuff
+        //custom action bar color and stuff! (twittnuker)
 		mTintedStatusContent.setColor(color, themed.getCurrentThemeBackgroundAlpha());
 		mActionBarBackground.setColor(color);
+        ActivityAccessor.setTaskDescription(activity, new TaskDescriptionCompat(null, null, color));
         mDescriptionView.setLinkTextColor(color);
         mProfileBannerView.setBackgroundColor(color);
         mLocationView.setLinkTextColor(color);

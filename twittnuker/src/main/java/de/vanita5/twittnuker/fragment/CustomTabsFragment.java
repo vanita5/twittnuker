@@ -62,6 +62,7 @@ import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
@@ -104,7 +105,8 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
 	public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
 		switch (item.getItemId()) {
 			case MENU_DELETE: {
-                final Expression where = Expression.in(new Column(Tabs._ID), new RawItemArray(mListView.getCheckedItemIds()));
+                final long[] itemIds = mListView.getCheckedItemIds();
+                final Expression where = Expression.in(new Column(Tabs._ID), new RawItemArray(itemIds));
 				mResolver.delete(Tabs.CONTENT_URI, where.getSQL(), null);
 				break;
 			}
@@ -163,7 +165,6 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
         mProgressContainer.setVisibility(shown ? View.GONE : View.VISIBLE);
     }
 
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -188,6 +189,7 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
 					values.put(Tabs.EXTRAS, data.getStringExtra(EXTRA_EXTRAS));
 					values.put(Tabs.POSITION, mAdapter.getCount());
 					mResolver.insert(Tabs.CONTENT_URI, values);
+                    SettingsActivity.setShouldNotifyChange(getActivity());
 				}
 				break;
 			}
@@ -199,6 +201,7 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
 					values.put(Tabs.EXTRAS, data.getStringExtra(EXTRA_EXTRAS));
                     final String where = Expression.equals(Tabs._ID, data.getLongExtra(EXTRA_ID, -1)).getSQL();
 					mResolver.update(Tabs.CONTENT_URI, values, where, null);
+                    SettingsActivity.setShouldNotifyChange(getActivity());
 				}
 				break;
 			}
@@ -329,6 +332,7 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
 				mResolver.update(Tabs.CONTENT_URI, values, where, null);
 			}
 		}
+        SettingsActivity.setShouldNotifyChange(getActivity());
 	}
 
 	private void updateTitle(final ActionMode mode) {
