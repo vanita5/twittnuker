@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextUtils;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -412,20 +413,21 @@ public class NotificationHelper implements Constants {
 	 */
 	private void sendPebbleNotification(final String message) {
 		if (mSharedPreferences.getBoolean(KEY_PEBBLE_NOTIFICATIONS, false)
-				&& message != null && !message.isEmpty()) {
+				&& !TextUtils.isEmpty(message)) {
 
-			final Intent intent = new Intent("com.getpebble.action.SEND_NOTIFICATION");
+            final String app_name = mContext.getString(R.string.app_name);
 
-			final HashMap<String, String> data = new HashMap<String, String>();
-
-			data.put("title", "Twittnuker");
+            final HashMap<String, String> data = new HashMap<>();
+            data.put("title", app_name);
 			data.put("body", message);
 
 			final JSONObject jsonData = new JSONObject(data);
+
 			final String notificationData = new JSONArray().put(jsonData).toString();
 
+            final Intent intent = new Intent(INTENT_ACTION_PEBBLE_NOTIFICATION);
 			intent.putExtra("messageType", "PEBBLE_ALERT");
-			intent.putExtra("sender", "Twittnuker");
+            intent.putExtra("sender", app_name);
 			intent.putExtra("notificationData", notificationData);
 
 			mContext.getApplicationContext().sendBroadcast(intent);
