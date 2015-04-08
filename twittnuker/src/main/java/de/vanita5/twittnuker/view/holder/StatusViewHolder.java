@@ -240,9 +240,14 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
 
         if (adapter.isMediaPreviewEnabled()) {
             mediaPreview.setStyle(adapter.getMediaPreviewStyle());
-            mediaPreview.setVisibility(status.media != null && status.media.length > 0 ? View.VISIBLE : View.GONE);
-            mediaPreview.displayMedia(status.media, loader, status.account_id, this,
-                    adapter.getImageLoadingHandler());
+            final boolean hasMedia = status.media != null && status.media.length > 0;
+            if (hasMedia && (adapter.isSensitiveContentEnabled() || !status.is_possibly_sensitive)) {
+                mediaPreview.setVisibility(hasMedia ? View.VISIBLE : View.GONE);
+            	mediaPreview.displayMedia(status.media, loader, status.account_id, this,
+                    	adapter.getImageLoadingHandler());
+			} else {
+				mediaPreview.setVisibility(View.GONE);
+			}
         } else {
             mediaPreview.setVisibility(View.GONE);
         }
@@ -290,7 +295,8 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
             favoriteCountView.setText(null);
         }
         if (shouldDisplayExtraType) {
-            displayExtraTypeIcon(status.card_name, status.media, status.location, status.place_full_name);
+            displayExtraTypeIcon(status.card_name, status.media, status.location, status.place_full_name,
+                    status.is_possibly_sensitive);
         } else {
             extraTypeView.setVisibility(View.GONE);
         }
@@ -313,7 +319,6 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
         final long status_id = cursor.getLong(indices.status_id);
         final long retweet_id = cursor.getLong(indices.retweet_id);
         final long my_retweet_id = cursor.getLong(indices.my_retweet_id);
-        final long retweeted_by_id = cursor.getLong(indices.retweeted_by_user_id);
         final long in_reply_to_status_id = cursor.getLong(indices.in_reply_to_status_id);
         final long in_reply_to_user_id = cursor.getLong(indices.in_reply_to_user_id);
 
@@ -322,12 +327,15 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
         final String card_name = cursor.getString(indices.card_name);
         final String place_full_name = cursor.getString(indices.place_full_name);
 
+        final boolean sensitive = cursor.getShort(indices.is_possibly_sensitive) == 1;
+
         final ParcelableMedia[] media = SimpleValueSerializer.fromSerializedString(
                 cursor.getString(indices.media), ParcelableMedia.SIMPLE_CREATOR);
         final ParcelableLocation location = ParcelableLocation.fromString(
                 cursor.getString(indices.location));
 
         if (retweet_id > 0) {
+            final long retweeted_by_id = cursor.getLong(indices.retweeted_by_user_id);
             final String retweeted_by_name = cursor.getString(indices.retweeted_by_user_name);
             final String retweeted_by_screen_name = cursor.getString(indices.retweeted_by_user_screen_name);
             final String retweetedBy = UserColorNameUtils.getDisplayName(
@@ -432,10 +440,13 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
 
 
         if (adapter.isMediaPreviewEnabled()) {
-            mediaPreview.setStyle(adapter.getMediaPreviewStyle());
-            mediaPreview.setVisibility(media != null && media.length > 0 ? View.VISIBLE : View.GONE);
-            mediaPreview.displayMedia(media, loader, account_id, this,
-                    adapter.getImageLoadingHandler());
+            final boolean hasMedia = media != null && media.length > 0;
+            if (hasMedia && (adapter.isSensitiveContentEnabled() || !sensitive)) {
+                mediaPreview.setVisibility(hasMedia ? View.VISIBLE : View.GONE);
+                mediaPreview.displayMedia(media, loader, account_id, this, adapter.getImageLoadingHandler());
+			} else {
+				mediaPreview.setVisibility(View.GONE);
+			}
         } else {
             mediaPreview.setVisibility(View.GONE);
         }
@@ -460,6 +471,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
             retweet_count = Math.max(0, cursor.getLong(indices.retweet_count) - 1);
         } else {
             final boolean creatingRetweet = twitter.isCreatingRetweet(account_id, status_id);
+            final long retweeted_by_id = cursor.getLong(indices.retweeted_by_user_id);
             retweetCountView.setActivated(creatingRetweet || Utils.isMyRetweet(account_id,
                     retweeted_by_id, my_retweet_id));
             retweet_count = cursor.getLong(indices.retweet_count) + (creatingRetweet ? 1 : 0);
@@ -482,7 +494,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
         } else {
             favoriteCountView.setText(null);
         }
-        displayExtraTypeIcon(card_name, media, location, place_full_name);
+        displayExtraTypeIcon(card_name, media, location, place_full_name, sensitive);
     }
 
     public CardView getCardView() {
@@ -566,21 +578,21 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
         profileImageView.setStyle(adapter.getProfileImageStyle());
     }
 
-    private void displayExtraTypeIcon(String cardName, ParcelableMedia[] media, ParcelableLocation location, String placeFullName) {
+    private void displayExtraTypeIcon(String cardName, ParcelableMedia[] media, ParcelableLocation location, String placeFullName, boolean sensitive) {
         if (TwitterCardUtils.CARD_NAME_AUDIO.equals(cardName)) {
-            extraTypeView.setImageResource(R.drawable.ic_action_music);
+            extraTypeView.setImageResource(sensitive ? R.drawable.ic_action_warning : R.drawable.ic_action_music);
             extraTypeView.setVisibility(View.VISIBLE);
         } else if (TwitterCardUtils.CARD_NAME_ANIMATED_GIF.equals(cardName)) {
-            extraTypeView.setImageResource(R.drawable.ic_action_movie);
+            extraTypeView.setImageResource(sensitive ? R.drawable.ic_action_warning : R.drawable.ic_action_movie);
             extraTypeView.setVisibility(View.VISIBLE);
         } else if (TwitterCardUtils.CARD_NAME_PLAYER.equals(cardName)) {
-            extraTypeView.setImageResource(R.drawable.ic_action_play_circle);
+            extraTypeView.setImageResource(sensitive ? R.drawable.ic_action_warning : R.drawable.ic_action_play_circle);
             extraTypeView.setVisibility(View.VISIBLE);
         } else if (media != null && media.length > 0) {
             if (hasVideo(media)) {
-                extraTypeView.setImageResource(R.drawable.ic_action_movie);
+                extraTypeView.setImageResource(sensitive ? R.drawable.ic_action_warning : R.drawable.ic_action_movie);
             } else {
-            	extraTypeView.setImageResource(R.drawable.ic_action_gallery);
+                extraTypeView.setImageResource(sensitive ? R.drawable.ic_action_warning : R.drawable.ic_action_gallery);
             }
             extraTypeView.setVisibility(View.VISIBLE);
         } else if (ParcelableLocation.isValidLocation(location) || !TextUtils.isEmpty(placeFullName)) {
@@ -619,6 +631,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
         private final int profileImageStyle, mediaPreviewStyle;
         private final boolean nameFirst;
         private final boolean displayProfileImage;
+        private final boolean sensitiveContentEnabled;
         private boolean displayMediaPreview;
 
         public DummyStatusHolderAdapter(Context context) {
@@ -637,6 +650,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
             nameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
             displayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
             displayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
+            sensitiveContentEnabled = preferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, true);
         }
 
         @Override
@@ -772,6 +786,11 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
         @Override
         public boolean isNameFirst() {
             return nameFirst;
+        }
+
+        @Override
+        public boolean isSensitiveContentEnabled() {
+            return sensitiveContentEnabled;
         }
 
         @Override

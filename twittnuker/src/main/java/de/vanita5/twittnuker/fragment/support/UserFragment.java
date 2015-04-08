@@ -213,6 +213,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private ActionBarDrawable mActionBarBackground;
     private Fragment mCurrentVisibleFragment;
     private int mCardBackgroundColor;
+    private int mUserUiColor;
 
 
     @Subscribe
@@ -1218,6 +1219,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 	}
 
     private void setUserUiColor(int color) {
+        mUserUiColor = color;
         if (mActionBarBackground == null) {
             setupBaseActionBar();
 	    }
@@ -1297,8 +1299,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 setCompatToolbarOverlayAlpha(activity, factor * tabOutlineAlphaFactor);
             }
 
-            final int color = mActionBarBackground.getColor();
-
             if (activity instanceof IThemedActivity) {
             	final Drawable drawable = mPagerIndicator.getBackground();
                 final int stackedTabColor;
@@ -1307,9 +1307,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                     final int contrastColor = ColorUtils.getContrastYIQ(stackedTabColor, 192);
                     mPagerIndicator.setIconColor(contrastColor);
                     mPagerIndicator.setLabelColor(contrastColor);
-                    mPagerIndicator.setStripColor(color);
+                    mPagerIndicator.setStripColor(mUserUiColor);
                 } else if (drawable instanceof ColorDrawable) {
-                    stackedTabColor = color;
+                    stackedTabColor = mUserUiColor;
                     final int tabColor = (Integer) sArgbEvaluator.evaluate(tabOutlineAlphaFactor, stackedTabColor, mCardBackgroundColor);
                     ((ColorDrawable) drawable).setColor(tabColor);
                     final int contrastColor = ColorUtils.getContrastYIQ(tabColor, 192);
@@ -1318,7 +1318,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                     mPagerIndicator.setStripColor(contrastColor);
             	}
             } else {
-				final int contrastColor = ColorUtils.getContrastYIQ(color, 192);
+                final int contrastColor = ColorUtils.getContrastYIQ(mUserUiColor, 192);
 				mPagerIndicator.setIconColor(contrastColor);
 				mPagerIndicator.setLabelColor(contrastColor);
 				mPagerIndicator.setStripColor(contrastColor);
