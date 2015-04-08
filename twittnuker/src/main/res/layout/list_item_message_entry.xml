@@ -38,7 +38,7 @@
     app:ignorePadding="true"
     tools:context=".adapter.DirectMessagesEntryAdapter">
 
-    <de.vanita5.twittnuker.view.ShapedImageView
+    <de.vanita5.twittnuker.view.SquareShapedImageView
         android:id="@+id/profile_image"
         style="?profileImageStyle"
         android:layout_width="@dimen/icon_size_card_list_item"

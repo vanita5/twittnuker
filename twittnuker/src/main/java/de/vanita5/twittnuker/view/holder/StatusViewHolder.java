@@ -65,6 +65,7 @@ import java.util.Locale;
 
 import twitter4j.TranslationResult;
 
+import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 
 public class StatusViewHolder extends RecyclerView.ViewHolder implements Constants, OnClickListener,
@@ -88,6 +89,8 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
     private final View quotedNameContainer;
     private final IColorLabelView itemContent;
     private final ForegroundColorView quoteIndicator;
+    private final View actionButtons;
+    private final View itemMenu;
 
     private StatusClickListener statusClickListener;
 
@@ -113,6 +116,9 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
 
         quoteIndicator = (ForegroundColorView) itemView.findViewById(R.id.quote_indicator);
 
+        itemMenu = itemView.findViewById(R.id.item_menu);
+        actionButtons = itemView.findViewById(R.id.action_buttons);
+
         replyCountView = (TextView) itemView.findViewById(R.id.reply_count);
         retweetCountView = (TextView) itemView.findViewById(R.id.retweet_count);
         favoriteCountView = (TextView) itemView.findViewById(R.id.favorite_count);
@@ -121,11 +127,19 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
     }
 
 	public void displaySampleStatus() {
+        profileImageView.setVisibility(adapter.isProfileImageEnabled() ? View.VISIBLE : View.GONE);
         profileImageView.setImageResource(R.mipmap.ic_launcher);
-		nameView.setText("Twittnuker Project");
-		screenNameView.setText("@twittnuker");
-        textView.setText(R.string.sample_status_text);
+        nameView.setText(TWIDERE_PREVIEW_NAME);
+        screenNameView.setText("@" + TWIDERE_PREVIEW_SCREEN_NAME);
+        if (adapter.getLinkHighlightingStyle() == VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
+        	textView.setText(Html.fromHtml(TWIDERE_PREVIEW_TEXT_HTML));
+            adapter.getTwidereLinkify().applyAllLinks(textView, -1, -1, false, adapter.getLinkHighlightingStyle());
+        } else {
+            textView.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
+        }
+        textView.setMovementMethod(null);
 		timeView.setTime(System.currentTimeMillis());
+        mediaPreview.setVisibility(adapter.isMediaPreviewEnabled() ? View.VISIBLE : View.GONE);
         mediaPreview.displayMedia(R.drawable.nyan_stars_background);
 	}
 
@@ -549,8 +563,8 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
     public void setStatusClickListener(StatusClickListener listener) {
         statusClickListener = listener;
         itemView.findViewById(R.id.item_content).setOnClickListener(this);
-        itemView.findViewById(R.id.item_menu).setOnClickListener(this);
 
+        itemMenu.setOnClickListener(this);
         itemView.setOnClickListener(this);
         profileImageView.setOnClickListener(this);
         replyCountView.setOnClickListener(this);
@@ -576,6 +590,8 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
         setTextSize(adapter.getTextSize());
         mediaPreview.setStyle(adapter.getMediaPreviewStyle());
         profileImageView.setStyle(adapter.getProfileImageStyle());
+        actionButtons.setVisibility(adapter.isCardActionsHidden() ? View.GONE : View.VISIBLE);
+        itemMenu.setVisibility(adapter.isCardActionsHidden() ? View.GONE : View.VISIBLE);
     }
 
     private void displayExtraTypeIcon(String cardName, ParcelableMedia[] media, ParcelableLocation location, String placeFullName, boolean sensitive) {
@@ -614,9 +630,9 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
 
         boolean isProfileImageEnabled();
 
-        void onStatusClick(StatusViewHolder holder, int position);
-
         void onMediaClick(StatusViewHolder holder, ParcelableMedia media, int position);
+
+        void onStatusClick(StatusViewHolder holder, int position);
 
         void onUserProfileClick(StatusViewHolder holder, int position);
     }
@@ -624,33 +640,30 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
     public static final class DummyStatusHolderAdapter implements IStatusesAdapter<Object> {
 
         private final Context context;
+        private final SharedPreferencesWrapper preferences;
         private final MediaLoaderWrapper loader;
         private final ImageLoadingHandler handler;
         private final AsyncTwitterWrapper twitter;
         private final TwidereLinkify linkify;
-        private final int profileImageStyle, mediaPreviewStyle;
-        private final boolean nameFirst;
-        private final boolean displayProfileImage;
-        private final boolean sensitiveContentEnabled;
+        private int profileImageStyle;
+        private int mediaPreviewStyle;
+        private int textSize;
+        private int linkHighlightStyle;
+        private boolean nameFirst;
+        private boolean displayProfileImage;
+        private boolean sensitiveContentEnabled;
+        private boolean hideCardActions;
         private boolean displayMediaPreview;
 
         public DummyStatusHolderAdapter(Context context) {
             this.context = context;
-
-            final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
-                    SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+            preferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
             final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
             loader = app.getMediaLoaderWrapper();
             handler = new ImageLoadingHandler(R.id.media_preview_progress);
             twitter = app.getTwitterWrapper();
             linkify = new TwidereLinkify(null);
-
-            profileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
-            mediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
-            nameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
-            displayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-            displayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
-            sensitiveContentEnabled = preferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, true);
+            updateOptions();
         }
 
         @Override
@@ -690,7 +703,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
 
         @Override
         public float getTextSize() {
-            return 0;
+            return textSize;
         }
 
         @Override
@@ -701,46 +714,6 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
         @Override
         public boolean isLoadMoreSupported() {
             return false;
-        }
-
-        @Override
-        public boolean isProfileImageEnabled() {
-            return displayProfileImage;
-        }
-
-        @Override
-        public void onItemActionClick(ViewHolder holder, int id, int position) {
-
-        }
-
-        @Override
-        public void onItemMenuClick(ViewHolder holder, View menuView, int position) {
-
-        }
-
-        @Override
-        public void onStatusClick(StatusViewHolder holder, int position) {
-
-        }
-
-        @Override
-        public void onMediaClick(StatusViewHolder holder, ParcelableMedia media, int position) {
-
-        }
-
-        @Override
-        public void onUserProfileClick(StatusViewHolder holder, int position) {
-
-        }
-
-        @Override
-        public boolean isGapItem(int position) {
-            return false;
-        }
-
-        @Override
-        public void onGapClick(ViewHolder holder, int position) {
-
         }
 
         @Override
@@ -780,7 +753,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
 
         @Override
         public int getLinkHighlightingStyle() {
-            return 0;
+            return linkHighlightStyle;
         }
 
         @Override
@@ -794,8 +767,18 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
         }
 
         @Override
+        public boolean isCardActionsHidden() {
+            return hideCardActions;
+        }
+
+        @Override
         public void setData(Object o) {
 
+        }
+
+        @Override
+        public boolean shouldShowAccountsColor() {
+            return false;
         }
 
         public void setMediaPreviewEnabled(boolean enabled) {
@@ -803,8 +786,55 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
         }
 
         @Override
-        public boolean shouldShowAccountsColor() {
+        public boolean isGapItem(int position) {
             return false;
+        }
+
+        @Override
+        public void onGapClick(ViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public boolean isProfileImageEnabled() {
+            return displayProfileImage;
+        }
+
+        @Override
+        public void onStatusClick(StatusViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public void onMediaClick(StatusViewHolder holder, ParcelableMedia media, int position) {
+
+        }
+
+        @Override
+        public void onUserProfileClick(StatusViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public void onItemActionClick(ViewHolder holder, int id, int position) {
+
+        }
+
+        @Override
+        public void onItemMenuClick(ViewHolder holder, View menuView, int position) {
+
+        }
+
+        public void updateOptions() {
+            profileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
+            mediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
+            textSize = preferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
+            nameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
+            displayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
+            displayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
+            sensitiveContentEnabled = preferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, false);
+            hideCardActions = preferences.getBoolean(KEY_HIDE_CARD_ACTIONS, false);
+            linkHighlightStyle = Utils.getLinkHighlightingStyleInt(preferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));
         }
     }
 }

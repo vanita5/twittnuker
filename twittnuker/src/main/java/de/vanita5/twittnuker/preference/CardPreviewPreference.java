@@ -35,7 +35,6 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.TwidereLinkify;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
 
@@ -77,18 +76,16 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
 		if (KEY_COMPACT_CARDS.equals(key)) {
 			mCompactModeChanged = true;
 		}
+        mAdapter.updateOptions();
 		notifyChanged();
 	}
 
 	@Override
     protected void onBindView(@NonNull final View view) {
-		if (mPreferences == null) return;
+        if (mHolder == null) return;
 		mCompactModeChanged = false;
-		final Context context = getContext();
-        final int highlightOption = Utils.getLinkHighlightingStyle(context);
-        mHolder = new StatusViewHolder(mAdapter, view);
+        mHolder.setupViewOptions();
         mHolder.displaySampleStatus();
-		mLinkify.setHighlightOption(highlightOption);
 		super.onBindView(view);
 	}
 
@@ -96,7 +93,9 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
 	protected View onCreateView(final ViewGroup parent) {
 		if (mPreferences != null && mPreferences.getBoolean(KEY_COMPACT_CARDS, false))
             return mInflater.inflate(R.layout.card_item_status_compact, parent, false);
-        return mInflater.inflate(R.layout.card_item_status, parent, false);
+        final View view = mInflater.inflate(R.layout.card_item_status, parent, false);
+        mHolder = new StatusViewHolder(mAdapter, view);
+        return view;
 	}
 
 }

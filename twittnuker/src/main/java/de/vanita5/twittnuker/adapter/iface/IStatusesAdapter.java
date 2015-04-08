@@ -43,6 +43,8 @@ public interface IStatusesAdapter<Data> extends IContentCardAdapter, StatusClick
 
     boolean isSensitiveContentEnabled();
 
+    boolean isCardActionsHidden();
+
     void setData(Data data);
 
     boolean shouldShowAccountsColor();

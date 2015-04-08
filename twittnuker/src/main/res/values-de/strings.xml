@@ -663,6 +663,7 @@
     <string name="tweet_hashtag">Tweet #<xliff:g id="text">%1$s</xliff:g></string>
     <string name="tweet_from_name">Tweet von <xliff:g id="text">%1$s</xliff:g></string>
     <string name="share_status">Tweet teilen</string>
+    <string name="hide_card_actions">Tweet Aktionen ausblenden</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

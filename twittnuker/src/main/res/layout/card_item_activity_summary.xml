@@ -61,7 +61,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <de.vanita5.twittnuker.view.ShapedImageView
+            <de.vanita5.twittnuker.view.SquareShapedImageView
                 android:id="@+id/activity_profile_image_0"
                 style="?profileImageStyle"
                 android:layout_width="@dimen/profile_image_size_activity_small"
@@ -69,7 +69,7 @@
                 android:layout_margin="2dp"
                 android:contentDescription="@string/profile_image"/>
 
-            <de.vanita5.twittnuker.view.ShapedImageView
+            <de.vanita5.twittnuker.view.SquareShapedImageView
                 android:id="@+id/activity_profile_image_1"
                 style="?profileImageStyle"
                 android:layout_width="@dimen/profile_image_size_activity_small"
@@ -77,7 +77,7 @@
                 android:layout_margin="2dp"
                 android:contentDescription="@string/profile_image"/>
 
-            <de.vanita5.twittnuker.view.ShapedImageView
+            <de.vanita5.twittnuker.view.SquareShapedImageView
                 android:id="@+id/activity_profile_image_2"
                 style="?profileImageStyle"
                 android:layout_width="@dimen/profile_image_size_activity_small"
@@ -85,7 +85,7 @@
                 android:layout_margin="2dp"
                 android:contentDescription="@string/profile_image"/>
 
-            <de.vanita5.twittnuker.view.ShapedImageView
+            <de.vanita5.twittnuker.view.SquareShapedImageView
                 android:id="@+id/activity_profile_image_3"
                 style="?profileImageStyle"
                 android:layout_width="@dimen/profile_image_size_activity_small"
@@ -93,7 +93,7 @@
                 android:layout_margin="2dp"
                 android:contentDescription="@string/profile_image"/>
 
-            <de.vanita5.twittnuker.view.ShapedImageView
+            <de.vanita5.twittnuker.view.SquareShapedImageView
                 android:id="@+id/activity_profile_image_4"
                 style="?profileImageStyle"
                 android:layout_width="@dimen/profile_image_size_activity_small"

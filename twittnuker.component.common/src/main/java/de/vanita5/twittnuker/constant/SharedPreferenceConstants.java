@@ -328,6 +328,9 @@ public interface SharedPreferenceConstants {
 	@Preference(type = LONG, exportable = false)
 	String KEY_DEFAULT_ACCOUNT_ID = "default_account_id";
 
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+	String KEY_HIDE_CARD_ACTIONS = "hide_card_actions";
+
 	//GCM Push
 	@Preference(type = STRING)
 	String KEY_GOOGLE_ACCOUNT = "key_google_account";
