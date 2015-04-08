@@ -274,7 +274,7 @@
 
     </FrameLayout>
 
-    <org.mariotaku.twidere.view.StatusTextView
+    <de.vanita5.twittnuker.view.StatusTextView
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
