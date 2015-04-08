@@ -181,11 +181,6 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 
 	public static ContentValues createDirectMessage(final DirectMessage message, final long accountId,
                                                     final boolean isOutgoing) {
-		return createDirectMessage(message, accountId, isOutgoing, false);
-	}
-
-	public static ContentValues createDirectMessage(final DirectMessage message, final long accountId,
-                                                    final boolean isOutgoing, final boolean large_profile_image) {
 		if (message == null) return null;
 		final ContentValues values = new ContentValues();
 		final User sender = message.getSender(), recipient = message.getRecipient();
@@ -211,11 +206,8 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(DirectMessages.SENDER_SCREEN_NAME, sender.getScreenName());
 		values.put(DirectMessages.RECIPIENT_NAME, recipient.getName());
 		values.put(DirectMessages.RECIPIENT_SCREEN_NAME, recipient.getScreenName());
-		values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL,
-				large_profile_image ? /*Utils.getBiggerTwitterProfileImage(sender_profile_image_url)*/ sender_profile_image_url : sender_profile_image_url); //FIXME
-		values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL,
-				large_profile_image ? /*Utils.getBiggerTwitterProfileImage(recipient_profile_image_url)*/ //FIXME
-						recipient_profile_image_url : recipient_profile_image_url);
+        values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL, sender_profile_image_url);
+        values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, recipient_profile_image_url);
         final ParcelableMedia[] mediaArray = ParcelableMedia.fromEntities(message);
         if (mediaArray != null) {
             values.put(DirectMessages.MEDIA_LIST, SimpleValueSerializer.toSerializedString(mediaArray));
@@ -313,20 +305,14 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 	}
 
 	public static ContentValues createStatus(final Status orig, final long accountId) {
-		return createStatus(orig, accountId, false);
-	}
-
-	public static ContentValues createStatus(final Status orig, final long accountId,
-                                             final boolean largeProfileImage) {
 		if (orig == null || orig.getId() <= 0) return null;
 		final ContentValues values = new ContentValues();
         values.put(Statuses.ACCOUNT_ID, accountId);
 		values.put(Statuses.STATUS_ID, orig.getId());
 		values.put(Statuses.STATUS_TIMESTAMP, orig.getCreatedAt().getTime());
-        final boolean isRetweet = orig.isRetweet();
 		final Status status;
-        final Status retweetedStatus = isRetweet ? orig.getRetweetedStatus() : null;
-        if (retweetedStatus != null) {
+        if (orig.isRetweet()) {
+            final Status retweetedStatus = orig.getRetweetedStatus();
             final User retweetUser = orig.getUser();
             final long retweetedById = retweetUser.getId();
             values.put(Statuses.RETWEET_ID, retweetedStatus.getId());
@@ -335,12 +321,34 @@ public final class ContentValuesCreator implements TwittnukerConstants {
             values.put(Statuses.RETWEETED_BY_USER_NAME, retweetUser.getName());
             values.put(Statuses.RETWEETED_BY_USER_SCREEN_NAME, retweetUser.getScreenName());
             values.put(Statuses.RETWEETED_BY_USER_PROFILE_IMAGE, ParseUtils.parseString(retweetUser.getProfileImageUrlHttps()));
+            values.put(Statuses.IS_RETWEET, true);
             if (retweetedById == accountId) {
                 values.put(Statuses.MY_RETWEET_ID, orig.getId());
             } else {
                 values.put(Statuses.MY_RETWEET_ID, orig.getCurrentUserRetweet());
             }
             status = retweetedStatus;
+        } else if (orig.isQuote()) {
+            final Status quotedStatus = orig.getQuotedStatus();
+            final User quoteUser = orig.getUser();
+            final long quotedById = quoteUser.getId();
+            values.put(Statuses.QUOTE_ID, quotedStatus.getId());
+            final String textHtml = TwitterContentUtils.formatStatusText(orig);
+            values.put(Statuses.QUOTE_TEXT_HTML, textHtml);
+            values.put(Statuses.QUOTE_TEXT_PLAIN, orig.getText());
+            values.put(Statuses.QUOTE_TEXT_UNESCAPED, toPlainText(textHtml));
+            values.put(Statuses.QUOTE_TIMESTAMP, quotedStatus.getCreatedAt().getTime());
+            values.put(Statuses.QUOTED_BY_USER_ID, quotedById);
+            values.put(Statuses.QUOTED_BY_USER_NAME, quoteUser.getName());
+            values.put(Statuses.QUOTED_BY_USER_SCREEN_NAME, quoteUser.getScreenName());
+            values.put(Statuses.QUOTED_BY_USER_PROFILE_IMAGE, ParseUtils.parseString(quoteUser.getProfileImageUrlHttps()));
+            values.put(Statuses.IS_QUOTE, true);
+            if (quotedById == accountId) {
+                values.put(Statuses.MY_QUOTE_ID, orig.getId());
+//            } else {
+//                values.put(Statuses.MY_QUOTE_ID, orig.getCurrentUserRetweet());
+            }
+            status = quotedStatus;
 		} else {
             values.put(Statuses.MY_RETWEET_ID, orig.getCurrentUserRetweet());
 			status = orig;
@@ -354,13 +362,12 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         values.put(Statuses.USER_SCREEN_NAME, screenName);
         values.put(Statuses.IS_PROTECTED, user.isProtected());
         values.put(Statuses.IS_VERIFIED, user.isVerified());
-        values.put(Statuses.USER_PROFILE_IMAGE_URL,
-                largeProfileImage ? /*Utils.getBiggerTwitterProfileImage(profileImageUrl)*/ profileImageUrl : profileImageUrl); //FIXME
+        values.put(Statuses.USER_PROFILE_IMAGE_URL, profileImageUrl);
         values.put(CachedUsers.IS_FOLLOWING, user.isFollowing());
-        final String text_html = TwitterContentUtils.formatStatusText(status);
-		values.put(Statuses.TEXT_HTML, text_html);
+        final String textHtml = TwitterContentUtils.formatStatusText(status);
+        values.put(Statuses.TEXT_HTML, textHtml);
 		values.put(Statuses.TEXT_PLAIN, status.getText());
-		values.put(Statuses.TEXT_UNESCAPED, toPlainText(text_html));
+        values.put(Statuses.TEXT_UNESCAPED, toPlainText(textHtml));
 		values.put(Statuses.RETWEET_COUNT, status.getRetweetCount());
 		values.put(Statuses.REPLY_COUNT, status.getReplyCount());
         values.put(Statuses.FAVORITE_COUNT, status.getFavoriteCount());
@@ -379,7 +386,6 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         if (place != null) {
             values.put(Statuses.PLACE_FULL_NAME, place.getFullName());
         }
-        values.put(Statuses.IS_RETWEET, isRetweet);
 		values.put(Statuses.IS_FAVORITE, status.isFavorited());
         final ParcelableMedia[] media = ParcelableMedia.fromEntities(status);
         if (media != null) {

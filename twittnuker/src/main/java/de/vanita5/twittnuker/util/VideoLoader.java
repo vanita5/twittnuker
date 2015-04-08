@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.util;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
@@ -34,6 +33,7 @@ import com.squareup.otto.Bus;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
+import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
 import de.vanita5.twittnuker.util.message.VideoLoadFinishedEvent;
 
 import java.io.File;
@@ -52,7 +52,7 @@ public class VideoLoader {
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mContext = context;
 		mDiskCache = app.getDiskCache();
-		mImageDownloader = app.getImageDownloader();
+        mImageDownloader = new TwidereImageDownloader(context, false);
 		mTaskManager = app.getAsyncTaskManager();
 		mBus = app.getMessageBus();
 	}

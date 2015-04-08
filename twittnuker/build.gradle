@@ -48,6 +48,9 @@ repositories {
     jcenter()
     mavenCentral()
     maven {
+        url 'https://github.com/suckgamony/RapidDecoder/raw/master/repository'
+    }
+    maven {
         url "https://jitpack.io"
     }
     maven {
@@ -71,14 +74,15 @@ dependencies {
     compile 'dnsjava:dnsjava:2.1.7'
     compile 'com.commonsware.cwac:merge:1.1.1'
     compile 'com.commonsware.cwac:sacklist:1.0.0'
-    compile 'com.diegocarloslima:byakugallery:0.1.0'
+    compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.1.3'
     compile 'com.rengwuxian.materialedittext:library:2.0.3'
     compile 'com.pnikosis:materialish-progress:1.5'
     compile 'com.squareup.okhttp:okhttp:2.3.0'
     compile 'com.google.android.gms:play-services:7.0.0'
     compile 'com.google.maps.android:android-maps-utils:0.3.4'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.3'
+// Disabled temporarilly due to attribute clash with subsampling-scale-image-view
+//    compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.3'
     compile 'com.github.mariotaku:MessageBubbleView:1.0'
     compile 'com.github.mariotaku:DragSortListView:0.6.1'
     compile 'com.github.mariotaku:SlidingMenu:1.3'

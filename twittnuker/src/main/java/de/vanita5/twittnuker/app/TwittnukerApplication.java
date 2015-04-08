@@ -109,7 +109,7 @@ public class TwittnukerApplication extends Application implements Constants,
 
 	public ImageDownloader getFullImageDownloader() {
 		if (mFullImageDownloader != null) return mFullImageDownloader;
-		return mFullImageDownloader = new TwidereImageDownloader(this, true);
+        return mFullImageDownloader = new TwidereImageDownloader(this, true);
 	}
 
 	public Handler getHandler() {
@@ -128,7 +128,7 @@ public class TwittnukerApplication extends Application implements Constants,
 
 	public ImageDownloader getImageDownloader() {
 		if (mImageDownloader != null) return mImageDownloader;
-		return mImageDownloader = new TwidereImageDownloader(this, false);
+        return mImageDownloader = new TwidereImageDownloader(this, false);
 	}
 
 	public ImageLoader getImageLoader() {

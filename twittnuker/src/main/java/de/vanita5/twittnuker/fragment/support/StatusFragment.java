@@ -71,7 +71,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
@@ -109,6 +108,7 @@ import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.Utils.OnMediaClickListener;
+import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.StatusTextView;
 import de.vanita5.twittnuker.view.TwitterCardContainer;
@@ -464,7 +464,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final View profileContainer;
         private final View retweetedByContainer;
         private final View mediaPreviewContainer;
-        private final LinearLayout mediaPreviewGrid;
+        private final View mediaPreviewLoad;
+        private final CardMediaContainer mediaPreview;
 
         private final TextView locationView;
         private final TwitterCardContainer twitterCard;
@@ -488,8 +489,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             repliesCountView = (TextView) itemView.findViewById(R.id.replies_count);
             retweetsCountView = (TextView) itemView.findViewById(R.id.retweets_count);
             favoritesCountView = (TextView) itemView.findViewById(R.id.favorites_count);
-            mediaPreviewContainer = itemView.findViewById(R.id.media_preview);
-            mediaPreviewGrid = (LinearLayout) itemView.findViewById(R.id.media_preview_grid);
+            mediaPreviewContainer = itemView.findViewById(R.id.media_preview_container);
+            mediaPreviewLoad = itemView.findViewById(R.id.media_preview_load);
+            mediaPreview = (CardMediaContainer) itemView.findViewById(R.id.media_preview);
             locationView = (TextView) itemView.findViewById(R.id.location_view);
             profileContainer = itemView.findViewById(R.id.profile_container);
             twitterCard = (TwitterCardContainer) itemView.findViewById(R.id.twitter_card);
@@ -577,11 +579,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 mediaPreviewContainer.setVisibility(View.GONE);
             } else {
                 mediaPreviewContainer.setVisibility(View.VISIBLE);
-                mediaPreviewGrid.setVisibility(View.VISIBLE);
-                mediaPreviewGrid.removeAllViews();
-                final int maxColumns = resources.getInteger(R.integer.grid_column_image_preview);
-                Utils.addToLinearLayout(mediaPreviewGrid, loader, status.media, status.account_id,
-                        maxColumns, adapter.getFragment());
+                mediaPreviewLoad.setVisibility(View.VISIBLE);
+                mediaPreview.setVisibility(View.GONE);
             }
 
             if (TwitterCardUtils.isCardSupported(status.card)) {

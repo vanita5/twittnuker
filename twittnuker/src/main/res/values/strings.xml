@@ -269,8 +269,8 @@
 	<string name="view">View</string>
 	<string name="custom_host_mapping">Custom host mapping</string>
 	<string name="custom_host_mapping_summary">Host mapping like /etc/hosts, but does not require any additional permissions.</string>
-	<string name="host">Host (e.g. 127.0.0.1)</string>
-	<string name="address">Address (Can be another host address)</string>
+	<string name="host_mapping_host">Host (e.g. 127.0.0.1)</string>
+	<string name="host_mapping_address">Address (Can be another host address)</string>
 	<string name="add_host_mapping">Add host mapping</string>
 	<string name="tcp_dns_query">TCP DNS Query</string>
 	<string name="tcp_dns_query_summary">Use TCP Protocol to make DNS requests, which can avoid DNS Cache Poisoning.</string>

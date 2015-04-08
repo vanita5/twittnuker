@@ -22,15 +22,9 @@
 
 package de.vanita5.twittnuker.util.imageloader;
 
-import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
-import static de.vanita5.twittnuker.util.Utils.getImageLoaderHttpClient;
-import static de.vanita5.twittnuker.util.Utils.getNormalTwitterProfileImage;
-import static de.vanita5.twittnuker.util.Utils.getRedirectedHttpResponse;
-import static de.vanita5.twittnuker.util.Utils.getTwitterAuthorization;
-import static de.vanita5.twittnuker.util.Utils.getTwitterProfileImageOfSize;
-
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.nostra13.universalimageloader.core.assist.ContentLengthInputStream;
@@ -38,24 +32,35 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
-
-import twitter4j.TwitterException;
-import twitter4j.auth.Authorization;
-import twitter4j.http.HttpClientWrapper;
-import twitter4j.http.HttpResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
+import twitter4j.TwitterException;
+import twitter4j.auth.Authorization;
+import twitter4j.http.HeaderMap;
+import twitter4j.http.HttpClientWrapper;
+import twitter4j.http.HttpResponse;
+
+import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
+import static de.vanita5.twittnuker.util.Utils.getImageLoaderHttpClient;
+import static de.vanita5.twittnuker.util.Utils.getNormalTwitterProfileImage;
+import static de.vanita5.twittnuker.util.Utils.getRedirectedHttpResponse;
+import static de.vanita5.twittnuker.util.Utils.getTwitterAuthorization;
+import static de.vanita5.twittnuker.util.Utils.getTwitterProfileImageOfSize;
+
 public class TwidereImageDownloader extends BaseImageDownloader implements Constants {
 
 	private final Context mContext;
+    private final SharedPreferencesWrapper mPreferences;
 	private HttpClientWrapper mClient;
 	private boolean mFastImageLoading;
 	private final boolean mFullImage;
@@ -64,15 +69,17 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 	public TwidereImageDownloader(final Context context, final boolean fullImage) {
 		super(context);
 		mContext = context;
+        mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME,
+                Context.MODE_PRIVATE, SharedPreferenceConstants.class);
 		mFullImage = fullImage;
 		mTwitterProfileImageSize = context.getString(R.string.profile_image_size);
 		reloadConnectivitySettings();
+
 	}
 
 	public void reloadConnectivitySettings() {
 		mClient = getImageLoaderHttpClient(mContext);
-		mFastImageLoading = mContext.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).getBoolean(
-				KEY_FAST_IMAGE_LOADING, true);
+        mFastImageLoading = mPreferences.getBoolean(KEY_FAST_IMAGE_LOADING);
 	}
 
 	@Override
@@ -137,8 +144,12 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 			account = null;
 			auth = null;
 		}
-		final String modifiedUri = getReplacedUri(uri, account != null ? account.api_url_format : null);
-		final HttpResponse resp = getRedirectedHttpResponse(mClient, modifiedUri, uriString, auth);
+        String modifiedUri = getReplacedUri(uri, account != null ? account.api_url_format : null);
+        final HeaderMap additionalHeaders = new HeaderMap();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            additionalHeaders.addHeader("Accept", "image/webp, */*");
+        }
+        final HttpResponse resp = getRedirectedHttpResponse(mClient, modifiedUri, uriString, auth, additionalHeaders);
 		return new ContentLengthInputStream(resp.asStream(), (int) resp.getContentLength());
 	}
 

@@ -262,7 +262,6 @@ public class StreamingService extends Service implements Constants {
 		private final long account_id;
 		private final String screen_name;
 		private final ContentResolver resolver;
-		private final boolean large_profile_image;
 
 		private NotificationHelper mNotificationHelper;
 		private SharedPreferences mPreferences;
@@ -271,7 +270,6 @@ public class StreamingService extends Service implements Constants {
 		public UserStreamListenerImpl(final Context context, final SharedPreferences preferences, final long account_id) {
 			this.context = context;
 			this.account_id = account_id;
-			large_profile_image = context.getResources().getBoolean(R.bool.hires_profile_image);
 			resolver = context.getContentResolver();
 			screen_name = Utils.getAccountScreenName(context, account_id);
 			mNotificationHelper = new NotificationHelper(context);
@@ -333,15 +331,13 @@ public class StreamingService extends Service implements Constants {
 			}
 			final User sender = directMessage.getSender(), recipient = directMessage.getRecipient();
 			if (sender.getId() == account_id) {
-				final ContentValues values = ContentValuesCreator.createDirectMessage(directMessage, account_id, true,
-						large_profile_image);
+				final ContentValues values = ContentValuesCreator.createDirectMessage(directMessage, account_id, true);
 				if (values != null) {
 					resolver.insert(DirectMessages.Outbox.CONTENT_URI, values);
 				}
 			}
 			if (recipient.getId() == account_id) {
-				final ContentValues values = ContentValuesCreator.createDirectMessage(directMessage, account_id, false,
-						large_profile_image);
+				final ContentValues values = ContentValuesCreator.createDirectMessage(directMessage, account_id, false);
 				final Uri.Builder builder = DirectMessages.Inbox.CONTENT_URI.buildUpon();
 				builder.appendQueryParameter(QUERY_PARAM_NOTIFY, "true");
 				if (values != null) {
@@ -401,7 +397,7 @@ public class StreamingService extends Service implements Constants {
 
 		@Override
 		public void onStatus(final Status status) {
-			final ContentValues values = ContentValuesCreator.createStatus(status, account_id, large_profile_image);
+			final ContentValues values = ContentValuesCreator.createStatus(status, account_id);
 			if (values != null) {
 				final String where = Statuses.ACCOUNT_ID + " = " + account_id + " AND " + Statuses.STATUS_ID + " = "
 						+ status.getId();
