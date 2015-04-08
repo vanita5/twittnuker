@@ -64,8 +64,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
-import de.vanita5.twittnuker.fragment.support.MentionsTimelineFragment;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
@@ -115,6 +113,7 @@ import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getNotificationUri;
 import static de.vanita5.twittnuker.util.Utils.getTableId;
 import static de.vanita5.twittnuker.util.Utils.getTableNameById;
+import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
 
 public final class TwidereDataProvider extends ContentProvider implements Constants, OnSharedPreferenceChangeListener,
 		LazyLoadCallback {
@@ -682,7 +681,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
     private long getPositionTag(String tag, long accountId) {
         final long position = mReadStateManager.getPosition(Utils.getReadPositionTagWithAccounts(tag,
-                accountId));
+				accountId));
         if (position != -1) return position;
         return mReadStateManager.getPosition(tag);
     }
@@ -859,6 +858,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     private static PendingIntent getDeleteIntent(Context context, String type, long accountId, long position) {
         // Setup delete intent
         final Intent recvIntent = new Intent(context, NotificationReceiver.class);
+        recvIntent.setAction(BROADCAST_NOTIFICATION_DELETED);
         final Uri.Builder recvLinkBuilder = new Uri.Builder();
         recvLinkBuilder.scheme(SCHEME_TWITTNUKER);
         recvLinkBuilder.authority(AUTHORITY_NOTIFICATIONS);
@@ -887,12 +887,18 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         if (AccountPreferences.isNotificationHasLight(defaultFlags)) {
             notificationDefaults |= NotificationCompat.DEFAULT_LIGHTS;
         }
-        if (AccountPreferences.isNotificationHasVibration(defaultFlags)) {
-            notificationDefaults |= NotificationCompat.DEFAULT_VIBRATE;
-        }
-        if (AccountPreferences.isNotificationHasRingtone(defaultFlags)) {
-            notificationDefaults |= NotificationCompat.DEFAULT_SOUND;
-            builder.setSound(pref.getNotificationRingtone(), AudioManager.STREAM_NOTIFICATION);
+        if (!isNotificationsSilent(getContext())) {
+			if (AccountPreferences.isNotificationHasVibration(defaultFlags)) {
+				notificationDefaults |= NotificationCompat.DEFAULT_VIBRATE;
+            } else {
+                notificationDefaults &= ~NotificationCompat.DEFAULT_VIBRATE;
+			}
+			if (AccountPreferences.isNotificationHasRingtone(defaultFlags)) {
+				notificationDefaults |= NotificationCompat.DEFAULT_SOUND;
+				builder.setSound(pref.getNotificationRingtone(), AudioManager.STREAM_NOTIFICATION);
+			}
+        } else {
+            notificationDefaults &= ~(NotificationCompat.DEFAULT_VIBRATE | NotificationCompat.DEFAULT_SOUND);
         }
         builder.setDefaults(notificationDefaults);
     }
@@ -1096,10 +1102,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 			}
 		}
 		return count;
-	}
-
-	private static <T> T safeGet(final List<T> list, final int index) {
-		return index >= 0 && index < list.size() ? list.get(index) : null;
 	}
 
 	private static boolean shouldReplaceOnConflict(final int table_id) {

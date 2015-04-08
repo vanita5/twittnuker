@@ -214,7 +214,7 @@ public class BackgroundOperationService extends IntentService implements Constan
     }
 
 	private Notification buildNotification(final String title, final String message, final int icon,
-			final Intent content_intent, final Intent delete_intent, boolean showProgress) {
+			final Intent content_intent, final Intent deleteIntent, boolean showProgress) {
 		final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 		builder.setTicker(message);
 		builder.setContentTitle(title);
@@ -223,8 +223,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 		builder.setWhen(System.currentTimeMillis());
 		builder.setSmallIcon(icon);
 		if(showProgress) builder.setProgress(0, 0, true);
-		if (delete_intent != null) {
-			builder.setDeleteIntent(PendingIntent.getBroadcast(this, 0, delete_intent,
+		if (deleteIntent != null) {
+            builder.setDeleteIntent(PendingIntent.getBroadcast(this, 0, deleteIntent,
 					PendingIntent.FLAG_UPDATE_CURRENT));
 		}
 		if (content_intent != null) {
