@@ -371,7 +371,7 @@ public class MediaPreviewUtils {
 	private static ParcelableMedia getInstagramImage(final String id, final String orig, final boolean fullImage) {
 		if (isEmpty(id)) return null;
 		//always use large image, because the thumbnail is too small for image preview
-		final String preview = String.format("https://instagram.com/p/%s/media/?size=%s", id, "l" /*fullImage ? "l" : "t"*/);
+		final String preview = String.format("https://instagram.com/p/%s/media/?size=%s", id, "l" /*fullImage ? "l" : "m"*/);
 		return ParcelableMedia.newImage(preview, orig);
 	}
 
