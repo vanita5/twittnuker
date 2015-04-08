@@ -887,6 +887,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 Utils.setLastSeen(mContext, status.getUserMentionEntities(), System.currentTimeMillis());
                 final ContentValues values = new ContentValues();
                 values.put(Statuses.IS_FAVORITE, true);
+                values.put(Statuses.FAVORITE_COUNT, status.getFavoriteCount());
                 final Expression where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, account_id),
                         Expression.or(Expression.equals(Statuses.STATUS_ID, status_id),
                                 Expression.equals(Statuses.RETWEET_ID, status_id)));
@@ -1821,7 +1822,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 //                    Expression.in(new Column(DirectMessages.MESSAGE_ID), new RawItemArray(messageIds)));
 //            final Uri deleteUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, false);
 //            mResolver.delete(deleteUri, deleteWhere.getSQL(), null);
-
 
 
             // Insert previously fetched items.
