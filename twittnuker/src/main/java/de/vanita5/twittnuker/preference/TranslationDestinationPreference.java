@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.preference;
 
-import static de.vanita5.twittnuker.util.Utils.getDefaultTwitterInstance;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -45,14 +43,16 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 
+import java.text.Collator;
+import java.util.Comparator;
+import java.util.List;
+
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.api.HelpResources.Language;
 
-import java.text.Collator;
-import java.util.Comparator;
-import java.util.List;
+import static de.vanita5.twittnuker.util.Utils.getDefaultTwitterInstance;
 
 public class TranslationDestinationPreference extends Preference implements Constants, OnClickListener {
 
@@ -159,7 +159,7 @@ public class TranslationDestinationPreference extends Preference implements Cons
 
 	}
 
-	class GetLanguagesTask extends AsyncTask<Object, Void, ResponseList<Language>> implements OnCancelListener {
+	class GetLanguagesTask extends AsyncTask<Object, Object, ResponseList<Language>> implements OnCancelListener {
 
 		private final ProgressDialog mProgress;
 

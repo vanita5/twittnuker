@@ -293,7 +293,7 @@ public class DraftsActivity extends BaseActionBarActivity implements LoaderCallb
 
 	}
 
-    private static class DeleteDraftsTask extends AsyncTask<Object, Void, Integer> {
+    private static class DeleteDraftsTask extends AsyncTask<Object, Object, Integer> {
 
 		private static final String FRAGMENT_TAG_DELETING_DRAFTS = "deleting_drafts";
 		private final FragmentActivity mActivity;

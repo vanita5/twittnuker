@@ -39,7 +39,7 @@ import twitter4j.User;
 
 import static de.vanita5.twittnuker.util.Utils.isFiltered;
 
-public class RetweetsOfMeLoader extends Twitter4JStatusesLoader {
+public class RetweetsOfMeLoader extends TwitterAPIStatusesLoader {
 
 	private int mTotalItemsCount;
 

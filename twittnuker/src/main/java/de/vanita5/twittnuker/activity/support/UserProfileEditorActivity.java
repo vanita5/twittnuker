@@ -85,7 +85,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
 
 	private MediaLoaderWrapper mLazyImageLoader;
 	private AsyncTaskManager mAsyncTaskManager;
-    private AsyncTask<Object, Void, ?> mTask;
+    private AsyncTask<Object, Object, ?> mTask;
 
     private ImageView mProfileImageView;
     private ImageView mProfileBannerView;
@@ -425,7 +425,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
         mDoneButton.setEnabled(isProfileChanged());
     }
 
-    static class UpdateProfileTaskInternal extends AsyncTask<Object, Void, SingleResponse<ParcelableUser>> {
+    static class UpdateProfileTaskInternal extends AsyncTask<Object, Object, SingleResponse<ParcelableUser>> {
 
         private static final String DIALOG_FRAGMENT_TAG = "updating_user_profile";
         private final UserProfileEditorActivity mActivity;
@@ -522,7 +522,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
 
     }
 
-    class RemoveProfileBannerTaskInternal extends AsyncTask<Object, Void, SingleResponse<Boolean>> {
+    class RemoveProfileBannerTaskInternal extends AsyncTask<Object, Object, SingleResponse<Boolean>> {
 
         private final long account_id;
 

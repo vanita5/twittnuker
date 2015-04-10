@@ -55,7 +55,6 @@ import static de.vanita5.twittnuker.util.Utils.buildStatusFilterWhereClause;
 import static de.vanita5.twittnuker.util.Utils.getNewestStatusIdsFromDatabase;
 import static de.vanita5.twittnuker.util.Utils.getOldestStatusIdsFromDatabase;
 import static de.vanita5.twittnuker.util.Utils.getTableNameByUri;
-import static de.vanita5.twittnuker.util.Utils.shouldEnableFiltersForRTs;
 
 public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor> {
 
@@ -185,7 +184,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
     @Override
     public void onLoadMoreContents() {
         super.onLoadMoreContents();
-        AsyncTaskUtils.executeTask(new AsyncTask<Object, Void, long[][]>() {
+        AsyncTaskUtils.executeTask(new AsyncTask<Object, Object, long[][]>() {
 
             @Override
             protected long[][] doInBackground(final Object... params) {
@@ -205,7 +204,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
 
     @Override
     public boolean triggerRefresh() {
-        AsyncTaskUtils.executeTask(new AsyncTask<Object, Void, long[][]>() {
+        AsyncTaskUtils.executeTask(new AsyncTask<Object, Object, long[][]>() {
 
             @Override
             protected long[][] doInBackground(final Object... params) {
@@ -226,7 +225,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
 
     protected Expression getFiltersWhere(String table) {
         if (!isFilterEnabled()) return null;
-        return buildStatusFilterWhereClause(table, null, shouldEnableFiltersForRTs(getActivity()));
+        return buildStatusFilterWhereClause(table, null);
     }
 
     protected long[] getNewestStatusIds(long[] accountIds) {

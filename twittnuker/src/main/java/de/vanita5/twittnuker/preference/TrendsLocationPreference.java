@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.preference;
 
-import static de.vanita5.twittnuker.util.Utils.getDefaultTwitterInstance;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -43,14 +41,16 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 
+import java.text.Collator;
+import java.util.Comparator;
+import java.util.List;
+
 import twitter4j.Location;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import java.text.Collator;
-import java.util.Comparator;
-import java.util.List;
+import static de.vanita5.twittnuker.util.Utils.getDefaultTwitterInstance;
 
 public class TrendsLocationPreference extends Preference implements Constants, OnClickListener {
 
@@ -159,7 +159,7 @@ public class TrendsLocationPreference extends Preference implements Constants, O
 
 	}
 
-	class GetAvailableTrendsTask extends AsyncTask<Object, Void, ResponseList<Location>> implements OnCancelListener {
+    class GetAvailableTrendsTask extends AsyncTask<Object, Object, ResponseList<Location>> implements OnCancelListener {
 
 		private final ProgressDialog mProgress;
 
@@ -186,7 +186,7 @@ public class TrendsLocationPreference extends Preference implements Constants, O
 
 		@Override
 		protected void onPostExecute(final ResponseList<Location> result) {
-			if (mProgress != null && mProgress.isShowing()) {
+            if (mProgress.isShowing()) {
 				mProgress.dismiss();
 			}
 			mAdapter.setData(result);
@@ -206,7 +206,7 @@ public class TrendsLocationPreference extends Preference implements Constants, O
 
 		@Override
 		protected void onPreExecute() {
-			if (mProgress != null && mProgress.isShowing()) {
+            if (mProgress.isShowing()) {
 				mProgress.dismiss();
 			}
 			mProgress.setMessage(getContext().getString(R.string.please_wait));

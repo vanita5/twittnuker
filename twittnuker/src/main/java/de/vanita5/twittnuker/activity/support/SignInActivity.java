@@ -522,7 +522,7 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
         });
     }
 
-    public static abstract class AbstractSignInTask extends AsyncTask<Object, Void, SignInResponse> {
+    public static abstract class AbstractSignInTask extends AsyncTask<Object, Object, SignInResponse> {
 
 		protected final Configuration conf;
 		protected final SignInActivity callback;

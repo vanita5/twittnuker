@@ -944,7 +944,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 
 	}
 
-    private static class UpdateUnreadCountTask extends AsyncTask<Object, Void, Map<SupportTabSpec, Integer>> {
+    private static class UpdateUnreadCountTask extends AsyncTask<Object, Object, Map<SupportTabSpec, Integer>> {
 		private final Context mContext;
         private final ReadStateManager mReadStateManager;
 		private final TabPagerIndicator mIndicator;

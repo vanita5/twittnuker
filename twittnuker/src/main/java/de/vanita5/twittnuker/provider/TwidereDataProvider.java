@@ -694,7 +694,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         final Expression selection = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
                 Expression.greaterThan(Statuses.STATUS_ID, position));
         final String filteredSelection = Utils.buildStatusFilterWhereClause(Statuses.TABLE_NAME,
-                selection, true).getSQL();
+                selection).getSQL();
         final String[] userProjection = {Statuses.USER_ID, Statuses.USER_NAME, Statuses.USER_SCREEN_NAME};
         final String[] statusProjection = {Statuses.STATUS_ID};
         final Cursor statusCursor = mDatabaseWrapper.query(Statuses.TABLE_NAME, statusProjection,
@@ -763,7 +763,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 	Expression.greaterThan(Statuses.STATUS_ID, position));
         }
         final String filteredSelection = Utils.buildStatusFilterWhereClause(Mentions.TABLE_NAME,
-                selection, true).getSQL();
+                selection).getSQL();
         final String[] userProjection = {Statuses.USER_ID, Statuses.USER_NAME, Statuses.USER_SCREEN_NAME};
         final String[] statusProjection = {Statuses.STATUS_ID, Statuses.USER_ID, Statuses.USER_NAME, Statuses.USER_SCREEN_NAME,
                 Statuses.TEXT_UNESCAPED, Statuses.STATUS_TIMESTAMP};
@@ -1121,7 +1121,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	}
 
 	@SuppressWarnings("unused")
-	private static class GetWritableDatabaseTask extends AsyncTask<Object, Void, SQLiteDatabase> {
+    private static class GetWritableDatabaseTask extends AsyncTask<Object, Object, SQLiteDatabase> {
 		private final Context mContext;
 		private final SQLiteOpenHelper mHelper;
 		private final SQLiteDatabaseWrapper mWrapper;

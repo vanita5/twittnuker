@@ -49,7 +49,7 @@ import twitter4j.TwitterException;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.truncateStatuses;
 
-public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
+public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader {
 
 	private final Context mContext;
 	private final long mAccountId;
@@ -58,12 +58,12 @@ public abstract class Twitter4JStatusesLoader extends ParcelableStatusesLoader {
 	private final Object[] mSavedStatusesFileArgs;
     private Comparator<ParcelableStatus> mComparator;
 
-    public Twitter4JStatusesLoader(final Context context, final long account_id, final long sinceId, final long maxId,
-                                   final List<ParcelableStatus> data, final String[] savedStatusesArgs,
-                                   final int tabPosition, boolean fromUser) {
+    public TwitterAPIStatusesLoader(final Context context, final long accountId, final long sinceId,
+                                    final long maxId, final List<ParcelableStatus> data,
+                                    final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {
         super(context, data, tabPosition, fromUser);
 		mContext = context;
-		mAccountId = account_id;
+        mAccountId = accountId;
         mMaxId = maxId;
         mSinceId = sinceId;
 		mDatabase = TwittnukerApplication.getInstance(context).getSQLiteDatabase();

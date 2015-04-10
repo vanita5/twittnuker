@@ -218,7 +218,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 
 	}
 
-    static class GetRequestTokenTask extends AsyncTask<Object, Void, RequestToken> {
+    static class GetRequestTokenTask extends AsyncTask<Object, Object, RequestToken> {
 
 		private final String mConsumerKey, mConsumerSecret;
 		private final TwittnukerApplication mApplication;

@@ -125,7 +125,7 @@ public class DataImportActivity extends BaseActionBarActivity implements FileSel
 		}
 	}
 
-	static class ImportSettingsTask extends AsyncTask<Object, Void, Boolean> {
+	static class ImportSettingsTask extends AsyncTask<Object, Object, Boolean> {
 		private static final String FRAGMENT_TAG = "import_settings_dialog";
 
 		private final DataImportActivity mActivity;
@@ -174,7 +174,7 @@ public class DataImportActivity extends BaseActionBarActivity implements FileSel
 
 	}
 
-	static class OpenImportTypeTask extends AsyncTask<Object, Void, Integer> {
+	static class OpenImportTypeTask extends AsyncTask<Object, Object, Integer> {
 
 		private static final String FRAGMENT_TAG = "read_settings_data_dialog";
 

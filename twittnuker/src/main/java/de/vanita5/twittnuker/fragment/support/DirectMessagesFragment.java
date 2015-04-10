@@ -162,7 +162,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 
 	@Override
     public void onRefresh() {
-        AsyncTaskUtils.executeTask(new AsyncTask<Object, Void, long[][]>() {
+        AsyncTaskUtils.executeTask(new AsyncTask<Object, Object, long[][]>() {
 
             @Override
             protected long[][] doInBackground(final Object... params) {
@@ -370,7 +370,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
         if (isRefreshing()) return;
         mAdapter.setLoadMoreIndicatorVisible(true);
         mSwipeRefreshLayout.setEnabled(false);
-        AsyncTaskUtils.executeTask(new AsyncTask<Object, Void, long[][]>() {
+        AsyncTaskUtils.executeTask(new AsyncTask<Object, Object, long[][]>() {
 
             @Override
             protected long[][] doInBackground(final Object... params) {
@@ -416,7 +416,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
         AsyncTaskUtils.executeTask(mRemoveUnreadCountsTask);
 	}
 
-    static class RemoveUnreadCountsTask extends AsyncTask<Object, Void, Void> {
+    static class RemoveUnreadCountsTask extends AsyncTask<Object, Object, Object> {
 		private final Set<Integer> read_positions;
         private final MessageEntriesAdapter adapter;
 		private final DirectMessagesFragment fragment;
@@ -428,7 +428,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 		}
 
 		@Override
-		protected Void doInBackground(final Object... params) {
+        protected Object doInBackground(final Object... params) {
 			for (final int pos : read_positions) {
                 final DirectMessageEntry entry = adapter.getEntry(pos);
                 final long id = entry.conversation_id, account_id = entry.account_id;
@@ -438,7 +438,7 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
 		}
 
 		@Override
-		protected void onPostExecute(final Void result) {
+        protected void onPostExecute(final Object result) {
 			final AsyncTwitterWrapper twitter = fragment.getTwitterWrapper();
 			if (twitter != null) {
 				twitter.removeUnreadCountsAsync(fragment.getTabPosition(), fragment.getUnreadCountsToRemove());

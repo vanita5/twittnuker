@@ -93,7 +93,7 @@ public class VideoLoader {
 		void onVideoLoadingStarted(String uri, VideoLoadingListener listener);
 	}
 
-	private static class PreLoadVideoTask extends ManagedAsyncTask<Void, Integer, SingleResponse<File>> implements IoUtils.CopyListener {
+    private static class PreLoadVideoTask extends ManagedAsyncTask<Object, Integer, SingleResponse<File>> implements IoUtils.CopyListener {
 
 		private final VideoLoader mPreLoader;
 		private final VideoLoadingListener mListener;
@@ -114,7 +114,7 @@ public class VideoLoader {
 		}
 
 		@Override
-		protected SingleResponse<File> doInBackground(Void... params) {
+        protected SingleResponse<File> doInBackground(Object... params) {
 			final File file = mPreLoader.mDiskCache.get(mUri);
 			if (file.isFile() && file.length() > 0) return SingleResponse.getInstance(file);
 			try {

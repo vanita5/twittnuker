@@ -61,7 +61,7 @@ public abstract class AsyncTaskPreference extends Preference implements Constant
 
 	protected abstract void doInBackground();
 
-	private static class Task extends AsyncTask<Object, Void, Void> {
+	private static class Task extends AsyncTask<Object, Object, Object> {
 
 		private final AsyncTaskPreference mPreference;
 		private final Context mContext;
@@ -74,13 +74,13 @@ public abstract class AsyncTaskPreference extends Preference implements Constant
 		}
 
 		@Override
-		protected Void doInBackground(final Object... args) {
+		protected Object doInBackground(final Object... args) {
 			mPreference.doInBackground();
 			return null;
 		}
 
 		@Override
-		protected void onPostExecute(final Void result) {
+		protected void onPostExecute(final Object result) {
 			if (mProgress == null) return;
 			if (mProgress.isShowing()) {
 				mProgress.dismiss();

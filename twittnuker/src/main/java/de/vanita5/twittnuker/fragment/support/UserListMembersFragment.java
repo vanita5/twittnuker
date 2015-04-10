@@ -134,7 +134,7 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment impl
 		return R.menu.action_user_list_member;
 	}
 
-    private class GetUserListTask extends AsyncTask<Object, Void, ParcelableUserList> {
+    private class GetUserListTask extends AsyncTask<Object, Object, ParcelableUserList> {
 
         private final long accountId, userId;
         private final long listId;

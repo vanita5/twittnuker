@@ -233,7 +233,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
         mCreateUserListContainer.setVisibility(isMyAccount ? View.VISIBLE : View.GONE);
 	}
 
-    private static class GetUserListsTask extends AsyncTask<Object, Void, SingleResponse<List<ParcelableUserList>>> {
+    private static class GetUserListsTask extends AsyncTask<Object, Object, SingleResponse<List<ParcelableUserList>>> {
 
 		private static final String FRAGMENT_TAG_GET_USER_LISTS = "get_user_lists";
 
@@ -304,7 +304,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 
 	}
 
-    private static class SearchUsersTask extends AsyncTask<Object, Void, SingleResponse<List<ParcelableUser>>> {
+    private static class SearchUsersTask extends AsyncTask<Object, Object, SingleResponse<List<ParcelableUser>>> {
 
 		private static final String FRAGMENT_TAG_SEARCH_USERS = "search_users";
 		private final UserListSelectorActivity mActivity;

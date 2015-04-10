@@ -186,7 +186,7 @@ public class ImagePickerActivity extends ThemedActionBarActivity {
 		}
 	}
 
-	private static class CopyImageTask extends AsyncTask<Object, Void, SingleResponse<File>> {
+	private static class CopyImageTask extends AsyncTask<Object, Object, SingleResponse<File>> {
 		private final ImagePickerActivity mActivity;
 		private final Uri mUri;
 

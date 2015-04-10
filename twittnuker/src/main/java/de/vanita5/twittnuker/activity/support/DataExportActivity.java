@@ -112,7 +112,7 @@ public class DataExportActivity extends BaseActionBarActivity implements FileSel
 		}
 	}
 
-	static class ExportSettingsTask extends AsyncTask<Object, Void, Boolean> {
+	static class ExportSettingsTask extends AsyncTask<Object, Object, Boolean> {
 		private static final String FRAGMENT_TAG = "import_settings_dialog";
 
 		private final DataExportActivity mActivity;
