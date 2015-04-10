@@ -266,6 +266,7 @@ public interface SharedPreferenceConstants {
 	String KEY_SETTINGS_WIZARD_COMPLETED = "settings_wizard_completed";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	String KEY_CARD_ANIMATION = "card_animation";
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	String KEY_UNREAD_COUNT = "unread_count";
 	String KEY_NOTIFICATION = "notification";
 	String KEY_NOTIFICATION_TYPE_HOME = "notification_type_home";

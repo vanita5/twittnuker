@@ -33,6 +33,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,8 +93,20 @@ public class OAuthPasswordAuthenticator implements Constants {
             final HeaderMap requestHeaders = new HeaderMap();
             requestHeaders.addHeader("Origin", "https://twitter.com");
             requestHeaders.addHeader("Referer", "https://twitter.com/oauth/authorize?oauth_token=" + requestToken.getToken());
-            requestHeaders.put("Cookie", cookieHeaders);
+            final List<String> modifiedCookieHeaders = new ArrayList<>();
 			final String oAuthAuthorizationUrl = conf.getOAuthAuthorizationURL();
+
+            final String host = parseUrlHost(oAuthAuthorizationUrl);
+            for (String cookieHeader : cookieHeaders) {
+                for (HttpCookie cookie : HttpCookie.parse(cookieHeader)) {
+                    if (HttpCookie.domainMatches(cookie.getDomain(), host)) {
+                        cookie.setVersion(1);
+                        cookie.setDomain("twitter.com");
+                    }
+                    modifiedCookieHeaders.add(cookie.toString());
+                }
+            }
+            requestHeaders.put("Cookie", modifiedCookieHeaders);
             final String oauthPin = readOAuthPINFromHtml(client.post(oAuthAuthorizationUrl, oAuthAuthorizationUrl,
                     params.toArray(new HttpParameter[params.size()]), requestHeaders).asReader());
             if (isEmpty(oauthPin)) throw new WrongUserPassException();
@@ -103,7 +116,7 @@ public class OAuthPasswordAuthenticator implements Constants {
 		}
 	}
 
-    public static void readInputFromHtml(final Reader in, Map<String, String> map, String... desiredNames) throws IOException, XmlPullParserException {
+    private static void readInputFromHtml(final Reader in, Map<String, String> map, String... desiredNames) throws IOException, XmlPullParserException {
 		try {
 			final XmlPullParserFactory f = XmlPullParserFactory.newInstance();
 			final XmlPullParser parser = f.newPullParser();
@@ -160,6 +173,11 @@ public class OAuthPasswordAuthenticator implements Constants {
 		} finally {
 			if (in != null) in.close();
 		}
+	}
+
+    private static String parseUrlHost(String url) {
+        final int startOfHost = url.indexOf("://") + 3, endOfHost = url.indexOf('/', startOfHost);
+        return url.substring(startOfHost, endOfHost);
 	}
 
 	public static class AuthenticationException extends Exception {

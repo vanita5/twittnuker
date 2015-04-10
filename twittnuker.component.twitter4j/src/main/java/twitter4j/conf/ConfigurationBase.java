@@ -762,7 +762,7 @@ class ConfigurationBase implements TwitterConstants, Configuration {
 	}
 
     public void setOAuthAuthorizationURL(String oAuthAuthorizationURL) {
-//        this.oAuthAuthorizationURL = oAuthAuthorizationURL;
+        this.oAuthAuthorizationURL = oAuthAuthorizationURL;
     }
 
 	protected final void setOAuthBaseURL(String oAuthBaseURL) {
