@@ -21,8 +21,9 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<WebView
-	android:id="@+id/webview"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"/>
+<clip xmlns:android="http://schemas.android.com/apk/res/android"
+      android:clipOrientation="horizontal">
+    <shape android:shape="rectangle">
+        <solid android:color="@color/branding_color"/>
+    </shape>
+</clip>

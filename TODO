@@ -8,10 +8,3 @@
 * Fix Twitlonger
 
 * Fix/Merge Twittnuker/Twidere notifications
-
-* add Strings with no default translation:
-    warning: string 'home_refresh_summary' has no default translation.
-    warning: string 'indicate_my_status' has no default translation.
-    warning: string 'lists_following_me' has no default translation.
-    warning: string 'long_click_to_open_menu_summary' has no default translation.
-    warning: string 'my_profile_image' has no default translation.
