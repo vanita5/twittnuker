@@ -47,6 +47,7 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator {
     private int mOption;
     private boolean mTabExpandEnabled;
     private int mHorizontalPadding, mVerticalPadding;
+    private int mColumns;
 
 	public TabPagerIndicator(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -97,6 +98,11 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator {
     }
 
     public void getTabSpecs() {
+    }
+
+    public void setColumns(int columns) {
+        mColumns = columns;
+        notifyDataSetChanged();
     }
 
     public void setItemContext(Context context) {
@@ -447,7 +453,7 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator {
         public void onBindViewHolder(TabItemHolder holder, int position) {
             final Drawable icon = mTabProvider.getPageIcon(position);
             final CharSequence title = mTabProvider.getPageTitle(position);
-            holder.setTabData(icon, title, mIndicator.getCurrentItem() == position);
+            holder.setTabData(icon, title, mIndicator.isTabSelected(position));
             holder.setBadge(mUnreadCounts.get(position, 0), mDisplayBadge);
 
             holder.setStripColor(mStripColor);
@@ -496,4 +502,19 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator {
 //            notifyDataSetChanged();
 		}
 	}
+
+    private boolean isTabSelected(int position) {
+        final int current = getCurrentItem();
+        final int columns = getColumns();
+        final int count = getCount();
+        if (current + columns > count) {
+            return position >= count - columns;
+        }
+        return position >= current && position < current + columns;
+    }
+
+    private int getColumns() {
+        if (mColumns > 0) return mColumns;
+        return 1;
+    }
 }

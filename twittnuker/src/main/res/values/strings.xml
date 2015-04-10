@@ -658,7 +658,6 @@
     <string name="round">Round</string>
     <string name="square">Square</string>
     <string name="profile_image_style">Profile image style</string>
-    <string name="default_profile_image_style">round</string>
     <string name="media_preview_style">Media preview style</string>
     <string name="draft_saved">Draft saved</string>
     <string name="open_twitter_links">Open Twitter links</string>
@@ -694,6 +693,10 @@
 	<string name="tweet_from_name">Tweet from <xliff:g id="text">%1$s</xliff:g></string>
 	<string name="share_status">Share tweet</string>
 	<string name="hide_card_actions">Hide card actions</string>
+	<string name="N_statuses_quantity_one"><xliff:g id="count">%d</xliff:g> tweet</string>
+	<string name="N_statuses_quantity_other"><xliff:g id="count">%d</xliff:g> tweets</string>
+	<string name="N_favorites_quantity_one"><xliff:g id="count">%d</xliff:g> favorites</string>
+	<string name="N_favorites_quantity_other"><xliff:g id="count">%d</xliff:g> favorites</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

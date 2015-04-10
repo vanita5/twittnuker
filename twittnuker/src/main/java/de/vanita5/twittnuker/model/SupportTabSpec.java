@@ -34,7 +34,7 @@ import static de.vanita5.twittnuker.util.CompareUtils.objectEquals;
 
 public class SupportTabSpec implements Comparable<SupportTabSpec>, TwittnukerConstants {
 
-	public final String name;
+    public CharSequence name;
 	public final Object icon;
 	public final String type;
 	public final Class<? extends Fragment> cls;

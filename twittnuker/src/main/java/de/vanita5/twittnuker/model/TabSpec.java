@@ -22,16 +22,16 @@
 
 package de.vanita5.twittnuker.model;
 
+import android.app.Fragment;
+import android.os.Bundle;
+
 import static de.vanita5.twittnuker.util.CompareUtils.bundleEquals;
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 import static de.vanita5.twittnuker.util.CompareUtils.objectEquals;
 
-import android.app.Fragment;
-import android.os.Bundle;
-
 public class TabSpec {
 
-	public final CharSequence name;
+	public CharSequence name;
 	public final Object icon;
 	public final Class<? extends Fragment> cls;
 	public final Bundle args;
