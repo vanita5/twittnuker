@@ -146,7 +146,6 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 
 	private ParcelableDirectMessage mSelectedDirectMessage;
 	private boolean mLoaderInitialized;
-	private boolean mLoadMoreAutomatically;
 	private String mImageUri;
 
 
@@ -545,7 +544,6 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 				ScaleType.CENTER_CROP.name());
 		mAdapter.setImagePreviewScaleType(previewScaleType);
 		mAdapter.notifyDataSetChanged();
-		mLoadMoreAutomatically = mPreferences.getBoolean(KEY_LOAD_MORE_AUTOMATICALLY, false);
 		updateAddImageButton();
 	}
 

@@ -669,8 +669,6 @@
     <string name="stream_autoscroll_summary">常にタイムラインの一番上を表示します。</string>
 
     <string name="love">Love</string>
-    <string name="load_conversations_automatically">会話の自動読み込み</string>
-    <string name="load_conversations_automatically_summary">ツイートを開いたとき会話を自動的に読み込みます。</string>
 
     <string name="shortening">短縮中</string>
     <string name="error_hototin">...失敗しましたorz\nツイートを送信せず下書きに保存しました。</string>

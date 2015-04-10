@@ -23,7 +23,10 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -36,6 +39,7 @@ import android.nfc.NfcEvent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -571,7 +575,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
                 final int idx = status.quote_text_unescaped.lastIndexOf(" twitter.com");
                 final Spanned quote_text = Html.fromHtml(status.quote_text_html);
-                quoteTextView.setText(idx > 0 ? quote_text.subSequence(0, idx - 1) : quote_text);
+                quoteTextView.setText(idx > 0 ? quote_text.subSequence(0, idx) : quote_text);
                 final SpannableString originalTweetLink = SpannableString.valueOf("Original tweet");
                 originalTweetLink.setSpan(new URLSpan(LinkCreator.getTwitterStatusLink(status.user_screen_name, status.quote_id).toString()),
                         0, originalTweetLink.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -663,12 +667,17 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 mediaPreview.setVisibility(View.GONE);
                 mediaPreviewLoad.setVisibility(View.GONE);
                 mediaPreview.displayMedia();
-            } else {
+            } else if (adapter.isDetailMediaExpanded()) {
                 mediaPreviewContainer.setVisibility(View.VISIBLE);
                 mediaPreview.setVisibility(View.VISIBLE);
                 mediaPreviewLoad.setVisibility(View.GONE);
                 mediaPreview.displayMedia(status.media, loader, status.account_id,
                         adapter.getFragment(), adapter.getImageLoadingHandler());
+            } else {
+                mediaPreviewContainer.setVisibility(View.VISIBLE);
+                mediaPreview.setVisibility(View.GONE);
+                mediaPreviewLoad.setVisibility(View.VISIBLE);
+                mediaPreview.displayMedia();
             }
 
             if (TwitterCardUtils.isCardSupported(status.card)) {
@@ -696,6 +705,15 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final ParcelableStatus status = adapter.getStatus(getAdapterPosition());
             final StatusFragment fragment = adapter.getFragment();
             switch (v.getId()) {
+                case R.id.media_preview_load: {
+                    if (adapter.isSensitiveContentEnabled() || !status.is_possibly_sensitive) {
+                        adapter.setDetailMediaExpanded(true);
+                    } else {
+                        final LoadSensitiveImageConfirmDialogFragment f = new LoadSensitiveImageConfirmDialogFragment();
+                        f.show(fragment.getChildFragmentManager(), "load_sensitive_image_confirm");
+                    }
+                    break;
+                }
                 case R.id.profile_container: {
                     final FragmentActivity activity = fragment.getActivity();
                     final Bundle activityOption = Utils.makeSceneTransitionOption(activity,
@@ -745,6 +763,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final MenuInflater inflater = activity.getMenuInflater();
             inflater.inflate(R.menu.menu_status, menuBar.getMenu());
             ThemeUtils.wrapMenuIcon(menuBar, MENU_GROUP_STATUS_SHARE);
+            mediaPreviewLoad.setOnClickListener(this);
             profileContainer.setOnClickListener(this);
             retweetsContainer.setOnClickListener(this);
             retweetedByContainer.setOnClickListener(this);
@@ -826,37 +845,36 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 		}
 	}
 
-    //Not needed in Twittnuker because manual media preview load is not implemented
-//    public static final class LoadSensitiveImageConfirmDialogFragment extends BaseSupportDialogFragment implements
-//            DialogInterface.OnClickListener {
-//
-//        @Override
-//        public void onClick(final DialogInterface dialog, final int which) {
-//            switch (which) {
-//                case DialogInterface.BUTTON_POSITIVE: {
-//                    final Fragment f = getParentFragment();
-//                    if (f instanceof StatusFragment) {
-//                        final StatusAdapter adapter = ((StatusFragment) f).getAdapter();
-//                        adapter.setDetailMediaExpanded(true);
-//                    }
-//                    break;
-//                }
-//            }
-//
-//        }
-//
-//        @NonNull
-//        @Override
-//        public Dialog onCreateDialog(final Bundle savedInstanceState) {
-//            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
-//            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
-//            builder.setTitle(android.R.string.dialog_alert_title);
-//            builder.setMessage(R.string.sensitive_content_warning);
-//            builder.setPositiveButton(android.R.string.ok, this);
-//            builder.setNegativeButton(android.R.string.cancel, null);
-//            return builder.create();
-//        }
-//    }
+    public static final class LoadSensitiveImageConfirmDialogFragment extends BaseSupportDialogFragment implements
+            DialogInterface.OnClickListener {
+
+        @Override
+        public void onClick(final DialogInterface dialog, final int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE: {
+                    final Fragment f = getParentFragment();
+                    if (f instanceof StatusFragment) {
+                        final StatusAdapter adapter = ((StatusFragment) f).getAdapter();
+                        adapter.setDetailMediaExpanded(true);
+                    }
+                    break;
+                }
+            }
+
+        }
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(final Bundle savedInstanceState) {
+            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+            builder.setTitle(android.R.string.dialog_alert_title);
+            builder.setMessage(R.string.sensitive_content_warning);
+            builder.setPositiveButton(android.R.string.ok, this);
+            builder.setNegativeButton(android.R.string.cancel, null);
+            return builder.create();
+        }
+    }
 
     private StatusAdapter getAdapter() {
         return mStatusAdapter;
@@ -958,6 +976,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private ParcelableStatus mStatus;
         private ParcelableCredentials mStatusAccount;
         private List<ParcelableStatus> mConversation, mReplies;
+        private boolean mDetailMediaExpanded;
 		private StatusAdapterListener mStatusAdapterListener;
 		private DetailStatusViewHolder mCachedHolder;
 
@@ -1139,6 +1158,20 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
         public ParcelableCredentials getStatusAccount() {
             return mStatusAccount;
+        }
+
+        public boolean isDetailMediaExpanded() {
+            if (mDisplayMediaPreview) {
+                final ParcelableStatus status = mStatus;
+                return status != null && (mSensitiveContentEnabled || !status.is_possibly_sensitive);
+            }
+            return mDetailMediaExpanded;
+        }
+
+        public void setDetailMediaExpanded(boolean expanded) {
+            mDetailMediaExpanded = expanded;
+            notifyDataSetChanged();
+            updateItemDecoration();
         }
 
 	    @Override

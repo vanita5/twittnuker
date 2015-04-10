@@ -62,7 +62,6 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
     private final ArrayList<ParcelableUserList> mData = new ArrayList<>();
 	private ParcelableUserList mSelectedUserList;
 	private long mCursor = -1;
-	private boolean mLoadMoreAutomatically;
 
 	private AsyncTwitterWrapper mTwitterWrapper;
 	private MultiSelectManager mMultiSelectManager;
@@ -210,7 +209,6 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 	@Override
 	public void onResume() {
 		super.onResume();
-		mLoadMoreAutomatically = mPreferences.getBoolean(KEY_LOAD_MORE_AUTOMATICALLY, false);
 		configBaseCardAdapter(getActivity(), mAdapter);
 	}
 
@@ -220,7 +218,6 @@ abstract class BaseUserListsListFragment extends BasePullToRefreshListFragment i
 
 	@Override
 	protected void onReachedBottom() {
-		if (!mLoadMoreAutomatically) return;
 		loadMoreUserLists();
 	}
 

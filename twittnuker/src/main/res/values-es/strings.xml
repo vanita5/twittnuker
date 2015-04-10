@@ -669,8 +669,6 @@
     <string name="pebble_notifications_summary">Enviar notificaciones a Pebble</string>
 
     <string name="love">Con amor</string>
-    <string name="load_conversations_automatically">Cargar conversaciones automáticamente</string>
-    <string name="load_conversations_automatically_summary">Carga la conversación automáticamente al abrir el tweet</string>
     <string name="standard_notifications">Notificaciones estándar</string>
     <string name="push_notifications">Notificaciones Push</string>
     <string name="enable_push_notifications">Habilitar notificaciones Push</string>

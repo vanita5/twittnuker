@@ -52,18 +52,6 @@
 			android:summary="@string/share_format_summary"
 			android:title="@string/share_format"/>
 
-		<CheckBoxPreference
-			android:defaultValue="false"
-			android:key="load_more_automatically"
-			android:summary="@string/load_more_automatically_summary"
-			android:title="@string/load_more_automatically"/>
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="load_conversations_automatically"
-            android:summary="@string/load_conversations_automatically_summary"
-            android:title="@string/load_conversations_automatically"/>
-
 		<de.vanita5.twittnuker.preference.SeekBarDialogPreference
 			android:defaultValue="100"
 			android:key="load_item_limit"
