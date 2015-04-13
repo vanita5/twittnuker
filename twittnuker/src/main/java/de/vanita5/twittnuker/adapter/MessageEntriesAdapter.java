@@ -37,7 +37,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -91,6 +90,10 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
                 updateReadState();
             }
         };
+    }
+
+    public void onUserProfileClick(int position) {
+        mListener.onUserClick(position, getEntry(position));
     }
 
     public void updateReadState() {
@@ -287,7 +290,9 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
     }
 
     public interface MessageEntriesAdapterListener {
-        public void onEntryClick(int position, DirectMessageEntry entry);
+        void onEntryClick(int position, DirectMessageEntry entry);
+
+        void onUserClick(int position, DirectMessageEntry entry);
 	}
 
 	public static class DirectMessageEntry {

@@ -55,6 +55,7 @@ import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
+import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.VideoLoader;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
@@ -92,10 +93,16 @@ public class TwittnukerApplication extends Application implements Constants,
     private VideoLoader mVideoLoader;
     private ReadStateManager mReadStateManager;
 
+    private String mDefaultUserAgent;
+
 	public AsyncTaskManager getAsyncTaskManager() {
 		if (mAsyncTaskManager != null) return mAsyncTaskManager;
 		return mAsyncTaskManager = AsyncTaskManager.getInstance();
 	}
+
+    public String getDefaultUserAgent() {
+        return mDefaultUserAgent;
+    }
 
 	public DiskCache getDiskCache() {
 		if (mDiskCache != null) return mDiskCache;
@@ -199,6 +206,7 @@ public class TwittnukerApplication extends Application implements Constants,
 			StrictModeUtils.detectAllVmPolicy();
 		}
 		super.onCreate();
+        mDefaultUserAgent = UserAgentUtils.getDefaultUserAgentString(this);
         mHandler = new Handler();
         mMessageBus = new Bus();
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
@@ -217,6 +225,8 @@ public class TwittnukerApplication extends Application implements Constants,
 					PackageManager.DONT_KILL_APP);
 		}
 		startRefreshServiceIfNeeded(this);
+
+		reloadConnectivitySettings();
 	}
 
 	@Override
@@ -235,8 +245,7 @@ public class TwittnukerApplication extends Application implements Constants,
 		} else if (KEY_ENABLE_PROXY.equals(key) || KEY_CONNECTION_TIMEOUT.equals(key) || KEY_PROXY_HOST.equals(key)
 				|| KEY_PROXY_PORT.equals(key) || KEY_FAST_IMAGE_LOADING.equals(key)) {
 			reloadConnectivitySettings();
-		}
-		else if (KEY_CONSUMER_KEY.equals(key) || KEY_CONSUMER_SECRET.equals(key) || KEY_API_URL_FORMAT.equals(key)
+		} else if (KEY_CONSUMER_KEY.equals(key) || KEY_CONSUMER_SECRET.equals(key) || KEY_API_URL_FORMAT.equals(key)
 				|| KEY_AUTH_TYPE.equals(key) || KEY_SAME_OAUTH_SIGNING_URL.equals(key)) {
 			final SharedPreferences.Editor editor = preferences.edit();
 			editor.putLong(KEY_API_LAST_CHANGE, System.currentTimeMillis());

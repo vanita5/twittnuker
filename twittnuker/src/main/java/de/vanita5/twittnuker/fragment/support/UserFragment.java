@@ -111,6 +111,7 @@ import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -141,6 +142,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.util.MenuUtils.setMenuItemAvailability;
 import static de.vanita5.twittnuker.util.ParseUtils.parseLong;
 import static de.vanita5.twittnuker.util.UserColorNameUtils.clearUserColor;
 import static de.vanita5.twittnuker.util.UserColorNameUtils.getUserColor;
@@ -161,7 +163,6 @@ import static de.vanita5.twittnuker.util.Utils.openUserFollowers;
 import static de.vanita5.twittnuker.util.Utils.openUserFriends;
 import static de.vanita5.twittnuker.util.Utils.openUserTimeline;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
 import static de.vanita5.twittnuker.util.Utils.showInfoMessage;
 
 public class UserFragment extends BaseSupportFragment implements OnClickListener,
@@ -786,8 +787,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		if (mentionItem != null) {
             mentionItem.setTitle(getString(R.string.mention_user_name, UserColorNameUtils.getDisplayName(getActivity(), user)));
 		}
-		Utils.setMenuItemAvailability(menu, MENU_MENTION, !isMyself);
-        Utils.setMenuItemAvailability(menu, R.id.incoming_friendships, isMyself);
+        MenuUtils.setMenuItemAvailability(menu, MENU_MENTION, !isMyself);
+        MenuUtils.setMenuItemAvailability(menu, R.id.incoming_friendships, isMyself);
 //        final MenuItem followItem = menu.findItem(MENU_FOLLOW);
 //        followItem.setVisible(!isMyself);
 //        final boolean shouldShowFollowItem = !creatingFriendship && !destroyingFriendship && !isMyself

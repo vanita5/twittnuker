@@ -95,7 +95,7 @@ import static de.vanita5.twittnuker.util.Utils.getAccountColor;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-import static de.vanita5.twittnuker.util.Utils.setMenuItemAvailability;
+import static de.vanita5.twittnuker.util.MenuUtils.setMenuItemAvailability;
 
 public class UserListFragment extends BaseSupportFragment implements OnClickListener,
         LoaderCallbacks<SingleResponse<ParcelableUserList>>, DrawerCallback,

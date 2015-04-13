@@ -64,6 +64,7 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
 
         setTextSize(adapter.getTextSize());
 		itemView.setOnClickListener(this);
+        profileImageView.setOnClickListener(this);
 	}
 
     public void displayMessage(Cursor cursor, boolean isUnread) {
@@ -103,11 +104,12 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.profile_image: {
+                adapter.onUserProfileClick(getLayoutPosition());
 				break;
 			}
 			default: {
 				if (v == itemView) {
-					adapter.onMessageClick(getPosition());
+                    adapter.onMessageClick(getLayoutPosition());
 				}
 				break;
 			}

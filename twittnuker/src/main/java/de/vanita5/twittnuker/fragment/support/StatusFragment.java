@@ -103,6 +103,7 @@ import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler;
 import de.vanita5.twittnuker.util.StatusLinkClickHandler;
@@ -732,8 +733,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 }
                 case R.id.retweeted_by_container: {
                     if (status.retweet_id > 0) {
-                        Utils.openUserProfile(adapter.getContext(), status.account_id, status.user_id,
-                                status.user_screen_name, null);
+                        Utils.openUserProfile(adapter.getContext(), status.account_id, status.retweeted_by_id,
+                                status.retweeted_by_screen_name, null);
                     }
                     break;
                 }
@@ -824,7 +825,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 				final SpannableString string = SpannableString.valueOf(textView.getText());
 				final URLSpan[] spans = string.getSpans(start, end, URLSpan.class);
 				final boolean avail = spans.length == 1 && URLUtil.isValidUrl(spans[0].getURL());
-				Utils.setMenuItemAvailability(menu, android.R.id.copyUrl, avail);
+                MenuUtils.setMenuItemAvailability(menu, android.R.id.copyUrl, avail);
 				return true;
 			}
 

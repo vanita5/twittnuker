@@ -93,6 +93,7 @@ import com.twitter.Extractor;
 import org.mariotaku.dynamicgridview.DraggableArrayAdapter;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.ViewStatusDialogFragment;
 import de.vanita5.twittnuker.model.DraftItem;
@@ -111,6 +112,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -271,53 +273,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
         outState.putParcelable(EXTRA_TEMP_URI, mTempPhotoUri);
         super.onSaveInstanceState(outState);
     }
-
-	public boolean handleMenuItem(final MenuItem item) {
-		switch (item.getItemId()) {
-            case MENU_TAKE_PHOTO: {
-				takePhoto();
-				break;
-			}
-            case MENU_ADD_IMAGE: {
-				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT || !openDocument()) {
-					pickImage();
-				}
-				break;
-			}
-			case MENU_ADD_LOCATION: {
-                toggleLocation();
-				break;
-			}
-			case MENU_DRAFTS: {
-				startActivity(new Intent(INTENT_ACTION_DRAFTS));
-				break;
-			}
-			case MENU_DELETE: {
-                AsyncTaskUtils.executeTask(new DeleteImageTask(this));
-				break;
-			}
-			case MENU_TOGGLE_SENSITIVE: {
-					if (!hasMedia()) return false;
-				mIsPossiblySensitive = !mIsPossiblySensitive;
-				setMenu();
-				updateTextCount();
-				break;
-			}
-			case MENU_VIEW: {
-				if (mInReplyToStatus == null) return false;
-				final DialogFragment fragment = new ViewStatusDialogFragment();
-				final Bundle args = new Bundle();
-				args.putParcelable(EXTRA_STATUS, mInReplyToStatus);
-				fragment.setArguments(args);
-				fragment.show(getSupportFragmentManager(), "view_status");
-				break;
-			}
-			default: {
-				break;
-			}
-		}
-		return true;
-	}
 
 
     private void toggleLocation() {
@@ -496,7 +451,56 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 
 	@Override
     public boolean onMenuItemClick(final MenuItem item) {
-        return handleMenuItem(item);
+        switch (item.getItemId()) {
+            case MENU_TAKE_PHOTO: {
+                takePhoto();
+                break;
+            }
+            case MENU_ADD_IMAGE: {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT || !openDocument()) {
+                    pickImage();
+                }
+                break;
+            }
+            case MENU_ADD_LOCATION: {
+                toggleLocation();
+                break;
+            }
+            case MENU_DRAFTS: {
+                startActivity(new Intent(INTENT_ACTION_DRAFTS));
+                break;
+            }
+            case MENU_DELETE: {
+                AsyncTaskUtils.executeTask(new DeleteImageTask(this));
+                break;
+            }
+            case MENU_TOGGLE_SENSITIVE: {
+                if (!hasMedia()) return false;
+                mIsPossiblySensitive = !mIsPossiblySensitive;
+                setMenu();
+                updateTextCount();
+                break;
+            }
+            case MENU_VIEW: {
+                if (mInReplyToStatus == null) return false;
+                final DialogFragment fragment = new ViewStatusDialogFragment();
+                final Bundle args = new Bundle();
+                args.putParcelable(EXTRA_STATUS, mInReplyToStatus);
+                fragment.setArguments(args);
+                fragment.show(getSupportFragmentManager(), "view_status");
+                break;
+            }
+            case R.id.link_to_quoted_status: {
+                final boolean newValue = !item.isChecked();
+                item.setChecked(newValue);
+                mPreferences.edit().putBoolean(KEY_LINK_TO_QUOTED_TWEET, newValue).apply();
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        return true;
 	}
 
 	@Override
@@ -558,7 +562,8 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 		// requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
 		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		mPreferences = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mPreferences = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME,
+                Context.MODE_PRIVATE, SharedPreferenceConstants.class);
 
         final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
         mTwitterWrapper = app.getTwitterWrapper();
@@ -578,7 +583,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 		}
 //        mMenuBar.setIsBottomBar(true);
         mMenuBar.setOnMenuItemClickListener(this);
-		mEditText.setOnEditorActionListener(mPreferences.getBoolean(KEY_QUICK_SEND, false) ? this : null);
+        mEditText.setOnEditorActionListener(mPreferences.getBoolean(KEY_QUICK_SEND) ? this : null);
 		mEditText.addTextChangedListener(this);
         mEditText.setCustomSelectionActionModeCallback(this);
         mAccountSelectorContainer.setOnClickListener(this);
@@ -730,7 +735,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
      */
     private boolean startLocationUpdateIfEnabled() {
         final LocationManager lm = mLocationManager;
-        final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
+        final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION);
         if (!attachLocation) {
             lm.removeUpdates(this);
             return false;
@@ -922,9 +927,8 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 	}
 
     private boolean isQuotingProtectedStatus() {
-        if (INTENT_ACTION_QUOTE.equals(getIntent().getAction()) && mInReplyToStatus != null)
-            return mInReplyToStatus.user_is_protected && mInReplyToStatus.account_id != mInReplyToStatus.user_id;
-        return false;
+        if (!isQuote() || mInReplyToStatus == null) return false;
+		return mInReplyToStatus.user_is_protected && mInReplyToStatus.account_id != mInReplyToStatus.user_id;
     }
 
 	private boolean noReplyContent(final String text) {
@@ -1012,16 +1016,15 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
          * Has media & Not reply: [[Take photo][Add image]][Medias menu][Attach location][Drafts]
          * Is reply: [Medias menu][View status][Attach location][Drafts]
          */
-        Utils.setMenuItemAvailability(menu, MENU_TAKE_PHOTO, true); //always
-        Utils.setMenuItemAvailability(menu, MENU_ADD_IMAGE, true); //always
-        Utils.setMenuItemAvailability(menu, MENU_VIEW, hasInReplyTo);
-        Utils.setMenuItemAvailability(menu, R.id.medias_menu, hasMedia);
-        Utils.setMenuItemAvailability(menu, MENU_TOGGLE_SENSITIVE, hasMedia);
+        MenuUtils.setMenuItemAvailability(menu, MENU_TAKE_PHOTO, true); //always
+        MenuUtils.setMenuItemAvailability(menu, MENU_ADD_IMAGE, true); //always
+        MenuUtils.setMenuItemAvailability(menu, MENU_VIEW, hasInReplyTo);
+        MenuUtils.setMenuItemAvailability(menu, R.id.medias_menu, hasMedia);
+        MenuUtils.setMenuItemAvailability(menu, MENU_TOGGLE_SENSITIVE, hasMedia);
+        MenuUtils.setMenuItemAvailability(menu, R.id.link_to_quoted_status, isQuote());
 
-        final MenuItem itemToggleSensitive = menu.findItem(MENU_TOGGLE_SENSITIVE);
-        if (itemToggleSensitive != null) {
-            itemToggleSensitive.setChecked(hasMedia && mIsPossiblySensitive);
-		}
+        MenuUtils.setMenuItemChecked(menu, MENU_TOGGLE_SENSITIVE, hasMedia && mIsPossiblySensitive);
+        MenuUtils.setMenuItemChecked(menu, R.id.link_to_quoted_status, mPreferences.getBoolean(KEY_LINK_TO_QUOTED_TWEET));
         ThemeUtils.resetCheatSheet(mMenuBar);
 //        mMenuBar.show();
 	}
@@ -1084,7 +1087,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 //            setRecentLocation();
 //        }
         final long[] accountIds = mAccountsAdapter.getSelectedAccountIds();
-		final boolean isQuote = INTENT_ACTION_QUOTE.equals(getIntent().getAction());
+        final boolean isQuote = isQuote();
         final ParcelableLocation statusLocation = attachLocation ? mRecentLocation : null;
 		final boolean linkToQuotedTweet = mPreferences.getBoolean(KEY_LINK_TO_QUOTED_TWEET, true);
 		final long inReplyToStatusId = !isQuote || linkToQuotedTweet ? mInReplyToStatusId : -1;
@@ -1114,6 +1117,10 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 			finish();
 		}
 	}
+
+    private boolean isQuote() {
+        return INTENT_ACTION_QUOTE.equals(getIntent().getAction());
+    }
 
 	private void updateTextCount() {
         if (mSendTextCountView == null || mEditText == null) return;

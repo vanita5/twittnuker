@@ -66,6 +66,7 @@ import de.vanita5.twittnuker.loader.support.TileImageLoader.Result;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMedia.VideoInfo.Variant;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.SaveImageTask;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -370,6 +371,7 @@ public final class MediaViewerActivity extends ThemedActionBarActivity implement
         @Override
         public void onClick(View v) {
             final MediaViewerActivity activity = (MediaViewerActivity) getActivity();
+            if (activity == null) return;
             activity.toggleBar();
         }
 
@@ -440,9 +442,9 @@ public final class MediaViewerActivity extends ThemedActionBarActivity implement
             final Object imageTag = mImageView.getTag();
             final boolean isLoading = getLoaderManager().hasRunningLoaders();
             final boolean hasImage = imageTag instanceof File;
-            Utils.setMenuItemAvailability(menu, R.id.refresh, !hasImage && !isLoading);
-            Utils.setMenuItemAvailability(menu, R.id.share, hasImage && !isLoading);
-            Utils.setMenuItemAvailability(menu, R.id.save, hasImage && !isLoading);
+            MenuUtils.setMenuItemAvailability(menu, R.id.refresh, !hasImage && !isLoading);
+            MenuUtils.setMenuItemAvailability(menu, R.id.share, hasImage && !isLoading);
+            MenuUtils.setMenuItemAvailability(menu, R.id.save, hasImage && !isLoading);
             if (hasImage) {
                 final MenuItem shareItem = menu.findItem(R.id.share);
                 final ShareActionProvider shareProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);

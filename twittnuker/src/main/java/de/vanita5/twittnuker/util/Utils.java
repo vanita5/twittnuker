@@ -274,8 +274,6 @@ import static de.vanita5.twittnuker.util.UserColorNameUtils.getUserColor;
 @SuppressWarnings("unused")
 public final class Utils implements Constants, TwitterConstants {
 
-	private static final String UA_TEMPLATE = "Mozilla/5.0 (Linux; Android %s; %s Build/%s) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.111 Safari/537.36";
-
     public static final Pattern PATTERN_XML_RESOURCE_IDENTIFIER = Pattern.compile("res/xml/([\\w_]+)\\.xml");
 
     public static final Pattern PATTERN_RESOURCE_IDENTIFIER = Pattern.compile("@([\\w_]+)/([\\w_]+)");
@@ -530,9 +528,9 @@ public final class Utils implements Constants, TwitterConstants {
                                 "'%>%'||" + Filters.Links.TABLE_NAME + "." + Filters.Links.VALUE + "||'%</a>%'")
                 ));
         final Expression filterExpression = Expression.or(
-                Expression.notIn(new Column(new Table(table), Statuses._ID), filteredIdsQueryBuilder.build()),
-                Expression.equals(new Column(new Table(table), Statuses.IS_GAP), 1)
-        );
+				Expression.notIn(new Column(new Table(table), Statuses._ID), filteredIdsQueryBuilder.build()),
+				Expression.equals(new Column(new Table(table), Statuses.IS_GAP), 1)
+		);
         if (extraSelection != null) {
             return Expression.and(filterExpression, extraSelection);
 	    }
@@ -1124,8 +1122,7 @@ public final class Utils implements Constants, TwitterConstants {
                 Expression.equals(Statuses.STATUS_ID, statusId)).getSQL();
 		final ContentResolver resolver = context.getContentResolver();
 		resolver.delete(CachedStatuses.CONTENT_URI, where, null);
-        resolver.insert(CachedStatuses.CONTENT_URI,
-				ContentValuesCreator.createStatus(status, accountId));
+        resolver.insert(CachedStatuses.CONTENT_URI, ContentValuesCreator.createStatus(status, accountId));
         return new ParcelableStatus(status, accountId, false);
 	}
 
@@ -1200,10 +1197,6 @@ public final class Utils implements Constants, TwitterConstants {
 		format_flags |= DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME;
 
 		return DateUtils.formatDateTime(context, timestamp, format_flags);
-	}
-
-	public static String generateBrowserUserAgent() {
-		return String.format(UA_TEMPLATE, Build.VERSION.RELEASE, Build.MODEL, Build.ID);
 	}
 
 	public static int getAccountColor(final Context context, final long account_id) {
@@ -1558,7 +1551,7 @@ public final class Utils implements Constants, TwitterConstants {
 
     private static String substituteLegacyApiBaseUrl(@NonNull String format, String domain) {
         final int startOfHost = format.indexOf("://") + 3, endOfHost = format.indexOf('/', startOfHost);
-        final String host = format.substring(startOfHost, endOfHost);
+        final String host = endOfHost != -1 ? format.substring(startOfHost, endOfHost) : format.substring(startOfHost);
         if (!host.equalsIgnoreCase("api.twitter.com")) return format;
         return format.substring(0, startOfHost) + domain + ".twitter.com" + format.substring(endOfHost);
     }
@@ -1781,7 +1774,7 @@ public final class Utils implements Constants, TwitterConstants {
         final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         final int timeoutMillis = prefs.getInt(KEY_CONNECTION_TIMEOUT, 10000) * 1000;
         final Proxy proxy = getProxy(context);
-        final String userAgent = generateBrowserUserAgent();
+        final String userAgent = TwittnukerApplication.getInstance(context).getDefaultUserAgent();
         final HostAddressResolverFactory resolverFactory = new TwidereHostResolverFactory(
                 TwittnukerApplication.getInstance(context));
         return getHttpClient(context, timeoutMillis, true, proxy, resolverFactory, userAgent, false);
@@ -1792,7 +1785,7 @@ public final class Utils implements Constants, TwitterConstants {
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final int timeoutMillis = prefs.getInt(KEY_CONNECTION_TIMEOUT, 10000) * 1000;
 		final Proxy proxy = getProxy(context);
-		final String userAgent = generateBrowserUserAgent();
+        final String userAgent = TwittnukerApplication.getInstance(context).getDefaultUserAgent();
 		final HostAddressResolverFactory resolverFactory = new TwidereHostResolverFactory(
 				TwittnukerApplication.getInstance(context));
 		return getHttpClient(context, timeoutMillis, true, proxy, resolverFactory, userAgent, false);
@@ -3580,7 +3573,7 @@ public final class Utils implements Constants, TwitterConstants {
             final boolean isOfficialKey = isOfficialCredentials(context, account);
             final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
             final boolean forcePrivateApis = prefs.getBoolean(KEY_FORCE_USING_PRIVATE_APIS, false);
-            setMenuItemAvailability(menu, MENU_TRANSLATE, forcePrivateApis || isOfficialKey);
+            MenuUtils.setMenuItemAvailability(menu, MENU_TRANSLATE, forcePrivateApis || isOfficialKey);
 		}
 		final MenuItem shareItem = menu.findItem(R.id.share);
         final ActionProvider shareProvider = MenuItemCompat.getActionProvider(shareItem);
@@ -3597,28 +3590,6 @@ public final class Utils implements Constants, TwitterConstants {
         }
 
     }
-
-	public static void setMenuItemAvailability(final Menu menu, final int id, final boolean available) {
-		if (menu == null) return;
-		final MenuItem item = menu.findItem(id);
-		if (item == null) return;
-		item.setVisible(available);
-		item.setEnabled(available);
-	}
-
-	public static void setMenuItemIcon(final Menu menu, final int id, final int icon) {
-		if (menu == null) return;
-		final MenuItem item = menu.findItem(id);
-		if (item == null) return;
-		item.setIcon(icon);
-	}
-
-	public static void setMenuItemTitle(final Menu menu, final int id, final int icon) {
-		if (menu == null) return;
-		final MenuItem item = menu.findItem(id);
-		if (item == null) return;
-		item.setTitle(icon);
-	}
 
 	public static void setUserAgent(final Context context, final ConfigurationBuilder cb) {
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -3645,14 +3616,25 @@ public final class Utils implements Constants, TwitterConstants {
      * @param cb
      */
     public static void setMockOfficialUserAgent(final Context context, final ConfigurationBuilder cb) {
-        cb.setClientVersion("5.32.0");
+        final PackageManager pm = context.getPackageManager();
         cb.setClientName("TwitterAndroid");
         cb.setClientURL(null);
+        String versionName;
+        int versionCode;
+        try {
+            final PackageInfo packageInfo = pm.getPackageInfo("com.twitter.android", 0);
+            versionName = packageInfo.versionName;
+            versionCode = packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            versionName = "5.53.0";
+            versionCode = 4030814;
+        }
+        cb.setClientVersion(versionName);
         final String deviceInfo = String.format(Locale.ROOT, "%s/%s (%s;%s;%s;%s;)",
 				Build.MODEL, Build.VERSION.RELEASE, Build.MANUFACTURER, Build.MODEL, Build.BRAND,
 				Build.PRODUCT);
         cb.setHttpUserAgent(String.format(Locale.ROOT, "TwitterAndroid/%s (%d-%c-%d) %s",
-				"5.32.0", 3030745, 'r', 692, deviceInfo));
+                versionName, versionCode, 'r', versionCode / 4200, deviceInfo));
     }
 
 	public static boolean shouldForceUsingPrivateAPIs(final Context context) {
