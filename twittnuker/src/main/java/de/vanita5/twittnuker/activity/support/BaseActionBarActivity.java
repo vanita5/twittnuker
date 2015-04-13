@@ -26,6 +26,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 
 import de.vanita5.twittnuker.Constants;
@@ -54,6 +56,13 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
 	}
 
     @Override
+    public boolean getSystemWindowsInsets(Rect insets) {
+        if (mSystemWindowsInsets == null) return false;
+        insets.set(mSystemWindowsInsets);
+        return true;
+    }
+
+    @Override
     public int getThemeColor() {
         return ThemeUtils.getUserAccentColor(this);
     }
@@ -80,6 +89,18 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
 	}
 
 	@Override
+    public void onFitSystemWindows(Rect insets) {
+        mSystemWindowsInsets = new Rect(insets);
+        notifyControlBarOffsetChanged();
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, @NonNull KeyEvent event) {
+        if (handleKeyboardShortcut(keyCode, event)) return true;
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 			case MENU_BACK: {
@@ -95,14 +116,13 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
 		super.startActivity(intent);
 	}
 
-	@Override
-	public void startActivityForResult(final Intent intent, final int requestCode) {
-		super.startActivityForResult(intent, requestCode);
-	}
-
 	protected IBasePullToRefreshFragment getCurrentPullToRefreshFragment() {
 		return null;
 	}
+
+    protected boolean handleKeyboardShortcut(int keyCode,@NonNull KeyEvent event) {
+        return false;
+    }
 
 	protected boolean isStateSaved() {
 		return mInstanceStateSaved;
@@ -114,9 +134,13 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
 	}
 
 	@Override
-	protected void onPause() {
-		mIsOnTop = false;
-		super.onPause();
+    protected void onStart() {
+        super.onStart();
+        mIsVisible = true;
+        final MessagesManager manager = getMessagesManager();
+        if (manager != null) {
+            manager.addMessageCallback(this);
+        }
 	}
 
 	@Override
@@ -127,19 +151,20 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
 	}
 
 	@Override
+    protected void onPause() {
+        mIsOnTop = false;
+        super.onPause();
+    }
+
+    @Override
 	protected void onSaveInstanceState(final Bundle outState) {
 		mInstanceStateSaved = true;
 		super.onSaveInstanceState(outState);
 	}
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		mIsVisible = true;
-		final MessagesManager manager = getMessagesManager();
-		if (manager != null) {
-			manager.addMessageCallback(this);
-		}
+    public void startActivityForResult(final Intent intent, final int requestCode) {
+        super.startActivityForResult(intent, requestCode);
 	}
 
 	@Override
@@ -151,20 +176,6 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
 		}
 		super.onStop();
 	}
-
-
-    @Override
-    public boolean getSystemWindowsInsets(Rect insets) {
-        if (mSystemWindowsInsets == null) return false;
-        insets.set(mSystemWindowsInsets);
-        return true;
-    }
-
-    @Override
-    public void onFitSystemWindows(Rect insets) {
-        mSystemWindowsInsets = new Rect(insets);
-        notifyControlBarOffsetChanged();
-    }
 
     @Override
     public void setControlBarOffset(float offset) {

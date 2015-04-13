@@ -24,23 +24,21 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:animateLayoutChanges="true"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
-
+    android:animateLayoutChanges="true">
 
     <FrameLayout
+        android:id="@+id/list_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/list_container">
+        android:layout_height="match_parent">
 
         <com.mobeta.android.dslv.DragSortListView
             android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:collapsed_height="2dp"
-            tools:visibility="gone"
             app:drag_enabled="true"
             app:drag_handle_id="@+id/drag_handle"
             app:drag_scroll_start="0.33"
@@ -50,9 +48,10 @@
             app:remove_enabled="false"
             app:slide_shuffle_speed="0.3"
             app:sort_enabled="true"
-            app:track_drag_sort="true"
+            app:track_drag_sort="false"
             app:use_default_controller="true"
-            tools:context=".fragment.CustomTabsFragment"/>
+            tools:context=".fragment.CustomTabsFragment"
+            tools:visibility="gone"/>
 
         <LinearLayout
             android:id="@android:id/empty"
@@ -63,8 +62,8 @@
             tools:visibility="visible">
 
             <de.vanita5.twittnuker.view.ActionIconView
-                android:layout_width="wrap_content"
                 android:id="@+id/empty_icon"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:color="?android:textColorSecondary"/>
 
@@ -80,14 +79,14 @@
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/progress_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/progress_container">
+        android:layout_height="match_parent">
 
         <ProgressBar
+            android:id="@android:id/progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@android:id/progress"
             android:layout_gravity="center"/>
     </FrameLayout>
 </FrameLayout>

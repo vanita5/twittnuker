@@ -697,6 +697,8 @@
 	<string name="N_statuses_quantity_other"><xliff:g id="count">%d</xliff:g> tweets</string>
 	<string name="N_favorites_quantity_one"><xliff:g id="count">%d</xliff:g> favorites</string>
 	<string name="N_favorites_quantity_other"><xliff:g id="count">%d</xliff:g> favorites</string>
+	<string name="drafts_hint_messages">Your unsent tweets will go here</string>
+	<string name="keyboard_shortcuts">Keyboard shortcuts</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

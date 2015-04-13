@@ -47,6 +47,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 	public static final String SILENT_NOTIFICATIONS_PREFERENCE_NAME = "silent_notifications";
 	public static final String TIMELINE_POSITIONS_PREFERENCES_NAME = "timeline_positions";
 	public static final String ACCOUNT_PREFERENCES_NAME_PREFIX = "account_preferences_";
+	public static final String KEYBOARD_SHORTCUTS_PREFERENCES_NAME = "keyboard_shortcuts_preferences";
 
 	public static final String SCHEME_HTTP = "http";
 	public static final String SCHEME_HTTPS = "https";

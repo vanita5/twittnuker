@@ -45,4 +45,8 @@
 		android:title="@string/import_export_settings"
 		android:key="import_export_settings"/>
 
+	<Preference
+		android:title="@string/keyboard_shortcuts"
+		android:fragment="de.vanita5.twittnuker.fragment.KeyboardShortcutsFragment"/>
+
 </PreferenceScreen>

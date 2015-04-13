@@ -94,7 +94,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.FlymeUtils;
-import de.vanita5.twittnuker.util.HotKeyHandler;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -147,8 +147,8 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 	private AsyncTwitterWrapper mTwitterWrapper;
 
 	private MultiSelectEventHandler mMultiSelectHandler;
-	private HotKeyHandler mHotKeyHandler;
     private ReadStateManager mReadStateManager;
+    private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
 
 	private SupportTabsAdapter mPagerAdapter;
 
@@ -170,7 +170,6 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 	private boolean isStreamingServiceRunning = false;
 
 	private boolean mPushEnabled;
-	private float mPagerPosition;
     private Toolbar mActionBar;
 
     private OnSharedPreferenceChangeListener mReadStateChangeListener = new OnSharedPreferenceChangeListener() {
@@ -280,6 +279,12 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 		return null;
 	}
 
+    @Override
+    protected boolean handleKeyboardShortcut(int keyCode, @NonNull KeyEvent event) {
+        mKeyboardShortcutsHandler.handleKey(null, keyCode, event);
+        return super.handleKeyboardShortcut(keyCode, event);
+    }
+
     /**
      * Called when the context is first created.
      */
@@ -299,7 +304,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 		mTwitterWrapper = getTwitterWrapper();
         mReadStateManager = TwittnukerApplication.getInstance(this).getReadStateManager();
 		mMultiSelectHandler = new MultiSelectEventHandler(this);
-		mHotKeyHandler = new HotKeyHandler(this);
+        mKeyboardShortcutsHandler = new KeyboardShortcutsHandler(this);
 		mMultiSelectHandler.dispatchOnCreate();
 		final long[] accountIds = getAccountIds(this);
 		if (accountIds.length == 0) {
@@ -319,8 +324,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 		setContentView(R.layout.activity_home);
         setSupportActionBar(mActionBar);
 		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONCREATE));
-//		final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
-		final boolean refreshOnStart = false; //FIXME workaround
+        final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
         mTabDisplayOption = getTabDisplayOptionInt(this);
 
         final int tabColumns = getResources().getInteger(R.integer.default_tab_columns);
@@ -359,7 +363,6 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 				openAccountsDrawer();
 			}
 		}
-		mPagerPosition = Float.NaN;
         setupHomeTabs();
 
         final int initialTabPosition = handleIntent(intent, savedInstanceState == null);
@@ -496,9 +499,6 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
                     return true;
                 }
                 break;
-            }
-            default: {
-                if (mHotKeyHandler.handleKey(keyCode, event)) return true;
             }
         }
         return super.onKeyUp(keyCode, event);

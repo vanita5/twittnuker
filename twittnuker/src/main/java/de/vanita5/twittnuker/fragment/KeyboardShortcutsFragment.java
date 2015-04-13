@@ -20,30 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package de.vanita5.twittnuker.fragment;
 
-import android.content.Context;
-import android.content.Intent;
-import android.view.KeyEvent;
-
-import de.vanita5.twittnuker.Constants;
-
-public class HotKeyHandler implements Constants {
-
-	private final Context mContext;
-
-	public HotKeyHandler(final Context context) {
-		mContext = context;
-	}
-
-	public boolean handleKey(final int keyCode, final KeyEvent event) {
-		switch (keyCode) {
-			case KeyEvent.KEYCODE_N: {
-				mContext.startActivity(new Intent(INTENT_ACTION_COMPOSE));
-				return true;
-			}
-		}
-		return false;
-	}
-
+public class KeyboardShortcutsFragment extends BaseListFragment {
 }

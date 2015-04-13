@@ -668,6 +668,8 @@
     <string name="N_statuses_quantity_other"><xliff:g id="count">%d</xliff:g> Tweets</string>
     <string name="N_favorites_quantity_one"><xliff:g id="count">%d</xliff:g> Favorit</string>
     <string name="N_favorites_quantity_other"><xliff:g id="count">%d</xliff:g> Favoriten</string>
+    <string name="drafts_hint_messages">Nicht gesendete Tweets findest du hier</string>
+    <string name="keyboard_shortcuts">Keyboard Shortcuts</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
