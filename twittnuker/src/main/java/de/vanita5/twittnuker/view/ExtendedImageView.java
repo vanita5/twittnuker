@@ -65,6 +65,7 @@ public class ExtendedImageView extends ImageView implements IExtendedView {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected boolean fitSystemWindows(@NonNull Rect insets) {
         if (mOnFitSystemWindowsListener != null) {
             mOnFitSystemWindowsListener.onFitSystemWindows(insets);
@@ -73,7 +74,7 @@ public class ExtendedImageView extends ImageView implements IExtendedView {
     }
 
     @Override
-	public final boolean dispatchTouchEvent(final MotionEvent event) {
+    public final boolean dispatchTouchEvent(@NonNull final MotionEvent event) {
 		if (mTouchInterceptor != null) {
 			final boolean ret = mTouchInterceptor.dispatchTouchEvent(this, event);
 			if (ret) return true;
@@ -82,7 +83,7 @@ public class ExtendedImageView extends ImageView implements IExtendedView {
 	}
 
 	@Override
-	public final boolean onTouchEvent(final MotionEvent event) {
+    public final boolean onTouchEvent(@NonNull final MotionEvent event) {
 		if (mTouchInterceptor != null) {
 			final boolean ret = mTouchInterceptor.onTouchEvent(this, event);
 			if (ret) return true;

@@ -21,27 +21,26 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout
-	android:id="@+id/go_top"
-	style="?android:actionButtonStyle"
+<de.vanita5.twittnuker.view.ExtendedLinearLayout
+    android:id="@+id/keyboard_shortcut_input"
     xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:gravity="center_vertical"
-	android:orientation="vertical"
-	android:padding="4dp">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="@dimen/element_spacing_xlarge">
 
-	<de.vanita5.twittnuker.view.ActionBarTitleView
-		android:id="@+id/actionbar_title"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:singleLine="true"/>
+    <TextView
+        android:id="@+id/keys_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:text="@string/keyboard_shortcut_hint"/>
 
-	<de.vanita5.twittnuker.view.ActionBarSubtitleView
-		android:id="@+id/actionbar_subtitle"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:singleLine="true"
-		android:visibility="gone"/>
+    <TextView
+        android:id="@+id/conflict_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-</LinearLayout>
+</de.vanita5.twittnuker.view.ExtendedLinearLayout>

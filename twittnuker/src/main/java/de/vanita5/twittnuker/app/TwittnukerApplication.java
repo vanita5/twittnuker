@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.MultiSelectManager;
@@ -92,6 +93,7 @@ public class TwittnukerApplication extends Application implements Constants,
     private Bus mMessageBus;
     private VideoLoader mVideoLoader;
     private ReadStateManager mReadStateManager;
+    private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
 
     private String mDefaultUserAgent;
 
@@ -131,6 +133,15 @@ public class TwittnukerApplication extends Application implements Constants,
     public ReadStateManager getReadStateManager() {
         if (mReadStateManager != null) return mReadStateManager;
         return mReadStateManager = new ReadStateManager(this);
+    }
+
+    public KeyboardShortcutsHandler getKeyboardShortcutsHandler() {
+        if (mKeyboardShortcutsHandler != null) return mKeyboardShortcutsHandler;
+        mKeyboardShortcutsHandler = new KeyboardShortcutsHandler(this);
+        if (mKeyboardShortcutsHandler.isEmpty()) {
+            mKeyboardShortcutsHandler.reset();
+        }
+        return mKeyboardShortcutsHandler;
     }
 
 	public ImageDownloader getImageDownloader() {

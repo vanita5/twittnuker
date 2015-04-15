@@ -670,6 +670,9 @@
     <string name="N_favorites_quantity_other"><xliff:g id="count">%d</xliff:g> Favoriten</string>
     <string name="drafts_hint_messages">Nicht gesendete Tweets findest du hier</string>
     <string name="keyboard_shortcuts">Keyboard Shortcuts</string>
+    <string name="keyboard_shortcut_hint">Tasten drücken</string>
+    <string name="conflicts_with_name">Konflikt mit <xliff:g id="name">%s</xliff:g></string>
+    <string name="overwrite">Überschreiben</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

@@ -50,7 +50,7 @@ public class ExtendedRelativeLayout extends RelativeLayout implements IExtendedV
 	}
 
 	@Override
-	public final boolean dispatchTouchEvent(final MotionEvent event) {
+    public final boolean dispatchTouchEvent(@NonNull final MotionEvent event) {
 		if (mTouchInterceptor != null) {
 			final boolean ret = mTouchInterceptor.dispatchTouchEvent(this, event);
 			if (ret) return true;
@@ -83,6 +83,7 @@ public class ExtendedRelativeLayout extends RelativeLayout implements IExtendedV
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected boolean fitSystemWindows(@NonNull Rect insets) {
         if (mOnFitSystemWindowsListener != null) {
             mOnFitSystemWindowsListener.onFitSystemWindows(insets);
@@ -91,7 +92,7 @@ public class ExtendedRelativeLayout extends RelativeLayout implements IExtendedV
     }
 
     @Override
-    public final boolean onTouchEvent(final MotionEvent event) {
+    public final boolean onTouchEvent(@NonNull final MotionEvent event) {
         if (mTouchInterceptor != null) {
             final boolean ret = mTouchInterceptor.onTouchEvent(this, event);
             if (ret) return true;

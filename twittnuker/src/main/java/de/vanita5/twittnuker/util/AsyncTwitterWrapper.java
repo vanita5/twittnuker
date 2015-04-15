@@ -195,6 +195,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		return mAsyncTaskManager.add(task, true);
 	}
 
+    public int createFavoriteAsync(final ParcelableStatus status) {
+        return createFavoriteAsync(status.account_id, status.id);
+    }
+
 	public int createFriendshipAsync(final long accountId, final long userId) {
 		final CreateFriendshipTask task = new CreateFriendshipTask(accountId, userId);
 		return mAsyncTaskManager.add(task, true);
@@ -250,6 +254,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		final DestroyFavoriteTask task = new DestroyFavoriteTask(accountId, status_id);
 		return mAsyncTaskManager.add(task, true);
 	}
+
+    public int destroyFavoriteAsync(final ParcelableStatus status) {
+        return destroyFavoriteAsync(status.account_id, status.id);
+    }
 
 	public int destroyFriendshipAsync(final long accountId, final long user_id) {
 		final DestroyFriendshipTask task = new DestroyFriendshipTask(accountId, user_id);
@@ -1399,7 +1407,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 
-
 		@Override
 		protected void onPostExecute(final SingleResponse<DirectMessage> result) {
 			super.onPostExecute(result);
@@ -1772,7 +1779,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         protected abstract Uri getDatabaseUri();
 
-        protected abstract boolean isOutgoing();        @Override
+        protected abstract boolean isOutgoing();
+
+        @Override
         protected List<MessageListResponse> doInBackground(final Object... params) {
 
             final List<MessageListResponse> result = new ArrayList<>();
@@ -1883,7 +1892,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         }
 
 
-
         @Override
         protected void onPostExecute(final List<StatusListResponse> result) {
             super.onPostExecute(result);
@@ -1977,7 +1985,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected Uri getDatabaseUri() {
             return Inbox.CONTENT_URI;
 		}
-
 
 
 		@Override

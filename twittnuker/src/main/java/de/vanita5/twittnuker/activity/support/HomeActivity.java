@@ -95,6 +95,7 @@ import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.FlymeUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.ShortcutCallback;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -280,9 +281,16 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 	}
 
     @Override
-    protected boolean handleKeyboardShortcut(int keyCode, @NonNull KeyEvent event) {
-        mKeyboardShortcutsHandler.handleKey(null, keyCode, event);
-        return super.handleKeyboardShortcut(keyCode, event);
+    public boolean handleKeyboardShortcut(int keyCode, @NonNull KeyEvent event) {
+        if (handleCurrentFragmentKeyboardShortcut(keyCode, event)) return true;
+        return mKeyboardShortcutsHandler.handleKey(this, null, keyCode, event);
+    }
+
+    private boolean handleCurrentFragmentKeyboardShortcut(int keyCode, @NonNull KeyEvent event) {
+        if (mCurrentVisibleFragment instanceof ShortcutCallback) {
+            return ((ShortcutCallback) mCurrentVisibleFragment).handleKeyboardShortcut(keyCode, event);
+        }
+        return false;
     }
 
     /**
@@ -302,9 +310,10 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 		}
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mTwitterWrapper = getTwitterWrapper();
-        mReadStateManager = TwittnukerApplication.getInstance(this).getReadStateManager();
+        final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
+        mReadStateManager = app.getReadStateManager();
 		mMultiSelectHandler = new MultiSelectEventHandler(this);
-        mKeyboardShortcutsHandler = new KeyboardShortcutsHandler(this);
+        mKeyboardShortcutsHandler = app.getKeyboardShortcutsHandler();
 		mMultiSelectHandler.dispatchOnCreate();
 		final long[] accountIds = getAccountIds(this);
 		if (accountIds.length == 0) {
@@ -670,8 +679,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 			openSearch(this, accountId, query);
 			return -1;
 		}
-//		final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false); FIXME workaround
-		final boolean refreshOnStart = false;
+        final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
 		final long[] refreshedIds = intent.getLongArrayExtra(EXTRA_REFRESH_IDS);
 		if (refreshedIds != null) {
 			mTwitterWrapper.refreshAll(refreshedIds);
@@ -966,14 +974,14 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
             for (SupportTabSpec spec : mTabs) {
                 switch (spec.type) {
                     case TAB_TYPE_HOME_TIMELINE: {
-                        final long[] accountIds = Utils.getAccountIds(spec.args);
+                        final long[] accountIds = getAccountIds(spec.args);
                         final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext, true, spec.tag, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
                         result.put(spec, Utils.getStatusesCount(mContext, Statuses.CONTENT_URI, position, accountIds));
                         break;
                     }
                     case TAB_TYPE_MENTIONS_TIMELINE: {
-                        final long[] accountIds = Utils.getAccountIds(spec.args);
+                        final long[] accountIds = getAccountIds(spec.args);
                         final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext, true, spec.tag, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
                         result.put(spec, Utils.getStatusesCount(mContext, Mentions.CONTENT_URI, position, accountIds));

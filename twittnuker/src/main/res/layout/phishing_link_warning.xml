@@ -34,12 +34,6 @@
 		android:text="@string/phishing_link_warning_message_1"
 		android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-	<!--<de.vanita5.twittnuker.view.AutoAdjustHeightImageView-->
-		<!--android:layout_width="match_parent"-->
-		<!--android:layout_height="wrap_content"-->
-		<!--android:layout_marginBottom="8dp"-->
-        <!--android:layout_marginTop="8dp"/>-->
-
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

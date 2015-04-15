@@ -28,26 +28,27 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
 import android.support.v4.view.WindowCompat;
 import android.support.v7.app.ActionBar;
+import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.fragment.support.SearchFragment;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.ShortcutCallback;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -58,13 +59,16 @@ import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import static de.vanita5.twittnuker.util.Utils.createFragmentForIntent;
 import static de.vanita5.twittnuker.util.Utils.matchLinkId;
 
-public class LinkHandlerActivity extends BaseActionBarActivity implements OnClickListener,
-        OnLongClickListener, SystemWindowsInsetsCallback, IControlBarActivity, SupportFragmentCallback {
+public class LinkHandlerActivity extends BaseActionBarActivity implements SystemWindowsInsetsCallback,
+        IControlBarActivity, SupportFragmentCallback {
 
     private ControlBarShowHideHelper mControlBarShowHideHelper = new ControlBarShowHideHelper(this);
 
 	private MultiSelectEventHandler mMultiSelectHandler;
+    private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
+
     private TintedStatusFrameLayout mMainContent;
+
 	private boolean mFinishOnly;
 
 	@Override
@@ -88,35 +92,6 @@ public class LinkHandlerActivity extends BaseActionBarActivity implements OnClic
     }
 
     @Override
-	public void onClick(final View v) {
-		switch (v.getId()) {
-			case R.id.go_top: {
-                final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_content);
-				if (fragment instanceof RefreshScrollTopInterface) {
-					((RefreshScrollTopInterface) fragment).scrollToStart();
-				} else if (fragment instanceof ListFragment) {
-					((ListFragment) fragment).setSelection(0);
-				}
-				break;
-			}
-		}
-	}
-
-	@Override
-	public boolean onLongClick(final View v) {
-		switch (v.getId()) {
-			case R.id.go_top: {
-                final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_content);
-				if (fragment instanceof RefreshScrollTopInterface) {
-					((RefreshScrollTopInterface) fragment).triggerRefresh();
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 			case MENU_HOME: {
@@ -153,6 +128,7 @@ public class LinkHandlerActivity extends BaseActionBarActivity implements OnClic
         final int linkId = matchLinkId(data);
         requestWindowFeatures(getWindow(), linkId, data);
 		super.onCreate(savedInstanceState);
+        mKeyboardShortcutsHandler = TwittnukerApplication.getInstance(this).getKeyboardShortcutsHandler();
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -410,6 +386,19 @@ public class LinkHandlerActivity extends BaseActionBarActivity implements OnClic
         mControlBarShowHideHelper.setControlBarVisibleAnimate(visible);
     }
 
+    @Override
+    public boolean handleKeyboardShortcut(int keyCode, @NonNull KeyEvent event) {
+        if (handleCurrentFragmentKeyboardShortcut(keyCode, event)) return true;
+        return mKeyboardShortcutsHandler.handleKey(this, null, keyCode, event);
+    }
+
+    private boolean handleCurrentFragmentKeyboardShortcut(int keyCode, @NonNull KeyEvent event) {
+        final Fragment fragment = getCurrentVisibleFragment();
+        if (fragment instanceof ShortcutCallback) {
+            return ((ShortcutCallback) fragment).handleKeyboardShortcut(keyCode, event);
+        }
+        return false;
+    }
 
     @Override
     public void setControlBarOffset(float offset) {

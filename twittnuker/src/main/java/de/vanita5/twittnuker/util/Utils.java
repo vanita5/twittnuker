@@ -2904,9 +2904,9 @@ public final class Utils implements Constants, TwitterConstants {
         return null;
     }
 
-    public static void openMessageConversation(final FragmentActivity activity, final long accountId,
+    public static void openMessageConversation(final Context context, final long accountId,
 			final long recipientId) {
-		if (activity == null) return;
+        if (context == null) return;
 		final Uri.Builder builder = new Uri.Builder();
 		builder.scheme(SCHEME_TWITTNUKER);
 		builder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
@@ -2915,7 +2915,7 @@ public final class Utils implements Constants, TwitterConstants {
 			builder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(recipientId));
 		}
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        activity.startActivity(intent);
+        context.startActivity(intent);
 	}
 
     public static void openMedia(final Context context, final ParcelableDirectMessage message, final ParcelableMedia current) {
@@ -3550,15 +3550,9 @@ public final class Utils implements Constants, TwitterConstants {
 		}
 		final MenuItem retweet = menu.findItem(MENU_RETWEET);
 		if (retweet != null) {
-			retweet.setVisible(!status.user_is_protected || isMyRetweet);
             ActionIconDrawable.setMenuHighlight(retweet, new TwidereMenuInfo(isMyRetweet, retweetHighlight));
             retweet.setTitle(isMyRetweet ? R.string.cancel_retweet : R.string.retweet);
 		}
-//        final MenuItem retweetSubItem = menu.findItem(R.id.retweet_submenu);
-//        if (retweetSubItem != null) {
-//            ActionIconDrawable.setMenuHighlight(retweetSubItem, new TwidereMenuInfo(isMyRetweet,
-//                    retweetHighlight));
-//        }
 		final MenuItem favorite = menu.findItem(MENU_FAVORITE);
 		if (favorite != null) {
             ActionIconDrawable.setMenuHighlight(favorite, new TwidereMenuInfo(status.is_favorite, favoriteHighlight));
