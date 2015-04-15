@@ -933,8 +933,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		protected void onPostExecute(final SingleResponse<ParcelableStatus> result) {
             mCreatingFavoriteIds.remove(account_id, status_id);
 			if (result.hasData()) {
+				final ParcelableStatus status = result.getData();
+
                 final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
-                bus.post(new FavoriteCreatedEvent(result.getData()));
+                bus.post(new FavoriteCreatedEvent(status));
 				mMessagesManager.showOkMessage(R.string.status_favorited, false);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_favoriting, result.getException(), true);
@@ -1475,8 +1477,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		protected void onPostExecute(final SingleResponse<ParcelableStatus> result) {
             mDestroyingFavoriteIds.remove(account_id, status_id);
 			if (result.hasData()) {
+				final ParcelableStatus status = result.getData();
+
                 final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
-                bus.post(new FavoriteDestroyedEvent(result.getData()));
+                bus.post(new FavoriteDestroyedEvent(status));
                 mMessagesManager.showInfoMessage(R.string.status_unfavorited, false);
 			} else {
 				mMessagesManager.showErrorMessage(R.string.action_unfavoriting, result.getException(), true);

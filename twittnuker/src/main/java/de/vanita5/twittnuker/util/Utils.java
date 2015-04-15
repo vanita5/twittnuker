@@ -3408,11 +3408,11 @@ public final class Utils implements Constants, TwitterConstants {
         } else {
             return top;
         }
-        if (actionBarHeight < top) {
-            return top - actionBarHeight;
+        if (actionBarHeight > top) {
+            return top;
         }
-        return top;
-    }
+		return top - actionBarHeight;
+	}
 
     public static void openUserProfile(final Context context, final ParcelableUser user,
                                        final Bundle activityOptions) {
