@@ -71,7 +71,7 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.util.ViewUtils;
 import de.vanita5.twittnuker.util.net.OkHttpClientFactory;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 
@@ -330,7 +330,7 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 		mEditPassword.addTextChangedListener(this);
         final Resources resources = getResources();
         final ColorStateList color = ColorStateList.valueOf(resources.getColor(R.color.material_light_green));
-        ViewAccessor.setBackgroundTintList(mSignInButton, color);
+        ViewUtils.setBackgroundTintList(mSignInButton, color);
 		setSignInButton();
 	}
 

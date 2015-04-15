@@ -28,7 +28,7 @@ import android.util.AttributeSet;
 import android.widget.MultiAutoCompleteTextView;
 
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.util.ViewUtils;
 import de.vanita5.twittnuker.view.iface.IThemedView;
 
 public class ThemedMultiAutoCompleteTextView extends MultiAutoCompleteTextView  implements IThemedView {
@@ -48,7 +48,7 @@ public class ThemedMultiAutoCompleteTextView extends MultiAutoCompleteTextView  
 
     @Override
     public void setThemeTintColor(ColorStateList color) {
-        ViewAccessor.setBackgroundTintList(this, color);
+        ViewUtils.setBackgroundTintList(this, color);
         setLinkTextColor(color);
         setHighlightColor(color.getDefaultColor());
     }

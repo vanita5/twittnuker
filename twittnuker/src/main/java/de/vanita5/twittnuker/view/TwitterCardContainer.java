@@ -26,7 +26,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
-import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.util.ViewUtils;
 
 public class TwitterCardContainer extends FrameLayout {
 
@@ -47,7 +47,7 @@ public class TwitterCardContainer extends FrameLayout {
 	public void setCardSize(int width, int height) {
 		mCardWidth = width;
 		mCardHeight = height;
-		if (!ViewAccessor.isInLayout(this)) {
+		if (!ViewUtils.isInLayout(this)) {
 			requestLayout();
 		}
 	}

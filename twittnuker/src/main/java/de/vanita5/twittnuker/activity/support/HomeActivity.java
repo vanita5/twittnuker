@@ -102,9 +102,9 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.ViewUtils;
 import de.vanita5.twittnuker.util.accessor.ActivityAccessor;
 import de.vanita5.twittnuker.util.accessor.ActivityAccessor.TaskDescriptionCompat;
-import de.vanita5.twittnuker.util.accessor.ViewAccessor;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.view.ExtendedViewPager;
@@ -235,11 +235,6 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
         mActionsButton.setTranslationY(mActionsButton.getHeight() * (1 - offset));
         }
         notifyControlBarOffsetChanged();
-	}
-
-	@Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getNoActionBarThemeResource(this);
 	}
 
 	@Override
@@ -803,7 +798,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
         final int actionBarAlpha = isTransparent ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xFF;
         final IHomeActionButton homeActionButton = (IHomeActionButton) mActionsButton;
         mTabIndicator.setItemContext(ThemeUtils.getActionBarContext(this));
-        ViewAccessor.setBackground(mActionBar, ThemeUtils.getActionBarBackground(this, themeResId, actionBarColor, true));
+        ViewUtils.setBackground(mActionBar, ThemeUtils.getActionBarBackground(this, themeResId, actionBarColor, true));
         //No need to differentiate between dark and light theme due to custom action bar color preference
 		homeActionButton.setButtonColor(actionBarColor);
 		homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
@@ -817,7 +812,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 		mColorStatusFrameLayout.setFactor(1);
         mTabIndicator.setAlpha(actionBarAlpha / 255f);
         mActionsButton.setAlpha(actionBarAlpha / 255f);
-        ViewAccessor.setBackground(mActionBarOverlay, ThemeUtils.getWindowContentOverlay(this));
+        ViewUtils.setBackground(mActionBarOverlay, ThemeUtils.getWindowContentOverlay(this));
 	}
 
     private void setupHomeTabs() {
@@ -859,7 +854,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 		mSlidingMenu.setBehindCanvasTransformer(new ListenerCanvasTransformer(this));
         final Window window = getWindow();
 		final Drawable windowBackground = ThemeUtils.getWindowBackground(this, getCurrentThemeResourceId());
-		ViewAccessor.setBackground(mSlidingMenu.getContent(), windowBackground);
+        ViewUtils.setBackground(mSlidingMenu.getContent(), windowBackground);
         window.setBackgroundDrawable(new EmptyDrawable(windowBackground));
 	}
 

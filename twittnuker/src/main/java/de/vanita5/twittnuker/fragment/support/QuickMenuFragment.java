@@ -56,7 +56,7 @@ import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment.TrendsAd
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.util.ViewUtils;
 import de.vanita5.twittnuker.view.ExtendedFrameLayout;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
 
@@ -149,7 +149,7 @@ public class QuickMenuFragment extends BaseSupportFragment implements OnFitSyste
 		mSlidingUpPanel = (SlidingUpPanelLayout) view.findViewById(R.id.activities_drawer);
         mActivitiesConfigButton = (ImageButton) view.findViewById(R.id.activities_config_button);
 		final View activitiesContainer = view.findViewById(R.id.activities_container);
-		ViewAccessor.setBackground(activitiesContainer, ThemeUtils.getWindowBackground(getThemedContext()));
+        ViewUtils.setBackground(activitiesContainer, ThemeUtils.getWindowBackground(getThemedContext()));
 	}
 
     @Override

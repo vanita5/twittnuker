@@ -30,6 +30,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.DialogInterface.OnShowListener;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.util.SparseBooleanArray;
 import android.view.View;
@@ -43,6 +44,7 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.fragment.iface.ISupportDialogFragmentCallback;
+import de.vanita5.twittnuker.util.DataImportExportUtils;
 
 public final class DataExportImportTypeSelectorDialogFragment extends BaseSupportDialogFragment implements
 		OnMultiChoiceClickListener, OnClickListener, OnShowListener, OnItemClickListener {
@@ -75,15 +77,17 @@ public final class DataExportImportTypeSelectorDialogFragment extends BaseSuppor
 		updatePositiveButton(dialog);
 	}
 
+    @NonNull
 	@Override
 	public final Dialog onCreateDialog(final Bundle savedInstanceState) {
 		final Context context = getActivity();
 		final int flags = getEnabledFlags();
 		mAdapter = new TypeAdapter(context, flags);
 		mListView = new ListView(context);
-		mAdapter.add(new Type(R.string.settings, FLAG_PREFERENCES));
-		mAdapter.add(new Type(R.string.user_colors, FLAG_USER_COLORS));
-		mAdapter.add(new Type(R.string.custom_host_mapping, FLAG_HOST_MAPPING));
+        mAdapter.add(new Type(R.string.settings, DataImportExportUtils.FLAG_PREFERENCES));
+        mAdapter.add(new Type(R.string.user_colors, DataImportExportUtils.FLAG_USER_COLORS));
+        mAdapter.add(new Type(R.string.custom_host_mapping, DataImportExportUtils.FLAG_HOST_MAPPING));
+        mAdapter.add(new Type(R.string.keyboard_shortcuts, DataImportExportUtils.FLAG_KEYBOARD_SHORTCUTS));
 		mListView.setAdapter(mAdapter);
 		mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		mListView.setOnItemClickListener(this);
@@ -133,8 +137,8 @@ public final class DataExportImportTypeSelectorDialogFragment extends BaseSuppor
 
 	private int getEnabledFlags() {
 		final Bundle args = getArguments();
-		if (args == null) return FLAG_ALL;
-		return args.getInt(EXTRA_FLAGS, FLAG_ALL);
+        if (args == null) return DataImportExportUtils.FLAG_ALL;
+        return args.getInt(EXTRA_FLAGS, DataImportExportUtils.FLAG_ALL);
 	}
 
 	private CharSequence getTitle() {

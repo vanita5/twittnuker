@@ -32,7 +32,7 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.util.ViewUtils;
 
 public class RightDrawerFrameLayout extends FrameLayout {
 
@@ -51,7 +51,7 @@ public class RightDrawerFrameLayout extends FrameLayout {
 	public RightDrawerFrameLayout(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
         final Drawable bg = ThemeUtils.getWindowBackground(context, ThemeUtils.getDrawerThemeResource(context));
-		ViewAccessor.setBackground(this, bg);
+		ViewUtils.setBackground(this, bg);
 		setWillNotDraw(false);
 		mClipPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 	}

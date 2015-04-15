@@ -77,6 +77,8 @@ import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 public class TwittnukerApplication extends Application implements Constants,
 		OnSharedPreferenceChangeListener {
 
+	private static final String KEY_KEYBOARD_SHORTCUT_INITIALIZED = "keyboard_shortcut_initialized";
+
 	private Handler mHandler;
     private MediaLoaderWrapper mMediaLoaderWrapper;
 	private ImageLoader mImageLoader;
@@ -138,8 +140,11 @@ public class TwittnukerApplication extends Application implements Constants,
     public KeyboardShortcutsHandler getKeyboardShortcutsHandler() {
         if (mKeyboardShortcutsHandler != null) return mKeyboardShortcutsHandler;
         mKeyboardShortcutsHandler = new KeyboardShortcutsHandler(this);
-        if (mKeyboardShortcutsHandler.isEmpty()) {
+        final SharedPreferences preferences = getSharedPreferences();
+        if (mKeyboardShortcutsHandler.isEmpty()
+                && !preferences.getBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, false)) {
             mKeyboardShortcutsHandler.reset();
+            preferences.edit().putBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, true);
         }
         return mKeyboardShortcutsHandler;
     }
@@ -220,8 +225,6 @@ public class TwittnukerApplication extends Application implements Constants,
         mDefaultUserAgent = UserAgentUtils.getDefaultUserAgentString(this);
         mHandler = new Handler();
         mMessageBus = new Bus();
-		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-		mPreferences.registerOnSharedPreferenceChangeListener(this);
 		initializeAsyncTask();
 		initAccountColor(this);
 		initUserColor(this);
@@ -238,6 +241,13 @@ public class TwittnukerApplication extends Application implements Constants,
 		startRefreshServiceIfNeeded(this);
 
 		reloadConnectivitySettings();
+	}
+
+	private SharedPreferences getSharedPreferences() {
+		if (mPreferences != null) return mPreferences;
+		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+		mPreferences.registerOnSharedPreferenceChangeListener(this);
+		return mPreferences;
 	}
 
 	@Override

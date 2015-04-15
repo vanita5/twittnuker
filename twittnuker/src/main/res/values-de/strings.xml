@@ -675,6 +675,8 @@
     <string name="conflicts_with_name">Konflikt mit <xliff:g id="name">%s</xliff:g></string>
     <string name="overwrite">Überschreiben</string>
     <string name="navigation">Navigation</string>
+    <string name="reset_to_default">Zurücksetzen</string>
+    <string name="reset_keyboard_shortcuts_confirm">Keyboard Shortcuts zurücksetzen?</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

@@ -34,6 +34,7 @@ import android.widget.Switch;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.fragment.SettingsDetailsFragment;
+import de.vanita5.twittnuker.util.ViewUtils;
 
 public class SwitchSettingsDetailsPreference extends SwitchPreference implements Constants {
 
@@ -63,7 +64,7 @@ public class SwitchSettingsDetailsPreference extends SwitchPreference implements
 		if (view instanceof ViewGroup) {
 			((ViewGroup) view).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 		}
-		final Switch switchView = (Switch) findViewByType(view, Switch.class);
+        final Switch switchView = (Switch) ViewUtils.findViewByType(view, Switch.class);
 		if (switchView != null) {
 			switchView.setClickable(true);
 			switchView.setFocusable(true);
@@ -75,17 +76,6 @@ public class SwitchSettingsDetailsPreference extends SwitchPreference implements
         if (mView != null) return mView;
         return mView = super.onCreateView(parent);
     }
-
-	private static View findViewByType(View view, Class<? extends View> cls) {
-		if (cls.isAssignableFrom(view.getClass())) return view;
-		if (view instanceof ViewGroup) {
-			for (int i = 0, j = ((ViewGroup) view).getChildCount(); i < j; i++) {
-				final View found = findViewByType(((ViewGroup) view).getChildAt(i), cls);
-				if (found != null) return found;
-			}
-		}
-		return null;
-	}
 
 	@Override
 	protected void onClick() {

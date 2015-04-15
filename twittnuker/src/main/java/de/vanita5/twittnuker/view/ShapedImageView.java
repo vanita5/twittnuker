@@ -52,9 +52,9 @@ import android.view.View;
 import android.widget.ImageView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.util.accessor.ViewAccessor;
-import de.vanita5.twittnuker.util.accessor.ViewAccessor.OutlineCompat;
-import de.vanita5.twittnuker.util.accessor.ViewAccessor.ViewOutlineProviderCompat;
+import de.vanita5.twittnuker.util.ViewUtils;
+import de.vanita5.twittnuker.util.ViewUtils.OutlineCompat;
+import de.vanita5.twittnuker.util.ViewUtils.ViewOutlineProviderCompat;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -429,8 +429,8 @@ public class ShapedImageView extends ImageView {
     }
 
 	private void initOutlineProvider() {
-        ViewAccessor.setClipToOutline(this, true);
-        ViewAccessor.setOutlineProvider(this, new CircularOutlineProvider());
+        ViewUtils.setClipToOutline(this, true);
+        ViewUtils.setOutlineProvider(this, new CircularOutlineProvider());
     }
 
     private void setBorderColorsInternal(int alpha, int... colors) {

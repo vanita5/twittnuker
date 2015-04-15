@@ -22,10 +22,9 @@
 
 package de.vanita5.twittnuker.util;
 
-import static de.vanita5.twittnuker.annotation.Preference.Type.INVALID;
-
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import org.json.JSONObject;
 import org.mariotaku.jsonserializer.JSONFileIO;
@@ -48,7 +47,21 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import static de.vanita5.twittnuker.annotation.Preference.Type.INVALID;
+
 public class DataImportExportUtils implements Constants {
+
+    public static final String ENTRY_PREFERENCES = "preferences.json";
+    public static final String ENTRY_USER_COLORS = "user_colors.json";
+    public static final String ENTRY_HOST_MAPPING = "host_mapping.json";
+    public static final String ENTRY_KEYBOARD_SHORTCUTS = "keyboard_shortcuts.json";
+
+    public static final int FLAG_PREFERENCES = 0x1;
+    public static final int FLAG_NICKNAMES = 0x2;
+    public static final int FLAG_USER_COLORS = 0x4;
+    public static final int FLAG_HOST_MAPPING = 0x8;
+    public static final int FLAG_KEYBOARD_SHORTCUTS = 0x10;
+    public static final int FLAG_ALL = FLAG_PREFERENCES | FLAG_NICKNAMES | FLAG_USER_COLORS | FLAG_HOST_MAPPING | FLAG_KEYBOARD_SHORTCUTS;
 
 	public static void exportData(final Context context, final File dst, final int flags) throws IOException {
 		if (dst == null) throw new FileNotFoundException();
@@ -64,6 +77,9 @@ public class DataImportExportUtils implements Constants {
 		if (hasFlag(flags, FLAG_HOST_MAPPING)) {
 			writeRawSharedPreferencesData(zos, context, HOST_MAPPING_PREFERENCES_NAME, ENTRY_HOST_MAPPING);
 		}
+        if (hasFlag(flags, FLAG_KEYBOARD_SHORTCUTS)) {
+            writeRawSharedPreferencesData(zos, context, KEYBOARD_SHORTCUTS_PREFERENCES_NAME, ENTRY_KEYBOARD_SHORTCUTS);
+        }
 		zos.finish();
 		zos.flush();
 		Utils.closeSilently(zos);
@@ -83,6 +99,9 @@ public class DataImportExportUtils implements Constants {
 		if (zipFile.getEntry(ENTRY_HOST_MAPPING) != null) {
 			flags |= FLAG_HOST_MAPPING;
 		}
+        if (zipFile.getEntry(ENTRY_KEYBOARD_SHORTCUTS) != null) {
+            flags |= FLAG_KEYBOARD_SHORTCUTS;
+        }
         zipFile.close();
 		return flags;
 	}
@@ -96,8 +115,8 @@ public class DataImportExportUtils implements Constants {
 					&& annotation != null && annotation.exportable() && annotation.type() != INVALID) {
 				try {
 					supportedPrefsMap.put((String) field.get(null), annotation);
-				} catch (final IllegalAccessException e) {
-				} catch (final IllegalArgumentException e) {
+                } catch (final IllegalAccessException | IllegalArgumentException e) {
+                    Log.w(LOGTAG, e);
 				}
 			}
 		}
@@ -116,6 +135,9 @@ public class DataImportExportUtils implements Constants {
 		if (hasFlag(flags, FLAG_HOST_MAPPING)) {
 		    readRawSharedPreferencesData(zipFile, context, HOST_MAPPING_PREFERENCES_NAME, ENTRY_HOST_MAPPING);
 		}
+        if (hasFlag(flags, FLAG_KEYBOARD_SHORTCUTS)) {
+            readRawSharedPreferencesData(zipFile, context, KEYBOARD_SHORTCUTS_PREFERENCES_NAME, ENTRY_KEYBOARD_SHORTCUTS);
+        }
         zipFile.close();
 	}
 

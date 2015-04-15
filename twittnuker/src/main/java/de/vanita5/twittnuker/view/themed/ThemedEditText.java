@@ -28,7 +28,7 @@ import android.util.AttributeSet;
 import android.widget.EditText;
 
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.util.ViewUtils;
 import de.vanita5.twittnuker.view.iface.IThemedView;
 
 public class ThemedEditText extends EditText implements IThemedView {
@@ -48,6 +48,6 @@ public class ThemedEditText extends EditText implements IThemedView {
 
     @Override
     public void setThemeTintColor(ColorStateList color) {
-        ViewAccessor.setBackgroundTintList(this, color);
+        ViewUtils.setBackgroundTintList(this, color);
     }
 }

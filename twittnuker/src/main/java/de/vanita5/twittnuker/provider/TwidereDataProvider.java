@@ -601,10 +601,15 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 	}
 
 	private void notifyContentObserver(final Uri uri) {
-        final ContentResolver cr = getContentResolver();
-        if (uri == null || cr == null) return;
-        cr.notifyChange(uri, null);
-	}
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+				final ContentResolver cr = getContentResolver();
+				if (uri == null || cr == null) return;
+				cr.notifyChange(uri, null);
+			}
+        });
+    }
 
 
 	private void notifyUnreadCountChanged(final int position) {

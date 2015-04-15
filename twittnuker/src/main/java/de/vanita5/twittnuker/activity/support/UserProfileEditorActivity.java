@@ -56,7 +56,7 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper;
-import de.vanita5.twittnuker.util.accessor.ViewAccessor;
+import de.vanita5.twittnuker.util.ViewUtils;
 import de.vanita5.twittnuker.view.ForegroundColorView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
@@ -121,7 +121,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
 
     @Override
     public int getThemeResourceId() {
-        return ThemeUtils.getNoActionBarThemeResource(this);
+        return ThemeUtils.getThemeResource(this);
     }
 
     @Override
@@ -140,8 +140,8 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
 
         setContentView(R.layout.activity_user_profile_editor);
         setSupportActionBar(mToolbar);
-        ViewAccessor.setBackground(mActionBarOverlay, ThemeUtils.getWindowContentOverlay(this));
-        ViewAccessor.setBackground(mToolbar, ThemeUtils.getActionBarBackground(mToolbar.getContext(),
+        ViewUtils.setBackground(mActionBarOverlay, ThemeUtils.getWindowContentOverlay(this));
+        ViewUtils.setBackground(mToolbar, ThemeUtils.getActionBarBackground(mToolbar.getContext(),
                 getCurrentThemeResourceId()));
         // setOverrideExitAniamtion(false);
         mEditName.addTextChangedListener(this);
