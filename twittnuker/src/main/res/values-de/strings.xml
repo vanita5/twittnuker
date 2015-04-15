@@ -475,6 +475,7 @@
     <string name="name_first">Name bevorzugen</string>
     <string name="name_first_summary">Benutzernamen statt den @Screennamen zeigen</string>
     <string name="next">Weiter</string>
+    <string name="previous">Zurück</string>
     <string name="settings_wizard">Einstellungen</string>
     <string name="wizard_page_welcome_title">Willkomen</string>
     <string name="wizard_page_welcome_text">Danke, dass du dich für Twittnuker entschieden hast.\nMöchtest du Twittnuker jetzt einrichten?</string>
@@ -673,6 +674,7 @@
     <string name="keyboard_shortcut_hint">Tasten drücken</string>
     <string name="conflicts_with_name">Konflikt mit <xliff:g id="name">%s</xliff:g></string>
     <string name="overwrite">Überschreiben</string>
+    <string name="navigation">Navigation</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

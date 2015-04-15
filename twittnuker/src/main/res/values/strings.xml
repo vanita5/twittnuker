@@ -464,6 +464,7 @@
 	<string name="name_first">Prefer display name</string>
     <string name="name_first_summary">Show the username rather than the @screenname</string>
 	<string name="next">Next</string>
+	<string name="previous">Previous</string>
 	<string name="settings_wizard">Settings wizard</string>
 	<string name="wizard_page_welcome_title">Welcome</string>
 	<string name="wizard_page_welcome_text">Thanks for choosing Twittnuker.\nWould you like to config it now?</string>
@@ -702,6 +703,7 @@
 	<string name="keyboard_shortcut_hint">Press keys</string>
 	<string name="conflicts_with_name">Conflicts with <xliff:g id="name">%s</xliff:g></string>
 	<string name="overwrite">Overwrite</string>
+	<string name="navigation">Navigation</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
