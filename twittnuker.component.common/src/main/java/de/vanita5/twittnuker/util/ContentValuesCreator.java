@@ -396,7 +396,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
             values.put(Statuses.PLACE_FULL_NAME, place.getFullName());
         }
 		values.put(Statuses.IS_FAVORITE, status.isFavorited());
-        final ParcelableMedia[] media = ParcelableMedia.fromEntities(status);
+        final ParcelableMedia[] media = ParcelableMedia.fromStatus(status);
         if (media != null) {
             values.put(Statuses.MEDIA_LIST, SimpleValueSerializer.toSerializedString(media));
         }
