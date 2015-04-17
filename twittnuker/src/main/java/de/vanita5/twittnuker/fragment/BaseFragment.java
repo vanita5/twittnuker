@@ -71,12 +71,6 @@ public class BaseFragment extends Fragment implements Constants {
 		return app != null ? app.getTwitterWrapper() : null;
 	}
 
-	public void invalidateOptionsMenu() {
-		final Activity activity = getActivity();
-		if (activity == null) return;
-		activity.invalidateOptionsMenu();
-	}
-
 	public void registerReceiver(final BroadcastReceiver receiver, final IntentFilter filter) {
 		final Activity activity = getActivity();
 		if (activity == null) return;
@@ -86,7 +80,7 @@ public class BaseFragment extends Fragment implements Constants {
 	public void setProgressBarIndeterminateVisibility(final boolean visible) {
 		final Activity activity = getActivity();
 		if (activity instanceof BaseActionBarActivity) {
-			((BaseActionBarActivity) activity).setProgressBarIndeterminateVisibility(visible);
+            activity.setProgressBarIndeterminateVisibility(visible);
 		}
 	}
 

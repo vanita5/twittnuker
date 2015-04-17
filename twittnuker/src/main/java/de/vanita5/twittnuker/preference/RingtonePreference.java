@@ -30,10 +30,11 @@ import android.database.Cursor;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
+import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.util.TwidereArrayUtils;
 
 public class RingtonePreference extends AutoInvalidateListPreference {
 
@@ -72,9 +73,9 @@ public class RingtonePreference extends AutoInvalidateListPreference {
 	}
 
 	@Override
-	protected void onPrepareDialogBuilder(final Builder builder) {
+    protected void onPrepareDialogBuilder(@NonNull final Builder builder) {
 		loadRingtones(getContext());
-		setSelectedItem(TwidereArrayUtils.indexOf(mValues, getPersistedString(null)));
+        setSelectedItem(ArrayUtils.indexOf(mValues, getPersistedString(null)));
 		builder.setSingleChoiceItems(getEntries(), getSelectedItem(), new OnClickListener() {
 			@Override
 			public void onClick(final DialogInterface dialog, final int which) {

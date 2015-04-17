@@ -34,8 +34,8 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.support.v4.content.AsyncTaskLoader;
 
+import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.util.TwidereArrayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,10 +65,10 @@ public class IntentActivitiesLoader extends AsyncTaskLoader<List<ResolveInfo>> i
 	@Override
 	public List<ResolveInfo> loadInBackground() {
 		final List<ResolveInfo> activities = mPackageManager.queryIntentActivities(mIntent, mFlags);
-		final List<ResolveInfo> result = new ArrayList<ResolveInfo>();
+        final List<ResolveInfo> result = new ArrayList<>();
 		for (final ResolveInfo activity : activities) {
 			final ActivityInfo activityInfo = activity.activityInfo;
-			if (mPackagesBlacklist == null || !TwidereArrayUtils.contains(mPackagesBlacklist, activityInfo.packageName)) {
+            if (mPackagesBlacklist == null || !ArrayUtils.contains(mPackagesBlacklist, activityInfo.packageName)) {
 				result.add(activity);
 			}
 		}

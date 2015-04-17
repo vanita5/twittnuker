@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -88,21 +87,6 @@ public class DataImportActivity extends BaseActionBarActivity implements FileSel
 			mImportSettingsTask = new ImportSettingsTask(this, path, flags);
 			mImportSettingsTask.execute();
 		}
-	}
-
-	public void showImportTypeDialog(final String path, final Integer flags) {
-		final DialogFragment df = new DataExportImportTypeSelectorDialogFragment();
-		final Bundle args = new Bundle();
-		args.putString(EXTRA_PATH, path);
-		args.putString(EXTRA_TITLE, getString(R.string.export_settings_type_dialog_title));
-		if (flags != null) {
-			args.putInt(EXTRA_FLAGS, flags);
-		} else {
-			args.putInt(EXTRA_FLAGS, 0);
-		}
-		df.setArguments(args);
-		df.show(getSupportFragmentManager(), "select_import_type");
-
 	}
 
 	@Override

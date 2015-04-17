@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.preference;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.SpannableString;
 import android.util.AttributeSet;
 import android.view.View;
@@ -58,7 +59,7 @@ public class LinkHighlightPreference extends AutoInvalidateListPreference implem
 	}
 
 	@Override
-	protected void onBindView(final View view) {
+	protected void onBindView(@NonNull final View view) {
 		super.onBindView(view);
 		final TextView summary = (TextView) view.findViewById(android.R.id.summary);
 		summary.setVisibility(View.VISIBLE);

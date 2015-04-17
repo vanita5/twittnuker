@@ -8,9 +8,9 @@
         android:title="@string/general">
 
         <de.vanita5.twittnuker.preference.ColorPickerPreference
-            android:defaultValue="@color/branding_color"
             android:key="notification_light_color"
-            android:title="@string/notification_light_color"/>
+            android:title="@string/notification_light_color"
+            app:defaultColor="@color/branding_color"/>
 
         <de.vanita5.twittnuker.preference.RingtonePreference
             android:key="notification_ringtone"

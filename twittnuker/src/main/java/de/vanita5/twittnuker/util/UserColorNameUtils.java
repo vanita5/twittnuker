@@ -38,7 +38,7 @@ import static android.text.TextUtils.isEmpty;
 
 public class UserColorNameUtils implements TwittnukerConstants {
 
-	private static LongSparseArray<Integer> sUserColors = new LongSparseArray<>();
+    private static final LongSparseArray<Integer> sUserColors = new LongSparseArray<>();
 
 	private UserColorNameUtils() {
 		throw new AssertionError();

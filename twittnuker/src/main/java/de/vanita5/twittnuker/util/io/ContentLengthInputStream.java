@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.util.io;
 
+import android.support.annotation.NonNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -64,9 +66,9 @@ public class ContentLengthInputStream extends InputStream {
 	}
 	
 	@Override
-	public void mark(final int readlimit) {
-		pos = readlimit;
-		stream.mark(readlimit);
+    public void mark(final int readLimit) {
+        pos = readLimit;
+        stream.mark(readLimit);
 	}
 
 	@Override
@@ -79,12 +81,12 @@ public class ContentLengthInputStream extends InputStream {
 	}
 	
 	@Override
-	public int read(final byte[] buffer) throws IOException {
+    public int read(@NonNull final byte[] buffer) throws IOException {
 		return read(buffer, 0, buffer.length);
 	}
 
 	@Override
-	public int read(final byte[] buffer, final int byteOffset, final int byteCount) throws IOException {
+    public int read(@NonNull final byte[] buffer, final int byteOffset, final int byteCount) throws IOException {
 		pos += byteCount;
 		if (readListener != null) {
 			readListener.onRead(length, pos);

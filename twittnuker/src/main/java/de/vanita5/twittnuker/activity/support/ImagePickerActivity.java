@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -93,7 +94,7 @@ public class ImagePickerActivity extends ThemedActionBarActivity {
 		final String action = intent.getAction();
 		if (INTENT_ACTION_TAKE_PHOTO.equals(action)) {
 			takePhoto();
-		} else if (INTENT_ACTION_PICK_FILE.equals(action)) {
+        } else if (INTENT_ACTION_PICK_IMAGE.equals(action)) {
 			pickImage();
 		} else {
 			new ImageSourceDialogFragment().show(getSupportFragmentManager(), "image_source");
@@ -127,7 +128,7 @@ public class ImagePickerActivity extends ThemedActionBarActivity {
 		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 		try {
 			startActivityForResult(intent, REQUEST_PICK_IMAGE);
-		} catch (final ActivityNotFoundException e) {
+        } catch (final ActivityNotFoundException ignored) {
 		}
 	}
 
@@ -145,7 +146,7 @@ public class ImagePickerActivity extends ThemedActionBarActivity {
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, mTempPhotoUri);
 		try {
 			startActivityForResult(intent, REQUEST_TAKE_PHOTO);
-		} catch (final ActivityNotFoundException e) {
+        } catch (final ActivityNotFoundException ignored) {
 		}
 	}
 
@@ -173,6 +174,7 @@ public class ImagePickerActivity extends ThemedActionBarActivity {
 			}
 		}
 
+        @NonNull
 		@Override
 		public Dialog onCreateDialog(final Bundle savedInstanceState) {
 			final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

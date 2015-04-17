@@ -27,6 +27,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -63,6 +64,7 @@ public class CreateUserListDialogFragment extends BaseSupportDialogFragment impl
 
 	}
 
+	@NonNull
 	@Override
 	public Dialog onCreateDialog(final Bundle savedInstanceState) {
 		mTwitterWrapper = getApplication().getTwitterWrapper();

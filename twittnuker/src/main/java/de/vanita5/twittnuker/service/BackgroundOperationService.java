@@ -62,7 +62,6 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ListUtils;
-import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.StatusCodeMessageUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
@@ -107,7 +106,6 @@ public class BackgroundOperationService extends IntentService implements Constan
 	private ContentResolver mResolver;
 	private NotificationManager mNotificationManager;
 	private AsyncTwitterWrapper mTwitter;
-	private MessagesManager mMessagesManager;
 
 	private String mUploader;
 	private String mShortener;
@@ -128,7 +126,6 @@ public class BackgroundOperationService extends IntentService implements Constan
 		mResolver = getContentResolver();
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mTwitter = app.getTwitterWrapper();
-		mMessagesManager = app.getMessagesManager();
 		final String uploaderComponent = mPreferences.getString(KEY_MEDIA_UPLOADER, null);
 		final String shortenerComponent = mPreferences.getString(KEY_STATUS_SHORTENER, null);
         mUseUploader = !ServicePickerPreference.isNoneValue(uploaderComponent);
@@ -143,44 +140,45 @@ public class BackgroundOperationService extends IntentService implements Constan
 		return START_STICKY;
 	}
 
-	public void showErrorMessage(final CharSequence message, final boolean long_message) {
+    public void showErrorMessage(final CharSequence message, final boolean longMessage) {
 		mHandler.post(new Runnable() {
 
 			@Override
 			public void run() {
-				mMessagesManager.showErrorMessage(message, long_message);
+				Utils.showErrorMessage(BackgroundOperationService.this, message, longMessage);
 			}
 		});
 	}
 
-	public void showErrorMessage(final int action_res, final Exception e, final boolean long_message) {
-
+    public void showErrorMessage(final int actionRes, final Exception e, final boolean longMessage) {
 		mHandler.post(new Runnable() {
 
 			@Override
 			public void run() {
-				mMessagesManager.showErrorMessage(action_res, e, long_message);
+                Utils.showErrorMessage(BackgroundOperationService.this, actionRes, e, longMessage);
 			}
 		});
 	}
 
-	public void showErrorMessage(final int action_res, final String message, final boolean long_message) {
-
+    public void showErrorMessage(final int actionRes, final String message, final boolean longMessage) {
 		mHandler.post(new Runnable() {
 
 			@Override
 			public void run() {
-				mMessagesManager.showErrorMessage(action_res, message, long_message);
+                Utils.showErrorMessage(BackgroundOperationService.this, actionRes, message, longMessage);
 			}
 		});
 	}
 
-	public void showOkMessage(final int message_res, final boolean long_message) {
-		mHandler.post(new Runnable() {
+    public void showOkMessage(final int messageRes, final boolean longMessage) {
+        showToast(getString(messageRes), longMessage);
+    }
 
+    private void showToast(final CharSequence message, final boolean longMessage) {
+		mHandler.post(new Runnable() {
 			@Override
 			public void run() {
-				mMessagesManager.showOkMessage(message_res, long_message);
+                Toast.makeText(BackgroundOperationService.this, message, longMessage ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
 			}
 		});
 	}
@@ -518,13 +516,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                         results.add(response);
                         continue;
                     } finally {
-						if (is != null) {
-							try {
-								is.close();
-							} catch (IOException e) {
-								Log.w(LOGTAG, e);
-							}
-						}
+                        IoUtils.closeSilently(is);
 					}
 					status.mediaIds(mediaIds);
 				}
@@ -562,7 +554,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		return results;
 	}
 
-	private static Notification updateSendDirectMessageNotificaion(final Context context,
+    private static Notification updateSendDirectMessageNotification(final Context context,
 			final NotificationCompat.Builder builder, final int progress, final String message) {
 		builder.setContentTitle(context.getString(R.string.sending_direct_message));
 		if (message != null) {
@@ -584,6 +576,25 @@ public class BackgroundOperationService extends IntentService implements Constan
         builder.setProgress(100, progress, progress >= 100 || progress <= 0);
         builder.setOngoing(true);
         return builder.build();
+	}
+
+	private static class ToastRunnable implements Runnable {
+		private final Context context;
+		private final int resId;
+		private final int duration;
+
+		public ToastRunnable(final Context context, final int resId, final int duration) {
+			this.context = context;
+			this.resId = resId;
+			this.duration = duration;
+		}
+
+		@Override
+		public void run() {
+			Toast.makeText(context, resId, duration).show();
+
+		}
+
 	}
 
 	private Notification updateUploadStatusNotification(final NotificationCompat.Builder builder, final int progress) {
@@ -644,14 +655,14 @@ public class BackgroundOperationService extends IntentService implements Constan
 	private String uploadMedia(File file, ParcelableAccount[] accounts, String message) throws UploadException {
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 		String url = null;
-		Configuration conf = null;
+		Configuration conf;
 
 		long accountId = -1;
 		if(accounts != null && accounts.length > 0) {
 			accountId = accounts[0].account_id;
 		}
 
-		ContentLengthInputStream is = null;
+		ContentLengthInputStream is;
 		startForeground(NOTIFICATION_ID_UPLOAD_MEDIA, updateUploadStatusNotification(builder, 0));
 		try {
 			is = new ContentLengthInputStream(file);
@@ -729,7 +740,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 			final int percent = length > 0 ? (int) (position * 100 / length) : 0;
 			if (this.percent != percent) {
 				manager.notify(NOTIFICATION_ID_SEND_DIRECT_MESSAGE,
-						updateSendDirectMessageNotificaion(context, builder, percent, message));
+                        updateSendDirectMessageNotification(context, builder, percent, message));
 			}
 			this.percent = percent;
 		}
@@ -785,24 +796,5 @@ public class BackgroundOperationService extends IntentService implements Constan
 		public UpdateStatusException(final String message) {
 			super(message);
 		}
-	}
-
-	private static class ToastRunnable implements Runnable {
-		private final Context context;
-		private final int resId;
-		private final int duration;
-
-		public ToastRunnable(final Context context, final int resId, final int duration) {
-			this.context = context;
-			this.resId = resId;
-			this.duration = duration;
-		}
-
-		@Override
-		public void run() {
-			Toast.makeText(context, resId, duration).show();
-
-		}
-
 	}
 }

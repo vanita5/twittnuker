@@ -130,7 +130,6 @@ import org.mariotaku.querybuilder.query.SQLSelectQuery;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.CameraCropActivity;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.GoogleMapViewerActivity;
@@ -961,31 +960,6 @@ public final class Utils implements Constants, TwitterConstants {
 		return fragment;
 	}
 
-	public static Intent createPickImageIntent(final Uri uri) {
-		final Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-		intent.setType("image/*");
-		return intent;
-	}
-
-	public static Intent createPickImageIntent(final Uri uri, final Integer outputX, final Integer outputY,
-			final Integer aspectX, final Integer aspectY, final boolean scaleUpIfNeeded) {
-		final Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-		intent.setType("image/*");
-		if (outputX != null && outputY != null) {
-			intent.putExtra(CameraCropActivity.EXTRA_OUTPUT_X, outputX);
-			intent.putExtra(CameraCropActivity.EXTRA_OUTPUT_Y, outputY);
-		}
-		if (aspectX != null && aspectY != null) {
-			intent.putExtra(CameraCropActivity.EXTRA_ASPECT_X, aspectX);
-			intent.putExtra(CameraCropActivity.EXTRA_ASPECT_Y, aspectY);
-		}
-		intent.putExtra("scale", true);
-		intent.putExtra("scaleUpIfNeeded", scaleUpIfNeeded);
-		intent.putExtra("crop", "true");
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-		return intent;
-	}
-
 	public static Intent createStatusShareIntent(final Context context, final ParcelableStatus status) {
 		final Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/plain");
@@ -1042,28 +1016,6 @@ public final class Utils implements Constants, TwitterConstants {
         final String timeString = formatToLongTimeString(context, status.timestamp);
         return context.getString(R.string.status_share_subject_format_with_time,
                 status.user_name, status.user_screen_name, timeString);
-	}
-
-	public static Intent createTakePhotoIntent(final Uri uri) {
-		final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-		return intent;
-	}
-
-	public static Intent createTakePhotoIntent(final Uri uri, final Integer outputX, final Integer outputY,
-			final Integer aspectX, final Integer aspectY, final boolean scaleUpIfNeeded) {
-		final Intent intent = new Intent(CameraCropActivity.INTENT_ACTION);
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-		if (outputX != null && outputY != null) {
-			intent.putExtra(CameraCropActivity.EXTRA_OUTPUT_X, outputX);
-			intent.putExtra(CameraCropActivity.EXTRA_OUTPUT_Y, outputY);
-		}
-		if (aspectX != null && aspectY != null) {
-			intent.putExtra(CameraCropActivity.EXTRA_ASPECT_X, aspectX);
-			intent.putExtra(CameraCropActivity.EXTRA_ASPECT_Y, aspectY);
-		}
-		intent.putExtra(CameraCropActivity.EXTRA_SCALE_UP_IF_NEEDED, scaleUpIfNeeded);
-		return intent;
 	}
 
 	public static String encodeQueryParams(final String value) throws IOException {
@@ -1628,7 +1580,7 @@ public final class Utils implements Constants, TwitterConstants {
 		return null;
 	}
 
-	public static Bitmap.CompressFormat getBitmapCompressFormatByMimetype(final String mimeType,
+    public static Bitmap.CompressFormat getBitmapCompressFormatByMimeType(final String mimeType,
 			final Bitmap.CompressFormat def) {
 		final String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
 		if ("jpeg".equalsIgnoreCase(extension) || "jpg".equalsIgnoreCase(extension))
@@ -2959,6 +2911,7 @@ public final class Utils implements Constants, TwitterConstants {
 	}
 
 
+    @SuppressWarnings("SuspiciousSystemArraycopy")
     public static <T extends Parcelable> T[] newParcelableArray(Parcelable[] array, Parcelable.Creator<T> creator) {
         if (array == null) return null;
         final T[] result = creator.newArray(array.length);
@@ -3665,10 +3618,10 @@ public final class Utils implements Constants, TwitterConstants {
         showErrorMessage(context, getErrorMessage(context, action, t), longMessage);
 	}
 
-	public static void showErrorMessage(final Context context, final int action, final String desc,
-			final boolean long_message) {
+    public static void showErrorMessage(final Context context, final int actionRes, final String desc,
+                                        final boolean longMessage) {
 		if (context == null) return;
-		showErrorMessage(context, context.getString(action), desc, long_message);
+        showErrorMessage(context, context.getString(actionRes), desc, longMessage);
 	}
 
 	public static void showErrorMessage(final Context context, final int action, final Throwable t,

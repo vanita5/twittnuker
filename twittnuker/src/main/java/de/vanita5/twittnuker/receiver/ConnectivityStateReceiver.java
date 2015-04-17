@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.receiver;
 
-import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +30,8 @@ import android.util.Log;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.Utils;
+
+import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
 public class ConnectivityStateReceiver extends BroadcastReceiver implements Constants {
 
@@ -44,6 +44,6 @@ public class ConnectivityStateReceiver extends BroadcastReceiver implements Cons
 		}
 		if (!ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) return;
 		startRefreshServiceIfNeeded(context);
-		//TODO start streaming here
+		//TODO start streaming here?
 	}
 }

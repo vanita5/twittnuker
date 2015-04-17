@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.R;
 
 public class AutoRefreshContentPreference extends MultiSelectListPreference implements Constants {
 
-	public static final boolean DEFAULT_ENABLE_HOME_TTMELINE = false;
+    public static final boolean DEFAULT_ENABLE_HOME_TIMELINE = false;
 	public static final boolean DEFAULT_ENABLE_MENTIONS = true;
 	public static final boolean DEFAULT_ENABLE_DIRECT_MESSAGES = true;
 	public static final boolean DEFAULT_ENABLE_TRENDS = false;
@@ -49,7 +49,7 @@ public class AutoRefreshContentPreference extends MultiSelectListPreference impl
 
 	@Override
 	protected boolean[] getDefaults() {
-		return new boolean[] { DEFAULT_ENABLE_HOME_TTMELINE, DEFAULT_ENABLE_MENTIONS, DEFAULT_ENABLE_DIRECT_MESSAGES,
+        return new boolean[]{DEFAULT_ENABLE_HOME_TIMELINE, DEFAULT_ENABLE_MENTIONS, DEFAULT_ENABLE_DIRECT_MESSAGES,
 				DEFAULT_ENABLE_TRENDS };
 	}
 

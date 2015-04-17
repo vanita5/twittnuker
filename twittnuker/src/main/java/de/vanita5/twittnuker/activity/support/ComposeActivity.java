@@ -47,9 +47,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NotificationCompat;
@@ -66,6 +64,7 @@ import android.support.v7.widget.RecyclerView.ItemDecoration;
 import android.support.v7.widget.RecyclerView.State;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ActionMode;
@@ -138,7 +137,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
-import static android.os.Environment.getExternalStorageState;
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ParseUtils.parseString;
 import static de.vanita5.twittnuker.util.ThemeUtils.getComposeThemeResource;
@@ -149,22 +147,17 @@ import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
 import static de.vanita5.twittnuker.util.Utils.getImageUploadStatus;
 import static de.vanita5.twittnuker.util.Utils.getQuoteStatus;
 import static de.vanita5.twittnuker.util.Utils.getShareStatus;
-import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
 public class ComposeActivity extends ThemedFragmentActivity implements TextWatcher, LocationListener,
         OnMenuItemClickListener, OnClickListener, OnEditorActionListener, OnLongClickListener, Callback {
 
 	private static final String FAKE_IMAGE_LINK = "https://www.example.com/fake_image.jpg";
-
 	private static final String EXTRA_IS_POSSIBLY_SENSITIVE = "is_possibly_sensitive";
-
 	private static final String EXTRA_SHOULD_SAVE_ACCOUNTS = "should_save_accounts";
-
 	private static final String EXTRA_ORIGINAL_TEXT = "original_text";
-
-	private static final String EXTRA_TEMP_URI = "temp_uri";
     private static final String EXTRA_SHARE_SCREENSHOT = "share_screenshot";
+
     private final Extractor mExtractor = new Extractor();
     private final Rect mWindowDecorHitRect = new Rect();
 	private TwidereValidator mValidator;
@@ -183,7 +176,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
     private View mAccountSelectorContainer;
 	private MediaPreviewAdapter mMediaPreviewAdapter;
 	private boolean mIsPossiblySensitive, mShouldSaveAccounts;
-	private Uri mTempPhotoUri;
 	private boolean mImageUploaderUsed, mStatusShortenerUsed;
 	private ParcelableStatus mInReplyToStatus;
 	private ParcelableUser mMentionUser;
@@ -270,7 +262,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
         outState.putParcelable(EXTRA_DRAFT, mDraftItem);
         outState.putBoolean(EXTRA_SHOULD_SAVE_ACCOUNTS, mShouldSaveAccounts);
         outState.putString(EXTRA_ORIGINAL_TEXT, mOriginalText);
-        outState.putParcelable(EXTRA_TEMP_URI, mTempPhotoUri);
         super.onSaveInstanceState(outState);
     }
 
@@ -297,30 +288,16 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 	@Override
 	public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
 		switch (requestCode) {
-			case REQUEST_TAKE_PHOTO: {
-				if (resultCode == Activity.RESULT_OK) {
-                    mTask = AsyncTaskUtils.executeTask(new AddMediaTask(this, mTempPhotoUri,
-                            createTempImageUri(), ParcelableMedia.TYPE_IMAGE, true));
-					mTempPhotoUri = null;
-				}
-				break;
-			}
-			case REQUEST_PICK_IMAGE: {
+            case REQUEST_TAKE_PHOTO:
+            case REQUEST_PICK_IMAGE:
+			case REQUEST_OPEN_DOCUMENT: {
 				if (resultCode == Activity.RESULT_OK) {
 					final Uri src = intent.getData();
-                    mTask = AsyncTaskUtils.executeTask(new AddMediaTask(this, src,
-                            createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false));
+					mTask = AsyncTaskUtils.executeTask(new AddMediaTask(this, src,
+                            createTempImageUri(), ParcelableMedia.TYPE_IMAGE, true));
 				}
 				break;
 			}
-				case REQUEST_OPEN_DOCUMENT: {
-					if (resultCode == Activity.RESULT_OK) {
-						final Uri src = intent.getData();
-                    mTask = AsyncTaskUtils.executeTask(new AddMediaTask(this, src,
-                            createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false));
-					}
-					break;
-				}
 			case REQUEST_EDIT_IMAGE: {
 				if (resultCode == Activity.RESULT_OK) {
 					final Uri uri = intent.getData();
@@ -457,9 +434,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
                 break;
             }
             case MENU_ADD_IMAGE: {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT || !openDocument()) {
-                    pickImage();
-                }
+				pickImage();
                 break;
             }
             case MENU_ADD_LOCATION: {
@@ -619,7 +594,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 			mDraftItem = savedInstanceState.getParcelable(EXTRA_DRAFT);
 			mShouldSaveAccounts = savedInstanceState.getBoolean(EXTRA_SHOULD_SAVE_ACCOUNTS);
 			mOriginalText = savedInstanceState.getString(EXTRA_ORIGINAL_TEXT);
-			mTempPhotoUri = savedInstanceState.getParcelable(EXTRA_TEMP_URI);
 		} else {
             // The context was first created
 			final int notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1);
@@ -714,7 +688,11 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setTicker(getString(R.string.draft_saved));
         builder.setContentTitle(getString(R.string.draft_saved));
-        builder.setContentText(text);
+        if (TextUtils.isEmpty(text)) {
+            builder.setContentText(getString(R.string.empty_content));
+        } else {
+        	builder.setContentText(text);
+        }
         builder.setSmallIcon(R.drawable.ic_stat_info);
         builder.setAutoCancel(true);
         final Intent draftsIntent = new Intent(this, DraftsActivity.class);
@@ -955,15 +933,9 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 	}
 
     private boolean pickImage() {
-		final Intent intent = new Intent(Intent.ACTION_PICK);
-		intent.setType("image/*");
-		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-		try {
-			startActivityForResult(intent, REQUEST_PICK_IMAGE);
-		} catch (final ActivityNotFoundException e) {
-			showErrorMessage(this, null, e, false);
-            return false;
-		}
+        final Intent intent = new Intent(this, ImagePickerActivity.class);
+        intent.setAction(INTENT_ACTION_PICK_IMAGE);
+		startActivityForResult(intent, REQUEST_PICK_IMAGE);
         return true;
 	}
 
@@ -1034,18 +1006,9 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 	}
 
     private boolean takePhoto() {
-		final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (!getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) return false;
-        final File cache_dir = getExternalCacheDir();
-        final File file = new File(cache_dir, "tmp_photo_" + System.currentTimeMillis());
-        mTempPhotoUri = Uri.fromFile(file);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, mTempPhotoUri);
-        try {
-            startActivityForResult(intent, REQUEST_TAKE_PHOTO);
-        } catch (final ActivityNotFoundException e) {
-            showErrorMessage(this, null, e, false);
-            return false;
-        }
+        final Intent intent = new Intent(this, ImagePickerActivity.class);
+        intent.setAction(INTENT_ACTION_TAKE_PHOTO);
+		startActivityForResult(intent, REQUEST_TAKE_PHOTO);
         return true;
 	}
 
@@ -1098,7 +1061,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 				&& (mInReplyToStatus == null || mInReplyToStatusId <= 0)) {
 			mIsPossiblySensitive = false;
 			mShouldSaveAccounts = true;
-			mTempPhotoUri = null;
 			mInReplyToStatus = null;
 			mMentionUser = null;
 			mDraftItem = null;

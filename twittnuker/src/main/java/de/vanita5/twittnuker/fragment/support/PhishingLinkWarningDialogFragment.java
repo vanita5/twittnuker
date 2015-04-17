@@ -30,6 +30,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 
 import de.vanita5.twittnuker.R;
@@ -54,6 +55,7 @@ public class PhishingLinkWarningDialogFragment extends BaseSupportDialogFragment
 
 	}
 
+	@NonNull
 	@Override
 	public Dialog onCreateDialog(final Bundle savedInstanceState) {
         final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());

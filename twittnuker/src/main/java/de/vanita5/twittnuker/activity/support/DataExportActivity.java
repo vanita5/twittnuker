@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;

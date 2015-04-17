@@ -23,10 +23,7 @@
 package de.vanita5.twittnuker.activity;
 
 import android.app.Activity;
-import android.content.res.Resources;
-import android.content.res.Resources.Theme;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.CompareUtils;

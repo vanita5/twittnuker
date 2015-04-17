@@ -113,11 +113,8 @@
     <string name="pick_color">Wähle Farbe</string>
     <string name="follow">Folgen</string>
     <string name="unfollow">Entfolgen</string>
-    <string name="bottom_compose_button">Tweet Button unten</string>
-    <string name="bottom_compose_button_summary">Tweet Button am unteren Bildschirmrand (bei großen Bildschirmen empfehlenswert)</string>
     <string name="leftside_compose_button">Tweet Button auf der linken Seite</string>
     <string name="leftside_compose_button_summary">Platziert den Tweet Button links</string>
-    <string name="bottom_send_button">Senden Button unten</string>
     <string name="load_item_limit">Limitierung zu ladender Elemente</string>
     <string name="load_item_limit_summary">Element-Limitierung pro Ladevorgang festlegen</string>
     <string name="load_more_automatically">Lade automatisch mehr Inhalt</string>
@@ -153,10 +150,7 @@
     <string name="reported_user_for_spam">Dieser Benutzer wurde wegen Spam gemeldet.</string>
     <string name="reported_users_for_spam">Als Spammer gemeldete Nutzerkonten.</string>
     <string name="filename_hint">Dateiname</string>
-    <string name="overwrite_confirm">Datei existiert bereits; überschreiben?</string>
-    <string name="save_as">Speichern als</string>
     <string name="please_wait">Bitte warten.</string>
-    <string name="file_saved_to">Datei gespeichert als <xliff:g id="filename">%s</xliff:g> .</string>
     <string name="saved_to_gallery">In Galerie gespeichert.</string>
     <string name="proxy">Proxy</string>
     <string name="http_proxy">HTTP Proxy</string>
@@ -227,9 +221,6 @@
     <string name="tabs">Tabs</string>
     <string name="add_tab">Tab hinzufügen</string>
     <string name="edit_tab">Tab bearbeiten</string>
-    <string name="move_up">Nach oben</string>
-    <string name="move_down">Nach unten</string>
-    <string name="unsaved_change_back_pressed">Du hast ungesicherte Änderungen, drücke zurück erneut um diese zu verwerfen.</string>
     <string name="invalid_settings">Ungültige Einstellungen gefunden.</string>
     <string name="icon">Icon</string>
     <string name="pick_file">Datei auswählen</string>
@@ -257,15 +248,11 @@
     <string name="show_absolute_time_summary">Zeitpunkt der Veröffentlichung von Tweets anzeigen statt vergangener Zeitspanne</string>
     <string name="user_mentions">Erwähnungen</string>
     <string name="dual_pane_layout">2-spaltiges Layout</string>
-    <string name="landscape">Querformat</string>
-    <string name="portrait">Hochformat</string>
     <string name="quick_send">\"Enter\" zum Senden</string>
     <string name="quick_send_summary">Tweet mit \"Enter\" abschicken</string>
-    <string name="unsaved_status">Tweet noch nicht gesendet oder gespeichert.</string>
     <string name="discard">Verwerfen</string>
     <string name="Nitems_selected_quantity_one">1 Element ausgewählt</string>
     <string name="Nitems_selected_quantity_other"><xliff:g id="items">%d</xliff:g> Elemente ausgewählt</string>
-    <string name="view">Ansicht</string>
     <string name="custom_host_mapping">Individuelles Host-Mapping</string>
     <string name="custom_host_mapping_summary">Host-Mapping wie /etc/hosts, ohne zusätzlich erforderliche Rechte</string>
     <string name="host_mapping_host">Host (Bsp.: 127.0.0.1)</string>
@@ -303,8 +290,6 @@
     <string name="incoming_friendships">Ausstehende Folgen-Anfragen</string>
     <string name="send_follow_request">Folgen-Anfrage senden</string>
     <string name="follow_request_sent">Folgen-Anfrage gesendet</string>
-    <string name="separate_retweet_action">Retweet-Funktion trennen</string>
-    <string name="separate_retweet_action_summary">Zeige Aktionen Retweet und Zitat im Tweet Menü</string>
     <string name="status">Tweet</string>
     <string name="preview">Vorschau</string>
     <string name="connection_timeout">Zeitüberschreitung der Verbindung</string>
@@ -436,7 +421,6 @@
     <string name="background_toast_notification">Hintergrundbenachrichtigung</string>
     <string name="background_toast_notification_summary">Benachrichtigungen einblenden, wenn die App in den Hintergrund geht</string>
     <string name="original_status">Original-Tweet</string>
-    <string name="compose_quit_action">Verhalten beim Abbruch</string>
     <string name="ask">Nachfragen</string>
     <string name="no_close_after_status_updated">Eingabemaske offen lassen</string>
     <string name="no_close_after_status_updated_summary">Lässt die Eingabemaske nach dem Senden eines Tweets geöffnet</string>
@@ -458,9 +442,6 @@
     <string name="theme_light">Hell</string>
     <string name="settings_interface">Oberfläche</string>
     <string name="no_rule">Keine Regel</string>
-    <string name="enable_in_mentions">Aktiviere für Mentions</string>
-    <string name="enable_in_home_timeline">Aktiviere für die Home Timeline</string>
-    <string name="enable_for_rts">Aktiviere für Retweets</string>
     <string name="safety">Sicherheit</string>
     <string name="updating_status_notification">Sende Tweet…</string>
     <string name="query">Abfrage</string>
@@ -545,12 +526,6 @@
     <string name="view_replies">Antworten ansehen</string>
     <string name="compact_cards">Kompakt anzeigen</string>
     <string name="compact_cards_summary">Mehr Tweets auf dem Bildschirm</string>
-    <string name="dashclock_home_unread_count_name">Anzahl ungelesene anzeigen</string>
-    <string name="dashclock_home_unread_count_description">Anzahl ungelesene anzeigen</string>
-    <string name="dashclock_mentions_unread_count_name">Anzahl der Erwähnungen anzeigen</string>
-    <string name="dashclock_mentions_unread_count_description">Anzahl der Erwähnungen anzeigen</string>
-    <string name="dashclock_messages_unread_count_name">Anzahl Nachrichten anzeigen</string>
-    <string name="dashclock_messages_unread_count_description">Anzahl ungelesener Nachrichten</string>
     <string name="N_new_statuses_quantity_one"><xliff:g id="items">%d</xliff:g> neuer Tweet</string>
     <string name="N_new_statuses_quantity_other"><xliff:g id="items">%d</xliff:g> neue Tweets</string>
     <string name="N_new_mentions_quantity_one"><xliff:g id="items">%d</xliff:g> neue Erwähnung</string>
@@ -558,6 +533,7 @@
     <string name="N_new_messages_quantity_one"><xliff:g id="items">%d</xliff:g> neue Unterhaltung</string>
     <string name="N_new_messages_quantity_other"><xliff:g id="items">%d</xliff:g> neue Unterhaltungen</string>
     <string name="status_share_subject_format_with_time">Tweet von <xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>) um <xliff:g id="time">%3$s</xliff:g></string>
+    <string name="status_share_text_format_with_link"><xliff:g id="text">%1$s</xliff:g>\n\n<xliff:g id="link">%2$s</xliff:g></string>
     <string name="share_subject_format"><xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>), um <xliff:g id="time">%3$s</xliff:g></string>
     <string name="rate_limit">Rate limit</string>
     <string name="wizard_hint_rate_limit">Falls Rate Limit Probleme auftreten liegt das an Twitter\'s API Beschränkungen.</string>
@@ -572,7 +548,6 @@
     <string name="multi_select">Mehrfachauswahl</string>
     <string name="long_click_to_open_menu">Halten, um das Menü zu öffnen</string>
     <string name="long_click_to_open_menu_summary">Öffnet das Tweet Menü, wenn lange auf einen Tweet gedrückt wird</string>
-    <string name="swipe_back">Zum Schließen wischen</string>
     <string name="tab_display_option_icon">Symbol</string>
     <string name="tab_display_option_label">Beschriftung</string>
     <string name="tab_display_option_icon_and_label">Symbol und Beschriftung</string>
@@ -599,7 +574,6 @@
     <string name="load_more_from_top">Mehr Tweets von oben nachladen</string>
     <string name="load_more_from_top_summary">Sinnvoll, wenn du die Timeline von unten nach oben liest</string>
     <string name="open_with_account">Mit Account öffnen</string>
-    <string name="card_highlight_option">Tweets hervorheben</string>
     <string name="card_highlight_option_highlight">Highlight</string>
     <string name="card_highlight_option_line">Linie</string>
     <string name="timeline_sync_service">Timeline Sync Service</string>
@@ -744,7 +718,6 @@
     <string name="project_name">Twittnuker Projekt</string>
     <string name="stream_notifications_summary">Push-ähnliche Benachrichtigungen beim streamen </string>
     <string name="twidere_project_account">Twidere Projekt</string>
-    <string name="twitter_link_handler">Twitter Links mit Twittnuker öffnen</string>
 
     <string name="mute_user_confirm_message"><xliff:g id="name">%s</xliff:g> muten? Du wirst die Tweets dieses Nutzers nicht mehr sehen, ihm aber trotzdem noch folgen.</string>
     <string name="sort_timeline_by_id_summary">Kann für andere Dienste (Status.net) nützlich sein</string>

@@ -120,7 +120,6 @@ public class CameraCropActivity extends Activity {
 		} catch (final Exception e) {
 			setResult(RESULT_CANCELED);
 			finish();
-			return;
 		}
 	}
 

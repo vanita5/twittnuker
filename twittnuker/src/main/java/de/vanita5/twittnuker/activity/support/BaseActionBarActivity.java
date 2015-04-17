@@ -34,10 +34,8 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
-import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.ShortcutCallback;
-import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
 
@@ -48,14 +46,11 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
         OnFitSystemWindowsListener, SystemWindowsInsetsCallback, IControlBarActivity,
         ShortcutCallback {
 
-	private boolean mInstanceStateSaved, mIsVisible, mIsOnTop;
+    private boolean mInstanceStateSaved;
+    private boolean mIsVisible;
 
     private Rect mSystemWindowsInsets;
     private ArrayList<ControlBarOffsetListener> mControlBarOffsetListeners = new ArrayList<>();
-
-	public MessagesManager getMessagesManager() {
-		return getTwittnukerApplication() != null ? getTwittnukerApplication().getMessagesManager() : null;
-	}
 
     @Override
     public boolean getSystemWindowsInsets(Rect insets) {
@@ -80,10 +75,6 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
 
 	public AsyncTwitterWrapper getTwitterWrapper() {
 		return getTwittnukerApplication() != null ? getTwittnukerApplication().getTwitterWrapper() : null;
-	}
-
-	public boolean isOnTop() {
-		return mIsOnTop;
 	}
 
 	public boolean isVisible() {
@@ -129,10 +120,6 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
 		super.startActivity(intent);
 	}
 
-	protected IBasePullToRefreshFragment getCurrentPullToRefreshFragment() {
-		return null;
-	}
-
     @Override
     public boolean handleKeyboardShortcutSingle(int keyCode, @NonNull KeyEvent event) {
         return false;
@@ -156,22 +143,16 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
     protected void onStart() {
         super.onStart();
         mIsVisible = true;
-        final MessagesManager manager = getMessagesManager();
-        if (manager != null) {
-            manager.addMessageCallback(this);
-        }
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		mInstanceStateSaved = false;
-		mIsOnTop = true;
 	}
 
 	@Override
     protected void onPause() {
-        mIsOnTop = false;
         super.onPause();
     }
 
@@ -189,10 +170,6 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
 	@Override
 	protected void onStop() {
 		mIsVisible = false;
-		final MessagesManager manager = getMessagesManager();
-		if (manager != null) {
-			manager.removeMessageCallback(this);
-		}
 		super.onStop();
 	}
 

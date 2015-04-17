@@ -313,9 +313,6 @@ public final class TwidereLinkify implements Constants {
 //					}
 //				}
 //			}
-			default: {
-				return;
-			}
 
 		}
 	}

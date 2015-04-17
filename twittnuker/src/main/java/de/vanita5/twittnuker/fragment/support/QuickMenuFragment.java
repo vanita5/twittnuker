@@ -56,7 +56,6 @@ import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment.TrendsAd
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.ViewUtils;
 import de.vanita5.twittnuker.view.ExtendedFrameLayout;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
 

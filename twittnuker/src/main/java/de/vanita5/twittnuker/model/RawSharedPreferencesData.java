@@ -49,7 +49,7 @@ public class RawSharedPreferencesData implements JSONParcelable, Constants {
 		}
 	};
 
-	private final Map<String, Object> preferencesMap = new HashMap<String, Object>();
+	private final Map<String, Object> preferencesMap = new HashMap<>();
 
 	public RawSharedPreferencesData(final JSONParcel in) {
 		final JSONIterable json = new JSONIterable(in.getJSON());

@@ -11,7 +11,7 @@
     <string name="remove_location">Rimuovi posizione</string>
     <string name="remove_image">Rimuovi immagine</string>
     <string name="remove_photo">Rimuovi foto</string>
-    <string name="status_hint">Che cosa sta succedendo ?</string>
+  <string name="status_hint">Che sta succedendo?</string>
     <string name="sign_up">Registrati</string>
     <string name="sign_in">Accedi</string>
     <string name="rest_base_url">REST Base URL</string>
@@ -113,11 +113,8 @@
     <string name="pick_color">Scegli colore</string>
     <string name="follow">Segui</string>
     <string name="unfollow">Smetti di seguire</string>
-    <string name="bottom_compose_button">Tasto \"componi\" in basso</string>
-    <string name="bottom_compose_button_summary">Mette il tasto componi nella parte inferiore, è consigliato attivare questa opzione se lo schermo è grande.</string>
     <string name="leftside_compose_button">Tasto componi a sinistra</string>
     <string name="leftside_compose_button_summary">Sposta il tasto \"componi\" a sinistra.</string>
-    <string name="bottom_send_button">Tasto \"invia\" in basso</string>
     <string name="load_item_limit">Limite oggetti caricati</string>
     <string name="load_item_limit_summary">Imposta il limite oggetti per update.</string>
     <string name="load_more_automatically">﻿Caricare automaticamente più contenuti</string>
@@ -153,10 +150,7 @@
     <string name="reported_user_for_spam">Segnala questo utente per spam.</string>
     <string name="reported_users_for_spam">Segnala questi utenti per spam.</string>
     <string name="filename_hint">Nome file</string>
-    <string name="overwrite_confirm">File esistente, sovrascrivere?</string>
-    <string name="save_as">Salva come</string>
     <string name="please_wait">Attendere prego.</string>
-    <string name="file_saved_to">File salvato in <xliff:g id="filename">%s</xliff:g>.</string>
     <string name="saved_to_gallery">Salvato in Galleria.</string>
     <string name="proxy">Proxy</string>
     <string name="http_proxy">HTTP Proxy</string>
@@ -227,9 +221,6 @@
     <string name="tabs">Tab</string>
     <string name="add_tab">Aggiungi tab</string>
     <string name="edit_tab">Modifica tab</string>
-    <string name="move_up">Sposta su</string>
-    <string name="move_down">Sposta giù</string>
-    <string name="unsaved_change_back_pressed">Non hai salvato i cambiamenti, premi INDIETRO ancora per abbandonare.</string>
     <string name="invalid_settings">Rilevate impostazioni non valide.</string>
     <string name="icon">Icona</string>
     <string name="pick_file">Seleziona file</string>
@@ -256,19 +247,15 @@
     <string name="show_absolute_time_summary">Visualizza il tempo assoluto nei tweets</string>
     <string name="user_mentions">Menzioni utente</string>
     <string name="dual_pane_layout">Layout a doppio riquadro</string>
-    <string name="landscape">Landscape</string>
-    <string name="portrait">Portrait</string>
     <string name="quick_send">Premi \"Invio\" per inviare</string>
     <string name="quick_send_summary">Inviare tweet alla pressione di \"Invio\".</string>
-    <string name="unsaved_status">Tweet non ancora salvato o inviato.</string>
     <string name="discard">Scarta</string>
     <string name="Nitems_selected_quantity_one">Un elemento selezionato</string>
     <string name="Nitems_selected_quantity_other"><xliff:g id="items">%d</xliff:g> elementi selezionati</string>
-    <string name="view">Visualizza</string>
     <string name="custom_host_mapping">Mappatura host personalizzata</string>
     <string name="custom_host_mapping_summary">Mappa gli host come in /etc/hosts, ma non richiede permessi aggiuntivi.</string>
     <string name="host_mapping_host">Host</string>
-    <string name="host_mapping_address">Indirizzo (può essere un altro indirizzo host)</string>
+  <string name="host_mapping_address">Indirizzo (Può essere l\'indirizzo di un altro host)</string>
     <string name="add_host_mapping">Aggiungi mappatura host</string>
     <string name="tcp_dns_query">TCP DNS Query</string>
     <string name="tcp_dns_query_summary">Usa il protocollo TCP per effettuare le richieste DNS, utile per evitare il DNS Cache Poisoning.</string>
@@ -277,7 +264,9 @@
     <string name="activities_about_me">Mie Attività</string>
     <string name="activities_by_friends">Attività dagli amici</string>
     <string name="activity_about_me_favorite"><xliff:g id="user">%s</xliff:g> ha inserito il tuo tweet tra i preferiti.</string>
-    <string name="activity_about_me_favorite_multi"><xliff:g id="user">%s</xliff:g> e altri <xliff:g id="count">%d</xliff:g> hanno inserito il tuo tweet tra i preferiti.</string>
+  <string name="activity_about_me_favorite_multi"><xliff:g id="user">%1$s</xliff:g> e <xliff:g id="other">%2$s</xliff:g> ha aggiunto a preferiti il tuo tweet.</string>
+  <string name="activity_about_me_favorited_retweet"><xliff:g id="user">%s</xliff:g> ha aggiunto a preferiti il tuo retweet.</string>
+  <string name="activity_about_me_favorited_retweet_multi"><xliff:g id="user">%1$s</xliff:g> e <xliff:g id="other">%2$s</xliff:g> hanno aggiunto a preferiti il tuo retweet.</string>
     <string name="activity_about_me_follow"><xliff:g id="user">%s</xliff:g> ti sta seguendo.</string>
     <string name="activity_about_me_follow_multi"><xliff:g id="user">%1$s</xliff:g> e <xliff:g id="other">%2$s</xliff:g> ti stanno seguendo.</string>
     <string name="activity_about_me_retweet"><xliff:g id="user">%s</xliff:g> ha retwittato il tuo tweet.</string>
@@ -285,7 +274,7 @@
     <string name="activity_about_me_retweeted_retweet"><xliff:g id="user">%s</xliff:g> ha retweettato il tuo tweet.</string>
     <string name="activity_about_me_retweeted_retweet_multi"><xliff:g id="user">%1$s</xliff:g> e <xliff:g id="other">%2$s</xliff:g> hanno retweettato il tuo retweet.</string>
     <string name="activity_about_me_list_member_added"><xliff:g id="user">%s</xliff:g> ti ha aggiunto a una lista.</string>
-    <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g> ti ha aggiunto alla lista "<xliff:g id="list">%2$s</xliff:g>\"\".</string>
+  <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g> ti ha aggiunto ad una lista <xliff:g id="list">%2$s</xliff:g>\".</string>
     <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> ti ha aggiunto alle sue liste.</string>
     <string name="activity_by_friends_favorite"><xliff:g id="user">%1$s</xliff:g> ha inserito nei preferiti il tweet di<xliff:g id="target">%2$s</xliff:g>.</string>
     <string name="activity_by_friends_favorite_multi"><xliff:g id="user">%1$s</xliff:g> ha inserito tra i preferiti i tweet di <xliff:g id="target">%2$s</xliff:g> e di altri<xliff:g id="count">%3$d</xliff:g>.</string>
@@ -300,8 +289,6 @@
     <string name="incoming_friendships">Richieste di seguirti in attesa</string>
     <string name="send_follow_request">Invia richiesta di follow</string>
     <string name="follow_request_sent">Richiesta di follow inviata</string>
-    <string name="separate_retweet_action">Azione di retweet separata</string>
-    <string name="separate_retweet_action_summary">Mostra sia le azioni retweet che quota nel menu del tweet</string>
     <string name="status">Tweet</string>
     <string name="preview">Anteprima</string>
     <string name="connection_timeout">Timeout connessione</string>
@@ -431,7 +418,6 @@
     <string name="background_toast_notification">Notifica in background</string>
     <string name="background_toast_notification_summary">Mostra le notifiche toast quando si passa in background</string>
     <string name="original_status">Tweet originale</string>
-    <string name="compose_quit_action">Quando si annulla \"componi\"</string>
     <string name="ask">Chiedi</string>
     <string name="no_close_after_status_updated">Mantieni \"Componi\" aperto dopo aver inviato il tweet</string>
     <string name="no_close_after_status_updated_summary">Un piccolo regalo per i chiacchieroni</string>
@@ -453,9 +439,6 @@
     <string name="theme_light">Chiaro</string>
     <string name="settings_interface">Interfaccia</string>
     <string name="no_rule">Nessuna regola</string>
-    <string name="enable_in_mentions">Abilita nelle menzioni</string>
-    <string name="enable_in_home_timeline">Abilita nella timeline</string>
-    <string name="enable_for_rts">Abilita per i Retweet</string>
     <string name="safety">Sicurezza</string>
     <string name="updating_status_notification">Invio del tweet&#8230;</string>
     <string name="query">Interroga</string>
@@ -535,12 +518,6 @@
     <string name="view_replies">Visualizza Risposte</string>
     <string name="compact_cards">Schede compatte</string>
     <string name="compact_cards_summary">Visualizza più schede sullo schermo</string>
-    <string name="dashclock_home_unread_count_name">Conteggio tweet non letti</string>
-    <string name="dashclock_home_unread_count_description">Contatore tweet non letti</string>
-    <string name="dashclock_mentions_unread_count_name">Conteggio menzioni non lette</string>
-    <string name="dashclock_mentions_unread_count_description">Contatore menzioni non lette</string>
-    <string name="dashclock_messages_unread_count_name">Conteggio messaggi diretti non letti</string>
-    <string name="dashclock_messages_unread_count_description">Contatore messaggi diretti non letti</string>
     <string name="N_new_statuses_quantity_one"><xliff:g id="items">%d</xliff:g> nuovo tweet</string>
     <string name="N_new_statuses_quantity_other"><xliff:g id="items">%d</xliff:g> nuovi tweet</string>
     <string name="N_new_mentions_quantity_one"><xliff:g id="items">%d</xliff:g> nuova menzione</string>
@@ -561,7 +538,6 @@
     <string name="center">Centro</string>
     <string name="multi_select">Selezione multipla</string>
     <string name="long_click_to_open_menu">Tenere premuto per aprire il menu</string>
-    <string name="swipe_back">Swipe per chiudere</string>
     <string name="tab_display_option_icon">Icona</string>
     <string name="tab_display_option_label">Label</string>
     <string name="tab_display_option_icon_and_label">Icon and label</string>
@@ -588,12 +564,10 @@
     <string name="status_text_limit">Limite di testo del Tweet</string>
     <string name="load_more_from_top">Carica gli elementi dall\'alto</string>
     <string name="load_more_from_top_summary">Utile se si preferisce leggere dal basso verso l\'alto</string>
-    <string name="twitter_link_handler">Twitter link handler</string>
     <string name="compose_now">Compose Now</string>
     <string name="compose_now_summary">Sostituisce la scorciatoia a Google Now con la Compose screen</string>
     <string name="compose_now_action">Azione Compose Now</string>
     <string name="open_with_account">Apri con account</string>
-    <string name="card_highlight_option">Opzioni di evidenziazione schede</string>
     <string name="card_highlight_option_highlight">Evidenzia</string>
     <string name="card_highlight_option_line">Linea</string>
     <string name="timeline_sync_service">Servizio sincronizzazione timeline</string>
@@ -662,10 +636,12 @@
     <string name="media_preview_style">Stile anteprima media</string>
     <string name="draft_saved">Progetto salvato</string>
     <string name="open_twitter_links">Apri i link di Twitter</string>
+  <string name="N_others_quantity_other">altri <xliff:g id="count">%d</xliff:g></string>
     <string name="type_name_to_search">Digita un nome da cercare</string>
     <string name="no_user_found">Nessun utente trovato</string>
     <string name="members">Membri</string>
     <string name="read_from_bottom">Leggi dal basso</string>
+  <string name="follows">Segui</string>
     <string name="belongs_to">Appartiene a</string>
     <string name="blocked_by_user_summary">Sei stato bloccato da <xliff:g id="name">%s</xliff:g></string>
     <string name="select_accounts">Seleziona gli account</string>
@@ -685,4 +661,8 @@
     <string name="scale">Scala</string>
     <string name="user_type_verified">Verificato</string>
     <string name="user_type_protected">Protetto</string>
+  <string name="share_status">Condividi tweet</string>
+  <string name="pebble_notifications">Notifiche Pebble</string>
+  <string name="pebble_notifications_summary">Invia Notifiche al tuo Pebble</string>
+  <string name="tweet_from_name">Tweet da <xliff:g id="text">%1$s</xliff:g></string>
 </resources>

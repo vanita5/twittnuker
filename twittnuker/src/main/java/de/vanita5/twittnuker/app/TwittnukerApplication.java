@@ -52,7 +52,6 @@ import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.MessagesManager;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
@@ -88,7 +87,6 @@ public class TwittnukerApplication extends Application implements Constants,
 	private MultiSelectManager mMultiSelectManager;
 	private TwidereImageDownloader mImageDownloader, mFullImageDownloader;
 	private DiskCache mDiskCache, mFullDiskCache;
-	private MessagesManager mCroutonsManager;
 	private SQLiteOpenHelper mSQLiteOpenHelper;
 	private HostAddressResolver mResolver;
 	private SQLiteDatabase mDatabase;
@@ -188,11 +186,6 @@ public class TwittnukerApplication extends Application implements Constants,
     public Bus getMessageBus() {
         return mMessageBus;
     }
-
-	public MessagesManager getMessagesManager() {
-		if (mCroutonsManager != null) return mCroutonsManager;
-		return mCroutonsManager = new MessagesManager(this);
-	}
 
 	public MultiSelectManager getMultiSelectManager() {
 		if (mMultiSelectManager != null) return mMultiSelectManager;

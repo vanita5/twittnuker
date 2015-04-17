@@ -243,8 +243,6 @@ public interface SharedPreferenceConstants {
 	String KEY_LINK_TO_QUOTED_TWEET = "link_to_quoted_tweet";
 	@Preference(type = BOOLEAN)
 	String KEY_BACKGROUND_TOAST_NOTIFICATION = "background_toast_notification";
-	@Preference(type = STRING)
-	String KEY_COMPOSE_QUIT_ACTION = "compose_quit_action";
 	@Preference(type = BOOLEAN)
 	String KEY_NO_CLOSE_AFTER_TWEET_SENT = "no_close_after_tweet_sent";
 	@Preference(type = BOOLEAN)

@@ -11,7 +11,7 @@
     <string name="remove_location">Eliminar ubicación</string>
     <string name="remove_image">Quitar imagen</string>
     <string name="remove_photo">Eliminar foto</string>
-    <string name="status_hint">¿Qué está pasando?</string>
+    <string name="status_hint">¿Qué esta sucediendo?</string>
     <string name="sign_up">Únete</string>
     <string name="sign_in">Inicia sesión</string>
     <string name="rest_base_url">REST Base URL</string>
@@ -87,11 +87,11 @@
     <string name="display_profile_image">Imagen de perfil para mostrar</string>
     <string name="image_load_summary">Desactivarlo aumentará la velocidad de desplazamiento en la lista y reducirá el uso de datos.</string>
     <string name="in_reply_to_name">En respuesta a <xliff:g id="user_name">%s</xliff:g></string>
-  <string name="name_retweeted"><xliff:g id="user_name">%s</xliff:g> retwitteó</string>
-  <string name="name_and_another_retweeted"><xliff:g id="user_name">%1$s</xliff:g> y otros retwittearon</string>
-  <string name="name_and_count_retweeted"><xliff:g id="user_name">%1$s</xliff:g> y <xliff:g id="retweet_count">%2$d</xliff:g> otros retwittearon</string>
-  <string name="N_retweeted_quantity_one"><xliff:g id="retweet_count">%d</xliff:g> retweet</string>
-  <string name="N_retweeted_quantity_other"><xliff:g id="retweet_count">%d</xliff:g> retweets</string>
+    <string name="name_retweeted"><xliff:g id="user_name">%s</xliff:g> retwitteó</string>
+    <string name="name_and_another_retweeted"><xliff:g id="user_name">%1$s</xliff:g> y otros retwittearon</string>
+    <string name="name_and_count_retweeted"><xliff:g id="user_name">%1$s</xliff:g> y <xliff:g id="retweet_count">%2$d</xliff:g> otros retwittearon</string>
+    <string name="N_retweeted_quantity_one"><xliff:g id="retweet_count">%d</xliff:g> retweet</string>
+    <string name="N_retweeted_quantity_other"><xliff:g id="retweet_count">%d</xliff:g> retweets</string>
     <string name="retweeted_by_name">Retuiteado por <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> y otros <xliff:g id="retweet_count">%2$d</xliff:g> han retuiteado esto</string>
     <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> han retuiteado esto</string>
@@ -113,11 +113,8 @@
     <string name="pick_color">Elegir color</string>
     <string name="follow">Seguir</string>
     <string name="unfollow">Dejar de seguir</string>
-    <string name="bottom_compose_button">Botón «redactar» en la parte inferior</string>
-    <string name="bottom_compose_button_summary">Reubicar el botón «redactar»  en la parte inferior, puedes habilitar esto si dispones de una gran pantalla.</string>
     <string name="leftside_compose_button">Botón «redactar» en el lado izquierdo</string>
     <string name="leftside_compose_button_summary">Colocar el botón de escribir en la izquierda.</string>
-    <string name="bottom_send_button">Botón «enviar» en la parte inferior</string>
     <string name="load_item_limit">Límite de carga de elemento</string>
     <string name="load_item_limit_summary">Establecer el límite por carga.</string>
     <string name="load_more_automatically">Cargar automáticamente más contenido</string>
@@ -153,11 +150,8 @@
     <string name="reported_user_for_spam">Reportat a este usuario por spam.</string>
     <string name="reported_users_for_spam">Estos usuarios han sido reportados por spam.</string>
     <string name="filename_hint">Nombre de archivo</string>
-    <string name="overwrite_confirm">El archivo existe, ¿sobreescribirlo?</string>
-    <string name="save_as">Guardar como</string>
     <string name="please_wait">Por favor espera.</string>
-    <string name="file_saved_to">Guardar archivo a <xliff:g id="filename">%s</xliff:g> .</string>
-  <string name="saved_to_gallery">Guardado en la galería.</string>
+    <string name="saved_to_gallery">Guardado en la galería.</string>
     <string name="proxy">Proxy</string>
     <string name="http_proxy">HTTP Proxy</string>
     <string name="http_proxy_summary">Usar HTTP Proxy para todas las peticiones de la red.</string>
@@ -170,7 +164,7 @@
     <string name="twitter_muted_users">Usuarios silenciados</string>
     <string name="message_user_muted">Usuario añadido a la lista de filtros. No verás tweets de estos usuarios en tu cronología ni en tu lista de menciones.</string>
     <string name="message_users_muted">Usuarios añadidos a la lista de filtros. No verás tweets de estos usuarios en tu cronología ni en tu lista de menciones.</string>
-  <string name="message_user_unmuted">Eliminar este usuario de la lista filtrada.</string>
+    <string name="message_user_unmuted">Eliminar este usuario de la lista filtrada.</string>
     <string name="inbox">Mensaje</string>
     <string name="load_images">Cargar imágenes</string>
     <string name="other_settings">Otras configuraciones</string>
@@ -193,10 +187,10 @@
     <string name="list_members">Lista de miembros</string>
     <string name="list_subscribers">Lista de subscriptores</string>
     <string name="type_to_compose">Escriba para componer</string>
-  <string name="lists">Listas</string>
+    <string name="lists">Listas</string>
     <string name="users_lists">Listas del usuario</string>
     <string name="lists_following_user">Listas que sigue este usuario</string>
-  <string name="lists_following_you">Listas siguiéndote</string>
+    <string name="lists_following_you">Listas siguiéndote</string>
     <string name="item_3_minutes">3 minutos</string>
     <string name="item_5_minutes">5 minutos</string>
     <string name="item_10_minutes">10 minutos</string>
@@ -215,7 +209,7 @@
     <string name="accounts">Cuentas</string>
     <string name="account">Cuenta</string>
     <string name="mention_this_user">Mencionar a este usuario</string>
-  <string name="mention_user_name">Mencionar <xliff:g id="name">%1$s</xliff:g></string>
+    <string name="mention_user_name">Mencionar <xliff:g id="name">%1$s</xliff:g></string>
     <string name="signing_in_please_wait">Iniciando sesión, por favor espere o pulse atrás para salir.</string>
     <string name="connectivity">Conectividad</string>
     <string name="add_member">Agregar un miembro</string>
@@ -227,9 +221,6 @@
     <string name="tabs">Pestañas</string>
     <string name="add_tab">Agregar pestaña</string>
     <string name="edit_tab">Editar pestaña</string>
-    <string name="move_up">Desplazar hacia arriba</string>
-    <string name="move_down">Desplazar hacia abajo</string>
-    <string name="unsaved_change_back_pressed">Tiene cambios sin guardar, presione atrás nuevamente para descartar.</string>
     <string name="invalid_settings">Se encontraron ajustes no válidos.</string>
     <string name="icon">Icono</string>
     <string name="pick_file">Selecciona el archivo</string>
@@ -256,15 +247,11 @@
     <string name="show_absolute_time_summary">Mostrar tiempo absoluto en los tweets</string>
     <string name="user_mentions">Menciones del usuario</string>
     <string name="dual_pane_layout">Diseño con doble panel</string>
-    <string name="landscape">Apaisado</string>
-    <string name="portrait">Vertical</string>
     <string name="quick_send">Pulsa «Intro» para enviar</string>
     <string name="quick_send_summary">Enviar el tweet al pulsar \"Intro\".</string>
-    <string name="unsaved_status">Tweet no enviado o guardado aún.</string>
     <string name="discard">Descartar</string>
     <string name="Nitems_selected_quantity_one">1 elemento seleccionado</string>
     <string name="Nitems_selected_quantity_other"><xliff:g id="items">%d</xliff:g> elementos seleccionados</string>
-    <string name="view">Vista</string>
     <string name="custom_host_mapping">Asignación de host personalizado</string>
     <string name="custom_host_mapping_summary">Funciona como \"/etc/hosts\", pero no requiere permisos adicionales.</string>
     <string name="host_mapping_host">Host</string>
@@ -277,33 +264,31 @@
     <string name="activities_about_me">Actividades sobre mí</string>
     <string name="activities_by_friends">Actividades de amigos</string>
     <string name="activity_about_me_favorite"><xliff:g id="user">%s</xliff:g> marcó tu tweet como favorito.</string>
-  <string name="activity_about_me_favorite_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> marcaron como favorito tu tweet.</string>
+    <string name="activity_about_me_favorite_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> marcaron como favorito tu tweet.</string>
     <string name="activity_about_me_favorited_retweet"><xliff:g id="user">%s</xliff:g> marcó como favorito tu retweet.</string>
     <string name="activity_about_me_favorited_retweet_multi"><xliff:g id="user">%1$s</xliff:g> y <xliff:g id="other">%2$s</xliff:g> marcaron como favorito tu retweet.</string>
     <string name="activity_about_me_follow"><xliff:g id="user">%s</xliff:g> te está siguiendo.</string>
-  <string name="activity_about_me_follow_multi"><xliff:g id="user">%1$s</xliff:g> y <xliff:g id="other">%2$s</xliff:g> te están siguiendo.</string>
+    <string name="activity_about_me_follow_multi"><xliff:g id="user">%1$s</xliff:g> y <xliff:g id="other">%2$s</xliff:g> te están siguiendo.</string>
     <string name="activity_about_me_retweet"><xliff:g id="user">%s</xliff:g> te retwitteó.</string>
-  <string name="activity_about_me_retweet_multi"><xliff:g id="user">%1$s</xliff:g> y <xliff:g id="other">%2$s</xliff:g> te han retweedteado.</string>
-  <string name="activity_about_me_retweeted_retweet"><xliff:g id="user">%s</xliff:g> han retweedteado tu retweet.</string>
-  <string name="activity_about_me_retweeted_retweet_multi"><xliff:g id="user">%1$s</xliff:g> y <xliff:g id="other">%2$s</xliff:g> te han retweedteado.</string>
+    <string name="activity_about_me_retweet_multi"><xliff:g id="user">%1$s</xliff:g> y <xliff:g id="other">%2$s</xliff:g> te han retweedteado.</string>
+    <string name="activity_about_me_retweeted_retweet"><xliff:g id="user">%s</xliff:g> han retweedteado tu retweet.</string>
+    <string name="activity_about_me_retweeted_retweet_multi"><xliff:g id="user">%1$s</xliff:g> y <xliff:g id="other">%2$s</xliff:g> te han retweedteado.</string>
     <string name="activity_about_me_list_member_added"><xliff:g id="usuario">%s</xliff:g> te añadió a una lista.</string>
-  <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g> te agregaron a la lista  "<xliff:g id="list">%2$s</xliff:g>\".</string>
-  <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%1$s</xliff:g> y <xliff:g id="other">%2$s</xliff:g> te han agregado a sus listas.</string>
+    <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g> te agregaron a la lista  "<xliff:g id="list">%2$s</xliff:g>\".</string>
+    <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%1$s</xliff:g> y <xliff:g id="other">%2$s</xliff:g> te han agregado a sus listas.</string>
     <string name="activity_by_friends_favorite"><xliff:g id="user">%1$s</xliff:g> marcó como favorito el tweet de <xliff:g id="target">%2$s</xliff:g>.</string>
-  <string name="activity_by_friends_favorite_multi"><xliff:g id="user">%1$s</xliff:g> marcó como favorito <xliff:g id="target">%2$s</xliff:g> y <xliff:g id="other">%3$s</xliff:g>\'s tweet.</string>
+    <string name="activity_by_friends_favorite_multi"><xliff:g id="user">%1$s</xliff:g> marcó como favorito <xliff:g id="target">%2$s</xliff:g> y <xliff:g id="other">%3$s</xliff:g>\'s tweet.</string>
     <string name="activity_by_friends_follow"><xliff:g id="user">%1$s</xliff:g> ahora sigue a <xliff:g id="target">%2$s</xliff:g>.</string>
-  <string name="activity_by_friends_follow_multi"><xliff:g id="user">%1$s</xliff:g> está siguiendo <xliff:g id="target">%2$s</xliff:g> y <xliff:g id="other">%3$s</xliff:g>.</string>
+    <string name="activity_by_friends_follow_multi"><xliff:g id="user">%1$s</xliff:g> está siguiendo <xliff:g id="target">%2$s</xliff:g> y <xliff:g id="other">%3$s</xliff:g>.</string>
     <string name="activity_by_friends_retweet"><xliff:g id="user">%1$s</xliff:g> ha retuiteado el tuit de <xliff:g id="target">%2$s</xliff:g>.</string>
-  <string name="activity_by_friends_list_member_added"><xliff:g id="user">%1$s</xliff:g> añadio a <xliff:g id="target">%2$s</xliff:g> a una lista.</string>
+    <string name="activity_by_friends_list_member_added"><xliff:g id="user">%1$s</xliff:g> añadio a <xliff:g id="target">%2$s</xliff:g> a una lista.</string>
     <string name="activity_by_friends_list_created"><xliff:g id="user">%1$s</xliff:g> ha creado la lista <xliff:g id="target">%2$s</xliff:g>.</string>
-  <string name="activity_by_friends_list_created_multi"><xliff:g id="user">%1$s</xliff:g> creó la lista <xliff:g id="target">%2$s</xliff:g> y <xliff:g id="other">%1$s</xliff:g>.</string>
+    <string name="activity_by_friends_list_created_multi"><xliff:g id="user">%1$s</xliff:g> creó la lista <xliff:g id="target">%2$s</xliff:g> y <xliff:g id="other">%1$s</xliff:g>.</string>
     <string name="status_not_updated">Tweet no enviado.</string>
     <string name="status_not_updated_summary">Tweet no enviado y guardado en borradores.</string>
     <string name="incoming_friendships">Solicitudes de seguimiento pendientes</string>
     <string name="send_follow_request">Enviar petición de seguimiento</string>
     <string name="follow_request_sent">Petición de seguimiento enviada</string>
-    <string name="separate_retweet_action">Separar la acción de retweet</string>
-    <string name="separate_retweet_action_summary">Mostrar al mismo tiempo retweet y citar en el menú del tweet</string>
     <string name="status">Tweet</string>
     <string name="preview">Previsualización</string>
     <string name="connection_timeout">Tiempo de espera de conexión agotado</string>
@@ -383,7 +368,7 @@
     <string name="quote_protected_status_notice">No se recomienda citar tweets protegidos.</string>
     <string name="edit_draft">Editar borrador</string>
     <string name="profile_image">Imagen de perfil</string>
-  <string name="your_profile_image">Tu imagen de perfil</string>
+    <string name="your_profile_image">Tu imagen de perfil</string>
     <string name="mention_user">Mención <xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">Color del tema</string>
     <string name="wrong_url_format">El formato del URL es incorrecto.</string>
@@ -433,7 +418,6 @@
     <string name="background_toast_notification">Notificaciones emergentes en segundo plano</string>
     <string name="background_toast_notification_summary">Mostrar notificaciones emergentes cuando esté activa en segundo plano</string>
     <string name="original_status">Tweet original</string>
-    <string name="compose_quit_action">Al cancelar «redactar»</string>
     <string name="ask">Preguntar</string>
     <string name="no_close_after_status_updated">Mantener «redactar» abierto después de enviar el tweet</string>
     <string name="no_close_after_status_updated_summary">Un pequeño regalo para chatterbox</string>
@@ -455,9 +439,6 @@
     <string name="theme_light">Claro</string>
     <string name="settings_interface">Interfaz</string>
     <string name="no_rule">Sin regla</string>
-    <string name="enable_in_mentions">Habilitar en menciones</string>
-    <string name="enable_in_home_timeline">Habilitar en la cronología</string>
-    <string name="enable_for_rts">Habilitar para RTs</string>
     <string name="safety">Seguro</string>
     <string name="updating_status_notification">Enviando tweet&#8230;</string>
     <string name="query">Consulta</string>
@@ -471,6 +452,8 @@
     <string name="card_animation">Animación en tarjetas</string>
     <string name="name_first">Mostrar nombre primero</string>
     <string name="next_step">Siguiente</string>
+    <string name="previous_item">Anterior</string>
+    <string name="next_item">Siguiente</string>
     <string name="settings_wizard">Asistente de configuración</string>
     <string name="wizard_page_welcome_title">Bienvenido</string>
     <string name="wizard_page_welcome_text">Gracias por escoger Twittnuker.\n¿Quieres configurarlo ahora?</string>
@@ -534,12 +517,6 @@
     <string name="view_replies">Ver respuestas</string>
     <string name="compact_cards">Tarjetas compactas</string>
     <string name="compact_cards_summary">Visualizar en pantalla más tarjetas</string>
-    <string name="dashclock_home_unread_count_name">Contador \"No Leídos\" en Inicio de Twittnuker</string>
-    <string name="dashclock_home_unread_count_description">Contador \"No Leídos\" en Inicio</string>
-    <string name="dashclock_mentions_unread_count_name">Contador \"No Leídos\" en menciones Twittnuker</string>
-    <string name="dashclock_mentions_unread_count_description">Contador \"No Leídos\" en menciones</string>
-    <string name="dashclock_messages_unread_count_name">Contador \"No Leídos\" en mensajes Twittnuker</string>
-    <string name="dashclock_messages_unread_count_description">Contador \"No Leídos\" en mensajes</string>
     <string name="N_new_statuses_quantity_one"><xliff:g id="items">%d</xliff:g> nuevo tweet</string>
     <string name="N_new_statuses_quantity_other"><xliff:g id="items">%d</xliff:g> nuevos tweets</string>
     <string name="N_new_mentions_quantity_one"><xliff:g id="items">%d</xliff:g> nueva mención</string>
@@ -559,7 +536,6 @@
     <string name="center">Centro</string>
     <string name="multi_select">Selección múltiple</string>
     <string name="long_click_to_open_menu">Mantener pulsado para abrir menú</string>
-    <string name="swipe_back">Deslizar para cerrar</string>
     <string name="tab_display_option_icon">Icono</string>
     <string name="tab_display_option_label">Etiqueta</string>
     <string name="tab_display_option_icon_and_label">Icono y etiqueta</string>
@@ -586,12 +562,10 @@
     <string name="status_text_limit">Límite de caracteres del tweet</string>
     <string name="load_more_from_top">Cargar más desde arriba</string>
     <string name="load_more_from_top_summary">Útil si prefieres leer desde abajo hacia arriba</string>
-    <string name="twitter_link_handler">Controlador de link de Twitter</string>
     <string name="compose_now">Redactar ahora</string>
     <string name="compose_now_summary">Reemplaza el atajo de Google Now por la pantalla de redactar tweets</string>
     <string name="compose_now_action">Acción de redactar ahora</string>
     <string name="open_with_account">Abrir desde otra cuenta</string>
-    <string name="card_highlight_option">Opción de destaque de tarjetas</string>
     <string name="card_highlight_option_highlight">Resaltar</string>
     <string name="card_highlight_option_line">Subrayar</string>
     <string name="timeline_sync_service">Servicio de sincronización de la cronología</string>
@@ -636,6 +610,73 @@
     <string name="replies">Respuestas</string>
     <string name="profile_banner">Encabezado</string>
     <string name="profile">Perfil</string>
+    <string name="listed">Listado</string>
+    <string name="state_blocking">Bloqueando</string>
+    <string name="load_more">Cargar más</string>
+    <string name="photo">Foto</string>
+    <string name="gallery">Galería</string>
+    <string name="remove">Eliminar</string>
+    <string name="load_media">Cargar multimedia</string>
+    <string name="profile_text_color">Color del texto</string>
+    <string name="profile_background_color">Color del fondo</string>
+    <string name="profile_link_color_main_color">Color enlaces (color primario)</string>
+    <string name="retweet_quote_confirm_title">¿Retweet a tus seguidores?</string>
+    <string name="font">Fuente</string>
+    <string name="size">Tamaño</string>
+    <string name="just_now">Justo ahora</string>
+    <string name="requested">Solicitado</string>
+    <string name="round">Redonda</string>
+    <string name="square">Cuadrada</string>
+    <string name="profile_image_style">Estilo imagen perfil</string>
+    <string name="media_preview_style">Estilo de la previsualización multimedia</string>
+    <string name="draft_saved">Borrador guardado</string>
+    <string name="open_twitter_links">Abrir los enlaces de Twitter</string>
+    <string name="N_others_quantity_one">otro</string>
+    <string name="N_others_quantity_other"><xliff:g id="count">%d</xliff:g> otros</string>
+    <string name="type_name_to_search">Escribe nombre a buscar</string>
+    <string name="no_user_found">Ningún usuario encontrado</string>
+    <string name="members">Miembros</string>
+    <string name="subscribers">Suscriptor</string>
+    <string name="read_from_bottom">Leer desde el final</string>
+    <string name="register">Registrar</string>
+    <string name="follows">Sigue</string>
+    <string name="belongs_to">Pertenece a</string>
+    <string name="blocked_by_user_summary">Fuiste bloqueado por <xliff:g id="name">%s</xliff:g></string>
+    <string name="select_accounts">Seleccione la cuenta</string>
+    <string name="media_preview">Previsualización multimedia</string>
+    <string name="no_location">Sin localización</string>
+    <string name="getting_location">Buscando localización</string>
+    <string name="save_to_gallery">Guardar en la galería</string>
+    <string name="unknown_location">Localización desconocida</string>
+    <string name="import_export_settings">Importar/Exportar ajustes</string>
+    <string name="user_protected_summary">Necesitas mandar una petición de seguimiento a este usuario protegido para ver sus tweets</string>
+    <string name="no_account">Sin cuenta</string>
+    <string name="from_name">De <xliff:g id="name">%1$s</xliff:g></string>
+    <string name="from_name_and_name">De <xliff:g id="name">%1$s</xliff:g> y <xliff:g id="name">%2$s</xliff:g></string>
+    <string name="from_name_and_N_others">De <xliff:g id="name">%1$s</xliff:g> y <xliff:g id="name">%2$d</xliff:g> otros</string>
+    <string name="activated_accounts">Cuentas activadas</string>
+    <string name="crop">Recortar</string>
+    <string name="scale">Escalar</string>
+    <string name="user_type_verified">Verificado</string>
+    <string name="user_type_protected">Protegido</string>
+    <string name="tweet_hashtag">Tweet #<xliff:g id="text">%1$s</xliff:g></string>
+    <string name="share_status">Compartir tweet</string>
+    <string name="pebble_notifications">Notificaciones Pebble</string>
+    <string name="pebble_notifications_summary">Enviar notificaciones a tu Pebble</string>
+    <string name="tweet_from_name">Tweet de <xliff:g id="text">%1$s</xliff:g></string>
+    <string name="hide_card_actions">Ocultar acciones de las tarjetas</string>
+    <string name="N_statuses_quantity_one"><xliff:g id="count">%d</xliff:g> tweet</string>
+    <string name="N_statuses_quantity_other"><xliff:g id="count">%d</xliff:g> tweets</string>
+    <string name="N_favorites_quantity_one"><xliff:g id="count">%d</xliff:g> favoritos</string>
+    <string name="N_favorites_quantity_other"><xliff:g id="count">%d</xliff:g> favoritos</string>
+    <string name="drafts_hint_messages">Tus tweets sin enviar se guardarán aquí</string>
+    <string name="keyboard_shortcuts">Atajos de teclado</string>
+    <string name="keyboard_shortcut_hint">Presionar teclas</string>
+    <string name="conflicts_with_name">Conflictos con <xliff:g id="name">%s</xliff:g></string>
+    <string name="overwrite">Sobreescribir</string>
+    <string name="navigation">Navegación</string>
+    <string name="reset_to_default">Restablecer a los valores por defecto</string>
+    <string name="reset_keyboard_shortcuts_confirm">¿Restablecer a valores por defecto los atajos de teclado?</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Contador en pestaña para tweets y mensajes no leídos</string>
@@ -665,8 +706,6 @@
     <string name="refresh_before_streaming_summary">La cronología y las menciones se refrescarán automáticamente tras empezar la actualización automática</string>
     <string name="stream_notifications">Notificaciones</string>
     <string name="stream_notifications_summary">Notificaciones push</string>
-    <string name="pebble_notifications">Pebble</string>
-    <string name="pebble_notifications_summary">Enviar notificaciones a Pebble</string>
 
     <string name="love">Con amor</string>
     <string name="standard_notifications">Notificaciones estándar</string>

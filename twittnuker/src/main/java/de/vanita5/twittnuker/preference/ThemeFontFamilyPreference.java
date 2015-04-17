@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.preference;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.text.SpannableString;
 import android.text.style.TypefaceSpan;
 import android.util.AttributeSet;
@@ -62,7 +63,7 @@ public class ThemeFontFamilyPreference extends AutoInvalidateListPreference impl
 	}
 
 	@Override
-	protected void onBindView(final View view) {
+	protected void onBindView(@NonNull final View view) {
 		super.onBindView(view);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
 		final TextView summary = (TextView) view.findViewById(android.R.id.summary);

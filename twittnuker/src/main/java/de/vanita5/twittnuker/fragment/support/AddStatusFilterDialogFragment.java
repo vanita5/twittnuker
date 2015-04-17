@@ -22,11 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import static de.vanita5.twittnuker.util.ContentValuesCreator.createFilteredUser;
-import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
-import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
-import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentResolver;
@@ -36,6 +31,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 
 import com.twitter.Extractor;
@@ -54,6 +50,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import static de.vanita5.twittnuker.util.ContentValuesCreator.createFilteredUser;
+import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
+import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
+
 public class AddStatusFilterDialogFragment extends BaseSupportDialogFragment implements OnMultiChoiceClickListener,
 		OnClickListener {
 
@@ -61,16 +61,16 @@ public class AddStatusFilterDialogFragment extends BaseSupportDialogFragment imp
 
 	private final Extractor mExtractor = new Extractor();
 	private FilterItemInfo[] mFilterItems;
-	private final Set<FilterItemInfo> mCheckedFilterItems = new HashSet<FilterItemInfo>();
+    private final Set<FilterItemInfo> mCheckedFilterItems = new HashSet<>();
 
 	@Override
 	public void onClick(final DialogInterface dialog, final int which) {
-		final Set<Long> user_ids = new HashSet<Long>();
-		final Set<String> keywords = new HashSet<String>();
-		final Set<String> sources = new HashSet<String>();
-		final ArrayList<ContentValues> user_values = new ArrayList<ContentValues>();
-		final ArrayList<ContentValues> keyword_values = new ArrayList<ContentValues>();
-		final ArrayList<ContentValues> source_values = new ArrayList<ContentValues>();
+        final Set<Long> user_ids = new HashSet<>();
+        final Set<String> keywords = new HashSet<>();
+        final Set<String> sources = new HashSet<>();
+        final ArrayList<ContentValues> user_values = new ArrayList<>();
+        final ArrayList<ContentValues> keyword_values = new ArrayList<>();
+        final ArrayList<ContentValues> source_values = new ArrayList<>();
 		for (final FilterItemInfo info : mCheckedFilterItems) {
 			final Object value = info.value;
 			if (value instanceof ParcelableUserMention) {
@@ -117,6 +117,7 @@ public class AddStatusFilterDialogFragment extends BaseSupportDialogFragment imp
 		}
 	}
 
+    @NonNull
 	@Override
 	public Dialog onCreateDialog(final Bundle savedInstanceState) {
         final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
@@ -148,7 +149,7 @@ public class AddStatusFilterDialogFragment extends BaseSupportDialogFragment imp
 		final Bundle args = getArguments();
 		if (args == null || !args.containsKey(EXTRA_STATUS)) return new FilterItemInfo[0];
 		final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
-		final ArrayList<FilterItemInfo> list = new ArrayList<FilterItemInfo>();
+        final ArrayList<FilterItemInfo> list = new ArrayList<>();
 		list.add(new FilterItemInfo(FilterItemInfo.FILTER_TYPE_USER, status));
 		final ParcelableUserMention[] mentions = status.mentions;
 		if (mentions != null) {
@@ -158,7 +159,7 @@ public class AddStatusFilterDialogFragment extends BaseSupportDialogFragment imp
 				}
 			}
 		}
-		final HashSet<String> hashtags = new HashSet<String>();
+        final HashSet<String> hashtags = new HashSet<>();
         hashtags.addAll(mExtractor.extractHashtags(status.text_plain));
         for (final String hashtag : hashtags) {
             list.add(new FilterItemInfo(FilterItemInfo.FILTER_TYPE_KEYWORD, hashtag));

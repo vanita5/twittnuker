@@ -248,7 +248,9 @@
             android:horizontalSpacing="@dimen/element_spacing_xsmall"
             android:verticalSpacing="@dimen/element_spacing_xsmall">
 
-            <include layout="@layout/layout_card_media_preview"/>
+            <include
+                layout="@layout/layout_card_media_preview"
+                tools:ignore="DuplicateIncludedIds"/>
 
         </de.vanita5.twittnuker.view.CardMediaContainer>
 

@@ -108,11 +108,8 @@
     <string name="pick_color">Escolher cor</string>
     <string name="follow">Seguir</string>
     <string name="unfollow">Deixar de seguir</string>
-    <string name="bottom_compose_button">Botão de escrever embaixo</string>
-    <string name="bottom_compose_button_summary">Coloca o botão de escrever na parte de baixo da tela, você pode ativá-lo se sua tela for grande.</string>
     <string name="leftside_compose_button">Botão de escrever no lado esquerdo</string>
     <string name="leftside_compose_button_summary">Coloca o botão de escrever para a esquerda da tela.</string>
-    <string name="bottom_send_button">Botão de enviar embaixo</string>
     <string name="load_item_limit">Limite de itens para carregar</string>
     <string name="load_item_limit_summary">Definir limite de itens por carregamento.</string>
     <string name="load_more_automatically">Carregar conteúdo adicional automaticamente</string>
@@ -148,10 +145,7 @@
     <string name="reported_user_for_spam">Usuário denunciado por spam.</string>
     <string name="reported_users_for_spam">Usuários denunciados como spam.</string>
     <string name="filename_hint">Nome do arquivo</string>
-    <string name="overwrite_confirm">Arquivo já existe, deseja substituí-lo?</string>
-    <string name="save_as">Salvar como</string>
     <string name="please_wait">Por favor, espere.</string>
-    <string name="file_saved_to">Arquivo salvo para <xliff:g id="filename">%s</xliff:g> .</string>
     <string name="proxy">Proxy</string>
     <string name="http_proxy">HTTP Proxy</string>
     <string name="http_proxy_summary">Usar HTTP Proxy para todas as solicitações de rede.</string>
@@ -220,9 +214,6 @@
     <string name="tabs">Abas</string>
     <string name="add_tab">Adicionar aba</string>
     <string name="edit_tab">Editar aba</string>
-    <string name="move_up">Para cima</string>
-    <string name="move_down">Para baixo</string>
-    <string name="unsaved_change_back_pressed">Você tem configurações não salvas, pressione voltar para descartar.</string>
     <string name="invalid_settings">Encontradas configurações inválidas.</string>
     <string name="icon">Ícone</string>
     <string name="pick_file">Selecionar arquivo</string>
@@ -249,15 +240,11 @@
     <string name="show_absolute_time_summary">Mostrar hora real nos tweets</string>
     <string name="user_mentions">Menções do usuário</string>
     <string name="dual_pane_layout">Design em Painel Duplo</string>
-    <string name="landscape">Paisagem</string>
-    <string name="portrait">Retrato</string>
     <string name="quick_send">Apertar Enter para Enviar</string>
     <string name="quick_send_summary">Enviar tweet ao apertar \"Enter\".</string>
-    <string name="unsaved_status">O tweet ainda não foi enviado nem salvo.</string>
     <string name="discard">Descartar</string>
     <string name="Nitems_selected_quantity_one">1 item selecionado</string>
     <string name="Nitems_selected_quantity_other"><xliff:g id="items">%d</xliff:g> itens selecionados</string>
-    <string name="view">Ver</string>
     <string name="custom_host_mapping">Mapeamento de hosts personalizado</string>
     <string name="custom_host_mapping_summary">Mapear hosts tais como /etc/hosts, mas não requer outras permissões adicionais.</string>
     <string name="host_mapping_host">Host</string>
@@ -292,8 +279,6 @@
     <string name="incoming_friendships">Solicitações pendentes</string>
     <string name="send_follow_request">Enviar solicitação para seguir</string>
     <string name="follow_request_sent">Solicitação enviada</string>
-    <string name="separate_retweet_action">Ação de retweetar separada</string>
-    <string name="separate_retweet_action_summary">Mostrar o retweet normal e com citação no menu de tweets</string>
     <string name="status">Tweetar</string>
     <string name="preview">Visualizar</string>
     <string name="connection_timeout">Tempo de espera da conexão</string>
@@ -424,7 +409,6 @@
     <string name="background_toast_notification">Notificação toast em segundo plano</string>
     <string name="background_toast_notification_summary">Exibir notificações toast quando estiver rodando em segundo plano</string>
     <string name="original_status">Tweet original</string>
-    <string name="compose_quit_action">Ao abortar a composição</string>
     <string name="ask">Perguntar</string>
     <string name="no_close_after_status_updated">Manter a tela de edição aberta após o tweet ser enviado</string>
     <string name="no_close_after_status_updated_summary">Um presentinho para os tagarelas</string>
@@ -446,9 +430,6 @@
     <string name="theme_light">Claro</string>
     <string name="settings_interface">Interface</string>
     <string name="no_rule">Sem regras</string>
-    <string name="enable_in_mentions">Habilitar nas menções</string>
-    <string name="enable_in_home_timeline">Habilitar na linha do tempo</string>
-    <string name="enable_for_rts">Habilitar em RTs</string>
     <string name="safety">Segurança</string>
     <string name="updating_status_notification">Enviando tweet&#8230;</string>
     <string name="query">Pesquisar</string>
@@ -527,12 +508,6 @@
     <string name="view_replies">Ver Respostas</string>
     <string name="compact_cards">Compactar cartões</string>
     <string name="compact_cards_summary">Exibir mais cartões na tela</string>
-    <string name="dashclock_home_unread_count_name">Contagem de não-lidos na tela</string>
-    <string name="dashclock_home_unread_count_description">Tela inicial com contagem</string>
-    <string name="dashclock_mentions_unread_count_name">Contagem de menções não lidas</string>
-    <string name="dashclock_mentions_unread_count_description">Contagem de menções não lidas</string>
-    <string name="dashclock_messages_unread_count_name">Contagem de novas mensagens</string>
-    <string name="dashclock_messages_unread_count_description">Contagem de novas mensagens</string>
     <string name="N_new_statuses_quantity_one"><xliff:g id="items">%d</xliff:g> novo tweet</string>
     <string name="N_new_statuses_quantity_other"><xliff:g id="items">%d</xliff:g> novos tweets</string>
     <string name="N_new_mentions_quantity_one"><xliff:g id="items">%d</xliff:g> nova menção</string>
@@ -552,7 +527,6 @@
     <string name="center">Centro</string>
     <string name="multi_select">Multisseleção</string>
     <string name="long_click_to_open_menu">Longo clique para abrir o menu</string>
-    <string name="swipe_back">Deslize para fechar</string>
     <string name="tab_display_option_icon">Ícone</string>
     <string name="tab_display_option_label">Rótulo</string>
     <string name="tab_display_option_icon_and_label">Ícone e Rótulo</string>
@@ -579,12 +553,10 @@
     <string name="status_text_limit">Limite do texto do tweet</string>
     <string name="load_more_from_top">Carregar mais do topo</string>
     <string name="load_more_from_top_summary">Útil se você prefere ler de baixo pra cima</string>
-    <string name="twitter_link_handler">Manipulador de links do Twitter</string>
     <string name="compose_now">Compor Agora</string>
     <string name="compose_now_summary">Substituir o atalho do Google Now pela tela de Composição</string>
     <string name="compose_now_action">Compor Ação</string>
     <string name="open_with_account">Abrir com conta</string>
-    <string name="card_highlight_option">Destacar posição do card</string>
     <string name="card_highlight_option_highlight">Destaques</string>
     <string name="card_highlight_option_line">Linha</string>
     <string name="timeline_sync_service">Serviço de sincronização da Timeline</string>

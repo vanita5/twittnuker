@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:title="@string/theme">
 
 	<PreferenceCategory
@@ -19,10 +20,10 @@
         android:title="@string/style"/>
 
     <de.vanita5.twittnuker.preference.ColorPickerPreference
-        android:defaultValue="@color/branding_color"
         android:key="theme_color"
         android:order="22"
-        android:title="@string/theme_color"/>
+        android:title="@string/theme_color"
+        app:defaultColor="@color/branding_color"/>
 
     <de.vanita5.twittnuker.preference.ColorPickerPreference
         android:defaultValue="@color/twittnuker_material_dark"

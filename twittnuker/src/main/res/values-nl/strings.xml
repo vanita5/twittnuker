@@ -106,11 +106,8 @@
   <string name="pick_color">Kleur kiezen</string>
   <string name="follow">Volgen</string>
   <string name="unfollow">Ontvolgen</string>
-  <string name="bottom_compose_button">Opstel-knop onder</string>
-  <string name="bottom_compose_button_summary">Zet de opstel-knop aan de onderkant, u kunt dit gebruiken als uw scherm groot is.</string>
   <string name="leftside_compose_button">Linkerkant opstel-knop</string>
   <string name="leftside_compose_button_summary">Zet de opstel-knop naar links.</string>
-  <string name="bottom_send_button">Verstuur knop onderaan</string>
   <string name="load_item_limit">Tweetlijst limiet</string>
   <string name="load_item_limit_summary">Lengte tweetlijst bij laden.</string>
   <string name="load_more_automatically">Laad meer inhoud automatisch</string>
@@ -146,10 +143,7 @@
   <string name="reported_user_for_spam">Rapporteer deze gebruiker voor spam.</string>
   <string name="reported_users_for_spam">Rapporteer deze gebruikers voor spam.</string>
   <string name="filename_hint">Bestandsnaam</string>
-  <string name="overwrite_confirm">Bestand bestaat, overschrijven?</string>
-  <string name="save_as">Opslaan als</string>
   <string name="please_wait">Een ogenblik geduld.</string>
-  <string name="file_saved_to">Bestand opgeslagen op <xliff:g id="filename">%s</xliff:g> .</string>
   <string name="proxy">Proxy</string>
   <string name="http_proxy">HTTP-Proxy</string>
   <string name="http_proxy_summary">HTTP-Proxy gebruiken voor alle netwerk verzoeken.</string>
@@ -215,9 +209,6 @@
   <string name="tabs">Tabbladen</string>
   <string name="add_tab">Voeg een tabblad toe</string>
   <string name="edit_tab">Wijzig tabblad</string>
-  <string name="move_up">Omhoog</string>
-  <string name="move_down">Omlaag</string>
-  <string name="unsaved_change_back_pressed">Je hebt onopgeslagen wijzigingen, klik nogmaals op TERUG om te verwijderen.</string>
   <string name="invalid_settings">Ongeldige instellingen gevonden.</string>
   <string name="icon">Icoon</string>
   <string name="pick_file">Kies bestand</string>
@@ -244,15 +235,11 @@
   <string name="show_absolute_time_summary">Laat absolute tijd in tweets zien</string>
   <string name="user_mentions">Gebruiker vermeldingen</string>
   <string name="dual_pane_layout">Dubbel Paneel Lay-out</string>
-  <string name="landscape">Landschap</string>
-  <string name="portrait">Portret</string>
   <string name="quick_send">Druk op \"Enter\" om te versturen</string>
   <string name="quick_send_summary">Verstuur tweet met \"Enter\".</string>
-  <string name="unsaved_status">Tweet nog niet verstuurd of opgeslagen.</string>
   <string name="discard">Verwerp</string>
   <string name="Nitems_selected_quantity_one">1 item geselecteerd</string>
   <string name="Nitems_selected_quantity_other"><xliff:g id="items">%d</xliff:g> items geselecteerd</string>
-  <string name="view">Bekijk</string>
   <string name="custom_host_mapping">Aangepaste host toewijzingen</string>
   <string name="custom_host_mapping_summary">Host toewijzingen zoals /etc/hosts, maar heeft geen aanvullende rechten nodig.</string>
   <string name="host_mapping_host">Host</string>
@@ -286,8 +273,6 @@
   <string name="incoming_friendships">Openstaande volg-verzoeken</string>
   <string name="send_follow_request">Verstuur verzoek om te volgen</string>
   <string name="follow_request_sent">Volg-verzoek verstuurd</string>
-  <string name="separate_retweet_action">Aparte retweet actie</string>
-  <string name="separate_retweet_action_summary">Toon zowel retweet en citaat actie in tweet menu</string>
   <string name="status">Tweet</string>
   <string name="preview">Voorbeeld</string>
   <string name="connection_timeout">Connectie timeout</string>
@@ -416,7 +401,6 @@
   <string name="background_toast_notification">Achtergrond Toast melding</string>
   <string name="background_toast_notification_summary">Laat Toast melding zien wanneer er naar de achtergrond geschakeld wordt</string>
   <string name="original_status">Originele tweet</string>
-  <string name="compose_quit_action">Bij afbreken van \'\'componeren\'\'</string>
   <string name="ask">Vraag</string>
   <string name="no_close_after_status_updated">Hou \"Componeren\" open na versturen van een tweet</string>
   <string name="no_close_after_status_updated_summary">Een klein cadeau voor chatterbox</string>
@@ -438,9 +422,6 @@
   <string name="theme_light">Licht</string>
   <string name="settings_interface">Interface</string>
   <string name="no_rule">Geen regel</string>
-  <string name="enable_in_mentions">Activeer mentions</string>
-  <string name="enable_in_home_timeline">Inschakelen in thuis tijdlijn</string>
-  <string name="enable_for_rts">Inschakelen voor retweets</string>
   <string name="safety">Veiligheid</string>
   <string name="updating_status_notification">Tweet versturen&#8230;</string>
   <string name="query">Vraag</string>
@@ -519,12 +500,6 @@
   <string name="view_replies">Bekijk Reacties</string>
   <string name="compact_cards">Compacte kaarten</string>
   <string name="compact_cards_summary">Toon meer kaarten op het scherm</string>
-  <string name="dashclock_home_unread_count_name">Twittnuker aantal ongelezen tijdlijn tweets</string>
-  <string name="dashclock_home_unread_count_description">Aantal ongelezen tijdlijn tweets</string>
-  <string name="dashclock_mentions_unread_count_name">Twittnuker aantal ongelezen vermeldingen</string>
-  <string name="dashclock_mentions_unread_count_description">Aantal ongelezen vermeldingen</string>
-  <string name="dashclock_messages_unread_count_name">Twittnuker aantal ongelezen berichten</string>
-  <string name="dashclock_messages_unread_count_description">Aantal ongelezen berichten</string>
   <string name="N_new_statuses_quantity_one"><xliff:g id="items">%d</xliff:g> nieuwe tweet</string>
   <string name="N_new_statuses_quantity_other"><xliff:g id="items">%d</xliff:g> nieuwe tweets</string>
   <string name="N_new_mentions_quantity_one"><xliff:g id="items">%d</xliff:g> nieuwe vermelding</string>
@@ -544,7 +519,6 @@
   <string name="center">Centrum</string>
   <string name="multi_select">Selecteer meerdere</string>
   <string name="long_click_to_open_menu">Lang indrukken om menu te openen</string>
-  <string name="swipe_back">Swipe om te sluiten</string>
   <string name="tab_display_option_icon">Icoon</string>
   <string name="tab_display_option_label">Label</string>
   <string name="tab_display_option_icon_and_label">Icoon en label</string>
@@ -575,12 +549,10 @@
   <string name="status_text_limit">tweet tekst limiet</string>
   <string name="load_more_from_top">Laad meer</string>
   <string name="load_more_from_top_summary">Handig als je graag van beneden naar boven leest</string>
-  <string name="twitter_link_handler">Twitter hyperlink dienst</string>
   <string name="compose_now">Nu opstellen</string>
   <string name="compose_now_summary">Vervangt de Google Now-snelkoppeling voor het opstelscherm</string>
   <string name="compose_now_action">Nu opstellen-actie</string>
   <string name="open_with_account">Openen met account</string>
-  <string name="card_highlight_option">Kaart markeren optie</string>
   <string name="card_highlight_option_highlight">Markeren</string>
   <string name="card_highlight_option_line">Lijn</string>
   <string name="timeline_sync_service">Tijdlijnsynchronisatieservice</string>

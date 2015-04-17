@@ -24,7 +24,6 @@
   <string name="leftside_compose_button_summary">Letakkan butang karang ke kiri.</string>
   <string name="load_more_automatically_summary">Memuatkan lebih kandungan (e.g. gambar, peta, status) secara automatik</string>
   <string name="quote_format_summary">\"[TEKS]\" = teks Tweet\n\"[NAMA] = nama pengguna Twitter</string>
-  <string name="overwrite_confirm">Fail telah wujud, tindihkan?</string>
   <string name="load_images">Memuatkan gambar</string>
   <string name="image_uploader_default">Lalai (Twitter)</string>
   <string name="error_message_image_upload_failed">Gagal memuat naik imej.</string>

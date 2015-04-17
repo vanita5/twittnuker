@@ -51,7 +51,7 @@ public class SharedPreferencesData implements JSONParcelable, Constants {
 		}
 	};
 
-	private final Map<String, Object> preferencesMap = new HashMap<String, Object>();
+	private final Map<String, Object> preferencesMap = new HashMap<>();
 
 	public SharedPreferencesData(final JSONParcel in) {
 		final Map<String, Preference> supportedMap = DataImportExportUtils.getSupportedPreferencesMap();

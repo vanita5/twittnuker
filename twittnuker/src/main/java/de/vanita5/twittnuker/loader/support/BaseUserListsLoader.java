@@ -22,13 +22,14 @@
 
 package de.vanita5.twittnuker.loader.support;
 
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
+
+import java.util.Collections;
+import java.util.List;
 
 import twitter4j.CursorSupport;
 import twitter4j.PageableResponseList;
@@ -36,12 +37,11 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserList;
 
-import java.util.Collections;
-import java.util.List;
+import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 
 public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<ParcelableUserList>> {
 
-	protected final NoDuplicatesArrayList<ParcelableUserList> mData = new NoDuplicatesArrayList<ParcelableUserList>();
+    protected final NoDuplicatesArrayList<ParcelableUserList> mData = new NoDuplicatesArrayList<>();
 	protected final long mAccountId;
 	private final long mCursor;
 

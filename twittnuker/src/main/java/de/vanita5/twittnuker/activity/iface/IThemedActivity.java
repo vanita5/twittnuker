@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.activity.iface;
 
-import android.content.res.Resources;
-
 public interface IThemedActivity {
 
     int getCurrentThemeBackgroundAlpha();

@@ -35,10 +35,9 @@ import java.util.HashMap;
 
 public final class ServiceUtils implements Constants {
 
-	private static HashMap<Context, ServiceUtils.ServiceBinder> sConnectionMap = new HashMap<Context, ServiceUtils.ServiceBinder>();
+    private static HashMap<Context, ServiceUtils.ServiceBinder> sConnectionMap = new HashMap<>();
 
 	public static ServiceToken bindToService(final Context context, final Intent intent) {
-
 		return bindToService(context, intent, null);
 	}
 
@@ -58,13 +57,18 @@ public final class ServiceUtils implements Constants {
 		return null;
 	}
 
+    public static void unbindFromService(final ServiceToken token) {
+        final ServiceBinder serviceBinder = sConnectionMap.get(token.wrappedContext);
+        if (serviceBinder == null) return;
+        token.wrappedContext.unbindService(serviceBinder);
+    }
+
 	public static class ServiceToken {
 
-		ContextWrapper wrapped_context;
+        private final ContextWrapper wrappedContext;
 
 		ServiceToken(final ContextWrapper context) {
-
-			wrapped_context = context;
+            wrappedContext = context;
 		}
 	}
 
@@ -73,13 +77,11 @@ public final class ServiceUtils implements Constants {
 		private final ServiceConnection mCallback;
 
 		public ServiceBinder(final ServiceConnection callback) {
-
 			mCallback = callback;
 		}
 
 		@Override
 		public void onServiceConnected(final ComponentName className, final android.os.IBinder service) {
-
 			if (mCallback != null) {
 				mCallback.onServiceConnected(className, service);
 			}
@@ -87,7 +89,6 @@ public final class ServiceUtils implements Constants {
 
 		@Override
 		public void onServiceDisconnected(final ComponentName className) {
-
 			if (mCallback != null) {
 				mCallback.onServiceDisconnected(className);
 			}

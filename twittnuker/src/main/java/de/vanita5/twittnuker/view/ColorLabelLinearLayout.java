@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
@@ -87,7 +88,7 @@ public class ColorLabelLinearLayout extends LinearLayout implements IColorLabelV
 	}
 
 	@Override
-	protected void dispatchDraw(final Canvas canvas) {
+    protected void dispatchDraw(@NonNull final Canvas canvas) {
 		mHelper.dispatchDrawBackground(canvas);
 		super.dispatchDraw(canvas);
 		mHelper.dispatchDrawLabels(canvas);

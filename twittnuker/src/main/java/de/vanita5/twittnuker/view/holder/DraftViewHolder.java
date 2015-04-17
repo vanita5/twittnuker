@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.view.holder;
 
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;

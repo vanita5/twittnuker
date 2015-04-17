@@ -46,12 +46,12 @@ public final class FileUtils {
 
 	/**
 	 * Copies a file to a new location preserving the file date.
-	 * <p>
+     * <p/>
 	 * This method copies the contents of the specified source file to the
 	 * specified destination file. The directory holding the destination file is
 	 * created if it does not exist. If the destination file exists, then this
 	 * method will overwrite it.
-	 * <p>
+     * <p/>
 	 * <strong>Note:</strong> This method tries to preserve the file's last
 	 * modified date/times using {@link File#setLastModified(long)}, however it
 	 * is not guaranteed that the operation will succeed. If the modification
@@ -67,8 +67,10 @@ public final class FileUtils {
 	public static void copyFile(final File srcFile, final File destFile) throws IOException {
 		if (srcFile == null) throw new NullPointerException("Source must not be null");
 		if (destFile == null) throw new NullPointerException("Destination must not be null");
-		if (srcFile.exists() == false) throw new FileNotFoundException("Source '" + srcFile + "' does not exist");
-		if (srcFile.isDirectory()) throw new IOException("Source '" + srcFile + "' exists but is a directory");
+        if (!srcFile.exists())
+            throw new FileNotFoundException("Source '" + srcFile + "' does not exist");
+        if (srcFile.isDirectory())
+            throw new IOException("Source '" + srcFile + "' exists but is a directory");
 		if (srcFile.getCanonicalPath().equals(destFile.getCanonicalPath()))
 			throw new IOException("Source '" + srcFile + "' and destination '" + destFile + "' are the same");
 		final File parentFile = destFile.getParentFile();
@@ -82,14 +84,15 @@ public final class FileUtils {
 	}
 
 	// -----------------------------------------------------------------------
+
 	/**
 	 * Copies a file to a directory preserving the file date.
-	 * <p>
+     * <p/>
 	 * This method copies the contents of the specified source file to a file of
 	 * the same name in the specified destination directory. The destination
 	 * directory is created if it does not exist. If the destination file
 	 * exists, then this method will overwrite it.
-	 * <p>
+     * <p/>
 	 * <strong>Note:</strong> This method tries to preserve the file's last
 	 * modified date/times using {@link File#setLastModified(long)}, however it
 	 * is not guaranteed that the operation will succeed. If the modification
@@ -101,11 +104,10 @@ public final class FileUtils {
 	 * @throws NullPointerException if source or destination is null
 	 * @throws IOException if source or destination is invalid
 	 * @throws IOException if an IO error occurs during copying
-	 * @see #copyFile(File, File, boolean)
 	 */
 	public static void copyFileToDirectory(final File srcFile, final File destDir) throws IOException {
 		if (destDir == null) throw new NullPointerException("Destination must not be null");
-		if (destDir.exists() && destDir.isDirectory() == false)
+        if (destDir.exists() && !destDir.isDirectory())
 			throw new IllegalArgumentException("Destination '" + destDir + "' is not a directory");
 		final File destFile = new File(destDir, srcFile.getName());
 		copyFile(srcFile, destFile);
@@ -113,12 +115,12 @@ public final class FileUtils {
 
 	/**
 	 * Unconditionally close a <code>Closeable</code>.
-	 * <p>
+     * <p/>
 	 * Equivalent to {@link Closeable#close()}, except any exceptions will be
 	 * ignored. This is typically used in finally blocks.
-	 * <p>
+     * <p/>
 	 * Example code:
-	 * 
+     * <p/>
 	 * <pre>
 	 * Closeable closeable = null;
 	 * try {
@@ -147,12 +149,12 @@ public final class FileUtils {
 
 	/**
 	 * Unconditionally close an <code>InputStream</code>.
-	 * <p>
+     * <p/>
 	 * Equivalent to {@link InputStream#close()}, except any exceptions will be
 	 * ignored. This is typically used in finally blocks.
-	 * <p>
+     * <p/>
 	 * Example code:
-	 * 
+     * <p/>
 	 * <pre>
 	 * byte[] data = new byte[1024];
 	 * InputStream in = null;
@@ -175,12 +177,12 @@ public final class FileUtils {
 
 	/**
 	 * Unconditionally close an <code>OutputStream</code>.
-	 * <p>
+     * <p/>
 	 * Equivalent to {@link OutputStream#close()}, except any exceptions will be
 	 * ignored. This is typically used in finally blocks.
-	 * <p>
+     * <p/>
 	 * Example code:
-	 * 
+     * <p/>
 	 * <pre>
 	 * byte[] data = &quot;Hello, World&quot;.getBytes();
 	 * 
@@ -226,7 +228,7 @@ public final class FileUtils {
 			output = fos.getChannel();
 			final long size = input.size();
 			long pos = 0;
-			long count = 0;
+            long count;
 			while (pos < size) {
 				count = size - pos > FILE_COPY_BUFFER_SIZE ? FILE_COPY_BUFFER_SIZE : size - pos;
 				pos += output.transferFrom(input, pos, count);

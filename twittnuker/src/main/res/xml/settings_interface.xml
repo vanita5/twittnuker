@@ -28,7 +28,7 @@
 		android:title="@string/unread_count"
 		android:summary="@string/unread_count_summary"/>
 
-	<de.vanita5.twittnuker.preference.LeftsideComposeButtonPreference
+	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
 		android:defaultValue="false"
 		android:key="leftside_compose_button"
 		android:summary="@string/leftside_compose_button_summary"

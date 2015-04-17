@@ -48,7 +48,6 @@ import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
-import de.vanita5.twittnuker.fragment.iface.IBasePullToRefreshFragment;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.fragment.support.SearchFragment;
 import de.vanita5.twittnuker.util.ColorUtils;
@@ -124,19 +123,6 @@ public class LinkHandlerActivity extends BaseActionBarActivity implements System
 			}
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	protected IBasePullToRefreshFragment getCurrentPullToRefreshFragment() {
-        final Fragment fragment = getCurrentVisibleFragment();
-		if (fragment instanceof IBasePullToRefreshFragment)
-			return (IBasePullToRefreshFragment) fragment;
-		else if (fragment instanceof SupportFragmentCallback) {
-			final Fragment curr = ((SupportFragmentCallback) fragment).getCurrentVisibleFragment();
-            if (curr instanceof IBasePullToRefreshFragment)
-                return (IBasePullToRefreshFragment) curr;
-		}
-		return null;
 	}
 
 	@Override

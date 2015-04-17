@@ -27,6 +27,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 
 import de.vanita5.twittnuker.R;
@@ -52,6 +53,7 @@ public class DestroyUserListDialogFragment extends BaseSupportDialogFragment imp
 		}
 	}
 
+	@NonNull
 	@Override
 	public Dialog onCreateDialog(final Bundle savedInstanceState) {
         final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());

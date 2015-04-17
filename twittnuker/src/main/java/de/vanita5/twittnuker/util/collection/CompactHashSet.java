@@ -23,6 +23,8 @@ package de.vanita5.twittnuker.util.collection;
 // update CompactIdentityHashSet.java, UniqueSet.java and
 // SoftHashMapIndex.java accordingly.
 
+import android.support.annotation.NonNull;
+
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -98,6 +100,7 @@ public class CompactHashSet<E> extends java.util.AbstractSet<E> {
 	 * @return an Iterator over the elements in this set.
 	 * @see ConcurrentModificationException
 	 */
+    @NonNull
 	public Iterator<E> iterator() {
 		return new CompactHashIterator<E>();
 	}
@@ -249,6 +252,7 @@ public class CompactHashSet<E> extends java.util.AbstractSet<E> {
 		modCount++;
 	}
 
+    @NonNull
 	public Object[] toArray() {
 		Object[] result = new Object[elements];
 		Object[] objects = this.objects;
@@ -265,8 +269,9 @@ public class CompactHashSet<E> extends java.util.AbstractSet<E> {
 	}
 
 	// not sure if this needs to have generics
+    @NonNull
 	@SuppressWarnings("unchecked")
-	public <T> T[] toArray(T[] a) {
+    public <T> T[] toArray(@NonNull T[] a) {
 		int size = elements;
 		if (a.length < size)
 			a = (T[])java.lang.reflect.Array.newInstance(

@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -56,7 +57,7 @@ public class ProfileBannerSpace extends View {
 	}
 
     @Override
-    protected boolean fitSystemWindows(Rect insets) {
+    protected boolean fitSystemWindows(@NonNull Rect insets) {
         mSystemWindowsInsets.set(insets);
         return super.fitSystemWindows(insets);
     }
@@ -67,7 +68,7 @@ public class ProfileBannerSpace extends View {
 	 * @param canvas an unused parameter.
 	 */
 	@Override
-	public void draw(final Canvas canvas) {
+    public void draw(@NonNull final Canvas canvas) {
 	}
 
 	@Override
