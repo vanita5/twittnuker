@@ -474,8 +474,9 @@
     <string name="card_animation">Scroll Animation</string>
     <string name="name_first">Name bevorzugen</string>
     <string name="name_first_summary">Benutzernamen statt den @Screennamen zeigen</string>
-    <string name="next">Weiter</string>
-    <string name="previous">Zurück</string>
+    <string name="next_step">Weiter</string>
+    <string name="previous_item">Zurück</string>
+    <string name="next_item">Weiter</string>
     <string name="settings_wizard">Einstellungen</string>
     <string name="wizard_page_welcome_title">Willkomen</string>
     <string name="wizard_page_welcome_text">Danke, dass du dich für Twittnuker entschieden hast.\nMöchtest du Twittnuker jetzt einrichten?</string>

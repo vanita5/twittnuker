@@ -21,7 +21,8 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:gravity="center_vertical"
@@ -29,9 +30,10 @@
 	android:orientation="horizontal"
 	android:padding="@dimen/element_spacing_small">
 
-	<ImageView
+    <de.vanita5.twittnuker.view.ShapedImageView
 		android:id="@android:id/icon"
 		android:layout_width="@dimen/icon_size_list_item_small"
+        style="?profileImageStyle"
 		android:layout_height="@dimen/icon_size_list_item_small"
 		android:contentDescription="@string/icon"
 		android:scaleType="fitCenter"/>

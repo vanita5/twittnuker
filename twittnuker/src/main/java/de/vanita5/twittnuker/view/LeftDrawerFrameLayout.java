@@ -27,12 +27,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.ViewUtils;
 
 public class LeftDrawerFrameLayout extends FrameLayout {
 
@@ -50,8 +49,7 @@ public class LeftDrawerFrameLayout extends FrameLayout {
 
 	public LeftDrawerFrameLayout(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
-        final Drawable bg = ThemeUtils.getWindowBackground(context, ThemeUtils.getDrawerThemeResource(context));
-		ViewUtils.setBackground(this, bg);
+        ThemeUtils.setupDrawerBackground(context, this);
 		setWillNotDraw(false);
 		mClipPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 	}
@@ -82,7 +80,7 @@ public class LeftDrawerFrameLayout extends FrameLayout {
 	}
 
 	@Override
-	protected void dispatchDraw(final Canvas canvas) {
+    protected void dispatchDraw(@NonNull final Canvas canvas) {
 		super.dispatchDraw(canvas);
 		if (mClipEnabled && mPercentOpen > 0 && mPercentOpen < 1) {
 			final int left = Math.round(getWidth() * (1 - (1 - mPercentOpen) * (1 - mScrollScale)));
