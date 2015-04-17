@@ -38,10 +38,11 @@ import static de.vanita5.twittnuker.util.Utils.restartActivity;
 
 public abstract class BaseThemedActivity extends Activity implements IThemedActivity {
 
-	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
-			mCurrentActionBarColor;
+    private int mCurrentThemeResource;
+    private int mCurrentThemeColor;
+    private int mCurrentThemeBackgroundAlpha;
+	private int mCurrentActionBarColor;
 	private String mCurrentThemeFontFamily;
-	private Theme mTheme;
     private String mCurrentThemeBackgroundOption;
 
 	@Override
@@ -57,11 +58,6 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     @Override
 	public final int getCurrentThemeResourceId() {
 		return mCurrentThemeResource;
-	}
-
-    @Override
-    public Resources getDefaultResources() {
-        return super.getResources();
 	}
 
     @Override
@@ -83,27 +79,9 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     public abstract int getThemeResourceId();
 
 	@Override
-	public void navigateUpFromSameTask() {
-		NavUtils.navigateUpFromSameTask(this);
-	}
-
-	@Override
 	public final void restart() {
 		restartActivity(this);
 	}
-
-    @Override
-    public Theme getTheme() {
-        if (mTheme == null) {
-            mTheme = getResources().newTheme();
-            mTheme.setTo(super.getTheme());
-            final int getThemeResourceId = getThemeResourceId();
-            if (getThemeResourceId != 0) {
-                mTheme.applyStyle(getThemeResourceId, true);
-            }
-        }
-        return mTheme;
-    }
 
 	protected final boolean isThemeChanged() {
 		return getThemeResourceId() != mCurrentThemeResource || getThemeColor() != mCurrentThemeColor
@@ -144,6 +122,6 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
 		setTheme(mCurrentThemeResource);
-        ThemeUtils.applyWindowBackground(this, getWindow(),mCurrentThemeResource, mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
+        ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource, mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
 	}
 }

@@ -39,6 +39,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.view.WindowCompat;
@@ -106,7 +107,7 @@ public class FiltersActivity extends BaseActionBarActivity implements TabListene
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 			case MENU_HOME: {
-				navigateUpFromSameTask();
+                NavUtils.navigateUpFromSameTask(this);
 				return true;
 			}
 			case MENU_ADD: {
