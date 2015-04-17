@@ -48,6 +48,7 @@ import android.nfc.NfcAdapter.CreateNdefMessageCallback;
 import android.nfc.NfcEvent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
@@ -58,12 +59,11 @@ import android.support.v4.content.Loader;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -104,9 +104,9 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
-import de.vanita5.twittnuker.text.TextAlphaSpan;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
@@ -170,7 +170,7 @@ import static de.vanita5.twittnuker.util.Utils.showInfoMessage;
 public class UserFragment extends BaseSupportFragment implements OnClickListener,
 		OnLinkClickListener, OnSizeChangedListener, OnSharedPreferenceChangeListener,
         OnTouchListener, DrawerCallback, SupportFragmentCallback, SystemWindowsInsetsCallback,
-        RefreshScrollTopInterface {
+        RefreshScrollTopInterface, OnPageChangeListener {
 
     private static final ArgbEvaluator sArgbEvaluator = new ArgbEvaluator();
 
@@ -184,6 +184,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private static final int TAB_POSITION_STATUSES = 0;
     private static final int TAB_POSITION_MEDIA = 1;
     private static final int TAB_POSITION_FAVORITES = 2;
+    private static final String TAB_TYPE_STATUSES = "statuses";
+    private static final String TAB_TYPE_MEDIA = "media";
+    private static final String TAB_TYPE_FAVORITES = "favorites";
 
 	private MediaLoaderWrapper mProfileImageLoader;
     private ShapedImageView mProfileImageView;
@@ -422,6 +425,53 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        updateSubtitle();
+    }
+
+    private void updateSubtitle() {
+        final ActionBarActivity activity = (ActionBarActivity) getActivity();
+        if (activity == null) return;
+        final ActionBar actionBar = activity.getSupportActionBar();
+        if (actionBar == null) return;
+        final ParcelableUser user = mUser;
+        if (user == null) {
+            actionBar.setSubtitle(null);
+            return;
+        }
+        final SupportTabSpec spec = mPagerAdapter.getTab(mViewPager.getCurrentItem());
+        switch (spec.type) {
+            case TAB_TYPE_STATUSES: {
+                actionBar.setSubtitle(getResources().getQuantityString(R.plurals.N_statuses, user.statuses_count, user.statuses_count));
+                break;
+            }
+            case TAB_TYPE_MEDIA: {
+                actionBar.setSubtitle(getResources().getQuantityString(R.plurals.N_media, user.media_count, user.media_count));
+                break;
+            }
+            case TAB_TYPE_FAVORITES: {
+                actionBar.setSubtitle(getResources().getQuantityString(R.plurals.N_favorites, user.favorites_count, user.favorites_count));
+                break;
+            }
+            default: {
+                actionBar.setSubtitle(null);
+                break;
+            }
+        }
+        updateTitleAlpha();
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    @Override
     public void scrollBy(float dy) {
         final Fragment fragment = mCurrentVisibleFragment;
         if (fragment instanceof DrawerCallback) {
@@ -510,8 +560,10 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 			getFriendship();
 		}
         activity.setTitle(UserColorNameUtils.getDisplayName(activity, user));
-        updateTitleColor();
+
+        updateTitleAlpha();
 		invalidateOptionsMenu();
+        updateSubtitle();
 	}
 
     @Override
@@ -718,6 +770,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mViewPager.setAdapter(mPagerAdapter);
         mPagerIndicator.setViewPager(mViewPager);
         mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
+        mPagerIndicator.setOnPageChangeListener(this);
 
         mFollowButton.setOnClickListener(this);
         mProfileImageView.setOnClickListener(this);
@@ -1232,7 +1285,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final ActionBar actionBar = linkHandler.getSupportActionBar();
         if (actionBar == null) return;
         final Drawable shadow = ResourcesCompat.getDrawable(activity.getResources(), R.drawable.shadow_user_banner_action_bar, null);
-        mActionBarBackground = new ActionBarDrawable(getResources(), shadow);
+        mActionBarBackground = new ActionBarDrawable(shadow);
         mActionBarBackground.setAlpha(linkHandler.getCurrentThemeBackgroundAlpha());
         mProfileBannerView.setAlpha(linkHandler.getCurrentThemeBackgroundAlpha() / 255f);
         actionBar.setBackgroundDrawable(mActionBarBackground);
@@ -1255,11 +1308,11 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             tabArgs.putLong(EXTRA_USER_ID, args.getLong(EXTRA_USER_ID, -1));
             tabArgs.putString(EXTRA_SCREEN_NAME, args.getString(EXTRA_SCREEN_NAME));
 			}
-        mPagerAdapter.addTab(UserTimelineFragment.class, tabArgs, getString(R.string.statuses), R.drawable.ic_action_quote, TAB_POSITION_STATUSES, null);
+        mPagerAdapter.addTab(UserTimelineFragment.class, tabArgs, getString(R.string.statuses), R.drawable.ic_action_quote, TAB_TYPE_STATUSES, TAB_POSITION_STATUSES, null);
         if (Utils.isOfficialKeyAccount(context, accountId)) {
-            mPagerAdapter.addTab(UserMediaTimelineFragment.class, tabArgs, getString(R.string.media), R.drawable.ic_action_gallery, TAB_POSITION_MEDIA, null);
+            mPagerAdapter.addTab(UserMediaTimelineFragment.class, tabArgs, getString(R.string.media), R.drawable.ic_action_gallery, TAB_TYPE_MEDIA, TAB_POSITION_MEDIA, null);
 	    }
-        mPagerAdapter.addTab(UserFavoritesFragment.class, tabArgs, getString(R.string.favorites), R.drawable.ic_action_star, TAB_POSITION_FAVORITES, null);
+        mPagerAdapter.addTab(UserFavoritesFragment.class, tabArgs, getString(R.string.favorites), R.drawable.ic_action_star, TAB_TYPE_FAVORITES, TAB_POSITION_FAVORITES, null);
 	}
 
     private boolean shouldUseNativeMenu() {
@@ -1363,36 +1416,34 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             if (actionBarView instanceof Toolbar) {
                 final Toolbar toolbar = (Toolbar) actionBarView;
                 toolbar.setTitleTextColor(itemColor);
+                toolbar.setSubtitleTextColor(itemColor);
                 ThemeUtils.setActionBarOverflowColor(toolbar, itemColor);
                 ThemeUtils.wrapToolbarMenuIcon(toolbar, itemColor, itemColor);
 			}
             mPagerIndicator.updateAppearance();
         }
-        updateTitleColor();
+        updateTitleAlpha();
     }
 
-    private void updateTitleColor() {
+    private void updateTitleAlpha() {
         final int[] location = new int[2];
         mNameView.getLocationInWindow(location);
         final float nameShowingRatio = (mHeaderDrawerLayout.getPaddingTop() - location[1])
                 / (float) mNameView.getHeight();
-        final int textAlpha = Math.round(0xFF * MathUtils.clamp(nameShowingRatio, 0, 1));
+        final float textAlpha = MathUtils.clamp(nameShowingRatio, 0, 1);
         final FragmentActivity activity = getActivity();
-        final SpannableStringBuilder spannedTitle;
-        final CharSequence title = activity.getTitle();
-        if (title instanceof SpannableStringBuilder) {
-            spannedTitle = (SpannableStringBuilder) title;
-        } else {
-            spannedTitle = SpannableStringBuilder.valueOf(title);
+        final View actionBarView = activity.getWindow().findViewById(android.support.v7.appcompat.R.id.action_bar);
+        if (actionBarView instanceof Toolbar) {
+            final Toolbar toolbar = (Toolbar) actionBarView;
+            final TextView titleView = ViewUtils.findViewByText(toolbar, toolbar.getTitle());
+            if (titleView != null) {
+                titleView.setAlpha(textAlpha);
+        	}
+            final TextView subtitleView = ViewUtils.findViewByText(toolbar, toolbar.getSubtitle());
+            if (subtitleView != null) {
+                subtitleView.setAlpha(textAlpha);
+        	}
         }
-        final TextAlphaSpan[] spans = spannedTitle.getSpans(0, spannedTitle.length(), TextAlphaSpan.class);
-        if (spans.length > 0) {
-            spans[0].setAlpha(textAlpha);
-        } else {
-            spannedTitle.setSpan(new TextAlphaSpan(textAlpha), 0, spannedTitle.length(),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        activity.setTitle(spannedTitle);
 	}
 
 	private static class ActionBarDrawable extends LayerDrawable {
@@ -1405,7 +1456,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         private int mAlpha;
         private float mOutlineAlphaFactor;
 
-        public ActionBarDrawable(Resources resources, Drawable shadow) {
+        public ActionBarDrawable(Drawable shadow) {
             super(new Drawable[]{shadow, new ActionBarColorDrawable(true)});
             mShadowDrawable = getDrawable(0);
             mColorDrawable = (ColorDrawable) getDrawable(1);

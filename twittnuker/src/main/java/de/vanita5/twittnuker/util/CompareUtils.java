@@ -24,6 +24,8 @@ package de.vanita5.twittnuker.util;
 
 import android.os.Bundle;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.Iterator;
 
 public class CompareUtils {
@@ -33,7 +35,7 @@ public class CompareUtils {
 		final Iterator<String> keys = bundle1.keySet().iterator();
 		while (keys.hasNext()) {
 			final String key = keys.next();
-			if (!TwidereArrayUtils.contains(ignoredKeys, key) && !objectEquals(bundle1.get(key), bundle2.get(key)))
+            if (!ArrayUtils.contains(ignoredKeys, key) && !objectEquals(bundle1.get(key), bundle2.get(key)))
 				return false;
 		}
 		return true;
@@ -53,4 +55,13 @@ public class CompareUtils {
 		return object1.equals(object2);
 	}
 
+    public static boolean textEquals(CharSequence text1, CharSequence text2) {
+        if (text1 == null || text2 == null) return text1 == text2;
+        if (text1 == text2) return true;
+        if (text1.length() != text2.length()) return false;
+        for (int i = 0, j = text1.length(); i < j; i++) {
+            if (text1.charAt(i) != text2.charAt(i)) return false;
+		}
+        return true;
+    }
 }
