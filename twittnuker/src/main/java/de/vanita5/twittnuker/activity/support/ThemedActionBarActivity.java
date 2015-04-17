@@ -47,34 +47,45 @@ import static de.vanita5.twittnuker.util.Utils.restartActivity;
 
 public abstract class ThemedActionBarActivity extends ActionBarActivity implements Constants, IThemedActivity {
 
-	private int mCurrentThemeResource, mCurrentThemeColor,
-			mCurrentThemeBackgroundAlpha, mCurrentActionBarColor;
+	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
+			mCurrentActionBarColor;
 	@ShapeStyle
 	private int mProfileImageStyle;
+    private String mCurrentThemeBackgroundOption;
 
 	@Override
-	public Resources getDefaultResources() {
-		return super.getResources();
+    public int getCurrentThemeBackgroundAlpha() {
+        return mCurrentThemeBackgroundAlpha;
 	}
 
 	@Override
+    public String getCurrentThemeBackgroundOption() {
+        return mCurrentThemeBackgroundOption;
+    }
+
+    @Override
+    public int getCurrentThemeColor() {
+        return mCurrentThemeColor;
+    }
+
+    @Override
 	public final int getCurrentThemeResourceId() {
 		return mCurrentThemeResource;
 	}
 
 	@Override
+    public Resources getDefaultResources() {
+        return super.getResources();
+    }
+
+    @Override
 	public int getThemeBackgroundAlpha() {
-		return ThemeUtils.isTransparentBackground(this) ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xff;
+        return ThemeUtils.getUserThemeBackgroundAlpha(this);
 	}
 
 	@Override
-	public int getCurrentThemeBackgroundAlpha() {
-		return mCurrentThemeBackgroundAlpha;
-	}
-
-	@Override
-	public int getCurrentThemeColor() {
-		return mCurrentThemeColor;
+    public String getThemeBackgroundOption() {
+        return ThemeUtils.getThemeBackgroundOption(this);
 	}
 
 	@Override
@@ -98,13 +109,8 @@ public abstract class ThemedActionBarActivity extends ActionBarActivity implemen
 			StrictModeUtils.detectAllVmPolicy();
 			StrictModeUtils.detectAllThreadPolicy();
 		}
-		setTheme();
+        setupTheme();
 		super.onCreate(savedInstanceState);
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
 	}
 
 	@Override
@@ -134,23 +140,25 @@ public abstract class ThemedActionBarActivity extends ActionBarActivity implemen
 		super.onResume();
 	}
 
-	protected boolean shouldSetWindowBackground() {
-		return true;
+    @Override
+    protected void onStart() {
+        super.onStart();
 	}
 
 	public int getActionBarColor() {
 		return ThemeUtils.getActionBarColor(this);
 	}
 
-	private void setTheme() {
+    private void setupTheme() {
 		mCurrentThemeResource = getThemeResourceId();
 		mCurrentThemeColor = getThemeColor();
 		mCurrentActionBarColor = getActionBarColor();
 		mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		mProfileImageStyle = Utils.getProfileImageStyle(this);
+        mCurrentThemeBackgroundOption = getThemeBackgroundOption();
 		setTheme(mCurrentThemeResource);
-		if (shouldSetWindowBackground() && ThemeUtils.isTransparentBackground(mCurrentThemeResource)) {
-			getWindow().setBackgroundDrawable(ThemeUtils.getWindowBackground(this));
-		}
+        ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource, mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
 	}
+
+
 }

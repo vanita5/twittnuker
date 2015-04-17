@@ -38,37 +38,35 @@ import static de.vanita5.twittnuker.util.Utils.restartActivity;
 
 public abstract class BaseThemedActivity extends Activity implements IThemedActivity {
 
-	private int mCurrentThemeResource, mCurrentThemeColor,
-			mCurrentThemeBackgroundAlpha, mCurrentActionBarColor;
+	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
+			mCurrentActionBarColor;
 	private String mCurrentThemeFontFamily;
 	private Theme mTheme;
+    private String mCurrentThemeBackgroundOption;
 
 	@Override
-	public Resources getDefaultResources() {
-		return super.getResources();
+    public int getCurrentThemeBackgroundAlpha() {
+        return mCurrentThemeBackgroundAlpha;
 	}
 
 	@Override
+    public int getCurrentThemeColor() {
+        return mCurrentThemeColor;
+    }
+
+    @Override
 	public final int getCurrentThemeResourceId() {
 		return mCurrentThemeResource;
 	}
 
     @Override
-	public Theme getTheme() {
-		if (mTheme == null) {
-			mTheme = getResources().newTheme();
-			mTheme.setTo(super.getTheme());
-			final int getThemeResourceId = getThemeResourceId();
-			if (getThemeResourceId != 0) {
-				mTheme.applyStyle(getThemeResourceId, true);
-			}
-		}
-		return mTheme;
+    public Resources getDefaultResources() {
+        return super.getResources();
 	}
 
     @Override
     public int getThemeBackgroundAlpha() {
-        return ThemeUtils.isTransparentBackground(this) ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xff;
+        return ThemeUtils.getUserThemeBackgroundAlpha(this);
     }
 
     @Override
@@ -94,6 +92,19 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 		restartActivity(this);
 	}
 
+    @Override
+    public Theme getTheme() {
+        if (mTheme == null) {
+            mTheme = getResources().newTheme();
+            mTheme.setTo(super.getTheme());
+            final int getThemeResourceId = getThemeResourceId();
+            if (getThemeResourceId != 0) {
+                mTheme.applyStyle(getThemeResourceId, true);
+            }
+        }
+        return mTheme;
+    }
+
 	protected final boolean isThemeChanged() {
 		return getThemeResourceId() != mCurrentThemeResource || getThemeColor() != mCurrentThemeColor
                 || !CompareUtils.objectEquals(getThemeFontFamily(), mCurrentThemeFontFamily)
@@ -102,16 +113,6 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 	}
 
 	@Override
-    public int getCurrentThemeBackgroundAlpha() {
-        return mCurrentThemeBackgroundAlpha;
-    }
-
-    @Override
-    public int getCurrentThemeColor() {
-        return mCurrentThemeColor;
-    }
-
-    @Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		if (Utils.isDebugBuild()) {
 			StrictModeUtils.detectAllVmPolicy();
@@ -141,9 +142,8 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 		mCurrentActionBarColor = getActionBarColor();
 		mCurrentThemeFontFamily = getThemeFontFamily();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
+        mCurrentThemeBackgroundOption = getThemeBackgroundOption();
 		setTheme(mCurrentThemeResource);
-        if (ThemeUtils.isTransparentBackground(mCurrentThemeResource)) {
-            getWindow().setBackgroundDrawable(ThemeUtils.getWindowBackground(this));
-        }
+        ThemeUtils.applyWindowBackground(this, getWindow(),mCurrentThemeResource, mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
 	}
 }
