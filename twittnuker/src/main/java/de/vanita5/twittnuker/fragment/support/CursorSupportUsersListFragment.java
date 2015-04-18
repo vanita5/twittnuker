@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
 
-public abstract class CursorSupportUsersListFragment extends BaseUsersListFragment {
+public abstract class CursorSupportUsersListFragment extends ParcelableUsersFragment {
 
 	private long mNextCursor, mPrevCursor;
 
@@ -61,15 +61,13 @@ public abstract class CursorSupportUsersListFragment extends BaseUsersListFragme
 		mPrevCursor = -1;
 	}
 
-	@Override
-	public void onLoadFinished(final Loader<List<ParcelableUser>> loader, final List<ParcelableUser> data) {
-		super.onLoadFinished(loader, data);
-		final BaseCursorSupportUsersLoader cursorLoader = (BaseCursorSupportUsersLoader) loader;
-		mNextCursor = cursorLoader.getNextCursor();
-		mPrevCursor = cursorLoader.getPrevCursor();
-		// TODO
-		// setEnabled(mNextCursor > 0 ? "from_end" : "disabled");
-	}
+//	@Override
+//	public void onLoadFinished(final Loader<List<ParcelableUser>> loader, final List<ParcelableUser> data) {
+//		super.onLoadFinished(loader, data);
+//		final BaseCursorSupportUsersLoader cursorLoader = (BaseCursorSupportUsersLoader) loader;
+//		mNextCursor = cursorLoader.getNextCursor();
+//		mPrevCursor = cursorLoader.getPrevCursor();
+//	}
 
 	@Override
 	public void onSaveInstanceState(final Bundle outState) {

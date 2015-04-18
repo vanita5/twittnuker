@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage.CursorIndices;
 import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -64,7 +64,7 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
     private final LayoutInflater mInflater;
 	private final MediaLoaderWrapper mImageLoader;
 	private final MultiSelectManager mMultiSelectManager;
-	private final ImageLoadingHandler mImageLoadingHandler;
+    private final MediaLoadingHandler mMediaLoadingHandler;
 
     private Cursor mCursor;
     private CursorIndices mIndices;
@@ -77,7 +77,7 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
         mLinkify = new TwidereLinkify(new DirectMessageOnLinkClickHandler(context, null));
 		mMultiSelectManager = app.getMultiSelectManager();
 		mImageLoader = app.getMediaLoaderWrapper();
-        mImageLoadingHandler = new ImageLoadingHandler(R.id.media_preview_progress);
+        mMediaLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
         mIncomingMessageColor = ThemeUtils.getUserAccentColor(context);
         mOutgoingMessageColor = ThemeUtils.getCardBackgroundColor(context);
 	}

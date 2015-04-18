@@ -38,7 +38,7 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableMedia;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.Utils.OnMediaClickListener;
 
@@ -92,7 +92,7 @@ public class CardMediaContainer extends ViewGroup implements Constants {
 							 @NonNull final MediaLoaderWrapper loader,
 							 final long accountId,
 							 final OnMediaClickListener mediaClickListener,
-							 final ImageLoadingHandler loadingHandler) {
+							 final MediaLoadingHandler loadingHandler) {
         if (mediaArray == null || mMediaPreviewStyle == VALUE_MEDIA_PREVIEW_STYLE_CODE_NONE) {
 			for (int i = 0, j = getChildCount(); i < j; i++) {
 				final View child = getChildAt(i);

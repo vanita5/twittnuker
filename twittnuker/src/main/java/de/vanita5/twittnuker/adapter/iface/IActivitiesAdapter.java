@@ -23,8 +23,11 @@
 package de.vanita5.twittnuker.adapter.iface;
 
 import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoadingHandler;
+import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 
-public interface IActivitiesAdapter<Data> extends IContentCardAdapter {
+public interface IActivitiesAdapter<Data> extends IContentCardAdapter, IGapSupportedAdapter {
 
 	ParcelableActivity getActivity(int position);
 
@@ -32,4 +35,10 @@ public interface IActivitiesAdapter<Data> extends IContentCardAdapter {
 
 	void setData(Data data);
 
+    @PreviewStyle
+    int getMediaPreviewStyle();
+
+    MediaLoaderWrapper getMediaLoader();
+
+    MediaLoadingHandler getMediaLoadingHandler();
 }

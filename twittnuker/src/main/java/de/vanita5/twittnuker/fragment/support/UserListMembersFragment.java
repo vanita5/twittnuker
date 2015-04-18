@@ -28,13 +28,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.loader.support.UserListMembersLoader;
-import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 
@@ -44,7 +40,7 @@ import twitter4j.UserList;
 
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 
-public class UserListMembersFragment extends CursorSupportUsersListFragment implements OnMenuItemClickListener {
+public class UserListMembersFragment extends CursorSupportUsersListFragment {
 
 	private ParcelableUserList mUserList;
 
@@ -95,22 +91,6 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment impl
 	}
 
 	@Override
-	public boolean onMenuItemClick(final MenuItem item) {
-		final ParcelableUser user = getSelectedUser();
-		if (user == null || mUserList == null) return false;
-		switch (item.getItemId()) {
-			case MENU_DELETE_FROM_LIST: {
-				DeleteUserListMembersDialogFragment.show(getFragmentManager(), mUserList, user);
-				break;
-			}
-			default: {
-				return super.onMenuItemClick(item);
-			}
-		}
-		return true;
-	}
-
-	@Override
 	public void onSaveInstanceState(final Bundle outState) {
 		outState.putParcelable(EXTRA_USER_LIST, mUserList);
 		super.onSaveInstanceState(outState);
@@ -127,11 +107,6 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment impl
 	public void onStop() {
 		unregisterReceiver(mStatusReceiver);
 		super.onStop();
-	}
-
-	@Override
-	protected int getUserMenuResource() {
-		return R.menu.action_user_list_member;
 	}
 
     private class GetUserListTask extends AsyncTask<Object, Object, ParcelableUserList> {

@@ -27,13 +27,13 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,7 +47,7 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatus.CursorIndices;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.SimpleValueSerializer;
@@ -69,8 +69,8 @@ import twitter4j.TranslationResult;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 
-public class StatusViewHolder extends RecyclerView.ViewHolder implements Constants, OnClickListener,
-        OnMediaClickListener {
+public class StatusViewHolder extends ViewHolder implements Constants, OnClickListener,
+        OnMediaClickListener, OnLongClickListener {
 
     @NonNull
     private final IStatusesAdapter<?> adapter;
@@ -151,7 +151,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
 
     public void displayStatus(@NonNull final ParcelableStatus status, @Nullable final TranslationResult translation,
                               final boolean displayInReplyTo, final boolean shouldDisplayExtraType) {
-        final MediaLoaderWrapper loader = adapter.getImageLoader();
+        final MediaLoaderWrapper loader = adapter.getMediaLoader();
         final AsyncTwitterWrapper twitter = adapter.getTwitterWrapper();
         final TwidereLinkify linkify = adapter.getTwidereLinkify();
         final Context context = adapter.getContext();
@@ -271,7 +271,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
             if (hasMedia && (adapter.isSensitiveContentEnabled() || !status.is_possibly_sensitive)) {
                 mediaPreview.setVisibility(hasMedia ? View.VISIBLE : View.GONE);
             	mediaPreview.displayMedia(status.media, loader, status.account_id, this,
-                    	adapter.getImageLoadingHandler());
+                        adapter.getMediaLoadingHandler());
 			} else {
 				mediaPreview.setVisibility(View.GONE);
 			}
@@ -288,8 +288,9 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
             textView.setMovementMethod(null);
         }
 
+        final Locale locale = Locale.getDefault();
         if (reply_count > 0) {
-            replyCountView.setText(Utils.getLocalizedNumber(Locale.getDefault(), reply_count));
+            replyCountView.setText(Utils.getLocalizedNumber(locale, reply_count));
         } else {
             replyCountView.setText(null);
 	    }
@@ -304,7 +305,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
             retweet_count = status.retweet_count + (creatingRetweet ? 1 : 0);
 	    }
         if (retweet_count > 0) {
-            retweetCountView.setText(Utils.getLocalizedNumber(Locale.getDefault(), retweet_count));
+            retweetCountView.setText(Utils.getLocalizedNumber(locale, retweet_count));
         } else {
             retweetCountView.setText(null);
         }
@@ -317,7 +318,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
             favorite_count = status.favorite_count + (creatingFavorite ? 1 : 0);
 	    }
         if (favorite_count > 0) {
-            favoriteCountView.setText(Utils.getLocalizedNumber(Locale.getDefault(), favorite_count));
+            favoriteCountView.setText(Utils.getLocalizedNumber(locale, favorite_count));
         } else {
             favoriteCountView.setText(null);
         }
@@ -331,7 +332,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
 
     public void displayStatus(@NonNull Cursor cursor, @NonNull CursorIndices indices,
                               final boolean displayInReplyTo) {
-        final MediaLoaderWrapper loader = adapter.getImageLoader();
+        final MediaLoaderWrapper loader = adapter.getMediaLoader();
         final AsyncTwitterWrapper twitter = adapter.getTwitterWrapper();
         final TwidereLinkify linkify = adapter.getTwidereLinkify();
         final Context context = adapter.getContext();
@@ -475,7 +476,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
             final boolean hasMedia = media != null && media.length > 0;
             if (hasMedia && (adapter.isSensitiveContentEnabled() || !sensitive)) {
                 mediaPreview.setVisibility(hasMedia ? View.VISIBLE : View.GONE);
-                mediaPreview.displayMedia(media, loader, account_id, this, adapter.getImageLoadingHandler());
+                mediaPreview.displayMedia(media, loader, account_id, this, adapter.getMediaLoadingHandler());
 			} else {
 				mediaPreview.setVisibility(View.GONE);
 			}
@@ -544,7 +545,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
     @Override
     public void onClick(View v) {
         if (statusClickListener == null) return;
-        final int position = getAdapterPosition();
+        final int position = getLayoutPosition();
         switch (v.getId()) {
             case R.id.item_content: {
                 statusClickListener.onStatusClick(this, position);
@@ -568,9 +569,21 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
     }
 
     @Override
+    public boolean onLongClick(View v) {
+        if (statusClickListener == null) return false;
+        final int position = getLayoutPosition();
+        switch (v.getId()) {
+            case R.id.item_content: {
+                return statusClickListener.onStatusLongClick(this, position);
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void onMediaClick(View view, ParcelableMedia media, long accountId) {
         if (statusClickListener == null) return;
-        final int position = getAdapterPosition();
+        final int position = getLayoutPosition();
         statusClickListener.onMediaClick(this, media, position);
     }
 
@@ -580,10 +593,10 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
 
     public void setStatusClickListener(StatusClickListener listener) {
         statusClickListener = listener;
-        itemView.findViewById(R.id.item_content).setOnClickListener(this);
+        ((View) itemContent).setOnClickListener(this);
+        ((View) itemContent).setOnLongClickListener(this);
 
         itemMenu.setOnClickListener(this);
-        itemView.setOnClickListener(this);
         profileImageView.setOnClickListener(this);
         replyCountView.setOnClickListener(this);
         retweetCountView.setOnClickListener(this);
@@ -646,11 +659,11 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
 
     public static interface StatusClickListener extends ContentCardClickListener {
 
-        boolean isProfileImageEnabled();
-
         void onMediaClick(StatusViewHolder holder, ParcelableMedia media, int position);
 
         void onStatusClick(StatusViewHolder holder, int position);
+
+        boolean onStatusLongClick(StatusViewHolder holder, int position);
 
         void onUserProfileClick(StatusViewHolder holder, int position);
     }
@@ -660,7 +673,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
         private final Context context;
         private final SharedPreferencesWrapper preferences;
         private final MediaLoaderWrapper loader;
-        private final ImageLoadingHandler handler;
+        private final MediaLoadingHandler handler;
         private final AsyncTwitterWrapper twitter;
         private final TwidereLinkify linkify;
         private int profileImageStyle;
@@ -678,14 +691,14 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
             preferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
             final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
             loader = app.getMediaLoaderWrapper();
-            handler = new ImageLoadingHandler(R.id.media_preview_progress);
+            handler = new MediaLoadingHandler(R.id.media_preview_progress);
             twitter = app.getTwitterWrapper();
             linkify = new TwidereLinkify(null);
             updateOptions();
         }
 
         @Override
-        public MediaLoaderWrapper getImageLoader() {
+        public MediaLoaderWrapper getMediaLoader() {
             return loader;
         }
 
@@ -695,7 +708,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
         }
 
         @Override
-        public ImageLoadingHandler getImageLoadingHandler() {
+        public MediaLoadingHandler getMediaLoadingHandler() {
             return handler;
         }
 
@@ -714,6 +727,7 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
             return mediaPreviewStyle;
         }
 
+        @NonNull
         @Override
         public AsyncTwitterWrapper getTwitterWrapper() {
             return twitter;
@@ -821,6 +835,11 @@ public class StatusViewHolder extends RecyclerView.ViewHolder implements Constan
         @Override
         public void onStatusClick(StatusViewHolder holder, int position) {
 
+        }
+
+        @Override
+        public boolean onStatusLongClick(StatusViewHolder holder, int position) {
+            return false;
         }
 
         @Override

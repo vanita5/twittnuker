@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.adapter.CursorStatusesAdapter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
@@ -36,6 +37,7 @@ public class MentionsTimelineFragment extends CursorStatusesFragment {
         return Mentions.CONTENT_URI;
     }
 
+    @NonNull
     @Override
     protected CursorStatusesAdapter onCreateAdapter(Context context, boolean compact) {
         final CursorStatusesAdapter adapter = super.onCreateAdapter(context, compact);

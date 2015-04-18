@@ -31,7 +31,7 @@ import android.widget.ImageView;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 
 import java.util.Collection;
@@ -40,7 +40,7 @@ public class MediaPreviewAdapter extends ArrayAdapter<String> implements Constan
 
 	private final MediaLoaderWrapper mImageLoader;
 	private final SharedPreferences mPreferences;
-	private final ImageLoadingHandler mImageLoadingHandler;
+	private final MediaLoadingHandler mMediaLoadingHandler;
 
 	private boolean mIsPossiblySensitive;
 
@@ -48,7 +48,7 @@ public class MediaPreviewAdapter extends ArrayAdapter<String> implements Constan
 		super(context, R.layout.gallery_item_image_preview);
 		mImageLoader = ((TwittnukerApplication) context.getApplicationContext()).getMediaLoaderWrapper();
 		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mImageLoadingHandler = new ImageLoadingHandler();
+		mMediaLoadingHandler = new MediaLoadingHandler();
 	}
 
 	public void addAll(final Collection<String> data, final boolean is_possibly_sensitive) {
@@ -66,9 +66,9 @@ public class MediaPreviewAdapter extends ArrayAdapter<String> implements Constan
 			view.findViewById(R.id.media_preview_progress).setVisibility(View.GONE);
 			image_view.setBackgroundResource(R.drawable.image_preview_nsfw);
 			mImageLoader.cancelDisplayTask(image_view);
-		} else if (!link.equals(mImageLoadingHandler.getLoadingUri(image_view))) {
+		} else if (!link.equals(mMediaLoadingHandler.getLoadingUri(image_view))) {
 			image_view.setBackgroundResource(0);
-			mImageLoader.displayPreviewImage(image_view, link, mImageLoadingHandler);
+			mImageLoader.displayPreviewImage(image_view, link, mMediaLoadingHandler);
 		}
 		return view;
 	}

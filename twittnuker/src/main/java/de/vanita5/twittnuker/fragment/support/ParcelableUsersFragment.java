@@ -24,50 +24,52 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.content.Loader;
+import android.support.annotation.NonNull;
+import android.support.v4.app.LoaderManager;
 
-import de.vanita5.twittnuker.loader.support.UserSearchLoader;
+import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
 
-public class SearchUsersFragment extends ParcelableUsersFragment {
-
-	private int mPage = 1;
+public abstract class ParcelableUsersFragment extends AbsUsersFragment<List<ParcelableUser>> {
 
 	@Override
-	public Loader<List<ParcelableUser>> newLoaderInstance(final Context context, final Bundle args) {
-		if (args == null) return null;
-		final long account_id = args.getLong(EXTRA_ACCOUNT_ID);
-		final String query = args.getString(EXTRA_QUERY);
-		return new UserSearchLoader(context, account_id, query, mPage, getData());
+	public boolean isRefreshing() {
+		final LoaderManager lm = getLoaderManager();
+		return lm.hasRunningLoaders();
+	}
+
+	@NonNull
+	@Override
+	protected final ParcelableUsersAdapter onCreateAdapter(Context context, boolean compact) {
+		return new ParcelableUsersAdapter(context, compact);
 	}
 
 	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		if (savedInstanceState != null) {
-			mPage = savedInstanceState.getInt(EXTRA_PAGE, 1);
-		}
-		super.onActivityCreated(savedInstanceState);
+	public boolean triggerRefresh() {
+		return false;
+	}
+
+	protected long getAccountId() {
+		final Bundle args = getArguments();
+		return args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
 	}
 
 	@Override
-	public void onDestroyView() {
-		mPage = 1;
-		super.onDestroyView();
+	protected boolean hasMoreData(List<ParcelableUser> data) {
+		return data == null || data.isEmpty();
 	}
 
 	@Override
-    public void onLoadingFinished(final List<ParcelableUser> data) {
-		if (data != null) {
-			mPage++;
-		}
+	protected void onLoadingFinished(List<ParcelableUser> data) {
+		setRefreshEnabled(true);
+		setRefreshing(false);
+		setLoadMoreIndicatorVisible(false);
 	}
 
-	@Override
-	public void onSaveInstanceState(final Bundle outState) {
-		outState.putInt(EXTRA_PAGE, mPage);
-		super.onSaveInstanceState(outState);
+	protected void removeUsers(long... ids) {
+		//TODO remove from adapter
 	}
 
 }

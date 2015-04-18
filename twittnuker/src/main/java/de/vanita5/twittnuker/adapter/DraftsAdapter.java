@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
+import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
@@ -49,7 +49,7 @@ import static de.vanita5.twittnuker.util.Utils.getAccountColors;
 public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
 
 	private final MediaLoaderWrapper mImageLoader;
-	private final ImageLoadingHandler mImageLoadingHandler;
+    private final MediaLoadingHandler mMediaLoadingHandler;
     private final int mMediaPreviewStyle;
 
 	private float mTextSize;
@@ -58,7 +58,7 @@ public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
 	public DraftsAdapter(final Context context) {
         super(context, R.layout.list_item_draft, null, new String[0], new int[0], 0);
 		mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
-        mImageLoadingHandler = new ImageLoadingHandler(R.id.media_preview_progress);
+        mMediaLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
         final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
                 SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mMediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
@@ -77,7 +77,7 @@ public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
 		if (actionType == Drafts.ACTION_UPDATE_STATUS) {
             final ParcelableMedia[] media = ParcelableMedia.fromMediaUpdates(mediaUpdates);
             holder.media_preview_container.setVisibility(View.VISIBLE);
-            holder.media_preview_container.displayMedia(media, mImageLoader, -1L, null, mImageLoadingHandler);
+            holder.media_preview_container.displayMedia(media, mImageLoader, -1L, null, mMediaLoadingHandler);
 		} else {
             holder.media_preview_container.setVisibility(View.GONE);
 		}

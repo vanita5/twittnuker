@@ -24,10 +24,10 @@ package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,8 +41,8 @@ import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -55,17 +55,15 @@ import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
-public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implements Constants,
+public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewHolder> implements Constants,
         IStatusesAdapter<D> {
 
-    public static final int ITEM_VIEW_TYPE_LOAD_INDICATOR = 0;
-    public static final int ITEM_VIEW_TYPE_GAP = 1;
     public static final int ITEM_VIEW_TYPE_STATUS = 2;
 
 	private final Context mContext;
 	private final LayoutInflater mInflater;
-	private final MediaLoaderWrapper mImageLoader;
-	private final ImageLoadingHandler mLoadingHandler;
+    private final MediaLoaderWrapper mMediaLoader;
+    private final MediaLoadingHandler mLoadingHandler;
     private final AsyncTwitterWrapper mTwitterWrapper;
     private final TwidereLinkify mLinkify;
 
@@ -87,8 +85,6 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     private final boolean mSensitiveContentEnabled;
     private final boolean mHideCardActions;
 
-    private boolean mLoadMoreSupported;
-    private boolean mLoadMoreIndicatorVisible;
     private boolean mShowInReplyTo;
     private boolean mShowAccountsColor;
 
@@ -97,8 +93,8 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context);
 		mInflater = LayoutInflater.from(context);
-        mImageLoader = app.getMediaLoaderWrapper();
-		mLoadingHandler = new ImageLoadingHandler(R.id.media_preview_progress);
+        mMediaLoader = app.getMediaLoaderWrapper();
+        mLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
         mTwitterWrapper = app.getTwitterWrapper();
         final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
                 SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -126,8 +122,8 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     }
 
     @Override
-    public final MediaLoaderWrapper getImageLoader() {
-        return mImageLoader;
+    public final MediaLoaderWrapper getMediaLoader() {
+        return mMediaLoader;
     }
 
     @Override
@@ -136,7 +132,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     }
 
     @Override
-    public final ImageLoadingHandler getImageLoadingHandler() {
+    public final MediaLoadingHandler getMediaLoadingHandler() {
         return mLoadingHandler;
     }
 
@@ -150,6 +146,7 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
         return mMediaPreviewStyle;
     }
 
+    @NonNull
     @Override
     public final AsyncTwitterWrapper getTwitterWrapper() {
         return mTwitterWrapper;
@@ -158,32 +155,6 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     @Override
     public final float getTextSize() {
         return mTextSize;
-    }
-
-    @Override
-    public boolean isLoadMoreIndicatorVisible() {
-        return mLoadMoreIndicatorVisible;
-    }
-
-    @Override
-    public boolean isLoadMoreSupported() {
-        return mLoadMoreSupported;
-    }
-
-    @Override
-    public void setLoadMoreSupported(boolean supported) {
-        mLoadMoreSupported = supported;
-        if (!supported) {
-            mLoadMoreIndicatorVisible = false;
-        }
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public void setLoadMoreIndicatorVisible(boolean enabled) {
-        if (mLoadMoreIndicatorVisible == enabled) return;
-        mLoadMoreIndicatorVisible = enabled && mLoadMoreSupported;
-        notifyDataSetChanged();
     }
 
     @Override
@@ -222,18 +193,21 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
     }
 
     @Override
-    public final void onStatusClick(StatusViewHolder holder, int position) {
-        if (mStatusAdapterListener != null) {
-            mStatusAdapterListener.onStatusClick(holder, position);
-        }
+    public boolean onStatusLongClick(StatusViewHolder holder, int position) {
+        return mStatusAdapterListener != null && mStatusAdapterListener.onStatusLongClick(holder, position);
     }
 
     @Override
+    public final void onStatusClick(StatusViewHolder holder, int position) {
+        if (mStatusAdapterListener == null) return;
+		mStatusAdapterListener.onStatusClick(holder, position);
+	}
+
+    @Override
     public void onMediaClick(StatusViewHolder holder, final ParcelableMedia media, int position) {
-        if (mStatusAdapterListener != null) {
-            mStatusAdapterListener.onMediaClick(holder, media, position);
-        }
-    }
+        if (mStatusAdapterListener == null) return;
+		mStatusAdapterListener.onMediaClick(holder, media, position);
+	}
 
     @Override
     public void onUserProfileClick(final StatusViewHolder holder, final int position) {
@@ -319,29 +293,26 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
 
 	@Override
 	public final int getItemCount() {
-        return getStatusesCount() + (mLoadMoreIndicatorVisible ? 1 : 0);
+        return getStatusesCount() + (isLoadMoreIndicatorVisible() ? 1 : 0);
 	}
 
 	@Override
     public final void onGapClick(ViewHolder holder, int position) {
-        if (mStatusAdapterListener != null) {
-            mStatusAdapterListener.onGapClick((GapViewHolder) holder, position);
-        }
-    }
+        if (mStatusAdapterListener == null) return;
+		mStatusAdapterListener.onGapClick((GapViewHolder) holder, position);
+	}
 
     @Override
     public void onItemActionClick(ViewHolder holder, int id, int position) {
-        if (mStatusAdapterListener != null) {
-            mStatusAdapterListener.onStatusActionClick((StatusViewHolder) holder, id, position);
-        }
-    }
+        if (mStatusAdapterListener == null) return;
+		mStatusAdapterListener.onStatusActionClick((StatusViewHolder) holder, id, position);
+	}
 
     @Override
     public void onItemMenuClick(ViewHolder holder, View menuView, int position) {
-        if (mStatusAdapterListener != null) {
-            mStatusAdapterListener.onStatusMenuClick((StatusViewHolder) holder, menuView, position);
-        }
-    }
+        if (mStatusAdapterListener == null) return;
+		mStatusAdapterListener.onStatusMenuClick((StatusViewHolder) holder, menuView, position);
+	}
 
     public void setListener(StatusAdapterListener listener) {
         mStatusAdapterListener = listener;
@@ -363,6 +334,8 @@ public abstract class AbsStatusesAdapter<D> extends Adapter<ViewHolder> implemen
         void onStatusActionClick(StatusViewHolder holder, int id, int position);
 
         void onStatusClick(StatusViewHolder holder, int position);
+
+        boolean onStatusLongClick(StatusViewHolder holder, int position);
 
         void onStatusMenuClick(StatusViewHolder holder, View menuView, int position);
     }

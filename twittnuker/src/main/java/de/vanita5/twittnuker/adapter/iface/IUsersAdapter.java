@@ -20,24 +20,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment.support;
+package de.vanita5.twittnuker.adapter.iface;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.support.v4.content.Loader;
-
-import de.vanita5.twittnuker.loader.support.IntentExtrasUsersLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 
-import java.util.List;
+public interface IUsersAdapter<Data> extends IContentCardAdapter {
 
-public class UsersListFragment extends ParcelableUsersFragment {
+	ParcelableUser getUser(int position);
 
-	@Override
-	public Loader<List<ParcelableUser>> newLoaderInstance(final Context context, final Bundle args) {
-		if (args == null) return null;
-		if (args.containsKey(EXTRA_USERS)) return new IntentExtrasUsersLoader(context, args, getData());
-		return null;
-	}
+	long getUserId(int position);
+
+	int getUsersCount();
+
+	void setData(Data data);
+
+	boolean shouldShowAccountsColor();
+
+	MediaLoaderWrapper getMediaLoader();
 
 }

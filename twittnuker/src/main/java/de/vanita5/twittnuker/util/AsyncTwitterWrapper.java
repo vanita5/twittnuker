@@ -905,6 +905,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			if (result.hasData()) {
 				final ParcelableStatus status = result.getData();
 
+
                 final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
                 bus.post(new FavoriteCreatedEvent(status));
                 showOkMessage(mContext, R.string.status_favorited, false);

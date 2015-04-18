@@ -20,24 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment.support;
+package de.vanita5.twittnuker.adapter.iface;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.support.v4.content.Loader;
+public interface ILoadMoreSupportAdapter {
+	int ITEM_VIEW_TYPE_LOAD_INDICATOR = 0;
 
-import de.vanita5.twittnuker.loader.support.IntentExtrasUsersLoader;
-import de.vanita5.twittnuker.model.ParcelableUser;
+	boolean isLoadMoreIndicatorVisible();
 
-import java.util.List;
+	void setLoadMoreIndicatorVisible(boolean enabled);
 
-public class UsersListFragment extends ParcelableUsersFragment {
+	boolean isLoadMoreSupported();
 
-	@Override
-	public Loader<List<ParcelableUser>> newLoaderInstance(final Context context, final Bundle args) {
-		if (args == null) return null;
-		if (args.containsKey(EXTRA_USERS)) return new IntentExtrasUsersLoader(context, args, getData());
-		return null;
-	}
-
+	void setLoadMoreSupported(boolean supported);
 }

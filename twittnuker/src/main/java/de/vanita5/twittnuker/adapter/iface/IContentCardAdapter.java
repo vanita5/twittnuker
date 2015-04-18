@@ -23,37 +23,26 @@
 package de.vanita5.twittnuker.adapter.iface;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ImageLoadingHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
-public interface IContentCardAdapter extends IGapSupportedAdapter, ContentCardClickListener {
-	MediaLoaderWrapper getImageLoader();
-
+public interface IContentCardAdapter extends ILoadMoreSupportAdapter {
 	Context getContext();
-
-	ImageLoadingHandler getImageLoadingHandler();
 
     int getItemCount();
 
     @ShapeStyle
 	int getProfileImageStyle();
 
-    @PreviewStyle
-	int getMediaPreviewStyle();
+    float getTextSize();
 
+    @NonNull
 	AsyncTwitterWrapper getTwitterWrapper();
 
-	float getTextSize();
+    boolean isProfileImageEnabled();
 
-    boolean isLoadMoreIndicatorVisible();
-
-    boolean isLoadMoreSupported();
-
-    void setLoadMoreSupported(boolean supported);
-
-    void setLoadMoreIndicatorVisible(boolean enabled);
+    MediaLoaderWrapper getMediaLoader();
 }

@@ -24,12 +24,9 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import de.vanita5.twittnuker.loader.support.IDsUsersLoader;
 import de.vanita5.twittnuker.loader.support.IncomingFriendshipsLoader;
-import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
 public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment {
 
@@ -38,27 +35,6 @@ public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment 
 		if (args == null) return null;
 		final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
 		return new IncomingFriendshipsLoader(context, accountId, getNextCursor(), getData());
-	}
-
-	@Override
-	public boolean onMenuItemClick(final MenuItem item) {
-	    switch (item.getItemId()) {
-			case MENU_ACCEPT: {
-				final AsyncTwitterWrapper twitter = getTwitterWrapper();
-				final ParcelableUser user = getSelectedUser();
-				if (twitter == null || user == null) return false;
-					twitter.acceptFriendshipAsync(user.account_id, user.id);
-					break;
-			}
-			case MENU_DENY: {
-				final AsyncTwitterWrapper twitter = getTwitterWrapper();
-				final ParcelableUser user = getSelectedUser();
-				if (twitter == null || user == null) return false;
-					twitter.denyFriendshipAsync(user.account_id, user.id);
-					break;
-			}
-		}
-		return super.onMenuItemClick(item);
 	}
 
 }

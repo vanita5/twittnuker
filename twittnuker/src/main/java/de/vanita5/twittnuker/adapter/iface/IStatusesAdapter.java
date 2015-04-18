@@ -22,30 +22,38 @@
 package de.vanita5.twittnuker.adapter.iface;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
+import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.StatusClickListener;
 
-public interface IStatusesAdapter<Data> extends IContentCardAdapter, StatusClickListener {
+public interface IStatusesAdapter<Data> extends IContentCardAdapter, StatusClickListener,
+        IGapSupportedAdapter, ContentCardClickListener {
+
+    int getLinkHighlightingStyle();
+
+    @PreviewStyle
+    int getMediaPreviewStyle();
 
     ParcelableStatus getStatus(int position);
 
-    int getStatusesCount();
-
     long getStatusId(int position);
+
+    int getStatusesCount();
 
     TwidereLinkify getTwidereLinkify();
 
-    boolean isMediaPreviewEnabled();
+    boolean isCardActionsHidden();
 
-    int getLinkHighlightingStyle();
+    boolean isMediaPreviewEnabled();
 
     boolean isNameFirst();
 
     boolean isSensitiveContentEnabled();
 
-    boolean isCardActionsHidden();
-
     void setData(Data data);
 
     boolean shouldShowAccountsColor();
+
+    MediaLoadingHandler getMediaLoadingHandler();
 }
