@@ -26,6 +26,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -46,6 +47,7 @@ public abstract class ParcelableUsersFragment extends AbsUsersFragment<List<Parc
 		return new ParcelableUsersAdapter(context, compact);
 	}
 
+
 	@Override
 	public boolean triggerRefresh() {
 		return false;
@@ -58,11 +60,12 @@ public abstract class ParcelableUsersFragment extends AbsUsersFragment<List<Parc
 
 	@Override
 	protected boolean hasMoreData(List<ParcelableUser> data) {
-		return data == null || data.isEmpty();
+        return data == null || !data.isEmpty();
 	}
 
 	@Override
-	protected void onLoadingFinished(List<ParcelableUser> data) {
+    public void onLoadFinished(Loader<List<ParcelableUser>> loader, List<ParcelableUser> data) {
+        super.onLoadFinished(loader, data);
 		setRefreshEnabled(true);
 		setRefreshing(false);
 		setLoadMoreIndicatorVisible(false);

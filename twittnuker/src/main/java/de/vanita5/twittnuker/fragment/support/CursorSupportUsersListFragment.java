@@ -61,15 +61,24 @@ public abstract class CursorSupportUsersListFragment extends ParcelableUsersFrag
 		mPrevCursor = -1;
 	}
 
-//	@Override
-//	public void onLoadFinished(final Loader<List<ParcelableUser>> loader, final List<ParcelableUser> data) {
-//		super.onLoadFinished(loader, data);
-//		final BaseCursorSupportUsersLoader cursorLoader = (BaseCursorSupportUsersLoader) loader;
-//		mNextCursor = cursorLoader.getNextCursor();
-//		mPrevCursor = cursorLoader.getPrevCursor();
-//	}
-
 	@Override
+    public void onLoadFinished(final Loader<List<ParcelableUser>> loader, final List<ParcelableUser> data) {
+        super.onLoadFinished(loader, data);
+        final BaseCursorSupportUsersLoader cursorLoader = (BaseCursorSupportUsersLoader) loader;
+        mNextCursor = cursorLoader.getNextCursor();
+        mPrevCursor = cursorLoader.getPrevCursor();
+    }
+
+    @Override
+    public void onLoadMoreContents() {
+        super.onLoadMoreContents();
+        final Bundle loaderArgs = new Bundle(getArguments());
+        loaderArgs.putBoolean(EXTRA_FROM_USER, true);
+        loaderArgs.putLong(EXTRA_NEXT_CURSOR, mNextCursor);
+        getLoaderManager().restartLoader(0, loaderArgs, this);
+    }
+
+    @Override
 	public void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putLong(EXTRA_NEXT_CURSOR, mNextCursor);
@@ -85,5 +94,5 @@ public abstract class CursorSupportUsersListFragment extends ParcelableUsersFrag
 	}
 
 	@Override
-	protected abstract BaseCursorSupportUsersLoader newLoaderInstance(final Context context, final Bundle args);
+    protected abstract BaseCursorSupportUsersLoader onCreateUsersLoader(final Context context, final Bundle args, boolean fromUser);
 }

@@ -24,8 +24,9 @@ package de.vanita5.twittnuker.adapter.iface;
 
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.view.holder.UserViewHolder.UserClickListener;
 
-public interface IUsersAdapter<Data> extends IContentCardAdapter {
+public interface IUsersAdapter<Data> extends IContentCardAdapter, UserClickListener {
 
 	ParcelableUser getUser(int position);
 

@@ -26,23 +26,36 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 
 import java.util.Collections;
 import java.util.List;
 
-public abstract class ParcelableUsersLoader extends AsyncTaskLoader<List<ParcelableUser>> implements Constants {
+public abstract class ParcelableUsersLoader extends AsyncTaskLoader<List<ParcelableUser>> implements IExtendedLoader, Constants {
 
 	private final List<ParcelableUser> mData = Collections
 			.synchronizedList(new NoDuplicatesArrayList<ParcelableUser>());
+    private boolean mFromUser;
 
-	public ParcelableUsersLoader(final Context context, final List<ParcelableUser> data) {
+    public ParcelableUsersLoader(final Context context, final List<ParcelableUser> data, boolean fromUser) {
 		super(context);
+        setFromUser(fromUser);
 		if (data != null) {
 			mData.addAll(data);
 		}
 	}
+
+    @Override
+    public void setFromUser(boolean fromUser) {
+        mFromUser = fromUser;
+    }
+
+    @Override
+    public boolean isFromUser() {
+        return mFromUser;
+    }
 
 	@Override
 	public void onStartLoading() {

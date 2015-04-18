@@ -22,18 +22,18 @@
 
 package de.vanita5.twittnuker.loader.support;
 
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
-
 import android.content.Context;
 
 import de.vanita5.twittnuker.model.ParcelableUser;
+
+import java.util.Collections;
+import java.util.List;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
-import java.util.Collections;
-import java.util.List;
+import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 
 public abstract class Twitter4JUsersLoader extends ParcelableUsersLoader {
 
@@ -41,10 +41,10 @@ public abstract class Twitter4JUsersLoader extends ParcelableUsersLoader {
 
 	private final Context mContext;
 
-	public Twitter4JUsersLoader(final Context context, final long account_id, final List<ParcelableUser> data) {
-		super(context, data);
+    public Twitter4JUsersLoader(final Context context, final long accountId, final List<ParcelableUser> data, boolean fromUser) {
+        super(context, data, fromUser);
 		mContext = context;
-		mAccountId = account_id;
+        mAccountId = accountId;
 	}
 
 	@Override

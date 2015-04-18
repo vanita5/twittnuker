@@ -23,75 +23,54 @@
 package de.vanita5.twittnuker.view.holder;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.Locale;
-
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
+import de.vanita5.twittnuker.adapter.iface.ContentCardClickListener;
+import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
+
+import java.util.Locale;
 
 import static de.vanita5.twittnuker.util.UserColorNameUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 
-public class UserViewHolder extends ViewHolder {
+public class UserViewHolder extends ViewHolder implements OnClickListener, OnLongClickListener {
 
-	private final IContentCardAdapter adapter;
+    private final IUsersAdapter<?> adapter;
 
-	public final IColorLabelView content;
-	private final ImageView profileImageView, profileTypeView;
-	private final TextView name, screenName, description, location, url, statusesCount, followersCount,
-			friendsCount;
-	private boolean account_color_enabled;
+    private final IColorLabelView itemContent;
+    private final ShapedImageView profileImageView;
+    private final ImageView profileTypeView;
+    private final TextView nameView, screenNameView, descriptionView, locationView, urlView,
+            statusesCountView, followersCountView, friendsCountView;
 
-	public UserViewHolder(final IContentCardAdapter adapter, final View itemView) {
+    private UserClickListener userClickListener;
+
+    public UserViewHolder(final IUsersAdapter<?> adapter, final View itemView) {
 		super(itemView);
 		this.adapter = adapter;
-		content = (IColorLabelView) itemView.findViewById(R.id.content);
-		profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
+        itemContent = (IColorLabelView) itemView.findViewById(R.id.item_content);
+        profileImageView = (ShapedImageView) itemView.findViewById(R.id.profile_image);
 		profileTypeView = (ImageView) itemView.findViewById(R.id.profile_type);
-		name = (TextView) itemView.findViewById(R.id.name);
-		screenName = (TextView) itemView.findViewById(R.id.screen_name);
-		description = (TextView) itemView.findViewById(R.id.description);
-		location = (TextView) itemView.findViewById(R.id.location);
-		url = (TextView) itemView.findViewById(R.id.url);
-		statusesCount = (TextView) itemView.findViewById(R.id.statuses_count);
-		followersCount = (TextView) itemView.findViewById(R.id.followers_count);
-		friendsCount = (TextView) itemView.findViewById(R.id.friends_count);
-	}
-
-	public void setAccountColor(final int color) {
-		content.drawEnd(account_color_enabled ? color : Color.TRANSPARENT);
-	}
-
-	public void setAccountColorEnabled(final boolean enabled) {
-		account_color_enabled = enabled;
-		if (!account_color_enabled) {
-			content.drawEnd(Color.TRANSPARENT);
-		}
-	}
-
-	public void setHighlightColor(final int color) {
-		content.drawBackground(color);
-	}
-
-	public void setTextSize(final float textSize) {
-		description.setTextSize(textSize);
-		name.setTextSize(textSize);
-		screenName.setTextSize(textSize * 0.75f);
-		location.setTextSize(textSize);
-		url.setTextSize(textSize);
-		statusesCount.setTextSize(textSize);
-		followersCount.setTextSize(textSize);
-		friendsCount.setTextSize(textSize);
+        nameView = (TextView) itemView.findViewById(R.id.name);
+        screenNameView = (TextView) itemView.findViewById(R.id.screen_name);
+        descriptionView = (TextView) itemView.findViewById(R.id.description);
+        locationView = (TextView) itemView.findViewById(R.id.location);
+        urlView = (TextView) itemView.findViewById(R.id.url);
+        statusesCountView = (TextView) itemView.findViewById(R.id.statuses_count);
+        followersCountView = (TextView) itemView.findViewById(R.id.followers_count);
+        friendsCountView = (TextView) itemView.findViewById(R.id.friends_count);
 	}
 
 	public void displayUser(ParcelableUser user) {
@@ -108,18 +87,18 @@ public class UserViewHolder extends ViewHolder {
 		} else {
 			profileTypeView.setImageDrawable(null);
 		}
-		name.setText(user.name);
-		screenName.setText("@" + user.screen_name);
-		description.setVisibility(TextUtils.isEmpty(user.description_unescaped) ? View.GONE : View.VISIBLE);
-		description.setText(user.description_unescaped);
-		location.setVisibility(TextUtils.isEmpty(user.location) ? View.GONE : View.VISIBLE);
-		location.setText(user.location);
-		url.setVisibility(TextUtils.isEmpty(user.url_expanded) ? View.GONE : View.VISIBLE);
-		url.setText(user.url_expanded);
+		nameView.setText(user.name);
+        screenNameView.setText("@" + user.screen_name);
+        descriptionView.setVisibility(TextUtils.isEmpty(user.description_unescaped) ? View.GONE : View.VISIBLE);
+        descriptionView.setText(user.description_unescaped);
+        locationView.setVisibility(TextUtils.isEmpty(user.location) ? View.GONE : View.VISIBLE);
+        locationView.setText(user.location);
+        urlView.setVisibility(TextUtils.isEmpty(user.url_expanded) ? View.GONE : View.VISIBLE);
+        urlView.setText(user.url_expanded);
 		final Locale locale = Locale.getDefault();
-		statusesCount.setText(getLocalizedNumber(locale, user.statuses_count));
-		followersCount.setText(getLocalizedNumber(locale, user.followers_count));
-		friendsCount.setText(getLocalizedNumber(locale, user.friends_count));
+        statusesCountView.setText(getLocalizedNumber(locale, user.statuses_count));
+        followersCountView.setText(getLocalizedNumber(locale, user.followers_count));
+        friendsCountView.setText(getLocalizedNumber(locale, user.friends_count));
 		if (adapter.isProfileImageEnabled()) {
 			profileImageView.setVisibility(View.VISIBLE);
 			loader.displayProfileImage(profileImageView, user.profile_image_url);
@@ -129,8 +108,63 @@ public class UserViewHolder extends ViewHolder {
 		}
 	}
 
+    @Override
+    public void onClick(View v) {
+        if (userClickListener == null) return;
+        switch (v.getId()) {
+            case R.id.item_content: {
+                userClickListener.onUserClick(this, getLayoutPosition());
+                break;
+            }
+        }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (userClickListener == null) return false;
+        switch (v.getId()) {
+            case R.id.item_content: {
+                return userClickListener.onUserLongClick(this, getLayoutPosition());
+            }
+        }
+        return false;
+    }
+
+    public void setOnClickListeners() {
+        setUserClickListener(adapter);
+    }
+
+    public void setTextSize(final float textSize) {
+        descriptionView.setTextSize(textSize);
+        nameView.setTextSize(textSize);
+        screenNameView.setTextSize(textSize * 0.75f);
+        locationView.setTextSize(textSize);
+        urlView.setTextSize(textSize);
+        statusesCountView.setTextSize(textSize);
+        followersCountView.setTextSize(textSize);
+        friendsCountView.setTextSize(textSize);
+    }
+
+    public void setUserClickListener(UserClickListener listener) {
+        userClickListener = listener;
+        ((View) itemContent).setOnClickListener(this);
+        ((View) itemContent).setOnLongClickListener(this);
+    }
+
 	public void setUserColor(final int color) {
-		content.drawStart(color);
+        itemContent.drawStart(color);
 	}
 
+    public void setupViewOptions() {
+        setTextSize(adapter.getTextSize());
+        profileImageView.setStyle(adapter.getProfileImageStyle());
+    }
+
+    public static interface UserClickListener extends ContentCardClickListener {
+
+        void onUserClick(UserViewHolder holder, int position);
+
+        boolean onUserLongClick(UserViewHolder holder, int position);
+
+    }
 }

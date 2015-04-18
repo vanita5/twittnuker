@@ -27,9 +27,9 @@ import android.content.SharedPreferences;
 
 import de.vanita5.twittnuker.model.ParcelableUser;
 
-import twitter4j.CursorSupport;
-
 import java.util.List;
+
+import twitter4j.CursorSupport;
 
 public abstract class BaseCursorSupportUsersLoader extends Twitter4JUsersLoader {
 
@@ -39,14 +39,13 @@ public abstract class BaseCursorSupportUsersLoader extends Twitter4JUsersLoader 
 
 	private long mNextCursor, mPrevCursor;
 
-	public BaseCursorSupportUsersLoader(final Context context, final long account_id, final long cursor,
-			final List<ParcelableUser> data) {
-		super(context, account_id, data);
+    public BaseCursorSupportUsersLoader(final Context context, final long accountId, final long cursor,
+                                        final List<ParcelableUser> data, boolean fromUser) {
+        super(context, accountId, data, fromUser);
 		mCursor = cursor;
-		mPreferences = getContext().getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final int prefs_load_item_limit = mPreferences.getInt(KEY_LOAD_ITEM_LIMIT,
-				DEFAULT_LOAD_ITEM_LIMIT);
-		mLoadItemLimit = Math.min(100, prefs_load_item_limit);
+        mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        final int loadItemLimit = mPreferences.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
+        mLoadItemLimit = Math.min(100, loadItemLimit);
 	}
 
 	public final int getCount() {

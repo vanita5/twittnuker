@@ -26,6 +26,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
+import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.loader.support.UserSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
@@ -36,14 +37,6 @@ public class SearchUsersFragment extends ParcelableUsersFragment {
 	private int mPage = 1;
 
 	@Override
-	public Loader<List<ParcelableUser>> newLoaderInstance(final Context context, final Bundle args) {
-		if (args == null) return null;
-		final long account_id = args.getLong(EXTRA_ACCOUNT_ID);
-		final String query = args.getString(EXTRA_QUERY);
-		return new UserSearchLoader(context, account_id, query, mPage, getData());
-	}
-
-	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		if (savedInstanceState != null) {
 			mPage = savedInstanceState.getInt(EXTRA_PAGE, 1);
@@ -52,22 +45,40 @@ public class SearchUsersFragment extends ParcelableUsersFragment {
 	}
 
 	@Override
-	public void onDestroyView() {
-		mPage = 1;
-		super.onDestroyView();
+    public Loader<List<ParcelableUser>> onCreateUsersLoader(final Context context, final Bundle args, boolean fromUser) {
+        if (args == null) return null;
+        final long account_id = args.getLong(EXTRA_ACCOUNT_ID);
+        final String query = args.getString(EXTRA_QUERY);
+        return new UserSearchLoader(context, account_id, query, mPage, getData(), fromUser);
 	}
 
 	@Override
-    public void onLoadingFinished(final List<ParcelableUser> data) {
-		if (data != null) {
+    public void onLoadFinished(final Loader<List<ParcelableUser>> loader, final List<ParcelableUser> data) {
+        super.onLoadFinished(loader, data);
+        if (loader instanceof IExtendedLoader && ((IExtendedLoader) loader).isFromUser() && data != null) {
 			mPage++;
 		}
 	}
 
 	@Override
+    public void onLoadMoreContents() {
+        super.onLoadMoreContents();
+        final Bundle loaderArgs = new Bundle(getArguments());
+        loaderArgs.putBoolean(EXTRA_FROM_USER, true);
+        loaderArgs.putLong(EXTRA_PAGE, mPage);
+        getLoaderManager().restartLoader(0, loaderArgs, this);
+    }
+
+    @Override
 	public void onSaveInstanceState(final Bundle outState) {
 		outState.putInt(EXTRA_PAGE, mPage);
 		super.onSaveInstanceState(outState);
 	}
+
+    @Override
+    public void onDestroyView() {
+        mPage = 1;
+        super.onDestroyView();
+    }
 
 }

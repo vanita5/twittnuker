@@ -166,7 +166,8 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
             final long accountId = args.getLong(EXTRA_ACCOUNT_ID);
             final String query = args.getString(EXTRA_QUERY);
             final boolean fromCache = args.getBoolean(EXTRA_FROM_CACHE);
-            return new CacheUserSearchLoader(getActivity(), accountId, query, fromCache);
+            final boolean fromUser = args.getBoolean(EXTRA_FROM_USER, false);
+            return new CacheUserSearchLoader(getActivity(), accountId, query, fromCache, fromUser);
         }
 
         @Override
@@ -741,8 +742,8 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     public static class CacheUserSearchLoader extends UserSearchLoader {
         private final boolean mFromCache;
 
-        public CacheUserSearchLoader(Context context, long accountId, String query, boolean fromCache) {
-            super(context, accountId, query, 0, null);
+        public CacheUserSearchLoader(Context context, long accountId, String query, boolean fromCache, boolean fromUser) {
+            super(context, accountId, query, 0, null, fromUser);
             mFromCache = fromCache;
         }
 

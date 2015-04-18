@@ -26,21 +26,21 @@ import android.content.Context;
 
 import de.vanita5.twittnuker.model.ParcelableUser;
 
+import java.util.List;
+
 import twitter4j.CursorPaging;
 import twitter4j.IDs;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import java.util.List;
-
 public class StatusRetweetersLoader extends IDsUsersLoader {
 
 	private final long mStatusId;
 
-	public StatusRetweetersLoader(final Context context, final long account_id, final long status_id,
-			final long cursor, final List<ParcelableUser> data) {
-		super(context, account_id, cursor, data);
-		mStatusId = status_id;
+    public StatusRetweetersLoader(final Context context, final long accountId, final long statusId,
+                                  final long cursor, final List<ParcelableUser> data, boolean fromUser) {
+        super(context, accountId, cursor, data, fromUser);
+        mStatusId = statusId;
 	}
 
 	@Override
