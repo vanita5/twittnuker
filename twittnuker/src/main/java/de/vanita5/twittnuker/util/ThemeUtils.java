@@ -37,6 +37,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.internal.app.WindowDecorActionBar;
@@ -44,8 +45,8 @@ import android.support.v7.internal.app.WindowDecorActionBar.ActionModeImpl;
 import android.support.v7.internal.view.SupportActionModeWrapper;
 import android.support.v7.internal.view.SupportActionModeWrapperTrojan;
 import android.support.v7.internal.view.menu.ActionMenuItemView;
+import android.support.v7.internal.widget.ActionBarContextView;
 import android.support.v7.internal.widget.ActionBarOverlayLayout;
-import android.support.v7.internal.widget.DecorToolbar;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
@@ -190,19 +191,20 @@ public class ThemeUtils implements Constants {
         textView.setText(builder);
     }
 
-    public static void applySupportActionModeBackground(ActionMode mode, FragmentActivity activity,
-                                                        int themeRes, int actionBarColor,
+    public static void applySupportActionModeColor(ActionMode mode, FragmentActivity activity,
+                                                   int themeRes, int actionBarColor,
                                                         String backgroundOption, boolean outlineEnabled) {
         // Very dirty implementation
         if (!(mode instanceof SupportActionModeWrapper) || !(activity instanceof IThemedActivity))
             return;
         final android.support.v7.view.ActionMode modeCompat = SupportActionModeWrapperTrojan.getWrappedObject((SupportActionModeWrapper) mode);
-        applySupportActionModeBackground(modeCompat, activity, themeRes, actionBarColor, backgroundOption, outlineEnabled);
+        applySupportActionModeColor(modeCompat, activity, themeRes, actionBarColor, backgroundOption, outlineEnabled);
     }
 
-    public static void applySupportActionModeBackground(android.support.v7.view.ActionMode modeCompat,
-                                                        FragmentActivity activity, int themeRes,
-                                                        int actionBarColor, String backgroundOption, boolean outlineEnabled) {
+    public static void applySupportActionModeColor(android.support.v7.view.ActionMode modeCompat,
+                                                   FragmentActivity activity, int themeRes,
+                                                   int actionBarColor, String backgroundOption,
+                                                   boolean outlineEnabled) {
         // Very dirty implementation
         if (!(modeCompat instanceof ActionModeImpl)) return;
         try {
@@ -218,14 +220,23 @@ public class ThemeUtils implements Constants {
             if (actionBar == null) return;
             final Context context = actionBar.getThemedContext();
             final Field contextViewField = WindowDecorActionBar.class.getDeclaredField("mContextView");
-            final Field decorToolbarField = WindowDecorActionBar.class.getDeclaredField("mDecorToolbar");
             contextViewField.setAccessible(true);
-            decorToolbarField.setAccessible(true);
             final View contextView = (View) contextViewField.get(actionBar);
-            final DecorToolbar decorToolbar = (DecorToolbar) decorToolbarField.get(actionBar);
-            if (contextView == null || decorToolbar == null) return;
-            final Toolbar toolbar = (Toolbar) decorToolbar.getViewGroup();
-            toolbar.setTitleTextColor(getContrastActionBarTitleColor(context, themeRes, actionBarColor));
+            if (!(contextView instanceof ActionBarContextView)) return;
+            final ActionBarContextView actionBarContextView = (ActionBarContextView) contextView;
+            final TextView actionBarTitleView = (TextView) contextView.findViewById(android.support.v7.appcompat.R.id.action_bar_title);
+            final TextView actionBarSubtitleView = (TextView) contextView.findViewById(android.support.v7.appcompat.R.id.action_bar_subtitle);
+            final ImageView actionModeCloseButton = (ImageView) contextView.findViewById(android.support.v7.appcompat.R.id.action_mode_close_button);
+            final ActionMenuView menuView = ViewUtils.findViewByType(contextView, ActionMenuView.class);
+            if (actionBarTitleView == null || actionBarSubtitleView == null || actionModeCloseButton == null || menuView == null)
+                return;
+            final int titleColor = getContrastActionBarTitleColor(context, themeRes, actionBarColor);
+            final int itemColor = getContrastActionBarItemColor(context, themeRes, actionBarColor);
+            actionBarTitleView.setTextColor(titleColor);
+            actionBarSubtitleView.setTextColor(titleColor);
+            actionModeCloseButton.setColorFilter(itemColor, Mode.SRC_ATOP);
+            setActionBarOverflowColor(menuView, itemColor);
+            ThemeUtils.wrapToolbarMenuIcon(menuView, itemColor, itemColor);
             ViewUtils.setBackground(contextView, getActionBarBackground(activity, themeRes, actionBarColor, backgroundOption, outlineEnabled));
         } catch (Exception e) {
             e.printStackTrace();
@@ -910,10 +921,26 @@ public class ThemeUtils implements Constants {
         setActionBarTitleTextColor(window, itemColor);
     }
 
-    @SuppressLint("NewApi")
     public static void setActionBarOverflowColor(Toolbar toolbar, int itemColor) {
         if (toolbar == null) return;
         final ActionMenuView actionMenuView = ViewUtils.findViewByType(toolbar, ActionMenuView.class);
+        if (actionMenuView == null) return;
+        View overflowView = null;
+        for (int i = 0, j = actionMenuView.getChildCount(); i < j; i++) {
+            final View child = actionMenuView.getChildAt(i);
+            final ActionMenuView.LayoutParams lp = (ActionMenuView.LayoutParams) child.getLayoutParams();
+            if (lp.isOverflowButton) {
+                overflowView = child;
+                break;
+            }
+        }
+        if (!(overflowView instanceof ImageView)) return;
+        final Drawable drawable = ((ImageView) overflowView).getDrawable();
+        if (drawable == null) return;
+        drawable.setColorFilter(itemColor, Mode.SRC_ATOP);
+    }
+
+    public static void setActionBarOverflowColor(ActionMenuView actionMenuView, int itemColor) {
         if (actionMenuView == null) return;
         View overflowView = null;
         for (int i = 0, j = actionMenuView.getChildCount(); i < j; i++) {
@@ -1051,7 +1078,8 @@ public class ThemeUtils implements Constants {
         item.setIcon(newIcon);
     }
 
-    public static void wrapToolbarMenuIcon(Toolbar view, int itemColor, int popupItemColor, int... excludeGroups) {
+    public static void wrapToolbarMenuIcon(@Nullable ActionMenuView view, int itemColor, int popupItemColor, int... excludeGroups) {
+        if (view == null) return;
         final Menu menu = view.getMenu();
         final int childCount = view.getChildCount();
         for (int i = 0, j = menu.size(), k = 0; i < j; i++) {

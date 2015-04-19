@@ -62,6 +62,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
@@ -1408,7 +1409,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 toolbar.setTitleTextColor(itemColor);
                 toolbar.setSubtitleTextColor(itemColor);
                 ThemeUtils.setActionBarOverflowColor(toolbar, itemColor);
-                ThemeUtils.wrapToolbarMenuIcon(toolbar, itemColor, itemColor);
+                ThemeUtils.wrapToolbarMenuIcon(ViewUtils.findViewByType(actionBarView, ActionMenuView.class), itemColor, itemColor);
 			}
             mPagerIndicator.updateAppearance();
         }
