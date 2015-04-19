@@ -241,7 +241,9 @@
         <activity
             android:name=".activity.FiltersActivity"
             android:icon="@drawable/ic_action_twittnuker"
-            android:label="@string/filters">
+            android:label="@string/filters"
+            android:theme="@style/Theme.Twidere.Dark.DialogWhenLarge"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.FILTERS"/>
 

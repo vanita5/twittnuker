@@ -289,7 +289,7 @@ public class LinkHandlerActivity extends BaseActionBarActivity implements System
                 mMainContent.setDrawColor(true);
                 mMainContent.setFactor(1);
                 final int color = getActionBarColor();
-                final int alpha = getCurrentThemeBackgroundAlpha();
+                final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption()) ? getCurrentThemeBackgroundAlpha() : 0xFF;
                 mMainContent.setColor(color, alpha);
                 break;
             }

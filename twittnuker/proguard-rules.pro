@@ -6,6 +6,14 @@
 
 -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
 
+-keepclassmembers class android.support.v7.internal.app.WindowDecorActionBar {
+    private *;
+}
+
+-keepclassmembers class android.support.v7.internal.widget.ActionBarOverlayLayout {
+    private *;
+}
+
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
 -keep public class * extends android.app.Service

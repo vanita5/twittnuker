@@ -22,85 +22,44 @@
 
 package de.vanita5.twittnuker.activity;
 
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.app.Dialog;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Rect;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.view.WindowCompat;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBar.Tab;
-import android.support.v7.app.ActionBar.TabListener;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AutoCompleteTextView;
+import android.view.WindowManager.LayoutParams;
 
-import org.mariotaku.querybuilder.Expression;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.BaseActionBarActivity;
-import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
-import de.vanita5.twittnuker.adapter.SourceAutoCompleteAdapter;
-import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
-import de.vanita5.twittnuker.fragment.BaseFiltersFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredKeywordsFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredLinksFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredSourcesFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredUsersFragment;
-import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
-import de.vanita5.twittnuker.util.ContentValuesCreator;
-import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.view.TabPagerIndicator;
+import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 
-import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
+public class FiltersActivity extends BaseActionBarActivity {
 
-public class FiltersActivity extends BaseActionBarActivity implements TabListener, OnPageChangeListener {
-
-	private static final String EXTRA_AUTO_COMPLETE_TYPE = "auto_complete_type";
-	private static final int AUTO_COMPLETE_TYPE_SOURCES = 2;
-
+    private TintedStatusFrameLayout mMainContent;
+    private TabPagerIndicator mPagerIndicator;
 	private ViewPager mViewPager;
+
 	private SupportTabsAdapter mAdapter;
 
-	private ActionBar mActionBar;
-	private SharedPreferences mPreferences;
-
 	@Override
-    public void onSupportContentChanged() {
-        super.onSupportContentChanged();
-		mViewPager = (ViewPager) findViewById(R.id.pager);
+    public boolean getSystemWindowsInsets(Rect insets) {
+        return false;
 	}
 
 	@Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_filters, menu);
-        return true;
-	}
-
-	@Override
-    public boolean onPrepareOptionsMenu(final Menu menu) {
-		return true;
+    public void onFitSystemWindows(Rect insets) {
+        super.onFitSystemWindows(insets);
+        mMainContent.setPadding(insets.left, insets.top, insets.right, insets.bottom);
 	}
 
 	@Override
@@ -110,163 +69,54 @@ public class FiltersActivity extends BaseActionBarActivity implements TabListene
                 NavUtils.navigateUpFromSameTask(this);
 				return true;
 			}
-			case MENU_ADD: {
-				final Fragment f = mAdapter.getItem(mViewPager.getCurrentItem());
-				if (!(f instanceof BaseFiltersFragment)) return true;
-				final Bundle args = new Bundle();
-				if (f instanceof FilteredUsersFragment) {
-					final Intent intent = new Intent(INTENT_ACTION_SELECT_USER);
-					intent.setClass(this, UserListSelectorActivity.class);
-					intent.putExtra(EXTRA_ACCOUNT_ID, getDefaultAccountId(this));
-					startActivityForResult(intent, REQUEST_SELECT_USER);
-					return true;
-				}
-				if (f instanceof FilteredSourcesFragment) {
-					args.putInt(EXTRA_AUTO_COMPLETE_TYPE, AUTO_COMPLETE_TYPE_SOURCES);
-				}
-				args.putParcelable(EXTRA_URI, ((BaseFiltersFragment) f).getContentUri());
-				final AddItemFragment dialog = new AddItemFragment();
-				dialog.setArguments(args);
-				dialog.show(getSupportFragmentManager(), "add_rule");
-				return true;
-			}
 		}
-		return false;
+        return super.onOptionsItemSelected(item);
 	}
 
 	@Override
     public void onCreate(final Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
         supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
+        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
+        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY);
         super.onCreate(savedInstanceState);
-        mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-        setContentView(R.layout.activity_filters);
-        mActionBar = getSupportActionBar();
-        mAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), null);
-        mActionBar.setDisplayHomeAsUpEnabled(true);
-        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        addTab(FilteredUsersFragment.class, R.string.users, 0);
-        addTab(FilteredKeywordsFragment.class, R.string.keywords, 1);
-        addTab(FilteredSourcesFragment.class, R.string.sources, 2);
-        addTab(FilteredLinksFragment.class, R.string.links, 3);
+        ThemeUtils.applyActionBarBackground(getSupportActionBar(), this, getCurrentThemeResourceId(),
+                getActionBarColor(), false);
+        setContentView(R.layout.activity_content_pages);
+        mMainContent.setOnFitSystemWindowsListener(this);
+        mAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), null, 1);
         mViewPager.setAdapter(mAdapter);
-        mViewPager.setOnPageChangeListener(this);
+        mViewPager.setOffscreenPageLimit(2);
+        mPagerIndicator.setViewPager(mViewPager);
+        mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
+
+
+        mAdapter.addTab(FilteredUsersFragment.class, null, getString(R.string.users), null, 0, null);
+        mAdapter.addTab(FilteredKeywordsFragment.class, null, getString(R.string.keywords), null, 1, null);
+        mAdapter.addTab(FilteredSourcesFragment.class, null, getString(R.string.sources), null, 2, null);
+        mAdapter.addTab(FilteredLinksFragment.class, null, getString(R.string.links), null, 3, null);
+
+
+        ThemeUtils.initPagerIndicatorAsActionBarTab(this, mPagerIndicator);
+        ThemeUtils.setCompatToolbarOverlay(this, new EmptyDrawable());
+
+        mMainContent.setDrawShadow(false);
+        mMainContent.setDrawColor(true);
+        mMainContent.setFactor(1);
+        final int color = getActionBarColor();
+        final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption()) ? getCurrentThemeBackgroundAlpha() : 0xFF;
+        mMainContent.setColor(color, alpha);
 	}
 
 	@Override
-    public boolean getSystemWindowsInsets(Rect insets) {
-        return false;
+    public void onSupportContentChanged() {
+        super.onSupportContentChanged();
+        mMainContent = (TintedStatusFrameLayout) findViewById(R.id.main_content);
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mPagerIndicator = (TabPagerIndicator) findViewById(R.id.view_pager_tabs);
     }
 
-    @Override
-    public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
-	}
-
-	@Override
-	public void onPageSelected(final int position) {
-		if (mActionBar == null) return;
-		mActionBar.setSelectedNavigationItem(position);
-	}
-
-	@Override
-    public void onPageScrollStateChanged(final int state) {
-
-	}
-
-	@Override
-	public void onTabSelected(final Tab tab, final FragmentTransaction ft) {
-		mViewPager.setCurrentItem(tab.getPosition());
-	}
-
-	@Override
-	public void onTabUnselected(final Tab tab, final FragmentTransaction ft) {
-
-	}
-
-	@Override
-    public void onTabReselected(final Tab tab, final FragmentTransaction ft) {
-
-    }
-
-    @Override
-	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-		switch (requestCode) {
-			case REQUEST_SELECT_USER: {
-				final Fragment filter = mAdapter.getItem(mViewPager.getCurrentItem());
-				if (resultCode != RESULT_OK || !(filter instanceof FilteredUsersFragment) || !data.hasExtra(EXTRA_USER))
-					return;
-				final ParcelableUser user = data.getParcelableExtra(EXTRA_USER);
-                final ContentValues values = ContentValuesCreator.createFilteredUser(user);
-				final ContentResolver resolver = getContentResolver();
-                resolver.delete(Filters.Users.CONTENT_URI, Expression.equals(Filters.Users.USER_ID, user.id).getSQL(), null);
-				resolver.insert(Filters.Users.CONTENT_URI, values);
-				break;
-			}
-		}
-	}
-
-	private void addTab(final Class<? extends Fragment> cls, final int name, final int position) {
-		if (mActionBar == null || mAdapter == null) return;
-		mActionBar.addTab(mActionBar.newTab().setText(name).setTabListener(this));
-        mAdapter.addTab(cls, null, getString(name), null, position, null);
-	}
-
-	public static final class AddItemFragment extends BaseSupportDialogFragment implements OnClickListener {
-
-		private AutoCompleteTextView mEditText;
-
-		private SimpleCursorAdapter mUserAutoCompleteAdapter;
-
-		@Override
-		public void onClick(final DialogInterface dialog, final int which) {
-			switch (which) {
-				case DialogInterface.BUTTON_POSITIVE:
-					if (mEditText.length() <= 0) return;
-					final ContentValues values = new ContentValues();
-					values.put(Filters.VALUE, getText());
-					final Bundle args = getArguments();
-					final Uri uri = args.getParcelable(EXTRA_URI);
-					getContentResolver().insert(uri, values);
-					break;
-			}
-
-		}
-
-        @NonNull
-		@Override
-		public Dialog onCreateDialog(final Bundle savedInstanceState) {
-            final FragmentActivity activity = getActivity();
-            final Context wrapped = ThemeUtils.getDialogThemedContext(activity);
-			final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
-			buildDialog(builder);
-			final View view = LayoutInflater.from(wrapped).inflate(R.layout.auto_complete_textview, null);
-			builder.setView(view);
-			mEditText = (AutoCompleteTextView) view.findViewById(R.id.edit_text);
-			final Bundle args = getArguments();
-			final int auto_complete_type = args != null ? args.getInt(EXTRA_AUTO_COMPLETE_TYPE, 0) : 0;
-			if (auto_complete_type != 0) {
-				if (auto_complete_type == AUTO_COMPLETE_TYPE_SOURCES) {
-                    mUserAutoCompleteAdapter = new SourceAutoCompleteAdapter(activity);
-				} else {
-                    final UserHashtagAutoCompleteAdapter adapter = new UserHashtagAutoCompleteAdapter(activity);
-                    adapter.setAccountId(Utils.getDefaultAccountId(activity));
-                    mUserAutoCompleteAdapter = adapter;
-				}
-				mEditText.setAdapter(mUserAutoCompleteAdapter);
-				mEditText.setThreshold(1);
-			}
-			builder.setTitle(R.string.add_rule);
-			builder.setPositiveButton(android.R.string.ok, this);
-			builder.setNegativeButton(android.R.string.cancel, this);
-			return builder.create();
-		}
-
-		protected String getText() {
-			return ParseUtils.parseString(mEditText.getText());
-		}
-
-		private void buildDialog(final Builder builder) {
-
-		}
-	}
 
 }

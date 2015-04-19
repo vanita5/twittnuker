@@ -99,9 +99,9 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
 import de.vanita5.twittnuker.util.CompareUtils;
-import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler;
@@ -794,8 +794,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
             textView.setMovementMethod(StatusContentMovementMethod.getInstance());
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                quoteTextView.setCustomSelectionActionModeCallback(new StatusActionModeCallback(quoteTextView, fragment, activity));
-                textView.setCustomSelectionActionModeCallback(new StatusActionModeCallback(textView, fragment, activity));
+			quoteTextView.setCustomSelectionActionModeCallback(new StatusActionModeCallback(quoteTextView, fragment, activity));
+			textView.setCustomSelectionActionModeCallback(new StatusActionModeCallback(textView, fragment, activity));
 //            }
         }
 
@@ -813,12 +813,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
 			@Override
 			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-				final FragmentActivity activity = fragment.getActivity();
-				if (activity instanceof IThemedActivity) {
-					final int themeRes = ((IThemedActivity) activity).getCurrentThemeResourceId();
-					final int accentColor = ((IThemedActivity) activity).getCurrentThemeColor();
-					ThemeUtils.applySupportActionModeBackground(mode, fragment.getActivity(), themeRes, accentColor, true);
-				}
 				mode.getMenuInflater().inflate(R.menu.action_status_text_selection, menu);
 				return true;
 			}
