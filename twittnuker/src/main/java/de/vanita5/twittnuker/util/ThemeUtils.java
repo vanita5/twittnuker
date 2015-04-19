@@ -746,18 +746,12 @@ public class ThemeUtils implements Constants {
         if (!(activity instanceof IThemedActivity)) return;
         final int themeRes = ((IThemedActivity) activity).getCurrentThemeResourceId();
         final int themeColor = ((IThemedActivity) activity).getCurrentThemeColor();
-        final int contrastColor = ColorUtils.getContrastYIQ(themeColor, 192);
-        ViewUtils.setBackground(indicator, getActionBarStackedBackground(activity, themeRes, themeColor, true));
-        if (isDarkTheme(themeRes)) {
-            final int foregroundColor = getThemeForegroundColor(activity);
-            indicator.setIconColor(foregroundColor);
-            indicator.setLabelColor(foregroundColor);
-            indicator.setStripColor(themeColor);
-        } else {
-            indicator.setIconColor(contrastColor);
-            indicator.setLabelColor(contrastColor);
-            indicator.setStripColor(contrastColor);
-        }
+        final int actionBarColor = ((IThemedActivity) activity).getActionBarColor();
+        final int contrastColor = ColorUtils.getContrastYIQ(actionBarColor, 192);
+        ViewUtils.setBackground(indicator, getActionBarStackedBackground(activity, themeRes, actionBarColor, true));
+        indicator.setIconColor(contrastColor);
+        indicator.setLabelColor(contrastColor);
+        indicator.setStripColor(themeColor);
         indicator.updateAppearance();
     }
 
