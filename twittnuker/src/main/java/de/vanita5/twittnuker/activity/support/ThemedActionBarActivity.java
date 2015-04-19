@@ -26,15 +26,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.View;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -72,6 +68,11 @@ public abstract class ThemedActionBarActivity extends ActionBarActivity implemen
 	}
 
 	@Override
+	public final int getCurrentActionBarColor() {
+		return mCurrentActionBarColor;
+	}
+
+	@Override
 	public int getThemeBackgroundAlpha() {
         return ThemeUtils.getUserThemeBackgroundAlpha(this);
 	}
@@ -87,6 +88,11 @@ public abstract class ThemedActionBarActivity extends ActionBarActivity implemen
 	}
 
 	@Override
+	public int getActionBarColor() {
+		return ThemeUtils.getActionBarColor(this);
+	}
+
+	@Override
 	public final void restart() {
 		restartActivity(this);
 	}
@@ -95,7 +101,7 @@ public abstract class ThemedActionBarActivity extends ActionBarActivity implemen
     public void onSupportActionModeStarted(android.support.v7.view.ActionMode mode) {
         super.onSupportActionModeStarted(mode);
         ThemeUtils.applySupportActionModeBackground(mode, this, getCurrentThemeResourceId(),
-                getActionBarColor(), true);
+				getActionBarColor(), getThemeBackgroundOption(), true);
     }
 
     @Override
@@ -106,17 +112,6 @@ public abstract class ThemedActionBarActivity extends ActionBarActivity implemen
 		}
         setupTheme();
 		super.onCreate(savedInstanceState);
-	}
-
-	@Override
-	protected void onTitleChanged(CharSequence title, int color) {
-		final SpannableStringBuilder builder = new SpannableStringBuilder(title);
-		final int themeResId = getCurrentThemeResourceId();
-		final int themeColor = getThemeColor(), contrastColor = ColorUtils.getContrastYIQ(themeColor, 192);
-		if (!ThemeUtils.isDarkTheme(themeResId)) {
-			builder.setSpan(new ForegroundColorSpan(contrastColor), 0, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-		}
-		super.onTitleChanged(title, color);
 	}
 
 	@Override
@@ -138,10 +133,6 @@ public abstract class ThemedActionBarActivity extends ActionBarActivity implemen
     @Override
     protected void onStart() {
         super.onStart();
-	}
-
-	public int getActionBarColor() {
-		return ThemeUtils.getActionBarColor(this);
 	}
 
     private void setupTheme() {

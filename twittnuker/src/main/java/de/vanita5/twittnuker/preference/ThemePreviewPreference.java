@@ -44,7 +44,6 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
@@ -118,11 +117,14 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		final int defaultTextSize = getDefaultTextSize(context);
         final int cardBackgroundColor = ThemeUtils.getCardBackgroundColor(context);
         final int accentColor = ThemeUtils.getUserAccentColor(context);
+		final int actionBarColor = ThemeUtils.getActionBarColor(context);
 
-        ThemeUtils.applyWindowBackground(context, windowBackgroundView, ThemeUtils.getThemeResource(context),
-		ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
-//        ViewAccessor.setBackground(windowContentOverlayView, ThemeUtils.getWindowContentOverlay(context));
-        ViewUtils.setBackground(actionBarView, ThemeUtils.getActionBarBackground(context, themeRes, accentColor, true));
+        final int themeId = ThemeUtils.getThemeResource(context);
+        final String backgroundOption = ThemeUtils.getThemeBackgroundOption(context);
+        ThemeUtils.applyWindowBackground(context, windowBackgroundView, themeId, backgroundOption,
+                ThemeUtils.getUserThemeBackgroundAlpha(context));
+        ViewUtils.setBackground(actionBarView, ThemeUtils.getActionBarBackground(context, themeRes,
+				actionBarColor, backgroundOption, true));
         ViewUtils.setBackground(actionBarOverlay, ThemeUtils.getWindowContentOverlay(context));
         cardView.setCardBackgroundColor(cardBackgroundColor);
 
@@ -131,8 +133,10 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		linkify.setHighlightOption(highlightOption);
 
 
+		actionBarView.setLogo(R.drawable.ic_action_twittnuker);
 		actionBarView.setTitle(R.string.app_name);
-		actionBarView.setTitleTextColor(ColorUtils.getContrastYIQ(accentColor, 192));
+        actionBarView.setTitleTextColor(ThemeUtils.getContrastActionBarTitleColor(context, themeId, actionBarColor));
+
         menuBar.setEnabled(false);
         final MenuInflater inflater = new SupportMenuInflater(context);
         inflater.inflate(R.menu.menu_status, menuBar.getMenu());

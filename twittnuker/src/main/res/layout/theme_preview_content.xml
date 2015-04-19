@@ -53,17 +53,6 @@
             android:layout_height="?actionBarSize"
             android:gravity="center_vertical"/>
 
-            <ImageView
-				android:layout_width="wrap_content"
-				android:layout_height="match_parent"
-				android:layout_marginBottom="4dp"
-				android:layout_marginTop="4dp"
-				android:adjustViewBounds="true"
-				android:contentDescription="@string/app_name"
-                android:padding="@dimen/element_spacing_small"
-				android:scaleType="centerInside"
-                android:src="@drawable/ic_action_twittnuker" />
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">

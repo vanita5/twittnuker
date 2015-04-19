@@ -45,6 +45,7 @@ import android.support.v7.internal.view.SupportActionModeWrapper;
 import android.support.v7.internal.view.SupportActionModeWrapperTrojan;
 import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.support.v7.internal.widget.ActionBarOverlayLayout;
+import android.support.v7.internal.widget.DecorToolbar;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
@@ -96,18 +97,19 @@ public class ThemeUtils implements Constants {
 
 
     public static void applyActionBarBackground(final ActionBar actionBar, final Context context,
-                                                final int themeRes, final int actionBarColor, boolean outlineEnabled) {
+                                                final int themeRes, final int actionBarColor,
+                                                final String backgroundOption, boolean outlineEnabled) {
         if (actionBar == null || context == null) return;
-        actionBar.setBackgroundDrawable(getActionBarBackground(context, themeRes, actionBarColor, outlineEnabled));
+        actionBar.setBackgroundDrawable(getActionBarBackground(context, themeRes, actionBarColor, backgroundOption, outlineEnabled));
         actionBar.setSplitBackgroundDrawable(getActionBarSplitBackground(context, themeRes));
-        actionBar.setStackedBackgroundDrawable(getActionBarBackground(context, themeRes, actionBarColor, outlineEnabled));
+        actionBar.setStackedBackgroundDrawable(getActionBarBackground(context, themeRes, actionBarColor, backgroundOption, outlineEnabled));
     }
 
 
     public static void applyActionBarBackground(final android.support.v7.app.ActionBar actionBar, final Context context,
-                                                final int themeRes, final int actionBarColor, boolean outlineEnabled) {
+                                                final int themeRes, final int actionBarColor, String backgroundOption, boolean outlineEnabled) {
         if (actionBar == null || context == null) return;
-        actionBar.setBackgroundDrawable(getActionBarBackground(context, themeRes, actionBarColor, outlineEnabled));
+        actionBar.setBackgroundDrawable(getActionBarBackground(context, themeRes, actionBarColor, backgroundOption, outlineEnabled));
         actionBar.setSplitBackgroundDrawable(getActionBarSplitBackground(context, themeRes));
         actionBar.setStackedBackgroundDrawable(getActionBarStackedBackground(context, themeRes, actionBarColor, outlineEnabled));
     }
@@ -189,17 +191,19 @@ public class ThemeUtils implements Constants {
     }
 
     public static void applySupportActionModeBackground(ActionMode mode, FragmentActivity activity,
-                                                        int themeRes, int actionBarColor, boolean outlineEnabled) {
+                                                        int themeRes, int actionBarColor,
+                                                        String backgroundOption, boolean outlineEnabled) {
         // Very dirty implementation
         if (!(mode instanceof SupportActionModeWrapper) || !(activity instanceof IThemedActivity))
             return;
         final android.support.v7.view.ActionMode modeCompat = SupportActionModeWrapperTrojan.getWrappedObject((SupportActionModeWrapper) mode);
-        applySupportActionModeBackground(modeCompat, activity, themeRes, actionBarColor, outlineEnabled);
+        applySupportActionModeBackground(modeCompat, activity, themeRes, actionBarColor, backgroundOption, outlineEnabled);
     }
 
     public static void applySupportActionModeBackground(android.support.v7.view.ActionMode modeCompat,
                                                         FragmentActivity activity, int themeRes,
-                                                        int actionBarColor, boolean outlineEnabled) {
+                                                        int actionBarColor, String backgroundOption, boolean outlineEnabled) {
+        // Very dirty implementation
         if (!(modeCompat instanceof ActionModeImpl)) return;
         try {
             WindowDecorActionBar actionBar = null;
@@ -212,14 +216,38 @@ public class ThemeUtils implements Constants {
                 }
             }
             if (actionBar == null) return;
+            final Context context = actionBar.getThemedContext();
             final Field contextViewField = WindowDecorActionBar.class.getDeclaredField("mContextView");
+            final Field decorToolbarField = WindowDecorActionBar.class.getDeclaredField("mDecorToolbar");
             contextViewField.setAccessible(true);
-            final View view = (View) contextViewField.get(actionBar);
-            if (view == null) return;
-            ViewUtils.setBackground(view, getActionBarBackground(activity, themeRes, actionBarColor, outlineEnabled));
+            decorToolbarField.setAccessible(true);
+            final View contextView = (View) contextViewField.get(actionBar);
+            final DecorToolbar decorToolbar = (DecorToolbar) decorToolbarField.get(actionBar);
+            if (contextView == null || decorToolbar == null) return;
+            final Toolbar toolbar = (Toolbar) decorToolbar.getViewGroup();
+            toolbar.setTitleTextColor(getContrastActionBarTitleColor(context, themeRes, actionBarColor));
+            ViewUtils.setBackground(contextView, getActionBarBackground(activity, themeRes, actionBarColor, backgroundOption, outlineEnabled));
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static int getContrastActionBarTitleColor(Context context, int theme, int color) {
+        if (isDarkTheme(theme) || ColorUtils.getYIQLuminance(color) < 192) {
+            //return light text color
+            return Color.WHITE;
+        }
+        //return dark text color
+        return Color.BLACK;
+    }
+
+    public static int getContrastActionBarItemColor(Context context, int theme, int color) {
+        if (isDarkTheme(theme) || ColorUtils.getYIQLuminance(color) < 192) {
+            //return light text color
+            return Color.WHITE;
+        }
+        //return dark text color
+        return Color.BLACK;
     }
 
     public static void applyWindowBackground(Context context, Window window, int theme, String option, int alpha) {
@@ -294,12 +322,21 @@ public class ThemeUtils implements Constants {
         }
     }
 
+    @Deprecated
     @NonNull
     public static Drawable getActionBarBackground(final Context context, final int themeRes,
                                                   final int actionBarColor, boolean outlineEnabled) {
         final ColorDrawable d = new ActionBarColorDrawable(actionBarColor, outlineEnabled);
         return applyActionBarDrawable(context, d, isTransparentBackground(context));
 	}
+
+    @NonNull
+    public static Drawable getActionBarBackground(final Context context, final int themeRes,
+                                                  final int actionBarColor, final String backgroundOption,
+                                                  final boolean outlineEnabled) {
+        final ColorDrawable d = new ActionBarColorDrawable(actionBarColor, outlineEnabled);
+        return applyActionBarDrawable(context, d, isTransparentBackground(backgroundOption));
+    }
 
     public static Context getActionBarContext(final Context context) {
         @SuppressLint("InlinedApi")

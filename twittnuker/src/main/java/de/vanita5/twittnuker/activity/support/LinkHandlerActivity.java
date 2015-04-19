@@ -50,7 +50,6 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.fragment.support.SearchFragment;
-import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.ShortcutCallback;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
@@ -247,8 +246,10 @@ public class LinkHandlerActivity extends BaseActionBarActivity implements System
 
     @SuppressLint("AppCompatMethod")
     private void setActionBarTheme(ActionBar actionBar, int linkId, Uri data) {
-        final int currentActionBarColor = getActionBarColor();
-        int actionBarItemsColor = ColorUtils.getContrastYIQ(currentActionBarColor, 192);
+        final int actionBarColor = getActionBarColor();
+        final int themeId = getCurrentThemeResourceId();
+        final String option = getThemeBackgroundOption();
+        int actionBarItemsColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
         switch (linkId) {
             case LINK_ID_USER: {
                 actionBarItemsColor = Color.WHITE;
@@ -256,17 +257,13 @@ public class LinkHandlerActivity extends BaseActionBarActivity implements System
             }
             case LINK_ID_SEARCH:
             case LINK_ID_USER_LISTS: {
-                ThemeUtils.applyActionBarBackground(actionBar, this, getCurrentThemeResourceId(),
-                        currentActionBarColor, false);
-                ThemeUtils.applyActionBarBackground(getActionBar(), this, getCurrentThemeResourceId(),
-                        currentActionBarColor, true);
+                ThemeUtils.applyActionBarBackground(actionBar, this, themeId, actionBarColor, option, false);
+                ThemeUtils.applyActionBarBackground(getActionBar(), this, themeId, actionBarColor, option, true);
                 break;
             }
             default: {
-                ThemeUtils.applyActionBarBackground(actionBar, this, getCurrentThemeResourceId(),
-                        currentActionBarColor, true);
-                ThemeUtils.applyActionBarBackground(getActionBar(), this, getCurrentThemeResourceId(),
-                        currentActionBarColor, true);
+                ThemeUtils.applyActionBarBackground(actionBar, this, themeId, actionBarColor, option, true);
+                ThemeUtils.applyActionBarBackground(getActionBar(), this, themeId, actionBarColor, option, true);
                 break;
             }
         }

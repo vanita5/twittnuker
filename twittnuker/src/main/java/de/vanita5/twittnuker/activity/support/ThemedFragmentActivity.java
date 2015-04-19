@@ -34,7 +34,6 @@ import android.view.View;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -82,9 +81,18 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     }
 
     @Override
+    public int getCurrentActionBarColor() {
+        return mCurrentActionBarColor;
+    }
+
+    @Override
 	public String getThemeFontFamily() {
 		return ThemeUtils.getThemeFontFamily(this);
 	}
+
+    public int getActionBarColor() {
+        return ThemeUtils.getActionBarColor(this);
+    }
 
 	@Override
 	public final void restart() {
@@ -126,16 +134,13 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     protected void onTitleChanged(CharSequence title, int color) {
         final SpannableStringBuilder builder = new SpannableStringBuilder(title);
         final int themeResId = getCurrentThemeResourceId();
-        final int themeColor = getThemeColor(), contrastColor = ColorUtils.getContrastYIQ(themeColor, 192);
+        final int themeColor = getThemeColor();
+        final int contrastColor = ThemeUtils.getContrastActionBarTitleColor(this, themeResId, themeColor);
         if (!ThemeUtils.isDarkTheme(themeResId)) {
             builder.setSpan(new ForegroundColorSpan(contrastColor), 0, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         super.onTitleChanged(title, color);
     }
-
-	public int getActionBarColor() {
-		return ThemeUtils.getActionBarColor(this);
-	}
 
 	private void setTheme() {
 		mCurrentThemeResource = getThemeResourceId();

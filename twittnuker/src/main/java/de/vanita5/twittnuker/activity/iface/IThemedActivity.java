@@ -30,6 +30,8 @@ public interface IThemedActivity {
 
     int getCurrentThemeColor();
 
+    int getCurrentActionBarColor();
+
     int getCurrentThemeResourceId();
 	
     int getThemeBackgroundAlpha();

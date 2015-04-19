@@ -108,6 +108,14 @@ public class UserViewHolder extends ViewHolder implements OnClickListener, OnLon
 		}
 	}
 
+    public ShapedImageView getProfileImageView() {
+        return profileImageView;
+    }
+
+    public ImageView getProfileTypeView() {
+        return profileTypeView;
+    }
+
     @Override
     public void onClick(View v) {
         if (userClickListener == null) return;

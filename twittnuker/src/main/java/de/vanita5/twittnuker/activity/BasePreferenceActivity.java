@@ -62,6 +62,11 @@ public abstract class BasePreferenceActivity extends PreferenceActivity implemen
         return 0;
     }
 
+    @Override
+    public int getCurrentActionBarColor() {
+        return 0;
+    }
+
 	@Override
 	public int getActionBarColor() {
 		return ThemeUtils.getActionBarColor(this);
