@@ -305,20 +305,11 @@ public class ThemeUtils implements Constants {
         }
     }
 
-    @Deprecated
-    @NonNull
-    public static Drawable getActionBarBackground(final Context context, final int themeRes,
-                                                  final int actionBarColor, boolean outlineEnabled) {
-        final ColorDrawable d = ActionBarColorDrawable.create(actionBarColor, outlineEnabled);
-        return applyActionBarDrawable(context, d, isTransparentBackground(context));
-	}
-
     @NonNull
     public static Drawable getActionBarBackground(final Context context, final int themeRes,
                                                   final int actionBarColor, final String backgroundOption,
                                                   final boolean outlineEnabled) {
-        final ColorDrawable d = ActionBarColorDrawable.create(actionBarColor, outlineEnabled);
-        return applyActionBarDrawable(context, d, isTransparentBackground(backgroundOption));
+        return ActionBarColorDrawable.create(actionBarColor, outlineEnabled);
     }
 
     public static Context getActionBarContext(final Context context) {
@@ -374,26 +365,32 @@ public class ThemeUtils implements Constants {
 
     public static Drawable getActionBarSplitBackground(final Context context, final int themeRes) {
         @SuppressWarnings("ConstantConditions")
-        final TypedArray a = context.obtainStyledAttributes(null, new int[] { android.R.attr.backgroundSplit },
+        final TypedArray a = context.obtainStyledAttributes(null, new int[]{android.R.attr.backgroundSplit},
                 android.R.attr.actionBarStyle, themeRes);
-        final Drawable d = a.getDrawable(0);
-        a.recycle();
-        return applyActionBarDrawable(context, d, isTransparentBackground(context));
+        try {
+            return a.getDrawable(0);
+        } finally {
+        	a.recycle();
+        }
     }
 
     @NonNull
     public static Drawable getActionBarStackedBackground(final Context context, final int themeRes,
                                                          final int actionBarColor, boolean outlineEnabled) {
-        final ColorDrawable d = ActionBarColorDrawable.create(actionBarColor, outlineEnabled);
-        return applyActionBarDrawable(context, d, isTransparentBackground(context));
+        return ActionBarColorDrawable.create(actionBarColor, outlineEnabled);
     }
 
-    public static int getCardBackgroundColor(final Context context) {
+    public static int getCardBackgroundColor(final Context context, String backgroundOption, int themeAlpha) {
         final TypedArray a = context.obtainStyledAttributes(new int[]{R.attr.cardItemBackgroundColor});
         final int color = a.getColor(0, Color.TRANSPARENT);
         a.recycle();
-        final int themeAlpha = getThemeAlpha(context);
-        return themeAlpha << 24 | (0x00FFFFFF & color);
+        if (isTransparentBackground(backgroundOption)) {
+        	return themeAlpha << 24 | (0x00FFFFFF & color);
+        } else if (isSolidBackground(backgroundOption)) {
+            return ColorUtils.getContrastYIQ(color, Color.WHITE, Color.BLACK);
+        } else {
+            return color;
+        }
     }
 
     public static Drawable getCompatToolbarOverlay(Activity activity) {
@@ -587,14 +584,6 @@ public class ThemeUtils implements Constants {
 		}
 	}
 
-	public static int getThemeAlpha(final Context context) {
-		return getThemeAlpha(getThemeResource(context));
-	}
-
-	public static int getThemeAlpha(final int themeRes) {
-		return 0xff;
-	}
-
     public static int getThemeBackgroundColor(final Context context) {
         final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.colorBackground});
         try {
@@ -666,10 +655,10 @@ public class ThemeUtils implements Constants {
             return a.getColor(0, 0);
 		} finally {
 			a.recycle();
-		}
-	}
+        }
+    }
 
-	public static String getThemeNameOption(final Context context) {
+    public static String getThemeNameOption(final Context context) {
 		if (context == null) return VALUE_THEME_NAME_LIGHT;
         final SharedPreferencesWrapper pref = getSharedPreferencesWrapper(context);
         return pref.getString(KEY_THEME, VALUE_THEME_NAME_LIGHT);
@@ -698,9 +687,9 @@ public class ThemeUtils implements Constants {
         @SuppressWarnings("ConstantConditions")
         final TypedArray a = context.obtainStyledAttributes(null, new int[] { android.R.attr.titleTextStyle },
 				android.R.attr.actionBarStyle, android.R.style.Widget_Holo_ActionBar);
-		final int textAppearance = a.getResourceId(0, android.R.style.TextAppearance_Holo);
-		a.recycle();
-		return textAppearance;
+        final int textAppearance = a.getResourceId(0, android.R.style.TextAppearance_Holo);
+        a.recycle();
+        return textAppearance;
 	}
 
     public static int getUserAccentColor(final Context context) {
@@ -737,7 +726,7 @@ public class ThemeUtils implements Constants {
     }
 
 	public static int getActionBarColor(final Context context) {
-		if (context == null) return MATERIAL_DARK;
+        if (context == null) return MATERIAL_DARK;
 		final SharedPreferencesWrapper pref = getSharedPreferencesWrapper(context);
         final Resources res = context.getResources();
 		final int def = res.getColor(R.color.twittnuker_material_dark);
@@ -792,7 +781,7 @@ public class ThemeUtils implements Constants {
         try {
             return a.getDrawable(0);
         } finally {
-			a.recycle();
+            a.recycle();
         }
     }
 
@@ -845,6 +834,10 @@ public class ThemeUtils implements Constants {
     public static boolean isTransparentBackground(final String option) {
         return VALUE_THEME_BACKGROUND_TRANSPARENT.equals(option);
 	}
+
+    public static boolean isSolidBackground(final String option) {
+        return VALUE_THEME_BACKGROUND_SOLID.equals(option);
+    }
 
     public static boolean isWindowFloating(Context context, int theme) {
         final TypedArray a;
@@ -1105,16 +1098,6 @@ public class ThemeUtils implements Constants {
             }
         }
     }
-
-	private static Drawable applyActionBarDrawable(final Context context, final Drawable d, final boolean applyAlpha) {
-		if (d == null) return null;
-        d.mutate();
-//        DrawableCompat.setTint(d, getUserAccentColor(context));
-		if (applyAlpha) {
-            d.setAlpha(getThemeAlpha(context));
-		}
-		return d;
-	}
 
     private static void applyColorTintForView(View view, int tintColor) {
         if (view instanceof IThemedView) {

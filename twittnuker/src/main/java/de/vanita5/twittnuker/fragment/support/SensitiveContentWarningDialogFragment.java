@@ -37,7 +37,8 @@ import de.vanita5.twittnuker.util.Utils;
 
 import static de.vanita5.twittnuker.util.Utils.openMediaDirectly;
 
-public class SensitiveContentWarningDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
+public class SensitiveContentWarningDialogFragment extends BaseSupportDialogFragment implements
+        DialogInterface.OnClickListener {
 
 	@Override
 	public void onClick(final DialogInterface dialog, final int which) {
@@ -49,9 +50,10 @@ public class SensitiveContentWarningDialogFragment extends BaseSupportDialogFrag
 				final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
                 final ParcelableMedia current = args.getParcelable(EXTRA_CURRENT_MEDIA);
                 final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
+                final Bundle option = args.getBundle(EXTRA_ACTIVITY_OPTIONS);
                 final ParcelableMedia[] media = Utils.newParcelableArray(args.getParcelableArray(EXTRA_MEDIA),
 						ParcelableMedia.CREATOR);
-                openMediaDirectly(context, accountId, status, current, media);
+                openMediaDirectly(context, accountId, status, current, media, option);
 				break;
 			}
 		}

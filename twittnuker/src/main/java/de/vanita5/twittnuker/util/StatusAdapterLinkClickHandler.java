@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
@@ -42,7 +43,9 @@ public class StatusAdapterLinkClickHandler<D> extends OnLinkClickHandler {
 		if (extraId == RecyclerView.NO_POSITION) return;
 		final ParcelableStatus status = adapter.getStatus((int) extraId);
 		final ParcelableMedia current = StatusLinkClickHandler.findByLink(status.media, link);
-		Utils.openMedia(context, status, current);
+        //TODO open media animation
+        Bundle options = null;
+        Utils.openMedia(context, status, current, options);
 	}
 
 }

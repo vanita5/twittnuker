@@ -40,7 +40,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.Utils.OnMediaClickListener;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -280,6 +279,10 @@ public class CardMediaContainer extends ViewGroup implements Constants {
 		}
 		return indicesCount;
 	}
+
+    public interface OnMediaClickListener {
+        void onMediaClick(View view, ParcelableMedia media, long accountId);
+    }
 
 	private static class ImageGridClickListener implements View.OnClickListener {
 		private final OnMediaClickListener mListener;

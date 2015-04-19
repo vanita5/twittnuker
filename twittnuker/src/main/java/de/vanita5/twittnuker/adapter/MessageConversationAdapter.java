@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -39,8 +40,8 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage.CursorIndices;
 import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler;
-import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -79,7 +80,7 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
 		mImageLoader = app.getMediaLoaderWrapper();
         mMediaLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
         mIncomingMessageColor = ThemeUtils.getUserAccentColor(context);
-        mOutgoingMessageColor = ThemeUtils.getCardBackgroundColor(context);
+        mOutgoingMessageColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
 	}
 
 
@@ -175,7 +176,9 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
             case R.id.media_preview: {
 				final ParcelableDirectMessage message = getDirectMessage(position);
                 if (message == null || message.media == null) return;
-                openMedia(mContext, message, null);
+                //TODO open media animation
+                Bundle options = null;
+                openMedia(mContext, message, null, options);
 			}
 		}
 	}

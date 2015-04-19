@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -35,7 +36,9 @@ public class StatusLinkClickHandler extends OnLinkClickHandler {
     protected void openMedia(long accountId, long extraId, boolean sensitive, String link, int start, int end) {
 		final ParcelableStatus status = mStatus;
 		final ParcelableMedia current = findByLink(status.media, link);
-        Utils.openMedia(context, status, current);
+        //TODO open media animation
+        Bundle options = null;
+        Utils.openMedia(context, status, current, options);
 	}
 
     public static ParcelableMedia findByLink(ParcelableMedia[] media, String link) {

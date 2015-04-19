@@ -262,7 +262,9 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListFragment<A
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final ParcelableStatus status = adapter.getStatus(position);
         if (status == null) return;
-        Utils.openMedia(getActivity(), status, media);
+        //TODO open media animation
+        Bundle options = null;
+        Utils.openMedia(getActivity(), status, media, options);
     }
 
     @Override

@@ -78,7 +78,6 @@ import android.widget.Space;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter.StatusAdapterListener;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
@@ -111,7 +110,7 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.Utils.OnMediaClickListener;
+import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 import de.vanita5.twittnuker.view.ForegroundColorView;
@@ -293,7 +292,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     public void onMediaClick(StatusViewHolder holder, ParcelableMedia media, int position) {
         final ParcelableStatus status = mStatusAdapter.getStatus(position);
         if (status == null) return;
-        Utils.openMedia(getActivity(), status, media);
+        //TODO open media animation
+        Bundle options = null;
+        Utils.openMedia(getActivity(), status, media, options);
     }
 
     @Override
@@ -368,7 +369,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     public void onMediaClick(View view, ParcelableMedia media, long accountId) {
         final ParcelableStatus status = mStatusAdapter.getStatus();
         if (status == null) return;
-        Utils.openMediaDirectly(getActivity(), accountId, status, media, status.media);
+        //TODO open media animation
+        Bundle options = null;
+        Utils.openMediaDirectly(getActivity(), accountId, status, media, status.media, options);
     }
 
     private void addConversation(ParcelableStatus status, int position) {
@@ -1001,7 +1004,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             mInflater = LayoutInflater.from(context);
             mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
             mMediaLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
-            mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context);
+            mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
             mNameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
             mTextSize = preferences.getInt(KEY_TEXT_SIZE, res.getInteger(R.integer.default_text_size));
             mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));

@@ -22,13 +22,11 @@
 
 package de.vanita5.twittnuker.view;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.R;
@@ -36,6 +34,7 @@ import de.vanita5.twittnuker.view.themed.ThemedTextView;
 
 public class ActionIconThemedTextView extends ThemedTextView {
 
+    private final int mIconWidth, mIconHeight;
     private int mColor, mDisabledColor, mActivatedColor;
 
 	public ActionIconThemedTextView(Context context) {
@@ -52,6 +51,8 @@ public class ActionIconThemedTextView extends ThemedTextView {
         mColor = a.getColor(R.styleable.IconActionButton_iabColor, 0);
         mDisabledColor = a.getColor(R.styleable.IconActionButton_iabDisabledColor, 0);
         mActivatedColor = a.getColor(R.styleable.IconActionButton_iabActivatedColor, 0);
+        mIconWidth = a.getDimensionPixelSize(R.styleable.IconActionButton_iabIconWidth, 0);
+        mIconHeight = a.getDimensionPixelSize(R.styleable.IconActionButton_iabIconHeight, 0);
 		a.recycle();
 	}
 
@@ -61,6 +62,30 @@ public class ActionIconThemedTextView extends ThemedTextView {
         if (colors != null) return colors.getDefaultColor();
         return getCurrentTextColor();
 	}
+
+    @Override
+    public void setCompoundDrawablesWithIntrinsicBounds(Drawable left, Drawable top, Drawable right, Drawable bottom) {
+        super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom);
+        updateCompoundDrawables();
+    }
+
+    @Override
+    public void setCompoundDrawablesWithIntrinsicBounds(int left, int top, int right, int bottom) {
+        super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom);
+        updateCompoundDrawables();
+    }
+
+    @Override
+    public void setCompoundDrawablesRelativeWithIntrinsicBounds(Drawable start, Drawable top, Drawable end, Drawable bottom) {
+        super.setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom);
+        updateCompoundDrawables();
+    }
+
+    @Override
+    public void setCompoundDrawablesRelativeWithIntrinsicBounds(int start, int top, int end, int bottom) {
+        super.setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom);
+        updateCompoundDrawables();
+    }
 
 	public int getColor() {
         if (mColor != 0) return mColor;
@@ -82,33 +107,28 @@ public class ActionIconThemedTextView extends ThemedTextView {
 	}
 
     @Override
-    public void setCompoundDrawables(Drawable left, Drawable top, Drawable right, Drawable bottom) {
-        super.setCompoundDrawables(left, top, right, bottom);
-    }
-
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-	@Override
-	public void setCompoundDrawablesRelative(Drawable start, Drawable top, Drawable end, Drawable bottom) {
-		super.setCompoundDrawablesRelative(start, top, end, bottom);
-	}
-
-	@Override
     protected void drawableStateChanged() {
         super.drawableStateChanged();
-		for (Drawable d : getCompoundDrawables()) {
-			if (d != null) {
-				d.mutate();
-                final int color;
-                if (isActivated()) {
-                    color = getActivatedColor();
-                } else if (isEnabled()) {
-                    color = getColor();
-                } else {
-                    color = getDisabledColor();
-			    }
-                d.setColorFilter(color, Mode.SRC_ATOP);
-		    }
-        }
+        updateCompoundDrawables();
     }
+
+    private void updateCompoundDrawables() {
+		for (Drawable d : getCompoundDrawables()) {
+            if (d == null) continue;
+			d.mutate();
+			final int color;
+			if (isActivated()) {
+				color = getActivatedColor();
+			} else if (isEnabled()) {
+				color = getColor();
+			} else {
+				color = getDisabledColor();
+			}
+            if (mIconWidth > 0 && mIconHeight > 0) {
+                d.setBounds(0, 0, mIconWidth, mIconHeight);
+            }
+			d.setColorFilter(color, Mode.SRC_ATOP);
+		}
+	}
 
 }

@@ -137,18 +137,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
-import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.ParseUtils.parseString;
-import static de.vanita5.twittnuker.util.ThemeUtils.getComposeThemeResource;
-import static de.vanita5.twittnuker.util.Utils.copyStream;
-import static de.vanita5.twittnuker.util.Utils.getAccountIds;
-import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
-import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
-import static de.vanita5.twittnuker.util.Utils.getImageUploadStatus;
-import static de.vanita5.twittnuker.util.Utils.getQuoteStatus;
-import static de.vanita5.twittnuker.util.Utils.getShareStatus;
-import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
-
 public class ComposeActivity extends ThemedFragmentActivity implements TextWatcher, LocationListener,
         OnMenuItemClickListener, OnClickListener, OnEditorActionListener, OnLongClickListener, Callback {
 
@@ -248,7 +236,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 
     @Override
     public int getThemeResourceId() {
-        return getComposeThemeResource(this);
+        return ThemeUtils.getComposeThemeResource(this);
     }
 
     @Override
@@ -419,7 +407,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
     public boolean onLongClick(final View v) {
         switch (v.getId()) {
             case R.id.send: {
-                showMenuItemToast(v, getString(R.string.send), true);
+                Utils.showMenuItemToast(v, getString(R.string.send), true);
                 return true;
             }
 	    }
@@ -548,7 +536,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
         setContentView(R.layout.activity_compose);
 //        setSupportProgressBarIndeterminateVisibility(false);
 		setFinishOnTouchOutside(false);
-        final long[] defaultAccountIds = getAccountIds(this);
+        final long[] defaultAccountIds = Utils.getAccountIds(this);
         if (defaultAccountIds.length <= 0) {
 			final Intent intent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
 			intent.setClass(this, SignInActivity.class);
@@ -654,7 +642,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
         startLocationUpdateIfEnabled();
 		setMenu();
 		updateTextCount();
-		final int text_size = mPreferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(this));
+        final int text_size = mPreferences.getInt(KEY_TEXT_SIZE, Utils.getDefaultTextSize(this));
 		mEditText.setTextSize(text_size * 1.25f);
 	}
 
@@ -783,7 +771,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 		        }
             }
         }
-		mEditText.setText(getShareStatus(this, extraSubject, extraText));
+        mEditText.setText(Utils.getShareStatus(this, extraSubject, extraText));
 		final int selection_end = mEditText.length();
 		mEditText.setSelection(selection_end);
 		return true;
@@ -842,8 +830,8 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 
 	private boolean handleMentionIntent(final ParcelableUser user) {
 		if (user == null || user.id <= 0) return false;
-		final String my_screen_name = getAccountScreenName(this, user.account_id);
-		if (isEmpty(my_screen_name)) return false;
+        final String my_screen_name = Utils.getAccountScreenName(this, user.account_id);
+        if (TextUtils.isEmpty(my_screen_name)) return false;
 		mEditText.setText("@" + user.screen_name + " ");
 		final int selection_end = mEditText.length();
 		mEditText.setSelection(selection_end);
@@ -853,7 +841,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 
 	private boolean handleQuoteIntent(final ParcelableStatus status) {
 		if (status == null || status.id <= 0) return false;
-		mEditText.setText(getQuoteStatus(this, status.user_screen_name, status.text_plain));
+		mEditText.setText(Utils.getQuoteStatus(this, status.id, status.user_screen_name, status.text_plain));
 		mEditText.setSelection(0);
         mAccountsAdapter.setSelectedAccountIds(status.account_id);
 		return true;
@@ -861,11 +849,11 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 
 	private boolean handleReplyIntent(final ParcelableStatus status) {
 		if (status == null || status.id <= 0) return false;
-        final String myScreenName = getAccountScreenName(this, status.account_id);
-        if (isEmpty(myScreenName)) return false;
+        final String myScreenName = Utils.getAccountScreenName(this, status.account_id);
+        if (TextUtils.isEmpty(myScreenName)) return false;
 		mEditText.append("@" + status.user_screen_name + " ");
 		final int selectionStart = mEditText.length();
-        if (!isEmpty(status.retweeted_by_screen_name)) {
+        if (!TextUtils.isEmpty(status.retweeted_by_screen_name)) {
             mEditText.append("@" + status.retweeted_by_screen_name + " ");
         }
         final Collection<String> mentions = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
@@ -886,8 +874,8 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
     private boolean handleReplyMultipleIntent(final String[] screenNames, final long accountId,
                                               final long inReplyToStatusId) {
         if (screenNames == null || screenNames.length == 0 || accountId <= 0) return false;
-        final String myScreenName = getAccountScreenName(this, accountId);
-        if (isEmpty(myScreenName)) return false;
+        final String myScreenName = Utils.getAccountScreenName(this, accountId);
+        if (TextUtils.isEmpty(myScreenName)) return false;
         for (final String screenName : screenNames) {
               if (screenName.equalsIgnoreCase(myScreenName)) {
 				continue;
@@ -1029,7 +1017,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
             final int textLength = mEditText.length();
             mEditText.setSelection(textLength - (tweetLength - maxLength), textLength);
 			return;
-		} else if (!hasMedia && (isEmpty(text) || noReplyContent(text))) {
+        } else if (!hasMedia && (TextUtils.isEmpty(text) || noReplyContent(text))) {
 			mEditText.setError(getString(R.string.error_message_no_content));
 			return;
         } else if (mAccountsAdapter.isSelectionEmpty()) {
@@ -1086,8 +1074,8 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 
 	private void updateTextCount() {
         if (mSendTextCountView == null || mEditText == null) return;
-        final String textOrig = parseString(mEditText.getText());
-		final String text = hasMedia() && textOrig != null ? mImageUploaderUsed ? getImageUploadStatus(
+        final String textOrig = ParseUtils.parseString(mEditText.getText());
+        final String text = hasMedia() && textOrig != null ? mImageUploaderUsed ? Utils.getImageUploadStatus(
 		    new String[] { FAKE_IMAGE_LINK }, textOrig) : textOrig + " " + FAKE_IMAGE_LINK : textOrig;
 		final int validatedCount = text != null ? mValidator.getTweetLength(text) : 0;
         mSendTextCountView.setTextCount(validatedCount);
@@ -1273,7 +1261,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements TextWatch
 				final ContentResolver resolver = activity.getContentResolver();
 				final InputStream is = resolver.openInputStream(src);
 				final OutputStream os = resolver.openOutputStream(dst);
-				copyStream(is, os);
+                Utils.copyStream(is, os);
 				os.close();
 				if (ContentResolver.SCHEME_FILE.equals(src.getScheme()) && delete_src) {
                     final File file = new File(src.getPath());

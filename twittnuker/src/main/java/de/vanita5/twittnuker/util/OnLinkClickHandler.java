@@ -26,6 +26,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -37,8 +38,6 @@ import static de.vanita5.twittnuker.util.Utils.openStatus;
 import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
 import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-import static de.vanita5.twittnuker.util.shortener.TweetShortenerUtils.expandHototin;
-import static de.vanita5.twittnuker.util.shortener.TweetShortenerUtils.expandTwitLonger;
 
 public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 
@@ -113,7 +112,9 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 
     protected void openMedia(long accountId, long extraId, boolean sensitive, String link, int start, int end) {
         final ParcelableMedia[] media = {ParcelableMedia.newImage(link, link)};
-        Utils.openMedia(context, accountId, sensitive, null, media);
+        //TODO open media animation
+        Bundle options = null;
+        Utils.openMedia(context, accountId, sensitive, null, media, options);
 	}
 
 	protected void openLink(final String link) {

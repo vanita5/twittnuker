@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Html;
 import android.view.View;
@@ -41,7 +42,7 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SimpleValueSerializer;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.Utils.OnMediaClickListener;
+import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.CardMediaContainer;
 
 public class MessageConversationViewHolder extends ViewHolder implements OnMediaClickListener {
@@ -92,7 +93,9 @@ public class MessageConversationViewHolder extends ViewHolder implements OnMedia
 
     @Override
     public void onMediaClick(View view, ParcelableMedia media, long accountId) {
-        Utils.openMedia(adapter.getContext(), adapter.getDirectMessage(getAdapterPosition()), media);
+        //TODO open media animation
+        Bundle options = null;
+        Utils.openMedia(adapter.getContext(), adapter.getDirectMessage(getAdapterPosition()), media, options);
 	}
 
 	public void setMessageColor(int color) {

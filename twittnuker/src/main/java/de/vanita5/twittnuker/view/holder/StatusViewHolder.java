@@ -47,15 +47,15 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatus.CursorIndices;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.SimpleValueSerializer;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.Utils.OnMediaClickListener;
+import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.ForegroundColorView;
 import de.vanita5.twittnuker.view.ShapedImageView;
@@ -226,7 +226,11 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         } else {
 			nameView.setText(status.user_name);
 			screenNameView.setText("@" + status.user_screen_name);
-			timeView.setTime(status.timestamp);
+            if (status.is_retweet) {
+                timeView.setTime(status.retweet_timestamp);
+            } else {
+				timeView.setTime(status.timestamp);
+            }
 
             quotedNameContainer.setVisibility(View.GONE);
             quoteTextView.setVisibility(View.GONE);
@@ -433,7 +437,11 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         } else {
 			nameView.setText(user_name);
 			screenNameView.setText("@" + user_screen_name);
-            timeView.setTime(cursor.getLong(indices.status_timestamp));
+            if (retweet_id > 0) {
+                timeView.setTime(cursor.getLong(indices.retweet_timestamp));
+            } else {
+            	timeView.setTime(cursor.getLong(indices.status_timestamp));
+            }
 
             quotedNameContainer.setVisibility(View.GONE);
             quoteTextView.setVisibility(View.GONE);

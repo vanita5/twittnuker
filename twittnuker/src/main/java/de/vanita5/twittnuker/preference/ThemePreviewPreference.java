@@ -115,7 +115,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 		final CardView cardView = (CardView) view.findViewById(R.id.card);
 
 		final int defaultTextSize = getDefaultTextSize(context);
-        final int cardBackgroundColor = ThemeUtils.getCardBackgroundColor(context);
+        final int cardBackgroundColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
         final int accentColor = ThemeUtils.getUserAccentColor(context);
 		final int actionBarColor = ThemeUtils.getActionBarColor(context);
 
