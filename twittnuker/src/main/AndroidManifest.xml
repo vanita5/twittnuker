@@ -482,6 +482,7 @@
             android:icon="@drawable/ic_action_twittnuker"
             android:exported="false"
             android:label="@string/edit_profile"
+            android:theme="@style/Theme.Twidere.Dark.DialogWhenLarge"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.EDIT_USER_PROFILE"/>

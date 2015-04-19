@@ -46,6 +46,7 @@ import android.widget.Toast;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -87,13 +88,14 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
     private ImageView mProfileImageView;
     private ImageView mProfileBannerView;
 	private EditText mEditName, mEditDescription, mEditLocation, mEditUrl;
-    private View mProgressContainer, mContent;
+    private View mProgressContainer, mEditProfileContent;
     private View mProfileImageCamera, mProfileImageGallery;
     private View mProfileBannerGallery, mProfileBannerRemove;
     private View mActionBarOverlay;
     private View mCancelButton, mDoneButton;
     private View mSetLinkColor, mSetBackgroundColor;
     private ForegroundColorView mLinkColor, mBackgroundColor;
+    private Toolbar mToolbar;
 
 	private long mAccountId;
 	private ParcelableUser mUser;
@@ -101,7 +103,6 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
 	private boolean mUserInfoLoaderInitialized;
 
 	private boolean mGetUserInfoCalled;
-    private Toolbar mToolbar;
 
 	@Override
     public void beforeTextChanged(final CharSequence s, final int length, final int start, final int end) {
@@ -140,6 +141,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
         ViewUtils.setBackground(mActionBarOverlay, ThemeUtils.getWindowContentOverlay(this));
         ViewUtils.setBackground(mToolbar, ThemeUtils.getSupportActionBarBackground(mToolbar.getContext(),
                 getCurrentThemeResourceId()));
+        ThemeUtils.setCompatToolbarOverlay(this, new EmptyDrawable());
         // setOverrideExitAniamtion(false);
         mEditName.addTextChangedListener(this);
         mEditDescription.addTextChangedListener(this);
@@ -259,7 +261,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
 	@Override
 	public Loader<SingleResponse<ParcelableUser>> onCreateLoader(final int id, final Bundle args) {
         mProgressContainer.setVisibility(View.VISIBLE);
-		mContent.setVisibility(View.GONE);
+        mEditProfileContent.setVisibility(View.GONE);
 		return new ParcelableUserLoader(UserProfileEditorActivity.this, mAccountId, mAccountId, null, getIntent()
 				.getExtras(), false, false);
 	}
@@ -288,7 +290,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
         super.onSupportContentChanged();
         mToolbar = (Toolbar) findViewById(R.id.done_bar);
         mProgressContainer = findViewById(R.id.progress_container);
-        mContent = findViewById(R.id.content);
+        mEditProfileContent = findViewById(R.id.edit_profile_content);
         mProfileBannerView = (ImageView) findViewById(R.id.profile_banner);
         mProfileImageView = (ImageView) findViewById(R.id.profile_image);
         mEditName = (EditText) findViewById(R.id.name);
@@ -361,7 +363,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
 		mUser = user;
         if (user != null) {
             mProgressContainer.setVisibility(View.GONE);
-			mContent.setVisibility(View.VISIBLE);
+            mEditProfileContent.setVisibility(View.VISIBLE);
 			mEditName.setText(user.name);
 			mEditDescription.setText(user.description_expanded);
 			mEditLocation.setText(user.location);
@@ -373,7 +375,7 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
             mBackgroundColor.setColor(user.background_color);
 		} else {
             mProgressContainer.setVisibility(View.GONE);
-			mContent.setVisibility(View.GONE);
+            mEditProfileContent.setVisibility(View.GONE);
 		}
         updateDoneButton();
 	}

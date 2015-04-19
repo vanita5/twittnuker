@@ -28,6 +28,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
+import android.util.Log;
 
 import org.mariotaku.querybuilder.Expression;
 import de.vanita5.twittnuker.Constants;
@@ -119,6 +120,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
             }
             return SingleResponse.getInstance(result);
 		} catch (final TwitterException e) {
+            Log.w(LOGTAG, e);
             return SingleResponse.getInstance(e);
 		}
 	}

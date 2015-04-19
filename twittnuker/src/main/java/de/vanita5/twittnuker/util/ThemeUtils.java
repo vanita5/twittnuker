@@ -47,6 +47,7 @@ import android.support.v7.internal.view.SupportActionModeWrapperTrojan;
 import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.support.v7.internal.widget.ActionBarContextView;
 import android.support.v7.internal.widget.ActionBarOverlayLayout;
+import android.support.v7.internal.widget.ContentFrameLayout;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
@@ -243,24 +244,6 @@ public class ThemeUtils implements Constants {
         }
     }
 
-    public static int getContrastActionBarTitleColor(Context context, int theme, int color) {
-        if (isDarkTheme(theme) || ColorUtils.getYIQLuminance(color) < 192) {
-            //return light text color
-            return Color.WHITE;
-        }
-        //return dark text color
-        return Color.BLACK;
-    }
-
-    public static int getContrastActionBarItemColor(Context context, int theme, int color) {
-        if (isDarkTheme(theme) || ColorUtils.getYIQLuminance(color) < 192) {
-            //return light text color
-            return Color.WHITE;
-        }
-        //return dark text color
-        return Color.BLACK;
-    }
-
     public static void applyWindowBackground(Context context, Window window, int theme, String option, int alpha) {
         if (isWindowFloating(context, theme)) return;
         if (VALUE_THEME_BACKGROUND_TRANSPARENT.equals(option)) {
@@ -310,17 +293,6 @@ public class ThemeUtils implements Constants {
         return view;
     }
 
-    public static Drawable getSupportActionBarBackground(final Context context, final int themeRes) {
-        @SuppressWarnings("ConstantConditions")
-        final TypedArray array = context.obtainStyledAttributes(null, new int[]{android.R.attr.background},
-                R.attr.actionBarStyle, themeRes);
-        try {
-            return array.getDrawable(0);
-        } finally {
-            array.recycle();
-        }
-    }
-
     @Deprecated
     public static Drawable getActionBarBackground(final Context context, final int themeRes) {
         @SuppressWarnings("ConstantConditions")
@@ -337,7 +309,7 @@ public class ThemeUtils implements Constants {
     @NonNull
     public static Drawable getActionBarBackground(final Context context, final int themeRes,
                                                   final int actionBarColor, boolean outlineEnabled) {
-        final ColorDrawable d = new ActionBarColorDrawable(actionBarColor, outlineEnabled);
+        final ColorDrawable d = ActionBarColorDrawable.create(actionBarColor, outlineEnabled);
         return applyActionBarDrawable(context, d, isTransparentBackground(context));
 	}
 
@@ -345,7 +317,7 @@ public class ThemeUtils implements Constants {
     public static Drawable getActionBarBackground(final Context context, final int themeRes,
                                                   final int actionBarColor, final String backgroundOption,
                                                   final boolean outlineEnabled) {
-        final ColorDrawable d = new ActionBarColorDrawable(actionBarColor, outlineEnabled);
+        final ColorDrawable d = ActionBarColorDrawable.create(actionBarColor, outlineEnabled);
         return applyActionBarDrawable(context, d, isTransparentBackground(backgroundOption));
     }
 
@@ -412,7 +384,7 @@ public class ThemeUtils implements Constants {
     @NonNull
     public static Drawable getActionBarStackedBackground(final Context context, final int themeRes,
                                                          final int actionBarColor, boolean outlineEnabled) {
-        final ColorDrawable d = new ActionBarColorDrawable(actionBarColor, outlineEnabled);
+        final ColorDrawable d = ActionBarColorDrawable.create(actionBarColor, outlineEnabled);
         return applyActionBarDrawable(context, d, isTransparentBackground(context));
     }
 
@@ -426,8 +398,15 @@ public class ThemeUtils implements Constants {
 
     public static Drawable getCompatToolbarOverlay(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) return null;
-        final View view = activity.getWindow().findViewById(android.support.v7.appcompat.R.id.decor_content_parent);
-        if (!(view instanceof ActionBarOverlayLayout)) return null;
+        final Window window = activity.getWindow();
+        final View view = window.findViewById(android.support.v7.appcompat.R.id.decor_content_parent);
+        if (!(view instanceof ActionBarOverlayLayout)) {
+            final View contentLayout = window.findViewById(android.support.v7.appcompat.R.id.action_bar_activity_content);
+            if (contentLayout instanceof ContentFrameLayout) {
+                return ((ContentFrameLayout) contentLayout).getForeground();
+            }
+            return null;
+        }
         try {
             final Field field = ActionBarOverlayLayout.class.getDeclaredField("mWindowContentOverlay");
             field.setAccessible(true);
@@ -445,6 +424,24 @@ public class ThemeUtils implements Constants {
         if (VALUE_THEME_NAME_DARK.equals(name)) return R.style.Theme_Twidere_Dark_Compose;
         return R.style.Theme_Twidere_Light_Compose;
 	}
+
+    public static int getContrastActionBarItemColor(Context context, int theme, int color) {
+        if (isDarkTheme(theme) || ColorUtils.getYIQLuminance(color) < 192) {
+            //return light text color
+            return Color.WHITE;
+        }
+        //return dark text color
+        return Color.BLACK;
+    }
+
+    public static int getContrastActionBarTitleColor(Context context, int theme, int color) {
+        if (isDarkTheme(theme) || ColorUtils.getYIQLuminance(color) < 192) {
+            //return light text color
+            return Color.WHITE;
+        }
+        //return dark text color
+        return Color.BLACK;
+    }
 
 	public static int getDialogThemeResource(final Context context) {
 		return getDialogThemeResource(getThemeNameOption(context));
@@ -539,6 +536,17 @@ public class ThemeUtils implements Constants {
             return R.style.Theme_Twidere_Settings_Light_DarkActionBar;
         else if (VALUE_THEME_NAME_DARK.equals(name)) return R.style.Theme_Twidere_Settings_Dark;
         return R.style.Theme_Twidere_Settings_Light_DarkActionBar;
+    }
+
+    public static Drawable getSupportActionBarBackground(final Context context, final int themeRes) {
+        @SuppressWarnings("ConstantConditions")
+        final TypedArray array = context.obtainStyledAttributes(null, new int[]{android.R.attr.background},
+                R.attr.actionBarStyle, themeRes);
+        try {
+            return array.getDrawable(0);
+        } finally {
+            array.recycle();
+        }
     }
 
     public static float getSupportActionBarElevation(final Context context) {
@@ -750,6 +758,15 @@ public class ThemeUtils implements Constants {
         return R.style.Theme_Twidere_Viewer;
 	}
 
+    public static Drawable getWindowBackground(final Context context) {
+        final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.windowBackground});
+        try {
+            return a.getDrawable(0);
+        } finally {
+            a.recycle();
+        }
+    }
+
     public static Drawable getWindowBackgroundApplyAlpha(final Context context, final int alpha) {
         final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.windowBackground});
 		final Drawable d = a.getDrawable(0);
@@ -769,15 +786,6 @@ public class ThemeUtils implements Constants {
 			a.recycle();
         }
 	}
-
-    public static Drawable getWindowBackground(final Context context) {
-        final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.windowBackground});
-        try {
-            return a.getDrawable(0);
-        } finally {
-        	a.recycle();
-        }
-    }
 
 	public static Drawable getWindowContentOverlay(final Context context) {
         final TypedArray a = context.obtainStyledAttributes(new int[] { android.R.attr.windowContentOverlay });
@@ -971,22 +979,26 @@ public class ThemeUtils implements Constants {
         }
     }
 
-    public static void setCompatToolbarOverlay(Activity activity, Drawable background) {
+    public static void setCompatToolbarOverlay(Activity activity, Drawable overlay) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) return;
-        final View view = activity.getWindow().findViewById(android.support.v7.appcompat.R.id.decor_content_parent);
-        if (!(view instanceof ActionBarOverlayLayout)) return;
+        final Window window = activity.getWindow();
+        final View view = window.findViewById(android.support.v7.appcompat.R.id.decor_content_parent);
+        if (!(view instanceof ActionBarOverlayLayout)) {
+            View contentLayout = window.findViewById(android.support.v7.appcompat.R.id.action_bar_activity_content);
+            if (contentLayout == null) {
+                contentLayout = window.findViewById(android.R.id.content);
+            }
+            if (contentLayout instanceof ContentFrameLayout) {
+                ((ContentFrameLayout) contentLayout).setForeground(overlay);
+            }
+            return;
+        }
         try {
             final Field field = ActionBarOverlayLayout.class.getDeclaredField("mWindowContentOverlay");
             field.setAccessible(true);
-            field.set(view, background);
+            field.set(view, overlay);
         } catch (Exception ignore) {
         }
-    }
-
-    public static void setCompatToolbarOverlayMode(Activity activity, boolean mode) {
-        final View view = activity.getWindow().findViewById(android.support.v7.appcompat.R.id.decor_content_parent);
-        if (!(view instanceof ActionBarOverlayLayout)) return;
-        ((ActionBarOverlayLayout) view).setOverlayMode(mode);
     }
 
     public static void setupDrawerBackground(Context context, View view) {
