@@ -36,11 +36,19 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.support.AccountsManagerFragment;
 import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 
-public class AccountsManagerActivity extends BaseActionBarActivity {
-
-    private TintedStatusFrameLayout mMainContent;
+public class AccountsManagerActivity extends BaseDialogWhenLargeActivity {
 
 	@Override
+    public void onFitSystemWindows(Rect insets) {
+        super.onFitSystemWindows(insets);
+        final FragmentManager fm = getSupportFragmentManager();
+        final Fragment f = fm.findFragmentById(R.id.main_content);
+        if (f instanceof IBaseFragment) {
+            ((IBaseFragment) f).requestFitSystemWindows();
+        }
+    }
+
+    @Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 			case MENU_HOME: {
@@ -52,12 +60,6 @@ public class AccountsManagerActivity extends BaseActionBarActivity {
 	}
 
 	@Override
-    public void onSupportContentChanged() {
-        super.onSupportContentChanged();
-        mMainContent = (TintedStatusFrameLayout) findViewById(R.id.main_content);
-    }
-
-    @Override
 	protected void onCreate(Bundle savedInstanceState) {
         supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
 		super.onCreate(savedInstanceState);
@@ -66,20 +68,9 @@ public class AccountsManagerActivity extends BaseActionBarActivity {
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
 		setContentView(R.layout.activity_content_fragment);
-        mMainContent.setOnFitSystemWindowsListener(this);
 		final FragmentManager fm = getSupportFragmentManager();
 		final FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.main_content, new AccountsManagerFragment());
 		ft.commit();
-	}
-
-	@Override
-    public void onFitSystemWindows(Rect insets) {
-        super.onFitSystemWindows(insets);
-		final FragmentManager fm = getSupportFragmentManager();
-        final Fragment f = fm.findFragmentById(R.id.main_content);
-		if (f instanceof IBaseFragment) {
-			((IBaseFragment) f).requestFitSystemWindows();
-		}
 	}
 }

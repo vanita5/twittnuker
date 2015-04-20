@@ -27,8 +27,12 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
@@ -139,6 +143,7 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
 		super.onCreate(savedInstanceState);
 	}
 
+
 	@Override
     protected void onStart() {
         super.onStart();
@@ -210,4 +215,5 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
     public void unregisterControlBarOffsetListener(ControlBarOffsetListener listener) {
         mControlBarOffsetListeners.remove(listener);
     }
+
 }

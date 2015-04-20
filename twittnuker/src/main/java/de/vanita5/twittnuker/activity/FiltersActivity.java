@@ -32,7 +32,7 @@ import android.view.MenuItem;
 import android.view.WindowManager.LayoutParams;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.BaseActionBarActivity;
+import de.vanita5.twittnuker.activity.support.BaseDialogWhenLargeActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredKeywordsFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredLinksFragment;
@@ -41,11 +41,9 @@ import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredUsersFragment;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
-import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 
-public class FiltersActivity extends BaseActionBarActivity {
+public class FiltersActivity extends BaseDialogWhenLargeActivity {
 
-    private TintedStatusFrameLayout mMainContent;
     private TabPagerIndicator mPagerIndicator;
 	private ViewPager mViewPager;
 
@@ -54,12 +52,6 @@ public class FiltersActivity extends BaseActionBarActivity {
 	@Override
     public boolean getSystemWindowsInsets(Rect insets) {
         return false;
-	}
-
-	@Override
-    public void onFitSystemWindows(Rect insets) {
-        super.onFitSystemWindows(insets);
-        mMainContent.setPadding(insets.left, insets.top, insets.right, insets.bottom);
 	}
 
 	@Override
@@ -82,10 +74,7 @@ public class FiltersActivity extends BaseActionBarActivity {
         supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
         supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY);
         super.onCreate(savedInstanceState);
-        ThemeUtils.applyActionBarBackground(getSupportActionBar(), this, getCurrentThemeResourceId(),
-                getActionBarColor(), getThemeBackgroundOption(), false);
-        setContentView(R.layout.activity_content_pages);
-        mMainContent.setOnFitSystemWindowsListener(this);
+        setContentView(R.layout.activity_filters);
         mAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), null, 1);
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(2);
@@ -102,18 +91,16 @@ public class FiltersActivity extends BaseActionBarActivity {
         ThemeUtils.initPagerIndicatorAsActionBarTab(this, mPagerIndicator);
         ThemeUtils.setCompatToolbarOverlay(this, new EmptyDrawable());
 
-        mMainContent.setDrawShadow(false);
-        mMainContent.setDrawColor(true);
-        mMainContent.setFactor(1);
-        final int color = getActionBarColor();
-        final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption()) ? getCurrentThemeBackgroundAlpha() : 0xFF;
-        mMainContent.setColor(color, alpha);
 	}
 
 	@Override
+    protected boolean isActionBarOutlineEnabled() {
+        return false;
+    }
+
+    @Override
     public void onSupportContentChanged() {
         super.onSupportContentChanged();
-        mMainContent = (TintedStatusFrameLayout) findViewById(R.id.main_content);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mPagerIndicator = (TabPagerIndicator) findViewById(R.id.view_pager_tabs);
     }

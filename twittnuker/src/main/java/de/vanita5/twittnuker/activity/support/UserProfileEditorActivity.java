@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.activity.support;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
@@ -65,7 +64,6 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.view.ForegroundColorView;
-import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
 import twitter4j.Twitter;
@@ -77,7 +75,7 @@ import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.isMyAccount;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 
-public class UserProfileEditorActivity extends BaseActionBarActivity implements OnSizeChangedListener, TextWatcher,
+public class UserProfileEditorActivity extends BaseDialogWhenLargeActivity implements OnSizeChangedListener, TextWatcher,
         OnClickListener, LoaderCallbacks<SingleResponse<ParcelableUser>> {
 
 	private static final int LOADER_ID_USER = 1;
@@ -89,7 +87,6 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
 	private MediaLoaderWrapper mLazyImageLoader;
 	private AsyncTaskManager mAsyncTaskManager;
     private AsyncTask<Object, Object, ?> mTask;
-    private TintedStatusFrameLayout mMainContent;
     private ImageView mProfileImageView;
     private ImageView mProfileBannerView;
 	private EditText mEditName, mEditDescription, mEditLocation, mEditUrl;
@@ -117,8 +114,83 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
     }
 
     @Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getDialogWhenLargeThemeResource(this);
+    public void onClick(final View view) {
+        final ParcelableUser user = mUser;
+        if (user == null || (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING))
+            return;
+        switch (view.getId()) {
+            case R.id.profile_image: {
+                break;
+            }
+            case R.id.profile_banner: {
+                break;
+            }
+            case R.id.profile_image_camera: {
+                final Intent intent = new Intent(this, ImagePickerActivity.class);
+                intent.setAction(INTENT_ACTION_PICK_IMAGE);
+                startActivityForResult(intent, REQUEST_UPLOAD_PROFILE_IMAGE);
+                break;
+            }
+            case R.id.profile_image_gallery: {
+                final Intent intent = new Intent(this, ImagePickerActivity.class);
+                intent.setAction(INTENT_ACTION_TAKE_PHOTO);
+                startActivityForResult(intent, REQUEST_UPLOAD_PROFILE_IMAGE);
+                break;
+            }
+            case R.id.profile_banner_gallery: {
+                final Intent intent = new Intent(this, ImagePickerActivity.class);
+                intent.setAction(INTENT_ACTION_PICK_IMAGE);
+                startActivityForResult(intent, REQUEST_UPLOAD_PROFILE_BANNER_IMAGE);
+                break;
+            }
+            case R.id.profile_banner_remove: {
+                mTask = new RemoveProfileBannerTaskInternal(user.account_id);
+                AsyncTaskUtils.executeTask(mTask);
+                break;
+            }
+            case R.id.set_link_color: {
+                final Intent intent = new Intent(this, ColorPickerDialogActivity.class);
+                intent.putExtra(EXTRA_COLOR, user.link_color);
+                intent.putExtra(EXTRA_ALPHA_SLIDER, false);
+                startActivityForResult(intent, REQUEST_PICK_LINK_COLOR);
+                break;
+            }
+            case R.id.set_background_color: {
+                final Intent intent = new Intent(this, ColorPickerDialogActivity.class);
+                intent.putExtra(EXTRA_COLOR, user.background_color);
+                intent.putExtra(EXTRA_ALPHA_SLIDER, false);
+                startActivityForResult(intent, REQUEST_PICK_BACKGROUND_COLOR);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public Loader<SingleResponse<ParcelableUser>> onCreateLoader(final int id, final Bundle args) {
+        mProgressContainer.setVisibility(View.VISIBLE);
+        mEditProfileContent.setVisibility(View.GONE);
+        return new ParcelableUserLoader(UserProfileEditorActivity.this, mAccountId, mAccountId, null, getIntent()
+                .getExtras(), false, false);
+    }
+
+    @Override
+    public void onLoadFinished(final Loader<SingleResponse<ParcelableUser>> loader,
+                               final SingleResponse<ParcelableUser> data) {
+        if (data.getData() != null && data.getData().id > 0) {
+            displayUser(data.getData());
+        } else if (mUser == null) {
+        }
+    }
+
+    @Override
+    public void onLoaderReset(final Loader<SingleResponse<ParcelableUser>> loader) {
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_profile_editor, menu);
+        return true;
     }
 
     @Override
@@ -164,20 +236,11 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
         }
 
         final ActionBar actionBar = getSupportActionBar();
-        final int actionBarColor = getCurrentActionBarColor();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            final int themeId = getCurrentThemeResourceId();
-            final String option = getThemeBackgroundOption();
-            final int actionBarItemsColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
-            ThemeUtils.applyActionBarBackground(actionBar, this, themeId, actionBarColor, option, true);
-            ThemeUtils.setActionBarItemsColor(getWindow(), actionBar, actionBarItemsColor);
         }
         setContentView(R.layout.activity_user_profile_editor);
 
-        mMainContent.setOnFitSystemWindowsListener(this);
-		mMainContent.setColor(actionBarColor);
-        mMainContent.setDrawColor(true);
         // setOverrideExitAniamtion(false);
         mEditName.addTextChangedListener(this);
         mEditDescription.addTextChangedListener(this);
@@ -205,12 +268,6 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
     }
 
     @Override
-    public void onFitSystemWindows(Rect insets) {
-        mMainContent.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-        super.onFitSystemWindows(insets);
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
     }
@@ -231,93 +288,12 @@ public class UserProfileEditorActivity extends BaseActionBarActivity implements 
     }
 
     @Override
-    public void onClick(final View view) {
-        final ParcelableUser user = mUser;
-        if (user == null || (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING))
-            return;
-        switch (view.getId()) {
-            case R.id.profile_image: {
-                break;
-            }
-            case R.id.profile_banner: {
-                break;
-            }
-            case R.id.profile_image_camera: {
-                final Intent intent = new Intent(this, ImagePickerActivity.class);
-                intent.setAction(INTENT_ACTION_PICK_IMAGE);
-                startActivityForResult(intent, REQUEST_UPLOAD_PROFILE_IMAGE);
-                break;
-            }
-            case R.id.profile_image_gallery: {
-                final Intent intent = new Intent(this, ImagePickerActivity.class);
-                intent.setAction(INTENT_ACTION_TAKE_PHOTO);
-                startActivityForResult(intent, REQUEST_UPLOAD_PROFILE_IMAGE);
-                break;
-            }
-            case R.id.profile_banner_gallery: {
-                final Intent intent = new Intent(this, ImagePickerActivity.class);
-                intent.setAction(INTENT_ACTION_PICK_IMAGE);
-                startActivityForResult(intent, REQUEST_UPLOAD_PROFILE_BANNER_IMAGE);
-                break;
-            }
-            case R.id.profile_banner_remove: {
-                mTask = new RemoveProfileBannerTaskInternal(user.account_id);
-                AsyncTaskUtils.executeTask(mTask);
-                break;
-			}
-            case R.id.set_link_color: {
-                final Intent intent = new Intent(this, ColorPickerDialogActivity.class);
-                intent.putExtra(EXTRA_COLOR, user.link_color);
-                intent.putExtra(EXTRA_ALPHA_SLIDER, false);
-                startActivityForResult(intent, REQUEST_PICK_LINK_COLOR);
-                break;
-            }
-            case R.id.set_background_color: {
-                final Intent intent = new Intent(this, ColorPickerDialogActivity.class);
-                intent.putExtra(EXTRA_COLOR, user.background_color);
-                intent.putExtra(EXTRA_ALPHA_SLIDER, false);
-                startActivityForResult(intent, REQUEST_PICK_BACKGROUND_COLOR);
-                break;
-            }
-        }
-    }
-
-	@Override
-	public Loader<SingleResponse<ParcelableUser>> onCreateLoader(final int id, final Bundle args) {
-        mProgressContainer.setVisibility(View.VISIBLE);
-        mEditProfileContent.setVisibility(View.GONE);
-		return new ParcelableUserLoader(UserProfileEditorActivity.this, mAccountId, mAccountId, null, getIntent()
-				.getExtras(), false, false);
-	}
-
-	@Override
-	public void onLoadFinished(final Loader<SingleResponse<ParcelableUser>> loader,
-			final SingleResponse<ParcelableUser> data) {
-		if (data.getData() != null && data.getData().id > 0) {
-			displayUser(data.getData());
-		} else if (mUser == null) {
-		}
-	}
-
-	@Override
-    public void onLoaderReset(final Loader<SingleResponse<ParcelableUser>> loader) {
-
-	}
-
-	@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_profile_editor, menu);
-        return true;
-    }
-
-    @Override
     public void onSizeChanged(final View view, final int w, final int h, final int oldw, final int oldh) {
 	}
 
 	@Override
     public void onSupportContentChanged() {
         super.onSupportContentChanged();
-        mMainContent = (TintedStatusFrameLayout) findViewById(R.id.main_content);
         mProgressContainer = findViewById(R.id.progress_container);
         mEditProfileContent = findViewById(R.id.edit_profile_content);
         mProfileBannerView = (ImageView) findViewById(R.id.profile_banner);

@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.fragment.support.SearchFragment;
+import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.ShortcutCallback;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
@@ -291,6 +292,11 @@ public class LinkHandlerActivity extends BaseActionBarActivity implements System
                 break;
             }
         }
+    }
+
+    @Override
+    protected boolean shouldSetActionItemColor() {
+        return !(getCurrentVisibleFragment() instanceof UserFragment);
     }
 
     private void setTaskInfo(int linkId, Uri uri) {

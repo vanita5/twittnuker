@@ -388,7 +388,8 @@
             android:icon="@drawable/ic_action_twittnuker"
             android:exported="false"
             android:label="@string/drafts"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Twidere.Dark.DialogWhenLarge">
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.DRAFTS"/>
 
@@ -403,7 +404,8 @@
             android:name=".activity.support.AccountsManagerActivity"
             android:exported="false"
             android:label="@string/accounts"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Twidere.Dark.DialogWhenLarge">
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.ACCOUNTS"/>
 
