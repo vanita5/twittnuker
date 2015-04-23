@@ -47,6 +47,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.FixedLinearLayoutManager;
@@ -93,7 +94,6 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
-import de.vanita5.twittnuker.text.method.StatusContentMovementMethod;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
@@ -110,8 +110,8 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.CardMediaContainer;
+import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 import de.vanita5.twittnuker.view.ForegroundColorView;
 import de.vanita5.twittnuker.view.ShapedImageView;
@@ -523,6 +523,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final StatusLinkClickHandler linkClickHandler;
         private final TwidereLinkify linkify;
 
+        private ParcelableStatus status;
+
         public DetailStatusViewHolder(StatusAdapter adapter, View itemView) {
             super(itemView);
             this.linkClickHandler = new StatusLinkClickHandler(adapter.getContext(), null);
@@ -563,6 +565,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
         public void displayStatus(ParcelableStatus status) {
             if (status == null) return;
+            if (status.equals(this.status)) return;
+            this.status = status;
             final StatusFragment fragment = adapter.getFragment();
             final Context context = adapter.getContext();
             final Resources resources = context.getResources();
@@ -720,6 +724,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             }
 
             Utils.setMenuForStatus(context, menuBar.getMenu(), status, adapter.getStatusAccount());
+
+            quoteTextView.setTextIsSelectable(true);
+            textView.setTextIsSelectable(true);
         }
 
         @Override
@@ -807,12 +814,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
             mediaPreview.setStyle(adapter.getMediaPreviewStyle());
 
-            quoteTextView.setTextIsSelectable(true);
-            textView.setTextIsSelectable(true);
-
-            quoteTextView.setMovementMethod(StatusContentMovementMethod.getInstance());
-            textView.setMovementMethod(StatusContentMovementMethod.getInstance());
-
             quoteTextView.setCustomSelectionActionModeCallback(new StatusActionModeCallback(quoteTextView, activity));
             textView.setCustomSelectionActionModeCallback(new StatusActionModeCallback(textView, activity));
         }
@@ -840,6 +841,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 				final URLSpan[] spans = string.getSpans(start, end, URLSpan.class);
 				final boolean avail = spans.length == 1 && URLUtil.isValidUrl(spans[0].getURL());
                 MenuUtils.setMenuItemAvailability(menu, android.R.id.copyUrl, avail);
+                MenuUtils.setMenuItemShowAsActionFlags(menu, android.R.id.copyUrl, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
 				return true;
 			}
 
@@ -957,8 +959,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
     private static class StatusAdapter extends Adapter<ViewHolder> implements IStatusesAdapter<List<ParcelableStatus>> {
 
-        private static final int VIEW_TYPE_DETAIL_STATUS = 0;
-        private static final int VIEW_TYPE_LIST_STATUS = 1;
+        private static final int VIEW_TYPE_LIST_STATUS = 0;
+        private static final int VIEW_TYPE_DETAIL_STATUS = 1;
         private static final int VIEW_TYPE_CONVERSATION_LOAD_INDICATOR = 2;
         private static final int VIEW_TYPE_REPLIES_LOAD_INDICATOR = 3;
         private static final int VIEW_TYPE_SPACE = 4;
@@ -991,9 +993,11 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private List<ParcelableStatus> mConversation, mReplies;
         private boolean mDetailMediaExpanded;
 		private StatusAdapterListener mStatusAdapterListener;
-		private DetailStatusViewHolder mCachedHolder;
+
+        private RecyclerView mRecyclerView;
 
         public StatusAdapter(StatusFragment fragment, boolean compact) {
+            setHasStableIds(true);
             final Context context = fragment.getActivity();
             final Resources res = context.getResources();
             final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
@@ -1210,7 +1214,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             switch (viewType) {
                 case VIEW_TYPE_DETAIL_STATUS: {
-                    if (mCachedHolder != null) return mCachedHolder;
                     final View view;
                     if (mIsCompact) {
                         view = mInflater.inflate(R.layout.header_status_compact, parent, false);
@@ -1301,19 +1304,15 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 	    }
 
         @Override
-        public void onViewAttachedToWindow(ViewHolder holder) {
-            super.onViewAttachedToWindow(holder);
-            if (mCachedHolder == holder) {
-                mCachedHolder = null;
-            }
+        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
+            mRecyclerView = recyclerView;
         }
 
         @Override
-        public void onViewDetachedFromWindow(ViewHolder holder) {
-            super.onViewDetachedFromWindow(holder);
-            if (holder instanceof DetailStatusViewHolder) {
-                mCachedHolder = (DetailStatusViewHolder) holder;
-            }
+        public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+            super.onDetachedFromRecyclerView(recyclerView);
+            mRecyclerView = null;
         }
 
         @Override
@@ -1407,6 +1406,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     	}
 
         private void updateItemDecoration() {
+            if (mRecyclerView == null) return;
             final DividerItemDecoration decoration = mFragment.getItemDecoration();
             decoration.setDecorationStart(0);
             if (isLoadMoreIndicatorVisible()) {
@@ -1414,7 +1414,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             } else {
                 decoration.setDecorationEndOffset(mReplies != null && mReplies.size() > 0 ? 1 : 2);
             }
-            mFragment.mRecyclerView.invalidateItemDecorations();
+            mRecyclerView.invalidateItemDecorations();
         }
 	}
 
