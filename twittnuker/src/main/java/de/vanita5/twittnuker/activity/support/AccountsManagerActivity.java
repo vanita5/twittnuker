@@ -22,33 +22,18 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.WindowCompat;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.support.AccountsManagerFragment;
-import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 
 public class AccountsManagerActivity extends BaseDialogWhenLargeActivity {
 
 	@Override
-    public void onFitSystemWindows(Rect insets) {
-        super.onFitSystemWindows(insets);
-        final FragmentManager fm = getSupportFragmentManager();
-        final Fragment f = fm.findFragmentById(R.id.main_content);
-        if (f instanceof IBaseFragment) {
-            ((IBaseFragment) f).requestFitSystemWindows();
-        }
-    }
-
-    @Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 			case MENU_HOME: {
@@ -66,7 +51,7 @@ public class AccountsManagerActivity extends BaseDialogWhenLargeActivity {
 		if (actionBar != null) {
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
-		setContentView(R.layout.activity_content_fragment);
+        setContentView(R.layout.activity_accounts_manager);
 		final FragmentManager fm = getSupportFragmentManager();
 		final FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.main_content, new AccountsManagerFragment());
