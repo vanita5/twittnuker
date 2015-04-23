@@ -289,7 +289,7 @@ public class StreamingService extends Service implements Constants {
 				notification.setTimestamp(status != null ? status.timestamp : System.currentTimeMillis());
 				notification.setOriginalStatus(status);
 				notification.setSourceUser(sourceUser);
-				notification.setProfileImageUrl(sourceUser != null ? sourceUser.getProfileImageURL().toString()
+				notification.setProfileImageUrl(sourceUser != null ? sourceUser.getProfileImageUrl()
 						: (status != null ? status.user_profile_image_url : null));
 
 				mNotificationHelper.cachePushNotification(notification);

@@ -84,10 +84,9 @@ public class StatusContentMovementMethod extends ArrowKeyMovementMethod {
 			if (link.length != 0) {
 				if (action == MotionEvent.ACTION_UP) {
 					link[0].onClick(widget);
-				} else if (action == MotionEvent.ACTION_DOWN) {
+                } else {
 					Selection.setSelection(buffer, buffer.getSpanStart(link[0]), buffer.getSpanEnd(link[0]));
 				}
-
 				return true;
 			} else {
 				Selection.removeSelection(buffer);

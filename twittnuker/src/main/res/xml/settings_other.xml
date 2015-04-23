@@ -9,14 +9,6 @@
 		android:summary="@string/quick_send_summary"
 		android:title="@string/quick_send"/>
 
-	<!--<de.vanita5.twittnuker.preference.AutoInvalidateListPreference-->
-		<!--android:defaultValue="ask"-->
-		<!--android:entries="@array/entries_compose_quit_action"-->
-		<!--android:entryValues="@array/values_compose_quit_action"-->
-		<!--android:key="compose_quit_action"-->
-		<!--android:summary="%s"-->
-		<!--android:title="@string/compose_quit_action"/>-->
-
 	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
 		android:defaultValue="false"
 		android:key="no_close_after_tweet_sent"
@@ -28,7 +20,7 @@
     	android:key="twitter_link_handler"
     	android:title="@string/open_twitter_links"/>
 
-    <de.vanita5.twittnuker.preference.ComponentStatePreference
+    <de.vanita5.twittnuker.preference.ComposeNowPreference
     	android:key="compose_now"
     	android:summary="@string/compose_now_summary"
     	android:title="@string/compose_now"/>
@@ -41,12 +33,12 @@
     	android:key="compose_now_action"
     	android:title="@string/compose_now_action"/>
 
-	<de.vanita5.twittnuker.preference.SettingsImportExportPreference
-		android:title="@string/import_export_settings"
-		android:key="import_export_settings"/>
-
 	<Preference
-		android:title="@string/keyboard_shortcuts"
-		android:fragment="de.vanita5.twittnuker.fragment.KeyboardShortcutsFragment"/>
+		android:fragment="de.vanita5.twittnuker.fragment.KeyboardShortcutsFragment"
+		android:title="@string/keyboard_shortcuts"/>
+
+	<de.vanita5.twittnuker.preference.SettingsImportExportPreference
+		android:key="import_export_settings"
+		android:title="@string/import_export_settings"/>
 
 </PreferenceScreen>

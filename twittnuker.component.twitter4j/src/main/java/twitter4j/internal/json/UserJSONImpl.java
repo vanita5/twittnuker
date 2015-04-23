@@ -229,7 +229,7 @@ import static twitter4j.internal.util.InternalParseUtil.getRawString;
 	 * {@inheritDoc}
 	 */
 	@Override
-    public String getProfileImageURL() {
+    public String getProfileImageUrl() {
         return profileImageUrl;
 	}
 

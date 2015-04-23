@@ -58,14 +58,12 @@
 			android:dependency="enable_proxy"
 			android:key="proxy_host"
 			android:singleLine="true"
-            android:summary="%s"
 			android:title="@string/proxy_host"/>
 		<de.vanita5.twittnuker.preference.SummaryEditTextPreference
 			android:dependency="enable_proxy"
 			android:inputType="number"
 			android:key="proxy_port"
 			android:singleLine="true"
-            android:summary="%s"
 			android:title="@string/proxy_port"/>
 	</PreferenceCategory>
 	<PreferenceCategory

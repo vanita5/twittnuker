@@ -90,9 +90,16 @@ public class FileSelectorDialogFragment extends BaseSupportDialogFragment implem
 				if (isPickDirectory() && a instanceof Callback) {
 					((Callback) a).onFilePicked(getCurrentDirectory());
 				}
-				dismiss();
+//                dismiss();
 				break;
 			}
+            case DialogInterface.BUTTON_NEGATIVE: {
+                final FragmentActivity a = getActivity();
+                if (a instanceof Callback) {
+                    ((Callback) a).onCancelled(this);
+                }
+                break;
+            }
 		}
 	}
 
@@ -103,7 +110,7 @@ public class FileSelectorDialogFragment extends BaseSupportDialogFragment implem
 		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setAdapter(mAdapter, this);
 		builder.setTitle(R.string.pick_file);
-        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.setNegativeButton(android.R.string.cancel, this);
 		if (isPickDirectory()) {
 			builder.setPositiveButton(android.R.string.ok, this);
 		}

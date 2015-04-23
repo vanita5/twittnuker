@@ -23,10 +23,7 @@
 package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -37,7 +34,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -204,9 +200,9 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
 	}
 
     @Override
-    public void onMediaClick(StatusViewHolder holder, final ParcelableMedia media, int position) {
+    public void onMediaClick(StatusViewHolder holder, View view, final ParcelableMedia media, int position) {
         if (mStatusAdapterListener == null) return;
-		mStatusAdapterListener.onMediaClick(holder, media, position);
+        mStatusAdapterListener.onMediaClick(holder, view, media, position);
 	}
 
     @Override
@@ -320,7 +316,7 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     public static interface StatusAdapterListener {
         void onGapClick(GapViewHolder holder, int position);
 
-        void onMediaClick(StatusViewHolder holder, ParcelableMedia media, int position);
+        void onMediaClick(StatusViewHolder holder, View view, ParcelableMedia media, int position);
 
         void onStatusActionClick(StatusViewHolder holder, int id, int position);
 
