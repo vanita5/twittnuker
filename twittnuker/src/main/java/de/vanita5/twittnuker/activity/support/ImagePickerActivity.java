@@ -51,6 +51,11 @@ public class ImagePickerActivity extends ThemedActionBarActivity {
 	}
 
 	@Override
+	public int getActionBarColor() {
+		return 0;
+	}
+
+	@Override
 	public int getThemeResourceId() {
 		return ThemeUtils.getNoDisplayThemeResource(this);
 	}

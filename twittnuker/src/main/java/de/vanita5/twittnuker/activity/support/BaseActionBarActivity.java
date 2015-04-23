@@ -69,6 +69,11 @@ public class BaseActionBarActivity extends ThemedActionBarActivity implements Co
     }
 
     @Override
+    public int getActionBarColor() {
+        return ThemeUtils.getActionBarColor(this);
+    }
+
+    @Override
     public int getThemeResourceId() {
         return ThemeUtils.getThemeResource(this);
     }

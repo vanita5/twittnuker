@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
@@ -35,7 +34,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
-import android.support.v4.view.WindowCompat;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -43,8 +41,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager.LayoutParams;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -61,7 +57,6 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileBannerImageTa
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.view.ForegroundColorView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
@@ -218,12 +213,6 @@ public class UserProfileEditorActivity extends BaseDialogWhenLargeActivity imple
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        final Window window = getWindow();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            window.addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
-        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
         super.onCreate(savedInstanceState);
         mAsyncTaskManager = TwittnukerApplication.getInstance(this).getAsyncTaskManager();
         mLazyImageLoader = TwittnukerApplication.getInstance(this).getMediaLoaderWrapper();

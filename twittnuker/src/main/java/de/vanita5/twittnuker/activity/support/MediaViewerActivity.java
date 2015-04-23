@@ -97,6 +97,11 @@ public final class MediaViewerActivity extends ThemedActionBarActivity implement
     }
 
     @Override
+    public int getActionBarColor() {
+        return ThemeUtils.getActionBarColor(this);
+    }
+
+    @Override
 	public int getThemeResourceId() {
 		return ThemeUtils.getViewerThemeResource(this);
 	}

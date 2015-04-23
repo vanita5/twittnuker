@@ -88,11 +88,6 @@ public abstract class ThemedActionBarActivity extends ActionBarActivity implemen
 	}
 
 	@Override
-	public int getActionBarColor() {
-		return ThemeUtils.getActionBarColor(this);
-	}
-
-	@Override
 	public final void restart() {
 		restartActivity(this);
 	}

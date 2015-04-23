@@ -22,12 +22,15 @@
 
 package de.vanita5.twittnuker.activity.support;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.WindowCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager.LayoutParams;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -45,6 +48,7 @@ public class BaseDialogWhenLargeActivity extends BaseActionBarActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+        setupWindow();
 		super.onCreate(savedInstanceState);
 		setupActionBar();
 	}
@@ -107,4 +111,13 @@ public class BaseDialogWhenLargeActivity extends BaseActionBarActivity {
 		mMainContent.setDrawColor(true);
 		mMainContent.setFactor(1);
 	}
+
+    private void setupWindow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
+        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
+        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY);
+    }
 }
