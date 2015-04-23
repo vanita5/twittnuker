@@ -38,6 +38,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.Constants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class IntentActivitiesLoader extends AsyncTaskLoader<List<ResolveInfo>> implements Constants {
@@ -64,6 +65,7 @@ public class IntentActivitiesLoader extends AsyncTaskLoader<List<ResolveInfo>> i
 
 	@Override
 	public List<ResolveInfo> loadInBackground() {
+        if (mIntent == null) return Collections.emptyList();
 		final List<ResolveInfo> activities = mPackageManager.queryIntentActivities(mIntent, mFlags);
         final List<ResolveInfo> result = new ArrayList<>();
 		for (final ResolveInfo activity : activities) {

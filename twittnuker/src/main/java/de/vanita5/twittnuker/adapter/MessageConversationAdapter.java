@@ -48,9 +48,6 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.MessageConversationViewHolder;
 
-import static de.vanita5.twittnuker.util.Utils.findDirectMessageInDatabases;
-import static de.vanita5.twittnuker.util.Utils.openMedia;
-
 public class MessageConversationAdapter extends Adapter<ViewHolder>
         implements Constants, IDirectMessagesAdapter, OnClickListener {
 
@@ -163,7 +160,7 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
 		c.moveToPosition(position);
 		final long account_id = c.getLong(mIndices.account_id);
 		final long message_id = c.getLong(mIndices.message_id);
-		return findDirectMessageInDatabases(mContext, account_id, message_id);
+        return Utils.findDirectMessageInDatabases(mContext, account_id, message_id);
 	}
 
 	@Override
@@ -178,7 +175,7 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
                 if (message == null || message.media == null) return;
                 //TODO open media animation
                 Bundle options = null;
-                openMedia(mContext, message, null, options);
+                Utils.openMedia(mContext, message, null, options);
 			}
 		}
 	}
