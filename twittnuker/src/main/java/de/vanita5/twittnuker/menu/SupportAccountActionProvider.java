@@ -56,28 +56,45 @@ public class SupportAccountActionProvider extends ActionProvider implements Twit
         return mAccounts;
     }
 
-	@Override
-    public boolean onPerformDefaultAction() {
-        return true;
+    public void setAccounts(ParcelableAccount[] accounts) {
+        mAccounts = accounts;
+    }
+
+    public long[] getActivatedAccountIds() {
+        if (mAccounts == null) return new long[0];
+        long[] temp = new long[mAccounts.length];
+        int len = 0;
+        for (ParcelableAccount account : mAccounts) {
+            if (account.is_activated) {
+                temp[len++] = account.account_id;
+            }
+        }
+        final long[] result = new long[len];
+        System.arraycopy(temp, 0, result, 0, len);
+        return result;
     }
 
     public boolean isExclusive() {
         return mExclusive;
     }
 
+    public void setExclusive(boolean exclusive) {
+        mExclusive = exclusive;
+    }
+
+	@Override
+    public View onCreateActionView() {
+        return null;
+    }
+
+    @Override
+    public boolean onPerformDefaultAction() {
+        return true;
+    }
 
     @Override
 	public boolean hasSubMenu() {
 		return true;
-	}
-
-	@Override
-	public View onCreateActionView() {
-		return null;
-	}
-
-	public void setAccounts(ParcelableAccount[] accounts) {
-		mAccounts = accounts;
 	}
 
 	@Override
@@ -100,10 +117,6 @@ public class SupportAccountActionProvider extends ActionProvider implements Twit
 			}
 		}
 	}
-
-    public void setExclusive(boolean exclusive) {
-        mExclusive = exclusive;
-    }
 
     public void setSelectedAccountIds(final long... accountIds) {
         mAccountIds = accountIds;

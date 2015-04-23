@@ -603,6 +603,7 @@
         </activity>
         <activity
             android:name=".activity.AssistLauncherActivity"
+            android:enabled="false"
             android:icon="@drawable/ic_action_twittnuker"
             android:excludeFromRecents="true"
             android:taskAffinity=":twittnuker_assist_launcher"
