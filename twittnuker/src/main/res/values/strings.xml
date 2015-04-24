@@ -695,6 +695,9 @@
 	<string name="reset_keyboard_shortcuts_confirm">Reset keyboard shortcuts to default?</string>
 	<string name="open_accounts_dashboard">Open accounts dashboard</string>
 
+	<string name="previous_tab">Previous tab</string>
+	<string name="next_tab">Next tab</string>
+
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
     <string name="link_to_quoted_status_summary">Adds a link to the original Tweet on quotes</string>

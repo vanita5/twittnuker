@@ -104,8 +104,10 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment {
         final PreferenceCategory home = makeAndAddCategory(getString(R.string.home));
         home.addPreference(makePreferences("home", "home.accounts_dashboard"));
         final PreferenceCategory navigation = makeAndAddCategory(getString(R.string.navigation));
-        navigation.addPreference(makePreferences("navigation", "navigation.next"));
         navigation.addPreference(makePreferences("navigation", "navigation.previous"));
+        navigation.addPreference(makePreferences("navigation", "navigation.next"));
+        navigation.addPreference(makePreferences("navigation", "navigation.previous_tab"));
+        navigation.addPreference(makePreferences("navigation", "navigation.next_tab"));
         navigation.addPreference(makePreferences("navigation", "navigation.refresh"));
         final PreferenceCategory statuses = makeAndAddCategory(getString(R.string.statuses));
         statuses.addPreference(makePreferences("status", "status.reply"));
@@ -190,12 +192,6 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment {
         }
 
         @Override
-        protected void onAttachedToActivity() {
-            super.onAttachedToActivity();
-            mKeyboardShortcutHandler.registerOnSharedPreferenceChangeListener(mPreferencesChangeListener);
-        }
-
-        @Override
         protected void onPrepareDialogBuilder(Builder builder) {
             builder.setPositiveButton(getContext().getString(android.R.string.ok), this);
             builder.setNegativeButton(getContext().getString(android.R.string.cancel), this);
@@ -204,9 +200,9 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment {
         }
 
         @Override
-        protected void onPrepareForRemoval() {
-            mKeyboardShortcutHandler.unregisterOnSharedPreferenceChangeListener(mPreferencesChangeListener);
-            super.onPrepareForRemoval();
+        protected void onAttachedToActivity() {
+            super.onAttachedToActivity();
+            mKeyboardShortcutHandler.registerOnSharedPreferenceChangeListener(mPreferencesChangeListener);
         }
 
         @Override
@@ -233,11 +229,16 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment {
             }
         }
 
+        @Override
+        protected void onPrepareForRemoval() {
+            mKeyboardShortcutHandler.unregisterOnSharedPreferenceChangeListener(mPreferencesChangeListener);
+            super.onPrepareForRemoval();
+        }
+
         private void updateSummary() {
             final KeyboardShortcutSpec spec = mKeyboardShortcutHandler.findKey(mAction);
             setSummary(spec != null ? spec.toKeyString() : null);
 		}
-
     }
 
     private static class KeyboardShortcutPreferenceCompat extends Preference {
@@ -273,6 +274,11 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment {
             context.startActivity(intent);
         }
 
+        private void updateSummary() {
+            final KeyboardShortcutSpec spec = mKeyboardShortcutHandler.findKey(mAction);
+            setSummary(spec != null ? spec.toKeyString() : null);
+        }
+
         @Override
         protected void onAttachedToActivity() {
             super.onAttachedToActivity();
@@ -285,10 +291,7 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment {
             super.onPrepareForRemoval();
         }
 
-        private void updateSummary() {
-            final KeyboardShortcutSpec spec = mKeyboardShortcutHandler.findKey(mAction);
-            setSummary(spec != null ? spec.toKeyString() : null);
-        }
+
 
 
 	}

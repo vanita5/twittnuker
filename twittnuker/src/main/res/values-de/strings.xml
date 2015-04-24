@@ -654,6 +654,9 @@
     <string name="reset_keyboard_shortcuts_confirm">Keyboard Shortcuts zurücksetzen?</string>
     <string name="open_accounts_dashboard">Account Dashboard öffnen</string>
 
+    <string name="previous_tab">Vorheriger Tab</string>
+    <string name="next_tab">Nächster Tab</string>
+
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
     <string name="unread_count_summary">Zeigt die Anzahl an ungelesenen Tweets oder Nachrichten im Tab an</string>

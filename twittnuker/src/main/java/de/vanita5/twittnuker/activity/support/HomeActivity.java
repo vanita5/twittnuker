@@ -279,7 +279,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 	@Override
     public boolean handleKeyboardShortcutSingle(int keyCode, @NonNull KeyEvent event) {
         if (handleFragmentKeyboardShortcutSingle(keyCode, event)) return true;
-        final String action = mKeyboardShortcutsHandler.getKeyAction("home", keyCode, event);
+        String action = mKeyboardShortcutsHandler.getKeyAction("home", keyCode, event);
         if (action != null) {
             switch (action) {
                 case "home.accounts_dashboard": {
@@ -287,6 +287,25 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
                         mSlidingMenu.showContent(true);
                     } else {
                         mSlidingMenu.showMenu(true);
+                    }
+                    return true;
+                }
+            }
+        }
+        action = mKeyboardShortcutsHandler.getKeyAction("navigation", keyCode, event);
+        if (action != null) {
+            switch (action) {
+                case "navigation.previous_tab": {
+                    final int previous = mViewPager.getCurrentItem() - 1;
+                    if (previous >= 0 && previous < mPagerAdapter.getCount()) {
+                        mViewPager.setCurrentItem(previous, true);
+                    }
+                    return true;
+                }
+                case "navigation.next_tab": {
+                    final int next = mViewPager.getCurrentItem() + 1;
+                    if (next >= 0 && next < mPagerAdapter.getCount()) {
+                        mViewPager.setCurrentItem(next, true);
                     }
                     return true;
                 }
