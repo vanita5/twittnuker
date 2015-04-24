@@ -43,6 +43,11 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     private String mCurrentThemeBackgroundOption;
 
 	@Override
+    public String getCurrentThemeBackgroundOption() {
+        return mCurrentThemeBackgroundOption;
+    }
+
+    @Override
     public int getCurrentThemeBackgroundAlpha() {
         return mCurrentThemeBackgroundAlpha;
 	}
@@ -52,7 +57,12 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
         return mCurrentThemeColor;
     }
 
-    @Override
+	@Override
+	public int getCurrentActionBarColor() {
+		return mCurrentActionBarColor;
+	}
+
+	@Override
 	public final int getCurrentThemeResourceId() {
 		return mCurrentThemeResource;
 	}
@@ -65,6 +75,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     @Override
     public abstract int getThemeColor();
 
+	@Override
 	public abstract int getActionBarColor();
 
 	@Override

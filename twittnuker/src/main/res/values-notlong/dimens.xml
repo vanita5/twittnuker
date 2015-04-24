@@ -21,27 +21,6 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<de.vanita5.twittnuker.view.ExtendedLinearLayout
-    android:id="@+id/keyboard_shortcut_input"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="@dimen/element_spacing_xlarge">
-
-    <TextView
-        android:id="@+id/keys_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/keyboard_shortcut_hint"
-        android:textAppearance="?android:textAppearanceMedium"/>
-
-    <TextView
-        android:id="@+id/conflict_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
-
-</de.vanita5.twittnuker.view.ExtendedLinearLayout>
+<resources>
+    <dimen name="drawer_offset_home">128dp</dimen>
+</resources>

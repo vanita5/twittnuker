@@ -372,19 +372,13 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 		final boolean enable_proxy = mPreferences.getBoolean(KEY_ENABLE_PROXY, false);
 		cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(mApplication));
         cb.setHttpClientFactory(new OkHttpClientFactory(mApplication));
-        if (TwitterContentUtils.isOfficialKey(this, mConsumerKey, mConsumerSecret)) {
-            Utils.setMockOfficialUserAgent(this, cb);
-        } else {
-            Utils.setUserAgent(this, cb);
-        }
+        Utils.setClientUserAgent(this, mConsumerKey, mConsumerSecret, cb);
         final String apiUrlFormat = TextUtils.isEmpty(mAPIUrlFormat) ? DEFAULT_TWITTER_API_URL_FORMAT : mAPIUrlFormat;
 		final String versionSuffix = mNoVersionSuffix ? null : "/1.1/";
         cb.setRestBaseURL(Utils.getApiUrl(apiUrlFormat, "api", versionSuffix));
         cb.setOAuthBaseURL(Utils.getApiUrl(apiUrlFormat, "api", "/oauth/"));
         cb.setUploadBaseURL(Utils.getApiUrl(apiUrlFormat, "upload", versionSuffix));
         cb.setOAuthAuthorizationURL(Utils.getApiUrl(apiUrlFormat, null, "/oauth/authorize"));
-        final String userAgent = TwittnukerApplication.getInstance(this).getDefaultUserAgent();
-        cb.setHttpUserAgent(userAgent);
 		if (!mSameOAuthSigningUrl) {
 			cb.setSigningRestBaseURL(DEFAULT_SIGNING_REST_BASE_URL);
 			cb.setSigningOAuthBaseURL(DEFAULT_SIGNING_OAUTH_BASE_URL);

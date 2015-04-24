@@ -37,8 +37,6 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -245,11 +243,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 					TWITTER_CONSUMER_SECRET_2);
 			cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(mApplication));
             cb.setHttpClientFactory(new OkHttpClientFactory(mApplication));
-            if (TwitterContentUtils.isOfficialKey(mActivity, consumerKey, consumerSecret)) {
-                Utils.setMockOfficialUserAgent(mActivity, cb);
-            } else {
-                Utils.setUserAgent(mActivity, cb);
-            }
+            Utils.setClientUserAgent(mActivity, consumerKey, consumerSecret, cb);
 			cb.setRestBaseURL(DEFAULT_REST_BASE_URL);
 			cb.setOAuthBaseURL(DEFAULT_OAUTH_BASE_URL);
 			cb.setSigningRestBaseURL(DEFAULT_SIGNING_REST_BASE_URL);

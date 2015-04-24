@@ -517,10 +517,12 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
             }
 
             public static final Parcelable.Creator<Variant> CREATOR = new Parcelable.Creator<Variant>() {
+                @Override
                 public Variant createFromParcel(Parcel source) {
                     return new Variant(source);
                 }
 
+                @Override
                 public Variant[] newArray(int size) {
                     return new Variant[size];
                 }
@@ -548,10 +550,12 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
         }
 
         public static final Parcelable.Creator<VideoInfo> CREATOR = new Parcelable.Creator<VideoInfo>() {
+            @Override
             public VideoInfo createFromParcel(Parcel source) {
                 return new VideoInfo(source);
             }
 
+            @Override
             public VideoInfo[] newArray(int size) {
                 return new VideoInfo[size];
             }

@@ -652,6 +652,7 @@
     <string name="navigation">Navigation</string>
     <string name="reset_to_default">Zurücksetzen</string>
     <string name="reset_keyboard_shortcuts_confirm">Keyboard Shortcuts zurücksetzen?</string>
+    <string name="open_accounts_dashboard">Account Dashboard öffnen</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
