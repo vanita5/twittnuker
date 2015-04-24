@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.activity.support;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
@@ -37,7 +38,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -53,7 +53,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.querybuilder.Columns.Column;
@@ -69,6 +68,8 @@ import de.vanita5.twittnuker.model.ParcelableUser.CachedIndices;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
+import de.vanita5.twittnuker.util.EditTextEnterHandler;
+import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SwipeDismissListViewTouchListener;
@@ -83,8 +84,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuickSearchBarActivity extends ThemedFragmentActivity implements OnClickListener,
-		OnEditorActionListener, LoaderCallbacks<List<SuggestionItem>>, TextWatcher,
-		OnItemSelectedListener, OnItemClickListener, DismissCallbacks, OnFitSystemWindowsListener {
+        LoaderCallbacks<List<SuggestionItem>>, OnItemSelectedListener, OnItemClickListener,
+        DismissCallbacks, OnFitSystemWindowsListener {
 
 	private Spinner mAccountSpinner;
 	private EditText mSearchQuery;
@@ -93,11 +94,6 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 	private SuggestionsAdapter mUsersSearchAdapter;
     private ExtendedRelativeLayout mMainContent;
     private Rect mSystemWindowsInsets = new Rect();
-
-	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-	}
 
 	@Override
     public boolean canDismiss(int position) {
@@ -121,6 +117,56 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
     }
 
     @Override
+    public int getThemeColor() {
+        return ThemeUtils.getUserAccentColor(this);
+    }
+
+	@Override
+	public int getActionBarColor() {
+		return ThemeUtils.getActionBarColor(this);
+	}
+
+    @Override
+    public int getThemeResourceId() {
+        return ThemeUtils.getQuickSearchBarThemeResource(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.search_submit: {
+                doSearch();
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onContentChanged() {
+        super.onContentChanged();
+        mMainContent = (ExtendedRelativeLayout) findViewById(R.id.main_content);
+        mAccountSpinner = (Spinner) findViewById(R.id.account_spinner);
+        mSearchQuery = (EditText) findViewById(R.id.search_query);
+        mSearchSubmit = findViewById(R.id.search_submit);
+        mSuggestionsList = (ListView) findViewById(R.id.suggestions_list);
+    }
+
+    @Override
+    public Loader<List<SuggestionItem>> onCreateLoader(int id, Bundle args) {
+        return new SuggestionsLoader(this, mAccountSpinner.getSelectedItemId(), mSearchQuery.getText().toString());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<SuggestionItem>> loader, List<SuggestionItem> data) {
+        mUsersSearchAdapter.setData(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<SuggestionItem>> loader) {
+        mUsersSearchAdapter.setData(null);
+    }
+
+    @Override
     public void onFitSystemWindows(Rect insets) {
         mSystemWindowsInsets.set(insets);
         updateWindowAttributes();
@@ -133,23 +179,13 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 	}
 
 	@Override
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		getSupportLoaderManager().restartLoader(0, null, this);
 	}
 
 	@Override
-	public void afterTextChanged(Editable s) {
+    public void onNothingSelected(AdapterView<?> parent) {
 
-	}
-
-	@Override
-    public int getThemeColor() {
-        return ThemeUtils.getUserAccentColor(this);
-    }
-
-    @Override
-	public int getThemeResourceId() {
-		return ThemeUtils.getQuickSearchBarThemeResource(this);
 	}
 
 	@Override
@@ -177,73 +213,41 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         mSuggestionsList.setOnTouchListener(listener);
         mSuggestionsList.setOnScrollListener(listener.makeScrollListener());
 		mSearchSubmit.setOnClickListener(this);
-		mSearchQuery.setOnEditorActionListener(this);
-		mSearchQuery.addTextChangedListener(this);
 
-		getSupportLoaderManager().initLoader(0, null, this);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		updateWindowAttributes();
-	}
-
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-			case R.id.search_submit: {
+        EditTextEnterHandler.attach(mSearchQuery, new EnterListener() {
+			@Override
+			public void onHitEnter() {
 				doSearch();
-				break;
 			}
-		}
-	}
+		}, true);
+        mSearchQuery.addTextChangedListener(new TextWatcher() {
+			@Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-	@Override
-    public void onContentChanged() {
-        super.onContentChanged();
-        mMainContent = (ExtendedRelativeLayout) findViewById(R.id.main_content);
-		mAccountSpinner = (Spinner) findViewById(R.id.account_spinner);
-		mSearchQuery = (EditText) findViewById(R.id.search_query);
-		mSearchSubmit = findViewById(R.id.search_submit);
-		mSuggestionsList = (ListView) findViewById(R.id.suggestions_list);
-	}
+			}
 
-	@Override
-	public Loader<List<SuggestionItem>> onCreateLoader(int id, Bundle args) {
-		return new SuggestionsLoader(this, mAccountSpinner.getSelectedItemId(), mSearchQuery.getText().toString());
-	}
 
-	@Override
-	public void onLoadFinished(Loader<List<SuggestionItem>> loader, List<SuggestionItem> data) {
-		mUsersSearchAdapter.setData(data);
-	}
+			@Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+			}
 
-	@Override
-	public void onLoaderReset(Loader<List<SuggestionItem>> loader) {
-		mUsersSearchAdapter.setData(null);
-	}
-
-	@Override
-	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		if (event == null) return false;
-		switch (event.getKeyCode()) {
-			case KeyEvent.KEYCODE_ENTER: {
+			@Override
+            public void afterTextChanged(Editable s) {
+                if (Utils.removeLineBreaks(s)) {
 				doSearch();
-				return true;
+                } else {
+                    getSupportLoaderManager().restartLoader(0, null, QuickSearchBarActivity.this);
+				}
 			}
-		}
-		return false;
+        });
+
+        getSupportLoaderManager().initLoader(0, null, this);
 	}
 
 	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		getSupportLoaderManager().restartLoader(0, null, this);
-	}
-
-	@Override
-	public void onNothingSelected(AdapterView<?> parent) {
-
+    protected void onResume() {
+        super.onResume();
+        updateWindowAttributes();
 	}
 
 	private void doSearch() {
@@ -258,6 +262,10 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 	private long getAccountId() {
 		return mAccountSpinner.getSelectedItemId();
 	}
+
+    private static int getHistorySize(CharSequence query) {
+        return TextUtils.isEmpty(query) ? 3 : 2;
+    }
 
 	private void updateWindowAttributes() {
 		final Window window = getWindow();
@@ -279,48 +287,6 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 
 		void onItemClick(QuickSearchBarActivity activity, int position);
 
-	}
-
-	static class SearchHistoryItem extends BaseClickableItem {
-
-        static final int ITEM_VIEW_TYPE = 0;
-        private final long mCursorId;
-		private final String mQuery;
-
-        public long getCursorId() {
-            return mCursorId;
-        }
-
-        public SearchHistoryItem(long cursorId, String query) {
-            mCursorId = cursorId;
-			mQuery = query;
-		}
-
-		@Override
-		public final int getItemLayoutResource() {
-			return R.layout.list_item_suggestion_search;
-		}
-
-		@Override
-		public int getItemViewType() {
-			return ITEM_VIEW_TYPE;
-		}
-
-		@Override
-		public void onItemClick(QuickSearchBarActivity activity, int position) {
-			Utils.openSearch(activity, activity.getAccountId(), mQuery);
-			activity.finish();
-		}
-
-
-		@Override
-		public void bindView(SuggestionsAdapter adapter, View view, int position) {
-			final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
-			final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-			text1.setText(mQuery);
-			icon.setImageResource(R.drawable.ic_action_history);
-			icon.setColorFilter(text1.getCurrentTextColor(), Mode.SRC_ATOP);
-		}
 	}
 
 	static abstract class BaseClickableItem implements SuggestionItem {
@@ -367,60 +333,33 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 		}
 	}
 
-	static class UserSuggestionItem extends BaseClickableItem {
+    static class SearchHistoryItem extends BaseClickableItem {
 
-        static final int ITEM_VIEW_TYPE = 2;
-		private final ParcelableUser mUser;
+        static final int ITEM_VIEW_TYPE = 0;
+        private final long mCursorId;
+        private final String mQuery;
 
-        public UserSuggestionItem(Cursor c, CachedIndices i, long accountId) {
-            mUser = new ParcelableUser(c, i, accountId);
-		}
-
-		@Override
-		public int getItemViewType() {
-			return ITEM_VIEW_TYPE;
-		}
-
-        public ParcelableUser getUser() {
-            return mUser;
-        }
-
-		@Override
-		public void onItemClick(QuickSearchBarActivity activity, int position) {
-			Utils.openUserProfile(activity, mUser, null);
-			activity.finish();
-		}
-
-		@Override
-		public final int getItemLayoutResource() {
-			return R.layout.list_item_suggestion_user;
+        public SearchHistoryItem(long cursorId, String query) {
+            mCursorId = cursorId;
+            mQuery = query;
 		}
 
 		@Override
 		public void bindView(SuggestionsAdapter adapter, View view, int position) {
-			final ParcelableUser user = mUser;
-			final MediaLoaderWrapper loader = adapter.getImageLoader();
 			final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
 			final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-			final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
-
-			text1.setText(user.name);
-            text2.setVisibility(View.VISIBLE);
-			text2.setText("@" + user.screen_name);
-            icon.clearColorFilter();
-			loader.displayProfileImage(icon, user.profile_image_url);
+            text1.setText(mQuery);
+            icon.setImageResource(R.drawable.ic_action_history);
+            icon.setColorFilter(text1.getCurrentTextColor(), Mode.SRC_ATOP);
 		}
-	}
 
-    static class UserScreenNameItem extends BaseClickableItem {
+        public long getCursorId() {
+            return mCursorId;
+        }
 
-        static final int ITEM_VIEW_TYPE = 3;
-        private final String mScreenName;
-        private final long mAccountId;
-
-        public UserScreenNameItem(String screenName, long accountId) {
-            mScreenName = screenName;
-            mAccountId = accountId;
+        @Override
+        public final int getItemLayoutResource() {
+            return R.layout.list_item_suggestion_search;
         }
 
         @Override
@@ -430,27 +369,11 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 
         @Override
         public void onItemClick(QuickSearchBarActivity activity, int position) {
-            Utils.openUserProfile(activity, mAccountId, -1, mScreenName, null);
+            Utils.openSearch(activity, activity.getAccountId(), mQuery);
             activity.finish();
         }
 
-        @Override
-        public final int getItemLayoutResource() {
-            return R.layout.list_item_suggestion_user;
-        }
 
-        @Override
-        public void bindView(SuggestionsAdapter adapter, View view, int position) {
-            final MediaLoaderWrapper loader = adapter.getImageLoader();
-            final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
-            final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-            final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
-            text1.setText('@' + mScreenName);
-            text2.setVisibility(View.GONE);
-            icon.setColorFilter(text1.getCurrentTextColor(), Mode.SRC_ATOP);
-            loader.cancelDisplayTask(icon);
-            icon.setImageResource(R.drawable.ic_action_user);
-        }
     }
 
 	public static class SuggestionsAdapter extends BaseAdapter {
@@ -536,10 +459,6 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 		}
 	}
 
-    private static int getHistorySize(CharSequence query) {
-        return TextUtils.isEmpty(query) ? 3 : 2;
-    }
-
 	public static class SuggestionsLoader extends AsyncTaskLoader<List<SuggestionItem>> {
 
 		private final long mAccountId;
@@ -615,5 +534,93 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 			forceLoad();
 		}
 	}
+
+    static class UserScreenNameItem extends BaseClickableItem {
+
+        static final int ITEM_VIEW_TYPE = 3;
+        private final String mScreenName;
+        private final long mAccountId;
+
+        public UserScreenNameItem(String screenName, long accountId) {
+            mScreenName = screenName;
+            mAccountId = accountId;
+        }
+
+        @Override
+        public int getItemViewType() {
+            return ITEM_VIEW_TYPE;
+        }
+
+        @Override
+        public void onItemClick(QuickSearchBarActivity activity, int position) {
+            Utils.openUserProfile(activity, mAccountId, -1, mScreenName, null);
+            activity.finish();
+        }
+
+        @Override
+        public final int getItemLayoutResource() {
+            return R.layout.list_item_suggestion_user;
+        }
+
+        @Override
+        public void bindView(SuggestionsAdapter adapter, View view, int position) {
+            final MediaLoaderWrapper loader = adapter.getImageLoader();
+            final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
+            final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+            final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+            text1.setText('@' + mScreenName);
+            text2.setVisibility(View.GONE);
+            icon.setColorFilter(text1.getCurrentTextColor(), Mode.SRC_ATOP);
+            loader.cancelDisplayTask(icon);
+            icon.setImageResource(R.drawable.ic_action_user);
+        }
+    }
+
+    static class UserSuggestionItem extends BaseClickableItem {
+
+        static final int ITEM_VIEW_TYPE = 2;
+        private final ParcelableUser mUser;
+
+        public UserSuggestionItem(Cursor c, CachedIndices i, long accountId) {
+            mUser = new ParcelableUser(c, i, accountId);
+        }
+
+        public ParcelableUser getUser() {
+            return mUser;
+        }
+
+        @Override
+        public int getItemViewType() {
+            return ITEM_VIEW_TYPE;
+        }
+
+
+        @Override
+        public void onItemClick(QuickSearchBarActivity activity, int position) {
+            Utils.openUserProfile(activity, mUser, null);
+            activity.finish();
+        }
+
+        @Override
+        public final int getItemLayoutResource() {
+            return R.layout.list_item_suggestion_user;
+        }
+
+        @Override
+        public void bindView(SuggestionsAdapter adapter, View view, int position) {
+            final ParcelableUser user = mUser;
+            final Context context = adapter.getContext();
+            final MediaLoaderWrapper loader = adapter.getImageLoader();
+            final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
+            final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+            final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+
+            text1.setText(user.name);
+            text2.setVisibility(View.VISIBLE);
+            text2.setText("@" + user.screen_name);
+            icon.clearColorFilter();
+            loader.displayProfileImage(icon, user.profile_image_url);
+        }
+    }
 
 }

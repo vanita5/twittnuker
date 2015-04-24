@@ -241,6 +241,7 @@
     <string name="status_shortener">Tweet-Verkürzungsdienst</string>
     <string name="status_shortener_default">Nicht kürzen (Senden abbrechen)</string>
     <string name="error_message_status_too_long">Der Tweet ist zu lang.</string>
+    <string name="error_message_message_too_long">Die Nachricht ist zu lang.</string>
     <string name="error_message_no_content">Kein Inhalt</string>
     <string name="error_message_tweet_shorten_failed">Tweet-Verkürzung schlug fehl.</string>
     <string name="multimedia_contents">Multimedia Inhalt</string>

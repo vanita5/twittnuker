@@ -82,6 +82,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.ShareActionProvider;
+import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -1413,10 +1414,10 @@ public final class Utils implements Constants, TwitterConstants {
             idsIn = new RawItemArray(accountIds);
         }
         final Expression selection = Expression.and(
-                Expression.in(new Column(Statuses.ACCOUNT_ID), idsIn),
-                Expression.greaterThan(Statuses.STATUS_ID, sinceId),
-                buildStatusFilterWhereClause(getTableNameByUri(uri), null)
-        );
+				Expression.in(new Column(Statuses.ACCOUNT_ID), idsIn),
+				Expression.greaterThan(Statuses.STATUS_ID, sinceId),
+				buildStatusFilterWhereClause(getTableNameByUri(uri), null)
+		);
         final Cursor cur = ContentResolverUtils.query(resolver, uri, new String[]{SQLFunctions.COUNT()},
                 selection.getSQL(),
                 null, null);
@@ -1471,6 +1472,17 @@ public final class Utils implements Constants, TwitterConstants {
         final TextView textView = new TextView(context, null, android.R.attr.listSeparatorTextViewStyle);
         textView.setText(title);
         return textView;
+    }
+
+    public static boolean removeLineBreaks(Editable s) {
+        boolean deleted = false;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            if (s.charAt(i) == '\n') {
+                s.delete(i, i + 1);
+                deleted |= true;
+            }
+        }
+        return deleted;
     }
 
     public static boolean setLastSeen(Context context, UserMentionEntity[] entities, long time) {

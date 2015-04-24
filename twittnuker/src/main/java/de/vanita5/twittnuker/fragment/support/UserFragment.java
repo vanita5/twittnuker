@@ -49,6 +49,7 @@ import android.nfc.NfcEvent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
@@ -67,6 +68,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -112,6 +114,8 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -148,7 +152,7 @@ import twitter4j.TwitterException;
 public class UserFragment extends BaseSupportFragment implements OnClickListener,
 		OnLinkClickListener, OnSizeChangedListener, OnSharedPreferenceChangeListener,
         OnTouchListener, DrawerCallback, SupportFragmentCallback, SystemWindowsInsetsCallback,
-        RefreshScrollTopInterface, OnPageChangeListener {
+        RefreshScrollTopInterface, OnPageChangeListener, KeyboardShortcutCallback {
 
     private static final ArgbEvaluator sArgbEvaluator = new ArgbEvaluator();
 
@@ -192,8 +196,10 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private TextView mPagesErrorText;
     private View mProfileNameBackground;
     private View mProfileDetailsContainer;
+    private Relationship mRelationship;
+
 	private SupportTabsAdapter mPagerAdapter;
-	private Relationship mRelationship;
+    private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
 
 	private ParcelableUser mUser = null;
     private Locale mLocale;
@@ -669,9 +675,13 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE)
                 .registerOnSharedPreferenceChangeListener(this);
         mLocale = getResources().getConfiguration().locale;
-        mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(activity, ThemeUtils.getThemeBackgroundOption(activity), ThemeUtils.getUserThemeBackgroundAlpha(activity));
+        mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(activity,
+                ThemeUtils.getThemeBackgroundOption(activity),
+                ThemeUtils.getUserThemeBackgroundAlpha(activity));
         mActionBarShadowColor = 0xA0000000;
-        mProfileImageLoader = getApplication().getMediaLoaderWrapper();
+        final TwittnukerApplication app = TwittnukerApplication.getInstance(activity);
+        mProfileImageLoader = app.getMediaLoaderWrapper();
+        mKeyboardShortcutsHandler = app.getKeyboardShortcutsHandler();
         final Bundle args = getArguments();
         long accountId = -1, userId = -1;
         String screenName = null;
@@ -1038,6 +1048,56 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mPagesErrorText = (TextView) view.findViewById(R.id.pages_error_text);
         mProfileNameBackground = view.findViewById(R.id.profile_name_background);
         mProfileDetailsContainer = view.findViewById(R.id.profile_details_container);
+    }
+
+    @Override
+    public boolean handleKeyboardShortcutSingle(int keyCode, @NonNull KeyEvent event) {
+        if (handleFragmentKeyboardShortcutSingle(keyCode, event)) return true;
+        final String action = mKeyboardShortcutsHandler.getKeyAction("navigation", keyCode, event);
+        if (action != null) {
+            switch (action) {
+                case "navigation.previous_tab": {
+                    final int previous = mViewPager.getCurrentItem() - 1;
+                    if (previous >= 0 && previous < mPagerAdapter.getCount()) {
+                        mViewPager.setCurrentItem(previous, true);
+                    }
+                    return true;
+                }
+                case "navigation.next_tab": {
+                    final int next = mViewPager.getCurrentItem() + 1;
+                    if (next >= 0 && next < mPagerAdapter.getCount()) {
+                        mViewPager.setCurrentItem(next, true);
+                    }
+                    return true;
+                }
+            }
+        }
+        return mKeyboardShortcutsHandler.handleKey(getActivity(), null, keyCode, event);
+    }
+
+    @Override
+    public boolean handleKeyboardShortcutRepeat(int keyCode, int repeatCount, @NonNull KeyEvent event) {
+        return handleFragmentKeyboardShortcutRepeat(keyCode, repeatCount, event);
+    }
+
+    private boolean handleFragmentKeyboardShortcutRepeat(int keyCode, int repeatCount, @NonNull KeyEvent event) {
+        final Fragment fragment = getKeyboardShortcutRecipient();
+        if (fragment instanceof KeyboardShortcutCallback) {
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(keyCode, repeatCount, event);
+        }
+        return false;
+    }
+
+    private boolean handleFragmentKeyboardShortcutSingle(int keyCode, @NonNull KeyEvent event) {
+        final Fragment fragment = getKeyboardShortcutRecipient();
+        if (fragment instanceof KeyboardShortcutCallback) {
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(keyCode, event);
+        }
+        return false;
+    }
+
+    private Fragment getKeyboardShortcutRecipient() {
+        return getCurrentVisibleFragment();
     }
 
     @Override
