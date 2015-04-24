@@ -94,6 +94,7 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.text.method.StatusContentMovementMethod;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
@@ -727,6 +728,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
             quoteTextView.setTextIsSelectable(true);
             textView.setTextIsSelectable(true);
+
+            quoteTextView.setMovementMethod(StatusContentMovementMethod.getInstance());
+            textView.setMovementMethod(StatusContentMovementMethod.getInstance());
         }
 
         @Override
