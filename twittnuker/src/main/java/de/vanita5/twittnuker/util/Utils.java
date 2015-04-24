@@ -1849,13 +1849,16 @@ public final class Utils implements Constants, TwitterConstants {
 
     @HighlightStyle
     public static int getLinkHighlightingStyleInt(final String option) {
-		if (VALUE_LINK_HIGHLIGHT_OPTION_BOTH.equals(option))
-			return VALUE_LINK_HIGHLIGHT_OPTION_CODE_BOTH;
-		else if (VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT.equals(option))
-			return VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
-		else if (VALUE_LINK_HIGHLIGHT_OPTION_UNDERLINE.equals(option))
-			return VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE;
-		return VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
+        if (option == null) return VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
+        switch (option) {
+            case VALUE_LINK_HIGHLIGHT_OPTION_BOTH:
+				return VALUE_LINK_HIGHLIGHT_OPTION_CODE_BOTH;
+            case VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT:
+				return VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
+            case VALUE_LINK_HIGHLIGHT_OPTION_UNDERLINE:
+				return VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE;
+        }
+        return VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
 	}
 
 	public static String getLocalizedNumber(final Locale locale, final Number number) {

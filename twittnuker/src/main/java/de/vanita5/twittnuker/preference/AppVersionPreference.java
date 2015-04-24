@@ -58,7 +58,7 @@ public class AppVersionPreference extends Preference {
 			setTitle(info.applicationInfo.loadLabel(pm));
 			setSummary(info.versionName);
 		} catch (final PackageManager.NameNotFoundException e) {
-
+            throw new AssertionError(e);
 		}
 	}
 

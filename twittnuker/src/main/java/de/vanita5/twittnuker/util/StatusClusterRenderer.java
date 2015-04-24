@@ -61,6 +61,8 @@ import com.google.maps.android.projection.SphericalMercatorProjection;
 import com.google.maps.android.ui.IconGenerator;
 import com.google.maps.android.ui.SquareTextView;
 
+import de.vanita5.twittnuker.model.ClusterStatus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -73,8 +75,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import de.vanita5.twittnuker.model.ClusterStatus;
 
 import static com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm.MAX_DISTANCE_AT_ZOOM;
 
@@ -355,6 +355,7 @@ public class StatusClusterRenderer implements ClusterRenderer<ClusterStatus> {
 			this.mSphericalMercatorProjection = new SphericalMercatorProjection(256 * Math.pow(2, Math.min(zoom, mZoom)));
 		}
 
+        @Override
 		@SuppressLint("NewApi")
 		public void run() {
 			if (clusters.equals(StatusClusterRenderer.this.mClusters)) {

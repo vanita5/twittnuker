@@ -1047,6 +1047,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             return RecyclerView.NO_POSITION;
 		}
 
+        @Override
         public Context getContext() {
             return mContext;
 		}
@@ -1056,6 +1057,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             return mProfileImageStyle;
         }
 
+        @Override
         public float getTextSize() {
             return mTextSize;
         }
@@ -1071,6 +1073,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             return mDisplayProfileImage;
         }
 
+        @Override
         public MediaLoaderWrapper getMediaLoader() {
             return mImageLoader;
         }
@@ -1129,6 +1132,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             return mDisplayMediaPreview;
         }
 
+        @Override
         public boolean isNameFirst() {
             return mNameFirst;
         }

@@ -23,8 +23,6 @@
 package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.view.View;
 
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;

@@ -41,6 +41,7 @@ public class DirectMessageOnLinkClickHandler extends OnLinkClickHandler {
          super(context, manager);
 	}
 
+    @Override
     protected boolean isPrivateData() {
         return true;
     }

@@ -50,8 +50,8 @@ public class JSONFileIO extends JSONSerializer {
 	public static String convertString(final InputStream stream) throws IOException {
 		if (stream == null) throw new FileNotFoundException();
 		final BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charset.defaultCharset()));
-		final StringBuffer buf = new StringBuffer();
-		String line = null;
+        final StringBuilder buf = new StringBuilder();
+        String line;
 		while ((line = reader.readLine()) != null) {
 			buf.append(line);
 			buf.append('\n');
@@ -67,8 +67,7 @@ public class JSONFileIO extends JSONSerializer {
 			cache_dir.mkdirs();
 		}
 		final String filename = Utils.encodeQueryParams(TwidereArrayUtils.toString(args, '.', false));
-		final File cache_file = new File(cache_dir, filename + ".json");
-		return cache_file;
+        return new File(cache_dir, filename + ".json");
 	}
 
 	public static <T extends JSONParcelable> T[] readArray(final File file) throws IOException {

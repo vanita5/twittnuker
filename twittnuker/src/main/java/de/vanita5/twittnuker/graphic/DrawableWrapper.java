@@ -29,8 +29,6 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableContainer;
-import android.os.Build;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 
@@ -104,6 +102,7 @@ class DrawableWrapper extends Drawable implements Drawable.Callback {
 		return mDrawable.getState();
 	}
 
+    @Override
 	public void jumpToCurrentState() {
 		DrawableCompat.jumpToCurrentState(mDrawable);
 	}
@@ -156,6 +155,7 @@ class DrawableWrapper extends Drawable implements Drawable.Callback {
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public void invalidateDrawable(Drawable who) {
 		invalidateSelf();
 	}
@@ -163,6 +163,7 @@ class DrawableWrapper extends Drawable implements Drawable.Callback {
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public void scheduleDrawable(Drawable who, Runnable what, long when) {
 		scheduleSelf(what, when);
 	}
@@ -170,6 +171,7 @@ class DrawableWrapper extends Drawable implements Drawable.Callback {
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public void unscheduleDrawable(Drawable who, Runnable what) {
 		unscheduleSelf(what);
 	}

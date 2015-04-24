@@ -706,6 +706,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 filteredSelection, null, null, null, Statuses.SORT_ORDER_TIMESTAMP_DESC);
         final Cursor userCursor = mDatabaseWrapper.query(Statuses.TABLE_NAME, userProjection,
                 filteredSelection, null, Statuses.USER_ID, null, Statuses.SORT_ORDER_TIMESTAMP_DESC);
+        //noinspection TryFinallyCanBeTryWithResources
         try {
             final int usersCount = userCursor.getCount();
             final int statusesCount = statusCursor.getCount();
@@ -776,6 +777,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 filteredSelection, null, null, null, Statuses.SORT_ORDER_TIMESTAMP_DESC);
         final Cursor userCursor = mDatabaseWrapper.query(Mentions.TABLE_NAME, userProjection,
                 filteredSelection, null, Statuses.USER_ID, null, Statuses.SORT_ORDER_TIMESTAMP_DESC);
+        //noinspection TryFinallyCanBeTryWithResources
         try {
             final int usersCount = userCursor.getCount();
             final int statusesCount = statusCursor.getCount();
@@ -953,6 +955,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 filteredSelection, null, null, null, DirectMessages.DEFAULT_SORT_ORDER);
         final Cursor userCursor = mDatabaseWrapper.query(DirectMessages.Inbox.TABLE_NAME, userProjection,
                 filteredSelection, null, DirectMessages.SENDER_ID, null, DirectMessages.DEFAULT_SORT_ORDER);
+        //noinspection TryFinallyCanBeTryWithResources
         try {
             final int usersCount = userCursor.getCount();
             final int messagesCount = messageCursor.getCount();

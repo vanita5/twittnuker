@@ -142,7 +142,7 @@ public class TwittnukerApplication extends Application implements Constants,
         if (mKeyboardShortcutsHandler.isEmpty()
                 && !preferences.getBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, false)) {
             mKeyboardShortcutsHandler.reset();
-            preferences.edit().putBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, true);
+            preferences.edit().putBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, true).apply();
         }
         return mKeyboardShortcutsHandler;
     }

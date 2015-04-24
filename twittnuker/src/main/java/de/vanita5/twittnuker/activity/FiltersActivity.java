@@ -23,13 +23,10 @@
 package de.vanita5.twittnuker.activity;
 
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.WindowCompat;
 import android.view.MenuItem;
-import android.view.WindowManager.LayoutParams;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.BaseDialogWhenLargeActivity;
