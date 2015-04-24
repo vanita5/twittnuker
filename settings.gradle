@@ -17,8 +17,9 @@ include 'services:webservice'
 */
 
 rootProject.name = 'twittnuker'
-include ':twittnuker'
+include ':twittnuker', ':twittnuker.launcher.compose'
 include ':twittnuker.component.twitter4j'
 include ':twittnuker.component.common'
 include ':twittnuker.component.jsonserializer'
 include ':twittnuker.component.querybuilder'
+include ':twittnuker.launcher.compose'

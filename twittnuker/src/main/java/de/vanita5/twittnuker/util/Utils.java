@@ -35,7 +35,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -3558,9 +3557,9 @@ public final class Utils implements Constants, TwitterConstants {
 			final PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
 			final String version_name = pi.versionName;
 			cb.setClientVersion(pi.versionName);
-			cb.setClientName(APP_NAME);
-			cb.setClientURL(APP_PROJECT_URL);
-			cb.setHttpUserAgent(APP_NAME + " " + APP_PROJECT_URL + " / " + version_name
+			cb.setClientName(TWITTNUKER_APP_NAME);
+			cb.setClientURL(TWITTNUKER_PROJECT_URL);
+			cb.setHttpUserAgent(TWITTNUKER_APP_NAME + " " + TWITTNUKER_PROJECT_URL + " / " + version_name
                     + (gzipCompressing ? " (gzip)" : ""));
 		} catch (final PackageManager.NameNotFoundException e) {
             throw new AssertionError(e);

@@ -33,12 +33,12 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 public interface TwittnukerConstants extends SharedPreferenceConstants,
 		IntentConstants, SecretConstants {
 
-	public static final String APP_NAME = "Twittnuker";
-	public static final String APP_PACKAGE_NAME = "de.vanita5.twittnuker";
-	public static final String APP_PROJECT_URL = "https://github.com/vanita5/twittnuker";
-	public static final String APP_PROJECT_EMAIL = "mail@twittnuker.org";
+	public static final String TWITTNUKER_APP_NAME = "Twittnuker";
+	public static final String TWITTNUKER_PACKAGE_NAME = "de.vanita5.twittnuker";
+	public static final String TWITTNUKER_PROJECT_URL = "https://github.com/vanita5/twittnuker";
+	public static final String TWITTNUKER_PROJECT_EMAIL = "mail@twittnuker.org";
 
-	public static final String LOGTAG = APP_NAME;
+	public static final String LOGTAG = TWITTNUKER_APP_NAME;
 
 	public static final String USER_COLOR_PREFERENCES_NAME = "user_colors";
 	public static final String HOST_MAPPING_PREFERENCES_NAME = "host_mapping";

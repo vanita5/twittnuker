@@ -92,7 +92,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ColorUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
-import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.ShortcutCallback;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -287,6 +287,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
                         mSlidingMenu.showContent(true);
                     } else {
                         mSlidingMenu.showMenu(true);
+                        setControlBarVisibleAnimate(true);
                     }
                     return true;
                 }
@@ -690,16 +691,16 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 
     private boolean handleFragmentKeyboardShortcutSingle(int keyCode, @NonNull KeyEvent event) {
         final Fragment fragment = getCurrentVisibleFragment();
-        if (fragment instanceof ShortcutCallback) {
-            return ((ShortcutCallback) fragment).handleKeyboardShortcutSingle(keyCode, event);
+        if (fragment instanceof KeyboardShortcutCallback) {
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(keyCode, event);
         }
         return false;
     }
 
     private boolean handleFragmentKeyboardShortcutRepeat(int keyCode, int repeatCount, @NonNull KeyEvent event) {
         final Fragment fragment = getCurrentVisibleFragment();
-        if (fragment instanceof ShortcutCallback) {
-            return ((ShortcutCallback) fragment).handleKeyboardShortcutRepeat(keyCode, repeatCount, event);
+        if (fragment instanceof KeyboardShortcutCallback) {
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(keyCode, repeatCount, event);
         }
         return false;
     }

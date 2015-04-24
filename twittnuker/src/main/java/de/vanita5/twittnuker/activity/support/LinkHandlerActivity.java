@@ -53,7 +53,7 @@ import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.fragment.support.SearchFragment;
 import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
-import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.ShortcutCallback;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -224,16 +224,16 @@ public class LinkHandlerActivity extends BaseActionBarActivity implements System
 
     private boolean handleFragmentKeyboardShortcutRepeat(int keyCode, int repeatCount, @NonNull KeyEvent event) {
         final Fragment fragment = getCurrentVisibleFragment();
-        if (fragment instanceof ShortcutCallback) {
-            return ((ShortcutCallback) fragment).handleKeyboardShortcutRepeat(keyCode, repeatCount, event);
+        if (fragment instanceof KeyboardShortcutCallback) {
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(keyCode, repeatCount, event);
         }
         return false;
     }
 
     private boolean handleFragmentKeyboardShortcutSingle(int keyCode, @NonNull KeyEvent event) {
         final Fragment fragment = getCurrentVisibleFragment();
-        if (fragment instanceof ShortcutCallback) {
-            return ((ShortcutCallback) fragment).handleKeyboardShortcutSingle(keyCode, event);
+        if (fragment instanceof KeyboardShortcutCallback) {
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(keyCode, event);
         }
         return false;
     }

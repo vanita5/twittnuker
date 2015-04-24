@@ -24,32 +24,61 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
 
 import de.vanita5.twittnuker.adapter.AbsUsersAdapter;
 import de.vanita5.twittnuker.adapter.AbsUsersAdapter.UserAdapterListener;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
+import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
 
-abstract class AbsUsersFragment<Data> extends AbsContentListFragment<AbsUsersAdapter<Data>> implements LoaderCallbacks<Data>, UserAdapterListener {
+abstract class AbsUsersFragment<Data> extends AbsContentListFragment<AbsUsersAdapter<Data>>
+        implements LoaderCallbacks<Data>, UserAdapterListener, KeyboardShortcutCallback {
+
+    private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
+    private RecyclerViewNavigationHelper mRecyclerViewNavigationHelper;
 
 	public final Data getData() {
 		return getAdapter().getData();
 	}
 
 	@Override
+    public boolean handleKeyboardShortcutSingle(int keyCode, @NonNull KeyEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean handleKeyboardShortcutRepeat(int keyCode, int repeatCount, @NonNull KeyEvent event) {
+        return mRecyclerViewNavigationHelper.handleKeyboardShortcutRepeat(keyCode, repeatCount, event);
+    }
+
+    @Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-        getAdapter().setListener(this);
+        final FragmentActivity activity = getActivity();
+        final TwittnukerApplication application = TwittnukerApplication.getInstance(activity);
+        mKeyboardShortcutsHandler = application.getKeyboardShortcutsHandler();
+        final AbsUsersAdapter<Data> adapter = getAdapter();
+        final RecyclerView recyclerView = getRecyclerView();
+        final LinearLayoutManager layoutManager = getLayoutManager();
+        adapter.setListener(this);
 
+        mRecyclerViewNavigationHelper = new RecyclerViewNavigationHelper(mKeyboardShortcutsHandler, recyclerView, layoutManager, adapter);
 		final Bundle loaderArgs = new Bundle(getArguments());
 		loaderArgs.putBoolean(EXTRA_FROM_USER, true);
 		getLoaderManager().initLoader(0, loaderArgs, this);

@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.ShortcutCallback;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
 
@@ -44,7 +44,7 @@ import java.util.ArrayList;
 @SuppressLint("Registered")
 public class BaseActionBarActivity extends ThemedActionBarActivity implements Constants,
         OnFitSystemWindowsListener, SystemWindowsInsetsCallback, IControlBarActivity,
-        ShortcutCallback {
+        KeyboardShortcutCallback {
 
     private boolean mInstanceStateSaved;
     private boolean mIsVisible;
