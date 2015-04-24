@@ -31,7 +31,6 @@ import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -52,7 +51,6 @@ import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
-import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ListScrollDistanceCalculator;
 import de.vanita5.twittnuker.util.ListScrollDistanceCalculator.ScrollDistanceListener;
@@ -292,19 +290,6 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 		super.onDestroy();
 	}
 
-	@Override
-	public void onDetach() {
-		super.onDetach();
-        final Fragment fragment = getParentFragment();
-        if (fragment instanceof SupportFragmentCallback) {
-            ((SupportFragmentCallback) fragment).onDetachFragment(this);
-        }
-		final Activity activity = getActivity();
-		if (activity instanceof SupportFragmentCallback) {
-			((SupportFragmentCallback) activity).onDetachFragment(this);
-		}
-	}
-
 	public void onPostStart() {
 	}
 
@@ -393,19 +378,6 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 	public void setSelection(final int position) {
 		if (getView() == null) return;
 		Utils.scrollListToPosition(getListView(), position);
-	}
-
-	@Override
-	public void setUserVisibleHint(final boolean isVisibleToUser) {
-		super.setUserVisibleHint(isVisibleToUser);
-        final Fragment fragment = getParentFragment();
-        if (fragment instanceof SupportFragmentCallback) {
-            ((SupportFragmentCallback) fragment).onSetUserVisibleHint(this, isVisibleToUser);
-        }
-		final Activity activity = getActivity();
-		if (activity instanceof SupportFragmentCallback) {
-			((SupportFragmentCallback) activity).onSetUserVisibleHint(this, isVisibleToUser);
-		}
 	}
 
 	@Override

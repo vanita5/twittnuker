@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.ViewParent;
 
 public class RecyclerViewUtils {
+
 	public static View findRecyclerViewChild(RecyclerView recyclerView, View view) {
 		if (view == null) return null;
 		final ViewParent parent = view.getParent();

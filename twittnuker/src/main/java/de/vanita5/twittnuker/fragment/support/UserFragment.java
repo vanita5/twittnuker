@@ -205,7 +205,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     private ActionBarDrawable mActionBarBackground;
     private Drawable mActionBarHomeAsUpIndicator;
-    private Fragment mCurrentVisibleFragment;
 
 
 	private final LoaderCallbacks<SingleResponse<Relationship>> mFriendshipLoaderCallbacks = new LoaderCallbacks<SingleResponse<Relationship>>() {
@@ -373,13 +372,13 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     @Override
     public boolean canScroll(float dy) {
-        final Fragment fragment = mCurrentVisibleFragment;
+        final Fragment fragment = getCurrentVisibleFragment();
         return fragment instanceof DrawerCallback && ((DrawerCallback) fragment).canScroll(dy);
     }
 
     @Override
     public void cancelTouch() {
-        final Fragment fragment = mCurrentVisibleFragment;
+        final Fragment fragment = getCurrentVisibleFragment();
         if (fragment instanceof DrawerCallback) {
             ((DrawerCallback) fragment).cancelTouch();
         }
@@ -387,7 +386,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     @Override
     public void fling(float velocity) {
-        final Fragment fragment = mCurrentVisibleFragment;
+        final Fragment fragment = getCurrentVisibleFragment();
         if (fragment instanceof DrawerCallback) {
             ((DrawerCallback) fragment).fling(velocity);
         }
@@ -451,7 +450,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     @Override
     public void scrollBy(float dy) {
-        final Fragment fragment = mCurrentVisibleFragment;
+        final Fragment fragment = getCurrentVisibleFragment();
         if (fragment instanceof DrawerCallback) {
             ((DrawerCallback) fragment).scrollBy(dy);
         }
@@ -472,7 +471,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final int offset = drawer.getPaddingTop() - top;
         updateScrollOffset(offset);
 
-        final Fragment fragment = mCurrentVisibleFragment;
+        final Fragment fragment = getCurrentVisibleFragment();
         if (fragment instanceof DrawerCallback) {
             ((DrawerCallback) fragment).topChanged(top);
         }
@@ -546,17 +545,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     @Override
     public Fragment getCurrentVisibleFragment() {
-        return mCurrentVisibleFragment;
-    }
-
-    @Override
-    public void onDetachFragment(Fragment fragment) {
-
-    }
-
-    @Override
-    public void onSetUserVisibleHint(Fragment fragment, boolean isVisibleToUser) {
-        mCurrentVisibleFragment = isVisibleToUser ? fragment : null;
+        final int currentItem = mViewPager.getCurrentItem();
+        if (currentItem < 0 || currentItem >= mPagerAdapter.getCount()) return null;
+        return (Fragment) mPagerAdapter.instantiateItem(mViewPager, currentItem);
     }
 
     @Override
@@ -1195,15 +1186,17 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
 	@Override
     public boolean scrollToStart() {
-        if (!(mCurrentVisibleFragment instanceof RefreshScrollTopInterface)) return false;
-        ((RefreshScrollTopInterface) mCurrentVisibleFragment).scrollToStart();
+        final Fragment fragment = getCurrentVisibleFragment();
+        if (!(fragment instanceof RefreshScrollTopInterface)) return false;
+        ((RefreshScrollTopInterface) fragment).scrollToStart();
         return true;
 	}
 
     @Override
     public boolean triggerRefresh() {
-        if (!(mCurrentVisibleFragment instanceof RefreshScrollTopInterface)) return false;
-        ((RefreshScrollTopInterface) mCurrentVisibleFragment).triggerRefresh();
+        final Fragment fragment = getCurrentVisibleFragment();
+        if (!(fragment instanceof RefreshScrollTopInterface)) return false;
+        ((RefreshScrollTopInterface) fragment).triggerRefresh();
         return true;
     }
 

@@ -73,7 +73,10 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListFragment<A
     private PopupMenu mPopupMenu;
     private ReadStateManager mReadStateManager;
     private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
+    private RecyclerViewNavigationHelper mRecyclerViewNavigationHelper;
+
     private ParcelableStatus mSelectedStatus;
+
     private OnMenuItemClickListener mOnStatusMenuItemClickListener = new OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
@@ -88,7 +91,6 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListFragment<A
                     getFragmentManager(), getTwitterWrapper(), status, item);
         }
     };
-    private RecyclerViewNavigationHelper mRecyclerViewNavigationHelper;
 
     protected AbsStatusesFragment() {
         mStatusesBusCallback = createMessageBusCallback();

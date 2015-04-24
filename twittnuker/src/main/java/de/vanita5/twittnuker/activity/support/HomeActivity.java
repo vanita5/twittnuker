@@ -44,7 +44,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.widget.Toolbar;
-import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -73,7 +72,6 @@ import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment;
-import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment;
@@ -137,7 +135,6 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 
 	private final ContentObserver mAccountChangeObserver = new AccountChangeObserver(this, mHandler);
 
-    private final SparseArray<Fragment> mAttachedFragments = new SparseArray<>();
     private ParcelableAccount mSelectedAccountToSearch;
 
 	private SharedPreferences mPreferences;
@@ -161,7 +158,6 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 	private RightDrawerFrameLayout mRightDrawerContainer;
     private TintedStatusFrameLayout mColorStatusFrameLayout;
 
-	private Fragment mCurrentVisibleFragment;
 	private UpdateUnreadCountTask mUpdateUnreadCountTask;
 
 	private int mTabDisplayOption;
@@ -184,38 +180,34 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
 		mSlidingMenu.showContent();
 	}
 
+    public long[] getActivatedAccountIds() {
+        final Fragment fragment = getLeftDrawerFragment();
+        if (fragment instanceof AccountsDashboardFragment) {
+            return ((AccountsDashboardFragment) fragment).getActivatedAccountIds();
+        }
+        return Utils.getActivatedAccountIds(this);
+    }
+
 	@Override
 	public Fragment getCurrentVisibleFragment() {
-		return mCurrentVisibleFragment;
-	}
-
-	@Override
-    public void onDetachFragment(final Fragment fragment) {
-		if (fragment instanceof IBaseFragment && ((IBaseFragment) fragment).getTabPosition() != -1) {
-            mAttachedFragments.remove(((IBaseFragment) fragment).getTabPosition());
-		}
-	}
-
-	@Override
-    public void onSetUserVisibleHint(final Fragment fragment, final boolean isVisibleToUser) {
-        if (isVisibleToUser) {
-            mCurrentVisibleFragment = fragment;
-		}
+        final int currentItem = mViewPager.getCurrentItem();
+        if (currentItem < 0 || currentItem >= mPagerAdapter.getCount()) return null;
+        return (Fragment) mPagerAdapter.instantiateItem(mViewPager, currentItem);
 	}
 
 	@Override
     public boolean triggerRefresh(final int position) {
-        final Fragment f = mAttachedFragments.get(position);
-        return f instanceof RefreshScrollTopInterface && !f.isDetached()
-                && ((RefreshScrollTopInterface) f).triggerRefresh();
+        final Fragment f = (Fragment) mPagerAdapter.instantiateItem(mViewPager, position);
+        if (!(f instanceof RefreshScrollTopInterface)) return false;
+        if (f.getActivity() == null || f.isDetached()) return false;
+        return ((RefreshScrollTopInterface) f).triggerRefresh();
+    }
+
+    public Fragment getLeftDrawerFragment() {
+        return getSupportFragmentManager().findFragmentById(R.id.left_drawer);
     }
 
 	@Override
-    public void setControlBarVisibleAnimate(boolean visible) {
-        mControlBarShowHideHelper.setControlBarVisibleAnimate(visible);
-    }
-
-    @Override
     public boolean getSystemWindowsInsets(Rect insets) {
         final int height = mTabIndicator != null ? mTabIndicator.getHeight() : 0;
         insets.top = height != 0 ? height : Utils.getActionBarHeight(this);
@@ -223,15 +215,8 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
     }
 
     @Override
-    public void setControlBarOffset(float offset) {
-        mTabsContainer.setTranslationY(mTabColumns > 1 ? 0 : getControlBarHeight() * (offset - 1));
-        final ViewGroup.LayoutParams lp = mActionsButton.getLayoutParams();
-        if (lp instanceof MarginLayoutParams) {
-            mActionsButton.setTranslationY((((MarginLayoutParams) lp).bottomMargin + mActionsButton.getHeight()) * (1 - offset));
-        } else {
-        mActionsButton.setTranslationY(mActionsButton.getHeight() * (1 - offset));
-        }
-        notifyControlBarOffsetChanged();
+    public void setControlBarVisibleAnimate(boolean visible) {
+        mControlBarShowHideHelper.setControlBarVisibleAnimate(visible);
 	}
 
 	@Override
@@ -298,21 +283,47 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
             switch (action) {
                 case "navigation.previous_tab": {
                     final int previous = mViewPager.getCurrentItem() - 1;
-                    if (previous >= 0 && previous < mPagerAdapter.getCount()) {
-                        mViewPager.setCurrentItem(previous, true);
+                    if (previous < 0) {
+                        mSlidingMenu.showMenu(true);
+                        setControlBarVisibleAnimate(true);
+                    } else if (previous < mPagerAdapter.getCount()) {
+                        if (mSlidingMenu.isSecondaryMenuShowing()) {
+                            mSlidingMenu.showContent(true);
+                        } else {
+							mViewPager.setCurrentItem(previous, true);
+						}
                     }
                     return true;
                 }
                 case "navigation.next_tab": {
                     final int next = mViewPager.getCurrentItem() + 1;
-                    if (next >= 0 && next < mPagerAdapter.getCount()) {
-                        mViewPager.setCurrentItem(next, true);
+                    if (next >= mPagerAdapter.getCount()) {
+                        mSlidingMenu.showSecondaryMenu(true);
+                        setControlBarVisibleAnimate(true);
+                    } else if (next >= 0) {
+                        if (mSlidingMenu.isMenuShowing()) {
+                            mSlidingMenu.showContent(true);
+                        } else {
+							mViewPager.setCurrentItem(next, true);
+						}
                     }
                     return true;
                 }
             }
         }
         return mKeyboardShortcutsHandler.handleKey(this, null, keyCode, event);
+    }
+
+    @Override
+    public void setControlBarOffset(float offset) {
+        mTabsContainer.setTranslationY(mTabColumns > 1 ? 0 : getControlBarHeight() * (offset - 1));
+        final ViewGroup.LayoutParams lp = mActionsButton.getLayoutParams();
+        if (lp instanceof MarginLayoutParams) {
+            mActionsButton.setTranslationY((((MarginLayoutParams) lp).bottomMargin + mActionsButton.getHeight()) * (1 - offset));
+        } else {
+            mActionsButton.setTranslationY(mActionsButton.getHeight() * (1 - offset));
+        }
+        notifyControlBarOffsetChanged();
     }
 
     @Override
@@ -574,27 +585,11 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
     }
 
     public void setSystemWindowInsets(Rect insets) {
-        final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.left_drawer);
+        final Fragment fragment = getLeftDrawerFragment();
         if (fragment instanceof AccountsDashboardFragment) {
             ((AccountsDashboardFragment) fragment).setStatusBarHeight(insets.top);
         }
         mColorStatusFrameLayout.setStatusBarHeight(insets.top);
-    }
-
-    @Override
-    public float getControlBarOffset() {
-        if (mTabColumns > 1) {
-            final ViewGroup.LayoutParams lp = mActionsButton.getLayoutParams();
-            float total;
-            if (lp instanceof MarginLayoutParams) {
-                total = ((MarginLayoutParams) lp).bottomMargin + mActionsButton.getHeight();
-            } else {
-                total = mActionsButton.getHeight();
-            }
-            return 1 - mActionsButton.getTranslationY() / total;
-        }
-        final float totalHeight = getControlBarHeight();
-        return 1 + mTabsContainer.getTranslationY() / totalHeight;
     }
 
     public void updateUnreadCount() {
@@ -618,22 +613,10 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
     }
 
     @Override
-    public int getControlBarHeight() {
-        return mTabIndicator.getHeight() - mTabIndicator.getStripHeight();
-    }
-
-    @Override
     protected void onNewIntent(final Intent intent) {
         final int tabPosition = handleIntent(intent, false);
         if (tabPosition >= 0) {
             mViewPager.setCurrentItem(MathUtils.clamp(tabPosition, mPagerAdapter.getCount(), 0));
-        }
-    }
-
-    @Override
-    public void onAttachFragment(final Fragment fragment) {
-        if (fragment instanceof IBaseFragment && ((IBaseFragment) fragment).getTabPosition() != -1) {
-            mAttachedFragments.put(((IBaseFragment) fragment).getTabPosition(), fragment);
         }
     }
 
@@ -653,6 +636,22 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
             return;
         }
         super.onBackPressed();
+    }
+
+    @Override
+    public float getControlBarOffset() {
+        if (mTabColumns > 1) {
+            final ViewGroup.LayoutParams lp = mActionsButton.getLayoutParams();
+            float total;
+            if (lp instanceof MarginLayoutParams) {
+                total = ((MarginLayoutParams) lp).bottomMargin + mActionsButton.getHeight();
+            } else {
+                total = mActionsButton.getHeight();
+            }
+            return 1 - mActionsButton.getTranslationY() / total;
+        }
+        final float totalHeight = getControlBarHeight();
+        return 1 + mTabsContainer.getTranslationY() / totalHeight;
     }
 
     @Override
@@ -681,26 +680,33 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
         mColorStatusFrameLayout = (TintedStatusFrameLayout) findViewById(R.id.home_content);
     }
 
-    public long[] getActivatedAccountIds() {
-        final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.left_drawer);
-        if (fragment instanceof AccountsDashboardFragment) {
-            return ((AccountsDashboardFragment) fragment).getActivatedAccountIds();
+    private Fragment getKeyboardShortcutRecipient() {
+        if (mSlidingMenu.isMenuShowing()) {
+            return getLeftDrawerFragment();
+        } else if (mSlidingMenu.isSecondaryMenuShowing()) {
+            return null;
+        } else {
+            return getCurrentVisibleFragment();
         }
-        return Utils.getActivatedAccountIds(this);
     }
 
-    private boolean handleFragmentKeyboardShortcutSingle(int keyCode, @NonNull KeyEvent event) {
-        final Fragment fragment = getCurrentVisibleFragment();
+    @Override
+    public int getControlBarHeight() {
+        return mTabIndicator.getHeight() - mTabIndicator.getStripHeight();
+    }
+
+    private boolean handleFragmentKeyboardShortcutRepeat(int keyCode, int repeatCount, @NonNull KeyEvent event) {
+        final Fragment fragment = getKeyboardShortcutRecipient();
         if (fragment instanceof KeyboardShortcutCallback) {
-            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(keyCode, event);
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(keyCode, repeatCount, event);
         }
         return false;
     }
 
-    private boolean handleFragmentKeyboardShortcutRepeat(int keyCode, int repeatCount, @NonNull KeyEvent event) {
-        final Fragment fragment = getCurrentVisibleFragment();
+    private boolean handleFragmentKeyboardShortcutSingle(int keyCode, @NonNull KeyEvent event) {
+        final Fragment fragment = getKeyboardShortcutRecipient();
         if (fragment instanceof KeyboardShortcutCallback) {
-            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(keyCode, repeatCount, event);
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(keyCode, event);
         }
         return false;
     }

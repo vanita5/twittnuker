@@ -38,7 +38,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.support.BaseActionBarActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
-import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
@@ -149,32 +148,6 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
     @Override
     public void onBaseViewCreated(View view, Bundle savedInstanceState) {
 
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        final Fragment fragment = getParentFragment();
-        if (fragment instanceof SupportFragmentCallback) {
-            ((SupportFragmentCallback) fragment).onDetachFragment(this);
-        }
-        final Activity activity = getActivity();
-        if (activity instanceof SupportFragmentCallback) {
-            ((SupportFragmentCallback) activity).onDetachFragment(this);
-        }
-    }
-
-    @Override
-    public void setUserVisibleHint(final boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        final Activity activity = getActivity();
-        final Fragment fragment = getParentFragment();
-        if (fragment instanceof SupportFragmentCallback) {
-            ((SupportFragmentCallback) fragment).onSetUserVisibleHint(this, isVisibleToUser);
-        }
-        if (activity instanceof SupportFragmentCallback) {
-            ((SupportFragmentCallback) activity).onSetUserVisibleHint(this, isVisibleToUser);
-        }
     }
 
     protected void fitSystemWindows(Rect insets) {

@@ -45,14 +45,14 @@ public class UserListsFragment extends BaseSupportFragment implements RefreshScr
 
     private ViewPager mViewPager;
 
-	private SupportTabsAdapter mAdapter;
+    private SupportTabsAdapter mPagerAdapter;
     private TabPagerIndicator mPagerIndicator;
-
-	private Fragment mCurrentVisibleFragment;
 
 	@Override
 	public Fragment getCurrentVisibleFragment() {
-		return mCurrentVisibleFragment;
+        final int currentItem = mViewPager.getCurrentItem();
+        if (currentItem < 0 || currentItem >= mPagerAdapter.getCount()) return null;
+        return (Fragment) mPagerAdapter.instantiateItem(mViewPager, currentItem);
 	}
 
 	public void hideIndicator() {
@@ -63,10 +63,10 @@ public class UserListsFragment extends BaseSupportFragment implements RefreshScr
 		super.onActivityCreated(savedInstanceState);
 		final Bundle args = getArguments();
 		final FragmentActivity activity = getActivity();
-		mAdapter = new SupportTabsAdapter(activity, getChildFragmentManager(), null, 1);
-        mAdapter.addTab(UserListsListFragment.class, args, getString(R.string.follows), null, 0, null);
-        mAdapter.addTab(UserListMembershipsListFragment.class, args, getString(R.string.belongs_to), 0, 1, null);
-		mViewPager.setAdapter(mAdapter);
+        mPagerAdapter = new SupportTabsAdapter(activity, getChildFragmentManager(), null, 1);
+        mPagerAdapter.addTab(UserListsListFragment.class, args, getString(R.string.follows), null, 0, null);
+        mPagerAdapter.addTab(UserListMembershipsListFragment.class, args, getString(R.string.belongs_to), 0, 1, null);
+        mViewPager.setAdapter(mPagerAdapter);
 		mViewPager.setOffscreenPageLimit(2);
 		mPagerIndicator.setViewPager(mViewPager);
         mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
@@ -81,18 +81,6 @@ public class UserListsFragment extends BaseSupportFragment implements RefreshScr
 	}
 
 	@Override
-	public void onDetachFragment(final Fragment fragment) {
-
-	}
-
-	@Override
-	public void onSetUserVisibleHint(final Fragment fragment, final boolean isVisibleToUser) {
-		if (isVisibleToUser) {
-			mCurrentVisibleFragment = fragment;
-		}
-	}
-
-	@Override
     public void onBaseViewCreated(final View view, final Bundle savedInstanceState) {
         super.onBaseViewCreated(view, savedInstanceState);
         mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
@@ -101,8 +89,9 @@ public class UserListsFragment extends BaseSupportFragment implements RefreshScr
 
 	@Override
 	public boolean scrollToStart() {
-		if (!(mCurrentVisibleFragment instanceof RefreshScrollTopInterface)) return false;
-		((RefreshScrollTopInterface) mCurrentVisibleFragment).scrollToStart();
+        final Fragment fragment = getCurrentVisibleFragment();
+        if (!(fragment instanceof RefreshScrollTopInterface)) return false;
+        ((RefreshScrollTopInterface) fragment).scrollToStart();
 		return true;
 	}
 
@@ -111,8 +100,9 @@ public class UserListsFragment extends BaseSupportFragment implements RefreshScr
 
 	@Override
 	public boolean triggerRefresh() {
-		if (!(mCurrentVisibleFragment instanceof RefreshScrollTopInterface)) return false;
-		((RefreshScrollTopInterface) mCurrentVisibleFragment).triggerRefresh();
+        final Fragment fragment = getCurrentVisibleFragment();
+        if (!(fragment instanceof RefreshScrollTopInterface)) return false;
+        ((RefreshScrollTopInterface) fragment).triggerRefresh();
 		return true;
 	}
 

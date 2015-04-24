@@ -20,14 +20,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment.iface;
+package pl.droidsonroids.gif;
 
-import android.support.v4.app.Fragment;
+public class GifSupportChecker {
 
-public interface SupportFragmentCallback {
-
-	public Fragment getCurrentVisibleFragment();
-
-	public boolean triggerRefresh(int position);
+	public static boolean isSupported() {
+		try {
+			// Just make it trying to load native library
+			System.identityHashCode(GifInfoHandle.NULL_INFO);
+		} catch (Throwable t) {
+			return false;
+		}
+		return true;
+	}
 
 }
