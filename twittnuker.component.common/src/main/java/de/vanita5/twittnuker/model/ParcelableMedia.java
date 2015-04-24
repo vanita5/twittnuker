@@ -37,12 +37,12 @@ import de.vanita5.twittnuker.util.SimpleValueSerializer.Reader;
 import de.vanita5.twittnuker.util.SimpleValueSerializer.SerializationException;
 import de.vanita5.twittnuker.util.SimpleValueSerializer.SimpleValueSerializable;
 import de.vanita5.twittnuker.util.SimpleValueSerializer.Writer;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import twitter4j.CardEntity;
 import twitter4j.CardEntity.BindingValue;
 import twitter4j.CardEntity.ImageValue;
@@ -58,7 +58,7 @@ import twitter4j.URLEntity;
 @SuppressWarnings("unused")
 public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueSerializable {
 
-    @IntDef({TYPE_UNKNOWN, TYPE_IMAGE, TYPE_VIDEO, TYPE_CARD_ANIMATED_GIF})
+    @IntDef({TYPE_UNKNOWN, TYPE_IMAGE, TYPE_VIDEO, TYPE_ANIMATED_GIF, TYPE_CARD_ANIMATED_GIF})
     public @interface MediaType {
 
     }
@@ -70,7 +70,9 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
     @MediaType
     public static final int TYPE_VIDEO = 2;
     @MediaType
-    public static final int TYPE_CARD_ANIMATED_GIF = 3;
+    public static final int TYPE_ANIMATED_GIF = 3;
+    @MediaType
+    public static final int TYPE_CARD_ANIMATED_GIF = 4;
 
     public static final Parcelable.Creator<ParcelableMedia> CREATOR = new Parcelable.Creator<ParcelableMedia>() {
         @Override
@@ -176,6 +178,8 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
                 return TYPE_IMAGE;
             case VIDEO:
                 return TYPE_VIDEO;
+            case ANIMATED_GIF:
+                return TYPE_ANIMATED_GIF;
         }
         return TYPE_UNKNOWN;
     }
