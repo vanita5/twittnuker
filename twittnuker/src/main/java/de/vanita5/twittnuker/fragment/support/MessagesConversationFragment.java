@@ -72,7 +72,7 @@ import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.OrderBy;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.BaseActionBarActivity;
+import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.activity.support.ImagePickerActivity;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
@@ -197,7 +197,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-        final BaseActionBarActivity activity = (BaseActionBarActivity) getActivity();
+        final BaseAppCompatActivity activity = (BaseAppCompatActivity) getActivity();
         mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mMessageDrafts = getSharedPreferences(MESSAGE_DRAFTS_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mImageLoader = TwittnukerApplication.getInstance(activity).getMediaLoaderWrapper();
@@ -683,7 +683,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 	}
 
     private void updateActionBar() {
-        final BaseActionBarActivity activity = (BaseActionBarActivity) getActivity();
+        final BaseAppCompatActivity activity = (BaseAppCompatActivity) getActivity();
         final ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar == null) return;
         actionBar.setDisplayOptions(mRecipient != null ? ActionBar.DISPLAY_SHOW_TITLE : ActionBar.DISPLAY_SHOW_CUSTOM,

@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.ViewUtils;
 import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 
-public class BaseDialogWhenLargeActivity extends BaseActionBarActivity {
+public class BaseDialogWhenLargeActivity extends BaseAppCompatActivity {
 
 	private TintedStatusFrameLayout mMainContent;
 

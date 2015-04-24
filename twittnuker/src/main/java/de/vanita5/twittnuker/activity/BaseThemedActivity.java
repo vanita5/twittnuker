@@ -31,8 +31,6 @@ import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 
-import static de.vanita5.twittnuker.util.Utils.restartActivity;
-
 public abstract class BaseThemedActivity extends Activity implements IThemedActivity {
 
     private int mCurrentThemeResource;
@@ -88,7 +86,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 
 	@Override
 	public final void restart() {
-		restartActivity(this);
+        Utils.restartActivity(this);
 	}
 
 	protected final boolean isThemeChanged() {

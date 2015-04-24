@@ -36,7 +36,7 @@ import com.twitter.Extractor;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.BaseActionBarActivity;
+import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.menu.AccountActionProvider;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -67,13 +67,13 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
 
 	private ActionMode mActionMode;
 
-	private final BaseActionBarActivity mActivity;
+	private final BaseAppCompatActivity mActivity;
 
 	private AccountActionProvider mAccountActionProvider;
 
 	public static final int MENU_GROUP = 201;
 
-	public MultiSelectEventHandler(final BaseActionBarActivity activity) {
+	public MultiSelectEventHandler(final BaseAppCompatActivity activity) {
 		mActivity = activity;
 	}
 

@@ -38,7 +38,7 @@ import android.widget.ImageView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.util.ColorUtils;
+import de.vanita5.twittnuker.util.TwidereColorUtils;
 
 import me.uucky.colorpicker.ColorPickerDialog;
 
@@ -67,7 +67,7 @@ public class ColorPickerPreference extends DialogPreference implements DialogInt
     protected void onBindView(@NonNull final View view) {
         super.onBindView(view);
         final ImageView imageView = (ImageView) view.findViewById(R.id.color);
-        imageView.setImageBitmap(ColorUtils.getColorPreviewBitmap(getContext(), getValue(), false));
+        imageView.setImageBitmap(TwidereColorUtils.getColorPreviewBitmap(getContext(), getValue(), false));
     }
 
     @Override

@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.activity.support;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -37,9 +37,7 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
-import static de.vanita5.twittnuker.util.Utils.restartActivity;
-
-public abstract class ThemedActionBarActivity extends ActionBarActivity implements Constants, IThemedActivity {
+public abstract class ThemedAppCompatActivity extends AppCompatActivity implements Constants, IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
 			mCurrentActionBarColor;
@@ -89,7 +87,7 @@ public abstract class ThemedActionBarActivity extends ActionBarActivity implemen
 
 	@Override
 	public final void restart() {
-		restartActivity(this);
+        Utils.restartActivity(this);
 	}
 
 	@Override

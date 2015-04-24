@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import java.io.File;
 import java.io.IOException;
 
-public class DataImportActivity extends BaseActionBarActivity implements FileSelectorDialogFragment.Callback,
+public class DataImportActivity extends BaseAppCompatActivity implements FileSelectorDialogFragment.Callback,
 		DataExportImportTypeSelectorDialogFragment.Callback {
 
 	private ImportSettingsTask mImportSettingsTask;

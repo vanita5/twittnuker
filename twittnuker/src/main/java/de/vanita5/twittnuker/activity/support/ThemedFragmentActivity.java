@@ -40,8 +40,6 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
-import static de.vanita5.twittnuker.util.Utils.restartActivity;
-
 public abstract class ThemedFragmentActivity extends FragmentActivity implements Constants, IThemedActivity {
 
 	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
@@ -96,7 +94,7 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
 
 	@Override
 	public final void restart() {
-		restartActivity(this);
+        Utils.restartActivity(this);
 	}
 
 	@Override

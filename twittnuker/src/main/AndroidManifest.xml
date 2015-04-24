@@ -224,7 +224,7 @@
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/settings"
-            android:theme="@style/Theme.Blank"
+            android:theme="@style/Theme.Twidere.Dark"
             android:icon="@drawable/ic_action_twittnuker"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -493,11 +493,6 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.CustomTabsActivity"
-            android:icon="@drawable/ic_action_twittnuker"
-            android:label="@string/tabs"
-            android:theme="@style/Theme.Blank"/>
         <activity
             android:name=".activity.support.CustomTabEditorActivity"
             android:icon="@drawable/ic_action_twittnuker"

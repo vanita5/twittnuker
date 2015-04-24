@@ -42,11 +42,11 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffsetListener;
-import de.vanita5.twittnuker.activity.support.BaseActionBarActivity;
+import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
-import de.vanita5.twittnuker.util.ColorUtils;
+import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.ContentListScrollListener;
 import de.vanita5.twittnuker.util.ContentListScrollListener.ContentListSupport;
 import de.vanita5.twittnuker.util.SimpleDrawerCallback;
@@ -115,8 +115,8 @@ public abstract class AbsContentListFragment<A extends IContentCardAdapter> exte
     @Override
 	public void setControlVisible(boolean visible) {
 		final FragmentActivity activity = getActivity();
-		if (activity instanceof BaseActionBarActivity) {
-			((BaseActionBarActivity) activity).setControlBarVisibleAnimate(visible);
+		if (activity instanceof BaseAppCompatActivity) {
+			((BaseAppCompatActivity) activity).setControlBarVisibleAnimate(visible);
 		}
 	}
 
@@ -185,7 +185,7 @@ public abstract class AbsContentListFragment<A extends IContentCardAdapter> exte
 		final Context context = view.getContext();
 		final boolean compact = Utils.isCompactCards(context);
 		final int backgroundColor = ThemeUtils.getThemeBackgroundColor(context);
-		final int colorRes = ColorUtils.getContrastYIQ(backgroundColor,
+		final int colorRes = TwidereColorUtils.getContrastYIQ(backgroundColor,
 				R.color.bg_refresh_progress_color_light, R.color.bg_refresh_progress_color_dark);
 		mSwipeRefreshLayout.setOnRefreshListener(this);
 		mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getUserAccentColor(context));

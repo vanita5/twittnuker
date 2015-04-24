@@ -37,6 +37,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -52,6 +53,7 @@ import de.vanita5.twittnuker.adapter.TabsAdapter;
 import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
+import de.vanita5.twittnuker.fragment.CustomTabsFragment;
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.HomeTimelineFragment;
@@ -348,7 +350,10 @@ public class SettingsWizardActivity extends Activity implements Constants {
 		public boolean onPreferenceClick(final Preference preference) {
 			final String key = preference.getKey();
 			if (WIZARD_PREFERENCE_KEY_EDIT_CUSTOM_TABS.equals(key)) {
-				startActivityForResult(new Intent(getActivity(), CustomTabsActivity.class), REQUEST_CUSTOM_TABS);
+                final Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                intent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT, CustomTabsFragment.class.getName());
+                intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_TITLE, R.string.tabs);
+                startActivityForResult(intent, REQUEST_CUSTOM_TABS);
 			} else if (WIZARD_PREFERENCE_KEY_USE_DEFAULTS.equals(key)) {
 				applyInitialTabSettings();
 			}

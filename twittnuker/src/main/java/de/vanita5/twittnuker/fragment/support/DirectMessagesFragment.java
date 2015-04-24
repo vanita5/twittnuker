@@ -60,7 +60,7 @@ import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffsetListener;
-import de.vanita5.twittnuker.activity.support.BaseActionBarActivity;
+import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter.DirectMessageEntry;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter.MessageEntriesAdapterListener;
@@ -137,8 +137,8 @@ public class DirectMessagesFragment extends BaseSupportFragment implements Loade
     @Override
     public void setControlVisible(boolean visible) {
         final FragmentActivity activity = getActivity();
-        if (activity instanceof BaseActionBarActivity) {
-            ((BaseActionBarActivity) activity).setControlBarVisibleAnimate(visible);
+        if (activity instanceof BaseAppCompatActivity) {
+            ((BaseAppCompatActivity) activity).setControlBarVisibleAnimate(visible);
         }
     }
 

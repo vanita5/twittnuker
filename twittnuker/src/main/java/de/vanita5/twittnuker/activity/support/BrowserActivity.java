@@ -35,7 +35,7 @@ import android.widget.Toast;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.BaseWebViewFragment;
 
-public class BrowserActivity extends BaseActionBarActivity {
+public class BrowserActivity extends BaseAppCompatActivity {
 
 	private Uri mUri = Uri.parse("about:blank");
 

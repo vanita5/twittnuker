@@ -87,7 +87,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ColorUtils;
+import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
@@ -128,7 +128,7 @@ import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
-public class HomeActivity extends BaseActionBarActivity implements OnClickListener, OnPageChangeListener,
+public class HomeActivity extends BaseAppCompatActivity implements OnClickListener, OnPageChangeListener,
         SupportFragmentCallback, OnOpenedListener, OnClosedListener, OnLongClickListener {
 
 	private final Handler mHandler = new Handler();
@@ -809,7 +809,7 @@ public class HomeActivity extends BaseActionBarActivity implements OnClickListen
     private void setupBars() {
         final int themeColor = getThemeColor();
 		final int actionBarColor = getActionBarColor();
-        final int contrastColor = ColorUtils.getContrastYIQ(actionBarColor, 192);
+        final int contrastColor = TwidereColorUtils.getContrastYIQ(actionBarColor, 192);
         final int themeResId = getCurrentThemeResourceId();
         final String backgroundOption = getCurrentThemeBackgroundOption();
         final boolean isTransparent = ThemeUtils.isTransparentBackground(backgroundOption);

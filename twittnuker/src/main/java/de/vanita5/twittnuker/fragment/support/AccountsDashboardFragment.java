@@ -100,6 +100,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
+import de.vanita5.twittnuker.util.ListViewUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TransitionUtils;
@@ -181,7 +182,7 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
             }
         }
         final ListView listView = getListView();
-        int firstVisiblePosition = listView.getFirstVisiblePosition();
+        final int firstVisiblePosition = ListViewUtils.getFirstFullyVisiblePosition(listView);
         final int selectedItem = listView.getSelectedItemPosition();
         final int count = listView.getCount();
         int resultPosition;
@@ -209,7 +210,7 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 			case REQUEST_SETTINGS: {
 				if (data == null) return;
 				final FragmentActivity activity = getActivity();
-				if (data.getBooleanExtra(EXTRA_RESTART_ACTIVITY, false) && activity instanceof IThemedActivity) {
+                if (data.getBooleanExtra(EXTRA_CHANGED, false) && activity instanceof IThemedActivity) {
 					((IThemedActivity) activity).restart();
 		}
 				return;

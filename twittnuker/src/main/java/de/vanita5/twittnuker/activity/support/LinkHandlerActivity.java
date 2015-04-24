@@ -65,7 +65,7 @@ import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import static de.vanita5.twittnuker.util.Utils.createFragmentForIntent;
 import static de.vanita5.twittnuker.util.Utils.matchLinkId;
 
-public class LinkHandlerActivity extends BaseActionBarActivity implements SystemWindowsInsetsCallback,
+public class LinkHandlerActivity extends BaseAppCompatActivity implements SystemWindowsInsetsCallback,
         IControlBarActivity, SupportFragmentCallback {
 
     private ControlBarShowHideHelper mControlBarShowHideHelper = new ControlBarShowHideHelper(this);

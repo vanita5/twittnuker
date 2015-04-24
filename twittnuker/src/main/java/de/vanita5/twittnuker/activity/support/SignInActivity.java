@@ -41,6 +41,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.WindowCompat;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
@@ -70,9 +71,7 @@ import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticityTokenEx
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.WrongUserPassException;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.ViewUtils;
 import de.vanita5.twittnuker.util.net.OkHttpClientFactory;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 
@@ -96,7 +95,7 @@ import static de.vanita5.twittnuker.util.Utils.isUserLoggedIn;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.trim;
 
-public class SignInActivity extends BaseActionBarActivity implements TwitterConstants, OnClickListener,
+public class SignInActivity extends BaseAppCompatActivity implements TwitterConstants, OnClickListener,
         TextWatcher {
 
 	private static final String TWITTER_SIGNUP_URL = "https://twitter.com/signup";
@@ -152,7 +151,7 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 				break;
 			}
 			case REQUEST_BROWSER_SIGN_IN: {
-				if (resultCode == BaseActionBarActivity.RESULT_OK && data != null) {
+				if (resultCode == BaseAppCompatActivity.RESULT_OK && data != null) {
 					doLogin(data);
 				}
 				break;
@@ -333,7 +332,7 @@ public class SignInActivity extends BaseActionBarActivity implements TwitterCons
 		mEditPassword.addTextChangedListener(this);
         final Resources resources = getResources();
         final ColorStateList color = ColorStateList.valueOf(resources.getColor(R.color.material_light_green));
-        ViewUtils.setBackgroundTintList(mSignInButton, color);
+        ViewCompat.setBackgroundTintList(mSignInButton, color);
 		setSignInButton();
 	}
 

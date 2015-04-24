@@ -30,10 +30,12 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,6 +49,7 @@ import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffset
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
 import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
@@ -54,13 +57,15 @@ import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.provider.RecentSearchProvider;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
 public class SearchFragment extends BaseSupportFragment implements RefreshScrollTopInterface,
         SupportFragmentCallback, SystemWindowsInsetsCallback, ControlBarOffsetListener,
-        OnPageChangeListener {
+        OnPageChangeListener, KeyboardShortcutCallback {
 
     private ViewPager mViewPager;
     private View mPagerWindowOverlay;
@@ -68,11 +73,77 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
     private SupportTabsAdapter mPagerAdapter;
     private TabPagerIndicator mPagerIndicator;
 
+    private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
+
     private int mControlBarOffsetPixels;
     private int mControlBarHeight;
 
+    public long getAccountId() {
+        return getArguments().getLong(EXTRA_ACCOUNT_ID);
+    }
 
     @Override
+    public Fragment getCurrentVisibleFragment() {
+        final int currentItem = mViewPager.getCurrentItem();
+        if (currentItem < 0 || currentItem >= mPagerAdapter.getCount()) return null;
+        return (Fragment) mPagerAdapter.instantiateItem(mViewPager, currentItem);
+    }
+
+    @Override
+    public boolean triggerRefresh(final int position) {
+        return false;
+	}
+
+    public String getQuery() {
+        return getArguments().getString(EXTRA_QUERY);
+    }
+
+    @Override
+    public boolean getSystemWindowsInsets(Rect insets) {
+        if (mPagerIndicator == null) return false;
+        final FragmentActivity activity = getActivity();
+        if (activity instanceof LinkHandlerActivity) {
+            ((LinkHandlerActivity) activity).getSystemWindowsInsets(insets);
+            insets.top = mPagerIndicator.getHeight() + getControlBarHeight();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean handleKeyboardShortcutSingle(int keyCode, @NonNull KeyEvent event) {
+        if (handleFragmentKeyboardShortcutSingle(keyCode, event)) return true;
+        final String action = mKeyboardShortcutsHandler.getKeyAction("navigation", keyCode, event);
+        if (action != null) {
+            switch (action) {
+                case "navigation.previous_tab": {
+                    final int previous = mViewPager.getCurrentItem() - 1;
+                    if (previous >= 0 && previous < mPagerAdapter.getCount()) {
+                        mViewPager.setCurrentItem(previous, true);
+                    }
+                    return true;
+                }
+                case "navigation.next_tab": {
+                    final int next = mViewPager.getCurrentItem() + 1;
+                    if (next >= 0 && next < mPagerAdapter.getCount()) {
+                        mViewPager.setCurrentItem(next, true);
+                    }
+                    return true;
+                }
+            }
+        }
+        return mKeyboardShortcutsHandler.handleKey(getActivity(), null, keyCode, event);
+    }
+
+	@Override
+    public boolean handleKeyboardShortcutRepeat(int keyCode, int repeatCount, @NonNull KeyEvent event) {
+        return handleFragmentKeyboardShortcutRepeat(keyCode, repeatCount, event);
+	}
+
+	public void hideIndicator() {
+	}
+
+	@Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (activity instanceof IControlBarActivity) {
@@ -81,94 +152,18 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
     }
 
     @Override
-    public void onDetach() {
-        final FragmentActivity activity = getActivity();
-        if (activity instanceof IControlBarActivity) {
-            ((IControlBarActivity) activity).unregisterControlBarOffsetListener(this);
-        }
-        super.onDetach();
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_content_pages, container, false);
     }
 
     @Override
-    public void onControlBarOffsetChanged(IControlBarActivity activity, float offset) {
-        mControlBarHeight = activity.getControlBarHeight();
-        mControlBarOffsetPixels = Math.round(mControlBarHeight * (1 - offset));
-        updateTabOffset();
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        final FragmentActivity activity = getActivity();
-        if (activity instanceof LinkHandlerActivity) {
-            ((LinkHandlerActivity) activity).setControlBarVisibleAnimate(true);
-        }
-    }
-
-    private void updateTabOffset() {
-        final int controlBarHeight = getControlBarHeight();
-        final int translationY = controlBarHeight - mControlBarOffsetPixels;
-        final FragmentActivity activity = getActivity();
-        if (activity instanceof LinkHandlerActivity) {
-            final View view = activity.getWindow().findViewById(android.support.v7.appcompat.R.id.action_bar);
-			if (view != null && controlBarHeight != 0) {
-				view.setAlpha(translationY / (float) controlBarHeight);
-			}
-        }
-        mPagerIndicator.setTranslationY(translationY);
-        mPagerWindowOverlay.setTranslationY(translationY);
-    }
-
-    private int getControlBarHeight() {
-        final FragmentActivity activity = getActivity();
-        final int controlBarHeight;
-        if (activity instanceof LinkHandlerActivity) {
-            controlBarHeight = ((LinkHandlerActivity) activity).getControlBarHeight();
-        } else {
-            controlBarHeight = mControlBarHeight;
-        }
-        if (controlBarHeight == 0) {
-            return Utils.getActionBarHeight(activity);
-        }
-        return controlBarHeight;
-    }
-
-    @Override
-    protected void fitSystemWindows(Rect insets) {
-        super.fitSystemWindows(insets);
-        final View view = getView();
-        if (view != null) {
-            final int top = Utils.getInsetsTopWithoutActionBarHeight(getActivity(), insets.top);
-            view.setPadding(insets.left, top, insets.right, insets.bottom);
-        }
-        updateTabOffset();
-    }
-
-	@Override
-	public Fragment getCurrentVisibleFragment() {
-        final int currentItem = mViewPager.getCurrentItem();
-        if (currentItem < 0 || currentItem >= mPagerAdapter.getCount()) return null;
-        return (Fragment) mPagerAdapter.instantiateItem(mViewPager, currentItem);
-	}
-
-	public void hideIndicator() {
-	}
-
-	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		setHasOptionsMenu(true);
 		final Bundle args = getArguments();
 		final FragmentActivity activity = getActivity();
+        final TwittnukerApplication app = TwittnukerApplication.getInstance(activity);
+        mKeyboardShortcutsHandler = app.getKeyboardShortcutsHandler();
         mPagerAdapter = new SupportTabsAdapter(activity, getChildFragmentManager(), null, 1);
         mPagerAdapter.addTab(StatusesSearchFragment.class, args, getString(R.string.statuses), R.drawable.ic_action_twitter, 0, null);
         mPagerAdapter.addTab(SearchUsersFragment.class, args, getString(R.string.users), R.drawable.ic_action_user, 1, null);
@@ -198,22 +193,24 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
         updateTabOffset();
     }
 
-    public String getQuery() {
-        return getArguments().getString(EXTRA_QUERY);
-	}
-
-    public long getAccountId() {
-        return getArguments().getLong(EXTRA_ACCOUNT_ID);
+	@Override
+    public void onDetach() {
+        final FragmentActivity activity = getActivity();
+        if (activity instanceof IControlBarActivity) {
+            ((IControlBarActivity) activity).unregisterControlBarOffsetListener(this);
+        }
+        super.onDetach();
     }
 
-	@Override
+    @Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
 		inflater.inflate(R.menu.menu_search, menu);
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_content_pages, container, false);
+    public void onPrepareOptionsMenu(Menu menu) {
+        final MenuItem item = menu.findItem(MENU_COMPOSE);
+        item.setTitle(getString(R.string.tweet_hashtag, getQuery()));
 	}
 	
 	@Override
@@ -240,12 +237,6 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
 	}
 
 	@Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        final MenuItem item = menu.findItem(MENU_COMPOSE);
-        item.setTitle(getString(R.string.tweet_hashtag, getQuery()));
-    }
-
-    @Override
     public void onBaseViewCreated(final View view, final Bundle savedInstanceState) {
         super.onBaseViewCreated(view, savedInstanceState);
         mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
@@ -254,6 +245,42 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
 	}
 
 	@Override
+    protected void fitSystemWindows(Rect insets) {
+        super.fitSystemWindows(insets);
+        final View view = getView();
+        if (view != null) {
+            final int top = Utils.getInsetsTopWithoutActionBarHeight(getActivity(), insets.top);
+            view.setPadding(insets.left, top, insets.right, insets.bottom);
+        }
+        updateTabOffset();
+    }
+
+    @Override
+    public void onControlBarOffsetChanged(IControlBarActivity activity, float offset) {
+        mControlBarHeight = activity.getControlBarHeight();
+        mControlBarOffsetPixels = Math.round(mControlBarHeight * (1 - offset));
+        updateTabOffset();
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        final FragmentActivity activity = getActivity();
+        if (activity instanceof LinkHandlerActivity) {
+            ((LinkHandlerActivity) activity).setControlBarVisibleAnimate(true);
+        }
+    }
+
+    @Override
 	public boolean scrollToStart() {
         final Fragment fragment = getCurrentVisibleFragment();
         if (!(fragment instanceof RefreshScrollTopInterface)) return false;
@@ -269,20 +296,51 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
 		return true;
 	}
 
-	@Override
-	public boolean triggerRefresh(final int position) {
+    private int getControlBarHeight() {
+        final FragmentActivity activity = getActivity();
+        final int controlBarHeight;
+        if (activity instanceof LinkHandlerActivity) {
+            controlBarHeight = ((LinkHandlerActivity) activity).getControlBarHeight();
+        } else {
+            controlBarHeight = mControlBarHeight;
+        }
+        if (controlBarHeight == 0) {
+            return Utils.getActionBarHeight(activity);
+        }
+        return controlBarHeight;
+    }
+
+    private Fragment getKeyboardShortcutRecipient() {
+        return getCurrentVisibleFragment();
+    }
+
+    private boolean handleFragmentKeyboardShortcutRepeat(int keyCode, int repeatCount, @NonNull KeyEvent event) {
+        final Fragment fragment = getKeyboardShortcutRecipient();
+        if (fragment instanceof KeyboardShortcutCallback) {
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(keyCode, repeatCount, event);
+        }
 		return false;
 	}
 
-    @Override
-    public boolean getSystemWindowsInsets(Rect insets) {
-        if (mPagerIndicator == null) return false;
-        final FragmentActivity activity = getActivity();
-        if (activity instanceof LinkHandlerActivity) {
-            ((LinkHandlerActivity) activity).getSystemWindowsInsets(insets);
-            insets.top = mPagerIndicator.getHeight() + getControlBarHeight();
-            return true;
+    private boolean handleFragmentKeyboardShortcutSingle(int keyCode, @NonNull KeyEvent event) {
+        final Fragment fragment = getKeyboardShortcutRecipient();
+        if (fragment instanceof KeyboardShortcutCallback) {
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(keyCode, event);
         }
         return false;
+    }
+
+    private void updateTabOffset() {
+        final int controlBarHeight = getControlBarHeight();
+        final int translationY = controlBarHeight - mControlBarOffsetPixels;
+        final FragmentActivity activity = getActivity();
+        if (activity instanceof LinkHandlerActivity) {
+            final View view = activity.getWindow().findViewById(android.support.v7.appcompat.R.id.action_bar);
+            if (view != null && controlBarHeight != 0) {
+                view.setAlpha(translationY / (float) controlBarHeight);
+        	}
+        }
+        mPagerIndicator.setTranslationY(translationY);
+        mPagerWindowOverlay.setTranslationY(translationY);
     }
 }

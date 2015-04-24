@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.fragment.support.WebMapFragment;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class GoogleMapViewerActivity extends ThemedActionBarActivity implements Constants {
+public class GoogleMapViewerActivity extends ThemedAppCompatActivity implements Constants {
 
     @Override
     public int getThemeColor() {

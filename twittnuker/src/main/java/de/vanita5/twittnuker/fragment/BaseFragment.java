@@ -30,7 +30,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.support.BaseActionBarActivity;
+import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
@@ -79,7 +79,7 @@ public class BaseFragment extends Fragment implements Constants {
 
 	public void setProgressBarIndeterminateVisibility(final boolean visible) {
 		final Activity activity = getActivity();
-		if (activity instanceof BaseActionBarActivity) {
+		if (activity instanceof BaseAppCompatActivity) {
             activity.setProgressBarIndeterminateVisibility(visible);
 		}
 	}

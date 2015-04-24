@@ -387,7 +387,7 @@ public class ThemeUtils implements Constants {
         if (isTransparentBackground(backgroundOption)) {
         	return themeAlpha << 24 | (0x00FFFFFF & color);
         } else if (isSolidBackground(backgroundOption)) {
-            return ColorUtils.getContrastYIQ(color, Color.WHITE, Color.BLACK);
+            return TwidereColorUtils.getContrastYIQ(color, Color.WHITE, Color.BLACK);
         } else {
             return color;
         }
@@ -423,7 +423,7 @@ public class ThemeUtils implements Constants {
 	}
 
     public static int getContrastActionBarItemColor(Context context, int theme, int color) {
-        if (isDarkTheme(theme) || ColorUtils.getYIQLuminance(color) < 192) {
+        if (isDarkTheme(theme) || TwidereColorUtils.getYIQLuminance(color) < 192) {
             //return light text color
             return Color.WHITE;
         }
@@ -432,7 +432,7 @@ public class ThemeUtils implements Constants {
     }
 
     public static int getContrastActionBarTitleColor(Context context, int theme, int color) {
-        if (isDarkTheme(theme) || ColorUtils.getYIQLuminance(color) < 192) {
+        if (isDarkTheme(theme) || TwidereColorUtils.getYIQLuminance(color) < 192) {
             //return light text color
             return Color.WHITE;
         }
@@ -490,16 +490,16 @@ public class ThemeUtils implements Constants {
 
     public static int getOptimalLinkColor(int linkColor, int color) {
         final int[] yiq = new int[3];
-        ColorUtils.colorToYIQ(color, yiq);
+        TwidereColorUtils.colorToYIQ(color, yiq);
         final int y = yiq[0];
-        ColorUtils.colorToYIQ(linkColor, yiq);
+        TwidereColorUtils.colorToYIQ(linkColor, yiq);
         if (y < 32 && yiq[0] < 192) {
             return linkColor;
         } else if (y > 192 && yiq[0] > 32) {
             return linkColor;
         }
         yiq[0] = yiq[0] + (y - yiq[0]) / 2;
-        return ColorUtils.YIQToColor(Color.alpha(linkColor), yiq);
+        return TwidereColorUtils.YIQToColor(Color.alpha(linkColor), yiq);
     }
 
     public static int getQuickSearchBarThemeResource(final Context context) {
@@ -523,17 +523,6 @@ public class ThemeUtils implements Constants {
 			a.recycle();
 		}
 	}
-
-    public static int getSettingsThemeResource(final Context context) {
-        return getSettingsThemeResource(getThemeNameOption(context));
-    }
-
-    public static int getSettingsThemeResource(final String name) {
-        if (VALUE_THEME_NAME_TWIDERE.equals(name) || VALUE_THEME_NAME_LIGHT.equals(name))
-            return R.style.Theme_Twidere_Settings_Light_DarkActionBar;
-        else if (VALUE_THEME_NAME_DARK.equals(name)) return R.style.Theme_Twidere_Settings_Dark;
-        return R.style.Theme_Twidere_Settings_Light_DarkActionBar;
-    }
 
     public static Drawable getSupportActionBarBackground(final Context context, final int themeRes) {
         @SuppressWarnings("ConstantConditions")
@@ -650,7 +639,7 @@ public class ThemeUtils implements Constants {
 
     public static int getThemeForegroundColor(final Context context, int theme) {
         final Context wrapped = theme != 0 ? new ContextThemeWrapper(context, theme) : context;
-		final TypedArray a = wrapped.obtainStyledAttributes(new int[] { android.R.attr.colorForeground });
+		final TypedArray a = wrapped.obtainStyledAttributes(new int[]{android.R.attr.colorForeground});
 		try {
             return a.getColor(0, 0);
 		} finally {
@@ -685,8 +674,8 @@ public class ThemeUtils implements Constants {
 
 	public static int getTitleTextAppearance(final Context context) {
         @SuppressWarnings("ConstantConditions")
-        final TypedArray a = context.obtainStyledAttributes(null, new int[] { android.R.attr.titleTextStyle },
-				android.R.attr.actionBarStyle, android.R.style.Widget_Holo_ActionBar);
+        final TypedArray a = context.obtainStyledAttributes(null, new int[]{android.R.attr.titleTextStyle},
+                android.R.attr.actionBarStyle, android.R.style.Widget_Holo_ActionBar);
         final int textAppearance = a.getResourceId(0, android.R.style.TextAppearance_Holo);
         a.recycle();
         return textAppearance;
@@ -777,7 +766,7 @@ public class ThemeUtils implements Constants {
 	}
 
 	public static Drawable getWindowContentOverlay(final Context context) {
-        final TypedArray a = context.obtainStyledAttributes(new int[] { android.R.attr.windowContentOverlay });
+        final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.windowContentOverlay});
         try {
             return a.getDrawable(0);
         } finally {
@@ -792,7 +781,7 @@ public class ThemeUtils implements Constants {
         final int themeRes = ((IThemedActivity) activity).getCurrentThemeResourceId();
         final int themeColor = ((IThemedActivity) activity).getCurrentThemeColor();
         final int actionBarColor = ((IThemedActivity) activity).getActionBarColor();
-        final int contrastColor = ColorUtils.getContrastYIQ(actionBarColor, 192);
+        final int contrastColor = TwidereColorUtils.getContrastYIQ(actionBarColor, 192);
         ViewUtils.setBackground(indicator, getActionBarStackedBackground(activity, themeRes, actionBarColor, true));
         indicator.setIconColor(contrastColor);
         indicator.setLabelColor(contrastColor);
@@ -827,6 +816,10 @@ public class ThemeUtils implements Constants {
 		return false;
 	}
 
+    public static boolean isSolidBackground(final String option) {
+        return VALUE_THEME_BACKGROUND_SOLID.equals(option);
+    }
+
 	public static boolean isTransparentBackground(final Context context) {
         return isTransparentBackground(getThemeBackgroundOption(context));
     }
@@ -834,10 +827,6 @@ public class ThemeUtils implements Constants {
     public static boolean isTransparentBackground(final String option) {
         return VALUE_THEME_BACKGROUND_TRANSPARENT.equals(option);
 	}
-
-    public static boolean isSolidBackground(final String option) {
-        return VALUE_THEME_BACKGROUND_SOLID.equals(option);
-    }
 
     public static boolean isWindowFloating(Context context, int theme) {
         final TypedArray a;
@@ -1028,8 +1017,8 @@ public class ThemeUtils implements Constants {
     public static void wrapMenuIcon(ActionMenuView view, int colorDark, int colorLight, int... excludeGroups) {
         final int itemBackgroundColor = ThemeUtils.getThemeBackgroundColor(view.getContext());
         final int popupItemBackgroundColor = ThemeUtils.getThemeBackgroundColor(view.getContext(), view.getPopupTheme());
-        final int itemColor = ColorUtils.getContrastYIQ(itemBackgroundColor, colorDark, colorLight);
-        final int popupItemColor = ColorUtils.getContrastYIQ(popupItemBackgroundColor, colorDark, colorLight);
+        final int itemColor = TwidereColorUtils.getContrastYIQ(itemBackgroundColor, colorDark, colorLight);
+        final int popupItemColor = TwidereColorUtils.getContrastYIQ(popupItemBackgroundColor, colorDark, colorLight);
         final Menu menu = view.getMenu();
         final int childCount = view.getChildCount();
         for (int i = 0, j = menu.size(), k = 0; i < j; i++) {
@@ -1054,8 +1043,8 @@ public class ThemeUtils implements Constants {
         final Resources resources = context.getResources();
         final int colorDark = resources.getColor(R.color.action_icon_dark);
         final int colorLight = resources.getColor(R.color.action_icon_light);
-        final int itemColor = ColorUtils.getContrastYIQ(backgroundColor, colorDark, colorLight);
-        final int popupItemColor = ColorUtils.getContrastYIQ(popupBackgroundColor, colorDark, colorLight);
+        final int itemColor = TwidereColorUtils.getContrastYIQ(backgroundColor, colorDark, colorLight);
+        final int popupItemColor = TwidereColorUtils.getContrastYIQ(popupBackgroundColor, colorDark, colorLight);
         for (int i = 0, j = menu.size(), k = 0; i < j; i++) {
             final MenuItem item = menu.getItem(i);
             wrapMenuItemIcon(item, itemColor, excludeGroups);
@@ -1114,8 +1103,10 @@ public class ThemeUtils implements Constants {
             final ColorStateList tintList = ColorStateList.valueOf(tintColor);
             final CompoundButton compoundButton = (CompoundButton) view;
             ViewUtils.setButtonTintList(compoundButton, tintList);
+        } else {
+//            final ColorStateList tintList = ColorStateList.valueOf(tintColor);
+//            ViewCompat.setBackgroundTintList(view, tintList);
         }
-        // TODO support TintableBackgroundView
     }
 
     @NonNull

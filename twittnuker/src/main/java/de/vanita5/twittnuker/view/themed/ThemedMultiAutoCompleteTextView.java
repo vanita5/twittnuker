@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.view.themed;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.widget.MultiAutoCompleteTextView;
 
@@ -48,7 +49,7 @@ public class ThemedMultiAutoCompleteTextView extends MultiAutoCompleteTextView  
 
     @Override
     public void setThemeTintColor(ColorStateList color) {
-        ViewUtils.setBackgroundTintList(this, color);
+        ViewCompat.setBackgroundTintList(this, color);
         setLinkTextColor(color);
         setHighlightColor(color.getDefaultColor());
     }

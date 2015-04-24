@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage.CursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
-import de.vanita5.twittnuker.util.ColorUtils;
+import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SimpleValueSerializer;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -101,7 +101,7 @@ public class MessageConversationViewHolder extends ViewHolder implements OnMedia
 	public void setMessageColor(int color) {
 		final ColorStateList colorStateList = ColorStateList.valueOf(color);
 		messageContent.setBubbleColor(colorStateList);
-		final int textLuminancePrimary = ColorUtils.getYIQLuminance(textColorPrimary);
+		final int textLuminancePrimary = TwidereColorUtils.getYIQLuminance(textColorPrimary);
 		final int textPrimaryDark, textPrimaryLight, textSecondaryDark, textSecondaryLight;
 		if (textLuminancePrimary < 128) {
 			textPrimaryDark = textColorPrimary;
@@ -114,8 +114,8 @@ public class MessageConversationViewHolder extends ViewHolder implements OnMedia
 			textSecondaryDark = textColorSecondaryInverse;
 			textSecondaryLight = textColorSecondary;
 		}
-		final int textContrastPrimary = ColorUtils.getContrastYIQ(color, 192, textPrimaryDark, textPrimaryLight);
-		final int textContrastSecondary = ColorUtils.getContrastYIQ(color, 192, textSecondaryDark, textSecondaryLight);
+		final int textContrastPrimary = TwidereColorUtils.getContrastYIQ(color, 192, textPrimaryDark, textPrimaryLight);
+		final int textContrastSecondary = TwidereColorUtils.getContrastYIQ(color, 192, textSecondaryDark, textSecondaryLight);
 		text.setTextColor(textContrastPrimary);
 		text.setLinkTextColor(textContrastSecondary);
 		time.setTextColor(textContrastSecondary);

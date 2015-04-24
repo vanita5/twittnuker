@@ -42,7 +42,7 @@ import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener
 import java.util.ArrayList;
 
 @SuppressLint("Registered")
-public class BaseActionBarActivity extends ThemedActionBarActivity implements Constants,
+public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Constants,
         OnFitSystemWindowsListener, SystemWindowsInsetsCallback, IControlBarActivity,
         KeyboardShortcutCallback {
 

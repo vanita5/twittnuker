@@ -53,6 +53,7 @@ import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.ContentListScrollListener;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.ReadStateManager;
@@ -352,12 +353,16 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListFragment<A
         mReadStateManager = getReadStateManager();
         final FragmentActivity activity = getActivity();
         final TwittnukerApplication application = TwittnukerApplication.getInstance(activity);
-        mKeyboardShortcutsHandler = application.getKeyboardShortcutsHandler();
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final RecyclerView recyclerView = getRecyclerView();
         final LinearLayoutManager layoutManager = getLayoutManager();
+        final ContentListScrollListener scrollListener = getScrollListener();
+        mKeyboardShortcutsHandler = application.getKeyboardShortcutsHandler();
+        mRecyclerViewNavigationHelper = new RecyclerViewNavigationHelper(mKeyboardShortcutsHandler,
+                recyclerView, layoutManager, adapter);
+
         adapter.setListener(this);
-        getScrollListener().setOnScrollListener(new OnScrollListener() {
+        scrollListener.setOnScrollListener(new OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -365,7 +370,6 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListFragment<A
                 }
             }
         });
-        mRecyclerViewNavigationHelper = new RecyclerViewNavigationHelper(mKeyboardShortcutsHandler, recyclerView, layoutManager, adapter);
 
         final Bundle loaderArgs = new Bundle(getArguments());
         loaderArgs.putBoolean(EXTRA_FROM_USER, true);

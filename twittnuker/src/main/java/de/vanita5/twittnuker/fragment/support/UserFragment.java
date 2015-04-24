@@ -48,7 +48,6 @@ import android.nfc.NfcAdapter.CreateNdefMessageCallback;
 import android.nfc.NfcEvent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -92,7 +91,7 @@ import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
-import de.vanita5.twittnuker.activity.support.ThemedActionBarActivity;
+import de.vanita5.twittnuker.activity.support.ThemedAppCompatActivity;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
@@ -112,7 +111,7 @@ import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ColorUtils;
+import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
@@ -170,7 +169,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private static final String TAB_TYPE_MEDIA = "media";
     private static final String TAB_TYPE_FAVORITES = "favorites";
 
-	private MediaLoaderWrapper mProfileImageLoader;
     private ShapedImageView mProfileImageView;
 	private ImageView mProfileTypeView;
 	private ProfileBannerImageView mProfileBannerView;
@@ -196,12 +194,13 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private TextView mPagesErrorText;
     private View mProfileNameBackground;
     private View mProfileDetailsContainer;
-    private Relationship mRelationship;
 
+    private MediaLoaderWrapper mProfileImageLoader;
 	private SupportTabsAdapter mPagerAdapter;
     private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
 
-	private ParcelableUser mUser = null;
+    private ParcelableUser mUser;
+    private Relationship mRelationship;
     private Locale mLocale;
     private boolean mGetUserInfoLoaderInitialized, mGetFriendShipLoaderInitialized;
     private int mBannerWidth;
@@ -1420,7 +1419,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             }
             mActionBarBackground.setOutlineAlphaFactor(tabOutlineAlphaFactor);
 
-            final ThemedActionBarActivity activity = (ThemedActionBarActivity) getActivity();
+            final ThemedAppCompatActivity activity = (ThemedAppCompatActivity) getActivity();
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 setCompatToolbarOverlayAlpha(activity, factor * tabOutlineAlphaFactor);
@@ -1433,7 +1432,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 				stackedTabColor = mUserUiColor;
 				final int tabColor = (Integer) sArgbEvaluator.evaluate(tabOutlineAlphaFactor, stackedTabColor, mCardBackgroundColor);
 				((ColorDrawable) drawable).setColor(tabColor);
-				final int contrastColor = ColorUtils.getContrastYIQ(tabColor, 192);
+				final int contrastColor = TwidereColorUtils.getContrastYIQ(tabColor, 192);
 				mPagerIndicator.setIconColor(contrastColor);
 				mPagerIndicator.setLabelColor(contrastColor);
 				mPagerIndicator.setStripColor(contrastColor);
