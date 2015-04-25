@@ -50,7 +50,6 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
-import de.vanita5.twittnuker.util.SimpleValueSerializer;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
@@ -361,10 +360,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
 
         final boolean sensitive = cursor.getShort(indices.is_possibly_sensitive) == 1;
 
-        final ParcelableMedia[] media = SimpleValueSerializer.fromSerializedString(
-                cursor.getString(indices.media), ParcelableMedia.SIMPLE_CREATOR);
-        final ParcelableLocation location = ParcelableLocation.fromString(
-                cursor.getString(indices.location));
+        final ParcelableMedia[] media = ParcelableMedia.fromSerializedJson(cursor.getString(indices.media));
+        final ParcelableLocation location = ParcelableLocation.fromString(cursor.getString(indices.location));
 
         if (retweet_id > 0) {
             final long retweeted_by_id = cursor.getLong(indices.retweeted_by_user_id);

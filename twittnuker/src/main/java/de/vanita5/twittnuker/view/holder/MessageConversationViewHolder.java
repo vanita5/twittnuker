@@ -37,13 +37,12 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage.CursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
-import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.SimpleValueSerializer;
+import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.CardMediaContainer;
+import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 
 public class MessageConversationViewHolder extends ViewHolder implements OnMediaClickListener {
 
@@ -82,7 +81,7 @@ public class MessageConversationViewHolder extends ViewHolder implements OnMedia
 
 		final long accountId = cursor.getLong(indices.account_id);
 		final long timestamp = cursor.getLong(indices.message_timestamp);
-        final ParcelableMedia[] media = SimpleValueSerializer.fromSerializedString(cursor.getString(indices.media), ParcelableMedia.SIMPLE_CREATOR);
+        final ParcelableMedia[] media = ParcelableMedia.fromSerializedJson(cursor.getString(indices.media));
 		text.setText(Html.fromHtml(cursor.getString(indices.text)));
 		linkify.applyAllLinks(text, accountId, false);
 		text.setMovementMethod(null);

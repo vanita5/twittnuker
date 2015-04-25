@@ -27,18 +27,22 @@ import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.JsonReader;
+import android.util.JsonWriter;
 
 import org.mariotaku.jsonserializer.JSONParcel;
 import org.mariotaku.jsonserializer.JSONParcelable;
+
+import de.vanita5.twittnuker.model.iface.JsonReadable;
+import de.vanita5.twittnuker.model.iface.JsonWritable;
+import de.vanita5.twittnuker.util.JsonSerializationUtils;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.SimpleValueSerializer;
-import de.vanita5.twittnuker.util.SimpleValueSerializer.Reader;
-import de.vanita5.twittnuker.util.SimpleValueSerializer.SerializationException;
-import de.vanita5.twittnuker.util.SimpleValueSerializer.SimpleValueSerializable;
-import de.vanita5.twittnuker.util.SimpleValueSerializer.Writer;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,7 +60,78 @@ import twitter4j.Status;
 import twitter4j.URLEntity;
 
 @SuppressWarnings("unused")
-public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueSerializable {
+public class ParcelableMedia implements Parcelable, JSONParcelable, JsonReadable, JsonWritable {
+
+    public static ParcelableMedia[] fromSerializedJson(String string) {
+        if (TextUtils.isEmpty(string)) return null;
+        JsonReader reader = new JsonReader(new StringReader(string));
+        try {
+            reader.beginArray();
+            final ParcelableMedia[] media = JsonSerializationUtils.array(reader, ParcelableMedia.class);
+            reader.endArray();
+            return media;
+        } catch (IOException ignore) {
+            return null;
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException ignore) {
+            }
+        }
+    }
+
+    @Override
+    public void read(JsonReader reader) throws IOException {
+        reader.beginObject();
+        while (reader.hasNext()) {
+            switch (reader.nextName()) {
+                case "media_url": {
+                    media_url = reader.nextString();
+                    break;
+                }
+                case "page_url": {
+                    page_url = reader.nextString();
+                    break;
+                }
+                case "preview_url": {
+                    preview_url = reader.nextString();
+                    break;
+                }
+                case "start": {
+                    start = reader.nextInt();
+                    break;
+                }
+                case "end": {
+                    end = reader.nextInt();
+                    break;
+                }
+                case "type": {
+                    //noinspection ResourceType
+                    type = reader.nextInt();
+                    break;
+                }
+                case "width": {
+                    width = reader.nextInt();
+                    break;
+                }
+                case "height": {
+                    height = reader.nextInt();
+                    break;
+                }
+                case "video_info": {
+                    reader.beginObject();
+                    video_info = JsonSerializationUtils.object(reader, VideoInfo.class);
+                    reader.endObject();
+                    break;
+                }
+                default: {
+                    reader.skipValue();
+                    break;
+                }
+            }
+        }
+        reader.endObject();
+    }
 
     @IntDef({TYPE_UNKNOWN, TYPE_IMAGE, TYPE_VIDEO, TYPE_ANIMATED_GIF, TYPE_CARD_ANIMATED_GIF})
     public @interface MediaType {
@@ -98,17 +173,6 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
         }
     };
 
-    public static final SimpleValueSerializer.Creator<ParcelableMedia> SIMPLE_CREATOR = new SimpleValueSerializer.Creator<ParcelableMedia>() {
-        @Override
-        public ParcelableMedia create(final SimpleValueSerializer.Reader reader) throws SerializationException {
-            return new ParcelableMedia(reader);
-        }
-
-        @Override
-        public ParcelableMedia[] newArray(final int size) {
-            return new ParcelableMedia[size];
-        }
-    };
 
     @NonNull
     public String media_url;
@@ -128,6 +192,7 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
     public ParcelableMedia() {
 
     }
+
 
     public ParcelableMedia(final JSONParcel in) {
         media_url = in.readString("media_url");
@@ -210,50 +275,6 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
         this.height = 0;
     }
 
-    public ParcelableMedia(Reader reader) throws SerializationException {
-        while (reader.hasKeyValue()) {
-            switch (reader.nextKey()) {
-                case "media_url": {
-                    media_url = reader.nextString();
-                    break;
-                }
-                case "page_url": {
-                    page_url = reader.nextString();
-                    break;
-                }
-                case "preview_url": {
-                    preview_url = reader.nextString();
-                    break;
-                }
-                case "start": {
-                    start = reader.nextInt();
-                    break;
-                }
-                case "end": {
-                    end = reader.nextInt();
-                    break;
-                }
-                case "type": {
-                    //noinspection ResourceType
-                    type = reader.nextInt();
-                    break;
-                }
-                case "width": {
-                    width = reader.nextInt();
-                    break;
-                }
-                case "height": {
-                    height = reader.nextInt();
-                    break;
-                }
-                default: {
-                    reader.skipValue();
-                    break;
-                }
-            }
-        }
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -298,15 +319,21 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
     }
 
     @Override
-    public void write(Writer writer) {
-        writer.write("media_url", media_url);
-        writer.write("page_url", page_url);
-        writer.write("preview_url", preview_url);
-        writer.write("start", String.valueOf(start));
-        writer.write("end", String.valueOf(end));
-        writer.write("type", String.valueOf(type));
-        writer.write("width", String.valueOf(width));
-        writer.write("height", String.valueOf(height));
+    public void write(JsonWriter writer) throws IOException {
+        writer.beginObject();
+        writer.name("media_url").value(media_url);
+        writer.name("page_url").value(page_url);
+        writer.name("preview_url").value(preview_url);
+        writer.name("start").value(start);
+        writer.name("end").value(end);
+        writer.name("type").value(type);
+        writer.name("width").value(width);
+        writer.name("height").value(height);
+        if (video_info != null) {
+            writer.name("video_info");
+            video_info.write(writer);
+        }
+        writer.endObject();
     }
 
     @Override
@@ -427,15 +454,11 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
     }
 
 
-    public static class VideoInfo implements Parcelable {
+    public static class VideoInfo implements Parcelable, JsonReadable, JsonWritable {
 
         public Variant[] variants;
-        public long[] aspect_ratio;
         public long duration;
 
-        public VideoInfo(Reader source) {
-
-        }
 
         public VideoInfo() {
 
@@ -443,7 +466,6 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
 
         public VideoInfo(MediaEntity.VideoInfo videoInfo) {
             variants = Variant.fromMediaEntityVariants(videoInfo.getVariants());
-            aspect_ratio = videoInfo.getAspectRatio();
             duration = videoInfo.getDuration();
         }
 
@@ -453,19 +475,73 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
         }
 
         @Override
+        public void read(JsonReader reader) throws IOException {
+            reader.beginObject();
+            while (reader.hasNext()) {
+                switch (reader.nextName()) {
+                    case "variants": {
+                        reader.beginArray();
+                        variants = JsonSerializationUtils.array(reader, Variant.class);
+                        reader.endArray();
+                        break;
+                    }
+                    case "duration": {
+                        duration = reader.nextLong();
+                        break;
+                    }
+                    default: {
+                        reader.skipValue();
+                        break;
+                    }
+                }
+            }
+            reader.endObject();
+        }
+
+        @Override
         public String toString() {
             return "VideoInfo{" +
                     "variants=" + Arrays.toString(variants) +
-                    ", aspect_ratio=" + Arrays.toString(aspect_ratio) +
                     ", duration=" + duration +
                     '}';
         }
 
-        public static class Variant implements Parcelable {
+        @Override
+        public void write(JsonWriter writer) {
+
+        }
+
+        public static class Variant implements Parcelable, JsonReadable {
             public Variant(MediaEntity.VideoInfo.Variant entityVariant) {
                 content_type = entityVariant.getContentType();
                 url = entityVariant.getUrl();
                 bitrate = entityVariant.getBitrate();
+            }
+
+            @Override
+            public void read(JsonReader reader) throws IOException {
+                reader.beginObject();
+                while (reader.hasNext()) {
+                    switch (reader.nextName()) {
+                        case "content_type": {
+                            content_type = reader.nextString();
+                            break;
+                        }
+                        case "url": {
+                            url = reader.nextString();
+                            break;
+                        }
+                        case "bitrate": {
+                            bitrate = reader.nextLong();
+                            break;
+                        }
+                        default: {
+                            reader.skipValue();
+                            break;
+                        }
+                    }
+                }
+                reader.endObject();
             }
 
             @Override
@@ -477,9 +553,9 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
                         '}';
             }
 
-            public final String content_type;
-            public final String url;
-            public final long bitrate;
+            public String content_type;
+            public String url;
+            public long bitrate;
 
             public Variant(JSONParcel source) {
                 content_type = source.readString("content_type");
@@ -538,14 +614,12 @@ public class ParcelableMedia implements Parcelable, JSONParcelable, SimpleValueS
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeTypedArray(variants, flags);
-            dest.writeLongArray(aspect_ratio);
             dest.writeLong(duration);
         }
 
 
         private VideoInfo(Parcel in) {
             variants = in.createTypedArray(Variant.CREATOR);
-            aspect_ratio = in.createLongArray();
             duration = in.readLong();
         }
 

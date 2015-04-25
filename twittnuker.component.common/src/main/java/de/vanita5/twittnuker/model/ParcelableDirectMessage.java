@@ -29,7 +29,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
-import de.vanita5.twittnuker.util.SimpleValueSerializer;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 
 import java.util.Comparator;
@@ -96,7 +95,7 @@ public class ParcelableDirectMessage implements Parcelable, Comparable<Parcelabl
         id = getAsLong(values, DirectMessages.MESSAGE_ID, -1);
         is_outgoing = getAsBoolean(values, DirectMessages.IS_OUTGOING, false);
         account_id = getAsLong(values, DirectMessages.ACCOUNT_ID, -1);
-        media = SimpleValueSerializer.fromSerializedString(values.getAsString(DirectMessages.MEDIA_LIST), ParcelableMedia.SIMPLE_CREATOR);
+        media = ParcelableMedia.fromSerializedJson(values.getAsString(DirectMessages.MEDIA_JSON));
 	}
 
 	public ParcelableDirectMessage(final Cursor c, final CursorIndices idx) {
@@ -117,7 +116,7 @@ public class ParcelableDirectMessage implements Parcelable, Comparable<Parcelabl
 				: null;
 		recipient_profile_image_url = idx.recipient_profile_image_url != -1 ? c
 				.getString(idx.recipient_profile_image_url) : null;
-        media = SimpleValueSerializer.fromSerializedString(idx.media != -1 ? c.getString(idx.media) : null, ParcelableMedia.SIMPLE_CREATOR);
+        media = idx.media != -1 ? ParcelableMedia.fromSerializedJson(c.getString(idx.media)) : null;
 	}
 
 	public ParcelableDirectMessage(final DirectMessage message, final long account_id, final boolean is_outgoing) {
@@ -250,7 +249,7 @@ public class ParcelableDirectMessage implements Parcelable, Comparable<Parcelabl
 			recipient_screen_name = cursor.getColumnIndex(DirectMessages.RECIPIENT_SCREEN_NAME);
 			sender_profile_image_url = cursor.getColumnIndex(DirectMessages.SENDER_PROFILE_IMAGE_URL);
 			recipient_profile_image_url = cursor.getColumnIndex(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL);
-            media = cursor.getColumnIndex(DirectMessages.MEDIA_LIST);
+            media = cursor.getColumnIndex(DirectMessages.MEDIA_JSON);
 		}
 	}
 }
