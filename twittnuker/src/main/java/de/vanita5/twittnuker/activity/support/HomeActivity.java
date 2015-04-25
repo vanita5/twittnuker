@@ -119,7 +119,6 @@ import java.util.Map.Entry;
 
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 import static de.vanita5.twittnuker.util.Utils.cleanDatabasesByItemLimit;
-import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
 import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
@@ -352,8 +351,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         mReadStateManager = app.getReadStateManager();
 		mMultiSelectHandler = new MultiSelectEventHandler(this);
 		mMultiSelectHandler.dispatchOnCreate();
-		final long[] accountIds = getAccountIds(this);
-		if (accountIds.length == 0) {
+        if (!Utils.hasAccount(this)) {
             final Intent signInIntent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
             signInIntent.setClass(this, SignInActivity.class);
             startActivity(signInIntent);
@@ -486,13 +484,13 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
     public void notifyAccountsChanged() {
         if (mPreferences == null) return;
-        final long[] account_ids = getAccountIds(this);
-        final long default_id = mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1);
-        if (account_ids == null || account_ids.length == 0) {
-            finish();
-        } else if (account_ids.length > 0 && !ArrayUtils.contains(account_ids, default_id)) {
-            mPreferences.edit().putLong(KEY_DEFAULT_ACCOUNT_ID, account_ids[0]).apply();
-        }
+//        final long[] accountIds = getAccountIds(this);
+//        final long default_id = mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1);
+//        if (accountIds == null || accountIds.length == 0) {
+//            finish();
+//        } else if (accountIds.length > 0 && !ArrayUtils.contains(accountIds, default_id)) {
+//            mPreferences.edit().putLong(KEY_DEFAULT_ACCOUNT_ID, accountIds[0]).apply();
+//        }
     }
 
     @Subscribe
@@ -1016,14 +1014,14 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             for (SupportTabSpec spec : mTabs) {
                 switch (spec.type) {
                     case TAB_TYPE_HOME_TIMELINE: {
-                        final long[] accountIds = getAccountIds(spec.args);
+                        final long[] accountIds = Utils.getAccountIds(spec.args);
                         final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext, true, spec.tag, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
                         result.put(spec, Utils.getStatusesCount(mContext, Statuses.CONTENT_URI, position, accountIds));
                         break;
                     }
                     case TAB_TYPE_MENTIONS_TIMELINE: {
-                        final long[] accountIds = getAccountIds(spec.args);
+                        final long[] accountIds = Utils.getAccountIds(spec.args);
                         final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext, true, spec.tag, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
                         result.put(spec, Utils.getStatusesCount(mContext, Mentions.CONTENT_URI, position, accountIds));

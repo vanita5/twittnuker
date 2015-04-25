@@ -46,11 +46,11 @@ import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
-import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.ContentListScrollListener;
 import de.vanita5.twittnuker.util.ContentListScrollListener.ContentListSupport;
 import de.vanita5.twittnuker.util.SimpleDrawerCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 
@@ -58,7 +58,6 @@ public abstract class AbsContentListFragment<A extends IContentCardAdapter> exte
 		DrawerCallback, RefreshScrollTopInterface, ControlBarOffsetListener, ContentListSupport {
 
 	private Rect mSystemWindowsInsets = new Rect();
-	private int mControlBarOffsetPixels;
 	private LinearLayoutManager mLayoutManager;
 	private View mProgressContainer;
 	private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -90,7 +89,6 @@ public abstract class AbsContentListFragment<A extends IContentCardAdapter> exte
 
 	@Override
 	public void onControlBarOffsetChanged(IControlBarActivity activity, float offset) {
-		mControlBarOffsetPixels = Math.round(activity.getControlBarHeight() * (1 - offset));
 		updateRefreshProgressOffset();
 	}
 
@@ -98,6 +96,12 @@ public abstract class AbsContentListFragment<A extends IContentCardAdapter> exte
 	public void onRefresh() {
 		triggerRefresh();
 	}
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        updateRefreshProgressOffset();
+    }
 
     @Override
 	public void scrollBy(float dy) {
@@ -142,10 +146,14 @@ public abstract class AbsContentListFragment<A extends IContentCardAdapter> exte
 		return mLayoutManager;
 	}
 
-	public void setRefreshing(boolean refreshing) {
-		if (refreshing == mSwipeRefreshLayout.isRefreshing()) return;
-//        if (!refreshing) updateRefreshProgressOffset();
-		mSwipeRefreshLayout.setRefreshing(refreshing && !mAdapter.isLoadMoreIndicatorVisible());
+    public void setRefreshing(final boolean refreshing) {
+        final boolean currentRefreshing = mSwipeRefreshLayout.isRefreshing();
+        if (!currentRefreshing) {
+            updateRefreshProgressOffset();
+        }
+        if (refreshing == currentRefreshing) return;
+        final boolean layoutRefreshing = refreshing && !mAdapter.isLoadMoreIndicatorVisible();
+        mSwipeRefreshLayout.setRefreshing(layoutRefreshing);
 	}
 
     @Override
@@ -239,6 +247,11 @@ public abstract class AbsContentListFragment<A extends IContentCardAdapter> exte
 		mSwipeRefreshLayout.setEnabled(enabled);
 	}
 
+    @Override
+    public boolean triggerRefresh() {
+        return false;
+    }
+
 	@NonNull
 	protected abstract A onCreateAdapter(Context context, boolean compact);
 
@@ -248,10 +261,16 @@ public abstract class AbsContentListFragment<A extends IContentCardAdapter> exte
 	}
 
 	protected void updateRefreshProgressOffset() {
-		if (mSystemWindowsInsets.top == 0 || mSwipeRefreshLayout == null || isRefreshing()) return;
+        final FragmentActivity activity = getActivity();
+        if (!(activity instanceof IControlBarActivity) || mSystemWindowsInsets.top == 0 || mSwipeRefreshLayout == null
+                || isRefreshing()) {
+            return;
+        }
 		final float density = getResources().getDisplayMetrics().density;
 		final int progressCircleDiameter = mSwipeRefreshLayout.getProgressCircleDiameter();
-		final int swipeStart = (mSystemWindowsInsets.top - mControlBarOffsetPixels) - progressCircleDiameter;
+        final IControlBarActivity control = (IControlBarActivity) activity;
+        final int controlBarOffsetPixels = Math.round(control.getControlBarHeight() * (1 - control.getControlBarOffset()));
+        final int swipeStart = (mSystemWindowsInsets.top - controlBarOffsetPixels) - progressCircleDiameter;
 		// 64: SwipeRefreshLayout.DEFAULT_CIRCLE_TARGET
 		final int swipeDistance = Math.round(64 * density);
 		mSwipeRefreshLayout.setProgressViewOffset(false, swipeStart, swipeStart + swipeDistance);

@@ -658,6 +658,7 @@
     <string name="next_tab">Nächster Tab</string>
     <string name="keyboard_shortcut_back">Zurück</string>
     <string name="press_again_to_close">Nochmal tippen um zu schliessen</string>
+    <string name="name_not_set"><xliff:g id="name">%s</xliff:g> nicht gesetzt</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
