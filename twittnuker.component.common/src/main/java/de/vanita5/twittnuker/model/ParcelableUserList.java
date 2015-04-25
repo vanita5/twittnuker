@@ -77,6 +77,8 @@ public class ParcelableUserList implements Parcelable, Comparable<ParcelableUser
     @JsonField(name = "user_profile_image_url")
 	public String user_profile_image_url;
 
+    public ParcelableUserList() {
+    }
 
 	public ParcelableUserList(final Parcel in) {
 		position = in.readLong();
