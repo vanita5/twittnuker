@@ -26,13 +26,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.mariotaku.jsonserializer.JSONParcel;
-import org.mariotaku.jsonserializer.JSONParcelable;
-import org.mariotaku.jsonserializer.JSONSerializer;
+import com.bluelinelabs.logansquare.LoganSquare;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-public class ParcelableMediaUpdate implements Parcelable, JSONParcelable {
+import java.io.IOException;
+import java.util.List;
+
+@JsonObject
+public class ParcelableMediaUpdate implements Parcelable {
 
 	public static final Parcelable.Creator<ParcelableMediaUpdate> CREATOR = new Parcelable.Creator<ParcelableMediaUpdate>() {
 		@Override
@@ -46,24 +48,12 @@ public class ParcelableMediaUpdate implements Parcelable, JSONParcelable {
 		}
 	};
 
-	public static final JSONParcelable.Creator<ParcelableMediaUpdate> JSON_CREATOR = new JSONParcelable.Creator<ParcelableMediaUpdate>() {
-		@Override
-		public ParcelableMediaUpdate createFromParcel(final JSONParcel in) {
-			return new ParcelableMediaUpdate(in);
-		}
+    @JsonField(name = "uri")
+    public String uri;
+    @JsonField(name = "type")
+    public int type;
 
-		@Override
-		public ParcelableMediaUpdate[] newArray(final int size) {
-			return new ParcelableMediaUpdate[size];
-		}
-	};
-
-	public final String uri;
-	public final int type;
-
-	public ParcelableMediaUpdate(final JSONParcel in) {
-		uri = in.readString("uri");
-		type = in.readInt("type");
+    public ParcelableMediaUpdate() {
 	}
 
 	public ParcelableMediaUpdate(final Parcel in) {
@@ -87,22 +77,18 @@ public class ParcelableMediaUpdate implements Parcelable, JSONParcelable {
 	}
 
 	@Override
-	public void writeToParcel(final JSONParcel out) {
-		out.writeString("uri", uri);
-		out.writeInt("type", type);
-	}
-
-	@Override
 	public void writeToParcel(final Parcel dest, final int flags) {
 		dest.writeString(uri);
 		dest.writeInt(type);
 	}
 
+    @Deprecated
 	public static ParcelableMediaUpdate[] fromJSONString(final String json) {
 		if (TextUtils.isEmpty(json)) return null;
 		try {
-			return JSONSerializer.createArray(JSON_CREATOR, new JSONArray(json));
-		} catch (final JSONException e) {
+            final List<ParcelableMediaUpdate> list = LoganSquare.parseList(json, ParcelableMediaUpdate.class);
+            return list.toArray(new ParcelableMediaUpdate[list.size()]);
+        } catch (final IOException e) {
 			return null;
 		}
 	}

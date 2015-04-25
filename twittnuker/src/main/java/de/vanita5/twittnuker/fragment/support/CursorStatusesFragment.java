@@ -41,6 +41,7 @@ import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
+import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.CursorStatusesAdapter;
 import de.vanita5.twittnuker.loader.support.ExtendedCursorLoader;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -86,8 +87,10 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
             where = accountWhere;
         }
         final String selection = processWhere(where).getSQL();
-        getAdapter().setShowAccountsColor(accountIds.length > 1);
-        return new ExtendedCursorLoader(context, uri, Statuses.COLUMNS, selection, null, sortOrder, fromUser);
+        final AbsStatusesAdapter<Cursor> adapter = getAdapter();
+        adapter.setShowAccountsColor(accountIds.length > 1);
+        final String[] projection = Statuses.COLUMNS;
+        return new ExtendedCursorLoader(context, uri, projection, selection, null, sortOrder, fromUser);
     }
 
     @Override

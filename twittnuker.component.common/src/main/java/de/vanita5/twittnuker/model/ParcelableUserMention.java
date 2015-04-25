@@ -25,23 +25,19 @@ package de.vanita5.twittnuker.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.JsonReader;
-import android.util.JsonWriter;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.mariotaku.jsonserializer.JSONParcel;
-import org.mariotaku.jsonserializer.JSONParcelable;
-import org.mariotaku.jsonserializer.JSONSerializer;
+import com.bluelinelabs.logansquare.LoganSquare;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import java.io.IOException;
+import java.util.List;
 
-import de.vanita5.twittnuker.model.iface.JsonReadable;
-import de.vanita5.twittnuker.model.iface.JsonWritable;
 import twitter4j.Status;
 import twitter4j.UserMentionEntity;
 
-public class ParcelableUserMention implements Parcelable, JSONParcelable, JsonReadable, JsonWritable {
+@JsonObject
+public class ParcelableUserMention implements Parcelable {
 
 	public static final Parcelable.Creator<ParcelableUserMention> CREATOR = new Parcelable.Creator<ParcelableUserMention>() {
 		@Override
@@ -54,30 +50,17 @@ public class ParcelableUserMention implements Parcelable, JSONParcelable, JsonRe
 			return new ParcelableUserMention[size];
 		}
 	};
-	public static final JSONParcelable.Creator<ParcelableUserMention> JSON_CREATOR = new JSONParcelable.Creator<ParcelableUserMention>() {
-		@Override
-		public ParcelableUserMention createFromParcel(final JSONParcel in) {
-			return new ParcelableUserMention(in);
-		}
 
-		@Override
-		public ParcelableUserMention[] newArray(final int size) {
-			return new ParcelableUserMention[size];
-		}
-	};
+    @JsonField(name = "id")
 	public long id;
-
-	public String name, screen_name;
+    @JsonField(name = "name")
+    public String name;
+    @JsonField(name = "screen_name")
+    public String screen_name;
 
     public ParcelableUserMention() {
 
     }
-
-	public ParcelableUserMention(final JSONParcel in) {
-		id = in.readLong("id");
-		name = in.readString("name");
-		screen_name = in.readString("screen_name");
-	}
 
 	public ParcelableUserMention(final Parcel in) {
 		id = in.readLong();
@@ -119,63 +102,27 @@ public class ParcelableUserMention implements Parcelable, JSONParcelable, JsonRe
 		return result;
 	}
 
-	@Override
-    public void read(JsonReader reader) throws IOException {
-        reader.beginObject();
-        while (reader.hasNext()) {
-            switch (reader.nextName()) {
-                case "id": {
-                    id = reader.nextLong();
-                    break;
-                }
-                case "name": {
-                    name = reader.nextString();
-                    break;
-                }
-                case "screen_name": {
-                    screen_name = reader.nextString();
-                    break;
-                }
-                default: {
-                    reader.skipValue();
-                    break;
-                }
-            }
-        }
-        reader.endObject();
-    }
 
-    @Override
+	@Override
 	public String toString() {
 		return "ParcelableUserMention{id=" + id + ", name=" + name + ", screen_name=" + screen_name + "}";
     }
 
+
     @Override
-    public void write(JsonWriter writer) throws IOException {
-        writer.name("id").value(id);
-        writer.name("name").value(name);
-        writer.name("screen_name").value(screen_name);
-	}
-
-	@Override
-	public void writeToParcel(final JSONParcel out) {
-		out.writeLong("id", id);
-		out.writeString("name", name);
-		out.writeString("screen_name", screen_name);
-	}
-
-	@Override
 	public void writeToParcel(final Parcel dest, final int flags) {
 		dest.writeLong(id);
 		dest.writeString(name);
 		dest.writeString(screen_name);
 	}
 
+    @Deprecated
 	public static ParcelableUserMention[] fromJSONString(final String json) {
 		if (TextUtils.isEmpty(json)) return null;
 		try {
-			return JSONSerializer.createArray(JSON_CREATOR, new JSONArray(json));
-		} catch (final JSONException e) {
+            final List<ParcelableUserMention> list = LoganSquare.parseList(json, ParcelableUserMention.class);
+            return list.toArray(new ParcelableUserMention[list.size()]);
+        } catch (final IOException e) {
 			return null;
 		}
 	}

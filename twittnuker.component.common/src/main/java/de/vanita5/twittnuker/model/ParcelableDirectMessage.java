@@ -28,6 +28,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 
@@ -41,6 +44,7 @@ import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsBoolean;
 import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsLong;
 
+@JsonObject
 public class ParcelableDirectMessage implements Parcelable, Comparable<ParcelableDirectMessage> {
 
 	public static final Parcelable.Creator<ParcelableDirectMessage> CREATOR = new Parcelable.Creator<ParcelableDirectMessage>() {
@@ -65,19 +69,44 @@ public class ParcelableDirectMessage implements Parcelable, Comparable<Parcelabl
 		}
 	};
 
-	public final long account_id, id, timestamp;
+    @JsonField(name = "long")
+    public long account_id;
+    @JsonField(name = "long")
+    public long id;
+    @JsonField(name = "long")
+    public long timestamp;
 
-	public final long sender_id, recipient_id;
+    @JsonField(name = "long")
+    public long sender_id;
+    @JsonField(name = "long")
+    public long recipient_id;
 
-	public final boolean is_outgoing;
+    @JsonField(name = "boolean")
+    public boolean is_outgoing;
 
-	public final String text_html, text_plain, text_unescaped;
+    @JsonField(name = "String")
+    public String text_html;
+    @JsonField(name = "String")
+    public String text_plain;
+    @JsonField(name = "String")
+    public String text_unescaped;
 
-	public final String sender_name, recipient_name, sender_screen_name, recipient_screen_name;
+    @JsonField(name = "String")
+    public String sender_name;
+    @JsonField(name = "String")
+    public String recipient_name;
+    @JsonField(name = "String")
+    public String sender_screen_name;
+    @JsonField(name = "String")
+    public String recipient_screen_name;
 
-	public final String sender_profile_image_url, recipient_profile_image_url;
+    @JsonField(name = "String")
+    public String sender_profile_image_url;
+    @JsonField(name = "String")
+    public String recipient_profile_image_url;
 
-	public final ParcelableMedia[] media;
+    @JsonField(name = "ParcelableMedia[]")
+    public ParcelableMedia[] media;
 
 	public ParcelableDirectMessage(final ContentValues values) {
 		text_plain = values.getAsString(DirectMessages.TEXT_PLAIN);
@@ -94,13 +123,13 @@ public class ParcelableDirectMessage implements Parcelable, Comparable<Parcelabl
         timestamp = getAsLong(values, DirectMessages.MESSAGE_TIMESTAMP, -1);
         id = getAsLong(values, DirectMessages.MESSAGE_ID, -1);
         is_outgoing = getAsBoolean(values, DirectMessages.IS_OUTGOING, false);
-        account_id = getAsLong(values, DirectMessages.ACCOUNT_ID, -1);
+		account_id = getAsLong(values, DirectMessages.ACCOUNT_ID, -1);
         media = ParcelableMedia.fromSerializedJson(values.getAsString(DirectMessages.MEDIA_JSON));
 	}
 
 	public ParcelableDirectMessage(final Cursor c, final CursorIndices idx) {
 		account_id = idx.account_id != -1 ? c.getLong(idx.account_id) : -1;
-		is_outgoing = idx.is_outgoing != -1 ? c.getShort(idx.is_outgoing) == 1 : null;
+        is_outgoing = idx.is_outgoing != -1 && c.getShort(idx.is_outgoing) == 1;
 		id = idx.message_id != -1 ? c.getLong(idx.message_id) : -1;
 		timestamp = idx.message_timestamp != -1 ? c.getLong(idx.message_timestamp) : -1;
 		sender_id = idx.sender_id != -1 ? c.getLong(idx.sender_id) : -1;

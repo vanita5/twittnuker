@@ -22,29 +22,12 @@
 
 package de.vanita5.twittnuker.model;
 
-import org.mariotaku.jsonserializer.JSONParcel;
-import org.mariotaku.jsonserializer.JSONParcelable;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-public class UnreadItem implements JSONParcelable {
-
-	public static final JSONParcelable.Creator<UnreadItem> JSON_CREATOR = new JSONParcelable.Creator<UnreadItem>() {
-		@Override
-		public UnreadItem createFromParcel(final JSONParcel in) {
-			return new UnreadItem(in);
-		}
-
-		@Override
-		public UnreadItem[] newArray(final int size) {
-			return new UnreadItem[size];
-		}
-	};
+@JsonObject
+public class UnreadItem {
 
 	public final long id, account_id;
-
-	public UnreadItem(final JSONParcel in) {
-		id = in.readLong("id");
-		account_id = in.readLong("account_id");
-	}
 
 	public UnreadItem(final long id, final long account_id) {
 		this.id = id;
@@ -76,9 +59,4 @@ public class UnreadItem implements JSONParcelable {
 		return "UnreadItem{id=" + id + ", account_id=" + account_id + "}";
 	}
 
-	@Override
-	public void writeToParcel(final JSONParcel out) {
-		out.writeLong("id", id);
-		out.writeLong("account_id", account_id);
-	}
 }

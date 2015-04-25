@@ -25,9 +25,10 @@ package de.vanita5.twittnuker.util;
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
+import com.bluelinelabs.logansquare.LoganSquare;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mariotaku.jsonserializer.JSONSerializer;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
@@ -49,7 +50,9 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import twitter4j.DirectMessage;
@@ -212,7 +215,10 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, recipient_profile_image_url);
         final ParcelableMedia[] mediaArray = ParcelableMedia.fromEntities(message);
         if (mediaArray != null) {
-            values.put(DirectMessages.MEDIA_JSON, JSONSerializer.toJSONArrayString(mediaArray));
+            try {
+                values.put(DirectMessages.MEDIA_JSON, LoganSquare.serialize(Arrays.asList(mediaArray), ParcelableMedia.class));
+            } catch (IOException ignored) {
+            }
 		}
 		return values;
 	}
@@ -235,7 +241,11 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL, message.sender_profile_image_url);
 		values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, message.recipient_profile_image_url);
         if (message.media != null) {
-            values.put(DirectMessages.MEDIA_JSON, JSONSerializer.toJSONArrayString(message.media));
+            try {
+                values.put(DirectMessages.MEDIA_JSON, LoganSquare.serialize(Arrays.asList(message.media), ParcelableMedia.class));
+            } catch (IOException ignored) {
+
+            }
 		}
 		return values;
 	}
@@ -276,7 +286,10 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Drafts.TIMESTAMP, System.currentTimeMillis());
 		if (imageUri != null) {
             final ParcelableMediaUpdate[] mediaArray = {new ParcelableMediaUpdate(imageUri, 0)};
-            values.put(Drafts.MEDIA, JSONSerializer.toJSONArrayString(mediaArray));
+            try {
+                values.put(Drafts.MEDIA, LoganSquare.serialize(Arrays.asList(mediaArray), ParcelableMediaUpdate.class));
+            } catch (IOException ignored) {
+            }
 		}
 		final JSONObject extras = new JSONObject();
 		try {
@@ -343,8 +356,11 @@ public final class ContentValuesCreator implements TwittnukerConstants {
             values.put(Statuses.QUOTE_TIMESTAMP, orig.getCreatedAt().getTime());
             values.put(Statuses.QUOTE_SOURCE, orig.getSource());
             final ParcelableMedia[] quoteMedia = ParcelableMedia.fromStatus(orig);
-            if (quoteMedia != null) {
-                values.put(Statuses.QUOTE_MEDIA_JSON, JSONSerializer.toJSONArrayString(quoteMedia));
+            if (quoteMedia != null && quoteMedia.length > 0) {
+                try {
+                    values.put(Statuses.QUOTE_MEDIA_JSON, LoganSquare.serialize(Arrays.asList(quoteMedia), ParcelableMedia.class));
+                } catch (IOException ignored) {
+                }
             }
             values.put(Statuses.QUOTED_BY_USER_ID, quotedById);
             values.put(Statuses.QUOTED_BY_USER_NAME, quoteUser.getName());
@@ -400,17 +416,26 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         }
 		values.put(Statuses.IS_FAVORITE, status.isFavorited());
         final ParcelableMedia[] media = ParcelableMedia.fromStatus(status);
-        if (media != null) {
-            values.put(Statuses.MEDIA_JSON, JSONSerializer.toJSONArrayString(media));
+        if (media != null && media.length > 0) {
+            try {
+                values.put(Statuses.MEDIA_JSON, LoganSquare.serialize(Arrays.asList(media), ParcelableMedia.class));
+            } catch (IOException ignored) {
+            }
         }
 		final ParcelableUserMention[] mentions = ParcelableUserMention.fromStatus(status);
-        if (mentions != null) {
-            values.put(Statuses.MENTIONS_JSON, JSONSerializer.toJSONArrayString(mentions));
+        if (mentions != null && mentions.length > 0) {
+            try {
+                values.put(Statuses.MENTIONS_JSON, LoganSquare.serialize(Arrays.asList(mentions), ParcelableUserMention.class));
+            } catch (IOException ignored) {
+            }
         }
         final ParcelableCardEntity card = ParcelableCardEntity.fromCardEntity(status.getCard(), accountId);
         if (card != null) {
-            values.put(Statuses.CARD_NAME, card.name);
-            values.put(Statuses.CARD, JSONSerializer.toJSONObjectString(card));
+            try {
+                values.put(Statuses.CARD, LoganSquare.serialize(card));
+            	values.put(Statuses.CARD_NAME, card.name);
+            } catch (IOException ignored) {
+            }
 		}
 		return values;
 	}
@@ -430,7 +455,10 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		values.put(Drafts.IS_POSSIBLY_SENSITIVE, status.is_possibly_sensitive);
 		values.put(Drafts.TIMESTAMP, System.currentTimeMillis());
 		if (status.media != null) {
-			values.put(Drafts.MEDIA, JSONSerializer.toJSONArrayString(status.media));
+            try {
+                values.put(Drafts.MEDIA, LoganSquare.serialize(Arrays.asList(status.media), ParcelableMediaUpdate.class));
+            } catch (IOException ignored) {
+            }
 		}
 		return values;
     }

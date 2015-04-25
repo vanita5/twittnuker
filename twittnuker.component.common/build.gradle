@@ -21,6 +21,7 @@
  */
 
 apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
 apply from: rootProject.file('global.gradle')
 
 android {
@@ -39,9 +40,10 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-annotations:22.0.0'
+    apt 'com.bluelinelabs:logansquare-compiler:1.0.6'
+    compile 'com.bluelinelabs:logansquare:1.0.6'
+    compile 'com.android.support:support-annotations:22.1.0'
     compile 'org.apache.commons:commons-lang3:3.4'
-    compile project(':twittnuker.component.jsonserializer')
     compile project(':twittnuker.component.querybuilder')
     compile project(':twittnuker.component.twitter4j')
     compile fileTree(dir: 'libs', include: ['*.jar'])
