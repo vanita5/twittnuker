@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.fragment;
 
-import static de.vanita5.twittnuker.util.UserColorNameUtils.getDisplayName;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -38,7 +36,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.Switch;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -83,7 +80,7 @@ public abstract class BaseAccountPreferenceFragment extends PreferenceFragment i
 	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
 		inflater.inflate(R.menu.menu_switch_preference, menu);
 		final View actionView = menu.findItem(MENU_TOGGLE).getActionView();
-		final Switch toggle = (Switch) actionView.findViewById(android.R.id.toggle);
+        final CompoundButton toggle = (CompoundButton) actionView.findViewById(android.R.id.toggle);
 		final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
 		toggle.setOnCheckedChangeListener(this);
 		toggle.setChecked(prefs.getBoolean(getSwitchPreferenceKey(), getSwitchPreferenceDefault()));

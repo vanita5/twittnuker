@@ -108,7 +108,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 
 		private final String mSwitchKey;
 		private final boolean mSwitchDefault;
-        private Switch mToggle;
+        private CompoundButton mToggle;
 
 		public AccountItemPreference(final Context context, final ParcelableAccount account, final String switchKey,
 				final boolean switchDefault) {
@@ -172,7 +172,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
         protected View onCreateView(ViewGroup parent) {
             final View view = super.onCreateView(parent);
             view.findViewById(R.id.settings).setOnClickListener(this);
-            final Switch toggle = (Switch) view.findViewById(android.R.id.toggle);
+            final CompoundButton toggle = (CompoundButton) view.findViewById(android.R.id.toggle);
             toggle.setOnCheckedChangeListener(this);
             mToggle = toggle;
             return view;
@@ -194,7 +194,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 			if (summaryView instanceof TextView) {
 				((TextView) summaryView).setSingleLine(true);
 			}
-            final Switch toggle = (Switch) view.findViewById(android.R.id.toggle);
+            final CompoundButton toggle = (CompoundButton) view.findViewById(android.R.id.toggle);
 			if (mSwitchKey != null) {
 				toggle.setChecked(mSwitchPreference.getBoolean(mSwitchKey, mSwitchDefault));
 			}
