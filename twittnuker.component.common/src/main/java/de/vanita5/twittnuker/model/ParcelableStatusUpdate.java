@@ -46,17 +46,18 @@ public class ParcelableStatusUpdate implements Parcelable {
 		}
 	};
 
-    @JsonField(name = "ParcelableAccount[]")
+    @JsonField(name = "accounts")
 	public ParcelableAccount[] accounts;
-    @JsonField(name = "ParcelableMediaUpdate[]")
+    @JsonField(name = "media")
 	public ParcelableMediaUpdate[] media;
-    @JsonField(name = "String")
+    @JsonField(name = "text")
 	public String text;
-    @JsonField(name = "ParcelableLocation")
+    @JsonField(name = "location")
 	public ParcelableLocation location;
-    @JsonField(name = "long")
+    @JsonField(name = "in_reply_to_status_id")
 	public long in_reply_to_status_id;
-	public final boolean is_possibly_sensitive;
+    @JsonField(name = "boolean")
+    public boolean is_possibly_sensitive;
 
 	/**
 	 * @deprecated It has too much arguments to call, use
