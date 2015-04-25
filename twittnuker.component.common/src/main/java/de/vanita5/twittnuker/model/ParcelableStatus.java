@@ -216,7 +216,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		in_reply_to_screen_name = in.readString("in_reply_to_screen_name");
 		source = in.readString("source");
 		user_profile_image_url = in.readString("profile_image_url");
-        media = in.readParcelableArray("medias", ParcelableMedia.JSON_CREATOR);
+        media = in.readParcelableArray("media", ParcelableMedia.JSON_CREATOR);
 		location = in.readParcelable("location", ParcelableLocation.JSON_CREATOR);
 		my_retweet_id = in.readLong("my_retweet_id");
 		is_possibly_sensitive = in.readBoolean("is_possibly_sensitive");
@@ -546,7 +546,7 @@ public class ParcelableStatus implements TwidereParcelable, Comparable<Parcelabl
 		out.writeString("in_reply_to_screen_name", in_reply_to_screen_name);
 		out.writeString("source", source);
 		out.writeString("profile_image_url", user_profile_image_url);
-        out.writeParcelableArray("medias", media);
+        out.writeParcelableArray("media", media);
 		out.writeParcelable("location", location);
 		out.writeLong("my_retweet_id", my_retweet_id);
 		out.writeBoolean("is_possibly_sensitive", is_possibly_sensitive);

@@ -508,7 +508,7 @@ public interface TwidereDataStore {
 
 		String IN_REPLY_TO_STATUS_ID = "in_reply_to_status_id";
 
-		String MEDIA = "medias";
+		String MEDIA = "media";
 
 		String IS_POSSIBLY_SENSITIVE = "is_possibly_sensitive";
 

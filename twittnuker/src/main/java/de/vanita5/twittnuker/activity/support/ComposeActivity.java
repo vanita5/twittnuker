@@ -990,7 +990,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         MenuUtils.setMenuItemAvailability(menu, MENU_TAKE_PHOTO, true); //always
         MenuUtils.setMenuItemAvailability(menu, MENU_ADD_IMAGE, true); //always
         MenuUtils.setMenuItemAvailability(menu, MENU_VIEW, hasInReplyTo);
-        MenuUtils.setMenuItemAvailability(menu, R.id.medias_menu, hasMedia);
+        MenuUtils.setMenuItemAvailability(menu, R.id.media_menu, hasMedia);
         MenuUtils.setMenuItemAvailability(menu, MENU_TOGGLE_SENSITIVE, hasMedia);
         MenuUtils.setMenuItemAvailability(menu, R.id.link_to_quoted_status, isQuote());
 

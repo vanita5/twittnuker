@@ -215,7 +215,7 @@ public interface IntentConstants {
 	public static final String EXTRA_FLAGS = "flags";
 	public static final String EXTRA_INTENT = "intent";
 	public static final String EXTRA_BLACKLIST = "blacklist";
-	public static final String EXTRA_MEDIA = "medias";
+	public static final String EXTRA_MEDIA = "media";
 	public static final String EXTRA_CURRENT_MEDIA = "current_media";
 	public static final String EXTRA_EXTRAS = "extras";
 	public static final String EXTRA_MY_FOLLOWING_ONLY = "my_following_only";

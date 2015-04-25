@@ -23,7 +23,7 @@
         </menu>
     </item>
     <item
-        android:id="@+id/medias_menu"
+        android:id="@+id/media_menu"
         android:icon="@drawable/ic_action_gallery"
         android:title="@string/media"
         android:visible="false"
