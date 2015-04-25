@@ -111,7 +111,6 @@ import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
@@ -121,6 +120,7 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.UserColorNameUtils;
@@ -197,7 +197,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     private MediaLoaderWrapper mProfileImageLoader;
 	private SupportTabsAdapter mPagerAdapter;
-    private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
 
     private ParcelableUser mUser;
     private Relationship mRelationship;
@@ -680,7 +679,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mActionBarShadowColor = 0xA0000000;
         final TwittnukerApplication app = TwittnukerApplication.getInstance(activity);
         mProfileImageLoader = app.getMediaLoaderWrapper();
-        mKeyboardShortcutsHandler = app.getKeyboardShortcutsHandler();
         final Bundle args = getArguments();
         long accountId = -1, userId = -1;
         String screenName = null;
@@ -1050,9 +1048,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     @Override
-    public boolean handleKeyboardShortcutSingle(int keyCode, @NonNull KeyEvent event) {
-        if (handleFragmentKeyboardShortcutSingle(keyCode, event)) return true;
-        final String action = mKeyboardShortcutsHandler.getKeyAction("navigation", keyCode, event);
+    public boolean handleKeyboardShortcutSingle(KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
+        if (handleFragmentKeyboardShortcutSingle(handler, keyCode, event)) return true;
+        final String action = handler.getKeyAction("navigation", keyCode, event);
         if (action != null) {
             switch (action) {
                 case "navigation.previous_tab": {
@@ -1071,26 +1069,28 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 }
             }
         }
-        return mKeyboardShortcutsHandler.handleKey(getActivity(), null, keyCode, event);
+        return handler.handleKey(getActivity(), null, keyCode, event);
     }
 
     @Override
-    public boolean handleKeyboardShortcutRepeat(int keyCode, int repeatCount, @NonNull KeyEvent event) {
-        return handleFragmentKeyboardShortcutRepeat(keyCode, repeatCount, event);
+    public boolean handleKeyboardShortcutRepeat(@NonNull final KeyboardShortcutsHandler handler,
+                                                final int keyCode, final int repeatCount,
+                                                @NonNull final KeyEvent event) {
+        return handleFragmentKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
     }
 
-    private boolean handleFragmentKeyboardShortcutRepeat(int keyCode, int repeatCount, @NonNull KeyEvent event) {
+    private boolean handleFragmentKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
         final Fragment fragment = getKeyboardShortcutRecipient();
         if (fragment instanceof KeyboardShortcutCallback) {
-            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(keyCode, repeatCount, event);
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
         }
         return false;
     }
 
-    private boolean handleFragmentKeyboardShortcutSingle(int keyCode, @NonNull KeyEvent event) {
+    private boolean handleFragmentKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
         final Fragment fragment = getKeyboardShortcutRecipient();
         if (fragment instanceof KeyboardShortcutCallback) {
-            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(keyCode, event);
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(handler, keyCode, event);
         }
         return false;
     }

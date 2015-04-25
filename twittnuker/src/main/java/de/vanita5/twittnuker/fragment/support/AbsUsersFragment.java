@@ -49,7 +49,6 @@ import de.vanita5.twittnuker.view.holder.UserViewHolder;
 abstract class AbsUsersFragment<Data> extends AbsContentListFragment<AbsUsersAdapter<Data>>
         implements LoaderCallbacks<Data>, UserAdapterListener, KeyboardShortcutCallback {
 
-    private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
     private RecyclerViewNavigationHelper mRecyclerViewNavigationHelper;
 
 	public final Data getData() {
@@ -57,13 +56,13 @@ abstract class AbsUsersFragment<Data> extends AbsContentListFragment<AbsUsersAda
 	}
 
 	@Override
-    public boolean handleKeyboardShortcutSingle(int keyCode, @NonNull KeyEvent event) {
+    public boolean handleKeyboardShortcutSingle(KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
         return false;
     }
 
     @Override
-    public boolean handleKeyboardShortcutRepeat(int keyCode, int repeatCount, @NonNull KeyEvent event) {
-        return mRecyclerViewNavigationHelper.handleKeyboardShortcutRepeat(keyCode, repeatCount, event);
+    public boolean handleKeyboardShortcutRepeat(KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
+        return mRecyclerViewNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
     }
 
     @Override
@@ -72,13 +71,12 @@ abstract class AbsUsersFragment<Data> extends AbsContentListFragment<AbsUsersAda
 
         final FragmentActivity activity = getActivity();
         final TwittnukerApplication application = TwittnukerApplication.getInstance(activity);
-        mKeyboardShortcutsHandler = application.getKeyboardShortcutsHandler();
         final AbsUsersAdapter<Data> adapter = getAdapter();
         final RecyclerView recyclerView = getRecyclerView();
         final LinearLayoutManager layoutManager = getLayoutManager();
         adapter.setListener(this);
 
-        mRecyclerViewNavigationHelper = new RecyclerViewNavigationHelper(mKeyboardShortcutsHandler, recyclerView, layoutManager, adapter);
+        mRecyclerViewNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter);
 		final Bundle loaderArgs = new Bundle(getArguments());
 		loaderArgs.putBoolean(EXTRA_FROM_USER, true);
 		getLoaderManager().initLoader(0, loaderArgs, this);
