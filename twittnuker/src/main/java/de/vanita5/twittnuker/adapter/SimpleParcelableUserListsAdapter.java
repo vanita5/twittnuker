@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.UserColorNameUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
 import java.util.List;
@@ -42,12 +42,14 @@ public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<Parcelabl
 
 	private final Context mContext;
     private final MediaLoaderWrapper mImageLoader;
+    private UserColorNameManager mUserColorNameManager;
 
 	public SimpleParcelableUserListsAdapter(final Context context) {
 		super(context, R.layout.list_item_two_line);
 		mContext = context;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mImageLoader = app.getMediaLoaderWrapper();
+        mUserColorNameManager = app.getUserColorNameManager();
 		configBaseAdapter(context, this);
 	}
 
@@ -76,8 +78,8 @@ public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<Parcelabl
 		holder.icon.setImageDrawable(null);
 
 		final ParcelableUserList user_list = getItem(position);
-        final String display_name = UserColorNameUtils.getDisplayName(user_list.user_name,
-				user_list.user_screen_name, isDisplayNameFirst());
+        final String display_name = mUserColorNameManager.getDisplayName(user_list, isDisplayNameFirst(),
+                false);
 		holder.text1.setText(user_list.name);
 		holder.text2.setText(mContext.getString(R.string.created_by, display_name));
         holder.icon.setVisibility(isProfileImageDisplayed() ? View.VISIBLE : View.GONE);

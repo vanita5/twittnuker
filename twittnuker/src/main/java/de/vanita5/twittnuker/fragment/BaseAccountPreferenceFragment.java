@@ -40,7 +40,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.util.UserColorNameUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 
 public abstract class BaseAccountPreferenceFragment extends PreferenceFragment implements Constants,
 		OnCheckedChangeListener, OnSharedPreferenceChangeListener {
@@ -60,7 +60,10 @@ public abstract class BaseAccountPreferenceFragment extends PreferenceFragment i
 		final Activity activity = getActivity();
 		final Intent intent = activity.getIntent();
 		if (account != null && intent.hasExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT)) {
-			final String name = UserColorNameUtils.getDisplayName(getActivity(), account.name, account.screen_name);
+            final UserColorNameManager manager = UserColorNameManager.getInstance(activity);
+            final boolean nameFirst = prefs.getBoolean(KEY_NAME_FIRST, true);
+            final String name = manager.getDisplayName(account.account_id, account.name,
+                    account.screen_name, nameFirst, false);
 			activity.setTitle(name);
 		}
 		updatePreferenceScreen();

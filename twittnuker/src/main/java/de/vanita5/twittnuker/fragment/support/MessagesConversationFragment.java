@@ -83,6 +83,7 @@ import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.loader.support.UserSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
@@ -103,8 +104,9 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallb
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ReadStateManager;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereValidator;
-import de.vanita5.twittnuker.util.UserColorNameUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.view.StatusComposeEditText;
@@ -160,10 +162,11 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     // Utility classes
 	private TwidereValidator mValidator;
 	private AsyncTwitterWrapper mTwitterWrapper;
-	private SharedPreferences mPreferences;
+    private SharedPreferencesWrapper mPreferences;
     private SharedPreferences mMessageDrafts;
     private ReadStateManager mReadStateManager;
     private MediaLoaderWrapper mImageLoader;
+    private UserColorNameManager mUserColorNameManager;
 
     // Views
     private RecyclerView mMessagesListView;
@@ -227,7 +230,9 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 		super.onActivityCreated(savedInstanceState);
 
         final BaseAppCompatActivity activity = (BaseAppCompatActivity) getActivity();
-        mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mPreferences = SharedPreferencesWrapper.getInstance(activity, SHARED_PREFERENCES_NAME,
+                Context.MODE_PRIVATE, SharedPreferenceConstants.class);
+        mUserColorNameManager = UserColorNameManager.getInstance(activity);
         mMessageDrafts = getSharedPreferences(MESSAGE_DRAFTS_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mImageLoader = TwittnukerApplication.getInstance(activity).getMediaLoaderWrapper();
         mReadStateManager = getReadStateManager();
@@ -765,7 +770,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         }
         final FragmentActivity activity = getActivity();
         if (mRecipient != null) {
-            activity.setTitle(UserColorNameUtils.getDisplayName(activity, mRecipient));
+            activity.setTitle(mUserColorNameManager.getDisplayName(mRecipient, mPreferences.getBoolean(KEY_NAME_FIRST), true));
         } else {
             activity.setTitle(R.string.direct_messages);
         }

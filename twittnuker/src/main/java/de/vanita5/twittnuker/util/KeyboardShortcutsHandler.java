@@ -42,7 +42,6 @@ import de.vanita5.twittnuker.constant.KeyboardShortcutConstants;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map.Entry;
-import java.util.Set;
 
 public class KeyboardShortcutsHandler implements Constants, KeyboardShortcutConstants {
 
@@ -97,10 +96,6 @@ public class KeyboardShortcutsHandler implements Constants, KeyboardShortcutCons
 		if (!sActionLabelMap.containsKey(action)) return null;
 		final int labelRes = sActionLabelMap.get(action);
 		return context.getString(labelRes);
-	}
-
-	public static Set<String> getActions() {
-		return sActionLabelMap.keySet();
 	}
 
     @Nullable
@@ -192,10 +187,6 @@ public class KeyboardShortcutsHandler implements Constants, KeyboardShortcutCons
 		}
 		return false;
 	}
-
-    public boolean isEmpty() {
-        return mPreferences.getAll().isEmpty();
-    }
 
 	public static boolean isValidForHotkey(int keyCode, KeyEvent event) {
         // These keys must use with modifiers

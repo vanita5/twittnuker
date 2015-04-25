@@ -67,6 +67,8 @@ import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -77,9 +79,10 @@ import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
-import de.vanita5.twittnuker.util.UserColorNameUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ColorLabelLinearLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout;
@@ -115,6 +118,9 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
     private CardView mCardView;
 
     private SupportTabsAdapter mPagerAdapter;
+    private boolean mUserListLoaderInitialized;
+    private UserColorNameManager mUserColorNameManager;
+    private SharedPreferencesWrapper mPreferences;
 
 	private ParcelableUserList mUserList;
 	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
@@ -137,7 +143,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 			}
 		}
 	};
-    private boolean mUserListLoaderInitialized;
 
     @Override
     public boolean canScroll(float dy) {
@@ -199,8 +204,9 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 		mUserList = userList;
         mUserListDetails.drawEnd(getAccountColor(getActivity(), userList.account_id));
 		mListNameView.setText(userList.name);
-        final String displayName = UserColorNameUtils.getDisplayName(getActivity(),
-				userList.user_name, userList.user_screen_name);
+
+        final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
+        final String displayName = mUserColorNameManager.getDisplayName(userList, nameFirst, false);
 		mCreatedByView.setText(getString(R.string.created_by, displayName));
 		final String description = userList.description;
         mDescriptionView.setVisibility(isEmpty(description) ? View.GONE : View.VISIBLE);
@@ -284,9 +290,16 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        final FragmentActivity activity = getActivity();
+        final TwittnukerApplication application = TwittnukerApplication.getInstance(activity);
+        mTwitterWrapper = application.getTwitterWrapper();
+        mProfileImageLoader = application.getMediaLoaderWrapper();
+        mUserColorNameManager = application.getUserColorNameManager();
+        mPreferences = SharedPreferencesWrapper.getInstance(activity, SHARED_PREFERENCES_NAME,
+                Context.MODE_PRIVATE, SharedPreferenceConstants.class);
+
         setHasOptionsMenu(true);
 
-        final FragmentActivity activity = getActivity();
 
         Utils.setNdefPushMessageCallback(activity, new CreateNdefMessageCallback() {
 
@@ -313,8 +326,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 
         }
 
-        mTwitterWrapper = getApplication().getTwitterWrapper();
-        mProfileImageLoader = getApplication().getMediaLoaderWrapper();
         mProfileImageView.setOnClickListener(this);
         mUserListDetails.setOnClickListener(this);
         mRetryButton.setOnClickListener(this);

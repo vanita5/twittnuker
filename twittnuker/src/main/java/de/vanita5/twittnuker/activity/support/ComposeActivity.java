@@ -123,7 +123,7 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
-import de.vanita5.twittnuker.util.UserColorNameUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ActionIconView;
 import de.vanita5.twittnuker.view.BadgeView;
@@ -613,6 +613,8 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         updateLocationState();
         updateMediaPreview();
         notifyAccountSelectionChanged();
+
+        mTextChanged = false;
     }
 
     private void setupEditText() {
@@ -951,26 +953,26 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
 	private boolean setComposeTitle(final Intent intent) {
 		final String action = intent.getAction();
+        final UserColorNameManager manager = UserColorNameManager.getInstance(this);
+        final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
 		if (INTENT_ACTION_REPLY.equals(action)) {
 			if (mInReplyToStatus == null) return false;
-            final String display_name = UserColorNameUtils.getDisplayName(this, mInReplyToStatus.user_name,
-					mInReplyToStatus.user_screen_name);
-			setTitle(getString(R.string.reply_to, display_name));
+            final String displayName = manager.getDisplayName(mInReplyToStatus.user_id, mInReplyToStatus.user_name,
+                    mInReplyToStatus.user_screen_name, nameFirst, false);
+            setTitle(getString(R.string.reply_to, displayName));
 		} else if (INTENT_ACTION_QUOTE.equals(action)) {
 			if (mInReplyToStatus == null) return false;
-            final String display_name = UserColorNameUtils.getDisplayName(this, mInReplyToStatus.user_name,
-					mInReplyToStatus.user_screen_name);
-			setTitle(getString(R.string.quote_user, display_name));
-//            mSubtitleView.setVisibility(mInReplyToStatus.user_is_protected
-//                    && mInReplyToStatus.account_id != mInReplyToStatus.user_id ? View.VISIBLE : View.GONE);
+            final String displayName = manager.getDisplayName(mInReplyToStatus.user_id, mInReplyToStatus.user_name,
+                    mInReplyToStatus.user_screen_name, nameFirst, false);
+            setTitle(getString(R.string.quote_user, displayName));
 		} else if (INTENT_ACTION_EDIT_DRAFT.equals(action)) {
 			if (mDraftItem == null) return false;
 			setTitle(R.string.edit_draft);
 		} else if (INTENT_ACTION_MENTION.equals(action)) {
 			if (mMentionUser == null) return false;
-            final String display_name = UserColorNameUtils.getDisplayName(this, mMentionUser.name,
-					mMentionUser.screen_name);
-			setTitle(getString(R.string.mention_user, display_name));
+            final String displayName = manager.getDisplayName(mMentionUser.id, mMentionUser.name,
+                    mMentionUser.screen_name, nameFirst, false);
+            setTitle(getString(R.string.mention_user, displayName));
 		} else if (INTENT_ACTION_REPLY_MULTIPLE.equals(action)) {
 			setTitle(R.string.reply);
 		} else if (Intent.ACTION_SEND.equals(action) || Intent.ACTION_SEND_MULTIPLE.equals(action)) {

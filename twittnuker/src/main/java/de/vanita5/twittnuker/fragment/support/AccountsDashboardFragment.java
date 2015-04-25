@@ -94,6 +94,7 @@ import de.vanita5.twittnuker.activity.support.QuickSearchBarActivity;
 import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.menu.SupportAccountActionProvider;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -102,9 +103,10 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.ListViewUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TransitionUtils;
-import de.vanita5.twittnuker.util.UserColorNameUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
 import de.vanita5.twittnuker.view.ShapedImageView;
@@ -633,10 +635,15 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 
 	private static final class AccountOptionsAdapter extends OptionItemsAdapter {
 
+        private final boolean mNameFirst;
+        private final UserColorNameManager mUserColorNameManager;
         private ParcelableAccount mSelectedAccount;
 
 		public AccountOptionsAdapter(final Context context) {
 			super(context);
+            mUserColorNameManager = UserColorNameManager.getInstance(context);
+            mNameFirst = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME,
+                    Context.MODE_PRIVATE, SharedPreferenceConstants.class).getBoolean(KEY_NAME_FIRST);
 		}
 
         public void setSelectedAccount(ParcelableAccount account) {
@@ -649,8 +656,9 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
             final ParcelableAccount account = mSelectedAccount;
             if (account != null && option.id == MENU_COMPOSE) {
                 final Context context = getContext();
-                return context.getString(R.string.tweet_from_name,
-                        UserColorNameUtils.getDisplayName(context, account.name, account.screen_name));
+                final String displayName = mUserColorNameManager.getDisplayName(-1, account.name,
+                        account.screen_name, mNameFirst, false);
+                return context.getString(R.string.tweet_from_name, displayName);
             }
             return super.getTitle(position, option);
         }

@@ -44,6 +44,7 @@ import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.HighlightStyle;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
@@ -62,6 +63,7 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     private final MediaLoadingHandler mLoadingHandler;
     private final AsyncTwitterWrapper mTwitterWrapper;
     private final TwidereLinkify mLinkify;
+    private final UserColorNameManager mUserColorNameManager;
 
     private StatusAdapterListener mStatusAdapterListener;
 
@@ -90,6 +92,7 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
         mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
 		mInflater = LayoutInflater.from(context);
         mMediaLoader = app.getMediaLoaderWrapper();
+        mUserColorNameManager = app.getUserColorNameManager();
         mLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
         mTwitterWrapper = app.getTwitterWrapper();
         final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
@@ -147,6 +150,11 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     @Override
     public final AsyncTwitterWrapper getTwitterWrapper() {
         return mTwitterWrapper;
+    }
+
+    @Override
+    public UserColorNameManager getUserColorNameManager() {
+        return mUserColorNameManager;
     }
 
     @Override

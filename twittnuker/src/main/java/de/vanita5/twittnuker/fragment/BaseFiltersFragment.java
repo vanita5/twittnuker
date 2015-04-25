@@ -64,6 +64,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.SourceAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportListFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -71,7 +72,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.UserColorNameUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
@@ -118,6 +119,7 @@ public abstract class BaseFiltersFragment extends BaseSupportListFragment implem
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		final View view = super.onCreateView(inflater, container, savedInstanceState);
+        assert view != null;
 		final View lv = view.findViewById(android.R.id.list);
 		final Resources res = getResources();
 		final float density = res.getDisplayMetrics().density;
@@ -394,6 +396,8 @@ public abstract class BaseFiltersFragment extends BaseSupportListFragment implem
 
 		private static final class FilterUsersListAdapter extends SimpleCursorAdapter {
 
+            private final UserColorNameManager mUserColorNameManager;
+
             private final boolean mNameFirst;
 			private int mUserIdIdx, mNameIdx, mScreenNameIdx;
 
@@ -402,6 +406,7 @@ public abstract class BaseFiltersFragment extends BaseSupportListFragment implem
 				final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
 						Context.MODE_PRIVATE);
 				mNameFirst = prefs.getBoolean(KEY_NAME_FIRST, true);
+                mUserColorNameManager = TwittnukerApplication.getInstance(context).getUserColorNameManager();
 			}
 
 			@Override
@@ -411,7 +416,8 @@ public abstract class BaseFiltersFragment extends BaseSupportListFragment implem
                 final long userId = cursor.getLong(mUserIdIdx);
 				final String name = cursor.getString(mNameIdx);
                 final String screenName = cursor.getString(mScreenNameIdx);
-                final String displayName = UserColorNameUtils.getDisplayName(name, screenName, mNameFirst);
+                final String displayName = mUserColorNameManager.getDisplayName(userId, name, screenName,
+                        mNameFirst, false);
                 text1.setText(displayName);
 			}
 

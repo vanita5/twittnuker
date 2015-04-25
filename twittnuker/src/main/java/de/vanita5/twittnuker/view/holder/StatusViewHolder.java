@@ -52,7 +52,7 @@ import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
-import de.vanita5.twittnuker.util.UserColorNameUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
@@ -124,6 +124,10 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         favoriteCountView = (TextView) itemView.findViewById(R.id.favorite_count);
 //TODO
 //        profileImageView.setSelectorColor(ThemeUtils.getUserHighlightColor(itemView.getContext()));
+
+        if (adapter.isMediaPreviewEnabled()) {
+            View.inflate(mediaPreview.getContext(), R.layout.layout_card_media_preview, mediaPreview);
+        }
     }
 
 	public void displaySampleStatus() {
@@ -153,6 +157,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         final MediaLoaderWrapper loader = adapter.getMediaLoader();
         final AsyncTwitterWrapper twitter = adapter.getTwitterWrapper();
         final TwidereLinkify linkify = adapter.getTwidereLinkify();
+        final UserColorNameManager manager = adapter.getUserColorNameManager();
         final Context context = adapter.getContext();
         final boolean nameFirst = adapter.isNameFirst();
 
@@ -161,15 +166,15 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         final long favorite_count;
 
         if (status.retweet_id > 0) {
-            final String retweetedBy = UserColorNameUtils.getDisplayName(
-                    status.retweeted_by_name, status.retweeted_by_screen_name, nameFirst);
+            final String retweetedBy = manager.getDisplayName(status.retweeted_by_id,
+                    status.retweeted_by_name, status.retweeted_by_screen_name, nameFirst, false);
             replyRetweetView.setText(context.getString(R.string.name_retweeted, retweetedBy));
             replyRetweetIcon.setImageResource(R.drawable.ic_activity_action_retweet);
             replyRetweetView.setVisibility(View.VISIBLE);
             replyRetweetIcon.setVisibility(View.VISIBLE);
         } else if (status.in_reply_to_status_id > 0 && status.in_reply_to_user_id > 0 && displayInReplyTo) {
-            final String inReplyTo = UserColorNameUtils.getDisplayName(
-                    status.in_reply_to_name, status.in_reply_to_screen_name, nameFirst);
+            final String inReplyTo = manager.getDisplayName(status.in_reply_to_user_id,
+                    status.in_reply_to_name, status.in_reply_to_screen_name, nameFirst, false);
             replyRetweetView.setText(context.getString(R.string.in_reply_to_name, inReplyTo));
             replyRetweetIcon.setImageResource(R.drawable.ic_activity_action_reply);
             replyRetweetView.setVisibility(View.VISIBLE);
@@ -204,7 +209,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             quoteTextView.setVisibility(View.VISIBLE);
             quoteIndicator.setVisibility(View.VISIBLE);
 
-            quoteIndicator.setColor(UserColorNameUtils.getUserColor(context, status.user_id));
+            quoteIndicator.setColor(manager.getUserColor(status.user_id, false));
 
             if (adapter.isProfileImageEnabled()) {
                 profileTypeView.setVisibility(View.VISIBLE);
@@ -220,7 +225,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
                 typeIconRes = 0;
             }
 
-            final int userColor = UserColorNameUtils.getUserColor(context, status.quoted_by_user_id);
+            final int userColor = manager.getUserColor(status.quoted_by_user_id, false);
             itemContent.drawStart(userColor);
         } else {
 			nameView.setText(status.user_name);
@@ -248,7 +253,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
 
                 typeIconRes = 0;
 			}
-            final int userColor = UserColorNameUtils.getUserColor(context, status.user_id);
+            final int userColor = manager.getUserColor(status.user_id, false);
             itemContent.drawStart(userColor);
         }
 
@@ -338,6 +343,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         final MediaLoaderWrapper loader = adapter.getMediaLoader();
         final AsyncTwitterWrapper twitter = adapter.getTwitterWrapper();
         final TwidereLinkify linkify = adapter.getTwidereLinkify();
+        final UserColorNameManager manager = adapter.getUserColorNameManager();
         final Context context = adapter.getContext();
         final boolean nameFirst = adapter.isNameFirst();
 
@@ -367,8 +373,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             final long retweeted_by_id = cursor.getLong(indices.retweeted_by_user_id);
             final String retweeted_by_name = cursor.getString(indices.retweeted_by_user_name);
             final String retweeted_by_screen_name = cursor.getString(indices.retweeted_by_user_screen_name);
-            final String retweetedBy = UserColorNameUtils.getDisplayName(
-                    retweeted_by_name, retweeted_by_screen_name, nameFirst);
+            final String retweetedBy = manager.getDisplayName(retweeted_by_id, retweeted_by_name,
+                    retweeted_by_screen_name, nameFirst, false);
             replyRetweetView.setText(context.getString(R.string.name_retweeted, retweetedBy));
             replyRetweetIcon.setImageResource(R.drawable.ic_activity_action_retweet);
             replyRetweetView.setVisibility(View.VISIBLE);
@@ -376,8 +382,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         } else if (in_reply_to_status_id > 0 && in_reply_to_user_id > 0 && displayInReplyTo) {
             final String in_reply_to_name = cursor.getString(indices.in_reply_to_user_name);
             final String in_reply_to_screen_name = cursor.getString(indices.in_reply_to_user_screen_name);
-            final String inReplyTo = UserColorNameUtils.getDisplayName(
-                    in_reply_to_name, in_reply_to_screen_name, nameFirst);
+            final String inReplyTo = manager.getDisplayName(in_reply_to_user_id, in_reply_to_name,
+                    in_reply_to_screen_name, nameFirst, false);
             replyRetweetView.setText(context.getString(R.string.in_reply_to_name, inReplyTo));
             replyRetweetIcon.setImageResource(R.drawable.ic_activity_action_reply);
             replyRetweetView.setVisibility(View.VISIBLE);
@@ -413,7 +419,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             quoteTextView.setVisibility(View.VISIBLE);
             quoteIndicator.setVisibility(View.VISIBLE);
 
-            quoteIndicator.setColor(UserColorNameUtils.getUserColor(context, user_id));
+            quoteIndicator.setColor(manager.getUserColor(user_id, false));
 
             if (adapter.isProfileImageEnabled()) {
                 profileImageView.setVisibility(View.VISIBLE);
@@ -428,7 +434,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
                 typeIconRes = 0;
             }
 
-            final int userColor = UserColorNameUtils.getUserColor(context, cursor.getLong(indices.quoted_by_user_id));
+            final int userColor = manager.getUserColor(cursor.getLong(indices.quoted_by_user_id), false);
             itemContent.drawStart(userColor);
 
         } else {
@@ -458,7 +464,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
 
                 typeIconRes = 0;
 			}
-            final int userColor = UserColorNameUtils.getUserColor(context, user_id);
+            final int userColor = manager.getUserColor(user_id, false);
             itemContent.drawStart(userColor);
         }
 
@@ -683,6 +689,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         private final MediaLoadingHandler handler;
         private final AsyncTwitterWrapper twitter;
         private final TwidereLinkify linkify;
+        private final UserColorNameManager manager;
+
         private int profileImageStyle;
         private int mediaPreviewStyle;
         private int textSize;
@@ -700,6 +708,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             loader = app.getMediaLoaderWrapper();
             handler = new MediaLoadingHandler(R.id.media_preview_progress);
             twitter = app.getTwitterWrapper();
+            manager = app.getUserColorNameManager();
             linkify = new TwidereLinkify(null);
             updateOptions();
         }
@@ -717,6 +726,11 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         @Override
         public MediaLoadingHandler getMediaLoadingHandler() {
             return handler;
+        }
+
+        @Override
+        public UserColorNameManager getUserColorNameManager() {
+            return manager;
         }
 
         @Override

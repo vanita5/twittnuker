@@ -36,7 +36,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.UserColorNameUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShortTimeView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
@@ -70,6 +70,7 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
     public void displayMessage(Cursor cursor, boolean isUnread) {
 		final Context context = adapter.getContext();
         final MediaLoaderWrapper loader = adapter.getMediaLoader();
+        final UserColorNameManager manager = adapter.getUserColorNameManager();
 
 		final long accountId = cursor.getLong(ConversationEntries.IDX_ACCOUNT_ID);
 		final long conversationId = cursor.getLong(ConversationEntries.IDX_CONVERSATION_ID);
@@ -94,7 +95,7 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
         if (account_color_enabled) {
             content.drawEnd(Utils.getAccountColor(context, accountId));
         }
-        content.drawStart(UserColorNameUtils.getUserColor(context, conversationId));
+        content.drawStart(manager.getUserColor(conversationId, false));
 
 		final String profileImage = cursor.getString(ConversationEntries.IDX_PROFILE_IMAGE_URL);
 		loader.displayProfileImage(profileImageView, profileImage);

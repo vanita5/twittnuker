@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
 import java.util.List;
@@ -42,6 +43,7 @@ public class SimpleParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUse
 
     private final MediaLoaderWrapper mImageLoader;
 	private final Context mContext;
+    private final UserColorNameManager mUserColorNameManager;
 
 	public SimpleParcelableUsersAdapter(final Context context) {
         this(context, R.layout.list_item_user);
@@ -52,6 +54,7 @@ public class SimpleParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUse
 		mContext = context;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mImageLoader = app.getMediaLoaderWrapper();
+        mUserColorNameManager = app.getUserColorNameManager();
 		configBaseAdapter(context, this);
 	}
 

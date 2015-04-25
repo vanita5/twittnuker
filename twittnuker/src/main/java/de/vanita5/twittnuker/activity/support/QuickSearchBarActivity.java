@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.activity.support;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
@@ -78,6 +77,7 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SwipeDismissListViewTouchListener;
 import de.vanita5.twittnuker.util.SwipeDismissListViewTouchListener.DismissCallbacks;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.view.ExtendedRelativeLayout;
@@ -399,12 +399,15 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 		private final Context mContext;
 		private final LayoutInflater mInflater;
 		private final MediaLoaderWrapper mImageLoader;
+        private final UserColorNameManager mUserColorNameManager;
 		private List<SuggestionItem> mData;
 
 		SuggestionsAdapter(Context context) {
 			mContext = context;
 			mInflater = LayoutInflater.from(context);
-			mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
+            final TwittnukerApplication application = TwittnukerApplication.getInstance(context);
+            mImageLoader = application.getMediaLoaderWrapper();
+            mUserColorNameManager = application.getUserColorNameManager();
         }
 
         public boolean canDismiss(int position) {
@@ -475,6 +478,10 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 			mData = data;
 			notifyDataSetChanged();
 		}
+
+        public UserColorNameManager getUserColorNameManager() {
+            return mUserColorNameManager;
+        }
 	}
 
 	public static class SuggestionsLoader extends AsyncTaskLoader<List<SuggestionItem>> {
@@ -627,7 +634,6 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         @Override
         public void bindView(SuggestionsAdapter adapter, View view, int position) {
             final ParcelableUser user = mUser;
-            final Context context = adapter.getContext();
             final MediaLoaderWrapper loader = adapter.getImageLoader();
             final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
             final TextView text1 = (TextView) view.findViewById(android.R.id.text1);

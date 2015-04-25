@@ -96,6 +96,7 @@ import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
@@ -119,11 +120,12 @@ import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
-import de.vanita5.twittnuker.util.UserColorNameUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.ViewUtils;
 import de.vanita5.twittnuker.util.accessor.ActivityAccessor;
@@ -169,6 +171,10 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private static final String TAB_TYPE_MEDIA = "media";
     private static final String TAB_TYPE_FAVORITES = "favorites";
 
+    private MediaLoaderWrapper mProfileImageLoader;
+    private UserColorNameManager mUserColorNameManager;
+    private SharedPreferencesWrapper mPreferences;
+
     private ShapedImageView mProfileImageView;
 	private ImageView mProfileTypeView;
 	private ProfileBannerImageView mProfileBannerView;
@@ -195,7 +201,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private View mProfileNameBackground;
     private View mProfileDetailsContainer;
 
-    private MediaLoaderWrapper mProfileImageLoader;
+
+    private ActionBarDrawable mActionBarBackground;
+    private Drawable mActionBarHomeAsUpIndicator;
 	private SupportTabsAdapter mPagerAdapter;
 
     private ParcelableUser mUser;
@@ -206,9 +214,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private int mCardBackgroundColor;
     private int mActionBarShadowColor;
     private int mUserUiColor;
-
-    private ActionBarDrawable mActionBarBackground;
-    private Drawable mActionBarHomeAsUpIndicator;
+    private boolean mNameFirst;
 
 
 	private final LoaderCallbacks<SingleResponse<Relationship>> mFriendshipLoaderCallbacks = new LoaderCallbacks<SingleResponse<Relationship>>() {
@@ -246,13 +252,13 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 mFollowButton.setEnabled(!relationship.isSourceBlockedByTarget());
                 if (relationship.isSourceBlockedByTarget()) {
                     mPagesErrorContainer.setVisibility(View.VISIBLE);
-                    final String displayName = UserColorNameUtils.getDisplayName(getActivity(), user);
+                    final String displayName = mUserColorNameManager.getDisplayName(user, mNameFirst, true);
                     mPagesErrorText.setText(getString(R.string.blocked_by_user_summary, displayName));
                     mPagesErrorIcon.setImageResource(R.drawable.ic_info_error_generic);
                     mPagesContent.setVisibility(View.GONE);
                 } else if (!relationship.isSourceFollowingTarget() && user.is_protected) {
                     mPagesErrorContainer.setVisibility(View.VISIBLE);
-                    final String displayName = UserColorNameUtils.getDisplayName(getActivity(), user);
+                    final String displayName = mUserColorNameManager.getDisplayName(user, mNameFirst, true);
                     mPagesErrorText.setText(getString(R.string.user_protected_summary, displayName));
                     mPagesErrorIcon.setImageResource(R.drawable.ic_info_locked);
                     mPagesContent.setVisibility(View.GONE);
@@ -486,7 +492,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final FragmentActivity activity = getActivity();
         if (user == null || user.id <= 0 || activity == null) return;
         final Resources resources = getResources();
-        final Resources res = resources;
+        final UserColorNameManager manager = UserColorNameManager.getInstance(activity);
 		final LoaderManager lm = getLoaderManager();
 		lm.destroyLoader(LOADER_ID_USER);
 		lm.destroyLoader(LOADER_ID_FRIENDSHIP);
@@ -495,7 +501,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		mErrorRetryContainer.setVisibility(View.GONE);
 		mProgressContainer.setVisibility(View.GONE);
 		mUser = user;
-        final int userColor = UserColorNameUtils.getUserColor(activity, user.id, true);
+        final int userColor = manager.getUserColor(user.id, true);
         mProfileImageView.setBorderColor(userColor != 0 ? userColor : Color.WHITE);
         mProfileNameContainer.drawEnd(Utils.getAccountColor(activity, user.account_id));
 		mNameView.setText(user.name);
@@ -521,7 +527,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final String createdAt = Utils.formatToLongTimeString(activity, user.created_at);
         final float daysSinceCreation = (System.currentTimeMillis() - user.created_at) / 1000 / 60 / 60 / 24;
         final int dailyTweets = Math.round(user.statuses_count / Math.max(1, daysSinceCreation));
-		mCreatedAtView.setText(res.getQuantityString(R.plurals.created_at_with_N_tweets_per_day, dailyTweets,
+        mCreatedAtView.setText(resources.getQuantityString(R.plurals.created_at_with_N_tweets_per_day, dailyTweets,
 				createdAt, dailyTweets));
 		mTweetCount.setText(Utils.getLocalizedNumber(mLocale, user.statuses_count));
 		mFollowersCount.setText(Utils.getLocalizedNumber(mLocale, user.followers_count));
@@ -533,14 +539,14 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		} else {
             setUserUiColor(user.link_color);
 		}
-		final int defWidth = res.getDisplayMetrics().widthPixels;
+        final int defWidth = resources.getDisplayMetrics().widthPixels;
 		final int width = mBannerWidth > 0 ? mBannerWidth : defWidth;
 		mProfileImageLoader.displayProfileBanner(mProfileBannerView, user.profile_banner_url, width);
         final Relationship relationship = mRelationship;
         if (relationship == null || relationship.getTargetUserId() != user.id) {
 			getFriendship();
 		}
-        activity.setTitle(UserColorNameUtils.getDisplayName(activity, user));
+        activity.setTitle(manager.getDisplayName(user, mNameFirst, true));
 
         updateTitleAlpha();
 		invalidateOptionsMenu();
@@ -611,15 +617,16 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 	@Override
 	public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         final ParcelableUser user = getUser();
+        final UserColorNameManager manager = UserColorNameManager.getInstance(getActivity());
 		switch (requestCode) {
 			case REQUEST_SET_COLOR: {
 				if (user == null) return;
 				if (resultCode == Activity.RESULT_OK) {
 					if (data == null) return;
 					final int color = data.getIntExtra(EXTRA_COLOR, Color.TRANSPARENT);
-                    UserColorNameUtils.setUserColor(getActivity(), mUser.id, color);
+                    manager.setUserColor(mUser.id, color);
 				} else if (resultCode == ColorPickerDialogActivity.RESULT_CLEARED) {
-                    UserColorNameUtils.clearUserColor(getActivity(), mUser.id);
+                    manager.clearUserColor(mUser.id);
 				}
 				break;
 			}
@@ -672,6 +679,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         setHasOptionsMenu(true);
         getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE)
                 .registerOnSharedPreferenceChangeListener(this);
+        mUserColorNameManager = UserColorNameManager.getInstance(activity);
+        mPreferences = SharedPreferencesWrapper.getInstance(activity, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE, SharedPreferenceConstants.class);
+        mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
         mLocale = getResources().getConfiguration().locale;
         mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(activity,
                 ThemeUtils.getThemeBackgroundOption(activity),
@@ -817,7 +827,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		final boolean isMyself = user.account_id == user.id;
 		final MenuItem mentionItem = menu.findItem(MENU_MENTION);
 		if (mentionItem != null) {
-            mentionItem.setTitle(getString(R.string.mention_user_name, UserColorNameUtils.getDisplayName(getActivity(), user)));
+            final String displayName = mUserColorNameManager.getDisplayName(user, mNameFirst, true);
+            mentionItem.setTitle(getString(R.string.mention_user_name, displayName));
 		}
         MenuUtils.setMenuItemAvailability(menu, MENU_MENTION, !isMyself);
         MenuUtils.setMenuItemAvailability(menu, R.id.incoming_friendships, isMyself);
@@ -933,7 +944,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 			}
 			case MENU_SET_COLOR: {
 				final Intent intent = new Intent(getActivity(), ColorPickerDialogActivity.class);
-                intent.putExtra(EXTRA_COLOR, UserColorNameUtils.getUserColor(getActivity(), user.id, true));
+                intent.putExtra(EXTRA_COLOR, mUserColorNameManager.getUserColor(user.id, true));
 				intent.putExtra(EXTRA_ALPHA_SLIDER, false);
 				intent.putExtra(EXTRA_CLEAR_BUTTON, true);
 				startActivityForResult(intent, REQUEST_SET_COLOR);

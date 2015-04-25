@@ -36,12 +36,12 @@ import de.vanita5.twittnuker.adapter.iface.ContentCardClickListener;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 import java.util.Locale;
 
-import static de.vanita5.twittnuker.util.UserColorNameUtils.getUserColor;
 import static de.vanita5.twittnuker.util.Utils.getLocalizedNumber;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 
@@ -77,9 +77,10 @@ public class UserViewHolder extends ViewHolder implements OnClickListener, OnLon
 
 		final Context context = adapter.getContext();
 		final MediaLoaderWrapper loader = adapter.getMediaLoader();
+        final UserColorNameManager manager = adapter.getUserColorNameManager();
 
 
-		setUserColor(getUserColor(context, user.id));
+        setUserColor(manager.getUserColor(user.id, false));
 
 		final int userTypeRes = getUserTypeIconRes(user.is_verified, user.is_protected);
 		if (userTypeRes != 0) {

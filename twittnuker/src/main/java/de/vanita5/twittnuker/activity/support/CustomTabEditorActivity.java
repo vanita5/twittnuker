@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 
 import java.text.Collator;
 import java.util.Comparator;
@@ -221,6 +222,7 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 		final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
         final boolean displayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
         final boolean displayName = mPreferences.getBoolean(KEY_NAME_FIRST, true);
+        final UserColorNameManager manager = UserColorNameManager.getInstance(this);
 		text1.setVisibility(View.VISIBLE);
 		text2.setVisibility(View.VISIBLE);
         icon.setVisibility(displayProfileImage ? View.VISIBLE : View.GONE);
@@ -232,17 +234,12 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
 				mImageLoader.displayProfileImage(icon, user.profile_image_url);
 			}
 		} else if (value instanceof ParcelableUserList) {
-			final ParcelableUserList user_list = (ParcelableUserList) value;
-			final String created_by;
-            if (displayName) {
-				created_by = "@" + user_list.user_screen_name;
-			} else {
-				created_by = user_list.user_name;
-			}
-			text1.setText(user_list.name);
-			text2.setText(getString(R.string.created_by, created_by));
+            final ParcelableUserList userList = (ParcelableUserList) value;
+            final String createdBy = manager.getDisplayName(userList, displayName, false);
+            text1.setText(userList.name);
+            text2.setText(getString(R.string.created_by, createdBy));
             if (displayProfileImage) {
-				mImageLoader.displayProfileImage(icon, user_list.user_profile_image_url);
+                mImageLoader.displayProfileImage(icon, userList.user_profile_image_url);
 			}
 		} else if (value instanceof CharSequence) {
 			text2.setVisibility(View.GONE);

@@ -207,8 +207,11 @@ public interface SharedPreferenceConstants {
 	String KEY_SHARE_FORMAT = "share_format";
 	@Preference(type = STRING, hasDefault = true, defaultString = "none")
 	String KEY_MEDIA_UPLOADER = "media_uploader";
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	String KEY_HOME_REFRESH_MENTIONS = "home_refresh_mentions";
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	String KEY_HOME_REFRESH_DIRECT_MESSAGES = "home_refresh_direct_messages";
+	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
 	String KEY_HOME_REFRESH_TRENDS = "home_refresh_trends";
 	@Preference(type = STRING, hasDefault = true, defaultString = "none")
 	String KEY_STATUS_SHORTENER = "tweet_shortener";

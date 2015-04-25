@@ -46,6 +46,7 @@ import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ReadStateManager.OnReadStateChangeListener;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.MessageEntryViewHolder;
@@ -65,8 +66,10 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
     private final int mMediaPreviewStyle;
     private final ReadStateManager mReadStateManager;
     private final OnSharedPreferenceChangeListener mReadStateChangeListener;
-    private final boolean mDisplayProfileImage;
+    private UserColorNameManager mUserColorNameManager;
     private final AsyncTwitterWrapper mTwitterWrapper;
+
+    private final boolean mDisplayProfileImage;
     private boolean mLoadMoreSupported;
     private boolean mLoadMoreIndicatorVisible;
 	private Cursor mCursor;
@@ -87,6 +90,7 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
         mDisplayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
         mTextSize = preferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
         mReadStateManager = app.getReadStateManager();
+        mUserColorNameManager = app.getUserColorNameManager();
         mReadStateChangeListener = new OnSharedPreferenceChangeListener() {
 
             @Override
@@ -131,6 +135,11 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
     @Override
     public MediaLoaderWrapper getMediaLoader() {
         return mImageLoader;
+    }
+
+    @Override
+    public UserColorNameManager getUserColorNameManager() {
+        return mUserColorNameManager;
     }
 
     @Override

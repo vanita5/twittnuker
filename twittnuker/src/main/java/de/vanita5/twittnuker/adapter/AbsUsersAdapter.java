@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
@@ -58,12 +59,15 @@ public abstract class AbsUsersAdapter<D> extends LoadMoreSupportAdapter<ViewHold
 	private final AsyncTwitterWrapper mTwitterWrapper;
 	private final boolean mDisplayProfileImage;
 
+    private final UserColorNameManager mUserColorNameManager;
+
 	public AbsUsersAdapter(final Context context, final boolean compact) {
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		mContext = context;
         mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
 		mInflater = LayoutInflater.from(context);
 		mMediaLoader = app.getMediaLoaderWrapper();
+        mUserColorNameManager = app.getUserColorNameManager();
 		mTwitterWrapper = app.getTwitterWrapper();
 		final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
 				SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -93,6 +97,11 @@ public abstract class AbsUsersAdapter<D> extends LoadMoreSupportAdapter<ViewHold
 	public AsyncTwitterWrapper getTwitterWrapper() {
 		return mTwitterWrapper;
 	}
+
+    @Override
+    public UserColorNameManager getUserColorNameManager() {
+        return mUserColorNameManager;
+    }
 
 	@Override
 	public boolean isProfileImageEnabled() {

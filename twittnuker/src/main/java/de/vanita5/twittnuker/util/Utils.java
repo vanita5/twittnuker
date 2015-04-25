@@ -270,7 +270,6 @@ import static de.vanita5.twittnuker.provider.TwidereDataStore.DIRECT_MESSAGES_UR
 import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
 import static de.vanita5.twittnuker.util.TwidereLinkify.TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES;
-import static de.vanita5.twittnuker.util.UserColorNameUtils.getUserColor;
 
 @SuppressWarnings("unused")
 public final class Utils implements Constants, TwitterConstants {
@@ -1968,6 +1967,12 @@ public final class Utils implements Constants, TwitterConstants {
 		return isEmpty(val) ? def : val;
 	}
 
+    public static String getNonEmptyString(final SharedPreferencesWrapper pref, final String key, final String def) {
+        if (pref == null) return def;
+        final String val = pref.getString(key, def);
+        return isEmpty(val) ? def : val;
+    }
+
 	public static String getNormalTwitterProfileImage(final String url) {
 		return getTwitterProfileImageOfSize(url, "normal");
 	}
@@ -2574,18 +2579,6 @@ public final class Utils implements Constants, TwitterConstants {
 		return string.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">");
 	}
 
-	public static String getUserName(final ParcelableStatus status) {
-		return UserColorNameUtils.getDisplayName(status.user_name, status.user_screen_name, false);
-	}
-
-	public static String getUserName(final ParcelableUser user) {
-		return UserColorNameUtils.getDisplayName(user.name, user.screen_name, false);
-	}
-
-	public static String getUserName(final User user) {
-		return UserColorNameUtils.getDisplayName(user.getName(), user.getScreenName(), false);
-	}
-
     @DrawableRes
     public static int getUserTypeIconRes(final boolean isVerified, final boolean isProtected) {
         if (isVerified)
@@ -2806,6 +2799,7 @@ public final class Utils implements Constants, TwitterConstants {
 		final String[] projection = {Accounts.CONSUMER_KEY, Accounts.CONSUMER_SECRET};
         final String selection = Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL();
 		final Cursor c = context.getContentResolver().query(Accounts.CONTENT_URI, projection, selection, null, null);
+        //noinspection TryFinallyCanBeTryWithResources
 		try {
 			if (c.moveToPosition(0))
                 return TwitterContentUtils.isOfficialKey(context, c.getString(0), c.getString(1));
@@ -3920,6 +3914,7 @@ public final class Utils implements Constants, TwitterConstants {
 	}
 
     public static boolean handleMenuItemClick(Context context, Fragment fragment, FragmentManager fm, AsyncTwitterWrapper twitter, ParcelableStatus status, MenuItem item) {
+        final UserColorNameManager colorNameManager = UserColorNameManager.getInstance(context);
         switch (item.getItemId()) {
             case MENU_COPY: {
                 if (ClipboardUtils.setText(context, status.text_plain)) {
@@ -3962,7 +3957,7 @@ public final class Utils implements Constants, TwitterConstants {
             }
             case MENU_SET_COLOR: {
                 final Intent intent = new Intent(context, ColorPickerDialogActivity.class);
-                final int color = getUserColor(context, status.user_id, true);
+                final int color = colorNameManager.getUserColor(status.user_id, true);
                 if (color != 0) {
                     intent.putExtra(EXTRA_COLOR, color);
                 }
@@ -4126,6 +4121,7 @@ public final class Utils implements Constants, TwitterConstants {
         final ContentResolver cr = context.getContentResolver();
         final Expression where = Expression.equals(Users.USER_ID, userId);
         final Cursor c = cr.query(Users.CONTENT_URI, new String[0], where.getSQL(), null, null);
+        //noinspection TryFinallyCanBeTryWithResources
         try {
             return c.getCount() > 0;
         } finally {
@@ -4139,6 +4135,7 @@ public final class Utils implements Constants, TwitterConstants {
         final Expression where = Expression.and(Expression.equals(ConversationEntries.ACCOUNT_ID, accountId),
                 Expression.equals(ConversationEntries.CONVERSATION_ID, conversationId));
         final Cursor c = cr.query(ConversationEntries.CONTENT_URI, null, where.getSQL(), null, null);
+        //noinspection TryFinallyCanBeTryWithResources
         try {
             if (c.moveToFirst()) return ParcelableUser.fromDirectMessageConversationEntry(c);
         } finally {

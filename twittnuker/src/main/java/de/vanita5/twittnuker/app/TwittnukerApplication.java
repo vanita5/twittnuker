@@ -56,6 +56,7 @@ import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.UserAgentUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.VideoLoader;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
@@ -67,7 +68,6 @@ import java.io.File;
 
 import twitter4j.http.HostAddressResolver;
 
-import static de.vanita5.twittnuker.util.UserColorNameUtils.initUserColor;
 import static de.vanita5.twittnuker.util.Utils.getBestCacheDir;
 import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
@@ -94,8 +94,14 @@ public class TwittnukerApplication extends Application implements Constants,
     private VideoLoader mVideoLoader;
     private ReadStateManager mReadStateManager;
     private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
+    private UserColorNameManager mUserColorNameManager;
 
     private String mDefaultUserAgent;
+
+    @NonNull
+    public static TwittnukerApplication getInstance(@NonNull final Context context) {
+        return (TwittnukerApplication) context.getApplicationContext();
+    }
 
 	public AsyncTaskManager getAsyncTaskManager() {
 		if (mAsyncTaskManager != null) return mAsyncTaskManager;
@@ -115,6 +121,11 @@ public class TwittnukerApplication extends Application implements Constants,
 		if (mFullDiskCache != null) return mFullDiskCache;
         return mFullDiskCache = createDiskCache(DIR_NAME_FULL_IMAGE_CACHE);
 	}
+
+    public UserColorNameManager getUserColorNameManager() {
+        if (mUserColorNameManager != null) return mUserColorNameManager;
+        return mUserColorNameManager = new UserColorNameManager(this);
+    }
 
 	public ImageDownloader getFullImageDownloader() {
 		if (mFullImageDownloader != null) return mFullImageDownloader;
@@ -139,8 +150,7 @@ public class TwittnukerApplication extends Application implements Constants,
         if (mKeyboardShortcutsHandler != null) return mKeyboardShortcutsHandler;
         mKeyboardShortcutsHandler = new KeyboardShortcutsHandler(this);
         final SharedPreferences preferences = getSharedPreferences();
-        if (mKeyboardShortcutsHandler.isEmpty()
-                && !preferences.getBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, false)) {
+        if (!preferences.getBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, false)) {
             mKeyboardShortcutsHandler.reset();
             preferences.edit().putBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, true).apply();
         }
@@ -178,11 +188,6 @@ public class TwittnukerApplication extends Application implements Constants,
         return mMediaLoaderWrapper = new MediaLoaderWrapper(getImageLoader(), getVideoLoader());
     }
 
-    @NonNull
-    public static TwittnukerApplication getInstance(@NonNull final Context context) {
-        return (TwittnukerApplication) context.getApplicationContext();
-    }
-
     public Bus getMessageBus() {
         return mMessageBus;
     }
@@ -206,7 +211,7 @@ public class TwittnukerApplication extends Application implements Constants,
 
 	public AsyncTwitterWrapper getTwitterWrapper() {
 		if (mTwitterWrapper != null) return mTwitterWrapper;
-		return mTwitterWrapper = AsyncTwitterWrapper.getInstance(this);
+        return mTwitterWrapper = new AsyncTwitterWrapper(this);
 	}
 
 	@Override
@@ -220,7 +225,6 @@ public class TwittnukerApplication extends Application implements Constants,
         mMessageBus = new Bus();
 		initializeAsyncTask();
 		initAccountColor(this);
-		initUserColor(this);
 
 		final PackageManager pm = getPackageManager();
 		final ComponentName main = new ComponentName(this, MainActivity.class);

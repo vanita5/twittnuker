@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.adapter;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PorterDuff.Mode;
@@ -80,9 +79,9 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
 	public UserHashtagAutoCompleteAdapter(final Context context, final EditText view) {
         super(context, R.layout.list_item_auto_complete, null, FROM, TO, 0);
 		mEditText = view;
+        final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mResolver = context.getContentResolver();
-		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mProfileImageLoader = app.getMediaLoaderWrapper();
         mDatabase = app.getSQLiteDatabase();
         mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);

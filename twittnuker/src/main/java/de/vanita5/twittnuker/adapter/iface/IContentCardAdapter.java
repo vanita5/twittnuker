@@ -27,10 +27,13 @@ import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
 public interface IContentCardAdapter extends ILoadMoreSupportAdapter {
 	Context getContext();
+
+    UserColorNameManager getUserColorNameManager();
 
     int getItemCount();
 

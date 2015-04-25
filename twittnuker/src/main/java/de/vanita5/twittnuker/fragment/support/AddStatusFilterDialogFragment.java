@@ -32,19 +32,22 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import com.twitter.Extractor;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.UserColorNameUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -170,12 +173,20 @@ public class AddStatusFilterDialogFragment extends BaseSupportDialogFragment imp
 	}
 
 	private String getName(final Object value) {
+        final FragmentActivity activity = getActivity();
+        final UserColorNameManager manager = UserColorNameManager.getInstance(activity);
+        final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(activity,
+                SharedPreferencesWrapper.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE,
+                SharedPreferenceConstants.class);
+        final boolean nameFirst = prefs.getBoolean(KEY_NAME_FIRST);
 		if (value instanceof ParcelableUserMention) {
 			final ParcelableUserMention mention = (ParcelableUserMention) value;
-			return UserColorNameUtils.getDisplayName(getActivity(), mention.name, mention.screen_name);
+            return manager.getDisplayName(mention.id, mention.name, mention.screen_name, nameFirst,
+                    true);
 		} else if (value instanceof ParcelableStatus) {
 			final ParcelableStatus status = (ParcelableStatus) value;
-			return UserColorNameUtils.getDisplayName(getActivity(), status.user_name, status.user_screen_name);
+            return manager.getDisplayName(status.user_id, status.user_name, status.user_screen_name,
+                    nameFirst, true);
 		} else
 			return ParseUtils.parseString(value);
 	}

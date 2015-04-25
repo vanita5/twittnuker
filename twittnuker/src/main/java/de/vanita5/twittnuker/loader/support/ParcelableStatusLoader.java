@@ -27,11 +27,13 @@ import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 
 import de.vanita5.twittnuker.constant.IntentConstants;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
 
 import twitter4j.TwitterException;
 
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT;
 import static de.vanita5.twittnuker.util.Utils.findStatus;
 
 public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<ParcelableStatus>> {
@@ -56,7 +58,12 @@ public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<Parce
 			if (cache != null) return SingleResponse.getInstance(cache);
 		}
 		try {
-			return SingleResponse.getInstance(findStatus(getContext(), mAccountId, mStatusId));
+            final ParcelableStatus status = findStatus(getContext(), mAccountId, mStatusId);
+            final ParcelableAccount.ParcelableCredentials credentials = ParcelableAccount.getCredentials(getContext(), mAccountId);
+            final SingleResponse<ParcelableStatus> response = SingleResponse.getInstance(status);
+            final Bundle extras = response.getExtras();
+            extras.putParcelable(EXTRA_ACCOUNT, credentials);
+            return response;
 		} catch (final TwitterException e) {
 			return SingleResponse.getInstance(e);
 		}
