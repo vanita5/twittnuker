@@ -22,10 +22,8 @@
 
 package de.vanita5.twittnuker.view;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.ImageView;
@@ -41,11 +39,6 @@ public class BoundsImageView extends ImageView {
 
 	public BoundsImageView(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
-	}
-
-	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-	public BoundsImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-		super(context, attrs, defStyleAttr, defStyleRes);
 	}
 
 	@Override
