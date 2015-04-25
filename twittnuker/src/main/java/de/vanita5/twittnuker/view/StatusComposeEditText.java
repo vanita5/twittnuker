@@ -31,6 +31,7 @@ import android.text.TextUtils;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
 
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
 
 public class StatusComposeEditText extends AppCompatMultiAutoCompleteTextView {
@@ -43,7 +44,7 @@ public class StatusComposeEditText extends AppCompatMultiAutoCompleteTextView {
 	}
 
 	public StatusComposeEditText(final Context context, final AttributeSet attrs) {
-		this(context, attrs, android.R.attr.autoCompleteTextViewStyle);
+        this(context, attrs, R.attr.autoCompleteTextViewStyle);
 	}
 
 	public StatusComposeEditText(final Context context, final AttributeSet attrs, final int defStyle) {

@@ -37,7 +37,6 @@ import android.view.View;
 
 import de.vanita5.twittnuker.adapter.AbsUsersAdapter;
 import de.vanita5.twittnuker.adapter.AbsUsersAdapter.UserAdapterListener;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
@@ -56,12 +55,12 @@ abstract class AbsUsersFragment<Data> extends AbsContentListFragment<AbsUsersAda
 	}
 
 	@Override
-    public boolean handleKeyboardShortcutSingle(KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
         return false;
     }
 
     @Override
-    public boolean handleKeyboardShortcutRepeat(KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
+    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
         return mRecyclerViewNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
     }
 
@@ -70,7 +69,6 @@ abstract class AbsUsersFragment<Data> extends AbsContentListFragment<AbsUsersAda
 		super.onActivityCreated(savedInstanceState);
 
         final FragmentActivity activity = getActivity();
-        final TwittnukerApplication application = TwittnukerApplication.getInstance(activity);
         final AbsUsersAdapter<Data> adapter = getAdapter();
         final RecyclerView recyclerView = getRecyclerView();
         final LinearLayoutManager layoutManager = getLayoutManager();

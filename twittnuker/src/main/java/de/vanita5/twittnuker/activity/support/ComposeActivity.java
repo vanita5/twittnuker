@@ -193,6 +193,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     private boolean mIsPossiblySensitive, mShouldSaveAccounts;
     private boolean mImageUploaderUsed, mStatusShortenerUsed;
     private boolean mNavigateBackPressed;
+    private boolean mTextChanged;
 
 	@Override
 	public int getThemeColor() {
@@ -558,6 +559,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
             @Override
             public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+                mTextChanged = true;
                 setMenu();
                 updateTextCount();
             }
@@ -645,9 +647,9 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
     @Override
     public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
-        final String action = handler.getKeyAction("navigation", keyCode, event);
-        if ("navigation.back".equals(action)) {
-            if (mEditText.length() == 0) {
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+        if (ACTION_NAVIGATION_BACK.equals(action)) {
+            if (mEditText.length() == 0 && !mTextChanged) {
                 if (!mNavigateBackPressed) {
                     final SuperToast toast = SuperToast.create(this, getString(R.string.press_again_to_close), Duration.SHORT);
                     toast.setOnDismissListener(new OnDismissListener() {
@@ -661,6 +663,8 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 } else {
                     onBackPressed();
                 }
+            } else {
+                mTextChanged = false;
             }
             return true;
         }

@@ -26,8 +26,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:padding="@dimen/element_spacing_small"
-    tools:layout_height="?android:actionBarSize">
+    android:padding="@dimen/element_spacing_small">
 
     <de.vanita5.twittnuker.view.SquareShapedImageView
         android:id="@android:id/icon"
