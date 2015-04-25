@@ -27,12 +27,12 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.view.themed.ThemedTextView;
 
-public class ActionIconThemedTextView extends ThemedTextView {
+public class ActionIconThemedTextView extends AppCompatTextView {
 
     private final int mIconWidth, mIconHeight;
     private int mColor, mDisabledColor, mActivatedColor;

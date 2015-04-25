@@ -666,8 +666,8 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     }
 
     @Override
-    public void onSupportContentChanged() {
-        super.onSupportContentChanged();
+    public void onContentChanged() {
+        super.onContentChanged();
         mActionBar = (Toolbar) findViewById(R.id.actionbar);
         mTabIndicator = (TabPagerIndicator) findViewById(R.id.main_tabs);
         mSlidingMenu = (HomeSlidingMenu) findViewById(R.id.home_menu);
@@ -1015,14 +1015,14 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             for (SupportTabSpec spec : mTabs) {
                 switch (spec.type) {
                     case TAB_TYPE_HOME_TIMELINE: {
-                        final long[] accountIds = Utils.getAccountIds(spec.args);
+                        final long[] accountIds = getAccountIds(spec.args);
                         final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext, true, spec.tag, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
                         result.put(spec, Utils.getStatusesCount(mContext, Statuses.CONTENT_URI, position, accountIds));
                         break;
                     }
                     case TAB_TYPE_MENTIONS_TIMELINE: {
-                        final long[] accountIds = Utils.getAccountIds(spec.args);
+                        final long[] accountIds = getAccountIds(spec.args);
                         final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext, true, spec.tag, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
                         result.put(spec, Utils.getStatusesCount(mContext, Mentions.CONTENT_URI, position, accountIds));

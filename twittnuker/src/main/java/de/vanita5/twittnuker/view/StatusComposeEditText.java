@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatMultiAutoCompleteTextView;
 import android.text.InputType;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -31,10 +32,8 @@ import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
-import de.vanita5.twittnuker.view.iface.IThemedView;
-import de.vanita5.twittnuker.view.themed.ThemedMultiAutoCompleteTextView;
 
-public class StatusComposeEditText extends ThemedMultiAutoCompleteTextView implements IThemedView {
+public class StatusComposeEditText extends AppCompatMultiAutoCompleteTextView {
 
 	private UserHashtagAutoCompleteAdapter mAdapter;
     private long mAccountId;

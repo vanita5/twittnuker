@@ -22,19 +22,16 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.AttributeSet;
-import android.view.View;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.app.ThemedAppCompatDelegate;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
 public abstract class ThemedAppCompatActivity extends AppCompatActivity implements Constants, IThemedActivity {
@@ -44,6 +41,8 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
 	@ShapeStyle
 	private int mProfileImageStyle;
     private String mCurrentThemeBackgroundOption;
+
+    private AppCompatDelegate mDelegate;
 
 	@Override
     public int getCurrentThemeBackgroundAlpha() {
@@ -86,18 +85,16 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
 	}
 
 	@Override
+    public int getCurrentProfileImageStyle() {
+        return mProfileImageStyle;
+    }
+
+    @Override
 	public final void restart() {
         Utils.restartActivity(this);
 	}
 
 	@Override
-    public void onSupportActionModeStarted(android.support.v7.view.ActionMode mode) {
-        super.onSupportActionModeStarted(mode);
-        ThemeUtils.applySupportActionModeColor(mode, this, getCurrentThemeResourceId(),
-				getActionBarColor(), getThemeBackgroundOption(), true);
-    }
-
-    @Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		if (Utils.isDebugBuild()) {
 			StrictModeUtils.detectAllVmPolicy();
@@ -108,24 +105,16 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
 	}
 
 	@Override
-	public View onCreateView(String name, @NonNull Context context, @NonNull AttributeSet attrs) {
-		final View view = ThemeUtils.createView(name, context, attrs, mCurrentThemeColor);
-		if (view instanceof ShapedImageView) {
-			final ShapedImageView shapedImageView = (ShapedImageView) view;
-			shapedImageView.setStyle(mProfileImageStyle);
-		}
-		if (view != null) return view;
-		return super.onCreateView(name, context, attrs);
+    public void onSupportActionModeStarted(android.support.v7.view.ActionMode mode) {
+        super.onSupportActionModeStarted(mode);
+        ThemeUtils.applySupportActionModeColor(mode, this, getCurrentThemeResourceId(),
+                getCurrentThemeColor(), getThemeBackgroundOption(), true);
 	}
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
-    @Override
-    protected void onStart() {
-        super.onStart();
+    public AppCompatDelegate getDelegate() {
+        if (mDelegate != null) return mDelegate;
+        return mDelegate = ThemedAppCompatDelegate.create(this, this);
 	}
 
     private void setupTheme() {
@@ -136,8 +125,8 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
 		mProfileImageStyle = Utils.getProfileImageStyle(this);
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
 		setTheme(mCurrentThemeResource);
-        ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource, mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
+        ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource,
+                mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
 	}
-
 
 }

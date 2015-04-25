@@ -22,25 +22,40 @@
 
 package de.vanita5.twittnuker.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.v4.view.WindowCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
+import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager.LayoutParams;
+import android.widget.FrameLayout;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.ShapedImageView;
+import de.vanita5.twittnuker.util.ViewUtils;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
+import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 
 public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity implements Constants,
         IThemedActivity {
+
+    private TintedStatusFrameLayout mMainContent;
 
     private int mCurrentThemeResource, mCurrentThemeColor, mCurrentActionBarColor, mCurrentThemeBackgroundAlpha;
     @ShapeStyle
@@ -48,16 +63,6 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     private String mCurrentThemeBackgroundOption;
 
 	@Override
-    public final int getCurrentThemeResourceId() {
-        return mCurrentThemeResource;
-    }
-
-    @Override
-    public int getThemeBackgroundAlpha() {
-        return ThemeUtils.getUserThemeBackgroundAlpha(this);
-    }
-
-    @Override
     public int getCurrentThemeBackgroundAlpha() {
         return mCurrentThemeBackgroundAlpha;
     }
@@ -66,11 +71,6 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     public String getCurrentThemeBackgroundOption() {
         return mCurrentThemeBackgroundOption;
     }
-
-	@Override
-    public String getThemeBackgroundOption() {
-        return ThemeUtils.getThemeBackgroundOption(this);
-	}
 
 	@Override
     public int getCurrentThemeColor() {
@@ -83,8 +83,28 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     }
 
     @Override
+    public final int getCurrentThemeResourceId() {
+        return mCurrentThemeResource;
+    }
+
+    @Override
+    public int getThemeBackgroundAlpha() {
+        return ThemeUtils.getUserThemeBackgroundAlpha(this);
+    }
+
+    @Override
+    public String getThemeBackgroundOption() {
+        return ThemeUtils.getThemeBackgroundOption(this);
+    }
+
+    @Override
     public String getThemeFontFamily() {
         return ThemeUtils.getThemeFontFamily(this);
+    }
+
+    @Override
+    public int getCurrentProfileImageStyle() {
+        return mProfileImageStyle;
     }
 
     @Override
@@ -93,35 +113,65 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
 	}
 
 	@Override
+    public void onContentChanged() {
+        super.onContentChanged();
+        mMainContent = (TintedStatusFrameLayout) findViewById(R.id.main_content);
+        setupTintStatusBar();
+    }
+
+    @Override
+    public void onSupportActionModeStarted(android.support.v7.view.ActionMode mode) {
+        super.onSupportActionModeStarted(mode);
+        ThemeUtils.applySupportActionModeColor(mode, this, getCurrentThemeResourceId(),
+                getCurrentThemeColor(), getThemeBackgroundOption(), true);
+    }
+
+    @Override
 	protected void onCreate(final Bundle savedInstanceState) {
         if (Utils.isDebugBuild()) {
             StrictModeUtils.detectAllVmPolicy();
             StrictModeUtils.detectAllThreadPolicy();
         }
         setTheme();
+        setupWindow();
 		super.onCreate(savedInstanceState);
+        setupActionBar();
 	}
 
     @Override
-    public View onCreateView(String name, @NonNull Context context, @NonNull AttributeSet attrs) {
-        final View view = ThemeUtils.createView(name, context, attrs, mCurrentThemeColor);
-        if (view instanceof ShapedImageView) {
-            final ShapedImageView shapedImageView = (ShapedImageView) view;
-            shapedImageView.setStyle(mProfileImageStyle);
-    	}
-        if (view != null) return view;
-        return super.onCreateView(name, context, attrs);
+    public void setContentView(@LayoutRes int layoutResID) {
+        final FrameLayout mainContent = initMainContent();
+        getLayoutInflater().inflate(layoutResID, mainContent, true);
+        super.setContentView(mainContent);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public void setContentView(View view) {
+        final FrameLayout mainContent = initMainContent();
+        mainContent.removeAllViews();
+        mainContent.addView(view);
+        super.setContentView(mainContent);
 	}
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    public void setContentView(View view, ViewGroup.LayoutParams params) {
+        final FrameLayout mainContent = initMainContent();
+        mainContent.removeAllViews();
+        mainContent.addView(view, params);
+        super.setContentView(mainContent);
 	}
+
+    @Override
+    public void addContentView(View view, ViewGroup.LayoutParams params) {
+        FrameLayout mainContent = (FrameLayout) findViewById(R.id.main_content);
+        if (mainContent == null) {
+            @SuppressLint("InflateParams")
+            final View mainLayout = getLayoutInflater().inflate(R.layout.activity_settings, null);
+            mainContent = (FrameLayout) mainLayout.findViewById(R.id.main_content);
+        }
+        mainContent.addView(view, params);
+        onContentChanged();
+    }
 
     @Override
     protected void onTitleChanged(CharSequence title, int color) {
@@ -135,6 +185,58 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         super.onTitleChanged(title, color);
     }
 
+    protected boolean isActionBarOutlineEnabled() {
+        return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        final boolean result = super.onPrepareOptionsMenu(menu);
+        if (!shouldSetActionItemColor()) return result;
+        final View actionBarView = getWindow().findViewById(android.support.v7.appcompat.R.id.action_bar);
+        if (actionBarView instanceof Toolbar) {
+            final int actionBarColor = getCurrentActionBarColor();
+            final int themeId = getCurrentThemeResourceId();
+            final int itemColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
+            final Toolbar toolbar = (Toolbar) actionBarView;
+            ThemeUtils.setActionBarOverflowColor(toolbar, itemColor);
+            final int popupColor = ThemeUtils.getThemeForegroundColor(toolbar.getContext(), toolbar.getPopupTheme());
+            ThemeUtils.wrapToolbarMenuIcon(ViewUtils.findViewByType(actionBarView, ActionMenuView.class), itemColor, popupColor);
+        }
+        return result;
+    }
+
+    @Override
+    public View onCreateView(String name, @NonNull Context context, @NonNull AttributeSet attrs) {
+        final View view = super.onCreateView(name, context, attrs);
+        ThemeUtils.initView(view, getCurrentThemeColor(), mProfileImageStyle);
+        return view;
+    }
+
+    protected boolean shouldSetActionItemColor() {
+        return true;
+    }
+
+    private FrameLayout initMainContent() {
+        final FrameLayout mainContent = (FrameLayout) findViewById(R.id.main_content);
+        if (mainContent != null) {
+            return mainContent;
+        }
+        @SuppressLint("InflateParams")
+        final View view = getLayoutInflater().inflate(R.layout.activity_settings, null);
+        return (FrameLayout) view.findViewById(R.id.main_content);
+    }
+
     private void setTheme() {
         mCurrentThemeResource = getThemeResourceId();
         mCurrentThemeColor = getThemeColor();
@@ -145,5 +247,38 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         setTheme(mCurrentThemeResource);
         ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource, mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
 	}
+
+    private void setupActionBar() {
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar == null) return;
+
+        final int actionBarColor = getCurrentActionBarColor();
+        final int themeId = getCurrentThemeResourceId();
+        final String option = getThemeBackgroundOption();
+        final int actionBarItemsColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
+        ThemeUtils.applyActionBarBackground(actionBar, this, themeId, actionBarColor, option, isActionBarOutlineEnabled());
+        ThemeUtils.setActionBarItemsColor(getWindow(), actionBar, actionBarItemsColor);
+    }
+
+    private void setupTintStatusBar() {
+        if (mMainContent == null) return;
+
+        final int color = getCurrentActionBarColor();
+        final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption()) ? getCurrentThemeBackgroundAlpha() : 0xFF;
+		mMainContent.setColor(color, alpha);
+
+        mMainContent.setDrawShadow(false);
+        mMainContent.setDrawColor(true);
+        mMainContent.setFactor(1);
+    }
+
+    private void setupWindow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
+        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
+        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY);
+    }
 
 }

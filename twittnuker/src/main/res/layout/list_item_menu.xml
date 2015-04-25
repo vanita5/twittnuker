@@ -21,7 +21,8 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:descendantFocusability="blocksDescendants"
@@ -37,7 +38,7 @@
 		android:layout_weight="0"
 		android:scaleType="centerInside"/>
 
-	<de.vanita5.twittnuker.view.themed.ThemedTextView
+    <TextView
 		android:id="@android:id/text1"
 		android:layout_width="match_parent"
 		android:layout_height="48dp"

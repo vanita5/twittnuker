@@ -99,7 +99,7 @@
                     android:focusable="false"
                     android:orientation="vertical">
 
-                    <de.vanita5.twittnuker.view.themed.ThemedTextView
+                    <TextView
                         android:id="@+id/name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
                         android:textStyle="bold"
                         tools:text="Name"/>
 
-                    <de.vanita5.twittnuker.view.themed.ThemedTextView
+                    <TextView
                         android:id="@+id/screen_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
                     android:layout_height="@dimen/element_size_normal"
                     android:focusable="false">
 
-                    <de.vanita5.twittnuker.view.TwidereActionMenuView
+                    <android.support.v7.widget.ActionMenuView
                         android:id="@+id/toggle_menu"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

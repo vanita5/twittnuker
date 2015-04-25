@@ -37,6 +37,7 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -62,13 +63,16 @@ import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.BasePreferenceActivity;
 import de.vanita5.twittnuker.activity.SettingsActivity;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
@@ -310,7 +314,16 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
 				subItem.setIntent(intent);
 			}
 		}
-        ThemeUtils.applyColorFilterToMenuIcon(getActivity(), menu);
+
+        final Activity activity = getActivity();
+        if (activity instanceof BasePreferenceActivity) {
+            final ActionBar actionBar = ((BasePreferenceActivity) activity).getSupportActionBar();
+			final int actionBarColor = ((IThemedActivity) activity).getCurrentActionBarColor();
+            final int itemColor = TwidereColorUtils.getContrastYIQ(actionBarColor, 192);
+            final int popupTheme = ThemeUtils.getActionBarPopupThemeRes(actionBar.getThemedContext());
+            final int popupColor = ThemeUtils.getThemeForegroundColor(activity, popupTheme);
+            ThemeUtils.applyColorFilterToMenuIcon(menu, itemColor, popupColor, 0, Mode.SRC_ATOP);
+        }
 	}
 
 	@Override

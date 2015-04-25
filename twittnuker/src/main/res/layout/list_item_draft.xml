@@ -50,7 +50,7 @@
 
     </de.vanita5.twittnuker.view.CardMediaContainer>
 
-    <de.vanita5.twittnuker.view.themed.ThemedTextView
+    <TextView
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
         android:textAppearance="?android:textAppearanceSmall"
         android:textColor="?android:textColorPrimary"/>
 
-    <de.vanita5.twittnuker.view.themed.ThemedTextView
+    <TextView
         android:id="@+id/time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

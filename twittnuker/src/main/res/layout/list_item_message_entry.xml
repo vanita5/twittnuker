@@ -102,7 +102,7 @@
             android:textColor="?android:attr/textColorSecondary"
             tools:text="12:00"/>
 
-        <de.vanita5.twittnuker.view.themed.ThemedTextView
+        <TextView
             android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

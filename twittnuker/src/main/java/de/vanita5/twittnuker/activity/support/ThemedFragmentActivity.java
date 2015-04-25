@@ -37,7 +37,6 @@ import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
 public abstract class ThemedFragmentActivity extends FragmentActivity implements Constants, IThemedActivity {
@@ -49,16 +48,6 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     private String mCurrentThemeBackgroundOption;
 
 	@Override
-    public final int getCurrentThemeResourceId() {
-        return mCurrentThemeResource;
-    }
-
-    @Override
-    public int getThemeBackgroundAlpha() {
-        return ThemeUtils.getUserThemeBackgroundAlpha(this);
-    }
-
-    @Override
     public int getCurrentThemeBackgroundAlpha() {
         return mCurrentThemeBackgroundAlpha;
     }
@@ -66,11 +55,6 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     @Override
     public String getCurrentThemeBackgroundOption() {
         return mCurrentThemeBackgroundOption;
-    }
-
-    @Override
-    public String getThemeBackgroundOption() {
-        return ThemeUtils.getThemeBackgroundOption(this);
     }
 
     @Override
@@ -84,6 +68,21 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     }
 
     @Override
+    public final int getCurrentThemeResourceId() {
+        return mCurrentThemeResource;
+    }
+
+    @Override
+    public int getThemeBackgroundAlpha() {
+        return ThemeUtils.getUserThemeBackgroundAlpha(this);
+    }
+
+    @Override
+    public String getThemeBackgroundOption() {
+        return ThemeUtils.getThemeBackgroundOption(this);
+    }
+
+    @Override
 	public String getThemeFontFamily() {
 		return ThemeUtils.getThemeFontFamily(this);
 	}
@@ -93,6 +92,11 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     }
 
 	@Override
+    public int getCurrentProfileImageStyle() {
+        return mProfileImageStyle;
+    }
+
+    @Override
 	public final void restart() {
         Utils.restartActivity(this);
 	}
@@ -109,23 +113,9 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
 
 	@Override
     public View onCreateView(String name, @NonNull Context context, @NonNull AttributeSet attrs) {
-        final View view = ThemeUtils.createView(name, context, attrs, mCurrentThemeColor);
-        if (view instanceof ShapedImageView) {
-            final ShapedImageView shapedImageView = (ShapedImageView) view;
-            shapedImageView.setStyle(mProfileImageStyle);
-        }
-        if (view != null) return view;
-        return super.onCreateView(name, context, attrs);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
+        final View view = super.onCreateView(name, context, attrs);
+        ThemeUtils.initView(view, getCurrentThemeColor(), mProfileImageStyle);
+        return view;
     }
 
     @Override

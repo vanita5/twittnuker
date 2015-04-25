@@ -62,7 +62,7 @@
             tools:src="@drawable/ic_activity_action_retweet"
             tools:visibility="visible"/>
 
-        <de.vanita5.twittnuker.view.themed.ThemedTextView
+        <TextView
             android:id="@+id/reply_retweet_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <de.vanita5.twittnuker.view.themed.ThemedTextView
+                    <TextView
                         android:id="@+id/name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -134,7 +134,7 @@
                         android:textStyle="bold"
                         tools:text="User"/>
 
-                    <de.vanita5.twittnuker.view.themed.ThemedTextView
+                    <TextView
                         android:id="@+id/screen_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -216,7 +216,7 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <de.vanita5.twittnuker.view.themed.ThemedTextView
+            <TextView
                 android:id="@+id/quoted_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -226,7 +226,7 @@
                 android:textStyle="bold"
                 tools:text="User"/>
 
-            <de.vanita5.twittnuker.view.themed.ThemedTextView
+            <TextView
                 android:id="@+id/quoted_screen_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

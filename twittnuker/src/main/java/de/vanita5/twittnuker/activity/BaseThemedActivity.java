@@ -39,18 +39,19 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 	private int mCurrentActionBarColor;
 	private String mCurrentThemeFontFamily;
     private String mCurrentThemeBackgroundOption;
+    private int mProfileImageStyle;
 
 	@Override
+    public int getCurrentThemeBackgroundAlpha() {
+        return mCurrentThemeBackgroundAlpha;
+    }
+
+    @Override
     public String getCurrentThemeBackgroundOption() {
         return mCurrentThemeBackgroundOption;
     }
 
     @Override
-    public int getCurrentThemeBackgroundAlpha() {
-        return mCurrentThemeBackgroundAlpha;
-	}
-
-	@Override
     public int getCurrentThemeColor() {
         return mCurrentThemeColor;
     }
@@ -85,6 +86,11 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     public abstract int getThemeResourceId();
 
 	@Override
+    public int getCurrentProfileImageStyle() {
+        return mProfileImageStyle;
+    }
+
+    @Override
 	public final void restart() {
         Utils.restartActivity(this);
 	}
@@ -126,6 +132,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 		mCurrentThemeFontFamily = getThemeFontFamily();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
+        mProfileImageStyle = Utils.getProfileImageStyle(this);
 		setTheme(mCurrentThemeResource);
         ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource, mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
 	}

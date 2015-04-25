@@ -51,7 +51,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -107,12 +106,11 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 	private int mAuthType;
 	private String mConsumerKey, mConsumerSecret;
 	private String mUsername, mPassword;
-	private boolean mBackPressed;
 	private long mAPIChangeTimestamp;
 
 	private EditText mEditUsername, mEditPassword;
 	private Button mSignInButton, mSignUpButton;
-	private LinearLayout mSigninSignupContainer, mUsernamePasswordContainer;
+    private LinearLayout mSignInSignUpContainer, mUsernamePasswordContainer;
 
 	private TwittnukerApplication mApplication;
 	private SharedPreferences mPreferences;
@@ -143,8 +141,7 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 					mConsumerSecret = data.getStringExtra(Accounts.CONSUMER_SECRET);
 					final boolean isTwipOMode = mAuthType == Accounts.AUTH_TYPE_TWIP_O_MODE;
 					mUsernamePasswordContainer.setVisibility(isTwipOMode ? View.GONE : View.VISIBLE);
-					mSigninSignupContainer
-							.setOrientation(isTwipOMode ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL);
+                    mSignInSignUpContainer.setOrientation(isTwipOMode ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL);
 				}
 				setSignInButton();
 				invalidateOptionsMenu();
@@ -158,19 +155,6 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
-	}
-
-	@Override
-	public void onBackPressed() {
-        if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING && !mBackPressed) {
-            final Toast toast = Toast.makeText(this, R.string.signing_in_please_wait, Toast.LENGTH_SHORT);
-            toast.show();
-			return;
-		}
-        if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING) {
-			mTask.cancel(false);
-		}
-		super.onBackPressed();
 	}
 
 	@Override
@@ -195,13 +179,13 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 	}
 
 	@Override
-    public void onSupportContentChanged() {
-        super.onSupportContentChanged();
+    public void onContentChanged() {
+        super.onContentChanged();
 		mEditUsername = (EditText) findViewById(R.id.username);
 		mEditPassword = (EditText) findViewById(R.id.password);
 		mSignInButton = (Button) findViewById(R.id.sign_in);
 		mSignUpButton = (Button) findViewById(R.id.sign_up);
-		mSigninSignupContainer = (LinearLayout) findViewById(R.id.sign_in_sign_up);
+        mSignInSignUpContainer = (LinearLayout) findViewById(R.id.sign_in_sign_up);
 		mUsernamePasswordContainer = (LinearLayout) findViewById(R.id.username_password);
 	}
 
@@ -296,14 +280,12 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
 		super.onCreate(savedInstanceState);
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mResolver = getContentResolver();
 		mApplication = TwittnukerApplication.getInstance(this);
 		setContentView(R.layout.activity_sign_in);
-        setSupportProgressBarIndeterminateVisibility(false);
 		final long[] account_ids = getActivatedAccountIds(this);
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -323,7 +305,7 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 
 		mUsernamePasswordContainer
 				.setVisibility(mAuthType == Accounts.AUTH_TYPE_TWIP_O_MODE ? View.GONE : View.VISIBLE);
-		mSigninSignupContainer.setOrientation(mAuthType == Accounts.AUTH_TYPE_TWIP_O_MODE ? LinearLayout.VERTICAL
+        mSignInSignUpContainer.setOrientation(mAuthType == Accounts.AUTH_TYPE_TWIP_O_MODE ? LinearLayout.VERTICAL
 				: LinearLayout.HORIZONTAL);
 
 		mEditUsername.setText(mUsername);
@@ -702,11 +684,6 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
                     api_url_format, same_oauth_signing_url, no_version_suffix);
 		}
 
-	}
-
-    @Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getThemeResource(this);
 	}
 
     static class SignInResponse {

@@ -47,14 +47,14 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
 
-            <de.vanita5.twittnuker.view.themed.ThemedTextView
+            <TextView
                 android:id="@+id/list_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-            <de.vanita5.twittnuker.view.themed.ThemedTextView
+            <TextView
                 android:id="@+id/created_by"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
         android:layout_height="0.2dp"
         android:background="?android:dividerVertical"/>
 
-    <de.vanita5.twittnuker.view.themed.ThemedTextView
+    <TextView
         android:id="@+id/description"
         tools:text="@string/sample_status_text"
         android:layout_width="match_parent"
