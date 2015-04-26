@@ -53,9 +53,9 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     // Registered listeners
     private ArrayList<ControlBarOffsetListener> mControlBarOffsetListeners = new ArrayList<>();
 
+    // Data fields
     private boolean mInstanceStateSaved;
     private boolean mIsVisible;
-
     private Rect mSystemWindowsInsets;
 
     @Override
@@ -136,10 +136,6 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
         return false;
     }
-
-	protected boolean isStateSaved() {
-		return mInstanceStateSaved;
-	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {

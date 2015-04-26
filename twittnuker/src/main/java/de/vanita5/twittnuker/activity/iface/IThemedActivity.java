@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.activity.iface;
 
+import de.vanita5.twittnuker.view.ShapedImageView;
+
 public interface IThemedActivity {
 
     int getCurrentThemeBackgroundAlpha();
@@ -44,8 +46,11 @@ public interface IThemedActivity {
 
 	String getThemeFontFamily();
 
+    String getCurrentThemeFontFamily();
+
     int getThemeResourceId();
 
+    @ShapedImageView.ShapeStyle
     int getCurrentProfileImageStyle();
 
     void restart();

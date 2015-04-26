@@ -22,16 +22,13 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.view.View;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
@@ -55,8 +52,14 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
 	@ShapeStyle
 	private int mProfileImageStyle;
     private String mCurrentThemeBackgroundOption;
+    private String mCurrentThemeFontFamily;
 
 	@Override
+    public String getCurrentThemeFontFamily() {
+        return mCurrentThemeFontFamily;
+    }
+
+    @Override
     public int getCurrentThemeBackgroundAlpha() {
         return mCurrentThemeBackgroundAlpha;
     }
@@ -101,6 +104,7 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     }
 
 	@Override
+    @ShapeStyle
     public int getCurrentProfileImageStyle() {
         return mProfileImageStyle;
     }
@@ -122,13 +126,6 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
 	}
 
 	@Override
-    public View onCreateView(String name, @NonNull Context context, @NonNull AttributeSet attrs) {
-        final View view = super.onCreateView(name, context, attrs);
-        ThemeUtils.initView(view, getCurrentThemeColor(), mProfileImageStyle);
-        return view;
-    }
-
-    @Override
     protected void onTitleChanged(CharSequence title, int color) {
         final SpannableStringBuilder builder = new SpannableStringBuilder(title);
         final int themeResId = getCurrentThemeResourceId();
@@ -147,6 +144,7 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		mProfileImageStyle = Utils.getProfileImageStyle(this);
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
+        mCurrentThemeFontFamily = getThemeFontFamily();
 		setTheme(mCurrentThemeResource);
         ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource, mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
 	}

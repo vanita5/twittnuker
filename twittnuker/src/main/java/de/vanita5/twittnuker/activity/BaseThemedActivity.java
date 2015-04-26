@@ -30,6 +30,7 @@ import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.view.ShapedImageView;
 
 public abstract class BaseThemedActivity extends Activity implements IThemedActivity {
 
@@ -42,6 +43,11 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     private int mProfileImageStyle;
 
 	@Override
+    public String getCurrentThemeFontFamily() {
+        return mCurrentThemeFontFamily;
+    }
+
+    @Override
     public int getCurrentThemeBackgroundAlpha() {
         return mCurrentThemeBackgroundAlpha;
     }
@@ -86,6 +92,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     public abstract int getThemeResourceId();
 
 	@Override
+    @ShapedImageView.ShapeStyle
     public int getCurrentProfileImageStyle() {
         return mProfileImageStyle;
     }

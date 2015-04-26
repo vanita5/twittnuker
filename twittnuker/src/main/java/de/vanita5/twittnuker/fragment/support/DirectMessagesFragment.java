@@ -85,7 +85,7 @@ public class DirectMessagesFragment extends AbsContentListFragment<MessageEntrie
     // Utility classes
 	private MultiSelectManager mMultiSelectManager;
     private RemoveUnreadCountsTask mRemoveUnreadCountsTask;
-    private RecyclerViewNavigationHelper mRecyclerViewNavigationHelper;
+    private RecyclerViewNavigationHelper mNavigationHelper;
 
     // Data fields
     private final LongSparseArray<Set<Long>> mUnreadCountsToRemove = new LongSparseArray<>();
@@ -125,12 +125,17 @@ public class DirectMessagesFragment extends AbsContentListFragment<MessageEntrie
     public boolean handleKeyboardShortcutRepeat(@NonNull final KeyboardShortcutsHandler handler,
                                                 final int keyCode, final int repeatCount,
                                                 @NonNull final KeyEvent event) {
-        return mRecyclerViewNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
+        return mNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
     }
 
     @Override
     public boolean handleKeyboardShortcutSingle(@NonNull final KeyboardShortcutsHandler handler,
                                                 final int keyCode, @NonNull final KeyEvent event) {
+        String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+        if (ACTION_NAVIGATION_REFRESH.equals(action)) {
+            triggerRefresh();
+            return true;
+        }
         return false;
 	}
 
@@ -244,7 +249,7 @@ public class DirectMessagesFragment extends AbsContentListFragment<MessageEntrie
         final MessageEntriesAdapter adapter = getAdapter();
         final RecyclerView recyclerView = getRecyclerView();
         final LinearLayoutManager layoutManager = getLayoutManager();
-        mRecyclerViewNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter);
+        mNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter);
 
         adapter.setListener(this);
 

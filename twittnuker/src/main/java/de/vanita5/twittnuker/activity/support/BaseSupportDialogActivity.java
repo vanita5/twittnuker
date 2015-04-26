@@ -26,12 +26,11 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 @SuppressLint("Registered")
-public class BaseSupportDialogActivity extends ThemedFragmentActivity implements Constants, IThemedActivity {
+public class BaseSupportDialogActivity extends ThemedFragmentActivity implements Constants {
 
 	private boolean mInstanceStateSaved;
 

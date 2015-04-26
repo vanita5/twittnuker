@@ -34,6 +34,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.WindowCompat;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -53,6 +54,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.DataExportActivity;
 import de.vanita5.twittnuker.activity.support.DataImportActivity;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.holder.ViewListHolder;
 
@@ -191,6 +193,21 @@ public class SettingsActivity extends BasePreferenceActivity {
 			super.setListAdapter(getHeaderAdapter());
 		}
 	}
+
+    @Override
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+        if (ACTION_NAVIGATION_BACK.equals(action)) {
+            onBackPressed();
+            return true;
+        }
+        return super.handleKeyboardShortcutSingle(handler, keyCode, event);
+    }
+
+    @Override
+    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
+        return super.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
+    }
 
     public static void setShouldNotifyChange(Activity activity) {
         if (!(activity instanceof SettingsActivity)) return;

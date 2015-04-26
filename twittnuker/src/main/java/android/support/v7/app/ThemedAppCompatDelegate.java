@@ -25,9 +25,11 @@ package android.support.v7.app;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.view.LayoutInflaterFactory;
 import android.util.AttributeSet;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -35,6 +37,11 @@ import android.view.Window;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.ThemeUtils;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ThemedAppCompatDelegate implements Constants {
 
@@ -56,6 +63,7 @@ public class ThemedAppCompatDelegate implements Constants {
 	private static class ThemedAppCompatDelegateImplV11 extends AppCompatDelegateImplV11 {
 
 		private final IThemedActivity themed;
+        private static final Map<String, Constructor> sConstructorCache = new HashMap<>();
 
 		private ThemedAppCompatDelegateImplV11(IThemedActivity themed, Context context, Window window, AppCompatCallback callback) {
 			super(context, window, callback);
@@ -69,6 +77,26 @@ public class ThemedAppCompatDelegate implements Constants {
 				LayoutInflaterCompat.setFactory(inflater, new ThemedLayoutInflaterFactory(themed, this));
 			}
 		}
+
+        @Override
+        public View createView(View parent, String name, @NonNull Context context, @NonNull AttributeSet attrs) {
+            View view = super.createView(parent, name, context, attrs);
+            if (view == null && name.contains(".")) {
+                try {
+                    Constructor<?> constructor = sConstructorCache.get(name);
+                    if (constructor == null) {
+                        final Class<?> viewCls = Class.forName(name);
+                        constructor = viewCls.getConstructor(Context.class, AttributeSet.class);
+                        sConstructorCache.put(name, constructor);
+                    }
+                    view = (View) constructor.newInstance(context, attrs);
+                } catch (ClassNotFoundException ignore) {
+                } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                    throw new InflateException(e);
+                }
+            }
+            return view;
+        }
 	}
 
 	/**
@@ -87,7 +115,7 @@ public class ThemedAppCompatDelegate implements Constants {
 		@Override
 		public View onCreateView(View view, String s, Context context, AttributeSet attributeSet) {
 			final View createdView = delegate.onCreateView(view, s, context, attributeSet);
-			ThemeUtils.initView(createdView, activity.getCurrentThemeColor(), activity.getCurrentProfileImageStyle());
+            ThemeUtils.initView(createdView, activity);
 			return createdView;
 		}
 	}

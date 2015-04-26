@@ -41,10 +41,16 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
 	@ShapeStyle
 	private int mProfileImageStyle;
     private String mCurrentThemeBackgroundOption;
+    private String mCurrentThemeFontFamily;
 
     private AppCompatDelegate mDelegate;
 
 	@Override
+    public String getCurrentThemeFontFamily() {
+        return mCurrentThemeFontFamily;
+    }
+
+    @Override
     public int getCurrentThemeBackgroundAlpha() {
         return mCurrentThemeBackgroundAlpha;
 	}
@@ -85,6 +91,7 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
 	}
 
 	@Override
+    @ShapeStyle
     public int getCurrentProfileImageStyle() {
         return mProfileImageStyle;
     }
@@ -124,6 +131,7 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
 		mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		mProfileImageStyle = Utils.getProfileImageStyle(this);
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
+        mCurrentThemeFontFamily = getThemeFontFamily();
 		setTheme(mCurrentThemeResource);
         ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource,
                 mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);

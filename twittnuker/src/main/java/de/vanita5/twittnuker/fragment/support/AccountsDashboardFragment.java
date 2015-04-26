@@ -80,6 +80,8 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.mariotaku.querybuilder.Expression;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.FiltersActivity;
 import de.vanita5.twittnuker.activity.SettingsActivity;
