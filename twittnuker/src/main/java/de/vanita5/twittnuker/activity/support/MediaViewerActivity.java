@@ -416,7 +416,7 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
                 intent.putExtra(Intent.EXTRA_TEXT, Utils.getStatusShareText(activity, status));
                 intent.putExtra(Intent.EXTRA_SUBJECT, Utils.getStatusShareSubject(activity, status));
             }
-            shareProvider.setShareIntent(intent);
+            if (shareProvider != null) shareProvider.setShareIntent(intent);
         }
 
 

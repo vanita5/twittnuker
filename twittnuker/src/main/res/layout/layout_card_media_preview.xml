@@ -32,7 +32,7 @@
         android:id="@+id/media_preview_item_0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?android:selectableItemBackground">
+        android:foreground="?selectableItemBackground">
 
         <include layout="@layout/layout_card_media_preview_item"/>
     </FrameLayout>
@@ -41,7 +41,7 @@
         android:id="@+id/media_preview_item_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?android:selectableItemBackground">
+        android:foreground="?selectableItemBackground">
 
         <include layout="@layout/layout_card_media_preview_item"/>
     </FrameLayout>
@@ -50,7 +50,7 @@
         android:id="@+id/media_preview_item_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?android:selectableItemBackground">
+        android:foreground="?selectableItemBackground">
 
         <include layout="@layout/layout_card_media_preview_item"/>
     </FrameLayout>
@@ -59,7 +59,7 @@
         android:id="@+id/media_preview_item_3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?android:selectableItemBackground">
+        android:foreground="?selectableItemBackground">
 
         <include layout="@layout/layout_card_media_preview_item"/>
 

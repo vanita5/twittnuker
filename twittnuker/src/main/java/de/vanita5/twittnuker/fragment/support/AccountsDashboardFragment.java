@@ -70,6 +70,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -79,9 +80,7 @@ import com.commonsware.cwac.merge.MergeAdapter;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.querybuilder.Expression;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.FiltersActivity;
 import de.vanita5.twittnuker.activity.SettingsActivity;
@@ -119,8 +118,8 @@ import static de.vanita5.twittnuker.util.Utils.openUserFavorites;
 import static de.vanita5.twittnuker.util.Utils.openUserLists;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 
-public class AccountsDashboardFragment extends BaseSupportListFragment implements LoaderCallbacks<Cursor>,
-        OnSharedPreferenceChangeListener, ImageLoadingListener, OnClickListener, KeyboardShortcutCallback {
+public class AccountsDashboardFragment extends BaseSupportFragment implements LoaderCallbacks<Cursor>,
+        OnSharedPreferenceChangeListener, ImageLoadingListener, OnClickListener, KeyboardShortcutCallback, AdapterView.OnItemClickListener {
 
 	private final SupportFragmentReloadCursorObserver mReloadContentObserver = new SupportFragmentReloadCursorObserver(
 			this, 0, this);
@@ -133,6 +132,7 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 	private AccountOptionsAdapter mAccountOptionsAdapter;
 	private AppMenuAdapter mAppMenuAdapter;
 
+    private ListView mListView;
     private TextView mAppMenuSectionView;
     private View mAccountSelectorView;
     private RecyclerView mAccountsSelector;
@@ -182,12 +182,11 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
                 return false;
             }
         }
-        final ListView listView = getListView();
-        final int firstVisiblePosition = ListViewUtils.getFirstFullyVisiblePosition(listView);
-        final int selectedItem = listView.getSelectedItemPosition();
-        final int count = listView.getCount();
+        final int firstVisiblePosition = ListViewUtils.getFirstFullyVisiblePosition(mListView);
+        final int selectedItem = mListView.getSelectedItemPosition();
+        final int count = mListView.getCount();
         int resultPosition;
-        if (!listView.isFocused() || selectedItem == ListView.INVALID_POSITION) {
+        if (!mListView.isFocused() || selectedItem == ListView.INVALID_POSITION) {
             resultPosition = firstVisiblePosition;
         } else {
             resultPosition = selectedItem + offset;
@@ -195,12 +194,12 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
                 resultPosition += offset;
             }
         }
-        final View focusedChild = listView.getFocusedChild();
+        final View focusedChild = mListView.getFocusedChild();
         if (focusedChild == null) {
-            listView.requestChildFocus(listView.getChildAt(0), null);
+            mListView.requestChildFocus(mListView.getChildAt(0), null);
         }
         if (resultPosition >= 0 && resultPosition < count) {
-            listView.setSelection(resultPosition);
+            mListView.setSelection(resultPosition);
         }
         return true;
     }
@@ -275,7 +274,7 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
     }
 
     @Override
-	public void onListItemClick(final ListView l, final View v, final int position, final long id) {
+    public void onItemClick(final AdapterView<?> parent, final View v, final int position, final long id) {
 		final ListAdapter adapter = mAdapter.getAdapter(position);
 		final Object item = mAdapter.getItem(position);
         if (adapter instanceof AccountOptionsAdapter) {
@@ -393,17 +392,16 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
         final Context context = view.getContext();
         final TwittnukerApplication application = TwittnukerApplication.getInstance(context);
         mImageLoader = application.getMediaLoaderWrapper();
-        final LayoutInflater inflater = LayoutInflater.from(context);
-        final ListView listView = getListView();
-        listView.setItemsCanFocus(true);
-        listView.setHorizontalScrollBarEnabled(false);
-        listView.setVerticalScrollBarEnabled(false);
+        mListView.setItemsCanFocus(true);
+        mListView.setHorizontalScrollBarEnabled(false);
+        mListView.setVerticalScrollBarEnabled(false);
         mAdapter = new MergeAdapter();
-        mAccountsAdapter = new AccountSelectorAdapter(context, this);
+        final LayoutInflater inflater = getLayoutInflater(savedInstanceState);
+        mAccountsAdapter = new AccountSelectorAdapter(context, inflater, this);
         mAccountOptionsAdapter = new AccountOptionsAdapter(context);
         mAppMenuAdapter = new AppMenuAdapter(context);
         mAppMenuSectionView = Utils.newSectionView(context, R.string.more);
-        mAccountSelectorView = inflater.inflate(R.layout.header_drawer_account_selector, listView, false);
+        mAccountSelectorView = inflater.inflate(R.layout.header_drawer_account_selector, mListView, false);
         mAccountsSelector = (RecyclerView) mAccountSelectorView.findViewById(R.id.other_accounts_list);
         final LinearLayoutManager layoutManager = new FixedLinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -442,14 +440,21 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
         mAdapter.addAdapter(mAccountOptionsAdapter);
         mAdapter.addView(mAppMenuSectionView, false);
         mAdapter.addAdapter(mAppMenuAdapter);
-        setListAdapter(mAdapter);
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
         getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        return LayoutInflater.from(getThemedContext()).inflate(R.layout.fragment_accounts_dashboard, container, false);
+        return inflater.inflate(R.layout.fragment_accounts_dashboard, container, false);
+    }
+
+    @Override
+    public void onBaseViewCreated(View view, Bundle savedInstanceState) {
+        super.onBaseViewCreated(view, savedInstanceState);
+        mListView = (ListView) view.findViewById(android.R.id.list);
     }
 
     @Override
@@ -490,7 +495,8 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
         rectF.set(location[0], location[1], location[0] + view.getWidth(), location[1] + view.getHeight());
     }
 
-	private Context getThemedContext() {
+    @Override
+    public Context getThemedContext() {
 		if (mThemedContext != null) return mThemedContext;
 		final Context context = getActivity();
 		final int themeResource = ThemeUtils.getDrawerThemeResource(context);
@@ -679,8 +685,8 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
         private final LongSparseArray<Long> positionMap = new LongSparseArray<>();
         private ParcelableAccount[] mInternalAccounts;
 
-        AccountSelectorAdapter(Context context, AccountsDashboardFragment fragment) {
-            mInflater = LayoutInflater.from(context);
+        AccountSelectorAdapter(Context context, LayoutInflater inflater, AccountsDashboardFragment fragment) {
+            mInflater = inflater;
             mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
             mFragment = fragment;
             setHasStableIds(true);

@@ -56,7 +56,7 @@
             <requestFocus/>
         </EditText>
 
-        <de.vanita5.twittnuker.view.ActionIconButton
+        <de.vanita5.twittnuker.view.themed.TintThemedImageButton
             android:id="@+id/query_button"
             style="?cardActionButtonStyle"
             android:layout_width="@dimen/element_size_normal"

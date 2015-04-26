@@ -73,7 +73,6 @@ import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.text.ParagraphSpacingSpan;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
-import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
 import java.lang.reflect.Field;
@@ -755,19 +754,6 @@ public class ThemeUtils implements Constants {
         indicator.setLabelColor(contrastColor);
         indicator.setStripColor(themeColor);
         indicator.updateAppearance();
-    }
-
-    public static void initView(View view, IThemedActivity activity) {
-        if (view == null) return;
-        if (view instanceof ShapedImageView) {
-            final ShapedImageView shapedImageView = (ShapedImageView) view;
-            shapedImageView.setStyle(activity.getCurrentProfileImageStyle());
-        } else if (view instanceof TextView) {
-            final String fontFamily = activity.getCurrentThemeFontFamily();
-            final TextView textView = (TextView) view;
-            final Typeface defTypeface = textView.getTypeface();
-            textView.setTypeface(getUserTypeface((Context) activity, fontFamily, defTypeface));
-        }
     }
 
     public static boolean isColoredActionBar(int themeRes) {

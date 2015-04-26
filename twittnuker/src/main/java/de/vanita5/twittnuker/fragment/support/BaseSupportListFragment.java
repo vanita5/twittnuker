@@ -31,7 +31,11 @@ import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManagerTrojan;
 import android.support.v4.app.ListFragment;
+import android.support.v4.view.LayoutInflaterCompat;
+import android.support.v4.view.LayoutInflaterFactory;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -48,6 +52,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
@@ -56,6 +61,7 @@ import de.vanita5.twittnuker.util.ListScrollDistanceCalculator;
 import de.vanita5.twittnuker.util.ListScrollDistanceCalculator.ScrollDistanceListener;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ExtendedFrameLayout;
 import de.vanita5.twittnuker.view.iface.IExtendedView.TouchInterceptor;
@@ -384,6 +390,23 @@ public class BaseSupportListFragment extends ListFragment implements IBaseFragme
 	public boolean triggerRefresh() {
 		return false;
 	}
+
+    @Override
+    public LayoutInflater getLayoutInflater(Bundle savedInstanceState) {
+        final FragmentActivity activity = getActivity();
+        if (!(activity instanceof IThemedActivity)) {
+            return super.getLayoutInflater(savedInstanceState);
+        }
+        final LayoutInflater inflater = activity.getLayoutInflater().cloneInContext(getThemedContext());
+        getChildFragmentManager(); // Init if needed; use raw implementation below.
+        final LayoutInflaterFactory delegate = FragmentManagerTrojan.getLayoutInflaterFactory(getChildFragmentManager());
+        LayoutInflaterCompat.setFactory(inflater, new ThemedLayoutInflaterFactory((IThemedActivity) activity, delegate));
+        return inflater;
+    }
+
+    public Context getThemedContext() {
+        return getActivity();
+    }
 
 	public void unregisterReceiver(final BroadcastReceiver receiver) {
 		final Activity activity = getActivity();
