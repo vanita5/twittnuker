@@ -28,7 +28,7 @@
         android:id="@id/select_account"
         android:icon="@drawable/ic_action_more_vertical"
         android:title="@string/select_account"
-        app:actionProviderClass="de.vanita5.twittnuker.menu.SupportAccountActionProvider"
+        app:actionProviderClass="de.vanita5.twittnuker.menu.support.AccountToggleProvider"
         app:showAsAction="always"/>
 
 

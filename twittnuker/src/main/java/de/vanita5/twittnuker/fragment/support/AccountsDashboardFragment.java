@@ -70,8 +70,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -95,7 +93,7 @@ import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
-import de.vanita5.twittnuker.menu.SupportAccountActionProvider;
+import de.vanita5.twittnuker.menu.support.AccountToggleProvider;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.CompareUtils;
@@ -113,17 +111,14 @@ import de.vanita5.twittnuker.view.ShapedImageView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static de.vanita5.twittnuker.util.Utils.openUserFavorites;
 import static de.vanita5.twittnuker.util.Utils.openUserLists;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 
 public class AccountsDashboardFragment extends BaseSupportListFragment implements LoaderCallbacks<Cursor>,
-        OnSharedPreferenceChangeListener, OnCheckedChangeListener, ImageLoadingListener, OnClickListener,
-        KeyboardShortcutCallback {
+        OnSharedPreferenceChangeListener, ImageLoadingListener, OnClickListener, KeyboardShortcutCallback {
 
 	private final SupportFragmentReloadCursorObserver mReloadContentObserver = new SupportFragmentReloadCursorObserver(
 			this, 0, this);
@@ -148,16 +143,16 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 
 	private Context mThemedContext;
     private MediaLoaderWrapper mImageLoader;
-    private SupportAccountActionProvider mAccountActionProvider;
+    private AccountToggleProvider mAccountActionProvider;
 
     private boolean mSwitchAccountAnimationPlaying;
 
     public long[] getActivatedAccountIds() {
-        if (mAccountActionProvider == null) {
-            return Utils.getActivatedAccountIds(getActivity());
+        if (mAccountActionProvider != null) {
+            return mAccountActionProvider.getActivatedAccountIds();
         }
-        return mAccountActionProvider.getActivatedAccountIds();
-    }
+		return Utils.getActivatedAccountIds(getActivity());
+	}
 
 	@Override
     public boolean handleKeyboardShortcutSingle(@NonNull final KeyboardShortcutsHandler handler,
@@ -230,16 +225,6 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        final ParcelableAccount account = mAccountsAdapter.getSelectedAccount();
-        if (account == null) return;
-        final ContentValues values = new ContentValues();
-        values.put(Accounts.IS_ACTIVATED, isChecked);
-        final String where = Accounts.ACCOUNT_ID + " = " + account.account_id;
-        mResolver.update(Accounts.CONTENT_URI, values, where, null);
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.profile_container: {
@@ -263,24 +248,20 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
 	@Override
     public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
         final Menu menu = mAccountsToggleMenu.getMenu();
-        mAccountActionProvider = (SupportAccountActionProvider) MenuItemCompat.getActionProvider(menu.findItem(MENU_SELECT_ACCOUNT));
+        mAccountActionProvider = (AccountToggleProvider) MenuItemCompat.getActionProvider(menu.findItem(MENU_SELECT_ACCOUNT));
         mAccountActionProvider.setExclusive(false);
         final ParcelableAccount[] accounts = ParcelableAccount.getAccounts(data);
-        final Set<Long> activatedIds = new HashSet<>();
 		long defaultId = -1;
         for (ParcelableAccount account : accounts) {
 			if (account.is_activated) {
-				if (defaultId < 0) {
-					defaultId = account.account_id;
-				}
-				activatedIds.add(account.account_id);
+				defaultId = account.account_id;
+                break;
 			}
 		}
         mAccountsAdapter.setAccounts(accounts);
 		mAccountsAdapter.setSelectedAccountId(mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, defaultId));
         mAccountOptionsAdapter.setSelectedAccount(mAccountsAdapter.getSelectedAccount());
         mAccountActionProvider.setAccounts(accounts);
-        mAccountActionProvider.setSelectedAccountIds(ArrayUtils.toPrimitive(activatedIds.toArray(new Long[activatedIds.size()])));
 
         initAccountActionsAdapter(accounts);
         updateAccountOptionsSeparatorLabel(null);
@@ -440,12 +421,14 @@ public class AccountsDashboardFragment extends BaseSupportListFragment implement
         mAccountsToggleMenu.setOnMenuItemClickListener(new OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (item.getGroupId() != SupportAccountActionProvider.MENU_GROUP) return false;
+                if (item.getGroupId() != AccountToggleProvider.MENU_GROUP) return false;
                 final ParcelableAccount[] accounts = mAccountActionProvider.getAccounts();
                 final ParcelableAccount account = accounts[item.getOrder()];
                 final ContentValues values = new ContentValues();
-                values.put(Accounts.IS_ACTIVATED, !account.is_activated);
-                final String where = Accounts.ACCOUNT_ID + " = " + account.account_id;
+                final boolean newActivated = !account.is_activated;
+                mAccountActionProvider.setAccountActivated(account.account_id, newActivated);
+                values.put(Accounts.IS_ACTIVATED, newActivated);
+                final String where = Expression.equals(Accounts.ACCOUNT_ID, account.account_id).getSQL();
                 mResolver.update(Accounts.CONTENT_URI, values, where, null);
                 return true;
             }

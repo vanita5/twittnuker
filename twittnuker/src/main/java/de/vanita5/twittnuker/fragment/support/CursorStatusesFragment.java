@@ -40,6 +40,7 @@ import com.squareup.otto.Subscribe;
 import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.CursorStatusesAdapter;
@@ -64,7 +65,12 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
 
     @Override
     protected void onLoadingFinished() {
-
+        final long[] accountIds = getAccountIds();
+        if (accountIds.length > 0) {
+            showContent();
+        } else {
+            showError(R.drawable.ic_info_account, getString(R.string.no_account_selected));
+        }
     }
 
     private ContentObserver mContentObserver;
@@ -130,6 +136,11 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
 
         @Subscribe
         public void notifyStatusRetweeted(StatusRetweetedEvent event) {
+        }
+
+        @Subscribe
+        public void notifyAccountChanged(AccountChangedEvent event) {
+
         }
 
     }
