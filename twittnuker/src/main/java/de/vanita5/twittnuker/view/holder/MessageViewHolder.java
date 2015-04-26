@@ -44,19 +44,18 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 
-public class MessageConversationViewHolder extends ViewHolder implements OnMediaClickListener {
+public class MessageViewHolder extends ViewHolder implements OnMediaClickListener {
 
 	public final CardMediaContainer mediaContainer;
 	public final TextView text, time;
 
 	private final MessageBubbleView messageContent;
-	private final MessageConversationAdapter adapter;
+    protected final MessageConversationAdapter adapter;
 
 	private final int textColorPrimary, textColorPrimaryInverse, textColorSecondary, textColorSecondaryInverse;
 
-	private float textSize;
 
-	public MessageConversationViewHolder(final MessageConversationAdapter adapter, final View itemView) {
+	public MessageViewHolder(final MessageConversationAdapter adapter, final View itemView) {
 		super(itemView);
 		this.adapter = adapter;
 		final Context context = itemView.getContext();
@@ -77,7 +76,7 @@ public class MessageConversationViewHolder extends ViewHolder implements OnMedia
 	public void displayMessage(Cursor cursor, CursorIndices indices) {
 		final Context context = adapter.getContext();
 		final TwidereLinkify linkify = adapter.getLinkify();
-		final MediaLoaderWrapper loader = adapter.getImageLoader();
+        final MediaLoaderWrapper loader = adapter.getMediaLoader();
 
 		final long accountId = cursor.getLong(indices.account_id);
 		final long timestamp = cursor.getLong(indices.message_timestamp);
@@ -121,11 +120,8 @@ public class MessageConversationViewHolder extends ViewHolder implements OnMedia
 	}
 
 	public void setTextSize(final float textSize) {
-		if (this.textSize != textSize) {
-			this.textSize = textSize;
-			text.setTextSize(textSize);
-			time.setTextSize(textSize * 0.75f);
-		}
+		text.setTextSize(textSize);
+		time.setTextSize(textSize * 0.75f);
 	}
 
 }

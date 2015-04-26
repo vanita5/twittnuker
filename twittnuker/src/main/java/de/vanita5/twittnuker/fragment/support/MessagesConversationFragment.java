@@ -61,7 +61,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -341,10 +340,6 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 	@Override
     public void onResume() {
         super.onResume();
-        final String previewScaleType = Utils.getNonEmptyString(mPreferences, KEY_MEDIA_PREVIEW_STYLE,
-                ScaleType.CENTER_CROP.name());
-        mAdapter.setImagePreviewScaleType(previewScaleType);
-        mAdapter.notifyDataSetChanged();
 		updateAddImageButton();
 	}
 

@@ -23,12 +23,19 @@
 package de.vanita5.twittnuker.adapter.iface;
 
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.view.ShapedImageView;
 
 public interface IDirectMessagesAdapter {
 
 	public ParcelableDirectMessage findItem(long id);
 
-	public void setDisplayImagePreview(boolean display);
+    @ShapedImageView.ShapeStyle
+    int getProfileImageStyle();
 
-	public void setImagePreviewScaleType(String scaleType);
+    boolean isProfileImageEnabled();
+
+    int getMediaPreviewStyle();
+
+    MediaLoaderWrapper getMediaLoader();
 }

@@ -31,7 +31,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView.ScaleType;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -43,24 +42,30 @@ import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.holder.MessageConversationViewHolder;
+import de.vanita5.twittnuker.view.ShapedImageView;
+import de.vanita5.twittnuker.view.holder.IncomingMessageViewHolder;
+import de.vanita5.twittnuker.view.holder.MessageViewHolder;
 
-public class MessageConversationAdapter extends Adapter<ViewHolder>
-        implements Constants, IDirectMessagesAdapter, OnClickListener {
+public class MessageConversationAdapter extends Adapter<ViewHolder> implements Constants,
+        IDirectMessagesAdapter, OnClickListener {
 
     private static final int ITEM_VIEW_TYPE_MESSAGE_OUTGOING = 1;
     private static final int ITEM_VIEW_TYPE_MESSAGE_INCOMING = 2;
     private final int mOutgoingMessageColor;
     private final int mIncomingMessageColor;
+    private final boolean mDisplayProfileImage;
 
-	private ScaleType mImagePreviewScaleType;
+    @ShapedImageView.ShapeStyle
+    private final int mProfileImageStyle;
+    private final int mMediaPreviewStyle;
 
     private final Context mContext;
     private final LayoutInflater mInflater;
-	private final MediaLoaderWrapper mImageLoader;
+    private final MediaLoaderWrapper mMediaLoader;
 	private final MultiSelectManager mMultiSelectManager;
     private final MediaLoadingHandler mMediaLoadingHandler;
 
@@ -74,7 +79,12 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mLinkify = new TwidereLinkify(new DirectMessageOnLinkClickHandler(context, null));
 		mMultiSelectManager = app.getMultiSelectManager();
-		mImageLoader = app.getMediaLoaderWrapper();
+        mMediaLoader = app.getMediaLoaderWrapper();
+        final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
+                SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mDisplayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
+        mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
+        mMediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
         mMediaLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
         mIncomingMessageColor = ThemeUtils.getUserAccentColor(context);
         mOutgoingMessageColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
@@ -85,8 +95,9 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
         return mContext;
     }
 
-    public MediaLoaderWrapper getImageLoader() {
-        return mImageLoader;
+    @Override
+    public MediaLoaderWrapper getMediaLoader() {
+        return mMediaLoader;
     }
 
     public TwidereLinkify getLinkify() {
@@ -98,13 +109,13 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
         switch (viewType) {
             case ITEM_VIEW_TYPE_MESSAGE_INCOMING: {
                 final View view = mInflater.inflate(R.layout.card_item_message_conversation_incoming, parent, false);
-                final MessageConversationViewHolder holder = new MessageConversationViewHolder(this, view);
+                final MessageViewHolder holder = new IncomingMessageViewHolder(this, view);
                 holder.setMessageColor(mIncomingMessageColor);
                 return holder;
 			}
             case ITEM_VIEW_TYPE_MESSAGE_OUTGOING: {
                 final View view = mInflater.inflate(R.layout.card_item_message_conversation_outgoing, parent, false);
-                final MessageConversationViewHolder holder = new MessageConversationViewHolder(this, view);
+                final MessageViewHolder holder = new MessageViewHolder(this, view);
                 holder.setMessageColor(mOutgoingMessageColor);
                 return holder;
 			}
@@ -119,7 +130,7 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
             case ITEM_VIEW_TYPE_MESSAGE_OUTGOING: {
                 final Cursor c = mCursor;
                 c.moveToPosition(getCursorPosition(position));
-                ((MessageConversationViewHolder) holder).displayMessage(c, mIndices);
+                ((MessageViewHolder) holder).displayMessage(c, mIndices);
             }
         }
     }
@@ -154,6 +165,16 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
 		return null;
 	}
 
+    @Override
+    public final int getProfileImageStyle() {
+        return mProfileImageStyle;
+    }
+
+    @Override
+    public boolean isProfileImageEnabled() {
+        return mDisplayProfileImage;
+    }
+
 	public ParcelableDirectMessage getDirectMessage(final int position) {
         final Cursor c = mCursor;
 		if (c == null || c.isClosed()) return null;
@@ -181,27 +202,8 @@ public class MessageConversationAdapter extends Adapter<ViewHolder>
 	}
 
 	@Override
-	public void setDisplayImagePreview(final boolean display) {
-		// Images in DM are always enabled
-	}
-
-	@Override
-	public void setImagePreviewScaleType(final String scaleTypeString) {
-        final ScaleType scaleType;
-        switch (Utils.getMediaPreviewStyle(scaleTypeString)) {
-            case VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP: {
-                scaleType = ScaleType.CENTER_CROP;
-                break;
-            }
-            case VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE: {
-                scaleType = ScaleType.CENTER_INSIDE;
-                break;
-            }
-            default: {
-                return;
-            }
-        }
-		mImagePreviewScaleType = scaleType;
+    public final int getMediaPreviewStyle() {
+        return mMediaPreviewStyle;
 	}
 
     public void setCursor(final Cursor cursor) {
