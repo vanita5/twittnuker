@@ -1442,7 +1442,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 			final int stackedTabColor;
             final int themeId = activity.getCurrentThemeResourceId();
             if (drawable instanceof ColorDrawable) {
-				stackedTabColor = mUserUiColor;
+				stackedTabColor = mUiColor;
 				final int tabColor = (Integer) sArgbEvaluator.evaluate(tabOutlineAlphaFactor, stackedTabColor, mCardBackgroundColor);
 				((ColorDrawable) drawable).setColor(tabColor);
 				final int contrastColor = TwidereColorUtils.getContrastYIQ(tabColor, 192);

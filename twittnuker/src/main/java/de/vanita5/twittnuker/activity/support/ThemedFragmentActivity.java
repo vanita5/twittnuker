@@ -22,13 +22,19 @@
 
 package de.vanita5.twittnuker.activity.support;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.LayoutInflaterCompat;
+import android.support.v4.view.LayoutInflaterFactory;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
@@ -37,6 +43,7 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
@@ -54,7 +61,22 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     private String mCurrentThemeBackgroundOption;
     private String mCurrentThemeFontFamily;
 
+    @NonNull
 	@Override
+    public LayoutInflater getLayoutInflater() {
+        final LayoutInflater inflater = super.getLayoutInflater();
+        if (inflater.getFactory() == null) {
+            LayoutInflaterCompat.setFactory(inflater, new ThemedLayoutInflaterFactory(this, new LayoutInflaterFactory() {
+                @Override
+                public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+                    return ThemedFragmentActivity.this.onCreateView(parent, name, context, attrs);
+                }
+            }));
+        }
+        return inflater;
+    }
+
+    @Override
     public String getCurrentThemeFontFamily() {
         return mCurrentThemeFontFamily;
     }

@@ -1193,7 +1193,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
         public AccountIconsAdapter(ComposeActivity activity) {
             mActivity = activity;
-            mInflater = LayoutInflater.from(activity);
+            mInflater = activity.getLayoutInflater();
             mImageLoader = TwittnukerApplication.getInstance(activity).getMediaLoaderWrapper();
             mSelection = new LongSparseArray<>();
         }
