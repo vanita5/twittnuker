@@ -65,7 +65,7 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
 import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
 
-public abstract class AbsStatusesFragment<Data> extends AbsContentListFragment<AbsStatusesAdapter<Data>>
+public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFragment<AbsStatusesAdapter<Data>>
         implements LoaderCallbacks<Data>, StatusAdapterListener, KeyboardShortcutCallback {
 
     private final Object mStatusesBusCallback;

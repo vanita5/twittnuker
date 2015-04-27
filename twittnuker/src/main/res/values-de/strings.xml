@@ -43,7 +43,7 @@
     <string name="select_account">Account auswählen</string>
     <string name="username">Benutzername</string>
     <string name="password">Passwort</string>
-    <string name="label_tweetstore_provider">Twittnuker Datenbank Anbieter</string>
+    <string name="label_data_provider">Twittnuker Datenbank Anbieter</string>
     <string name="label_refresh_service">Dienst aktualisieren</string>
     <string name="label_background_operation_service">Hintergrunddienst</string>
     <string name="open_in_browser">Im Browser öffnen</string>
@@ -659,6 +659,8 @@
     <string name="keyboard_shortcut_back">Zurück</string>
     <string name="press_again_to_close">Nochmal tippen um zu schliessen</string>
     <string name="name_not_set"><xliff:g id="name">%s</xliff:g> nicht gesetzt</string>
+    <string name="app_restart_confirm">Twittnuker startet jetzt neu um die Änderungen anzuwenden.</string>
+    <string name="dont_restart">Nicht neustarten</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

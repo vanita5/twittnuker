@@ -57,7 +57,7 @@ import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 
-public abstract class AbsContentListFragment<A extends IContentCardAdapter> extends BaseSupportFragment
+public abstract class AbsContentRecyclerViewFragment<A extends IContentCardAdapter> extends BaseSupportFragment
         implements OnRefreshListener, DrawerCallback, RefreshScrollTopInterface, ControlBarOffsetListener,
         ContentListSupport {
 
@@ -187,7 +187,7 @@ public abstract class AbsContentListFragment<A extends IContentCardAdapter> exte
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_recycler_view, container, false);
+        return inflater.inflate(R.layout.fragment_content_recyclerview, container, false);
 	}
 
 	@Override

@@ -23,8 +23,12 @@
 package de.vanita5.twittnuker.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -63,9 +67,16 @@ import java.util.List;
 
 public class SettingsActivity extends BasePreferenceActivity {
 
+    private static final int RESULT_SETTINGS_CHANGED = 10;
+
 	private HeaderAdapter mAdapter;
 
     private boolean mShouldNotifyChange;
+
+    public static void setShouldNotifyChange(Activity activity) {
+        if (!(activity instanceof SettingsActivity)) return;
+        ((SettingsActivity) activity).setShouldNotifyChange(true);
+    }
 
     public HeaderAdapter getHeaderAdapter() {
         if (mAdapter != null) return mAdapter;
@@ -108,7 +119,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && data != null && data.getBooleanExtra(EXTRA_CHANGED, false)) {
+        if (resultCode == RESULT_SETTINGS_CHANGED && data != null && data.getBooleanExtra(EXTRA_CHANGED, false)) {
             setShouldNotifyChange(true);
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -147,12 +158,26 @@ public class SettingsActivity extends BasePreferenceActivity {
 
 	@Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-		if (getIntent().getStringExtra(EXTRA_SHOW_FRAGMENT) != null) return false;
+        if (!isTopSettings()) return false;
         getMenuInflater().inflate(R.menu.menu_settings, menu);
 		return true;
 	}
 
 	@Override
+    public void onBackPressed() {
+        if (isTopSettings() && shouldNotifyChange()) {
+            final RestartConfirmDialogFragment df = new RestartConfirmDialogFragment();
+            df.show(getFragmentManager().beginTransaction(), "restart_confirm");
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    private boolean isTopSettings() {
+        return getIntent().getStringExtra(EXTRA_SHOW_FRAGMENT) == null;
+    }
+
+    @Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 			case MENU_HOME: {
@@ -180,8 +205,12 @@ public class SettingsActivity extends BasePreferenceActivity {
         if (shouldNotifyChange()) {
             final Intent data = new Intent();
             data.putExtra(EXTRA_CHANGED, true);
-            setResult(RESULT_OK, data);
+            setResult(isTopSettings() ? RESULT_OK : RESULT_SETTINGS_CHANGED, data);
         }
+        super.finish();
+    }
+
+    private void finishNoRestart() {
         super.finish();
     }
 
@@ -207,11 +236,6 @@ public class SettingsActivity extends BasePreferenceActivity {
     @Override
     public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
         return super.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
-    }
-
-    public static void setShouldNotifyChange(Activity activity) {
-        if (!(activity instanceof SettingsActivity)) return;
-        ((SettingsActivity) activity).setShouldNotifyChange(true);
     }
 
 	@Override
@@ -255,6 +279,33 @@ public class SettingsActivity extends BasePreferenceActivity {
         return mShouldNotifyChange;
 	}
 
+    public static class RestartConfirmDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.app_restart_confirm);
+            builder.setPositiveButton(android.R.string.ok, this);
+            builder.setNegativeButton(R.string.dont_restart, this);
+            return builder.create();
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            final SettingsActivity activity = (SettingsActivity) getActivity();
+            if (activity == null) return;
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE: {
+                    activity.finish();
+                    break;
+                }
+                case DialogInterface.BUTTON_NEGATIVE: {
+                    activity.finishNoRestart();
+                    break;
+                }
+            }
+        }
+    }
+
     private static class HeaderAdapter extends BaseAdapter {
 
         static final int HEADER_TYPE_NORMAL = 0;
@@ -274,6 +325,16 @@ public class SettingsActivity extends BasePreferenceActivity {
 			mResources = context.getResources();
             mActionIconColor = ThemeUtils.getThemeForegroundColor(context);
 		}
+
+        private static int getHeaderType(final Header header) {
+            if (header.fragment != null || header.intent != null)
+                return HEADER_TYPE_NORMAL;
+            else if (header.title != null || header.titleRes != 0)
+                return HEADER_TYPE_CATEGORY;
+            else
+                return HEADER_TYPE_SPACE;
+
+        }
 
         public void add(Header header) {
             mHeaders.add(header);
@@ -415,16 +476,6 @@ public class SettingsActivity extends BasePreferenceActivity {
                 }
             }
             return categoriesCount;
-        }
-
-        private static int getHeaderType(final Header header) {
-            if (header.fragment != null || header.intent != null)
-                return HEADER_TYPE_NORMAL;
-            else if (header.title != null || header.titleRes != 0)
-                return HEADER_TYPE_CATEGORY;
-            else
-                return HEADER_TYPE_SPACE;
-
         }
 
         private View inflateItemView(int viewType, ViewGroup parent) {

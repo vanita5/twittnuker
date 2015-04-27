@@ -95,9 +95,10 @@ public class BaseDialogWhenLargeActivity extends BaseAppCompatActivity {
 		final int actionBarColor = getCurrentActionBarColor();
 		final int themeId = getCurrentThemeResourceId();
 		final String option = getThemeBackgroundOption();
+        final int titleColor = ThemeUtils.getContrastActionBarTitleColor(this, themeId, actionBarColor);
 		final int actionBarItemsColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
 		ThemeUtils.applyActionBarBackground(actionBar, this, themeId, actionBarColor, option, isActionBarOutlineEnabled());
-		ThemeUtils.setActionBarItemsColor(getWindow(), actionBar, actionBarItemsColor);
+        ThemeUtils.setActionBarColor(getWindow(), actionBar, titleColor, actionBarItemsColor);
 	}
 
 	private void setupTintStatusBar() {

@@ -22,11 +22,13 @@
   -->
 
 <FrameLayout
-    android:id="@+id/fragment_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
+
+    <include layout="@layout/layout_content_fragment_common" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_layout"
@@ -34,16 +36,14 @@
         android:layout_height="match_parent"
         android:clipToPadding="false">
 
-        <de.vanita5.twittnuker.view.RecyclerViewBackport
-            android:id="@+id/recycler_view"
+        <ListView
+            android:id="@+id/list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:focusable="true"
             android:focusableInTouchMode="false"
-            android:scrollbars="vertical"/>
+            android:listSelector="?selectableItemBackground" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
-
-    <include layout="@layout/layout_content_fragment_common"/>
 </FrameLayout>
