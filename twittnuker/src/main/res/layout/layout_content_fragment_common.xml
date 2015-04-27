@@ -31,11 +31,7 @@
         android:padding="@dimen/element_spacing_large"
         tools:visibility="gone">
 
-        <ProgressBar
-            style="?android:progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+        <include layout="@layout/layout_progress_wheel_medium" />
     </FrameLayout>
 
     <LinearLayout

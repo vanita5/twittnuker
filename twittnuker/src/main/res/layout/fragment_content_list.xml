@@ -20,38 +20,30 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
+
 <FrameLayout
+    android:id="@+id/fragment_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
-    <RelativeLayout
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
 
-        <com.sprylab.android.widget.TextureVideoView
-            android:id="@+id/video_view"
+        <de.vanita5.twittnuker.view.RecyclerViewBackport
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"/>
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:focusable="true"
+            android:focusableInTouchMode="false"
+            android:scrollbars="vertical"/>
 
-        <ProgressBar
-            android:id="@+id/video_view_progress"
-            style="?android:progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/element_spacing_xsmall"
-            android:layout_alignBottom="@+id/video_view"
-            android:layout_gravity="bottom"
-            android:background="@color/bg_color_video_playback_progress"
-            android:indeterminateDrawable="@android:color/transparent"
-            android:progressDrawable="@drawable/progress_bar_video"
-            android:visibility="gone"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-    </RelativeLayout>
-
-    <include layout="@layout/layout_progress_wheel_medium" />
-
+    <include layout="@layout/layout_content_fragment_common"/>
 </FrameLayout>
