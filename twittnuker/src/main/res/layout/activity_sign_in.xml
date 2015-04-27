@@ -20,20 +20,25 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<de.vanita5.twittnuker.view.TintedStatusFrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:setPadding="true">
 
 	<ScrollView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
         android:layout_gravity="center">
 
-		<RelativeLayout
+        <LinearLayout
 			android:layout_width="300dp"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
-            android:fitsSystemWindows="true"
-			android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
 			<LinearLayout
 				android:id="@+id/username_password"
@@ -68,9 +73,18 @@
 				android:id="@+id/sign_in_sign_up"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_below="@+id/username_password"
 				android:orientation="horizontal"
 				android:padding="8dp">
+
+				<Button
+					android:id="@+id/sign_in"
+					style="?android:buttonStyleSmall"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:minHeight="48dp"
+					android:onClick="onClick"
+					android:text="@string/sign_in"/>
 
                 <Button
                     android:id="@+id/sign_up"
@@ -82,16 +96,6 @@
 					android:onClick="onClick"
                     android:text="@string/register"/>
 
-                <Button
-                    android:id="@+id/sign_in"
-					style="?android:buttonStyleSmall"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:minHeight="48dp"
-					android:onClick="onClick"
-                    android:text="@string/sign_in"/>
-
 			</LinearLayout>
 
 			<Button
@@ -99,7 +103,6 @@
 				style="?android:borderlessButtonStyle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_below="@+id/sign_in_sign_up"
 				android:layout_margin="8dp"
 				android:clickable="true"
 				android:gravity="center_vertical"
@@ -107,7 +110,7 @@
 				android:onClick="onClick"
 				android:text="@string/sign_in_method_introduction_title"
 				android:textAppearance="?android:textAppearanceSmall"/>
-		</RelativeLayout>
+        </LinearLayout>
 	</ScrollView>
 
-</merge>
+</de.vanita5.twittnuker.view.TintedStatusFrameLayout>

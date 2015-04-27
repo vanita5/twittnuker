@@ -145,6 +145,8 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
 		} else if (view instanceof TintableBackgroundView) {
             final TintableBackgroundView tintable = (TintableBackgroundView) view;
             if (view instanceof Button) {
+            } else if (view instanceof EditText) {
+                tintable.setSupportBackgroundTintList(ColorStateList.valueOf(tintColor));
             } else {
                 if (isColorTint) {
                     final int[][] states = {{android.R.attr.state_selected}, {android.R.attr.state_focused},

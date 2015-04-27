@@ -94,7 +94,7 @@ import static de.vanita5.twittnuker.util.Utils.isUserLoggedIn;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.trim;
 
-public class SignInActivity extends BaseAppCompatActivity implements TwitterConstants, OnClickListener,
+public class SignInActivity extends BaseDialogWhenLargeActivity implements TwitterConstants, OnClickListener,
         TextWatcher {
 
 	private static final String TWITTER_SIGNUP_URL = "https://twitter.com/signup";
@@ -107,16 +107,17 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 	private String mConsumerKey, mConsumerSecret;
 	private String mUsername, mPassword;
 	private long mAPIChangeTimestamp;
+    private boolean mSameOAuthSigningUrl, mNoVersionSuffix;
 
 	private EditText mEditUsername, mEditPassword;
 	private Button mSignInButton, mSignUpButton;
     private LinearLayout mSignInSignUpContainer, mUsernamePasswordContainer;
 
+	private final Handler mHandler = new Handler();
 	private TwittnukerApplication mApplication;
 	private SharedPreferences mPreferences;
 	private ContentResolver mResolver;
 	private AbstractSignInTask mTask;
-    private boolean mSameOAuthSigningUrl, mNoVersionSuffix;
 
 	@Override
 	public void afterTextChanged(final Editable s) {
@@ -277,6 +278,8 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 	public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
 		setSignInButton();
 	}
+
+
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -484,8 +487,6 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 		}
 		setSignInButton();
 	}
-
-    private final Handler mHandler = new Handler();
 
 	void onSignInStart() {
         mHandler.post(new Runnable() {
