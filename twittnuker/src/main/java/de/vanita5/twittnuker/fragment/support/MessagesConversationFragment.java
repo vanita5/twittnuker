@@ -31,6 +31,7 @@ import android.database.Cursor;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
@@ -38,6 +39,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.FixedLinearLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -46,6 +48,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Property;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -109,12 +112,13 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.view.StatusComposeEditText;
 import de.vanita5.twittnuker.view.StatusTextCountView;
-import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import me.uucky.colorpicker.internal.EffectViewHelper;
 
 import static de.vanita5.twittnuker.util.Utils.buildDirectMessageConversationUri;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
@@ -128,7 +132,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     private static final String EXTRA_FROM_CACHE = "from_cache";
 
 
-    // Callbacks
+    // Callbacks and listeners
     private LoaderCallbacks<List<ParcelableUser>> mSearchLoadersCallback = new LoaderCallbacks<List<ParcelableUser>>() {
         @Override
         public Loader<List<ParcelableUser>> onCreateLoader(int id, Bundle args) {
@@ -156,6 +160,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 
         }
     };
+    private PanelShowHideListener mScrollListener;
 
     // Utility classes
 	private TwidereValidator mValidator;
@@ -165,6 +170,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     private ReadStateManager mReadStateManager;
     private MediaLoaderWrapper mImageLoader;
     private UserColorNameManager mUserColorNameManager;
+    private EffectViewHelper mEffectHelper;
 
     // Views
     private RecyclerView mMessagesListView;
@@ -181,6 +187,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     private View mUsersSearchEmpty;
     private TextView mUsersSearchEmptyText;
 	private PopupMenu mPopupMenu;
+    private View mInputPanelShadowCompat;
 
     // Adapters
     private MessageConversationAdapter mAdapter;
@@ -195,6 +202,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     private ParcelableAccount mAccount;
     private ParcelableUser mRecipient;
     private boolean mTextChanged, mQueryTextChanged;
+    private View mInputPanel;
 
     @Subscribe
     public void notifyTaskStateChanged(TaskStateChangedEvent event) {
@@ -262,6 +270,20 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         layoutManager.setStackFromEnd(true);
         mMessagesListView.setLayoutManager(layoutManager);
         mMessagesListView.setAdapter(mAdapter);
+
+        final boolean useOutline = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
+
+        if (useOutline) {
+            final float elevation = getResources().getDimension(R.dimen.element_spacing_normal);
+            final PanelElevationProperty property = new PanelElevationProperty(elevation);
+            mEffectHelper = new EffectViewHelper(mInputPanel, property, 100);
+        } else {
+            mEffectHelper = new EffectViewHelper(mInputPanelShadowCompat, View.ALPHA, 100);
+        }
+        mScrollListener = new PanelShowHideListener(mEffectHelper);
+
+        mInputPanelShadowCompat.setVisibility(useOutline ? View.GONE : View.VISIBLE);
+        ViewCompat.setAlpha(mInputPanelShadowCompat, 0);
 
         mUsersSearchAdapter = new SimpleParcelableUsersAdapter(activity);
         mUsersSearchList.setAdapter(mUsersSearchAdapter);
@@ -332,6 +354,8 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         bus.register(this);
 		updateTextCount();
         updateEmptyText();
+        mMessagesListView.addOnScrollListener(mScrollListener);
+        mScrollListener.reset();
     }
 
 	@Override
@@ -353,6 +377,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 
     @Override
     public void onStop() {
+        mMessagesListView.removeOnScrollListener(mScrollListener);
         final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
         bus.unregister(this);
         if (mPopupMenu != null) {
@@ -389,14 +414,15 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         mUsersSearchEmpty = view.findViewById(R.id.users_search_empty);
         mUsersSearchEmptyText = (TextView) view.findViewById(R.id.users_search_empty_text);
         mMessagesListView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        final View inputSendContainer = view.findViewById(R.id.input_send_container);
         mConversationContainer = view.findViewById(R.id.conversation_container);
-        mRecipientSelectorContainer = view.findViewById(R.id.recipient_selector_container);
-        mEditText = (StatusComposeEditText) inputSendContainer.findViewById(R.id.edit_text);
-        mTextCountView = (StatusTextCountView) inputSendContainer.findViewById(R.id.text_count);
-        mSendButton = inputSendContainer.findViewById(R.id.send);
-        mAddImageButton = (ImageView) inputSendContainer.findViewById(R.id.add_image);
         mUsersSearchList = (ListView) view.findViewById(R.id.users_search_list);
+        mRecipientSelectorContainer = view.findViewById(R.id.recipient_selector_container);
+        mInputPanelShadowCompat = view.findViewById(R.id.input_panel_shadow_compat);
+        mInputPanel = view.findViewById(R.id.input_panel);
+        mEditText = (StatusComposeEditText) mInputPanel.findViewById(R.id.edit_text);
+        mTextCountView = (StatusTextCountView) mInputPanel.findViewById(R.id.text_count);
+        mSendButton = mInputPanel.findViewById(R.id.send);
+        mAddImageButton = (ImageView) mInputPanel.findViewById(R.id.add_image);
     }
 
     @Override
@@ -529,6 +555,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
         return false;
     }
+
 
     public void showConversation(final ParcelableAccount account, final ParcelableUser recipient) {
         mAccount = account;
@@ -873,5 +900,47 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         }
     }
 
+    private static class PanelShowHideListener extends RecyclerView.OnScrollListener {
 
+        private final EffectViewHelper mEffectHelper;
+        private boolean mShowElevation;
+
+        PanelShowHideListener(EffectViewHelper helper) {
+            mEffectHelper = helper;
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+            final boolean showElevation = layoutManager.findLastCompletelyVisibleItemPosition() < layoutManager.getItemCount() - 1;
+            if (mShowElevation != showElevation) {
+                mEffectHelper.setState(showElevation);
+            }
+            mShowElevation = showElevation;
+        }
+
+        public void reset() {
+            mEffectHelper.resetState(mShowElevation);
+        }
+    }
+
+    private static class PanelElevationProperty extends Property<View, Float> {
+
+        private final float mElevation;
+
+        private PanelElevationProperty(float elevation) {
+            super(Float.TYPE, null);
+            mElevation = elevation;
+        }
+
+        @Override
+        public void set(View object, Float value) {
+            ViewCompat.setTranslationZ(object, mElevation * value);
+        }
+
+        @Override
+        public Float get(View object) {
+            return ViewCompat.getTranslationZ(object) / mElevation;
+        }
+    }
 }
