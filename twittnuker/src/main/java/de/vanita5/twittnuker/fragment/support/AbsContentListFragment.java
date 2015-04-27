@@ -304,6 +304,14 @@ public abstract class AbsContentListFragment<A extends IContentCardAdapter> exte
         mSwipeRefreshLayout.setVisibility(View.GONE);
         mErrorIconView.setImageResource(icon);
         mErrorTextView.setText(text);
+    }
+
+    protected final void showEmpty(int icon, CharSequence text) {
+        mErrorContainer.setVisibility(View.VISIBLE);
+        mProgressContainer.setVisibility(View.GONE);
+        mSwipeRefreshLayout.setVisibility(View.VISIBLE);
+        mErrorIconView.setImageResource(icon);
+        mErrorTextView.setText(text);
 	}
 
 	protected void updateRefreshProgressOffset() {

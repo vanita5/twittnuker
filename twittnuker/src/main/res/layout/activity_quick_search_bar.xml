@@ -71,12 +71,13 @@
                     <requestFocus/>
                 </EditText>
 
-                <de.vanita5.twittnuker.view.themed.TintThemedImageButton
+                <de.vanita5.twittnuker.view.ActionIconButton
                     android:id="@+id/search_submit"
                     android:layout_width="@dimen/element_size_normal"
                     android:layout_height="match_parent"
                     android:layout_weight="0"
                     android:background="?android:actionBarItemBackground"
+                    android:color="?menuIconColor"
                     android:src="@drawable/ic_action_search"/>
 
             </LinearLayout>

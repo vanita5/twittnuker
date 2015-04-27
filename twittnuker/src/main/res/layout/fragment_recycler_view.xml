@@ -28,6 +28,8 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
+    <include layout="@layout/layout_content_fragment_common" />
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
@@ -44,6 +46,4 @@
             android:scrollbars="vertical"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
-
-    <include layout="@layout/layout_content_fragment_common"/>
 </FrameLayout>
