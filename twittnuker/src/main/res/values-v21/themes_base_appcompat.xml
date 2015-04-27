@@ -23,12 +23,13 @@
 
 <resources>
 
-    <style name="Widget.Base.ActionMode.Light" parent="android:Widget.DeviceDefault.Light.ActionMode">
-        <item name="android:height">?actionBarSize</item>
+    <style name="Theme.Compat.Base.Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:textColorTertiary">@color/tertiary_text_mtrl_dark</item>
+        <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_light</item>
     </style>
 
-    <style name="Widget.Base.ActionMode.Dark" parent="android:Widget.DeviceDefault.ActionMode">
-        <item name="android:height">?actionBarSize</item>
+    <style name="Theme.Compat.Base.Light.Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:textColorTertiary">@color/tertiary_text_mtrl_light</item>
+        <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_dark</item>
     </style>
-
 </resources>

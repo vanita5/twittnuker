@@ -150,7 +150,8 @@
 
         <item name="windowActionBar">false</item>
         <item name="windowActionModeOverlay">false</item>
-        <item name="android:actionBarSize">?actionBarSize</item>
+
+        <item name="android:actionModeStyle">@style/Widget.Twidere.ActionMode.Dark</item>
 
 		<item name="android:windowNoTitle">true</item>
         <item name="android:panelColorBackground">#3c3c3c</item>
@@ -177,7 +178,8 @@
 
         <item name="windowActionBar">false</item>
         <item name="windowActionModeOverlay">false</item>
-        <item name="android:actionBarSize">?actionBarSize</item>
+
+        <item name="android:actionModeStyle">@style/Widget.Twidere.ActionMode.Light</item>
 
 		<item name="android:windowNoTitle">true</item>
         <item name="android:panelColorBackground">#e5e5e5</item>
@@ -264,8 +266,7 @@
 		<item name="android:windowNoDisplay">true</item>
 	</style>
 
-    <style name="Theme.Test" parent="Theme.Compat.Base">
-    </style>
+    <style name="Theme.Test" parent="Theme.Compat.Base"></style>
 
     <style name="Theme.Twidere.Wizard" parent="Theme.Twidere.Light">
         <item name="windowActionBar">false</item>
