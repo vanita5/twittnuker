@@ -221,7 +221,7 @@ public class NotificationHelper implements Constants {
 					viewProfileBuilder.scheme(SCHEME_TWITTNUKER);
 					viewProfileBuilder.authority(AUTHORITY_USER);
 					viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
-					viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(notification.getOriginalStatus().retweeted_by_id));
+					viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(notification.getOriginalStatus().retweeted_by_user_id));
 					final Intent viewProfileIntent = new Intent(Intent.ACTION_VIEW, viewProfileBuilder.build());
 					viewProfileIntent.setPackage(TWITTNUKER_PACKAGE_NAME);
 					builder.addAction(R.drawable.ic_action_profile, mContext.getString(R.string.view_user_profile),

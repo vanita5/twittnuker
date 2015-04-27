@@ -53,7 +53,7 @@
     </RelativeLayout>
 
 
-    <com.pnikosis.materialishprogress.ProgressWheel
+    <de.vanita5.twittnuker.view.themed.TintThemedProgressWheel
         android:id="@+id/load_progress"
         android:layout_width="@dimen/element_size_normal"
         android:layout_height="@dimen/element_size_normal"
