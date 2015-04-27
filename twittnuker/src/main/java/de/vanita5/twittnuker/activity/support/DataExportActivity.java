@@ -41,12 +41,22 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class DataExportActivity extends BaseAppCompatActivity implements FileSelectorDialogFragment.Callback,
+public class DataExportActivity extends ThemedFragmentActivity implements FileSelectorDialogFragment.Callback,
 		DataExportImportTypeSelectorDialogFragment.Callback {
 
 	private ExportSettingsTask mTask;
 
 	@Override
+    public int getThemeColor() {
+        return ThemeUtils.getThemeColor(this);
+    }
+
+	@Override
+	public int getActionBarColor() {
+		return ThemeUtils.getActionBarColor(this);
+	}
+
+    @Override
 	public int getThemeResourceId() {
 		return ThemeUtils.getNoDisplayThemeResource(this);
 	}

@@ -201,6 +201,11 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 	}
 
     @Override
+    public int getActionBarColor() {
+        return ThemeUtils.getActionBarColor(this);
+    }
+
+    @Override
     public int getThemeResourceId() {
         return ThemeUtils.getComposeThemeResource(this);
     }

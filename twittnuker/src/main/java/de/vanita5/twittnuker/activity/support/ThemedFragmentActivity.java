@@ -121,10 +121,6 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
 		return ThemeUtils.getThemeFontFamily(this);
 	}
 
-    public int getActionBarColor() {
-        return ThemeUtils.getActionBarColor(this);
-    }
-
 	@Override
     @ShapeStyle
     public int getCurrentProfileImageStyle() {

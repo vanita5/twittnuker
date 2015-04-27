@@ -39,11 +39,21 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import java.io.File;
 import java.io.IOException;
 
-public class DataImportActivity extends BaseAppCompatActivity implements FileSelectorDialogFragment.Callback,
+public class DataImportActivity extends ThemedFragmentActivity implements FileSelectorDialogFragment.Callback,
 		DataExportImportTypeSelectorDialogFragment.Callback {
 
 	private ImportSettingsTask mImportSettingsTask;
 	private OpenImportTypeTask mOpenImportTypeTask;
+
+    @Override
+    public int getThemeColor() {
+        return ThemeUtils.getThemeColor(this);
+    }
+
+	@Override
+	public int getActionBarColor() {
+		return ThemeUtils.getActionBarColor(this);
+	}
 
 	@Override
 	public int getThemeResourceId() {
