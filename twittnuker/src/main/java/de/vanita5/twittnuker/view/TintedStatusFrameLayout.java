@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.util.Utils;
 public class TintedStatusFrameLayout extends ExtendedFrameLayout {
 
 	private final Paint mBlackPaint, mShadowPaint, mColorPaint;
-    private final boolean mSetPadding;
+    private boolean mSetPadding;
 
 	private int mStatusBarHeight;
 	private float mFactor;
@@ -55,13 +55,13 @@ public class TintedStatusFrameLayout extends ExtendedFrameLayout {
 
 	public TintedStatusFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TintedStatusLayout);
-        mSetPadding = a.getBoolean(R.styleable.TintedStatusLayout_setPadding, false);
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TintedStatusLayout);
+        setSetPaddingEnabled(a.getBoolean(R.styleable.TintedStatusLayout_setPadding, false));
+        a.recycle();
 		mBlackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mBlackPaint.setColor(Color.BLACK);
 		mShadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mColorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        a.recycle();
 		setWillNotDraw(false);
         setFactor(1);
 	}
@@ -129,4 +129,8 @@ public class TintedStatusFrameLayout extends ExtendedFrameLayout {
 		mColorPaint.setAlpha(Math.round(0xFF * MathUtils.clamp(f, 0, 1)));
 		invalidate();
 	}
+
+    public void setSetPaddingEnabled(boolean enabled) {
+        mSetPadding = enabled;
+    }
 }

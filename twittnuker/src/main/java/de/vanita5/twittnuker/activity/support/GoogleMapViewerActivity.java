@@ -39,26 +39,10 @@ import de.vanita5.twittnuker.fragment.iface.IMapFragment;
 import de.vanita5.twittnuker.fragment.support.GoogleMapFragment;
 import de.vanita5.twittnuker.fragment.support.WebMapFragment;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class GoogleMapViewerActivity extends ThemedAppCompatActivity implements Constants {
+public class GoogleMapViewerActivity extends BaseDialogWhenLargeActivity implements Constants {
 
     @Override
-    public int getThemeColor() {
-        return ThemeUtils.getUserAccentColor(this);
-    }
-
-	@Override
-	public int getActionBarColor() {
-		return ThemeUtils.getActionBarColor(this);
-	}
-
-	@Override
-	public int getThemeResourceId() {
-		return ThemeUtils.getViewerThemeResource(this);
-	}
-
-	@Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_google_maps_viewer, menu);
 		return true;
@@ -72,11 +56,10 @@ public class GoogleMapViewerActivity extends ThemedAppCompatActivity implements 
 				break;
 			}
 			case MENU_CENTER: {
-				final Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
-				if (!(fragment instanceof IMapFragment)) {
-					break;
-				}
-				((IMapFragment) fragment).center();
+                final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_content);
+                if ((fragment instanceof IMapFragment)) {
+					((IMapFragment) fragment).center();
+                }
 				break;
 			}
 		}
@@ -86,6 +69,8 @@ public class GoogleMapViewerActivity extends ThemedAppCompatActivity implements 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_content_fragment);
+        getMainContent().setSetPaddingEnabled(true);
 		final Uri uri = getIntent().getData();
 		if (uri == null || !AUTHORITY_MAP.equals(uri.getAuthority())) {
 			finish();
@@ -112,7 +97,7 @@ public class GoogleMapViewerActivity extends ThemedAppCompatActivity implements 
 		final Fragment fragment = isNativeMapSupported() ? new GoogleMapFragment() : new WebMapFragment();
 		fragment.setArguments(bundle);
 		final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.replace(android.R.id.content, fragment).commit();
+        ft.replace(R.id.main_content, fragment).commit();
 	}
 
 	private boolean isNativeMapSupported() {
