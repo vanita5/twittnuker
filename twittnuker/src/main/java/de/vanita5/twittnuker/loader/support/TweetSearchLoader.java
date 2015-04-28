@@ -41,12 +41,15 @@ import static de.vanita5.twittnuker.util.Utils.isFiltered;
 public class TweetSearchLoader extends TwitterAPIStatusesLoader {
 
 	private final String mQuery;
+    private final boolean mGapEnabled;
 
     public TweetSearchLoader(final Context context, final long accountId, final String query,
                              final long sinceId, final long maxId, final List<ParcelableStatus> data,
-                             final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {
+                             final String[] savedStatusesArgs, final int tabPosition, boolean fromUser,
+                             boolean makeGap) {
         super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
 		mQuery = query;
+        mGapEnabled = makeGap;
 	}
 
     @NonNull
@@ -69,4 +72,8 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
         return isFiltered(database, status, true);
 	}
 
+    @Override
+    protected boolean isGapEnabled() {
+        return mGapEnabled;
+    }
 }

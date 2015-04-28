@@ -228,6 +228,7 @@ public interface IntentConstants {
 	public static final String EXTRA_SOURCE = "source";
 	public static final String EXTRA_DESTINATION = "destination";
 	public static final String EXTRA_ACTIVITY_OPTIONS = "activity_options";
+	public static final String EXTRA_MAKE_GAP = "make_gap";
 
 	/* Twittnuker */
 	public static final String EXTRA_HOTOTIN_EXPANDED_TEXT = "hototin_expanded_text";
