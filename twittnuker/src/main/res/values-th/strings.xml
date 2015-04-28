@@ -32,7 +32,6 @@
     <string name="error_occurred">มีข้อผิดพลาดเกิดขึ้น กรุณาลองอีกครั้ง</string>
     <string name="error_already_logged_in">คุณเข้าสู่ระบบอยู่แล้ว</string>
     <string name="no_account_selected">ไม่มีบัญชีผู้ใช้ที่เลือกไว้</string>
-    <string name="empty_account_selection_disallowed">กรุณาเลือกอย่างน้อยหนึ่งบัญชี</string>
     <string name="error_unknown_error">ผิดพลาด: ไม่ทราบสาเหตุ อาจจะเป็นบั๊ก</string>
     <string name="error_message">ผิดพลาด: <xliff:g id="message">%s</xliff:g></string>
     <string name="error_message_with_action">ข้อผิดพลาดเมื่อ <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
@@ -204,7 +203,6 @@
     <string name="tabs">แท็บ</string>
     <string name="add_tab">เพิ่มแท็บ</string>
     <string name="edit_tab">แก้ไขแท็บ</string>
-    <string name="invalid_settings">พบการตั้งค่าที่ไม่ถูกต้อง</string>
     <string name="icon">ไอคอน</string>
     <string name="pick_file">เลือกไฟล์</string>
     <string name="user_timeline">ไทม์ไลน์ผู้ใช้</string>
@@ -314,7 +312,6 @@
     <string name="profile_images">ภาพแทนตัว</string>
     <string name="preview_images">แสดงตัวอย่างภาพ</string>
     <string name="preload_wifi_only">โหลดล่วงหน้าเมื่อใช้ Wifi เท่านั้น</string>
-    <string name="disable_tab_swipe">ปิดการปัดแท็บ</string>
     <string name="sign_in_method_introduction_title">มันทำงานอย่างไร?</string>
     <string name="edit_draft">แก้ไขแบบร่าง</string>
     <string name="profile_image">ภาพโปรไฟล์</string>

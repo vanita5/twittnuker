@@ -32,7 +32,6 @@
     <string name="error_occurred">Трапилася помилка, спробуйте ще раз.</string>
     <string name="error_already_logged_in">Ви вже увійшли.</string>
     <string name="no_account_selected">Не вибрано жодного профілю.</string>
-    <string name="empty_account_selection_disallowed">Будь ласка, виберіть хоча б один профіль.</string>
     <string name="error_unknown_error">Помилка: невідома помилка, це можливо - баг.</string>
     <string name="error_message">Помилка: <xliff:g id="message">%s</xliff:g></string>
     <string name="error_message_with_action">Помилка <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
@@ -204,7 +203,6 @@
     <string name="tabs">Вкладки</string>
     <string name="add_tab">Додати вкладку</string>
     <string name="edit_tab">Редагувати вкладку</string>
-    <string name="invalid_settings">Знайдено недопустимі налаштування.</string>
     <string name="icon">Піктограма</string>
     <string name="pick_file">Вибрати файл</string>
     <string name="user_timeline">Стрічка користувача</string>
@@ -338,7 +336,6 @@
     <string name="profile_images">Зображення профілю</string>
     <string name="preview_images">Перегляд зображень</string>
     <string name="preload_wifi_only">Попереднє завантаження лише через wi-fi</string>
-    <string name="disable_tab_swipe">Вимкнути ковзання по вкладках</string>
     <string name="sign_in_method_introduction_title">Як це працює?</string>
     <string name="sign_in_method_introduction">Більшість клієнтів на кшталт twicca відкривають браузер і просять вас ввести ім\'я користувача та пароль і тоді повертаються назад до своїх оболонок. Інколи це може стати дуже незручно.\n\n Twittnuker використовує простіші кроки для входу, не відкриваючи браузер. Не турбуйтеся про пароль, Twittnuker ніколи не зберігатиме його, це повністю безпечно!</string>
     <string name="quote_protected_status_notice">Не рекомендується цитувати захищений твіт. </string>

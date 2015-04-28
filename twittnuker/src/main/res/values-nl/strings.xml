@@ -32,7 +32,6 @@
   <string name="error_occurred">Er is iets misgegaan, probeer opnieuw.</string>
   <string name="error_already_logged_in">U bent al ingelogd.</string>
   <string name="no_account_selected">Geen account geselecteerd.</string>
-  <string name="empty_account_selection_disallowed">Selecteer tenminste één account.</string>
   <string name="error_unknown_error">Fout: onbekend, waarschijnlijk een bug.</string>
   <string name="error_message">Fout: <xliff:g id="message">%s</xliff:g></string>
   <string name="error_message_with_action">Fout bij actie <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
@@ -209,7 +208,6 @@
   <string name="tabs">Tabbladen</string>
   <string name="add_tab">Voeg een tabblad toe</string>
   <string name="edit_tab">Wijzig tabblad</string>
-  <string name="invalid_settings">Ongeldige instellingen gevonden.</string>
   <string name="icon">Icoon</string>
   <string name="pick_file">Kies bestand</string>
   <string name="user_timeline">Gebruiker tijdlijn</string>
@@ -346,7 +344,6 @@
   <string name="profile_images">Profielfoto\'s</string>
   <string name="preview_images">Voorbeeldafbeeldingen</string>
   <string name="preload_wifi_only">Preload alleen via Wi-Fi</string>
-  <string name="disable_tab_swipe">Schakel schuiven tussen tabbladen uit</string>
   <string name="sign_in_method_introduction_title">Hoe werkt het?</string>
   <string name="sign_in_method_introduction">De meeste cliënten zoals twicca openen een browser en vragen je je gebruikersnaam en wachtwoord te typen, en daarna brengen ze je terug naar hun cliënten. Soms kan dit erg lastig worden.\n\nTwittnuker gebruikt gemakkelijkere stappen om in te loggen, zonder de browser te openen. Maak je geen zorgen over je wachtwoord, Twittnuker zal het nooit opslaan, het is geheel veilig!</string>
   <string name="quote_protected_status_notice">Het is niet aangeraden om beschermde tweets te citeren.</string>

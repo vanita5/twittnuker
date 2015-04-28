@@ -34,7 +34,6 @@
     <string name="error_occurred">Wystąpił błąd, spróbuj ponownie.</string>
     <string name="error_already_logged_in">Już jesteś zalogowany.</string>
     <string name="no_account_selected">Nie wybrano żadnego konta.</string>
-    <string name="empty_account_selection_disallowed">Wybierz przynajmniej jedno konto.</string>
     <string name="error_unknown_error">Nieznany błąd, prawdopodobnie błąd w aplikacji.</string>
     <string name="error_message">Błąd: <xliff:g id="message">%s</xliff:g></string>
     <string name="error_message_with_action">Błąd podczas <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
@@ -221,7 +220,6 @@
     <string name="tabs">Karty</string>
     <string name="add_tab">Dodaj zakładkę</string>
     <string name="edit_tab">Edytuj zakładkę</string>
-    <string name="invalid_settings">Znaleziono niepoprawne ustawienia.</string>
     <string name="icon">Ikona</string>
     <string name="pick_file">Wybierz plik</string>
     <string name="user_timeline">Strumień użytkownika</string>
@@ -357,7 +355,6 @@
     <string name="profile_images">Zdjęcia profilowe</string>
     <string name="preview_images">Podgląd obrazków</string>
     <string name="preload_wifi_only">Wczytuj tylko gdy działa Wi-Fi</string>
-    <string name="disable_tab_swipe">Wyłącz przełączanie kart gestem</string>
     <string name="sign_in_method_introduction_title">Jak to działa?</string>
   <string name="sign_in_method_introduction">Większość klientów jak np. Twicca otwiera okno przeglądarki gdzie należy podać nazwę użytkownika i hasło a następnie wraca do aplikacji. Czasami może to być całkiem niewygodne.\n\n
   Twittnuker używa znacznie prostszego mechanizmu logowania, bez otwierania okna przeglądarki. Twoje hasło jest całkowicie bezpieczne gdyż Twittnuker nigdy go nie przechowuje.</string>

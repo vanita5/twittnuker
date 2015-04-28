@@ -34,7 +34,6 @@
     <string name="error_occurred">Si è verificato un errore, riprova.</string>
     <string name="error_already_logged_in">Hai già effettuato il login.</string>
     <string name="no_account_selected">Nessun account selezionato.</string>
-    <string name="empty_account_selection_disallowed">Seleziona almeno un account.</string>
     <string name="error_unknown_error">Errore: Errore sconosciuto, questo è probabilmente un bug.</string>
     <string name="error_message">Errore: <xliff:g id="message">%s</xliff:g></string>
     <string name="error_message_with_action">Errore durante <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
@@ -221,7 +220,6 @@
     <string name="tabs">Tab</string>
     <string name="add_tab">Aggiungi tab</string>
     <string name="edit_tab">Modifica tab</string>
-    <string name="invalid_settings">Rilevate impostazioni non valide.</string>
     <string name="icon">Icona</string>
     <string name="pick_file">Seleziona file</string>
     <string name="user_timeline">Timeline utente</string>
@@ -362,7 +360,6 @@
     <string name="profile_images">Immagini del profilo</string>
     <string name="preview_images">Anteprima immagini</string>
     <string name="preload_wifi_only">Precarica solo se in Wi-Fi</string>
-    <string name="disable_tab_swipe">Disabilita swipe delle tab</string>
     <string name="sign_in_method_introduction_title">Come funziona?</string>
     <string name="sign_in_method_introduction">Molti client come twicca aprono una finestra del browser per effettuare il login, per poi ritornare all\'app. Troppo complicato. \n\nTwittnuker usa usa un metodo di login semplificato, che non ha bisogno del browser. Non preoccuparti della tua password, Twittnuker non la memorizza, ed è sicuro al 100%!</string>
     <string name="quote_protected_status_notice">Non è raccomandato quotare un tweet protetto.</string>

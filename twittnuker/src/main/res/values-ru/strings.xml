@@ -34,7 +34,6 @@
     <string name="error_occurred">Произошла ошибка, пожалуйста, попробуйте еще раз.</string>
     <string name="error_already_logged_in">Вы уже вошли.</string>
     <string name="no_account_selected">Аккаунт не выбран.</string>
-    <string name="empty_account_selection_disallowed">Пожалуйста, выберите хотя-бы один аккаунт.</string>
     <string name="error_unknown_error">Ошибка: Это неизвестная ошибка, скорее всего - баг.</string>
     <string name="error_message">Ошибка: <xliff:g id="message">%s</xliff:g></string>
     <string name="error_message_with_action">Ошибка <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
@@ -221,7 +220,6 @@
     <string name="tabs">Вкладки</string>
     <string name="add_tab">Добавить вкладку</string>
     <string name="edit_tab">Редактировать вкладку</string>
-    <string name="invalid_settings">Найдены недопустимые настройки</string>
     <string name="icon">Иконка</string>
     <string name="pick_file">Выбрать файл</string>
     <string name="user_timeline">Лента пользователя</string>
@@ -362,7 +360,6 @@
     <string name="profile_images">Изображения профиля</string>
     <string name="preview_images">Предпросмотр изображений</string>
     <string name="preload_wifi_only">Предзагружать только по Wi-Fi</string>
-    <string name="disable_tab_swipe">Выкл свайп между вкладками</string>
     <string name="sign_in_method_introduction_title">Как это работает?</string>
   <string name="sign_in_method_introduction">Большинство программ-клиентов, таких как twicca, открывает запрос логина и пароля через браузер, а затем возвращает вас обратно в программу-клиент. Иногда это очень неудобно. Twittnuker использует другой, более простой механизм входа без перехода в браузер. Не переживайте за ваши пароли, Twittnuker нигде их не хранит, это абсолютно безопасно!
 </string>

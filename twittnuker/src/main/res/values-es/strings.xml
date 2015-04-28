@@ -34,7 +34,6 @@
     <string name="error_occurred">A ocurrido un error, inténtelo de nuevo.</string>
     <string name="error_already_logged_in">Ya has iniciado sesión.</string>
     <string name="no_account_selected">No se seleccionó ninguna cuenta.</string>
-    <string name="empty_account_selection_disallowed">Selecciona al menos una cuenta.</string>
     <string name="error_unknown_error">Error: Error desconocido, esto es probablemente un bug.</string>
     <string name="error_message">Error: <xliff:g id="message">%s</xliff:g></string>
     <string name="error_message_with_action">Error durante <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
@@ -43,7 +42,6 @@
     <string name="select_account">Seleccione la cuenta</string>
     <string name="username">Nombre de usuario</string>
     <string name="password">Contraseña</string>
-    <string name="label_data_provider">Proveedor de base de datos de Twittnuker</string>
     <string name="label_refresh_service">Recargar servicio</string>
     <string name="label_background_operation_service">Servicio en segundo plano</string>
     <string name="open_in_browser">Abrir en el navegador</string>
@@ -221,7 +219,6 @@
     <string name="tabs">Pestañas</string>
     <string name="add_tab">Agregar pestaña</string>
     <string name="edit_tab">Editar pestaña</string>
-    <string name="invalid_settings">Se encontraron ajustes no válidos.</string>
     <string name="icon">Icono</string>
     <string name="pick_file">Selecciona el archivo</string>
     <string name="user_timeline">Cronología del usuario</string>
@@ -240,6 +237,7 @@
     <string name="status_shortener">Acortador de tweets</string>
     <string name="status_shortener_default">Nada (Cancelar envío)</string>
     <string name="error_message_status_too_long">Tweet demasiado largo.</string>
+    <string name="error_message_message_too_long">Error, mensaje muy largo.</string>
     <string name="error_message_no_content">Sin contenido</string>
     <string name="error_message_tweet_shorten_failed">Error al acortar el tweet.</string>
     <string name="multimedia_contents">Contenido multimedia</string>
@@ -362,7 +360,6 @@
     <string name="profile_images">Imágenes de perfil</string>
     <string name="preview_images">Vista previa de imágenes</string>
     <string name="preload_wifi_only">Precargar solo con Wi-Fi</string>
-    <string name="disable_tab_swipe">Desactivar el cambio de pestañas deslizando el dedo por la pantalla</string>
     <string name="sign_in_method_introduction_title">¿Cómo funciona?</string>
     <string name="sign_in_method_introduction">La mayoría de los clientes como twicca abren un navegador solicitando que escribas el nombre de usuario y la contraseña, después el navegador te devuelve al cliente. A veces esto puede llegar a ser muy inconveniente. \n\n Twittnuker usa unos pasos más simples para iniciar sesión, sin abrir el navegador. No te preocupes por tu contraseña, Twittnuker nunca la almacenará, ¡es totalmente seguro!</string>
     <string name="quote_protected_status_notice">No se recomienda citar tweets protegidos.</string>

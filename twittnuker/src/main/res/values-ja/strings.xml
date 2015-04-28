@@ -34,7 +34,6 @@
     <string name="error_occurred">エラーが発生しました。もう一度お試しください。</string>
     <string name="error_already_logged_in">あなたは既にサインインしています。</string>
     <string name="no_account_selected">アカウントが選択されていません。</string>
-    <string name="empty_account_selection_disallowed">最低でもひとつのアカウントを選んでください。</string>
     <string name="error_unknown_error">エラー：詳細不明、バグかもしれません&#8230;</string>
     <string name="error_message">エラー：<xliff:g id="message">%s</xliff:g></string>
     <string name="error_message_with_action"><xliff:g id="action">%1$s</xliff:g>中のエラー: <xliff:g id="message">%2$s</xliff:g></string>
@@ -190,6 +189,7 @@
     <string name="lists">リスト</string>
     <string name="users_lists">保存したリスト</string>
     <string name="lists_following_user">追加されたリスト</string>
+    <string name="lists_following_you">あなたをフォローしているリスト</string>
     <string name="item_3_minutes">3分</string>
     <string name="item_5_minutes">5分</string>
     <string name="item_10_minutes">10分</string>
@@ -220,7 +220,6 @@
     <string name="tabs">タブ</string>
     <string name="add_tab">タブを追加</string>
     <string name="edit_tab">タブを編集</string>
-    <string name="invalid_settings">無効な設定が見つかりました。</string>
     <string name="icon">アイコン</string>
     <string name="pick_file">ファイルを選択</string>
     <string name="user_timeline">ユーザータイムライン</string>
@@ -358,7 +357,6 @@
     <string name="profile_images">プロフィール画像</string>
     <string name="preview_images">プレビュー画像</string>
     <string name="preload_wifi_only">Wi-Fi接続時のみ先読み</string>
-    <string name="disable_tab_swipe">タブのスワイプ操作を無効化</string>
     <string name="sign_in_method_introduction_title">どんなふうに動作するの?</string>
     <string name="sign_in_method_introduction">ほとんどのクライアントではブラウザを開いてユーザー名とパスワードを入力させた後クライアントに戻ります。\n\nTTwittnukerではそんな面倒なことをせずにログインできます。パスワードの保管などはしていないのでご安心ください。</string>
     <string name="quote_protected_status_notice">非公開ツイートを引用するのはおすすめできません。</string>
@@ -615,6 +613,7 @@
     <string name="photo">写真</string>
     <string name="gallery">ギャラリー</string>
     <string name="remove">削除</string>
+    <string name="load_media">メディアを読み込む</string>
     <string name="profile_text_color">テキストの色</string>
     <string name="profile_background_color">背景色</string>
     <string name="profile_link_color_main_color">テーマカラー</string>
@@ -631,10 +630,13 @@
     <string name="no_user_found">ユーザーが見つかりません。</string>
     <string name="members">追加されているユーザー</string>
     <string name="subscribers">追加しているユーザー</string>
+    <string name="read_from_bottom">タイムラインを下から読む</string>
+    <string name="register">新規登録</string>
     <string name="follows">保存している</string>
     <string name="belongs_to">保存されている</string>
     <string name="select_accounts">アカウントを選択</string>
     <string name="media_preview">メディアのプレビュー</string>
+    <string name="no_location">位置情報なし</string>
     <string name="getting_location">位置を取得しています。</string>
     <string name="save_to_gallery">ギャラリーに保存</string>
     <string name="unknown_location">場所不明</string>
@@ -646,7 +648,17 @@
     <string name="user_type_verified">認証された</string>
     <string name="user_type_protected">保護されている</string>
     <string name="share_status">ツイートをシエア</string>
+    <string name="pebble_notifications">Pebbleへ通知</string>
+    <string name="pebble_notifications_summary">通知をPebbleへ送信する</string>
+    <string name="tweet_from_name"><xliff:g id="text">%1$s</xliff:g>からツイート投稿</string>
     <string name="hide_card_actions">アクションボタンを非表示</string>
+    <string name="drafts_hint_messages">未送信のツイートが保存されます</string>
+    <string name="keyboard_shortcuts">キーボードショートカット</string>
+    <string name="keyboard_shortcut_hint">キーを押してください</string>
+    <string name="overwrite">上書き</string>
+    <string name="navigation">ナビゲーション</string>
+    <string name="reset_to_default">初期化する</string>
+    <string name="reset_keyboard_shortcuts_confirm">キーボードショートカットを初期化しますか？</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">タブに未読ツイート/メッセージ数を表示します。</string>

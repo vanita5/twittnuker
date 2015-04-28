@@ -34,7 +34,6 @@
     <string name="error_occurred">Tapahtui virhe, yritä uudelleen.</string>
     <string name="error_already_logged_in">Olet jo kirjautunut sisään.</string>
     <string name="no_account_selected">Tiliä ei ole valittu.</string>
-    <string name="empty_account_selection_disallowed">Valitse vähintään yksi tili.</string>
     <string name="error_unknown_error">Virhe: Tuntematon virhe, joka on todennäköisesti ohjelmavirhe.</string>
     <string name="error_message">Virhe: <xliff:g id="message">%s</xliff:g></string>
     <string name="error_message_with_action">Virhe toiminnossa <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
@@ -43,7 +42,6 @@
     <string name="select_account">Valitse tili</string>
     <string name="username">Käyttäjätunnus</string>
     <string name="password">Salasana</string>
-    <string name="label_data_provider">Twittnukern tietokannan tarjoaja</string>
     <string name="label_refresh_service">Päivitä palvelu</string>
     <string name="label_background_operation_service">Taustatoimintojen palvelu</string>
     <string name="open_in_browser">Avaa selaimessa</string>
@@ -221,7 +219,6 @@
     <string name="tabs">Välilehdet</string>
     <string name="add_tab">Lisää välilehti</string>
     <string name="edit_tab">Muokkaa välilehteä</string>
-    <string name="invalid_settings">Asetukset ovat virheelliset.</string>
     <string name="icon">Kuvake</string>
     <string name="pick_file">Valitse tiedosto</string>
     <string name="user_timeline">Käyttäjän aikajana</string>
@@ -358,7 +355,6 @@
     <string name="profile_images">Profiilin kuvat</string>
     <string name="preview_images">Esikatsele kuvia</string>
     <string name="preload_wifi_only">Lataa etukäteen vain Wi-Fi-yhteydellä</string>
-    <string name="disable_tab_swipe">Ota välilehtien pyyhkäisy pois käytöstä</string>
     <string name="sign_in_method_introduction_title">Kuinka se toimii?</string>
     <string name="sign_in_method_introduction">Useimmat asiakasohjelmat, kuten Twicca, avaavat selaimen, johon kirjoitetaan käyttäjätunnus ja salasana. Tunnuksen syöttämisen jälkeen käyttäjä ohjataan takaisin asiakasohjelmaan. Tämä voi olla hyvinkin epäkäytännöllistä.\n\nTwittnuker käyttää yksinkertaisempaa tapaa, jossa ei tarvitse avata selainta. Älä murehdi salasanasta: Twittnuker ei säilytä sitä ja salasana on täysin turvassa!</string>
     <string name="quote_protected_status_notice">Ei ole suositeltavaa lainata suojattua twiittiä.</string>

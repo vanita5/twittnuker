@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage.CursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
@@ -112,8 +113,10 @@ public class MessageViewHolder extends ViewHolder implements OnMediaClickListene
 			textSecondaryDark = textColorSecondaryInverse;
 			textSecondaryLight = textColorSecondary;
 		}
-		final int textContrastPrimary = TwidereColorUtils.getContrastYIQ(color, 192, textPrimaryDark, textPrimaryLight);
-		final int textContrastSecondary = TwidereColorUtils.getContrastYIQ(color, 192, textSecondaryDark, textSecondaryLight);
+        final int textContrastPrimary = TwidereColorUtils.getContrastYIQ(color,
+                ThemeUtils.ACCENT_COLOR_THRESHOLD, textPrimaryDark, textPrimaryLight);
+        final int textContrastSecondary = TwidereColorUtils.getContrastYIQ(color,
+                ThemeUtils.ACCENT_COLOR_THRESHOLD, textSecondaryDark, textSecondaryLight);
 		text.setTextColor(textContrastPrimary);
 		text.setLinkTextColor(textContrastSecondary);
 		time.setTextColor(textContrastSecondary);

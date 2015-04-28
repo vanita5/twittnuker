@@ -49,7 +49,6 @@ import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffset
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
 import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
@@ -160,7 +159,6 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
 		setHasOptionsMenu(true);
 		final Bundle args = getArguments();
 		final FragmentActivity activity = getActivity();
-        final TwittnukerApplication app = TwittnukerApplication.getInstance(activity);
         mPagerAdapter = new SupportTabsAdapter(activity, getChildFragmentManager(), null, 1);
         mPagerAdapter.addTab(StatusesSearchFragment.class, args, getString(R.string.statuses), R.drawable.ic_action_twitter, 0, null);
         mPagerAdapter.addTab(SearchUsersFragment.class, args, getString(R.string.users), R.drawable.ic_action_user, 1, null);
@@ -171,6 +169,7 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
         mPagerIndicator.setOnPageChangeListener(this);
         ThemeUtils.initPagerIndicatorAsActionBarTab(activity, mPagerIndicator);
         ThemeUtils.setCompatToolbarOverlay(activity, new EmptyDrawable());
+        ThemeUtils.setCompatContentViewOverlay(activity, new EmptyDrawable());
 		if (savedInstanceState == null && args != null && args.containsKey(EXTRA_QUERY)) {
 			final String query = args.getString(EXTRA_QUERY);
 			final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),

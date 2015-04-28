@@ -34,7 +34,6 @@
     <string name="error_occurred">Terjadi kesalahan, silahkan coba lagi.</string>
     <string name="error_already_logged_in">Anda sudah login.</string>
     <string name="no_account_selected">Tidak ada akun yang dipilih.</string>
-    <string name="empty_account_selection_disallowed">Silahkan pilih setidaknya satu akun.</string>
     <string name="error_unknown_error">Kesalahan: Kesalahan tidak diketahui, ini mungkin adalah bug.</string>
     <string name="error_message">Kesalahan: <xliff:g id="message">%s</xliff:g></string>
     <string name="error_message_with_action">Kesalahan saat <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
@@ -221,7 +220,6 @@
     <string name="tabs">Tab</string>
     <string name="add_tab">Tambah tab</string>
     <string name="edit_tab">Sunting tab</string>
-    <string name="invalid_settings">Pengaturan salah ditemukan.</string>
     <string name="icon">Ikon</string>
     <string name="pick_file">Pilih berkas</string>
     <string name="user_timeline">Timeline pengguna</string>
@@ -358,7 +356,6 @@
     <string name="profile_images">Gambar Profil </string>
     <string name="preview_images">Pratinjau gambar</string>
     <string name="preload_wifi_only">Preload menggunakan Wi-Fi saja</string>
-    <string name="disable_tab_swipe">Nonaktifkan tab menggesek</string>
     <string name="sign_in_method_introduction_title">Bagaimana cara kerjanya?</string>
     <string name="sign_in_method_introduction">Umumnya aplikasi pihak ke-3 seperti twicca perlu membuka peramban untuk memasukkan nama pengguna dan sandi, kemudian akan kembali ke aplikasi tersebut. Terkadang hal ini sangat menggangu. \n\nTwittnuker menggunakan langkah-langkah yang lebih sederhana untuk masuk ke twitter tanpa perlu membuka peramban. Tidak perlu khawatir dengan sandi anda, Twittnuker tidak akan pernah menyimpannya, ini benar-benar aman!</string>
     <string name="quote_protected_status_notice">Tidak direkomendasikan untuk mengutip twit terproteksi.</string>

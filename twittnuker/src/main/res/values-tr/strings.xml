@@ -34,7 +34,6 @@
   <string name="error_occurred">Bir hata oluştu, lütfen daha sonra deneyin.</string>
   <string name="error_already_logged_in">Zaten giriş yaptınız</string>
   <string name="no_account_selected">Hesap seçilmedi.</string>
-  <string name="empty_account_selection_disallowed">Lütfen en az bir tane hesap seçin.</string>
   <string name="error_unknown_error">Hata: Bilinmeyen sorun, bir yazılım hatası olabilir.</string>
   <string name="error_message">Hata: <xliff:g id="message">%s</xliff:g></string>
   <string name="error_message_with_action"><xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g> sürecinde hata</string>
@@ -221,7 +220,6 @@
   <string name="tabs">Sekmeler</string>
   <string name="add_tab">Sekme ekle</string>
   <string name="edit_tab">Sekmeyi düzenle</string>
-  <string name="invalid_settings">Geçersiz ayarlar belirlendi.</string>
   <string name="icon">Simge</string>
   <string name="pick_file">Dosya seç</string>
   <string name="user_timeline">Kullanıcı zaman akışı</string>
@@ -360,7 +358,6 @@
   <string name="profile_images">Profil resimleri</string>
   <string name="preview_images">Resim önizleme</string>
   <string name="preload_wifi_only">Yalnız Wi-Fi kullanarak önyükleme yap</string>
-  <string name="disable_tab_swipe">Sekme kaydırmayı iptal et</string>
   <string name="sign_in_method_introduction_title">Nasıl çalışıyor?</string>
   <string name="sign_in_method_introduction">çoğu istemci örneğin twicca bir tarayıcı açar ve size kullanıcı adı ve şifre girmenizi söyler, ve sonra sizi istemciye geri döndürür. Bazen bu çok sakıncalı olabilir. Twittnuker giriş için tarayıcı kullanmadan daha basit adımlar kullanır. Şifreniz hakkında endişelenmeyin. Twittnuker onu asla kaydetmez, bu tamamen güvenli.</string>
   <string name="quote_protected_status_notice">Korunan tweet\'i alıntı yapmak önerilmez.</string>

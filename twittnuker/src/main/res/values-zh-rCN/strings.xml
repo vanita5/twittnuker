@@ -34,7 +34,6 @@
     <string name="error_occurred">发生错误，请重试</string>
     <string name="error_already_logged_in">你已经登录</string>
     <string name="no_account_selected">没有选择帐号</string>
-    <string name="empty_account_selection_disallowed">请选择至少一个帐号</string>
     <string name="error_unknown_error">错误：未知错误，这很可能是个bug</string>
     <string name="error_message">发生问题：<xliff:g id="message">%s</xliff:g></string>
     <string name="error_message_with_action">在<xliff:g id="action">%1$s</xliff:g>时发生问题：<xliff:g id="message">%2$s</xliff:g></string>
@@ -99,8 +98,8 @@
     <string name="users_favorited_this">收藏这条推文的用户</string>
     <string name="reply_to">回复<xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">引用<xliff:g id="user_name">%s</xliff:g></string>
-    <string name="time_source"><xliff:g id="time">%1$s</xliff:g>，来自<xliff:g id="source">%2$s</xliff:g></string>
-    <string name="source">来自<xliff:g id="source">%s</xliff:g></string>
+    <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
+    <string name="source"><xliff:g id="source">%s</xliff:g></string>
     <string name="filters">过滤</string>
     <string name="users">用户</string>
     <string name="user">用户</string>
@@ -221,7 +220,6 @@
     <string name="tabs">标签页</string>
     <string name="add_tab">添加标签页</string>
     <string name="edit_tab">编辑标签页</string>
-    <string name="invalid_settings">发现无效设定</string>
     <string name="icon">图标</string>
     <string name="pick_file">选取文件</string>
     <string name="user_timeline">时间轴</string>
@@ -240,6 +238,7 @@
     <string name="status_shortener">推文缩短服务</string>
     <string name="status_shortener_default">无（不发送过长推文）</string>
     <string name="error_message_status_too_long">推文太长</string>
+    <string name="error_message_message_too_long">　信息太长</string>
     <string name="error_message_no_content">没有内容</string>
     <string name="error_message_tweet_shorten_failed">推文缩短失败</string>
     <string name="multimedia_contents">多媒体内容</string>
@@ -362,7 +361,6 @@
     <string name="profile_images">个人资料图片</string>
     <string name="preview_images">推文预览图片</string>
     <string name="preload_wifi_only">仅使用Wi-Fi预加载</string>
-    <string name="disable_tab_swipe">禁用滑动切换标签页</string>
     <string name="sign_in_method_introduction_title">输入密码登录是怎样工作的？</string>
     <string name="sign_in_method_introduction">大多数客户端（例如twicca）通过打开浏览器验证登录Twitter，然后浏览器再将你引导回客户端。有时这会导致许多不便，因为一些第三方浏览器不会引导你回客户端。\n\nTwittnuker使用更加简便的步骤代替浏览器登录到Twitter，不必担心你会泄露你的密码，这个方式非常安全！\n\nTwittnuker不会保存密码，仅在登录时发送给Twitter，只要网络足够安全，你的密码永远不会被第三方获取！</string>
     <string name="quote_protected_status_notice">不建议引用受保护的推文</string>
@@ -433,7 +431,7 @@
     <string name="created_by">由<xliff:g id="created_by">%s</xliff:g>创建</string>
     <string name="add_to_list">添加到列表</string>
     <string name="account_delete_confirm_title">删除帐号</string>
-    <string name="account_delete_confirm_message">这个帐号将会从Twittnuker中删除</string>
+    <string name="account_delete_confirm_message">这个帐号将会从Twidere中删除</string>
     <string name="theme">主题</string>
     <string name="theme_dark">暗色</string>
     <string name="theme_light">亮色</string>
@@ -501,6 +499,7 @@
     <string name="account_options">帐号选项</string>
     <string name="show_in_timeline">在时间轴中显示</string>
     <string name="cards">卡片</string>
+    <string name="no_tab_hint">没有标签页</string>
     <string name="delete_user">删除用户<xliff:g id="name">%s</xliff:g></string>
     <string name="delete_users">删除用户</string>
     <string name="delete_user_confirm_message">删除<xliff:g id="name">%s</xliff:g>吗？这个操作不能撤销。</string>
@@ -644,6 +643,8 @@
     <string name="members">成员</string>
     <string name="subscribers">订阅者</string>
     <string name="read_from_bottom">从底部阅读</string>
+    <string name="read_from_bottom_summary_off">刷新后跳到最近的推文</string>
+    <string name="read_from_bottom_summary_on">刷新后保留阅读位置</string>
     <string name="register">注册</string>
     <string name="follows">关注</string>
     <string name="belongs_to">属于</string>
@@ -684,4 +685,13 @@
     <string name="navigation">导航</string>
     <string name="reset_to_default">重置</string>
     <string name="reset_keyboard_shortcuts_confirm">重置快捷键到默认？</string>
+    <string name="open_accounts_dashboard">打开帐号面板</string>
+    <string name="previous_tab">前一个标签页</string>
+    <string name="next_tab">后一个标签页</string>
+    <string name="keyboard_shortcut_back">返回</string>
+    <string name="press_again_to_close">再次按下以关闭</string>
+    <string name="name_not_set"><xliff:g id="name">%s</xliff:g>没有设定</string>
+    <string name="swipe_down_to_refresh">下拉以刷新</string>
+    <string name="app_restart_confirm">Twittnuker将重启以应用设定</string>
+    <string name="dont_restart">不重启</string>
 </resources>

@@ -393,6 +393,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         mEmptyTabHint.setOnClickListener(this);
 
         ThemeUtils.setCompatToolbarOverlay(this, new EmptyDrawable());
+        ThemeUtils.setCompatContentViewOverlay(this, new EmptyDrawable());
 		setupSlidingMenu();
         setupBars();
 		initUnreadCount();
@@ -827,7 +828,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 		ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
 		mColorStatusFrameLayout.setDrawColor(true);
 		mColorStatusFrameLayout.setDrawShadow(false);
-		mColorStatusFrameLayout.setColor(actionBarColor, actionBarAlpha);
+        mColorStatusFrameLayout.setColor(actionBarColor, actionBarAlpha);
 		mColorStatusFrameLayout.setFactor(1);
         mTabIndicator.setAlpha(actionBarAlpha / 255f);
         mActionsButton.setAlpha(actionBarAlpha / 255f);

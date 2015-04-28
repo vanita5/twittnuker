@@ -21,5 +21,4 @@
     <string name="error_occurred">Ett fel inträffade, försök igen.</string>
     <string name="error_already_logged_in">Du har redan loggat in.</string>
     <string name="no_account_selected">Inget konto valt.</string>
-    <string name="empty_account_selection_disallowed">Välj i alla fall ett konto.</string>
 </resources>

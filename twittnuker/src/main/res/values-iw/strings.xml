@@ -26,7 +26,6 @@
     <string name="error_occurred">שגיאה ארעה, נא נסה שנית.</string>
     <string name="error_already_logged_in">את/ה כבר מחובר.</string>
     <string name="no_account_selected">לא נבחר חשבון.</string>
-    <string name="empty_account_selection_disallowed">אנא בחר חשבון אחד לפחות.</string>
     <string name="error_unknown_error">שגיאה: שגיאה לא ידועה, זה כנראה באג.</string>
     <string name="select_account">בחר חשבון</string>
     <string name="username">שם משתמש</string>
