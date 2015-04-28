@@ -1316,8 +1316,12 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final IThemedActivity themed = (IThemedActivity) activity;
         final int themeRes = themed.getCurrentThemeResourceId();
         //custom action bar color and stuff! (twittnuker)
-		mTintedStatusContent.setColor(color, themed.getCurrentThemeBackgroundAlpha());
-		mActionBarBackground.setColor(color);
+        if (mTintedStatusContent != null) {
+            mTintedStatusContent.setColor(color, themed.getCurrentThemeBackgroundAlpha());
+        }
+        if (mActionBarBackground != null) {
+            mActionBarBackground.setColor(color);
+        }
         ActivityAccessor.setTaskDescription(activity, new TaskDescriptionCompat(null, null, color));
         mDescriptionView.setLinkTextColor(color);
         mProfileBannerView.setBackgroundColor(color);

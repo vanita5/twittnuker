@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
+import android.util.Log;
 import android.util.Pair;
 
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -44,6 +45,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import de.vanita5.twittnuker.util.Utils;
 import twitter4j.Activity;
 import twitter4j.Paging;
 import twitter4j.Twitter;
@@ -162,7 +164,14 @@ public abstract class Twitter4JActivitiesLoader extends ParcelableActivitiesLoad
 		try {
             return LoganSquare.parseList(new FileInputStream(file), ParcelableActivity.class);
 		} catch (final IOException e) {
-			e.printStackTrace();
+            if (Utils.isDebugBuild()) {
+                Log.w(LOGTAG, e);
+            }
+        } catch (RuntimeException e) {
+            if (Utils.isDebugBuild()) {
+                throw e;
+            }
+            Log.e(LOGTAG, "Error unserializing data", e);
 		}
 		return null;
 	}

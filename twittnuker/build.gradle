@@ -1,6 +1,7 @@
 import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 apply from: rootProject.file('global.gradle')
 
 android {
@@ -59,11 +60,12 @@ repositories {
 }
 
 dependencies {
+    apt 'com.bluelinelabs:logansquare-compiler:1.0.6'
     //compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:support-v13:22.1.0'
-    compile 'com.android.support:appcompat-v7:22.1.0'
-    compile 'com.android.support:cardview-v7:22.1.0'
-    compile 'com.android.support:recyclerview-v7:22.1.0'
+    compile 'com.android.support:support-v13:22.1.1'
+    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:cardview-v7:22.1.1'
+    compile 'com.android.support:recyclerview-v7:22.1.1'
     compile 'com.sothree.slidinguppanel:library:3.0.0'
     compile 'com.twitter:twitter-text:1.11.1'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
@@ -87,6 +89,7 @@ dependencies {
     compile 'com.github.mariotaku:SlidingMenu:1.3'
     compile 'com.github.uucky:ColorPicker-Android:0.9.4'
     compile 'com.sprylab.android.texturevideoview:texturevideoview:1.0.0'
+    compile 'com.bluelinelabs:logansquare:1.0.6'
     compile project(':twittnuker.component.common')
     compile fileTree(dir: 'libs', include: ['*.jar'])
     debugCompile 'im.dino:dbinspector:3.1.0@aar'
