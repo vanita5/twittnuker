@@ -356,6 +356,7 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
         switch (linkId) {
             case LINK_ID_SEARCH:
             case LINK_ID_USER_LISTS:
+            case LINK_ID_USER_LIST:
             case LINK_ID_FILTERS: {
                 ThemeUtils.applyActionBarBackground(actionBarContainer, this, themeId, actionBarColor, option, false);
                 break;

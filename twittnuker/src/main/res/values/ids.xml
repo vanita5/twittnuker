@@ -75,4 +75,5 @@
     <item name="accounts" type="id"/>
     <item name="inverse_selection" type="id"/>
 	<item name="reset" type="id"/>
+    <item name="info" type="id"/>
 </resources>
