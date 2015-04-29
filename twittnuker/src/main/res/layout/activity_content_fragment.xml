@@ -49,7 +49,7 @@
             android:touchscreenBlocksFocus="true"
             tools:ignore="UnusedAttribute">
 
-            <android.support.v7.widget.Toolbar
+            <de.vanita5.twittnuker.view.TwidereToolbar
                 android:id="@+id/action_bar"
                 style="?attr/toolbarStyle"
                 android:layout_width="match_parent"

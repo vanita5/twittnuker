@@ -43,7 +43,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <de.vanita5.twittnuker.view.TwidereToolbar
+        <android.support.v7.widget.Toolbar
             android:id="@+id/actionbar"
             style="?actionBarStyle"
             android:layout_width="match_parent"
@@ -59,7 +59,7 @@
                 app:tabExpandEnabled="true"
                 app:tabHorizontalPadding="@dimen/element_spacing_normal"/>
 
-        </de.vanita5.twittnuker.view.TwidereToolbar>
+        </android.support.v7.widget.Toolbar>
 
         <View
             android:id="@+id/actionbar_overlay"

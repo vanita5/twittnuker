@@ -4221,6 +4221,23 @@ public final class Utils implements Constants, TwitterConstants {
         context.startActivity(intent);
     }
 
+    public static <T> Object findFieldOfTypes(T obj, Class<? extends T> cls, Class<?>... checkTypes) {
+        labelField:
+        for (Field field : cls.getDeclaredFields()) {
+            final Class<?> type = field.getType();
+            View view = null;
+            for (Class<?> checkType : checkTypes) {
+                if (!checkType.isAssignableFrom(type)) continue labelField;
+            }
+            field.setAccessible(true);
+            try {
+                return field.get(obj);
+            } catch (Exception ignore) {
+            }
+        }
+        return null;
+    }
+
     static class UtilsL {
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)

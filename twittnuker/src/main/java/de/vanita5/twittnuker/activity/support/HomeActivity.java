@@ -41,6 +41,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ThemedAppCompatDelegateFactory;
@@ -379,6 +380,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         mActionsButton.setOnLongClickListener(this);
         mEmptyTabHint.setOnClickListener(this);
 
+        ViewCompat.setElevation(mActionBar, ThemeUtils.getSupportActionBarElevation(this));
         ThemeUtils.setCompatToolbarOverlay(this, new EmptyDrawable());
         ThemeUtils.setCompatContentViewOverlay(this, new EmptyDrawable());
 		setupSlidingMenu();

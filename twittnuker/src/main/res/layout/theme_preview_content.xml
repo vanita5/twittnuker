@@ -46,7 +46,7 @@
 		android:layout_alignParentTop="true"
 		android:orientation="vertical">
 
-        <de.vanita5.twittnuker.view.TwidereToolbar
+        <android.support.v7.widget.Toolbar
 			android:id="@+id/actionbar"
             style="?actionBarStyle"
 			android:layout_width="match_parent"
