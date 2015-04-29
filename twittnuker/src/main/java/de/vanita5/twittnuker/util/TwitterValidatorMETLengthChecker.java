@@ -20,31 +20,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
-apply from: rootProject.file('global.gradle')
+package de.vanita5.twittnuker.util;
 
-android {
-    defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
+import android.support.annotation.NonNull;
 
-dependencies {
-    apt 'com.bluelinelabs:logansquare-compiler:1.0.6'
-    compile 'com.bluelinelabs:logansquare:1.0.6'
-    compile 'com.android.support:support-annotations:22.1.1'
-    compile 'org.apache.commons:commons-lang3:3.4'
-    compile project(':twittnuker.component.querybuilder')
-    compile project(':twittnuker.component.twitter4j')
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+import com.rengwuxian.materialedittext.validation.METLengthChecker;
+import com.twitter.Validator;
+
+public class TwitterValidatorMETLengthChecker extends METLengthChecker {
+	private Validator mValidator;
+
+	public TwitterValidatorMETLengthChecker(@NonNull Validator validator) {
+		mValidator = validator;
+	}
+
+	@Override
+	public int getLength(CharSequence charSequence) {
+		return mValidator.getTweetLength(String.valueOf(charSequence));
+	}
+
 }
