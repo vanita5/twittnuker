@@ -74,6 +74,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.text.ParagraphSpacingSpan;
@@ -1057,9 +1058,7 @@ public class ThemeUtils implements Constants {
             }
         }
         if (!(overflowView instanceof ImageView)) return;
-        final Drawable drawable = ((ImageView) overflowView).getDrawable();
-        if (drawable == null) return;
-        drawable.setColorFilter(itemColor, Mode.SRC_ATOP);
+        ((ImageView) overflowView).setColorFilter(itemColor, Mode.SRC_ATOP);
     }
 
     public static void setActionBarOverflowColor(ActionMenuView actionMenuView, int itemColor) {
@@ -1248,5 +1247,12 @@ public class ThemeUtils implements Constants {
             return TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
         }
         return 0;
+    }
+
+    @Nullable
+    public static Toolbar getToolbarFromActivity(Activity activity) {
+        if (activity instanceof LinkHandlerActivity)
+            return ((LinkHandlerActivity) activity).peekActionBarToolbar();
+        return null;
     }
 }

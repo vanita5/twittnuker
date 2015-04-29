@@ -26,12 +26,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.view.LayoutInflaterCompat;
+import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Window;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
+
+import java.lang.reflect.Field;
 
 public class ThemedAppCompatDelegate implements Constants {
 
@@ -54,9 +58,33 @@ public class ThemedAppCompatDelegate implements Constants {
 
 		private final IThemedActivity themed;
 
-		private ThemedAppCompatDelegateImplV11(IThemedActivity themed, Context context, Window window, AppCompatCallback callback) {
+        private ThemedAppCompatDelegateImplV11(final IThemedActivity themed, final Context context,
+                                               Window window, AppCompatCallback callback) {
 			super(context, window, callback);
 			this.themed = themed;
+//            try {
+//                final Field field = AppCompatDelegateImplV7.class.getDeclaredField("mInvalidatePanelMenuRunnable");
+//                field.setAccessible(true);
+//                final Runnable old = (Runnable) field.get(this);
+//                field.set(this, new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (old != null) {
+//                            old.run();
+//                        }
+//                        final int themeColor = themed.getCurrentThemeColor();
+//                        final int themeId = themed.getCurrentThemeResourceId();
+//                        final int itemColor = ThemeUtils.getContrastActionBarItemColor(context, themeId, themeColor);
+//                        final Toolbar toolbar = ThemeUtils.getToolbarFromActivity((Activity) themed);
+//                        if (toolbar != null) {
+//                            ThemeUtils.setActionBarOverflowColor(toolbar, itemColor);
+//                            ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(toolbar, ActionMenuView.class), itemColor, itemColor);
+//                        }
+//                    }
+//                });
+//            } catch (Exception ignore) {
+//
+//            }
 		}
 
 		@Override
