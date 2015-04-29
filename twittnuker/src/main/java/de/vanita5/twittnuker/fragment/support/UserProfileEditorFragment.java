@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileBannerImageTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper;
@@ -75,7 +76,8 @@ import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 
 public class UserProfileEditorFragment extends BaseSupportFragment implements OnSizeChangedListener, TextWatcher,
-        OnClickListener, LoaderCallbacks<SingleResponse<ParcelableUser>> {
+        OnClickListener, LoaderCallbacks<SingleResponse<ParcelableUser>>,
+        KeyboardShortcutsHandler.TakeAllKeyboardShortcut {
 
 	private static final int LOADER_ID_USER = 1;
 
@@ -481,6 +483,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
             if (f instanceof DialogFragment) {
                 ((DialogFragment) f).dismissAllowingStateLoss();
             }
+            mFragment.getActivity().finish();
         }
 
         @Override

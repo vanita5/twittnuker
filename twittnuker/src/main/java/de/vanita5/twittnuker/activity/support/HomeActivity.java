@@ -43,6 +43,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v7.app.ThemedAppCompatDelegateFactory;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -97,11 +98,11 @@ import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.support.ActivitySupport;
-import de.vanita5.twittnuker.util.support.ViewSupport;
-import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
+import de.vanita5.twittnuker.util.support.ActivitySupport;
+import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat;
+import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.ExtendedViewPager;
 import de.vanita5.twittnuker.view.HomeSlidingMenu;
 import de.vanita5.twittnuker.view.LeftDrawerFrameLayout;
@@ -218,20 +219,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 	}
 
 	@Override
-    public boolean onKeyUp(final int keyCode, @NonNull final KeyEvent event) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_MENU: {
-                if (mSlidingMenu != null) {
-                    mSlidingMenu.toggle(true);
-                    return true;
-                }
-                break;
-            }
-        }
-        return super.onKeyUp(keyCode, event);
-    }
-
-    @Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 			case MENU_HOME: {
@@ -399,6 +386,27 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 		initUnreadCount();
 		updateActionsButton();
 		updateSlidingMenuTouchMode();
+        getDelegate().setKeyListener(new ThemedAppCompatDelegateFactory.KeyListener() {
+            @Override
+            public boolean onKeyDown(int keyCode, KeyEvent event) {
+                return false;
+            }
+
+            @Override
+            public boolean onKeyUp(int keyCode, KeyEvent event) {
+                // Steal MENU key event
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_MENU: {
+                        if (mSlidingMenu != null) {
+                            mSlidingMenu.toggle(true);
+                            return true;
+                        }
+                        break;
+                    }
+                }
+                return false;
+            }
+        });
 
 		if (savedInstanceState == null) {
 			if (refreshOnStart) {
@@ -650,17 +658,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         }
         final float totalHeight = getControlBarHeight();
         return 1 + mTabsContainer.getTranslationY() / totalHeight;
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_MENU && event.getAction() == KeyEvent.ACTION_UP) {
-            if (mSlidingMenu != null) {
-                mSlidingMenu.toggle(true);
-                return true;
-            }
-        }
-        return super.dispatchKeyEvent(event);
     }
 
     @Override
