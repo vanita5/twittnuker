@@ -119,7 +119,6 @@ public class UserMediaTimelineFragment extends BaseSupportFragment
 
 	@Override
 	protected void fitSystemWindows(Rect insets) {
-		super.fitSystemWindows(insets);
         if (mRecyclerView != null) {
             mRecyclerView.setClipToPadding(false);
             mRecyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom);

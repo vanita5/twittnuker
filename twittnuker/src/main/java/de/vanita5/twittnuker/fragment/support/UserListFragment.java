@@ -540,7 +540,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 
     @Override
     protected void fitSystemWindows(Rect insets) {
-        super.fitSystemWindows(insets);
         final View progress = mProgressContainer, error = mErrorContainer;
         final HeaderDrawerLayout content = mHeaderDrawerLayout;
         if (progress == null || error == null || content == null) {

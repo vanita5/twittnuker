@@ -34,6 +34,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -42,6 +43,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -50,6 +53,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -73,6 +77,8 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.OkHttpClientFactory;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 
+import de.vanita5.twittnuker.util.support.ViewSupport;
+import de.vanita5.twittnuker.view.iface.TintedStatusLayout;
 import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
 import twitter4j.TwitterException;
@@ -93,7 +99,7 @@ import static de.vanita5.twittnuker.util.Utils.isUserLoggedIn;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.trim;
 
-public class SignInActivity extends BaseDialogWhenLargeActivity implements TwitterConstants, OnClickListener,
+public class SignInActivity extends BaseAppCompatActivity implements TwitterConstants, OnClickListener,
         TextWatcher {
 
 	private static final String TWITTER_SIGNUP_URL = "https://twitter.com/signup";
@@ -117,6 +123,7 @@ public class SignInActivity extends BaseDialogWhenLargeActivity implements Twitt
 	private SharedPreferences mPreferences;
 	private ContentResolver mResolver;
 	private AbstractSignInTask mTask;
+    private TintedStatusLayout mMainContent;
 
 	@Override
 	public void afterTextChanged(final Editable s) {
@@ -127,6 +134,7 @@ public class SignInActivity extends BaseDialogWhenLargeActivity implements Twitt
     public  int getThemeResourceId() {
         return ThemeUtils.getThemeResource(this);
     }
+
     @Override
 	public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
 
@@ -183,7 +191,6 @@ public class SignInActivity extends BaseDialogWhenLargeActivity implements Twitt
 	}
 
 
-
 	@Override
     public void onContentChanged() {
         super.onContentChanged();
@@ -193,6 +200,8 @@ public class SignInActivity extends BaseDialogWhenLargeActivity implements Twitt
 		mSignUpButton = (Button) findViewById(R.id.sign_up);
         mSignInSignUpContainer = (LinearLayout) findViewById(R.id.sign_in_sign_up);
 		mUsernamePasswordContainer = (LinearLayout) findViewById(R.id.username_password);
+        mMainContent = (TintedStatusLayout) findViewById(R.id.main_content);
+        setupTintStatusBar();
 	}
 
 	@Override
@@ -260,7 +269,17 @@ public class SignInActivity extends BaseDialogWhenLargeActivity implements Twitt
 			itemBrowser.setVisible(is_oauth);
 			itemBrowser.setEnabled(is_oauth);
 		}
-		return super.onPrepareOptionsMenu(menu);
+        final boolean result = super.onPrepareOptionsMenu(menu);
+        if (!shouldSetActionItemColor()) return result;
+        final Toolbar toolbar = peekActionBarToolbar();
+        if (toolbar != null) {
+			final int actionBarColor = getCurrentActionBarColor();
+            final int themeId = getCurrentThemeResourceId();
+            final int itemColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
+            ThemeUtils.setActionBarOverflowColor(toolbar, itemColor);
+            ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(toolbar, ActionMenuView.class), itemColor, itemColor);
+        }
+        return result;
 	}
 
 	@Override
@@ -287,6 +306,7 @@ public class SignInActivity extends BaseDialogWhenLargeActivity implements Twitt
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
+        setupWindow();
 		super.onCreate(savedInstanceState);
 		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
 		mResolver = getContentResolver();
@@ -488,16 +508,70 @@ public class SignInActivity extends BaseDialogWhenLargeActivity implements Twitt
 
 	void onSignInStart() {
         mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-        		if (isFinishing()) return;
-                final FragmentManager fm = getSupportFragmentManager();
-                final FragmentTransaction ft = fm.beginTransaction();
-                final SupportProgressDialogFragment fragment = new SupportProgressDialogFragment();
-        		fragment.setCancelable(false);
-                fragment.show(ft, FRAGMENT_TAG_SIGN_IN_PROGRESS);
+			@Override
+			public void run() {
+				if (isFinishing()) return;
+				final FragmentManager fm = getSupportFragmentManager();
+				final FragmentTransaction ft = fm.beginTransaction();
+				final SupportProgressDialogFragment fragment = new SupportProgressDialogFragment();
+				fragment.setCancelable(false);
+				fragment.show(ft, FRAGMENT_TAG_SIGN_IN_PROGRESS);
 			}
-        });
+		});
+    }
+
+    protected TintedStatusLayout getMainContent() {
+        return mMainContent;
+    }
+
+    protected boolean isActionBarOutlineEnabled() {
+        return true;
+    }
+
+    protected boolean shouldSetActionItemColor() {
+        return true;
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        setupActionBar();
+    }
+
+    private void setupActionBar() {
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar == null) return;
+
+		final int actionBarColor = getCurrentActionBarColor();
+        final int themeId = getCurrentThemeResourceId();
+        final String option = getThemeBackgroundOption();
+        final int titleColor = ThemeUtils.getContrastActionBarTitleColor(this, themeId, actionBarColor);
+        final int actionBarItemsColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
+        ThemeUtils.applyActionBarBackground(actionBar, this, themeId, actionBarColor, option, isActionBarOutlineEnabled());
+        final Toolbar toolbar = peekActionBarToolbar();
+        if (toolbar != null) {
+            ThemeUtils.setToolBarColor(toolbar, titleColor, actionBarItemsColor);
+        } else {
+            ThemeUtils.setActionBarColor(getWindow(), getSupportActionBar(), titleColor, actionBarItemsColor);
+        }
+    }
+
+    private void setupTintStatusBar() {
+        if (mMainContent == null) return;
+
+        final int color = getCurrentActionBarColor();
+        final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption()) ? getCurrentThemeBackgroundAlpha() : 0xFF;
+        mMainContent.setColor(color, alpha);
+
+        mMainContent.setDrawShadow(false);
+        mMainContent.setDrawColor(true);
+        mMainContent.setFactor(1);
+    }
+
+    private void setupWindow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
     }
 
     public static abstract class AbstractSignInTask extends AsyncTask<Object, Object, SignInResponse> {

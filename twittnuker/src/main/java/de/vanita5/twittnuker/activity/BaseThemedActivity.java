@@ -28,7 +28,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -104,12 +103,6 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
         Utils.restartActivity(this);
 	}
 
-	protected final boolean isThemeChanged() {
-		return getThemeResourceId() != mCurrentThemeResource || getThemeColor() != mCurrentThemeColor
-                || !CompareUtils.objectEquals(getThemeFontFamily(), mCurrentThemeFontFamily)
-                || getThemeBackgroundAlpha() != mCurrentThemeBackgroundAlpha
-				|| getActionBarColor() != mCurrentActionBarColor;
-	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -121,24 +114,17 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 		setActionBarBackground();
 	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		if (isThemeChanged()) {
-			restart();
-		}
-	}
-
     private void setActionBarBackground() {
     }
 
     @Override
-    public void setTheme(int resid) {
-        super.setTheme(mCurrentThemeResource = getThemeResourceId());
+    public void setTheme(int resId) {
+        final int themeResourceId = getThemeResourceId();
+        super.setTheme(mCurrentThemeResource = themeResourceId != 0 ? themeResourceId : resId);
     }
 
     @Override
-    protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resid, boolean first) {
+    protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resId, boolean first) {
 		mCurrentThemeColor = getThemeColor();
 		mCurrentActionBarColor = getActionBarColor();
 		mCurrentThemeFontFamily = getThemeFontFamily();
@@ -146,7 +132,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
         mProfileImageStyle = Utils.getProfileImageStyle(this);
         ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource, mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
-        super.onApplyThemeResource(theme, resid, first);
+        super.onApplyThemeResource(theme, resId, first);
 	}
 
 }

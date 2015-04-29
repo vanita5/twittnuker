@@ -26,11 +26,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.iface.IMapFragment;
 import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient;
 
@@ -47,8 +51,26 @@ public class WebMapFragment extends BaseSupportWebViewFragment implements IMapFr
 	}
 
 	@Override
+	public boolean onOptionsItemSelected(final MenuItem item) {
+		switch (item.getItemId()) {
+			case MENU_CENTER: {
+				center();
+				break;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.menu_google_maps_viewer, menu);
+	}
+
+
+	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		setHasOptionsMenu(true);
 		getLocation();
 		setupWebView();
 	}
@@ -57,7 +79,7 @@ public class WebMapFragment extends BaseSupportWebViewFragment implements IMapFr
 	 * The Location Manager manages location providers. This code searches for
 	 * the best provider of data (GPS, WiFi/cell phone tower lookup, some other
 	 * mechanism) and finds the last known location.
-	 **/
+	 */
 	private void getLocation() {
 		final Bundle bundle = getArguments();
 		if (bundle != null) {
@@ -66,7 +88,9 @@ public class WebMapFragment extends BaseSupportWebViewFragment implements IMapFr
 		}
 	}
 
-	/** Sets up the WebView object and loads the URL of the page **/
+	/**
+	 * Sets up the WebView object and loads the URL of the page *
+	 */
 	private void setupWebView() {
 
 		final WebView webview = getWebView();
@@ -85,7 +109,7 @@ public class WebMapFragment extends BaseSupportWebViewFragment implements IMapFr
 	/**
 	 * Sets up the interface for getting access to Latitude and Longitude data
 	 * from device
-	 **/
+	 */
 	class MapJavaScriptInterface {
 
 		@JavascriptInterface
