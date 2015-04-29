@@ -49,7 +49,8 @@ import de.vanita5.twittnuker.activity.AppCompatPreferenceActivity;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.TwidereToolbar;
-import de.vanita5.twittnuker.view.iface.IThemedView;
+import de.vanita5.twittnuker.view.iface.IThemeAccentView;
+import de.vanita5.twittnuker.view.iface.IThemeBackgroundTintView;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -122,57 +123,57 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
 
 	//TODO maybe we gotta use the actionBarColor here
 	private static void initViewTint(View view, IThemedActivity activity) {
-        final int noTintColor, tintColor, actionBarColor;
+        final int noTintColor, accentColor, backgroundTintColor, actionBarColor;
         final boolean isColorTint;
         // View context is not derived from ActionBar, apply color tint directly
         final Resources resources = ((Activity) activity).getResources();
         final boolean isActionBarContext = isActionBarContext(view.getContext(), getActionBarContext((Activity) activity));
         final int themeResourceId = activity.getCurrentThemeResourceId();
         if (!isActionBarContext) {
-            tintColor = actionBarColor = activity.getCurrentActionBarColor()
-            noTintColor = TwidereColorUtils.getContrastYIQ(tintColor, ThemeUtils.ACCENT_COLOR_THRESHOLD);
+            accentColor = activity.getCurrentThemeColor();
+			actionBarColor = activity.getCurrentActionBarColor();
+            noTintColor = TwidereColorUtils.getContrastYIQ(actionBarColor, ThemeUtils.ACCENT_COLOR_THRESHOLD);
+			backgroundTintColor = accentColor;
             isColorTint = true;
-//        } else if (ThemeUtils.isDarkTheme(themeResourceId)) {
-//            // View context is derived from ActionBar but is currently dark theme, so we should show
-//            // light
-//            actionBarColor = resources.getColor(R.color.background_color_action_bar_dark);
-//            noTintColor = Color.WHITE;
-//            tintColor = activity.getCurrentThemeColor();
-//            isColorTint = true;
 		} else {
             // View context is derived from ActionBar and it's light theme, so we use contrast color
             actionBarColor = activity.getCurrentActionBarColor();
-            tintColor = TwidereColorUtils.getContrastYIQ(actionBarColor, ThemeUtils.ACCENT_COLOR_THRESHOLD);
-            noTintColor = TwidereColorUtils.getContrastYIQ(tintColor, ThemeUtils.ACCENT_COLOR_THRESHOLD);
+            accentColor = activity.getCurrentThemeColor();
+            noTintColor = TwidereColorUtils.getContrastYIQ(accentColor, ThemeUtils.ACCENT_COLOR_THRESHOLD);
+            backgroundTintColor = accentColor;
             isColorTint = false;
 		}
         if (view instanceof TextView) {
             final TextView textView = (TextView) view;
-            textView.setLinkTextColor(tintColor);
+            textView.setLinkTextColor(accentColor);
         }
-		if (view instanceof IThemedView) {
-            ((IThemedView) view).setThemeTintColor(ColorStateList.valueOf(tintColor));
+        if (view instanceof IThemeAccentView) {
+            ((IThemeAccentView) view).setAccentTintColor(ColorStateList.valueOf(accentColor));
+        } else if (view instanceof IThemeBackgroundTintView) {
+            ((IThemeBackgroundTintView) view).setBackgroundTintColor(ColorStateList.valueOf(backgroundTintColor));
 		} else if (view instanceof TintableBackgroundView) {
             final TintableBackgroundView tintable = (TintableBackgroundView) view;
-            if (view instanceof Button) {
-            } else if (view instanceof EditText) {
-                tintable.setSupportBackgroundTintList(ColorStateList.valueOf(tintColor));
-            } else {
-                if (isColorTint) {
-                    final int[][] states = {{android.R.attr.state_selected}, {android.R.attr.state_focused},
-                            {android.R.attr.state_pressed}, {0}};
-                    final int[] colors = {tintColor, tintColor, tintColor, noTintColor};
-                    tintable.setSupportBackgroundTintList(new ColorStateList(states, colors));
-                } else {
-                    tintable.setSupportBackgroundTintList(ColorStateList.valueOf(tintColor));
-                }
-            }
-		} else if (view instanceof EditText) {
-            ViewCompat.setBackgroundTintList(view, ColorStateList.valueOf(tintColor));
+            applyTintableBackgroundViewTint(tintable, accentColor, noTintColor, backgroundTintColor, isColorTint);
         } else if (view instanceof TwidereToolbar) {
             final int itemColor = ThemeUtils.getContrastActionBarItemColor((Context) activity,
                     themeResourceId, actionBarColor);
             ((TwidereToolbar) view).setItemColor(itemColor);
+            } else if (view instanceof EditText) {
+            ViewCompat.setBackgroundTintList(view, ColorStateList.valueOf(accentColor));
+        }
+    }
+
+    private static void applyTintableBackgroundViewTint(TintableBackgroundView tintable, int accentColor, int noTintColor, int backgroundTintColor, boolean isColorTint) {
+        if (tintable instanceof Button) {
+        } else if (tintable instanceof EditText) {
+            tintable.setSupportBackgroundTintList(ColorStateList.valueOf(backgroundTintColor));
+        } else if (isColorTint) {
+			final int[][] states = {{android.R.attr.state_selected}, {android.R.attr.state_focused},
+					{android.R.attr.state_pressed}, {0}};
+            final int[] colors = {accentColor, accentColor, accentColor, noTintColor};
+			tintable.setSupportBackgroundTintList(new ColorStateList(states, colors));
+		} else {
+            tintable.setSupportBackgroundTintList(ColorStateList.valueOf(accentColor));
 		}
 	}
 

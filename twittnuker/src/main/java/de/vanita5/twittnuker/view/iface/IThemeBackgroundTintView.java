@@ -24,8 +24,8 @@ package de.vanita5.twittnuker.view.iface;
 
 import android.content.res.ColorStateList;
 
-public interface IThemedView {
+public interface IThemeBackgroundTintView {
 
-	public void setThemeTintColor(ColorStateList color);
+	public void setBackgroundTintColor(ColorStateList color);
 
 }

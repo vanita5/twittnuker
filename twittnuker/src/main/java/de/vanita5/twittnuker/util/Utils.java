@@ -222,6 +222,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.SocketAddress;
@@ -4156,7 +4157,7 @@ public final class Utils implements Constants, TwitterConstants {
                                                         long conversationId) {
         final ContentResolver cr = context.getContentResolver();
         final Expression where = Expression.and(Expression.equals(ConversationEntries.ACCOUNT_ID, accountId),
-                Expression.equals(ConversationEntries.CONVERSATION_ID, conversationId));
+				Expression.equals(ConversationEntries.CONVERSATION_ID, conversationId));
         final Cursor c = cr.query(ConversationEntries.CONTENT_URI, null, where.getSQL(), null, null);
         //noinspection TryFinallyCanBeTryWithResources
         try {

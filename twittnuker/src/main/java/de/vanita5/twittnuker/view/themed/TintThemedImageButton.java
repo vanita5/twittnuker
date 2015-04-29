@@ -29,9 +29,10 @@ import android.graphics.PorterDuff.Mode;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
 
-import de.vanita5.twittnuker.view.iface.IThemedView;
+import de.vanita5.twittnuker.view.iface.IThemeAccentView;
+import de.vanita5.twittnuker.view.iface.IThemeBackgroundTintView;
 
-public class TintThemedImageButton extends ImageButton implements IThemedView {
+public class TintThemedImageButton extends ImageButton implements IThemeBackgroundTintView {
 
 	private final int mDefaultColor;
 
@@ -62,7 +63,7 @@ public class TintThemedImageButton extends ImageButton implements IThemedView {
 
 
 	@Override
-	public void setThemeTintColor(ColorStateList color) {
+    public void setBackgroundTintColor(ColorStateList color) {
 		if (color == null) {
 			clearColorFilter();
 		} else {
