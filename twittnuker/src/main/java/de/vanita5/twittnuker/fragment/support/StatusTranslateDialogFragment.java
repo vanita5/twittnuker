@@ -43,8 +43,8 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
-
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
+
 import twitter4j.TranslationResult;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -85,7 +85,13 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 		mProgressBar.setVisibility(View.VISIBLE);
 		mMessageView.setVisibility(View.VISIBLE);
 		mMessageView.setText(R.string.please_wait);
-		return new TranslationResultLoader(getActivity(), status.account_id, status.id);
+        final long statusId;
+        if (status.is_retweet) {
+            statusId = status.retweet_id;
+        } else {
+            statusId = status.id;
+        }
+        return new TranslationResultLoader(getActivity(), status.account_id, statusId);
 	}
 
 	@Override
@@ -127,7 +133,7 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 
 	private void displayTranslatedStatus(final ParcelableStatus status, final TranslationResult translated) {
 		if (status == null || translated == null) return;
-        mHolder.displayStatus(status, null, false, true);
+        mHolder.displayStatus(status, translated, false, true);
 
         mStatusContainer.findViewById(R.id.item_menu).setVisibility(View.GONE);
         mStatusContainer.findViewById(R.id.action_buttons).setVisibility(View.GONE);

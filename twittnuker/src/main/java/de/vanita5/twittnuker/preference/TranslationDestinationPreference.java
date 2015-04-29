@@ -195,7 +195,7 @@ public class TranslationDestinationPreference extends Preference implements Cons
 
 		@Override
 		protected void onPostExecute(final ResponseList<Language> result) {
-			if (mProgress != null && mProgress.isShowing()) {
+            if (mProgress.isShowing()) {
 				mProgress.dismiss();
 			}
 			mAdapter.setData(result);
@@ -215,7 +215,7 @@ public class TranslationDestinationPreference extends Preference implements Cons
 
 		@Override
 		protected void onPreExecute() {
-			if (mProgress != null && mProgress.isShowing()) {
+            if (mProgress.isShowing()) {
 				mProgress.dismiss();
 			}
 			mProgress.setMessage(getContext().getString(R.string.please_wait));
