@@ -4,7 +4,7 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.view.Window;
 
-public class WindowAccessor {
+public class WindowSupport {
 	public static void setStatusBarColor(Window window, int color) {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
         WindowAccessorLollipop.setStatusBarColor(window, color);

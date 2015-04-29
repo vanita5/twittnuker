@@ -20,29 +20,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.accessor;
+package de.vanita5.twittnuker.util.support;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.res.Configuration;
 import android.os.Build;
+import android.webkit.WebSettings;
 
-public class ConfigurationAccessor {
+public class WebSettingsSupport {
 
-	@SuppressLint("InlinedApi")
-	public static int getLayoutDirection(final Configuration conf) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-			return GetLayoutDirectionAccessorJB.getLayoutDirection(conf);
-		final String lang = conf.locale.getLanguage();
-		return "ar".equalsIgnoreCase(lang) ? Configuration.SCREENLAYOUT_LAYOUTDIR_RTL
-				: Configuration.SCREENLAYOUT_LAYOUTDIR_LTR;
+	public static void setAllowUniversalAccessFromFileURLs(final WebSettings settings, final boolean flag) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
+		WebSettingsAccessorSDK16.setAllowUniversalAccessFromFileURLs(settings, flag);
 	}
 
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-	private static class GetLayoutDirectionAccessorJB {
-
-		private static int getLayoutDirection(final Configuration conf) {
-			return conf.getLayoutDirection();
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	private static class WebSettingsAccessorSDK16 {
+		private static void setAllowUniversalAccessFromFileURLs(final WebSettings settings, final boolean flag) {
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
+			settings.setAllowUniversalAccessFromFileURLs(flag);
 		}
 	}
+
 }
