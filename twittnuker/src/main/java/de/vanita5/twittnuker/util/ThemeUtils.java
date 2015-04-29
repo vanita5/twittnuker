@@ -47,6 +47,7 @@ import android.support.v7.internal.view.StandaloneActionMode;
 import android.support.v7.internal.view.SupportActionModeWrapper;
 import android.support.v7.internal.view.SupportActionModeWrapperTrojan;
 import android.support.v7.internal.view.menu.ActionMenuItemView;
+import android.support.v7.internal.widget.ActionBarContainer;
 import android.support.v7.internal.widget.ActionBarContextView;
 import android.support.v7.internal.widget.ActionBarOverlayLayout;
 import android.support.v7.internal.widget.ContentFrameLayout;
@@ -118,6 +119,15 @@ public class ThemeUtils implements Constants {
         actionBar.setBackgroundDrawable(getActionBarBackground(context, themeRes, actionBarColor, backgroundOption, outlineEnabled));
         actionBar.setSplitBackgroundDrawable(getActionBarSplitBackground(context, themeRes));
         actionBar.setStackedBackgroundDrawable(getActionBarStackedBackground(context, themeRes, actionBarColor, outlineEnabled));
+    }
+
+
+    public static void applyActionBarBackground(final ActionBarContainer actionBar, final Context context,
+                                                final int themeRes, final int actionBarColor, String backgroundOption, boolean outlineEnabled) {
+        if (actionBar == null || context == null) return;
+        actionBar.setPrimaryBackground(getActionBarBackground(context, themeRes, actionBarColor, backgroundOption, outlineEnabled));
+        actionBar.setSplitBackground(getActionBarSplitBackground(context, themeRes));
+        actionBar.setStackedBackground(getActionBarStackedBackground(context, themeRes, actionBarColor, outlineEnabled));
     }
 
 
@@ -718,6 +728,14 @@ public class ThemeUtils implements Constants {
 	}
 
 
+    public static int getThemeResource(final int otherTheme) {
+        if (isDarkTheme(otherTheme)) {
+            return R.style.Theme_Twidere_Dark;
+        }
+        return R.style.Theme_Twidere_Light;
+    }
+
+
     public static int getNoActionBarThemeResource(final Context context) {
         return getNoActionBarThemeResource(getThemeNameOption(context));
     }
@@ -858,7 +876,12 @@ public class ThemeUtils implements Constants {
         }
     }
 
-    public static void initPagerIndicatorAsActionBarTab(FragmentActivity activity, TabPagerIndicator indicator) {
+    public static Drawable getNormalWindowContentOverlay(final Context context, int themeRes) {
+        final int normalThemeResId = ThemeUtils.getThemeResource(themeRes);
+        return getWindowContentOverlay(context, normalThemeResId);
+    }
+
+    public static void initPagerIndicatorAsActionBarTab(FragmentActivity activity, TabPagerIndicator indicator, @Nullable View pagerOverlay) {
         final float supportActionBarElevation = getSupportActionBarElevation(activity);
         ViewCompat.setElevation(indicator, supportActionBarElevation);
         if (!(activity instanceof IThemedActivity)) return;
@@ -875,13 +898,16 @@ public class ThemeUtils implements Constants {
             colorDark = textColors[0];
             colorLight = textColors[1];
         }
-        final int contrastColor = TwidereColorUtils.getContrastYIQ(actionBarColor,
-                ACCENT_COLOR_THRESHOLD, colorDark, colorLight);
+        final int contrastColor = TwidereColorUtils.getContrastYIQ(actionBarColor, ACCENT_COLOR_THRESHOLD,
+                colorDark, colorLight);
         ViewSupport.setBackground(indicator, getActionBarStackedBackground(activity, themeRes, actionBarColor, true));
 		indicator.setIconColor(contrastColor);
 		indicator.setLabelColor(contrastColor);
 		indicator.setStripColor(themeColor);
         indicator.updateAppearance();
+        if (pagerOverlay != null) {
+            ViewSupport.setBackground(pagerOverlay, getNormalWindowContentOverlay(activity, themeRes));
+        }
     }
 
     public static boolean isColoredActionBar(int themeRes) {

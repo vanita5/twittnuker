@@ -48,10 +48,11 @@ import de.vanita5.twittnuker.view.TabPagerIndicator;
 public class FiltersFragment extends BaseSupportFragment implements RefreshScrollTopInterface,
 		SupportFragmentCallback, IBaseFragment.SystemWindowsInsetsCallback {
 
+    private SupportTabsAdapter mPagerAdapter;
+
 	private TabPagerIndicator mPagerIndicator;
 	private ViewPager mViewPager;
-
-	private SupportTabsAdapter mPagerAdapter;
+    private View mPagerOverlay;
 
 	@Nullable
 	@Override
@@ -75,7 +76,7 @@ public class FiltersFragment extends BaseSupportFragment implements RefreshScrol
 		mPagerAdapter.addTab(FilteredSourcesFragment.class, null, getString(R.string.sources), null, 2, null);
 		mPagerAdapter.addTab(FilteredLinksFragment.class, null, getString(R.string.links), null, 3, null);
 
-		ThemeUtils.initPagerIndicatorAsActionBarTab(activity, mPagerIndicator);
+        ThemeUtils.initPagerIndicatorAsActionBarTab(activity, mPagerIndicator, mPagerOverlay);
 		ThemeUtils.setCompatToolbarOverlay(activity, new EmptyDrawable());
 		ThemeUtils.setCompatContentViewOverlay(activity, new EmptyDrawable());
 		ThemeUtils.setWindowOverlayViewOverlay(activity, new EmptyDrawable());
@@ -86,6 +87,7 @@ public class FiltersFragment extends BaseSupportFragment implements RefreshScrol
 		super.onBaseViewCreated(view, savedInstanceState);
 		mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
 		mPagerIndicator = (TabPagerIndicator) view.findViewById(R.id.view_pager_tabs);
+        mPagerOverlay = view.findViewById(R.id.pager_window_overlay);
 	}
 
 	@Override
