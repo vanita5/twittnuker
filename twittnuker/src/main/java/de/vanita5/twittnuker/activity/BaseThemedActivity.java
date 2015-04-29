@@ -23,7 +23,9 @@
 package de.vanita5.twittnuker.activity;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.CompareUtils;
@@ -115,8 +117,6 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 			StrictModeUtils.detectAllVmPolicy();
 			StrictModeUtils.detectAllThreadPolicy();
 		}
-
-		setTheme();
 		super.onCreate(savedInstanceState);
 		setActionBarBackground();
 	}
@@ -132,15 +132,21 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     private void setActionBarBackground() {
     }
 
-    private void setTheme() {
-		mCurrentThemeResource = getThemeResourceId();
+    @Override
+    public void setTheme(int resid) {
+        super.setTheme(mCurrentThemeResource = getThemeResourceId());
+    }
+
+    @Override
+    protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resid, boolean first) {
 		mCurrentThemeColor = getThemeColor();
 		mCurrentActionBarColor = getActionBarColor();
 		mCurrentThemeFontFamily = getThemeFontFamily();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
         mProfileImageStyle = Utils.getProfileImageStyle(this);
-		setTheme(mCurrentThemeResource);
         ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource, mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
+        super.onApplyThemeResource(theme, resid, first);
 	}
+
 }

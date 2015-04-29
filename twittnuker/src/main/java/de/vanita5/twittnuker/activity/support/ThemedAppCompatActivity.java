@@ -22,10 +22,15 @@
 
 package de.vanita5.twittnuker.activity.support;
 
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.app.ThemedAppCompatDelegate;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
@@ -44,6 +49,7 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
     private String mCurrentThemeFontFamily;
 
     private AppCompatDelegate mDelegate;
+    private Toolbar mToolbar;
 
 	@Override
     public String getCurrentThemeFontFamily() {
@@ -107,7 +113,6 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
 			StrictModeUtils.detectAllVmPolicy();
 			StrictModeUtils.detectAllThreadPolicy();
 		}
-        setupTheme();
 		super.onCreate(savedInstanceState);
 	}
 
@@ -124,17 +129,43 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
         return mDelegate = ThemedAppCompatDelegate.create(this, this);
 	}
 
-    private void setupTheme() {
-		mCurrentThemeResource = getThemeResourceId();
+    @Override
+    public void setTheme(int resid) {
+        super.setTheme(mCurrentThemeResource = getThemeResourceId());
+    }
+
+    @Override
+    protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resid, boolean first) {
 		mCurrentThemeColor = getThemeColor();
 		mCurrentActionBarColor = getActionBarColor();
 		mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
 		mProfileImageStyle = Utils.getProfileImageStyle(this);
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
         mCurrentThemeFontFamily = getThemeFontFamily();
-		setTheme(mCurrentThemeResource);
-        ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource,
+        ThemeUtils.applyWindowBackground(this, getWindow(), getDelegate(), resid,
                 mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
+        super.onApplyThemeResource(theme, resid, first);
+    }
+
+    @Override
+    public void setSupportActionBar(Toolbar toolbar) {
+        super.setSupportActionBar(toolbar);
+        mToolbar = toolbar;
+    }
+
+    @Nullable
+    public final Toolbar peekActionBarToolbar() {
+        return mToolbar;
+    }
+
+    @Nullable
+    public final Toolbar getActionBarToolbar() {
+        if (mToolbar != null) return mToolbar;
+        final View actionBarView = getWindow().findViewById(android.support.v7.appcompat.R.id.action_bar);
+        if (actionBarView instanceof Toolbar) {
+            return (Toolbar) actionBarView;
+        }
+        return null;
 	}
 
 }

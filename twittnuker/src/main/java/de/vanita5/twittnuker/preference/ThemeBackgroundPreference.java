@@ -24,7 +24,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.graphic.AlphaPatternDrawable;
-import de.vanita5.twittnuker.util.ViewUtils;
+import de.vanita5.twittnuker.util.support.ViewSupport;
 
 public class ThemeBackgroundPreference extends DialogPreference implements Constants {
 
@@ -162,7 +162,7 @@ public class ThemeBackgroundPreference extends DialogPreference implements Const
 			mAlphaSlider.setOnSeekBarChangeListener(mAlphaSliderChangedListener);
 			mAlphaSlider.setProgress(preferences.getInt(KEY_THEME_BACKGROUND_ALPHA, DEFAULT_THEME_BACKGROUND_ALPHA));
 			final int patternSize = res.getDimensionPixelSize(R.dimen.element_spacing_msmall);
-            ViewUtils.setBackground(mAlphaPreview, new AlphaPatternDrawable(patternSize));
+            ViewSupport.setBackground(mAlphaPreview, new AlphaPatternDrawable(patternSize));
 			updateAlphaVisibility();
 			updateAlphaPreview();
 

@@ -77,7 +77,7 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
 
     @Override
     public int getThemeResourceId() {
-        return ThemeUtils.getThemeResource(this);
+        return ThemeUtils.getNoActionBarThemeResource(this);
     }
 
 	public TwittnukerApplication getTwittnukerApplication() {
@@ -94,7 +94,11 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
 
 	@Override
     public void onFitSystemWindows(Rect insets) {
-        mSystemWindowsInsets = new Rect(insets);
+        if (mSystemWindowsInsets == null)
+        	mSystemWindowsInsets = new Rect(insets);
+        else {
+            mSystemWindowsInsets.set(insets);
+        }
         notifyControlBarOffsetChanged();
     }
 

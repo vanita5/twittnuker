@@ -49,30 +49,23 @@ public class UserListsFragment extends BaseSupportFragment implements RefreshScr
     private TabPagerIndicator mPagerIndicator;
 
 	@Override
-	public Fragment getCurrentVisibleFragment() {
-        final int currentItem = mViewPager.getCurrentItem();
-        if (currentItem < 0 || currentItem >= mPagerAdapter.getCount()) return null;
-        return (Fragment) mPagerAdapter.instantiateItem(mViewPager, currentItem);
-	}
-
-	public void hideIndicator() {
-	}
-
-	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		final Bundle args = getArguments();
 		final FragmentActivity activity = getActivity();
         mPagerAdapter = new SupportTabsAdapter(activity, getChildFragmentManager(), null, 1);
-        mPagerAdapter.addTab(UserListsListFragment.class, args, getString(R.string.follows), null, 0, null);
-        mPagerAdapter.addTab(UserListMembershipsListFragment.class, args, getString(R.string.belongs_to), 0, 1, null);
         mViewPager.setAdapter(mPagerAdapter);
 		mViewPager.setOffscreenPageLimit(2);
 		mPagerIndicator.setViewPager(mViewPager);
         mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
+
+        mPagerAdapter.addTab(UserListsListFragment.class, args, getString(R.string.follows), null, 0, null);
+        mPagerAdapter.addTab(UserListMembershipsListFragment.class, args, getString(R.string.belongs_to), 0, 1, null);
+
         ThemeUtils.initPagerIndicatorAsActionBarTab(activity, mPagerIndicator);
         ThemeUtils.setCompatToolbarOverlay(activity, new EmptyDrawable());
         ThemeUtils.setCompatContentViewOverlay(activity, new EmptyDrawable());
+        ThemeUtils.setWindowOverlayViewOverlay(activity, new EmptyDrawable());
 	}
 
 
@@ -96,9 +89,6 @@ public class UserListsFragment extends BaseSupportFragment implements RefreshScr
 		return true;
 	}
 
-	public void showIndicator() {
-	}
-
 	@Override
 	public boolean triggerRefresh() {
         final Fragment fragment = getCurrentVisibleFragment();
@@ -107,6 +97,12 @@ public class UserListsFragment extends BaseSupportFragment implements RefreshScr
 		return true;
 	}
 
+    @Override
+    public Fragment getCurrentVisibleFragment() {
+        final int currentItem = mViewPager.getCurrentItem();
+        if (currentItem < 0 || currentItem >= mPagerAdapter.getCount()) return null;
+        return (Fragment) mPagerAdapter.instantiateItem(mViewPager, currentItem);
+    }
 
 	@Override
     protected void fitSystemWindows(Rect insets) {

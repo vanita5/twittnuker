@@ -20,15 +20,12 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<de.vanita5.twittnuker.view.TintedStatusFrameLayout
-    android:id="@+id/main_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    app:setPadding="true">
+    android:animateLayoutChanges="true">
 
     <FrameLayout
         android:id="@+id/list_container"
@@ -77,4 +74,5 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"/>
     </FrameLayout>
-</de.vanita5.twittnuker.view.TintedStatusFrameLayout>
+
+</FrameLayout>

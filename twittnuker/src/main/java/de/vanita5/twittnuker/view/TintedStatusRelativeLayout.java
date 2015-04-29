@@ -36,93 +36,93 @@ import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.iface.TintedStatusLayout;
 
-public class TintedStatusFrameLayout extends ExtendedFrameLayout implements TintedStatusLayout {
+public class TintedStatusRelativeLayout extends ExtendedRelativeLayout implements TintedStatusLayout {
 
 	private final Paint mBlackPaint, mShadowPaint, mColorPaint;
-    private boolean mSetPadding;
+	private boolean mSetPadding;
 
 	private int mStatusBarHeight;
 	private float mFactor;
 	private int mColorAlpha, mShadowAlpha;
 	private boolean mDrawShadow, mDrawColor;
-    private Rect mSystemWindowsInsets;
+	private Rect mSystemWindowsInsets;
 
-	public TintedStatusFrameLayout(Context context) {
+	public TintedStatusRelativeLayout(Context context) {
 		this(context, null);
 	}
 
-	public TintedStatusFrameLayout(Context context, AttributeSet attrs) {
+	public TintedStatusRelativeLayout(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
-	public TintedStatusFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+	public TintedStatusRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
-        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TintedStatusLayout);
-        setSetPaddingEnabled(a.getBoolean(R.styleable.TintedStatusLayout_setPadding, false));
-        a.recycle();
+		final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TintedStatusLayout);
+		setSetPaddingEnabled(a.getBoolean(R.styleable.TintedStatusLayout_setPadding, false));
+		a.recycle();
 		mBlackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mBlackPaint.setColor(Color.BLACK);
 		mShadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mColorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mSystemWindowsInsets = new Rect();
+		mSystemWindowsInsets = new Rect();
 		setWillNotDraw(false);
-        setFactor(1);
+		setFactor(1);
 	}
 
 
-    @Override
+	@Override
 	public void setColor(int color) {
-        setColor(color, Color.alpha(color));
-    }
+		setColor(color, Color.alpha(color));
+	}
 
-    @Override
-    public void setColor(int color, int alpha) {
+	@Override
+	public void setColor(int color, int alpha) {
 		mColorPaint.setColor(color);
-        mColorAlpha = alpha;
+		mColorAlpha = alpha;
 		updateAlpha();
 	}
 
-    @Override
-    public void setDrawColor(boolean color) {
-        mDrawColor = color;
-        invalidate();
-    }
+	@Override
+	public void setDrawColor(boolean color) {
+		mDrawColor = color;
+		invalidate();
+	}
 
-    @Override
-    public void setDrawShadow(boolean shadow) {
-        mDrawShadow = shadow;
-        invalidate();
-    }
+	@Override
+	public void setDrawShadow(boolean shadow) {
+		mDrawShadow = shadow;
+		invalidate();
+	}
 
-    @Override
-    public void setFactor(float f) {
-        mFactor = f;
-        updateAlpha();
-    }
+	@Override
+	public void setFactor(float f) {
+		mFactor = f;
+		updateAlpha();
+	}
 
-    @Override
+	@Override
 	public void setShadowColor(int color) {
 		mShadowPaint.setColor(color);
 		mShadowAlpha = Color.alpha(color);
 		updateAlpha();
 	}
 
-    @Override
-    public void setSetPaddingEnabled(boolean enabled) {
-        mSetPadding = enabled;
-    }
+	@Override
+	public void setSetPaddingEnabled(boolean enabled) {
+		mSetPadding = enabled;
+	}
 
-    public void setStatusBarHeight(int height) {
-        mStatusBarHeight = height;
-        invalidate();
-    }
+	public void setStatusBarHeight(int height) {
+		mStatusBarHeight = height;
+		invalidate();
+	}
 
 	@Override
-    public void getSystemWindowsInsets(Rect insets) {
-        insets.set(mSystemWindowsInsets);
-    }
+	public void getSystemWindowsInsets(Rect insets) {
+		insets.set(mSystemWindowsInsets);
+	}
 
-    @Override
+	@Override
 	protected void dispatchDraw(@NonNull Canvas canvas) {
 		super.dispatchDraw(canvas);
 		if (mDrawShadow) {
@@ -133,14 +133,14 @@ public class TintedStatusFrameLayout extends ExtendedFrameLayout implements Tint
 		canvas.drawRect(0, 0, canvas.getWidth(), mStatusBarHeight, mDrawColor ? mColorPaint : mBlackPaint);
 	}
 
-    @Override
-    protected boolean fitSystemWindows(@NonNull Rect insets) {
-        setStatusBarHeight(Utils.getInsetsTopWithoutActionBarHeight(getContext(), insets.top));
-        if (mSetPadding) {
-            setPadding(insets.left, insets.top, insets.right, insets.bottom);
-        }
-        mSystemWindowsInsets.set(insets);
-        return super.fitSystemWindows(insets);
+	@Override
+	protected boolean fitSystemWindows(@NonNull Rect insets) {
+		setStatusBarHeight(Utils.getInsetsTopWithoutActionBarHeight(getContext(), insets.top));
+		if (mSetPadding) {
+			setPadding(insets.left, insets.top, insets.right, insets.bottom);
+		}
+		mSystemWindowsInsets.set(insets);
+		return super.fitSystemWindows(insets);
 	}
 
 	private void updateAlpha() {

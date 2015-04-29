@@ -1,4 +1,4 @@
-package de.vanita5.twittnuker.util.accessor;
+package de.vanita5.twittnuker.util.support;
 
 import android.annotation.TargetApi;
 import android.os.Build;

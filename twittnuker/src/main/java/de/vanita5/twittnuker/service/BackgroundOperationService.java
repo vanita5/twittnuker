@@ -44,6 +44,8 @@ import com.nostra13.universalimageloader.utils.IoUtils;
 import com.twitter.Extractor;
 
 import org.mariotaku.querybuilder.Expression;
+
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -368,7 +370,12 @@ public class BackgroundOperationService extends IntentService implements Constan
     private void displayTweetNotSendNotification() {
 		final String title = getString(R.string.status_not_updated);
         final String message = getString(R.string.status_not_updated_summary);
-        final Intent intent = new Intent(INTENT_ACTION_DRAFTS);
+        final Intent intent = new Intent();
+        intent.setPackage(BuildConfig.APPLICATION_ID);
+        final Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_DRAFTS);
+        intent.setData(builder.build());
         final Notification notification = buildNotification(title, message, R.drawable.ic_stat_twittnuker, intent, null, false);
         mNotificationManager.notify(NOTIFICATION_ID_DRAFTS, notification);
     }
@@ -620,7 +627,12 @@ public class BackgroundOperationService extends IntentService implements Constan
 		}
 
 		if (statuses == null || statuses.isEmpty()) {
-			final Intent intent = new Intent(INTENT_ACTION_DRAFTS);
+			final Intent intent = new Intent();
+			intent.setPackage(BuildConfig.APPLICATION_ID);
+			final Uri.Builder builder = new Uri.Builder();
+			builder.scheme(SCHEME_TWITTNUKER);
+			builder.authority(AUTHORITY_DRAFTS);
+			intent.setData(builder.build());
 			final Notification errorNotification = buildNotification(getString(R.string.shortening),
 					getString(R.string.error_twitlonger), R.drawable.ic_stat_twittnuker, intent, null, false);
 			mNotificationManager.notify(NOTIFICATION_ID_SHORTENING, errorNotification);
@@ -643,7 +655,12 @@ public class BackgroundOperationService extends IntentService implements Constan
 		}
 
 		if (statuses == null || statuses.isEmpty()) {
-			final Intent intent = new Intent(INTENT_ACTION_DRAFTS);
+			final Intent intent = new Intent();
+			intent.setPackage(BuildConfig.APPLICATION_ID);
+			final Uri.Builder builder = new Uri.Builder();
+			builder.scheme(SCHEME_TWITTNUKER);
+			builder.authority(AUTHORITY_DRAFTS);
+			intent.setData(builder.build());
 			final Notification errorNotification = buildNotification(getString(R.string.shortening),
 					getString(R.string. error_hototin), R.drawable.ic_stat_twittnuker, intent, null, false);
 			mNotificationManager.notify(NOTIFICATION_ID_SHORTENING, errorNotification);

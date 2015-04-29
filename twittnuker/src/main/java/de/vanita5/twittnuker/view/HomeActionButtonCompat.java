@@ -44,7 +44,7 @@ import android.widget.ProgressBar;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
-import de.vanita5.twittnuker.util.ViewUtils;
+import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.iface.IHomeActionButton;
 
 public class HomeActionButtonCompat extends FrameLayout implements IHomeActionButton {
@@ -69,7 +69,7 @@ public class HomeActionButtonCompat extends FrameLayout implements IHomeActionBu
         final Resources resources = getResources();
         final int radius = resources.getDimensionPixelSize(R.dimen.element_spacing_small);
         mBackground = new FloatingActionDrawable(this, radius);
-        ViewUtils.setBackground(this, mBackground);
+        ViewSupport.setBackground(this, mBackground);
 	}
 
 	@Override

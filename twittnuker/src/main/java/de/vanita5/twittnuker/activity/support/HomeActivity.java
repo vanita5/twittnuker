@@ -97,9 +97,9 @@ import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.ViewUtils;
-import de.vanita5.twittnuker.util.accessor.ActivityAccessor;
-import de.vanita5.twittnuker.util.accessor.ActivityAccessor.TaskDescriptionCompat;
+import de.vanita5.twittnuker.util.support.ActivitySupport;
+import de.vanita5.twittnuker.util.support.ViewSupport;
+import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.view.ExtendedViewPager;
@@ -208,7 +208,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 	@Override
     public boolean getSystemWindowsInsets(Rect insets) {
         final int height = mTabIndicator != null ? mTabIndicator.getHeight() : 0;
-        insets.top = height != 0 ? height : Utils.getActionBarHeight(this);
+        insets.top = height != 0 ? height : ThemeUtils.getActionBarHeight(this);
         return true;
     }
 
@@ -810,29 +810,33 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     private void setupBars() {
         final int themeColor = getThemeColor();
 		final int actionBarColor = getActionBarColor();
-        final int contrastColor = TwidereColorUtils.getContrastYIQ(actionBarColor, 192);
         final int themeResId = getCurrentThemeResourceId();
         final String backgroundOption = getCurrentThemeBackgroundOption();
         final boolean isTransparent = ThemeUtils.isTransparentBackground(backgroundOption);
         final int actionBarAlpha = isTransparent ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xFF;
         final IHomeActionButton homeActionButton = (IHomeActionButton) mActionsButton;
         mTabIndicator.setItemContext(ThemeUtils.getActionBarContext(this));
-        ViewUtils.setBackground(mActionBar, ThemeUtils.getActionBarBackground(this, themeResId, actionBarColor,
+        ViewSupport.setBackground(mActionBar, ThemeUtils.getActionBarBackground(this, themeResId, actionBarColor,
                 backgroundOption, true));
+        final int[] foregroundColors = new int[2];
+        ThemeUtils.getColorForegroundAndInverse(this, foregroundColors);
         //No need to differentiate between dark and light theme due to custom action bar color preference
-		homeActionButton.setButtonColor(actionBarColor);
-		homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
-		mTabIndicator.setStripColor(themeColor);
+
+        final int contrastColor = TwidereColorUtils.getContrastYIQ(actionBarColor,
+                ThemeUtils.ACCENT_COLOR_THRESHOLD, foregroundColors[0], foregroundColors[1]);
+        homeActionButton.setButtonColor(actionBarColor);
+        homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
+        mTabIndicator.setStripColor(themeColor);
 		mTabIndicator.setIconColor(contrastColor);
 		mTabIndicator.setLabelColor(contrastColor);
-		ActivityAccessor.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
+        ActivitySupport.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
 		mColorStatusFrameLayout.setDrawColor(true);
 		mColorStatusFrameLayout.setDrawShadow(false);
         mColorStatusFrameLayout.setColor(actionBarColor, actionBarAlpha);
 		mColorStatusFrameLayout.setFactor(1);
         mTabIndicator.setAlpha(actionBarAlpha / 255f);
         mActionsButton.setAlpha(actionBarAlpha / 255f);
-        ViewUtils.setBackground(mActionBarOverlay, ThemeUtils.getWindowContentOverlay(this));
+        ViewSupport.setBackground(mActionBarOverlay, ThemeUtils.getWindowContentOverlay(this));
 	}
 
     private void setupHomeTabs() {

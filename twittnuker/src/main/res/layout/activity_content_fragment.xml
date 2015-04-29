@@ -21,8 +21,30 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<de.vanita5.twittnuker.view.TintedStatusFrameLayout
+<de.vanita5.twittnuker.view.TintedStatusFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/content_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <de.vanita5.twittnuker.view.TwidereToolbar
+            android:id="@+id/tool_bar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize" />
+
+        <View
+            android:background="?android:windowContentOverlay"
+            android:id="@+id/window_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</de.vanita5.twittnuker.view.TintedStatusFrameLayout>

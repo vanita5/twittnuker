@@ -82,15 +82,11 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import org.mariotaku.querybuilder.Expression;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.FiltersActivity;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.activity.support.AccountsManagerActivity;
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
-import de.vanita5.twittnuker.activity.support.DraftsActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.activity.support.QuickSearchBarActivity;
-import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
@@ -308,7 +304,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 					final Bundle bundle = new Bundle();
 					bundle.putLong(EXTRA_ACCOUNT_ID, account.account_id);
 					final Intent intent = new Intent(INTENT_ACTION_EDIT_USER_PROFILE);
-					intent.setClass(getActivity(), UserProfileEditorActivity.class);
+                    intent.setClass(getActivity(), UserProfileEditorFragment.class);
 					intent.putExtras(bundle);
 					startActivity(intent);
 					break;
@@ -319,20 +315,15 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 			final OptionItem option = (OptionItem) item;
 			switch (option.id) {
                 case MENU_ACCOUNTS: {
-                    final Intent intent = new Intent(getActivity(), AccountsManagerActivity.class);
-					startActivity(intent);
+                    Utils.openAccountsManager(getActivity());
 					break;
 				}
 				case MENU_DRAFTS: {
-					final Intent intent = new Intent(INTENT_ACTION_DRAFTS);
-					intent.setClass(getActivity(), DraftsActivity.class);
-					startActivity(intent);
+                    Utils.openDrafts(getActivity());
 					break;
 				}
 				case MENU_FILTERS: {
-					final Intent intent = new Intent(getActivity(), FiltersActivity.class);
-					intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-					startActivity(intent);
+                    Utils.openFilters(getActivity());
 					break;
 				}
 				case MENU_SETTINGS: {

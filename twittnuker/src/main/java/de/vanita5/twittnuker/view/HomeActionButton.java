@@ -42,9 +42,9 @@ import android.widget.ProgressBar;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.ViewUtils;
-import de.vanita5.twittnuker.util.ViewUtils.OutlineCompat;
-import de.vanita5.twittnuker.util.ViewUtils.ViewOutlineProviderCompat;
+import de.vanita5.twittnuker.util.support.ViewSupport;
+import de.vanita5.twittnuker.util.support.graphics.OutlineCompat;
+import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
 import de.vanita5.twittnuker.view.iface.IHomeActionButton;
 
 import me.uucky.colorpicker.internal.EffectViewHelper;
@@ -95,14 +95,14 @@ public class HomeActionButton extends FrameLayout implements IHomeActionButton {
         }
 		mIconView = (ImageView) findViewById(android.R.id.icon);
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
-        ViewUtils.setOutlineProvider(this, new HomeActionButtonOutlineProvider());
+        ViewSupport.setOutlineProvider(this, new HomeActionButtonOutlineProvider());
 		setClipToOutline(true);
         setButtonColor(Color.WHITE);
 	}
 
 	@Override
     public void setButtonColor(int color) {
-        ViewUtils.setBackground(this, new ColorDrawable(color));
+        ViewSupport.setBackground(this, new ColorDrawable(color));
 	}
 
     @Override

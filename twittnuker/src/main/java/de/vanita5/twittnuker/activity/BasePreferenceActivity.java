@@ -23,11 +23,11 @@
 package de.vanita5.twittnuker.activity;
 
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.v4.view.WindowCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
@@ -49,7 +49,7 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.ViewUtils;
+import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 
@@ -151,10 +151,8 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
             StrictModeUtils.detectAllVmPolicy();
             StrictModeUtils.detectAllThreadPolicy();
         }
-        setTheme();
         setupWindow();
 		super.onCreate(savedInstanceState);
-        setupActionBar();
         mKeyboardShortcutsHandler = TwittnukerApplication.getInstance(this).getKeyboardShortcutsHandler();
 	}
 
@@ -244,7 +242,7 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
             final Toolbar toolbar = (Toolbar) actionBarView;
             ThemeUtils.setActionBarOverflowColor(toolbar, itemColor);
             final int popupColor = ThemeUtils.getThemeForegroundColor(toolbar.getContext(), toolbar.getPopupTheme());
-            ThemeUtils.wrapToolbarMenuIcon(ViewUtils.findViewByType(actionBarView, ActionMenuView.class), itemColor, popupColor);
+            ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(actionBarView, ActionMenuView.class), itemColor, popupColor);
         }
         return result;
     }
@@ -263,16 +261,27 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         return (FrameLayout) view.findViewById(R.id.main_content);
     }
 
-    private void setTheme() {
-        mCurrentThemeResource = getThemeResourceId();
+    @Override
+    protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resid, boolean first) {
         mCurrentThemeColor = getThemeColor();
         mCurrentActionBarColor = getActionBarColor();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
         mProfileImageStyle = Utils.getProfileImageStyle(this);
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
         mCurrentThemeFontFamily = getThemeFontFamily();
-        setTheme(mCurrentThemeResource);
         ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource, mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
+        super.onApplyThemeResource(theme, resid, first);
+    }
+
+    @Override
+    public void setTheme(int resid) {
+        super.setTheme(mCurrentThemeResource = getThemeResourceId());
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        setupActionBar();
 	}
 
     private void setupActionBar() {
@@ -304,9 +313,9 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
-        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
-        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY);
+//        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
+//        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
+//        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY);
     }
 
 }

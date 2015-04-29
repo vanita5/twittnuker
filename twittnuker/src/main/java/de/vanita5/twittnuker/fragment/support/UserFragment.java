@@ -93,7 +93,6 @@ import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.activity.support.ThemedAppCompatActivity;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
-import de.vanita5.twittnuker.activity.support.UserProfileEditorActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
@@ -127,13 +126,13 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.ViewUtils;
-import de.vanita5.twittnuker.util.accessor.ActivityAccessor;
-import de.vanita5.twittnuker.util.accessor.ActivityAccessor.TaskDescriptionCompat;
+import de.vanita5.twittnuker.util.support.ActivitySupport;
+import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
 import de.vanita5.twittnuker.util.message.ProfileUpdatedEvent;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
@@ -1115,15 +1114,10 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     @Override
     protected void fitSystemWindows(Rect insets) {
         super.fitSystemWindows(insets);
+        final ThemedAppCompatActivity activity = (ThemedAppCompatActivity) getActivity();
         mHeaderDrawerLayout.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-        final FragmentActivity activity = getActivity();
-        final boolean isTransparentBackground;
-        if (activity instanceof IThemedActivity) {
-            final String backgroundOption = ((IThemedActivity) activity).getCurrentThemeBackgroundOption();
-            isTransparentBackground = ThemeUtils.isTransparentBackground(backgroundOption);
-        } else {
-            isTransparentBackground = ThemeUtils.isTransparentBackground(getActivity());
-        }
+        final String backgroundOption = activity.getCurrentThemeBackgroundOption();
+        final boolean isTransparentBackground = ThemeUtils.isTransparentBackground(backgroundOption);
         mHeaderDrawerLayout.setClipToPadding(isTransparentBackground);
     }
 
@@ -1139,12 +1133,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 			}
             case R.id.follow: {
                 if (user.id == user.account_id) {
-                    final Bundle extras = new Bundle();
-                    extras.putLong(EXTRA_ACCOUNT_ID, user.account_id);
-                    final Intent intent = new Intent(INTENT_ACTION_EDIT_USER_PROFILE);
-                    intent.setClass(getActivity(), UserProfileEditorActivity.class);
-                    intent.putExtras(extras);
-                    startActivity(intent);
+                    Utils.openProfileEditor(getActivity(), user.account_id);
                     break;
                 }
                 final Relationship relationship = mRelationship;
@@ -1190,7 +1179,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 			}
 			case R.id.name_container: {
 				if (user.account_id != user.id) return;
-				startActivity(new Intent(getActivity(), UserProfileEditorActivity.class));
+                Utils.openProfileEditor(getActivity(), user.account_id);
 				break;
 			}
 		}
@@ -1302,6 +1291,11 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     private static void setCompatToolbarOverlayAlpha(FragmentActivity activity, float alpha) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) return;
+        final View windowOverlay = activity.findViewById(R.id.window_overlay);
+        if (windowOverlay != null) {
+            windowOverlay.setAlpha(alpha);
+            return;
+        }
         final Drawable drawable = ThemeUtils.getCompatToolbarOverlay(activity);
         if (drawable == null) return;
         drawable.setAlpha(Math.round(alpha * 255));
@@ -1322,12 +1316,12 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         if (mActionBarBackground != null) {
             mActionBarBackground.setColor(color);
         }
-        ActivityAccessor.setTaskDescription(activity, new TaskDescriptionCompat(null, null, color));
+        ActivitySupport.setTaskDescription(activity, new TaskDescriptionCompat(null, null, color));
         mDescriptionView.setLinkTextColor(color);
         mProfileBannerView.setBackgroundColor(color);
         mLocationView.setLinkTextColor(color);
         mURLView.setLinkTextColor(color);
-        ViewUtils.setBackground(mPagerIndicator, ThemeUtils.getActionBarStackedBackground(activity, themeRes, color, true));
+        ViewSupport.setBackground(mPagerIndicator, ThemeUtils.getActionBarStackedBackground(activity, themeRes, color, true));
 
         final HeaderDrawerLayout drawer = mHeaderDrawerLayout;
         if (drawer != null) {
@@ -1462,13 +1456,13 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             if (mActionBarHomeAsUpIndicator != null) {
                 mActionBarHomeAsUpIndicator.setColorFilter(itemColor, Mode.SRC_ATOP);
             }
-            final View actionBarView = activity.getWindow().findViewById(android.support.v7.appcompat.R.id.action_bar);
-            if (actionBarView instanceof Toolbar) {
-                final Toolbar toolbar = (Toolbar) actionBarView;
+            final Toolbar actionBarView = activity.getActionBarToolbar();
+            if (actionBarView != null) {
+                final Toolbar toolbar = actionBarView;
                 toolbar.setTitleTextColor(itemColor);
                 toolbar.setSubtitleTextColor(itemColor);
                 ThemeUtils.setActionBarOverflowColor(toolbar, itemColor);
-                ThemeUtils.wrapToolbarMenuIcon(ViewUtils.findViewByType(actionBarView, ActionMenuView.class), itemColor, itemColor);
+                ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(actionBarView, ActionMenuView.class), itemColor, itemColor);
 			}
             mPagerIndicator.updateAppearance();
         }
@@ -1481,15 +1475,14 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final float nameShowingRatio = (mHeaderDrawerLayout.getPaddingTop() - location[1])
                 / (float) mNameView.getHeight();
         final float textAlpha = MathUtils.clamp(nameShowingRatio, 0, 1);
-        final FragmentActivity activity = getActivity();
-        final View actionBarView = activity.getWindow().findViewById(android.support.v7.appcompat.R.id.action_bar);
-        if (actionBarView instanceof Toolbar) {
-            final Toolbar toolbar = (Toolbar) actionBarView;
-            final TextView titleView = ViewUtils.findViewByText(toolbar, toolbar.getTitle());
+        final ThemedAppCompatActivity activity = (ThemedAppCompatActivity) getActivity();
+        final Toolbar actionBarView = activity.getActionBarToolbar();
+        if (actionBarView != null) {
+            final TextView titleView = ViewSupport.findViewByText(actionBarView, actionBarView.getTitle());
             if (titleView != null) {
                 titleView.setAlpha(textAlpha);
         	}
-            final TextView subtitleView = ViewUtils.findViewByText(toolbar, toolbar.getSubtitle());
+            final TextView subtitleView = ViewSupport.findViewByText(actionBarView, actionBarView.getSubtitle());
             if (subtitleView != null) {
                 subtitleView.setAlpha(textAlpha);
         	}

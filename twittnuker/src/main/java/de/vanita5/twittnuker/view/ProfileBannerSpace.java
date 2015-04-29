@@ -29,9 +29,12 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 
+import de.vanita5.twittnuker.util.ThemeUtils;
+
 public class ProfileBannerSpace extends View {
 
 	private final Rect mSystemWindowsInsets;
+    private final int mActionBarHeight;
 
 	/**
 	 * {@inheritDoc}
@@ -54,7 +57,17 @@ public class ProfileBannerSpace extends View {
 	public ProfileBannerSpace(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
 		mSystemWindowsInsets = new Rect();
+        mActionBarHeight = ThemeUtils.getActionBarHeight(context);
 	}
+
+    /**
+     * Draw nothing.
+     *
+     * @param canvas an unused parameter.
+     */
+    @Override
+    public void draw(@NonNull final Canvas canvas) {
+    }
 
     @Override
     protected boolean fitSystemWindows(@NonNull Rect insets) {
@@ -62,18 +75,11 @@ public class ProfileBannerSpace extends View {
         return super.fitSystemWindows(insets);
     }
 
-	/**
-	 * Draw nothing.
-	 *
-	 * @param canvas an unused parameter.
-	 */
-	@Override
-    public void draw(@NonNull final Canvas canvas) {
-	}
-
 	@Override
 	protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-		final int width = MeasureSpec.getSize(widthMeasureSpec), height = width / 2 - mSystemWindowsInsets.top;
+        final int insetsTop = mSystemWindowsInsets.top;
+        final int top = insetsTop < mActionBarHeight ? insetsTop + mActionBarHeight : insetsTop;
+        final int width = MeasureSpec.getSize(widthMeasureSpec), height = width / 2 - top;
 		setMeasuredDimension(width, height);
 		super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
 	}

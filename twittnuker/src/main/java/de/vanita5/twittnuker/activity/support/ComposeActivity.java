@@ -97,6 +97,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.support.DraftsFragment;
 import de.vanita5.twittnuker.fragment.support.ViewStatusDialogFragment;
 import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -338,7 +339,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         final Window window = getWindow();
         final Rect rect = new Rect();
         window.getDecorView().getWindowVisibleDisplayFrame(rect);
-        final int actionBarHeight = Utils.getActionBarHeight(this);
+        final int actionBarHeight = ThemeUtils.getActionBarHeight(this);
         final View contentView = window.findViewById(android.R.id.content);
         final int[] location = new int[2];
         contentView.getLocationOnScreen(location);
@@ -419,7 +420,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 break;
             }
             case MENU_DRAFTS: {
-                startActivity(new Intent(INTENT_ACTION_DRAFTS));
+                Utils.openDrafts(this);
                 break;
             }
             case MENU_DELETE: {
@@ -727,7 +728,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         }
         builder.setSmallIcon(R.drawable.ic_stat_info);
         builder.setAutoCancel(true);
-        final Intent draftsIntent = new Intent(this, DraftsActivity.class);
+        final Intent draftsIntent = new Intent(this, DraftsFragment.class);
         builder.setContentIntent(PendingIntent.getActivity(this, 0, draftsIntent, PendingIntent.FLAG_UPDATE_CURRENT));
         final Intent serviceIntent = new Intent(this, BackgroundOperationService.class);
         serviceIntent.setAction(INTENT_ACTION_DISCARD_DRAFT);

@@ -1,4 +1,4 @@
-package de.vanita5.twittnuker.util.accessor;
+package de.vanita5.twittnuker.util.support;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -9,7 +9,7 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class ActivityAccessor {
+public class ActivitySupport {
 
 	public static void setTaskDescription(Activity activity, TaskDescriptionCompat taskDescription) {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;

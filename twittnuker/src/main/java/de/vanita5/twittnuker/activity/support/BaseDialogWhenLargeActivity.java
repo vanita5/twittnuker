@@ -24,25 +24,23 @@ package de.vanita5.twittnuker.activity.support;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.WindowCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.View;
 import android.view.WindowManager.LayoutParams;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.ViewUtils;
-import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
+import de.vanita5.twittnuker.util.support.ViewSupport;
+import de.vanita5.twittnuker.view.iface.TintedStatusLayout;
 
 public class BaseDialogWhenLargeActivity extends BaseAppCompatActivity {
 
-	private TintedStatusFrameLayout mMainContent;
+    private TintedStatusLayout mMainContent;
 
 	@Override
-	public final int getThemeResourceId() {
+    public int getThemeResourceId() {
 		return ThemeUtils.getDialogWhenLargeThemeResource(this);
 	}
 
@@ -50,21 +48,19 @@ public class BaseDialogWhenLargeActivity extends BaseAppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
         setupWindow();
 		super.onCreate(savedInstanceState);
-		setupActionBar();
 	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		final boolean result = super.onPrepareOptionsMenu(menu);
 		if (!shouldSetActionItemColor()) return result;
-		final View actionBarView = getWindow().findViewById(android.support.v7.appcompat.R.id.action_bar);
-		if (actionBarView instanceof Toolbar) {
+        final Toolbar toolbar = peekActionBarToolbar();
+        if (toolbar != null) {
 			final int actionBarColor = getCurrentActionBarColor();
 			final int themeId = getCurrentThemeResourceId();
 			final int itemColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
-			final Toolbar toolbar = (Toolbar) actionBarView;
 			ThemeUtils.setActionBarOverflowColor(toolbar, itemColor);
-			ThemeUtils.wrapToolbarMenuIcon(ViewUtils.findViewByType(actionBarView, ActionMenuView.class), itemColor, itemColor);
+            ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(toolbar, ActionMenuView.class), itemColor, itemColor);
 		}
 		return result;
 	}
@@ -72,11 +68,11 @@ public class BaseDialogWhenLargeActivity extends BaseAppCompatActivity {
 	@Override
     public void onContentChanged() {
         super.onContentChanged();
-		mMainContent = (TintedStatusFrameLayout) findViewById(R.id.main_content);
+        mMainContent = (TintedStatusLayout) findViewById(R.id.main_content);
 		setupTintStatusBar();
 	}
 
-	protected TintedStatusFrameLayout getMainContent() {
+    protected TintedStatusLayout getMainContent() {
 		return mMainContent;
 	}
 
@@ -88,6 +84,12 @@ public class BaseDialogWhenLargeActivity extends BaseAppCompatActivity {
 		return true;
 	}
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        setupActionBar();
+    }
+
 	private void setupActionBar() {
 		final ActionBar actionBar = getSupportActionBar();
 		if (actionBar == null) return;
@@ -98,7 +100,12 @@ public class BaseDialogWhenLargeActivity extends BaseAppCompatActivity {
         final int titleColor = ThemeUtils.getContrastActionBarTitleColor(this, themeId, actionBarColor);
 		final int actionBarItemsColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
 		ThemeUtils.applyActionBarBackground(actionBar, this, themeId, actionBarColor, option, isActionBarOutlineEnabled());
-        ThemeUtils.setActionBarColor(getWindow(), actionBar, titleColor, actionBarItemsColor);
+        final Toolbar toolbar = peekActionBarToolbar();
+        if (toolbar != null) {
+            ThemeUtils.setToolBarColor(toolbar, titleColor, actionBarItemsColor);
+        } else {
+            ThemeUtils.setActionBarColor(getWindow(), getSupportActionBar(), titleColor, actionBarItemsColor);
+        }
 	}
 
 	private void setupTintStatusBar() {
@@ -117,8 +124,5 @@ public class BaseDialogWhenLargeActivity extends BaseAppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
-        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
-        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY);
     }
 }
