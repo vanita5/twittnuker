@@ -1108,7 +1108,8 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     private void updateLocationState() {
         final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
         if (attachLocation) {
-            mLocationIcon.setColorFilter(getCurrentThemeColor(), Mode.SRC_ATOP);
+            mLocationIcon.setColorFilter(ThemeUtils.getOptimalAccentColor(this, false,
+                    getCurrentThemeResourceId()), Mode.SRC_ATOP);
         } else {
             mLocationIcon.setColorFilter(mLocationIcon.getDefaultColor(), Mode.SRC_ATOP);
             mLocationText.setText(R.string.no_location);

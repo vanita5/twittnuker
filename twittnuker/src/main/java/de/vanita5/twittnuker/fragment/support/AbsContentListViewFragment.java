@@ -43,7 +43,6 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffsetListener;
-import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.util.ContentListScrollListener.ContentListSupport;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -149,7 +148,6 @@ public abstract class AbsContentListViewFragment<A extends ListAdapter> extends 
 		final int colorRes = TwidereColorUtils.getContrastYIQ(backgroundColor,
 				R.color.bg_refresh_progress_color_light, R.color.bg_refresh_progress_color_dark);
 		mSwipeRefreshLayout.setOnRefreshListener(this);
-		mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getUserAccentColor(context));
 		mSwipeRefreshLayout.setProgressBackgroundColorSchemeResource(colorRes);
 		mAdapter = onCreateAdapter(context, compact);
 		mListView.setOnTouchListener(new View.OnTouchListener() {
@@ -161,7 +159,7 @@ public abstract class AbsContentListViewFragment<A extends ListAdapter> extends 
 				return false;
 			}
 		});
-		mListView.setAdapter((ListAdapter) mAdapter);
+		mListView.setAdapter(mAdapter);
 
 	}
 

@@ -45,7 +45,6 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffsetListener;
-import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
@@ -203,7 +202,6 @@ public abstract class AbsContentRecyclerViewFragment<A extends IContentCardAdapt
 		final int colorRes = TwidereColorUtils.getContrastYIQ(backgroundColor,
 				R.color.bg_refresh_progress_color_light, R.color.bg_refresh_progress_color_dark);
 		mSwipeRefreshLayout.setOnRefreshListener(this);
-		mSwipeRefreshLayout.setColorSchemeColors(ThemeUtils.getUserAccentColor(context));
 		mSwipeRefreshLayout.setProgressBackgroundColorSchemeResource(colorRes);
 		mAdapter = onCreateAdapter(context, compact);
 		mLayoutManager = new FixedLinearLayoutManager(context);

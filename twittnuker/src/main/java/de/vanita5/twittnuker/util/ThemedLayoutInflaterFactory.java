@@ -46,6 +46,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.AppCompatPreferenceActivity;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.support.ViewSupport;
@@ -128,13 +129,17 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
         final int noTintColor, accentColor, backgroundTintColor, actionBarColor;
         final boolean isColorTint;
         // View context is not derived from ActionBar, apply color tint directly
+        final Resources resources = ((Activity) activity).getResources();
         final boolean isActionBarContext = isActionBarContext(view.getContext(), getActionBarContext((Activity) activity));
         final int themeResourceId = activity.getCurrentThemeResourceId();
+        final boolean isDarkTheme = ThemeUtils.isDarkTheme(themeResourceId);
+        final int backgroundColorApprox;
         if (!isActionBarContext) {
             accentColor = activity.getCurrentThemeColor();
 			actionBarColor = activity.getCurrentActionBarColor();
             noTintColor = TwidereColorUtils.getContrastYIQ(actionBarColor, ThemeUtils.ACCENT_COLOR_THRESHOLD);
 			backgroundTintColor = accentColor;
+            backgroundColorApprox = isDarkTheme ? Color.BLACK : Color.WHITE;
             isColorTint = true;
 		} else {
             // View context is derived from ActionBar and it's light theme, so we use contrast color
@@ -142,29 +147,47 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
             accentColor = activity.getCurrentThemeColor();
             noTintColor = TwidereColorUtils.getContrastYIQ(accentColor, ThemeUtils.ACCENT_COLOR_THRESHOLD);
             backgroundTintColor = accentColor;
+            backgroundColorApprox = isDarkTheme ? Color.BLACK : Color.WHITE;
             isColorTint = false;
 		}
+        final boolean isAccentOptimal = Math.abs(TwidereColorUtils.getYIQContrast(actionBarColor, accentColor)) > 64;
         if (view instanceof TextView) {
             final TextView textView = (TextView) view;
-            textView.setLinkTextColor(accentColor);
+            if (isAccentOptimal) {
+				textView.setLinkTextColor(accentColor);
+			}
         }
         if (view instanceof IThemeAccentView) {
-            ((IThemeAccentView) view).setAccentTintColor(ColorStateList.valueOf(accentColor));
+            if (isAccentOptimal) {
+            	((IThemeAccentView) view).setAccentTintColor(ColorStateList.valueOf(accentColor));
+            } else {
+                final int defaultAccentColor = ThemeUtils.getColorFromAttribute(view.getContext(),
+                        R.attr.colorAccent, resources.getColor(R.color.branding_color));
+                ((IThemeAccentView) view).setAccentTintColor(ColorStateList.valueOf(defaultAccentColor));
+            }
         } else if (view instanceof IThemeBackgroundTintView) {
-            ((IThemeBackgroundTintView) view).setBackgroundTintColor(ColorStateList.valueOf(backgroundTintColor));
+            if (isAccentOptimal || !isColorTint) {
+            	((IThemeBackgroundTintView) view).setBackgroundTintColor(ColorStateList.valueOf(backgroundTintColor));
+            }
 		} else if (view instanceof TintableBackgroundView) {
             final TintableBackgroundView tintable = (TintableBackgroundView) view;
-            applyTintableBackgroundViewTint(tintable, accentColor, noTintColor, backgroundTintColor, isColorTint);
+            if (isAccentOptimal) {
+            	applyTintableBackgroundViewTint(tintable, accentColor, noTintColor, backgroundTintColor, isColorTint);
+            }
         } else if (view instanceof TwidereToolbar) {
             final int itemColor = ThemeUtils.getContrastActionBarItemColor((Context) activity,
                     themeResourceId, actionBarColor);
             ((TwidereToolbar) view).setItemColor(itemColor);
             } else if (view instanceof EditText) {
-            ViewCompat.setBackgroundTintList(view, ColorStateList.valueOf(accentColor));
+            if (isAccentOptimal) {
+            	ViewCompat.setBackgroundTintList(view, ColorStateList.valueOf(accentColor));
+            }
         } else if (view instanceof ProgressBar) {
-            ViewSupport.setProgressTintList((ProgressBar) view, ColorStateList.valueOf(accentColor));
-            ViewSupport.setProgressBackgroundTintList((ProgressBar) view, ColorStateList.valueOf(accentColor));
-        }
+            if (isAccentOptimal) {
+				ViewSupport.setProgressTintList((ProgressBar) view, ColorStateList.valueOf(accentColor));
+				ViewSupport.setProgressBackgroundTintList((ProgressBar) view, ColorStateList.valueOf(accentColor));
+			}
+		}
     }
 
     private static void applyTintableBackgroundViewTint(TintableBackgroundView tintable, int accentColor, int noTintColor, int backgroundTintColor, boolean isColorTint) {
