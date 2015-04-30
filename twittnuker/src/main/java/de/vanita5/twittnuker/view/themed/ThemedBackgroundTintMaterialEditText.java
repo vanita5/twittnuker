@@ -32,6 +32,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import de.vanita5.twittnuker.view.iface.IThemeBackgroundTintView;
 
 public class ThemedBackgroundTintMaterialEditText extends MaterialEditText implements IThemeBackgroundTintView {
+
 	public ThemedBackgroundTintMaterialEditText(Context context) {
 		super(context);
 	}
