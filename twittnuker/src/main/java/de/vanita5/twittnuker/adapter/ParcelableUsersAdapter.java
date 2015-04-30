@@ -51,7 +51,7 @@ public class ParcelableUsersAdapter extends AbsUsersAdapter<List<ParcelableUser>
 	}
 
     @Override
-    protected void bindStatus(UserViewHolder holder, int position) {
+    protected void bindUser(UserViewHolder holder, int position) {
         holder.displayUser(getUser(position));
 	}
 

@@ -20,13 +20,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.iface;
+package de.vanita5.twittnuker.adapter;
 
-import android.content.res.ColorStateList;
-import android.support.annotation.NonNull;
+import android.content.Context;
+import android.database.Cursor;
+import android.support.v4.widget.SimpleCursorAdapter;
 
-public interface IThemeAccentView {
+import de.vanita5.twittnuker.provider.TwidereDataStore;
 
-    public void setAccentTintColor(@NonNull ColorStateList color);
+public class TrendsAdapter extends SimpleCursorAdapter {
+	private int mNameIdx;
+
+	@Override
+	public String getItem(int position) {
+		final Cursor c = getCursor();
+		if (c != null && !c.isClosed() && c.moveToPosition(position))
+			return c.getString(mNameIdx);
+		return null;
+	}
+
+	@Override
+	public Cursor swapCursor(Cursor c) {
+		if (c != null) {
+			mNameIdx = c.getColumnIndex(TwidereDataStore.CachedTrends.NAME);
+		}
+		return super.swapCursor(c);
+	}
+
+	public TrendsAdapter(final Context context) {
+		super(context, android.R.layout.simple_list_item_1, null, new String[]{TwidereDataStore.CachedTrends.NAME},
+				new int[]{android.R.id.text1}, 0);
+	}
 
 }

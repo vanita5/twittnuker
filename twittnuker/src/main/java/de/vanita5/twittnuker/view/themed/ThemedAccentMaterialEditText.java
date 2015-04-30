@@ -20,13 +20,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.iface;
+package de.vanita5.twittnuker.view.themed;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
+import android.util.AttributeSet;
 
-public interface IThemeAccentView {
+import com.rengwuxian.materialedittext.MaterialEditText;
 
-    public void setAccentTintColor(@NonNull ColorStateList color);
+import de.vanita5.twittnuker.view.iface.IThemeAccentView;
 
+public class ThemedAccentMaterialEditText extends MaterialEditText implements IThemeAccentView {
+	public ThemedAccentMaterialEditText(Context context) {
+		super(context);
+	}
+
+	public ThemedAccentMaterialEditText(Context context, AttributeSet attrs) {
+		super(context, attrs);
+	}
+
+	public ThemedAccentMaterialEditText(Context context, AttributeSet attrs, int style) {
+		super(context, attrs, style);
+	}
+
+	@Override
+	public void setAccentTintColor(@NonNull ColorStateList color) {
+		setPrimaryColor(color.getDefaultColor());
+	}
 }

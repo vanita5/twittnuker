@@ -31,7 +31,8 @@ import java.util.List;
 
 import twitter4j.CursorSupport;
 
-public abstract class BaseCursorSupportUsersLoader extends Twitter4JUsersLoader {
+public abstract class BaseCursorSupportUsersLoader extends Twitter4JUsersLoader
+        implements ICursorSupportLoader {
 
 	private final long mCursor;
 	private final SharedPreferences mPreferences;
@@ -52,14 +53,17 @@ public abstract class BaseCursorSupportUsersLoader extends Twitter4JUsersLoader 
 		return mLoadItemLimit;
 	}
 
+    @Override
 	public final long getCursor() {
 		return mCursor;
 	}
 
+    @Override
 	public final long getNextCursor() {
 		return mNextCursor;
 	}
 
+    @Override
 	public final long getPrevCursor() {
 		return mPrevCursor;
 	}

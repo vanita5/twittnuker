@@ -46,7 +46,7 @@ import de.vanita5.twittnuker.fragment.support.InvalidTabFragment;
 import de.vanita5.twittnuker.fragment.support.MentionsTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.RetweetsOfMeFragment;
 import de.vanita5.twittnuker.fragment.support.StatusesSearchFragment;
-import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment;
+import de.vanita5.twittnuker.fragment.support.TrendsSuggestionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserFavoritesFragment;
 import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
@@ -80,7 +80,7 @@ public class CustomTabUtils implements Constants {
 				DirectMessagesFragment.class, R.string.direct_messages, R.drawable.ic_action_message,
 				CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 2, false));
 		CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_TRENDS_SUGGESTIONS, new CustomTabConfiguration(
-				TrendsSuggectionsFragment.class, R.string.trends, R.drawable.ic_action_hashtag,
+				TrendsSuggestionsFragment.class, R.string.trends, R.drawable.ic_action_hashtag,
 				CustomTabConfiguration.ACCOUNT_NONE, CustomTabConfiguration.FIELD_TYPE_NONE, 3, true));
 		CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_FAVORITES, new CustomTabConfiguration(UserFavoritesFragment.class,
 				R.string.favorites, R.drawable.ic_action_star, CustomTabConfiguration.ACCOUNT_REQUIRED,

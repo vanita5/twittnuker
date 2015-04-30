@@ -20,13 +20,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.iface;
+package de.vanita5.twittnuker.view.themed;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
+import android.util.AttributeSet;
 
-public interface IThemeAccentView {
+import com.pnikosis.materialishprogress.ProgressWheel;
 
-    public void setAccentTintColor(@NonNull ColorStateList color);
+import de.vanita5.twittnuker.view.iface.IThemeAccentView;
 
+public class ThemedAccentProgressWheel extends ProgressWheel implements IThemeAccentView {
+	public ThemedAccentProgressWheel(Context context, AttributeSet attrs) {
+		super(context, attrs);
+	}
+
+	public ThemedAccentProgressWheel(Context context) {
+		super(context);
+	}
+
+	@Override
+    public void setAccentTintColor(@NonNull ColorStateList color) {
+		setBarColor(color.getDefaultColor());
+	}
 }

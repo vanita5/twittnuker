@@ -20,13 +20,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.iface;
+package de.vanita5.twittnuker.loader.support.iface;
 
-import android.content.res.ColorStateList;
-import android.support.annotation.NonNull;
+public interface ICursorSupportLoader {
+	long getCursor();
 
-public interface IThemeAccentView {
+	long getNextCursor();
 
-    public void setAccentTintColor(@NonNull ColorStateList color);
-
+	long getPrevCursor();
 }

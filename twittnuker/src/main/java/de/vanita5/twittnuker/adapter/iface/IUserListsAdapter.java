@@ -20,32 +20,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.themed;
+package de.vanita5.twittnuker.adapter.iface;
 
-import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.util.AttributeSet;
+import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.view.holder.UserListViewHolder.UserListClickListener;
 
-import com.pnikosis.materialishprogress.ProgressWheel;
+public interface IUserListsAdapter<Data> extends IContentCardAdapter, UserListClickListener {
 
-import de.vanita5.twittnuker.view.iface.IThemeAccentView;
+	ParcelableUserList getUserList(int position);
 
-public class TintThemedProgressWheel extends ProgressWheel implements IThemeAccentView {
-	public TintThemedProgressWheel(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+	long getUserListId(int position);
 
-	public TintThemedProgressWheel(Context context) {
-		super(context);
-	}
+	int getUserListsCount();
+
+	void setData(Data data);
+
+	boolean shouldShowAccountsColor();
+
+	boolean isNameFirst();
 
 	@Override
-    public void setAccentTintColor(ColorStateList color) {
-		if (color != null) {
-			setBarColor(color.getDefaultColor());
-		} else {
-			setBarColor(Color.TRANSPARENT);
-		}
-	}
+	MediaLoaderWrapper getMediaLoader();
+
 }

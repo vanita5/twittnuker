@@ -52,7 +52,7 @@ import org.mariotaku.querybuilder.SQLQueryBuilder;
 import org.mariotaku.querybuilder.Table;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.support.TrendsSuggectionsFragment.TrendsAdapter;
+import de.vanita5.twittnuker.adapter.TrendsAdapter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;

@@ -339,6 +339,7 @@
     <string name="hashtag">Hashtag</string>
     <string name="links">Links</string>
     <string name="edit_profile">Profil bearbeiten</string>
+    <string name="edit_details">Edit details</string>
     <string name="display_sensitive_contents">Zeige kritische Inhalte</string>
     <string name="display_sensitive_contents_summary">Kritische Inhalte ohne Warnung anzeigen</string>
     <string name="sensitive_content_warning">Dieser Tweet könnte heiklen Inhalt haben. Fortfahren?</string>
