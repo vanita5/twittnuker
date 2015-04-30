@@ -59,7 +59,6 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
 	private final Context mContext;
 	private final long mAccountId;
 	private final long mMaxId, mSinceId;
-	private final SQLiteDatabase mDatabase;
 	private final Object[] mSavedStatusesFileArgs;
     private Comparator<ParcelableStatus> mComparator;
 
@@ -71,7 +70,6 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
         mAccountId = accountId;
         mMaxId = maxId;
         mSinceId = sinceId;
-		mDatabase = TwittnukerApplication.getInstance(context).getSQLiteDatabase();
         mSavedStatusesFileArgs = savedStatusesArgs;
 	}
 
@@ -146,10 +144,11 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
             data.add(new ParcelableStatus(status, mAccountId, insertGap && isGapEnabled() && minIdx == i));
         }
 
+        final SQLiteDatabase db = TwittnukerApplication.getInstance(context).getSQLiteDatabase();
         final ParcelableStatus[] array = data.toArray(new ParcelableStatus[data.size()]);
         for (int i = 0, size = array.length; i < size; i++) {
             final ParcelableStatus status = array[i];
-            if (shouldFilterStatus(mDatabase, status) && !status.is_gap && i != size - 1) {
+            if (shouldFilterStatus(db, status) && !status.is_gap && i != size - 1) {
                 deleteStatus(data, status.id);
 			}
 		}

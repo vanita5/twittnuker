@@ -43,10 +43,12 @@ import android.view.InflateException;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.activity.AppCompatPreferenceActivity;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.TwidereToolbar;
 import de.vanita5.twittnuker.view.iface.IThemeAccentView;
@@ -126,7 +128,6 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
         final int noTintColor, accentColor, backgroundTintColor, actionBarColor;
         final boolean isColorTint;
         // View context is not derived from ActionBar, apply color tint directly
-        final Resources resources = ((Activity) activity).getResources();
         final boolean isActionBarContext = isActionBarContext(view.getContext(), getActionBarContext((Activity) activity));
         final int themeResourceId = activity.getCurrentThemeResourceId();
         if (!isActionBarContext) {
@@ -160,6 +161,9 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
             ((TwidereToolbar) view).setItemColor(itemColor);
             } else if (view instanceof EditText) {
             ViewCompat.setBackgroundTintList(view, ColorStateList.valueOf(accentColor));
+        } else if (view instanceof ProgressBar) {
+            ViewSupport.setProgressTintList((ProgressBar) view, ColorStateList.valueOf(accentColor));
+            ViewSupport.setProgressBackgroundTintList((ProgressBar) view, ColorStateList.valueOf(accentColor));
         }
     }
 

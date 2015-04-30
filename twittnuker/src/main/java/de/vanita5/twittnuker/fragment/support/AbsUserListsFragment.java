@@ -35,11 +35,13 @@ import android.view.KeyEvent;
 
 import de.vanita5.twittnuker.adapter.AbsUserListsAdapter;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
+import de.vanita5.twittnuker.loader.support.iface.ICursorSupportLoader;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.view.holder.UserListViewHolder;
 
 abstract class AbsUserListsFragment<Data> extends AbsContentRecyclerViewFragment<AbsUserListsAdapter<Data>>
 		implements LoaderCallbacks<Data>, AbsUserListsAdapter.UserListAdapterListener, KeyboardShortcutCallback {

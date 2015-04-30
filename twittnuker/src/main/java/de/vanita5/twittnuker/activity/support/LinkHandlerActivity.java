@@ -46,6 +46,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 
+import com.meizu.flyme.reflect.StatusBarProxy;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
@@ -59,6 +61,7 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallb
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereActionModeForChildListener;
+import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.ActivitySupport;
 import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat;
@@ -277,18 +280,6 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
     }
 
     @Override
-    protected boolean onPrepareOptionsPanel(View view, Menu menu) {
-        final Toolbar toolbar = peekActionBarToolbar();
-        final boolean result = super.onPrepareOptionsPanel(view, menu);
-        if (mActionBarItemsColor != 0 && toolbar != null) {
-            toolbar.setTitleTextColor(mActionBarItemsColor);
-            toolbar.setSubtitleTextColor(mActionBarItemsColor);
-            ThemeUtils.setActionBarOverflowColor(toolbar, mActionBarItemsColor);
-        }
-        return result;
-    }
-
-    @Override
     public void onContentChanged() {
         super.onContentChanged();
         mMainContent = (TintedStatusFrameLayout) findViewById(R.id.main_content);
@@ -366,9 +357,14 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
                 break;
             }
         }
-        if (actionBarItemsColor != 0) {
+        if (actionBarItemsColor != 0 && shouldSetActionItemColor()) {
             final int titleColor = ThemeUtils.getContrastActionBarTitleColor(this, themeId, actionBarColor);
-            ThemeUtils.setActionBarColor(getWindow(), actionBar, titleColor, actionBarItemsColor);
+            final Toolbar toolbar = peekActionBarToolbar();
+            if (toolbar != null) {
+                ThemeUtils.setToolBarColor(toolbar, titleColor, actionBarItemsColor);
+            } else {
+                ThemeUtils.setActionBarColor(getWindow(), getSupportActionBar(), titleColor, actionBarItemsColor);
+            }
         }
         mActionBarItemsColor = actionBarItemsColor;
     }
@@ -383,9 +379,10 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
                 mMainContent.setDrawShadow(false);
                 mMainContent.setDrawColor(true);
                 mMainContent.setFactor(1);
-                final int color = getActionBarColor();
                 final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption()) ? getCurrentThemeBackgroundAlpha() : 0xFF;
-                mMainContent.setColor(color, alpha);
+                final int statusBarColor = getActionBarColor();
+                mMainContent.setColor(statusBarColor, alpha);
+                StatusBarProxy.setStatusBarDarkIcon(getWindow(), TwidereColorUtils.getYIQLuminance(statusBarColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD);
                 break;
             }
         }

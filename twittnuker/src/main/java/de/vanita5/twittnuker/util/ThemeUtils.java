@@ -41,6 +41,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.app.AppCompatDelegateTrojan;
+import android.support.v7.internal.app.ToolbarActionBar;
 import android.support.v7.internal.app.WindowDecorActionBar;
 import android.support.v7.internal.app.WindowDecorActionBar.ActionModeImpl;
 import android.support.v7.internal.view.StandaloneActionMode;
@@ -82,6 +83,7 @@ import de.vanita5.twittnuker.text.ParagraphSpacingSpan;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
+import de.vanita5.twittnuker.view.TwidereToolbar;
 
 import java.lang.reflect.Field;
 
@@ -433,7 +435,7 @@ public class ThemeUtils implements Constants {
 	}
 
     public static int getContrastActionBarItemColor(Context context, int theme, int color) {
-        if (isDarkTheme(theme) || TwidereColorUtils.getYIQLuminance(color) < ACCENT_COLOR_THRESHOLD) {
+        if (isDarkTheme(theme) || TwidereColorUtils.getYIQLuminance(color) <= ACCENT_COLOR_THRESHOLD) {
             //return light text color
             return context.getResources().getColor(R.color.action_icon_light);
         }
@@ -444,13 +446,13 @@ public class ThemeUtils implements Constants {
     public static int getContrastActionBarTitleColor(Context context, int theme, int color) {
         if (isDarkTheme(theme)) {
             //return light text color
-            return getTextColorPrimary(context);
-        } else if (TwidereColorUtils.getYIQLuminance(color) < ACCENT_COLOR_THRESHOLD) {
+            return getColorFromAttribute(context, android.R.attr.colorForeground, Color.RED);
+        } else if (TwidereColorUtils.getYIQLuminance(color) <= ACCENT_COLOR_THRESHOLD) {
             //return light text color
-            return getTextColorPrimaryInverse(context);
+            return getColorFromAttribute(context, android.R.attr.colorForegroundInverse, Color.RED);
         } else {
         //return dark text color
-            return getTextColorPrimary(context);
+            return getColorFromAttribute(context, android.R.attr.colorForeground, Color.RED);
         }
     }
 
@@ -507,7 +509,7 @@ public class ThemeUtils implements Constants {
         TwidereColorUtils.colorToYIQ(color, yiq);
         final int y = yiq[0];
         TwidereColorUtils.colorToYIQ(linkColor, yiq);
-        if (y < 32 && yiq[0] < ACCENT_COLOR_THRESHOLD) {
+        if (y < 32 && yiq[0] <= ACCENT_COLOR_THRESHOLD) {
             return linkColor;
         } else if (y > ACCENT_COLOR_THRESHOLD && yiq[0] > 32) {
             return linkColor;
@@ -557,6 +559,15 @@ public class ThemeUtils implements Constants {
         } finally {
             a.recycle();
         }
+    }
+
+    public static int getColorFromAttribute(Context context, int attr, int def) {
+        final TypedValue outValue = new TypedValue();
+        if (!context.getTheme().resolveAttribute(attr, outValue, true))
+            return def;
+        if (outValue.type == TypedValue.TYPE_REFERENCE)
+            return context.getResources().getColor(attr);
+        return outValue.data;
     }
 
 	public static int getTextAppearanceLarge(final Context context) {
@@ -1024,6 +1035,8 @@ public class ThemeUtils implements Constants {
             actionBar.setSubtitle(actionBar.getSubtitle());
 			setActionBarTitleTextColor(window, titleColor);
 			setActionBarSubtitleTextColor(window, titleColor);
+        } else if (actionBar instanceof ToolbarActionBar) {
+
 		}
     }
 
@@ -1033,13 +1046,15 @@ public class ThemeUtils implements Constants {
             drawable.setColorFilter(itemColor, Mode.SRC_ATOP);
         }
         toolbar.setNavigationIcon(drawable);
-        // Ensure title view created
         toolbar.setTitleTextColor(titleColor);
         toolbar.setSubtitleTextColor(titleColor);
     }
 
     public static void setActionBarOverflowColor(Toolbar toolbar, int itemColor) {
         if (toolbar == null) return;
+        if (toolbar instanceof TwidereToolbar) {
+            ((TwidereToolbar) toolbar).setItemColor(itemColor);
+        }
         final ActionMenuView actionMenuView = ViewSupport.findViewByType(toolbar, ActionMenuView.class);
         if (actionMenuView == null) return;
         View overflowView = null;
@@ -1053,6 +1068,21 @@ public class ThemeUtils implements Constants {
         }
         if (!(overflowView instanceof ImageView)) return;
         ((ImageView) overflowView).setColorFilter(itemColor, Mode.SRC_ATOP);
+    }
+
+    public static void setActionBarMenuItemsColor(Toolbar toolbar, int itemColor) {
+        if (toolbar == null) return;
+        if (toolbar instanceof TwidereToolbar) {
+            ((TwidereToolbar) toolbar).setItemColor(itemColor);
+        }
+        final ActionMenuView actionMenuView = ViewSupport.findViewByType(toolbar, ActionMenuView.class);
+        if (actionMenuView == null) return;
+        for (int i = 0, j = actionMenuView.getChildCount(); i < j; i++) {
+            final View child = actionMenuView.getChildAt(i);
+            if (child instanceof ActionMenuView.ActionMenuChildView && child instanceof ImageView) {
+                ((ImageView) child).setColorFilter(itemColor, Mode.SRC_ATOP);
+            }
+        }
     }
 
     public static void setActionBarOverflowColor(ActionMenuPresenter presenter, int itemColor) {
@@ -1087,10 +1117,10 @@ public class ThemeUtils implements Constants {
         }
     }
 
-    public static void setActionBarTitleTextColor(Window window, int itemColor) {
+    public static void setActionBarTitleTextColor(Window window, int titleColor) {
         final View actionBarView = window.findViewById(android.support.v7.appcompat.R.id.action_bar);
         if (actionBarView instanceof Toolbar) {
-            ((Toolbar) actionBarView).setTitleTextColor(itemColor);
+            ((Toolbar) actionBarView).setTitleTextColor(titleColor);
         }
     }
 

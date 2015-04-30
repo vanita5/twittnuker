@@ -64,6 +64,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
+import com.meizu.flyme.reflect.StatusBarProxy;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -339,15 +340,15 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         mReadStateManager = app.getReadStateManager();
 		mMultiSelectHandler = new MultiSelectEventHandler(this);
 		mMultiSelectHandler.dispatchOnCreate();
-        if (!Utils.hasAccount(this)) {
-            final Intent signInIntent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
-            signInIntent.setClass(this, SignInActivity.class);
-            startActivity(signInIntent);
-			finish();
-			return;
-		} else {
-			notifyAccountsChanged();
-		}
+//        if (!Utils.hasAccount(this)) {
+//            final Intent signInIntent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
+//            signInIntent.setClass(this, SignInActivity.class);
+//            startActivity(signInIntent);
+//            finish();
+//            return;
+//        } else {
+//            notifyAccountsChanged();
+//        }
 		final Intent intent = getIntent();
 		if (openSettingsWizard()) {
 			finish();
@@ -366,7 +367,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         mPagerAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), mTabIndicator, mTabColumns);
 		mPushEnabled = isPushEnabled(this);
 		mViewPager.setAdapter(mPagerAdapter);
-		mViewPager.setOffscreenPageLimit(3);
+//        mViewPager.setOffscreenPageLimit(3);
         mTabIndicator.setViewPager(mViewPager);
         mTabIndicator.setOnPageChangeListener(this);
         mTabIndicator.setColumns(mTabColumns);
@@ -495,14 +496,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     }
 
     public void notifyAccountsChanged() {
-        if (mPreferences == null) return;
-//        final long[] accountIds = getAccountIds(this);
-//        final long default_id = mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, -1);
-//        if (accountIds == null || accountIds.length == 0) {
-//            finish();
-//        } else if (accountIds.length > 0 && !ArrayUtils.contains(accountIds, default_id)) {
-//            mPreferences.edit().putLong(KEY_DEFAULT_ACCOUNT_ID, accountIds[0]).apply();
-//        }
     }
 
     @Subscribe
@@ -808,30 +801,31 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
     private void setupBars() {
         final int themeColor = getThemeColor();
-		final int actionBarColor = getActionBarColor();
+		final int statusBarColor = getActionBarColor();
         final int themeResId = getCurrentThemeResourceId();
         final String backgroundOption = getCurrentThemeBackgroundOption();
         final boolean isTransparent = ThemeUtils.isTransparentBackground(backgroundOption);
         final int actionBarAlpha = isTransparent ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xFF;
         final IHomeActionButton homeActionButton = (IHomeActionButton) mActionsButton;
         mTabIndicator.setItemContext(ThemeUtils.getActionBarContext(this));
-        ViewSupport.setBackground(mActionBar, ThemeUtils.getActionBarBackground(this, themeResId, actionBarColor,
+        ViewSupport.setBackground(mActionBar, ThemeUtils.getActionBarBackground(this, themeResId, statusBarColor,
                 backgroundOption, true));
         final int[] foregroundColors = new int[2];
         ThemeUtils.getColorForegroundAndInverse(this, foregroundColors);
         //No need to differentiate between dark and light theme due to custom action bar color preference
 
-        final int contrastColor = TwidereColorUtils.getContrastYIQ(actionBarColor,
+        final int contrastColor = TwidereColorUtils.getContrastYIQ(statusBarColor,
                 ThemeUtils.ACCENT_COLOR_THRESHOLD, foregroundColors[0], foregroundColors[1]);
-        homeActionButton.setButtonColor(actionBarColor);
+        homeActionButton.setButtonColor(statusBarColor);
         homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
         mTabIndicator.setStripColor(themeColor);
 		mTabIndicator.setIconColor(contrastColor);
 		mTabIndicator.setLabelColor(contrastColor);
-        ActivitySupport.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
+        ActivitySupport.setTaskDescription(this, new TaskDescriptionCompat(null, null, statusBarColor));
 		mColorStatusFrameLayout.setDrawColor(true);
 		mColorStatusFrameLayout.setDrawShadow(false);
-        mColorStatusFrameLayout.setColor(actionBarColor, actionBarAlpha);
+        mColorStatusFrameLayout.setColor(statusBarColor, actionBarAlpha);
+        StatusBarProxy.setStatusBarDarkIcon(getWindow(), TwidereColorUtils.getYIQLuminance(statusBarColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD);
 		mColorStatusFrameLayout.setFactor(1);
         mTabIndicator.setAlpha(actionBarAlpha / 255f);
         mActionsButton.setAlpha(actionBarAlpha / 255f);

@@ -34,8 +34,7 @@
 		android:id="@+id/compose_content"
 		android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:animateLayoutChanges="true">
+        android:layout_weight="1">
 
         <org.mariotaku.dynamicgridview.DynamicGridView
             android:id="@+id/media_thumbnail_preview"

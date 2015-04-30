@@ -22,12 +22,12 @@
 
 package de.vanita5.twittnuker.util;
 
-import java.util.Locale;
-
 import android.os.StrictMode;
 import android.os.StrictMode.ThreadPolicy;
 import android.os.StrictMode.VmPolicy;
 import android.util.Log;
+
+import java.util.Locale;
 
 public class StrictModeUtils {
 

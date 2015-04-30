@@ -141,6 +141,7 @@ import de.vanita5.twittnuker.fragment.support.DestroyStatusDialogFragment;
 import de.vanita5.twittnuker.fragment.support.DraftsFragment;
 import de.vanita5.twittnuker.fragment.support.FiltersFragment;
 import de.vanita5.twittnuker.fragment.support.IncomingFriendshipsFragment;
+import de.vanita5.twittnuker.fragment.support.ListsFragment;
 import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
 import de.vanita5.twittnuker.fragment.support.MutesUsersListFragment;
 import de.vanita5.twittnuker.fragment.support.SavedSearchesListFragment;
@@ -159,10 +160,9 @@ import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.fragment.support.UserFriendsFragment;
 import de.vanita5.twittnuker.fragment.support.UserListFragment;
 import de.vanita5.twittnuker.fragment.support.UserListMembersFragment;
-import de.vanita5.twittnuker.fragment.support.UserListMembershipsListFragment;
+import de.vanita5.twittnuker.fragment.support.UserListMembershipsFragment;
 import de.vanita5.twittnuker.fragment.support.UserListSubscribersFragment;
 import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
-import de.vanita5.twittnuker.fragment.support.UserListsFragment;
 import de.vanita5.twittnuker.fragment.support.UserMediaTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserMentionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserProfileEditorFragment;
@@ -198,8 +198,8 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters.Users;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Preferences;
 import de.vanita5.twittnuker.provider.TwidereDataStore.PushNotifications;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Preferences;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
@@ -757,7 +757,7 @@ public final class Utils implements Constants, TwitterConstants {
 				break;
 			}
 			case LINK_ID_USER_LIST_MEMBERSHIPS: {
-				fragment = new UserListMembershipsListFragment();
+				fragment = new UserListMembershipsFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
                 final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {
@@ -870,7 +870,7 @@ public final class Utils implements Constants, TwitterConstants {
 				break;
 			}
 			case LINK_ID_USER_LISTS: {
-                fragment = new UserListsFragment();
+                fragment = new ListsFragment();
 				final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
                 final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
 				if (!args.containsKey(EXTRA_SCREEN_NAME)) {

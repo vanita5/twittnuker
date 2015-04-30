@@ -48,7 +48,7 @@ import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
+import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter.DirectMessageEntry;
@@ -106,8 +106,8 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
     @Override
     public void setControlVisible(boolean visible) {
         final FragmentActivity activity = getActivity();
-        if (activity instanceof BaseAppCompatActivity) {
-            ((BaseAppCompatActivity) activity).setControlBarVisibleAnimate(visible);
+        if (activity instanceof IControlBarActivity) {
+            ((IControlBarActivity) activity).setControlBarVisibleAnimate(visible);
         }
     }
 

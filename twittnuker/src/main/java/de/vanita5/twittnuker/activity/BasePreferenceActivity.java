@@ -41,6 +41,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
 import android.widget.FrameLayout;
 
+import com.meizu.flyme.reflect.StatusBarProxy;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
@@ -48,6 +50,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
@@ -300,9 +303,10 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     private void setupTintStatusBar() {
         if (mMainContent == null) return;
 
-        final int color = getCurrentActionBarColor();
+        final int statusBarColor = getCurrentActionBarColor();
         final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption()) ? getCurrentThemeBackgroundAlpha() : 0xFF;
-		mMainContent.setColor(color, alpha);
+		mMainContent.setColor(statusBarColor, alpha);
+        StatusBarProxy.setStatusBarDarkIcon(getWindow(), TwidereColorUtils.getYIQLuminance(statusBarColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD);
 
         mMainContent.setDrawShadow(false);
         mMainContent.setDrawColor(true);

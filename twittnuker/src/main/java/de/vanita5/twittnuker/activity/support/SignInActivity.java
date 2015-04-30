@@ -59,6 +59,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.meizu.flyme.reflect.StatusBarProxy;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -73,12 +75,13 @@ import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticityTokenEx
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.WrongUserPassException;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.OkHttpClientFactory;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
-
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.iface.TintedStatusLayout;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
 import twitter4j.TwitterException;
@@ -559,9 +562,10 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
     private void setupTintStatusBar() {
         if (mMainContent == null) return;
 
-        final int color = getCurrentActionBarColor();
         final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption()) ? getCurrentThemeBackgroundAlpha() : 0xFF;
-        mMainContent.setColor(color, alpha);
+		final int statusBarColor = getCurrentActionBarColor();
+        mMainContent.setColor(statusBarColor, alpha);
+        StatusBarProxy.setStatusBarDarkIcon(getWindow(), TwidereColorUtils.getYIQLuminance(statusBarColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD);
 
         mMainContent.setDrawShadow(false);
         mMainContent.setDrawColor(true);

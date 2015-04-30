@@ -27,6 +27,7 @@ import android.content.Context;
 import java.util.List;
 
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.view.holder.UserListViewHolder;
 
 public class ParcelableUserListsAdapter extends AbsUserListsAdapter<List<ParcelableUserList>> {
 

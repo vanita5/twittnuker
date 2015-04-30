@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 
 import java.util.List;
 
-public class UserListMembershipsListFragment extends ParcelableUserListsFragment {
+public class UserListMembershipsFragment extends ParcelableUserListsFragment {
 
 	@Override
     public Loader<List<ParcelableUserList>> onCreateUserListsLoader(final Context context,

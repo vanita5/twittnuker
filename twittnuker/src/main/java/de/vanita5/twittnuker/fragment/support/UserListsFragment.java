@@ -22,97 +22,116 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.graphics.Rect;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.content.Loader;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
-import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
-import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
-import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
-import de.vanita5.twittnuker.graphic.EmptyDrawable;
-import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.view.TabPagerIndicator;
+import de.vanita5.twittnuker.adapter.AbsUserListsAdapter;
+import de.vanita5.twittnuker.loader.support.UserListsLoader;
+import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.util.MenuUtils;
+import de.vanita5.twittnuker.util.Utils;
 
-public class UserListsFragment extends BaseSupportFragment implements RefreshScrollTopInterface,
-        SupportFragmentCallback, SystemWindowsInsetsCallback {
+import java.util.List;
 
-    private ViewPager mViewPager;
-    private TabPagerIndicator mPagerIndicator;
-    private View mPagerOverlay;
+public class UserListsFragment extends ParcelableUserListsFragment {
 
-    private SupportTabsAdapter mPagerAdapter;
+    private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
 
 	@Override
+        public void onReceive(final Context context, final Intent intent) {
+            if (getActivity() == null || !isAdded() || isDetached()) return;
+            final String action = intent.getAction();
+            if (BROADCAST_USER_LIST_DELETED.equals(action)) {
+                final ParcelableUserList list = intent.getParcelableExtra(EXTRA_USER_LIST);
+                if (list != null) {
+                    removeUserList(list.id);
+                }
+            }
+        }
+    };
+
+    @Override
+    public Loader<List<ParcelableUserList>> onCreateUserListsLoader(final Context context,
+                                                                    final Bundle args, final boolean fromUser) {
+        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final long userId = args.getLong(EXTRA_USER_ID, -1);
+        final String screenName = args.getString(EXTRA_SCREEN_NAME);
+        return new UserListsLoader(getActivity(), accountId, userId, screenName, true, getData());
+    }
+
+    @Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		final Bundle args = getArguments();
-		final FragmentActivity activity = getActivity();
-        mPagerAdapter = new SupportTabsAdapter(activity, getChildFragmentManager(), null, 1);
-        mViewPager.setAdapter(mPagerAdapter);
-		mViewPager.setOffscreenPageLimit(2);
-		mPagerIndicator.setViewPager(mViewPager);
-        mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
-
-        mPagerAdapter.addTab(UserListsListFragment.class, args, getString(R.string.follows), null, 0, null);
-        mPagerAdapter.addTab(UserListMembershipsListFragment.class, args, getString(R.string.belongs_to), 0, 1, null);
-
-        ThemeUtils.initPagerIndicatorAsActionBarTab(activity, mPagerIndicator, mPagerOverlay);
-        ThemeUtils.setCompatToolbarOverlay(activity, new EmptyDrawable());
-        ThemeUtils.setCompatContentViewOverlay(activity, new EmptyDrawable());
-        ThemeUtils.setWindowOverlayViewOverlay(activity, new EmptyDrawable());
-	}
-
-
-	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_content_pages, container, false);
+        setHasOptionsMenu(true);
 	}
 
 	@Override
-    public void onBaseViewCreated(final View view, final Bundle savedInstanceState) {
-        super.onBaseViewCreated(view, savedInstanceState);
-        mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
-        mPagerIndicator = (TabPagerIndicator) view.findViewById(R.id.view_pager_tabs);
-        mPagerOverlay = view.findViewById(R.id.pager_window_overlay);
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_user_lists_owned, menu);
 	}
 
 	@Override
-	public boolean scrollToStart() {
-        final Fragment fragment = getCurrentVisibleFragment();
-        if (!(fragment instanceof RefreshScrollTopInterface)) return false;
-        ((RefreshScrollTopInterface) fragment).scrollToStart();
-		return true;
-	}
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.new_user_list: {
+                final DialogFragment f = new CreateUserListDialogFragment();
+                final Bundle args = new Bundle();
+                args.putLong(EXTRA_ACCOUNT_ID, getAccountId());
+                f.setArguments(args);
+                f.show(getFragmentManager(), null);
+				return true;
+			}
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 	@Override
-	public boolean triggerRefresh() {
-        final Fragment fragment = getCurrentVisibleFragment();
-        if (!(fragment instanceof RefreshScrollTopInterface)) return false;
-        ((RefreshScrollTopInterface) fragment).triggerRefresh();
-		return true;
+    public void onPrepareOptionsMenu(final Menu menu) {
+        final MenuItem item = menu.findItem(R.id.new_user_list);
+        if (item == null) return;
+        final long accountId = getAccountId(), userId = getUserId();
+        if (accountId == userId) {
+            MenuUtils.setMenuItemAvailability(menu, R.id.new_user_list, true);
+        } else {
+            MenuUtils.setMenuItemAvailability(menu, R.id.new_user_list, Utils.isMyAccount(getActivity(), getScreenName()));
+        }
+    }
+
+    private String getScreenName() {
+        return getArguments().getString(EXTRA_SCREEN_NAME);
+    }
+
+    private long getUserId() {
+        return getArguments().getLong(EXTRA_USER_ID);
 	}
 
     @Override
-    public Fragment getCurrentVisibleFragment() {
-        final int currentItem = mViewPager.getCurrentItem();
-        if (currentItem < 0 || currentItem >= mPagerAdapter.getCount()) return null;
-        return (Fragment) mPagerAdapter.instantiateItem(mViewPager, currentItem);
+    public void onStart() {
+        super.onStart();
+        registerReceiver(mStatusReceiver, new IntentFilter(BROADCAST_USER_LIST_DELETED));
     }
 
     @Override
-	public boolean triggerRefresh(final int position) {
-		return false;
+    public void onStop() {
+        unregisterReceiver(mStatusReceiver);
+        super.onStop();
 	}
 
-    @Override
-    public boolean getSystemWindowsInsets(Rect insets) {
-        return false;
+    private void removeUserList(final long id) {
+        final AbsUserListsAdapter<List<ParcelableUserList>> adapter = getAdapter();
+//        final int listsIdx = adapter.findItemPosition(id);
+//        if (listsIdx >= 0) {
+//            adapter.removeAt(listsIdx);
+//        }
     }
+
 }

@@ -25,15 +25,14 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Handler;
 import android.util.Log;
 import android.util.Pair;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 
 import org.mariotaku.jsonserializer.JSONFileIO;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.util.Utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,7 +44,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import de.vanita5.twittnuker.util.Utils;
 import twitter4j.Activity;
 import twitter4j.Paging;
 import twitter4j.Twitter;
@@ -59,8 +57,6 @@ public abstract class Twitter4JActivitiesLoader extends ParcelableActivitiesLoad
     private final Context mContext;
     private final long mAccountIds;
     private final long mMaxId, mSinceId;
-    private final SQLiteDatabase mDatabase;
-    private final Handler mHandler;
     private final Object[] mSavedStatusesFileArgs;
     private Comparator<ParcelableActivity> mComparator;
 
@@ -72,8 +68,6 @@ public abstract class Twitter4JActivitiesLoader extends ParcelableActivitiesLoad
         mAccountIds = accountId;
         mSinceId = sinceId;
         mMaxId = maxId;
-        mDatabase = TwittnukerApplication.getInstance(context).getSQLiteDatabase();
-        mHandler = new Handler();
         mSavedStatusesFileArgs = savedStatusesArgs;
     }
 

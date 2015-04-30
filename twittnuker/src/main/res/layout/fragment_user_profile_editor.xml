@@ -97,6 +97,7 @@
                                     android:id="@+id/profile_image_camera"
                                     style="?android:borderlessButtonStyle"
                                     android:layout_width="0dp"
+                                    android:background="?selectableItemBackground"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:drawableLeft="@drawable/ic_action_camera"
@@ -110,6 +111,7 @@
                                     android:id="@+id/profile_image_gallery"
                                     style="?android:borderlessButtonStyle"
                                     android:layout_width="0dp"
+                                    android:background="?selectableItemBackground"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:drawableLeft="@drawable/ic_action_gallery"
@@ -152,7 +154,7 @@
                                 android:paddingTop="@dimen/element_spacing_normal"
                                 android:text="@string/profile_banner"
                                 android:textAllCaps="true"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:textAppearance="?android:textAppearanceSmall"
                                 android:textColor="?android:textColorPrimary"
                                 android:textStyle="bold"/>
 
@@ -171,6 +173,7 @@
                                     android:drawableLeft="@drawable/ic_action_gallery"
                                     android:paddingBottom="0dp"
                                     android:paddingLeft="@dimen/element_spacing_normal"
+                                    android:background="?selectableItemBackground"
                                     android:paddingRight="@dimen/element_spacing_normal"
                                     android:paddingTop="0dp"
                                     android:text="@string/gallery"/>
@@ -178,6 +181,7 @@
                                 <de.vanita5.twittnuker.view.ActionIconThemedTextView
                                     android:id="@+id/profile_banner_remove"
                                     style="?android:borderlessButtonStyle"
+                                    android:background="?selectableItemBackground"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -212,7 +216,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/element_spacing_normal">
 
-                    <de.vanita5.twittnuker.view.themed.ThemedAccentMaterialEditText
+                    <de.vanita5.twittnuker.view.themed.ThemedBackgroundTintMaterialEditText
                         android:id="@+id/name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -223,7 +227,7 @@
                         app:met_floatingLabelText="@string/name"
                         app:met_maxCharacters="20"/>
 
-                    <de.vanita5.twittnuker.view.themed.ThemedAccentMaterialEditText
+                    <de.vanita5.twittnuker.view.themed.ThemedBackgroundTintMaterialEditText
                         android:id="@+id/description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -235,7 +239,7 @@
                         app:met_floatingLabelText="@string/description"
                         app:met_maxCharacters="160"/>
 
-                    <de.vanita5.twittnuker.view.themed.ThemedAccentMaterialEditText
+                    <de.vanita5.twittnuker.view.themed.ThemedBackgroundTintMaterialEditText
                         android:id="@+id/location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -246,7 +250,7 @@
                         app:met_floatingLabelText="@string/location"
                         app:met_maxCharacters="30"/>
 
-                    <de.vanita5.twittnuker.view.themed.ThemedAccentMaterialEditText
+                    <de.vanita5.twittnuker.view.themed.ThemedBackgroundTintMaterialEditText
                         android:id="@+id/url"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -297,7 +301,7 @@
                             android:layout_weight="1"
                             android:text="@string/profile_link_color_main_color"
                             android:textAllCaps="true"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textAppearance="?android:textAppearanceSmall"
                             android:textColor="?android:textColorPrimary"
                             android:textStyle="bold"/>
 
@@ -325,7 +329,7 @@
                             android:layout_weight="1"
                             android:text="@string/profile_background_color"
                             android:textAllCaps="true"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textAppearance="?android:textAppearanceSmall"
                             android:textColor="?android:textColorPrimary"
                             android:textStyle="bold"/>
 
@@ -345,11 +349,7 @@
         android:visibility="visible"
         tools:visibility="gone">
 
-        <ProgressBar
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+        <include layout="@layout/layout_progress_wheel_medium" />
     </FrameLayout>
 
 </FrameLayout>
