@@ -277,7 +277,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
     public void onPrepareOptionsMenu(Menu menu) {
         final ParcelableUserList userList = mUserList;
         setMenuItemAvailability(menu, MENU_INFO, userList != null);
-        menu.removeGroup(MENU_GROUP_USER_LIST_EXTENSION);
         if (userList != null) {
         	final boolean isMyList = userList.user_id == userList.account_id;
             final boolean isFollowing = userList.is_following;
@@ -296,7 +295,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
             final Intent extensionsIntent = new Intent(INTENT_ACTION_EXTENSION_OPEN_USER_LIST);
             extensionsIntent.setExtrasClassLoader(getActivity().getClassLoader());
             extensionsIntent.putExtra(EXTRA_USER_LIST, userList);
-            addIntentToMenu(getActivity(), menu, extensionsIntent, MENU_GROUP_USER_LIST_EXTENSION);
         } else {
             setMenuItemAvailability(menu, MENU_EDIT, false);
             setMenuItemAvailability(menu, MENU_FOLLOW, false);

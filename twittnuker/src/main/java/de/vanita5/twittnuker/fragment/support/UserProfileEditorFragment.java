@@ -65,6 +65,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.TwitterValidatorMETLengthChecker;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ForegroundColorView;
