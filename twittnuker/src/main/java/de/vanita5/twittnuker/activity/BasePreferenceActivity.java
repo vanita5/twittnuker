@@ -28,12 +28,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.app.ThemedAppCompatDelegateFactory;
-import android.support.v7.app.ThemedAppCompatDelegateFactory.ThemedAppCompatDelegate;
-import android.support.v7.internal.widget.NativeActionModeAwareLayout;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -234,7 +229,7 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         if (actionBarView instanceof Toolbar) {
             final int actionBarColor = getCurrentActionBarColor();
             final int themeId = getCurrentThemeResourceId();
-            final int itemColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
+            final int itemColor = ThemeUtils.getContrastForegroundColor(this, themeId, actionBarColor);
             final Toolbar toolbar = (Toolbar) actionBarView;
             final int popupColor = ThemeUtils.getThemeForegroundColor(toolbar.getContext(), toolbar.getPopupTheme());
             ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(actionBarView, ActionMenuView.class), itemColor, popupColor);
@@ -286,7 +281,7 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         final String option = getThemeBackgroundOption();
         ThemeUtils.applyActionBarBackground(actionBar, this, themeId, actionBarColor, option, isActionBarOutlineEnabled());
 //        final int titleColor = ThemeUtils.getContrastActionBarTitleColor(this, themeId, actionBarColor);
-//        final int actionBarItemsColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
+//        final int actionBarItemsColor = ThemeUtils.getContrastForegroundColor(this, themeId, actionBarColor);
 //        ThemeUtils.setActionBarColor(getWindow(), actionBar, titleColor, actionBarItemsColor);
     }
 

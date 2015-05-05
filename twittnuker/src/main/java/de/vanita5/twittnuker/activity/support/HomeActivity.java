@@ -815,7 +815,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         final int[] foregroundColors = new int[2];
         ThemeUtils.getColorForegroundAndInverse(this, foregroundColors);
         //No need to differentiate between dark and light theme due to custom action bar color preference
-
         final int contrastColor = TwidereColorUtils.getContrastYIQ(statusBarColor,
                 ThemeUtils.ACCENT_COLOR_THRESHOLD, foregroundColors[0], foregroundColors[1]);
         homeActionButton.setButtonColor(statusBarColor);

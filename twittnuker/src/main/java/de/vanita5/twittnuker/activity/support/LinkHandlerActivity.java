@@ -266,7 +266,7 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
         if (toolbar != null) {
             final int actionBarColor = getCurrentActionBarColor();
             final int themeId = getCurrentThemeResourceId();
-            final int itemColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
+            final int itemColor = ThemeUtils.getContrastForegroundColor(this, themeId, actionBarColor);
             ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(toolbar, ActionMenuView.class), itemColor, itemColor);
         }
     }
@@ -340,7 +340,7 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
         final int actionBarColor = getActionBarColor();
         final int themeId = getCurrentThemeResourceId();
         final String option = getThemeBackgroundOption();
-        int actionBarItemsColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
+        int actionBarItemsColor = ThemeUtils.getContrastForegroundColor(this, themeId, actionBarColor);
         final ActionBarContainer actionBarContainer = (ActionBarContainer) findViewById(R.id.twidere_action_bar_container);
         switch (linkId) {
             case LINK_ID_SEARCH:

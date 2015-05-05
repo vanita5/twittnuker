@@ -142,6 +142,7 @@ import de.vanita5.twittnuker.view.ProfileBannerImageView;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
+import de.vanita5.twittnuker.view.TwidereToolbar;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
 import java.util.List;
@@ -887,6 +888,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final HeaderDrawerLayout drawer = mHeaderDrawerLayout;
         if (drawer != null) {
             final int offset = drawer.getPaddingTop() - drawer.getHeaderTop();
+            mPreviousActionBarItemIsDark = 0;
+            mPreviousTabItemIsDark = 0;
             updateScrollOffset(offset);
         }
     }
@@ -1471,19 +1474,17 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             final boolean actionItemIsDark = TwidereColorUtils.getYIQLuminance(barColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD;
             if (mPreviousActionBarItemIsDark == 0 || (actionItemIsDark ? 1 : -1) != mPreviousActionBarItemIsDark) {
                 StatusBarProxy.setStatusBarDarkIcon(activity.getWindow(), actionItemIsDark);
-            	final int itemColor = ThemeUtils.getContrastActionBarItemColor(activity, themeId, barColor);
-//                final int titleColor = ThemeUtils.getContrastActionBarTitleColor(activity, themeId, barColor);
+                final int contrastForegroundColor = ThemeUtils.getContrastForegroundColor(activity, themeId, barColor);
 				final Toolbar actionBarView = activity.getActionBarToolbar();
 				if (actionBarView != null) {
-//                    actionBarView.setTitleTextColor(titleColor);
-//                    actionBarView.setSubtitleTextColor(titleColor);
-					ThemeUtils.setActionBarOverflowColor(actionBarView, itemColor);
-					ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(actionBarView, ActionMenuView.class), itemColor, itemColor);
-					final Drawable navigationIcon = actionBarView.getNavigationIcon();
-					if (navigationIcon != null) {
-						navigationIcon.setColorFilter(itemColor, Mode.SRC_ATOP);
+                    actionBarView.setTitleTextColor(contrastForegroundColor);
+                    actionBarView.setSubtitleTextColor(contrastForegroundColor);
+                    ThemeUtils.setActionBarOverflowColor(actionBarView, contrastForegroundColor);
+                    ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(actionBarView, ActionMenuView.class),
+                            contrastForegroundColor, contrastForegroundColor);
+                    if (actionBarView instanceof TwidereToolbar) {
+                        ((TwidereToolbar) actionBarView).setItemColor(contrastForegroundColor);
 					}
-					actionBarView.setNavigationIcon(navigationIcon);
 				}
             }
             mPreviousActionBarItemIsDark = actionItemIsDark ? 1 : -1;
