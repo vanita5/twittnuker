@@ -23,21 +23,31 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v7.internal.widget.ActionBarContainer;
 import android.util.AttributeSet;
 
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class TwidereActionBarContainer extends ActionBarContainer {
-	public TwidereActionBarContainer(Context context) {
-		super(wrapContext(context));
-	}
+
+    private static final int[] ATTRS = {android.R.attr.layout};
 
 	public TwidereActionBarContainer(Context context, AttributeSet attrs) {
 		super(wrapContext(context), attrs);
+        final TypedArray a = getContext().obtainStyledAttributes(attrs, ATTRS);
+        inflate(getContext(), a.getResourceId(0, R.layout.layout_actionbar_content), this);
+        a.recycle();
 	}
 
 	private static Context wrapContext(Context context) {
+        if (context instanceof IThemedActivity) {
+            return ThemeUtils.getActionBarThemedContext(context,
+                    ((IThemedActivity) context).getCurrentThemeResourceId(),
+                    ((IThemedActivity) context).getCurrentActionBarColor());
+        }
 		return ThemeUtils.getActionBarThemedContext(context);
 	}
 }

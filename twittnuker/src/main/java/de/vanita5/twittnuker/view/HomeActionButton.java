@@ -41,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.util.support.graphics.OutlineCompat;
@@ -90,8 +91,14 @@ public class HomeActionButton extends FrameLayout implements IHomeActionButton {
         mHelper = new EffectViewHelper(this, new PressElevationProperty(elevation), 200);
         if (isInEditMode()) {
             inflate(context, R.layout.action_item_home_actions, this);
+        } else if (context instanceof IThemedActivity) {
+            int themeResourceId = ((IThemedActivity) context).getCurrentThemeResourceId();
+            int actionBarColor = ((IThemedActivity) context).getCurrentActionBarColor();
+            inflate(ThemeUtils.getActionBarThemedContext(context, themeResourceId, actionBarColor),
+                    R.layout.action_item_home_actions, this);
         } else {
-        	inflate(ThemeUtils.getActionBarContext(context), R.layout.action_item_home_actions, this);
+            inflate(ThemeUtils.getActionBarThemedContext(context), R.layout.action_item_home_actions,
+                    this);
         }
 		mIconView = (ImageView) findViewById(android.R.id.icon);
 		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
