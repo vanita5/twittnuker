@@ -72,7 +72,6 @@ import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfiguration
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
@@ -318,10 +317,11 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
         final Activity activity = getActivity();
         if (activity instanceof BasePreferenceActivity) {
             final ActionBar actionBar = ((BasePreferenceActivity) activity).getSupportActionBar();
+			final int themeResId = ((IThemedActivity) activity).getThemeResourceId();
 			final int actionBarColor = ((IThemedActivity) activity).getCurrentActionBarColor();
-            final int itemColor = TwidereColorUtils.getContrastYIQ(actionBarColor, ThemeUtils.ACCENT_COLOR_THRESHOLD);
+            final int itemColor = ThemeUtils.getContrastActionBarItemColor(actionBar.getThemedContext());
             final int popupTheme = ThemeUtils.getActionBarPopupThemeRes(actionBar.getThemedContext());
-            final int popupColor = ThemeUtils.getThemeForegroundColor(activity, popupTheme);
+            final int popupColor = ThemeUtils.getContrastActionBarItemColor(activity);
             ThemeUtils.applyColorFilterToMenuIcon(menu, itemColor, popupColor, 0, Mode.SRC_ATOP);
         }
 	}

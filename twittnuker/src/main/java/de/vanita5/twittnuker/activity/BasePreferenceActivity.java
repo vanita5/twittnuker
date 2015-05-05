@@ -28,12 +28,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.app.ThemedAppCompatDelegateFactory;
+import android.support.v7.app.ThemedAppCompatDelegateFactory.ThemedAppCompatDelegate;
+import android.support.v7.internal.widget.NativeActionModeAwareLayout;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -175,23 +177,25 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
         final FrameLayout mainContent = initMainContent();
-        getLayoutInflater().inflate(layoutResID, mainContent, true);
+        getLayoutInflater().inflate(layoutResID, (ViewGroup) mainContent.findViewById(R.id.settings_content), true);
         super.setContentView(mainContent);
     }
 
     @Override
     public void setContentView(View view) {
         final FrameLayout mainContent = initMainContent();
-        mainContent.removeAllViews();
-        mainContent.addView(view);
+        final ViewGroup settingsContent = (ViewGroup) mainContent.findViewById(R.id.settings_content);
+        settingsContent.removeAllViews();
+        settingsContent.addView(view);
         super.setContentView(mainContent);
 	}
 
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
         final FrameLayout mainContent = initMainContent();
-        mainContent.removeAllViews();
-        mainContent.addView(view, params);
+        final ViewGroup settingsContent = (ViewGroup) mainContent.findViewById(R.id.settings_content);
+        settingsContent.removeAllViews();
+        settingsContent.addView(view);
         super.setContentView(mainContent);
 	}
 
@@ -203,20 +207,9 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
             final View mainLayout = getLayoutInflater().inflate(R.layout.activity_settings, null);
             mainContent = (FrameLayout) mainLayout.findViewById(R.id.main_content);
         }
-        mainContent.addView(view, params);
+        final ViewGroup settingsContent = (ViewGroup) mainContent.findViewById(R.id.settings_content);
+        settingsContent.addView(view, params);
         onContentChanged();
-    }
-
-    @Override
-    protected void onTitleChanged(CharSequence title, int color) {
-        final SpannableStringBuilder builder = new SpannableStringBuilder(title);
-        final int themeResId = getCurrentThemeResourceId();
-        final int themeColor = getThemeColor(); //TODO?
-        final int contrastColor = ThemeUtils.getContrastActionBarTitleColor(this, themeResId, themeColor);
-        if (!ThemeUtils.isDarkTheme(themeResId)) {
-            builder.setSpan(new ForegroundColorSpan(contrastColor), 0, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        super.onTitleChanged(title, color);
     }
 
     protected boolean isActionBarOutlineEnabled() {
@@ -243,7 +236,6 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
             final int themeId = getCurrentThemeResourceId();
             final int itemColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
             final Toolbar toolbar = (Toolbar) actionBarView;
-            ThemeUtils.setActionBarOverflowColor(toolbar, itemColor);
             final int popupColor = ThemeUtils.getThemeForegroundColor(toolbar.getContext(), toolbar.getPopupTheme());
             ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(actionBarView, ActionMenuView.class), itemColor, popupColor);
         }
@@ -259,9 +251,7 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         if (mainContent != null) {
             return mainContent;
         }
-        @SuppressLint("InflateParams")
-        final View view = getLayoutInflater().inflate(R.layout.activity_settings, null);
-        return (FrameLayout) view.findViewById(R.id.main_content);
+        return ((FrameLayout) getLayoutInflater().inflate(R.layout.activity_settings, null));
     }
 
     @Override
@@ -294,17 +284,17 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         final int actionBarColor = getCurrentActionBarColor();
         final int themeId = getCurrentThemeResourceId();
         final String option = getThemeBackgroundOption();
-        final int titleColor = ThemeUtils.getContrastActionBarTitleColor(this, themeId, actionBarColor);
-        final int actionBarItemsColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
         ThemeUtils.applyActionBarBackground(actionBar, this, themeId, actionBarColor, option, isActionBarOutlineEnabled());
-        ThemeUtils.setActionBarColor(getWindow(), actionBar, titleColor, actionBarItemsColor);
+//        final int titleColor = ThemeUtils.getContrastActionBarTitleColor(this, themeId, actionBarColor);
+//        final int actionBarItemsColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
+//        ThemeUtils.setActionBarColor(getWindow(), actionBar, titleColor, actionBarItemsColor);
     }
 
     private void setupTintStatusBar() {
         if (mMainContent == null) return;
 
-        final int statusBarColor = getCurrentActionBarColor();
         final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption()) ? getCurrentThemeBackgroundAlpha() : 0xFF;
+        final int statusBarColor = getCurrentActionBarColor();
 		mMainContent.setColor(statusBarColor, alpha);
         StatusBarProxy.setStatusBarDarkIcon(getWindow(), TwidereColorUtils.getYIQLuminance(statusBarColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD);
 
@@ -317,9 +307,6 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-//        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
-//        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
-//        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY);
     }
 
 }

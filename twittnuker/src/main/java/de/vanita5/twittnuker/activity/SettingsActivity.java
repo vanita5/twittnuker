@@ -35,7 +35,12 @@ import android.content.res.Resources;
 import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.app.ThemedAppCompatDelegateFactory;
+import android.support.v7.internal.widget.NativeActionModeAwareLayout;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -59,6 +64,9 @@ import de.vanita5.twittnuker.activity.support.DataImportActivity;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereActionModeForChildListener;
+import de.vanita5.twittnuker.util.support.ViewSupport;
+import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
 import de.vanita5.twittnuker.view.holder.ViewListHolder;
 
 import java.util.ArrayList;
@@ -71,6 +79,8 @@ public class SettingsActivity extends BasePreferenceActivity {
 	private HeaderAdapter mAdapter;
 
     private boolean mShouldNotifyChange;
+    private TwidereActionModeForChildListener mTwidereActionModeForChildListener;
+    private ThemedAppCompatDelegateFactory.ThemedAppCompatDelegate mDelegate;
 
     public static void setShouldNotifyChange(Activity activity) {
         if (!(activity instanceof SettingsActivity)) return;
@@ -83,6 +93,19 @@ public class SettingsActivity extends BasePreferenceActivity {
     }
 
 	@Override
+    public void onBackPressed() {
+        if (mTwidereActionModeForChildListener.finishExisting()) {
+            return;
+        }
+        if (isTopSettings() && shouldNotifyChange()) {
+            final RestartConfirmDialogFragment df = new RestartConfirmDialogFragment();
+            df.show(getFragmentManager().beginTransaction(), "restart_confirm");
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     public int getThemeColor() {
         return ThemeUtils.getUserAccentColor(this);
 	}
@@ -94,7 +117,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 
     @Override
     public int getThemeResourceId() {
-        return ThemeUtils.getThemeResource(this);
+        return ThemeUtils.getNoActionBarThemeResource(this);
     }
 
     @Override
@@ -161,16 +184,6 @@ public class SettingsActivity extends BasePreferenceActivity {
         getMenuInflater().inflate(R.menu.menu_settings, menu);
 		return true;
 	}
-
-	@Override
-    public void onBackPressed() {
-        if (isTopSettings() && shouldNotifyChange()) {
-            final RestartConfirmDialogFragment df = new RestartConfirmDialogFragment();
-            df.show(getFragmentManager().beginTransaction(), "restart_confirm");
-            return;
-        }
-        super.onBackPressed();
-    }
 
     private boolean isTopSettings() {
         return getIntent().getStringExtra(EXTRA_SHOW_FRAGMENT) == null;
@@ -241,6 +254,19 @@ public class SettingsActivity extends BasePreferenceActivity {
 	protected void onCreate(final Bundle savedInstanceState) {
 //        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
 		super.onCreate(savedInstanceState);
+
+        setSupportActionBar((Toolbar) findViewById(R.id.action_bar));
+
+        mTwidereActionModeForChildListener = new TwidereActionModeForChildListener(this, this, false);
+        final NativeActionModeAwareLayout layout = (NativeActionModeAwareLayout) findViewById(android.R.id.content);
+        layout.setActionModeForChildListener(mTwidereActionModeForChildListener);
+
+        ThemeUtils.setCompatContentViewOverlay(this, new EmptyDrawable());
+        final View actionBarContainer = findViewById(R.id.twidere_action_bar_container);
+        ViewCompat.setElevation(actionBarContainer, ThemeUtils.getSupportActionBarElevation(this));
+        ViewSupport.setOutlineProvider(actionBarContainer, ViewOutlineProviderCompat.BACKGROUND);
+        final View windowOverlay = findViewById(R.id.window_overlay);
+        ViewSupport.setBackground(windowOverlay, ThemeUtils.getNormalWindowContentOverlay(this, getCurrentThemeResourceId()));
 		setIntent(getIntent().addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
         final ActionBar actionBar = getSupportActionBar();
 		if (actionBar != null) {
@@ -277,6 +303,14 @@ public class SettingsActivity extends BasePreferenceActivity {
     private boolean shouldNotifyChange() {
         return mShouldNotifyChange;
 	}
+
+    @Override
+    public AppCompatDelegate getDelegate() {
+        if (mDelegate == null) {
+            mDelegate = ThemedAppCompatDelegateFactory.create(this, this);
+        }
+        return mDelegate;
+    }
 
     public static class RestartConfirmDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {
         @Override

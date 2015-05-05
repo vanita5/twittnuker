@@ -279,7 +279,6 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 			final int actionBarColor = getCurrentActionBarColor();
             final int themeId = getCurrentThemeResourceId();
             final int itemColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
-            ThemeUtils.setActionBarOverflowColor(toolbar, itemColor);
             ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(toolbar, ActionMenuView.class), itemColor, itemColor);
         }
         return result;
@@ -548,14 +547,13 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 		final int actionBarColor = getCurrentActionBarColor();
         final int themeId = getCurrentThemeResourceId();
         final String option = getThemeBackgroundOption();
-        final int titleColor = ThemeUtils.getContrastActionBarTitleColor(this, themeId, actionBarColor);
         final int actionBarItemsColor = ThemeUtils.getContrastActionBarItemColor(this, themeId, actionBarColor);
         ThemeUtils.applyActionBarBackground(actionBar, this, themeId, actionBarColor, option, isActionBarOutlineEnabled());
         final Toolbar toolbar = peekActionBarToolbar();
         if (toolbar != null) {
-            ThemeUtils.setToolBarColor(toolbar, titleColor, actionBarItemsColor);
+//            ThemeUtils.setToolBarColor(toolbar, titleColor, actionBarItemsColor);
         } else {
-            ThemeUtils.setActionBarColor(getWindow(), getSupportActionBar(), titleColor, actionBarItemsColor);
+//            ThemeUtils.setActionBarColor(getWindow(), getSupportActionBar(), titleColor, actionBarItemsColor);
         }
     }
 

@@ -884,6 +884,11 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		}
         MenuUtils.setMenuItemAvailability(menu, R.id.muted_users, isMyself);
         MenuUtils.setMenuItemAvailability(menu, R.id.blocked_users, isMyself);
+        final HeaderDrawerLayout drawer = mHeaderDrawerLayout;
+        if (drawer != null) {
+            final int offset = drawer.getPaddingTop() - drawer.getHeaderTop();
+            updateScrollOffset(offset);
+        }
     }
 
     @Override
@@ -1467,11 +1472,11 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             if (mPreviousActionBarItemIsDark == 0 || (actionItemIsDark ? 1 : -1) != mPreviousActionBarItemIsDark) {
                 StatusBarProxy.setStatusBarDarkIcon(activity.getWindow(), actionItemIsDark);
             	final int itemColor = ThemeUtils.getContrastActionBarItemColor(activity, themeId, barColor);
-                final int titleColor = ThemeUtils.getContrastActionBarTitleColor(activity, themeId, barColor);
+//                final int titleColor = ThemeUtils.getContrastActionBarTitleColor(activity, themeId, barColor);
 				final Toolbar actionBarView = activity.getActionBarToolbar();
 				if (actionBarView != null) {
-                    actionBarView.setTitleTextColor(titleColor);
-                    actionBarView.setSubtitleTextColor(titleColor);
+//                    actionBarView.setTitleTextColor(titleColor);
+//                    actionBarView.setSubtitleTextColor(titleColor);
 					ThemeUtils.setActionBarOverflowColor(actionBarView, itemColor);
 					ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(actionBarView, ActionMenuView.class), itemColor, itemColor);
 					final Drawable navigationIcon = actionBarView.getNavigationIcon();
