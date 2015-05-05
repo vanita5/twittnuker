@@ -658,7 +658,6 @@
     <string name="from_name">De <xliff:g id="name">%1$s</xliff:g></string>
     <string name="from_name_and_name">De <xliff:g id="name">%1$s</xliff:g> y <xliff:g id="name">%2$s</xliff:g></string>
     <string name="from_name_and_N_others">De <xliff:g id="name">%1$s</xliff:g> y <xliff:g id="name">%2$d</xliff:g> otros</string>
-    <string name="search">Procurar</string>
     <string name="crop">Recortar</string>
     <string name="scale">Escala</string>
     <string name="user_type_verified">Verificado</string>
