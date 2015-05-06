@@ -22,13 +22,16 @@
   -->
 
 <LinearLayout
-    android:id="@+id/advanced_api_config"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/advanced_api_config"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/element_spacing_normal">
+    android:paddingEnd="0dp"
+    android:paddingLeft="@dimen/element_spacing_normal"
+    android:paddingRight="0dp"
+    android:paddingStart="@dimen/element_spacing_normal">
 
     <CheckBox
         android:id="@+id/same_oauth_signing_url"

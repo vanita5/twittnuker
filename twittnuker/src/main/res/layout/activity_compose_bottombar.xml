@@ -24,6 +24,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
 	android:baselineAligned="false"
@@ -62,8 +63,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignBottom="@id/account_profile_image"
+                android:layout_alignEnd="@id/account_profile_image"
                 android:layout_alignLeft="@id/account_profile_image"
                 android:layout_alignRight="@id/account_profile_image"
+                android:layout_alignStart="@id/account_profile_image"
                 android:layout_alignTop="@id/account_profile_image"
                 android:layout_gravity="center"
                 android:textColor="?android:colorForeground"/>
@@ -93,8 +96,10 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/element_spacing_normal"
+        android:paddingEnd="@dimen/element_spacing_normal"
         android:paddingLeft="@dimen/element_spacing_large"
         android:paddingRight="@dimen/element_spacing_normal"
+        android:paddingStart="@dimen/element_spacing_large"
         android:paddingTop="@dimen/element_spacing_normal">
 
         <de.vanita5.twittnuker.view.StatusTextCountView
@@ -103,7 +108,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:minWidth="@dimen/element_size_small"
-            android:textAppearance="?android:textAppearanceSmall"/>
+            android:textAppearance="?android:textAppearanceSmall"
+            tools:text="140" />
 
         <de.vanita5.twittnuker.view.ActionIconView
             android:layout_width="wrap_content"

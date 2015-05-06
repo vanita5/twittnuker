@@ -34,7 +34,6 @@
         android:background="?selectableItemBackground"
         android:focusable="true"
         android:focusableInTouchMode="false"
-        android:orientation="vertical"
         android:paddingTop="@dimen/element_spacing_small"
         app:ignorePadding="true">
 
@@ -43,9 +42,12 @@
             android:layout_width="@dimen/icon_size_status_profile_image"
             android:layout_height="@dimen/element_size_small"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignTop="@+id/reply_retweet_status"
             android:layout_marginLeft="@dimen/element_spacing_normal"
-            android:layout_marginRight="@dimen/element_spacing_small"/>
+            android:layout_marginStart="@dimen/element_spacing_normal"
+            android:layout_marginRight="@dimen/element_spacing_small"
+            android:layout_marginEnd="@dimen/element_spacing_small" />
 
         <de.vanita5.twittnuker.view.ActionIconView
             android:id="@+id/reply_retweet_icon"
@@ -54,7 +56,9 @@
             android:layout_height="@dimen/element_size_small"
             android:layout_alignTop="@id/reply_retweet_status"
             android:layout_marginLeft="@dimen/element_spacing_small"
+            android:layout_marginStart="@dimen/element_spacing_small"
             android:layout_toLeftOf="@+id/reply_retweet_status"
+            android:layout_toStartOf="@+id/reply_retweet_status"
             android:color="?android:textColorSecondary"
             android:padding="@dimen/element_spacing_small"
             android:scaleType="centerInside"
@@ -69,8 +73,9 @@
             android:layout_marginLeft="@dimen/element_spacing_normal"
             android:layout_marginRight="@dimen/element_spacing_normal"
             android:layout_toRightOf="@+id/reply_retweet_space"
+            android:layout_toEndOf="@+id/reply_retweet_space"
             android:ellipsize="end"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical|start"
             android:minHeight="@dimen/element_size_small"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -83,8 +88,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/reply_retweet_status"
-            android:paddingLeft="@dimen/element_spacing_normal">
+            android:paddingEnd="0dp"
+            android:paddingLeft="@dimen/element_spacing_normal"
+            android:paddingRight="0dp"
+            android:paddingStart="@dimen/element_spacing_normal">
 
             <de.vanita5.twittnuker.view.ShapedImageView
                 android:id="@+id/profile_image"
@@ -94,6 +103,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginBottom="@dimen/element_spacing_small"
                 android:layout_marginRight="@dimen/element_spacing_small"
+                android:layout_marginEnd="@dimen/element_spacing_small"
                 android:layout_marginTop="@dimen/element_spacing_small"
                 android:contentDescription="@string/profile_image"
                 android:scaleType="centerCrop"/>
@@ -104,6 +114,7 @@
                 android:layout_height="@dimen/icon_size_profile_type"
                 android:layout_alignBottom="@id/profile_image"
                 android:layout_alignRight="@id/profile_image"
+                android:layout_alignEnd="@id/profile_image"
                 android:scaleType="fitCenter"/>
 
             <LinearLayout
@@ -111,8 +122,11 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/element_spacing_normal"
+                android:layout_marginStart="@dimen/element_spacing_normal"
                 android:layout_toLeftOf="@+id/extra_type"
+                android:layout_toStartOf="@+id/extra_type"
                 android:layout_toRightOf="@id/profile_image"
+                android:layout_toEndOf="@id/profile_image"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -139,11 +153,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/element_spacing_small"
+                        android:layout_marginStart="@dimen/element_spacing_small"
                         android:singleLine="true"
                         android:textAppearance="?android:textAppearanceSmall"
                         android:textColor="?android:textColorSecondary"
-                        android:textSize="10sp"
-                        tools:text="\@user"/>
+                        tools:text="\@user"
+                        tools:textSize="@dimen/text_size_extra_small" />
                 </LinearLayout>
 
 
@@ -157,7 +172,7 @@
                     android:singleLine="true"
                     android:textAppearance="?android:textAppearanceSmall"
                     tools:text="10 mins ago"
-                    tools:textSize="10sp"/>
+                    tools:textSize="@dimen/text_size_extra_small" />
 
             </LinearLayout>
 
@@ -166,6 +181,7 @@
                 android:layout_width="@dimen/element_size_small"
                 android:layout_height="@dimen/element_size_small"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginBottom="@dimen/element_spacing_normal"
                 android:layout_marginLeft="@dimen/element_spacing_mlarge"
@@ -181,6 +197,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/profile_container"
+            android:layout_alignStart="@+id/profile_container"
             android:layout_below="@id/profile_container"
             android:layout_marginBottom="@dimen/element_spacing_small"
             android:layout_marginTop="@dimen/element_spacing_normal"
@@ -199,6 +216,7 @@
             android:layout_alignBottom="@+id/text"
             android:layout_alignTop="@+id/quoted_name_container"
             android:layout_marginLeft="@dimen/element_spacing_normal"
+            android:layout_marginStart="@dimen/element_spacing_normal"
             android:background="?android:dividerHorizontal"
             android:visibility="gone"
             tools:visibility="visible"/>
@@ -209,6 +227,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/quote_text"
             android:layout_toRightOf="@+id/quote_indicator"
+            android:layout_toEndOf="@+id/quote_indicator"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/element_spacing_normal"
@@ -231,11 +250,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/element_spacing_small"
+                android:layout_marginStart="@dimen/element_spacing_small"
                 android:singleLine="true"
                 android:textAppearance="?android:textAppearanceSmall"
                 android:textColor="?android:textColorSecondary"
-                android:textSize="10sp"
-                tools:text="\@user"/>
+                tools:text="\@user"
+                tools:textSize="@dimen/text_size_extra_small" />
         </LinearLayout>
 
         <de.vanita5.twittnuker.view.CardMediaContainer
@@ -245,6 +265,7 @@
             android:layout_below="@+id/quoted_name_container"
             android:layout_marginTop="@dimen/element_spacing_normal"
             android:layout_toRightOf="@+id/quote_indicator"
+            android:layout_toEndOf="@+id/quote_indicator"
             android:horizontalSpacing="@dimen/element_spacing_xsmall"
             android:verticalSpacing="@dimen/element_spacing_xsmall">
 
@@ -260,6 +281,7 @@
             android:layout_marginBottom="@dimen/element_spacing_normal"
             android:layout_marginTop="@dimen/element_spacing_normal"
             android:layout_toRightOf="@+id/quote_indicator"
+            android:layout_toEndOf="@+id/quote_indicator"
             android:paddingLeft="@dimen/element_spacing_normal"
             android:paddingRight="@dimen/element_spacing_normal"
             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -271,9 +293,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/profile_container"
+            android:layout_alignStart="@+id/profile_container"
             android:layout_below="@+id/text"
             android:layout_marginTop="@dimen/element_spacing_minus_small"
-            android:gravity="center_vertical|left"
+            android:gravity="center_vertical|start"
             android:orientation="horizontal">
 
             <de.vanita5.twittnuker.view.ActionIconThemedTextView
@@ -282,6 +305,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/button_size_content_card"
                 android:drawableLeft="@drawable/ic_action_reply"
+                android:drawableStart="@drawable/ic_action_reply"
                 android:focusable="false"
                 android:gravity="center"
                 android:paddingLeft="@dimen/element_spacing_normal"
@@ -296,6 +320,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/button_size_content_card"
                 android:drawableLeft="@drawable/ic_action_retweet"
+                android:drawableStart="@drawable/ic_action_retweet"
                 android:focusable="false"
                 android:gravity="center"
                 android:paddingLeft="@dimen/element_spacing_normal"
@@ -310,6 +335,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/button_size_content_card"
                 android:drawableLeft="@drawable/ic_action_star"
+                android:drawableStart="@drawable/ic_action_star"
                 android:focusable="false"
                 android:gravity="center"
                 android:paddingLeft="@dimen/element_spacing_normal"
@@ -327,6 +353,7 @@
             android:layout_height="@dimen/element_size_normal"
             android:layout_alignBottom="@+id/action_buttons"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignTop="@+id/action_buttons"
             android:layout_marginBottom="@dimen/element_spacing_small"
             android:layout_marginLeft="@dimen/element_spacing_normal"
