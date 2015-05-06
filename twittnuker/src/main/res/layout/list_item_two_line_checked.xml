@@ -23,6 +23,7 @@
 
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:layout_gravity="center_vertical"
@@ -38,30 +39,36 @@
 		android:layout_height="@dimen/icon_size_list_item"
 		android:layout_weight="0"
 		android:contentDescription="@string/icon"
-		android:scaleType="fitCenter"/>
+        android:scaleType="fitCenter"
+        tools:src="@android:drawable/sym_def_app_icon" />
 
 	<LinearLayout
-		android:layout_width="match_parent"
+        android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
 		android:gravity="center_vertical"
 		android:orientation="vertical"
-		android:paddingLeft="@dimen/element_spacing_normal">
+        android:paddingEnd="0dp"
+        android:paddingLeft="@dimen/element_spacing_normal"
+        android:paddingRight="0dp"
+        android:paddingStart="@dimen/element_spacing_normal">
 
 		<TextView
 			android:id="@android:id/text1"
-			android:layout_width="match_parent"
+            android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:singleLine="true"
 			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:textStyle="bold"/>
+            android:textStyle="bold"
+            tools:text="text1" />
 
 		<TextView
 			android:id="@android:id/text2"
-			android:layout_width="match_parent"
+            android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:singleLine="true"
-			android:textAppearance="?android:attr/textAppearanceSmall"/>
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            tools:text="text2" />
 	</LinearLayout>
 
 	<de.vanita5.twittnuker.view.ActivatedCheckBox
@@ -71,6 +78,7 @@
 		android:layout_weight="0"
 		android:clickable="false"
 		android:focusable="false"
-		android:visibility="gone"/>
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </LinearLayout>

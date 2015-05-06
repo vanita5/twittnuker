@@ -31,6 +31,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.support.TextViewSupport;
 
 public class ActionIconThemedTextView extends AppCompatTextView {
 
@@ -54,6 +55,7 @@ public class ActionIconThemedTextView extends AppCompatTextView {
         mIconWidth = a.getDimensionPixelSize(R.styleable.IconActionButton_iabIconWidth, 0);
         mIconHeight = a.getDimensionPixelSize(R.styleable.IconActionButton_iabIconHeight, 0);
 		a.recycle();
+        updateCompoundDrawables();
 	}
 
 	public int getActivatedColor() {
@@ -113,7 +115,13 @@ public class ActionIconThemedTextView extends AppCompatTextView {
     }
 
     private void updateCompoundDrawables() {
-		for (Drawable d : getCompoundDrawables()) {
+        updateCompoundDrawables(getCompoundDrawables());
+        updateCompoundDrawables(TextViewSupport.getCompoundDrawablesRelative(this));
+    }
+
+    private void updateCompoundDrawables(Drawable[] drawables) {
+        if (drawables == null) return;
+        for (Drawable d : drawables) {
             if (d == null) continue;
 			d.mutate();
 			final int color;

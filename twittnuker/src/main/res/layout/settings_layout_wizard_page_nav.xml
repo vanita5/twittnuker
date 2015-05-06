@@ -32,7 +32,7 @@
 		android:id="@android:id/title"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="right"
+        android:layout_gravity="end"
 		android:fontFamily="sans-serif-condensed"
 		android:singleLine="true"
 		android:textAppearance="?android:attr/textAppearanceLarge"

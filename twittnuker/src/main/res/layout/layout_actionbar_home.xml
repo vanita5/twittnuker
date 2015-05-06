@@ -42,7 +42,7 @@
             app:tabHorizontalPadding="@dimen/element_spacing_normal" />
     </de.vanita5.twittnuker.view.TwidereToolbar>
 
-    <android.support.v7.internal.widget.ActionBarContextView
+    <de.vanita5.twittnuker.view.TwidereActionBarContextView
         android:id="@+id/action_context_bar"
         style="?attr/actionModeStyle"
         android:layout_width="match_parent"

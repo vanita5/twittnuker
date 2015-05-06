@@ -29,10 +29,9 @@
         style="?attr/toolbarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:navigationContentDescription="@string/abc_action_bar_up_description"
-        app:navigationIcon="?homeAsUpIndicator" />
+        app:navigationContentDescription="@string/abc_action_bar_up_description" />
 
-    <android.support.v7.internal.widget.ActionBarContextView
+    <de.vanita5.twittnuker.view.TwidereActionBarContextView
         android:id="@+id/action_context_bar"
         style="?attr/actionModeStyle"
         android:layout_width="match_parent"

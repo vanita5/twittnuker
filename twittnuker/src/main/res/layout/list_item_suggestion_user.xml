@@ -44,6 +44,9 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingEnd="0dp"
+        android:paddingRight="0dp"
+        android:paddingStart="@dimen/element_spacing_small"
         android:paddingLeft="@dimen/element_spacing_small">
 
         <TextView
@@ -59,6 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/element_spacing_small"
+            android:layout_marginStart="@dimen/element_spacing_small"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             tools:text="\@mariotaku"/>

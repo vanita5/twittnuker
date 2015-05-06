@@ -31,12 +31,15 @@
     android:padding="@dimen/element_spacing_normal">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:paddingRight="@dimen/element_spacing_normal">
+        android:paddingEnd="@dimen/element_spacing_normal"
+        android:paddingLeft="0dp"
+        android:paddingRight="@dimen/element_spacing_normal"
+        android:paddingStart="0dp">
 
         <TextView
             android:id="@+id/name"
@@ -51,7 +54,7 @@
 
         <TextView
             android:id="@+id/created_by"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/element_spacing_xsmall"
             android:singleLine="true"

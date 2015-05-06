@@ -22,9 +22,9 @@
   -->
 
 <manifest
-    package="de.vanita5.twittnuker"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    package="de.vanita5.twittnuker"
     android:installLocation="auto">
 
     <uses-sdk/>
@@ -80,7 +80,9 @@
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Twidere.Dark.NoActionBar">
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Twidere.Dark.NoActionBar"
+        tools:ignore="UnusedAttribute">
         tools:replace="allowBackup">
         <uses-library
             android:name="com.sec.android.app.multiwindow"
