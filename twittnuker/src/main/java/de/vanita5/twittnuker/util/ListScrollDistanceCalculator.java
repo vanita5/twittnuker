@@ -69,7 +69,7 @@ public class ListScrollDistanceCalculator implements OnScrollListener {
 		mScrollDistanceListener = listener;
 	}
 
-	public static interface ScrollDistanceListener {
+    public interface ScrollDistanceListener {
 		void onScrollDistanceChanged(int delta, int total);
 	}
 }

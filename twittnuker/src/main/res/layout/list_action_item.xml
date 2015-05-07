@@ -19,6 +19,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:layout_centerVertical="true"
+    android:layout_toEndOf="@android:id/icon"
 	android:layout_toRightOf="@android:id/icon"
 	android:gravity="center_vertical"
 	android:minHeight="48dp"

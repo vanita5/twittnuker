@@ -105,7 +105,7 @@ public class UserColorNameManager implements TwittnukerConstants {
 		return color;
 	}
 
-	public static interface OnUserColorChangedListener {
+	public interface OnUserColorChangedListener {
 		void onUserColorChanged(long userId, int color);
 	}
 

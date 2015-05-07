@@ -26,7 +26,7 @@ import android.view.View;
 
 public interface IBaseCardAdapter extends IBaseAdapter {
 
-	public static interface MenuButtonClickListener {
+	interface MenuButtonClickListener {
 		void onMenuButtonClick(View button, int position, long id);
 	}
 }

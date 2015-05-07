@@ -151,6 +151,7 @@ public class ParcelableAccount implements Parcelable {
 		return null;
 	}
 
+    @NonNull
     public static long[] getAccountIds(final ParcelableAccount[] accounts) {
         final long[] ids = new long[accounts.length];
         for (int i = 0, j = accounts.length; i < j; i++) {
@@ -159,6 +160,7 @@ public class ParcelableAccount implements Parcelable {
         return ids;
     }
 
+    @NonNull
 	public static ParcelableAccount[] getAccounts(final Context context, final boolean activatedOnly,
 										final boolean officialKeyOnly) {
 		final List<ParcelableAccount> list = getAccountsList(context, activatedOnly, officialKeyOnly);

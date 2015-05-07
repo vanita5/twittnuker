@@ -24,6 +24,6 @@ package de.vanita5.twittnuker.fragment.iface;
 
 public interface IMapFragment {
 
-	public void center();
+	void center();
 
 }

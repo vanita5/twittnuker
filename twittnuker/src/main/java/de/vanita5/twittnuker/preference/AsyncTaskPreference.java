@@ -81,7 +81,6 @@ public abstract class AsyncTaskPreference extends Preference implements Constant
 
 		@Override
 		protected void onPostExecute(final Object result) {
-			if (mProgress == null) return;
 			if (mProgress.isShowing()) {
 				mProgress.dismiss();
 			}
@@ -89,7 +88,6 @@ public abstract class AsyncTaskPreference extends Preference implements Constant
 
 		@Override
 		protected void onPreExecute() {
-			if (mProgress == null) return;
 			if (mProgress.isShowing()) {
 				mProgress.dismiss();
 			}

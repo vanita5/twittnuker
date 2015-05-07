@@ -34,16 +34,17 @@
         android:layout_height="wrap_content"
         android:baselineAligned="false"
         android:orientation="horizontal"
+        android:padding="@dimen/element_spacing_large"
         android:visibility="visible"
-        tools:visibility="gone"
-        android:padding="@dimen/element_spacing_large">
+        tools:visibility="gone">
 
         <ProgressBar
             android:id="@android:id/progress"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dip"/>
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp" />
 
         <TextView
             android:id="@android:id/message"

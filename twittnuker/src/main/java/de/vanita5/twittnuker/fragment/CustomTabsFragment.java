@@ -81,7 +81,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import static de.vanita5.twittnuker.util.CustomTabUtils.getConfiguraionMap;
+import static de.vanita5.twittnuker.util.CustomTabUtils.getConfigurationMap;
 import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconDrawable;
 import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconObject;
 import static de.vanita5.twittnuker.util.CustomTabUtils.getTabTypeName;
@@ -284,7 +284,7 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
 		if (itemAdd != null && itemAdd.hasSubMenu()) {
 			final SubMenu subMenu = itemAdd.getSubMenu();
 			subMenu.clear();
-			final HashMap<String, CustomTabConfiguration> map = getConfiguraionMap();
+			final HashMap<String, CustomTabConfiguration> map = getConfigurationMap();
             final List<Entry<String, CustomTabConfiguration>> tabs = new ArrayList<>(
 					map.entrySet());
 			Collections.sort(tabs, CustomTabConfigurationComparator.SINGLETON);
@@ -292,18 +292,18 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
 				final String type = entry.getKey();
 				final CustomTabConfiguration conf = entry.getValue();
 
-				final boolean isOfficiakKeyAccountRequired = TAB_TYPE_ACTIVITIES_ABOUT_ME.equals(type)
+                final boolean isOfficialKeyAccountRequired = TAB_TYPE_ACTIVITIES_ABOUT_ME.equals(type)
 						|| TAB_TYPE_ACTIVITIES_BY_FRIENDS.equals(type);
 				final boolean accountIdRequired = conf.getAccountRequirement() == CustomTabConfiguration.ACCOUNT_REQUIRED;
 
 				final Intent intent = new Intent(INTENT_ACTION_ADD_TAB);
 				intent.setClass(getActivity(), CustomTabEditorActivity.class);
 				intent.putExtra(EXTRA_TYPE, type);
-				intent.putExtra(EXTRA_OFFICIAL_KEY_ONLY, isOfficiakKeyAccountRequired);
+                intent.putExtra(EXTRA_OFFICIAL_KEY_ONLY, isOfficialKeyAccountRequired);
 
 				final MenuItem subItem = subMenu.add(conf.getDefaultTitle());
                 final boolean disabledByNoAccount = accountIdRequired && accountIds.length == 0;
-                final boolean disabledByNoOfficialKey = !forcePrivateAPI && isOfficiakKeyAccountRequired && !hasOfficialKeyAccounts;
+                final boolean disabledByNoOfficialKey = !forcePrivateAPI && isOfficialKeyAccountRequired && !hasOfficialKeyAccounts;
                 final boolean disabledByDuplicateTab = conf.isSingleTab() && isTabAdded(getActivity(), type);
                 final boolean shouldDisable = disabledByDuplicateTab || disabledByNoOfficialKey || disabledByNoAccount;
 				subItem.setVisible(!shouldDisable);

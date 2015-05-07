@@ -91,7 +91,7 @@ public class MultiSelectManager implements Constants {
 		mCallbacks.remove(callback);
 	}
 
-	public boolean unselectItem(final Object item) {
+	public boolean deselectItem(final Object item) {
 		return mSelectedItems.remove(item);
 	}
 
@@ -134,13 +134,13 @@ public class MultiSelectManager implements Constants {
 		return TwidereArrayUtils.fromList(ids_list);
 	}
 
-	public static interface Callback {
+	public interface Callback {
 
-		public void onItemsCleared();
+		void onItemsCleared();
 
-		public void onItemSelected(Object item);
+		void onItemSelected(Object item);
 
-		public void onItemUnselected(Object item);
+		void onItemUnselected(Object item);
 
 	}
 

@@ -22,9 +22,9 @@
   -->
 
 <RelativeLayout
-    android:id="@+id/item_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
@@ -35,6 +35,7 @@
         android:id="@+id/activity_type"
         android:layout_width="@dimen/icon_size_activity_type"
         android:layout_height="@dimen/icon_size_activity_type"
+        android:layout_alignEnd="@+id/profile_image_space"
         android:layout_alignRight="@+id/profile_image_space"
         android:layout_alignTop="@+id/profile_images_container"
         android:scaleType="centerInside"
@@ -45,6 +46,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/element_spacing_normal"
+        android:layout_marginStart="@dimen/element_spacing_normal"
+        android:layout_toEndOf="@+id/profile_image_space"
         android:layout_toRightOf="@+id/profile_image_space"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -116,6 +119,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/profile_images_container"
+        android:layout_alignStart="@+id/profile_images_container"
         android:layout_below="@+id/profile_images_container"
         android:singleLine="false"
         android:textAppearance="?android:textAppearanceSmall"
@@ -127,11 +131,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/profile_images_container"
+        android:layout_alignStart="@+id/profile_images_container"
         android:layout_below="@+id/title"
         android:singleLine="false"
         android:textAppearance="?android:textAppearanceSmall"
         android:textColor="?android:textColorSecondary"
-        android:textSize="12dp"
-        tools:text="@string/sample_status_text"/>
+        tools:text="@string/sample_status_text"
+        tools:textSize="@dimen/text_size_extra_small" />
 
 </RelativeLayout>

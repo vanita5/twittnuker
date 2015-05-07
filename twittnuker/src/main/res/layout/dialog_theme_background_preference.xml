@@ -42,8 +42,10 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/element_spacing_normal"
+        android:paddingEnd="@dimen/element_spacing_normal"
         android:paddingLeft="@dimen/element_spacing_large"
         android:paddingRight="@dimen/element_spacing_normal"
+        android:paddingStart="@dimen/element_spacing_large"
         android:paddingTop="@dimen/element_spacing_normal">
 
         <SeekBar
@@ -58,6 +60,7 @@
             android:layout_width="@dimen/element_size_small"
             android:layout_height="@dimen/element_size_small"
             android:layout_marginLeft="@dimen/element_spacing_normal"
+            android:layout_marginStart="@dimen/element_spacing_normal"
             android:layout_weight="0"
             android:scaleType="centerInside"
             android:src="@mipmap/ic_launcher"

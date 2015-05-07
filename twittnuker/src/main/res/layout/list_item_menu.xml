@@ -35,7 +35,9 @@
 		android:layout_width="42dp"
 		android:layout_height="42dp"
 		android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
 		android:layout_weight="0"
+        android:contentDescription="@string/icon"
 		android:scaleType="centerInside"/>
 
     <TextView
@@ -43,6 +45,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="48dp"
 		android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
 		android:layout_weight="1"
 		android:gravity="center_vertical"
 		android:singleLine="true"
@@ -52,8 +55,10 @@
 	    android:id="@android:id/checkbox"
 	    android:layout_width="wrap_content"
 	    android:layout_height="48dp"
+        android:layout_marginEnd="12dp"
 	    android:layout_marginLeft="8dp"
 	    android:layout_marginRight="12dp"
+        android:layout_marginStart="8dp"
 	    android:layout_weight="0"
 	    android:clickable="false"
 	    android:focusable="false"

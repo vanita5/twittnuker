@@ -42,7 +42,7 @@ public interface IForegroundView {
      *
      * @return A Drawable or null if no foreground was set.
      */
-    public Drawable getForeground();
+    Drawable getForeground();
 
     /**
      * Supply a Drawable that is to be rendered on top of all of the child views
@@ -53,7 +53,7 @@ public interface IForegroundView {
      * @param drawable The Drawable to be drawn on top of the children.
      * @attr ref android.R.attr#foreground
      */
-    public void setForeground(final Drawable drawable);
+    void setForeground(final Drawable drawable);
 
     /**
      * Describes how the foreground is positioned. Defaults to START and TOP.
@@ -61,9 +61,9 @@ public interface IForegroundView {
      * @param foregroundGravity See {@link android.view.Gravity}
      * @attr ref android.R.attr#foregroundGravity
      */
-    public void setForegroundGravity(int foregroundGravity);
+    void setForegroundGravity(int foregroundGravity);
 
-    public static class ForegroundViewHelper {
+    class ForegroundViewHelper {
 
         private final View mView;
 

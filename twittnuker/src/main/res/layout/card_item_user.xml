@@ -22,10 +22,10 @@
   -->
 
 <android.support.v7.widget.CardView
-    android:id="@+id/card"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/element_spacing_small"
@@ -33,9 +33,9 @@
     android:layout_marginRight="@dimen/element_spacing_normal"
     android:layout_marginTop="@dimen/element_spacing_small"
     app:cardBackgroundColor="?cardItemBackgroundColor"
-    tools:context=".adapter.ParcelableUsersAdapter"
     app:cardCornerRadius="2dp"
-    app:cardElevation="2dp">
+    app:cardElevation="2dp"
+    tools:context=".adapter.ParcelableUsersAdapter">
 
     <de.vanita5.twittnuker.view.ColorLabelLinearLayout
         android:id="@+id/item_content"
@@ -55,8 +55,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/element_spacing_normal"
+            android:paddingEnd="@dimen/element_spacing_xlarge"
             android:paddingLeft="@dimen/element_spacing_normal"
             android:paddingRight="@dimen/element_spacing_xlarge"
+            android:paddingStart="@dimen/element_spacing_normal"
             android:paddingTop="@dimen/element_spacing_normal">
 
             <de.vanita5.twittnuker.view.ShapedImageView
@@ -73,8 +75,10 @@
                 android:layout_width="@dimen/icon_size_profile_type"
                 android:layout_height="@dimen/icon_size_profile_type"
                 android:layout_alignBottom="@id/profile_image"
+                android:layout_alignEnd="@id/profile_image"
                 android:layout_alignRight="@id/profile_image"
                 android:layout_marginBottom="@dimen/element_spacing_minus_small"
+                android:layout_marginEnd="@dimen/element_spacing_minus_normal"
                 android:layout_marginRight="@dimen/element_spacing_minus_normal"
                 android:scaleType="centerInside"
                 tools:ignore="ContentDescription"/>
@@ -83,10 +87,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/profile_image"
                 android:layout_toRightOf="@+id/profile_image"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
-                android:paddingLeft="8dp">
+                android:paddingEnd="0dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="0dp"
+                android:paddingStart="8dp">
 
                 <TextView
                     android:id="@+id/name"
@@ -123,6 +131,7 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_indicator_location"
             android:drawablePadding="4dp"
+            android:drawableStart="@drawable/ic_indicator_location"
             android:padding="8dp"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall"/>
@@ -133,6 +142,7 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_indicator_link"
             android:drawablePadding="4dp"
+            android:drawableStart="@drawable/ic_indicator_link"
             android:padding="8dp"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall"/>
@@ -150,6 +160,7 @@
                 android:layout_weight="1"
                 android:drawableLeft="@drawable/ic_indicator_twitter"
                 android:drawablePadding="4dp"
+                android:drawableStart="@drawable/ic_indicator_twitter"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceSmall"/>
 
@@ -160,6 +171,7 @@
                 android:layout_weight="1"
                 android:drawableLeft="@drawable/ic_indicator_followers"
                 android:drawablePadding="4dp"
+                android:drawableStart="@drawable/ic_indicator_followers"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceSmall"/>
 
@@ -170,6 +182,7 @@
                 android:layout_weight="1"
                 android:drawableLeft="@drawable/ic_indicator_following"
                 android:drawablePadding="4dp"
+                android:drawableStart="@drawable/ic_indicator_following"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceSmall"/>
         </LinearLayout>

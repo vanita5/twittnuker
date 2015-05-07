@@ -58,7 +58,7 @@ public class BaseListFragment extends ListFragment implements Constants, OnScrol
 	}
 
 	public final MultiSelectManager getMultiSelectManager() {
-		return getApplication() != null ? getApplication().getMultiSelectManager() : null;
+        return getApplication().getMultiSelectManager();
 	}
 
 	public final SharedPreferences getSharedPreferences(final String name, final int mode) {
@@ -79,7 +79,7 @@ public class BaseListFragment extends ListFragment implements Constants, OnScrol
 	}
 
 	public AsyncTwitterWrapper getTwitterWrapper() {
-		return getApplication() != null ? getApplication().getTwitterWrapper() : null;
+        return getApplication().getTwitterWrapper();
 	}
 
 	public void invalidateOptionsMenu() {

@@ -22,13 +22,13 @@
   -->
 
 <de.vanita5.twittnuker.view.ColorLabelFrameLayout
-    android:id="@+id/item_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_content"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:paddingBottom="@dimen/element_spacing_small"
     android:background="?selectableItemBackground"
+	android:paddingBottom="@dimen/element_spacing_small"
 	android:paddingLeft="@dimen/element_spacing_normal"
 	android:paddingRight="@dimen/element_spacing_normal"
 	android:paddingTop="@dimen/element_spacing_small"
@@ -38,8 +38,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/element_spacing_normal"
+        android:paddingEnd="@dimen/item_menu_card_padding_compact"
         android:paddingLeft="@dimen/element_spacing_normal"
         android:paddingRight="@dimen/item_menu_card_padding_compact"
+        android:paddingStart="@dimen/element_spacing_normal"
         android:paddingTop="@dimen/element_spacing_normal">
 
         <de.vanita5.twittnuker.view.ShapedImageView
@@ -48,7 +50,9 @@
             android:layout_width="@dimen/icon_size_card_list_item"
             android:layout_height="@dimen/icon_size_card_list_item"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:layout_marginEnd="@dimen/element_spacing_normal"
             android:layout_marginRight="@dimen/element_spacing_normal"
             android:contentDescription="@string/profile_image"/>
 
@@ -57,8 +61,10 @@
             android:layout_width="@dimen/icon_size_profile_type"
             android:layout_height="@dimen/icon_size_profile_type"
             android:layout_alignBottom="@id/profile_image"
+            android:layout_alignEnd="@id/profile_image"
             android:layout_alignRight="@id/profile_image"
             android:layout_marginBottom="@dimen/element_spacing_minus_small"
+            android:layout_marginEnd="@dimen/element_spacing_minus_normal"
             android:layout_marginRight="@dimen/element_spacing_minus_normal"
             android:scaleType="centerInside"
             tools:ignore="ContentDescription"/>
@@ -67,15 +73,17 @@
             android:id="@+id/name_frame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_alignWithParentIfMissing="true"
+            android:layout_toEndOf="@id/profile_image"
             android:layout_toRightOf="@id/profile_image">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left|center_vertical"
+                android:layout_gravity="start|center_vertical"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -106,6 +114,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/name_frame"
+            android:layout_alignStart="@+id/name_frame"
             android:layout_below="@+id/name_frame"
             android:paddingTop="@dimen/element_spacing_small"
             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -116,9 +125,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/name_frame"
+            android:layout_alignStart="@+id/name_frame"
             android:layout_below="@+id/description"
             android:drawableLeft="@drawable/ic_indicator_location"
             android:drawablePadding="@dimen/element_spacing_small"
+            android:drawableStart="@drawable/ic_indicator_location"
             android:paddingTop="@dimen/element_spacing_small"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall"/>
@@ -128,9 +139,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/name_frame"
+            android:layout_alignStart="@+id/name_frame"
             android:layout_below="@+id/location"
             android:drawableLeft="@drawable/ic_indicator_web"
             android:drawablePadding="@dimen/element_spacing_small"
+            android:drawableStart="@drawable/ic_indicator_web"
             android:paddingTop="@dimen/element_spacing_small"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall"/>
@@ -139,6 +152,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/name_frame"
+            android:layout_alignStart="@+id/name_frame"
             android:layout_below="@+id/url"
             android:orientation="horizontal"
             android:paddingTop="@dimen/element_spacing_small">
@@ -150,6 +164,7 @@
                 android:layout_weight="1"
                 android:drawableLeft="@drawable/ic_indicator_twitter"
                 android:drawablePadding="@dimen/element_spacing_small"
+                android:drawableStart="@drawable/ic_indicator_twitter"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceSmall"/>
 
@@ -160,6 +175,7 @@
                 android:layout_weight="1"
                 android:drawableLeft="@drawable/ic_indicator_followers"
                 android:drawablePadding="@dimen/element_spacing_small"
+                android:drawableStart="@drawable/ic_indicator_followers"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceSmall"/>
 
@@ -170,6 +186,7 @@
                 android:layout_weight="1"
                 android:drawableLeft="@drawable/ic_indicator_following"
                 android:drawablePadding="@dimen/element_spacing_small"
+                android:drawableStart="@drawable/ic_indicator_following"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceSmall"/>
         </LinearLayout>

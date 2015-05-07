@@ -164,7 +164,7 @@ public final class DataExportImportTypeSelectorDialogFragment extends BaseSuppor
 		positiveButton.setEnabled(getCheckedFlags() != 0);
 	}
 
-	public static interface Callback extends ISupportDialogFragmentCallback {
+    public interface Callback extends ISupportDialogFragmentCallback {
 		void onPositiveButtonClicked(String path, int flags);
 	}
 

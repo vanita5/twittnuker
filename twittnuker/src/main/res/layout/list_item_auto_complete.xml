@@ -32,8 +32,8 @@
 
     <de.vanita5.twittnuker.view.ShapedImageView
         android:id="@android:id/icon"
-        android:layout_width="@dimen/icon_size_list_item_small"
         style="?profileImageStyle"
+        android:layout_width="@dimen/icon_size_list_item_small"
         android:layout_height="@dimen/icon_size_list_item_small"
         android:contentDescription="@string/icon"
         android:scaleType="fitCenter"/>
@@ -43,7 +43,10 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/element_spacing_small">
+        android:paddingEnd="0dp"
+        android:paddingLeft="@dimen/element_spacing_small"
+        android:paddingRight="0dp"
+        android:paddingStart="@dimen/element_spacing_small">
 
         <TextView
             android:id="@android:id/text1"

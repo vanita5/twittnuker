@@ -75,6 +75,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/media_profile_image"
                 android:layout_marginLeft="@dimen/element_spacing_small"
+                android:layout_marginStart="@dimen/element_spacing_small"
+                android:layout_toEndOf="@+id/media_profile_image"
                 android:layout_toRightOf="@+id/media_profile_image"
                 android:ellipsize="end"/>
         </de.vanita5.twittnuker.view.ColorLabelRelativeLayout>

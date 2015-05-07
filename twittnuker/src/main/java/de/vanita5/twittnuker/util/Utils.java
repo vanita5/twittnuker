@@ -77,6 +77,7 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.util.LongSparseArray;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ActionProvider;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -491,8 +492,8 @@ public final class Utils implements Constants, TwitterConstants {
 		return builder.build();
 	}
 
-    public static Expression buildStatusFilterWhereClause(final String table, final Expression extraSelection) {
-		if (table == null) return null;
+    @NonNull
+    public static Expression buildStatusFilterWhereClause(@NonNull final String table, final Expression extraSelection) {
         final SQLSelectQuery filteredUsersQuery = SQLQueryBuilder
                 .select(new Column(new Table(Filters.Users.TABLE_NAME), Filters.Users.USER_ID))
                 .from(new Tables(Filters.Users.TABLE_NAME))
@@ -1437,11 +1438,13 @@ public final class Utils implements Constants, TwitterConstants {
 		}
 	}
 
-	public static int getAllStatusesCount(final Context context, final Uri uri) {
+    public static int getAllStatusesCount(final Context context, @NonNull final Uri uri) {
 		if (context == null) return 0;
 		final ContentResolver resolver = context.getContentResolver();
+        final String table = getTableNameByUri(uri);
+        if (table == null) return 0;
 		final Cursor cur = ContentResolverUtils.query(resolver, uri, new String[] { Statuses.STATUS_ID },
-                buildStatusFilterWhereClause(getTableNameByUri(uri), null).getSQL(),
+                buildStatusFilterWhereClause(table, null).getSQL(),
                 null, null);
 		if (cur == null) return 0;
 		try {
@@ -1479,11 +1482,14 @@ public final class Utils implements Constants, TwitterConstants {
         return 0;
     }
 
+    @NonNull
 	public static long[] getAllStatusesIds(final Context context, final Uri uri) {
 		if (context == null) return new long[0];
 		final ContentResolver resolver = context.getContentResolver();
+        final String table = getTableNameByUri(uri);
+        if (table == null) return new long[0];
 		final Cursor cur = ContentResolverUtils.query(resolver, uri, new String[] { Statuses.STATUS_ID },
-                buildStatusFilterWhereClause(getTableNameByUri(uri), null).getSQL(),
+                buildStatusFilterWhereClause(table, null).getSQL(),
                 null, null);
 		if (cur == null) return new long[0];
 		final long[] ids = new long[cur.getCount()];
@@ -2232,11 +2238,11 @@ public final class Utils implements Constants, TwitterConstants {
     }
 
     public static int getTabDisplayOptionInt(final String option) {
-		if (VALUE_TAB_DIPLAY_OPTION_ICON.equals(option))
-			return VALUE_TAB_DIPLAY_OPTION_CODE_ICON;
-		else if (VALUE_TAB_DIPLAY_OPTION_LABEL.equals(option))
-			return VALUE_TAB_DIPLAY_OPTION_CODE_LABEL;
-		return VALUE_TAB_DIPLAY_OPTION_CODE_BOTH;
+		if (VALUE_TAB_DISPLAY_OPTION_ICON.equals(option))
+            return VALUE_TAB_DISPLAY_OPTION_CODE_ICON;
+        else if (VALUE_TAB_DISPLAY_OPTION_LABEL.equals(option))
+			return VALUE_TAB_DISPLAY_OPTION_CODE_LABEL;
+		return VALUE_TAB_DISPLAY_OPTION_CODE_BOTH;
     }
 
 	public static int getTableId(final Uri uri) {
@@ -3758,7 +3764,7 @@ public final class Utils implements Constants, TwitterConstants {
 			cheatSheet.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, height);
 		} else {
 			// Show along the top; follow action buttons
-			cheatSheet.setGravity(Gravity.TOP | Gravity.RIGHT, screenWidth - screenPos[0] - width / 2, height);
+            cheatSheet.setGravity(Gravity.TOP | GravityCompat.END, screenWidth - screenPos[0] - width / 2, height);
 		}
 		cheatSheet.show();
 	}

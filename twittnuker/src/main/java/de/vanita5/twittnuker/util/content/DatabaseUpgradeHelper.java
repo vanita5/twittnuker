@@ -26,6 +26,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.querybuilder.Columns;
 import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
@@ -74,13 +75,13 @@ public final class DatabaseUpgradeHelper {
 		if (strictMode) {
 			final String oldCreate = getCreateSQL(db, table);
 			final Map<String, String> map = getTypeMapByCreateQuery(oldCreate);
-			boolean differenct = false;
+            boolean different = false;
 			for (final NewColumn newCol : newCols) {
 				if (!newCol.getType().equalsIgnoreCase(map.get(newCol.getName()))) {
-					differenct = true;
+                    different = true;
 				}
 			}
-			if (!differenct) return;
+            if (!different) return;
 		} else if (oldCols == null || TwidereArrayUtils.contentMatch(newColNames, oldCols)) return;
 		if (dropDirectly) {
 			db.beginTransaction();
@@ -114,11 +115,11 @@ public final class DatabaseUpgradeHelper {
 												final String[] oldCols, final Map<String, String> colAliases, final String[] notNullCols,
 												final OnConflict onConflict) {
         final SQLInsertQuery.Builder qb = insertInto(onConflict, table);
-		final List<String> newInsertColsList = new ArrayList<String>();
+        final List<String> newInsertColsList = new ArrayList<>();
 		for (final String newCol : newCols) {
 			final String oldAliasedCol = colAliases != null ? colAliases.get(newCol) : null;
-			if (TwidereArrayUtils.contains(oldCols, newCol) || oldAliasedCol != null
-					&& TwidereArrayUtils.contains(oldCols, oldAliasedCol)) {
+            if (ArrayUtils.contains(oldCols, newCol) || oldAliasedCol != null
+                    && ArrayUtils.contains(oldCols, oldAliasedCol)) {
 				newInsertColsList.add(newCol);
 			}
 		}
@@ -129,7 +130,7 @@ public final class DatabaseUpgradeHelper {
 		for (int i = 0, j = oldDataCols.length; i < j; i++) {
 			final String newCol = newInsertCols[i];
 			final String oldAliasedCol = colAliases != null ? colAliases.get(newCol) : null;
-			if (oldAliasedCol != null && TwidereArrayUtils.contains(oldCols, oldAliasedCol)) {
+            if (oldAliasedCol != null && ArrayUtils.contains(oldCols, oldAliasedCol)) {
 				oldDataCols[i] = new Columns.Column(oldAliasedCol, newCol);
 			} else {
 				oldDataCols[i] = new Columns.Column(newCol);
@@ -166,8 +167,7 @@ public final class DatabaseUpgradeHelper {
 	}
 	
 	private static String[] getNotNullColumns(final NewColumn[] newCols) {
-		if (newCols == null)
-			return null;
+        if (newCols == null) return null;
 		final String[] notNullCols = new String[newCols.length];
 		int count = 0;
 		for (final NewColumn column : newCols) {
@@ -182,7 +182,7 @@ public final class DatabaseUpgradeHelper {
 		if (TextUtils.isEmpty(query)) return Collections.emptyMap();
 		final int start = query.indexOf("("), end = query.lastIndexOf(")");
 		if (start < 0 || end < 0) return Collections.emptyMap();
-		final HashMap<String, String> map = new HashMap<String, String>();
+        final HashMap<String, String> map = new HashMap<>();
 		for (final String segment : query.substring(start + 1, end).split(",")) {
 			final String trimmed = segment.trim().replaceAll(" +", " ");
 			final int idx = trimmed.indexOf(" ");

@@ -252,7 +252,7 @@
 		<item name="android:windowNoDisplay">true</item>
 	</style>
 
-    <style name="Theme.Test" parent="Theme.Compat.Base"></style>
+    <style name="Theme.Test" parent="Theme.Compat.Base"/>
 
     <style name="Theme.Twidere.Wizard" parent="Theme.Twidere.Light.NoActionBar">
         <item name="windowActionBar">false</item>

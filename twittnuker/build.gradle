@@ -41,8 +41,8 @@ android {
 
 }
 
-configurations.all {
-    exclude group: 'org.yaml', module: 'snakeyaml'
+configurations {
+    all*.exclude group: 'org.yaml', module: 'snakeyaml'
 }
 
 repositories {

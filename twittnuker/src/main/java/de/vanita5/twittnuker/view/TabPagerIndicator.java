@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -30,11 +31,11 @@ import de.vanita5.twittnuker.view.iface.PagerIndicator;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-public class TabPagerIndicator extends RecyclerView implements PagerIndicator {
+public class TabPagerIndicator extends RecyclerView implements PagerIndicator, Constants {
 
-    public static final int ICON = 0x1;
-    public static final int LABEL = 0x2;
-    public static final int BOTH = ICON | LABEL;
+    public static final int LABEL = VALUE_TAB_DISPLAY_OPTION_CODE_LABEL;
+    public static final int ICON = VALUE_TAB_DISPLAY_OPTION_CODE_ICON;
+    public static final int BOTH = VALUE_TAB_DISPLAY_OPTION_CODE_BOTH;
 
     private final int mStripHeight;
     private final TabPagerIndicatorAdapter mIndicatorAdapter;

@@ -32,6 +32,7 @@
         android:layout_width="24dp"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:layout_weight="0"
         android:background="@drawable/list_drag_handle"/>
@@ -42,6 +43,7 @@
 		android:layout_width="@dimen/icon_size_list_item"
 		android:layout_height="@dimen/icon_size_list_item"
 		android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/drag_handle"
         android:layout_toRightOf="@+id/drag_handle"
         android:contentDescription="@string/your_profile_image"
 		android:scaleType="fitCenter"/>
@@ -51,8 +53,10 @@
 		android:layout_height="wrap_content"
 		android:layout_alignWithParentIfMissing="true"
 		android:layout_centerVertical="true"
+        android:layout_toEndOf="@android:id/icon"
 		android:layout_toLeftOf="@android:id/checkbox"
 		android:layout_toRightOf="@android:id/icon"
+        android:layout_toStartOf="@android:id/checkbox"
 		android:orientation="vertical"
 		android:padding="@dimen/element_spacing_normal">
 
@@ -77,6 +81,7 @@
 		android:id="@android:id/checkbox"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
 		android:layout_alignParentRight="true"
 		android:layout_centerVertical="true"
 		android:clickable="false"

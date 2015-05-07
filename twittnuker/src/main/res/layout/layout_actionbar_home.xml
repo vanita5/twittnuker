@@ -39,6 +39,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             app:tabExpandEnabled="true"
+            app:tabDisplayOption="icon"
             app:tabHorizontalPadding="@dimen/element_spacing_normal" />
     </de.vanita5.twittnuker.view.TwidereToolbar>
 

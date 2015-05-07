@@ -33,7 +33,8 @@
         android:layout_gravity="center"
         android:layout_marginLeft="@dimen/element_spacing_large"
         android:layout_marginRight="@dimen/element_spacing_large"
-        android:layout_weight="0"/>
+        android:layout_weight="0"
+        android:contentDescription="@string/icon" />
 
     <LinearLayout
         android:id="@android:id/content"

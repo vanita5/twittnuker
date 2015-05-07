@@ -28,7 +28,7 @@ import de.vanita5.twittnuker.view.ShapedImageView;
 
 public interface IDirectMessagesAdapter {
 
-	public ParcelableDirectMessage findItem(long id);
+    ParcelableDirectMessage findItem(long id);
 
     @ShapedImageView.ShapeStyle
     int getProfileImageStyle();

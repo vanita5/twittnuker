@@ -31,7 +31,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
@@ -1043,7 +1042,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final boolean mIsCompact;
         private final int mProfileImageStyle;
         private final int mMediaPreviewStyle;
-        private final int mLinkHighligingStyle;
+        private final int mLinkHighlightingStyle;
         private final boolean mDisplayMediaPreview;
         private final boolean mDisplayProfileImage;
         private final boolean mSensitiveContentEnabled;
@@ -1080,7 +1079,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             mTextSize = preferences.getInt(KEY_TEXT_SIZE, res.getInteger(R.integer.default_text_size));
             mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
             mMediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
-            mLinkHighligingStyle = Utils.getLinkHighlightingStyleInt(preferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));
+            mLinkHighlightingStyle = Utils.getLinkHighlightingStyleInt(preferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));
             mIsCompact = compact;
             mDisplayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
             mDisplayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
@@ -1147,7 +1146,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
         @Override
         public int getLinkHighlightingStyle() {
-            return mLinkHighligingStyle;
+            return mLinkHighlightingStyle;
         }
 
         @Override

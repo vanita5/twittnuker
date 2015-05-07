@@ -56,4 +56,5 @@ public interface IStatusesAdapter<Data> extends IContentCardAdapter, StatusClick
     boolean shouldShowAccountsColor();
 
     MediaLoadingHandler getMediaLoadingHandler();
+
 }
