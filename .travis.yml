@@ -26,4 +26,4 @@ before_script:
   - "echo $JAVA_OPTS"
   - "export JAVA_OPTS=-Xmx1024m"
 
-script: ./gradlew build
+script: ./gradlew svgToPng build

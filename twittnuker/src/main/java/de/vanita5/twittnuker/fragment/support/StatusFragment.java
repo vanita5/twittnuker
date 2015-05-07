@@ -129,6 +129,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import twitter4j.Paging;
+import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 public class StatusFragment extends BaseSupportFragment implements LoaderCallbacks<SingleResponse<ParcelableStatus>>,
@@ -949,10 +951,30 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             try {
                 ParcelableStatus status = params[0];
                 final long account_id = status.account_id;
-                while (status.in_reply_to_status_id > 0 && !isCancelled()) {
-                    status = Utils.findStatus(context, account_id, status.in_reply_to_status_id);
-                    publishProgress(status);
-                    list.add(0, status);
+                if (Utils.isOfficialKeyAccount(context, account_id)) {
+                    final Twitter twitter = Utils.getTwitterInstance(context, account_id, true);
+                	while (status.in_reply_to_status_id > 0 && !isCancelled()) {
+                        status = Utils.findStatusInDatabases(context, account_id, status.in_reply_to_status_id);
+                        publishProgress(status);
+                        list.add(0, status);
+                    }
+                    final Paging paging = new Paging();
+                    paging.setMaxId(status.id);
+                    final List<ParcelableStatus> conversations = new ArrayList<>();
+                    for (twitter4j.Status conversationItem : twitter.showConversation(status.id, paging)) {
+                        if (conversationItem.getId() < status.id) {
+                            final ParcelableStatus pStatus = new ParcelableStatus(conversationItem, account_id, false);
+                            publishProgress(pStatus);
+                            conversations.add(pStatus);
+                        }
+                    }
+                    list.addAll(0, conversations);
+                } else {
+                    while (status.in_reply_to_status_id > 0 && !isCancelled()) {
+						status = Utils.findStatus(context, account_id, status.in_reply_to_status_id);
+						publishProgress(status);
+						list.add(0, status);
+					}
                 }
             } catch (final TwitterException e) {
                 return ListResponse.getListInstance(e);
