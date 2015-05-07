@@ -1,17 +1,14 @@
--printseeds seeds.txt
--printusage unused.txt
--printmapping mapping.txt
-
 -dontobfuscate
 
 -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
 
 -keepclassmembers class android.support.v7.internal.app.WindowDecorActionBar {
-    private *;
+    private android.support.v7.internal.widget.ActionBarContextView mContextView;
+    private android.support.v7.internal.widget.DecorToolbar mDecorToolbar;
 }
 
 -keepclassmembers class android.support.v7.internal.widget.ActionBarOverlayLayout {
-    private *;
+    private android.graphics.drawable.Drawable mWindowContentOverlay;
 }
 
 -keep public class * extends android.app.Activity
@@ -66,7 +63,7 @@
 # Keep the BuildConfig
 -keep class com.example.BuildConfig { *; }
 
-# Otto
+# Otto http://square.github.io/otto/
 -keepclassmembers class ** {
     @com.squareup.otto.Subscribe public *;
     @com.squareup.otto.Produce public *;
@@ -86,8 +83,9 @@
 }
 -keep class java.util.regex.Pattern { *; }
 -keep class sun.misc.Unsafe { *; }
--dontwarn java.nio.file.*
--dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+-dontwarn java.nio.file.**
+-dontwarn sun.net.spi.**
+-dontwarn org.codehaus.mojo.**
 -dontwarn com.twitter.Autolink
 -dontwarn com.google.appengine.api.urlfetch.*
 
@@ -111,3 +109,8 @@
 
 #android-gif-drawable
 -keep class pl.droidsonroids.gif.GifInfoHandle{<init>(long,int,int,int);}
+
+# https://github.com/bluelinelabs/LoganSquare
+-keep class com.bluelinelabs.logansquare.** { *; }
+-keep @com.bluelinelabs.logansquare.annotation.JsonObject class *
+-keep class **$$JsonObjectMapper { *; }
