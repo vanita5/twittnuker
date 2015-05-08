@@ -46,6 +46,7 @@ import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.CursorStatusesAdapter;
 import de.vanita5.twittnuker.loader.support.ExtendedCursorLoader;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -174,7 +175,9 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<Cursor>
             }
         };
         cr.registerContentObserver(Accounts.CONTENT_URI, true, mContentObserver);
+        cr.registerContentObserver(Filters.CONTENT_URI, true, mContentObserver);
         updateRefreshState();
+        reloadStatuses();
     }
 
     protected void reloadStatuses() {

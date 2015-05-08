@@ -30,7 +30,7 @@
 
     <include layout="@layout/layout_content_fragment_common" />
 
-    <de.vanita5.twittnuker.view.themed.ThemedAccentSwipeRefreshLayout
+    <de.vanita5.twittnuker.view.themed.AccentSwipeRefreshLayout
         android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -45,5 +45,5 @@
             android:focusableInTouchMode="false"
             android:scrollbars="vertical"/>
 
-    </de.vanita5.twittnuker.view.themed.ThemedAccentSwipeRefreshLayout>
+    </de.vanita5.twittnuker.view.themed.AccentSwipeRefreshLayout>
 </FrameLayout>

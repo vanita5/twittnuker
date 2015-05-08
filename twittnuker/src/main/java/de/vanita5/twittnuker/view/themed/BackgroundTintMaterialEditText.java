@@ -25,22 +25,29 @@ package de.vanita5.twittnuker.view.themed;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
 
-import de.vanita5.twittnuker.view.iface.IThemeAccentView;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
-public class ThemedAccentSwipeRefreshLayout extends SwipeRefreshLayout implements IThemeAccentView {
-	public ThemedAccentSwipeRefreshLayout(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+import de.vanita5.twittnuker.view.iface.IThemeBackgroundTintView;
 
-	public ThemedAccentSwipeRefreshLayout(Context context) {
+public class BackgroundTintMaterialEditText extends MaterialEditText implements IThemeBackgroundTintView {
+
+	public BackgroundTintMaterialEditText(Context context) {
 		super(context);
 	}
 
-	@Override
-	public void setAccentTintColor(@NonNull ColorStateList color) {
-		setColorSchemeColors(color.getDefaultColor());
+	public BackgroundTintMaterialEditText(Context context, AttributeSet attrs) {
+		super(context, attrs);
 	}
+
+	public BackgroundTintMaterialEditText(Context context, AttributeSet attrs, int style) {
+		super(context, attrs, style);
+	}
+
+	@Override
+    public void setBackgroundTintColor(@NonNull ColorStateList color) {
+		setPrimaryColor(color.getDefaultColor());
+	}
+
 }

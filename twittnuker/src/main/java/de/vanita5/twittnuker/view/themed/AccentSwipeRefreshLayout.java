@@ -25,23 +25,22 @@ package de.vanita5.twittnuker.view.themed;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
-
-import com.pnikosis.materialishprogress.ProgressWheel;
 
 import de.vanita5.twittnuker.view.iface.IThemeAccentView;
 
-public class ThemedAccentProgressWheel extends ProgressWheel implements IThemeAccentView {
-	public ThemedAccentProgressWheel(Context context, AttributeSet attrs) {
+public class AccentSwipeRefreshLayout extends SwipeRefreshLayout implements IThemeAccentView {
+	public AccentSwipeRefreshLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public ThemedAccentProgressWheel(Context context) {
+	public AccentSwipeRefreshLayout(Context context) {
 		super(context);
 	}
 
 	@Override
-    public void setAccentTintColor(@NonNull ColorStateList color) {
-		setBarColor(color.getDefaultColor());
+	public void setAccentTintColor(@NonNull ColorStateList color) {
+		setColorSchemeColors(color.getDefaultColor());
 	}
 }
