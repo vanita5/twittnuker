@@ -12,9 +12,12 @@
             android:title="@string/notification_light_color"
             app:defaultColor="@color/branding_color"/>
 
-        <de.vanita5.twittnuker.preference.RingtonePreference
+        <RingtonePreference
             android:key="notification_ringtone"
-            android:title="@string/notification_ringtone"/>
+            android:ringtoneType="notification"
+            android:showDefault="true"
+            android:showSilent="true"
+            android:title="@string/notification_ringtone" />
     </PreferenceCategory>
 
     <PreferenceCategory

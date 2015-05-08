@@ -93,19 +93,6 @@ public class SettingsActivity extends BasePreferenceActivity {
     }
 
 	@Override
-    public void onBackPressed() {
-        if (mTwidereActionModeForChildListener.finishExisting()) {
-            return;
-        }
-        if (isTopSettings() && shouldNotifyChange()) {
-            final RestartConfirmDialogFragment df = new RestartConfirmDialogFragment();
-            df.show(getFragmentManager().beginTransaction(), "restart_confirm");
-            return;
-        }
-        super.onBackPressed();
-    }
-
-    @Override
     public int getThemeColor() {
         return ThemeUtils.getUserAccentColor(this);
 	}
@@ -192,12 +179,6 @@ public class SettingsActivity extends BasePreferenceActivity {
     @Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
-			case MENU_HOME: {
-                if (!isFinishing()) {
-					onBackPressed();
-                }
-				return true;
-			}
 			case MENU_IMPORT_SETTINGS: {
 				final Intent intent = new Intent(this, DataImportActivity.class);
 				startActivity(intent);
@@ -239,7 +220,7 @@ public class SettingsActivity extends BasePreferenceActivity {
     public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
         final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
         if (ACTION_NAVIGATION_BACK.equals(action)) {
-            onBackPressed();
+            navigateUp();
             return true;
         }
         return super.handleKeyboardShortcutSingle(handler, keyCode, event);
@@ -255,7 +236,8 @@ public class SettingsActivity extends BasePreferenceActivity {
 //        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
 		super.onCreate(savedInstanceState);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.action_bar));
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
+        setSupportActionBar(toolbar);
 
         mTwidereActionModeForChildListener = new TwidereActionModeForChildListener(this, this, false);
         final NativeActionModeAwareLayout layout = (NativeActionModeAwareLayout) findViewById(android.R.id.content);
@@ -268,6 +250,14 @@ public class SettingsActivity extends BasePreferenceActivity {
         final View windowOverlay = findViewById(R.id.window_overlay);
         ViewSupport.setBackground(windowOverlay, ThemeUtils.getNormalWindowContentOverlay(this, getCurrentThemeResourceId()));
 		setIntent(getIntent().addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateUp();
+            }
+        });
+
         final ActionBar actionBar = getSupportActionBar();
 		if (actionBar != null) {
 			actionBar.setDisplayHomeAsUpEnabled(true);
@@ -296,20 +286,32 @@ public class SettingsActivity extends BasePreferenceActivity {
         }
     }
 
-    private void setShouldNotifyChange(boolean notify) {
-        mShouldNotifyChange = notify;
-    }
-
-    private boolean shouldNotifyChange() {
-        return mShouldNotifyChange;
-	}
-
     @Override
     public AppCompatDelegate getDelegate() {
         if (mDelegate == null) {
             mDelegate = ThemedAppCompatDelegateFactory.create(this, this);
         }
         return mDelegate;
+    }
+
+    private void setShouldNotifyChange(boolean notify) {
+        mShouldNotifyChange = notify;
+    }
+
+    private boolean shouldNotifyChange() {
+        return mShouldNotifyChange;
+    }
+
+    private void navigateUp() {
+        if (mTwidereActionModeForChildListener.finishExisting()) {
+            return;
+        }
+        if (isTopSettings() && shouldNotifyChange()) {
+            final RestartConfirmDialogFragment df = new RestartConfirmDialogFragment();
+            df.show(getFragmentManager().beginTransaction(), "restart_confirm");
+            return;
+        }
+        onBackPressed();
     }
 
     public static class RestartConfirmDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {

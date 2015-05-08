@@ -22,13 +22,13 @@
   -->
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/list_header_title"
 	style="?android:attr/listSeparatorTextViewStyle"
     android:layout_width="match_parent"
 	android:layout_height="wrap_content"
     android:paddingBottom="@dimen/element_spacing_xsmall"
-    android:paddingEnd="0dp"
     android:paddingLeft="@dimen/element_spacing_small"
     android:paddingRight="0dp"
-    android:paddingStart="@dimen/element_spacing_small"
-    android:paddingTop="@dimen/element_spacing_xsmall" />
+    android:paddingTop="@dimen/element_spacing_xsmall"
+    tools:ignore="RtlHardcoded" />
