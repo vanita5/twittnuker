@@ -46,7 +46,7 @@ import java.util.Locale;
 
 import twitter4j.TwitterException;
 import twitter4j.auth.Authorization;
-import twitter4j.http.HeaderMap;
+import de.vanita5.twittnuker.api.twitter.auth.HeaderMap;
 import twitter4j.http.HttpClientWrapper;
 import twitter4j.http.HttpResponse;
 

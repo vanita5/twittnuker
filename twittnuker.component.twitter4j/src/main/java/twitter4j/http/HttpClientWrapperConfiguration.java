@@ -16,8 +16,7 @@
 
 package twitter4j.http;
 
-import java.util.List;
-import java.util.Map;
+import de.vanita5.twittnuker.api.twitter.auth.HeaderMap;
 
 public interface HttpClientWrapperConfiguration extends HttpClientConfiguration {
 	/**

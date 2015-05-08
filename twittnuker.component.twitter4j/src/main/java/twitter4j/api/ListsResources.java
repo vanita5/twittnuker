@@ -16,7 +16,6 @@
 
 package twitter4j.api;
 
-import twitter4j.CursorPaging;
 import twitter4j.PageableResponseList;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
@@ -185,12 +184,12 @@ public interface ListsResources {
 	 *      lists/members | Twitter Developers</a>
 	 * @since Twitter4J 2.2.3
 	 */
-	PageableResponseList<User> getUserListMembers(long listId, CursorPaging paging) throws TwitterException;
+    PageableResponseList<User> getUserListMembers(long listId, Paging paging) throws TwitterException;
 
-	PageableResponseList<User> getUserListMembers(String slug, long ownerId, CursorPaging paging)
+    PageableResponseList<User> getUserListMembers(String slug, long ownerId, Paging paging)
 			throws TwitterException;
 
-	PageableResponseList<User> getUserListMembers(String slug, String ownerScreenName, CursorPaging paging)
+    PageableResponseList<User> getUserListMembers(String slug, String ownerScreenName, Paging paging)
 			throws TwitterException;
 
 	/**
@@ -371,12 +370,12 @@ public interface ListsResources {
 	 *      lists/subscribers | Twitter Developers</a>
 	 * @since Twitter4J 2.2.3
 	 */
-	PageableResponseList<User> getUserListSubscribers(long listId, CursorPaging paging) throws TwitterException;
+    PageableResponseList<User> getUserListSubscribers(long listId, Paging paging) throws TwitterException;
 
-	PageableResponseList<User> getUserListSubscribers(String slug, long ownerId, CursorPaging paging)
+    PageableResponseList<User> getUserListSubscribers(String slug, long ownerId, Paging paging)
 			throws TwitterException;
 
-	PageableResponseList<User> getUserListSubscribers(String slug, String ownerScreenName, CursorPaging paging)
+    PageableResponseList<User> getUserListSubscribers(String slug, String ownerScreenName, Paging paging)
 			throws TwitterException;
 
 	/**

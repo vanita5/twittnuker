@@ -44,7 +44,7 @@ import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
-import twitter4j.http.HeaderMap;
+import de.vanita5.twittnuker.api.twitter.auth.HeaderMap;
 import twitter4j.http.HttpClientWrapper;
 import twitter4j.http.HttpParameter;
 import twitter4j.http.HttpResponse;

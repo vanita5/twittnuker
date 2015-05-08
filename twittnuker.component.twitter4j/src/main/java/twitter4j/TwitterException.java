@@ -22,10 +22,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Locale;
 
-import twitter4j.http.HttpRequest;
-import twitter4j.http.HttpResponse;
 import twitter4j.http.HttpResponseCode;
-import twitter4j.internal.json.InternalJSONFactoryImpl;
 import twitter4j.internal.util.InternalParseUtil;
 
 import static twitter4j.internal.util.InternalParseUtil.getInt;
@@ -42,9 +39,7 @@ public class TwitterException extends Exception implements TwitterResponse, Http
 	private int errorCode = -1;
 	private static final long serialVersionUID = -2623309261327598087L;
 	private ExceptionDiagnosis exceptionDiagnosis = null;
-	private HttpResponse response;
 	private String errorMessage = null;
-	private HttpRequest request;
 
 	private final static String[] FILTER = new String[] {"twitter4j"};
 
@@ -187,8 +182,10 @@ public class TwitterException extends Exception implements TwitterResponse, Http
 	 */
 	@Override
 	public RateLimitStatus getRateLimitStatus() {
-		if (null == response) return null;
-		return InternalJSONFactoryImpl.createRateLimitStatusFromResponseHeader(response);
+//        if (null == response) return null;
+//        return InternalJSONFactoryImpl.createRateLimitStatusFromResponseHeader(response);
+        // TODO support rate limit message
+        throw new UnsupportedOperationException();
 	}
 
 	public String getResponseHeader(final String name) {

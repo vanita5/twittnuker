@@ -126,6 +126,8 @@ import org.mariotaku.querybuilder.Selectable;
 import org.mariotaku.querybuilder.Table;
 import org.mariotaku.querybuilder.Tables;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
+import org.mariotaku.simplerestapi.http.Authorization;
+import org.mariotaku.simplerestapi.http.RestHttpClient;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -134,6 +136,10 @@ import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
+import de.vanita5.twittnuker.api.twitter.auth.BasicAuthorization;
+import de.vanita5.twittnuker.api.twitter.auth.EmptyAuthorization;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.support.AccountsManagerFragment;
@@ -251,14 +257,8 @@ import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import twitter4j.URLEntity;
+import twitter4j.UrlEntity;
 import twitter4j.UserMentionEntity;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.Authorization;
-import twitter4j.auth.BasicAuthorization;
-import twitter4j.auth.OAuthAuthorization;
-import twitter4j.auth.TwipOModeAuthorization;
-import twitter4j.auth.XAuthAuthorization;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.http.HostAddressResolverFactory;
@@ -2139,7 +2139,7 @@ public final class Utils implements Constants, TwitterConstants {
 		return getTwitterProfileImageOfSize(url, "reasonably_small");
 	}
 
-	public static HttpResponse getRedirectedHttpResponse(final HttpClientWrapper client, final String url,
+    public static HttpResponse getRedirectedHttpResponse(final RestHttpClient client, final String url,
                                                          final String signUrl, final Authorization auth,
                                                          final HashMap<String, List<String>> additionalHeaders)
             throws TwitterException {
@@ -2356,9 +2356,9 @@ public final class Utils implements Constants, TwitterConstants {
 					cb.setOAuthConsumerKey(TWITTER_CONSUMER_KEY_2);
 					cb.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET_2);
 				}
-				final OAuthAuthorization auth = new OAuthAuthorization(cb.build());
-				auth.setOAuthAccessToken(new AccessToken(account.oauth_token, account.oauth_token_secret));
-				return auth;
+                final Configuration conf = cb.build();
+                return new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret(),
+                        new OAuthToken(account.oauth_token, account.oauth_token_secret));
 			}
 			case Accounts.AUTH_TYPE_BASIC: {
 				final String screenName = account.screen_name;
@@ -2416,11 +2416,10 @@ public final class Utils implements Constants, TwitterConstants {
 						cb.setOAuthConsumerKey(TWITTER_CONSUMER_KEY_2);
 						cb.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET_2);
 					}
-					final OAuthAuthorization auth = new OAuthAuthorization(cb.build());
+                    final Configuration conf = cb.build();
 					final String token = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN));
 					final String tokenSecret = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN_SECRET));
-					auth.setOAuthAccessToken(new AccessToken(token, tokenSecret));
-					return auth;
+                    return new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret(), new OAuthToken(token, tokenSecret));
 				}
 				case Accounts.AUTH_TYPE_BASIC: {
 					final String screenName = c.getString(c.getColumnIndexOrThrow(Accounts.SCREEN_NAME));
@@ -2582,7 +2581,7 @@ public final class Utils implements Constants, TwitterConstants {
 				if (isEmpty(token) || isEmpty(tokenSecret)) return null;
 				cb.setOAuthAccessToken(token);
 				cb.setOAuthAccessTokenSecret(tokenSecret);
-				return new TwitterFactory(cb.build()).getInstance(new AccessToken(token, tokenSecret));
+                return new TwitterFactory(cb.build()).getInstance(new OAuthToken(token, tokenSecret));
 			}
 			case Accounts.AUTH_TYPE_BASIC: {
 				final String screenName = credentials.screen_name;
@@ -2593,7 +2592,7 @@ public final class Utils implements Constants, TwitterConstants {
 				return new TwitterFactory(cb.build()).getInstance(new BasicAuthorization(loginName, password));
 			}
 			case Accounts.AUTH_TYPE_TWIP_O_MODE: {
-				return new TwitterFactory(cb.build()).getInstance(new TwipOModeAuthorization());
+                return new TwitterFactory(cb.build()).getInstance(new EmptyAuthorization());
 			}
 			default: {
 				return null;

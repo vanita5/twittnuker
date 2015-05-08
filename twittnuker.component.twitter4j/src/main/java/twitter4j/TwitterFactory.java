@@ -16,10 +16,11 @@
 
 package twitter4j;
 
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.Authorization;
-import twitter4j.auth.AuthorizationFactory;
-import twitter4j.auth.OAuthAuthorization;
+import org.mariotaku.simplerestapi.http.Authorization;
+import de.vanita5.twittnuker.api.twitter.TwitterAPIFactory;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
+
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationContext;
 
@@ -33,15 +34,8 @@ import twitter4j.conf.ConfigurationContext;
  */
 public final class TwitterFactory {
 	/* AsyncTwitterFactory and TWitterStream will access this field */
-	static final Authorization DEFAULT_AUTHORIZATION = AuthorizationFactory.getInstance(ConfigurationContext
-			.getInstance());
-	private static final Twitter SINGLETON;
 
 	private final Configuration conf;
-
-	static {
-		SINGLETON = new TwitterImpl(ConfigurationContext.getInstance(), DEFAULT_AUTHORIZATION);
-	}
 
 	/**
 	 * Creates a TwitterFactory with the root configuration.
@@ -62,16 +56,6 @@ public final class TwitterFactory {
 	}
 
 	/**
-	 * Returns a instance associated with the configuration bound to this
-	 * factory.
-	 * 
-	 * @return default singleton instance
-	 */
-	public Twitter getInstance() {
-		return getInstance(AuthorizationFactory.getInstance(conf));
-	}
-
-	/**
 	 * Returns a OAuth Authenticated instance.<br>
 	 * consumer key and consumer Secret must be provided by
 	 * twitter4j.properties, or system properties.<br>
@@ -82,27 +66,17 @@ public final class TwitterFactory {
 	 * @return an instance
 	 * @since Twitter4J 2.1.9
 	 */
-	public Twitter getInstance(final AccessToken accessToken) {
+    public Twitter getInstance(final OAuthToken accessToken) {
 		final String consumerKey = conf.getOAuthConsumerKey();
 		final String consumerSecret = conf.getOAuthConsumerSecret();
 		if (null == consumerKey && null == consumerSecret)
 			throw new IllegalStateException("Consumer key and Consumer secret not supplied.");
-		final OAuthAuthorization oauth = new OAuthAuthorization(conf);
-		oauth.setOAuthAccessToken(accessToken);
+        final OAuthAuthorization oauth = new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret(), accessToken);
 		return getInstance(oauth);
 	}
 
 	public Twitter getInstance(final Authorization auth) {
-		return new TwitterImpl(conf, auth);
+        return TwitterAPIFactory.getInstance(auth);
 	}
 
-	/**
-	 * Returns default singleton Twitter instance.
-	 * 
-	 * @return default singleton Twitter instance
-	 * @since Twitter4J 2.2.4
-	 */
-	public static Twitter getSingleton() {
-		return SINGLETON;
-	}
 }

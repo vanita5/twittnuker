@@ -16,8 +16,6 @@
 
 package twitter4j.conf;
 
-import java.util.Properties;
-
 import twitter4j.auth.AuthorizationConfiguration;
 import twitter4j.http.HttpClientConfiguration;
 import twitter4j.http.HttpClientWrapperConfiguration;
@@ -25,8 +23,7 @@ import twitter4j.http.HttpClientWrapperConfiguration;
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
-public interface Configuration extends HttpClientConfiguration, HttpClientWrapperConfiguration,
-		AuthorizationConfiguration {
+public interface Configuration extends AuthorizationConfiguration {
 
     String getCardsPlatform();
 
@@ -77,12 +74,5 @@ public interface Configuration extends HttpClientConfiguration, HttpClientWrappe
 	boolean isIncludeDescendentReplyCountEnabled();
 
 	boolean isTwitterClientHeaderIncluded();
-
-	String getMediaProvider();
-
-	//Twittnuker specific
-	String getMediaProviderAPIKey();
-
-	Properties getMediaProviderParameters();
 
 }

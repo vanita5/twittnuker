@@ -23,7 +23,7 @@ import java.util.Properties;
 
 import twitter4j.TwitterConstants;
 import twitter4j.Version;
-import twitter4j.http.HeaderMap;
+import de.vanita5.twittnuker.api.twitter.auth.HeaderMap;
 import twitter4j.http.HostAddressResolverFactory;
 import twitter4j.http.HttpClientFactory;
 

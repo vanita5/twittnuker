@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
+import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper.TwitterListResponse;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 
@@ -73,7 +74,8 @@ public class CacheUsersStatusesTask extends AsyncTask<TwitterListResponse<twitte
                     final Set<ContentValues> hashTagValues = new HashSet<>();
 
                     statusesValues.add(createStatus(status, response.accountId));
-                    for (final String hashtag : extractor.extractHashtags(status.getText())) {
+                    final String text = TwitterContentUtils.unescapeTwitterStatusText(status.getText());
+                    for (final String hashtag : extractor.extractHashtags(text)) {
 						final ContentValues values = new ContentValues();
 						values.put(CachedHashtags.NAME, hashtag);
 						hashTagValues.add(values);
