@@ -43,6 +43,7 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
@@ -60,7 +61,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
 import static android.text.TextUtils.isEmpty;
@@ -78,7 +78,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 
 	private WebSettings mWebSettings;
 
-	private RequestToken mRequestToken;
+    private OAuthToken mRequestToken;
 
 	private GetRequestTokenTask mTask;
 
@@ -148,7 +148,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 		mProgressContainer.setVisibility(shown ? View.VISIBLE : View.GONE);
 	}
 
-	private void setRequestToken(final RequestToken token) {
+    private void setRequestToken(final OAuthToken token) {
 		mRequestToken = token;
 	}
 
@@ -199,12 +199,12 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 			final Uri uri = Uri.parse(url);
 			if (url.startsWith(OAUTH_CALLBACK_URL)) {
 				final String oauth_verifier = uri.getQueryParameter(EXTRA_OAUTH_VERIFIER);
-				final RequestToken request_token = mActivity.mRequestToken;
-				if (oauth_verifier != null && request_token != null) {
+                final OAuthToken requestToken = mActivity.mRequestToken;
+                if (oauth_verifier != null && requestToken != null) {
 					final Intent intent = new Intent();
 					intent.putExtra(EXTRA_OAUTH_VERIFIER, oauth_verifier);
-					intent.putExtra(EXTRA_REQUEST_TOKEN, request_token.getToken());
-					intent.putExtra(EXTRA_REQUEST_TOKEN_SECRET, request_token.getTokenSecret());
+                    intent.putExtra(EXTRA_REQUEST_TOKEN, requestToken.getOauthToken());
+                    intent.putExtra(EXTRA_REQUEST_TOKEN_SECRET, requestToken.getOauthTokenSecret());
 					mActivity.setResult(RESULT_OK, intent);
 					mActivity.finish();
 				}
@@ -215,7 +215,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 
 	}
 
-    static class GetRequestTokenTask extends AsyncTask<Object, Object, RequestToken> {
+    static class GetRequestTokenTask extends AsyncTask<Object, Object, OAuthToken> {
 
 		private final String mConsumerKey, mConsumerSecret;
 		private final TwittnukerApplication mApplication;
@@ -232,7 +232,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 		}
 
 		@Override
-		protected RequestToken doInBackground(final Object... params) {
+        protected OAuthToken doInBackground(final Object... params) {
 			final ConfigurationBuilder cb = new ConfigurationBuilder();
 			final boolean enable_gzip_compressing = mPreferences.getBoolean(KEY_GZIP_COMPRESSING, false);
 			final boolean ignore_ssl_error = mPreferences.getBoolean(KEY_IGNORE_SSL_ERROR, false);
@@ -274,7 +274,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 		}
 
 		@Override
-		protected void onPostExecute(final RequestToken data) {
+        protected void onPostExecute(final OAuthToken data) {
 			mActivity.setLoadProgressShown(false);
 			mActivity.setRequestToken(data);
 			if (data == null) {
@@ -305,12 +305,12 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 		@JavascriptInterface
 		public void processHTML(final String html) {
             final String oauthVerifier = mActivity.readOAuthPin(html);
-            final RequestToken requestToken = mActivity.mRequestToken;
+            final OAuthToken requestToken = mActivity.mRequestToken;
             if (oauthVerifier != null && requestToken != null) {
 				final Intent intent = new Intent();
                 intent.putExtra(EXTRA_OAUTH_VERIFIER, oauthVerifier);
-                intent.putExtra(EXTRA_REQUEST_TOKEN, requestToken.getToken());
-                intent.putExtra(EXTRA_REQUEST_TOKEN_SECRET, requestToken.getTokenSecret());
+                intent.putExtra(EXTRA_REQUEST_TOKEN, requestToken.getOauthToken());
+                intent.putExtra(EXTRA_REQUEST_TOKEN_SECRET, requestToken.getOauthTokenSecret());
 				mActivity.setResult(RESULT_OK, intent);
 				mActivity.finish();
 			}

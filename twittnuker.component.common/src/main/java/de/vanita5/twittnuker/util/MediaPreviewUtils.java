@@ -26,8 +26,8 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.mariotaku.simplerestapi.http.Endpoint;
-import org.mariotaku.simplerestapi.http.KeyValuePair;
 import org.mariotaku.simplerestapi.http.RestHttpClient;
 import org.mariotaku.simplerestapi.http.RestRequest;
 import org.mariotaku.simplerestapi.http.RestResponse;

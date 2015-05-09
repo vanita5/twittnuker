@@ -28,8 +28,8 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
 
-import twitter4j.CursorPaging;
 import twitter4j.IDs;
+import twitter4j.Paging;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
@@ -44,7 +44,8 @@ public abstract class IDsUsersLoader extends BaseCursorSupportUsersLoader {
 	@Override
 	public List<User> getUsers(final Twitter twitter) throws TwitterException {
 		if (twitter == null) return null;
-		final CursorPaging paging = new CursorPaging(getCount());
+        final Paging paging = new Paging();
+        paging.count(getCount());
 		if (getCursor() > 0) {
 			paging.setCursor(getCursor());
 		}
@@ -54,6 +55,6 @@ public abstract class IDsUsersLoader extends BaseCursorSupportUsersLoader {
 		return twitter.lookupUsers(ids.getIDs());
 	}
 
-	protected abstract IDs getIDs(Twitter twitter, CursorPaging paging) throws TwitterException;
+    protected abstract IDs getIDs(Twitter twitter, Paging paging) throws TwitterException;
 
 }

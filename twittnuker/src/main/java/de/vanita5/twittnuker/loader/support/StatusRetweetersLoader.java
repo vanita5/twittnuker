@@ -28,8 +28,8 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
 
-import twitter4j.CursorPaging;
 import twitter4j.IDs;
+import twitter4j.Paging;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
@@ -44,7 +44,7 @@ public class StatusRetweetersLoader extends IDsUsersLoader {
 	}
 
 	@Override
-	protected IDs getIDs(final Twitter twitter, final CursorPaging paging) throws TwitterException {
+    protected IDs getIDs(final Twitter twitter, final Paging paging) throws TwitterException {
 		if (twitter == null) return null;
 		if (mStatusId > 0) return twitter.getRetweetersIDs(mStatusId, paging);
 		return null;
