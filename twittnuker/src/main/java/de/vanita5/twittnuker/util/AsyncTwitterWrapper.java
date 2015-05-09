@@ -95,6 +95,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 import twitter4j.UserList;
+import twitter4j.UserListUpdate;
 import twitter4j.http.HttpResponseCode;
 
 import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
@@ -106,7 +107,6 @@ import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
 import static de.vanita5.twittnuker.util.Utils.getNewestStatusIdsFromDatabase;
 import static de.vanita5.twittnuker.util.Utils.getStatusCountInDatabase;
-import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.showInfoMessage;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
@@ -499,10 +499,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		return 0;
 	}
 
-	public int updateUserListDetails(final long accountId, final long listId, final boolean isPublic,
-			final String name, final String description) {
-		final UpdateUserListDetailsTask task = new UpdateUserListDetailsTask(accountId, listId, isPublic, name,
-				description);
+    public int updateUserListDetails(final long accountId, final long listId, final UserListUpdate update) {
+        final UpdateUserListDetailsTask task = new UpdateUserListDetailsTask(accountId, listId, update);
 		return mAsyncTaskManager.add(task, true);
 	}
 
@@ -1661,7 +1659,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             } catch (final TwitterException e) {
                 exception = e;
             }
-            if (status != null || (exception != null && exception.getErrorCode() == HttpResponseCode.NOT_FOUND)) {
+            if (status != null || exception.getErrorCode() == HttpResponseCode.NOT_FOUND) {
                 final ContentValues values = new ContentValues();
                 values.put(Statuses.MY_RETWEET_ID, -1);
                 for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
@@ -2467,17 +2465,13 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
 		private final long accountId;
 		private final long listId;
-		private final boolean isPublic;
-		private final String name, description;
+        private final UserListUpdate update;
 
-		public UpdateUserListDetailsTask(final long accountId, final long listId, final boolean isPublic,
-				final String name, final String description) {
+        public UpdateUserListDetailsTask(final long accountId, final long listId, UserListUpdate update) {
 			super(mContext, mAsyncTaskManager);
 			this.accountId = accountId;
 			this.listId = listId;
-			this.name = name;
-			this.isPublic = isPublic;
-			this.description = description;
+            this.update = update;
 		}
 
 		@Override
@@ -2486,7 +2480,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             final Twitter twitter = TwitterAPIUtils.getTwitterInstance(mContext, accountId, false);
 			if (twitter != null) {
 				try {
-					final UserList list = twitter.updateUserList(listId, name, isPublic, description);
+                    final UserList list = twitter.updateUserList(listId, update);
                     return SingleResponse.getInstance(new ParcelableUserList(list, accountId));
 				} catch (final TwitterException e) {
 					return SingleResponse.getInstance(e);

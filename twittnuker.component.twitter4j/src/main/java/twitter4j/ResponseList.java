@@ -16,7 +16,6 @@
 
 package twitter4j;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -24,7 +23,7 @@ import java.util.List;
  * 
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
-public interface ResponseList<T> extends TwitterResponse, List<T>, Serializable {
+public interface ResponseList<T> extends TwitterResponse, List<T> {
 
 	/**
 	 * {@inheritDoc}

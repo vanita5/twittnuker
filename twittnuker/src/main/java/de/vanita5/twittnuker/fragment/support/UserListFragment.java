@@ -85,6 +85,7 @@ import de.vanita5.twittnuker.view.TabPagerIndicator;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserList;
+import twitter4j.UserListUpdate;
 
 import static de.vanita5.twittnuker.util.MenuUtils.setMenuItemAvailability;
 import static de.vanita5.twittnuker.util.Utils.TwitterAPIUtils.getTwitterInstance;
@@ -473,7 +474,11 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 					mDescription = ParseUtils.parseString(mEditDescription.getText());
 					mIsPublic = mPublicCheckBox.isChecked();
 					if (mName == null || mName.length() <= 0) return;
-					mTwitterWrapper.updateUserListDetails(mAccountId, mListId, mIsPublic, mName, mDescription);
+                    final UserListUpdate update = new UserListUpdate();
+                    update.setPublic(mIsPublic);
+                    update.setName(mName);
+                    update.setDescription(mDescription);
+                    mTwitterWrapper.updateUserListDetails(mAccountId, mListId, update);
 					break;
 				}
 			}
