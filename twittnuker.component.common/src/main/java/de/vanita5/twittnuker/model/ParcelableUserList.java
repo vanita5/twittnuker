@@ -48,9 +48,9 @@ public class ParcelableUserList implements Parcelable, Comparable<ParcelableUser
 	};
 
     @JsonField(name = "members_count")
-	public int members_count;
+    public long members_count;
     @JsonField(name = "subscribers_count")
-	public int subscribers_count;
+    public long subscribers_count;
 
     @JsonField(name = "account_id")
 	public long account_id;
@@ -92,8 +92,8 @@ public class ParcelableUserList implements Parcelable, Comparable<ParcelableUser
 		user_name = in.readString();
 		user_screen_name = in.readString();
 		user_profile_image_url = in.readString();
-		members_count = in.readInt();
-		subscribers_count = in.readInt();
+        members_count = in.readLong();
+        subscribers_count = in.readLong();
 	}
 
 	public ParcelableUserList(final UserList list, final long account_id) {
@@ -110,7 +110,7 @@ public class ParcelableUserList implements Parcelable, Comparable<ParcelableUser
 		this.position = position;
 		this.account_id = account_id;
 		id = list.getId();
-		is_public = list.isPublic();
+        is_public = list.getMode() == UserList.Mode.PUBLIC;
 		this.is_following = is_following;
 		name = list.getName();
 		description = list.getDescription();
@@ -177,8 +177,8 @@ public class ParcelableUserList implements Parcelable, Comparable<ParcelableUser
 		out.writeString(user_name);
 		out.writeString(user_screen_name);
 		out.writeString(user_profile_image_url);
-		out.writeInt(members_count);
-		out.writeInt(subscribers_count);
+        out.writeLong(members_count);
+        out.writeLong(subscribers_count);
 	}
 
 }

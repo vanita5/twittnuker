@@ -32,9 +32,12 @@ import org.mariotaku.simplerestapi.http.ContentType;
 import org.mariotaku.simplerestapi.http.RestResponse;
 import org.mariotaku.simplerestapi.http.mime.TypedData;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
+import de.vanita5.twittnuker.api.twitter.model.impl.DirectMessageImpl;
+import de.vanita5.twittnuker.api.twitter.model.impl.ErrorInfoImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.HashtagEntityImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.Indices;
 import de.vanita5.twittnuker.api.twitter.model.impl.MediaEntityImpl;
+import de.vanita5.twittnuker.api.twitter.model.impl.MediaUploadResponseImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.PageableResponseListWrapper;
 import de.vanita5.twittnuker.api.twitter.model.impl.PlaceImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.QueryResultWrapper;
@@ -43,6 +46,7 @@ import de.vanita5.twittnuker.api.twitter.model.impl.RelationshipWrapper;
 import de.vanita5.twittnuker.api.twitter.model.impl.ResponseListImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.SavedSearchImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.StatusImpl;
+import de.vanita5.twittnuker.api.twitter.model.impl.TranslationResultImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.TwitterResponseImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.TypeConverterMapper;
 import de.vanita5.twittnuker.api.twitter.model.impl.UrlEntityImpl;
@@ -62,6 +66,8 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
+import twitter4j.CardEntity;
+import twitter4j.DirectMessage;
 import twitter4j.ErrorInfo;
 import twitter4j.GeoLocation;
 import twitter4j.HashtagEntity;
@@ -78,6 +84,7 @@ import twitter4j.TranslationResult;
 import twitter4j.TwitterException;
 import twitter4j.UrlEntity;
 import twitter4j.User;
+import twitter4j.UserList;
 import twitter4j.UserMentionEntity;
 
 /**
@@ -90,6 +97,8 @@ public class TwitterConverter implements Converter {
     static {
         TypeConverterMapper.register(Status.class, StatusImpl.class);
         TypeConverterMapper.register(User.class, UserImpl.class);
+        TypeConverterMapper.register(UserList.class, UserListImpl.class);
+        TypeConverterMapper.register(DirectMessage.class, DirectMessageImpl.class);
         TypeConverterMapper.register(SavedSearch.class, SavedSearchImpl.class);
         TypeConverterMapper.register(UrlEntity.class, UrlEntityImpl.class);
         TypeConverterMapper.register(MediaEntity.class, MediaEntityImpl.class);
@@ -100,6 +109,7 @@ public class TwitterConverter implements Converter {
         TypeConverterMapper.register(MediaEntity.VideoInfo.Variant.class, MediaEntityImpl.VideoInfoImpl.VariantImpl.class);
         TypeConverterMapper.register(UserMentionEntity.class, UserMentionEntityImpl.class);
         TypeConverterMapper.register(HashtagEntity.class, HashtagEntityImpl.class);
+        TypeConverterMapper.register(CardEntity.class, CardEntityImpl.class);
         TypeConverterMapper.register(Place.class, PlaceImpl.class);
         TypeConverterMapper.register(Relationship.class, RelationshipImpl.class);
         TypeConverterMapper.register(MediaUploadResponse.class, MediaUploadResponseImpl.class);
@@ -114,6 +124,7 @@ public class TwitterConverter implements Converter {
         registerWrapper(QueryResult.class, QueryResultWrapper.class);
         registerWrapper(PageableResponseList.class, PageableResponseListWrapper.class);
         registerWrapper(Relationship.class, RelationshipWrapper.class);
+        registerWrapper(CardEntity.BindingValue.class, CardEntityImpl.BindingValueWrapper.class);
 //        TypeConverterMapper.register(DirectMessage.class, DirectMessageImpl.class);
     }
 

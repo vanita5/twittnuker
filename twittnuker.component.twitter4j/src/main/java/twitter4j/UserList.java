@@ -17,88 +17,54 @@
 package twitter4j;
 
 import java.io.Serializable;
-import java.net.URI;
+import java.util.Date;
 
-/**
- * A data interface representing Basic list information element
- * 
- * @author Dan Checkoway - dcheckoway at gmail.com
- */
 public interface UserList extends Comparable<UserList>, TwitterResponse, Serializable {
-	/**
-	 * Returns the description of the list
-	 * 
-	 * @return the description of the list
-	 */
+    Mode getMode();
+
 	String getDescription();
 
-	/**
-	 * Returns the full name of the list
-	 * 
-	 * @return the full name of the list
-	 */
+
 	String getFullName();
 
-	/**
-	 * Returns the id of the list
-	 * 
-	 * @return the id of the list
-	 */
+
 	long getId();
 
-	/**
-	 * Returns the member count of the list
-	 * 
-	 * @return the member count of the list
-	 */
-	int getMemberCount();
 
-	/**
-	 * Returns the name of the list
-	 * 
-	 * @return the name of the list
-	 */
+    long getMemberCount();
+
+
 	String getName();
 
-	/**
-	 * Returns the slug of the list
-	 * 
-	 * @return the slug of the list
-	 */
+
 	String getSlug();
 
-	/**
-	 * Returns the subscriber count of the list
-	 * 
-	 * @return the subscriber count of the list
-	 */
-	int getSubscriberCount();
 
-	/**
-	 * Returns the uri of the list
-	 * 
-	 * @return the uri of the list
-	 */
-	URI getURI();
+    long getSubscriberCount();
 
-	/**
-	 * Returns the user of the list
-	 * 
-	 * @return the user of the list
-	 */
+
+    String getUri();
+
+
 	User getUser();
 
-	/**
-	 * Returns if the authenticated user is following the list
-	 * 
-	 * @return if the authenticated user is following the list
-	 */
+
+    Date getCreatedAt();
+
 	boolean isFollowing();
 
-	/**
-	 * tests if the list is public
-	 * 
-	 * @return if the list is public
-	 */
-	boolean isPublic();
+    enum Mode {
+        PUBLIC, PRIVATE;
+
+        public static Mode parse(String str) {
+            switch (str) {
+                case "public":
+                    return PUBLIC;
+                case "private":
+                    return PRIVATE;
+			}
+            throw new UnsupportedOperationException();
+        }
+
+    }
 }
