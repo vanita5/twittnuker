@@ -35,15 +35,19 @@ import java.util.List;
  * Created by mariotaku on 15/2/4.
  */
 public class OAuthToken implements ValueMap {
-	@Override
-	public String toString() {
-		return "OAuthToken{" +
-				"oauthToken='" + oauthToken + '\'' +
-				", oauthTokenSecret='" + oauthTokenSecret + '\'' +
-				'}';
+
+    private String screenName;
+    private long userId;
+
+    private String oauthToken, oauthTokenSecret;
+
+    public String getScreenName() {
+        return screenName;
 	}
 
-	private String oauthToken;
+    public long getUserId() {
+        return userId;
+    }
 
 	public String getOauthTokenSecret() {
 		return oauthTokenSecret;
@@ -52,8 +56,6 @@ public class OAuthToken implements ValueMap {
 	public String getOauthToken() {
 		return oauthToken;
 	}
-
-	private String oauthTokenSecret;
 
 	public OAuthToken(String oauthToken, String oauthTokenSecret) {
 		this.oauthToken = oauthToken;
@@ -73,6 +75,14 @@ public class OAuthToken implements ValueMap {
 					oauthTokenSecret = param.getValue();
 					break;
 				}
+                case "user_id": {
+                    userId = Long.parseLong(param.getValue());
+                    break;
+                }
+                case "screen_name": {
+                    screenName = param.getValue();
+                    break;
+                }
 			}
 		}
 		if (oauthToken == null || oauthTokenSecret == null) {
@@ -84,6 +94,16 @@ public class OAuthToken implements ValueMap {
 	public boolean has(String key) {
 		return "oauth_token".equals(key) || "oauth_token_secret".equals(key);
 	}
+
+    @Override
+    public String toString() {
+        return "OAuthToken{" +
+                "screenName='" + screenName + '\'' +
+                ", userId=" + userId +
+                ", oauthToken='" + oauthToken + '\'' +
+                ", oauthTokenSecret='" + oauthTokenSecret + '\'' +
+                '}';
+    }
 
 	@Override
 	public String get(String key) {

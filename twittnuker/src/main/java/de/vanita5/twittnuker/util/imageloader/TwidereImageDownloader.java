@@ -25,11 +25,17 @@ package de.vanita5.twittnuker.util.imageloader;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.webkit.URLUtil;
 
 import com.nostra13.universalimageloader.core.assist.ContentLengthInputStream;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
+import org.mariotaku.simplerestapi.http.Authorization;
+import org.mariotaku.simplerestapi.http.RestHttpClient;
+import org.mariotaku.simplerestapi.http.RestResponse;
+import org.mariotaku.simplerestapi.http.mime.TypedData;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
@@ -45,10 +51,6 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import twitter4j.TwitterException;
-import twitter4j.auth.Authorization;
-import de.vanita5.twittnuker.api.twitter.auth.HeaderMap;
-import twitter4j.http.HttpClientWrapper;
-import twitter4j.http.HttpResponse;
 
 import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
 import static de.vanita5.twittnuker.util.Utils.getImageLoaderHttpClient;
@@ -61,7 +63,7 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 
 	private final Context mContext;
     private final SharedPreferencesWrapper mPreferences;
-	private HttpClientWrapper mClient;
+    private RestHttpClient mClient;
 	private boolean mFastImageLoading;
 	private final boolean mFullImage;
 	private final String mTwitterProfileImageSize;
@@ -99,8 +101,7 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 			if (statusCode != -1 && isTwitterProfileImage(uriString) && !uriString.contains("_normal.")) {
 				try {
 					return getStreamFromNetworkInternal(getNormalTwitterProfileImage(uriString), extras);
-				} catch (final TwitterException e2) {
-
+                } catch (final TwitterException ignored) {
 				}
 			}
 			throw new IOException(String.format(Locale.US, "Error downloading image %s, error code: %d", uriString,
@@ -108,8 +109,7 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 		}
 	}
 
-	private String getReplacedUri(final Uri uri, final String apiUrlFormat) {
-		if (uri == null) return null;
+    private String getReplacedUri(@NonNull final Uri uri, final String apiUrlFormat) {
 		if (apiUrlFormat == null) return uri.toString();
 		if (isTwitterUri(uri)) {
 			final StringBuilder sb = new StringBuilder();
@@ -149,8 +149,9 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             additionalHeaders.addHeader("Accept", "image/webp, */*");
         }
-        final HttpResponse resp = getRedirectedHttpResponse(mClient, modifiedUri, uriString, auth, additionalHeaders);
-		return new ContentLengthInputStream(resp.asStream(), (int) resp.getContentLength());
+        final RestResponse resp = getRedirectedHttpResponse(mClient, modifiedUri, uriString, auth, additionalHeaders);
+        final TypedData body = resp.getBody();
+        return new ContentLengthInputStream(body.stream(), (int) body.length());
 	}
 
 	private boolean isTwitterAuthRequired(final Uri uri) {

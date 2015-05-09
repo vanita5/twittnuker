@@ -30,6 +30,7 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import org.json.JSONException;
 import org.json.JSONObject;
 import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
@@ -65,7 +66,6 @@ import twitter4j.Trend;
 import twitter4j.Trends;
 import twitter4j.UrlEntity;
 import twitter4j.User;
-import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
@@ -94,15 +94,14 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		return values;
 	}
 
-    public static ContentValues createAccount(final Configuration conf, final AccessToken accessToken,
+    public static ContentValues createAccount(final Configuration conf, final OAuthToken accessToken,
                                               final User user, final int authType, final int color,
                                               final String apiUrlFormat, final boolean sameOAuthSigningUrl,
                                               final boolean noVersionSuffix) {
-		if (user == null || user.getId() <= 0 || accessToken == null || user.getId() != accessToken.getUserId())
-			return null;
+        if (user == null || accessToken == null) return null;
 		final ContentValues values = new ContentValues();
-		values.put(Accounts.OAUTH_TOKEN, accessToken.getToken());
-		values.put(Accounts.OAUTH_TOKEN_SECRET, accessToken.getTokenSecret());
+        values.put(Accounts.OAUTH_TOKEN, accessToken.getOauthToken());
+        values.put(Accounts.OAUTH_TOKEN_SECRET, accessToken.getOauthTokenSecret());
 		values.put(Accounts.CONSUMER_KEY, conf.getOAuthConsumerKey());
 		values.put(Accounts.CONSUMER_SECRET, conf.getOAuthConsumerSecret());
 		values.put(Accounts.AUTH_TYPE, authType);

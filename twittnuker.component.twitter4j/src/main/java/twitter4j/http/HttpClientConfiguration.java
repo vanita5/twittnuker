@@ -23,8 +23,6 @@ public interface HttpClientConfiguration {
 
 	HostAddressResolverFactory getHostAddressResolverFactory();
 
-	HttpClientFactory getHttpClientFactory();
-
 	int getHttpConnectionTimeout();
 
 	int getHttpDefaultMaxPerRoute();

@@ -18,6 +18,7 @@ package twitter4j.internal.util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mariotaku.simplerestapi.http.RestResponse;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -32,8 +33,6 @@ import java.util.TimeZone;
 
 import twitter4j.TwitterException;
 import twitter4j.TwitterResponse;
-import twitter4j.http.HTMLEntity;
-import twitter4j.http.HttpResponse;
 
 /**
  * A tiny parse utility class.
@@ -91,10 +90,6 @@ public final class InternalParseUtil {
 			return -1;
 		else
 			return Double.valueOf(str2);
-	}
-
-	public static String getHTMLUnescapedString(final String name, final JSONObject json) {
-		return HTMLEntity.unescape(getRawString(name, json));
 	}
 
 	public static int getInt(final String str) {
@@ -190,9 +185,9 @@ public final class InternalParseUtil {
 		return parsed;
 	}
 
-	public static int toAccessLevel(final HttpResponse res) {
+    public static int toAccessLevel(final RestResponse res) {
 		if (null == res) return -1;
-		final String xAccessLevel = res.getResponseHeader("X-Access-Level");
+        final String xAccessLevel = res.getHeader("X-Access-Level");
 		int accessLevel;
 		if (null == xAccessLevel) {
 			accessLevel = TwitterResponse.NONE;

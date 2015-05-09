@@ -64,6 +64,8 @@ import com.meizu.flyme.reflect.StatusBarProxy;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
+import de.vanita5.twittnuker.api.twitter.auth.EmptyAuthorization;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
@@ -91,10 +93,6 @@ import twitter4j.TwitterConstants;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.User;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.BasicAuthorization;
-import twitter4j.auth.RequestToken;
-import twitter4j.auth.TwipOModeAuthorization;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
@@ -640,7 +638,7 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
         protected SignInResponse doInBackground(final Object... params) {
 			try {
 				final Twitter twitter = new TwitterFactory(conf).getInstance();
-				final AccessToken access_token = twitter.getOAuthAccessToken(new RequestToken(conf, request_token,
+                final OAuthToken access_token = twitter.getOAuthAccessToken(new RequestToken(conf, request_token,
 						request_token_secret), oauth_verifier);
 				final long userId = access_token.getUserId();
                 if (userId <= 0) return new SignInResponse(false, false, null);
@@ -732,7 +730,7 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
         private SignInResponse authOAuth() throws AuthenticationException, TwitterException {
 			final Twitter twitter = new TwitterFactory(conf).getInstance();
 			final OAuthPasswordAuthenticator authenticator = new OAuthPasswordAuthenticator(twitter);
-			final AccessToken access_token = authenticator.getOAuthAccessToken(username, password);
+            final OAuthToken access_token = authenticator.getOAuthAccessToken(username, password);
 			final long user_id = access_token.getUserId();
             if (user_id <= 0) return new SignInResponse(false, false, null);
 			final User user = twitter.verifyCredentials();
@@ -743,7 +741,7 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 		}
 
         private SignInResponse authTwipOMode() throws TwitterException {
-			final Twitter twitter = new TwitterFactory(conf).getInstance(new TwipOModeAuthorization());
+            final Twitter twitter = new TwitterFactory(conf).getInstance(new EmptyAuthorization());
 			final User user = twitter.verifyCredentials();
 			final long user_id = user.getId();
             if (user_id <= 0) return new SignInResponse(false, false, null);

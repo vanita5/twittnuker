@@ -16,16 +16,14 @@
 
 package twitter4j;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.mariotaku.simplerestapi.http.ValueMap;
 
-import twitter4j.http.HttpParameter;
 
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.1.1
  */
-public final class GeoQuery {
+public final class GeoQuery implements ValueMap {
 
 	private final GeoLocation location;
 	private final String ip;
@@ -68,11 +66,13 @@ public final class GeoQuery {
 		final GeoQuery geoQuery = (GeoQuery) o;
 
 		if (maxResults != geoQuery.maxResults) return false;
-		if (accuracy != null ? !accuracy.equals(geoQuery.accuracy) : geoQuery.accuracy != null) return false;
+        if (accuracy != null ? !accuracy.equals(geoQuery.accuracy) : geoQuery.accuracy != null)
+            return false;
 		if (granularity != null ? !granularity.equals(geoQuery.granularity) : geoQuery.granularity != null)
 			return false;
 		if (ip != null ? !ip.equals(geoQuery.ip) : geoQuery.ip != null) return false;
-		if (location != null ? !location.equals(geoQuery.location) : geoQuery.location != null) return false;
+        if (location != null ? !location.equals(geoQuery.location) : geoQuery.location != null)
+            return false;
 
 		return true;
 	}
@@ -159,37 +159,54 @@ public final class GeoQuery {
 				+ ", granularity='" + granularity + '\'' + ", maxResults=" + maxResults + '}';
 	}
 
-	private void appendParameter(final String name, final double value, final List<HttpParameter> params) {
-		params.add(new HttpParameter(name, String.valueOf(value)));
-	}
-
-	private void appendParameter(final String name, final int value, final List<HttpParameter> params) {
-		if (0 < value) {
-			params.add(new HttpParameter(name, String.valueOf(value)));
+    @Override
+    public boolean has(String key) {
+        switch (key) {
+            case "lat":
+            case "long": {
+                return location != null;
+			}
+            case "ip": {
+                return ip != null;
+			}
+            case "accuracy": {
+                return accuracy != null;
+			}
+            case "granularity": {
+                return granularity != null;
+			}
+            case "max_results": {
+                return maxResults > 0;
+			}
 		}
-	}
+        return false;
+    }
 
-	private void appendParameter(final String name, final String value, final List<HttpParameter> params) {
-		if (value != null) {
-			params.add(new HttpParameter(name, value));
-		}
-	}
-
-	/* package */HttpParameter[] asHttpParameterArray() {
-		final ArrayList<HttpParameter> params = new ArrayList<HttpParameter>();
-		if (location != null) {
-			appendParameter("lat", location.getLatitude(), params);
-			appendParameter("long", location.getLongitude(), params);
-
-		}
-		if (ip != null) {
-			appendParameter("ip", ip, params);
-
-		}
-		appendParameter("accuracy", accuracy, params);
-		appendParameter("granularity", granularity, params);
-		appendParameter("max_results", maxResults, params);
-		final HttpParameter[] paramArray = new HttpParameter[params.size()];
-		return params.toArray(paramArray);
-	}
+    @Override
+    public String get(String key) {
+        switch (key) {
+            case "lat": {
+                if (location == null) return null;
+                return String.valueOf(location.getLatitude());
+			}
+            case "long": {
+                if (location == null) return null;
+                return String.valueOf(location.getLongitude());
+			}
+            case "ip": {
+                return ip;
+			}
+            case "accuracy": {
+                return accuracy;
+            }
+            case "granularity": {
+                return granularity;
+            }
+            case "max_results": {
+                if (maxResults <= 0) return null;
+                return String.valueOf(maxResults);
+            }
+        }
+        return null;
+    }
 }

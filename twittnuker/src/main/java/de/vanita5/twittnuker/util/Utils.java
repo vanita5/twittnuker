@@ -128,6 +128,8 @@ import org.mariotaku.querybuilder.Tables;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
 import org.mariotaku.simplerestapi.http.Authorization;
 import org.mariotaku.simplerestapi.http.RestHttpClient;
+import org.mariotaku.simplerestapi.http.RestResponse;
+
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -257,13 +259,10 @@ import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import twitter4j.UrlEntity;
 import twitter4j.UserMentionEntity;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.http.HostAddressResolverFactory;
-import twitter4j.http.HttpClientWrapper;
-import twitter4j.http.HttpResponse;
 
 import static android.text.TextUtils.isEmpty;
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
@@ -1783,10 +1782,10 @@ public final class Utils implements Constants, TwitterConstants {
 	}
 
 
-	public static HttpClientWrapper getHttpClient(final Context context, final int timeoutMillis,
-												  final boolean ignoreSslError, final Proxy proxy,
-												  final HostAddressResolverFactory resolverFactory,
-												  final String userAgent, final boolean twitterClientHeader) {
+    public static RestHttpClient getHttpClient(final Context context, final int timeoutMillis,
+											   final boolean ignoreSslError, final Proxy proxy,
+											   final HostAddressResolverFactory resolverFactory,
+											   final String userAgent, final boolean twitterClientHeader) {
 		final ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setHttpConnectionTimeout(timeoutMillis);
 		cb.setIgnoreSSLError(ignoreSslError);
@@ -1806,7 +1805,7 @@ public final class Utils implements Constants, TwitterConstants {
 		return new HttpClientWrapper(cb.build());
 	}
 
-    public static HttpClientWrapper getDefaultHttpClient(final Context context) {
+    public static RestHttpClient getDefaultHttpClient(final Context context) {
         if (context == null) return null;
         final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         final int timeoutMillis = prefs.getInt(KEY_CONNECTION_TIMEOUT, 10000) * 1000;
@@ -1817,7 +1816,7 @@ public final class Utils implements Constants, TwitterConstants {
         return getHttpClient(context, timeoutMillis, true, proxy, resolverFactory, userAgent, false);
     }
 
-	public static HttpClientWrapper getImageLoaderHttpClient(final Context context) {
+    public static RestHttpClient getImageLoaderHttpClient(final Context context) {
 		if (context == null) return null;
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		final int timeoutMillis = prefs.getInt(KEY_CONNECTION_TIMEOUT, 10000) * 1000;
@@ -2139,14 +2138,13 @@ public final class Utils implements Constants, TwitterConstants {
 		return getTwitterProfileImageOfSize(url, "reasonably_small");
 	}
 
-    public static HttpResponse getRedirectedHttpResponse(final RestHttpClient client, final String url,
+    public static RestResponse getRedirectedHttpResponse(@NonNull final RestHttpClient client, @NonNull final String url,
                                                          final String signUrl, final Authorization auth,
                                                          final HashMap<String, List<String>> additionalHeaders)
             throws TwitterException {
-		if (url == null) return null;
         final ArrayList<String> urls = new ArrayList<>();
 		urls.add(url);
-		HttpResponse resp;
+        RestResponse resp;
 		try {
             resp = client.get(url, signUrl, auth, additionalHeaders);
 		} catch (final TwitterException te) {
@@ -2155,8 +2153,8 @@ public final class Utils implements Constants, TwitterConstants {
 			} else
 				throw te;
 		}
-		while (resp != null && isRedirected(resp.getStatusCode())) {
-			final String request_url = resp.getResponseHeader("Location");
+        while (resp != null && isRedirected(resp.getStatus())) {
+            final String request_url = resp.getHeader("Location");
 			if (request_url == null) return null;
 			if (urls.contains(request_url)) throw new TwitterException("Too many redirects");
 			urls.add(request_url);

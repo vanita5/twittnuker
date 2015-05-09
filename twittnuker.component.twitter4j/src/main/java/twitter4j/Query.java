@@ -16,11 +16,7 @@
 
 package twitter4j;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import twitter4j.http.HttpParameter;
+import org.mariotaku.simplerestapi.http.ValueMap;
 
 /**
  * A data class represents search query.<br>
@@ -34,7 +30,7 @@ import twitter4j.http.HttpParameter;
  * @see <a href="http://search.twitter.com/operators">Twitter API / Search
  *      Operators</a>
  */
-public final class Query {
+public final class Query implements ValueMap {
 	private String query = null;
 	private String lang = null;
 	private String locale = null;
@@ -62,8 +58,6 @@ public final class Query {
 
 	public final static String RECENT = "recent";
 
-	private static HttpParameter WITH_TWITTER_USER_ID = new HttpParameter("with_twitter_user_id", "true");
-
 	public Query() {
 	}
 
@@ -82,13 +76,15 @@ public final class Query {
 		if (page != query1.page) return false;
 		if (rpp != query1.rpp) return false;
 		if (sinceId != query1.sinceId) return false;
-		if (geocode != null ? !geocode.equals(query1.geocode) : query1.geocode != null) return false;
+        if (geocode != null ? !geocode.equals(query1.geocode) : query1.geocode != null)
+            return false;
 		if (lang != null ? !lang.equals(query1.lang) : query1.lang != null) return false;
 		if (locale != null ? !locale.equals(query1.locale) : query1.locale != null) return false;
 		if (query != null ? !query.equals(query1.query) : query1.query != null) return false;
 		if (since != null ? !since.equals(query1.since) : query1.since != null) return false;
 		if (until != null ? !until.equals(query1.until) : query1.until != null) return false;
-		if (resultType != null ? !resultType.equals(query1.resultType) : query1.resultType != null) return false;
+        if (resultType != null ? !resultType.equals(query1.resultType) : query1.resultType != null)
+            return false;
 
 		return true;
 	}
@@ -492,36 +488,88 @@ public final class Query {
 		return this;
 	}
 
-	private void appendParameter(final String name, final long value, final List<HttpParameter> params) {
-		if (0 <= value) {
-			params.add(new HttpParameter(name, String.valueOf(value)));
-		}
-	}
+    @Override
+    public boolean has(String key) {
+        switch (key) {
+            case "q": {
+                return query != null;
+			}
+            case "lang": {
+                return lang != null;
+			}
+            case "locale": {
+                return locale != null;
+			}
+            case "max_id": {
+                return maxId != -1;
+			}
+            case "since_id": {
+                return sinceId != -1;
+            }
+            case "rpp": {
+                return rpp != -1;
+            }
+            case "page": {
+                return page != -1;
+            }
+            case "since": {
+                return since != null;
+            }
+            case "until": {
+                return until != null;
+            }
+            case "geocode": {
+                return geocode != null;
+            }
+            case "result_type": {
+                return resultType != null;
+            }
+        }
+        return false;
+    }
 
-	private void appendParameter(final String name, final String value, final List<HttpParameter> params) {
-		if (value != null) {
-			params.add(new HttpParameter(name, value));
-		}
-	}
+    @Override
+    public String get(String key) {
+        switch (key) {
+            case "q": {
+                return query;
+			}
+            case "lang": {
+                return lang;
+			}
+            case "locale": {
+                return locale;
+			}
+            case "max_id": {
+                if (maxId == -1) return null;
+                return String.valueOf(maxId);
+            }
+            case "since_id": {
+                if (sinceId == -1) return null;
+                return String.valueOf(sinceId);
+            }
+            case "rpp": {
+                if (rpp == -1) return null;
+                return String.valueOf(rpp);
+            }
+            case "page": {
+                if (page == -1) return null;
+                return String.valueOf(page);
+            }
+            case "since": {
+                return since;
+            }
+            case "until": {
+                return until;
+            }
+            case "geocode": {
+                return geocode;
+            }
+            case "result_type": {
+                return resultType;
+            }
+        }
+        return null;
+    }
 
-	/* package */HttpParameter[] asHttpParameterArray(final HttpParameter... extraParams) {
-		final ArrayList<HttpParameter> params = new ArrayList<HttpParameter>();
-		appendParameter("q", query, params);
-		appendParameter("lang", lang, params);
-		appendParameter("locale", locale, params);
-		appendParameter("max_id", maxId, params);
-		appendParameter("rpp", rpp, params);
-		appendParameter("page", page, params);
-		appendParameter("since", since, params);
-		appendParameter("since_id", sinceId, params);
-		appendParameter("geocode", geocode, params);
-		appendParameter("until", until, params);
-		appendParameter("result_type", resultType, params);
-		params.add(WITH_TWITTER_USER_ID);
-		if (extraParams != null) {
-            Collections.addAll(params, extraParams);
-		}
-		final HttpParameter[] paramArray = new HttpParameter[params.size()];
-		return params.toArray(paramArray);
-	}
 }

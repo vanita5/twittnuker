@@ -22,8 +22,16 @@
 
 package de.vanita5.twittnuker.util;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.bluelinelabs.logansquare.LoganSquare;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+
+import org.mariotaku.simplerestapi.http.Endpoint;
+import org.mariotaku.simplerestapi.http.KeyValuePair;
+import org.mariotaku.simplerestapi.http.RestHttpClient;
+import org.mariotaku.simplerestapi.http.RestRequest;
+import org.mariotaku.simplerestapi.http.RestResponse;
+import org.mariotaku.simplerestapi.method.GET;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.HtmlLinkExtractor.HtmlLink;
 
@@ -37,11 +45,7 @@ import java.util.regex.Pattern;
 
 import twitter4j.MediaEntity;
 import twitter4j.Status;
-import twitter4j.TwitterException;
 import twitter4j.UrlEntity;
-import twitter4j.http.HttpClientWrapper;
-import twitter4j.http.HttpParameter;
-import twitter4j.http.HttpResponse;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -208,7 +212,7 @@ public class MediaPreviewUtils {
 	}
 
 	public static ParcelableMedia getAllAvailableImage(final String link, final boolean fullImage,
-				final HttpClientWrapper client) throws IOException {
+                                                       final RestHttpClient client) throws IOException {
 		if (link == null) return null;
 		Matcher m;
 		m = PATTERN_TWITTER_IMAGES.matcher(link);
@@ -388,20 +392,18 @@ public class MediaPreviewUtils {
 		return ParcelableMedia.newImage(preview, orig);
 	}
 
-	private static ParcelableMedia getPhotozouImage(final HttpClientWrapper client, final String id, final String orig,
-				final boolean fullImage) throws IOException {
+    private static ParcelableMedia getPhotozouImage(final RestHttpClient client, final String id, final String orig,
+													final boolean fullImage) throws IOException {
 		if (isEmpty(id)) return null;
 		if (client != null) {
-			try {
-				final HttpParameter[] parameters = { new HttpParameter("photo_id", id) };
-				final HttpResponse resp = client.get(URL_PHOTOZOU_PHOTO_INFO, URL_PHOTOZOU_PHOTO_INFO, parameters);
-				final JSONObject json = resp.asJSONObject().getJSONObject("info").getJSONObject("photo");
-				final String key = fullImage ? "original_image_url" : "image_url";
-				return ParcelableMedia.newImage(json.getString(key), orig);
-			} catch (final TwitterException e) {
-				return null;
-			} catch (final JSONException e) {
-				throw new IOException(e);
+            final RestRequest.Builder builder = new RestRequest.Builder();
+            builder.method(GET.METHOD);
+            builder.url(Endpoint.constructUrl(URL_PHOTOZOU_PHOTO_INFO, new KeyValuePair("photo_id", id)));
+            final RestResponse response = client.execute(builder.build());
+            final PhotoZouPhotoInfo info = LoganSquare.parse(response.getBody().stream(), PhotoZouPhotoInfo.class);
+            if (info.info != null && info.info.photo != null) {
+                final String key = fullImage ? info.info.photo.originalImageUrl : info.info.photo.imageUrl;
+                return ParcelableMedia.newImage(key, orig);
 			}
 		}
 		final String preview = String.format(Locale.US, "http://photozou.jp/p/img/%s", id);
@@ -461,6 +463,28 @@ public class MediaPreviewUtils {
 		if (isEmpty(id)) return null;
 		final String preview = String.format("http://p.twipple.jp/show/large/%s", id);
 		return ParcelableMedia.newImage(preview, orig);
+	}
+
+	@JsonObject
+	public static final class PhotoZouPhotoInfo {
+
+		@JsonField(name = "info")
+		public Info info;
+
+		@JsonObject
+		public static final class Info {
+
+			@JsonField(name = "photo")
+			public Photo photo;
+
+			@JsonObject
+			public static final class Photo {
+				@JsonField(name = "original_image_url")
+				public String originalImageUrl;
+				@JsonField(name = "image_url")
+				public String imageUrl;
+			}
+		}
 
 	}
 
