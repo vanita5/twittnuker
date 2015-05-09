@@ -29,6 +29,7 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import java.util.Date;
 
+import de.vanita5.twittnuker.api.twitter.TwitterDateConverter;
 import twitter4j.RateLimitStatus;
 import twitter4j.Status;
 import twitter4j.UrlEntity;
@@ -76,7 +77,7 @@ public class UserImpl implements User {
 	@JsonField(name = "listed_count")
 	long listedCount;
 
-	@JsonField(name = "created_at")
+    @JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
 	Date createdAt;
 
 	@JsonField(name = "favourites_count")

@@ -38,7 +38,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserList;
 
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 
 public class UserListMembersFragment extends CursorSupportUsersListFragment {
 
@@ -126,7 +126,7 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment {
 
 		@Override
 		protected ParcelableUserList doInBackground(final Object... params) {
-            final Twitter twitter = getTwitterInstance(getActivity(), accountId, true);
+            final Twitter twitter = TwitterAPIUtils.getTwitterInstance(getActivity(), accountId, true);
 			if (twitter == null) return null;
 			try {
 				final UserList list;

@@ -76,7 +76,7 @@ import twitter4j.TwitterException;
 import twitter4j.User;
 
 import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 
 public class UserProfileEditorFragment extends BaseSupportFragment implements OnSizeChangedListener, TextWatcher,
         OnClickListener, LoaderCallbacks<SingleResponse<ParcelableUser>>,
@@ -443,7 +443,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
 
         @Override
         protected SingleResponse<ParcelableUser> doInBackground(final Object... params) {
-            final Twitter twitter = getTwitterInstance(mActivity, mAccountId, true);
+            final Twitter twitter = TwitterAPIUtils.getTwitterInstance(mActivity, mAccountId, true);
             try {
                 User user = null;
                 if (isColorChanged()) {

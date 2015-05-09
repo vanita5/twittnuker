@@ -78,7 +78,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
                 return SingleResponse.getInstance(user);
 			}
 		}
-        final Twitter twitter = getTwitterInstance(context, mAccountId, true);
+        final Twitter twitter = TwitterAPIUtils.getTwitterInstance(context, mAccountId, true);
         if (twitter == null) return SingleResponse.getInstance();
         if (mLoadFromCache) {
             final Expression where;

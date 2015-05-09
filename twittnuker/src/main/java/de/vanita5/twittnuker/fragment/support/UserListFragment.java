@@ -87,7 +87,7 @@ import twitter4j.TwitterException;
 import twitter4j.UserList;
 
 import static de.vanita5.twittnuker.util.MenuUtils.setMenuItemAvailability;
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.Utils.TwitterAPIUtils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 
@@ -549,7 +549,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 				final ParcelableUserList cache = mExtras.getParcelable(EXTRA_USER_LIST);
 				if (cache != null) return SingleResponse.getInstance(cache);
 			}
-			final Twitter twitter = getTwitterInstance(getContext(), mAccountId, true);
+            final Twitter twitter = TwitterAPIUtils.getTwitterInstance(getContext(), mAccountId, true);
 			if (twitter == null) return SingleResponse.getInstance();
 			try {
 				final UserList list;

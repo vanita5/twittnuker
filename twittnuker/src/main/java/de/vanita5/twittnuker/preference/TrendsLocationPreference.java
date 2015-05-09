@@ -50,7 +50,7 @@ import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import static de.vanita5.twittnuker.util.Utils.getDefaultTwitterInstance;
+import static de.vanita5.twittnuker.util.TwitterAPIUtils.getDefaultTwitterInstance;
 
 public class TrendsLocationPreference extends Preference implements Constants, OnClickListener {
 
@@ -174,7 +174,7 @@ public class TrendsLocationPreference extends Preference implements Constants, O
 
 		@Override
 		protected ResponseList<Location> doInBackground(final Object... args) {
-			final Twitter twitter = getDefaultTwitterInstance(getContext(), false);
+            final Twitter twitter = TwitterAPIUtils.getDefaultTwitterInstance(getContext(), false);
 			if (twitter == null) return null;
 			try {
 				return twitter.getAvailableTrends();

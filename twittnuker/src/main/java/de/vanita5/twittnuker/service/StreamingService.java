@@ -45,7 +45,7 @@ import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.NotificationHelper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.net.OkHttpClientFactory;
+import de.vanita5.twittnuker.api.twitter.TwitterDateConverter;
 import twitter4j.DirectMessage;
 import twitter4j.StallWarning;
 import twitter4j.Status;
@@ -205,7 +205,7 @@ public class StreamingService extends Service implements Constants {
 			final long account_id = account.account_id;
 			mAccountIds[i] = account_id;
 			final StreamConfigurationBuilder cb = new StreamConfigurationBuilder();
-            cb.setHttpClientFactory(new OkHttpClientFactory(this));
+            cb.setHttpClientFactory(new TwitterDateConverter(this));
 			cb.setHostAddressResolverFactory(new TwidereStreamingHostAddressResolverFactory(this));
 			cb.setGZIPEnabled(prefs.getBoolean(KEY_GZIP_COMPRESSING, true));
 			cb.setIncludeEntitiesEnabled(true);

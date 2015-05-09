@@ -51,7 +51,7 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.truncateStatuses;
 
 public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader {
@@ -171,7 +171,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
 
     @Nullable
 	protected final Twitter getTwitter() {
-		return getTwitterInstance(mContext, mAccountId, true, true);
+        return TwitterAPIUtils.getTwitterInstance(mContext, mAccountId, true, true);
 	}
 
 	protected abstract boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status);

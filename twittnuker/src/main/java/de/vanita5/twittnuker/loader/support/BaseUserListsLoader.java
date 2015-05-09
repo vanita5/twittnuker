@@ -38,7 +38,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserList;
 
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 
 public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<ParcelableUserList>>
         implements ICursorSupportLoader {
@@ -78,7 +78,7 @@ public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<Parcelabl
 
 	@Override
 	public List<ParcelableUserList> loadInBackground() {
-		final Twitter twitter = getTwitterInstance(getContext(), mAccountId, true);
+        final Twitter twitter = TwitterAPIUtils.getTwitterInstance(getContext(), mAccountId, true);
         List<UserList> listLoaded = null;
 		try {
             listLoaded = getUserLists(twitter);

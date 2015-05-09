@@ -22,7 +22,9 @@
 
 package de.vanita5.twittnuker.api.twitter;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Headers;
@@ -33,8 +35,6 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.mariotaku.simplerestapi.http.ContentType;
 import org.mariotaku.simplerestapi.http.RestHttpClient;
 import org.mariotaku.simplerestapi.http.RestRequest;
@@ -57,8 +57,12 @@ public class OkHttpRestClient implements RestHttpClient {
 	private final OkHttpClient client;
 
 	public OkHttpRestClient() {
-		client = new OkHttpClient();
+        this(new OkHttpClient());
 	}
+
+    public OkHttpRestClient(OkHttpClient client) {
+        this.client = client;
+    }
 
 	@Override
 	public RestResponse execute(RestRequest restRequest) throws IOException {
@@ -68,7 +72,7 @@ public class OkHttpRestClient implements RestHttpClient {
         final List<Pair<String, String>> headers = restRequest.getHeaders();
 		if (headers != null) {
             for (Pair<String, String> header : headers) {
-				builder.addHeader(header.getKey(), header.getValue());
+                builder.addHeader(header.first, header.second);
 			}
 		}
 		final Call call = client.newCall(builder.build());
@@ -84,7 +88,9 @@ public class OkHttpRestClient implements RestHttpClient {
 
 		@Override
 		public MediaType contentType() {
-			return MediaType.parse(body.contentType().toHeader());
+            final ContentType contentType = body.contentType();
+            if (contentType == null) return null;
+            return MediaType.parse(contentType.toHeader());
 		}
 
 		@Override
@@ -117,7 +123,7 @@ public class OkHttpRestClient implements RestHttpClient {
 			final Headers headers = response.headers();
             final ArrayList<Pair<String, String>> headersList = new ArrayList<>();
 			for (int i = 0, j = headers.size(); i < j; i++) {
-                headersList.add(new ImmutablePair<>(headers.name(i), headers.value(i)));
+                headersList.add(Pair.create(headers.name(i), headers.value(i)));
 			}
 			return headersList;
 		}
@@ -158,7 +164,9 @@ public class OkHttpRestClient implements RestHttpClient {
 
 		@Override
 		public ContentType contentType() {
-			return ContentType.parse(body.contentType().toString());
+            final MediaType mediaType = body.contentType();
+            if (mediaType == null) return null;
+            return ContentType.parse(mediaType.toString());
 		}
 
 		@Override
@@ -172,9 +180,10 @@ public class OkHttpRestClient implements RestHttpClient {
 		}
 
 		@Override
-		public void writeTo(OutputStream os) throws IOException {
+        public void writeTo(@NonNull OutputStream os) throws IOException {
 		}
 
+        @NonNull
 		@Override
 		public InputStream stream() throws IOException {
 			return body.byteStream();

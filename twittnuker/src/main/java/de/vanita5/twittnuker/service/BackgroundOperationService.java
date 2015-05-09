@@ -96,7 +96,7 @@ import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createMessageDraft;
 import static de.vanita5.twittnuker.util.Utils.getImagePathFromUri;
 import static de.vanita5.twittnuker.util.Utils.getImageUploadStatus;
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 
 public class BackgroundOperationService extends IntentService implements Constants {
 
@@ -383,7 +383,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 	private SingleResponse<ParcelableDirectMessage> sendDirectMessage(final NotificationCompat.Builder builder,
                                                                       final long accountId, final long recipientId,
                                                                       final String text, final String imageUri) {
-		final Twitter twitter = getTwitterInstance(this, accountId, true, true);
+        final Twitter twitter = TwitterAPIUtils.getTwitterInstance(this, accountId, true, true);
         if (twitter == null) return SingleResponse.getInstance();
 		try {
 			final ParcelableDirectMessage directMessage;
@@ -485,7 +485,7 @@ public class BackgroundOperationService extends IntentService implements Constan
             for (final ParcelableAccount account : statusUpdate.accounts) {
 				String shortenedContent = "";
 				ShortenedStatusModel shortenedStatusModel = null;
-				final Twitter twitter = getTwitterInstance(this, account.account_id, true, true);
+                final Twitter twitter = TwitterAPIUtils.getTwitterInstance(this, account.account_id, true, true);
 
 				if (shouldShorten && mUseShortener && shortenedStatuses != null) {
 					shortenedStatusModel = shortenedStatuses.get(account.account_id);

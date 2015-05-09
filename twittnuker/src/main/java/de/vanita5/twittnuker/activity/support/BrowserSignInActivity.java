@@ -50,7 +50,6 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.net.OkHttpClientFactory;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -59,7 +58,6 @@ import java.io.StringReader;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
-import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
@@ -241,7 +239,6 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 			final String consumerSecret = getNonEmptyString(mPreferences, KEY_CONSUMER_SECRET,
 					TWITTER_CONSUMER_SECRET_2);
 			cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(mApplication));
-            cb.setHttpClientFactory(new OkHttpClientFactory(mApplication));
             Utils.setClientUserAgent(mActivity, consumerKey, consumerSecret, cb);
 			cb.setRestBaseURL(DEFAULT_REST_BASE_URL);
 			cb.setOAuthBaseURL(DEFAULT_OAUTH_BASE_URL);
@@ -266,8 +263,8 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 			}
 			try {
 				final Twitter twitter = new TwitterFactory(cb.build()).getInstance();
-				return twitter.getOAuthRequestToken(OAUTH_CALLBACK_OOB);
-			} catch (final TwitterException e) {
+                return twitter.getRequestToken(OAUTH_CALLBACK_OOB);
+            } catch (final Exception e) {
 				e.printStackTrace();
 			}
 			return null;
@@ -284,7 +281,8 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
                 }
 				return;
 			}
-			mActivity.loadUrl(data.getAuthorizationURL());
+            //TODO
+//            mActivity.loadUrl(data.getAuthorizationURL());
 		}
 
 		@Override

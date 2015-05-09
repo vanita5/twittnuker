@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package de.vanita5.twittnuker.api.twitter.auth;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.mariotaku.simplerestapi.Utils;

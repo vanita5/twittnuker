@@ -62,7 +62,7 @@ import twitter4j.http.HttpResponseCode;
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ParseUtils.parseString;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 
 public class UserListSelectorActivity extends BaseSupportDialogActivity implements OnClickListener, OnItemClickListener {
 
@@ -251,7 +251,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 
 		@Override
 		protected SingleResponse<List<ParcelableUserList>> doInBackground(final Object... params) {
-			final Twitter twitter = getTwitterInstance(mActivity, mAccountId, false);
+            final Twitter twitter = TwitterAPIUtils.getTwitterInstance(mActivity, mAccountId, false);
 			if (twitter == null) return SingleResponse.getInstance();
 			try {
                 final ResponseList<UserList> lists = twitter.getUserLists(mScreenName, true);
@@ -322,7 +322,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 
 		@Override
 		protected SingleResponse<List<ParcelableUser>> doInBackground(final Object... params) {
-			final Twitter twitter = getTwitterInstance(mActivity, mAccountId, false);
+            final Twitter twitter = TwitterAPIUtils.getTwitterInstance(mActivity, mAccountId, false);
 			if (twitter == null) return SingleResponse.getInstance();
 			try {
 				final ResponseList<User> lists = twitter.searchUsers(mName, 1);

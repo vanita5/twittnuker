@@ -30,6 +30,7 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import java.util.Arrays;
 import java.util.Date;
 
+import de.vanita5.twittnuker.api.twitter.TwitterDateConverter;
 import twitter4j.CardEntity;
 import twitter4j.GeoLocation;
 import twitter4j.HashtagEntity;
@@ -47,7 +48,7 @@ import twitter4j.UserMentionEntity;
 @JsonObject
 public class StatusImpl implements Status {
 
-	@JsonField(name = "created_at")
+    @JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
 	Date createdAt;
 
 	@JsonField(name = "id")
@@ -166,7 +167,6 @@ public class StatusImpl implements Status {
 
 	@Override
 	public Date getCreatedAt() {
-
 		return createdAt;
 	}
 

@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.webkit.URLUtil;
 
 import com.nostra13.universalimageloader.core.assist.ContentLengthInputStream;
@@ -48,14 +49,16 @@ import de.vanita5.twittnuker.util.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import twitter4j.TwitterException;
 
 import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
-import static de.vanita5.twittnuker.util.Utils.getImageLoaderHttpClient;
+import static de.vanita5.twittnuker.util.TwitterAPIUtils.getImageLoaderHttpClient;
+import static de.vanita5.twittnuker.util.TwitterAPIUtils.getRedirectedHttpResponse;
 import static de.vanita5.twittnuker.util.Utils.getNormalTwitterProfileImage;
-import static de.vanita5.twittnuker.util.Utils.getRedirectedHttpResponse;
 import static de.vanita5.twittnuker.util.Utils.getTwitterAuthorization;
 import static de.vanita5.twittnuker.util.Utils.getTwitterProfileImageOfSize;
 
@@ -145,9 +148,9 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 			auth = null;
 		}
         String modifiedUri = getReplacedUri(uri, account != null ? account.api_url_format : null);
-        final HeaderMap additionalHeaders = new HeaderMap();
+        final List<Pair<String, String>> additionalHeaders = new ArrayList<>();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            additionalHeaders.addHeader("Accept", "image/webp, */*");
+            additionalHeaders.add(Pair.create("Accept", "image/webp, */*"));
         }
         final RestResponse resp = getRedirectedHttpResponse(mClient, modifiedUri, uriString, auth, additionalHeaders);
         final TypedData body = resp.getBody();

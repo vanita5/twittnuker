@@ -50,7 +50,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 
 public class TwitterWrapper implements Constants {
 
@@ -70,7 +70,7 @@ public class TwitterWrapper implements Constants {
 	}
 
 	public static SingleResponse<Boolean> deleteProfileBannerImage(final Context context, final long account_id) {
-		final Twitter twitter = getTwitterInstance(context, account_id, false);
+        final Twitter twitter = TwitterAPIUtils.getTwitterInstance(context, account_id, false);
         if (twitter == null) return new SingleResponse<>(false, null);
 		try {
 			twitter.removeProfileBannerImage();
@@ -167,7 +167,7 @@ public class TwitterWrapper implements Constants {
 
 	public static SingleResponse<ParcelableUser> updateProfile(final Context context, final long account_id,
 			final String name, final String url, final String location, final String description) {
-		final Twitter twitter = getTwitterInstance(context, account_id, false);
+        final Twitter twitter = TwitterAPIUtils.getTwitterInstance(context, account_id, false);
 		if (twitter != null) {
 			try {
 				final User user = twitter.updateProfile(name, url, location, description);
@@ -182,7 +182,7 @@ public class TwitterWrapper implements Constants {
     public static void updateProfileBannerImage(final Context context, final long accountId,
                                                 final Uri imageUri, final boolean deleteImage)
                                                 throws FileNotFoundException, TwitterException {
-        final Twitter twitter = getTwitterInstance(context, accountId, false);
+        final Twitter twitter = TwitterAPIUtils.getTwitterInstance(context, accountId, false);
         updateProfileBannerImage(context, twitter, imageUri, deleteImage);
     }
 
@@ -223,7 +223,7 @@ public class TwitterWrapper implements Constants {
     public static User updateProfileImage(final Context context, final long accountId,
                                           final Uri imageUri, final boolean deleteImage)
             throws FileNotFoundException, TwitterException {
-        final Twitter twitter = getTwitterInstance(context, accountId, true);
+        final Twitter twitter = TwitterAPIUtils.getTwitterInstance(context, accountId, true);
         return updateProfileImage(context, twitter, imageUri, deleteImage);
 	}
 

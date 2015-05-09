@@ -20,23 +20,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.net;
+package de.vanita5.twittnuker.api.twitter.model.impl;
 
-import android.content.Context;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import twitter4j.http.HttpClient;
-import twitter4j.http.HttpClientConfiguration;
-import twitter4j.http.HttpClientFactory;
+import twitter4j.DirectMessage;
 
-public class OkHttpClientFactory implements HttpClientFactory {
-    private final Context context;
-
-    public OkHttpClientFactory(Context context) {
-        this.context = context;
-    }
-
-	@Override
-	public HttpClient getInstance(HttpClientConfiguration conf) {
-        return new OkHttpClientImpl(context, conf);
-	}
+/**
+ * Created by mariotaku on 15/5/7.
+ */
+@JsonObject
+public class DirectMessageImpl  {
 }

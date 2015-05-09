@@ -20,32 +20,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.loader.support;
+package de.vanita5.twittnuker.api.twitter;
 
-import android.content.Context;
+import com.bluelinelabs.logansquare.typeconverters.DateTypeConverter;
 
-import de.vanita5.twittnuker.model.ParcelableUser;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
-import java.util.List;
+/**
+ * Created by mariotaku on 15/5/7.
+ */
+public class TwitterDateConverter extends DateTypeConverter {
 
-import twitter4j.PageableResponseList;
-import twitter4j.Paging;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.User;
+    private final DateFormat mDateFormat;
 
-public class UserBlocksLoader extends CursorSupportUsersLoader {
+    public TwitterDateConverter() {
+        mDateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy", Locale.ENGLISH);
+    }
 
-    public UserBlocksLoader(final Context context, final long accountId, final long cursor,
-                            final List<ParcelableUser> data, boolean fromUser) {
-        super(context, accountId, cursor, data, fromUser);
+    public DateFormat getDateFormat() {
+        return mDateFormat;
 	}
-
-	@Override
-    protected final PageableResponseList<User> getCursoredUsers(final Twitter twitter, final Paging paging)
-			throws TwitterException {
-		if (twitter == null) return null;
-		return twitter.getBlocksList(paging);
-	}
-
 }

@@ -52,7 +52,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.api.HelpResources.Language;
 
-import static de.vanita5.twittnuker.util.Utils.getDefaultTwitterInstance;
+import static de.vanita5.twittnuker.util.TwitterAPIUtils.getDefaultTwitterInstance;
 
 public class TranslationDestinationPreference extends Preference implements Constants, OnClickListener {
 
@@ -174,7 +174,7 @@ public class TranslationDestinationPreference extends Preference implements Cons
 
 		@Override
 		protected ResponseList<Language> doInBackground(final Object... args) {
-			final Twitter twitter = getDefaultTwitterInstance(getContext(), false);
+            final Twitter twitter = TwitterAPIUtils.getDefaultTwitterInstance(getContext(), false);
 			final String pref = mPreferences.getString(KEY_TRANSLATION_DESTINATION, null);
 			if (twitter == null) return null;
 			try {

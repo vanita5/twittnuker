@@ -162,7 +162,7 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
 		@Override
 		public SingleResponse<TranslationResult> loadInBackground() {
 			final Context context = getContext();
-			final Twitter twitter = Utils.getTwitterInstance(context, mAccountId, false);
+            final Twitter twitter = TwitterAPIUtils.getTwitterInstance(context, mAccountId, false);
 			final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 			if (twitter == null) return SingleResponse.getInstance();
 			try {
