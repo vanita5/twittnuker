@@ -16,6 +16,14 @@
 
 package twitter4j;
 
+import com.bluelinelabs.logansquare.LoganSquare;
+import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.GeoPoint;
+
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -29,6 +37,21 @@ public class GeoLocation implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 4603460402828968366L;
+
+    public static final TypeConverter<GeoLocation> CONVERTER = new TypeConverter<GeoLocation>() {
+        @Override
+        public GeoLocation parse(JsonParser jsonParser) throws IOException {
+            final GeoPoint geoPoint = LoganSquare.mapperFor(GeoPoint.class).parse(jsonParser);
+            if (geoPoint == null) return null;
+            return geoPoint.getGeoLocation();
+        }
+
+        @Override
+        public void serialize(GeoLocation object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) throws IOException {
+            throw new UnsupportedOperationException();
+        }
+    };
+
 	protected double latitude;
 	protected double longitude;
 

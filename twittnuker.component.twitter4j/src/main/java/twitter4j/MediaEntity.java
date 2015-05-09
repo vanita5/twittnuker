@@ -19,44 +19,23 @@ package twitter4j;
 import java.io.Serializable;
 import java.util.Map;
 
-/**
- * @author Yusuke Yamamoto - yusuke at mac.com
- * @since Twitter4J 2.2.3
- */
+
 public interface MediaEntity extends UrlEntity, Serializable {
-	/**
-	 * Returns the id of the media.
-	 * 
-	 * @return the id of the media
-	 */
+
 	long getId();
 
-	/**
-	 * Returns the media URL.
-	 * 
-	 * @return the media URL
-	 */
+
+    Map<String, Feature> getFeatures();
+
     String getMediaUrl();
 
-	/**
-	 * Returns the media secure URL.
-	 * 
-	 * @return the media secure URL
-	 */
+
     String getMediaUrlHttps();
 
-	/**
-	 * Returns size variations of the media.
-	 * 
-	 * @return size variations of the media
-	 */
-	Map<Integer, Size> getSizes();
 
-	/**
-	 * Returns the media type ("photo").
-	 * 
-	 * @return the media type ("photo").
-	 */
+    Map<String, Size> getSizes();
+
+
     Type getType();
 
     enum Type {
@@ -105,9 +84,25 @@ public interface MediaEntity extends UrlEntity, Serializable {
 
 		int getHeight();
 
-		int getResize();
+        String getResize();
 
-		int getWidth();
-	}
+        int getWidth();
+    }
 
+    /**
+     * Created by mariotaku on 15/3/31.
+     */
+    interface Feature {
+
+        interface Face {
+
+            int getX();
+
+            int getY();
+
+            int getHeight();
+
+			int getWidth();
+		}
+    }
 }
