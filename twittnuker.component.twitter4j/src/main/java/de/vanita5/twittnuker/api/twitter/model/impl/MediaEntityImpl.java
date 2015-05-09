@@ -39,9 +39,6 @@ public class MediaEntityImpl implements MediaEntity {
 	@JsonField(name = "id")
 	long id;
 
-	@JsonField(name = "id_str")
-	String idStr;
-
 	@JsonField(name = "indices")
 	Indices indices;
 
@@ -62,12 +59,8 @@ public class MediaEntityImpl implements MediaEntity {
 	HashMap<String, Size> sizes;
 	@JsonField(name = "source_status_id")
 	long sourceStatusId;
-	@JsonField(name = "source_status_id_str")
-	String sourceStatusIdStr;
 	@JsonField(name = "source_user_id")
 	long sourceUserId;
-	@JsonField(name = "source_user_id_str")
-	String sourceUserIdStr;
 	@JsonField(name = "video_info")
 	VideoInfo videoInfo;
 
@@ -140,7 +133,6 @@ public class MediaEntityImpl implements MediaEntity {
 	public String toString() {
 		return "MediaEntityImpl{" +
 				"id=" + id +
-				", idStr='" + idStr + '\'' +
 				", indices=" + indices +
 				", mediaUrl='" + mediaUrl + '\'' +
 				", mediaUrlHttps='" + mediaUrlHttps + '\'' +
@@ -150,9 +142,7 @@ public class MediaEntityImpl implements MediaEntity {
 				", type=" + type +
 				", sizes=" + sizes +
 				", sourceStatusId=" + sourceStatusId +
-				", sourceStatusIdStr='" + sourceStatusIdStr + '\'' +
 				", sourceUserId=" + sourceUserId +
-				", sourceUserIdStr='" + sourceUserIdStr + '\'' +
 				", videoInfo=" + videoInfo +
 				", features=" + features +
 				'}';
@@ -203,7 +193,6 @@ public class MediaEntityImpl implements MediaEntity {
 
 	@Override
 	public int getEnd() {
-
 		return indices.getEnd();
 	}
 

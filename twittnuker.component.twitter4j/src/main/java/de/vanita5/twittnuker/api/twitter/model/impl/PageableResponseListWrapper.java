@@ -22,67 +22,44 @@
 
 package de.vanita5.twittnuker.api.twitter.model.impl;
 
-import android.support.annotation.NonNull;
-
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.api.twitter.TwitterDateConverter;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
 
-import java.util.Date;
-
-import twitter4j.RateLimitStatus;
-import twitter4j.SavedSearch;
+import de.vanita5.twittnuker.api.twitter.TwitterConverter;
+import twitter4j.PageableResponseList;
+import twitter4j.Status;
+import twitter4j.User;
 
 /**
  * Created by mariotaku on 15/5/7.
  */
 @JsonObject
-public class SavedSearchImpl extends TwitterResponseImpl implements SavedSearch {
+public class PageableResponseListWrapper extends TwitterResponseImpl implements Wrapper<PageableResponseList<?>> {
+
+	@JsonField(name = "previous_cursor")
+	long previousCursor;
+	@JsonField(name = "next_cursor")
+	long nextCursor;
+
+	@JsonField(name = "users")
+	ArrayList<User> users;
+
+	@JsonField(name = "statuses")
+	ArrayList<Status> statuses;
 
 	@Override
-	public int getId() {
-		return id;
+	public PageableResponseList<?> getWrapped(Object extra) {
+		final Type[] typeArgs = (Type[]) extra;
+		final Class<?> elementType = (Class<?>) typeArgs[0];
+		if (User.class.isAssignableFrom(elementType)) {
+			return new PageableResponseListImpl<>(users);
+		} else if (Status.class.isAssignableFrom(elementType)) {
+			return new PageableResponseListImpl<>(statuses);
+		}
+		throw new TwitterConverter.UnsupportedTypeException(elementType);
 	}
-
-	@Override
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public int getPosition() {
-		return position;
-	}
-
-	@Override
-	public String getQuery() {
-		return query;
-	}
-
-	@JsonField(name = "id")
-	int id;
-
-	@JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
-	Date createdAt;
-
-	@JsonField(name = "name")
-	String name;
-
-	@JsonField(name = "position")
-	int position;
-
-	@JsonField(name = "query")
-	String query;
-
-	@Override
-	public int compareTo(@NonNull SavedSearch another) {
-		return id - another.getId();
-	}
-
 }

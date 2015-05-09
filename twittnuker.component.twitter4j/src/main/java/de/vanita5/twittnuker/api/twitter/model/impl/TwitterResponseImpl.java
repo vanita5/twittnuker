@@ -22,67 +22,33 @@
 
 package de.vanita5.twittnuker.api.twitter.model.impl;
 
-import android.support.annotation.NonNull;
-
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-
-import de.vanita5.twittnuker.api.twitter.TwitterDateConverter;
-
-import java.util.Date;
+import org.mariotaku.simplerestapi.http.RestResponse;
 
 import twitter4j.RateLimitStatus;
-import twitter4j.SavedSearch;
+import twitter4j.TwitterResponse;
+import twitter4j.internal.util.InternalParseUtil;
 
 /**
  * Created by mariotaku on 15/5/7.
  */
-@JsonObject
-public class SavedSearchImpl extends TwitterResponseImpl implements SavedSearch {
+public class TwitterResponseImpl implements TwitterResponse {
+
+	private int accessLevel;
+	private RateLimitStatus rateLimitStatus;
 
 	@Override
-	public int getId() {
-		return id;
+	public final void processResponseHeader(RestResponse resp) {
+		rateLimitStatus = RateLimitStatusJSONImpl.createFromResponseHeader(resp);
+		accessLevel = InternalParseUtil.toAccessLevel(resp);
 	}
 
 	@Override
-	public Date getCreatedAt() {
-		return createdAt;
+	public final int getAccessLevel() {
+		return accessLevel;
 	}
 
 	@Override
-	public String getName() {
-		return name;
+	public final RateLimitStatus getRateLimitStatus() {
+		return rateLimitStatus;
 	}
-
-	@Override
-	public int getPosition() {
-		return position;
-	}
-
-	@Override
-	public String getQuery() {
-		return query;
-	}
-
-	@JsonField(name = "id")
-	int id;
-
-	@JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
-	Date createdAt;
-
-	@JsonField(name = "name")
-	String name;
-
-	@JsonField(name = "position")
-	int position;
-
-	@JsonField(name = "query")
-	String query;
-
-	@Override
-	public int compareTo(@NonNull SavedSearch another) {
-		return id - another.getId();
-	}
-
 }

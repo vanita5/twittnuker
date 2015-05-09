@@ -22,67 +22,22 @@
 
 package de.vanita5.twittnuker.api.twitter.model.impl;
 
-import android.support.annotation.NonNull;
-
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.api.twitter.TwitterDateConverter;
-
-import java.util.Date;
-
-import twitter4j.RateLimitStatus;
-import twitter4j.SavedSearch;
+import twitter4j.Relationship;
 
 /**
  * Created by mariotaku on 15/5/7.
  */
 @JsonObject
-public class SavedSearchImpl extends TwitterResponseImpl implements SavedSearch {
+public class RelationshipWrapper extends TwitterResponseImpl implements Wrapper<Relationship> {
+
+	@JsonField(name = "relationship")
+	RelationshipImpl relationship;
 
 	@Override
-	public int getId() {
-		return id;
+	public Relationship getWrapped(Object extra) {
+		return relationship;
 	}
-
-	@Override
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public int getPosition() {
-		return position;
-	}
-
-	@Override
-	public String getQuery() {
-		return query;
-	}
-
-	@JsonField(name = "id")
-	int id;
-
-	@JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
-	Date createdAt;
-
-	@JsonField(name = "name")
-	String name;
-
-	@JsonField(name = "position")
-	int position;
-
-	@JsonField(name = "query")
-	String query;
-
-	@Override
-	public int compareTo(@NonNull SavedSearch another) {
-		return id - another.getId();
-	}
-
 }

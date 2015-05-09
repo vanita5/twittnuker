@@ -52,11 +52,9 @@ public class OAuthAuthorization implements Authorization {
 	private static final String DEFAULT_ENCODING = "UTF-8";
 	private static final String OAUTH_SIGNATURE_METHOD = "HMAC-SHA1";
 	private static final String OAUTH_VERSION = "1.0";
-
-	SecureRandom secureRandom = new SecureRandom();
-
 	private final String consumerKey, consumerSecret;
 	private final OAuthToken oauthToken;
+    SecureRandom secureRandom = new SecureRandom();
 
 	public OAuthAuthorization(String consumerKey, String consumerSecret) {
 		this(consumerKey, consumerSecret, null);
@@ -67,6 +65,20 @@ public class OAuthAuthorization implements Authorization {
 		this.consumerSecret = consumerSecret;
 		this.oauthToken = oauthToken;
 	}
+
+    @Override
+    public String getConsumerKey() {
+        return consumerKey;
+    }
+
+    @Override
+    public String getConsumerSecret() {
+        return consumerSecret;
+    }
+
+    public OAuthToken getOauthToken() {
+        return oauthToken;
+    }
 
 	private String generateOAuthSignature(RestMethod method, String url,
 										  String oauthNonce, long timestamp,
@@ -183,7 +195,6 @@ public class OAuthAuthorization implements Authorization {
 	private static String encode(final String value) {
 		return Utils.encode(value, DEFAULT_ENCODING);
 	}
-
 
 	private String generateOAuthNonce() {
 		final byte[] input = new byte[32];

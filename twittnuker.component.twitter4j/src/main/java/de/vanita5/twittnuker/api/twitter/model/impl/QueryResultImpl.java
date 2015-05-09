@@ -22,67 +22,50 @@
 
 package de.vanita5.twittnuker.api.twitter.model.impl;
 
-import android.support.annotation.NonNull;
+import java.util.ArrayList;
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-
-import de.vanita5.twittnuker.api.twitter.TwitterDateConverter;
-
-import java.util.Date;
-
-import twitter4j.RateLimitStatus;
-import twitter4j.SavedSearch;
+import twitter4j.QueryResult;
+import twitter4j.Status;
 
 /**
  * Created by mariotaku on 15/5/7.
  */
-@JsonObject
-public class SavedSearchImpl extends TwitterResponseImpl implements SavedSearch {
+public class QueryResultImpl extends ResponseListImpl<Status> implements QueryResult {
+
+	private final QueryResultWrapper.SearchMetadata metadata;
 
 	@Override
-	public int getId() {
-		return id;
+	public double getCompletedIn() {
+		return metadata.completedIn;
 	}
 
 	@Override
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public int getPosition() {
-		return position;
+	public long getMaxId() {
+		return metadata.maxId;
 	}
 
 	@Override
 	public String getQuery() {
-		return query;
+		return metadata.query;
 	}
-
-	@JsonField(name = "id")
-	int id;
-
-	@JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
-	Date createdAt;
-
-	@JsonField(name = "name")
-	String name;
-
-	@JsonField(name = "position")
-	int position;
-
-	@JsonField(name = "query")
-	String query;
 
 	@Override
-	public int compareTo(@NonNull SavedSearch another) {
-		return id - another.getId();
+	public int getResultsPerPage() {
+		return metadata.count;
 	}
 
+	@Override
+	public long getSinceId() {
+		return metadata.sinceId;
+	}
+
+	@Override
+	public String getWarning() {
+		return metadata.warning;
+	}
+
+	public QueryResultImpl(ArrayList<Status> statuses, QueryResultWrapper.SearchMetadata metadata) {
+		addAll(statuses);
+		this.metadata = metadata;
+	}
 }

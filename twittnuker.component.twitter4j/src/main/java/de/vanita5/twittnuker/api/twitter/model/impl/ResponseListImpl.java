@@ -22,21 +22,22 @@
 
 package de.vanita5.twittnuker.api.twitter.model.impl;
 
+import org.mariotaku.simplerestapi.http.RestResponse;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 import twitter4j.RateLimitStatus;
 import twitter4j.ResponseList;
+import twitter4j.internal.util.InternalParseUtil;
 
 /**
  * Created by mariotaku on 15/5/7.
  */
 public class ResponseListImpl<T> extends ArrayList<T> implements ResponseList<T> {
 
-	@Override
-	public int getAccessLevel() {
-		return 0;
-	}
+    private int accessLevel;
+    private RateLimitStatus rateLimitStatus;
 
 	public ResponseListImpl(int capacity) {
 		super(capacity);
@@ -50,7 +51,18 @@ public class ResponseListImpl<T> extends ArrayList<T> implements ResponseList<T>
 	}
 
 	@Override
-	public RateLimitStatus getRateLimitStatus() {
-		return null;
+    public final void processResponseHeader(RestResponse resp) {
+        rateLimitStatus = RateLimitStatusJSONImpl.createFromResponseHeader(resp);
+        accessLevel = InternalParseUtil.toAccessLevel(resp);
+    }
+
+    @Override
+    public final int getAccessLevel() {
+        return accessLevel;
+    }
+
+    @Override
+    public final RateLimitStatus getRateLimitStatus() {
+        return rateLimitStatus;
 	}
 }

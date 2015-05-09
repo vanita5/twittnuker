@@ -126,9 +126,9 @@ import org.mariotaku.querybuilder.Selectable;
 import org.mariotaku.querybuilder.Table;
 import org.mariotaku.querybuilder.Tables;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
+import org.mariotaku.simplerestapi.RestAPIFactory;
+import org.mariotaku.simplerestapi.RestClient;
 import org.mariotaku.simplerestapi.http.Authorization;
-import org.mariotaku.simplerestapi.http.RestHttpClient;
-import org.mariotaku.simplerestapi.http.RestResponse;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -138,10 +138,9 @@ import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.api.twitter.auth.BasicAuthorization;
-import de.vanita5.twittnuker.api.twitter.auth.EmptyAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthSupport;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.support.AccountsManagerFragment;
 import de.vanita5.twittnuker.fragment.support.AddStatusFilterDialogFragment;
@@ -217,8 +216,6 @@ import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.TwidereLinkify.HighlightStyle;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
-import de.vanita5.twittnuker.api.twitter.TwitterDateConverter;
-import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.ShapedImageView;
@@ -257,11 +254,9 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
 import twitter4j.UserMentionEntity;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
-import twitter4j.http.HostAddressResolverFactory;
 
 import static android.text.TextUtils.isEmpty;
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
@@ -1339,7 +1334,7 @@ public final class Utils implements Constants, TwitterConstants {
 	}
 
 	public static int getAccountNotificationId(final int notificationType, final long accountId) {
-		return Arrays.hashCode(new long[] { notificationType, accountId });
+		return Arrays.hashCode(new long[]{notificationType, accountId});
 	}
 
 	public static String getAccountScreenName(final Context context, final long accountId) {
@@ -1370,7 +1365,7 @@ public final class Utils implements Constants, TwitterConstants {
 	public static String getAccountProfileImage(final Context context, final long accountId) {
 		if (context == null) return null;
 		final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-				new String[] { Accounts.PROFILE_IMAGE_URL }, Accounts.ACCOUNT_ID + " = " + accountId, null, null);
+				new String[]{Accounts.PROFILE_IMAGE_URL}, Accounts.ACCOUNT_ID + " = " + accountId, null, null);
 		if (cur == null) return null;
 		try {
 			if (cur.getCount() > 0 && cur.moveToFirst()) {
@@ -2631,11 +2626,12 @@ public final class Utils implements Constants, TwitterConstants {
 
     public static boolean isOfficialTwitterInstance(final Context context, final Twitter twitter) {
         if (context == null || twitter == null) return false;
-        final Configuration conf = twitter.getConfiguration();
-        final Authorization auth = twitter.getAuthorization();
-        final boolean isOAuth = auth instanceof OAuthAuthorization || auth instanceof XAuthAuthorization;
-        final String consumerKey = conf.getOAuthConsumerKey(), consumerSecret = conf.getOAuthConsumerSecret();
-        return isOAuth && TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret);
+        final RestClient restClient = RestAPIFactory.getRestClient(twitter);
+        final Authorization auth = restClient.getAuthorization();
+        if (!(auth instanceof OAuthSupport)) return false;
+        final String consumerKey = ((OAuthSupport) auth).getConsumerKey();
+        final String consumerSecret = ((OAuthSupport) auth).getConsumerSecret();
+        return TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret);
     }
 
 	public static boolean isOnWifi(final Context context) {

@@ -33,7 +33,7 @@ import twitter4j.RateLimitStatus;
  * Created by mariotaku on 15/5/7.
  */
 @JsonObject
-public class PlaceImpl implements Place {
+public class PlaceImpl extends TwitterResponseImpl implements Place {
 
 	@JsonField(name = "full_name")
 	String fullName;
@@ -108,13 +108,4 @@ public class PlaceImpl implements Place {
 		return 0;
 	}
 
-	@Override
-	public int getAccessLevel() {
-		return 0;
-	}
-
-	@Override
-	public RateLimitStatus getRateLimitStatus() {
-		return null;
-	}
 }
