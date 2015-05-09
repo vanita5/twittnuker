@@ -25,14 +25,16 @@ package de.vanita5.twittnuker.api.twitter.model.impl;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import de.vanita5.twittnuker.api.twitter.TwitterConverter;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import de.vanita5.twittnuker.api.twitter.TwitterConverter;
 import twitter4j.PageableResponseList;
 import twitter4j.Status;
 import twitter4j.User;
+import twitter4j.UserList;
 
 /**
  * Created by mariotaku on 15/5/7.
@@ -51,6 +53,9 @@ public class PageableResponseListWrapper extends TwitterResponseImpl implements 
 	@JsonField(name = "statuses")
 	ArrayList<Status> statuses;
 
+    @JsonField(name = "user_lists")
+    ArrayList<Status> userLists;
+
 	@Override
 	public PageableResponseList<?> getWrapped(Object extra) {
 		final Type[] typeArgs = (Type[]) extra;
@@ -59,6 +64,8 @@ public class PageableResponseListWrapper extends TwitterResponseImpl implements 
 			return new PageableResponseListImpl<>(users);
 		} else if (Status.class.isAssignableFrom(elementType)) {
 			return new PageableResponseListImpl<>(statuses);
+        } else if (UserList.class.isAssignableFrom(elementType)) {
+            return new PageableResponseListImpl<>(userLists);
 		}
 		throw new TwitterConverter.UnsupportedTypeException(elementType);
 	}

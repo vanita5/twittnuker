@@ -26,12 +26,13 @@ import android.content.Context;
 
 import de.vanita5.twittnuker.model.ParcelableUserList;
 
+import java.util.List;
+
 import twitter4j.PageableResponseList;
+import twitter4j.Paging;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserList;
-
-import java.util.List;
 
 public class UserListMembershipsLoader extends BaseUserListsLoader {
 
@@ -48,9 +49,11 @@ public class UserListMembershipsLoader extends BaseUserListsLoader {
 	@Override
 	public PageableResponseList<UserList> getUserLists(final Twitter twitter) throws TwitterException {
 		if (twitter == null) return null;
+        final Paging paging = new Paging();
+        paging.cursor(getCursor());
 		if (mUserId > 0)
-			return twitter.getUserListMemberships(mUserId, getCursor());
-		else if (mScreenName != null) return twitter.getUserListMemberships(mScreenName, getCursor());
+            return twitter.getUserListMemberships(mUserId, paging);
+        else if (mScreenName != null) return twitter.getUserListMemberships(mScreenName, paging);
 		return null;
 	}
 
