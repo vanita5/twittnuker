@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 
-import twitter4j.URLEntity;
+import twitter4j.UrlEntity;
 import twitter4j.User;
 
 @JsonObject

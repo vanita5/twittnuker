@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.model.ParcelableUser.CachedIndices;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
+import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 
 import twitter4j.Twitter;
@@ -44,7 +45,6 @@ import twitter4j.TwitterException;
 import twitter4j.User;
 
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createCachedUser;
-import static de.vanita5.twittnuker.util.Utils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.isMyAccount;
 
 public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<ParcelableUser>> implements Constants {

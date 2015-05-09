@@ -254,6 +254,7 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
 import twitter4j.TwitterException;
+import twitter4j.UrlEntity;
 import twitter4j.UserMentionEntity;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
@@ -3860,10 +3861,10 @@ public final class Utils implements Constants, TwitterConstants {
 		return 0;
 	}
 
-	public static String parseURLEntities(String text, final URLEntity[] entities) {
-		for (URLEntity entity : entities) {
+	public static String parseURLEntities(String text, final UrlEntity[] entities) {
+		for (UrlEntity entity : entities) {
 			final int start = entity.getStart(), end = entity.getEnd();
-			final String displayUrl = entity.getDisplayURL();
+			final String displayUrl = entity.getDisplayUrl();
 			if (displayUrl != null && !displayUrl.isEmpty() && start >= 0 && end >= 0) {
 				StringBuffer bf = new StringBuffer(text);
 				return bf.replace(start, end, displayUrl).toString();

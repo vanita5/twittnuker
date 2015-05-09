@@ -45,6 +45,7 @@ import java.text.Collator;
 import java.util.Comparator;
 import java.util.List;
 
+import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import twitter4j.Location;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;

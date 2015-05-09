@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import twitter4j.CursorSupport;
 import twitter4j.PageableResponseList;
 import twitter4j.Twitter;

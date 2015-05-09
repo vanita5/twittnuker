@@ -46,6 +46,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;

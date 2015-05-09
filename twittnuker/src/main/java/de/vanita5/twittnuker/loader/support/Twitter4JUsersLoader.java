@@ -29,6 +29,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import java.util.Collections;
 import java.util.List;
 
+import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;

@@ -78,6 +78,7 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
+import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
@@ -88,7 +89,6 @@ import twitter4j.UserList;
 import twitter4j.UserListUpdate;
 
 import static de.vanita5.twittnuker.util.MenuUtils.setMenuItemAvailability;
-import static de.vanita5.twittnuker.util.Utils.TwitterAPIUtils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
 import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 

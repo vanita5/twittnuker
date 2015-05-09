@@ -236,6 +236,7 @@
 	<string name="home_refresh">Refresh in home timeline</string>
 	<string name="home_refresh_summary">Timelines that should be refreshed</string>
 	<string name="error_message_image_upload_failed">Image upload failed.</string>
+	<string name="error_message_image_uploader_not_found">Image uploader not found, maybe it was uninstalled.</string>
 	<string name="tweet_shortener">Tweet shortener</string>
     <string name="status_shortener">Tweet shortener</string>
     <string name="status_shortener_default">None (Abort sending)</string>
@@ -243,6 +244,7 @@
 	<string name="error_message_message_too_long">Message too long.</string>
 	<string name="error_message_no_content">No content</string>
 	<string name="error_message_tweet_shorten_failed">Tweet shorten failed.</string>
+	<string name="error_message_tweet_shortener_not_found">Tweet shortener not found, maybe it was uninstalled.</string>
 	<string name="multimedia_contents">Multimedia content</string>
 	<string name="show_absolute_time">Show absolute time</string>
 	<string name="show_absolute_time_summary">Show absolute time in tweets</string>

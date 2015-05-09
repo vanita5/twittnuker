@@ -20,23 +20,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.streaming.util;
+package de.vanita5.twittnuker.model;
 
-import android.content.Context;
-
-import twitter4j.http.HostAddressResolver;
-import twitter4j.http.HostAddressResolverFactory;
-import twitter4j.http.HttpClientConfiguration;
-
-public class TwidereStreamingHostAddressResolverFactory implements HostAddressResolverFactory {
-	private final Context context;
-
-	public TwidereStreamingHostAddressResolverFactory(Context context) {
-		this.context = context;
-	}
-
-	@Override
-	public HostAddressResolver getInstance(HttpClientConfiguration conf) {
-		return new TwidereStreamingHostAddressResolver(context);
-	}
-}
+parcelable ParcelableStatusUpdate;

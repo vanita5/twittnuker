@@ -52,6 +52,7 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;

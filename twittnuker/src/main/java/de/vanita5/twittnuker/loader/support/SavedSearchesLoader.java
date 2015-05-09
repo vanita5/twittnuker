@@ -25,14 +25,11 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-import static de.vanita5.twittnuker.util.TwitterAPIUtils;
-
+import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import twitter4j.ResponseList;
 import twitter4j.SavedSearch;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-
-import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 
 public class SavedSearchesLoader extends AsyncTaskLoader<ResponseList<SavedSearch>> {
 

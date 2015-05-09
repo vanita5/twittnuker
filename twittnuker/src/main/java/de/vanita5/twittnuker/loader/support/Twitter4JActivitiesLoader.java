@@ -32,6 +32,7 @@ import com.bluelinelabs.logansquare.LoganSquare;
 
 import org.mariotaku.jsonserializer.JSONFileIO;
 import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.io.File;

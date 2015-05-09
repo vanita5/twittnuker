@@ -47,7 +47,7 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * Created by mariotaku on 15/2/4.
  */
-public class OAuthAuthorization implements Authorization {
+public class OAuthAuthorization implements Authorization,OAuthSupport {
 
 	private static final String DEFAULT_ENCODING = "UTF-8";
 	private static final String OAUTH_SIGNATURE_METHOD = "HMAC-SHA1";

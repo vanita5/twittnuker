@@ -58,6 +58,8 @@ import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.model.StatusShortenResult;
+import de.vanita5.twittnuker.model.UploaderMediaItem;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -69,13 +71,12 @@ import de.vanita5.twittnuker.util.ListUtils;
 import de.vanita5.twittnuker.util.MediaUploaderInterface;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.StatusCodeMessageUtils;
+import de.vanita5.twittnuker.util.StatusShortenerInterface;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener;
-import de.vanita5.twittnuker.util.shortener.TweetShortenerUtils;
-import de.vanita5.twittnuker.util.shortener.TweetShortenerUtils.ShortenedStatusModel;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -84,7 +85,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import twitter4j.MediaUploadResponse;
 import twitter4j.Status;
@@ -93,10 +93,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.UserMentionEntity;
 import twitter4j.api.TwitterUpload;
-import twitter4j.conf.Configuration;
-import twitter4j.media.ImageUpload;
-import twitter4j.media.ImageUploadFactory;
-import twitter4j.media.MediaProvider;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createMessageDraft;
@@ -468,7 +464,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 					throw new UploadException(this);
 				if (uploadResult.error_code != 0)
 					throw new UploadException(uploadResult.error_message);
-				overrideStatusText = getImageUploadStatus(this, uploadResult.media_uris, statusUpdate.text);
+				overrideStatusText = getImageUploadStatus(uploadResult.media_uris, statusUpdate.text);
 			} else {
 				overrideStatusText = null;
 			}
@@ -615,78 +611,6 @@ public class BackgroundOperationService extends IntentService implements Constan
 		}
 
 	}
-
-	//FIXME
-	private Notification updateUploadStatusNotification(final NotificationCompat.Builder builder, final int progress) {
-		builder.setContentTitle(getString(R.string.uploading_image));
-		builder.setContentText((progress < 100 ? progress : 100) + "%");
-		builder.setSmallIcon(R.drawable.ic_stat_send);
-		builder.setProgress(100, progress, progress >= 100 || progress <= 0);
-		final Notification notification = builder.build();
-		mNotificationManager.notify(NOTIFICATION_ID_UPLOAD_MEDIA, notification);
-		return notification;
-	}
-
-	//FIXME
-	@Deprecated
-	private Map<Long, ShortenedStatusModel> postTwitlonger(ParcelableStatusUpdate pstatus) {
-		final Notification notification = buildNotification(getString(R.string.shortening),
-				getString(R.string.shortening_twitlonger), R.drawable.ic_stat_twittnuker, null, null, true);
-		mNotificationManager.notify(NOTIFICATION_ID_SHORTENING, notification);
-
-		Map<Long, ShortenedStatusModel> statuses;
-		try {
-			statuses = TweetShortenerUtils.postTwitlonger(this, pstatus);
-		} finally {
-			mNotificationManager.cancel(NOTIFICATION_ID_SHORTENING);
-		}
-
-		if (statuses == null || statuses.isEmpty()) {
-			final Intent intent = new Intent();
-			intent.setPackage(BuildConfig.APPLICATION_ID);
-			final Uri.Builder builder = new Uri.Builder();
-			builder.scheme(SCHEME_TWITTNUKER);
-			builder.authority(AUTHORITY_DRAFTS);
-			intent.setData(builder.build());
-			final Notification errorNotification = buildNotification(getString(R.string.shortening),
-					getString(R.string.error_twitlonger), R.drawable.ic_stat_twittnuker, intent, null, false);
-			mNotificationManager.notify(NOTIFICATION_ID_SHORTENING, errorNotification);
-			return null;
-		}
-		return statuses;
-	}
-
-	//FIXME
-	@Deprecated
-	private Map<Long, ShortenedStatusModel> postHototIn(ParcelableStatusUpdate pstatus) {
-
-		final Notification notification = buildNotification(getString(R.string.shortening),
-				getString(R.string.shortening_hototin), R.drawable.ic_stat_twittnuker, null, null, true);
-		mNotificationManager.notify(NOTIFICATION_ID_SHORTENING, notification);
-
-		Map<Long, ShortenedStatusModel> statuses;
-		try {
-			statuses = TweetShortenerUtils.shortWithHototin(this, pstatus);
-		} finally {
-			mNotificationManager.cancel(NOTIFICATION_ID_SHORTENING);
-		}
-
-		if (statuses == null || statuses.isEmpty()) {
-			final Intent intent = new Intent();
-			intent.setPackage(BuildConfig.APPLICATION_ID);
-			final Uri.Builder builder = new Uri.Builder();
-			builder.scheme(SCHEME_TWITTNUKER);
-			builder.authority(AUTHORITY_DRAFTS);
-			intent.setData(builder.build());
-			final Notification errorNotification = buildNotification(getString(R.string.shortening),
-					getString(R.string. error_hototin), R.drawable.ic_stat_twittnuker, intent, null, false);
-			mNotificationManager.notify(NOTIFICATION_ID_SHORTENING, errorNotification);
-			return null;
-		}
-		return statuses;
-	}
-
-
 
 	static class MessageMediaUploadListener implements ReadListener {
 		private final Context context;
