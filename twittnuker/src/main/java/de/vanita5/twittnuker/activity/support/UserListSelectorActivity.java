@@ -52,6 +52,7 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -62,7 +63,6 @@ import twitter4j.http.HttpResponseCode;
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ParseUtils.parseString;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
-import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 
 public class UserListSelectorActivity extends BaseSupportDialogActivity implements OnClickListener, OnItemClickListener {
 
@@ -325,7 +325,8 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
             final Twitter twitter = TwitterAPIUtils.getTwitterInstance(mActivity, mAccountId, false);
 			if (twitter == null) return SingleResponse.getInstance();
 			try {
-				final ResponseList<User> lists = twitter.searchUsers(mName, 1);
+                final Paging paging = new Paging();
+                final ResponseList<User> lists = twitter.searchUsers(mName, paging);
                 final List<ParcelableUser> data = new ArrayList<>();
 				for (final User item : lists) {
 					data.add(new ParcelableUser(item, mAccountId));

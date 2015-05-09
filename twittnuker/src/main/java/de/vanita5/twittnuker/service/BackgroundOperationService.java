@@ -44,11 +44,13 @@ import com.nostra13.universalimageloader.utils.IoUtils;
 import com.twitter.Extractor;
 
 import org.mariotaku.querybuilder.Expression;
-
+import org.mariotaku.simplerestapi.http.ContentType;
+import org.mariotaku.simplerestapi.http.mime.FileTypedData;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.model.MediaUploadResult;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
@@ -64,9 +66,11 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ListUtils;
+import de.vanita5.twittnuker.util.MediaUploaderInterface;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.StatusCodeMessageUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
+import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener;
@@ -87,6 +91,8 @@ import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.UserMentionEntity;
+import twitter4j.api.TwitterUpload;
 import twitter4j.conf.Configuration;
 import twitter4j.media.ImageUpload;
 import twitter4j.media.ImageUploadFactory;
@@ -96,7 +102,6 @@ import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createMessageDraft;
 import static de.vanita5.twittnuker.util.Utils.getImagePathFromUri;
 import static de.vanita5.twittnuker.util.Utils.getImageUploadStatus;
-import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 
 public class BackgroundOperationService extends IntentService implements Constants {
 
@@ -109,8 +114,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 	private NotificationManager mNotificationManager;
 	private AsyncTwitterWrapper mTwitter;
 
-	private String mUploader;
-	private String mShortener;
+    private MediaUploaderInterface mUploader;
+    private StatusShortenerInterface mShortener;
 
 	private boolean mUseUploader, mUseShortener;
 
@@ -132,8 +137,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 		final String shortenerComponent = mPreferences.getString(KEY_STATUS_SHORTENER, null);
         mUseUploader = !ServicePickerPreference.isNoneValue(uploaderComponent);
 		mUseShortener = !ServicePickerPreference.isNoneValue(shortenerComponent);
-		mUploader = mUseUploader ? uploaderComponent : null;
-		mShortener = mUseShortener ? shortenerComponent : null;
+        mUploader = mUseUploader ? MediaUploaderInterface.getInstance(app, uploaderComponent) : null;
+        mShortener = mUseShortener ? StatusShortenerInterface.getInstance(app, shortenerComponent) : null;
 	}
 
 	@Override
@@ -167,7 +172,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 
 			@Override
 			public void run() {
-                Utils.showErrorMessage(BackgroundOperationService.this, actionRes, message, longMessage);
+				Utils.showErrorMessage(BackgroundOperationService.this, actionRes, message, longMessage);
 			}
 		});
 	}
@@ -384,7 +389,8 @@ public class BackgroundOperationService extends IntentService implements Constan
                                                                       final long accountId, final long recipientId,
                                                                       final String text, final String imageUri) {
         final Twitter twitter = TwitterAPIUtils.getTwitterInstance(this, accountId, true, true);
-        if (twitter == null) return SingleResponse.getInstance();
+        final TwitterUpload twitterUpload = TwitterAPIUtils.getTwitterInstance(this, accountId, true, true, TwitterUpload.class);
+        if (twitter == null || twitterUpload == null) return SingleResponse.getInstance();
 		try {
 			final ParcelableDirectMessage directMessage;
 			if (imageUri != null) {
@@ -397,7 +403,8 @@ public class BackgroundOperationService extends IntentService implements Constan
                 BitmapUtils.downscaleImageIfNeeded(file, 100);
 				final ContentLengthInputStream is = new ContentLengthInputStream(file);
 				is.setReadListener(new MessageMediaUploadListener(this, mNotificationManager, builder, text));
-				final MediaUploadResponse uploadResp = twitter.uploadMedia(file.getName(), is, o.outMimeType);
+//                final MediaUploadResponse uploadResp = twitter.uploadMedia(file.getName(), is, o.outMimeType);
+                final MediaUploadResponse uploadResp = twitterUpload.uploadMedia(file);
 				directMessage = new ParcelableDirectMessage(twitter.sendDirectMessage(recipientId, text,
 						uploadResp.getId()), accountId, true);
                 if (!file.delete()) {
@@ -440,59 +447,68 @@ public class BackgroundOperationService extends IntentService implements Constan
 		if (statusUpdate.accounts.length == 0) return Collections.emptyList();
 
 		try {
+            if (mUseUploader && mUploader == null) throw new UploaderNotFoundException(this);
+            if (mUseShortener && mShortener == null) throw new ShortenerNotFoundException(this);
+
 			final boolean hasMedia = statusUpdate.media != null && statusUpdate.media.length > 0;
-			final String imagePath = hasMedia ? getImagePathFromUri(this, Uri.parse(statusUpdate.media[0].uri)) : null;
-            final File imageFile = imagePath != null ? new File(imagePath) : null;
 
-			String uploadResultUrl = null;
-
-			if (mUseUploader && imageFile != null && imageFile.exists()) {
-				uploadResultUrl = uploadMedia(imageFile, statusUpdate.accounts, statusUpdate.text);
-			}
-
-            final String unshortenedContent = mUseUploader && uploadResultUrl != null ? getImageUploadStatus(
-					new String[] { uploadResultUrl.toString() }, statusUpdate.text) : statusUpdate.text;
-
-			final boolean shouldShorten = mValidator.getTweetLength(unshortenedContent) > mValidator.getMaxTweetLength();
-			Map<Long, ShortenedStatusModel> shortenedStatuses = null;
-
-			if (shouldShorten && mUseShortener) {
-				if (mShortener.equals(SERVICE_SHORTENER_HOTOTIN)) {
-					shortenedStatuses = postHototIn(statusUpdate);
-					if (shortenedStatuses == null) throw new ShortenException(this);
-				} else if (mShortener.equals(SERVICE_SHORTENER_TWITLONGER)) {
-					shortenedStatuses = postTwitlonger(statusUpdate);
-					if (shortenedStatuses == null) throw new ShortenException(this);
-				} else {
-					throw new IllegalArgumentException("BackgroundOperationService.java#updateStatus()");
+            final String overrideStatusText;
+            if (mUseUploader && mUploader != null && hasMedia) {
+                final MediaUploadResult uploadResult;
+                try {
+                    mUploader.waitForService();
+                    uploadResult = mUploader.upload(statusUpdate,
+                            UploaderMediaItem.getFromStatusUpdate(this, statusUpdate));
+                } catch (final Exception e) {
+                    throw new UploadException(this);
+                } finally {
+                    mUploader.unbindService();
 				}
+				if (mUseUploader && hasMedia && uploadResult == null)
+					throw new UploadException(this);
+				if (uploadResult.error_code != 0)
+					throw new UploadException(uploadResult.error_message);
+				overrideStatusText = getImageUploadStatus(this, uploadResult.media_uris, statusUpdate.text);
+			} else {
+				overrideStatusText = null;
 			}
 
+            final String unShortenedText = isEmpty(overrideStatusText) ? statusUpdate.text : overrideStatusText;
+
+			final boolean shouldShorten = mValidator.getTweetLength(unShortenedText) > mValidator.getMaxTweetLength();
+            final String shortenedText;
 			if (shouldShorten) {
-				if (!mUseShortener)
+                if (mUseShortener) {
+                    final StatusShortenResult shortenedResult;
+                    mShortener.waitForService();
+                    try {
+                        shortenedResult = mShortener.shorten(statusUpdate, unShortenedText);
+                    } catch (final Exception e) {
+                        throw new ShortenException(this);
+                    } finally {
+                        mShortener.unbindService();
+                    }
+                    if (shortenedResult == null || shortenedResult.shortened == null)
+                        throw new ShortenException(this);
+                    shortenedText = shortenedResult.shortened;
+                } else
 					throw new StatusTooLongException(this);
-				else if (unshortenedContent == null) throw new ShortenException(this);
+            } else {
+                shortenedText = unShortenedText;
 			}
-			if (!mUseUploader && statusUpdate.media != null) {
+            if (statusUpdate.media != null) {
 				for (final ParcelableMediaUpdate media : statusUpdate.media) {
 					final String path = getImagePathFromUri(this, Uri.parse(media.uri));
 					final File file = path != null ? new File(path) : null;
-					if (file != null && file.exists()) {
+                    if (!mUseUploader && file != null && file.exists()) {
                         BitmapUtils.downscaleImageIfNeeded(file, 95);
 					}
 				}
 			}
             for (final ParcelableAccount account : statusUpdate.accounts) {
-				String shortenedContent = "";
-				ShortenedStatusModel shortenedStatusModel = null;
                 final Twitter twitter = TwitterAPIUtils.getTwitterInstance(this, account.account_id, true, true);
-
-				if (shouldShorten && mUseShortener && shortenedStatuses != null) {
-					shortenedStatusModel = shortenedStatuses.get(account.account_id);
-					shortenedContent = shortenedStatusModel.getText();
-				}
-				final StatusUpdate status = new StatusUpdate(shouldShorten && mUseShortener ? shortenedContent
-						: unshortenedContent);
+                final TwitterUpload upload = TwitterAPIUtils.getTwitterInstance(this, account.account_id, true, true, TwitterUpload.class);
+                final StatusUpdate status = new StatusUpdate(shortenedText);
 				status.setInReplyToStatusId(statusUpdate.in_reply_to_status_id);
 				if (statusUpdate.location != null) {
 					status.setLocation(ParcelableLocation.toGeoLocation(statusUpdate.location));
@@ -512,8 +528,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 							is = new ContentLengthInputStream(file);
 							is.setReadListener(new StatusMediaUploadListener(this, mNotificationManager, builder,
 									statusUpdate));
-                            final MediaUploadResponse uploadResp = twitter.uploadMedia(file.getName(), is,
-                                    o.outMimeType);
+                            final MediaUploadResponse uploadResp = upload.uploadMedia(
+                                    new FileTypedData(is, file.getName(), file.length(), ContentType.parse(o.outMimeType)));
                             mediaIds[i] = uploadResp.getId();
 						}
                     } catch (final FileNotFoundException e) {
@@ -535,12 +551,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 				}
 				try {
                     final Status resultStatus = twitter.updateStatus(status);
-
-					//Update Twitlonger statuses
-					if (shouldShorten && mUseShortener && mShortener.equals(SERVICE_SHORTENER_TWITLONGER)) {
-						TweetShortenerUtils.updateTwitlonger(shortenedStatusModel, resultStatus.getId(), twitter);
-					}
-					Utils.setLastSeen(this, resultStatus.getUserMentionEntities(), System.currentTimeMillis());
+					final UserMentionEntity[] entities = resultStatus.getUserMentionEntities();
+					Utils.setLastSeen(this, entities, System.currentTimeMillis());
 					if (!notReplyToOther) {
                         final long inReplyToUserId = resultStatus.getInReplyToUserId();
 						if (inReplyToUserId <= 0) {
@@ -604,6 +616,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 
 	}
 
+	//FIXME
 	private Notification updateUploadStatusNotification(final NotificationCompat.Builder builder, final int progress) {
 		builder.setContentTitle(getString(R.string.uploading_image));
 		builder.setContentText((progress < 100 ? progress : 100) + "%");
@@ -614,6 +627,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 		return notification;
 	}
 
+	//FIXME
+	@Deprecated
 	private Map<Long, ShortenedStatusModel> postTwitlonger(ParcelableStatusUpdate pstatus) {
 		final Notification notification = buildNotification(getString(R.string.shortening),
 				getString(R.string.shortening_twitlonger), R.drawable.ic_stat_twittnuker, null, null, true);
@@ -641,6 +656,8 @@ public class BackgroundOperationService extends IntentService implements Constan
 		return statuses;
 	}
 
+	//FIXME
+	@Deprecated
 	private Map<Long, ShortenedStatusModel> postHototIn(ParcelableStatusUpdate pstatus) {
 
 		final Notification notification = buildNotification(getString(R.string.shortening),
@@ -669,71 +686,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 		return statuses;
 	}
 
-	private String uploadMedia(File file, ParcelableAccount[] accounts, String message) throws UploadException {
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-		String url = null;
-		Configuration conf;
 
-		long accountId = -1;
-		if(accounts != null && accounts.length > 0) {
-			accountId = accounts[0].account_id;
-		}
-
-		ContentLengthInputStream is;
-		startForeground(NOTIFICATION_ID_UPLOAD_MEDIA, updateUploadStatusNotification(builder, 0));
-		try {
-			is = new ContentLengthInputStream(file);
-			is.setReadListener(new ReadListener() {
-
-				int percent;
-
-				@Override
-				public void onRead(final long length, final long position) {
-					final int percent = length > 0 ? (int) (position * 100 / length) : 0;
-					if (this.percent != percent) {
-						mNotificationManager.notify(NOTIFICATION_ID_UPLOAD_MEDIA,
-								updateUploadStatusNotification(builder, percent));
-					}
-					this.percent = percent;
-				}
-			});
-
-			if (mUploader.equals(SERVICE_UPLOADER_TWIPPLE)) {
-				Twitter twitter = getTwitterInstance(this, accountId, MediaProvider.TWIPPLE.toString(), "");
-				if (twitter == null) throw new UploadException(this);
-
-				conf = twitter.getConfiguration();
-
-				ImageUpload imageUpload = new ImageUploadFactory(conf).getInstance(MediaProvider.TWIPPLE);
-				try {
-					url = imageUpload.upload(file.getName(), is, message);
-				} catch (TwitterException e) {
-					throw new UploadException(this);
-				}
-			}
-			is.close();
-		} catch (FileNotFoundException e) {
-			throw new UploadException(this);
-		} catch (IOException e) {
-			throw new UploadException(this);
-		}
-
-		if (isEmpty(url)) throw new UploadException(this);
-		return url;
-	}
-
-	static class UploadException extends UpdateStatusException {
-		private static final long serialVersionUID = 8596614696393917525L;
-
-		public UploadException(final Context context) {
-			super(context.getString(R.string.error_message_image_upload_failed));
-		}
-
-		public UploadException(final String message) {
-			super(message);
-		}
-
-	}
 
 	static class MessageMediaUploadListener implements ReadListener {
 		private final Context context;
@@ -762,6 +715,22 @@ public class BackgroundOperationService extends IntentService implements Constan
 			this.percent = percent;
 		}
 	}
+
+    static class ShortenerNotFoundException extends UpdateStatusException {
+        private static final long serialVersionUID = -7262474256595304566L;
+
+        public ShortenerNotFoundException(final Context context) {
+            super(context.getString(R.string.error_message_tweet_shortener_not_found));
+        }
+    }
+
+    static class ShortenException extends UpdateStatusException {
+        private static final long serialVersionUID = 3075877185536740034L;
+
+        public ShortenException(final Context context) {
+            super(context.getString(R.string.error_message_tweet_shorten_failed));
+        }
+    }
 
     static class StatusMediaUploadListener implements ReadListener {
         private final Context context;
@@ -799,18 +768,30 @@ public class BackgroundOperationService extends IntentService implements Constan
 		}
 	}
 
-	static class ShortenException extends UpdateStatusException {
-		private static final long serialVersionUID = 3075877185536740034L;
-
-		public ShortenException(final Context context) {
-			super(context.getString(R.string.error_message_tweet_shorten_failed));
-		}
-	}
-
 	static class UpdateStatusException extends Exception {
 		private static final long serialVersionUID = -1267218921727097910L;
 
 		public UpdateStatusException(final String message) {
+            super(message);
+        }
+    }
+
+    static class UploaderNotFoundException extends UpdateStatusException {
+        private static final long serialVersionUID = 1041685850011544106L;
+
+        public UploaderNotFoundException(final Context context) {
+            super(context.getString(R.string.error_message_image_uploader_not_found));
+        }
+    }
+
+    static class UploadException extends UpdateStatusException {
+        private static final long serialVersionUID = 8596614696393917525L;
+
+        public UploadException(final Context context) {
+            super(context.getString(R.string.error_message_image_upload_failed));
+        }
+
+        public UploadException(final String message) {
 			super(message);
 		}
 	}

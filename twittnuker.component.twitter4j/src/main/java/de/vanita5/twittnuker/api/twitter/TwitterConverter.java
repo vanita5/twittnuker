@@ -33,15 +33,22 @@ import org.mariotaku.simplerestapi.http.RestResponse;
 import org.mariotaku.simplerestapi.http.mime.TypedData;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.api.twitter.model.impl.HashtagEntityImpl;
+import de.vanita5.twittnuker.api.twitter.model.impl.Indices;
 import de.vanita5.twittnuker.api.twitter.model.impl.MediaEntityImpl;
+import de.vanita5.twittnuker.api.twitter.model.impl.PageableResponseListWrapper;
 import de.vanita5.twittnuker.api.twitter.model.impl.PlaceImpl;
+import de.vanita5.twittnuker.api.twitter.model.impl.QueryResultWrapper;
+import de.vanita5.twittnuker.api.twitter.model.impl.RelationshipImpl;
+import de.vanita5.twittnuker.api.twitter.model.impl.RelationshipWrapper;
 import de.vanita5.twittnuker.api.twitter.model.impl.ResponseListImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.SavedSearchImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.StatusImpl;
+import de.vanita5.twittnuker.api.twitter.model.impl.TwitterResponseImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.TypeConverterMapper;
 import de.vanita5.twittnuker.api.twitter.model.impl.UrlEntityImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.UserImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.UserMentionEntityImpl;
+import de.vanita5.twittnuker.api.twitter.model.impl.Wrapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -55,9 +62,11 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
+import twitter4j.ErrorInfo;
 import twitter4j.GeoLocation;
 import twitter4j.HashtagEntity;
 import twitter4j.MediaEntity;
+import twitter4j.MediaUploadResponse;
 import twitter4j.PageableResponseList;
 import twitter4j.Place;
 import twitter4j.QueryResult;
@@ -65,6 +74,7 @@ import twitter4j.Relationship;
 import twitter4j.ResponseList;
 import twitter4j.SavedSearch;
 import twitter4j.Status;
+import twitter4j.TranslationResult;
 import twitter4j.TwitterException;
 import twitter4j.UrlEntity;
 import twitter4j.User;
@@ -92,6 +102,10 @@ public class TwitterConverter implements Converter {
         TypeConverterMapper.register(HashtagEntity.class, HashtagEntityImpl.class);
         TypeConverterMapper.register(Place.class, PlaceImpl.class);
         TypeConverterMapper.register(Relationship.class, RelationshipImpl.class);
+        TypeConverterMapper.register(MediaUploadResponse.class, MediaUploadResponseImpl.class);
+        TypeConverterMapper.register(MediaUploadResponse.Image.class, MediaUploadResponseImpl.ImageImpl.class);
+        TypeConverterMapper.register(ErrorInfo.class, ErrorInfoImpl.class);
+        TypeConverterMapper.register(TranslationResult.class, TranslationResultImpl.class);
 
         LoganSquare.registerTypeConverter(Indices.class, Indices.CONVERTER);
         LoganSquare.registerTypeConverter(GeoLocation.class, GeoLocation.CONVERTER);
@@ -107,16 +121,7 @@ public class TwitterConverter implements Converter {
     public Object convert(RestResponse response, Type type) throws Exception {
 		final TypedData body = response.getBody();
         if (!response.isSuccessful()) {
-            final ByteArrayOutputStream os = new ByteArrayOutputStream();
-            body.writeTo(os);
-            os.flush();
-			final ContentType contentType = body.contentType();
-            Charset charset = null;
-            if (contentType != null) {
-                charset = contentType.getCharset();
-            }
-            if (charset == null) charset = Charset.defaultCharset();
-            throw new TwitterException(os.toString(charset.name()));
+            throw LoganSquare.parse(body.stream(), TwitterException.class);
         }
         final ContentType contentType = body.contentType();
 		final InputStream stream = body.stream();

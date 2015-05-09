@@ -33,6 +33,17 @@ import org.mariotaku.simplerestapi.http.RestHttpClient;
 import org.mariotaku.simplerestapi.http.RestRequest;
 import org.mariotaku.simplerestapi.http.RestResponse;
 import org.mariotaku.simplerestapi.method.GET;
+import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.api.twitter.OkHttpRestClient;
+import de.vanita5.twittnuker.api.twitter.auth.BasicAuthorization;
+import de.vanita5.twittnuker.api.twitter.auth.EmptyAuthorization;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
+import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -41,15 +52,6 @@ import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.api.twitter.OkHttpRestClient;
-import de.vanita5.twittnuker.api.twitter.auth.BasicAuthorization;
-import de.vanita5.twittnuker.api.twitter.auth.EmptyAuthorization;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
-import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.provider.TwidereDataStore;
-import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
 import twitter4j.TwitterFactory;
@@ -100,6 +102,13 @@ public class TwitterAPIUtils {
 	public static Twitter getTwitterInstance(final Context context, final long accountId,
 											 final boolean includeEntities,
 											 final boolean includeRetweets) {
+        return getTwitterInstance(context, accountId, includeEntities, includeRetweets, Twitter.class);
+    }
+
+    @Nullable
+    public static <T> T getTwitterInstance(final Context context, final long accountId,
+                                           final boolean includeEntities,
+                                           final boolean includeRetweets, Class<T> cls) {
 		if (context == null) return null;
 		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
 		final SharedPreferences prefs = context.getSharedPreferences(TwittnukerConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -127,8 +136,6 @@ public class TwitterAPIUtils {
 				cb.setHttpProxyPort(proxy_port);
 			}
 		}
-		final String prefConsumerKey = prefs.getString(SharedPreferenceConstants.KEY_CONSUMER_KEY, TwittnukerConstants.TWITTER_CONSUMER_KEY_2);
-		final String prefConsumerSecret = prefs.getString(SharedPreferenceConstants.KEY_CONSUMER_SECRET, TwittnukerConstants.TWITTER_CONSUMER_SECRET_2);
 		final String apiUrlFormat = credentials.api_url_format;
 		final String consumerKey = Utils.trim(credentials.consumer_key);
 		final String consumerSecret = Utils.trim(credentials.consumer_secret);
@@ -152,23 +159,15 @@ public class TwitterAPIUtils {
 		cb.setIncludeRTsEnabled(includeRetweets);
 		cb.setIncludeReplyCountEnabled(true);
 		cb.setIncludeDescendentReplyCountEnabled(true);
+        return new TwitterFactory(cb.build()).getInstance(getAuthorization(credentials), cls);
+    }
+
+    public static Authorization getAuthorization(ParcelableAccount.ParcelableCredentials credentials) {
 		switch (credentials.auth_type) {
 			case TwidereDataStore.Accounts.AUTH_TYPE_OAUTH:
 			case TwidereDataStore.Accounts.AUTH_TYPE_XAUTH: {
-				if (!isEmpty(consumerKey) && !isEmpty(consumerSecret)) {
-					cb.setOAuthConsumerKey(consumerKey);
-					cb.setOAuthConsumerSecret(consumerSecret);
-				} else if (!isEmpty(prefConsumerKey) && !isEmpty(prefConsumerSecret)) {
-					cb.setOAuthConsumerKey(prefConsumerKey);
-					cb.setOAuthConsumerSecret(prefConsumerSecret);
-				} else {
-					cb.setOAuthConsumerKey(TwittnukerConstants.TWITTER_CONSUMER_KEY_2);
-					cb.setOAuthConsumerSecret(TwittnukerConstants.TWITTER_CONSUMER_SECRET_2);
-				}
-				final String token = credentials.oauth_token;
-				final String tokenSecret = credentials.oauth_token_secret;
-				if (isEmpty(token) || isEmpty(tokenSecret)) return null;
-				return new TwitterFactory(cb.build()).getInstance(new OAuthToken(token, tokenSecret));
+                return new OAuthAuthorization(credentials.consumer_key, credentials.consumer_secret,
+                        new OAuthToken(credentials.oauth_token, credentials.oauth_token_secret));
 			}
 			case TwidereDataStore.Accounts.AUTH_TYPE_BASIC: {
 				final String screenName = credentials.screen_name;
@@ -176,15 +175,10 @@ public class TwitterAPIUtils {
 				final String loginName = username != null ? username : screenName;
 				final String password = credentials.basic_auth_password;
 				if (isEmpty(loginName) || isEmpty(password)) return null;
-				return new TwitterFactory(cb.build()).getInstance(new BasicAuthorization(loginName, password));
-			}
-			case TwidereDataStore.Accounts.AUTH_TYPE_TWIP_O_MODE: {
-				return new TwitterFactory(cb.build()).getInstance(new EmptyAuthorization());
-			}
-			default: {
-				return null;
+                return new BasicAuthorization(loginName, password);
 			}
 		}
+        return new EmptyAuthorization();
 	}
 
 	public static RestHttpClient getHttpClient(final Context context, final int timeoutMillis,

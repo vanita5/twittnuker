@@ -113,4 +113,9 @@ public class OAuthToken implements ValueMap {
 		}
 		return null;
 	}
+
+    @Override
+    public String[] keys() {
+        return new String[]{"oauth_token", "oauth_token_secret"};
+    }
 }

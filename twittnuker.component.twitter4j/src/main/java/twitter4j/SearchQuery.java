@@ -30,7 +30,7 @@ import org.mariotaku.simplerestapi.http.ValueMap;
  * @see <a href="http://search.twitter.com/operators">Twitter API / Search
  *      Operators</a>
  */
-public final class Query implements ValueMap {
+public final class SearchQuery implements ValueMap {
 	private String query = null;
 	private String lang = null;
 	private String locale = null;
@@ -58,10 +58,10 @@ public final class Query implements ValueMap {
 
 	public final static String RECENT = "recent";
 
-	public Query() {
+	public SearchQuery() {
 	}
 
-	public Query(final String query) {
+	public SearchQuery(final String query) {
 		this.query = query;
 	}
 
@@ -70,7 +70,7 @@ public final class Query implements ValueMap {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		final Query query1 = (Query) o;
+		final SearchQuery query1 = (SearchQuery) o;
 
 		if (maxId != query1.maxId) return false;
 		if (page != query1.page) return false;
@@ -100,7 +100,7 @@ public final class Query implements ValueMap {
 	 * @return the instance
 	 * @since Twitter4J 2.1.0
 	 */
-	public Query geoCode(final GeoLocation location, final double radius, final String unit) {
+	public SearchQuery geoCode(final GeoLocation location, final double radius, final String unit) {
 		setGeoCode(location, radius, unit);
 		return this;
 	}
@@ -238,7 +238,7 @@ public final class Query implements ValueMap {
 	 * @return the instance
 	 * @since Twitter4J 2.1.0
 	 */
-	public Query lang(final String lang) {
+	public SearchQuery lang(final String lang) {
 		setLang(lang);
 		return this;
 	}
@@ -252,7 +252,7 @@ public final class Query implements ValueMap {
 	 * @return the instance
 	 * @since Twitter4J 2.1.1
 	 */
-	public Query locale(final String locale) {
+	public SearchQuery locale(final String locale) {
 		setLocale(locale);
 		return this;
 	}
@@ -264,7 +264,7 @@ public final class Query implements ValueMap {
 	 * @return this instance
 	 * @since Twitter4J 2.1.1
 	 */
-	public Query maxId(final long maxId) {
+	public SearchQuery maxId(final long maxId) {
 		setMaxId(maxId);
 		return this;
 	}
@@ -277,7 +277,7 @@ public final class Query implements ValueMap {
 	 * @return the instance
 	 * @since Twitter4J 2.1.0
 	 */
-	public Query page(final int page) {
+	public SearchQuery page(final int page) {
 		setPage(page);
 		return this;
 	}
@@ -293,7 +293,7 @@ public final class Query implements ValueMap {
 	 *      Operators</a>
 	 * @since Twitter4J 2.1.0
 	 */
-	public Query query(final String query) {
+	public SearchQuery query(final String query) {
 		setQuery(query);
 		return this;
 	}
@@ -306,7 +306,7 @@ public final class Query implements ValueMap {
 	 * @return the instance
 	 * @since Twitter4J 2.1.3
 	 */
-	public Query resultType(final String resultType) {
+	public SearchQuery resultType(final String resultType) {
 		setResultType(resultType);
 		return this;
 	}
@@ -318,7 +318,7 @@ public final class Query implements ValueMap {
 	 * @return the instance
 	 * @since Twitter4J 2.1.0
 	 */
-	public Query rpp(final int rpp) {
+	public SearchQuery rpp(final int rpp) {
 		setRpp(rpp);
 		return this;
 	}
@@ -450,7 +450,7 @@ public final class Query implements ValueMap {
 	 * @return since
 	 * @since Twitter4J 2.1.1
 	 */
-	public Query since(final String since) {
+	public SearchQuery since(final String since) {
 		setSince(since);
 		return this;
 	}
@@ -462,7 +462,7 @@ public final class Query implements ValueMap {
 	 * @return the instance
 	 * @since Twitter4J 2.1.0
 	 */
-	public Query sinceId(final long sinceId) {
+	public SearchQuery sinceId(final long sinceId) {
 		setSinceId(sinceId);
 		return this;
 	}
@@ -483,7 +483,7 @@ public final class Query implements ValueMap {
 	 * @return the instance
 	 * @since Twitter4J 2.1.1
 	 */
-	public Query until(final String until) {
+	public SearchQuery until(final String until) {
 		setUntil(until);
 		return this;
 	}
@@ -570,6 +570,12 @@ public final class Query implements ValueMap {
             }
         }
         return null;
+    }
+
+    @Override
+    public String[] keys() {
+        return new String[]{"q", "lang", "locale", "max_id", "since_id", "rpp", "page", "since",
+                "until", "geocode", "result_type"};
     }
 
 }

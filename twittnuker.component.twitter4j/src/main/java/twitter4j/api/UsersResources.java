@@ -53,13 +53,18 @@ public interface UsersResources {
 	User destroyMute(String screenName) throws TwitterException;
 
 	AccountSettings getAccountSettings() throws TwitterException;
+
+    @GET("/blocks/ids.json")
 	IDs getBlocksIDs() throws TwitterException;
 
-    IDs getBlocksIDs(Paging paging) throws TwitterException;
+    @GET("/blocks/ids.json")
+    IDs getBlocksIDs(@Query Paging paging) throws TwitterException;
 
+    @GET("/blocks/list.json")
     PageableResponseList<User> getBlocksList() throws TwitterException;
 
-    PageableResponseList<User> getBlocksList(Paging paging) throws TwitterException;
+    @GET("/blocks/list.json")
+    PageableResponseList<User> getBlocksList(@Query Paging paging) throws TwitterException;
 
 	ResponseList<User> getMemberSuggestions(String categorySlug) throws TwitterException;
 
@@ -69,7 +74,8 @@ public interface UsersResources {
 
     PageableResponseList<User> getMutesUsersList() throws TwitterException;
 
-    PageableResponseList<User> getMutesUsersList(Paging paging) throws TwitterException;
+    @GET("/mutes/users/list.json")
+    PageableResponseList<User> getMutesUsersList(@Query Paging paging) throws TwitterException;
 
 	ResponseList<Category> getSuggestedUserCategories() throws TwitterException;
 
@@ -81,8 +87,8 @@ public interface UsersResources {
 
 	void removeProfileBannerImage() throws TwitterException;
 
-	ResponseList<User> searchUsers(String query, int page) throws TwitterException;
-
+    @GET("/users/search.json")
+    ResponseList<User> searchUsers(@Query("q") String query, @Query Paging paging) throws TwitterException;
 
     @GET("/users/show.json")
     User showUser(@Query("user_id") long userId) throws TwitterException;
