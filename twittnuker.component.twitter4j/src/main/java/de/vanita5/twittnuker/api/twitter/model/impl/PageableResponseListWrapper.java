@@ -29,7 +29,6 @@ import de.vanita5.twittnuker.api.twitter.TwitterConverter;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import twitter4j.PageableResponseList;
 import twitter4j.Status;
@@ -53,8 +52,8 @@ public class PageableResponseListWrapper extends TwitterResponseImpl implements 
 	@JsonField(name = "statuses")
 	ArrayList<Status> statuses;
 
-    @JsonField(name = "user_lists")
-    ArrayList<Status> userLists;
+    @JsonField(name = "lists")
+    ArrayList<UserList> userLists;
 
 	@Override
 	public PageableResponseList<?> getWrapped(Object extra) {

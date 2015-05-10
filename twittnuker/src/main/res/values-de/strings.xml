@@ -658,6 +658,7 @@
     <string name="app_restart_confirm">Twittnuker startet jetzt neu um die Änderungen anzuwenden.</string>
     <string name="dont_restart">Nicht neustarten</string>
     <string name="user_list_details">Listen Details</string>
+    <string name="invalid_list_name">Muss mit einem Buchtsaben anfangen und kann nur Buchstaben, Zahlen, \"-\", oder \"_\" enthalten.</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

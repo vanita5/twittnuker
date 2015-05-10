@@ -57,6 +57,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.rengwuxian.materialedittext.MaterialEditText;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
@@ -70,6 +72,7 @@ import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.text.validator.UserListNameValidator;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -457,7 +460,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 	public static class EditUserListDialogFragment extends BaseSupportDialogFragment implements
 			DialogInterface.OnClickListener {
 
-		private EditText mEditName, mEditDescription;
+        private MaterialEditText mEditName, mEditDescription;
 		private CheckBox mPublicCheckBox;
 		private String mName, mDescription;
 		private long mAccountId;
@@ -475,7 +478,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 					mIsPublic = mPublicCheckBox.isChecked();
 					if (mName == null || mName.length() <= 0) return;
                     final UserListUpdate update = new UserListUpdate();
-                    update.setPublic(mIsPublic);
+                    update.setMode(mIsPublic ? UserList.Mode.PUBLIC : UserList.Mode.PRIVATE);
                     update.setName(mName);
                     update.setDescription(mDescription);
                     mTwitterWrapper.updateUserListDetails(mAccountId, mListId, update);
@@ -499,8 +502,9 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
             final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
             final View view = LayoutInflater.from(wrapped).inflate(R.layout.dialog_user_list_detail_editor, null);
 			builder.setView(view);
-			mEditName = (EditText) view.findViewById(R.id.name);
-			mEditDescription = (EditText) view.findViewById(R.id.description);
+            mEditName = (MaterialEditText) view.findViewById(R.id.name);
+            mEditName.addValidator(new UserListNameValidator(getString(R.string.invalid_list_name)));
+            mEditDescription = (MaterialEditText) view.findViewById(R.id.description);
 			mPublicCheckBox = (CheckBox) view.findViewById(R.id.is_public);
 			if (mName != null) {
 				mEditName.setText(mName);

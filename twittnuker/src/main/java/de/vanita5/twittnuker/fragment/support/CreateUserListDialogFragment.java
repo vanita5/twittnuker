@@ -31,16 +31,18 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.EditText;
+
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.text.validator.UserListNameValidator;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class CreateUserListDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
 
-	private EditText mEditName, mEditDescription;
+    private MaterialEditText mEditName, mEditDescription;
 	private CheckBox mPublicCheckBox;
 	private String mName, mDescription;
 	private long mAccountId;
@@ -74,8 +76,9 @@ public class CreateUserListDialogFragment extends BaseSupportDialogFragment impl
         final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 		final View view = LayoutInflater.from(wrapped).inflate(R.layout.dialog_user_list_detail_editor, null);
 		builder.setView(view);
-		mEditName = (EditText) view.findViewById(R.id.name);
-		mEditDescription = (EditText) view.findViewById(R.id.description);
+        mEditName = (MaterialEditText) view.findViewById(R.id.name);
+        mEditName.addValidator(new UserListNameValidator(getString(R.string.invalid_list_name)));
+        mEditDescription = (MaterialEditText) view.findViewById(R.id.description);
 		mPublicCheckBox = (CheckBox) view.findViewById(R.id.is_public);
 		if (mName != null) {
 			mEditName.setText(mName);
