@@ -35,8 +35,10 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
 import org.mariotaku.simplerestapi.http.Authorization;
 import org.mariotaku.simplerestapi.http.RestHttpClient;
+import org.mariotaku.simplerestapi.http.RestRequest;
 import org.mariotaku.simplerestapi.http.RestResponse;
 import org.mariotaku.simplerestapi.http.mime.TypedData;
+import org.mariotaku.simplerestapi.method.GET;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
@@ -137,7 +139,7 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 		if (isTwitterAuthRequired(uri) && extras instanceof AccountExtra) {
 			final AccountExtra accountExtra = (AccountExtra) extras;
 			account = ParcelableAccount.getCredentials(mContext, accountExtra.account_id);
-            auth = Utils.getTwitterAuthorization(mContext, accountExtra.account_id);
+            auth = TwitterAPIUtils.getAuthorization(account);
 		} else {
 			account = null;
 			auth = null;
@@ -147,7 +149,10 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             additionalHeaders.add(Pair.create("Accept", "image/webp, */*"));
         }
-        final RestResponse resp = TwitterAPIUtils.getRedirectedHttpResponse(mClient, modifiedUri, uriString, auth, additionalHeaders);
+        if (auth!= null && auth.hasAuthorization()) {
+//            additionalHeaders.add(Pair.create("Authorization", auth.getHeader()));
+        }
+        final RestResponse resp = mClient.execute(new RestRequest.Builder().method(GET.METHOD).url(modifiedUri).headers(additionalHeaders).build());
         final TypedData body = resp.getBody();
         return new ContentLengthInputStream(body.stream(), (int) body.length());
 	}

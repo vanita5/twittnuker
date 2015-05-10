@@ -42,6 +42,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import org.mariotaku.simplerestapi.http.Authorization;
+import org.mariotaku.simplerestapi.http.Endpoint;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
@@ -50,6 +52,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import org.xmlpull.v1.XmlPullParserException;
@@ -58,7 +61,6 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import twitter4j.TwitterConstants;
-import twitter4j.TwitterFactory;
 import twitter4j.TwitterOAuth;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
@@ -241,7 +243,6 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 			final String consumerSecret = getNonEmptyString(mPreferences, KEY_CONSUMER_SECRET,
 					TWITTER_CONSUMER_SECRET);
 			cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(mApplication));
-            Utils.setClientUserAgent(mActivity, consumerKey, consumerSecret, cb);
 			cb.setRestBaseURL(DEFAULT_REST_BASE_URL);
 			cb.setOAuthBaseURL(DEFAULT_OAUTH_BASE_URL);
 			cb.setSigningRestBaseURL(DEFAULT_SIGNING_REST_BASE_URL);
@@ -265,9 +266,9 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity implements 
 			}
 			try {
                 final Configuration conf = cb.build();
-                final TwitterOAuth twitter = new TwitterFactory(conf).getInstance(
-                        new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret()),
-                        TwitterOAuth.class);
+                final Endpoint endpoint = new Endpoint(DEFAULT_OAUTH_BASE_URL);
+                final Authorization auth = new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret());
+                final TwitterOAuth twitter = TwitterAPIUtils.getInstance(mActivity, endpoint, auth, TwitterOAuth.class);
                 return twitter.getRequestToken(OAUTH_CALLBACK_OOB);
             } catch (final Exception e) {
 				e.printStackTrace();

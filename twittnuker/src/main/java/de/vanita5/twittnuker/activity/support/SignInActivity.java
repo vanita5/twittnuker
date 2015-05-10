@@ -62,6 +62,8 @@ import android.widget.Toast;
 
 import com.meizu.flyme.reflect.StatusBarProxy;
 
+import org.mariotaku.simplerestapi.http.Authorization;
+import org.mariotaku.simplerestapi.http.Endpoint;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.api.twitter.auth.BasicAuthorization;
@@ -83,6 +85,7 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereActionModeForChildListener;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
+import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
 import de.vanita5.twittnuker.util.support.ViewSupport;
@@ -92,7 +95,6 @@ import de.vanita5.twittnuker.view.iface.TintedStatusLayout;
 import twitter4j.Twitter;
 import twitter4j.TwitterConstants;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
 import twitter4j.TwitterOAuth;
 import twitter4j.User;
 import twitter4j.conf.Configuration;
@@ -387,7 +389,6 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 		final boolean ignore_ssl_error = mPreferences.getBoolean(KEY_IGNORE_SSL_ERROR, false);
 		final boolean enable_proxy = mPreferences.getBoolean(KEY_ENABLE_PROXY, false);
 		cb.setHostAddressResolverFactory(new TwidereHostResolverFactory(mApplication));
-        Utils.setClientUserAgent(this, mConsumerKey, mConsumerSecret, cb);
         final String apiUrlFormat = TextUtils.isEmpty(mAPIUrlFormat) ? DEFAULT_TWITTER_API_URL_FORMAT : mAPIUrlFormat;
 		final String versionSuffix = mNoVersionSuffix ? null : "/1.1/";
         cb.setRestBaseURL(Utils.getApiUrl(apiUrlFormat, "api", versionSuffix));
@@ -638,16 +639,16 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 		@Override
         protected SignInResponse doInBackground(final Object... params) {
 			try {
-                final TwitterOAuth oauth = new TwitterFactory(conf).getInstance(
-                        new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret()),
-                        TwitterOAuth.class);
+                final String versionSuffix = noVersionSuffix ? null : "1.1";
+                final Endpoint endpoint = new Endpoint(Utils.getApiUrl(apiUrlFormat, "api", versionSuffix));
+                final Authorization auth = new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret());
+                final TwitterOAuth oauth = TwitterAPIUtils.getInstance(context, endpoint, auth, TwitterOAuth.class);
                 final OAuthToken accessToken = oauth.getAccessToken(new OAuthToken(requestToken,
 						requestTokenSecret), oauthVerifier);
                 final long userId = accessToken.getUserId();
                 if (userId <= 0) return new SignInResponse(false, false, null);
-                final Twitter twitter = new TwitterFactory(conf).getInstance(
-                        new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret(), accessToken),
-                        Twitter.class);
+                final Twitter twitter = TwitterAPIUtils.getInstance(context, endpoint,
+                        new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret(), accessToken), Twitter.class);
 				final User user = twitter.verifyCredentials();
                 if (isUserLoggedIn(context, userId)) return new SignInResponse(true, false, null);
                 final int color = analyseUserProfileColor(user);
@@ -681,22 +682,22 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 		private final int auth_type;
 
 		private final Context context;
-		private final String api_url_format;
-        private final boolean same_oauth_signing_url, no_version_suffix;
+        private final String apiUrlFormat;
+        private final boolean sameOAuthSigningUrl, noVersionSuffix;
 
         public SignInTask(final SignInActivity context, final Configuration conf,
                           final String username, final String password, final int auth_type,
-                          final String api_url_format, final boolean same_oauth_signing_url,
-                          final boolean no_version_suffix) {
+                          final String apiUrlFormat, final boolean sameOAuthSigningUrl,
+                          final boolean noVersionSuffix) {
 			super(context, conf);
 			this.context = context;
 			this.conf = conf;
 			this.username = username;
 			this.password = password;
 			this.auth_type = auth_type;
-			this.api_url_format = api_url_format;
-			this.same_oauth_signing_url = same_oauth_signing_url;
-            this.no_version_suffix = no_version_suffix;
+            this.apiUrlFormat = apiUrlFormat;
+            this.sameOAuthSigningUrl = sameOAuthSigningUrl;
+            this.noVersionSuffix = noVersionSuffix;
 		}
 
 		@Override
@@ -723,59 +724,65 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 		}
 
         private SignInResponse authBasic() throws TwitterException {
-			final Twitter twitter = new TwitterFactory(conf).getInstance(new BasicAuthorization(username, password));
+            final String versionSuffix = noVersionSuffix ? null : "1.1";
+            final Endpoint endpoint = new Endpoint(Utils.getApiUrl(apiUrlFormat, "api", versionSuffix));
+            final Authorization auth = new BasicAuthorization(username, password);
+            final Twitter twitter = TwitterAPIUtils.getInstance(context, endpoint, auth, Twitter.class);
 			final User user = twitter.verifyCredentials();
 			final long user_id = user.getId();
             if (user_id <= 0) return new SignInResponse(false, false, null);
             if (isUserLoggedIn(context, user_id)) return new SignInResponse(true, false, null);
             final int color = analyseUserProfileColor(user);
-            return new SignInResponse(conf, username, password, user, color, api_url_format,
-                    no_version_suffix);
+            return new SignInResponse(conf, username, password, user, color, apiUrlFormat,
+                    noVersionSuffix);
 		}
 
         private SignInResponse authOAuth() throws AuthenticationException, TwitterException {
-            final TwitterOAuth oauth = new TwitterFactory(conf).getInstance(
-                    new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret()),
-                    TwitterOAuth.class);
+            final String versionSuffix = noVersionSuffix ? null : "1.1";
+            final Endpoint endpoint = new Endpoint(Utils.getApiUrl(apiUrlFormat, "api", versionSuffix));
+            final Authorization auth = new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret());
+            final TwitterOAuth oauth = TwitterAPIUtils.getInstance(context, endpoint, auth, TwitterOAuth.class);
             final OAuthPasswordAuthenticator authenticator = new OAuthPasswordAuthenticator(oauth);
             final OAuthToken accessToken = authenticator.getOAuthAccessToken(username, password);
             final long user_id = accessToken.getUserId();
             if (user_id <= 0) return new SignInResponse(false, false, null);
             if (isUserLoggedIn(context, user_id)) return new SignInResponse(true, false, null);
-            final Twitter twitter = new TwitterFactory(conf).getInstance(
-                    new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret(), accessToken),
-                    Twitter.class);
+            final Twitter twitter = TwitterAPIUtils.getInstance(context, endpoint,
+                    new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret(), accessToken), Twitter.class);
 			final User user = twitter.verifyCredentials();
             final int color = analyseUserProfileColor(user);
             return new SignInResponse(conf, accessToken, user, Accounts.AUTH_TYPE_OAUTH, color,
-                    api_url_format, same_oauth_signing_url, no_version_suffix);
+                    apiUrlFormat, sameOAuthSigningUrl, noVersionSuffix);
 		}
 
         private SignInResponse authTwipOMode() throws TwitterException {
-            final Twitter twitter = new TwitterFactory(conf).getInstance(new EmptyAuthorization());
+            final String versionSuffix = noVersionSuffix ? null : "1.1";
+            final Endpoint endpoint = new Endpoint(Utils.getApiUrl(apiUrlFormat, "api", versionSuffix));
+            final Authorization auth = new EmptyAuthorization();
+            final Twitter twitter = TwitterAPIUtils.getInstance(context, endpoint, auth, Twitter.class);
 			final User user = twitter.verifyCredentials();
 			final long user_id = user.getId();
             if (user_id <= 0) return new SignInResponse(false, false, null);
             if (isUserLoggedIn(context, user_id)) return new SignInResponse(true, false, null);
             final int color = analyseUserProfileColor(user);
-            return new SignInResponse(conf, user, color, api_url_format, no_version_suffix);
+            return new SignInResponse(conf, user, color, apiUrlFormat, noVersionSuffix);
 		}
 
         private SignInResponse authxAuth() throws TwitterException {
-            final TwitterOAuth oauth = new TwitterFactory(conf).getInstance(
-                    new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret()),
-                    TwitterOAuth.class);
+            final String versionSuffix = noVersionSuffix ? null : "1.1";
+            final Endpoint endpoint = new Endpoint(Utils.getApiUrl(apiUrlFormat, "api", versionSuffix));
+            final Authorization auth = new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret());
+            final TwitterOAuth oauth = TwitterAPIUtils.getInstance(context, endpoint, auth, TwitterOAuth.class);
             final OAuthToken accessToken = oauth.getAccessToken(username, password, TwitterOAuth.XAuthMode.CLIENT);
             final long user_id = accessToken.getUserId();
             if (user_id <= 0) return new SignInResponse(false, false, null);
             if (isUserLoggedIn(context, user_id)) return new SignInResponse(true, false, null);
-            final Twitter twitter = new TwitterFactory(conf).getInstance(
-                    new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret(), accessToken),
-                    Twitter.class);
+            final Twitter twitter = TwitterAPIUtils.getInstance(context, endpoint,
+                    new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret(), accessToken), Twitter.class);
             final User user = twitter.verifyCredentials();
             final int color = analyseUserProfileColor(user);
             return new SignInResponse(conf, accessToken, user, Accounts.AUTH_TYPE_XAUTH, color,
-                    api_url_format, same_oauth_signing_url, no_version_suffix);
+                    apiUrlFormat, sameOAuthSigningUrl, noVersionSuffix);
 		}
 
 	}
