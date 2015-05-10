@@ -72,6 +72,7 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ForegroundColorView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
+import twitter4j.ProfileUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
@@ -420,7 +421,6 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         private final String mLocation;
         private final String mDescription;
         private final int mLinkColor;
-        private final int mBackgroundColor;
         private final FragmentActivity mActivity;
 
         public UpdateProfileTaskInternal(final UserProfileEditorFragment fragment,
@@ -438,7 +438,6 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
             mLocation = location;
             mDescription = description;
             mLinkColor = linkColor;
-            mBackgroundColor = backgroundColor;
         }
 
         @Override
@@ -446,13 +445,14 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
             final Twitter twitter = TwitterAPIUtils.getTwitterInstance(mActivity, mAccountId, true);
             try {
                 User user = null;
-                if (isColorChanged()) {
-                    final String linkColor = String.format("%08x", mLinkColor).substring(2);
-                    final String backgroundColor = String.format("%08x", mBackgroundColor).substring(2);
-                    user = twitter.updateProfileColors(backgroundColor, null, linkColor, null, null);
-                }
                 if (isProfileChanged()) {
-                    user = twitter.updateProfile(mName, mUrl, mLocation, mDescription);
+                    final ProfileUpdate profileUpdate = new ProfileUpdate();
+                    profileUpdate.name(mName);
+                    profileUpdate.url(mUrl);
+                    profileUpdate.location(mLocation);
+                    profileUpdate.description(mDescription);
+                    profileUpdate.linkColor(mLinkColor);
+                    user = twitter.updateProfile(profileUpdate);
                 }
                 if (user == null) {
                     // User profile unchanged
@@ -464,17 +464,10 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
             }
         }
 
-        private boolean isColorChanged() {
-            final ParcelableUser orig = mOriginal;
-            if (orig == null) return true;
-            if (mLinkColor != orig.link_color) return true;
-            if (mBackgroundColor != orig.background_color) return true;
-            return false;
-        }
-
         private boolean isProfileChanged() {
             final ParcelableUser orig = mOriginal;
             if (orig == null) return true;
+            if (mLinkColor != orig.link_color) return true;
             if (!stringEquals(mName, orig.name)) return true;
             if (!stringEquals(mDescription, isEmpty(orig.description_expanded) ? orig.description_plain : orig.description_expanded))
                 return true;

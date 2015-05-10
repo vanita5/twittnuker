@@ -490,7 +490,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         if (adapter.isMediaPreviewEnabled()) {
             final boolean hasMedia = media != null && media.length > 0;
             if (hasMedia && (adapter.isSensitiveContentEnabled() || !sensitive)) {
-                mediaPreview.setVisibility(hasMedia ? View.VISIBLE : View.GONE);
+                mediaPreview.setVisibility(View.VISIBLE);
                 mediaPreview.displayMedia(media, loader, account_id, this, adapter.getMediaLoadingHandler());
 			} else {
 				mediaPreview.setVisibility(View.GONE);
