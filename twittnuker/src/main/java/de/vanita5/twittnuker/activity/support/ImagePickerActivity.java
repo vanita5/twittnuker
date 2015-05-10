@@ -22,18 +22,24 @@ import android.webkit.MimeTypeMap;
 
 import com.nostra13.universalimageloader.utils.IoUtils;
 
+import org.mariotaku.simplerestapi.http.ContentType;
+import org.mariotaku.simplerestapi.http.RestHttpClient;
+import org.mariotaku.simplerestapi.http.RestRequest;
+import org.mariotaku.simplerestapi.http.RestResponse;
+import org.mariotaku.simplerestapi.http.mime.TypedData;
+import org.mariotaku.simplerestapi.method.GET;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwitterAPIUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 
 import static android.os.Environment.getExternalStorageState;
 
@@ -193,15 +199,28 @@ public class ImagePickerActivity extends ThemedFragmentActivity {
 			try {
 				final File cacheDir = mActivity.getCacheDir();
                 final Uri uri = this.mUri;
+                final String mimeType;
                 if (SCHEME_HTTP.equals(uri.getScheme()) || SCHEME_HTTPS.equals(uri.getScheme())) {
-                    is = new URL(uri.toString()).openStream();
+                    final RestHttpClient client = TwitterAPIUtils.getDefaultHttpClient(mActivity);
+                    final RestRequest.Builder builder = new RestRequest.Builder();
+                    builder.method(GET.METHOD);
+                    builder.url(uri.toString());
+                    final RestResponse response = client.execute(builder.build());
+                    if (response.isSuccessful()) {
+                        final TypedData body = response.getBody();
+                        is = body.stream();
+                        final ContentType contentType = body.contentType();
+                        mimeType = contentType != null ? contentType.getContentType() : "image/*";
+                	} else {
+                        throw new IOException("Unable to get " + uri);
+                    }
                 } else {
                     is = cr.openInputStream(uri);
+					final BitmapFactory.Options opts = new BitmapFactory.Options();
+					opts.inJustDecodeBounds = true;
+					BitmapFactory.decodeStream(cr.openInputStream(uri), null, opts);
+                    mimeType = opts.outMimeType;
                 }
-				final BitmapFactory.Options opts = new BitmapFactory.Options();
-				opts.inJustDecodeBounds = true;
-                BitmapFactory.decodeStream(cr.openInputStream(uri), null, opts);
-				final String mimeType = opts.outMimeType;
 				final String suffix = mimeType != null ? "."
 						+ MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) : null;
 				final File outFile = File.createTempFile("temp_image_", suffix, cacheDir);
