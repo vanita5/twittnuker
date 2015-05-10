@@ -228,9 +228,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.SocketAddress;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.text.NumberFormat;
@@ -238,7 +235,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -2046,20 +2042,6 @@ public final class Utils implements Constants, TwitterConstants {
 		return VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP;
     }
 
-	public static Proxy getProxy(final Context context) {
-		if (context == null) return null;
-		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		final boolean enable_proxy = prefs.getBoolean(KEY_ENABLE_PROXY, false);
-		if (!enable_proxy) return Proxy.NO_PROXY;
-		final String proxyHost = prefs.getString(KEY_PROXY_HOST, null);
-		final int proxyPort = ParseUtils.parseInt(prefs.getString(KEY_PROXY_PORT, "-1"));
-		if (!isEmpty(proxyHost) && proxyPort >= 0 && proxyPort < 65535) {
-			final SocketAddress addr = InetSocketAddress.createUnresolved(proxyHost, proxyPort);
-			return new Proxy(Proxy.Type.HTTP, addr);
-		}
-		return Proxy.NO_PROXY;
-	}
-
     public static String getQuoteStatus(final Context context, long statusId, final String screen_name, final String text) {
 		if (context == null) return null;
         String quoteFormat = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).getString(
@@ -2236,8 +2218,8 @@ public final class Utils implements Constants, TwitterConstants {
 				// Here I use old consumer key/secret because it's default
 				// key for older
 				// versions
-				final String prefConsumerKey = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
-				final String prefConsumerSecret = prefs.getString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
+				final String prefConsumerKey = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY);
+				final String prefConsumerSecret = prefs.getString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET);
 				final ConfigurationBuilder cb = new ConfigurationBuilder();
 				if (!isEmpty(account.api_url_format)) {
                     final String versionSuffix = account.no_version_suffix ? null : "/1.1/";
@@ -2258,8 +2240,8 @@ public final class Utils implements Constants, TwitterConstants {
 					cb.setOAuthConsumerKey(prefConsumerKey);
 					cb.setOAuthConsumerSecret(prefConsumerSecret);
 				} else {
-					cb.setOAuthConsumerKey(TWITTER_CONSUMER_KEY_2);
-					cb.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET_2);
+					cb.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
+					cb.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
 				}
                 final Configuration conf = cb.build();
                 return new OAuthAuthorization(conf.getOAuthConsumerKey(), conf.getOAuthConsumerSecret(),
@@ -2293,8 +2275,8 @@ public final class Utils implements Constants, TwitterConstants {
 				case Accounts.AUTH_TYPE_XAUTH: {
 					final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
 							Context.MODE_PRIVATE);
-					final String prefConsumerKey = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
-					final String prefConsumerSecret = prefs.getString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
+					final String prefConsumerKey = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY);
+					final String prefConsumerSecret = prefs.getString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET);
 					final ConfigurationBuilder cb = new ConfigurationBuilder();
 					final String apiUrlFormat = c.getString(c.getColumnIndex(Accounts.API_URL_FORMAT));
 					final String consumerKey = trim(c.getString(c.getColumnIndex(Accounts.CONSUMER_KEY)));
@@ -2318,8 +2300,8 @@ public final class Utils implements Constants, TwitterConstants {
 						cb.setOAuthConsumerKey(prefConsumerKey);
 						cb.setOAuthConsumerSecret(prefConsumerSecret);
 					} else {
-						cb.setOAuthConsumerKey(TWITTER_CONSUMER_KEY_2);
-						cb.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET_2);
+						cb.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
+						cb.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
 					}
                     final Configuration conf = cb.build();
 					final String token = c.getString(c.getColumnIndexOrThrow(Accounts.OAUTH_TOKEN));

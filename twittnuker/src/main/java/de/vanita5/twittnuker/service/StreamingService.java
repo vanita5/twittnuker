@@ -214,9 +214,9 @@
 //                cb.setHostAddressResolverFactory(new TwidereStreamingHostAddressResolverFactory(this));
 //			}
 //			final String default_consumer_key = Utils
-//					.getNonEmptyString(prefs.getSharedPreferences(), KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY_2);
+//					.getNonEmptyString(prefs.getSharedPreferences(), KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY);
 //			final String default_consumer_secret = Utils
-//					.getNonEmptyString(prefs.getSharedPreferences(), KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET_2);
+//					.getNonEmptyString(prefs.getSharedPreferences(), KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET);
 //			final String consumer_key = account.consumer_key, consumer_secret = account.consumer_secret;
 //			if (!isEmpty(consumer_key) && !isEmpty(consumer_secret)) {
 //				cb.setOAuthConsumerKey(consumer_key);
