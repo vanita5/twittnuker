@@ -11,6 +11,6 @@ public interface SecretConstants {
 	/**
 	 * Twitter OAuth keys
 	 */
-	public static final String TWITTER_CONSUMER_KEY_2 = "";
-	public static final String TWITTER_CONSUMER_SECRET_2 = "";
+	public static final String TWITTER_CONSUMER_KEY = "";
+	public static final String TWITTER_CONSUMER_SECRET = "";
 }
