@@ -57,8 +57,8 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.StringReader;
 
-import twitter4j.TwitterConstants;
-import twitter4j.TwitterOAuth;
+import de.vanita5.twittnuker.api.twitter.TwitterConstants;
+import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;

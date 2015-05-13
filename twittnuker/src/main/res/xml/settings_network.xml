@@ -66,18 +66,5 @@
 			android:singleLine="true"
 			android:title="@string/proxy_port"/>
 	</PreferenceCategory>
-	<PreferenceCategory
-		android:key="category_api"
-		android:title="@string/api">
-		<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
-			android:defaultValue="true"
-			android:key="gzip_compressing"
-			android:summary="@string/gzip_compressing_summary"
-			android:title="@string/gzip_compressing"/>
-
-		<de.vanita5.twittnuker.preference.DefaultAPIPreference
-            android:summary="@string/default_api_settings_summary"
-            android:title="@string/default_api_settings"/>
-	</PreferenceCategory>
 
 </PreferenceScreen>

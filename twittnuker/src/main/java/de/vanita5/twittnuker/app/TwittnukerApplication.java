@@ -42,6 +42,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.nostra13.universalimageloader.utils.L;
+import com.squareup.okhttp.internal.Network;
 import com.squareup.otto.Bus;
 
 import de.vanita5.twittnuker.Constants;
@@ -66,8 +67,6 @@ import de.vanita5.twittnuker.util.net.TwidereHostAddressResolver;
 
 import java.io.File;
 
-import twitter4j.http.HostAddressResolver;
-
 import static de.vanita5.twittnuker.util.Utils.getBestCacheDir;
 import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
@@ -88,7 +87,7 @@ public class TwittnukerApplication extends Application implements Constants,
 	private TwidereImageDownloader mImageDownloader, mFullImageDownloader;
 	private DiskCache mDiskCache, mFullDiskCache;
 	private SQLiteOpenHelper mSQLiteOpenHelper;
-	private HostAddressResolver mResolver;
+    private Network mNetwork;
 	private SQLiteDatabase mDatabase;
     private Bus mMessageBus;
     private VideoLoader mVideoLoader;
@@ -136,9 +135,9 @@ public class TwittnukerApplication extends Application implements Constants,
 		return mHandler;
 	}
 
-	public HostAddressResolver getHostAddressResolver() {
-		if (mResolver != null) return mResolver;
-		return mResolver = new TwidereHostAddressResolver(this);
+    public Network getNetwork() {
+        if (mNetwork != null) return mNetwork;
+        return mNetwork = new TwidereHostAddressResolver(this);
 	}
 
     public ReadStateManager getReadStateManager() {
@@ -199,7 +198,6 @@ public class TwittnukerApplication extends Application implements Constants,
 
 	public SQLiteDatabase getSQLiteDatabase() {
 		if (mDatabase != null) return mDatabase;
-
 		StrictModeUtils.checkDiskIO();
 		return mDatabase = getSQLiteOpenHelper().getWritableDatabase();
 	}

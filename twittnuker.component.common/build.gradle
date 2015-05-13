@@ -45,6 +45,5 @@ dependencies {
     compile 'com.android.support:support-annotations:22.1.1'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile project(':twittnuker.component.querybuilder')
-    compile project(':twittnuker.component.twitter4j')
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }

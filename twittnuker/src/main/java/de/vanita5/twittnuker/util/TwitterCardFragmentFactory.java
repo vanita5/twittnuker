@@ -27,7 +27,7 @@ import android.support.v4.app.Fragment;
 import de.vanita5.twittnuker.fragment.support.CardBrowserFragment;
 import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity.ParcelableBindingValue;
-import twitter4j.CardEntity.BindingValue;
+import de.vanita5.twittnuker.api.twitter.model.CardEntity.BindingValue;
 
 public abstract class TwitterCardFragmentFactory {
 

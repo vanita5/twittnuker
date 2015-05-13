@@ -32,7 +32,7 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import de.vanita5.twittnuker.util.ParseUtils;
 
-import twitter4j.GeoLocation;
+import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
 
 @JsonObject
 public class ParcelableLocation implements Parcelable {

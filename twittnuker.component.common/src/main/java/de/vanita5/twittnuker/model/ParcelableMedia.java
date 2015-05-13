@@ -44,17 +44,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import twitter4j.CardEntity;
-import twitter4j.CardEntity.BindingValue;
-import twitter4j.CardEntity.ImageValue;
-import twitter4j.CardEntity.StringValue;
-import twitter4j.EntitySupport;
-import twitter4j.ExtendedEntitySupport;
-import twitter4j.MediaEntity;
-import twitter4j.MediaEntity.Size;
-import twitter4j.MediaEntity.Type;
-import twitter4j.Status;
-import twitter4j.UrlEntity;
+import de.vanita5.twittnuker.api.twitter.model.CardEntity;
+import de.vanita5.twittnuker.api.twitter.model.CardEntity.BindingValue;
+import de.vanita5.twittnuker.api.twitter.model.CardEntity.ImageValue;
+import de.vanita5.twittnuker.api.twitter.model.CardEntity.StringValue;
+import de.vanita5.twittnuker.api.twitter.model.EntitySupport;
+import de.vanita5.twittnuker.api.twitter.model.ExtendedEntitySupport;
+import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
+import de.vanita5.twittnuker.api.twitter.model.MediaEntity.Size;
+import de.vanita5.twittnuker.api.twitter.model.MediaEntity.Type;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 
 @SuppressWarnings("unused")
 @JsonObject

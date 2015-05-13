@@ -46,9 +46,9 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
 
-import twitter4j.TranslationResult;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
 
 public class StatusTranslateDialogFragment extends BaseSupportDialogFragment implements
 		LoaderCallbacks<SingleResponse<TranslationResult>> {

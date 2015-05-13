@@ -29,8 +29,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import twitter4j.ResponseList;
-import twitter4j.SavedSearch;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
 
 public class SavedSearchesAdapter extends BaseAdapter {
 

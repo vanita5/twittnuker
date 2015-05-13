@@ -90,11 +90,11 @@ import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
 import de.vanita5.twittnuker.view.iface.TintedStatusLayout;
 
-import twitter4j.Twitter;
-import twitter4j.TwitterConstants;
-import twitter4j.TwitterException;
-import twitter4j.TwitterOAuth;
-import twitter4j.User;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterConstants;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
+import de.vanita5.twittnuker.api.twitter.model.User;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createAccount;

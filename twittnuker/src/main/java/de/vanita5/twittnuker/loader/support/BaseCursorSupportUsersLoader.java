@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
 
-import twitter4j.CursorSupport;
+import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
 
 public abstract class BaseCursorSupportUsersLoader extends Twitter4JUsersLoader
         implements ICursorSupportLoader {

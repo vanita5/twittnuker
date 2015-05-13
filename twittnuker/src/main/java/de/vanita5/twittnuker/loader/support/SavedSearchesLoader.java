@@ -26,10 +26,10 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
 import de.vanita5.twittnuker.util.TwitterAPIUtils;
-import twitter4j.ResponseList;
-import twitter4j.SavedSearch;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
 
 public class SavedSearchesLoader extends AsyncTaskLoader<ResponseList<SavedSearch>> {
 

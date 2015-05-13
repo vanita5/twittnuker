@@ -63,7 +63,7 @@ import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 import java.util.Locale;
 
-import twitter4j.TranslationResult;
+import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;

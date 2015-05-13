@@ -57,16 +57,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import twitter4j.DirectMessage;
-import twitter4j.GeoLocation;
-import twitter4j.Place;
-import twitter4j.Relationship;
-import twitter4j.SavedSearch;
-import twitter4j.Status;
-import twitter4j.Trend;
-import twitter4j.Trends;
-import twitter4j.UrlEntity;
-import twitter4j.User;
+import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
+import de.vanita5.twittnuker.api.twitter.model.Place;
+import de.vanita5.twittnuker.api.twitter.model.Relationship;
+import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.model.Trend;
+import de.vanita5.twittnuker.api.twitter.model.Trends;
+import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
+import de.vanita5.twittnuker.api.twitter.model.User;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 

@@ -33,11 +33,11 @@ import java.util.Collections;
 import java.util.List;
 
 import de.vanita5.twittnuker.util.TwitterAPIUtils;
-import twitter4j.CursorSupport;
-import twitter4j.PageableResponseList;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.UserList;
+import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
+import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.UserList;
 
 import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 

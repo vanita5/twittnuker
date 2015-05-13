@@ -31,13 +31,13 @@ import de.vanita5.twittnuker.model.ConsumerKeyType;
 import java.nio.charset.Charset;
 import java.util.zip.CRC32;
 
-import twitter4j.DirectMessage;
-import twitter4j.EntitySupport;
-import twitter4j.MediaEntity;
-import twitter4j.Status;
-import twitter4j.UrlEntity;
-import twitter4j.User;
-import twitter4j.UserMentionEntity;
+import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.api.twitter.model.EntitySupport;
+import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
+import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 

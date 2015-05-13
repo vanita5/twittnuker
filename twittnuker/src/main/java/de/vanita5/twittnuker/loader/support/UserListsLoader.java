@@ -28,10 +28,10 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 
 import java.util.List;
 
-import twitter4j.ResponseList;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.UserList;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.UserList;
 
 public class UserListsLoader extends BaseUserListsLoader {
 

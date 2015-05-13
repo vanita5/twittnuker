@@ -28,7 +28,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Pair;
-import android.webkit.URLUtil;
 
 import com.nostra13.universalimageloader.core.assist.ContentLengthInputStream;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
@@ -57,7 +56,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import twitter4j.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
 
 public class TwidereImageDownloader extends BaseImageDownloader implements Constants {
 

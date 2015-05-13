@@ -29,8 +29,8 @@ import android.support.annotation.NonNull;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import twitter4j.User;
-import twitter4j.UserList;
+import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.api.twitter.model.UserList;
 
 @JsonObject
 public class ParcelableUserList implements Parcelable, Comparable<ParcelableUserList> {

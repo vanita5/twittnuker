@@ -53,7 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import twitter4j.TwitterOAuth;
+import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 
 import static android.text.TextUtils.isEmpty;
 

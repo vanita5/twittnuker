@@ -47,10 +47,10 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import de.vanita5.twittnuker.util.TwitterAPIUtils;
-import twitter4j.Paging;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
 
 import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.truncateStatuses;
@@ -122,7 +122,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
         int minIdx = -1;
         int rowsDeleted = 0;
         for (int i = 0, j = statuses.size(); i < j; i++) {
-            final twitter4j.Status status = statuses.get(i);
+            final Status status = statuses.get(i);
             final long id = status.getId();
             if (minId == -1 || id < minId) {
                 minId = id;

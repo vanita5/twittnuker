@@ -30,9 +30,9 @@ import java.util.Collections;
 import java.util.List;
 
 import de.vanita5.twittnuker.util.TwitterAPIUtils;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.User;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.User;
 
 import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 

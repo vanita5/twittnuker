@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.util;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.SSLCertificateSocketFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,7 +31,6 @@ import android.util.Pair;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.internal.Internal;
-import com.squareup.okhttp.internal.Network;
 
 import org.mariotaku.simplerestapi.RestAPIFactory;
 import org.mariotaku.simplerestapi.RestMethod;
@@ -42,39 +40,28 @@ import org.mariotaku.simplerestapi.http.Endpoint;
 import org.mariotaku.simplerestapi.http.RestHttpClient;
 import org.mariotaku.simplerestapi.http.RestRequest;
 import org.mariotaku.simplerestapi.http.RestResponse;
-import org.mariotaku.simplerestapi.method.GET;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.api.twitter.OkHttpRestClient;
-import de.vanita5.twittnuker.api.twitter.TwitterConverter;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
+import de.vanita5.twittnuker.api.twitter.api.TwitterUpload;
 import de.vanita5.twittnuker.api.twitter.auth.BasicAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.EmptyAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
+import de.vanita5.twittnuker.api.twitter.util.TwitterConverter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
-import de.vanita5.twittnuker.util.net.TwidereHostResolverFactory;
+import de.vanita5.twittnuker.util.net.OkHttpRestClient;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.SocketAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
-import twitter4j.Twitter;
-import twitter4j.TwitterConstants;
-import twitter4j.TwitterException;
-import twitter4j.TwitterOAuth;
-import twitter4j.api.TwitterUpload;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
-import twitter4j.http.HostAddressResolver;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -239,18 +226,7 @@ public class TwitterAPIUtils implements TwittnukerConstants {
         if (enableProxy) {
             client.setProxy(getProxy(prefs));
         }
-        final HostAddressResolver resolver = TwittnukerApplication.getInstance(context).getHostAddressResolver();
-        Internal.instance.setNetwork(client, new Network() {
-            @Override
-            public InetAddress[] resolveInetAddresses(String host) throws UnknownHostException {
-                try {
-                    return resolver.resolve(host);
-                } catch (IOException e) {
-                    if (e instanceof UnknownHostException) throw (UnknownHostException) e;
-                    throw new UnknownHostException("Unable to resolve address " + e.getMessage());
-                }
-            }
-        });
+        Internal.instance.setNetwork(client, TwittnukerApplication.getInstance(context).getNetwork());
         return new OkHttpRestClient(client);
     }
 

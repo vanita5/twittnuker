@@ -30,6 +30,7 @@ import android.os.AsyncTask;
 import com.twitter.Extractor;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
@@ -45,7 +46,7 @@ import static de.vanita5.twittnuker.util.ContentValuesCreator.createCachedUser;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createStatus;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
 
-public class CacheUsersStatusesTask extends AsyncTask<TwitterListResponse<twitter4j.Status>, Object, Object> implements Constants {
+public class CacheUsersStatusesTask extends AsyncTask<TwitterListResponse<Status>, Object, Object> implements Constants {
 
     private final Context context;
 
@@ -55,19 +56,19 @@ public class CacheUsersStatusesTask extends AsyncTask<TwitterListResponse<twitte
 
     @SafeVarargs
 	@Override
-    protected final Object doInBackground(final TwitterListResponse<twitter4j.Status>... args) {
+    protected final Object doInBackground(final TwitterListResponse<de.vanita5.twittnuker.api.twitter.model.Status>... args) {
         if (args == null || args.length == 0) return null;
         final ContentResolver resolver = context.getContentResolver();
 		final Extractor extractor = new Extractor();
 
-        for (final TwitterListResponse<twitter4j.Status> response : args) {
+        for (final TwitterListResponse<de.vanita5.twittnuker.api.twitter.model.Status> response : args) {
             if (response == null || response.list == null) {
 				continue;
 			}
-            final List<twitter4j.Status> list = response.list;
+            final List<de.vanita5.twittnuker.api.twitter.model.Status> list = response.list;
             for (int bulkIdx = 0, totalSize = list.size(); bulkIdx < totalSize; bulkIdx += 100) {
                 for (int idx = bulkIdx, end = Math.min(totalSize, bulkIdx + ContentResolverUtils.MAX_BULK_COUNT); idx < end; idx++) {
-                    final twitter4j.Status status = list.get(idx);
+                    final de.vanita5.twittnuker.api.twitter.model.Status status = list.get(idx);
 
                     final Set<ContentValues> usersValues = new HashSet<>();
                     final Set<ContentValues> statusesValues = new HashSet<>();

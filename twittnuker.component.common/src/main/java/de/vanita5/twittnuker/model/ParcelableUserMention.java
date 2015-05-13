@@ -33,8 +33,8 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import java.io.IOException;
 import java.util.List;
 
-import twitter4j.Status;
-import twitter4j.UserMentionEntity;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 
 @JsonObject
 public class ParcelableUserMention implements Parcelable {

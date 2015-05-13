@@ -29,10 +29,10 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import java.util.Arrays;
 
-import twitter4j.Activity;
-import twitter4j.Status;
-import twitter4j.User;
-import twitter4j.UserList;
+import de.vanita5.twittnuker.api.twitter.model.Activity;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.api.twitter.model.UserList;
 
 @JsonObject
 public class ParcelableActivity implements Comparable<ParcelableActivity> {

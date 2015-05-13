@@ -38,25 +38,24 @@
 //import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 //import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 //import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
-//import de.vanita5.twittnuker.streaming.util.TwidereStreamingHostAddressResolverFactory;
 //import de.vanita5.twittnuker.util.TwidereArrayUtils;
 //import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 //import de.vanita5.twittnuker.util.ContentValuesCreator;
 //import de.vanita5.twittnuker.util.NotificationHelper;
 //import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 //import de.vanita5.twittnuker.util.Utils;
-//import de.vanita5.twittnuker.api.twitter.TwitterDateConverter;
-//import twitter4j.DirectMessage;
-//import twitter4j.StallWarning;
-//import twitter4j.Status;
-//import twitter4j.StatusDeletionNotice;
-//import twitter4j.TwitterStream;
-//import twitter4j.TwitterStreamFactory;
-//import twitter4j.User;
-//import twitter4j.UserList;
-//import twitter4j.UserStreamListener;
-//import twitter4j.auth.AccessToken;
-//import twitter4j.conf.StreamConfigurationBuilder;
+//import de.vanita5.twittnuker.api.twitter.util.TwitterDateConverter;
+//import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
+//import de.vanita5.twittnuker.api.twitter.model.StallWarning;
+//import de.vanita5.twittnuker.api.twitter.model.Status;
+//import de.vanita5.twittnuker.api.twitter.model.StatusDeletionNotice;
+//import de.vanita5.twittnuker.api.twitter.model.TwitterStream;
+//import de.vanita5.twittnuker.api.twitter.model.TwitterStreamFactory;
+//import de.vanita5.twittnuker.api.twitter.model.User;
+//import de.vanita5.twittnuker.api.twitter.model.UserList;
+//import de.vanita5.twittnuker.api.twitter.model.UserStreamListener;
+//import de.vanita5.twittnuker.api.twitter.model.auth.AccessToken;
+//import de.vanita5.twittnuker.api.twitter.model.conf.StreamConfigurationBuilder;
 //
 //import static android.text.TextUtils.isEmpty;
 //

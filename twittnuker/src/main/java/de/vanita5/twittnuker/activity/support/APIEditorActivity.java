@@ -40,7 +40,7 @@ import android.widget.Toast;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 
-import twitter4j.TwitterConstants;
+import de.vanita5.twittnuker.api.twitter.TwitterConstants;
 
 import static de.vanita5.twittnuker.util.ParseUtils.parseString;
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;

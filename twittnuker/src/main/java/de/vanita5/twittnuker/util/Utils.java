@@ -240,15 +240,15 @@ import java.util.zip.CRC32;
 
 import javax.net.ssl.SSLException;
 
-import twitter4j.DirectMessage;
-import twitter4j.RateLimitStatus;
-import twitter4j.Relationship;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterConstants;
-import twitter4j.TwitterException;
-import twitter4j.UrlEntity;
-import twitter4j.UserMentionEntity;
+import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
+import de.vanita5.twittnuker.api.twitter.model.Relationship;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterConstants;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
+import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 
 import static android.text.TextUtils.isEmpty;
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
@@ -3512,10 +3512,10 @@ public final class Utils implements Constants, TwitterConstants {
 		return in.size() != out.size();
 	}
 
-	public static boolean truncateStatuses(final List<twitter4j.Status> in, final List<twitter4j.Status> out,
+	public static boolean truncateStatuses(final List<Status> in, final List<Status> out,
                                            final long sinceId) {
 		if (in == null) return false;
-		for (final twitter4j.Status status : in) {
+		for (final Status status : in) {
             if (sinceId > 0 && status.getId() <= sinceId) {
 				continue;
 			}
@@ -3524,10 +3524,10 @@ public final class Utils implements Constants, TwitterConstants {
 		return in.size() != out.size();
 	}
 
-    public static boolean truncateActivities(final List<twitter4j.Activity> in, final List<twitter4j.Activity> out,
+    public static boolean truncateActivities(final List<de.vanita5.twittnuker.api.twitter.model.Activity> in, final List<de.vanita5.twittnuker.api.twitter.model.Activity> out,
                                              final long sinceId) {
         if (in == null) return false;
-        for (final twitter4j.Activity status : in) {
+        for (final de.vanita5.twittnuker.api.twitter.model.Activity status : in) {
             if (sinceId > 0 && status.getMaxPosition() <= sinceId) {
                 continue;
             }

@@ -55,7 +55,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.EditText;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -86,10 +85,10 @@ import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.UserList;
-import twitter4j.UserListUpdate;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
 
 import static de.vanita5.twittnuker.util.MenuUtils.setMenuItemAvailability;
 import static de.vanita5.twittnuker.util.Utils.openUserListDetails;

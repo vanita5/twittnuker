@@ -46,15 +46,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import twitter4j.CardEntity;
-import twitter4j.CardEntity.BindingValue;
-import twitter4j.CardEntity.BooleanValue;
-import twitter4j.CardEntity.ImageValue;
-import twitter4j.CardEntity.StringValue;
-import twitter4j.CardEntity.UserValue;
-import twitter4j.Place;
-import twitter4j.Status;
-import twitter4j.User;
+import de.vanita5.twittnuker.api.twitter.model.CardEntity;
+import de.vanita5.twittnuker.api.twitter.model.CardEntity.BindingValue;
+import de.vanita5.twittnuker.api.twitter.model.CardEntity.BooleanValue;
+import de.vanita5.twittnuker.api.twitter.model.CardEntity.ImageValue;
+import de.vanita5.twittnuker.api.twitter.model.CardEntity.StringValue;
+import de.vanita5.twittnuker.api.twitter.model.CardEntity.UserValue;
+import de.vanita5.twittnuker.api.twitter.model.Place;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.model.User;
 
 @SuppressWarnings("unused")
 @JsonObject

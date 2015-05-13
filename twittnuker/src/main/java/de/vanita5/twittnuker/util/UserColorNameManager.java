@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-import twitter4j.User;
+import de.vanita5.twittnuker.api.twitter.model.User;
 
 import static android.text.TextUtils.isEmpty;
 

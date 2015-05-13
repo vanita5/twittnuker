@@ -30,10 +30,10 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import java.util.ArrayList;
 import java.util.List;
 
-import twitter4j.Paging;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
 
 import static de.vanita5.twittnuker.util.Utils.isOfficialTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.shouldForceUsingPrivateAPIs;

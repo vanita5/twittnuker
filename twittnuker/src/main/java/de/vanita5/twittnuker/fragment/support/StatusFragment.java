@@ -130,9 +130,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import twitter4j.Paging;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
 
 public class StatusFragment extends BaseSupportFragment implements LoaderCallbacks<SingleResponse<ParcelableStatus>>,
         OnMediaClickListener, StatusAdapterListener, KeyboardShortcutCallback {
@@ -963,7 +963,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                     final Paging paging = new Paging();
                     paging.setMaxId(status.id);
                     final List<ParcelableStatus> conversations = new ArrayList<>();
-                    for (twitter4j.Status item : twitter.showConversation(status.id, paging)) {
+                    for (de.vanita5.twittnuker.api.twitter.model.Status item : twitter.showConversation(status.id, paging)) {
                         if (item.getId() < status.id) {
                             final ParcelableStatus conversation = new ParcelableStatus(item, accountId, false);
                             publishProgress(conversation);

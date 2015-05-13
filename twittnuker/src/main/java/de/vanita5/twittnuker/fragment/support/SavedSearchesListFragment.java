@@ -37,8 +37,8 @@ import de.vanita5.twittnuker.loader.support.SavedSearchesLoader;
 import java.util.Collections;
 import java.util.Comparator;
 
-import twitter4j.ResponseList;
-import twitter4j.SavedSearch;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
 
 import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
 

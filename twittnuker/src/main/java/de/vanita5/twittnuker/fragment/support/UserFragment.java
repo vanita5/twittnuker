@@ -150,9 +150,9 @@ import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 import java.util.List;
 import java.util.Locale;
 
-import twitter4j.Relationship;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.Relationship;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
 
 public class UserFragment extends BaseSupportFragment implements OnClickListener,
 		OnLinkClickListener, OnSizeChangedListener, OnSharedPreferenceChangeListener,

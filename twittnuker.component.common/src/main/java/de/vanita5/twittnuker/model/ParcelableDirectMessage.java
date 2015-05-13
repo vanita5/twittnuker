@@ -37,8 +37,8 @@ import de.vanita5.twittnuker.util.TwitterContentUtils;
 import java.util.Comparator;
 import java.util.Date;
 
-import twitter4j.DirectMessage;
-import twitter4j.User;
+import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.api.twitter.model.User;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsBoolean;

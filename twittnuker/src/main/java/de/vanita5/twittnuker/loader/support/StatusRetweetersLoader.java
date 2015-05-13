@@ -28,10 +28,10 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
 
-import twitter4j.IDs;
-import twitter4j.Paging;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.IDs;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
 
 public class StatusRetweetersLoader extends IDsUsersLoader {
 

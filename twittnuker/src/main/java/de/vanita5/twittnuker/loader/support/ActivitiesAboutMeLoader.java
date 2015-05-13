@@ -29,10 +29,10 @@ import de.vanita5.twittnuker.model.ParcelableActivity;
 
 import java.util.List;
 
-import twitter4j.Activity;
-import twitter4j.Paging;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.Activity;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
 
 public class ActivitiesAboutMeLoader extends Twitter4JActivitiesLoader {
 

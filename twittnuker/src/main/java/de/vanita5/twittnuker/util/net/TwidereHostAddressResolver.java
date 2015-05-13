@@ -28,6 +28,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.LruCache;
 
+import com.squareup.okhttp.internal.Network;
+
 import org.apache.http.conn.util.InetAddressUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.HostsFileParser;
@@ -53,9 +55,7 @@ import java.util.Arrays;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import twitter4j.http.HostAddressResolver;
-
-public class TwidereHostAddressResolver implements Constants, HostAddressResolver {
+public class TwidereHostAddressResolver implements Constants, Network {
 
     private static final String RESOLVER_LOGTAG = "Twittnuker.Host";
 
@@ -80,11 +80,6 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
 		mHostCache.remove(host);
 	}
 
-    @NonNull
-	@Override
-    public InetAddress[] resolve(@NonNull final String host) throws IOException {
-        return resolveInternal(host, host);
-    }
 
     @NonNull
     private InetAddress[] resolveInternal(String originalHost, String host) throws IOException {
@@ -208,4 +203,13 @@ public class TwidereHostAddressResolver implements Constants, HostAddressResolve
         return InetAddressUtils.isIPv4Address(address) || InetAddressUtils.isIPv6Address(address);
 	}
 
+    @Override
+    public InetAddress[] resolveInetAddresses(String host) throws UnknownHostException {
+        try {
+            return resolveInternal(host, host);
+        } catch (IOException e) {
+            if (e instanceof UnknownHostException) throw (UnknownHostException) e;
+            throw new UnknownHostException("Unable to resolve address " + e.getMessage());
+        }
+    }
 }

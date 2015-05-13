@@ -43,7 +43,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 
-import twitter4j.TwitterConstants;
+import de.vanita5.twittnuker.api.twitter.TwitterConstants;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ParseUtils.parseString;

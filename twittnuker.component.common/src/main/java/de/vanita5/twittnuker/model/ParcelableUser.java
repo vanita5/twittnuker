@@ -38,8 +38,8 @@ import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 
-import twitter4j.UrlEntity;
-import twitter4j.User;
+import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
+import de.vanita5.twittnuker.api.twitter.model.User;
 
 @JsonObject
 public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {

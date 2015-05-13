@@ -1,6 +1,6 @@
 package de.vanita5.twittnuker.model;
 
-import twitter4j.User;
+import de.vanita5.twittnuker.api.twitter.model.User;
 
 /**
  * This represents a single (Push) Notification.

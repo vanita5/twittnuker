@@ -72,10 +72,10 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ForegroundColorView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
-import twitter4j.ProfileUpdate;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.User;
+import de.vanita5.twittnuker.api.twitter.model.ProfileUpdate;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.User;
 
 import static android.text.TextUtils.isEmpty;
 
