@@ -29,7 +29,6 @@ import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mariotaku.jsonserializer.JSONFileIO;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.annotation.Preference;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
@@ -152,7 +151,7 @@ public class DataImportExportUtils implements Constants {
                                                     @NonNull final ProcessStrategy strategy) throws IOException {
         final ZipEntry entry = zipFile.getEntry(entryName);
         if (entry == null) return;
-        final JSONObject json = JSONFileIO.convertJSONObject(zipFile.getInputStream(entry));
+        final JSONObject json = LoganSquareWrapper.convertJSONObject(zipFile.getInputStream(entry));
         final Iterator<String> keys = json.keys();
         final SharedPreferences preferences = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = preferences.edit();

@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
 
 import de.vanita5.twittnuker.Constants;
@@ -80,6 +81,7 @@ public abstract class ParcelableStatusesLoader extends AsyncTaskLoader<List<Parc
 		return result;
 	}
 
+    @Nullable
 	protected List<ParcelableStatus> getData() {
 		return mData;
 	}

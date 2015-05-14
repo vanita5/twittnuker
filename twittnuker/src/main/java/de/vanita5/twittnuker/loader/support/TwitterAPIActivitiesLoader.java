@@ -30,17 +30,16 @@ import android.util.Pair;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 
-import org.mariotaku.jsonserializer.JSONFileIO;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.util.LoganSquareWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static de.vanita5.twittnuker.util.Utils.truncateActivities;
 
-public abstract class Twitter4JActivitiesLoader extends ParcelableActivitiesLoader {
+public abstract class TwitterAPIActivitiesLoader extends ParcelableActivitiesLoader {
 
     private final Context mContext;
     private final long mAccountIds;
@@ -59,9 +58,9 @@ public abstract class Twitter4JActivitiesLoader extends ParcelableActivitiesLoad
     private final Object[] mSavedStatusesFileArgs;
     private Comparator<ParcelableActivity> mComparator;
 
-    public Twitter4JActivitiesLoader(final Context context, final long accountId, final long sinceId,
-                                     final long maxId, final List<ParcelableActivity> data, final String[] savedStatusesArgs,
-                                     final int tabPosition) {
+    public TwitterAPIActivitiesLoader(final Context context, final long accountId, final long sinceId,
+                                      final long maxId, final List<ParcelableActivity> data, final String[] savedStatusesArgs,
+                                      final int tabPosition) {
         super(context, data, tabPosition);
 		mContext = context;
         mAccountIds = accountId;
@@ -154,10 +153,8 @@ public abstract class Twitter4JActivitiesLoader extends ParcelableActivitiesLoad
 	
 	private List<ParcelableActivity> getCachedData(final File file) {
         if (file == null) return null;
-        FileInputStream is = null;
 		try {
-            is = new FileInputStream(file);
-            return LoganSquare.parseList(is, ParcelableActivity.class);
+            return LoganSquareWrapper.parseList(file, ParcelableActivity.class);
 		} catch (final IOException e) {
             if (Utils.isDebugBuild()) {
                 Log.w(LOGTAG, e);
@@ -167,8 +164,6 @@ public abstract class Twitter4JActivitiesLoader extends ParcelableActivitiesLoad
                 throw e;
             }
             Log.e(LOGTAG, "Error unserializing data", e);
-        } finally {
-            Utils.closeSilently(is);
 		}
 		return null;
 	}
@@ -176,7 +171,7 @@ public abstract class Twitter4JActivitiesLoader extends ParcelableActivitiesLoad
 	private File getSerializationFile() {
         if (mSavedStatusesFileArgs == null) return null;
 		try {
-            return JSONFileIO.getSerializationFile(mContext, mSavedStatusesFileArgs);
+            return LoganSquareWrapper.getSerializationFile(mContext, mSavedStatusesFileArgs);
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}

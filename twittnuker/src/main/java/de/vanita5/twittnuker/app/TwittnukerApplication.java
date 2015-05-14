@@ -45,6 +45,9 @@ import com.nostra13.universalimageloader.utils.L;
 import com.squareup.okhttp.internal.Network;
 import com.squareup.otto.Bus;
 
+import org.acra.ACRA;
+import org.acra.annotation.ReportsCrashes;
+import org.acra.sender.HttpSender;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.AssistLauncherActivity;
 import de.vanita5.twittnuker.activity.MainActivity;
@@ -72,6 +75,11 @@ import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
 import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
+@ReportsCrashes(formUri = "https://vanita5.cloudant.com/acra-twittnuker/_design/acra-storage/_update/report",
+		reportType = HttpSender.Type.JSON,
+		httpMethod = HttpSender.Method.PUT,
+		formUriBasicAuthLogin = "ionstoweneringstantleare",
+		formUriBasicAuthPassword = "MNNNyLKyTDvuaqbaCtOkqdMC")
 public class TwittnukerApplication extends Application implements Constants,
 		OnSharedPreferenceChangeListener {
 
@@ -218,6 +226,7 @@ public class TwittnukerApplication extends Application implements Constants,
 			StrictModeUtils.detectAllVmPolicy();
 		}
 		super.onCreate();
+        initBugReport();
         mDefaultUserAgent = UserAgentUtils.getDefaultUserAgentString(this);
         mHandler = new Handler();
         mMessageBus = new Bus();
@@ -237,6 +246,10 @@ public class TwittnukerApplication extends Application implements Constants,
 
 		reloadConnectivitySettings();
 	}
+
+    private void initBugReport() {
+        ACRA.init(this);
+    }
 
 	private SharedPreferences getSharedPreferences() {
 		if (mPreferences != null) return mPreferences;

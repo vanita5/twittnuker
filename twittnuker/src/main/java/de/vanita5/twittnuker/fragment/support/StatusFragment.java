@@ -76,6 +76,9 @@ import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter.StatusAdapterListener;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.loader.support.ParcelableStatusLoader;
@@ -122,10 +125,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-
 public class StatusFragment extends BaseSupportFragment implements LoaderCallbacks<SingleResponse<ParcelableStatus>>,
         OnMediaClickListener, StatusAdapterListener, KeyboardShortcutCallback {
 
@@ -159,6 +158,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     private LoaderCallbacks<List<ParcelableStatus>> mRepliesLoaderCallback = new LoaderCallbacks<List<ParcelableStatus>>() {
 		@Override
         public Loader<List<ParcelableStatus>> onCreateLoader(int id, Bundle args) {
+            mStatusAdapter.updateItemDecoration();
             final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
             final String screenName = args.getString(EXTRA_SCREEN_NAME);
             final long statusId = args.getLong(EXTRA_STATUS_ID, -1);
@@ -168,12 +168,12 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final StatusRepliesLoader loader = new StatusRepliesLoader(getActivity(), accountId,
                     screenName, statusId, maxId, sinceId, null, null, 0, true);
             loader.setComparator(ParcelableStatus.REVERSE_ID_COMPARATOR);
-
             return loader;
         }
 
         @Override
         public void onLoadFinished(Loader<List<ParcelableStatus>> loader, List<ParcelableStatus> data) {
+            mStatusAdapter.updateItemDecoration();
             final Pair<Long, Integer> readPosition = saveReadPosition();
             setReplies(data);
             restoreReadPosition(readPosition);
@@ -1466,10 +1466,10 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             if (mRecyclerView == null) return;
             final DividerItemDecoration decoration = mFragment.getItemDecoration();
             decoration.setDecorationStart(0);
-            if (isLoadMoreIndicatorVisible()) {
-                decoration.setDecorationEndOffset(3);
+            if (mReplies == null) {
+                decoration.setDecorationEndOffset(2);
             } else {
-                decoration.setDecorationEndOffset(mReplies != null && mReplies.size() > 0 ? 1 : 2);
+                decoration.setDecorationEndOffset(1);
             }
             mRecyclerView.invalidateItemDecorations();
         }

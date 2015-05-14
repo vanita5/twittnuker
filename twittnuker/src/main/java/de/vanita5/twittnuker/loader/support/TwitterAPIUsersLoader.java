@@ -36,13 +36,13 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 
 import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 
-public abstract class Twitter4JUsersLoader extends ParcelableUsersLoader {
+public abstract class TwitterAPIUsersLoader extends ParcelableUsersLoader {
 
 	private final long mAccountId;
 
 	private final Context mContext;
 
-    public Twitter4JUsersLoader(final Context context, final long accountId, final List<ParcelableUser> data, boolean fromUser) {
+    public TwitterAPIUsersLoader(final Context context, final long accountId, final List<ParcelableUser> data, boolean fromUser) {
         super(context, data, fromUser);
 		mContext = context;
         mAccountId = accountId;

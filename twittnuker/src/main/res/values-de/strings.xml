@@ -661,6 +661,8 @@
     <string name="invalid_list_name">Muss mit einem Buchtsaben anfangen und kann nur Buchstaben, Zahlen, \"-\", oder \"_\" enthalten.</string>
     <string name="delete_conversation">Unterhaltung löschen</string>
     <string name="delete_conversation_confirm_message">Alle Nachrichten aus dieser Unterhaltung löschen?</string>
+    <string name="name_first_summary_on">Name zuerst anzeigen</string>
+    <string name="name_first_summary_off">\@Screenname zuerst anzeigen</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

@@ -94,6 +94,7 @@ dependencies {
     compile 'com.github.uucky:ColorPicker-Android:0.9.4'
     compile 'com.sprylab.android.texturevideoview:texturevideoview:1.0.0'
     compile 'com.bluelinelabs:logansquare:1.0.6'
+    compile 'ch.acra:acra:4.6.2'
     compile project(':twittnuker.component.common')
     compile fileTree(dir: 'libs', include: ['*.jar'])
     debugCompile 'im.dino:dbinspector:3.1.0@aar'

@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 
-public class ActivitiesByFriendsLoader extends Twitter4JActivitiesLoader {
+public class ActivitiesByFriendsLoader extends TwitterAPIActivitiesLoader {
 
 
     public ActivitiesByFriendsLoader(final Context context, final long accountId, long sinceId,

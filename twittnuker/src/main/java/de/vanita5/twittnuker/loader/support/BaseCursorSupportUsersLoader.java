@@ -32,7 +32,7 @@ import java.util.List;
 
 import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
 
-public abstract class BaseCursorSupportUsersLoader extends Twitter4JUsersLoader
+public abstract class BaseCursorSupportUsersLoader extends TwitterAPIUsersLoader
         implements ICursorSupportLoader {
 
 	private final long mCursor;
