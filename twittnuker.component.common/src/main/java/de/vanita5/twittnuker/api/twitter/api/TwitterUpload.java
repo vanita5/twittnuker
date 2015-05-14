@@ -31,7 +31,7 @@ import org.mariotaku.simplerestapi.param.Part;
 import java.io.File;
 
 import de.vanita5.twittnuker.api.twitter.model.MediaUploadResponse;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 @SuppressWarnings("RedundantThrows")
 public interface TwitterUpload {

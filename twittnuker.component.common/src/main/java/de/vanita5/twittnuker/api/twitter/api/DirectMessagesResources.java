@@ -32,7 +32,7 @@ import org.mariotaku.simplerestapi.param.Query;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 @SuppressWarnings("RedundantThrows")
 public interface DirectMessagesResources {

@@ -27,7 +27,7 @@ import java.util.Map;
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.TwitterAPIConfiguration;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 @SuppressWarnings("RedundantThrows")
 public interface HelpResources {

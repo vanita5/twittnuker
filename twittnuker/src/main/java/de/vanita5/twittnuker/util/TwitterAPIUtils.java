@@ -42,7 +42,7 @@ import org.mariotaku.simplerestapi.http.RestRequest;
 import org.mariotaku.simplerestapi.http.RestResponse;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.api.twitter.api.TwitterUpload;
 import de.vanita5.twittnuker.api.twitter.auth.BasicAuthorization;

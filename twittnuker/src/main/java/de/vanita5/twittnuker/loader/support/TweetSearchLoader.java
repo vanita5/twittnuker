@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 import java.util.List;

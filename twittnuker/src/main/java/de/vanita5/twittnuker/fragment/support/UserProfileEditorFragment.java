@@ -74,7 +74,7 @@ import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
 import de.vanita5.twittnuker.api.twitter.model.ProfileUpdate;
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 
 import static android.text.TextUtils.isEmpty;

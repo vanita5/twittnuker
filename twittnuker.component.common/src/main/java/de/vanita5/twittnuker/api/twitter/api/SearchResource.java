@@ -27,7 +27,7 @@ import org.mariotaku.simplerestapi.param.Query;
 
 import de.vanita5.twittnuker.api.twitter.model.QueryResult;
 import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 @SuppressWarnings("RedundantThrows")
 public interface SearchResource {

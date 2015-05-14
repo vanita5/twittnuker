@@ -246,7 +246,7 @@ import de.vanita5.twittnuker.api.twitter.model.Relationship;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterConstants;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 

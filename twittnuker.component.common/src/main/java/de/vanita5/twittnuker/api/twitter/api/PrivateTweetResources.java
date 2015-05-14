@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.StatusActivitySummary;
 import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 @SuppressWarnings("RedundantThrows")
 public interface PrivateTweetResources extends PrivateResources {

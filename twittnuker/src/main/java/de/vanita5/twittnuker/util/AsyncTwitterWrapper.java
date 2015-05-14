@@ -93,7 +93,7 @@ import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
 import de.vanita5.twittnuker.api.twitter.model.Trends;
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;

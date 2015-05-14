@@ -132,7 +132,7 @@ import java.util.Locale;
 
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 public class StatusFragment extends BaseSupportFragment implements LoaderCallbacks<SingleResponse<ParcelableStatus>>,
         OnMediaClickListener, StatusAdapterListener, KeyboardShortcutCallback {

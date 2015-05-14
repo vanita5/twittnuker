@@ -56,7 +56,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 public class TwidereImageDownloader extends BaseImageDownloader implements Constants {
 

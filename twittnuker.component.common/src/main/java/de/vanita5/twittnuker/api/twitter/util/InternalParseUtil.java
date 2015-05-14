@@ -37,7 +37,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
 
 /**

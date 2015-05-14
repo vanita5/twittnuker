@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;

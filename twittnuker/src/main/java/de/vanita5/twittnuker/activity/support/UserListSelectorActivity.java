@@ -46,7 +46,7 @@ import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.http.HttpResponseCode;

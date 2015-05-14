@@ -86,7 +86,7 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
 

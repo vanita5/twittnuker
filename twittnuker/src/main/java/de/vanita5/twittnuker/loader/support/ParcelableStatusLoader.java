@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
 
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT;
 import static de.vanita5.twittnuker.util.Utils.findStatus;

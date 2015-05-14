@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createCachedUser;

@@ -16,7 +16,7 @@
 
 package de.vanita5.twittnuker.api.twitter.media;
 
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 import java.io.File;
 import java.io.InputStream;

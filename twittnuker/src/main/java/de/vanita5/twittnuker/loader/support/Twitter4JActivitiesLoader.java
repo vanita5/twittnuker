@@ -48,7 +48,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
 import static de.vanita5.twittnuker.util.Utils.truncateActivities;

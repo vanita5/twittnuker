@@ -27,7 +27,7 @@ import de.vanita5.twittnuker.api.twitter.model.GeoQuery;
 import de.vanita5.twittnuker.api.twitter.model.Place;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SimilarPlaces;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com

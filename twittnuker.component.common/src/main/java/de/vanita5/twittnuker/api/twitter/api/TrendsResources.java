@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.api.twitter.api;
 
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
 import de.vanita5.twittnuker.api.twitter.model.Location;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;

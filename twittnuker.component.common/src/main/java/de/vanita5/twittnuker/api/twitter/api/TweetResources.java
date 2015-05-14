@@ -29,7 +29,7 @@ import org.mariotaku.simplerestapi.param.Body;
 import org.mariotaku.simplerestapi.param.Form;
 import org.mariotaku.simplerestapi.param.Path;
 import org.mariotaku.simplerestapi.param.Query;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.IDs;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;

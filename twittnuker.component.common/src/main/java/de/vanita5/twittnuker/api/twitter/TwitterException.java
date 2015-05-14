@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model;
+package de.vanita5.twittnuker.api.twitter;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
@@ -28,6 +28,9 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import org.mariotaku.simplerestapi.http.RestRequest;
 import org.mariotaku.simplerestapi.http.RestResponse;
 
+import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
+import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
+import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
 import de.vanita5.twittnuker.api.twitter.model.impl.RateLimitStatusJSONImpl;
 
 import java.util.Locale;

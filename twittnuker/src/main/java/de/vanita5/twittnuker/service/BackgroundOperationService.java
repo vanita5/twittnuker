@@ -90,7 +90,7 @@ import de.vanita5.twittnuker.api.twitter.model.MediaUploadResponse;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.StatusUpdate;
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 import de.vanita5.twittnuker.api.twitter.api.TwitterUpload;
 

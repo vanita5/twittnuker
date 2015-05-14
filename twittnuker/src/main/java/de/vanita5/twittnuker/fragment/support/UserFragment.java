@@ -152,7 +152,7 @@ import java.util.Locale;
 
 import de.vanita5.twittnuker.api.twitter.model.Relationship;
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 public class UserFragment extends BaseSupportFragment implements OnClickListener,
 		OnLinkClickListener, OnSizeChangedListener, OnSharedPreferenceChangeListener,

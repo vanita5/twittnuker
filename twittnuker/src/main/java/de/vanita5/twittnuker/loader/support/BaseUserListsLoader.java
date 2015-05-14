@@ -36,7 +36,7 @@ import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 
 import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;

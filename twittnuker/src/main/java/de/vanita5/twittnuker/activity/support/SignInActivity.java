@@ -92,7 +92,7 @@ import de.vanita5.twittnuker.view.iface.TintedStatusLayout;
 
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterConstants;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.api.twitter.model.User;
 
