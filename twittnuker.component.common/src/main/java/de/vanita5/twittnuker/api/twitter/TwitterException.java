@@ -25,8 +25,8 @@ package de.vanita5.twittnuker.api.twitter;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import org.mariotaku.simplerestapi.http.RestRequest;
-import org.mariotaku.simplerestapi.http.RestResponse;
+import org.mariotaku.simplerestapi.http.RestHttpRequest;
+import org.mariotaku.simplerestapi.http.RestHttpResponse;
 
 import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
@@ -62,8 +62,8 @@ public class TwitterException extends Exception implements TwitterResponse, Http
 
 
 	boolean nested = false;
-    private RestRequest request;
-    private RestResponse response;
+    private RestHttpRequest request;
+    private RestHttpResponse response;
 
     public TwitterException() {
     }
@@ -84,21 +84,21 @@ public class TwitterException extends Exception implements TwitterResponse, Http
 		this.statusCode = statusCode;
 	}
 
-    public TwitterException(final String message, final RestRequest req, final RestResponse res) {
+    public TwitterException(final String message, final RestHttpRequest req, final RestHttpResponse res) {
 		this(message);
         setResponse(res);
 		request = req;
         statusCode = res != null ? res.getStatus() : -1;
     }
 
-    public void setResponse(RestResponse res) {
+    public void setResponse(RestHttpResponse res) {
         response = res;
         if (res != null) {
             rateLimitStatus = RateLimitStatusJSONImpl.createFromResponseHeader(res);
 		}
 	}
 
-    public TwitterException(final String message, final RestResponse res) {
+    public TwitterException(final String message, final RestHttpResponse res) {
 		this(message, null, res);
 	}
 
@@ -122,7 +122,7 @@ public class TwitterException extends Exception implements TwitterResponse, Http
 	}
 
     @Override
-    public void processResponseHeader(RestResponse resp) {
+    public void processResponseHeader(RestHttpResponse resp) {
 
     }
 
@@ -151,11 +151,11 @@ public class TwitterException extends Exception implements TwitterResponse, Http
 	}
 
 
-    public RestRequest getHttpRequest() {
+    public RestHttpRequest getHttpRequest() {
 		return request;
 	}
 
-    public RestResponse getHttpResponse() {
+    public RestHttpResponse getHttpResponse() {
 		return response;
 	}
 

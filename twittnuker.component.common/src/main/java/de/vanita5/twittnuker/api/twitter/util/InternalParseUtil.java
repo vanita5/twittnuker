@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.api.twitter.util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mariotaku.simplerestapi.http.RestResponse;
+import org.mariotaku.simplerestapi.http.RestHttpResponse;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -191,7 +191,7 @@ public final class InternalParseUtil {
 		return parsed;
 	}
 
-    public static int toAccessLevel(final RestResponse res) {
+    public static int toAccessLevel(final RestHttpResponse res) {
 		if (null == res) return -1;
         final String xAccessLevel = res.getHeader("X-Access-Level");
 		int accessLevel;

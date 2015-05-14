@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.api.twitter.auth;
 import android.util.Base64;
 import android.util.Pair;
 
-import org.mariotaku.simplerestapi.RestMethodInfo;
+import org.mariotaku.simplerestapi.RequestInfo;
 import org.mariotaku.simplerestapi.Utils;
 import org.mariotaku.simplerestapi.http.Authorization;
 import org.mariotaku.simplerestapi.http.Endpoint;
@@ -133,7 +133,7 @@ public class OAuthAuthorization implements Authorization,OAuthSupport {
 	}
 
 	@Override
-    public String getHeader(Endpoint endpoint, RestMethodInfo.RequestInfo request) {
+    public String getHeader(Endpoint endpoint, RequestInfo request) {
         if (!(endpoint instanceof OAuthEndpoint))
             throw new IllegalArgumentException("OAuthEndpoint required");
 		final OAuthEndpoint oauthEndpoint = (OAuthEndpoint) endpoint;

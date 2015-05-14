@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.api.twitter.auth;
 
 import android.util.Base64;
 
-import org.mariotaku.simplerestapi.RestMethodInfo;
+import org.mariotaku.simplerestapi.RequestInfo;
 import org.mariotaku.simplerestapi.http.Authorization;
 import org.mariotaku.simplerestapi.http.Endpoint;
 
@@ -42,7 +42,7 @@ public final class BasicAuthorization implements Authorization {
 	}
 
 	@Override
-    public String getHeader(Endpoint endpoint, RestMethodInfo.RequestInfo info) {
+    public String getHeader(Endpoint endpoint, RequestInfo info) {
 		if (!hasAuthorization()) return null;
 		return "Basic " + Base64.encodeToString((user + ":" + password).getBytes(), Base64.NO_WRAP);
 	}

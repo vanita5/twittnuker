@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.api.twitter.model.impl;
 
-import org.mariotaku.simplerestapi.http.RestResponse;
+import org.mariotaku.simplerestapi.http.RestHttpResponse;
 
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
@@ -37,7 +37,7 @@ public class TwitterResponseImpl implements TwitterResponse {
 	private RateLimitStatus rateLimitStatus;
 
 	@Override
-	public final void processResponseHeader(RestResponse resp) {
+	public final void processResponseHeader(RestHttpResponse resp) {
 		rateLimitStatus = RateLimitStatusJSONImpl.createFromResponseHeader(resp);
 		accessLevel = InternalParseUtil.toAccessLevel(resp);
 	}

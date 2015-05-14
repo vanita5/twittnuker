@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.view.holder;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -33,8 +34,11 @@ import de.vanita5.twittnuker.adapter.iface.IUserListsAdapter;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
+
+import java.util.Locale;
 
 public class UserListViewHolder extends ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
@@ -44,6 +48,9 @@ public class UserListViewHolder extends ViewHolder implements View.OnClickListen
 	private final ShapedImageView profileImageView;
 	private final TextView nameView;
 	private final TextView createdByView;
+    private final TextView descriptionView;
+    private final TextView membersCountView;
+    private final TextView subscribersCountView;
 
 	private UserListClickListener userListClickListener;
 
@@ -54,6 +61,9 @@ public class UserListViewHolder extends ViewHolder implements View.OnClickListen
 		profileImageView = (ShapedImageView) itemView.findViewById(R.id.profile_image);
 		nameView = (TextView) itemView.findViewById(R.id.name);
 		createdByView = (TextView) itemView.findViewById(R.id.created_by);
+        descriptionView = (TextView) itemView.findViewById(R.id.description);
+        membersCountView = (TextView) itemView.findViewById(R.id.members_count);
+        subscribersCountView = (TextView) itemView.findViewById(R.id.subscribers_count);
 	}
 
 	public void displayUserList(ParcelableUserList userList) {
@@ -75,7 +85,10 @@ public class UserListViewHolder extends ViewHolder implements View.OnClickListen
 			profileImageView.setVisibility(View.GONE);
 			loader.cancelDisplayTask(profileImageView);
 		}
-
+        descriptionView.setVisibility(TextUtils.isEmpty(userList.description) ? View.GONE : View.VISIBLE);
+        descriptionView.setText(userList.description);
+        membersCountView.setText(Utils.getLocalizedNumber(Locale.getDefault(), userList.members_count));
+        subscribersCountView.setText(Utils.getLocalizedNumber(Locale.getDefault(), userList.subscribers_count));
 	}
 
 	public void setOnClickListeners() {
