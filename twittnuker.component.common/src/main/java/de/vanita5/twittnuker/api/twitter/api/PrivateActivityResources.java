@@ -22,15 +22,19 @@
 
 package de.vanita5.twittnuker.api.twitter.api;
 
+import org.mariotaku.simplerestapi.method.GET;
+import org.mariotaku.simplerestapi.param.Query;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 @SuppressWarnings("RedundantThrows")
 public interface PrivateActivityResources extends PrivateResources {
 
-	ResponseList<Activity> getActivitiesAboutMe(Paging paging) throws TwitterException;
+    @GET("/activity/about_me.json")
+    ResponseList<Activity> getActivitiesAboutMe(@Query Paging paging) throws TwitterException;
 
-	ResponseList<Activity> getActivitiesByFriends(Paging paging) throws TwitterException;
+    @GET("/activity/by_friends.json")
+    ResponseList<Activity> getActivitiesByFriends(@Query Paging paging) throws TwitterException;
 }

@@ -53,25 +53,36 @@ public class TypeConverterMapper<T> implements TypeConverter<T> {
 		throw new UnsupportedOperationException();
 	}
 
-    @SuppressWarnings({"TryWithIdenticalCatches", "unchecked"})
+    @SuppressWarnings({"TryWithIdenticalCatches"})
 	public static <T> void register(Class<T> cls, Class<? extends T> impl) {
 		LoganSquare.registerTypeConverter(cls, new TypeConverterMapper<>(impl));
         try {
             //noinspection unchecked
-            final Field objectMappersField = LoganSquare.class.getDeclaredField("OBJECT_MAPPERS");
-            objectMappersField.setAccessible(true);
-            final Map<Class, JsonMapper> mappers = (Map<Class, JsonMapper>) objectMappersField.get(null);
-            mappers.put(cls, (JsonMapper) Class.forName(impl.getName() + "$$JsonObjectMapper").newInstance());
+            register(cls, impl, (JsonMapper) Class.forName(impl.getName() + "$$JsonObjectMapper").newInstance());
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @SuppressWarnings({"TryWithIdenticalCatches"})
+    public static <T> void register(Class<T> cls, Class<? extends T> impl, JsonMapper<? extends T> mapper) {
+        LoganSquare.registerTypeConverter(cls, new TypeConverterMapper<>(impl));
+        try {
+            //noinspection unchecked
+            final Field objectMappersField = LoganSquare.class.getDeclaredField("OBJECT_MAPPERS");
+            objectMappersField.setAccessible(true);
+            //noinspection unchecked
+            final Map<Class, JsonMapper> mappers = (Map<Class, JsonMapper>) objectMappersField.get(null);
+            mappers.put(cls, mapper);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
 		}
 	}
-
 
 }

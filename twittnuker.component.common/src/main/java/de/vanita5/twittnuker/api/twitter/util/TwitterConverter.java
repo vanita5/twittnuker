@@ -32,7 +32,29 @@ import org.mariotaku.simplerestapi.Converter;
 import org.mariotaku.simplerestapi.http.ContentType;
 import org.mariotaku.simplerestapi.http.RestResponse;
 import org.mariotaku.simplerestapi.http.mime.TypedData;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
+import de.vanita5.twittnuker.api.twitter.model.Activity;
+import de.vanita5.twittnuker.api.twitter.model.CardEntity;
+import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
+import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
+import de.vanita5.twittnuker.api.twitter.model.HashtagEntity;
+import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
+import de.vanita5.twittnuker.api.twitter.model.MediaUploadResponse;
+import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
+import de.vanita5.twittnuker.api.twitter.model.Place;
+import de.vanita5.twittnuker.api.twitter.model.QueryResult;
+import de.vanita5.twittnuker.api.twitter.model.Relationship;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
+import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
+import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
+import de.vanita5.twittnuker.api.twitter.model.impl.ActivityImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.CardEntityImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.DirectMessageImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.ErrorInfoImpl;
@@ -70,27 +92,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.vanita5.twittnuker.api.twitter.model.CardEntity;
-import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
-import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
-import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
-import de.vanita5.twittnuker.api.twitter.model.HashtagEntity;
-import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
-import de.vanita5.twittnuker.api.twitter.model.MediaUploadResponse;
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Place;
-import de.vanita5.twittnuker.api.twitter.model.QueryResult;
-import de.vanita5.twittnuker.api.twitter.model.Relationship;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
-import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
-import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.api.twitter.model.UserList;
-import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
-
 /**
  * Created by mariotaku on 15/5/5.
  */
@@ -120,11 +121,13 @@ public class TwitterConverter implements Converter {
         TypeConverterMapper.register(MediaUploadResponse.Image.class, MediaUploadResponseImpl.ImageImpl.class);
         TypeConverterMapper.register(ErrorInfo.class, ErrorInfoImpl.class);
         TypeConverterMapper.register(TranslationResult.class, TranslationResultImpl.class);
+        TypeConverterMapper.register(Activity.class, ActivityImpl.class, ActivityImpl.MAPPER);
 
         LoganSquare.registerTypeConverter(Indices.class, Indices.CONVERTER);
         LoganSquare.registerTypeConverter(GeoLocation.class, GeoLocation.CONVERTER);
         LoganSquare.registerTypeConverter(MediaEntity.Type.class, EnumConverter.get(MediaEntity.Type.class));
         LoganSquare.registerTypeConverter(UserList.Mode.class, EnumConverter.get(UserList.Mode.class));
+        LoganSquare.registerTypeConverter(Activity.Action.class, EnumConverter.get(Activity.Action.class));
 
         registerWrapper(QueryResult.class, QueryResultWrapper.class);
         registerWrapper(PageableResponseList.class, PageableResponseListWrapper.class);
