@@ -23,15 +23,14 @@
 package de.vanita5.twittnuker.api.twitter.api;
 
 import org.mariotaku.simplerestapi.http.BodyType;
+import org.mariotaku.simplerestapi.http.mime.FileTypedData;
 import org.mariotaku.simplerestapi.method.GET;
 import org.mariotaku.simplerestapi.method.POST;
 import org.mariotaku.simplerestapi.param.Body;
 import org.mariotaku.simplerestapi.param.Form;
+import org.mariotaku.simplerestapi.param.Part;
 import org.mariotaku.simplerestapi.param.Query;
-
-import java.io.File;
-import java.io.InputStream;
-
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.AccountSettings;
 import de.vanita5.twittnuker.api.twitter.model.Category;
 import de.vanita5.twittnuker.api.twitter.model.IDs;
@@ -40,7 +39,6 @@ import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ProfileUpdate;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SettingsUpdate;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 
 @SuppressWarnings("RedundantThrows")
@@ -125,23 +123,28 @@ public interface UsersResources {
     @Body(BodyType.FORM)
     User updateProfile(@Form ProfileUpdate profileUpdate) throws TwitterException;
 
-	User updateProfileBackgroundImage(File image, boolean tile) throws TwitterException;
+    @POST("/account/update_profile_background_image.json")
+    @Body(BodyType.MULTIPART)
+    User updateProfileBackgroundImage(@Part("image") FileTypedData data, @Part("tile") boolean tile) throws TwitterException;
 
-	User updateProfileBackgroundImage(InputStream image, boolean tile) throws TwitterException;
+    @POST("/account/update_profile_background_image.json")
+    @Body(BodyType.FORM)
+    User updateProfileBackgroundImage(@Form("media_id") long mediaId, @Part("tile") boolean tile) throws TwitterException;
 
-	void updateProfileBannerImage(File banner) throws TwitterException;
-
-	void updateProfileBannerImage(File banner, int width, int height, int offsetLeft, int offsetTop)
+    @POST("/account/update_profile_banner.json")
+    @Body(BodyType.MULTIPART)
+    void updateProfileBannerImage(@Part("image") FileTypedData data, @Part("width") int width,
+                                  @Part("height") int height, @Part("offset_left") int offsetLeft,
+                                  @Part("offset_top") int offsetTop)
 			throws TwitterException;
 
-	void updateProfileBannerImage(InputStream banner) throws TwitterException;
+    @POST("/account/update_profile_banner.json")
+    @Body(BodyType.MULTIPART)
+    void updateProfileBannerImage(@Part("image") FileTypedData data) throws TwitterException;
 
-	void updateProfileBannerImage(InputStream banner, int width, int height, int offsetLeft, int offsetTop)
-			throws TwitterException;
-
-	User updateProfileImage(File image) throws TwitterException;
-
-	User updateProfileImage(InputStream image) throws TwitterException;
+    @POST("/account/update_profile_image.json")
+    @Body(BodyType.MULTIPART)
+    User updateProfileImage(@Part("image") FileTypedData data) throws TwitterException;
 
     @GET("/account/verify_credentials.json")
 	User verifyCredentials() throws TwitterException;
