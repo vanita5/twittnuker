@@ -32,6 +32,16 @@ import org.json.JSONObject;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
+import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
+import de.vanita5.twittnuker.api.twitter.model.Place;
+import de.vanita5.twittnuker.api.twitter.model.Relationship;
+import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.model.Trend;
+import de.vanita5.twittnuker.api.twitter.model.Trends;
+import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
+import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
@@ -56,17 +66,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
-import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
-import de.vanita5.twittnuker.api.twitter.model.Place;
-import de.vanita5.twittnuker.api.twitter.model.Relationship;
-import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
-import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.model.Trend;
-import de.vanita5.twittnuker.api.twitter.model.Trends;
-import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
-import de.vanita5.twittnuker.api.twitter.model.User;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 
@@ -467,7 +466,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         if (trendsList == null) return new ContentValues[0];
         final List<ContentValues> resultList = new ArrayList<>();
         for (final Trends trends : trendsList) {
-			final long timestamp = trends.getTrendAt().getTime();
+            final long timestamp = trends.getAsOf().getTime();
 			for (final Trend trend : trends.getTrends()) {
 				final ContentValues values = new ContentValues();
 				values.put(CachedTrends.NAME, trend.getName());

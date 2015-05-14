@@ -25,15 +25,17 @@ package de.vanita5.twittnuker.api.twitter.model.impl;
 import android.support.annotation.NonNull;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
-
-import java.util.Date;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import de.vanita5.twittnuker.api.twitter.model.Trends;
 import de.vanita5.twittnuker.api.twitter.util.TwitterTrendsDateConverter;
 
+import java.util.Date;
+
 /**
  * Created by mariotaku on 15/5/10.
  */
+@JsonObject
 public class TrendsImpl extends TwitterResponseImpl implements Trends {
 
 	@JsonField(name = "as_of", typeConverter = TwitterTrendsDateConverter.class)
