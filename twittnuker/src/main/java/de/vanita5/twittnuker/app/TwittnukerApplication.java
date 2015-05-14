@@ -259,7 +259,7 @@ public class TwittnukerApplication extends Application implements Constants,
 			stopService(new Intent(this, RefreshService.class));
 			startRefreshServiceIfNeeded(this);
 		} else if (KEY_ENABLE_PROXY.equals(key) || KEY_CONNECTION_TIMEOUT.equals(key) || KEY_PROXY_HOST.equals(key)
-				|| KEY_PROXY_PORT.equals(key) || KEY_FAST_IMAGE_LOADING.equals(key)) {
+				|| KEY_PROXY_PORT.equals(key)) {
 			reloadConnectivitySettings();
 		} else if (KEY_CONSUMER_KEY.equals(key) || KEY_CONSUMER_SECRET.equals(key) || KEY_API_URL_FORMAT.equals(key)
 				|| KEY_AUTH_TYPE.equals(key) || KEY_SAME_OAUTH_SIGNING_URL.equals(key)) {

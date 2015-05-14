@@ -32,7 +32,9 @@ import android.util.Pair;
 import com.nostra13.universalimageloader.core.assist.ContentLengthInputStream;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
+import org.mariotaku.simplerestapi.RestMethodInfo;
 import org.mariotaku.simplerestapi.http.Authorization;
+import org.mariotaku.simplerestapi.http.Endpoint;
 import org.mariotaku.simplerestapi.http.RestHttpClient;
 import org.mariotaku.simplerestapi.http.RestRequest;
 import org.mariotaku.simplerestapi.http.RestResponse;
@@ -40,6 +42,8 @@ import org.mariotaku.simplerestapi.http.mime.TypedData;
 import org.mariotaku.simplerestapi.method.GET;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
@@ -50,20 +54,18 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.util.Utils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-
 public class TwidereImageDownloader extends BaseImageDownloader implements Constants {
 
 	private final Context mContext;
     private final SharedPreferencesWrapper mPreferences;
     private RestHttpClient mClient;
-	private boolean mFastImageLoading;
 	private final boolean mFullImage;
 	private final String mTwitterProfileImageSize;
 
@@ -80,14 +82,12 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 
 	public void reloadConnectivitySettings() {
         mClient = TwitterAPIUtils.getDefaultHttpClient(mContext);
-        mFastImageLoading = mPreferences.getBoolean(KEY_FAST_IMAGE_LOADING);
 	}
 
 	@Override
 	protected InputStream getStreamFromNetwork(final String uriString, final Object extras) throws IOException {
 		if (uriString == null) return null;
-		final ParcelableMedia media = MediaPreviewUtils.getAllAvailableImage(uriString, mFullImage, mFullImage
-				|| !mFastImageLoading ? mClient : null);
+        final ParcelableMedia media = MediaPreviewUtils.getAllAvailableImage(uriString, mFullImage, mClient);
 		try {
 			final String mediaUrl = media != null ? media.media_url : uriString;
 			if (isTwitterProfileImage(uriString)) {
@@ -95,24 +95,20 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 				return getStreamFromNetworkInternal(replaced, extras);
 			} else
 				return getStreamFromNetworkInternal(mediaUrl, extras);
-		} catch (final TwitterException e) {
-			final int statusCode = e.getStatusCode();
-			if (statusCode != -1 && isTwitterProfileImage(uriString) && !uriString.contains("_normal.")) {
-				try {
-                    return getStreamFromNetworkInternal(Utils.getNormalTwitterProfileImage(uriString), extras);
-                } catch (final TwitterException ignored) {
-				}
+        } catch (final FileNotFoundException e) {
+            if (isTwitterProfileImage(uriString) && !uriString.contains("_normal.")) {
+				return getStreamFromNetworkInternal(Utils.getNormalTwitterProfileImage(uriString), extras);
 			}
-			throw new IOException(String.format(Locale.US, "Error downloading image %s, error code: %d", uriString,
-									statusCode));
+            throw new IOException(String.format(Locale.US, "Error downloading image %s", uriString));
 		}
 	}
 
-    private String getReplacedUri(@NonNull final Uri uri, final String apiUrlFormat) {
-		if (apiUrlFormat == null) return uri.toString();
+    private Uri getReplacedUri(@NonNull final Uri uri, final String apiUrlFormat) {
+        if (apiUrlFormat == null) return uri;
 		if (isTwitterUri(uri)) {
 			final StringBuilder sb = new StringBuilder();
-			final String domain = uri.getHost().replaceAll("\\.?twitter.com", "");
+            final String host = uri.getHost();
+            final String domain = host.substring(0, host.lastIndexOf(".twitter.com"));
 			final String path = uri.getPath();
 			sb.append(Utils.getApiUrl(apiUrlFormat, domain, path));
 			final String query = uri.getQuery();
@@ -125,13 +121,12 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 				sb.append("#");
 				sb.append(fragment);
 	}
-			return sb.toString();
+            return Uri.parse(sb.toString());
 		}
-		return uri.toString();
+        return uri;
 	}
 
-	private ContentLengthInputStream getStreamFromNetworkInternal(final String uriString, final Object extras)
-			throws IOException, TwitterException {
+    private ContentLengthInputStream getStreamFromNetworkInternal(final String uriString, final Object extras) throws IOException {
 		final Uri uri = Uri.parse(uriString);
 		final Authorization auth;
 		final ParcelableCredentials account;
@@ -143,32 +138,58 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 			account = null;
 			auth = null;
 		}
-        String modifiedUri = getReplacedUri(uri, account != null ? account.api_url_format : null);
+        Uri modifiedUri = getReplacedUri(uri, account != null ? account.api_url_format : null);
+
         final List<Pair<String, String>> additionalHeaders = new ArrayList<>();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             additionalHeaders.add(Pair.create("Accept", "image/webp, */*"));
         }
+        final String method = GET.METHOD;
         if (auth!= null && auth.hasAuthorization()) {
-//            additionalHeaders.add(Pair.create("Authorization", auth.getHeader()));
+            final Endpoint endpoint;
+            if (auth instanceof OAuthAuthorization) {
+                endpoint = new OAuthEndpoint(getEndpoint(modifiedUri), getEndpoint(uri));
+            } else {
+                endpoint = new Endpoint(getEndpoint(modifiedUri));
+        	}
+            final List<Pair<String, String>> queries = new ArrayList<>();
+            for (String name : uri.getQueryParameterNames()) {
+                for (String value : uri.getQueryParameters(name)) {
+                    queries.add(Pair.create(name, value));
+                }
+            }
+            final RestMethodInfo.RequestInfo info = new RestMethodInfo.RequestInfo(method, uri.getPath(), queries, null, additionalHeaders, null, null, null);
+            additionalHeaders.add(Pair.create("Authorization", auth.getHeader(endpoint, info)));
         }
-        final RestResponse resp = mClient.execute(new RestRequest.Builder().method(GET.METHOD).url(modifiedUri).headers(additionalHeaders).build());
+		final String requestUri = modifiedUri.toString();
+        final RestResponse resp = mClient.execute(new RestRequest.Builder().method(method).url(requestUri).headers(additionalHeaders).build());
         final TypedData body = resp.getBody();
         return new ContentLengthInputStream(body.stream(), (int) body.length());
 	}
 
+    private String getEndpoint(Uri uri) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(uri.getScheme());
+        sb.append("://");
+        sb.append(uri.getHost());
+        if (uri.getPort() != -1) {
+            sb.append(':');
+            sb.append(uri.getPort());
+        }
+        sb.append("/");
+        return sb.toString();
+    }
+
 	private boolean isTwitterAuthRequired(final Uri uri) {
-		if (uri == null) return false;
-		return "ton.twitter.com".equalsIgnoreCase(uri.getHost());
+        return uri != null && "ton.twitter.com".equalsIgnoreCase(uri.getHost());
 	}
 
 	private boolean isTwitterProfileImage(final String uriString) {
-		if (TextUtils.isEmpty(uriString)) return false;
-        return TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES.matcher(uriString).matches();
+        return !TextUtils.isEmpty(uriString) && TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES.matcher(uriString).matches();
 	}
 
 	private boolean isTwitterUri(final Uri uri) {
-		if (uri == null) return false;
-		return "ton.twitter.com".equalsIgnoreCase(uri.getHost());
+        return uri != null && "ton.twitter.com".equalsIgnoreCase(uri.getHost());
 	}
 
 }

@@ -179,8 +179,8 @@ public class TwitterAPIUtils implements TwittnukerConstants {
         factory.setRequestFactory(new RestRequest.Factory() {
 
             @Override
-            public RestRequest create(@NonNull Endpoint endpoint, @NonNull RestMethodInfo info, @Nullable Authorization authorization) {
-                final RestMethod restMethod = info.getMethod();
+            public RestRequest create(@NonNull Endpoint endpoint, @NonNull RestMethodInfo.RequestInfo info, @Nullable Authorization authorization) {
+                final String restMethod = info.getMethod();
                 final String url = Endpoint.constructUrl(endpoint.getUrl(), info);
                 final ArrayList<Pair<String, String>> headers = new ArrayList<>(info.getHeaders());
 
@@ -188,7 +188,7 @@ public class TwitterAPIUtils implements TwittnukerConstants {
                     headers.add(Pair.create("Authorization", authorization.getHeader(endpoint, info)));
                 }
                 headers.add(Pair.create("User-Agent", userAgent));
-                return new RestRequest(restMethod.value(), url, headers, info.getBody(), null);
+                return new RestRequest(restMethod, url, headers, info.getBody(), null);
             }
         });
         factory.setExceptionFactory(new RestAPIFactory.ExceptionFactory() {

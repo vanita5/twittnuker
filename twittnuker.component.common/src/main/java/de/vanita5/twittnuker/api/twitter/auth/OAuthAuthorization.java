@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.api.twitter.auth;
 import android.util.Base64;
 import android.util.Pair;
 
-import org.mariotaku.simplerestapi.RestMethod;
 import org.mariotaku.simplerestapi.RestMethodInfo;
 import org.mariotaku.simplerestapi.Utils;
 import org.mariotaku.simplerestapi.http.Authorization;
@@ -80,7 +79,7 @@ public class OAuthAuthorization implements Authorization,OAuthSupport {
         return oauthToken;
     }
 
-	private String generateOAuthSignature(RestMethod method, String url,
+    private String generateOAuthSignature(String method, String url,
 										  String oauthNonce, long timestamp,
 										  String oauthToken, String oauthTokenSecret,
                                           List<Pair<String, String>> queries,
@@ -123,7 +122,7 @@ public class OAuthAuthorization implements Authorization,OAuthSupport {
 			SecretKeySpec secret = new SecretKeySpec(signingKey.getBytes(), mac.getAlgorithm());
 			mac.init(secret);
 			String urlNoQuery = url.indexOf('?') != -1 ? url.substring(0, url.indexOf('?')) : url;
-			final String baseString = encode(method.value()) + '&' + encode(urlNoQuery) + '&' + encode(paramBuilder.toString());
+            final String baseString = encode(method) + '&' + encode(urlNoQuery) + '&' + encode(paramBuilder.toString());
 			final byte[] signature = mac.doFinal(baseString.getBytes(DEFAULT_ENCODING));
             return Base64.encodeToString(signature, Base64.NO_WRAP);
 		} catch (NoSuchAlgorithmException e) {
@@ -134,10 +133,11 @@ public class OAuthAuthorization implements Authorization,OAuthSupport {
 	}
 
 	@Override
-	public String getHeader(Endpoint endpoint, RestMethodInfo request) {
-        if (!(endpoint instanceof OAuthEndpoint)) throw new IllegalArgumentException("OAuthEndpoint required");
+    public String getHeader(Endpoint endpoint, RestMethodInfo.RequestInfo request) {
+        if (!(endpoint instanceof OAuthEndpoint))
+            throw new IllegalArgumentException("OAuthEndpoint required");
 		final OAuthEndpoint oauthEndpoint = (OAuthEndpoint) endpoint;
-		final RestMethod method = request.getMethod();
+        final String method = request.getMethod();
 		final String url = Endpoint.constructUrl(oauthEndpoint.getSignUrl(), request);
 		final String oauthNonce = generateOAuthNonce();
 		final long timestamp = System.currentTimeMillis() / 1000;
