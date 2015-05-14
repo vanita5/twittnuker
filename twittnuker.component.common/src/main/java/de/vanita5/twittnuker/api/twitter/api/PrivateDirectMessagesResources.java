@@ -22,11 +22,17 @@
 
 package de.vanita5.twittnuker.api.twitter.api;
 
+import org.mariotaku.simplerestapi.method.POST;
+import org.mariotaku.simplerestapi.param.Path;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 @SuppressWarnings("RedundantThrows")
 public interface PrivateDirectMessagesResources extends PrivateResources {
 
-	void destroyDirectMessagesConversation(long userId) throws TwitterException;
+    @POST("/dm/conversation/{conversation_id}/delete.json")
+    void destroyDirectMessagesConversation(@Path("conversation_id") String conversationId) throws TwitterException;
+
+    @POST("/dm/conversation/{account_id}-{user_id}/delete.json")
+    void destroyDirectMessagesConversation(@Path("account_id") long accountId, @Path("user_id") long userId) throws TwitterException;
 
 }

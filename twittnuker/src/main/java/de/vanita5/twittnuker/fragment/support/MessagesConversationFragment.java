@@ -23,8 +23,11 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -85,6 +88,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.loader.support.UserSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUser.CachedIndices;
@@ -102,6 +106,7 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.TakeAllKeyboardShortcut;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -198,7 +203,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 	private ParcelableDirectMessage mSelectedDirectMessage;
 	private boolean mLoaderInitialized;
 	private String mImageUri;
-    private ParcelableAccount mAccount;
+    private ParcelableCredentials mAccount;
     private ParcelableUser mRecipient;
     private boolean mTextChanged, mQueryTextChanged;
     private View mInputPanel;
@@ -255,7 +260,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         mAccountSpinner = (Spinner) actionBarView.findViewById(R.id.account_spinner);
         mEditUserQuery = (EditText) actionBarView.findViewById(R.id.user_query);
         mQueryButton = actionBarView.findViewById(R.id.query_button);
-        final List<ParcelableAccount> accounts = ParcelableAccount.getAccountsList(activity, false);
+        final List<ParcelableCredentials> accounts = ParcelableCredentials.getCredentialsList(activity, false);
         final AccountsSpinnerAdapter accountsSpinnerAdapter = new AccountsSpinnerAdapter(
                 actionBar.getThemedContext(), R.layout.spinner_item_account_icon);
         accountsSpinnerAdapter.setDropDownViewResource(R.layout.list_item_user);
@@ -290,7 +295,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         mUsersSearchList.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final ParcelableAccount account = (ParcelableAccount) mAccountSpinner.getSelectedItem();
+                final ParcelableCredentials account = (ParcelableCredentials) mAccountSpinner.getSelectedItem();
                 showConversation(account, mUsersSearchAdapter.getItem(position));
                 updateRecipientInfo();
             }
@@ -303,14 +308,14 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 		mAddImageButton.setOnClickListener(this);
 		mSendButton.setEnabled(false);
 		if (savedInstanceState != null) {
-            final ParcelableAccount account = savedInstanceState.getParcelable(EXTRA_ACCOUNT);
+            final ParcelableCredentials account = savedInstanceState.getParcelable(EXTRA_ACCOUNT);
             final ParcelableUser recipient = savedInstanceState.getParcelable(EXTRA_USER);
             showConversation(account, recipient);
 			mEditText.setText(savedInstanceState.getString(EXTRA_TEXT));
 			mImageUri = savedInstanceState.getString(EXTRA_IMAGE_URI);
 		} else {
 			final Bundle args = getArguments();
-            final ParcelableAccount account;
+            final ParcelableCredentials account;
             final ParcelableUser recipient;
             if (args != null) {
                 if (args.containsKey(EXTRA_ACCOUNT)) {
@@ -383,7 +388,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
             mPopupMenu.dismiss();
         }
 
-        final ParcelableAccount account = mAccount;
+        final ParcelableCredentials account = mAccount;
         final ParcelableUser recipient = mRecipient;
         if (account != null && recipient != null) {
             final String key = getDraftsTextKey(account.account_id, recipient.id);
@@ -402,7 +407,19 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
+        MenuUtils.setMenuItemAvailability(menu, MENU_DELETE_ALL, mRecipient != null && Utils.isOfficialCredentials(getActivity(), mAccount));
         updateRecipientInfo();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_DELETE_ALL: {
+
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -452,7 +469,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 				break;
 			}
             case R.id.query_button: {
-                final ParcelableAccount account = (ParcelableAccount) mAccountSpinner.getSelectedItem();
+                final ParcelableCredentials account = (ParcelableCredentials) mAccountSpinner.getSelectedItem();
                 searchUsers(account.account_id, ParseUtils.parseString(mEditUserQuery.getText()), false);
                 break;
             }
@@ -461,7 +478,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 
 	@Override
 	public void onItemSelected(final AdapterView<?> parent, final View view, final int pos, final long id) {
-        final ParcelableAccount account = (ParcelableAccount) mAccountSpinner.getSelectedItem();
+        final ParcelableCredentials account = (ParcelableCredentials) mAccountSpinner.getSelectedItem();
 		if (account != null) {
             mAccount = account;
             updateRecipientInfo();
@@ -549,7 +566,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     }
 
 
-    public void showConversation(final ParcelableAccount account, final ParcelableUser recipient) {
+    public void showConversation(final ParcelableCredentials account, final ParcelableUser recipient) {
         mAccount = account;
         mRecipient = recipient;
         if (account == null || recipient == null) return;
@@ -620,7 +637,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 //    }
 
     private void sendDirectMessage() {
-        final ParcelableAccount account = mAccount;
+        final ParcelableCredentials account = mAccount;
         final ParcelableUser recipient = mRecipient;
         if (mAccount == null || mRecipient == null) return;
         final String message = mEditText.getText().toString();
@@ -640,7 +657,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         final EditTextEnterHandler queryEnterHandler = EditTextEnterHandler.attach(mEditUserQuery, new EnterListener() {
 			@Override
             public void onHitEnter() {
-                final ParcelableAccount account = (ParcelableAccount) mAccountSpinner.getSelectedItem();
+                final ParcelableCredentials account = (ParcelableCredentials) mAccountSpinner.getSelectedItem();
                 if (account == null) return;
                 mEditText.setAccountId(account.account_id);
                 searchUsers(account.account_id, ParseUtils.parseString(mEditUserQuery.getText()), false);
@@ -658,7 +675,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 
             @Override
             public void afterTextChanged(Editable s) {
-                final ParcelableAccount account = (ParcelableAccount) mAccountSpinner.getSelectedItem();
+                final ParcelableCredentials account = (ParcelableCredentials) mAccountSpinner.getSelectedItem();
                 if (account == null) return;
                 mEditText.setAccountId(account.account_id);
                 searchUsers(account.account_id, ParseUtils.parseString(s), true);
@@ -856,13 +873,38 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         }
     }
 
+    public static class DeleteConversationConfirmDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.delete_conversation_confirm_message);
+            builder.setPositiveButton(android.R.string.ok, this);
+            builder.setNegativeButton(android.R.string.cancel, null);
+            return builder.create();
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE: {
+                    final ParcelableCredentials account = getArguments().getParcelable(EXTRA_ACCOUNT);
+                    final ParcelableUser user = getArguments().getParcelable(EXTRA_USER);
+                    final AsyncTwitterWrapper twitter = getTwitterWrapper();
+                    twitter.destroyMessageConversationAsync(account.account_id, user.id);
+                    break;
+                }
+            }
+        }
+    }
+
     private static class SetReadStateTask extends AsyncTask<Object, Object, Cursor> {
         private final Context mContext;
         private final ReadStateManager mReadStateManager;
-        private final ParcelableAccount mAccount;
+        private final ParcelableCredentials mAccount;
         private final ParcelableUser mRecipient;
 
-        public SetReadStateTask(Context context, ParcelableAccount account, ParcelableUser recipient) {
+        public SetReadStateTask(Context context, ParcelableCredentials account, ParcelableUser recipient) {
             mContext = context;
             mReadStateManager = TwittnukerApplication.getInstance(context).getReadStateManager();
             mAccount = account;

@@ -64,6 +64,7 @@ import de.vanita5.twittnuker.activity.support.QuickSearchBarActivity.SuggestionI
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUser.CachedIndices;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
@@ -210,7 +211,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_quick_search_bar);
-		final List<ParcelableAccount> accounts = ParcelableAccount.getAccountsList(this, false);
+        final List<ParcelableCredentials> accounts = ParcelableAccount.getCredentialsList(this, false);
 		final AccountsSpinnerAdapter accountsSpinnerAdapter = new AccountsSpinnerAdapter(this, R.layout.spinner_item_account_icon);
 		accountsSpinnerAdapter.setDropDownViewResource(R.layout.list_item_user);
 		accountsSpinnerAdapter.addAll(accounts);

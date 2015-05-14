@@ -704,6 +704,8 @@
 	<string name="dont_restart">Don\'t restart</string>
 	<string name="user_list_details">List details</string>
 	<string name="invalid_list_name">Must start with a letter and can consist only letters, numbers, \"-\", or \"_\".</string>
+	<string name="delete_conversation">Delete conversation</string>
+	<string name="delete_conversation_confirm_message">Delete all messages of this conversation?</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

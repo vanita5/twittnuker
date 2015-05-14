@@ -804,30 +804,30 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
     private void setupBars() {
         final int themeColor = getThemeColor();
-		final int statusBarColor = getActionBarColor();
+		final int actionBarColor = getActionBarColor();
         final int themeResId = getCurrentThemeResourceId();
         final String backgroundOption = getCurrentThemeBackgroundOption();
         final boolean isTransparent = ThemeUtils.isTransparentBackground(backgroundOption);
         final int actionBarAlpha = isTransparent ? ThemeUtils.getUserThemeBackgroundAlpha(this) : 0xFF;
         final IHomeActionButton homeActionButton = (IHomeActionButton) mActionsButton;
-        mTabIndicator.setItemContext(ThemeUtils.getActionBarThemedContext(this, themeResId, statusBarColor));
-        ViewSupport.setBackground(mActionBarContainer	, ThemeUtils.getActionBarBackground(this, themeResId, statusBarColor,
+        mTabIndicator.setItemContext(ThemeUtils.getActionBarThemedContext(this, themeResId, actionBarColor));
+        ViewSupport.setBackground(mActionBarContainer	, ThemeUtils.getActionBarBackground(this, themeResId, actionBarColor,
                 backgroundOption, true));
         final int[] foregroundColors = new int[2];
         ThemeUtils.getColorForegroundAndInverse(this, foregroundColors);
         //No need to differentiate between dark and light theme due to custom action bar color preference
-        final int contrastColor = TwidereColorUtils.getContrastYIQ(statusBarColor,
+        final int contrastColor = TwidereColorUtils.getContrastYIQ(actionBarColor,
                 ThemeUtils.ACCENT_COLOR_THRESHOLD, foregroundColors[0], foregroundColors[1]);
-        homeActionButton.setButtonColor(statusBarColor);
+        homeActionButton.setButtonColor(actionBarColor);
         homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
         mTabIndicator.setStripColor(themeColor);
 		mTabIndicator.setIconColor(contrastColor);
 		mTabIndicator.setLabelColor(contrastColor);
-        ActivitySupport.setTaskDescription(this, new TaskDescriptionCompat(null, null, statusBarColor));
+        ActivitySupport.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
 		mColorStatusFrameLayout.setDrawColor(true);
 		mColorStatusFrameLayout.setDrawShadow(false);
-        mColorStatusFrameLayout.setColor(statusBarColor, actionBarAlpha);
-        StatusBarProxy.setStatusBarDarkIcon(getWindow(), TwidereColorUtils.getYIQLuminance(statusBarColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD);
+        mColorStatusFrameLayout.setColor(actionBarColor, actionBarAlpha);
+        StatusBarProxy.setStatusBarDarkIcon(getWindow(), TwidereColorUtils.getYIQLuminance(actionBarColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD);
 		mColorStatusFrameLayout.setFactor(1);
         mActionBarWithOverlay.setAlpha(actionBarAlpha / 255f);
         mActionsButton.setAlpha(actionBarAlpha / 255f);

@@ -23,5 +23,11 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    <item
+        android:id="@id/delete_all"
+        android:enabled="false"
+        android:icon="@drawable/ic_action_delete"
+        android:title="@string/delete_conversation"
+        android:visible="false"
+        app:showAsAction="never" />
 </menu>
