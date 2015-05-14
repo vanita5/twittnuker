@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.api.twitter.model.impl;
 
-
 import android.support.annotation.NonNull;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;

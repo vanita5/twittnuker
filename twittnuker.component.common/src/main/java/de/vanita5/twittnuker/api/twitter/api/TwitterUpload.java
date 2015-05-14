@@ -33,6 +33,7 @@ import java.io.File;
 import de.vanita5.twittnuker.api.twitter.model.MediaUploadResponse;
 import de.vanita5.twittnuker.api.twitter.model.TwitterException;
 
+@SuppressWarnings("RedundantThrows")
 public interface TwitterUpload {
 
 	@POST("/media/upload.json")

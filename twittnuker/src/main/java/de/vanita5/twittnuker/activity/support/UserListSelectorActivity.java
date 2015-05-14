@@ -42,6 +42,14 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUserListsAdapter;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
+import de.vanita5.twittnuker.util.TwitterAPIUtils;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.api.twitter.http.HttpResponseCode;
 import de.vanita5.twittnuker.fragment.support.CreateUserListDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -51,15 +59,6 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.model.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.api.twitter.model.UserList;
-import de.vanita5.twittnuker.api.twitter.http.HttpResponseCode;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ParseUtils.parseString;

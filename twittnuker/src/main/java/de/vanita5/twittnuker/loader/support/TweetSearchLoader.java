@@ -26,15 +26,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.model.ParcelableStatus;
-
-import java.util.List;
-
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.model.TwitterException;
+import de.vanita5.twittnuker.model.ParcelableStatus;
+
+import java.util.List;
 
 import static de.vanita5.twittnuker.util.Utils.isFiltered;
 
@@ -56,10 +55,7 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
 	@Override
     public List<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
 		final SearchQuery query = new SearchQuery(processQuery(mQuery));
-        query.setCount(paging.getCount());
-		if (paging.getMaxId() > 0) {
-			query.setMaxId(paging.getMaxId());
-		}
+        query.paging(paging);
         return twitter.search(query);
 	}
 
