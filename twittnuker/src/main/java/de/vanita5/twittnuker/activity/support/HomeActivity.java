@@ -811,16 +811,15 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         mTabIndicator.setItemContext(ThemeUtils.getActionBarThemedContext(this, themeResId, actionBarColor));
         ViewSupport.setBackground(mActionBarContainer	, ThemeUtils.getActionBarBackground(this, themeResId, actionBarColor,
                 backgroundOption, true));
+        final int actionItemColor = ThemeUtils.getContrastForegroundColor(this, getCurrentThemeResourceId(), actionBarColor);
         final int[] foregroundColors = new int[2];
         ThemeUtils.getColorForegroundAndInverse(this, foregroundColors);
         //No need to differentiate between dark and light theme due to custom action bar color preference
-        final int contrastColor = TwidereColorUtils.getContrastYIQ(actionBarColor,
-                ThemeUtils.ACCENT_COLOR_THRESHOLD, foregroundColors[0], foregroundColors[1]);
         homeActionButton.setButtonColor(actionBarColor);
-        homeActionButton.setIconColor(contrastColor, Mode.SRC_ATOP);
+        homeActionButton.setIconColor(actionItemColor, Mode.SRC_ATOP);
         mTabIndicator.setStripColor(themeColor);
-		mTabIndicator.setIconColor(contrastColor);
-		mTabIndicator.setLabelColor(contrastColor);
+		mTabIndicator.setIconColor(actionItemColor);
+		mTabIndicator.setLabelColor(actionItemColor);
         ActivitySupport.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
 		mColorStatusFrameLayout.setDrawColor(true);
 		mColorStatusFrameLayout.setDrawShadow(false);

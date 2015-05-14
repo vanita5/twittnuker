@@ -65,6 +65,7 @@ import android.support.v7.widget.RecyclerView.State;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Editable;
 import android.text.Spannable;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
@@ -111,6 +112,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
+import de.vanita5.twittnuker.text.MarkForDeleteSpan;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
@@ -682,12 +684,18 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                         intent.setData(Uri.parse(imageSpans[0].getSource()));
                         startActivityForResult(intent, REQUEST_PICK_IMAGE);
                     }
+                    ((Spannable) s).setSpan(new MarkForDeleteSpan(), start, start + count,
+                            Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 }
             }
 
             @Override
             public void afterTextChanged(final Editable s) {
                 mTextChanged = s.length() == 0;
+                final MarkForDeleteSpan[] deletes = s.getSpans(0, s.length(), MarkForDeleteSpan.class);
+                for (MarkForDeleteSpan delete : deletes) {
+                    s.delete(s.getSpanStart(delete), s.getSpanEnd(delete));
+                }
             }
         });
         mEditText.setCustomSelectionActionModeCallback(this);

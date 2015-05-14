@@ -56,6 +56,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 	String SCHEME_HTTPS = "https";
     String SCHEME_CONTENT = "content";
 	String SCHEME_TWITTNUKER = "twittnuker";
+    String SCHEME_DATA = "data";
 
 	String SERVICE_SHORTENER_HOTOTIN = "hototin";
 	String SERVICE_SHORTENER_TWITLONGER = "twitlonger";

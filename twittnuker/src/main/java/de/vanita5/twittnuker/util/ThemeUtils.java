@@ -943,8 +943,14 @@ public class ThemeUtils implements Constants {
         final int drawerThemeRes = getDrawerThemeResource(themeRes);
         final String backgroundOption = ((IThemedActivity) context).getThemeBackgroundOption();
         final int alpha = ((IThemedActivity) context).getCurrentThemeBackgroundAlpha();
-        final Drawable d = getWindowBackgroundFromTheme(context, drawerThemeRes);
-        if (d != null && isTransparentBackground(backgroundOption)) {
+        final Drawable d;
+        if (isSolidBackground(backgroundOption)) {
+            d = new ColorDrawable(Color.BLACK);
+        } else {
+            d = getWindowBackgroundFromTheme(context, drawerThemeRes);
+        }
+        if (d == null) throw new NullPointerException();
+        if (isTransparentBackground(backgroundOption)) {
             d.setAlpha(alpha);
         }
         ViewSupport.setBackground(view, d);

@@ -97,6 +97,9 @@ import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.activity.support.ThemedAppCompatActivity;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.Relationship;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
@@ -149,10 +152,6 @@ import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
 import java.util.List;
 import java.util.Locale;
-
-import de.vanita5.twittnuker.api.twitter.model.Relationship;
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 public class UserFragment extends BaseSupportFragment implements OnClickListener,
 		OnLinkClickListener, OnSizeChangedListener, OnSharedPreferenceChangeListener,
@@ -1321,14 +1320,14 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final AppCompatActivity activity = (AppCompatActivity) getActivity();
         final IThemedActivity themed = (IThemedActivity) activity;
         final int themeRes = themed.getCurrentThemeResourceId();
-        //custom action bar color and stuff! (twittnuker)
+        final int actionBarColor = ThemeUtils.getActionBarColor(activity);
         if (mTintedStatusContent != null) {
-            mTintedStatusContent.setColor(color, themed.getCurrentThemeBackgroundAlpha());
+            mTintedStatusContent.setColor(actionBarColor, themed.getCurrentThemeBackgroundAlpha());
         }
         if (mActionBarBackground != null) {
-            mActionBarBackground.setColor(color);
+            mActionBarBackground.setColor(actionBarColor);
         }
-        ActivitySupport.setTaskDescription(activity, new TaskDescriptionCompat(null, null, color));
+        ActivitySupport.setTaskDescription(activity, new TaskDescriptionCompat(null, null, actionBarColor));
         mDescriptionView.setLinkTextColor(color);
         mProfileBannerView.setBackgroundColor(color);
         mLocationView.setLinkTextColor(color);
@@ -1450,9 +1449,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             }
 
             final Drawable tabBackground = mPagerIndicator.getBackground();
-            int stackedTabColor;
             final int themeId = activity.getCurrentThemeResourceId();
-			stackedTabColor = mUiColor;
+            int stackedTabColor = ThemeUtils.getActionBarColor(activity);
 
             if (ThemeUtils.isTransparentBackground(activity.getCurrentThemeBackgroundOption())) {
                 stackedTabColor = ColorUtils.setAlphaComponent(stackedTabColor, activity.getCurrentThemeBackgroundAlpha());
