@@ -65,10 +65,16 @@ import org.mariotaku.simplerestapi.http.Authorization;
 import org.mariotaku.simplerestapi.http.Endpoint;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterConstants;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.api.twitter.auth.BasicAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.EmptyAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
+import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
@@ -89,12 +95,6 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
 import de.vanita5.twittnuker.view.iface.TintedStatusLayout;
-
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterConstants;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
-import de.vanita5.twittnuker.api.twitter.model.User;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createAccount;
@@ -692,8 +692,14 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 		}
 
         private SignInResponse authOAuth() throws AuthenticationException, TwitterException {
-            final String versionSuffix = noVersionSuffix ? null : "1.1";
-            final Endpoint endpoint = new Endpoint(Utils.getApiUrl(apiUrlFormat, "api", versionSuffix));
+            String endpointUrl, signEndpointUrl;
+            endpointUrl = Utils.getApiUrl(apiUrlFormat, "api", null);
+            if (!sameOAuthSigningUrl) {
+                signEndpointUrl = Utils.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", null);
+            } else {
+                signEndpointUrl = endpointUrl;
+            }
+            Endpoint endpoint = new OAuthEndpoint(endpointUrl, signEndpointUrl);
             OAuthAuthorization auth = new OAuthAuthorization(consumerKey.getOauthToken(), consumerKey.getOauthTokenSecret());
             final TwitterOAuth oauth = TwitterAPIUtils.getInstance(context, endpoint, auth, TwitterOAuth.class);
             final OAuthPasswordAuthenticator authenticator = new OAuthPasswordAuthenticator(oauth);
@@ -701,6 +707,15 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
             final long user_id = accessToken.getUserId();
             if (user_id <= 0) return new SignInResponse(false, false, null);
             if (isUserLoggedIn(context, user_id)) return new SignInResponse(true, false, null);
+
+            final String versionSuffix = noVersionSuffix ? null : "1.1";
+            endpointUrl = Utils.getApiUrl(apiUrlFormat, "api", versionSuffix);
+            if (!sameOAuthSigningUrl) {
+                signEndpointUrl = Utils.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", versionSuffix);
+            } else {
+                signEndpointUrl = endpointUrl;
+            }
+            endpoint = new OAuthEndpoint(endpointUrl, signEndpointUrl);
             auth = new OAuthAuthorization(consumerKey.getOauthToken(), consumerKey.getOauthTokenSecret(), accessToken);
             final Twitter twitter = TwitterAPIUtils.getInstance(context, endpoint,
                     auth, Twitter.class);
