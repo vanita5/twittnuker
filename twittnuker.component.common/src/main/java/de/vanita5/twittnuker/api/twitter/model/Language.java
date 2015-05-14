@@ -23,17 +23,12 @@
 package de.vanita5.twittnuker.api.twitter.model;
 
 /**
- * A data interface representing Trend.
- * 
- * @author Yusuke Yamamoto - yusuke at mac.com
- * @since Twitter4J 2.0.2
+ * Created by mariotaku on 15/5/10.
  */
-public interface Trend {
+public interface Language {
+	String getCode();
 
 	String getName();
 
-	String getQuery();
-
-	String getUrl();
-
+	String getStatus();
 }

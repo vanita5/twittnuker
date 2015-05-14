@@ -20,20 +20,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model;
+package de.vanita5.twittnuker.api.twitter.model.impl;
+
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+
+import de.vanita5.twittnuker.api.twitter.model.Language;
 
 /**
- * A data interface representing Trend.
- * 
- * @author Yusuke Yamamoto - yusuke at mac.com
- * @since Twitter4J 2.0.2
+ * Created by mariotaku on 15/5/10.
  */
-public interface Trend {
+@JsonObject
+public class LanguageImpl implements Language {
+	@JsonField(name = "name")
+	String name;
+	@JsonField(name = "code")
+	String code;
+	@JsonField(name = "status")
+	String status;
 
-	String getName();
+	@Override
+	public String getName() {
+		return name;
+	}
 
-	String getQuery();
+	@Override
+	public String getCode() {
+		return code;
+	}
 
-	String getUrl();
-
+	@Override
+	public String getStatus() {
+		return status;
+	}
 }

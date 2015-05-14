@@ -51,9 +51,7 @@ import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.api.HelpResources.Language;
-
-import static de.vanita5.twittnuker.util.TwitterAPIUtils.getDefaultTwitterInstance;
+import de.vanita5.twittnuker.api.twitter.model.Language;
 
 public class TranslationDestinationPreference extends Preference implements Constants, OnClickListener {
 

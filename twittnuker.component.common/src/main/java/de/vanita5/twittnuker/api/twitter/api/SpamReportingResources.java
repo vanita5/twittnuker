@@ -22,6 +22,10 @@
 
 package de.vanita5.twittnuker.api.twitter.api;
 
+import org.mariotaku.simplerestapi.http.BodyType;
+import org.mariotaku.simplerestapi.method.POST;
+import org.mariotaku.simplerestapi.param.Body;
+import org.mariotaku.simplerestapi.param.Form;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 
@@ -31,32 +35,11 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 @SuppressWarnings("RedundantThrows")
 public interface SpamReportingResources {
 
-	/**
-	 * The user specified in the id is blocked by the authenticated user and
-	 * reported as a spammer. <br>
-	 * This method calls http://api.twitter.com/1.1/report_spam.json
-	 * 
-	 * @param userId The ID of the user you want to report as a spammer.
-	 * @return The User reported as a spammer.
-	 * @throws TwitterException when Twitter service or network is unavailable
-	 * @see <a href="https://dev.twitter.com/docs/api/1.1/post/report_spam">POST
-	 *      report_spam | Twitter Developers</a>
-	 * @since Twitter4J 2.1.0
-	 */
-	User reportSpam(long userId) throws TwitterException;
+    @POST("/users/report_spam.json")
+    @Body(BodyType.FORM)
+    User reportSpam(@Form("user_id") long userId) throws TwitterException;
 
-	/**
-	 * The user specified in the id is blocked by the authenticated user and
-	 * reported as a spammer. <br>
-	 * This method calls http://api.twitter.com/1.1/report_spam.json
-	 * 
-	 * @param screenName The screen name of the user you want to report as a
-	 *            spammer.
-	 * @return The User reported as a spammer.
-	 * @throws TwitterException when Twitter service or network is unavailable
-	 * @see <a href="https://dev.twitter.com/docs/api/1.1/post/report_spam">POST
-	 *      report_spam | Twitter Developers</a>
-	 * @since Twitter4J 2.1.0
-	 */
-	User reportSpam(String screenName) throws TwitterException;
+    @POST("/users/report_spam.json")
+    @Body(BodyType.FORM)
+    User reportSpam(@Form("screen_name") String screenName) throws TwitterException;
 }

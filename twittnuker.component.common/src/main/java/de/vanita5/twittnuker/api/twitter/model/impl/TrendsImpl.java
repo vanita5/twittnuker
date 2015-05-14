@@ -20,23 +20,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model;
+package de.vanita5.twittnuker.api.twitter.model.impl;
 
-import java.io.Serializable;
+import android.support.annotation.NonNull;
+
+import com.bluelinelabs.logansquare.annotation.JsonField;
+
 import java.util.Date;
 
+import de.vanita5.twittnuker.api.twitter.model.Trends;
+import de.vanita5.twittnuker.api.twitter.util.TwitterTrendsDateConverter;
+
 /**
- * A data class representing Trends.
- * 
- * @author Yusuke Yamamoto - yusuke at mac.com
- * @since Twitter4J 2.0.2
+ * Created by mariotaku on 15/5/10.
  */
+public class TrendsImpl extends TwitterResponseImpl implements Trends {
 
-public interface Trends extends TwitterResponse, Comparable<Trends>, Serializable {
-	Date getAsOf();
+	@JsonField(name = "as_of", typeConverter = TwitterTrendsDateConverter.class)
+	Date asOf;
+	@JsonField(name = "trends")
+	TrendImpl[] trends;
+	@JsonField(name = "locations")
+	LocationImpl[] locations;
 
-	Location[] getLocations();
+	@Override
+	public Date getAsOf() {
+		return asOf;
+	}
 
-	Trend[] getTrends();
+	@Override
+	public TrendImpl[] getTrends() {
+		return trends;
+	}
 
+	@Override
+	public LocationImpl[] getLocations() {
+		return locations;
+	}
+
+	@Override
+	public int compareTo(@NonNull Trends another) {
+		return asOf.compareTo(another.getAsOf());
+	}
 }

@@ -22,12 +22,14 @@
 
 package de.vanita5.twittnuker.api.twitter.api;
 
-import java.util.Map;
-
+import org.mariotaku.simplerestapi.method.GET;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.Language;
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.TwitterAPIConfiguration;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
+
+import java.util.Map;
 
 @SuppressWarnings("RedundantThrows")
 public interface HelpResources {
@@ -60,6 +62,7 @@ public interface HelpResources {
 	 *      help/languages | Twitter Developers</a>
 	 * @since Twitter4J 2.2.3
 	 */
+    @GET("/help/languages.json")
 	ResponseList<Language> getLanguages() throws TwitterException;
 
 	String getPrivacyPolicy() throws TwitterException;
@@ -70,11 +73,4 @@ public interface HelpResources {
 
 	String getTermsOfService() throws TwitterException;
 
-	interface Language {
-		String getCode();
-
-		String getName();
-
-		String getStatus();
-	}
 }
