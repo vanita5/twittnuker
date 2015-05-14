@@ -74,7 +74,6 @@ public class HomeActionButton extends FrameLayout implements IHomeActionButton {
 
     private final EffectViewHelper mHelper;
 	private final ImageView mIconView;
-	private final ProgressBar mProgressBar;
 
 	public HomeActionButton(final Context context) {
 		this(context, null);
@@ -101,7 +100,6 @@ public class HomeActionButton extends FrameLayout implements IHomeActionButton {
                     this);
         }
 		mIconView = (ImageView) findViewById(android.R.id.icon);
-		mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
         ViewSupport.setOutlineProvider(this, new HomeActionButtonOutlineProvider());
 		setClipToOutline(true);
         setButtonColor(Color.WHITE);
@@ -130,12 +128,10 @@ public class HomeActionButton extends FrameLayout implements IHomeActionButton {
     @Override
     public void setIconColor(int color, Mode mode) {
         mIconView.setColorFilter(color, mode);
-        mProgressBar.setIndeterminateTintList(ColorStateList.valueOf(color));
 	}
 
 	@Override
 	public void setShowProgress(final boolean showProgress) {
-		mProgressBar.setVisibility(showProgress ? View.VISIBLE : View.GONE);
 		mIconView.setVisibility(showProgress ? View.GONE : View.VISIBLE);
 	}
 

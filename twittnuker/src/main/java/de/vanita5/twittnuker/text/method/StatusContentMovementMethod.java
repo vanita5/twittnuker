@@ -32,6 +32,7 @@ import android.text.method.MovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.TextView;
 
 /**
@@ -63,7 +64,7 @@ public class StatusContentMovementMethod extends ArrowKeyMovementMethod {
 
 	@Override
 	public boolean onTouchEvent(@NonNull final TextView widget, @NonNull final Spannable buffer, @NonNull final MotionEvent event) {
-		final int action = event.getAction();
+        final int action = event.getActionMasked();
 
 		if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
 			int x = (int) event.getX();
@@ -81,16 +82,22 @@ public class StatusContentMovementMethod extends ArrowKeyMovementMethod {
 
 			final ClickableSpan[] link = buffer.getSpans(off, off, ClickableSpan.class);
 
+
 			if (link.length != 0) {
-				if (action == MotionEvent.ACTION_UP) {
-					link[0].onClick(widget);
+                if (action == MotionEvent.ACTION_DOWN) {
+                    Selection.setSelection(buffer, buffer.getSpanStart(link[0]), buffer.getSpanEnd(link[0]));
+                    return true;
                 } else {
-					Selection.setSelection(buffer, buffer.getSpanStart(link[0]), buffer.getSpanEnd(link[0]));
-				}
+                    if ((!widget.isLongClickable() || (event.getEventTime() - event.getDownTime()) < ViewConfiguration.getLongPressTimeout())) {
+						link[0].onClick(widget);
+					}
+                    Selection.removeSelection(buffer);
 				return true;
+                }
 			} else {
 				Selection.removeSelection(buffer);
 			}
+
 		}
 
 		return super.onTouchEvent(widget, buffer, event);
