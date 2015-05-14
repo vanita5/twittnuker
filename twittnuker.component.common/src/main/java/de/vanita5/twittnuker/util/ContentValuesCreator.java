@@ -466,11 +466,11 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         if (trendsList == null) return new ContentValues[0];
         final List<ContentValues> resultList = new ArrayList<>();
         for (final Trends trends : trendsList) {
-            final long timestamp = trends.getAsOf().getTime();
+//            final long timestamp = trends.getAsOf().getTime();
 			for (final Trend trend : trends.getTrends()) {
 				final ContentValues values = new ContentValues();
 				values.put(CachedTrends.NAME, trend.getName());
-				values.put(CachedTrends.TIMESTAMP, timestamp);
+                values.put(CachedTrends.TIMESTAMP, System.currentTimeMillis());
                 resultList.add(values);
 			}
 		}

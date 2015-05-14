@@ -43,7 +43,18 @@ import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.SQLFunctions;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.http.HttpResponseCode;
+import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
 import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.model.Trends;
+import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ListResponse;
@@ -86,18 +97,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-
-import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
-import de.vanita5.twittnuker.api.twitter.model.Trends;
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.api.twitter.model.UserList;
-import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
-import de.vanita5.twittnuker.api.twitter.http.HttpResponseCode;
 
 import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createDirectMessage;
@@ -1910,12 +1909,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 		}
 
 		@Override
-		public List<Trends> getTrends(final Twitter twitter) throws TwitterException {
-            final ArrayList<Trends> trends_list = new ArrayList<>();
-			if (twitter != null) {
-				trends_list.add(twitter.getLocationTrends(woeid));
-			}
-			return trends_list;
+        public List<Trends> getTrends(@NonNull final Twitter twitter) throws TwitterException {
+            return twitter.getLocationTrends(woeid);
 		}
 
 		@Override
@@ -2175,7 +2170,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 			this.account_id = account_id;
 		}
 
-		public abstract List<Trends> getTrends(Twitter twitter) throws TwitterException;
+        public abstract List<Trends> getTrends(@NonNull Twitter twitter) throws TwitterException;
 
 		@Override
         protected ListResponse<Trends> doInBackground(final Object... params) {
