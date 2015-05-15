@@ -25,10 +25,12 @@ package de.vanita5.twittnuker.fragment.support;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,21 +44,22 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
+import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 
 public abstract class AbsActivitiesFragment<Data> extends AbsContentRecyclerViewFragment<AbsActivitiesAdapter<Data>>
         implements LoaderCallbacks<Data>, OnRefreshListener, DrawerCallback, RefreshScrollTopInterface,
-        ActivityAdapterListener {
+        ActivityAdapterListener, KeyboardShortcutsHandler.KeyboardShortcutCallback {
 
 	private final Object mStatusesBusCallback;
+    private SharedPreferences mPreferences;
+    private RecyclerViewNavigationHelper mNavigationHelper;
 
 	protected AbsActivitiesFragment() {
 		mStatusesBusCallback = createMessageBusCallback();
 	}
-
-	private SharedPreferences mPreferences;
-
 
 		@Override
     public void onGapClick(GapViewHolder holder, int position) {
@@ -66,6 +69,16 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentRecyclerView
         getActivities(accountIds, maxIds, null);
     }
 
+    @Override
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, final int keyCode, final int repeatCount,
+                                                @NonNull final KeyEvent event) {
+        return mNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
+    }
 
 	public SharedPreferences getSharedPreferences() {
 		if (mPreferences != null) return mPreferences;
@@ -82,9 +95,11 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentRecyclerView
 	@Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+        final AbsActivitiesAdapter<Data> adapter = getAdapter();
+        mNavigationHelper = new RecyclerViewNavigationHelper(getRecyclerView(), getLayoutManager(), adapter);
 		final View view = getView();
 		if (view == null) throw new AssertionError();
-        getAdapter().setListener(this);
+        adapter.setListener(this);
 		getLoaderManager().initLoader(0, getArguments(), this);
         showProgress();
 	}
