@@ -59,6 +59,7 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -89,7 +90,6 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
-import de.vanita5.twittnuker.text.method.StatusContentMovementMethod;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.CompareUtils;
@@ -694,7 +694,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             } else if (!TextUtils.isEmpty(timeString) && TextUtils.isEmpty(source)) {
                 timeSourceView.setText(timeString);
             }
-            timeSourceView.setMovementMethod(StatusContentMovementMethod.getInstance());
+            timeSourceView.setMovementMethod(LinkMovementMethod.getInstance());
 
             textView.setText(Html.fromHtml(status.text_html));
             linkify.applyAllLinks(textView, status.account_id, layoutPosition, status.is_possibly_sensitive);
@@ -766,8 +766,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             quoteTextView.setTextIsSelectable(true);
             textView.setTextIsSelectable(true);
 
-            quoteTextView.setMovementMethod(StatusContentMovementMethod.getInstance());
-            textView.setMovementMethod(StatusContentMovementMethod.getInstance());
+            quoteTextView.setMovementMethod(LinkMovementMethod.getInstance());
+            textView.setMovementMethod(LinkMovementMethod.getInstance());
         }
 
         @Override
