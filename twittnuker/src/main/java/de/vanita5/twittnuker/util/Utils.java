@@ -137,7 +137,16 @@ import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterConstants;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthSupport;
+import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
+import de.vanita5.twittnuker.api.twitter.model.Relationship;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
+import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.support.AccountsManagerFragment;
 import de.vanita5.twittnuker.fragment.support.AddStatusFilterDialogFragment;
@@ -239,16 +248,6 @@ import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 
 import javax.net.ssl.SSLException;
-
-import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
-import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
-import de.vanita5.twittnuker.api.twitter.model.Relationship;
-import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterConstants;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
-import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 
 import static android.text.TextUtils.isEmpty;
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
@@ -967,9 +966,13 @@ public final class Utils implements Constants, TwitterConstants {
 				break;
 			}
 			case LINK_ID_SEARCH: {
-				final String param_query = uri.getQueryParameter(QUERY_PARAM_QUERY);
-				if (isEmpty(param_query)) return null;
-				args.putString(EXTRA_QUERY, param_query);
+                final String paramQuery = uri.getQueryParameter(QUERY_PARAM_QUERY);
+                if (!args.containsKey(EXTRA_QUERY) && !isEmpty(paramQuery)) {
+                    args.putString(EXTRA_QUERY, paramQuery);
+                }
+                if (!args.containsKey(EXTRA_QUERY)) {
+                    return null;
+                }
 				fragment = new SearchFragment();
 				break;
 			}
@@ -2700,15 +2703,28 @@ public final class Utils implements Constants, TwitterConstants {
         activity.startActivity(intent);
 	}
 
-    public static void openSearch(final Context context, final long account_id, final String query) {
+    public static void openSearch(final Context context, final long accountId, final String query) {
+        openSearch(context, accountId, query, null);
+    }
+
+    public static void openSearch(final Context context, final long accountId, final String query, String type) {
         if (context == null) return;
+        final Intent intent = new Intent(Intent.ACTION_VIEW);
+        // Some devices cannot process query parameter with hashes well, so add this intent extra
+        intent.putExtra(EXTRA_QUERY, query);
+        intent.putExtra(EXTRA_ACCOUNT_ID, accountId);
+
 		final Uri.Builder builder = new Uri.Builder();
 		builder.scheme(SCHEME_TWITTNUKER);
 		builder.authority(AUTHORITY_SEARCH);
-		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(account_id));
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
 		builder.appendQueryParameter(QUERY_PARAM_QUERY, query);
-        final Uri uri = builder.build();
-        final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        if (!TextUtils.isEmpty(type)) {
+            builder.appendQueryParameter(QUERY_PARAM_TYPE, type);
+            intent.putExtra(EXTRA_TYPE, type);
+        }
+        intent.setData(builder.build());
+
         context.startActivity(intent);
 	}
 
@@ -2787,17 +2803,7 @@ public final class Utils implements Constants, TwitterConstants {
 	}
 
     public static void openTweetSearch(final Context context, final long accountId, final String query) {
-        if (context == null) return;
-		final Uri.Builder builder = new Uri.Builder();
-		builder.scheme(SCHEME_TWITTNUKER);
-		builder.authority(AUTHORITY_SEARCH);
-		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
-		builder.appendQueryParameter(QUERY_PARAM_TYPE, QUERY_PARAM_VALUE_TWEETS);
-		if (query != null) {
-			builder.appendQueryParameter(QUERY_PARAM_QUERY, query);
-		}
-		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        context.startActivity(intent);
+        openSearch(context, accountId, query, QUERY_PARAM_VALUE_TWEETS);
 	}
 
 	public static void openUserBlocks(final Activity activity, final long account_id) {

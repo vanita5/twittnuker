@@ -1320,6 +1320,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final AppCompatActivity activity = (AppCompatActivity) getActivity();
         final IThemedActivity themed = (IThemedActivity) activity;
         final int themeRes = themed.getCurrentThemeResourceId();
+        final String backgroundOption = themed.getThemeBackgroundOption();
         final int actionBarColor = ThemeUtils.getActionBarColor(activity);
         if (mTintedStatusContent != null) {
             mTintedStatusContent.setColor(actionBarColor, themed.getCurrentThemeBackgroundAlpha());
@@ -1332,7 +1333,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mProfileBannerView.setBackgroundColor(color);
         mLocationView.setLinkTextColor(color);
         mURLView.setLinkTextColor(color);
-        ViewSupport.setBackground(mPagerIndicator, ThemeUtils.getActionBarStackedBackground(activity, themeRes, color, true));
+        ViewSupport.setBackground(mPagerIndicator, ThemeUtils.getActionBarStackedBackground(activity,
+                themeRes, actionBarColor, backgroundOption, true));
 
         final HeaderDrawerLayout drawer = mHeaderDrawerLayout;
         if (drawer != null) {

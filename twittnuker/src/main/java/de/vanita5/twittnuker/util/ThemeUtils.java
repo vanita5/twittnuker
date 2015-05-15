@@ -103,7 +103,7 @@ public class ThemeUtils implements Constants {
         if (actionBar == null || context == null) return;
         actionBar.setBackgroundDrawable(getActionBarBackground(context, themeRes, actionBarColor, backgroundOption, outlineEnabled));
         actionBar.setSplitBackgroundDrawable(getActionBarSplitBackground(context, themeRes));
-        actionBar.setStackedBackgroundDrawable(getActionBarStackedBackground(context, themeRes, actionBarColor, outlineEnabled));
+        actionBar.setStackedBackgroundDrawable(getActionBarStackedBackground(context, themeRes, actionBarColor, backgroundOption, outlineEnabled));
     }
 
 
@@ -112,7 +112,7 @@ public class ThemeUtils implements Constants {
         if (actionBar == null || context == null) return;
         actionBar.setPrimaryBackground(getActionBarBackground(context, themeRes, actionBarColor, backgroundOption, outlineEnabled));
         actionBar.setSplitBackground(getActionBarSplitBackground(context, themeRes));
-        actionBar.setStackedBackground(getActionBarStackedBackground(context, themeRes, actionBarColor, outlineEnabled));
+        actionBar.setStackedBackground(getActionBarStackedBackground(context, themeRes, actionBarColor, backgroundOption, outlineEnabled));
     }
 
     public static void applyColorFilterToMenuIcon(final Menu menu, final int color, final int popupColor,
@@ -255,8 +255,9 @@ public class ThemeUtils implements Constants {
 
     @NonNull
     public static Drawable getActionBarStackedBackground(final Context context, final int themeRes,
-                                                         final int actionBarColor, boolean outlineEnabled) {
-        return ActionBarColorDrawable.create(actionBarColor, outlineEnabled);
+                                                         final int actionBarColor, String backgroundOption,
+                                                         boolean outlineEnabled) {
+        return getActionBarBackground(context, themeRes, actionBarColor, backgroundOption, outlineEnabled);
     }
 
     public static int getCardBackgroundColor(final Context context, String backgroundOption, int themeAlpha) {
@@ -713,6 +714,7 @@ public class ThemeUtils implements Constants {
         if (!(activity instanceof IThemedActivity)) return;
         final int themeRes = ((IThemedActivity) activity).getCurrentThemeResourceId();
         final int themeColor = ((IThemedActivity) activity).getCurrentThemeColor();
+        final String backgroundOption = ((IThemedActivity) activity).getCurrentThemeBackgroundOption();
         final int actionBarColor = ((IThemedActivity) activity).getCurrentActionBarColor();
         final int colorDark, colorLight;
         final int[] textColors = new int[2];
@@ -726,7 +728,7 @@ public class ThemeUtils implements Constants {
         }
         final int contrastColor = TwidereColorUtils.getContrastYIQ(actionBarColor, ACCENT_COLOR_THRESHOLD,
                 colorDark, colorLight);
-        ViewSupport.setBackground(indicator, getActionBarStackedBackground(activity, themeRes, actionBarColor, true));
+        ViewSupport.setBackground(indicator, getActionBarStackedBackground(activity, themeRes, actionBarColor, backgroundOption, true));
 		indicator.setIconColor(contrastColor);
 		indicator.setLabelColor(contrastColor);
 		indicator.setStripColor(themeColor);

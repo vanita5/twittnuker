@@ -391,6 +391,7 @@
     <string name="search_name_deleted">Suche \"<xliff:g id="name">%s</xliff:g>\" gelöscht.</string>
     <string name="import_from">Importiere aus&#8230;</string>
     <string name="link_to_quoted_status">Zitierten Tweet verlinken</string>
+    <string name="quote_original_status">Tweet zitieren</string>
     <string name="followed_user">Folge <xliff:g id="user">%s</xliff:g>.</string>
     <string name="sent_follow_request_to_user">Follower-Anfrage an <xliff:g id="user">%s</xliff:g> senden.</string>
     <string name="unfollowed_user"><xliff:g id="user">%s</xliff:g> entfolgt</string>
@@ -663,6 +664,7 @@
     <string name="delete_conversation_confirm_message">Alle Nachrichten aus dieser Unterhaltung löschen?</string>
     <string name="name_first_summary_on">Name zuerst anzeigen</string>
     <string name="name_first_summary_off">\@Screenname zuerst anzeigen</string>
+    <string name="comment_hint">Kommentar...</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

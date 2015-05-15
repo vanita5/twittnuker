@@ -21,27 +21,50 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<ScrollView
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/status_container"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/element_spacing_normal"
+    android:layout_height="match_parent"
     android:paddingBottom="@dimen/element_spacing_normal"
     android:paddingLeft="@dimen/element_spacing_large"
-    android:paddingRight="@dimen/element_spacing_large">
-
+    android:paddingRight="@dimen/element_spacing_large"
+    android:paddingTop="@dimen/element_spacing_normal">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <EditText
+        <LinearLayout
             android:layout_width="match_parent"
-            android:visibility="gone"
             android:layout_height="wrap_content"
-            android:inputType="text"/>
+            android:orientation="horizontal">
+
+            <de.vanita5.twittnuker.view.themed.BackgroundTintMaterialEditText
+                android:id="@+id/edit_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="true"
+                android:hint="@string/comment_hint"
+                android:inputType="text"
+                android:visibility="visible"
+                app:met_maxCharacters="140">
+
+                <requestFocus />
+            </de.vanita5.twittnuker.view.themed.BackgroundTintMaterialEditText>
+
+            <de.vanita5.twittnuker.view.ActionIconButton
+                android:id="@+id/comment_menu"
+                style="?cardActionButtonStyle"
+                android:layout_width="@dimen/element_size_normal"
+                android:layout_height="@dimen/element_size_normal"
+                android:layout_weight="0"
+                android:color="?android:textColorTertiary"
+                android:focusable="false"
+                android:src="@drawable/ic_action_more_vertical" />
+        </LinearLayout>
 
         <include layout="@layout/card_item_status_common"/>
     </LinearLayout>

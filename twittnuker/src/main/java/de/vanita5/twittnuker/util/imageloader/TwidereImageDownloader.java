@@ -145,6 +145,7 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
             additionalHeaders.add(Pair.create("Accept", "image/webp, */*"));
         }
         final String method = GET.METHOD;
+        final String requestUri;
         if (auth!= null && auth.hasAuthorization()) {
             final Endpoint endpoint;
             if (auth instanceof OAuthAuthorization) {
@@ -161,8 +162,10 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
             final RequestInfo info = new RequestInfo(method, uri.getPath(), queries, null,
                     additionalHeaders, null, null, null, null);
             additionalHeaders.add(Pair.create("Authorization", auth.getHeader(endpoint, info)));
+            requestUri = modifiedUri.toString();
+        } else {
+            requestUri = modifiedUri.toString();
         }
-		final String requestUri = modifiedUri.toString();
         final RestHttpResponse resp = mClient.execute(new RestHttpRequest.Builder().method(method).url(requestUri).headers(additionalHeaders).build());
         final TypedData body = resp.getBody();
         return new ContentLengthInputStream(body.stream(), (int) body.length());
