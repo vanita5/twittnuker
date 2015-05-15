@@ -33,7 +33,6 @@ import com.nostra13.universalimageloader.core.assist.ContentLengthInputStream;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
 import org.mariotaku.simplerestapi.RequestInfo;
-import org.mariotaku.simplerestapi.RestMethodInfo;
 import org.mariotaku.simplerestapi.http.Authorization;
 import org.mariotaku.simplerestapi.http.Endpoint;
 import org.mariotaku.simplerestapi.http.RestHttpClient;
@@ -159,7 +158,8 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
                     queries.add(Pair.create(name, value));
                 }
             }
-            final RequestInfo info = new RequestInfo(method, uri.getPath(), queries, null, additionalHeaders, null, null, null);
+            final RequestInfo info = new RequestInfo(method, uri.getPath(), queries, null,
+                    additionalHeaders, null, null, null, null);
             additionalHeaders.add(Pair.create("Authorization", auth.getHeader(endpoint, info)));
         }
 		final String requestUri = modifiedUri.toString();
