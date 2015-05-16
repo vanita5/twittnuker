@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
@@ -50,12 +51,11 @@ public class AccountPreferences implements Constants {
 
 	public int getDefaultNotificationLightColor() {
         final ParcelableAccount a = ParcelableAccount.getAccount(mContext, mAccountId);
-        return a != null ? a.color : mContext.getResources().getColor(R.color.material_light_blue);
+        return a != null ? a.color : mContext.getResources().getColor(R.color.branding_color);
 	}
 
 	public int getDirectMessagesNotificationType() {
-		return mPreferences.getInt(KEY_NOTIFICATION_TYPE_DIRECT_MESSAGES,
-				DEFAULT_NOTIFICATION_TYPE_DIRECT_MESSAGES);
+        return mPreferences.getInt(KEY_NOTIFICATION_TYPE_DIRECT_MESSAGES, DEFAULT_NOTIFICATION_TYPE_DIRECT_MESSAGES);
 	}
 
 	public int getHomeTimelineNotificationType() {
@@ -63,8 +63,7 @@ public class AccountPreferences implements Constants {
 	}
 
 	public int getMentionsNotificationType() {
-		return mPreferences.getInt(KEY_NOTIFICATION_TYPE_MENTIONS,
-				DEFAULT_NOTIFICATION_TYPE_MENTIONS);
+        return mPreferences.getInt(KEY_NOTIFICATION_TYPE_MENTIONS, DEFAULT_NOTIFICATION_TYPE_MENTIONS);
 	}
 
 	public int getNotificationLightColor() {
@@ -78,8 +77,7 @@ public class AccountPreferences implements Constants {
 	}
 
 	public boolean isAutoRefreshDirectMessagesEnabled() {
-		return mPreferences.getBoolean(KEY_AUTO_REFRESH_DIRECT_MESSAGES,
-				DEFAULT_AUTO_REFRESH_DIRECT_MESSAGES);
+        return mPreferences.getBoolean(KEY_AUTO_REFRESH_DIRECT_MESSAGES, DEFAULT_AUTO_REFRESH_DIRECT_MESSAGES);
 	}
 
 	public boolean isAutoRefreshEnabled() {
@@ -87,8 +85,7 @@ public class AccountPreferences implements Constants {
 	}
 
 	public boolean isAutoRefreshHomeTimelineEnabled() {
-		return mPreferences.getBoolean(KEY_AUTO_REFRESH_HOME_TIMELINE,
-				DEFAULT_AUTO_REFRESH_HOME_TIMELINE);
+        return mPreferences.getBoolean(KEY_AUTO_REFRESH_HOME_TIMELINE, DEFAULT_AUTO_REFRESH_HOME_TIMELINE);
 	}
 
 	public boolean isAutoRefreshMentionsEnabled() {
@@ -100,8 +97,7 @@ public class AccountPreferences implements Constants {
 	}
 
 	public boolean isDirectMessagesNotificationEnabled() {
-		return mPreferences.getBoolean(KEY_DIRECT_MESSAGES_NOTIFICATION,
-				DEFAULT_DIRECT_MESSAGES_NOTIFICATION);
+		return mPreferences.getBoolean(KEY_DIRECT_MESSAGES_NOTIFICATION, DEFAULT_DIRECT_MESSAGES_NOTIFICATION);
 	}
 
 	public boolean isMentionsNotificationEnabled() {
@@ -150,6 +146,7 @@ public class AccountPreferences implements Constants {
 		return enabledIds;
 	}
 
+    @Nullable
 	public static AccountPreferences[] getNotificationEnabledPreferences(final Context context, final long[] accountIds) {
 		if (context == null || accountIds == null) return null;
 		final AccountPreferences[] temp = new AccountPreferences[accountIds.length];
@@ -165,6 +162,7 @@ public class AccountPreferences implements Constants {
 		return enabledIds;
 	}
 
+	@Nullable
 	public static AccountPreferences[] getPushEnabledPreferences(final Context context, final long[] accountIds) {
 		if (context == null || accountIds == null) return null;
 		final AccountPreferences[] temp = new AccountPreferences[accountIds.length];
