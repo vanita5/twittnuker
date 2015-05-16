@@ -43,6 +43,7 @@ dependencies {
     apt 'com.bluelinelabs:logansquare-compiler:1.0.6'
     compile 'com.bluelinelabs:logansquare:1.0.6'
     compile 'com.android.support:support-annotations:22.1.1'
+    compile 'com.android.support:support-v4:22.1.1'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile project(':twittnuker.component.querybuilder')
     compile fileTree(dir: 'libs', include: ['*.jar'])

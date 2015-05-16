@@ -45,6 +45,7 @@ import android.widget.Toast;
 import org.mariotaku.simplerestapi.http.Authorization;
 import org.mariotaku.simplerestapi.http.Endpoint;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -52,13 +53,11 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
 import de.vanita5.twittnuker.util.TwitterAPIUtils;
+import de.vanita5.twittnuker.util.Utils;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.StringReader;
-
-import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
-import de.vanita5.twittnuker.util.Utils;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;

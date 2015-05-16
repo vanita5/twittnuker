@@ -25,12 +25,8 @@ package de.vanita5.twittnuker.util;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.common.R;
-import de.vanita5.twittnuker.model.ConsumerKeyType;
-
-import java.nio.charset.Charset;
-import java.util.zip.CRC32;
-
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.EntitySupport;
 import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
@@ -38,10 +34,24 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
+import de.vanita5.twittnuker.api.twitter.model.impl.StatusImpl;
+import de.vanita5.twittnuker.common.R;
+import de.vanita5.twittnuker.model.ConsumerKeyType;
+import de.vanita5.twittnuker.util.collection.LongSparseMap;
+
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.CRC32;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 
 public class TwitterContentUtils {
+
+    public static final int TWITTER_BULK_QUERY_COUNT = 100;
+
 	public static String formatDirectMessageText(final DirectMessage message) {
 		if (message == null) return null;
         final HtmlBuilder builder = new HtmlBuilder(message.getText(), false, true, true);
@@ -157,6 +167,43 @@ public class TwitterContentUtils {
     public static String unescapeTwitterStatusText(final String str) {
         if (str == null) return null;
         return str.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">");
+    }
+
+    private static final Pattern PATTERN_TWITTER_STATUS_LINK = Pattern.compile("https?://twitter\\.com/(?:#!/)?(\\w+)/status(es)?/(\\d+)");
+
+    public static <T extends List<Status>> T getStatusesWithQuoteData(Twitter twitter, @NonNull T list) throws TwitterException {
+        LongSparseMap<Status> quotes = new LongSparseMap<>();
+        // Phase 1: collect all statuses contains a status link, and put it in the map
+        for (Status status : list) {
+            if (status.isQuote()) continue;
+            final UrlEntity[] entities = status.getUrlEntities();
+            if (entities == null || entities.length <= 0) continue;
+            // Seems Twitter will find last status link for quote target, so we search backward
+            for (int i = entities.length - 1; i >= 0; i--) {
+                final Matcher m = PATTERN_TWITTER_STATUS_LINK.matcher(entities[i].getExpandedUrl());
+                if (!m.matches()) continue;
+                quotes.put(Long.parseLong(m.group(3)), status);
+                break;
+            }
+        }
+        // Phase 2: look up quoted tweets. Each lookup can fetch up to 100 tweets, so we split quote
+        // ids into batches
+        final long[] quoteIds = quotes.keys();
+        for (int currentBulkIdx = 0, totalLength = quoteIds.length; currentBulkIdx < totalLength; currentBulkIdx += TWITTER_BULK_QUERY_COUNT) {
+            final int currentBulkCount = Math.min(totalLength, currentBulkIdx + TWITTER_BULK_QUERY_COUNT);
+            final long[] ids = new long[currentBulkCount];
+            System.arraycopy(quoteIds, currentBulkIdx, ids, 0, currentBulkCount);
+            // Lookup quoted statuses, then set each status into original status
+            for (Status quoted : twitter.lookupStatuses(ids)) {
+                final Set<Status> orig = quotes.get(quoted.getId());
+                // This set shouldn't be null here, add null check to make inspector happy.
+                if (orig == null) continue;
+                for (Status status : orig) {
+                    StatusImpl.setQuotedStatus(status, quoted);
+                }
+            }
+        }
+        return list;
     }
 
 	private static void parseEntities(final HtmlBuilder builder, final EntitySupport entities) {

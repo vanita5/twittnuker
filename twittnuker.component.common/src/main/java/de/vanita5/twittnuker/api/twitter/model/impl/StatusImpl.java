@@ -27,11 +27,6 @@ import android.support.annotation.NonNull;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.api.twitter.util.TwitterDateConverter;
-
-import java.util.Arrays;
-import java.util.Date;
-
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
 import de.vanita5.twittnuker.api.twitter.model.HashtagEntity;
@@ -41,6 +36,10 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
+import de.vanita5.twittnuker.api.twitter.util.TwitterDateConverter;
+
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Created by mariotaku on 15/5/5.
@@ -328,6 +327,11 @@ public class StatusImpl extends TwitterResponseImpl implements Status {
 				", possiblySensitive=" + possiblySensitive +
 				'}';
 	}
+
+    public static void setQuotedStatus(Status status, Status quoted) {
+        if (!(status instanceof StatusImpl)) return;
+        ((StatusImpl) status).quotedStatus = quoted;
+    }
 
 	@JsonObject
 	static class CurrentUserRetweet {

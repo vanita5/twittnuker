@@ -22,13 +22,14 @@
 
 package de.vanita5.twittnuker.util.collection;
 
+import android.support.annotation.Nullable;
 import android.support.v4.util.LongSparseArray;
 
-import java.util.HashSet;
+import java.util.Set;
 
 public class LongSparseMap<T> {
 
-	private final LongSparseArray<HashSet<T>> internalArray;
+    private final LongSparseArray<CompactHashSet<T>> internalArray;
 
 	public LongSparseMap() {
 		internalArray = new LongSparseArray<>();
@@ -36,15 +37,20 @@ public class LongSparseMap<T> {
 
 	public boolean put(long key, T value) {
 		final int idx = internalArray.indexOfKey(key);
-		final HashSet<T> set;
+        final CompactHashSet<T> set;
 		if (idx < 0) {
-			set = new HashSet<>();
+            set = new CompactHashSet<>();
 			internalArray.put(key, set);
 		} else {
 			set = internalArray.valueAt(idx);
 		}
 		return set.add(value);
 	}
+
+    @Nullable
+    public Set<T> get(long key) {
+        return internalArray.get(key);
+    }
 
 	public boolean clear(long key) {
 		final int idx = internalArray.indexOfKey(key);
@@ -62,5 +68,13 @@ public class LongSparseMap<T> {
 		final int idx = internalArray.indexOfKey(key);
 		return idx >= 0 && internalArray.valueAt(idx).contains(value);
 	}
+
+    public long[] keys() {
+        final long[] keys = new long[internalArray.size()];
+        for (int i = 0, j = internalArray.size(); i < j; i++) {
+            keys[i] = internalArray.keyAt(i);
+        }
+        return keys;
+    }
 
 }
