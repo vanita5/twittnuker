@@ -20,15 +20,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model;
+package de.vanita5.twittnuker.api.twitter.model.impl;
 
-/**
- * @author Alessandro Bahgat - ale.bahgat at gmail.com
- */
-public interface TimeZone {
-	String getName();
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-    String getTzInfoName();
+import de.vanita5.twittnuker.api.twitter.model.TimeZone;
 
-    int getUtcOffset();
+@JsonObject
+public class TimeZoneImpl implements TimeZone {
+
+	@JsonField(name = "utc_offset")
+	int utcOffset;
+	@JsonField(name = "name")
+	String name;
+	@JsonField(name = "tzinfo_name")
+	String tzInfoName;
+
+	@Override
+	public int getUtcOffset() {
+		return utcOffset;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String getTzInfoName() {
+		return tzInfoName;
+	}
 }
