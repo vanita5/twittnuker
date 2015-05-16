@@ -5,8 +5,8 @@
     <item
 		android:id="@id/mention"
         android:icon="@drawable/ic_action_at"
-        app:showAsAction="ifRoom"
-		android:title="@string/mention_this_user"/>
+        android:title="@string/mention_this_user"
+        app:showAsAction="ifRoom" />
 	<item
 		android:id="@id/send_direct_message"
         android:icon="@drawable/ic_action_new_message"
@@ -24,6 +24,11 @@
     	android:id="@id/add_to_filter"
         android:icon="@drawable/ic_action_speaker_muted"
     	android:title="@string/add_to_filter"/>
+    <item
+        android:id="@id/enable_retweets"
+        android:checkable="true"
+        android:icon="@drawable/ic_action_retweet"
+        android:title="@string/enable_retweets" />
 	<item
 		android:id="@id/mute_user"
         android:icon="@drawable/ic_action_mic_muted"

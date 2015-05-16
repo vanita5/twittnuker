@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.util.Log;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.Utils;
 
@@ -39,7 +40,7 @@ public class ConnectivityStateReceiver extends BroadcastReceiver implements Cons
 
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
-		if (Utils.isDebugBuild()) {
+		if (BuildConfig.DEBUG) {
 			Log.d(RECEIVER_LOGTAG, String.format("Received Broadcast %s", intent));
 		}
 		if (!ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) return;

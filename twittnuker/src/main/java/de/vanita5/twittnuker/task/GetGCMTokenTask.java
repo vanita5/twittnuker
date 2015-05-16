@@ -14,9 +14,9 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import java.io.IOException;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
-import de.vanita5.twittnuker.util.Utils;
 
 public class GetGCMTokenTask extends AsyncTask<Object, Void, String> implements Constants {
 
@@ -45,7 +45,7 @@ public class GetGCMTokenTask extends AsyncTask<Object, Void, String> implements 
 		try {
 			token = fetchToken();
 		} catch (IOException e) {
-			if (Utils.isDebugBuild()) {
+			if (BuildConfig.DEBUG) {
 				Log.e(TAG, "Exception: ", e);
 			}
 		}
@@ -75,7 +75,7 @@ public class GetGCMTokenTask extends AsyncTask<Object, Void, String> implements 
 					REQUEST_CODE_RECOVER_FROM_AUTH_ERROR);
 		}
 		catch (GoogleAuthException e) {
-			if (Utils.isDebugBuild()) {
+			if (BuildConfig.DEBUG) {
 				Log.e(TAG, "Unrecoverable error", e);
 			}
 		}

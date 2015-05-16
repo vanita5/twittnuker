@@ -58,6 +58,7 @@ import android.widget.CheckBox;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
@@ -363,7 +364,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 					try {
 						startActivity(item.getIntent());
 					} catch (final ActivityNotFoundException e) {
-						if (Utils.isDebugBuild()) Log.w(LOGTAG, e);
+						if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
 						return false;
 					}
 				}

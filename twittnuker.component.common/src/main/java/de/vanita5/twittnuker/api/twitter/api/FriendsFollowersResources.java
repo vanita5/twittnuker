@@ -30,6 +30,7 @@ import org.mariotaku.simplerestapi.param.Form;
 import org.mariotaku.simplerestapi.param.Query;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Friendship;
+import de.vanita5.twittnuker.api.twitter.model.FriendshipUpdate;
 import de.vanita5.twittnuker.api.twitter.model.IDs;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
@@ -114,9 +115,11 @@ public interface FriendsFollowersResources {
     Relationship showFriendship(@Query("source_screen_name") String sourceScreenName,
                                 @Query("target_screen_name") String targetScreenName) throws TwitterException;
 
-	Relationship updateFriendship(long userId, boolean enableDeviceNotification, boolean retweets)
-			throws TwitterException;
+    @POST("/friendships/update.json")
+    @Body(BodyType.FORM)
+    Relationship updateFriendship(@Form("user_id") long userId, @Form FriendshipUpdate update) throws TwitterException;
 
-	Relationship updateFriendship(String screenName, boolean enableDeviceNotification, boolean retweets)
-			throws TwitterException;
+    @POST("/friendships/update.json")
+    @Body(BodyType.FORM)
+    Relationship updateFriendship(@Form("screen_name") String screenName, @Form FriendshipUpdate update) throws TwitterException;
 }

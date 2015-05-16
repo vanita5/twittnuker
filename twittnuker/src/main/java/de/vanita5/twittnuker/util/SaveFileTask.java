@@ -33,6 +33,7 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
@@ -124,7 +125,7 @@ public class SaveFileTask extends AsyncTask<Object, Object, File> implements Con
 			}
 			return saveFile;
 		} catch (final IOException e) {
-			if (Utils.isDebugBuild()) Log.w(LOGTAG, "Failed to save file", e);
+			if (BuildConfig.DEBUG) Log.w(LOGTAG, "Failed to save file", e);
 			return null;
 		}
 	}

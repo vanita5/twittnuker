@@ -24,18 +24,14 @@ package de.vanita5.twittnuker.util.message;
 
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.twitter.model.Relationship;
+import de.vanita5.twittnuker.model.ParcelableUser;
 
-public class FriendshipUpdatedEvent {
+public class FriendshipUserUpdatedEvent {
 
-    public final long accountId;
-    public final long userId;
 	@NonNull
-    public final Relationship relationship;
+	public final ParcelableUser user;
 
-    public FriendshipUpdatedEvent(long accountId, long userId,@NonNull Relationship relationship) {
-        this.accountId = accountId;
-        this.userId = userId;
-        this.relationship = relationship;
+	public FriendshipUserUpdatedEvent(@NonNull ParcelableUser user) {
+		this.user = user;
 	}
 }

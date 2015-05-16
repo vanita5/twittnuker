@@ -109,4 +109,8 @@ public interface Relationship extends TwitterResponse {
     boolean isSourceRequestedFollowingTarget();
 
     boolean isTargetRequestedFollowingSource();
+
+    boolean isSourceWantRetweetsFromTarget();
+
+    boolean isSourceNotificationsEnabledForTarget();
 }

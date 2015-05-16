@@ -20,22 +20,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.message;
+package de.vanita5.twittnuker.api.twitter.model;
 
-import android.support.annotation.NonNull;
+import org.mariotaku.simplerestapi.http.SimpleValueMap;
 
-import de.vanita5.twittnuker.api.twitter.model.Relationship;
+/**
+ * Created by mariotaku on 15/5/13.
+ */
+public class FriendshipUpdate extends SimpleValueMap {
 
-public class FriendshipUpdatedEvent {
+	public void setDeviceNotificationsEnabled(boolean enabled) {
+		put("device", enabled);
+	}
 
-    public final long accountId;
-    public final long userId;
-	@NonNull
-    public final Relationship relationship;
+	public void setRetweetsEnabled(boolean enabled) {
+		put("retweets", enabled);
+	}
 
-    public FriendshipUpdatedEvent(long accountId, long userId,@NonNull Relationship relationship) {
-        this.accountId = accountId;
-        this.userId = userId;
-        this.relationship = relationship;
+	public FriendshipUpdate retweets(boolean enabled) {
+		setRetweetsEnabled(enabled);
+		return this;
+	}
+
+	public FriendshipUpdate deviceNotifications(boolean enabled) {
+		setDeviceNotificationsEnabled(enabled);
+		return this;
 	}
 }

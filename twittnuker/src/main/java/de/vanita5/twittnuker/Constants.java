@@ -107,6 +107,7 @@ public interface Constants extends TwittnukerConstants {
     int MENU_ACCOUNTS = R.id.accounts;
 	int MENU_INVERSE_SELECTION = R.id.inverse_selection;
 	int MENU_RESET = R.id.reset;
+	int MENU_ENABLE_RETWEETS = R.id.enable_retweets;
 
 	int LINK_ID_STATUS = 1;
 	int LINK_ID_USER = 2;

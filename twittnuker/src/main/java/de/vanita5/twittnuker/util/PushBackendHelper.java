@@ -11,6 +11,7 @@ import com.google.android.gms.auth.UserRecoverableNotifiedException;
 
 import java.io.IOException;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.gcm.backend.PushBackendServer;
 import retrofit.RestAdapter;
@@ -59,13 +60,13 @@ public class PushBackendHelper implements TwittnukerConstants {
 		}
 		catch (UserRecoverableNotifiedException e) {
 			// Unable to authenticate, but the user can fix this.
-			if (Utils.isDebugBuild()) Log.e(TAG, "Could not fetch token: " + e.getMessage());
+			if (BuildConfig.DEBUG) Log.e(TAG, "Could not fetch token: " + e.getMessage());
 		}
 		catch (GoogleAuthException e) {
-			if (Utils.isDebugBuild()) Log.e(TAG, "Unrecoverable error " + e.getMessage());
+			if (BuildConfig.DEBUG) Log.e(TAG, "Unrecoverable error " + e.getMessage());
 		}
 		catch (IOException e) {
-			if (Utils.isDebugBuild()) Log.e(TAG, e.getMessage());
+			if (BuildConfig.DEBUG) Log.e(TAG, e.getMessage());
 		}
 		return null;
 	}

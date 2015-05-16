@@ -32,6 +32,7 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.util.Log;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
@@ -50,7 +51,6 @@ import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
 import static de.vanita5.twittnuker.util.Utils.getNewestStatusIdsFromDatabase;
 import static de.vanita5.twittnuker.util.Utils.hasAutoRefreshAccounts;
 import static de.vanita5.twittnuker.util.Utils.isBatteryOkay;
-import static de.vanita5.twittnuker.util.Utils.isDebugBuild;
 import static de.vanita5.twittnuker.util.Utils.isNetworkAvailable;
 import static de.vanita5.twittnuker.util.Utils.shouldStopAutoRefreshOnBatteryLow;
 
@@ -68,7 +68,7 @@ public class RefreshService extends Service implements Constants {
 		@Override
 		public void onReceive(final Context context, final Intent intent) {
 			final String action = intent.getAction();
-			if (isDebugBuild()) {
+			if (BuildConfig.DEBUG) {
 				Log.d(LOGTAG, String.format("Refresh service received action %s", action));
 			}
 			if (BROADCAST_RESCHEDULE_HOME_TIMELINE_REFRESHING.equals(action)) {
@@ -85,7 +85,7 @@ public class RefreshService extends Service implements Constants {
 				if (BROADCAST_REFRESH_HOME_TIMELINE.equals(action)) {
 					final long[] refreshIds = getRefreshableIds(accountPrefs, new HomeRefreshableFilter());
 					final long[] sinceIds = getNewestStatusIdsFromDatabase(context, Statuses.CONTENT_URI, refreshIds);
-					if (isDebugBuild()) {
+					if (BuildConfig.DEBUG) {
 						Log.d(LOGTAG, String.format("Auto refreshing home for %s", Arrays.toString(refreshIds)));
 					}
 					if (!isHomeTimelineRefreshing()) {
@@ -94,7 +94,7 @@ public class RefreshService extends Service implements Constants {
 				} else if (BROADCAST_REFRESH_MENTIONS.equals(action)) {
 					final long[] refreshIds = getRefreshableIds(accountPrefs, new MentionsRefreshableFilter());
 					final long[] sinceIds = getNewestStatusIdsFromDatabase(context, Mentions.CONTENT_URI, refreshIds);
-					if (isDebugBuild()) {
+					if (BuildConfig.DEBUG) {
 						Log.d(LOGTAG, String.format("Auto refreshing mentions for %s", Arrays.toString(refreshIds)));
 					}
 					if (!isMentionsRefreshing()) {
@@ -104,7 +104,7 @@ public class RefreshService extends Service implements Constants {
 					final long[] refreshIds = getRefreshableIds(accountPrefs, new MessagesRefreshableFilter());
 					final long[] sinceIds = getNewestMessageIdsFromDatabase(context, DirectMessages.Inbox.CONTENT_URI,
 							refreshIds);
-					if (isDebugBuild()) {
+					if (BuildConfig.DEBUG) {
 						Log.d(LOGTAG, String.format("Auto refreshing messages for %s", Arrays.toString(refreshIds)));
 					}
 					if (!isReceivedDirectMessagesRefreshing()) {
@@ -112,7 +112,7 @@ public class RefreshService extends Service implements Constants {
 					}
 				} else if (BROADCAST_REFRESH_TRENDS.equals(action)) {
 					final long[] refreshIds = getRefreshableIds(accountPrefs, new TrendsRefreshableFilter());
-					if (isDebugBuild()) {
+					if (BuildConfig.DEBUG) {
 						Log.d(LOGTAG, String.format("Auto refreshing trends for %s", Arrays.toString(refreshIds)));
 					}
 					if (!isLocalTrendsRefreshing()) {

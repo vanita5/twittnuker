@@ -183,7 +183,7 @@ public class TwittnukerApplication extends Application implements Constants,
 		// cb.memoryCache(new ImageMemoryCache(40));
 		cb.diskCache(getDiskCache());
 		cb.imageDownloader(getImageDownloader());
-		L.writeDebugLogs(Utils.isDebugBuild());
+		L.writeDebugLogs(BuildConfig.DEBUG);
 		loader.init(cb.build());
 		return mImageLoader = loader;
 	}
@@ -227,7 +227,7 @@ public class TwittnukerApplication extends Application implements Constants,
 
 	@Override
 	public void onCreate() {
-		if (Utils.isDebugBuild()) {
+		if (BuildConfig.DEBUG) {
 			StrictModeUtils.detectAllVmPolicy();
 		}
 		super.onCreate();

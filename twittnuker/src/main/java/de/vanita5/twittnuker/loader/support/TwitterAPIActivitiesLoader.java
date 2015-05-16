@@ -30,6 +30,7 @@ import android.util.Pair;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
@@ -37,7 +38,6 @@ import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.util.LoganSquareWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIUtils;
-import de.vanita5.twittnuker.util.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -156,11 +156,11 @@ public abstract class TwitterAPIActivitiesLoader extends ParcelableActivitiesLoa
 		try {
             return LoganSquareWrapper.parseList(file, ParcelableActivity.class);
 		} catch (final IOException e) {
-            if (Utils.isDebugBuild()) {
+            if (BuildConfig.DEBUG) {
                 Log.w(LOGTAG, e);
             }
         } catch (RuntimeException e) {
-            if (Utils.isDebugBuild()) {
+            if (BuildConfig.DEBUG) {
                 throw e;
             }
             Log.e(LOGTAG, "Error unserializing data", e);

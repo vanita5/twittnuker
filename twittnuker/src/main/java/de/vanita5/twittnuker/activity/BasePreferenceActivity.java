@@ -40,6 +40,7 @@ import android.widget.FrameLayout;
 
 import com.meizu.flyme.reflect.StatusBarProxy;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
@@ -147,7 +148,7 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
 
     @Override
 	protected void onCreate(final Bundle savedInstanceState) {
-        if (Utils.isDebugBuild()) {
+        if (BuildConfig.DEBUG) {
             StrictModeUtils.detectAllVmPolicy();
             StrictModeUtils.detectAllThreadPolicy();
         }

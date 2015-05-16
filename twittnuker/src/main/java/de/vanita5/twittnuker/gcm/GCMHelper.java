@@ -13,6 +13,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.gcm.backend.PushBackendServer;
 import de.vanita5.twittnuker.util.PushBackendHelper;
@@ -110,12 +111,12 @@ public class GCMHelper implements TwittnukerConstants {
 	public static void registerIfNotAlreadyDone(final Context context) {
 		if (!isPlayServicesAvailable(context)) {
 			//do nothing
-			if (Utils.isDebugBuild()) Toast.makeText(context, "Play Services not available on this device!", Toast.LENGTH_LONG).show();
+			if (BuildConfig.DEBUG) Toast.makeText(context, "Play Services not available on this device!", Toast.LENGTH_LONG).show();
 			return;
 		}
 
 		final String regid = getRegistrationId(context);
-		if (regid.isEmpty() || Utils.isDebugBuild()) {
+		if (regid.isEmpty() || BuildConfig.DEBUG) {
 			registerForGCM(context);
 		} else {
 			Toast.makeText(context, "Already registered!", Toast.LENGTH_LONG).show();
@@ -131,7 +132,7 @@ public class GCMHelper implements TwittnukerConstants {
 
 		final String regid = getRegistrationId(context);
 		if (regid.isEmpty()) {
-			if (Utils.isDebugBuild()) {
+			if (BuildConfig.DEBUG) {
 				Toast.makeText(context, "Could not find a regid on the device...", Toast.LENGTH_LONG).show();
 			}
 		} else {
@@ -196,7 +197,7 @@ public class GCMHelper implements TwittnukerConstants {
 					// Require the user to click a button again, or perform
 					// exponential back-off.
 					//TODO
-					if (Utils.isDebugBuild()) Log.e("GCMHelper", ex.getMessage());
+					if (BuildConfig.DEBUG) Log.e("GCMHelper", ex.getMessage());
 					setPushRegistered(context, false);
 				} catch (RetrofitError e) {
 					//TODO RetrofitError Handling by HTTP Error

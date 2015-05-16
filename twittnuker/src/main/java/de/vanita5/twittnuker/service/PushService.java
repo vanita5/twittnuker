@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
@@ -46,7 +47,7 @@ public class PushService extends IntentService implements Constants {
 			final String messageType = gcm.getMessageType(intent);
 
 			if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-				if (Utils.isDebugBuild()) Log.i("accounts", "Received: " + extras.toString());
+				if (BuildConfig.DEBUG) Log.i("accounts", "Received: " + extras.toString());
 
 				long accountId = -1;
 				try {

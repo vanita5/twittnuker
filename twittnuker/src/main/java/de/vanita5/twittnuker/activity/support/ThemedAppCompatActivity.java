@@ -31,6 +31,7 @@ import android.support.v7.app.ThemedAppCompatDelegateFactory;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.StrictModeUtils;
@@ -108,7 +109,7 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-		if (Utils.isDebugBuild()) {
+        if (BuildConfig.DEBUG) {
 			StrictModeUtils.detectAllVmPolicy();
 			StrictModeUtils.detectAllThreadPolicy();
 		}

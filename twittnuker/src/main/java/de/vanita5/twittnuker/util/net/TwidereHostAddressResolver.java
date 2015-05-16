@@ -31,9 +31,10 @@ import android.util.LruCache;
 import com.squareup.okhttp.internal.Network;
 
 import org.apache.http.conn.util.InetAddressUtils;
+
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.HostsFileParser;
-import de.vanita5.twittnuker.util.Utils;
 import org.xbill.DNS.AAAARecord;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.CNAMERecord;
@@ -87,7 +88,7 @@ public class TwidereHostAddressResolver implements Constants, Network {
 		// First, I'll try to load address cached.
         final InetAddress[] cachedHostAddr = mHostCache.get(host);
         if (cachedHostAddr != null) {
-			if (Utils.isDebugBuild()) {
+            if (BuildConfig.DEBUG) {
                 Log.d(RESOLVER_LOGTAG, "Got cached " + Arrays.toString(cachedHostAddr));
                 return cachedHostAddr;
 			}
@@ -99,7 +100,7 @@ public class TwidereHostAddressResolver implements Constants, Network {
             if (mappedAddr != null) {
                 final InetAddress[] hostAddr = fromAddressString(originalHost, mappedAddr);
                 mHostCache.put(originalHost, hostAddr);
-				if (Utils.isDebugBuild()) {
+                if (BuildConfig.DEBUG) {
                     Log.d(RESOLVER_LOGTAG, "Got mapped " + Arrays.toString(hostAddr));
 				}
                 return hostAddr;
@@ -109,7 +110,7 @@ public class TwidereHostAddressResolver implements Constants, Network {
 		if (mSystemHosts.contains(host)) {
             final InetAddress[] hostAddr = fromAddressString(originalHost, mSystemHosts.getAddress(host));
             mHostCache.put(originalHost, hostAddr);
-			if (Utils.isDebugBuild()) {
+            if (BuildConfig.DEBUG) {
                 Log.d(RESOLVER_LOGTAG, "Got hosts " + Arrays.toString(hostAddr));
 			}
 			return hostAddr;
@@ -118,7 +119,7 @@ public class TwidereHostAddressResolver implements Constants, Network {
 		if (customMappedHost != null) {
             final InetAddress[] hostAddr = fromAddressString(originalHost, customMappedHost);
             mHostCache.put(originalHost, hostAddr);
-			if (Utils.isDebugBuild()) {
+            if (BuildConfig.DEBUG) {
 				Log.d(RESOLVER_LOGTAG, "Got mapped address " + customMappedHost + " for host " + host);
 			}
             return hostAddr;
@@ -149,7 +150,7 @@ public class TwidereHostAddressResolver implements Constants, Network {
             if (!resolvedAddresses.isEmpty()) {
                 final InetAddress[] hostAddr = resolvedAddresses.toArray(new InetAddress[resolvedAddresses.size()]);
                 mHostCache.put(originalHost, hostAddr);
-				if (Utils.isDebugBuild()) {
+                if (BuildConfig.DEBUG) {
                     Log.d(RESOLVER_LOGTAG, "Resolved " + Arrays.toString(hostAddr));
 				}
 				return hostAddr;
@@ -161,7 +162,7 @@ public class TwidereHostAddressResolver implements Constants, Network {
                     return resolveInternal(originalHost, ((CNAMERecord) record).getTarget().toString());
             }
         }
-		if (Utils.isDebugBuild()) {
+        if (BuildConfig.DEBUG) {
 			Log.w(RESOLVER_LOGTAG, "Resolve address " + host + " failed, using original host");
 		}
         final InetAddress[] defaultAddresses = InetAddress.getAllByName(host);

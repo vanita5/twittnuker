@@ -24,6 +24,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import de.vanita5.twittnuker.BuildConfig;
+
 public class Exif {
 	private static final String TAG = "Exif";
 
@@ -75,7 +77,7 @@ public class Exif {
 			if (!read(is, buf, 2)) return 0;
 			length = pack(buf, 0, 2, false);
 			if (length < 2) {
-				if (Utils.isDebugBuild()) Log.e(TAG, "Invalid length");
+				if (BuildConfig.DEBUG) Log.e(TAG, "Invalid length");
 				return 0;
 			}
 			length -= 2;
@@ -107,7 +109,7 @@ public class Exif {
 			// Identify the byte order.
 			int tag = pack(jpeg, offset, 4, false);
 			if (tag != 0x49492A00 && tag != 0x4D4D002A) {
-				if (Utils.isDebugBuild()) Log.e(TAG, "Invalid byte order");
+				if (BuildConfig.DEBUG) Log.e(TAG, "Invalid byte order");
 				return 0;
 			}
 			final boolean littleEndian = tag == 0x49492A00;
@@ -139,7 +141,7 @@ public class Exif {
 						case 8:
 							return 270;
 					}
-					if (Utils.isDebugBuild()) Log.i(TAG, "Unsupported orientation");
+					if (BuildConfig.DEBUG) Log.i(TAG, "Unsupported orientation");
 					return 0;
 				}
 				offset += 12;
@@ -147,7 +149,7 @@ public class Exif {
 			}
 		}
 
-		if (Utils.isDebugBuild()) Log.i(TAG, "Orientation not found");
+		if (BuildConfig.DEBUG) Log.i(TAG, "Orientation not found");
 		return 0;
 	}
 

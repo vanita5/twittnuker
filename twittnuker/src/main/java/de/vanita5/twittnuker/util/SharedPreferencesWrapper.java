@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.util.Log;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.annotation.Preference;
 
@@ -71,7 +72,7 @@ public class SharedPreferencesWrapper implements Constants {
 		try {
 			return mPreferences.getBoolean(key, defValue);
 		} catch (final ClassCastException e) {
-            if (Utils.isDebugBuild()) Log.w(LOGTAG, e);
+            if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
 			mPreferences.edit().remove(key).apply();
 			return defValue;
 		}
@@ -87,7 +88,7 @@ public class SharedPreferencesWrapper implements Constants {
         try {
             return mPreferences.getFloat(key, defValue);
         } catch (final ClassCastException e) {
-            if (Utils.isDebugBuild()) Log.w(LOGTAG, e);
+            if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
             mPreferences.edit().remove(key).apply();
             return defValue;
         }
@@ -97,7 +98,7 @@ public class SharedPreferencesWrapper implements Constants {
 		try {
 			return mPreferences.getInt(key, defValue);
 		} catch (final ClassCastException e) {
-            if (Utils.isDebugBuild()) Log.w(LOGTAG, e);
+            if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
 			mPreferences.edit().remove(key).apply();
 			return defValue;
 		}
@@ -107,7 +108,7 @@ public class SharedPreferencesWrapper implements Constants {
 		try {
 			return mPreferences.getLong(key, defValue);
 		} catch (final ClassCastException e) {
-            if (Utils.isDebugBuild()) Log.w(LOGTAG, e);
+            if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
 			mPreferences.edit().remove(key).apply();
 			return defValue;
 		}
@@ -121,7 +122,7 @@ public class SharedPreferencesWrapper implements Constants {
 		try {
 			return mPreferences.getString(key, defValue);
 		} catch (final ClassCastException e) {
-            if (Utils.isDebugBuild()) Log.w(LOGTAG, e);
+            if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
 			mPreferences.edit().remove(key).apply();
 			return defValue;
 		}
@@ -131,7 +132,7 @@ public class SharedPreferencesWrapper implements Constants {
         try {
             return mPreferences.getStringSet(key, defValue);
         } catch (final ClassCastException e) {
-            if (Utils.isDebugBuild()) Log.w(LOGTAG, e);
+            if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
             mPreferences.edit().remove(key).apply();
             return defValue;
         }

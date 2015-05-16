@@ -27,6 +27,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -106,7 +107,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-		if (Utils.isDebugBuild()) {
+        if (BuildConfig.DEBUG) {
 			StrictModeUtils.detectAllVmPolicy();
 			StrictModeUtils.detectAllThreadPolicy();
 		}

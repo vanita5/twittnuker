@@ -95,6 +95,7 @@ dependencies {
     compile 'com.sprylab.android.texturevideoview:texturevideoview:1.0.0'
     compile 'com.bluelinelabs:logansquare:1.0.6'
     compile 'ch.acra:acra:4.6.2'
+    compile 'com.github.boxme:AsyncManager:9391ed71d7@aar'
     compile project(':twittnuker.component.common')
     compile fileTree(dir: 'libs', include: ['*.jar'])
     debugCompile 'im.dino:dbinspector:3.1.0@aar'
