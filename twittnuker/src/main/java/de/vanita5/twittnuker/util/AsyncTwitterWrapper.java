@@ -45,7 +45,6 @@ import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import org.mariotaku.querybuilder.SQLFunctions;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.Twitter;
@@ -118,8 +117,6 @@ import static de.vanita5.twittnuker.util.Utils.getStatusCountInDatabase;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.showInfoMessage;
 import static de.vanita5.twittnuker.util.Utils.showOkMessage;
-import static de.vanita5.twittnuker.util.Utils.truncateMessages;
-import static de.vanita5.twittnuker.util.Utils.truncateStatuses;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
 
@@ -1907,7 +1904,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                         paging.setSinceId(since_id - 1);
                     }
                     final List<DirectMessage> messages = new ArrayList<>();
-                    final boolean truncated = truncateMessages(getDirectMessages(twitter, paging), messages,
+                    final boolean truncated = Utils.truncateMessages(getDirectMessages(twitter, paging), messages,
                             since_id);
                     result.add(new MessageListResponse(accountId, max_id, since_id, messages,
                             truncated));
@@ -2247,7 +2244,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                         sinceId = -1;
                     }
                     final List<de.vanita5.twittnuker.api.twitter.model.Status> statuses = new ArrayList<>();
-                    final boolean truncated = truncateStatuses(getStatuses(twitter, paging), statuses, sinceId);
+                    final boolean truncated = Utils.truncateStatuses(getStatuses(twitter, paging), statuses, sinceId);
+                    TwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
                     storeStatus(accountId, statuses, maxId, truncated, true);
                     publishProgress(new StatusListResponse(accountId, statuses));
                 } catch (final TwitterException e) {

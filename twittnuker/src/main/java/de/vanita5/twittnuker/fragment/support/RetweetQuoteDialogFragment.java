@@ -42,11 +42,15 @@ import android.view.View;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.rengwuxian.materialedittext.validation.METLengthChecker;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MenuUtils;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
@@ -55,13 +59,14 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapt
 import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 
 public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implements
-		DialogInterface.OnClickListener {
+		Constants, DialogInterface.OnClickListener {
 
 	public static final String FRAGMENT_TAG = "retweet_quote";
     private MaterialEditText mEditComment;
     private PopupMenu mPopupMenu;
     private View mCommentMenu;
     private TwidereValidator mValidator;
+    private SharedPreferencesWrapper mPreferences;
 
 	@Override
 	public void onClick(final DialogInterface dialog, final int which) {
@@ -72,30 +77,13 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
 				final AsyncTwitterWrapper twitter = getTwitterWrapper();
                 if (twitter == null) return;
                 if (mEditComment.length() > 0) {
-                    final Menu menu = mPopupMenu.getMenu();
-                    final MenuItem quoteOriginalStatus = menu.findItem(R.id.quote_original_status);
-                    final MenuItem linkToQuotedStatus = menu.findItem(R.id.link_to_quoted_status);
-                    final Uri statusLink;
-                    final long inReplyToStatusId;
-                    if (!status.is_quote) {
-                        inReplyToStatusId = status.id;
-                        statusLink = LinkCreator.getTwitterStatusLink(status.quoted_by_user_screen_name, status.id);
-                    } else if (quoteOriginalStatus.isChecked()) {
-                        inReplyToStatusId = status.quote_id;
-                        statusLink = LinkCreator.getTwitterStatusLink(status.user_screen_name, status.quote_id);
-                    } else {
-                        inReplyToStatusId = status.id;
-                        statusLink = LinkCreator.getTwitterStatusLink(status.quoted_by_user_screen_name, status.id);
-                    }
-                    final String commentText = mEditComment.getText() + " " + statusLink;
-                    twitter.updateStatusAsync(new long[]{status.account_id}, commentText, null, null,
-							linkToQuotedStatus.isChecked() ? inReplyToStatusId : -1, status.is_possibly_sensitive);
+                    quoteStatus(twitter, status);
                 } else if (isMyRetweet(status)) {
                     twitter.cancelRetweetAsync(status.account_id, status.id, status.my_retweet_id);
-				} else {
-					twitter.retweetStatusAsync(status.account_id, status.id);
-				}
-				break;
+                } else {
+                    twitter.retweetStatusAsync(status.account_id, status.id);
+                }
+                break;
             }
             case DialogInterface.BUTTON_NEUTRAL: {
                 final Intent intent = new Intent(INTENT_ACTION_QUOTE);
@@ -103,9 +91,30 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
                 startActivity(intent);
                 break;
             }
-			default:
-				break;
+            default:
+                break;
+        }
+    }
+
+    private void quoteStatus(AsyncTwitterWrapper twitter, ParcelableStatus status) {
+		final Menu menu = mPopupMenu.getMenu();
+		final MenuItem quoteOriginalStatus = menu.findItem(R.id.quote_original_status);
+		final MenuItem linkToQuotedStatus = menu.findItem(R.id.link_to_quoted_status);
+		final Uri statusLink;
+		final long inReplyToStatusId;
+		if (!status.is_quote) {
+			inReplyToStatusId = status.id;
+			statusLink = LinkCreator.getTwitterStatusLink(status.quoted_by_user_screen_name, status.id);
+		} else if (quoteOriginalStatus.isChecked()) {
+			inReplyToStatusId = status.quote_id;
+			statusLink = LinkCreator.getTwitterStatusLink(status.user_screen_name, status.quote_id);
+		} else {
+			inReplyToStatusId = status.id;
+			statusLink = LinkCreator.getTwitterStatusLink(status.quoted_by_user_screen_name, status.id);
 		}
+		final String commentText = mEditComment.getText() + " " + statusLink;
+		twitter.updateStatusAsync(new long[]{status.account_id}, commentText, null, null,
+				linkToQuotedStatus.isChecked() ? inReplyToStatusId : -1, status.is_possibly_sensitive);
 	}
 
 	@NonNull
@@ -115,6 +124,7 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
 		final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
 		final Context context = builder.getContext();
         mValidator = new TwidereValidator(context);
+        mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE, SharedPreferenceConstants.class);
 		final LayoutInflater inflater = LayoutInflater.from(context);
         @SuppressLint("InflateParams") final View view = inflater.inflate(R.layout.dialog_status_quote_retweet, null);
         final StatusViewHolder holder = new StatusViewHolder(new DummyStatusHolderAdapter(context), view.findViewById(R.id.item_content));
@@ -136,14 +146,25 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
         mEditComment = (MaterialEditText) view.findViewById(R.id.edit_comment);
         mEditComment.setLengthChecker(new METLengthChecker() {
 
-            final String statusLink = LinkCreator.getTwitterStatusLink(status.user_screen_name, status.quote_id).toString();
+			final String statusLink = LinkCreator.getTwitterStatusLink(status.user_screen_name, status.quote_id).toString();
 
-            @Override
-            public int getLength(CharSequence text) {
-                return mValidator.getTweetLength(text + " " + statusLink);
-            }
-        });
+			@Override
+			public int getLength(CharSequence text) {
+				return mValidator.getTweetLength(text + " " + statusLink);
+			}
+		});
         mEditComment.setMaxCharacters(mValidator.getMaxTweetLength());
+
+        final boolean sendByEnter = mPreferences.getBoolean(KEY_QUICK_SEND);
+        EditTextEnterHandler.attach(mEditComment, new EditTextEnterHandler.EnterListener() {
+			@Override
+			public void onHitEnter() {
+				final AsyncTwitterWrapper twitter = getTwitterWrapper();
+				final ParcelableStatus status = getStatus();
+				if (twitter == null || status == null) return;
+				quoteStatus(twitter, status);
+			}
+		}, sendByEnter);
         mCommentMenu = view.findViewById(R.id.comment_menu);
 
         mPopupMenu = new PopupMenu(context, mCommentMenu, Gravity.NO_GRAVITY,

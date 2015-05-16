@@ -52,8 +52,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static de.vanita5.twittnuker.util.Utils.truncateStatuses;
-
 public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader {
 
 	private final Context mContext;
@@ -112,7 +110,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
 				paging.setSinceId(mSinceId - 1);
 			}
             statuses = new ArrayList<>();
-            truncated = truncateStatuses(getStatuses(twitter, paging), statuses, mSinceId);
+            truncated = Utils.truncateStatuses(getStatuses(twitter, paging), statuses, mSinceId);
             if (!Utils.isOfficialTwitterInstance(context, twitter)) {
                 TwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
             }
