@@ -39,6 +39,7 @@ import de.vanita5.twittnuker.api.twitter.model.StatusUpdate;
 @SuppressWarnings("RedundantThrows")
 public interface TweetResources {
     @POST("/statuses/destroy/{id}.json")
+    @Body(BodyType.FORM)
     Status destroyStatus(@Path("id") long statusId) throws TwitterException;
 
     @GET("/statuses/retweeters/ids.json")
@@ -48,6 +49,7 @@ public interface TweetResources {
     ResponseList<Status> getRetweets(@Path("id") long statusId, @Query Paging paging) throws TwitterException;
 
     @POST("/statuses/retweet/{id}.json")
+    @Body(BodyType.FORM)
     Status retweetStatus(@Path("id") long statusId) throws TwitterException;
 
     @GET("/statuses/show.json")

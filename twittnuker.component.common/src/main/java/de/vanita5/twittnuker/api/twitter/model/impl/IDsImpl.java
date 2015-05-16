@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.api.twitter.model.impl;
 
 import com.bluelinelabs.logansquare.JsonMapper;
+import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -38,6 +39,18 @@ import java.util.List;
  * Created by mariotaku on 15/5/10.
  */
 public class IDsImpl extends TwitterResponseImpl implements IDs {
+
+    public static final TypeConverter<IDs> CONVERTER = new TypeConverter<IDs>() {
+        @Override
+        public IDs parse(JsonParser jsonParser) throws IOException {
+            return MAPPER.parse(jsonParser);
+        }
+
+        @Override
+        public void serialize(IDs object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) {
+            throw new UnsupportedOperationException();
+        }
+    };
 
 	public static final JsonMapper<IDs> MAPPER = new JsonMapper<IDs>() {
 		@SuppressWarnings("TryWithIdenticalCatches")

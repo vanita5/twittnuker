@@ -250,6 +250,15 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     }
 
     @Override
+    public void setTheme(int resid) {
+        super.setTheme(mCurrentThemeResource = getThemeResourceId());
+        if (shouldApplyWindowBackground()) {
+            ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource,
+                    mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
+        }
+    }
+
+    @Override
     protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resid, boolean first) {
         mCurrentThemeColor = getThemeColor();
         mCurrentActionBarColor = getActionBarColor();
@@ -258,15 +267,6 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
         mCurrentThemeFontFamily = getThemeFontFamily();
         super.onApplyThemeResource(theme, resid, first);
-        if (shouldApplyWindowBackground()) {
-			ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource,
-					mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
-		}
-    }
-
-    @Override
-    public void setTheme(int resid) {
-        super.setTheme(mCurrentThemeResource = getThemeResourceId());
     }
 
     @Override

@@ -48,6 +48,8 @@ import com.squareup.otto.Bus;
 import org.acra.ACRA;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
+
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.AssistLauncherActivity;
 import de.vanita5.twittnuker.activity.MainActivity;
@@ -79,7 +81,8 @@ import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 		reportType = HttpSender.Type.JSON,
 		httpMethod = HttpSender.Method.PUT,
 		formUriBasicAuthLogin = "ionstoweneringstantleare",
-		formUriBasicAuthPassword = "MNNNyLKyTDvuaqbaCtOkqdMC")
+		formUriBasicAuthPassword = "MNNNyLKyTDvuaqbaCtOkqdMC",
+		buildConfigClass = BuildConfig.class)
 public class TwittnukerApplication extends Application implements Constants,
 		OnSharedPreferenceChangeListener {
 

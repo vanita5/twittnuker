@@ -131,6 +131,10 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
     @Override
     public void setTheme(int resid) {
         super.setTheme(mCurrentThemeResource = getThemeResourceId());
+        if (shouldApplyWindowBackground()) {
+            ThemeUtils.applyWindowBackground(this, getWindow(), resid, mCurrentThemeBackgroundOption,
+                    mCurrentThemeBackgroundAlpha);
+        }
     }
 
     @Override
@@ -142,10 +146,6 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
         mCurrentThemeFontFamily = getThemeFontFamily();
         super.onApplyThemeResource(theme, resid, first);
-        if (shouldApplyWindowBackground()) {
-            ThemeUtils.applyWindowBackground(this, getWindow(), resid, mCurrentThemeBackgroundOption,
-                    mCurrentThemeBackgroundAlpha);
-        }
     }
 
     @Override

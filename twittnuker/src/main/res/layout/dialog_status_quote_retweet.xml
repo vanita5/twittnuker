@@ -50,7 +50,11 @@
                 android:hint="@string/comment_hint"
                 android:inputType="text"
                 android:visibility="visible"
-                app:met_maxCharacters="140">
+                app:met_baseColor="?android:textColorSecondary"
+                app:met_helperTextColor="?android:textColorSecondary"
+                app:met_maxCharacters="140"
+                app:met_textColor="?android:textColorPrimary"
+                app:met_textColorHint="?android:textColorSecondary">
 
                 <requestFocus />
             </de.vanita5.twittnuker.view.themed.BackgroundTintMaterialEditText>

@@ -24,18 +24,18 @@ package de.vanita5.twittnuker.api.twitter.model;
 
 public interface StatusActivitySummary extends TwitterResponse {
 
-	public long getDescendentReplyCount();
+	long getDescendentReplyCount();
 
-	public IDs getFavoriters();
+	IDs getFavoriters();
 
-	public long getFavoritersCount();
+	long getFavoritersCount();
 
-	public IDs getRepliers();
+	IDs getRepliers();
 
-	public long getRepliersCount();
+	long getRepliersCount();
 
-	public IDs getRetweeters();
+	IDs getRetweeters();
 
-	public long getRetweetersCount();
+	long getRetweetersCount();
 
 }

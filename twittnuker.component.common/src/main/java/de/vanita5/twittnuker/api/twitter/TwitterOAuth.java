@@ -27,7 +27,6 @@ import org.mariotaku.simplerestapi.method.POST;
 import org.mariotaku.simplerestapi.param.Body;
 import org.mariotaku.simplerestapi.param.Extra;
 import org.mariotaku.simplerestapi.param.Form;
-
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 
 /**
@@ -35,19 +34,19 @@ import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
  */
 public interface TwitterOAuth {
 
+    @POST("/oauth/request_token")
 	@Body(BodyType.FORM)
-	@POST("/oauth/request_token")
     OAuthToken getRequestToken(@Form("oauth_callback") String oauthCallback) throws TwitterException;
 
+    @POST("/oauth/access_token")
 	@Body(BodyType.FORM)
-	@POST("/oauth/access_token")
 	OAuthToken getAccessToken(@Form("x_auth_username") String xauthUsername,
 							  @Form("x_auth_password") String xauthPassword,
                               @Form("x_auth_mode") XAuthMode xauthMode)throws TwitterException;
 
 
+    @POST("/oauth/access_token")
 	@Body(BodyType.FORM)
-	@POST("/oauth/access_token")
     OAuthToken getAccessToken(@Extra({"oauth_token", "oauth_token_secret"}) OAuthToken requestToken, @Form("oauth_verifier") String oauthVerifier)throws TwitterException;
 
 	enum XAuthMode {

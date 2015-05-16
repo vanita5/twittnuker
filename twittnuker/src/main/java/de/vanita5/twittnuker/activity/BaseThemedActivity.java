@@ -121,6 +121,10 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     public void setTheme(int resId) {
         final int themeResourceId = getThemeResourceId();
         super.setTheme(mCurrentThemeResource = themeResourceId != 0 ? themeResourceId : resId);
+        if (shouldApplyWindowBackground()) {
+            ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource,
+                    mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
+        }
     }
 
     @Override
@@ -132,10 +136,6 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
         mProfileImageStyle = Utils.getProfileImageStyle(this);
         super.onApplyThemeResource(theme, resId, first);
-        if (shouldApplyWindowBackground()) {
-			ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource,
-					mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
-		}
     }
 
     protected boolean shouldApplyWindowBackground() {
