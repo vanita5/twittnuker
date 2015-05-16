@@ -27,7 +27,6 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import org.mariotaku.simplerestapi.http.RestHttpRequest;
 import org.mariotaku.simplerestapi.http.RestHttpResponse;
-
 import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
@@ -137,17 +136,6 @@ public class TwitterException extends Exception implements TwitterResponse, Http
 	public int getErrorCode() {
         if (errors == null || errors.length == 0) return -1;
         return errors[0].getCode();
-	}
-
-	/**
-	 * Returns error message from the API if available.
-	 * 
-	 * @return error message from the API
-	 * @since Twitter4J 2.2.3
-	 */
-	public String getErrorMessage() {
-        if (errors == null || errors.length == 0) return null;
-        return errors[0].getMessage();
 	}
 
 

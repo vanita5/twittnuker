@@ -138,7 +138,6 @@ import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterConstants;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthSupport;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
@@ -258,7 +257,7 @@ import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_
 import static de.vanita5.twittnuker.util.TwidereLinkify.TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES;
 
 @SuppressWarnings("unused")
-public final class Utils implements Constants, TwitterConstants {
+public final class Utils implements Constants {
 
     public static final Pattern PATTERN_XML_RESOURCE_IDENTIFIER = Pattern.compile("res/xml/([\\w_]+)\\.xml");
 

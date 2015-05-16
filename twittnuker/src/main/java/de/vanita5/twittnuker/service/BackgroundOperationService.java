@@ -92,7 +92,7 @@ import de.vanita5.twittnuker.api.twitter.model.StatusUpdate;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
-import de.vanita5.twittnuker.api.twitter.api.TwitterUpload;
+import de.vanita5.twittnuker.api.twitter.TwitterUpload;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createMessageDraft;

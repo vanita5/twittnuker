@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.api;
+package de.vanita5.twittnuker.api.twitter;
 
 import org.mariotaku.simplerestapi.http.BodyType;
 import org.mariotaku.simplerestapi.http.mime.FileTypedData;

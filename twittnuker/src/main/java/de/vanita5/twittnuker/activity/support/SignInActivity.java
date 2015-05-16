@@ -68,7 +68,6 @@ import org.mariotaku.simplerestapi.http.Endpoint;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterConstants;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.api.twitter.auth.BasicAuthorization;
@@ -106,8 +105,7 @@ import static de.vanita5.twittnuker.util.Utils.isUserLoggedIn;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.trim;
 
-public class SignInActivity extends BaseAppCompatActivity implements TwitterConstants, OnClickListener,
-        TextWatcher {
+public class SignInActivity extends BaseAppCompatActivity implements OnClickListener, TextWatcher {
 
 	private static final String TWITTER_SIGNUP_URL = "https://twitter.com/signup";
 	private static final String EXTRA_API_LAST_CHANGE = "api_last_change";
@@ -392,7 +390,7 @@ public class SignInActivity extends BaseAppCompatActivity implements TwitterCons
 	private void setDefaultAPI() {
 		final long apiLastChange = mPreferences.getLong(KEY_API_LAST_CHANGE, mAPIChangeTimestamp);
 		final boolean defaultApiChanged = apiLastChange != mAPIChangeTimestamp;
-		final String apiUrlFormat = getNonEmptyString(mPreferences, KEY_API_URL_FORMAT, null);
+        final String apiUrlFormat = getNonEmptyString(mPreferences, KEY_API_URL_FORMAT, DEFAULT_TWITTER_API_URL_FORMAT);
 		final int authType = mPreferences.getInt(KEY_AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
 		final boolean sameOAuthSigningUrl = mPreferences.getBoolean(KEY_SAME_OAUTH_SIGNING_URL, false);
         final boolean noVersionSuffix = mPreferences.getBoolean(KEY_NO_VERSION_SUFFIX, false);

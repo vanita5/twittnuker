@@ -48,7 +48,7 @@ import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
-import de.vanita5.twittnuker.api.twitter.api.TwitterUpload;
+import de.vanita5.twittnuker.api.twitter.TwitterUpload;
 import de.vanita5.twittnuker.api.twitter.auth.BasicAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.EmptyAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
