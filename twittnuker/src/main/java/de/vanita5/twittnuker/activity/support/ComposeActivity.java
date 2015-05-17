@@ -131,8 +131,8 @@ import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ActionIconView;
 import de.vanita5.twittnuker.view.BadgeView;
+import de.vanita5.twittnuker.view.ComposeEditText;
 import de.vanita5.twittnuker.view.ShapedImageView;
-import de.vanita5.twittnuker.view.StatusComposeEditText;
 import de.vanita5.twittnuker.view.StatusTextCountView;
 
 import java.io.File;
@@ -170,7 +170,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     // Views
     private GridView mMediaPreviewGrid;
     private ActionMenuView mMenuBar;
-    private StatusComposeEditText mEditText;
+    private ComposeEditText mEditText;
     private View mSendView;
     private StatusTextCountView mSendTextCountView;
     private RecyclerView mAccountSelector;
@@ -458,7 +458,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     @Override
     public void onContentChanged() {
         super.onContentChanged();
-        mEditText = (StatusComposeEditText) findViewById(R.id.edit_text);
+        mEditText = (ComposeEditText) findViewById(R.id.edit_text);
         mMediaPreviewGrid = (GridView) findViewById(R.id.media_thumbnail_preview);
         mMenuBar = (ActionMenuView) findViewById(R.id.menu_bar);
         mSendView = findViewById(R.id.send);

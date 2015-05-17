@@ -21,10 +21,9 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout
-    android:id="@+id/compose_activity"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/compose_activity"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
 	android:minWidth="@dimen/compose_min_width"
@@ -41,10 +40,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignBottom="@+id/edit_text_container"
-            android:layout_alignLeft="@+id/edit_text_container"
-            android:layout_alignStart="@+id/edit_text_container"
-            android:layout_alignRight="@+id/edit_text_container"
             android:layout_alignEnd="@+id/edit_text_container"
+            android:layout_alignLeft="@+id/edit_text_container"
+            android:layout_alignRight="@+id/edit_text_container"
+            android:layout_alignStart="@+id/edit_text_container"
             android:layout_alignTop="@+id/edit_text_container"
             android:alpha="0.2"
             android:numColumns="@integer/grid_column_image_preview"
@@ -57,7 +56,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <de.vanita5.twittnuker.view.StatusComposeEditText
+            <de.vanita5.twittnuker.view.ComposeEditText
                 android:id="@+id/edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -94,8 +93,8 @@
                     android:id="@+id/location_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/element_spacing_normal"
-                    android:layout_marginEnd="@dimen/element_spacing_normal" />
+                    android:layout_marginEnd="@dimen/element_spacing_normal"
+                    android:layout_marginRight="@dimen/element_spacing_normal" />
 
             </LinearLayout>
 
@@ -106,10 +105,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignBottom="@+id/edit_text_container"
-            android:layout_alignLeft="@+id/edit_text_container"
-            android:layout_alignStart="@+id/edit_text_container"
-            android:layout_alignRight="@+id/edit_text_container"
             android:layout_alignEnd="@+id/edit_text_container"
+            android:layout_alignLeft="@+id/edit_text_container"
+            android:layout_alignRight="@+id/edit_text_container"
+            android:layout_alignStart="@+id/edit_text_container"
             android:layout_alignTop="@+id/edit_text_container"
             android:visibility="gone">
 

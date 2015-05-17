@@ -115,13 +115,13 @@ import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
-import de.vanita5.twittnuker.view.StatusComposeEditText;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import de.vanita5.twittnuker.view.UserHashtagAutoCompleteEditText;
 import me.uucky.colorpicker.internal.EffectViewHelper;
 
 import static de.vanita5.twittnuker.util.Utils.buildDirectMessageConversationUri;
@@ -179,7 +179,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     // Views
     private RecyclerView mMessagesListView;
     private ListView mUsersSearchList;
-    private StatusComposeEditText mEditText;
+    private UserHashtagAutoCompleteEditText mEditText;
 	private View mSendButton;
 	private ImageView mAddImageButton;
     private View mConversationContainer, mRecipientSelectorContainer;
@@ -440,7 +440,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         mRecipientSelectorContainer = view.findViewById(R.id.recipient_selector_container);
         mInputPanelShadowCompat = view.findViewById(R.id.input_panel_shadow_compat);
         mInputPanel = view.findViewById(R.id.input_panel);
-        mEditText = (StatusComposeEditText) mInputPanel.findViewById(R.id.edit_text);
+        mEditText = (UserHashtagAutoCompleteEditText) mInputPanel.findViewById(R.id.edit_text);
         mSendButton = mInputPanel.findViewById(R.id.send);
         mAddImageButton = (ImageView) mInputPanel.findViewById(R.id.add_image);
     }
