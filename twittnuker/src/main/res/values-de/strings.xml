@@ -665,6 +665,7 @@
     <string name="name_first_summary_on">Name zuerst anzeigen</string>
     <string name="name_first_summary_off">\@Screenname zuerst anzeigen</string>
     <string name="comment_hint">Kommentar…</string>
+    <string name="comment">Kommentar</string>
     <string name="enable_retweets">Retweets aktivieren</string>
     <string name="disable_retweets">Retweets deaktivieren</string>
 
