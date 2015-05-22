@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.ContentCardClickListener;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -63,8 +64,6 @@ import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 import java.util.Locale;
 
-import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
-
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 
@@ -82,6 +81,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
     private final TextView quoteTextView;
     private final TextView nameView, screenNameView;
     private final TextView quotedNameView, quotedScreenNameView;
+    private TextView primaryNameView, secondaryNameView;
+    private TextView quotedPrimaryNameView, quotedSecondaryNameView;
     private final TextView replyRetweetView;
     private final ShortTimeView timeView;
     private final CardMediaContainer mediaPreview;
@@ -103,10 +104,10 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         extraTypeView = (ImageView) itemView.findViewById(R.id.extra_type);
         textView = (TextView) itemView.findViewById(R.id.text);
         quoteTextView = (TextView) itemView.findViewById(R.id.quote_text);
-        nameView = (TextView) itemView.findViewById(R.id.name);
-        screenNameView = (TextView) itemView.findViewById(R.id.screen_name);
-        quotedNameView = (TextView) itemView.findViewById(R.id.quoted_name);
-        quotedScreenNameView = (TextView) itemView.findViewById(R.id.quoted_screen_name);
+        nameView = primaryNameView = (TextView) itemView.findViewById(R.id.name);
+        screenNameView = secondaryNameView = (TextView) itemView.findViewById(R.id.screen_name);
+        quotedNameView = quotedPrimaryNameView = (TextView) itemView.findViewById(R.id.quoted_name);
+        quotedScreenNameView = quotedSecondaryNameView = (TextView) itemView.findViewById(R.id.quoted_screen_name);
         replyRetweetIcon = (ImageView) itemView.findViewById(R.id.reply_retweet_icon);
         replyRetweetView = (TextView) itemView.findViewById(R.id.reply_retweet_status);
         timeView = (ShortTimeView) itemView.findViewById(R.id.time);
@@ -133,8 +134,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
 	public void displaySampleStatus() {
         profileImageView.setVisibility(adapter.isProfileImageEnabled() ? View.VISIBLE : View.GONE);
         profileImageView.setImageResource(R.mipmap.ic_launcher);
-        nameView.setText(TWIDERE_PREVIEW_NAME);
-        screenNameView.setText("@" + TWIDERE_PREVIEW_SCREEN_NAME);
+        primaryNameView.setText(TWIDERE_PREVIEW_NAME);
+        secondaryNameView.setText("@" + TWIDERE_PREVIEW_SCREEN_NAME);
         if (adapter.getLinkHighlightingStyle() == VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
         	textView.setText(Html.fromHtml(TWIDERE_PREVIEW_TEXT_HTML));
             adapter.getTwidereLinkify().applyAllLinks(textView, -1, -1, false, adapter.getLinkHighlightingStyle());
@@ -187,11 +188,11 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         final int typeIconRes;
 
         if (status.is_quote) {
-            quotedNameView.setText(status.user_name);
-            quotedScreenNameView.setText("@" + status.user_screen_name);
+            quotedPrimaryNameView.setText(status.user_name);
+            quotedSecondaryNameView.setText("@" + status.user_screen_name);
             timeView.setTime(status.quote_timestamp);
-            nameView.setText(status.quoted_by_user_name);
-            screenNameView.setText("@" + status.quoted_by_user_screen_name);
+            primaryNameView.setText(status.quoted_by_user_name);
+            secondaryNameView.setText("@" + status.quoted_by_user_screen_name);
 
             final int idx = status.quote_text_unescaped.lastIndexOf(" twitter.com");
             if (translation != null) {
@@ -230,8 +231,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             final int userColor = manager.getUserColor(status.quoted_by_user_id, false);
             itemContent.drawStart(userColor);
         } else {
-			nameView.setText(status.user_name);
-			screenNameView.setText("@" + status.user_screen_name);
+            primaryNameView.setText(status.user_name);
+            secondaryNameView.setText("@" + status.user_screen_name);
             if (status.is_retweet) {
                 timeView.setTime(status.retweet_timestamp);
             } else {
@@ -279,7 +280,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             mediaPreview.setStyle(adapter.getMediaPreviewStyle());
             final boolean hasMedia = status.media != null && status.media.length > 0;
             if (hasMedia && (adapter.isSensitiveContentEnabled() || !status.is_possibly_sensitive)) {
-                mediaPreview.setVisibility(hasMedia ? View.VISIBLE : View.GONE);
+                mediaPreview.setVisibility(View.VISIBLE);
             	mediaPreview.displayMedia(status.media, loader, status.account_id, this,
                         adapter.getMediaLoadingHandler());
 			} else {
@@ -400,11 +401,11 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         final int typeIconRes;
 
         if (cursor.getShort(indices.is_quote) == 1) {
-            quotedNameView.setText(user_name);
-            quotedScreenNameView.setText("@" + user_screen_name);
+            quotedPrimaryNameView.setText(user_name);
+            quotedSecondaryNameView.setText("@" + user_screen_name);
             timeView.setTime(cursor.getLong(indices.quote_timestamp));
-            nameView.setText(cursor.getString(indices.quoted_by_user_name));
-            screenNameView.setText("@" + cursor.getString(indices.quoted_by_user_screen_name));
+            primaryNameView.setText(cursor.getString(indices.quoted_by_user_name));
+            secondaryNameView.setText("@" + cursor.getString(indices.quoted_by_user_screen_name));
 
             final String quote_text_unescaped = cursor.getString(indices.quote_text_unescaped);
             final int idx = quote_text_unescaped.lastIndexOf(" twitter.com");
@@ -442,8 +443,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             itemContent.drawStart(userColor);
 
         } else {
-			nameView.setText(user_name);
-			screenNameView.setText("@" + user_screen_name);
+            primaryNameView.setText(user_name);
+            secondaryNameView.setText("@" + user_screen_name);
             if (retweet_id > 0) {
                 timeView.setTime(cursor.getLong(indices.retweet_timestamp));
             } else {
@@ -638,6 +639,12 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         profileImageView.setStyle(adapter.getProfileImageStyle());
         actionButtons.setVisibility(adapter.isCardActionsHidden() ? View.GONE : View.VISIBLE);
         itemMenu.setVisibility(adapter.isCardActionsHidden() ? View.GONE : View.VISIBLE);
+
+        final boolean nameFirst = adapter.isNameFirst();
+        primaryNameView = nameFirst ? nameView : screenNameView;
+        secondaryNameView = nameFirst ? screenNameView : nameView;
+        quotedPrimaryNameView = nameFirst ? quotedNameView : quotedScreenNameView;
+        quotedSecondaryNameView = nameFirst ? quotedScreenNameView : quotedNameView;
     }
 
     private void displayExtraTypeIcon(String cardName, ParcelableMedia[] media, ParcelableLocation location, String placeFullName, boolean sensitive) {
