@@ -23,6 +23,8 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
@@ -32,8 +34,9 @@ import com.rengwuxian.materialedittext.MaterialMultiAutoCompleteTextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
 import de.vanita5.twittnuker.util.widget.ScreenNameTokenizer;
+import de.vanita5.twittnuker.view.iface.IThemeBackgroundTintView;
 
-public class UserHashtagAutoCompleteEditText extends MaterialMultiAutoCompleteTextView {
+public class UserHashtagAutoCompleteEditText extends MaterialMultiAutoCompleteTextView implements IThemeBackgroundTintView {
 
 	private UserHashtagAutoCompleteAdapter mAdapter;
     private long mAccountId;
@@ -76,6 +79,11 @@ public class UserHashtagAutoCompleteEditText extends MaterialMultiAutoCompleteTe
 			mAdapter.closeCursor();
 			mAdapter = null;
 		}
+    }
+
+    @Override
+    public void setBackgroundTintColor(@NonNull ColorStateList color) {
+        setPrimaryColor(color.getDefaultColor());
     }
 
     public void setAccountId(long accountId) {
