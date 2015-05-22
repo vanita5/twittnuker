@@ -10,7 +10,7 @@
 		<de.vanita5.twittnuker.preference.CardPreviewPreference android:key="card_preview"/>
 	</PreferenceCategory>
 
-	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+	<de.vanita5.twittnuker.preference.AutoFixSwitchPreference
 		android:defaultValue="false"
 		android:key="name_first"
 		android:order="21"
@@ -21,9 +21,9 @@
 		<extra
 			android:name="notify_change"
 			android:value="true" />
-	</de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference>
+	</de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
 
-    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
         android:defaultValue="true"
         android:key="display_profile_image"
         android:order="22"
@@ -31,7 +31,7 @@
 		<extra
 			android:name="notify_change"
 			android:value="true" />
-	</de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference>
+	</de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
 
 	<de.vanita5.twittnuker.preference.SummaryListPreference
 		android:defaultValue="@string/default_profile_image_style"
@@ -45,7 +45,7 @@
 			android:value="true" />
 	</de.vanita5.twittnuker.preference.SummaryListPreference>
 
-	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+	<de.vanita5.twittnuker.preference.AutoFixSwitchPreference
 		android:defaultValue="false"
 		android:key="media_preview"
 		android:order="24"
@@ -53,7 +53,7 @@
 		<extra
 			android:name="notify_change"
 			android:value="true" />
-	</de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference>
+	</de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
 	<de.vanita5.twittnuker.preference.SummaryListPreference
 		android:defaultValue="crop"
 		android:order="25"
@@ -76,7 +76,7 @@
 			android:value="true" />
 	</de.vanita5.twittnuker.preference.LinkHighlightPreference>
 
-	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+	<de.vanita5.twittnuker.preference.AutoFixSwitchPreference
 		android:defaultValue="false"
 		android:key="show_absolute_time"
 		android:order="29"
@@ -85,8 +85,8 @@
 		<extra
 			android:name="notify_change"
 			android:value="true" />
-	</de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference>
-	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+	</de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
+	<de.vanita5.twittnuker.preference.AutoFixSwitchPreference
 		android:defaultValue="false"
 		android:key="card_animation"
 		android:order="30"
@@ -94,8 +94,8 @@
 		<extra
 			android:name="notify_change"
 			android:value="true" />
-	</de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference>
-	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+	</de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
+	<de.vanita5.twittnuker.preference.AutoFixSwitchPreference
 		android:defaultValue="true"
 		android:key="compact_cards"
 		android:order="31"
@@ -104,8 +104,8 @@
 		<extra
 			android:name="notify_change"
 			android:value="true" />
-	</de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference>
-	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+	</de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
+	<de.vanita5.twittnuker.preference.AutoFixSwitchPreference
 		android:defaultValue="false"
 		android:key="hide_card_actions"
 		android:order="33"
@@ -113,6 +113,6 @@
 		<extra
 			android:name="notify_change"
 			android:value="true" />
-	</de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference>
+	</de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
 
 </PreferenceScreen>

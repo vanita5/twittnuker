@@ -53,6 +53,7 @@ import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.TwidereToolbar;
+import de.vanita5.twittnuker.view.iface.ICustomTypefaceTextView;
 import de.vanita5.twittnuker.view.iface.IThemeAccentView;
 import de.vanita5.twittnuker.view.iface.IThemeBackgroundTintView;
 
@@ -94,6 +95,7 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
 			}
 		}
 		if (!whiteListed) return null;
+        //noinspection TryWithIdenticalCatches
 		try {
 			Constructor<?> constructor = sConstructorCache.get(name);
 			if (constructor == null) {
@@ -104,8 +106,14 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
 			}
 			return (View) constructor.newInstance(context, attrs);
 		} catch (ClassNotFoundException ignore) {
-		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (NoSuchMethodException e) {
 			throw new InflateException(e);
+        } catch (InvocationTargetException e) {
+            throw new InflateException(e);
+        } catch (InstantiationException e) {
+            throw new InflateException(e);
+        } catch (IllegalAccessException e) {
+            throw new InflateException(e);
 		}
 		return null;
 	}
@@ -116,7 +124,7 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
 			final ShapedImageView shapedImageView = (ShapedImageView) view;
 			shapedImageView.setStyle(activity.getCurrentProfileImageStyle());
 		}
-		if (view instanceof TextView) {
+        if (view instanceof TextView && (!(view instanceof ICustomTypefaceTextView))) {
 			final String fontFamily = activity.getCurrentThemeFontFamily();
 			final TextView textView = (TextView) view;
 			final Typeface defTypeface = textView.getTypeface();
@@ -131,7 +139,8 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
         final boolean isColorTint;
         // View context is not derived from ActionBar, apply color tint directly
         final Resources resources = ((Activity) activity).getResources();
-        final boolean isActionBarContext = isActionBarContext(view.getContext(), getActionBarContext((Activity) activity));
+        final Context viewContext = view.getContext();
+        final boolean isActionBarContext = isActionBarContext(viewContext, getActionBarContext((Activity) activity));
         final int themeResourceId = activity.getCurrentThemeResourceId();
         final boolean isDarkTheme = ThemeUtils.isDarkTheme(themeResourceId);
         final int backgroundColorApprox;
@@ -157,12 +166,8 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
             // View context is derived from ActionBar and it's light theme, so we use contrast color
             final int actionBarColor = activity.getCurrentActionBarColor();
             final int actionBarTheme = ThemeUtils.getActionBarThemeResource(activity.getThemeResourceId(), actionBarColor);
-            final int[] darkLightColors = new int[2];
-            ThemeUtils.getDarkLightForegroundColors((Context) activity, actionBarTheme, darkLightColors);
-            accentColor = TwidereColorUtils.getContrastYIQ(actionBarColor, ThemeUtils.ACCENT_COLOR_THRESHOLD,
-                    darkLightColors[0], darkLightColors[1]);
-            noTintColor = TwidereColorUtils.getContrastYIQ(accentColor, ThemeUtils.ACCENT_COLOR_THRESHOLD,
-                    darkLightColors[0], darkLightColors[1]);
+            accentColor = ThemeUtils.getColorFromAttribute(viewContext, android.R.attr.colorForeground, 0);
+            noTintColor = ThemeUtils.getColorFromAttribute(viewContext, android.R.attr.colorBackground, 0);
             backgroundTintColor = accentColor;
             backgroundColorApprox = Color.WHITE;
             isColorTint = false;
@@ -178,7 +183,7 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
             if (isAccentOptimal || !isColorTint) {
             	((IThemeAccentView) view).setAccentTintColor(ColorStateList.valueOf(accentColor));
             } else {
-                final int defaultAccentColor = ThemeUtils.getColorFromAttribute(view.getContext(),
+                final int defaultAccentColor = ThemeUtils.getColorFromAttribute(viewContext,
                         R.attr.colorAccent, resources.getColor(R.color.branding_color));
                 ((IThemeAccentView) view).setAccentTintColor(ColorStateList.valueOf(defaultAccentColor));
             }
@@ -192,7 +197,7 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
             	applyTintableBackgroundViewTint(tintable, accentColor, noTintColor, backgroundTintColor, isColorTint);
             }
         } else if (view instanceof TwidereToolbar) {
-            final Context context = view.getContext();
+            final Context context = viewContext;
             if (context instanceof android.support.v7.internal.view.ContextThemeWrapper) {
                 ((TwidereToolbar) view).setItemColor(ThemeUtils.getThemeForegroundColor(context,
                         ((ContextThemeWrapper) context).getThemeResId()));

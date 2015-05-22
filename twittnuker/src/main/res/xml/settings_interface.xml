@@ -30,7 +30,7 @@
         </de.vanita5.twittnuker.preference.SeekBarDialogPreference>
 
     </PreferenceCategory>
-    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
 		android:defaultValue="true"
 		android:key="unread_count"
 		android:title="@string/unread_count"
@@ -38,17 +38,13 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference>
+    </de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
 
-	<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+	<de.vanita5.twittnuker.preference.AutoFixSwitchPreference
 		android:defaultValue="false"
 		android:key="leftside_compose_button"
 		android:summary="@string/leftside_compose_button_summary"
 		android:title="@string/leftside_compose_button"/>
-	<!--<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference-->
-		<!--android:defaultValue="false"-->
-		<!--android:key="fast_scroll_thumb"-->
-		<!--android:title="@string/fast_scroll_thumb"/>-->
 
     <de.vanita5.twittnuker.preference.SummaryListPreference
         android:defaultValue="@string/default_tab_display_option"
