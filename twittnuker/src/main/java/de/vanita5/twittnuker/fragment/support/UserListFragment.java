@@ -64,6 +64,10 @@ import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
@@ -85,11 +89,6 @@ import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
-
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.UserList;
-import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
 
 import static de.vanita5.twittnuker.util.MenuUtils.setMenuItemAvailability;
 import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
@@ -243,11 +242,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         mViewPager.setAdapter(mPagerAdapter);
         mPagerIndicator.setViewPager(mViewPager);
         mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
-        if (activity instanceof IThemedActivity) {
-            mPagerIndicator.setStripColor(((IThemedActivity) activity).getCurrentThemeColor());
-        } else {
-
-        }
         getUserListInfo(false);
         setupUserPages();
 	}
@@ -455,6 +449,13 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         ThemeUtils.setCompatToolbarOverlay(activity, new EmptyDrawable());
         ThemeUtils.setCompatContentViewOverlay(activity, new EmptyDrawable());
         ThemeUtils.setWindowOverlayViewOverlay(activity, new EmptyDrawable());
+
+        if (activity instanceof IThemedActivity) {
+            final String backgroundOption = ((IThemedActivity) activity).getCurrentThemeBackgroundOption();
+            final boolean isTransparent = ThemeUtils.isTransparentBackground(backgroundOption);
+            final int actionBarAlpha = isTransparent ? ThemeUtils.getActionBarAlpha(ThemeUtils.getUserThemeBackgroundAlpha(activity)) : 0xFF;
+            mPagerIndicator.setAlpha(actionBarAlpha / 255f);
+        }
     }
 
 	public static class EditUserListDialogFragment extends BaseSupportDialogFragment implements

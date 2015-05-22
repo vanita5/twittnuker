@@ -95,7 +95,7 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
     };
 
     private TintedStatusFrameLayout mMainContent;
-    private View mActionBarOverlay;
+    private View mActionBarWithOverlay;
     private ActionBarContainer mActionBarContainer;
 
 	private boolean mFinishOnly;
@@ -281,7 +281,7 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
     public void onContentChanged() {
         super.onContentChanged();
         mMainContent = (TintedStatusFrameLayout) findViewById(R.id.main_content);
-        mActionBarOverlay = findViewById(R.id.twidere_action_bar_with_overlay);
+        mActionBarWithOverlay = findViewById(R.id.twidere_action_bar_with_overlay);
         mActionBarContainer = (ActionBarContainer) findViewById(R.id.twidere_action_bar_container);
     }
 
@@ -355,6 +355,9 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
                 break;
             }
         }
+        final boolean isTransparent = ThemeUtils.isTransparentBackground(option);
+        final int actionBarAlpha = isTransparent ? ThemeUtils.getActionBarAlpha(ThemeUtils.getUserThemeBackgroundAlpha(this)) : 0xFF;
+        mActionBarWithOverlay.setAlpha(actionBarAlpha / 255f);
     }
 
     private void setStatusBarColor(int linkId, Uri uri) {
@@ -367,8 +370,9 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
                 mMainContent.setDrawShadow(false);
                 mMainContent.setDrawColor(true);
                 mMainContent.setFactor(1);
-                final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption()) ? getCurrentThemeBackgroundAlpha() : 0xFF;
-                final int statusBarColor = getActionBarColor();
+                final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption())
+                        ? ThemeUtils.getActionBarAlpha(getCurrentThemeBackgroundAlpha()) : 0xFF;
+                final int statusBarColor = ThemeUtils.getActionBarColor(this);
                 mMainContent.setColor(statusBarColor, alpha);
                 StatusBarProxy.setStatusBarDarkIcon(getWindow(), TwidereColorUtils.getYIQLuminance(statusBarColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD);
                 break;

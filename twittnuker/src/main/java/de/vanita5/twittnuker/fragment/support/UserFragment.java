@@ -89,7 +89,6 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.mariotaku.querybuilder.Expression;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
@@ -1354,7 +1353,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final String backgroundOption = themed.getThemeBackgroundOption();
         final int actionBarColor = ThemeUtils.getActionBarColor(activity);
         if (mTintedStatusContent != null) {
-            mTintedStatusContent.setColor(actionBarColor, themed.getCurrentThemeBackgroundAlpha());
+            mTintedStatusContent.setColor(actionBarColor, ThemeUtils.getActionBarAlpha(themed.getCurrentThemeBackgroundAlpha()));
         }
         if (mActionBarBackground != null) {
             mActionBarBackground.setColor(actionBarColor);
@@ -1385,7 +1384,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mActionBarBackground = new ActionBarDrawable(shadow);
         if (!ThemeUtils.isWindowFloating(linkHandler, linkHandler.getCurrentThemeResourceId())
                 && ThemeUtils.isTransparentBackground(linkHandler.getCurrentThemeBackgroundOption())) {
-			mActionBarBackground.setAlpha(linkHandler.getCurrentThemeBackgroundAlpha());
+//            mActionBarBackground.setAlpha(ThemeUtils.getActionBarAlpha(linkHandler.getCurrentThemeBackgroundAlpha()));
 			mProfileBannerView.setAlpha(linkHandler.getCurrentThemeBackgroundAlpha() / 255f);
         }
         actionBarContainer.setPrimaryBackground(mActionBarBackground);
@@ -1486,7 +1485,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             int stackedTabColor = ThemeUtils.getActionBarColor(activity);
 
             if (ThemeUtils.isTransparentBackground(activity.getCurrentThemeBackgroundOption())) {
-                stackedTabColor = ColorUtils.setAlphaComponent(stackedTabColor, activity.getCurrentThemeBackgroundAlpha());
+                stackedTabColor = ColorUtils.setAlphaComponent(stackedTabColor, ThemeUtils.getActionBarAlpha(activity.getCurrentThemeBackgroundAlpha()));
             }
 			final int tabColor = (Integer) sArgbEvaluator.evaluate(tabOutlineAlphaFactor, stackedTabColor, mCardBackgroundColor);
             ((ColorDrawable) tabBackground).setColor(tabColor);

@@ -46,6 +46,7 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffsetListener;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
 import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
@@ -68,9 +69,9 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
 
     private ViewPager mViewPager;
     private View mPagerWindowOverlay;
+    private TabPagerIndicator mPagerIndicator;
 
     private SupportTabsAdapter mPagerAdapter;
-    private TabPagerIndicator mPagerIndicator;
 
     private int mControlBarOffsetPixels;
     private int mControlBarHeight;
@@ -171,6 +172,13 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
         ThemeUtils.setCompatToolbarOverlay(activity, new EmptyDrawable());
         ThemeUtils.setCompatContentViewOverlay(activity, new EmptyDrawable());
         ThemeUtils.setWindowOverlayViewOverlay(activity, new EmptyDrawable());
+
+        if (activity instanceof IThemedActivity) {
+            final String backgroundOption = ((IThemedActivity) activity).getCurrentThemeBackgroundOption();
+            final boolean isTransparent = ThemeUtils.isTransparentBackground(backgroundOption);
+            final int actionBarAlpha = isTransparent ? ThemeUtils.getActionBarAlpha(ThemeUtils.getUserThemeBackgroundAlpha(activity)) : 0xFF;
+            mPagerIndicator.setAlpha(actionBarAlpha / 255f);
+        }
 		if (savedInstanceState == null && args != null && args.containsKey(EXTRA_QUERY)) {
 			final String query = args.getString(EXTRA_QUERY);
 			final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),

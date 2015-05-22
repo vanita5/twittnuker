@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredKeywordsFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredLinksFragment;
@@ -80,6 +81,13 @@ public class FiltersFragment extends BaseSupportFragment implements RefreshScrol
 		ThemeUtils.setCompatToolbarOverlay(activity, new EmptyDrawable());
 		ThemeUtils.setCompatContentViewOverlay(activity, new EmptyDrawable());
 		ThemeUtils.setWindowOverlayViewOverlay(activity, new EmptyDrawable());
+
+        if (activity instanceof IThemedActivity) {
+            final String backgroundOption = ((IThemedActivity) activity).getCurrentThemeBackgroundOption();
+            final boolean isTransparent = ThemeUtils.isTransparentBackground(backgroundOption);
+            final int actionBarAlpha = isTransparent ? ThemeUtils.getActionBarAlpha(ThemeUtils.getUserThemeBackgroundAlpha(activity)) : 0xFF;
+            mPagerIndicator.setAlpha(actionBarAlpha / 255f);
+        }
 	}
 
 	@Override

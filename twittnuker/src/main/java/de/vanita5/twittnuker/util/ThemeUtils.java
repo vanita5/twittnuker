@@ -70,6 +70,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
+import de.vanita5.twittnuker.preference.ThemeBackgroundPreference;
 import de.vanita5.twittnuker.text.ParagraphSpacingSpan;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.support.ViewSupport;
@@ -631,7 +632,13 @@ public class ThemeUtils implements Constants {
     public static int getUserThemeBackgroundAlpha(final Context context) {
         if (context == null) return DEFAULT_THEME_BACKGROUND_ALPHA;
         final SharedPreferencesWrapper pref = getSharedPreferencesWrapper(context);
-        return pref.getInt(KEY_THEME_BACKGROUND_ALPHA, DEFAULT_THEME_BACKGROUND_ALPHA);
+        return MathUtils.clamp(pref.getInt(KEY_THEME_BACKGROUND_ALPHA, DEFAULT_THEME_BACKGROUND_ALPHA),
+                ThemeBackgroundPreference.MIN_ALPHA, ThemeBackgroundPreference.MAX_ALPHA);
+    }
+
+    public static int getActionBarAlpha(final int alpha) {
+        return MathUtils.clamp(alpha * 2, ThemeBackgroundPreference.MIN_ALPHA,
+                ThemeBackgroundPreference.MAX_ALPHA);
     }
 
 	public static int getActionBarColor(final Context context) {
@@ -690,7 +697,8 @@ public class ThemeUtils implements Constants {
         final Drawable d = a.getDrawable(0);
         a.recycle();
         if (d != null) {
-            d.setAlpha(alpha);
+            d.setAlpha(MathUtils.clamp(alpha, ThemeBackgroundPreference.MIN_ALPHA,
+                    ThemeBackgroundPreference.MAX_ALPHA));
         }
         return d;
     }
