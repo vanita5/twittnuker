@@ -127,12 +127,14 @@ public class TrendsSuggestionsFragment extends AbsContentListViewFragment<Trends
 		super.onStart();
 		getLoaderManager().restartLoader(0, null, this);
         final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
+        assert bus != null;
         bus.register(this);
 	}
 
 	@Override
 	public void onStop() {
         final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
+        assert bus != null;
         bus.unregister(this);
 		super.onStop();
     }

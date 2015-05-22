@@ -59,6 +59,8 @@ import android.widget.TextView;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.desmond.asyncmanager.AsyncManager;
+import com.desmond.asyncmanager.TaskRunnable;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.sprylab.android.widget.TextureVideoView;
 
@@ -83,7 +85,6 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.VideoLoader;
 import de.vanita5.twittnuker.util.VideoLoader.VideoLoadingListener;
-import de.vanita5.twittnuker.view.LinePageIndicator;
 
 import java.io.File;
 
@@ -99,7 +100,6 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
     private ViewPager mViewPager;
     private MediaPagerAdapter mPagerAdapter;
     private View mMediaStatusContainer;
-    private LinePageIndicator mIndicator;
 
 	@Override
     public int getThemeColor() {
@@ -139,15 +139,11 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.element_spacing_normal));
         mViewPager.setOnPageChangeListener(this);
-        mIndicator.setSelectedColor(getCurrentThemeColor());
-        mIndicator.setViewPager(mViewPager);
         final Intent intent = getIntent();
         final long accountId = intent.getLongExtra(EXTRA_ACCOUNT_ID, -1);
         final ParcelableMedia[] media = Utils.newParcelableArray(intent.getParcelableArrayExtra(EXTRA_MEDIA), ParcelableMedia.CREATOR);
         final ParcelableMedia currentMedia = intent.getParcelableExtra(EXTRA_CURRENT_MEDIA);
         mPagerAdapter.setMedia(accountId, media);
-        mIndicator.notifyDataSetChanged();
-        mIndicator.setVisibility(mPagerAdapter.getCount() > 1 ? View.VISIBLE : View.GONE);
         final int currentIndex = ArrayUtils.indexOf(media, currentMedia);
         if (currentIndex != -1) {
             mViewPager.setCurrentItem(currentIndex, false);
@@ -166,6 +162,7 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
         } else {
             mMediaStatusContainer.setVisibility(View.GONE);
         }
+        updatePositionTitle();
     }
 
     public boolean hasStatus() {
@@ -176,7 +173,6 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
     public void onContentChanged() {
         super.onContentChanged();
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mIndicator = (LinePageIndicator) findViewById(R.id.pager_indicator);
         mMediaStatusContainer = findViewById(R.id.media_status_container);
     }
 
@@ -187,6 +183,7 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
 
     @Override
     public void onPageSelected(int position) {
+        updatePositionTitle();
         setBarVisibility(true);
     }
 
@@ -241,7 +238,7 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
 	}
 
     private boolean isMediaStatusEnabled() {
-        return false;
+        return Boolean.parseBoolean("false");
     }
 
     private void setBarVisibility(boolean visible) {
@@ -253,12 +250,15 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
             actionBar.hide();
         }
 
-        mIndicator.setVisibility(visible && mPagerAdapter.getCount() > 1 ? View.VISIBLE : View.GONE);
         mMediaStatusContainer.setVisibility(isMediaStatusEnabled() && visible ? View.VISIBLE : View.GONE);
     }
 
     private void toggleBar() {
         setBarVisibility(!isBarShowing());
+    }
+
+    private void updatePositionTitle() {
+        setTitle(String.format("%d / %d", mViewPager.getCurrentItem() + 1, mPagerAdapter.getCount()));
     }
 
     public static class BaseImagePageFragment extends BaseSupportFragment
@@ -406,32 +406,51 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
         @Override
         public void onPrepareOptionsMenu(Menu menu) {
             super.onPrepareOptionsMenu(menu);
-            final File file = mImageFile;
             final boolean isLoading = getLoaderManager().hasRunningLoaders();
-            final boolean hasImage = file != null && file.exists();
-            MenuUtils.setMenuItemAvailability(menu, R.id.refresh, !hasImage && !isLoading);
-            MenuUtils.setMenuItemAvailability(menu, R.id.share, hasImage && !isLoading);
-            MenuUtils.setMenuItemAvailability(menu, R.id.save, hasImage && !isLoading);
-            if (!hasImage) return;
-            final MenuItem shareItem = menu.findItem(R.id.share);
-            final ShareActionProvider shareProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
-            final Intent intent = new Intent(Intent.ACTION_SEND);
-            final Uri fileUri = Uri.fromFile(file);
-            intent.setDataAndType(fileUri, Utils.getImageMimeType(file));
-            intent.putExtra(Intent.EXTRA_STREAM, fileUri);
-            final MediaViewerActivity activity = (MediaViewerActivity) getActivity();
-            if (activity.hasStatus()) {
-                final ParcelableStatus status = activity.getStatus();
-                intent.putExtra(Intent.EXTRA_TEXT, Utils.getStatusShareText(activity, status));
-                intent.putExtra(Intent.EXTRA_SUBJECT, Utils.getStatusShareSubject(activity, status));
-            }
-            if (shareProvider != null) shareProvider.setShareIntent(intent);
+            final TaskRunnable<File, Pair<Boolean, Intent>, Menu> checkState = new TaskRunnable<File, Pair<Boolean, Intent>, Menu>() {
+                @Override
+                public Pair<Boolean, Intent> doLongOperation(File file) throws InterruptedException {
+            		final boolean hasImage = file != null && file.exists();
+                    if (!hasImage) {
+                        return Pair.create(false, null);
+                    }
+					final Intent intent = new Intent(Intent.ACTION_SEND);
+					final Uri fileUri = Uri.fromFile(file);
+					intent.setDataAndType(fileUri, Utils.getImageMimeType(file));
+					intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+					final MediaViewerActivity activity = (MediaViewerActivity) getActivity();
+					if (activity.hasStatus()) {
+						final ParcelableStatus status = activity.getStatus();
+						intent.putExtra(Intent.EXTRA_TEXT, Utils.getStatusShareText(activity, status));
+						intent.putExtra(Intent.EXTRA_SUBJECT, Utils.getStatusShareSubject(activity, status));
+					}
+                    return Pair.create(true, intent);
+        		}
+
+        		@Override
+                public void callback(Menu menu, Pair<Boolean, Intent> result) {
+                    final boolean hasImage = result.first;
+                    MenuUtils.setMenuItemAvailability(menu, R.id.refresh, !hasImage && !isLoading);
+                    MenuUtils.setMenuItemAvailability(menu, R.id.share, hasImage && !isLoading);
+                    MenuUtils.setMenuItemAvailability(menu, R.id.save, hasImage && !isLoading);
+                    if (!hasImage) return;
+                    final MenuItem shareItem = menu.findItem(R.id.share);
+                    final ShareActionProvider shareProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
+                    if (shareProvider != null) shareProvider.setShareIntent(result.second);
+                }
+            };
+            checkState.setParams(mImageFile);
+            checkState.setResultHandler(menu);
+            AsyncManager.runBackgroundTask(checkState);
         }
 
 
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
             inflater.inflate(R.menu.menu_media_viewer_image_page, menu);
+            final MenuItem shareItem = menu.findItem(R.id.share);
+            final ShareActionProvider shareProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
+            if (shareProvider != null) shareProvider.setShareHistoryFileName(null);
         }
 
 

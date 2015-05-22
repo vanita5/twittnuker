@@ -65,7 +65,6 @@ import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.BasePreferenceActivity;
 import de.vanita5.twittnuker.activity.SettingsActivity;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
@@ -317,11 +316,10 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
         final Activity activity = getActivity();
         if (activity instanceof BasePreferenceActivity) {
             final ActionBar actionBar = ((BasePreferenceActivity) activity).getSupportActionBar();
-			final int themeResId = ((IThemedActivity) activity).getThemeResourceId();
-			final int actionBarColor = ((IThemedActivity) activity).getCurrentActionBarColor();
+            final int themeResourceId = ((BasePreferenceActivity) activity).getCurrentThemeResourceId();
             final int itemColor = ThemeUtils.getContrastActionBarItemColor(actionBar.getThemedContext());
-            final int popupTheme = ThemeUtils.getActionBarPopupThemeRes(actionBar.getThemedContext());
-            final int popupColor = ThemeUtils.getContrastActionBarItemColor(activity);
+            final int popupTheme = ThemeUtils.getActionBarPopupThemeRes(actionBar.getThemedContext(), themeResourceId);
+            final int popupColor = ThemeUtils.getColorFromAttribute(activity, popupTheme, android.R.attr.colorForeground, 0);
             ThemeUtils.applyColorFilterToMenuIcon(menu, itemColor, popupColor, 0, Mode.SRC_ATOP);
         }
 	}

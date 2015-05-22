@@ -242,7 +242,7 @@ public class TwittnukerApplication extends Application implements Constants,
 		final ComponentName main = new ComponentName(this, MainActivity.class);
 		pm.setComponentEnabledSetting(main, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
 					PackageManager.DONT_KILL_APP);
-		if (!Utils.isComposeNowSupported()) {
+		if (!Utils.isComposeNowSupported(this)) {
 			final ComponentName assist = new ComponentName(this, AssistLauncherActivity.class);
 			pm.setComponentEnabledSetting(assist, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
 					PackageManager.DONT_KILL_APP);

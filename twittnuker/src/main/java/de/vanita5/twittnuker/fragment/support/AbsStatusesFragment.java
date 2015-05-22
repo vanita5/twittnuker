@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.fragment.support;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -418,6 +419,13 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
         if (status == null) return;
         mReadStateManager.setPosition(readPositionTag, status.id);
         mReadStateManager.setPosition(getCurrentReadPositionTag(), status.id, true);
+    }
+
+    @NonNull
+    @Override
+    protected Rect getExtraContentPadding() {
+        final int paddingVertical = getResources().getDimensionPixelSize(R.dimen.element_spacing_small);
+        return new Rect(0, paddingVertical, 0, paddingVertical);
     }
 
     private String getCurrentReadPositionTag() {
