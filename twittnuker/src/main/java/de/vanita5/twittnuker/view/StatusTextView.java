@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import de.vanita5.twittnuker.text.SafeSpannableString;
 import de.vanita5.twittnuker.text.SafeSpannableStringBuilder;
 
-public class StatusTextView extends AppCompatTextView {
+public class StatusTextView extends HandleSpanClickTextView {
 
 	public StatusTextView(final Context context) {
         this(context, null);
