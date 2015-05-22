@@ -713,6 +713,8 @@
 	<string name="comment">Comment</string>
 	<string name="enable_retweets">Enable retweets</string>
 	<string name="disable_retweets">Disable retweets</string>
+	<string name="play">Play</string>
+	<string name="pause">Pause</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

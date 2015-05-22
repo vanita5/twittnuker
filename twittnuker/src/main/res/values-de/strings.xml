@@ -668,6 +668,8 @@
     <string name="comment">Kommentar</string>
     <string name="enable_retweets">Retweets aktivieren</string>
     <string name="disable_retweets">Retweets deaktivieren</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
