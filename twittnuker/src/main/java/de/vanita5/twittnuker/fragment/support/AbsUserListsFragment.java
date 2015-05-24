@@ -46,7 +46,7 @@ import de.vanita5.twittnuker.view.holder.UserListViewHolder;
 abstract class AbsUserListsFragment<Data> extends AbsContentRecyclerViewFragment<AbsUserListsAdapter<Data>>
 		implements LoaderCallbacks<Data>, AbsUserListsAdapter.UserListAdapterListener, KeyboardShortcutCallback {
 
-	private RecyclerViewNavigationHelper mRecyclerViewNavigationHelper;
+    private RecyclerViewNavigationHelper mNavigationHelper;
 
 	private long mNextCursor;
 	private long mPrevCursor;
@@ -57,12 +57,12 @@ abstract class AbsUserListsFragment<Data> extends AbsContentRecyclerViewFragment
 
 	@Override
 	public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
-		return false;
+        return mNavigationHelper.handleKeyboardShortcutSingle(handler, keyCode, event);
 	}
 
 	@Override
 	public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
-		return mRecyclerViewNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
+        return mNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
 	}
 
 	@Override
@@ -75,7 +75,8 @@ abstract class AbsUserListsFragment<Data> extends AbsContentRecyclerViewFragment
 		final LinearLayoutManager layoutManager = getLayoutManager();
 		adapter.setListener(this);
 
-		mRecyclerViewNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter);
+        mNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter,
+                this);
 		final Bundle loaderArgs = new Bundle(getArguments());
 		loaderArgs.putBoolean(EXTRA_FROM_USER, true);
 		getLoaderManager().initLoader(0, loaderArgs, this);

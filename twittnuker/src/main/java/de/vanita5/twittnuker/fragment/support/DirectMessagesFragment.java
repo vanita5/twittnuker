@@ -249,7 +249,8 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
         final MessageEntriesAdapter adapter = getAdapter();
         final RecyclerView recyclerView = getRecyclerView();
         final LinearLayoutManager layoutManager = getLayoutManager();
-        mNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter);
+        mNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter,
+                this);
 
         adapter.setListener(this);
 

@@ -263,7 +263,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         mRecyclerView.setAdapter(mStatusAdapter);
 
         mRecyclerViewNavigationHelper = new RecyclerViewNavigationHelper(mRecyclerView, mLayoutManager,
-                mStatusAdapter);
+                mStatusAdapter, null);
 
         setState(STATE_LOADING);
 
