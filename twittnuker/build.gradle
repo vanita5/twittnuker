@@ -91,11 +91,11 @@ dependencies {
     compile 'com.github.mariotaku:MessageBubbleView:1.2'
     compile 'com.github.mariotaku:DragSortListView:0.6.1'
     compile 'com.github.mariotaku:SlidingMenu:1.3'
-    compile 'com.github.uucky:ColorPicker-Android:0.9.4'
+    compile 'com.github.uucky:ColorPicker-Android:0.9.7@aar'
+    compile 'com.github.boxme:AsyncManager:9391ed71d7@aar'
     compile 'com.sprylab.android.texturevideoview:texturevideoview:1.0.0'
     compile 'com.bluelinelabs:logansquare:1.0.6'
     compile 'ch.acra:acra:4.6.2'
-    compile 'com.github.boxme:AsyncManager:9391ed71d7@aar'
     compile 'org.jraf:android-switch-backport:2.0.1'
     compile project(':twittnuker.component.common')
     compile fileTree(dir: 'libs', include: ['*.jar'])

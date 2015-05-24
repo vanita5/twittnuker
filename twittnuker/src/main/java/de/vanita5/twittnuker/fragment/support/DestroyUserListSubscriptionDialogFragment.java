@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
