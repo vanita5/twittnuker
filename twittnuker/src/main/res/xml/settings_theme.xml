@@ -8,20 +8,18 @@
 		android:key="cat_theme_preview"
         android:order="11"
         android:title="@string/preview">
-		<de.vanita5.twittnuker.preference.ThemePreviewPreference android:key="theme_preview"/>
+		<de.vanita5.twittnuker.preference.ThemePreviewPreference
+            android:key="theme_preview"/>
 	</PreferenceCategory>
 
-	<de.vanita5.twittnuker.preference.SummaryListPreference
-		android:defaultValue="light"
-		android:entries="@array/entries_theme"
-		android:entryValues="@array/values_theme"
-		android:key="theme"
+	<de.vanita5.twittnuker.preference.DarkLightThemeTogglePreference
         android:order="21"
-        android:title="@string/style">
+		android:key="theme"
+        android:title="@string/dark_theme">
         <extra
             android:name="notify_change"
             android:value="true" />
-    </de.vanita5.twittnuker.preference.SummaryListPreference>
+    </de.vanita5.twittnuker.preference.DarkLightThemeTogglePreference>
 
     <de.vanita5.twittnuker.preference.ColorPickerPreference
         android:key="theme_color"

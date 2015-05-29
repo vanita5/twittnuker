@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
+import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
@@ -296,6 +297,16 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void setUserVisibleHint(final boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        final FragmentActivity activity = getActivity();
+        if (isVisibleToUser && activity != null) {
+            final NotificationManager nm = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+            nm.cancel(NOTIFICATION_ID_MENTIONS_TIMELINE);
+        }
     }
 
 	protected long getAccountId() {

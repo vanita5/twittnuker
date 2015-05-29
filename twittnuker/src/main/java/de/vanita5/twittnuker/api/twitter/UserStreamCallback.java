@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.api.twitter;
 
+import android.util.Log;
+
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +47,8 @@ import java.io.InputStreamReader;
  */
 public abstract class UserStreamCallback implements RawCallback {
 
+    private boolean connected;
+
 	private boolean disconnected;
 
 	@Override
@@ -57,77 +61,92 @@ public abstract class UserStreamCallback implements RawCallback {
 		}
 		final ObjectMapper mapper = new ObjectMapper(LoganSquare.JSON_FACTORY);
 		final CRLFLineReader reader = new CRLFLineReader(new InputStreamReader(response.getBody().stream(), "UTF-8"));
-		for (String line; (line = reader.readLine()) != null && !disconnected; ) {
-			if (line.isEmpty()) continue;
-			JsonNode rootNode = mapper.readTree(line);
-			switch (JSONObjectType.determine(rootNode)) {
-				case SENDER: {
-					break;
+        try {
+			for (String line; (line = reader.readLine()) != null && !disconnected; ) {
+                if (!connected) {
+                    onConnected();
+                    connected = true;
+                }
+				if (line.isEmpty()) continue;
+				JsonNode rootNode = mapper.readTree(line);
+				switch (JSONObjectType.determine(rootNode)) {
+					case SENDER: {
+						break;
+					}
+					case STATUS: {
+						onStatus(LoganSquare.mapperFor(Status.class).parse(rootNode.traverse()));
+						break;
+					}
+					case DIRECT_MESSAGE: {
+						onDirectMessage(LoganSquare.mapperFor(DirectMessage.class).parse(rootNode.traverse()));
+						break;
+					}
+					case DELETE: {
+						break;
+					}
+					case LIMIT:
+						break;
+					case STALL_WARNING:
+						break;
+					case SCRUB_GEO:
+						break;
+					case FRIENDS:
+						break;
+					case FAVORITE: {
+						onFavorite(parse(User.class, rootNode.get("source")),
+								parse(User.class, rootNode.get("target")),
+								parse(Status.class, rootNode.get("target_object")));
+						break;
+					}
+                    case UNFAVORITE: {
+                        onUnfavorite(parse(User.class, rootNode.get("source")),
+                                parse(User.class, rootNode.get("target")),
+                                parse(Status.class, rootNode.get("target_object")));
+						break;
+                    }
+					case FOLLOW:
+						break;
+					case UNFOLLOW:
+						break;
+					case USER_LIST_MEMBER_ADDED:
+						break;
+					case USER_LIST_MEMBER_DELETED:
+						break;
+					case USER_LIST_SUBSCRIBED:
+						break;
+					case USER_LIST_UNSUBSCRIBED:
+						break;
+					case USER_LIST_CREATED:
+						break;
+					case USER_LIST_UPDATED:
+						break;
+					case USER_LIST_DESTROYED:
+						break;
+					case USER_UPDATE:
+						break;
+					case USER_DELETE:
+						break;
+					case USER_SUSPEND:
+						break;
+					case BLOCK:
+						break;
+					case UNBLOCK:
+						break;
+					case DISCONNECTION:
+						break;
+					case UNKNOWN:
+						break;
 				}
-				case STATUS: {
-					onStatus(LoganSquare.mapperFor(Status.class).parse(rootNode.traverse()));
-					break;
-				}
-				case DIRECT_MESSAGE: {
-					onDirectMessage(LoganSquare.mapperFor(DirectMessage.class).parse(rootNode.traverse()));
-					break;
-				}
-				case DELETE: {
-					break;
-				}
-				case LIMIT:
-					break;
-				case STALL_WARNING:
-					break;
-				case SCRUB_GEO:
-					break;
-				case FRIENDS:
-					break;
-				case FAVORITE: {
-					onFavorite(parse(User.class, rootNode.get("source")),
-							parse(User.class, rootNode.get("target")),
-							parse(Status.class, rootNode.get("target_object")));
-					break;
-				}
-				case UNFAVORITE:
-					break;
-				case FOLLOW:
-					break;
-				case UNFOLLOW:
-					break;
-				case USER_LIST_MEMBER_ADDED:
-					break;
-				case USER_LIST_MEMBER_DELETED:
-					break;
-				case USER_LIST_SUBSCRIBED:
-					break;
-				case USER_LIST_UNSUBSCRIBED:
-					break;
-				case USER_LIST_CREATED:
-					break;
-				case USER_LIST_UPDATED:
-					break;
-				case USER_LIST_DESTROYED:
-					break;
-				case USER_UPDATE:
-					break;
-				case USER_DELETE:
-					break;
-				case USER_SUSPEND:
-					break;
-				case BLOCK:
-					break;
-				case UNBLOCK:
-					break;
-				case DISCONNECTION:
-					break;
-				case UNKNOWN:
-					break;
 			}
+        } catch (IOException e) {
+            onException(e);
+        } finally {
+            Log.d("Twittnuker.Stream", "Cleaning up...");
+			reader.close();
+			response.close();
 		}
-		reader.close();
-		response.close();
-	}
+    }
+
 
 	private static <T> T parse(final Class<T> cls, final JsonNode json) throws IOException {
 		return LoganSquare.mapperFor(cls).parse(json.traverse());
@@ -141,6 +160,8 @@ public abstract class UserStreamCallback implements RawCallback {
 	public void disconnect() {
 		disconnected = true;
 	}
+
+    public abstract void onConnected();
 
 	public abstract void onBlock(User source, User blockedUser);
 

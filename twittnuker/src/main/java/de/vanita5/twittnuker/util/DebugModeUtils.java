@@ -20,27 +20,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment;
+package de.vanita5.twittnuker.util;
 
-import android.support.annotation.Nullable;
+import android.app.Application;
 
-import de.vanita5.twittnuker.R;
+import com.squareup.okhttp.OkHttpClient;
 
-public class AccountRefreshSettingsFragment extends BaseAccountPreferenceFragment {
+public class DebugModeUtils {
 
-	@Override
-	protected int getPreferencesResource() {
-		return R.xml.settings_account_refresh;
+	public static void initForHttpClient(final OkHttpClient client) {
+		// No-op
 	}
 
-	@Override
-	protected boolean getSwitchPreferenceDefault() {
-		return DEFAULT_AUTO_REFRESH;
+
+	public static void initForApplication(final Application application) {
+		// No-op
 	}
 
-	@Override
-	@Nullable
-	protected String getSwitchPreferenceKey() {
-		return null;
-	}
 }

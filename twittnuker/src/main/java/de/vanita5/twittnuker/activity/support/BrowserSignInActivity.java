@@ -53,7 +53,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -241,7 +240,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity  {
                 consumerSecret = defConsumerSecret;
 			}
 			try {
-                final Endpoint endpoint = new Endpoint(TwitterAPIUtils.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", "oauth"));
+                final Endpoint endpoint = new Endpoint(TwitterAPIFactory.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", "oauth"));
                 final Authorization auth = new OAuthAuthorization(consumerKey, consumerSecret);
                 final TwitterOAuth twitter = TwitterAPIFactory.getInstance(mActivity, endpoint, auth, TwitterOAuth.class);
                 return twitter.getRequestToken(OAUTH_CALLBACK_OOB);

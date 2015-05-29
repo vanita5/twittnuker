@@ -27,7 +27,7 @@
 	android:layout_height="wrap_content"
 	android:descendantFocusability="blocksDescendants"
 	android:gravity="center_vertical"
-	android:minHeight="48dp"
+    android:minHeight="?listPreferredItemHeightSmall"
 	android:orientation="horizontal">
 
 	<ImageView

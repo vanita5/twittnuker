@@ -52,7 +52,6 @@ import de.vanita5.twittnuker.util.MediaPreviewUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.io.FileNotFoundException;
@@ -111,7 +110,7 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
             final String host = uri.getHost();
             final String domain = host.substring(0, host.lastIndexOf(".twitter.com"));
 			final String path = uri.getPath();
-            sb.append(TwitterAPIUtils.getApiUrl(apiUrlFormat, domain, path));
+            sb.append(TwitterAPIFactory.getApiUrl(apiUrlFormat, domain, path));
 			final String query = uri.getQuery();
 			if (!TextUtils.isEmpty(query)) {
 				sb.append("?");
@@ -134,7 +133,7 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 		if (isTwitterAuthRequired(uri) && extras instanceof AccountExtra) {
 			final AccountExtra accountExtra = (AccountExtra) extras;
 			account = ParcelableAccount.getCredentials(mContext, accountExtra.account_id);
-            auth = TwitterAPIUtils.getAuthorization(account);
+            auth = TwitterAPIFactory.getAuthorization(account);
 		} else {
 			account = null;
 			auth = null;

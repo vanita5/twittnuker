@@ -17,13 +17,16 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.util.LongSparseArray;
 import android.util.Log;
 import android.widget.Toast;
 
 import org.mariotaku.restfu.http.Authorization;
+import org.mariotaku.restfu.http.ContentType;
 import org.mariotaku.restfu.http.Endpoint;
+import org.mariotaku.restfu.http.RestHttpResponse;
+import org.mariotaku.restfu.http.mime.TypedData;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -52,16 +55,17 @@ import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.NotificationHelper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 public class StreamingService extends Service implements Constants {
 
-    private final List<WeakReference<TwidereUserStreamCallback>> mTwitterInstances = new ArrayList<>();
+    private final LongSparseArray<UserStreamCallback> mCallbacks = new LongSparseArray<>();
 	private ContentResolver mResolver;
 
 	private SharedPreferences mPreferences;
@@ -85,14 +89,13 @@ public class StreamingService extends Service implements Constants {
 			if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action)) {
 				NetworkInfo wifi = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
 
-				if (wifi.isConnected()) {
+				if (wifi.isConnected() || mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)) {
 					initStreaming();
 				} else {
-					if (!mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)) {
-						clearTwitterInstances();
-					}
+					clearTwitterInstances();
 				}
 			} else if (BROADCAST_REFRESH_STREAMING_SERVICE.equals(action)) {
+				clearTwitterInstances();
 				initStreaming();
 			}
 		}
@@ -122,7 +125,7 @@ public class StreamingService extends Service implements Constants {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mPreferences = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		mResolver = getContentResolver();
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mTwitterWrapper = TwittnukerApplication.getInstance(this).getTwitterWrapper();
@@ -145,80 +148,53 @@ public class StreamingService extends Service implements Constants {
 	}
 
 	private void clearTwitterInstances() {
-        for (final WeakReference<TwidereUserStreamCallback> reference : mTwitterInstances) {
-            final TwidereUserStreamCallback twitter = reference.get();
-            new Thread(new ShutdownStreamTwitterRunnable(twitter)).start();
+        for (int i = 0, j = mCallbacks.size(); i < j; i++) {
+            new Thread(new ShutdownStreamTwitterRunnable(mCallbacks.valueAt(i))).start();
 		}
-		mTwitterInstances.clear();
+        mCallbacks.clear();
 		isStreaming = false;
 		mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
 	}
 
-    @SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation")
 	private void initStreaming() {
 		if (!mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) return;
 
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-		if (isStreaming) {
-			if (!(mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
-					|| wifi.isConnected())) {
-				clearTwitterInstances();
-			}
-			return;
-		}
-
 		if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
 				|| wifi.isConnected()) {
-
-			final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-			if (setTwitterInstances(prefs)) {
-				if (!mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, true)) return;
-				final Intent intent = new Intent(this, HomeActivity.class);
-				NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-				builder.setOngoing(true)
-						.setOnlyAlertOnce(true)
-						.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT))
-						.setSmallIcon(R.drawable.ic_stat_twittnuker)
-						.setContentTitle(getString(R.string.app_name))
-						.setContentText(getString(R.string.streaming_service_running))
-						.setTicker(getString(R.string.streaming_service_running))
-						.setPriority(NotificationCompat.PRIORITY_MIN)
-						.setCategory(NotificationCompat.CATEGORY_SERVICE);
-				mNotificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
-			} else {
-				isStreaming = false;
-				mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
-			}
+			setTwitterInstances();
+			updateStreamState();
 		}
 	}
 
-	private boolean setTwitterInstances(final SharedPreferencesWrapper prefs) {
-		if (prefs == null) return false;
+    private boolean setTwitterInstances() {
 		final List<ParcelableCredentials> accountsList = ParcelableAccount.getCredentialsList(this, true);
 		mAccountIds = new long[accountsList.size()];
 		clearTwitterInstances();
+        boolean result = false;
 		for (int i = 0, j = accountsList.size(); i < j; i++) {
 			final ParcelableCredentials account = accountsList.get(i);
-            final Endpoint endpoint = TwitterAPIUtils.getEndpoint(account, TwitterUserStream.class);
-            final Authorization authorization = TwitterAPIUtils.getAuthorization(account);
-            final TwitterUserStream twitter = Utils.getInstance(this, endpoint, authorization, TwitterUserStream.class);
-			final long account_id = account.account_id;
-			mAccountIds[i] = account_id;
+            final Endpoint endpoint = TwitterAPIFactory.getEndpoint(account, TwitterUserStream.class);
+            final Authorization authorization = TwitterAPIFactory.getAuthorization(account);
+            final TwitterUserStream twitter = TwitterAPIFactory.getInstance(this, endpoint, authorization, TwitterUserStream.class);
             final TwidereUserStreamCallback callback = new TwidereUserStreamCallback(this, account, mPreferences);
-			refreshBefore(new long[]{ account_id });
-			mTwitterInstances.add(new WeakReference<>(callback));
+			refreshBefore(new long[]{ account.account_id });
+			mCallbacks.put(account.account_id, callback);
             new Thread() {
                 @Override
                 public void run() {
                     twitter.getUserStream(callback);
-                    Log.d(LOGTAG, "Stream disconnected");
+                    Log.d(Constants.LOGTAG, String.format("Stream %d disconnected", account.account_id));
+                    mCallbacks.remove(account.account_id);
+                    updateStreamState();
 				}
             }.start();
+            result |= true;
 		}
-		isStreaming = true;
-		return true;
+        return result;
 	}
 
 	private void refreshBefore(final long[] mAccountId) {
@@ -227,17 +203,39 @@ public class StreamingService extends Service implements Constants {
 		}
 	}
 
-	static class ShutdownStreamTwitterRunnable implements Runnable {
-        private final TwidereUserStreamCallback twitter;
+	private void updateStreamState() {
+		if (!mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, true)) return;
+		if (mCallbacks.size() > 0) {
+			isStreaming = true;
+			final Intent intent = new Intent(this, HomeActivity.class);
+			final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+			builder.setOngoing(true)
+					.setOnlyAlertOnce(true)
+					.setSmallIcon(R.drawable.ic_stat_twittnuker)
+					.setContentTitle(getString(R.string.app_name))
+					.setContentText(getString(R.string.streaming_service_running))
+					.setTicker(getString(R.string.streaming_service_running))
+					.setPriority(NotificationCompat.PRIORITY_MIN)
+					.setCategory(NotificationCompat.CATEGORY_SERVICE)
+					.setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT));
+			mNotificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
+		} else {
+			mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
+		}
+	}
 
-        ShutdownStreamTwitterRunnable(final TwidereUserStreamCallback twitter) {
-            this.twitter = twitter;
+	static class ShutdownStreamTwitterRunnable implements Runnable {
+        private final UserStreamCallback callback;
+
+        ShutdownStreamTwitterRunnable(final UserStreamCallback callback) {
+            this.callback = callback;
 		}
 
 		@Override
 		public void run() {
-            if (twitter == null) return;
-            twitter.disconnect();
+            if (callback == null) return;
+            Log.d(Constants.LOGTAG, "Disconnecting stream");
+            callback.disconnect();
 		}
 
 	}
@@ -284,9 +282,14 @@ public class StreamingService extends Service implements Constants {
 		}
 
 		@Override
+        public void onConnected() {
+
+        }
+
+        @Override
 		public void onBlock(final User source, final User blockedUser) {
 			final String message = String.format("%s blocked %s", source.getScreenName(), blockedUser.getScreenName());
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            Log.d(LOGTAG, message);
 		}
 
 		@Override
@@ -338,8 +341,35 @@ public class StreamingService extends Service implements Constants {
         public void onException(final Throwable ex) {
             if (ex instanceof TwitterException) {
                 Log.w(LOGTAG, String.format("Error %d", ((TwitterException) ex).getStatusCode()), ex);
+                final RestHttpResponse response = ((TwitterException) ex).getHttpResponse();
+                if (response != null) {
+                    try {
+                        final TypedData body = response.getBody();
+                        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+                        body.writeTo(os);
+                        final String charsetName;
+                        if (body != null) {
+                            final ContentType contentType = body.contentType();
+                            if (contentType != null) {
+                                final Charset charset = contentType.getCharset();
+                                if (charset != null) {
+                                    charsetName = charset.name();
+            					} else {
+                                    charsetName = Charset.defaultCharset().name();
+                                }
+                            } else {
+                                charsetName = Charset.defaultCharset().name();
+                            }
+                        } else {
+                            charsetName = Charset.defaultCharset().name();
+                        }
+                        Log.w(LOGTAG, os.toString(charsetName));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             } else {
-				Log.w(LOGTAG, ex);
+                Log.w(Constants.LOGTAG, ex);
 			}
 		}
 

@@ -41,13 +41,13 @@ import org.mariotaku.restfu.http.RestHttpClient;
 import org.mariotaku.restfu.http.RestHttpRequest;
 import org.mariotaku.restfu.http.RestHttpResponse;
 import org.mariotaku.restfu.http.mime.TypedData;
+import de.vanita5.twittnuker.util.DebugModeUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
 import okio.BufferedSink;
 
 /**
@@ -63,6 +63,7 @@ public class OkHttpRestClient implements RestHttpClient {
 
     public OkHttpRestClient(OkHttpClient client) {
         this.client = client;
+        DebugModeUtils.initForHttpClient(client);
     }
 
     @NonNull

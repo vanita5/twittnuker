@@ -49,7 +49,6 @@ import com.squareup.otto.Bus;
 import org.acra.ACRA;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.AssistLauncherActivity;
@@ -57,6 +56,7 @@ import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.ErrorLogger;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -232,6 +232,7 @@ public class TwittnukerApplication extends Application implements Constants,
 			StrictModeUtils.detectAllVmPolicy();
 		}
 		super.onCreate();
+        initDebugMode();
         initBugReport();
         mDefaultUserAgent = UserAgentUtils.getDefaultUserAgentString(this);
         mHandler = new Handler();
@@ -252,6 +253,10 @@ public class TwittnukerApplication extends Application implements Constants,
 
 		reloadConnectivitySettings();
 	}
+
+    private void initDebugMode() {
+        DebugModeUtils.initForApplication(this);
+    }
 
     private void initBugReport() {
         ACRA.init(this);

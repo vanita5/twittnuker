@@ -22,9 +22,9 @@
   -->
 
 <manifest
+    package="de.vanita5.twittnuker"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="de.vanita5.twittnuker"
     android:installLocation="auto">
 
     <uses-sdk/>

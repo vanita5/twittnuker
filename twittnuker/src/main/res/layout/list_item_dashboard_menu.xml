@@ -23,27 +23,34 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:divider="?dividerVertical"
-    android:orientation="vertical"
-    android:showDividers="middle">
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:gravity="center_vertical"
+    android:minHeight="?listPreferredItemHeightSmall"
+    android:orientation="horizontal">
 
-    <ListView
-        android:id="@android:id/list"
+    <ImageView
+        android:id="@android:id/icon"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_weight="0"
+        android:contentDescription="@string/icon"
+        android:scaleType="centerInside"/>
+
+    <TextView
+        android:id="@android:id/text1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:layout_weight="1"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        android:focusable="true"
-        android:listSelector="?selectableItemBackground"
-        tools:context=".fragment.support.AccountsDashboardFragment"/>
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="?android:textColorPrimary"
+        android:textStyle="bold"/>
 
-    <android.support.v7.widget.ActionMenuView
-        android:id="@+id/dashboard_menu"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:layout_weight="0"/>
 </LinearLayout>

@@ -128,7 +128,6 @@ import org.mariotaku.querybuilder.query.SQLSelectQuery;
 import org.mariotaku.restfu.RestAPIFactory;
 import org.mariotaku.restfu.RestClient;
 import org.mariotaku.restfu.http.Authorization;
-import org.mariotaku.restfu.http.Endpoint;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
@@ -140,7 +139,6 @@ import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthSupport;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
@@ -148,7 +146,6 @@ import de.vanita5.twittnuker.api.twitter.model.Relationship;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
-import de.vanita5.twittnuker.api.twitter.util.TwitterConverter;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.support.AccountsManagerFragment;
 import de.vanita5.twittnuker.fragment.support.AddStatusFilterDialogFragment;
@@ -187,7 +184,6 @@ import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
 import de.vanita5.twittnuker.menu.SupportStatusShareProvider;
 import de.vanita5.twittnuker.model.AccountPreferences;
-import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
@@ -3791,33 +3787,6 @@ public final class Utils implements Constants {
         }
         return null;
     }
-
-	//Streaming, Temporary
-
-	public static <T> T getInstance(final Context context, final Endpoint endpoint, final Authorization auth, Class<T> cls) {
-		final RestAPIFactory factory = new RestAPIFactory();
-		final String userAgent;
-		if (auth instanceof OAuthAuthorization) {
-			final String consumerKey = ((OAuthAuthorization) auth).getConsumerKey();
-			final String consumerSecret = ((OAuthAuthorization) auth).getConsumerSecret();
-			final ConsumerKeyType officialKeyType = TwitterContentUtils.getOfficialKeyType(context, consumerKey, consumerSecret);
-			if (officialKeyType != ConsumerKeyType.UNKNOWN) {
-				userAgent = TwitterAPIUtils.getUserAgentName(officialKeyType);
-			} else {
-				userAgent = TwitterAPIUtils.getTwidereUserAgent(context);
-			}
-		} else {
-			userAgent = TwitterAPIUtils.getTwidereUserAgent(context);
-		}
-		factory.setClient(getDefaultHttpClient(context));
-		factory.setConverter(new TwitterConverter());
-		factory.setEndpoint(endpoint);
-		factory.setAuthorization(auth);
-		factory.setRequestInfoFactory(new TwitterAPIUtils.TwidereRequestInfoFactory());
-		factory.setHttpRequestFactory(new TwitterAPIUtils.TwidereHttpRequestFactory(userAgent));
-		factory.setExceptionFactory(new TwitterAPIUtils.TwidereExceptionFactory());
-		return factory.build(cls);
-	}
 
     static class UtilsL {
 

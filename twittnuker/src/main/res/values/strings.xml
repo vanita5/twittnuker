@@ -716,6 +716,7 @@
 	<string name="play">Play</string>
 	<string name="pause">Pause</string>
 	<string name="jump_to_top">Jump to top</string>
+	<string name="dark_theme">Dark theme</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

@@ -94,7 +94,6 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereActionModeForChildListener;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
 import de.vanita5.twittnuker.view.iface.TintedStatusLayout;
@@ -602,7 +601,7 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
         protected SignInResponse doInBackground(final Object... params) {
 			try {
                 final String versionSuffix = noVersionSuffix ? null : "1.1";
-                final Endpoint endpoint = new Endpoint(TwitterAPIUtils.getApiUrl(apiUrlFormat, "api", versionSuffix));
+                final Endpoint endpoint = new Endpoint(TwitterAPIFactory.getApiUrl(apiUrlFormat, "api", versionSuffix));
                 final TwitterOAuth oauth = TwitterAPIFactory.getInstance(context, endpoint,
 						new OAuthAuthorization(consumerKey.getOauthToken(), consumerKey.getOauthTokenSecret()), TwitterOAuth.class);
                 final OAuthToken accessToken = oauth.getAccessToken(requestToken, oauthVerifier);
@@ -687,7 +686,7 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
 
         private SignInResponse authBasic() throws TwitterException {
             final String versionSuffix = noVersionSuffix ? null : "1.1";
-            final Endpoint endpoint = new Endpoint(TwitterAPIUtils.getApiUrl(apiUrlFormat, "api", versionSuffix));
+            final Endpoint endpoint = new Endpoint(TwitterAPIFactory.getApiUrl(apiUrlFormat, "api", versionSuffix));
             final Authorization auth = new BasicAuthorization(username, password);
             final Twitter twitter = TwitterAPIFactory.getInstance(context, endpoint, auth, Twitter.class);
 			final User user = twitter.verifyCredentials();
@@ -701,9 +700,9 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
 
         private SignInResponse authOAuth() throws AuthenticationException, TwitterException {
             String endpointUrl, signEndpointUrl;
-            endpointUrl = TwitterAPIUtils.getApiUrl(apiUrlFormat, "api", null);
+            endpointUrl = TwitterAPIFactory.getApiUrl(apiUrlFormat, "api", null);
             if (!sameOAuthSigningUrl) {
-                signEndpointUrl = TwitterAPIUtils.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", null);
+                signEndpointUrl = TwitterAPIFactory.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", null);
             } else {
                 signEndpointUrl = endpointUrl;
             }
@@ -715,9 +714,9 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
             final long userId = accessToken.getUserId();
             if (userId <= 0) return new SignInResponse(false, false, null);
             final String versionSuffix = noVersionSuffix ? null : "1.1";
-            endpointUrl = TwitterAPIUtils.getApiUrl(apiUrlFormat, "api", versionSuffix);
+            endpointUrl = TwitterAPIFactory.getApiUrl(apiUrlFormat, "api", versionSuffix);
             if (!sameOAuthSigningUrl) {
-                signEndpointUrl = TwitterAPIUtils.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", versionSuffix);
+                signEndpointUrl = TwitterAPIFactory.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", versionSuffix);
             } else {
                 signEndpointUrl = endpointUrl;
             }
@@ -733,7 +732,7 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
 
         private SignInResponse authTwipOMode() throws TwitterException {
             final String versionSuffix = noVersionSuffix ? null : "1.1";
-            final Endpoint endpoint = new Endpoint(TwitterAPIUtils.getApiUrl(apiUrlFormat, "api", versionSuffix));
+            final Endpoint endpoint = new Endpoint(TwitterAPIFactory.getApiUrl(apiUrlFormat, "api", versionSuffix));
             final Authorization auth = new EmptyAuthorization();
             final Twitter twitter = TwitterAPIFactory.getInstance(context, endpoint, auth, Twitter.class);
 			final User user = twitter.verifyCredentials();
@@ -745,7 +744,7 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
 
         private SignInResponse authxAuth() throws TwitterException {
             final String versionSuffix = noVersionSuffix ? null : "1.1";
-            final Endpoint endpoint = new Endpoint(TwitterAPIUtils.getApiUrl(apiUrlFormat, "api", versionSuffix));
+            final Endpoint endpoint = new Endpoint(TwitterAPIFactory.getApiUrl(apiUrlFormat, "api", versionSuffix));
             OAuthAuthorization auth = new OAuthAuthorization(consumerKey.getOauthToken(), consumerKey.getOauthTokenSecret());
             final TwitterOAuth oauth = TwitterAPIFactory.getInstance(context, endpoint, auth, TwitterOAuth.class);
             final OAuthToken accessToken = oauth.getAccessToken(username, password, TwitterOAuth.XAuthMode.CLIENT);

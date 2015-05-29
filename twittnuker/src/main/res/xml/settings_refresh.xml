@@ -4,7 +4,7 @@
 	android:title="@string/refresh">
 
 	<de.vanita5.twittnuker.preference.AutoRefreshAccountsListPreference
-		android:key="cat_auto_refresh"
+		android:key="auto_refresh"
         android:title="@string/auto_refresh"
         app:switchDefault="true"
         app:switchKey="auto_refresh"/>

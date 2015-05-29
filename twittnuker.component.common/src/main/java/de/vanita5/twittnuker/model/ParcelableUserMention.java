@@ -29,14 +29,17 @@ import android.text.TextUtils;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-
-import java.io.IOException;
-import java.util.List;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 
+import java.io.IOException;
+import java.util.List;
+
 @JsonObject
+@ParcelablePlease(allFields = false)
 public class ParcelableUserMention implements Parcelable {
 
 	public static final Parcelable.Creator<ParcelableUserMention> CREATOR = new Parcelable.Creator<ParcelableUserMention>() {
@@ -51,10 +54,13 @@ public class ParcelableUserMention implements Parcelable {
 		}
 	};
 
+    @ParcelableThisPlease
     @JsonField(name = "id")
 	public long id;
+    @ParcelableThisPlease
     @JsonField(name = "name")
     public String name;
+    @ParcelableThisPlease
     @JsonField(name = "screen_name")
     public String screen_name;
 
@@ -90,8 +96,15 @@ public class ParcelableUserMention implements Parcelable {
 	}
 
     public static ParcelableUserMention[] fromSerializedJson(String string) {
-
-        return new ParcelableUserMention[0];
+        if (string == null) return null;
+        final List<ParcelableUserMention> list;
+        try {
+            list = LoganSquare.parseList(string, ParcelableUserMention.class);
+        } catch (IOException e) {
+            return null;
+        }
+        if (list == null) return null;
+        return list.toArray(new ParcelableUserMention[list.size()]);
     }
 
 	@Override
