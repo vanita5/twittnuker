@@ -22,8 +22,8 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.simplerestapi.Utils;
-import org.mariotaku.simplerestapi.http.SimpleValueMap;
+import org.mariotaku.restfu.Utils;
+import org.mariotaku.restfu.http.SimpleValueMap;
 
 public final class StatusUpdate extends SimpleValueMap {
 

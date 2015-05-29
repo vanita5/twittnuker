@@ -25,7 +25,8 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
+
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
 import de.vanita5.twittnuker.api.twitter.Twitter;
@@ -42,7 +43,7 @@ public class SavedSearchesLoader extends AsyncTaskLoader<ResponseList<SavedSearc
 
 	@Override
 	public ResponseList<SavedSearch> loadInBackground() {
-		final Twitter twitter = TwitterAPIUtils.getTwitterInstance(getContext(), mAccountId, false);
+		final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId, false);
 		if (twitter == null) return null;
 		try {
 			return twitter.getSavedSearches();

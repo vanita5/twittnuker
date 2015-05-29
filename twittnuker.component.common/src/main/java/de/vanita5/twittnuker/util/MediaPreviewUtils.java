@@ -28,11 +28,11 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import org.mariotaku.simplerestapi.http.Endpoint;
-import org.mariotaku.simplerestapi.http.RestHttpClient;
-import org.mariotaku.simplerestapi.http.RestHttpRequest;
-import org.mariotaku.simplerestapi.http.RestHttpResponse;
-import org.mariotaku.simplerestapi.method.GET;
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.http.Endpoint;
+import org.mariotaku.restfu.http.RestHttpClient;
+import org.mariotaku.restfu.http.RestHttpRequest;
+import org.mariotaku.restfu.http.RestHttpResponse;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.HtmlLinkExtractor.HtmlLink;
 

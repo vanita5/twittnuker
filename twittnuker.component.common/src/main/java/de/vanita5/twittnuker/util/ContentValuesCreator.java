@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.api.twitter.model.Trends;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -79,7 +80,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 		if (basicUsername == null || basicPassword == null) return null;
 		values.put(Accounts.BASIC_AUTH_USERNAME, basicUsername);
 		values.put(Accounts.BASIC_AUTH_PASSWORD, basicPassword);
-		values.put(Accounts.AUTH_TYPE, Accounts.AUTH_TYPE_BASIC);
+        values.put(Accounts.AUTH_TYPE, ParcelableCredentials.AUTH_TYPE_BASIC);
 		values.put(Accounts.ACCOUNT_ID, user.getId());
 		values.put(Accounts.SCREEN_NAME, user.getScreenName());
 		values.put(Accounts.NAME, user.getName());
@@ -121,7 +122,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
                                               final boolean noVersionSuffix) {
 		if (user == null || user.getId() <= 0) return null;
 		final ContentValues values = new ContentValues();
-		values.put(Accounts.AUTH_TYPE, Accounts.AUTH_TYPE_TWIP_O_MODE);
+        values.put(Accounts.AUTH_TYPE, ParcelableCredentials.AUTH_TYPE_TWIP_O_MODE);
 		values.put(Accounts.ACCOUNT_ID, user.getId());
 		values.put(Accounts.SCREEN_NAME, user.getScreenName());
 		values.put(Accounts.NAME, user.getName());

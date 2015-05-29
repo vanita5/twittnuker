@@ -57,6 +57,7 @@ import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.ErrorLogger;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
@@ -254,6 +255,7 @@ public class TwittnukerApplication extends Application implements Constants,
 
     private void initBugReport() {
         ACRA.init(this);
+		ErrorLogger.setEnabled(BuildConfig.DEBUG);
     }
 
 	private SharedPreferences getSharedPreferences() {

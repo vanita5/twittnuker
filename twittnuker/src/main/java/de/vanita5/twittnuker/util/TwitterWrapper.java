@@ -28,7 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.util.LongSparseArray;
 import android.util.Log;
 
-import org.mariotaku.simplerestapi.http.mime.FileTypedData;
+import org.mariotaku.restfu.http.mime.FileTypedData;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -67,7 +67,7 @@ public class TwitterWrapper implements Constants {
 	}
 
 	public static SingleResponse<Boolean> deleteProfileBannerImage(final Context context, final long account_id) {
-        final Twitter twitter = TwitterAPIUtils.getTwitterInstance(context, account_id, false);
+        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, account_id, false);
         if (twitter == null) return new SingleResponse<>(false, null);
 		try {
 			twitter.removeProfileBannerImage();
@@ -166,7 +166,7 @@ public class TwitterWrapper implements Constants {
     public static void updateProfileBannerImage(final Context context, final long accountId,
                                                 final Uri imageUri, final boolean deleteImage)
                                                 throws FileNotFoundException, TwitterException {
-        final Twitter twitter = TwitterAPIUtils.getTwitterInstance(context, accountId, false);
+        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountId, false);
         updateProfileBannerImage(context, twitter, imageUri, deleteImage);
     }
 
@@ -209,7 +209,7 @@ public class TwitterWrapper implements Constants {
     public static User updateProfileImage(final Context context, final long accountId,
                                           final Uri imageUri, final boolean deleteImage)
             throws FileNotFoundException, TwitterException {
-        final Twitter twitter = TwitterAPIUtils.getTwitterInstance(context, accountId, true);
+        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountId, true);
         return updateProfileImage(context, twitter, imageUri, deleteImage);
 	}
 

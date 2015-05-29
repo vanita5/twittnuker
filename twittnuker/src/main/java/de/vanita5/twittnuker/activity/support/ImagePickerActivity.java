@@ -23,18 +23,18 @@ import android.webkit.MimeTypeMap;
 import com.github.ooxi.jdatauri.DataUri;
 import com.nostra13.universalimageloader.utils.IoUtils;
 
-import org.mariotaku.simplerestapi.http.ContentType;
-import org.mariotaku.simplerestapi.http.RestHttpClient;
-import org.mariotaku.simplerestapi.http.RestHttpRequest;
-import org.mariotaku.simplerestapi.http.RestHttpResponse;
-import org.mariotaku.simplerestapi.http.mime.TypedData;
-import org.mariotaku.simplerestapi.method.GET;
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.http.ContentType;
+import org.mariotaku.restfu.http.RestHttpClient;
+import org.mariotaku.restfu.http.RestHttpRequest;
+import org.mariotaku.restfu.http.RestHttpResponse;
+import org.mariotaku.restfu.http.mime.TypedData;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -205,7 +205,7 @@ public class ImagePickerActivity extends ThemedFragmentActivity {
                 final String mimeType;
                 final String scheme = uri.getScheme();
                 if (SCHEME_HTTP.equals(scheme) || SCHEME_HTTPS.equals(scheme)) {
-                    final RestHttpClient client = TwitterAPIUtils.getDefaultHttpClient(mActivity);
+                    final RestHttpClient client = TwitterAPIFactory.getDefaultHttpClient(mActivity);
                     final RestHttpRequest.Builder builder = new RestHttpRequest.Builder();
                     builder.method(GET.METHOD);
                     builder.url(uri.toString());

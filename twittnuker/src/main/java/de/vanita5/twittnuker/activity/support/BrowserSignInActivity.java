@@ -42,8 +42,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import org.mariotaku.simplerestapi.http.Authorization;
-import org.mariotaku.simplerestapi.http.Endpoint;
+import org.mariotaku.restfu.http.Authorization;
+import org.mariotaku.restfu.http.Endpoint;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
@@ -52,8 +52,8 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterAPIUtils;
-import de.vanita5.twittnuker.util.Utils;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -241,9 +241,9 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity  {
                 consumerSecret = defConsumerSecret;
 			}
 			try {
-                final Endpoint endpoint = new Endpoint(Utils.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", "oauth"));
+                final Endpoint endpoint = new Endpoint(TwitterAPIUtils.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", "oauth"));
                 final Authorization auth = new OAuthAuthorization(consumerKey, consumerSecret);
-                final TwitterOAuth twitter = TwitterAPIUtils.getInstance(mActivity, endpoint, auth, TwitterOAuth.class);
+                final TwitterOAuth twitter = TwitterAPIFactory.getInstance(mActivity, endpoint, auth, TwitterOAuth.class);
                 return twitter.getRequestToken(OAUTH_CALLBACK_OOB);
             } catch (final Exception e) {
 				e.printStackTrace();

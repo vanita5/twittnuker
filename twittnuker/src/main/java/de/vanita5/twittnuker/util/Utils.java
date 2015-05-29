@@ -35,7 +35,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -126,9 +125,11 @@ import org.mariotaku.querybuilder.Selectable;
 import org.mariotaku.querybuilder.Table;
 import org.mariotaku.querybuilder.Tables;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
-import org.mariotaku.simplerestapi.RestAPIFactory;
-import org.mariotaku.simplerestapi.RestClient;
-import org.mariotaku.simplerestapi.http.Authorization;
+import org.mariotaku.restfu.RestAPIFactory;
+import org.mariotaku.restfu.RestClient;
+import org.mariotaku.restfu.http.Authorization;
+import org.mariotaku.restfu.http.Endpoint;
+
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -139,6 +140,7 @@ import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthSupport;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
@@ -146,6 +148,7 @@ import de.vanita5.twittnuker.api.twitter.model.Relationship;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
+import de.vanita5.twittnuker.api.twitter.util.TwitterConverter;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.support.AccountsManagerFragment;
 import de.vanita5.twittnuker.fragment.support.AddStatusFilterDialogFragment;
@@ -186,7 +189,7 @@ import de.vanita5.twittnuker.menu.SupportStatusShareProvider;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -255,6 +258,7 @@ import static de.vanita5.twittnuker.provider.TwidereDataStore.DIRECT_MESSAGES_UR
 import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
 import static de.vanita5.twittnuker.util.TwidereLinkify.TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES;
+import static de.vanita5.twittnuker.util.TwitterAPIFactory.getDefaultHttpClient;
 
 @SuppressWarnings("unused")
 public final class Utils implements Constants {
@@ -1104,7 +1108,7 @@ public final class Utils implements Constants {
         if (context == null) throw new NullPointerException();
         final ParcelableStatus cached = findStatusInDatabases(context, accountId, statusId);
         if (cached != null) return cached;
-        final Twitter twitter = TwitterAPIUtils.getTwitterInstance(context, accountId, true);
+        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountId, true);
         if (twitter == null) throw new TwitterException("Account does not exist");
         final Status status = twitter.showStatus(statusId);
         final String where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
@@ -1500,8 +1504,8 @@ public final class Utils implements Constants {
 
     public static boolean isOfficialCredentials(final Context context, final ParcelableCredentials account) {
         if (account == null) return false;
-        final boolean isOAuth = account.auth_type == Accounts.AUTH_TYPE_OAUTH
-                || account.auth_type == Accounts.AUTH_TYPE_XAUTH;
+        final boolean isOAuth = account.auth_type == ParcelableCredentials.AUTH_TYPE_OAUTH
+                || account.auth_type == ParcelableCredentials.AUTH_TYPE_XAUTH;
         final String consumerKey = account.consumer_key, consumerSecret = account.consumer_secret;
         return isOAuth && TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret);
     }
@@ -1549,49 +1553,6 @@ public final class Utils implements Constants {
         return cr.update(CachedUsers.CONTENT_URI, values, where.getSQL(), null) != 0;
     }
 
-
-    public static String getApiBaseUrl(String format, final String domain) {
-        if (format == null) return null;
-        final Matcher matcher = Pattern.compile("\\[(\\.?)DOMAIN(\\.?)\\]").matcher(format);
-        if (!matcher.find()) {
-            // For backward compatibility
-            format = substituteLegacyApiBaseUrl(format, domain);
-            if (!format.endsWith("/1.1") && !format.endsWith("/1.1/")) {
-                return format;
-            }
-            final String versionSuffix = "/1.1";
-            final int suffixLength = versionSuffix.length();
-            final int lastIndex = format.lastIndexOf(versionSuffix);
-            return format.substring(0, lastIndex) + format.substring(lastIndex + suffixLength);
-        }
-        if (TextUtils.isEmpty(domain)) return matcher.replaceAll("");
-        return matcher.replaceAll(String.format("$1%s$2", domain));
-    }
-
-    private static String substituteLegacyApiBaseUrl(@NonNull String format, String domain) {
-        final int startOfHost = format.indexOf("://") + 3, endOfHost = format.indexOf('/', startOfHost);
-        final String host = endOfHost != -1 ? format.substring(startOfHost, endOfHost) : format.substring(startOfHost);
-        if (!host.equalsIgnoreCase("api.twitter.com")) return format;
-        return format.substring(0, startOfHost) + domain + ".twitter.com" + format.substring(endOfHost);
-    }
-
-	public static String getApiUrl(final String pattern, final String domain, final String appendPath) {
-		final String urlBase = getApiBaseUrl(pattern, domain);
-        if (urlBase == null) return null;
-        if (appendPath == null) return urlBase.endsWith("/") ? urlBase : urlBase + "/";
-		final StringBuilder sb = new StringBuilder(urlBase);
-		if (urlBase.endsWith("/")) {
-			sb.append(appendPath.startsWith("/") ? appendPath.substring(1) : appendPath);
-		} else {
-			if (appendPath.startsWith("/")) {
-				sb.append(appendPath);
-			} else {
-				sb.append('/');
-				sb.append(appendPath);
-			}
-		}
-		return sb.toString();
-	}
 
     public static String getBestBannerUrl(final String baseUrl, final int width) {
         final String type = getBestBannerType(width);
@@ -3265,36 +3226,6 @@ public final class Utils implements Constants {
 
     }
 
-
-    public static String getTwidereUserAgent(final Context context) {
-		final PackageManager pm = context.getPackageManager();
-		try {
-			final PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
-            return TWITTNUKER_APP_NAME + " " + TWITTNUKER_PROJECT_URL + " / " + pi.versionName;
-		} catch (final PackageManager.NameNotFoundException e) {
-            throw new AssertionError(e);
-		}
-	}
-
-
-    public static String getUserAgentName(ConsumerKeyType type) {
-        switch (type) {
-            case TWITTER_FOR_ANDROID: {
-                return "TwitterAndroid";
-            }
-            case TWITTER_FOR_IPHONE: {
-                return "Twitter-iPhone";
-            }
-            case TWITTER_FOR_IPAD: {
-                return "Twitter-iPad";
-            }
-            case TWITTER_FOR_MAC: {
-                return "Twitter-Mac";
-            }
-        }
-        return "Twitter";
-    }
-
 	public static boolean shouldForceUsingPrivateAPIs(final Context context) {
 		if (context == null) return false;
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -3860,6 +3791,33 @@ public final class Utils implements Constants {
         }
         return null;
     }
+
+	//Streaming, Temporary
+
+	public static <T> T getInstance(final Context context, final Endpoint endpoint, final Authorization auth, Class<T> cls) {
+		final RestAPIFactory factory = new RestAPIFactory();
+		final String userAgent;
+		if (auth instanceof OAuthAuthorization) {
+			final String consumerKey = ((OAuthAuthorization) auth).getConsumerKey();
+			final String consumerSecret = ((OAuthAuthorization) auth).getConsumerSecret();
+			final ConsumerKeyType officialKeyType = TwitterContentUtils.getOfficialKeyType(context, consumerKey, consumerSecret);
+			if (officialKeyType != ConsumerKeyType.UNKNOWN) {
+				userAgent = TwitterAPIUtils.getUserAgentName(officialKeyType);
+			} else {
+				userAgent = TwitterAPIUtils.getTwidereUserAgent(context);
+			}
+		} else {
+			userAgent = TwitterAPIUtils.getTwidereUserAgent(context);
+		}
+		factory.setClient(getDefaultHttpClient(context));
+		factory.setConverter(new TwitterConverter());
+		factory.setEndpoint(endpoint);
+		factory.setAuthorization(auth);
+		factory.setRequestInfoFactory(new TwitterAPIUtils.TwidereRequestInfoFactory());
+		factory.setHttpRequestFactory(new TwitterAPIUtils.TwidereHttpRequestFactory(userAgent));
+		factory.setExceptionFactory(new TwitterAPIUtils.TwidereExceptionFactory());
+		return factory.build(cls);
+	}
 
     static class UtilsL {
 

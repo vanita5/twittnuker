@@ -89,7 +89,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.loader.support.UserSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUser.CachedIndices;

@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.api.twitter.model.impl;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import org.mariotaku.simplerestapi.http.RestHttpResponse;
+import org.mariotaku.restfu.http.RestHttpResponse;
 
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 

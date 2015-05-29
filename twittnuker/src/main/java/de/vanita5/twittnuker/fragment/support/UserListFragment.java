@@ -85,7 +85,7 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
@@ -559,7 +559,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 				final ParcelableUserList cache = mExtras.getParcelable(EXTRA_USER_LIST);
 				if (cache != null) return SingleResponse.getInstance(cache);
 			}
-            final Twitter twitter = TwitterAPIUtils.getTwitterInstance(getContext(), mAccountId, true);
+            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId, true);
 			if (twitter == null) return SingleResponse.getInstance();
 			try {
 				final UserList list;

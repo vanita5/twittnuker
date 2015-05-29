@@ -32,14 +32,14 @@ import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
-import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.TwitterAPIFactory.getTwitterInstance;
 
 public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<ParcelableUserList>>
         implements ICursorSupportLoader {
@@ -79,7 +79,7 @@ public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<Parcelabl
 
 	@Override
 	public List<ParcelableUserList> loadInBackground() {
-        final Twitter twitter = TwitterAPIUtils.getTwitterInstance(getContext(), mAccountId, true);
+        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId, true);
         List<UserList> listLoaded = null;
 		try {
             listLoaded = getUserLists(twitter);

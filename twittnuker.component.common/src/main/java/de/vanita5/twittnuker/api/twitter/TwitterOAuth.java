@@ -22,11 +22,12 @@
 
 package de.vanita5.twittnuker.api.twitter;
 
-import org.mariotaku.simplerestapi.http.BodyType;
-import org.mariotaku.simplerestapi.method.POST;
-import org.mariotaku.simplerestapi.param.Body;
-import org.mariotaku.simplerestapi.param.Extra;
-import org.mariotaku.simplerestapi.param.Form;
+
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.Body;
+import org.mariotaku.restfu.annotation.param.Extra;
+import org.mariotaku.restfu.annotation.param.Form;
+import org.mariotaku.restfu.http.BodyType;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 
 /**

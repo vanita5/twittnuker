@@ -27,8 +27,7 @@ import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 
-import org.mariotaku.simplerestapi.http.ValueMap;
-
+import org.mariotaku.restfu.http.ValueMap;
 import de.vanita5.twittnuker.api.twitter.model.impl.GeoPoint;
 
 import java.io.IOException;

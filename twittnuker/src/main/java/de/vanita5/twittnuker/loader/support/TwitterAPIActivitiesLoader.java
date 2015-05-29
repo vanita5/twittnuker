@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.util.LoganSquareWrapper;
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -146,7 +146,7 @@ public abstract class TwitterAPIActivitiesLoader extends ParcelableActivitiesLoa
 	protected abstract List<Activity> getActivities(Twitter twitter, Paging paging) throws TwitterException;
 
     protected final Twitter getTwitter() {
-        return TwitterAPIUtils.getTwitterInstance(mContext, mAccountIds, true, true);
+        return TwitterAPIFactory.getTwitterInstance(mContext, mAccountIds, true, true);
 	}
 
     protected abstract boolean shouldFilterActivity(final SQLiteDatabase database, final ParcelableActivity activity);

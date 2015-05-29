@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.constant;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.annotation.Preference;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 
 import static de.vanita5.twittnuker.annotation.Preference.Type.BOOLEAN;
 import static de.vanita5.twittnuker.annotation.Preference.Type.INT;
@@ -250,7 +250,7 @@ public interface SharedPreferenceConstants {
 	String KEY_SAME_OAUTH_SIGNING_URL = "same_oauth_signing_url";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	String KEY_NO_VERSION_SUFFIX = "no_version_suffix";
-	@Preference(type = INT, hasDefault = true, defaultInt = Accounts.AUTH_TYPE_OAUTH)
+    @Preference(type = INT, hasDefault = true, defaultInt = ParcelableCredentials.AUTH_TYPE_OAUTH)
 	String KEY_AUTH_TYPE = "auth_type";
 	@Preference(type = STRING, hasDefault = true, defaultString = TwittnukerConstants.TWITTER_CONSUMER_KEY)
 	String KEY_CONSUMER_KEY = "consumer_key";

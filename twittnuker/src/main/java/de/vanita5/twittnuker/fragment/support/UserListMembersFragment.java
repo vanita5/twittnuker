@@ -34,12 +34,13 @@ import de.vanita5.twittnuker.loader.support.UserListMembersLoader;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 
-import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.TwitterAPIFactory.getTwitterInstance;
 
 public class UserListMembersFragment extends CursorSupportUsersListFragment {
 
@@ -127,7 +128,7 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment {
 
 		@Override
 		protected ParcelableUserList doInBackground(final Object... params) {
-            final Twitter twitter = TwitterAPIUtils.getTwitterInstance(getActivity(), accountId, true);
+            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getActivity(), accountId, true);
 			if (twitter == null) return null;
 			try {
 				final UserList list;

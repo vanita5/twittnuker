@@ -87,7 +87,7 @@ import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.loader.support.ParcelableStatusLoader;
 import de.vanita5.twittnuker.loader.support.StatusRepliesLoader;
 import de.vanita5.twittnuker.model.ListResponse;
-import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -108,7 +108,7 @@ import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler;
 import de.vanita5.twittnuker.util.StatusLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
@@ -906,7 +906,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 ParcelableStatus status = params[0];
                 final long accountId = status.account_id;
                 if (Utils.isOfficialKeyAccount(context, accountId)) {
-                    final Twitter twitter = TwitterAPIUtils.getTwitterInstance(context, accountId, true);
+                    final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountId, true);
                 	while (status.in_reply_to_status_id > 0 && !isCancelled()) {
                         final ParcelableStatus cached = Utils.findStatusInDatabases(context, accountId, status.in_reply_to_status_id);
                         if (cached == null) break;

@@ -31,7 +31,7 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
-import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 
 import java.util.Collection;

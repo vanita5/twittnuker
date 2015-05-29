@@ -45,13 +45,13 @@ import java.text.Collator;
 import java.util.Comparator;
 import java.util.List;
 
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.api.twitter.model.Location;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
-import static de.vanita5.twittnuker.util.TwitterAPIUtils.getDefaultTwitterInstance;
+import static de.vanita5.twittnuker.util.TwitterAPIFactory.getDefaultTwitterInstance;
 
 public class TrendsLocationPreference extends Preference implements Constants, OnClickListener {
 
@@ -175,7 +175,7 @@ public class TrendsLocationPreference extends Preference implements Constants, O
 
 		@Override
 		protected ResponseList<Location> doInBackground(final Object... args) {
-            final Twitter twitter = TwitterAPIUtils.getDefaultTwitterInstance(getContext(), false);
+            final Twitter twitter = TwitterAPIFactory.getDefaultTwitterInstance(getContext(), false);
 			if (twitter == null) return null;
 			try {
 				return twitter.getAvailableTrends();

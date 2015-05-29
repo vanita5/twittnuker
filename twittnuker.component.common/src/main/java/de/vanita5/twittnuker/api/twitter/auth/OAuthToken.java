@@ -21,9 +21,10 @@
  */
 package de.vanita5.twittnuker.api.twitter.auth;
 
-import org.apache.commons.lang3.tuple.Pair;
-import org.mariotaku.simplerestapi.Utils;
-import org.mariotaku.simplerestapi.http.ValueMap;
+import android.util.Pair;
+
+import org.mariotaku.restfu.Utils;
+import org.mariotaku.restfu.http.ValueMap;
 
 import java.nio.charset.Charset;
 import java.text.ParseException;
@@ -65,21 +66,21 @@ public class OAuthToken implements ValueMap {
         List<Pair<String, String>> params = new ArrayList<>();
 		Utils.parseGetParameters(body, params, charset.name());
         for (Pair<String, String> param : params) {
-			switch (param.getKey()) {
+            switch (param.first) {
 				case "oauth_token": {
-					oauthToken = param.getValue();
+                    oauthToken = param.second;
 					break;
 				}
 				case "oauth_token_secret": {
-					oauthTokenSecret = param.getValue();
+                    oauthTokenSecret = param.second;
 					break;
 				}
                 case "user_id": {
-                    userId = Long.parseLong(param.getValue());
+                    userId = Long.parseLong(param.second);
                     break;
                 }
                 case "screen_name": {
-                    screenName = param.getValue();
+                    screenName = param.second;
                     break;
                 }
 			}

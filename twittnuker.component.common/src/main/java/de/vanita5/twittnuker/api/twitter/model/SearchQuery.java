@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.api.twitter.model;
 
 import android.support.annotation.NonNull;
 
-import org.mariotaku.simplerestapi.http.SimpleValueMap;
+import org.mariotaku.restfu.http.SimpleValueMap;
 
 /**
  * A data class represents search query.<br>

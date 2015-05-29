@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.api.twitter.util;
 
-import org.mariotaku.simplerestapi.http.RestHttpResponse;
+import org.mariotaku.restfu.http.RestHttpResponse;
 import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
 
 /**

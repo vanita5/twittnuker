@@ -22,17 +22,16 @@
 
 package de.vanita5.twittnuker.api.twitter.api;
 
-import org.mariotaku.simplerestapi.http.BodyType;
-import org.mariotaku.simplerestapi.method.GET;
-import org.mariotaku.simplerestapi.method.POST;
-import org.mariotaku.simplerestapi.param.Body;
-import org.mariotaku.simplerestapi.param.Form;
-import org.mariotaku.simplerestapi.param.Query;
-
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.Body;
+import org.mariotaku.restfu.annotation.param.Form;
+import org.mariotaku.restfu.annotation.param.Query;
+import org.mariotaku.restfu.http.BodyType;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 /**
  * @author Joern Huxhorn - jhuxhorn at googlemail.com

@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.api.twitter.api;
 
-import org.mariotaku.simplerestapi.method.GET;
+import org.mariotaku.restfu.annotation.method.GET;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Language;
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;

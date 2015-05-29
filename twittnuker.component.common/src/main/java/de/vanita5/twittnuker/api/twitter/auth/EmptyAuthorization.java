@@ -22,9 +22,9 @@
 
 package de.vanita5.twittnuker.api.twitter.auth;
 
-import org.mariotaku.simplerestapi.RequestInfo;
-import org.mariotaku.simplerestapi.http.Authorization;
-import org.mariotaku.simplerestapi.http.Endpoint;
+import org.mariotaku.restfu.RestRequestInfo;
+import org.mariotaku.restfu.http.Authorization;
+import org.mariotaku.restfu.http.Endpoint;
 
 /**
  * Created by mariotaku on 15/4/19.
@@ -32,7 +32,7 @@ import org.mariotaku.simplerestapi.http.Endpoint;
 public final class EmptyAuthorization implements Authorization {
 
 	@Override
-    public String getHeader(Endpoint endpoint, RequestInfo info) {
+    public String getHeader(Endpoint endpoint, RestRequestInfo info) {
 		return null;
 	}
 

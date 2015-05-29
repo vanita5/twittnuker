@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.model.ParcelableUser.CachedIndices;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 
 import de.vanita5.twittnuker.api.twitter.Twitter;
@@ -78,7 +78,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
                 return SingleResponse.getInstance(user);
 			}
 		}
-        final Twitter twitter = TwitterAPIUtils.getTwitterInstance(context, mAccountId, true);
+        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, mAccountId, true);
         if (twitter == null) return SingleResponse.getInstance();
         if (mLoadFromCache) {
             final Expression where;

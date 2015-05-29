@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.api.twitter.auth;
 
-import org.mariotaku.simplerestapi.http.Endpoint;
+import org.mariotaku.restfu.http.Endpoint;
 
 /**
  * Created by mariotaku on 15/2/6.

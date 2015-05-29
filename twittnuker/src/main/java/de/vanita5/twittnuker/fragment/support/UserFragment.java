@@ -110,7 +110,7 @@ import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
-import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
@@ -132,7 +132,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
@@ -198,6 +198,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 	private ViewPager mViewPager;
     private TabPagerIndicator mPagerIndicator;
     private View mPagerOverlay;
+    private View mErrorOverlay;
     private View mProfileBannerContainer;
     private Button mFollowButton;
     private ProgressBar mFollowProgress;
@@ -791,6 +792,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         if (activity instanceof IThemedActivity) {
             ViewSupport.setBackground(mPagerOverlay, ThemeUtils.getNormalWindowContentOverlay(activity,
                     ((IThemedActivity) activity).getCurrentThemeResourceId()));
+            ViewSupport.setBackground(mErrorOverlay, ThemeUtils.getNormalWindowContentOverlay(activity,
+                    ((IThemedActivity) activity).getCurrentThemeResourceId()));
         }
 
         setupBaseActionBar();
@@ -1091,6 +1094,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mViewPager = (ViewPager) contentView.findViewById(R.id.view_pager);
         mPagerIndicator = (TabPagerIndicator) contentView.findViewById(R.id.view_pager_tabs);
         mPagerOverlay = contentView.findViewById(R.id.pager_window_overlay);
+        mErrorOverlay = contentView.findViewById(R.id.error_window_overlay);
         mFollowButton = (Button) headerView.findViewById(R.id.follow);
         mFollowProgress = (ProgressBar) headerView.findViewById(R.id.follow_progress);
         mPagesContent = view.findViewById(R.id.pages_content);
@@ -1456,7 +1460,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final ProfileBannerImageView profileBannerView = mProfileBannerView;
         final View profileBannerContainer = mProfileBannerContainer;
         final int spaceHeight = space.getHeight();
-        final float factor = MathUtils.clamp(offset / (float) spaceHeight, 0, 1);
+        final float factor = MathUtils.clamp(spaceHeight == 0 ? 0 : (offset / (float) spaceHeight), 0, 1);
 //        profileBannerContainer.setTranslationY(Math.max(-offset, -spaceHeight));
 //        profileBannerView.setTranslationY(Math.min(offset, spaceHeight) / 2);
         profileBannerContainer.setTranslationY(-offset);
@@ -1625,7 +1629,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         @Override
         public SingleResponse<Relationship> loadInBackground() {
             if (account_id == user_id) return SingleResponse.getInstance();
-            final Twitter twitter = TwitterAPIUtils.getTwitterInstance(context, account_id, false);
+            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, account_id, false);
             if (twitter == null) return SingleResponse.getInstance();
             try {
                 final Relationship relationship = twitter.showFriendship(user_id);

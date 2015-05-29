@@ -29,7 +29,7 @@ import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 
-import org.mariotaku.simplerestapi.http.RestHttpResponse;
+import org.mariotaku.restfu.http.RestHttpResponse;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.api.twitter.model.User;

@@ -29,12 +29,12 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import java.util.Collections;
 import java.util.List;
 
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
-import static de.vanita5.twittnuker.util.TwitterAPIUtils.getTwitterInstance;
+import static de.vanita5.twittnuker.util.TwitterAPIFactory.getTwitterInstance;
 
 public abstract class TwitterAPIUsersLoader extends ParcelableUsersLoader {
 
@@ -53,7 +53,7 @@ public abstract class TwitterAPIUsersLoader extends ParcelableUsersLoader {
 		final List<ParcelableUser> data = getData();
 		final List<User> users;
 		try {
-            users = getUsers(TwitterAPIUtils.getTwitterInstance(mContext, mAccountId, true));
+            users = getUsers(TwitterAPIFactory.getTwitterInstance(mContext, mAccountId, true));
 			if (users == null) return data;
 		} catch (final TwitterException e) {
 			e.printStackTrace();

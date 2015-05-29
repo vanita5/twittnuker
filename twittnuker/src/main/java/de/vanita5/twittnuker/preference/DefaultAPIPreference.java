@@ -41,6 +41,7 @@ import android.widget.Toast;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 
 import static android.text.TextUtils.isEmpty;
@@ -72,12 +73,12 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 	@Override
 	public void onCheckedChanged(final RadioGroup group, final int checkedId) {
 		final int authType = getCheckedAuthType(checkedId);
-		final boolean isOAuth = authType == Accounts.AUTH_TYPE_OAUTH || authType == Accounts.AUTH_TYPE_XAUTH;
+        final boolean isOAuth = authType == ParcelableCredentials.AUTH_TYPE_OAUTH || authType == ParcelableCredentials.AUTH_TYPE_XAUTH;
         mEditSameOAuthSigningUrl.setVisibility(isOAuth ? View.VISIBLE : View.GONE);
         mEditConsumerKey.setVisibility(isOAuth ? View.VISIBLE : View.GONE);
         mEditConsumerSecret.setVisibility(isOAuth ? View.VISIBLE : View.GONE);
         if (!mEditNoVersionSuffixChanged) {
-            mEditNoVersionSuffix.setChecked(authType == Accounts.AUTH_TYPE_TWIP_O_MODE);
+            mEditNoVersionSuffix.setChecked(authType == ParcelableCredentials.AUTH_TYPE_TWIP_O_MODE);
         }
 	}
 
@@ -100,7 +101,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
     protected void onBindDialogView(@NonNull final View view) {
 		final SharedPreferences pref = getSharedPreferences();
         final String apiUrlFormat = getNonEmptyString(pref, KEY_API_URL_FORMAT, DEFAULT_TWITTER_API_URL_FORMAT);
-		final int authType = pref.getInt(KEY_AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
+        final int authType = pref.getInt(KEY_AUTH_TYPE, ParcelableCredentials.AUTH_TYPE_OAUTH);
 		final boolean sameOAuthSigningUrl = pref.getBoolean(KEY_SAME_OAUTH_SIGNING_URL, false);
         final boolean noVersionSuffix = pref.getBoolean(KEY_NO_VERSION_SUFFIX, false);
 		final String consumerKey = getNonEmptyString(pref, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY);
@@ -161,7 +162,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 
 		final SharedPreferences pref = getSharedPreferences();
         final String prefApiUrlFormat = getNonEmptyString(pref, KEY_API_URL_FORMAT, DEFAULT_TWITTER_API_URL_FORMAT);
-		final int prefAuthType = pref.getInt(KEY_AUTH_TYPE, Accounts.AUTH_TYPE_OAUTH);
+        final int prefAuthType = pref.getInt(KEY_AUTH_TYPE, ParcelableCredentials.AUTH_TYPE_OAUTH);
 		final boolean prefSameOAuthSigningUrl = pref.getBoolean(KEY_API_URL_FORMAT, false);
 		final String prefConsumerKey = getNonEmptyString(pref, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY);
 		final String prefConsumerSecret = getNonEmptyString(pref, KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET);
@@ -192,16 +193,16 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 	private int getCheckedAuthType(final int checkedId) {
 		switch (checkedId) {
 			case R.id.xauth: {
-				return Accounts.AUTH_TYPE_XAUTH;
+                return ParcelableCredentials.AUTH_TYPE_XAUTH;
 			}
 			case R.id.basic: {
-				return Accounts.AUTH_TYPE_BASIC;
+                return ParcelableCredentials.AUTH_TYPE_BASIC;
 			}
 			case R.id.twip_o: {
-				return Accounts.AUTH_TYPE_TWIP_O_MODE;
+                return ParcelableCredentials.AUTH_TYPE_TWIP_O_MODE;
 			}
 			default: {
-				return Accounts.AUTH_TYPE_OAUTH;
+                return ParcelableCredentials.AUTH_TYPE_OAUTH;
 			}
 		}
 	}
@@ -214,10 +215,10 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 		mEditConsumerKey.setText(consumerKey);
 		mEditConsumerSecret.setText(consumerSecret);
 
-		mButtonOAuth.setChecked(authType == Accounts.AUTH_TYPE_OAUTH);
-		mButtonxAuth.setChecked(authType == Accounts.AUTH_TYPE_XAUTH);
-		mButtonBasic.setChecked(authType == Accounts.AUTH_TYPE_BASIC);
-		mButtonTwipOMode.setChecked(authType == Accounts.AUTH_TYPE_TWIP_O_MODE);
+        mButtonOAuth.setChecked(authType == ParcelableCredentials.AUTH_TYPE_OAUTH);
+        mButtonxAuth.setChecked(authType == ParcelableCredentials.AUTH_TYPE_XAUTH);
+        mButtonBasic.setChecked(authType == ParcelableCredentials.AUTH_TYPE_BASIC);
+        mButtonTwipOMode.setChecked(authType == ParcelableCredentials.AUTH_TYPE_TWIP_O_MODE);
 		if (mEditAuthType.getCheckedRadioButtonId() == -1) {
 			mButtonOAuth.setChecked(true);
 		}

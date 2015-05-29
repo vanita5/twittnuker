@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.LoganSquareWrapper;
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.Utils;
 
@@ -175,7 +175,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
 
     @Nullable
 	protected final Twitter getTwitter() {
-        return TwitterAPIUtils.getTwitterInstance(mContext, mAccountId, true, true);
+        return TwitterAPIFactory.getTwitterInstance(mContext, mAccountId, true, true);
 	}
 
 	protected abstract boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status);

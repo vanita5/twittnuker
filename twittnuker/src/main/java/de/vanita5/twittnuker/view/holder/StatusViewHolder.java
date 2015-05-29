@@ -408,7 +408,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             quotedPrimaryNameView.setText(user_name);
             quotedSecondaryNameView.setText("@" + user_screen_name);
             timeView.setTime(cursor.getLong(indices.quote_timestamp));
-            primaryNameView.setText(cursor.getString(indices.quoted_by_user_name));
+            primaryNameView.setText(
+                    cursor.getString(indices.quoted_by_user_name));
             secondaryNameView.setText("@" + cursor.getString(indices.quoted_by_user_screen_name));
 
             final String quote_text_unescaped = cursor.getString(indices.quote_text_unescaped);

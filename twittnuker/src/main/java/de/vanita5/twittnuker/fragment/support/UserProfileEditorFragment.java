@@ -54,6 +54,10 @@ import com.twitter.Validator;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.ImagePickerActivity;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.ProfileUpdate;
+import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -65,17 +69,12 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterValidatorMETLengthChecker;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ForegroundColorView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
-
-import de.vanita5.twittnuker.api.twitter.model.ProfileUpdate;
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.User;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -133,13 +132,13 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
             }
             case R.id.profile_image_camera: {
                 final Intent intent = new Intent(getActivity(), ImagePickerActivity.class);
-                intent.setAction(ImagePickerActivity.INTENT_ACTION_PICK_IMAGE);
+                intent.setAction(ImagePickerActivity.INTENT_ACTION_TAKE_PHOTO);
                 startActivityForResult(intent, REQUEST_UPLOAD_PROFILE_IMAGE);
                 break;
             }
             case R.id.profile_image_gallery: {
                 final Intent intent = new Intent(getActivity(), ImagePickerActivity.class);
-                intent.setAction(ImagePickerActivity.INTENT_ACTION_TAKE_PHOTO);
+                intent.setAction(ImagePickerActivity.INTENT_ACTION_PICK_IMAGE);
                 startActivityForResult(intent, REQUEST_UPLOAD_PROFILE_IMAGE);
                 break;
             }
@@ -442,7 +441,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
 
         @Override
         protected SingleResponse<ParcelableUser> doInBackground(final Object... params) {
-            final Twitter twitter = TwitterAPIUtils.getTwitterInstance(mActivity, mAccountId, true);
+            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mActivity, mAccountId, true);
             try {
                 User user = null;
                 if (isProfileChanged()) {

@@ -114,3 +114,7 @@
 -keep class com.bluelinelabs.logansquare.** { *; }
 -keep @com.bluelinelabs.logansquare.annotation.JsonObject class *
 -keep class **$$JsonObjectMapper { *; }
+
+#jackson fasterxml
+-keepnames class org.codehaus.jackson.** { *; }
+-dontwarn com.fasterxml.jackson.databind.**

@@ -64,7 +64,7 @@ import de.vanita5.twittnuker.activity.support.QuickSearchBarActivity.SuggestionI
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.ParcelableAccount.ParcelableCredentials;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUser.CachedIndices;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;

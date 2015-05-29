@@ -88,6 +88,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 //import de.vanita5.twittnuker.service.StreamingService;
+import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.CustomTabUtils;
@@ -939,23 +940,21 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 		mSlidingMenu.setTouchModeAbove(mode);
 	}
 
-    //FIXME
 	private void startStreamingService() {
-//		if (!isStreamingServiceRunning) {
-//			final Intent serviceIntent = new Intent(this, StreamingService.class);
-//			startService(serviceIntent);
-//			isStreamingServiceRunning = true;
-//		}
-//		sendBroadcast(new Intent(BROADCAST_REFRESH_STREAMING_SERVICE));
+		if (!isStreamingServiceRunning) {
+			final Intent serviceIntent = new Intent(this, StreamingService.class);
+			startService(serviceIntent);
+			isStreamingServiceRunning = true;
+		}
+		sendBroadcast(new Intent(BROADCAST_REFRESH_STREAMING_SERVICE));
 	}
 
-    //FIXME
 	private void stopStreamingService() {
-//		if (isStreamingServiceRunning) {
-//			final Intent serviceIntent = new Intent(this, StreamingService.class);
-//			stopService(serviceIntent);
-//			isStreamingServiceRunning = false;
-//		}
+		if (isStreamingServiceRunning) {
+			final Intent serviceIntent = new Intent(this, StreamingService.class);
+			stopService(serviceIntent);
+			isStreamingServiceRunning = false;
+		}
 	}
 
 	private static final class AccountChangeObserver extends ContentObserver {

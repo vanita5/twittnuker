@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.simplerestapi.http.ValueMap;
+import org.mariotaku.restfu.http.ValueMap;
 
 
 /**

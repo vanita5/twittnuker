@@ -42,20 +42,20 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUserListsAdapter;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
-import de.vanita5.twittnuker.util.TwitterAPIUtils;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.http.HttpResponseCode;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
-import de.vanita5.twittnuker.api.twitter.http.HttpResponseCode;
 import de.vanita5.twittnuker.fragment.support.CreateUserListDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -251,7 +251,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 
 		@Override
 		protected SingleResponse<List<ParcelableUserList>> doInBackground(final Object... params) {
-            final Twitter twitter = TwitterAPIUtils.getTwitterInstance(mActivity, mAccountId, false);
+            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mActivity, mAccountId, false);
 			if (twitter == null) return SingleResponse.getInstance();
 			try {
                 final ResponseList<UserList> lists = twitter.getUserLists(mScreenName, true);
@@ -322,7 +322,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 
 		@Override
 		protected SingleResponse<List<ParcelableUser>> doInBackground(final Object... params) {
-            final Twitter twitter = TwitterAPIUtils.getTwitterInstance(mActivity, mAccountId, false);
+            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mActivity, mAccountId, false);
 			if (twitter == null) return SingleResponse.getInstance();
 			try {
                 final Paging paging = new Paging();
