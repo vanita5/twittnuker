@@ -415,7 +415,7 @@ public class StreamingService extends Service implements Constants {
 		@Override
 		public void onStatus(final Status status) {
             final ContentValues values = ContentValuesCreator.createStatus(status, account.account_id);
-            if (!statusStreamStarted) {
+            if (!statusStreamStarted && !mPreferences.getBoolean(KEY_REFRESH_BEFORE_STREAMING, true)) {
                 statusStreamStarted = true;
                 values.put(Statuses.IS_GAP, true);
             }
