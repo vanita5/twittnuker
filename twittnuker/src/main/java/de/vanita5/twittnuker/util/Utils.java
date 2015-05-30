@@ -1983,10 +1983,10 @@ public final class Utils implements Constants {
 
     @ShapeStyle
     public static int getProfileImageStyle(String style) {
-        if (VALUE_PROFILE_IMAGE_STYLE_SQUARE.equalsIgnoreCase(style)) {
-            return ShapedImageView.SHAPE_RECTANGLE;
+        if (VALUE_PROFILE_IMAGE_STYLE_ROUND.equalsIgnoreCase(style)) {
+            return ShapedImageView.SHAPE_CIRCLE;
         }
-        return ShapedImageView.SHAPE_CIRCLE;
+        return ShapedImageView.SHAPE_RECTANGLE;
     }
 
     @PreviewStyle
