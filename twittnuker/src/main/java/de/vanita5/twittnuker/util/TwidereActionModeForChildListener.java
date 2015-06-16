@@ -29,7 +29,6 @@ import android.support.v7.app.AppCompatCallback;
 import android.support.v7.internal.view.StandaloneActionMode;
 import android.support.v7.internal.view.SupportActionModeWrapper;
 import android.support.v7.internal.widget.ActionBarContextView;
-import android.support.v7.internal.widget.NativeActionModeAwareLayout;
 import android.support.v7.view.ActionMode;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -43,8 +42,9 @@ import android.widget.PopupWindow;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.view.TintedStatusNativeActionModeAwareLayout;
 
-public class TwidereActionModeForChildListener implements NativeActionModeAwareLayout.OnActionModeForChildListener {
+public class TwidereActionModeForChildListener implements TintedStatusNativeActionModeAwareLayout.OnActionModeForChildListener {
 	private final Activity mActivity;
     private final IThemedActivity mThemed;
 	private final AppCompatCallback mAppCompatCallback;

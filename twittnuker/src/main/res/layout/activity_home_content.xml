@@ -24,16 +24,16 @@
 <de.vanita5.twittnuker.view.MainFrameLayout
     android:id="@+id/home_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <de.vanita5.twittnuker.view.ExtendedViewPager
         android:id="@+id/main_pager"
-        android:focusable="true"
-        android:focusableInTouchMode="false"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="false"/>
 
     <include layout="@layout/layout_empty_tab_hint"/>
 
