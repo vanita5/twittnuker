@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" xmlns:tools="http://schemas.android.com/tools">
 
 	<string name="compose">Compose</string>
 	<string name="add_account">Add account</string>
@@ -748,6 +748,11 @@
     <string name="pebble_notifications">Pebble Notifications</string>
     <string name="pebble_notifications_summary">Send Notifications to your Pebble</string>
 	<string name="no_account">No account</string>
+
+
+	<string name="read_from_bottom_summary_off"></string>
+
+	<string name="read_from_bottom_summary_on"></string>
 
     <string name="love">Love</string>
     <string name="standard_notifications">Standard Notifications</string>
