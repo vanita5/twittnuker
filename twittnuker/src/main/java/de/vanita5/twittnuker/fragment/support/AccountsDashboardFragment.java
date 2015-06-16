@@ -126,6 +126,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 
     private AccountSelectorAdapter mAccountsAdapter;
 	private AccountOptionsAdapter mAccountOptionsAdapter;
+    private AppMenuAdapter mAppMenuAdapter;
 
     private ListView mListView;
     private View mAccountSelectorView;
@@ -315,6 +316,30 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 					break;
 				}
 			}
+        } else if (adapter instanceof AppMenuAdapter) {
+            if (!(item instanceof OptionItem)) return;
+            final OptionItem option = (OptionItem) item;
+            switch (option.id) {
+                case MENU_ACCOUNTS: {
+                    Utils.openAccountsManager(getActivity());
+                    break;
+                }
+                case MENU_DRAFTS: {
+                    Utils.openDrafts(getActivity());
+                    break;
+                }
+                case MENU_FILTERS: {
+                    Utils.openFilters(getActivity());
+                    break;
+                }
+                case MENU_SETTINGS: {
+                    final Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivityForResult(intent, REQUEST_SETTINGS);
+                    break;
+                }
+            }
+            closeAccountsDrawer();
 		}
 	}
 
@@ -371,6 +396,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         final LayoutInflater inflater = getLayoutInflater(savedInstanceState);
         mAccountsAdapter = new AccountSelectorAdapter(context, inflater, this);
         mAccountOptionsAdapter = new AccountOptionsAdapter(context);
+        mAppMenuAdapter = new AppMenuAdapter(context);
         mAccountSelectorView = inflater.inflate(R.layout.header_drawer_account_selector, mListView, false);
         mAccountsSelector = (RecyclerView) mAccountSelectorView.findViewById(R.id.other_accounts_list);
         final LinearLayoutManager layoutManager = new FixedLinearLayoutManager(context);
@@ -409,8 +435,8 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 
         mAdapter.addView(mAccountSelectorView, true);
         mAdapter.addAdapter(mAccountOptionsAdapter);
-//        mAdapter.addView(mAppMenuSectionView, false);
-//        mAdapter.addAdapter(mAppMenuAdapter);
+        mAdapter.addView(inflater.inflate(R.layout.layout_divider_drawer, mListView, false), false);
+        mAdapter.addAdapter(mAppMenuAdapter);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
@@ -806,10 +832,10 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 
         public AppMenuAdapter(final Context context) {
             super(context);
-            add(new OptionItem(R.string.accounts, R.drawable.ic_action_accounts, MENU_ACCOUNTS));
+//            add(new OptionItem(R.string.accounts, R.drawable.ic_action_accounts, MENU_ACCOUNTS));
             add(new OptionItem(R.string.drafts, R.drawable.ic_action_draft, MENU_DRAFTS));
             add(new OptionItem(R.string.filters, R.drawable.ic_action_speaker_muted, MENU_FILTERS));
-            add(new OptionItem(R.string.settings, R.drawable.ic_action_settings, MENU_SETTINGS));
+//            add(new OptionItem(R.string.settings, R.drawable.ic_action_settings, MENU_SETTINGS));
         }
 
     }
