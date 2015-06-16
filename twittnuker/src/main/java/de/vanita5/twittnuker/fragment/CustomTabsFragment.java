@@ -37,7 +37,6 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -63,7 +62,6 @@ import org.mariotaku.querybuilder.Columns.Column;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.RawItemArray;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.BasePreferenceActivity;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
@@ -225,56 +223,6 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
 	@Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
 		inflater.inflate(R.menu.menu_custom_tabs, menu);
-	}
-
-	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.layout_draggable_list_with_empty_view, container, false);
-	}
-
-	@Override
-	public void onDestroyActionMode(final ActionMode mode) {
-
-	}
-
-	@Override
-	public void onItemCheckedStateChanged(final ActionMode mode, final int position, final long id,
-			final boolean checked) {
-		updateTitle(mode);
-	}
-
-
-	@Override
-	public void onLoaderReset(final Loader<Cursor> loader) {
-		mAdapter.changeCursor(null);
-	}
-
-	@Override
-	public void onLoadFinished(final Loader<Cursor> loader, final Cursor cursor) {
-		mAdapter.changeCursor(cursor);
-		setListShown(true);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
-			default: {
-				final Intent intent = item.getIntent();
-				if (intent == null) return false;
-				startActivityForResult(intent, REQUEST_ADD_TAB);
-				return true;
-			}
-		}
-	}
-
-	@Override
-	public boolean onPrepareActionMode(final ActionMode mode, final Menu menu) {
-		updateTitle(mode);
-		return true;
-	}
-
-	@Override
-	public void onPrepareOptionsMenu(final Menu menu) {
 		final Resources res = getResources();
 		final boolean hasOfficialKeyAccounts = Utils.hasAccountSignedWithOfficialKeys(getActivity());
         final boolean forcePrivateAPI = mPreferences.getBoolean(KEY_FORCE_USING_PRIVATE_APIS, false);
@@ -312,16 +260,52 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
 				subItem.setIntent(intent);
 			}
 		}
+    }
 
-        final Activity activity = getActivity();
-        if (activity instanceof BasePreferenceActivity) {
-            final ActionBar actionBar = ((BasePreferenceActivity) activity).getSupportActionBar();
-            final int themeResourceId = ((BasePreferenceActivity) activity).getCurrentThemeResourceId();
-            final int itemColor = ThemeUtils.getContrastActionBarItemColor(actionBar.getThemedContext());
-            final int popupTheme = ThemeUtils.getActionBarPopupThemeRes(actionBar.getThemedContext(), themeResourceId);
-            final int popupColor = ThemeUtils.getColorFromAttribute(activity, popupTheme, android.R.attr.colorForeground, 0);
-            ThemeUtils.applyColorFilterToMenuIcon(menu, itemColor, popupColor, 0, Mode.SRC_ATOP);
+    @Override
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.layout_draggable_list_with_empty_view, container, false);
+	}
+
+    @Override
+    public void onDestroyActionMode(final ActionMode mode) {
+
+    }
+
+    @Override
+    public void onItemCheckedStateChanged(final ActionMode mode, final int position, final long id,
+                                          final boolean checked) {
+        updateTitle(mode);
+    }
+
+
+    @Override
+    public void onLoaderReset(final Loader<Cursor> loader) {
+        mAdapter.changeCursor(null);
+    }
+
+    @Override
+    public void onLoadFinished(final Loader<Cursor> loader, final Cursor cursor) {
+        mAdapter.changeCursor(cursor);
+        setListShown(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            default: {
+                final Intent intent = item.getIntent();
+                if (intent == null) return false;
+                startActivityForResult(intent, REQUEST_ADD_TAB);
+                return true;
+            }
         }
+    }
+
+    @Override
+    public boolean onPrepareActionMode(final ActionMode mode, final Menu menu) {
+        updateTitle(mode);
+        return true;
 	}
 
 	@Override

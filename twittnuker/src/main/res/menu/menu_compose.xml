@@ -37,14 +37,6 @@
                 android:title="@string/mark_as_sensitive"/>
         </menu>
     </item>
-	<item
-		android:id="@id/add_location"
-		android:checkable="true"
-        android:enabled="false"
-		android:icon="@drawable/ic_action_my_location"
-        android:title="@string/location"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction"/>
     <item
     	android:id="@id/view"
 		android:icon="@drawable/ic_action_reply"

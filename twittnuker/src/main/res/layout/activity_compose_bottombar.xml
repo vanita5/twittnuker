@@ -21,7 +21,8 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
@@ -37,7 +38,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:clickable="true"
-        android:padding="@dimen/element_spacing_msmall">
+        android:paddingBottom="@dimen/element_spacing_msmall"
+        android:paddingTop="@dimen/element_spacing_msmall">
 
         <de.vanita5.twittnuker.view.SquareShapedImageView
             android:id="@+id/account_profile_image"

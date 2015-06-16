@@ -112,7 +112,7 @@
             android:layout_alignTop="@+id/edit_text_container"
             android:visibility="gone">
 
-            <android.support.v7.widget.RecyclerView
+            <de.vanita5.twittnuker.view.ExtendedRecyclerView
                 android:id="@+id/account_selector"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

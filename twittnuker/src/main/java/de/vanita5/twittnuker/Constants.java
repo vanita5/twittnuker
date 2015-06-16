@@ -31,7 +31,7 @@ package de.vanita5.twittnuker;
 public interface Constants extends TwittnukerConstants {
 
 	String DATABASES_NAME = "twittnuker.sqlite";
-	int DATABASES_VERSION = 98;
+	int DATABASES_VERSION = 99;
 
 	int MENU_GROUP_STATUS_SHARE = 20;
 
@@ -149,8 +149,6 @@ public interface Constants extends TwittnukerConstants {
 	String TWIDERE_PREVIEW_SCREEN_NAME = "twittnuker";
 	String TWIDERE_PREVIEW_TEXT_HTML = "Twittnuker is an open source twitter client for Android, see <a href='https://github.com/vanita5/twittnuker'>https://github.com/vanita5/twittnuker<a/>";
 	String TWIDERE_PREVIEW_SOURCE = "Twittnuker";
-
-	float DEFAULT_PULL_TO_REFRESH_SCROLL_DISTANCE = 0.3f;
 
 	int MATERIAL_DARK = 0xff212121;
 	int MATERIAL_LIGHT = 0xffbdbdbd;

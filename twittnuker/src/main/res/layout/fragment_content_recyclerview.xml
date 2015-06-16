@@ -36,7 +36,7 @@
         android:layout_height="match_parent"
         android:clipToPadding="false">
 
-        <de.vanita5.twittnuker.view.RecyclerViewBackport
+        <de.vanita5.twittnuker.view.ExtendedRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
