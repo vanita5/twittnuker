@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.api.twitter.model.IDs;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ProfileUpdate;
+import de.vanita5.twittnuker.api.twitter.model.ResponseCode;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SettingsUpdate;
 import de.vanita5.twittnuker.api.twitter.model.User;
@@ -106,7 +107,7 @@ public interface UsersResources {
 
     @POST("/account/remove_profile_banner.json")
     @Body(BodyType.FORM)
-	void removeProfileBannerImage() throws TwitterException;
+    ResponseCode removeProfileBannerImage() throws TwitterException;
 
     @GET("/users/search.json")
     ResponseList<User> searchUsers(@Query("q") String query, @Query Paging paging) throws TwitterException;
@@ -135,14 +136,14 @@ public interface UsersResources {
 
     @POST("/account/update_profile_banner.json")
     @Body(BodyType.MULTIPART)
-    void updateProfileBannerImage(@Part("image") FileTypedData data, @Part("width") int width,
+    ResponseCode updateProfileBannerImage(@Part("image") FileTypedData data, @Part("width") int width,
                                   @Part("height") int height, @Part("offset_left") int offsetLeft,
                                   @Part("offset_top") int offsetTop)
 			throws TwitterException;
 
     @POST("/account/update_profile_banner.json")
     @Body(BodyType.MULTIPART)
-    void updateProfileBannerImage(@Part("image") FileTypedData data) throws TwitterException;
+    ResponseCode updateProfileBannerImage(@Part("image") FileTypedData data) throws TwitterException;
 
     @POST("/account/update_profile_image.json")
     @Body(BodyType.MULTIPART)

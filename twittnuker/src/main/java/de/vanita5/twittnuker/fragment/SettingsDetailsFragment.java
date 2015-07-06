@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -98,8 +99,14 @@ public class SettingsDetailsFragment extends BasePreferenceFragment implements S
         final Preference preference = findPreference(key);
         if (preference == null) return;
         final Bundle extras = preference.getExtras();
-        if (extras != null && extras.containsKey(EXTRA_NOTIFY_CHANGE)) {
-            SettingsActivity.setShouldNotifyChange(getActivity());
+        if (extras != null) {
+            final Activity activity = getActivity();
+            if (extras.containsKey(EXTRA_NOTIFY_CHANGE)) {
+                SettingsActivity.setShouldNotifyChange(activity);
+            }
+            if (extras.containsKey(EXTRA_RESTART_ACTIVITY)) {
+                Utils.restartActivity(activity);
+            }
         }
     }
 }

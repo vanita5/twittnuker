@@ -19,6 +19,9 @@
         <extra
             android:name="notify_change"
             android:value="true" />
+        <extra
+            android:name="restart_activity"
+            android:value="true"/>
     </de.vanita5.twittnuker.preference.DarkLightThemeTogglePreference>
 
     <de.vanita5.twittnuker.preference.ColorPickerPreference
@@ -29,6 +32,9 @@
         <extra
             android:name="notify_change"
             android:value="true" />
+        <extra
+            android:name="restart_activity"
+            android:value="true"/>
     </de.vanita5.twittnuker.preference.ColorPickerPreference>
 
     <de.vanita5.twittnuker.preference.ColorPickerPreference
@@ -39,6 +45,9 @@
         <extra
             android:name="notify_change"
             android:value="true" />
+        <extra
+            android:name="restart_activity"
+            android:value="true"/>
     </de.vanita5.twittnuker.preference.ColorPickerPreference>
 
     <de.vanita5.twittnuker.preference.ThemeBackgroundPreference
@@ -48,6 +57,9 @@
         <extra
             android:name="notify_change"
             android:value="true" />
+        <extra
+            android:name="restart_activity"
+            android:value="true"/>
     </de.vanita5.twittnuker.preference.ThemeBackgroundPreference>
 
 </PreferenceScreen>

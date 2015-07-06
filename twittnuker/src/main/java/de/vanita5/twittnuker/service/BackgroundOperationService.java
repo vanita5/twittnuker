@@ -547,7 +547,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                 status.possiblySensitive(statusUpdate.is_possibly_sensitive);
 
 				if (twitter == null) {
-					results.add(new SingleResponse<ParcelableStatus>(null, new NullPointerException()));
+                    results.add(SingleResponse.<ParcelableStatus>getInstance(new NullPointerException()));
 					continue;
 				}
 				try {
@@ -561,7 +561,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 						}
 					}
                     final ParcelableStatus result = new ParcelableStatus(resultStatus, account.account_id, false);
-                    results.add(new SingleResponse<>(result, null));
+                    results.add(SingleResponse.getInstance(result));
 				} catch (final TwitterException e) {
 					final SingleResponse<ParcelableStatus> response = SingleResponse.getInstance(e);
 					results.add(response);
