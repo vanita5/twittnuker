@@ -116,7 +116,6 @@ import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 import de.vanita5.twittnuker.view.ForegroundColorView;
-import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.StatusTextView;
 import de.vanita5.twittnuker.view.TwitterCardContainer;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
@@ -546,7 +545,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final StatusTextView textView;
         private final TextView quoteTextView;
         private final TextView quotedNameView, quotedScreenNameView;
-        private final ShapedImageView profileImageView;
+        private final ImageView profileImageView;
         private final ImageView profileTypeView;
         private final TextView timeSourceView;
         private final TextView retweetedByView;
@@ -576,7 +575,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             nameView = (TextView) itemView.findViewById(R.id.name);
             screenNameView = (TextView) itemView.findViewById(R.id.screen_name);
             textView = (StatusTextView) itemView.findViewById(R.id.text);
-            profileImageView = (ShapedImageView) itemView.findViewById(R.id.profile_image);
+            profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
             profileTypeView = (ImageView) itemView.findViewById(R.id.profile_type);
             timeSourceView = (TextView) itemView.findViewById(R.id.time_source);
             retweetedByView = (TextView) itemView.findViewById(R.id.retweeted_by);

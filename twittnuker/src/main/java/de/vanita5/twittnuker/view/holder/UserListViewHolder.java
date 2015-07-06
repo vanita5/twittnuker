@@ -26,6 +26,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
@@ -35,7 +36,6 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 import java.util.Locale;
@@ -45,7 +45,7 @@ public class UserListViewHolder extends ViewHolder implements View.OnClickListen
 	private final IUserListsAdapter<?> adapter;
 
 	private final IColorLabelView itemContent;
-	private final ShapedImageView profileImageView;
+    private final ImageView profileImageView;
 	private final TextView nameView;
 	private final TextView createdByView;
     private final TextView descriptionView;
@@ -58,7 +58,7 @@ public class UserListViewHolder extends ViewHolder implements View.OnClickListen
 		super(itemView);
 		itemContent = (IColorLabelView) itemView.findViewById(R.id.item_content);
 		this.adapter = adapter;
-		profileImageView = (ShapedImageView) itemView.findViewById(R.id.profile_image);
+        profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
 		nameView = (TextView) itemView.findViewById(R.id.name);
 		createdByView = (TextView) itemView.findViewById(R.id.created_by);
         descriptionView = (TextView) itemView.findViewById(R.id.description);
@@ -125,7 +125,6 @@ public class UserListViewHolder extends ViewHolder implements View.OnClickListen
 
 	public void setupViewOptions() {
 		setTextSize(adapter.getTextSize());
-		profileImageView.setStyle(adapter.getProfileImageStyle());
 	}
 
 	public void setTextSize(final float textSize) {

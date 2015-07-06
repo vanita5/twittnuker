@@ -37,8 +37,6 @@ import android.view.View.OnLongClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.makeramen.roundedimageview.RoundedImageView;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.ContentCardClickListener;
@@ -61,7 +59,6 @@ import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.ForegroundColorView;
 import de.vanita5.twittnuker.view.NameView;
-import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShortTimeView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
@@ -77,7 +74,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
     private final IStatusesAdapter<?> adapter;
 
     private final ImageView replyRetweetIcon;
-    private final RoundedImageView profileImageView;
+    private final ImageView profileImageView;
     private final ImageView profileTypeView;
     private final ImageView extraTypeView;
     private final TextView textView;
@@ -99,7 +96,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         super(itemView);
         this.adapter = adapter;
         itemContent = (IColorLabelView) itemView.findViewById(R.id.item_content);
-        profileImageView = (RoundedImageView) itemView.findViewById(R.id.profile_image);
+        profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
         profileTypeView = (ImageView) itemView.findViewById(R.id.profile_type);
         extraTypeView = (ImageView) itemView.findViewById(R.id.extra_type);
         textView = (TextView) itemView.findViewById(R.id.text);
@@ -651,7 +648,6 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         setTextSize(adapter.getTextSize());
         mediaPreview.setStyle(adapter.getMediaPreviewStyle());
 //        profileImageView.setStyle(adapter.getProfileImageStyle());
-        profileImageView.setOval(adapter.getProfileImageStyle() == ShapedImageView.SHAPE_CIRCLE);
         actionButtons.setVisibility(adapter.isCardActionsHidden() ? View.GONE : View.VISIBLE);
         itemMenu.setVisibility(adapter.isCardActionsHidden() ? View.GONE : View.VISIBLE);
 

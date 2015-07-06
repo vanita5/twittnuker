@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.AppCompatPreferenceActivity;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.support.ViewSupport;
+import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.TwidereToolbar;
 import de.vanita5.twittnuker.view.iface.ICustomTypefaceTextView;
@@ -124,6 +125,10 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
 			final ShapedImageView shapedImageView = (ShapedImageView) view;
 			shapedImageView.setStyle(activity.getCurrentProfileImageStyle());
 		}
+        if (view instanceof ProfileImageView) {
+            final ProfileImageView profileImageView = (ProfileImageView) view;
+            profileImageView.setOval(activity.getCurrentProfileImageStyle() == ShapedImageView.SHAPE_CIRCLE);
+        }
         if (view instanceof TextView && (!(view instanceof ICustomTypefaceTextView))) {
 			final String fontFamily = activity.getCurrentThemeFontFamily();
 			final TextView textView = (TextView) view;

@@ -74,7 +74,7 @@
             tools:textSize="@dimen/text_size_extra_small"
             tools:visibility="visible"/>
 
-        <com.makeramen.roundedimageview.RoundedImageView
+        <de.vanita5.twittnuker.view.ProfileImageView
             android:id="@+id/profile_image"
             style="?profileImageStyle"
             android:layout_width="@dimen/icon_size_status_profile_image"
