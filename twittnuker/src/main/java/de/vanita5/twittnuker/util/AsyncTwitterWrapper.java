@@ -2208,6 +2208,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected void onPostExecute(List<StatusListResponse> result) {
             super.onPostExecute(result);
             final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
+            assert bus != null;
             bus.post(new GetStatusesTaskEvent(getDatabaseUri(), false, getException(result)));
         }
 
@@ -2215,6 +2216,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected void onPreExecute() {
             super.onPreExecute();
             final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
+            assert bus != null;
             bus.post(new GetStatusesTaskEvent(getDatabaseUri(), true, null));
         }
 
@@ -2229,17 +2231,17 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 if (twitter == null) continue;
                 try {
                     final Paging paging = new Paging();
-                    paging.setCount(loadItemLimit);
+                    paging.count(loadItemLimit);
                     final long maxId, sinceId;
                     if (isMaxIdsValid() && mMaxIds[idx] > 0) {
                         maxId = mMaxIds[idx];
-                        paging.setMaxId(maxId);
+                        paging.maxId(maxId);
                     } else {
                         maxId = -1;
                     }
                     if (isSinceIdsValid() && mSinceIds[idx] > 0) {
                         sinceId = mSinceIds[idx];
-                        paging.setSinceId(sinceId - 1);
+                        paging.sinceId(sinceId - 1);
                     } else {
                         sinceId = -1;
                     }

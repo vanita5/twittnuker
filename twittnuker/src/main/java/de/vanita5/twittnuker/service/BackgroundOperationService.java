@@ -37,6 +37,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
