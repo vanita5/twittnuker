@@ -49,6 +49,13 @@ import org.mariotaku.restfu.http.mime.FileTypedData;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.TwitterUpload;
+import de.vanita5.twittnuker.api.twitter.model.MediaUploadResponse;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.model.StatusUpdate;
+import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.MediaUploadResult;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -85,14 +92,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import de.vanita5.twittnuker.api.twitter.model.MediaUploadResponse;
-import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.model.StatusUpdate;
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
-import de.vanita5.twittnuker.api.twitter.TwitterUpload;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createMessageDraft;
@@ -524,8 +523,13 @@ public class BackgroundOperationService extends IntentService implements Constan
 							is = new ContentLengthInputStream(file);
 							is.setReadListener(new StatusMediaUploadListener(this, mNotificationManager, builder,
 									statusUpdate));
-                            final MediaUploadResponse uploadResp = upload.uploadMedia(
-                                    new FileTypedData(is, file.getName(), file.length(), ContentType.parse(o.outMimeType)));
+                            final ContentType contentType;
+                            if (TextUtils.isEmpty(o.outMimeType)) {
+                                contentType = ContentType.parse("image/*");
+                            } else {
+                                contentType = ContentType.parse(o.outMimeType);
+                            }
+                            final MediaUploadResponse uploadResp = upload.uploadMedia(new FileTypedData(is, file.getName(), file.length(), contentType));
                             mediaIds[i] = uploadResp.getId();
 						}
                     } catch (final FileNotFoundException e) {
