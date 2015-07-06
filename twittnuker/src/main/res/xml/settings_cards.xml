@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:title="@string/cards">
 
 	<PreferenceCategory
@@ -10,10 +10,23 @@
 		<de.vanita5.twittnuker.preference.CardPreviewPreference android:key="card_preview"/>
 	</PreferenceCategory>
 
+	<de.vanita5.twittnuker.preference.SeekBarDialogPreference
+		android:defaultValue="@integer/default_text_size"
+		android:key="text_size_int"
+		android:order="22"
+		android:summary="@string/text_size_summary"
+		android:title="@string/size"
+		app:max="24"
+		app:min="12"
+		app:progressTextSuffix="sp">
+		<extra
+			android:name="notify_change"
+			android:value="true"/>
+	</de.vanita5.twittnuker.preference.SeekBarDialogPreference>
 	<de.vanita5.twittnuker.preference.AutoFixSwitchPreference
 		android:defaultValue="false"
 		android:key="name_first"
-		android:order="21"
+		android:order="23"
 		android:summaryOff="@string/name_first_summary_off"
 	    android:summaryOn="@string/name_first_summary_on"
 		android:title="@string/name_first"
@@ -26,7 +39,7 @@
     <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
         android:defaultValue="true"
         android:key="display_profile_image"
-        android:order="22"
+        android:order="24"
         android:title="@string/profile_image">
 		<extra
 			android:name="notify_change"
@@ -38,7 +51,7 @@
 		android:entries="@array/entries_profile_image_style"
 		android:entryValues="@array/values_profile_image_style"
 		android:key="profile_image_style"
-		android:order="23"
+		android:order="25"
 		android:title="@string/profile_image_style">
 		<extra
 			android:name="notify_change"
@@ -48,7 +61,7 @@
 	<de.vanita5.twittnuker.preference.AutoFixSwitchPreference
 		android:defaultValue="false"
 		android:key="media_preview"
-		android:order="24"
+		android:order="26"
 		android:title="@string/media_preview">
 		<extra
 			android:name="notify_change"

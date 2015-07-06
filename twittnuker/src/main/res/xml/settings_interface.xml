@@ -16,19 +16,6 @@
                 android:value="true" />
         </de.vanita5.twittnuker.preference.ThemeFontFamilyPreference>
 
-        <de.vanita5.twittnuker.preference.SeekBarDialogPreference
-            android:defaultValue="@integer/default_text_size"
-            android:key="text_size_int"
-            android:summary="@string/text_size_summary"
-            android:title="@string/size"
-            app:max="24"
-            app:min="12"
-            app:progressTextSuffix="sp">
-            <extra
-                android:name="notify_change"
-                android:value="true" />
-        </de.vanita5.twittnuker.preference.SeekBarDialogPreference>
-
     </PreferenceCategory>
     <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
 		android:defaultValue="true"

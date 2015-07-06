@@ -87,7 +87,6 @@ import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
-//import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -341,15 +340,15 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         mReadStateManager = app.getReadStateManager();
 		mMultiSelectHandler = new MultiSelectEventHandler(this);
 		mMultiSelectHandler.dispatchOnCreate();
-//        if (!Utils.hasAccount(this)) {
-//            final Intent signInIntent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
-//            signInIntent.setClass(this, SignInActivity.class);
-//            startActivity(signInIntent);
-//            finish();
-//            return;
-//        } else {
-//            notifyAccountsChanged();
-//        }
+        if (!Utils.hasAccount(this)) {
+            final Intent signInIntent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
+            signInIntent.setClass(this, SignInActivity.class);
+            startActivity(signInIntent);
+            finish();
+            return;
+        } else {
+            notifyAccountsChanged();
+        }
 		final Intent intent = getIntent();
 		if (openSettingsWizard()) {
 			finish();
