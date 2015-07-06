@@ -118,3 +118,5 @@
 #jackson fasterxml
 -keepnames class org.codehaus.jackson.** { *; }
 -dontwarn com.fasterxml.jackson.databind.**
+
+-dontwarn com.squareup.picasso.**
