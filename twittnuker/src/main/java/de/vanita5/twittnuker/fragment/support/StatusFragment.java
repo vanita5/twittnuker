@@ -636,9 +636,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 nameView.setText(status.quoted_by_user_name);
                 screenNameView.setText("@" + status.quoted_by_user_screen_name);
 
-                final int idx = status.quote_text_unescaped.lastIndexOf(" twitter.com");
-                final Spanned quote_text = Html.fromHtml(status.quote_text_html);
-                quoteTextView.setText(idx > 0 ? quote_text.subSequence(0, idx) : quote_text);
+                quoteTextView.setText(Html.fromHtml(status.quote_text_html));
+                Utils.applyOriginalTweetSpan(quoteTextView, status);
+
                 linkify.applyAllLinks(quoteTextView, status.account_id, layoutPosition, status.is_possibly_sensitive);
                 ThemeUtils.applyParagraphSpacing(quoteTextView, 1.1f);
 
