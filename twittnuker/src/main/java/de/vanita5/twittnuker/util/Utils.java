@@ -3820,10 +3820,11 @@ public final class Utils implements Constants {
 
 	}
 
-	public Location getCachedLocation(Context context) {
-		final LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+	public static Location getCachedLocation(Context context) {
 		Location location = null;
 		try {
+            final LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            try {
 			location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		} catch (Exception ignore) {
 
@@ -3831,9 +3832,12 @@ public final class Utils implements Constants {
 		if (location != null) return location;
 		try {
 			location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		} catch (Exception ignore) {
+            } catch (Exception ignore) {
 
+            }
+		} catch (Exception ignore) {
 		}
 		return location;
 	}
+
 }

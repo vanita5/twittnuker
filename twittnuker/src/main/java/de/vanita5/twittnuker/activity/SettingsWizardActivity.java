@@ -67,6 +67,7 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.LinePageIndicator;
 
 import java.io.File;
@@ -312,6 +313,12 @@ public class SettingsWizardActivity extends Activity implements Constants {
 			return R.xml.settings_wizard_page_hints;
 		}
 
+        @Override
+        public void gotoNextPage() {
+            // Try getting location, some custom rom will popup requirement dialog
+            Utils.getCachedLocation(getActivity());
+            super.gotoNextPage();
+        }
 	}
 
 	public static class WizardPageTabsFragment extends BaseWizardPageFragment {
