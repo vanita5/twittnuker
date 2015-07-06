@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
 	android:title="@string/hints">
 
-    <de.vanita5.twittnuke.preference.ForegroundColorIconPreference
+    <de.vanita5.twittnuker.preference.ForegroundColorIconPreference
         android:icon="@drawable/ic_action_location"
         android:order="11"
         android:summary="@string/wizard_hint_summary_location_requirement"
         android:title="@string/wizard_hint_title_location_requirement"/>
-    <de.vanita5.twittnuke.preference.ForegroundColorIconPreference
+    <de.vanita5.twittnuker.preference.ForegroundColorIconPreference
 		android:icon="@drawable/ic_action_accounts"
         android:order="12"
 		android:summary="@string/wizard_hint_compose_select_account"
