@@ -24,6 +24,8 @@ package de.vanita5.twittnuker.api.twitter.model;
 
 import org.mariotaku.restfu.http.SimpleValueMap;
 
+import java.util.Locale;
+
 /**
  * Created by mariotaku on 15/1/6.
  */
@@ -46,7 +48,7 @@ public class ProfileUpdate extends SimpleValueMap {
 	}
 
 	public void setLinkColor(int profileLinkColor) {
-		put("profile_link_color", profileLinkColor);
+        put("profile_link_color", String.format(Locale.ROOT, "%06X", 0xFFFFFF & profileLinkColor));
 	}
 
 	public ProfileUpdate name(String name) {
