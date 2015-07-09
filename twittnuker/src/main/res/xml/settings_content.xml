@@ -73,7 +73,7 @@
         	android:key="read_from_bottom"
         	android:summary="@string/load_more_from_top_summary"
             android:title="@string/read_from_bottom"/>
-        <CheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="false"
             android:key="sort_timeline_by_id"
             android:title="@string/sort_timeline_by_id"

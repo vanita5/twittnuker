@@ -708,7 +708,7 @@
 	<string name="delete_conversation">Delete conversation</string>
 	<string name="delete_conversation_confirm_message">Delete all messages of this conversation?</string>
 	<string name="name_first_summary_on">Display name first</string>
-	<string name="name_first_summary_off">Display @screenname first</string>
+	<string name="name_first_summary_off">Display \@screenname first</string>
 	<string name="comment_hint">Comment…</string>
 	<string name="comment">Comment</string>
 	<string name="enable_retweets">Enable retweets</string>
@@ -720,6 +720,7 @@
 
 	<string name="wizard_hint_title_location_requirement">Location permission</string>
 	<string name="wizard_hint_summary_location_requirement">Twittnuker needs location permission when you send tweet containing location.</string>
+	<string name="crop_image">Crop image</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
