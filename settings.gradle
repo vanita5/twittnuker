@@ -17,7 +17,7 @@ include 'services:webservice'
 */
 
 rootProject.name = 'twittnuker'
-include ':twittnuker', ':twittnuker.launcher.compose', ':twittnuker.shortener.gist'
+include ':twittnuker', ':twittnuker.launcher.compose'
 include ':twittnuker.component.common'
 include ':twittnuker.component.querybuilder'
 include ':twittnuker.launcher.compose'

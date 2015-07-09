@@ -80,7 +80,7 @@ import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.OrderBy;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
-import de.vanita5.twittnuker.activity.support.ImagePickerActivity;
+import de.vanita5.twittnuker.activity.support.ThemedImagePickerActivity;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
@@ -469,7 +469,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 				break;
 			}
 			case R.id.add_image: {
-				final Intent intent = new Intent(getActivity(), ImagePickerActivity.class);
+                final Intent intent = ThemedImagePickerActivity.withThemed(getActivity()).build();
 				startActivityForResult(intent, REQUEST_PICK_IMAGE);
 				break;
 			}

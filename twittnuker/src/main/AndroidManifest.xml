@@ -330,7 +330,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.support.ImagePickerActivity"
+            android:name=".activity.support.ThemedImagePickerActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:exported="false"
             android:theme="@style/Theme.Twidere.Light.NoDisplay"

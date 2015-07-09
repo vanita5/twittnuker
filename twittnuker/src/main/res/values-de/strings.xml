@@ -594,8 +594,12 @@
     <string name="profile">Profil</string>
     <string name="state_blocking">(D) Blocking</string>
     <string name="load_more">Mehr laden</string>
-    <string name="photo">Kamera</string>
+    <string name="photo">Bild</string>
+    <string name="camera">Kamera</string>
     <string name="gallery">Galerie</string>
+    <string name="source_camera">Kamera</string>
+    <string name="source_gallery">Galerie</string>
+    <string name="source_clipboard">Zwischenspeicher</string>
     <string name="remove">Entfernen</string>
     <string name="load_media">Bilder laden</string>
     <string name="profile_text_color">Textfarbe</string>

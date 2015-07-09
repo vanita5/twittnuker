@@ -31,11 +31,11 @@ import org.mariotaku.restfu.http.RestHttpClient;
 import org.mariotaku.restfu.http.RestHttpRequest;
 import org.mariotaku.restfu.http.RestHttpResponse;
 import org.mariotaku.restfu.http.mime.TypedData;
-import de.vanita5.twittnuker.activity.support.ImagePickerActivity;
+import de.vanita5.twittnuker.activity.support.ThemedImagePickerActivity;
 
 import java.io.IOException;
 
-public class RestFuNetworkStreamDownloader extends ImagePickerActivity.NetworkStreamDownloader {
+public class RestFuNetworkStreamDownloader extends ThemedImagePickerActivity.NetworkStreamDownloader {
 
     public RestFuNetworkStreamDownloader(Context context) {
         super(context);
