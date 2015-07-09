@@ -115,13 +115,13 @@ import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.view.UserHashtagAutoCompleteEditText;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import de.vanita5.twittnuker.view.UserHashtagAutoCompleteEditText;
 import me.uucky.colorpicker.internal.EffectViewHelper;
 
 import static de.vanita5.twittnuker.util.Utils.buildDirectMessageConversationUri;
@@ -361,6 +361,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     public void onStart() {
         super.onStart();
         final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
+        assert bus != null;
         bus.register(this);
         updateEmptyText();
         mMessagesListView.addOnScrollListener(mScrollListener);
