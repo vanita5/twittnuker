@@ -30,7 +30,7 @@
     android:orientation="horizontal"
     android:padding="@dimen/element_spacing_msmall">
 
-    <de.vanita5.twittnuker.view.ProfileImageView
+    <de.vanita5.twittnuker.view.ShapedImageView
         android:id="@android:id/icon"
         style="?profileImageStyleLarge"
         android:layout_width="wrap_content"
