@@ -1,7 +1,7 @@
 package de.vanita5.twittnuker;
 
 /**
- * Constants that sould not be available for the public (API Keys
+ * Constants that sould not be available for the public (API Keys)
  *
  */
 public interface SecretConstants {

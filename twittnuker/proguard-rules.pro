@@ -120,3 +120,10 @@
 -dontwarn com.fasterxml.jackson.databind.**
 
 -dontwarn com.squareup.picasso.**
+
+# Osmdroid
+-dontwarn org.osmdroid.google.**
+-dontwarn org.apache.http.entity.**
+
+# slf4j
+-dontwarn org.slf4j.**

@@ -25,18 +25,11 @@ package de.vanita5.twittnuker.util;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-
-import de.vanita5.twittnuker.fragment.support.GoogleMapFragment;
-import de.vanita5.twittnuker.fragment.support.WebMapFragment;
+import de.vanita5.twittnuker.fragment.support.OpenStreetMapViewerFragment;
 
 public class MapFragmentFactoryImpl extends MapFragmentFactory {
 	@Override
 	public Fragment createMapFragment(Context context) {
-		if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS) {
-			return new GoogleMapFragment();
+        return new OpenStreetMapViewerFragment();
 		}
-		return new WebMapFragment();
 	}
-}
