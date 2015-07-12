@@ -120,3 +120,13 @@
 -dontwarn com.fasterxml.jackson.databind.**
 
 -dontwarn com.squareup.picasso.**
+
+# Osmdroid
+-dontwarn org.osmdroid.**
+-dontwarn org.apache.http.entity.**
+
+# slf4j
+-keep class org.slf4j.** { *; }
+-keep enum org.slf4j.** { *; }
+-keep interface org.slf4j.** { *; }
+-dontwarn org.slf4j.**

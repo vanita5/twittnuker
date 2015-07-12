@@ -28,8 +28,6 @@ import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity;
 
 public final class TwitterCardFragmentFactoryImpl extends TwitterCardFragmentFactory {
 
-	private static final String YOUTUBE_DATA_API_KEY = "AIzaSyCVdCIMFFxdNqHnCPrJ9yKUzoTfs8jhYGc";
-
 	@Override
 	public Fragment createAnimatedGifFragment(ParcelableCardEntity card) {
 		return null;
@@ -42,34 +40,6 @@ public final class TwitterCardFragmentFactoryImpl extends TwitterCardFragmentFac
 
 	@Override
 	public Fragment createPlayerFragment(ParcelableCardEntity card) {
-//        final ParcelableValueItem app_url_resolved = ParcelableCardEntity.getValue(card, "app_url_resolved");
-//        if (app_url_resolved != null) {
-//            final Uri uri = Uri.parse((String) app_url_resolved.value);
-//            final String paramV = uri.getQueryParameter("v");
-//            if ("www.youtube.com".equals(uri.getHost()) && paramV != null) {
-//                final YouTubePlayerSupportFragment fragment = YouTubePlayerSupportFragment.newInstance();
-//                fragment.initialize(YOUTUBE_DATA_API_KEY, new OnInitializedListener() {
-//                    @Override
-//                    public void onInitializationSuccess(Provider provider, YouTubePlayer player, boolean wasRestored) {
-//                        if (!wasRestored) {
-//                            player.cueVideo(paramV);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onInitializationFailure(Provider provider, YouTubeInitializationResult errorReason) {
-//                        final FragmentActivity activity = fragment.getActivity();
-//                        if (activity == null) return;
-////                        if (errorReason.isUserRecoverableError()) {
-////                            errorReason.getErrorDialog(activity, RECOVERY_DIALOG_REQUEST).show();
-////                        } else {
-////                            Toast.makeText(activity, errorReason.toString(), Toast.LENGTH_LONG).show();
-////                        }
-//                    }
-//                });
-//                return fragment;
-//            }
-//        }
 		return null;
 	}
 
