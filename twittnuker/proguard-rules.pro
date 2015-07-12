@@ -108,7 +108,7 @@
 -keep class org.mariotaku.** { public protected private *; }
 
 #android-gif-drawable
--keep class pl.droidsonroifads.gif.GifInfoHandle{<init>(long,int,int,int);}
+-keep class pl.droidsonroids.gif.GifInfoHandle{<init>(long,int,int,int);}
 
 # https://github.com/bluelinelabs/LoganSquare
 -keep class com.bluelinelabs.logansquare.** { *; }
