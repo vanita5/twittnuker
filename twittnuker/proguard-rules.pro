@@ -108,7 +108,7 @@
 -keep class org.mariotaku.** { public protected private *; }
 
 #android-gif-drawable
--keep class pl.droidsonroids.gif.GifInfoHandle{<init>(long,int,int,int);}
+-keep class pl.droidsonroifads.gif.GifInfoHandle{<init>(long,int,int,int);}
 
 # https://github.com/bluelinelabs/LoganSquare
 -keep class com.bluelinelabs.logansquare.** { *; }
@@ -122,8 +122,11 @@
 -dontwarn com.squareup.picasso.**
 
 # Osmdroid
--dontwarn org.osmdroid.google.**
+-dontwarn org.osmdroid.**
 -dontwarn org.apache.http.entity.**
 
 # slf4j
+-keep class org.slf4j.** { *; }
+-keep enum org.slf4j.** { *; }
+-keep interface org.slf4j.** { *; }
 -dontwarn org.slf4j.**
