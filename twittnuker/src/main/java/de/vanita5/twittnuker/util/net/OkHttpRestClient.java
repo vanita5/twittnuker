@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util.net;
 
+import android.content.Context;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -55,19 +56,13 @@ import java.util.List;
 
 import okio.BufferedSink;
 
-/**
- * Created by mariotaku on 15/5/5.
- */
 public class OkHttpRestClient implements RestHttpClient {
 
 	private final OkHttpClient client;
 
-	public OkHttpRestClient() {
-        this(new OkHttpClient());
-	}
-
-    public OkHttpRestClient(OkHttpClient client) {
+    public OkHttpRestClient(Context context, OkHttpClient client) {
         this.client = client;
+        NetworkUsageUtils.initForHttpClient(context, client);
         DebugModeUtils.initForHttpClient(client);
     }
 
@@ -88,6 +83,7 @@ public class OkHttpRestClient implements RestHttpClient {
                 builder.addHeader(header.first, header.second);
 			}
 		}
+        builder.tag(restHttpRequest.getExtra());
         return client.newCall(builder.build());
     }
 
@@ -134,6 +130,11 @@ public class OkHttpRestClient implements RestHttpClient {
 		public void writeTo(BufferedSink sink) throws IOException {
 			body.writeTo(sink.outputStream());
 		}
+
+        @Override
+        public long contentLength() throws IOException {
+            return body.length();
+        }
 
 		@Nullable
 		public static RequestBody wrap(@Nullable TypedData body) {

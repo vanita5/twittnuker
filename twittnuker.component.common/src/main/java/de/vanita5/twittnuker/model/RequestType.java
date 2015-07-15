@@ -20,28 +20,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package de.vanita5.twittnuker.model;
 
-import android.app.Application;
+public enum RequestType {
+    API("api"), MEDIA("media"), USAGE_STATISTICS("usage_statistics");
 
-import com.facebook.stetho.Stetho;
-import com.facebook.stetho.okhttp.StethoInterceptor;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
+    public String getName() {
+        return name;
+    }
 
-import java.util.List;
+    private final String name;
 
-public class DebugModeUtils {
-
-	public static void initForHttpClient(final OkHttpClient client) {
-        final List<Interceptor> interceptors = client.networkInterceptors();
-        interceptors.add(new StethoInterceptor());
-	}
-
-	public static void initForApplication(final Application application) {
-        Stetho.initialize(Stetho.newInitializerBuilder(application)
-                .enableDumpapp(Stetho.defaultDumperPluginsProvider(application))
-                .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(application))
-                .build());
-	}
+    RequestType(String name) {
+        this.name = name;
+    }
 }

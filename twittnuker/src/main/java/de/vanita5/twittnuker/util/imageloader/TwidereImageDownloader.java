@@ -48,6 +48,7 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -166,7 +167,12 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
         } else {
             requestUri = modifiedUri.toString();
         }
-        final RestHttpResponse resp = mClient.execute(new RestHttpRequest.Builder().method(method).url(requestUri).headers(additionalHeaders).build());
+        final RestHttpRequest.Builder builder = new RestHttpRequest.Builder();
+        builder.method(method);
+        builder.url(requestUri);
+        builder.headers(additionalHeaders);
+        builder.extra(RequestType.MEDIA);
+        final RestHttpResponse resp = mClient.execute(builder.build());
         final TypedData body = resp.getBody();
         return new ContentLengthInputStream(body.stream(), (int) body.length());
 	}

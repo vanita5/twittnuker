@@ -29,6 +29,7 @@ import android.os.Build;
 
 import org.mariotaku.querybuilder.Columns;
 import org.mariotaku.querybuilder.Columns.Column;
+import org.mariotaku.querybuilder.Constraint;
 import org.mariotaku.querybuilder.Expression;
 import org.mariotaku.querybuilder.NewColumn;
 import org.mariotaku.querybuilder.OnConflict;
@@ -52,6 +53,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
+import de.vanita5.twittnuker.provider.TwidereDataStore.NetworkUsages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.PushNotifications;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
@@ -97,6 +99,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 		db.execSQL(createTable(Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, true));
 		db.execSQL(createTable(SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true));
 		db.execSQL(createTable(SearchHistory.TABLE_NAME, SearchHistory.COLUMNS, SearchHistory.TYPES, true));
+		db.execSQL(createTable(NetworkUsages.TABLE_NAME, NetworkUsages.COLUMNS, NetworkUsages.TYPES, true, createNetworkUsagesConstraint()));
 		db.execSQL(createTable(PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES, true));
 
 		createViews(db);
@@ -106,6 +109,10 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 		db.setTransactionSuccessful();
 		db.endTransaction();
 	}
+
+    private Constraint createNetworkUsagesConstraint() {
+        return Constraint.unique(new Columns(NetworkUsages.TIME_IN_HOURS, NetworkUsages.REQUEST_NETWORK, NetworkUsages.REQUEST_TYPE), OnConflict.IGNORE);
+    }
 
     private void createIndices(SQLiteDatabase db) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
@@ -238,6 +245,8 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 		safeUpgrade(db, Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, false, null);
 		safeUpgrade(db, SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true, null);
 		safeUpgrade(db, SearchHistory.TABLE_NAME, SearchHistory.COLUMNS, SearchHistory.TYPES, true, null);
+		safeUpgrade(db, NetworkUsages.TABLE_NAME, NetworkUsages.COLUMNS, NetworkUsages.TYPES, true, null,
+				createNetworkUsagesConstraint());
 		safeUpgrade(db, PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES,
 				false, null);
         db.beginTransaction();
@@ -249,9 +258,10 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 	}
 
 	private static String createTable(final String tableName, final String[] columns, final String[] types,
-			final boolean createIfNotExists) {
+                                      final boolean createIfNotExists, final Constraint... constraints) {
 		final SQLCreateTableQuery.Builder qb = SQLQueryBuilder.createTable(createIfNotExists, tableName);
 		qb.columns(NewColumn.createNewColumns(columns, types));
+        qb.constraint(constraints);
         return qb.buildSQL();
     }
 

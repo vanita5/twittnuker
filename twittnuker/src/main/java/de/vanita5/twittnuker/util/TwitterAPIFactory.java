@@ -66,6 +66,7 @@ import de.vanita5.twittnuker.api.twitter.util.TwitterConverter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.util.net.OkHttpRestClient;
 
 import java.net.InetSocketAddress;
@@ -138,7 +139,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
 			client.setProxy(getProxy(prefs));
 		}
 		Internal.instance.setNetwork(client, TwittnukerApplication.getInstance(context).getNetwork());
-		return new OkHttpRestClient(client);
+        return new OkHttpRestClient(context, client);
 	}
 
 
@@ -392,7 +393,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
                 headers.add(Pair.create("Authorization", authorization.getHeader(endpoint, info)));
             }
             headers.add(Pair.create("User-Agent", userAgent));
-            return new RestHttpRequest(restMethod, url, headers, info.getBody(), null);
+            return new RestHttpRequest(restMethod, url, headers, info.getBody(), RequestType.API);
         }
     }
 

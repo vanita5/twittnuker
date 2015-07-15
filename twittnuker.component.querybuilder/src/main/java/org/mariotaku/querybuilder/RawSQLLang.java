@@ -20,28 +20,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package org.mariotaku.querybuilder;
 
-import android.app.Application;
+public final class RawSQLLang implements SQLLang {
 
-import com.facebook.stetho.Stetho;
-import com.facebook.stetho.okhttp.StethoInterceptor;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
+    private final String statement;
 
-import java.util.List;
+    public RawSQLLang(String statement) {
+        this.statement = statement;
+    }
 
-public class DebugModeUtils {
-
-	public static void initForHttpClient(final OkHttpClient client) {
-        final List<Interceptor> interceptors = client.networkInterceptors();
-        interceptors.add(new StethoInterceptor());
-	}
-
-	public static void initForApplication(final Application application) {
-        Stetho.initialize(Stetho.newInitializerBuilder(application)
-                .enableDumpapp(Stetho.defaultDumperPluginsProvider(application))
-                .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(application))
-                .build());
-	}
+    @Override
+    public String getSQL() {
+        return statement;
+    }
 }
