@@ -26,6 +26,7 @@ import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.Body;
 import org.mariotaku.restfu.annotation.param.Form;
+import org.mariotaku.restfu.annotation.param.MethodExtra;
 import org.mariotaku.restfu.annotation.param.Path;
 import org.mariotaku.restfu.annotation.param.Query;
 import org.mariotaku.restfu.http.BodyType;
@@ -37,6 +38,8 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.StatusUpdate;
 
 @SuppressWarnings("RedundantThrows")
+@MethodExtra(name = "extra_params", values = {"include_my_retweet", "include_rts", "include_entities",
+        "include_cards", "cards_platform", "include_reply_count", "include_descendent_reply_count"})
 public interface TweetResources {
     @POST("/statuses/destroy/{id}.json")
     @Body(BodyType.FORM)
