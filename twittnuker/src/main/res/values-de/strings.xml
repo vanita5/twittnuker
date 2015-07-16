@@ -680,7 +680,7 @@
     <string name="usage_label_sent">Gesendet</string>
     <string name="usage_label_received">Empfangen</string>
     <string name="this_month">Dieser Monat</string>
-    <string name="media_preload">Vorgeladene Bilder</string>
+    <string name="media_preload">Bilder vorladen</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
