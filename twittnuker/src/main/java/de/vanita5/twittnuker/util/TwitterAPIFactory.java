@@ -42,6 +42,7 @@ import org.mariotaku.restfu.RestAPIFactory;
 import org.mariotaku.restfu.RestMethodInfo;
 import org.mariotaku.restfu.RestRequestInfo;
 import org.mariotaku.restfu.annotation.RestMethod;
+import org.mariotaku.restfu.annotation.param.MethodExtra;
 import org.mariotaku.restfu.http.Authorization;
 import org.mariotaku.restfu.http.Endpoint;
 import org.mariotaku.restfu.http.FileValue;
@@ -65,6 +66,7 @@ import de.vanita5.twittnuker.api.twitter.util.TwitterConverter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.util.net.OkHttpRestClient;
 
 import java.net.InetSocketAddress;
@@ -72,11 +74,15 @@ import java.net.Proxy;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -127,16 +133,20 @@ public class TwitterAPIFactory implements TwittnukerConstants {
 
 		final OkHttpClient client = new OkHttpClient();
 		client.setConnectTimeout(connectionTimeout, TimeUnit.SECONDS);
+        final long connectionTimeoutMillis = TimeUnit.MILLISECONDS.convert(connectionTimeout, TimeUnit.SECONDS);
+        final SSLSocketFactory sslSocketFactory;
 		if (ignoreSslError) {
-			client.setSslSocketFactory(SSLCertificateSocketFactory.getInsecure(0, null));
-		} else {
-			client.setSslSocketFactory(SSLCertificateSocketFactory.getDefault(0, null));
+            sslSocketFactory = SSLCertificateSocketFactory.getInsecure((int) connectionTimeoutMillis, null);
+            if (sslSocketFactory instanceof SSLCertificateSocketFactory) {
+
+            }
+            client.setSslSocketFactory(sslSocketFactory);
 		}
 		if (enableProxy) {
 			client.setProxy(getProxy(prefs));
 		}
-		Internal.instance.setNetwork(client, TwittnukerApplication.getInstance(context).getNetwork());
-		return new OkHttpRestClient(client);
+        Internal.instance.setNetwork(client, TwittnukerApplication.getInstance(context).getNetwork());
+        return new OkHttpRestClient(context, client);
 	}
 
 
@@ -327,6 +337,21 @@ public class TwitterAPIFactory implements TwittnukerConstants {
     }
 
     public static class TwidereRequestInfoFactory implements RequestInfoFactory {
+
+        private static HashMap<String, String> sExtraParams = new HashMap<>();
+
+        static {
+            sExtraParams.put("include_cards", "true");
+            sExtraParams.put("cards_platform", "Android-12");
+            sExtraParams.put("include_entities", "true");
+            sExtraParams.put("include_my_retweet", "1");
+            sExtraParams.put("include_rts", "1");
+            sExtraParams.put("include_reply_count", "true");
+            sExtraParams.put("include_descendent_reply_count", "true");
+            sExtraParams.put("full_text", "true");
+        }
+
+
         @Override
         public RestRequestInfo create(RestMethodInfo methodInfo) {
             final RestMethod method = methodInfo.getMethod();
@@ -337,23 +362,19 @@ public class TwitterAPIFactory implements TwittnukerConstants {
             final List<Pair<String, TypedData>> parts = methodInfo.getParts();
             final FileValue file = methodInfo.getFile();
             final Map<String, Object> extras = methodInfo.getExtras();
-            if (parts.isEmpty()) {
-                final List<Pair<String, String>> params = method.hasBody() ? forms : queries;
-                addParameter(params, "include_cards", true);
-                addParameter(params, "cards_platform", "Android-12");
-                addParameter(params, "include_entities", true);
-                addParameter(params, "include_my_retweet", 1);
-                addParameter(params, "include_rts", 1);
-                addParameter(params, "include_reply_count", true);
-                addParameter(params, "include_descendent_reply_count", true);
-            } else {
-                addPart(parts, "include_cards", true);
-                addPart(parts, "cards_platform", "Android-12");
-                addPart(parts, "include_entities", true);
-                addPart(parts, "include_my_retweet", 1);
-                addPart(parts, "include_rts", 1);
-                addPart(parts, "include_reply_count", true);
-                addPart(parts, "include_descendent_reply_count", true);
+            final MethodExtra methodExtra = methodInfo.getMethodExtra();
+            if (methodExtra != null && "extra_params".equals(methodExtra.name())) {
+                final String[] extraParamKeys = methodExtra.values();
+                if (parts.isEmpty()) {
+                    final List<Pair<String, String>> params = method.hasBody() ? forms : queries;
+                    for (String key : extraParamKeys) {
+                        addParameter(params, key, sExtraParams.get(key));
+                    }
+                } else {
+                    for (String key : extraParamKeys) {
+                        addPart(parts, key, sExtraParams.get(key));
+                    }
+                }
             }
             return new RestRequestInfo(method.value(), path, queries, forms, headers, parts, file,
                     methodInfo.getBody(), extras);
@@ -379,7 +400,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
                 headers.add(Pair.create("Authorization", authorization.getHeader(endpoint, info)));
             }
             headers.add(Pair.create("User-Agent", userAgent));
-            return new RestHttpRequest(restMethod, url, headers, info.getBody(), null);
+            return new RestHttpRequest(restMethod, url, headers, info.getBody(), RequestType.API);
         }
     }
 

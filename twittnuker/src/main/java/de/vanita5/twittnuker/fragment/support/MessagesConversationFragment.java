@@ -71,7 +71,6 @@ import android.widget.TextView;
 import com.github.johnpersano.supertoasts.SuperToast;
 import com.github.johnpersano.supertoasts.SuperToast.Duration;
 import com.github.johnpersano.supertoasts.SuperToast.OnDismissListener;
-import com.rengwuxian.materialedittext.validation.METLengthChecker;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -115,13 +114,13 @@ import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
-import de.vanita5.twittnuker.view.UserHashtagAutoCompleteEditText;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import de.vanita5.twittnuker.view.ComposeEditText;
 import me.uucky.colorpicker.internal.EffectViewHelper;
 
 import static de.vanita5.twittnuker.util.Utils.buildDirectMessageConversationUri;
@@ -179,7 +178,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     // Views
     private RecyclerView mMessagesListView;
     private ListView mUsersSearchList;
-    private UserHashtagAutoCompleteEditText mEditText;
+    private ComposeEditText mEditText;
 	private View mSendButton;
 	private ImageView mAddImageButton;
     private View mConversationContainer, mRecipientSelectorContainer;
@@ -339,13 +338,14 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
             }
         }
         mEditText.setSelection(mEditText.length());
-        mEditText.setMaxCharacters(mValidator.getMaxTweetLength());
-        mEditText.setLengthChecker(new METLengthChecker() {
-            @Override
-            public int getLength(CharSequence text) {
-                return mValidator.getTweetLength(String.valueOf(text));
-            }
-        });
+//        mEditText.setMaxCharacters(mValidator.getMaxTweetLength());
+//        mEditText.setLengthChecker(new METLengthChecker() {
+//            @Override
+//            public int getLength(CharSequence text) {
+//                return mValidator.getTweetLength(String.valueOf(text));
+//            }
+//        });
+        // TODO show text length
         final boolean isValid = mAccount != null && mRecipient != null;
 		mConversationContainer.setVisibility(isValid ? View.VISIBLE : View.GONE);
 		mRecipientSelectorContainer.setVisibility(isValid ? View.GONE : View.VISIBLE);
@@ -441,7 +441,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         mRecipientSelectorContainer = view.findViewById(R.id.recipient_selector_container);
         mInputPanelShadowCompat = view.findViewById(R.id.input_panel_shadow_compat);
         mInputPanel = view.findViewById(R.id.input_panel);
-        mEditText = (UserHashtagAutoCompleteEditText) mInputPanel.findViewById(R.id.edit_text);
+        mEditText = (ComposeEditText) mInputPanel.findViewById(R.id.edit_text);
         mSendButton = mInputPanel.findViewById(R.id.send);
         mAddImageButton = (ImageView) mInputPanel.findViewById(R.id.add_image);
     }

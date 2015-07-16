@@ -55,4 +55,12 @@ public class MathUtils {
 		if (n <= 0) throw new IllegalArgumentException();
 		return Integer.highestOneBit(n);
 	}
+
+    public static double sum(double... doubles) {
+        double sum = 0;
+        for (double d : doubles) {
+            sum += d;
+        }
+        return sum;
+    }
 }

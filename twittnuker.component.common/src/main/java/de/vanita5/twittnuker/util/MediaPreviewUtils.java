@@ -34,6 +34,7 @@ import org.mariotaku.restfu.http.RestHttpClient;
 import org.mariotaku.restfu.http.RestHttpRequest;
 import org.mariotaku.restfu.http.RestHttpResponse;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.util.HtmlLinkExtractor.HtmlLink;
 
 import java.io.IOException;
@@ -400,6 +401,7 @@ public class MediaPreviewUtils {
             final RestHttpRequest.Builder builder = new RestHttpRequest.Builder();
             builder.method(GET.METHOD);
             builder.url(Endpoint.constructUrl(URL_PHOTOZOU_PHOTO_INFO, Pair.create("photo_id", id)));
+            builder.extra(RequestType.MEDIA);
             final RestHttpResponse response = client.execute(builder.build());
             final PhotoZouPhotoInfo info = LoganSquare.parse(response.getBody().stream(), PhotoZouPhotoInfo.class);
             if (info.info != null && info.info.photo != null) {

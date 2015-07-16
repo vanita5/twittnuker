@@ -26,6 +26,7 @@ import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.Body;
 import org.mariotaku.restfu.annotation.param.Form;
+import org.mariotaku.restfu.annotation.param.MethodExtra;
 import org.mariotaku.restfu.annotation.param.Part;
 import org.mariotaku.restfu.annotation.param.Query;
 import org.mariotaku.restfu.http.BodyType;
@@ -43,6 +44,7 @@ import de.vanita5.twittnuker.api.twitter.model.SettingsUpdate;
 import de.vanita5.twittnuker.api.twitter.model.User;
 
 @SuppressWarnings("RedundantThrows")
+@MethodExtra(name = "extra_params", values = {"include_entities"})
 public interface UsersResources {
 
     @POST("/blocks/create.json")

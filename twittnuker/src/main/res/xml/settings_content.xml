@@ -12,40 +12,10 @@
         	android:key="media_uploader"
         	android:summary="%s"
 			android:title="@string/image_uploader"/>
-
-		<de.vanita5.twittnuker.preference.ImagePreloadPreference
-			android:key="image_preload_options"
-			android:title="@string/image_preload_options"/>
-
-		<CheckBoxPreference
-			android:defaultValue="true"
-			android:key="preload_wifi_only"
-			android:title="@string/preload_wifi_only"/>
 	</PreferenceCategory>
 	<PreferenceCategory
 		android:key="category_content"
 		android:title="@string/content">
-		<de.vanita5.twittnuker.preference.StatusShortenerPreference
-            android:defaultValue=""
-        	android:key="status_shortener"
-        	android:summary="%s"
-        	android:title="@string/status_shortener"/>
-
-		<EditTextPreference
-			android:defaultValue="RT @[NAME]: [TEXT]"
-			android:dialogTitle="@string/quote_format"
-			android:key="quote_format"
-			android:singleLine="true"
-			android:summary="@string/quote_format_summary"
-			android:title="@string/quote_format"/>
-
-		<EditTextPreference
-			android:defaultValue="[TITLE] - [TEXT]"
-			android:dialogTitle="@string/share_format"
-			android:key="share_format"
-			android:singleLine="true"
-			android:summary="@string/share_format_summary"
-			android:title="@string/share_format"/>
 
 		<de.vanita5.twittnuker.preference.SeekBarDialogPreference
 			android:defaultValue="100"
@@ -56,12 +26,12 @@
             app:min="10"
             app:step="5"/>
 
-        <de.vanita5.twittnuker.preference.TimelineSyncPreference
-            android:enabled="false"
-        	android:defaultValue=""
-        	android:key="timeline_sync_service"
-        	android:summary="%s"
-        	android:title="@string/timeline_sync_service"/>
+        <!--<de.vanita5.twittnuker.preference.TimelineSyncPreference-->
+            <!--android:enabled="false"-->
+        	<!--android:defaultValue=""-->
+        	<!--android:key="timeline_sync_service"-->
+        	<!--android:summary="%s"-->
+        	<!--android:title="@string/timeline_sync_service"/>-->
 
 		<CheckBoxPreference
 			android:defaultValue="true"
@@ -87,6 +57,16 @@
         <de.vanita5.twittnuker.preference.TranslationDestinationPreference
             android:key="translation_destination"
             android:title="@string/translation_destination"/>
+
+
+		<de.vanita5.twittnuker.preference.ComponentStatePreference
+			android:name="de.vanita5.twittnuker.activity.TwitterLinkHandlerActivity"
+			android:key="twitter_link_handler"
+			android:title="@string/open_twitter_links"/>
+
+		<Preference
+			android:fragment="de.vanita5.twittnuker.fragment.KeyboardShortcutsFragment"
+			android:title="@string/keyboard_shortcuts"/>
 	</PreferenceCategory>
 	<PreferenceCategory
 		android:key="category_safety"

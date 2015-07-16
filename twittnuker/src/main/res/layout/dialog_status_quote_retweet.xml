@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <de.vanita5.twittnuker.view.UserHashtagAutoCompleteEditText
+            <de.vanita5.twittnuker.view.ComposeMaterialEditText
                 android:id="@+id/edit_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                 app:met_textColorHint="?android:textColorTertiary">
 
                 <requestFocus />
-            </de.vanita5.twittnuker.view.UserHashtagAutoCompleteEditText>
+            </de.vanita5.twittnuker.view.ComposeMaterialEditText>
 
             <de.vanita5.twittnuker.view.ActionIconButton
                 android:id="@+id/comment_menu"

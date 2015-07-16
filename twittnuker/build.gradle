@@ -80,6 +80,7 @@ dependencies {
     compile 'com.soundcloud.android:android-crop:1.0.0@aar'
     compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.1'
     compile 'com.github.mariotaku:PickNCrop:76563fae81'
+    compile 'com.diogobernardino:williamchart:1.7.0'
     compile 'com.google.android.gms:play-services:7.5.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.7'
@@ -88,7 +89,7 @@ dependencies {
     compile 'com.github.mariotaku:DragSortListView:0.6.1'
     compile 'com.github.mariotaku:SlidingMenu:1.3'
     compile 'com.github.uucky:ColorPicker-Android:0.9.7@aar'
-    compile 'com.github.boxme:AsyncManager:9391ed71d7@aar'
+    compile 'com.github.boxme:asyncmanager:1.0.0'
     compile 'com.sprylab.android.texturevideoview:texturevideoview:1.0.0'
     compile 'com.bluelinelabs:logansquare:1.1.0'
     compile 'ch.acra:acra:4.6.2'
@@ -100,14 +101,13 @@ dependencies {
     compile 'org.osmdroid:osmdroid-android:4.3'
     compile 'org.slf4j:slf4j-simple:1.7.12'
 
-    debugCompile 'im.dino:dbinspector:3.1.0@aar'
     debugCompile 'com.facebook.stetho:stetho:1.1.1'
     debugCompile 'com.facebook.stetho:stetho-okhttp:1.1.1'
 }
 
-task svgToPng(type: SvgDrawableTask) {
+task svgToDrawable(type: SvgDrawableTask) {
     // specify where to pick SVG from
-    from = file('src/main/svg-png')
+    from = file('src/main/svg/drawable')
     // specify the android res folder
     to = file('src/main/res-svg2png')
     // create qualified directories if missing
@@ -117,7 +117,9 @@ task svgToPng(type: SvgDrawableTask) {
     // let generate PNG for the following densities only
     targetedDensities = ['hdpi', 'mdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi']
     // relative path of the file specifying nine patch specs
-    ninePatchConfig = file('src/main/svg-png/9patch.json')
+    ninePatchConfig = file('src/main/svg/drawable/9patch.json')
     // output format of the generated resources
     outputFormat = 'PNG'
+
+    outputType = 'drawable'
 }

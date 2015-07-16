@@ -725,6 +725,11 @@
 	<string name="wizard_hint_title_location_requirement">Location permission</string>
 	<string name="wizard_hint_summary_location_requirement">Twittnuker needs location permission when you send tweet containing location.</string>
 	<string name="crop_image">Crop image</string>
+	<string name="usage_label_sent">Sent</string>
+	<string name="usage_label_received">Received</string>
+	<string name="this_month">This month</string>
+	<string name="media_preload">Media preload</string>
+	<string name="on_mobile_network">On mobile network</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

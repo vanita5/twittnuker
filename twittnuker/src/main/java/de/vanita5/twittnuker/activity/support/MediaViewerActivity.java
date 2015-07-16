@@ -35,11 +35,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.ShareActionProvider;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -87,6 +85,7 @@ import de.vanita5.twittnuker.util.VideoLoader;
 import de.vanita5.twittnuker.util.VideoLoader.VideoLoadingListener;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import pl.droidsonroids.gif.GifSupportChecker;
 import pl.droidsonroids.gif.GifTextureView;
@@ -138,7 +137,7 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
         mPagerAdapter = new MediaPagerAdapter(this);
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.element_spacing_normal));
-        mViewPager.setOnPageChangeListener(this);
+        mViewPager.addOnPageChangeListener(this);
         final Intent intent = getIntent();
         final long accountId = intent.getLongExtra(EXTRA_ACCOUNT_ID, -1);
         final ParcelableMedia[] media = Utils.newParcelableArray(intent.getParcelableArrayExtra(EXTRA_MEDIA), ParcelableMedia.CREATOR);
@@ -432,13 +431,12 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
                     if (callback.first.isDetached()) return;
                     final Menu menu = callback.second;
                     final boolean hasImage = result.first;
-                    MenuUtils.setMenuItemAvailability(menu, R.id.refresh, !hasImage && !isLoading);
-                    MenuUtils.setMenuItemAvailability(menu, R.id.share, hasImage && !isLoading);
-                    MenuUtils.setMenuItemAvailability(menu, R.id.save, hasImage && !isLoading);
+                    MenuUtils.setMenuItemAvailability(menu, MENU_REFRESH, !hasImage && !isLoading);
+                    MenuUtils.setMenuItemAvailability(menu, MENU_SHARE, hasImage && !isLoading);
+                    MenuUtils.setMenuItemAvailability(menu, MENU_SAVE, hasImage && !isLoading);
                     if (!hasImage) return;
-                    final MenuItem shareItem = menu.findItem(R.id.share);
-                    final ShareActionProvider shareProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
-                    if (shareProvider != null) shareProvider.setShareIntent(result.second);
+                    final MenuItem shareItem = menu.findItem(MENU_SHARE);
+                    shareItem.setIntent(Intent.createChooser(result.second, callback.first.getString(R.string.share)));
                 }
             };
             checkState.setParams(mImageFile);
@@ -450,9 +448,6 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
             inflater.inflate(R.menu.menu_media_viewer_image_page, menu);
-            final MenuItem shareItem = menu.findItem(R.id.share);
-            final ShareActionProvider shareProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
-            if (shareProvider != null) shareProvider.setShareHistoryFileName(null);
         }
 
 
@@ -874,7 +869,8 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
                 final int position = mMediaPlayerControl.getCurrentPosition();
                 if (duration <= 0 || position < 0) return;
                 mProgressBar.setProgress(Math.round(1000 * position / (float) duration));
-                final int durationSecs = duration / 1000, positionSecs = position / 1000;
+                final long durationSecs = TimeUnit.SECONDS.convert(duration, TimeUnit.MILLISECONDS),
+                        positionSecs = TimeUnit.SECONDS.convert(position, TimeUnit.MILLISECONDS);
                 mDurationLabel.setText(String.format("%02d:%02d", durationSecs / 60, durationSecs % 60));
                 mPositionLabel.setText(String.format("%02d:%02d", positionSecs / 60, positionSecs % 60));
                 mHandler.postDelayed(this, 16);
@@ -894,12 +890,11 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
             final Pair<String, String> linkAndType = mVideoUrlAndType;
             final boolean isLoading = linkAndType != null && mVideoLoader.isLoading(linkAndType.first);
             final boolean hasVideo = file != null && file.exists() && linkAndType != null;
-            MenuUtils.setMenuItemAvailability(menu, R.id.refresh, !hasVideo && !isLoading);
-            MenuUtils.setMenuItemAvailability(menu, R.id.share, hasVideo && !isLoading);
-            MenuUtils.setMenuItemAvailability(menu, R.id.save, hasVideo && !isLoading);
+            MenuUtils.setMenuItemAvailability(menu, MENU_REFRESH, !hasVideo && !isLoading);
+            MenuUtils.setMenuItemAvailability(menu, MENU_SHARE, hasVideo && !isLoading);
+            MenuUtils.setMenuItemAvailability(menu, MENU_SAVE, hasVideo && !isLoading);
             if (!hasVideo) return;
-            final MenuItem shareItem = menu.findItem(R.id.share);
-            final ShareActionProvider shareProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
+            final MenuItem shareItem = menu.findItem(MENU_SHARE);
             final Intent intent = new Intent(Intent.ACTION_SEND);
             final Uri fileUri = Uri.fromFile(file);
             intent.setDataAndType(fileUri, linkAndType.second);
@@ -910,7 +905,7 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
                 intent.putExtra(Intent.EXTRA_TEXT, Utils.getStatusShareText(activity, status));
                 intent.putExtra(Intent.EXTRA_SUBJECT, Utils.getStatusShareSubject(activity, status));
 			}
-            if (shareProvider != null) shareProvider.setShareIntent(intent);
+            shareItem.setIntent(Intent.createChooser(intent, getString(R.string.share)));
         }
 
 

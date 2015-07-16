@@ -79,6 +79,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -153,6 +154,7 @@ import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import de.vanita5.twittnuker.view.TwidereToolbar;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -177,7 +179,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private static final String TAB_TYPE_MEDIA = "media";
     private static final String TAB_TYPE_FAVORITES = "favorites";
 
-    private MediaLoaderWrapper mProfileImageLoader;
+    private MediaLoaderWrapper mMediaLoader;
     private UserColorNameManager mUserColorNameManager;
     private SharedPreferencesWrapper mPreferences;
 
@@ -223,6 +225,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private int mUiColor;
     private boolean mNameFirst;
     private int mPreviousTabItemIsDark, mPreviousActionBarItemIsDark;
+    private boolean mHideBirthdayView;
 
 
 	private final LoaderCallbacks<SingleResponse<Relationship>> mFriendshipLoaderCallbacks = new LoaderCallbacks<SingleResponse<Relationship>>() {
@@ -547,7 +550,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		mFollowersCount.setText(Utils.getLocalizedNumber(mLocale, user.followers_count));
 		mFriendsCount.setText(Utils.getLocalizedNumber(mLocale, user.friends_count));
 
-        mProfileImageLoader.displayProfileImage(mProfileImageView, Utils.getOriginalTwitterProfileImage(user.profile_image_url));
+        mMediaLoader.displayProfileImage(mProfileImageView, Utils.getOriginalTwitterProfileImage(user.profile_image_url));
 		if (userColor != 0) {
             setUiColor(userColor);
 		} else {
@@ -555,13 +558,21 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 		}
         final int defWidth = resources.getDisplayMetrics().widthPixels;
 		final int width = mBannerWidth > 0 ? mBannerWidth : defWidth;
-		mProfileImageLoader.displayProfileBanner(mProfileBannerView, user.profile_banner_url, width);
+        mMediaLoader.displayProfileBanner(mProfileBannerView, user.profile_banner_url, width);
         final Relationship relationship = mRelationship;
         if (relationship == null || relationship.getTargetUserId() != user.id) {
 			getFriendship();
 		}
         activity.setTitle(manager.getDisplayName(user, mNameFirst, true));
 
+        Calendar cal = Calendar.getInstance();
+        final int currentMonth = cal.get(Calendar.MONTH), currentDay = cal.get(Calendar.DAY_OF_MONTH);
+        cal.setTimeInMillis(user.created_at);
+        if (cal.get(Calendar.MONTH) == currentMonth && cal.get(Calendar.DAY_OF_MONTH) == currentDay && !mHideBirthdayView) {
+            mProfileBirthdayBannerView.setVisibility(View.VISIBLE);
+        } else {
+            mProfileBirthdayBannerView.setVisibility(View.GONE);
+        }
         updateTitleAlpha();
 		invalidateOptionsMenu();
         updateSubtitle();
@@ -702,7 +713,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 ThemeUtils.getUserThemeBackgroundAlpha(activity));
         mActionBarShadowColor = 0xA0000000;
         final TwittnukerApplication app = TwittnukerApplication.getInstance(activity);
-        mProfileImageLoader = app.getMediaLoaderWrapper();
+        mMediaLoader = app.getMediaLoaderWrapper();
         final Bundle args = getArguments();
         long accountId = -1, userId = -1;
         String screenName = null;
@@ -779,6 +790,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mFollowersContainer.setOnClickListener(this);
         mFriendsContainer.setOnClickListener(this);
         mHeaderErrorIcon.setOnClickListener(this);
+        mProfileBirthdayBannerView.setOnClickListener(this);
         mProfileBannerView.setOnSizeChangedListener(this);
         mProfileBannerSpace.setOnTouchListener(this);
 
@@ -1229,6 +1241,12 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 Utils.openProfileEditor(getActivity(), user.account_id);
 				break;
 			}
+            case R.id.profile_birthday_banner: {
+                mHideBirthdayView = true;
+                mProfileBirthdayBannerView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+                mProfileBirthdayBannerView.setVisibility(View.GONE);
+                break;
+            }
 		}
 
 	}
@@ -1289,6 +1307,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
 	@Override
 	public boolean onTouch(final View v, final MotionEvent event) {
+        if (mProfileBirthdayBannerView.getVisibility() == View.VISIBLE) {
+            return mProfileBirthdayBannerView.dispatchTouchEvent(event);
+        }
 		return mProfileBannerView.dispatchTouchEvent(event);
 	}
 

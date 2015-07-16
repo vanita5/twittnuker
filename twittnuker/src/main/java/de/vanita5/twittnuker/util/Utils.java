@@ -212,6 +212,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters.Users;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
+import de.vanita5.twittnuker.provider.TwidereDataStore.NetworkUsages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
 import de.vanita5.twittnuker.provider.TwidereDataStore.PushNotifications;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Preferences;
@@ -259,7 +260,6 @@ import static de.vanita5.twittnuker.provider.TwidereDataStore.DIRECT_MESSAGES_UR
 import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
 import static de.vanita5.twittnuker.util.TwidereLinkify.TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES;
-import static de.vanita5.twittnuker.util.TwitterAPIFactory.getDefaultHttpClient;
 
 @SuppressWarnings("unused")
 public final class Utils implements Constants {
@@ -316,6 +316,8 @@ public final class Utils implements Constants {
                 TABLE_ID_SAVED_SEARCHES);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, SearchHistory.CONTENT_PATH,
                 TABLE_ID_SEARCH_HISTORY);
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, NetworkUsages.CONTENT_PATH,
+                TABLE_ID_NETWORK_USAGES);
 
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Notifications.CONTENT_PATH,
 				VIRTUAL_TABLE_ID_NOTIFICATIONS);
@@ -2142,6 +2144,8 @@ public final class Utils implements Constants {
                 return SavedSearches.TABLE_NAME;
             case TABLE_ID_SEARCH_HISTORY:
                 return SearchHistory.TABLE_NAME;
+            case TABLE_ID_NETWORK_USAGES:
+                return NetworkUsages.TABLE_NAME;
 			default:
 				return null;
 		}
@@ -2475,6 +2479,13 @@ public final class Utils implements Constants {
 		return networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI
 				&& networkInfo.isConnected();
 	}
+
+    public static int getActiveNetworkType(final Context context) {
+        if (context == null) return -1;
+        final ConnectivityManager conn = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final NetworkInfo networkInfo = conn.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected() ? networkInfo.getType() : -1;
+    }
 
 	public static boolean isRedirected(final int code) {
 		return code == 301 || code == 302 || code == 307;
@@ -3798,7 +3809,7 @@ public final class Utils implements Constants {
         final SpannableStringBuilder text = SpannableStringBuilder.valueOf(textView.getText());
         final URLSpan[] spans = text.getSpans(0, text.length(), URLSpan.class);
         URLSpan found = null;
-        String findPattern = "twitter.com/" + status.quoted_by_user_screen_name + "/status/" + status.quote_id;
+        String findPattern = "twitter.com/" + status.user_screen_name + "/status/" + status.quote_id;
         for (URLSpan span : spans) {
             if (span.getURL().contains(findPattern)) {
                 found = span;
@@ -3864,4 +3875,17 @@ public final class Utils implements Constants {
 		return location;
 	}
 
+    public static final String[] fileSizeUnits = {"bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+
+    public static String calculateProperSize(double bytes) {
+        double value = bytes;
+        int index;
+        for (index = 0; index < fileSizeUnits.length; index++) {
+            if (value < 1024) {
+                break;
+            }
+            value = value / 1024;
+        }
+        return String.format("%.2f %s", value, fileSizeUnits[index]);
+    }
 }

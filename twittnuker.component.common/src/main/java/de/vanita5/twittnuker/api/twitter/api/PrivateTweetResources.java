@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.api.twitter.api;
 
 import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.annotation.param.MethodExtra;
 import org.mariotaku.restfu.annotation.param.Path;
 import org.mariotaku.restfu.annotation.param.Query;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -33,6 +34,8 @@ import de.vanita5.twittnuker.api.twitter.model.StatusActivitySummary;
 import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
 
 @SuppressWarnings("RedundantThrows")
+@MethodExtra(name = "extra_params", values = {"include_my_retweet", "include_rts", "include_entities",
+        "include_cards", "cards_platform", "include_reply_count", "include_descendent_reply_count"})
 public interface PrivateTweetResources extends PrivateResources {
 
     @GET("/statuses/{id}/activity/summary.json")

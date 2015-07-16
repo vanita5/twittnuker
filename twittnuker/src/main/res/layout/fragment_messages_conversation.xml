@@ -21,10 +21,11 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    android:id="@+id/fragment_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.DirectMessagesConversationFragment">
@@ -116,7 +117,7 @@
                     android:minHeight="@dimen/element_size_normal"
                     android:padding="@dimen/element_spacing_normal">
 
-                    <de.vanita5.twittnuker.view.UserHashtagAutoCompleteEditText
+                    <de.vanita5.twittnuker.view.ComposeEditText
                         android:id="@+id/edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -130,14 +131,11 @@
                         android:maxHeight="140dp"
                         android:singleLine="false"
                         android:textAppearance="?android:textAppearanceMedium"
-                        app:met_baseColor="?android:textColorSecondary"
-                        app:met_helperTextColor="?android:textColorSecondary"
-                        app:met_hideUnderline="true"
-                        app:met_textColor="?android:textColorPrimary"
-                        app:met_textColorHint="?android:textColorTertiary">
+                        android:textColor="?android:textColorPrimary"
+                        android:textColorHint="?android:textColorTertiary">
 
                         <requestFocus/>
-                    </de.vanita5.twittnuker.view.UserHashtagAutoCompleteEditText>
+                    </de.vanita5.twittnuker.view.ComposeEditText>
 
                 </FrameLayout>
             </org.mariotaku.messagebubbleview.library.MessageBubbleView>

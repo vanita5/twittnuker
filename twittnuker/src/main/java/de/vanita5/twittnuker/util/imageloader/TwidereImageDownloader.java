@@ -48,10 +48,12 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.io.FileNotFoundException;
@@ -65,6 +67,7 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 
 	private final Context mContext;
     private final SharedPreferencesWrapper mPreferences;
+    private final String mUserAgent;
     private RestHttpClient mClient;
 	private final boolean mFullImage;
 	private final String mTwitterProfileImageSize;
@@ -76,6 +79,7 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
                 Context.MODE_PRIVATE, SharedPreferenceConstants.class);
 		mFullImage = fullImage;
 		mTwitterProfileImageSize = context.getString(R.string.profile_image_size);
+        mUserAgent = UserAgentUtils.getDefaultUserAgentString(context);
 		reloadConnectivitySettings();
 
 	}
@@ -144,6 +148,7 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             additionalHeaders.add(Pair.create("Accept", "image/webp, */*"));
         }
+        additionalHeaders.add(Pair.create("User-Agent", mUserAgent));
         final String method = GET.METHOD;
         final String requestUri;
         if (auth!= null && auth.hasAuthorization()) {
@@ -166,7 +171,12 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
         } else {
             requestUri = modifiedUri.toString();
         }
-        final RestHttpResponse resp = mClient.execute(new RestHttpRequest.Builder().method(method).url(requestUri).headers(additionalHeaders).build());
+        final RestHttpRequest.Builder builder = new RestHttpRequest.Builder();
+        builder.method(method);
+        builder.url(requestUri);
+        builder.headers(additionalHeaders);
+        builder.extra(RequestType.MEDIA);
+        final RestHttpResponse resp = mClient.execute(builder.build());
         final TypedData body = resp.getBody();
         return new ContentLengthInputStream(body.stream(), (int) body.length());
 	}
