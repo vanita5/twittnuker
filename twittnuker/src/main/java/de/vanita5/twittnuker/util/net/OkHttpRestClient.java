@@ -26,7 +26,6 @@ import android.content.Context;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.Pair;
 
 import com.squareup.okhttp.Call;
@@ -47,7 +46,6 @@ import org.mariotaku.restfu.http.RestHttpRequest;
 import org.mariotaku.restfu.http.RestHttpResponse;
 import org.mariotaku.restfu.http.RestQueuedRequest;
 import org.mariotaku.restfu.http.mime.TypedData;
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.DebugModeUtils;
 
 import java.io.IOException;
@@ -72,12 +70,7 @@ public class OkHttpRestClient implements RestHttpClient {
 	@Override
     public RestHttpResponse execute(RestHttpRequest restHttpRequest) throws IOException {
         final Call call = newCall(restHttpRequest);
-        try {
-            return new OkRestHttpResponse(call.execute());
-        } catch (IOException e) {
-            Log.w(Constants.LOGTAG, e);
-            throw e;
-        }
+        return new OkRestHttpResponse(call.execute());
     }
 
     private Call newCall(final RestHttpRequest restHttpRequest) {
