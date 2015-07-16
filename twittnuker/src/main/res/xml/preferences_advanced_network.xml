@@ -21,24 +21,25 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@id/refresh"
-        android:icon="@drawable/ic_action_refresh"
-        android:title="@string/refresh"
-        app:showAsAction="ifRoom"/>
-    <item
-        android:id="@id/share"
-        android:icon="@drawable/ic_action_share"
-        android:title="@string/share"
-        app:showAsAction="ifRoom"/>
-    <item
-        android:id="@id/save"
-        android:icon="@drawable/ic_action_save"
-        android:title="@string/save_to_gallery"/>
-    <item
-        android:id="@id/open_in_browser"
-        android:icon="@drawable/ic_action_web"
-        android:title="@string/open_in_browser"/>
-</menu>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/network">
+
+    <de.vanita5.twittnuker.preference.NetworkUsageSummaryPreferences />
+    <de.vanita5.twittnuker.preference.ImagePreloadPreference
+        android:key="image_preload_options"
+        android:title="@string/media_preload" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="preload_wifi_only"
+        android:title="@string/preload_wifi_only" />
+    <Preference
+        android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
+        android:title="@string/advanced">
+        <extra
+            android:name="resid"
+            android:value="@xml/preferences_advanced_network" />
+    </Preference>
+
+</PreferenceScreen>

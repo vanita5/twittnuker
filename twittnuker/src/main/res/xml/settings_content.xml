@@ -12,15 +12,6 @@
         	android:key="media_uploader"
         	android:summary="%s"
 			android:title="@string/image_uploader"/>
-
-		<de.vanita5.twittnuker.preference.ImagePreloadPreference
-			android:key="image_preload_options"
-			android:title="@string/image_preload_options"/>
-
-		<CheckBoxPreference
-			android:defaultValue="true"
-			android:key="preload_wifi_only"
-			android:title="@string/preload_wifi_only"/>
 	</PreferenceCategory>
 	<PreferenceCategory
 		android:key="category_content"
@@ -35,12 +26,12 @@
             app:min="10"
             app:step="5"/>
 
-        <de.vanita5.twittnuker.preference.TimelineSyncPreference
-            android:enabled="false"
-        	android:defaultValue=""
-        	android:key="timeline_sync_service"
-        	android:summary="%s"
-        	android:title="@string/timeline_sync_service"/>
+        <!--<de.vanita5.twittnuker.preference.TimelineSyncPreference-->
+            <!--android:enabled="false"-->
+        	<!--android:defaultValue=""-->
+        	<!--android:key="timeline_sync_service"-->
+        	<!--android:summary="%s"-->
+        	<!--android:title="@string/timeline_sync_service"/>-->
 
 		<CheckBoxPreference
 			android:defaultValue="true"
