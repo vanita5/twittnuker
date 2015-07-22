@@ -33,7 +33,6 @@ import android.text.TextUtils;
 import android.util.Pair;
 import android.webkit.URLUtil;
 
-import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.internal.Internal;
 
@@ -195,7 +194,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         return TwitterAPIFactory.getInstance(context, getEndpoint(credentials, cls), credentials, cls);
 	}
 
-    public static Endpoint getEndpoint(ParcelableCredentials credentials, Class<?> cls) throws APIFormatException {
+    public static Endpoint getEndpoint(ParcelableCredentials credentials, Class<?> cls) {
         final String apiUrlFormat;
         final boolean sameOAuthSigningUrl = credentials.same_oauth_signing_url;
         final boolean noVersionSuffix = credentials.no_version_suffix;
@@ -222,8 +221,6 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         }
         final String endpointUrl;
         endpointUrl = getApiUrl(apiUrlFormat, domain, versionSuffix);
-        if (endpointUrl == null || HttpUrl.parse(endpointUrl) == null)
-            throw new APIFormatException(apiUrlFormat);
         if (credentials.auth_type == ParcelableCredentials.AUTH_TYPE_XAUTH || credentials.auth_type == ParcelableCredentials.AUTH_TYPE_OAUTH) {
             final String signEndpointUrl;
             if (!sameOAuthSigningUrl) {
@@ -231,8 +228,6 @@ public class TwitterAPIFactory implements TwittnukerConstants {
             } else {
                 signEndpointUrl = endpointUrl;
             }
-            if (signEndpointUrl == null || HttpUrl.parse(signEndpointUrl) == null)
-                throw new APIFormatException(apiUrlFormat);
             return new OAuthEndpoint(endpointUrl, signEndpointUrl);
         }
         return new Endpoint(endpointUrl);
@@ -427,9 +422,4 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         }
     }
 
-    public static class APIFormatException extends RuntimeException {
-        public APIFormatException(String format) {
-            super("Wrong api format " + format);
-        }
-    }
 }
