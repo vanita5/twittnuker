@@ -97,12 +97,10 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.4.4'
     compile project(':twittnuker.component.common')
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
     // libraries for f-droid
     compile 'org.osmdroid:osmdroid-android:4.3'
     compile 'org.slf4j:slf4j-simple:1.7.12'
-
-    debugCompile 'com.facebook.stetho:stetho:1.1.1'
-    debugCompile 'com.facebook.stetho:stetho-okhttp:1.1.1'
 }
 
 task svgToDrawable(type: SvgDrawableTask) {

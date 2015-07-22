@@ -23,25 +23,13 @@
 package de.vanita5.twittnuker.util;
 
 import android.app.Application;
-
-import com.facebook.stetho.Stetho;
-import com.facebook.stetho.okhttp.StethoInterceptor;
-import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
-
-import java.util.List;
 
 public class DebugModeUtils {
 
 	public static void initForHttpClient(final OkHttpClient client) {
-        final List<Interceptor> interceptors = client.networkInterceptors();
-        interceptors.add(new StethoInterceptor());
 	}
 
 	public static void initForApplication(final Application application) {
-        Stetho.initialize(Stetho.newInitializerBuilder(application)
-                .enableDumpapp(Stetho.defaultDumperPluginsProvider(application))
-                .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(application))
-                .build());
 	}
 }
