@@ -3825,6 +3825,12 @@ public final class Utils implements Constants {
         textView.setText(text);
     }
 
+    public static boolean isCustomConsumerKeySecret(String consumerKey, String consumerSecret) {
+        if (TextUtils.isEmpty(consumerKey) || TextUtils.isEmpty(consumerSecret)) return false;
+        return (!TWITTER_CONSUMER_KEY.equals(consumerKey) && !TWITTER_CONSUMER_SECRET.equals(consumerKey))
+                && (!TWITTER_CONSUMER_KEY.equals(consumerKey) && !TWITTER_CONSUMER_SECRET.equals(consumerSecret));
+    }
+
     static class UtilsL {
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)

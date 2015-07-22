@@ -257,6 +257,7 @@ public interface SharedPreferenceConstants {
 	@Preference(type = STRING, hasDefault = true, defaultString = TwittnukerConstants.TWITTER_CONSUMER_SECRET)
 	String KEY_CONSUMER_SECRET = "consumer_secret";
 	String KEY_SETTINGS_WIZARD_COMPLETED = "settings_wizard_completed";
+	String KEY_CONSUMER_KEY_SECRET_SET = "consumer_key_secret_set";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
 	String KEY_CARD_ANIMATION = "card_animation";
 	@Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
