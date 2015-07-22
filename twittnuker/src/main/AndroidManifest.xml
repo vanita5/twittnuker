@@ -259,21 +259,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.support.BrowserActivity"
-            android:icon="@drawable/ic_action_twittnuker"
-            android:exported="false"
-            android:label="@string/browser">
-            <intent-filter>
-                <action android:name="de.vanita5.twittnuker.VIEW_WEBPAGE"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-
-                <data android:scheme="file"/>
-                <data android:scheme="http"/>
-                <data android:scheme="https"/>
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".activity.support.ColorPickerDialogActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/set_color"
