@@ -40,6 +40,7 @@ import android.widget.Toast;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
 import static de.vanita5.twittnuker.util.ParseUtils.parseString;
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
@@ -78,7 +79,11 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements OnCh
 	public void onClick(final View v) {
 		switch (v.getId()) {
 			case R.id.save: {
-                saveAndFinish();
+                if (checkApiUrl()) {
+                    saveAndFinish();
+                } else {
+                    mEditAPIUrlFormat.setError(getString(R.string.wrong_url_format));
+                }
 				break;
 			}
             case R.id.api_url_format_help: {
@@ -86,6 +91,10 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements OnCh
                 break;
 		    }
 	    }
+    }
+
+    private boolean checkApiUrl() {
+        return TwitterAPIFactory.verifyApiFormat(String.valueOf(mEditAPIUrlFormat.getText()));
     }
 
 	@Override

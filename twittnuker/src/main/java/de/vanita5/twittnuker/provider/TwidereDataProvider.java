@@ -67,7 +67,6 @@ import org.mariotaku.querybuilder.SetValue;
 import org.mariotaku.querybuilder.query.SQLInsertQuery;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
 import org.mariotaku.querybuilder.query.SQLUpdateQuery;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -793,7 +792,11 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setNumber(statusesCount);
             builder.setColor(pref.getNotificationLightColor());
             setNotificationPreferences(builder, pref, pref.getHomeTimelineNotificationType());
-            nm.notify("home_" + accountId, NOTIFICATION_ID_HOME_TIMELINE, builder.build());
+            try {
+                nm.notify("home_" + accountId, NOTIFICATION_ID_HOME_TIMELINE, builder.build());
+            } catch (SecurityException e) {
+                // Silently ignore
+            }
         } finally {
             statusCursor.close();
             userCursor.close();
@@ -889,8 +892,12 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setStyle(style);
             builder.setColor(pref.getNotificationLightColor());
             setNotificationPreferences(builder, pref, pref.getMentionsNotificationType());
-            nm.notify("mentions_" + accountId, NOTIFICATION_ID_MENTIONS_TIMELINE,
-                    builder.build());
+            try {
+                nm.notify("mentions_" + accountId, NOTIFICATION_ID_MENTIONS_TIMELINE,
+                        builder.build());
+            } catch (SecurityException e) {
+                // Silently ignore
+            }
         } finally {
             statusCursor.close();
             userCursor.close();
@@ -1080,7 +1087,11 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setStyle(style);
             builder.setColor(pref.getNotificationLightColor());
             setNotificationPreferences(builder, pref, pref.getDirectMessagesNotificationType());
-            nm.notify("messages_" + accountId, NOTIFICATION_ID_DIRECT_MESSAGES, builder.build());
+            try {
+                nm.notify("messages_" + accountId, NOTIFICATION_ID_DIRECT_MESSAGES, builder.build());
+            } catch (SecurityException e) {
+                // Silently ignore
+            }
         } finally {
             messageCursor.close();
             userCursor.close();
