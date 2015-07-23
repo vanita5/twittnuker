@@ -20,20 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model;
+package de.vanita5.twittnuker.api.twitter.model;
 
-import android.support.annotation.NonNull;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
-public enum ConsumerKeyType {
-	TWITTER_FOR_ANDROID, TWITTER_FOR_IPHONE, TWITTER_FOR_IPAD, TWITTER_FOR_MAC,
-    TWITTER_FOR_WINDOWS_PHONE, TWITTER_FOR_GOOGLE_TV, TWEETDECK, UNKNOWN;
+public class StatusSchedule extends StatusUpdate {
+    public StatusSchedule(String status) {
+        super(status);
+    }
 
-	@NonNull
-	public static ConsumerKeyType parse(String type) {
-		try {
-			return ConsumerKeyType.valueOf(type);
-		} catch (Exception e) {
-			return UNKNOWN;
-		}
-	}
+    public void setExecuteAt(Date executeAt) {
+        put("execute_at", TimeUnit.SECONDS.convert(executeAt.getTime(), TimeUnit.MILLISECONDS));
+    }
 }

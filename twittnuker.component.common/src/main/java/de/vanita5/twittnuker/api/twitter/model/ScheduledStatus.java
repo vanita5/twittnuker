@@ -20,20 +20,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model;
+package de.vanita5.twittnuker.api.twitter.model;
 
-import android.support.annotation.NonNull;
+import java.util.Date;
 
-public enum ConsumerKeyType {
-	TWITTER_FOR_ANDROID, TWITTER_FOR_IPHONE, TWITTER_FOR_IPAD, TWITTER_FOR_MAC,
-    TWITTER_FOR_WINDOWS_PHONE, TWITTER_FOR_GOOGLE_TV, TWEETDECK, UNKNOWN;
+public interface ScheduledStatus {
 
-	@NonNull
-	public static ConsumerKeyType parse(String type) {
-		try {
-			return ConsumerKeyType.valueOf(type);
-		} catch (Exception e) {
-			return UNKNOWN;
-		}
-	}
+    long[] getMediaIds();
+
+    Date getUpdatedAt();
+
+    Date getCreatedAt();
+
+    Date getExecuteAt();
+
+    String getText();
 }

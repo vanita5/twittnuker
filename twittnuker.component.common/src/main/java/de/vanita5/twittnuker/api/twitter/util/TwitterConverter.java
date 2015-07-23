@@ -54,6 +54,7 @@ import de.vanita5.twittnuker.api.twitter.model.Relationship;
 import de.vanita5.twittnuker.api.twitter.model.ResponseCode;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
+import de.vanita5.twittnuker.api.twitter.model.ScheduledStatus;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.StatusActivitySummary;
 import de.vanita5.twittnuker.api.twitter.model.StatusDeletionNotice;
@@ -85,6 +86,7 @@ import de.vanita5.twittnuker.api.twitter.model.impl.RelationshipImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.RelationshipWrapper;
 import de.vanita5.twittnuker.api.twitter.model.impl.ResponseListImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.SavedSearchImpl;
+import de.vanita5.twittnuker.api.twitter.model.impl.ScheduledStatusImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.StatusActivitySummaryImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.StatusDeletionNoticeImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.StatusImpl;
@@ -155,6 +157,7 @@ public class TwitterConverter implements Converter {
         TypeConverterMapper.register(Activity.class, ActivityImpl.class, ActivityImpl.MAPPER);
         TypeConverterMapper.register(Warning.class, WarningImpl.class);
         TypeConverterMapper.register(StatusDeletionNotice.class, StatusDeletionNoticeImpl.class);
+        TypeConverterMapper.register(ScheduledStatus.class, ScheduledStatusImpl.class);
 
         LoganSquare.registerTypeConverter(Indices.class, Indices.CONVERTER);
         LoganSquare.registerTypeConverter(GeoLocation.class, GeoLocation.CONVERTER);
