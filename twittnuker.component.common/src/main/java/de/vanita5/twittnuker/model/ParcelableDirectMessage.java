@@ -31,14 +31,13 @@ import android.support.annotation.NonNull;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 
 import java.util.Comparator;
 import java.util.Date;
-
-import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
-import de.vanita5.twittnuker.api.twitter.model.User;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.content.ContentValuesUtils.getAsBoolean;
@@ -156,18 +155,19 @@ public class ParcelableDirectMessage implements Parcelable, Comparable<Parcelabl
 		this.account_id = account_id;
 		this.is_outgoing = is_outgoing;
 		final User sender = message.getSender(), recipient = message.getRecipient();
-        final String sender_profile_image_url = sender != null ? sender.getProfileImageUrlHttps() : null;
-        final String recipient_profile_image_url = recipient != null ? recipient.getProfileImageUrlHttps() : null;
+        assert sender != null && recipient != null;
+        final String sender_profile_image_url = TwitterContentUtils.getProfileImageUrl(sender);
+        final String recipient_profile_image_url = TwitterContentUtils.getProfileImageUrl(recipient);
 		id = message.getId();
 		timestamp = getTime(message.getCreatedAt());
-		sender_id = sender != null ? sender.getId() : -1;
-		recipient_id = recipient != null ? recipient.getId() : -1;
+        sender_id = sender.getId();
+        recipient_id = recipient.getId();
         text_html = TwitterContentUtils.formatDirectMessageText(message);
 		text_plain = message.getText();
-		sender_name = sender != null ? sender.getName() : null;
-		recipient_name = recipient != null ? recipient.getName() : null;
-		sender_screen_name = sender != null ? sender.getScreenName() : null;
-		recipient_screen_name = recipient != null ? recipient.getScreenName() : null;
+        sender_name = sender.getName();
+        recipient_name = recipient.getName();
+        sender_screen_name = sender.getScreenName();
+        recipient_screen_name = recipient.getScreenName();
         this.sender_profile_image_url = sender_profile_image_url;
         this.recipient_profile_image_url = recipient_profile_image_url;
         text_unescaped = toPlainText(text_html);

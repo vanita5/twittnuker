@@ -94,7 +94,7 @@ dependencies {
     compile 'com.bluelinelabs:logansquare:1.1.0'
     compile 'ch.acra:acra:4.6.2'
     compile 'org.jraf:android-switch-backport:2.0.1'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.4'
+    compile 'com.fasterxml.jackson.jr:jackson-jr-objects:2.3.0'
     compile project(':twittnuker.component.common')
     compile fileTree(dir: 'libs', include: ['*.jar'])
 

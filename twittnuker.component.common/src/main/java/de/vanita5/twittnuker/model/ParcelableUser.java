@@ -32,14 +32,13 @@ import android.support.annotation.Nullable;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
+import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
-
-import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
-import de.vanita5.twittnuker.api.twitter.model.User;
 
 @JsonObject
 public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {
@@ -246,7 +245,7 @@ public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {
         description_expanded = TwitterContentUtils.formatExpandedUserDescription(user);
         description_unescaped = HtmlEscapeHelper.toPlainText(description_html);
 		location = user.getLocation();
-        profile_image_url = user.getProfileImageUrlHttps();
+        profile_image_url = TwitterContentUtils.getProfileImageUrl(user);
 		profile_banner_url = user.getProfileBannerImageUrl();
         url = user.getUrl();
         url_expanded = url != null && urls_url_entities != null && urls_url_entities.length > 0 ? urls_url_entities[0].getExpandedUrl() : null;

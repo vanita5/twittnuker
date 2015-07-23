@@ -33,17 +33,6 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.util.MediaPreviewUtils;
-import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.TwidereArrayUtils;
-
-import java.io.IOException;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity.BindingValue;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity.ImageValue;
@@ -55,6 +44,17 @@ import de.vanita5.twittnuker.api.twitter.model.MediaEntity.Size;
 import de.vanita5.twittnuker.api.twitter.model.MediaEntity.Type;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
+import de.vanita5.twittnuker.util.MediaPreviewUtils;
+import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
+import de.vanita5.twittnuker.util.TwitterContentUtils;
+
+import java.io.IOException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @SuppressWarnings("unused")
 @JsonObject
@@ -109,9 +109,9 @@ public class ParcelableMedia implements Parcelable {
     }
 
     public ParcelableMedia(final MediaEntity entity) {
-        page_url = entity.getMediaUrl();
-        media_url = entity.getMediaUrl();
-        preview_url = entity.getMediaUrl();
+        page_url = TwitterContentUtils.getMediaUrl(entity);
+        media_url = TwitterContentUtils.getMediaUrl(entity);
+        preview_url = TwitterContentUtils.getMediaUrl(entity);
         start = entity.getStart();
         end = entity.getEnd();
         type = getTypeInt(entity.getType());
@@ -212,7 +212,7 @@ public class ParcelableMedia implements Parcelable {
         }
         if (mediaEntities != null) {
             for (final MediaEntity media : mediaEntities) {
-                final String mediaURL = media.getMediaUrl();
+                final String mediaURL = TwitterContentUtils.getMediaUrl(media);
                 if (mediaURL != null) {
                     list.add(new ParcelableMedia(media));
                 }
