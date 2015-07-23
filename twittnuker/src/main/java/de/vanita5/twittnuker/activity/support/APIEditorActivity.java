@@ -40,6 +40,7 @@ import android.widget.Toast;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
 import static de.vanita5.twittnuker.util.ParseUtils.parseString;
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
@@ -78,8 +79,11 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements OnCh
 	public void onClick(final View v) {
 		switch (v.getId()) {
 			case R.id.save: {
-				if (checkUrlErrors()) return;
-                saveAndFinish();
+                if (checkApiUrl()) {
+                    saveAndFinish();
+                } else {
+                    mEditAPIUrlFormat.setError(getString(R.string.wrong_url_format));
+                }
 				break;
 			}
             case R.id.api_url_format_help: {
@@ -87,6 +91,10 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements OnCh
                 break;
 		    }
 	    }
+    }
+
+    private boolean checkApiUrl() {
+        return TwitterAPIFactory.verifyApiFormat(String.valueOf(mEditAPIUrlFormat.getText()));
     }
 
 	@Override
@@ -144,6 +152,10 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements OnCh
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        final Intent intent = getIntent();
+        final Bundle extras = intent.getExtras();
+
 		setContentView(R.layout.activity_api_editor);
 
 		String apiUrlFormat;
@@ -158,25 +170,20 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements OnCh
         final boolean prefNoVersionSuffix = pref.getBoolean(KEY_NO_VERSION_SUFFIX, false);
 		final String prefConsumerKey = getNonEmptyString(pref, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY);
 		final String prefConsumerSecret = getNonEmptyString(pref, KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET);
+        final Bundle bundle;
 		if (savedInstanceState != null) {
-			apiUrlFormat = trim(savedInstanceState.getString(Accounts.API_URL_FORMAT, prefApiUrlFormat));
-			authType = savedInstanceState.getInt(Accounts.AUTH_TYPE, prefAuthType);
-			sameOAuthSigningUrl = savedInstanceState.getBoolean(Accounts.SAME_OAUTH_SIGNING_URL,
-					prefSameOAuthSigningUrl);
-            noVersionSuffix = savedInstanceState.getBoolean(Accounts.NO_VERSION_SUFFIX,
-                    prefNoVersionSuffix);
-			consumerKey = trim(savedInstanceState.getString(Accounts.CONSUMER_KEY, prefConsumerKey));
-			consumerSecret = trim(savedInstanceState.getString(Accounts.CONSUMER_SECRET, prefConsumerSecret));
+            bundle = savedInstanceState;
+        } else if (extras != null) {
+            bundle = extras;
 		} else {
-			final Intent intent = getIntent();
-			final Bundle extras = intent.getExtras();
-			apiUrlFormat = trim(extras.getString(Accounts.API_URL_FORMAT, prefApiUrlFormat));
-			authType = extras.getInt(Accounts.AUTH_TYPE, prefAuthType);
-			sameOAuthSigningUrl = extras.getBoolean(Accounts.SAME_OAUTH_SIGNING_URL, prefSameOAuthSigningUrl);
-            noVersionSuffix = extras.getBoolean(Accounts.NO_VERSION_SUFFIX, prefNoVersionSuffix);
-			consumerKey = trim(extras.getString(Accounts.CONSUMER_KEY, prefConsumerKey));
-			consumerSecret = trim(extras.getString(Accounts.CONSUMER_SECRET, prefConsumerSecret));
+            bundle = new Bundle();
 		}
+        apiUrlFormat = trim(bundle.getString(Accounts.API_URL_FORMAT, prefApiUrlFormat));
+        authType = bundle.getInt(Accounts.AUTH_TYPE, prefAuthType);
+        sameOAuthSigningUrl = bundle.getBoolean(Accounts.SAME_OAUTH_SIGNING_URL, prefSameOAuthSigningUrl);
+        noVersionSuffix = bundle.getBoolean(Accounts.NO_VERSION_SUFFIX, prefNoVersionSuffix);
+        consumerKey = trim(bundle.getString(Accounts.CONSUMER_KEY, prefConsumerKey));
+        consumerSecret = trim(bundle.getString(Accounts.CONSUMER_SECRET, prefConsumerSecret));
 
 		mEditAuthType.setOnCheckedChangeListener(this);
         mEditNoVersionSuffix.setOnCheckedChangeListener(this);
@@ -196,11 +203,6 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements OnCh
 		if (mEditAuthType.getCheckedRadioButtonId() == -1) {
 			mButtonOAuth.setChecked(true);
 		}
-	}
-
-	private boolean checkUrlErrors() {
-		final boolean urlHasErrors = false;
-		return urlHasErrors;
 	}
 
 	private int getCheckedAuthType(final int checkedId) {

@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.util.net;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.util.Log;
 
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
@@ -33,13 +34,14 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
-import java.io.IOException;
-
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.provider.TwidereDataStore.NetworkUsages;
 import de.vanita5.twittnuker.util.Utils;
 
-public class NetworkUsageUtils {
+import java.io.IOException;
+
+public class NetworkUsageUtils implements Constants {
     public static void initForHttpClient(Context context, OkHttpClient client) {
         client.networkInterceptors().add(new NetworkUsageInterceptor(context));
     }
@@ -71,7 +73,11 @@ public class NetworkUsageUtils {
             final Response response = chain.proceed(request);
             values.put(NetworkUsages.KILOBYTES_RECEIVED, getBodyLength(response.body()) / 1024.0);
             final ContentResolver cr = context.getContentResolver();
-            cr.insert(NetworkUsages.CONTENT_URI, values);
+            try {
+                cr.insert(NetworkUsages.CONTENT_URI, values);
+            } catch (IllegalStateException e) {
+                Log.e(LOGTAG, "Unable to log network usage", e);
+            }
             return response;
         }
 

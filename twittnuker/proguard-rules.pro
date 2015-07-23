@@ -130,3 +130,6 @@
 -keep enum org.slf4j.** { *; }
 -keep interface org.slf4j.** { *; }
 -dontwarn org.slf4j.**
+
+#JacksonXML
+-dontwarn java.beans.**

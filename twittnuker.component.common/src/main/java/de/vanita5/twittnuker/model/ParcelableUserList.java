@@ -31,6 +31,7 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.util.TwitterContentUtils;
 
 @JsonObject
 public class ParcelableUserList implements Parcelable, Comparable<ParcelableUserList> {
@@ -117,7 +118,7 @@ public class ParcelableUserList implements Parcelable, Comparable<ParcelableUser
 		user_id = user.getId();
 		user_name = user.getName();
 		user_screen_name = user.getScreenName();
-        user_profile_image_url = user.getProfileImageUrlHttps();
+        user_profile_image_url = TwitterContentUtils.getProfileImageUrl(user);
 		members_count = list.getMemberCount();
 		subscribers_count = list.getSubscriberCount();
 	}

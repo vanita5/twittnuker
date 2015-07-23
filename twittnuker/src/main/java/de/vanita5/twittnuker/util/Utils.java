@@ -351,6 +351,8 @@ public final class Utils implements Constants {
 				VIRTUAL_TABLE_ID_CACHED_USERS_WITH_SCORE);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Drafts.CONTENT_PATH_UNSENT,
 				VIRTUAL_TABLE_ID_DRAFTS_UNSENT);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Drafts.CONTENT_PATH_NOTIFICATIONS,
+				VIRTUAL_TABLE_ID_DRAFTS_NOTIFICATIONS);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, PushNotifications.CONTENT_PATH,
 				TABLE_ID_PUSH_NOTIFICATIONS);
 
@@ -1669,8 +1671,8 @@ public final class Utils implements Constants {
 		if (context == null) return -1;
 		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         final long accountId = prefs.getLong(KEY_DEFAULT_ACCOUNT_ID, -1);
-        final long[] accountIds;
-        if (accountId == -1 && (accountIds = Utils.getAccountIds(context)).length > 0) {
+        final long[] accountIds = Utils.getAccountIds(context);
+        if (accountIds.length > 0 && !ArrayUtils.contains(accountIds, accountId) && accountIds.length > 0) {
              /* TODO: this is just a quick fix */
             return accountIds[0];
         }
@@ -1845,7 +1847,7 @@ public final class Utils implements Constants {
         final long[] messageIds = new long[accountIds.length];
 		int idx = 0;
         for (final long accountId : accountIds) {
-            final String where = Statuses.ACCOUNT_ID + " = " + accountId;
+            final String where = Expression.equals(DirectMessages.ACCOUNT_ID, accountId).getSQL();
 			final Cursor cur = ContentResolverUtils.query(resolver, uri, cols, where, null,
 					DirectMessages.DEFAULT_SORT_ORDER);
 			if (cur == null) {
@@ -1867,14 +1869,14 @@ public final class Utils implements Constants {
 		return getNewestStatusIdsFromDatabase(context, uri, account_ids);
 	}
 
-	public static long[] getNewestStatusIdsFromDatabase(final Context context, final Uri uri, final long[] account_ids) {
-		if (context == null || uri == null || account_ids == null) return null;
+    public static long[] getNewestStatusIdsFromDatabase(final Context context, final Uri uri, final long[] accountIds) {
+        if (context == null || uri == null || accountIds == null) return null;
 		final String[] cols = new String[] { Statuses.STATUS_ID };
 		final ContentResolver resolver = context.getContentResolver();
-		final long[] status_ids = new long[account_ids.length];
+        final long[] status_ids = new long[accountIds.length];
 		int idx = 0;
-		for (final long account_id : account_ids) {
-			final String where = Statuses.ACCOUNT_ID + " = " + account_id;
+        for (final long accountId : accountIds) {
+            final String where = Expression.equals(Statuses.ACCOUNT_ID, accountId).getSQL();
 			final Cursor cur = ContentResolverUtils
 					.query(resolver, uri, cols, where, null, Statuses.DEFAULT_SORT_ORDER);
 			if (cur == null) {
@@ -1923,14 +1925,14 @@ public final class Utils implements Constants {
 		return getOldestMessageIdsFromDatabase(context, uri, account_ids);
 	}
 
-	public static long[] getOldestMessageIdsFromDatabase(final Context context, final Uri uri, final long[] account_ids) {
+    public static long[] getOldestMessageIdsFromDatabase(final Context context, final Uri uri, final long[] accountIds) {
 		if (context == null || uri == null) return null;
 		final String[] cols = new String[] { DirectMessages.MESSAGE_ID };
 		final ContentResolver resolver = context.getContentResolver();
-		final long[] status_ids = new long[account_ids.length];
+        final long[] status_ids = new long[accountIds.length];
 		int idx = 0;
-		for (final long account_id : account_ids) {
-			final String where = Statuses.ACCOUNT_ID + " = " + account_id;
+        for (final long accountId : accountIds) {
+            final String where = Expression.equals(DirectMessages.ACCOUNT_ID, accountId).getSQL();
 			final Cursor cur = ContentResolverUtils.query(resolver, uri, cols, where, null, DirectMessages.MESSAGE_ID);
 			if (cur == null) {
 				continue;
@@ -1951,14 +1953,14 @@ public final class Utils implements Constants {
 		return getOldestStatusIdsFromDatabase(context, uri, account_ids);
 	}
 
-	public static long[] getOldestStatusIdsFromDatabase(final Context context, final Uri uri, final long[] account_ids) {
-		if (context == null || uri == null || account_ids == null) return null;
+    public static long[] getOldestStatusIdsFromDatabase(final Context context, final Uri uri, final long[] accountIds) {
+        if (context == null || uri == null || accountIds == null) return null;
 		final String[] cols = new String[] { Statuses.STATUS_ID };
 		final ContentResolver resolver = context.getContentResolver();
-		final long[] status_ids = new long[account_ids.length];
+        final long[] status_ids = new long[accountIds.length];
 		int idx = 0;
-		for (final long account_id : account_ids) {
-			final String where = Statuses.ACCOUNT_ID + " = " + account_id;
+        for (final long accountId : accountIds) {
+            final String where = Expression.equals(Statuses.ACCOUNT_ID, accountId).getSQL();
 			final Cursor cur = ContentResolverUtils.query(resolver, uri, cols, where, null, Statuses.STATUS_ID);
 			if (cur == null) {
 				continue;
@@ -2396,10 +2398,10 @@ public final class Utils implements Constants {
                 status.retweeted_by_user_id, filter_rts);
 	}
 
-	public static boolean isMyAccount(final Context context, final long account_id) {
+    public static boolean isMyAccount(final Context context, final long accountId) {
 		if (context == null) return false;
 		final ContentResolver resolver = context.getContentResolver();
-		final String where = Accounts.ACCOUNT_ID + " = " + account_id;
+        final String where = Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL();
 		final Cursor cur = ContentResolverUtils.query(resolver, Accounts.CONTENT_URI, new String[0], where, null, null);
 		try {
 			return cur != null && cur.getCount() > 0;
@@ -2413,7 +2415,7 @@ public final class Utils implements Constants {
 	public static boolean isMyAccount(final Context context, final String screen_name) {
 		if (context == null) return false;
 		final ContentResolver resolver = context.getContentResolver();
-		final String where = Accounts.SCREEN_NAME + " = ?";
+        final String where = Expression.equalsArgs(Accounts.SCREEN_NAME).getSQL();
 		final Cursor cur = ContentResolverUtils.query(resolver, Accounts.CONTENT_URI, new String[0], where,
 				new String[] { screen_name }, null);
 		try {
@@ -2429,8 +2431,8 @@ public final class Utils implements Constants {
         return status != null && isMyRetweet(status.account_id, status.retweeted_by_user_id, status.my_retweet_id);
 	}
 
-    public static boolean isMyRetweet(final long account_id, final long retweeted_by_id, final long my_retweet_id) {
-        return retweeted_by_id == account_id || my_retweet_id > 0;
+    public static boolean isMyRetweet(final long accountId, final long retweetedById, final long myRetweetId) {
+        return retweetedById == accountId || myRetweetId > 0;
     }
 
 	public static boolean isNetworkAvailable(final Context context) {
@@ -3199,7 +3201,7 @@ public final class Utils implements Constants {
 		final boolean isMyRetweet = isMyRetweet(status);
 		final MenuItem delete = menu.findItem(MENU_DELETE);
 		if (delete != null) {
-			delete.setVisible(status.account_id == status.user_id && !isMyRetweet);
+            delete.setVisible(isMyStatus(status));
 		}
 		final MenuItem retweet = menu.findItem(MENU_RETWEET);
 		if (retweet != null) {
@@ -3236,6 +3238,14 @@ public final class Utils implements Constants {
             addIntentToMenu(context, shareSubMenu, shareIntent, MENU_GROUP_STATUS_SHARE);
         }
 
+    }
+
+    private static boolean isMyStatus(ParcelableStatus status) {
+        if (isMyRetweet(status)) return true;
+        if (status.is_quote) {
+            return status.account_id == status.quoted_by_user_id;
+        }
+        return status.account_id == status.user_id;
     }
 
 	public static boolean shouldForceUsingPrivateAPIs(final Context context) {
@@ -3499,7 +3509,7 @@ public final class Utils implements Constants {
     }
 
 	public static boolean useShareScreenshot() {
-		return false;
+        return Boolean.parseBoolean("false");
 	}
 
 	private static Drawable getMetadataDrawable(final PackageManager pm, final ActivityInfo info, final String key) {
@@ -3823,6 +3833,12 @@ public final class Utils implements Constants {
         end = text.getSpanEnd(found);
         text.setSpan(new OriginalStatusSpan(textView.getContext()), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textView.setText(text);
+    }
+
+    public static boolean isCustomConsumerKeySecret(String consumerKey, String consumerSecret) {
+        if (TextUtils.isEmpty(consumerKey) || TextUtils.isEmpty(consumerSecret)) return false;
+        return (!TWITTER_CONSUMER_KEY.equals(consumerKey) && !TWITTER_CONSUMER_SECRET.equals(consumerKey))
+                && (!TWITTER_CONSUMER_KEY.equals(consumerKey) && !TWITTER_CONSUMER_SECRET.equals(consumerSecret));
     }
 
     static class UtilsL {

@@ -44,6 +44,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.InboxStyle;
@@ -67,13 +68,13 @@ import org.mariotaku.querybuilder.SetValue;
 import org.mariotaku.querybuilder.query.SQLInsertQuery;
 import org.mariotaku.querybuilder.query.SQLSelectQuery;
 import org.mariotaku.querybuilder.query.SQLUpdateQuery;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
+import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -90,6 +91,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 import de.vanita5.twittnuker.receiver.NotificationReceiver;
+import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ImagePreloader;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
@@ -251,7 +253,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 				case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
 					return null;
 			}
-			if (table == null) return null;
 			final long rowId;
             if (tableId == TABLE_ID_CACHED_USERS) {
                 final Expression where = Expression.equals(CachedUsers.USER_ID,
@@ -316,11 +317,15 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                                 values.getAsDouble(NetworkUsages.KILOBYTES_SENT), requestNetwork, requestType});
                 mDatabaseWrapper.setTransactionSuccessful();
                 mDatabaseWrapper.endTransaction();
+            } else if (tableId == VIRTUAL_TABLE_ID_DRAFTS_NOTIFICATIONS) {
+                rowId = showDraftNotification(uri, values);
             } else if (shouldReplaceOnConflict(tableId)) {
                 rowId = mDatabaseWrapper.insertWithOnConflict(table, null, values,
                         SQLiteDatabase.CONFLICT_REPLACE);
+            } else if (table != null) {
+                rowId = mDatabaseWrapper.insert(table, null, values);
 			} else {
-				rowId = mDatabaseWrapper.insert(table, null, values);
+                return null;
 			}
 			onDatabaseUpdated(tableId, uri);
             onNewItemsInserted(uri, tableId, values, rowId);
@@ -329,6 +334,54 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 			throw new IllegalStateException(e);
 		}
 	}
+
+    private long showDraftNotification(Uri queryUri, ContentValues values) {
+        if (values == null) return -1;
+        final Long draftId = values.getAsLong(BaseColumns._ID);
+        if (draftId == null) return -1;
+        final Expression where = Expression.equals(Drafts._ID, draftId);
+        final Cursor c = getContentResolver().query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.getSQL(), null, null);
+        final DraftItem.CursorIndices i = new DraftItem.CursorIndices(c);
+        final DraftItem item;
+        try {
+            if (!c.moveToFirst()) return -1;
+            item = new DraftItem(c, i);
+        } finally {
+            c.close();
+        }
+        final Context context = getContext();
+        final String title = context.getString(R.string.status_not_updated);
+        final String message = context.getString(R.string.status_not_updated_summary);
+        final Intent intent = new Intent();
+        intent.setPackage(BuildConfig.APPLICATION_ID);
+        final Uri.Builder uriBuilder = new Uri.Builder();
+        uriBuilder.scheme(SCHEME_TWITTNUKER);
+        uriBuilder.authority(AUTHORITY_DRAFTS);
+        intent.setData(uriBuilder.build());
+        final NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
+        notificationBuilder.setTicker(message);
+        notificationBuilder.setContentTitle(title);
+        notificationBuilder.setContentText(item.text);
+        notificationBuilder.setAutoCancel(true);
+        notificationBuilder.setWhen(System.currentTimeMillis());
+        notificationBuilder.setSmallIcon(R.drawable.ic_stat_draft);
+        final Intent discardIntent = new Intent(context, BackgroundOperationService.class);
+        discardIntent.setAction(INTENT_ACTION_DISCARD_DRAFT);
+        discardIntent.setData(Uri.withAppendedPath(Drafts.CONTENT_URI, String.valueOf(draftId)));
+        notificationBuilder.addAction(R.drawable.ic_action_delete, context.getString(R.string.discard),
+                PendingIntent.getService(context, 0, discardIntent, PendingIntent.FLAG_ONE_SHOT));
+
+        final Intent sendIntent = new Intent(context, BackgroundOperationService.class);
+        sendIntent.setAction(INTENT_ACTION_SEND_DRAFT);
+        sendIntent.setData(Uri.withAppendedPath(Drafts.CONTENT_URI, String.valueOf(draftId)));
+        notificationBuilder.addAction(R.drawable.ic_action_send, context.getString(R.string.send),
+                PendingIntent.getService(context, 0, sendIntent, PendingIntent.FLAG_ONE_SHOT));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        notificationBuilder.setContentIntent(PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT));
+		getNotificationManager().notify(Uri.withAppendedPath(Drafts.CONTENT_URI, String.valueOf(draftId)).toString(),
+                NOTIFICATION_ID_DRAFTS, notificationBuilder.build());
+        return draftId;
+    }
 
 	@Override
 	public boolean onCreate() {
@@ -793,7 +846,11 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setNumber(statusesCount);
             builder.setColor(pref.getNotificationLightColor());
             setNotificationPreferences(builder, pref, pref.getHomeTimelineNotificationType());
-            nm.notify("home_" + accountId, NOTIFICATION_ID_HOME_TIMELINE, builder.build());
+            try {
+                nm.notify("home_" + accountId, NOTIFICATION_ID_HOME_TIMELINE, builder.build());
+            } catch (SecurityException e) {
+                // Silently ignore
+            }
         } finally {
             statusCursor.close();
             userCursor.close();
@@ -889,8 +946,12 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setStyle(style);
             builder.setColor(pref.getNotificationLightColor());
             setNotificationPreferences(builder, pref, pref.getMentionsNotificationType());
-            nm.notify("mentions_" + accountId, NOTIFICATION_ID_MENTIONS_TIMELINE,
-                    builder.build());
+            try {
+                nm.notify("mentions_" + accountId, NOTIFICATION_ID_MENTIONS_TIMELINE,
+                        builder.build());
+            } catch (SecurityException e) {
+                // Silently ignore
+            }
         } finally {
             statusCursor.close();
             userCursor.close();
@@ -1080,7 +1141,11 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setStyle(style);
             builder.setColor(pref.getNotificationLightColor());
             setNotificationPreferences(builder, pref, pref.getDirectMessagesNotificationType());
-            nm.notify("messages_" + accountId, NOTIFICATION_ID_DIRECT_MESSAGES, builder.build());
+            try {
+                nm.notify("messages_" + accountId, NOTIFICATION_ID_DIRECT_MESSAGES, builder.build());
+            } catch (SecurityException e) {
+                // Silently ignore
+            }
         } finally {
             messageCursor.close();
             userCursor.close();
