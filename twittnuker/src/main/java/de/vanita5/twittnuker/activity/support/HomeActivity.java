@@ -45,6 +45,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayoutTrojan;
 import android.support.v7.app.ThemedAppCompatDelegateFactory;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -150,7 +151,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     private View mActionsButton;
     private View mActionBarWithOverlay;
     private FrameLayout mLeftDrawerContainer;
-    private TintedStatusFrameLayout mColorStatusFrameLayout;
+    private TintedStatusFrameLayout mHomeContent;
 
 	private UpdateUnreadCountTask mUpdateUnreadCountTask;
 
@@ -170,8 +171,8 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     private View mActionBarContainer;
 
 	public void closeAccountsDrawer() {
-//        if (mSlidingMenu == null) return;
-//        mSlidingMenu.showContent();
+        if (mDrawerLayout == null) return;
+        mDrawerLayout.closeDrawers();
 	}
 
     public long[] getActivatedAccountIds() {
@@ -223,14 +224,13 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             case android.R.id.home: {
 				final FragmentManager fm = getSupportFragmentManager();
 				final int count = fm.getBackStackEntryCount();
-
-//                if (mSlidingMenu.isMenuShowing()) {
-//                    mSlidingMenu.showContent();
-//                    return true;
-//                } else if (count == 0) {
-//                    mSlidingMenu.showMenu();
-//                    return true;
-//                }
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.START) || mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+                    mDrawerLayout.closeDrawers();
+                    return true;
+                } else if (count == 0) {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                    return true;
+                }
                 return true;
             }
             case R.id.search: {
@@ -252,12 +252,12 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         if (action != null) {
             switch (action) {
                 case ACTION_HOME_ACCOUNTS_DASHBOARD: {
-//                    if (mSlidingMenu.isMenuShowing()) {
-//                        mSlidingMenu.showContent(true);
-//                    } else {
-//                        mSlidingMenu.showMenu(true);
-//                        setControlBarVisibleAnimate(true);
-//                    }
+                    if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                        mDrawerLayout.closeDrawers();
+                    } else {
+                        mDrawerLayout.openDrawer(GravityCompat.START);
+                        setControlBarVisibleAnimate(true);
+                    }
                     return true;
                 }
             }
@@ -266,33 +266,31 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         if (action != null) {
             switch (action) {
                 case ACTION_NAVIGATION_PREVIOUS_TAB: {
-//                    final int previous = mViewPager.getCurrentItem() - 1;
-//                    final int mode = mSlidingMenu.getMode();
-//                    if (previous < 0 && (mode == SlidingMenu.LEFT || mode == SlidingMenu.LEFT_RIGHT)) {
-//                        mSlidingMenu.showMenu(true);
-//                        setControlBarVisibleAnimate(true);
-//                    } else if (previous < mPagerAdapter.getCount()) {
-//                        if (mSlidingMenu.isSecondaryMenuShowing()) {
-//                            mSlidingMenu.showContent(true);
-//                        } else {
-//                            mViewPager.setCurrentItem(previous, true);
-//                        }
-//                    }
+                    final int previous = mViewPager.getCurrentItem() - 1;
+                    if (previous < 0 && DrawerLayoutTrojan.findDrawerWithGravity(mDrawerLayout, Gravity.START) != null) {
+                        mDrawerLayout.openDrawer(GravityCompat.START);
+                        setControlBarVisibleAnimate(true);
+                    } else if (previous < mPagerAdapter.getCount()) {
+                        if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+                            mDrawerLayout.closeDrawers();
+                        } else {
+                            mViewPager.setCurrentItem(previous, true);
+                        }
+                    }
                     return true;
                 }
                 case ACTION_NAVIGATION_NEXT_TAB: {
-//                    final int next = mViewPager.getCurrentItem() + 1;
-//                    final int mode = mSlidingMenu.getMode();
-//                    if (next >= mPagerAdapter.getCount() && (mode == SlidingMenu.RIGHT || mode == SlidingMenu.LEFT_RIGHT)) {
-//                        mSlidingMenu.showSecondaryMenu(true);
-//                        setControlBarVisibleAnimate(true);
-//                    } else if (next >= 0) {
-//                        if (mSlidingMenu.isMenuShowing()) {
-//                            mSlidingMenu.showContent(true);
-//                        } else {
-//                            mViewPager.setCurrentItem(next, true);
-//                        }
-//                    }
+                    final int next = mViewPager.getCurrentItem() + 1;
+                    if (next >= mPagerAdapter.getCount() && DrawerLayoutTrojan.findDrawerWithGravity(mDrawerLayout, Gravity.END) != null) {
+                        mDrawerLayout.openDrawer(GravityCompat.END);
+                        setControlBarVisibleAnimate(true);
+                    } else if (next >= 0) {
+                        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                            mDrawerLayout.closeDrawers();
+                        } else {
+                            mViewPager.setCurrentItem(next, true);
+                        }
+                    }
                     return true;
                 }
             }
@@ -361,7 +359,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
         mTabColumns = getResources().getInteger(R.integer.default_tab_columns);
 
-        mColorStatusFrameLayout.setOnFitSystemWindowsListener(this);
+        mHomeContent.setOnFitSystemWindowsListener(this);
         mPagerAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), mTabIndicator, mTabColumns);
 		mPushEnabled = isPushEnabled(this);
 		mViewPager.setAdapter(mPagerAdapter);
@@ -403,10 +401,14 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                 // Steal MENU key event
                 switch (keyCode) {
                     case KeyEvent.KEYCODE_MENU: {
-//                        if (mSlidingMenu != null) {
-//                            mSlidingMenu.toggle(true);
-//                            return true;
-//                        }
+                        if (mDrawerLayout != null) {
+                            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                                mDrawerLayout.closeDrawers();
+                            } else {
+                                mDrawerLayout.openDrawer(GravityCompat.START);
+                            }
+                            return true;
+                        }
                         break;
                     }
                 }
@@ -558,16 +560,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     }
 
     @Override
-    public void onWindowFocusChanged(final boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-//        if (mSlidingMenu != null && mSlidingMenu.isMenuShowing()) {
-//            updateDrawerPercentOpen(1, false);
-//        } else {
-//            updateDrawerPercentOpen(0, false);
-//        }
-    }
-
-    @Override
     public boolean onSearchRequested() {
         startActivity(new Intent(this, QuickSearchBarActivity.class));
         return true;
@@ -585,7 +577,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         if (fragment instanceof AccountsDashboardFragment) {
             ((AccountsDashboardFragment) fragment).requestFitSystemWindows();
         }
-        mColorStatusFrameLayout.setStatusBarHeight(insets.top);
+        mHomeContent.setStatusBarHeight(insets.top);
     }
 
     public void updateUnreadCount() {
@@ -595,17 +587,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                 mPagerAdapter.getTabs());
         AsyncTaskUtils.executeTask(mUpdateUnreadCountTask);
         mTabIndicator.setDisplayBadge(mPreferences.getBoolean(KEY_UNREAD_COUNT, true));
-    }
-
-    @Override
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-        switch (requestCode) {
-            case REQUEST_SWIPEBACK_ACTIVITY: {
-                // closeAccountsDrawer();
-                return;
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -665,7 +646,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         mActionsButton = findViewById(R.id.actions_button);
         mActionBarWithOverlay = findViewById(R.id.twidere_action_bar_with_overlay);
         mTabIndicator = (TabPagerIndicator) findViewById(R.id.main_tabs);
-        mColorStatusFrameLayout = (TintedStatusFrameLayout) findViewById(R.id.home_content);
+        mHomeContent = (TintedStatusFrameLayout) findViewById(R.id.home_content);
     }
 
     private Fragment getKeyboardShortcutRecipient() {
@@ -818,11 +799,11 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 		mTabIndicator.setIconColor(actionItemColor);
 		mTabIndicator.setLabelColor(actionItemColor);
         ActivitySupport.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
-		mColorStatusFrameLayout.setDrawColor(true);
-		mColorStatusFrameLayout.setDrawShadow(false);
-        mColorStatusFrameLayout.setColor(actionBarColor, actionBarAlpha);
+        mHomeContent.setDrawColor(true);
+        mHomeContent.setDrawShadow(false);
+        mHomeContent.setColor(actionBarColor, actionBarAlpha);
         StatusBarProxy.setStatusBarDarkIcon(getWindow(), TwidereColorUtils.getYIQLuminance(actionBarColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD);
-		mColorStatusFrameLayout.setFactor(1);
+        mHomeContent.setFactor(1);
         mActionBarWithOverlay.setAlpha(actionBarAlpha / 255f);
         mActionsButton.setAlpha(actionBarAlpha / 255f);
 	}
@@ -837,36 +818,12 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     }
 
 	private void setupSlidingMenu() {
-//        if (mSlidingMenu == null) return;
-//        final Resources res = getResources();
-//        final int marginThreshold = res.getDimensionPixelSize(R.dimen.default_sliding_menu_margin_threshold);
-//        final boolean relativeBehindWidth = res.getBoolean(R.bool.relative_behind_width);
-//        mSlidingMenu.setMode(SlidingMenu.LEFT);
-//        mSlidingMenu.setShadowWidthRes(R.dimen.default_sliding_menu_shadow_width);
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow_left, GravityCompat.START);
-//        mSlidingMenu.setSecondaryShadowDrawable(R.drawable.shadow_right);
-//        if (relativeBehindWidth) {
-//            mSlidingMenu.setBehindOffsetRes(R.dimen.drawer_offset_home);
-//        } else {
-//            mSlidingMenu.setBehindWidthRes(R.dimen.drawer_width_home);
-//        }
-//        mSlidingMenu.setTouchmodeMarginThreshold(marginThreshold);
-//        mSlidingMenu.setFadeDegree(0.5f);
-//        mSlidingMenu.setMenu(R.layout.drawer_home_accounts);
-//        mSlidingMenu.setOnOpenedListener(this);
-//        mSlidingMenu.setOnClosedListener(this);
-//        mLeftDrawerContainer = (LeftDrawerFrameLayout) mSlidingMenu.getMenu().findViewById(R.id.left_drawer_container);
-//        final boolean isTransparentBackground = ThemeUtils.isTransparentBackground(getCurrentThemeBackgroundOption());
-//        mLeftDrawerContainer.setClipEnabled(isTransparentBackground);
-//        mLeftDrawerContainer.setScrollScale(mSlidingMenu.getBehindScrollScale());
-//        mSlidingMenu.setBehindCanvasTransformer(new ListenerCanvasTransformer(this));
-//        final Window window = getWindow();
-//        ThemeUtils.applyWindowBackground(this, mSlidingMenu.getContent(), getCurrentThemeResourceId(),
-//                getThemeBackgroundOption(), getCurrentThemeBackgroundAlpha());
-//        window.setBackgroundDrawable(new EmptyDrawable());
-//
-//        mSlidingMenu.addIgnoredView(mActionBarContainer);
-	}
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow_start, GravityCompat.START);
+        final Window window = getWindow();
+        ThemeUtils.applyWindowBackground(this, mHomeContent, getCurrentThemeResourceId(),
+                getThemeBackgroundOption(), getCurrentThemeBackgroundAlpha());
+        window.setBackgroundDrawable(new EmptyDrawable());
+    }
 
     private void triggerActionsClick() {
         if (mViewPager == null || mPagerAdapter == null) return;
