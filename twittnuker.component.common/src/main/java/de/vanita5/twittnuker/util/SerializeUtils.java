@@ -20,24 +20,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'com.android.library'
-apply from: rootProject.file('global.gradle')
+package de.vanita5.twittnuker.util;
 
-android {
-    defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+import com.bluelinelabs.logansquare.LoganSquare;
+
+import java.io.IOException;
+import java.util.Arrays;
+
+public class SerializeUtils {
+
+    public static <T> String serializeArray(Class<T> cls, T... array) {
+        try {
+            return LoganSquare.serialize(Arrays.asList(array), cls);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
-}
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
 }

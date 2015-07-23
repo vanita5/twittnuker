@@ -47,6 +47,10 @@ public class Paging extends SimpleValueMap {
 
     public void setCursor(long cursor) {
         put("cursor", cursor);
+    }
+
+    public void setCursor(String cursor) {
+        put("cursor", cursor);
 	}
 
     public Paging sinceId(long sinceId) {

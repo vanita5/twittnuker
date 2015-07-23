@@ -20,18 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.mariotaku.querybuilder;
+package android.support.v4.content;
 
-public final class RawSQLLang implements SQLLang {
-
-    private final String statement;
-
-    public RawSQLLang(String statement) {
-        this.statement = statement;
-    }
-
-    @Override
-    public String getSQL() {
-        return statement;
+/**
+ * Created by mariotaku on 15/7/5.
+ */
+public class LoaderTrojan {
+    public static <T> boolean isContentChanged(final Loader<T> loader) {
+        return loader.mContentChanged;
     }
 }

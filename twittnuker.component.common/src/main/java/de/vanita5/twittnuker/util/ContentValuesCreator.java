@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
+import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
 import de.vanita5.twittnuker.api.twitter.model.Place;
@@ -42,6 +43,7 @@ import de.vanita5.twittnuker.api.twitter.model.Trend;
 import de.vanita5.twittnuker.api.twitter.model.Trends;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
@@ -54,6 +56,7 @@ import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
@@ -397,7 +400,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         values.put(Statuses.IS_PROTECTED, user.isProtected());
         values.put(Statuses.IS_VERIFIED, user.isVerified());
         values.put(Statuses.USER_PROFILE_IMAGE_URL, profileImageUrl);
-        values.put(CachedUsers.IS_FOLLOWING, user.isFollowing());
+        values.put(Statuses.IS_FOLLOWING, user.isFollowing());
         final String textHtml = TwitterContentUtils.formatStatusText(status);
         values.put(Statuses.TEXT_HTML, textHtml);
         values.put(Statuses.TEXT_PLAIN, TwitterContentUtils.unescapeTwitterStatusText(status.getText()));
@@ -445,6 +448,71 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         return createStatusDraft(status, ParcelableAccount.getAccountIds(status.accounts));
 	}
 
+    @NonNull
+    public static ContentValues createActivity(final Activity activity, final long accountId) {
+        final ContentValues values;
+        switch (activity.getAction()) {
+            case REPLY: {
+                values = createStatusActivity(activity.getTargetStatuses()[0]);
+                break;
+            }
+            case MENTION: {
+                values = createStatusActivity(activity.getTargetObjectStatuses()[0]);
+                break;
+            }
+            default: {
+                values = new ContentValues();
+                break;
+            }
+        }
+        values.put(Activities.ACCOUNT_ID, accountId);
+        values.put(Activities.TIMESTAMP, activity.getCreatedAt().getTime());
+        values.put(Activities.MIN_POSITION, activity.getMinPosition());
+        values.put(Activities.MAX_POSITION, activity.getMaxPosition());
+        values.put(Activities.SOURCES, SerializeUtils.serializeArray(User.class, activity.getSources()));
+        values.put(Activities.TARGET_STATUSES, SerializeUtils.serializeArray(Status.class, activity.getTargetStatuses()));
+        values.put(Activities.TARGET_USERS, SerializeUtils.serializeArray(User.class, activity.getTargetUsers()));
+        values.put(Activities.TARGET_USER_LISTS, SerializeUtils.serializeArray(UserList.class, activity.getTargetUserLists()));
+        values.put(Activities.TARGET_OBJECT_STATUSES, SerializeUtils.serializeArray(Status.class, activity.getTargetObjectStatuses()));
+        values.put(Activities.TARGET_OBJECT_USER_LISTS, SerializeUtils.serializeArray(UserList.class, activity.getTargetObjectUserLists()));
+        return values;
+    }
+
+    @NonNull
+    public static ContentValues createStatusActivity(final Status orig) {
+        if (orig == null) throw new NullPointerException();
+        final ContentValues values = new ContentValues();
+        final Status status;
+        if (orig.isRetweet()) {
+            final Status retweetedStatus = orig.getRetweetedStatus();
+            final User retweetUser = orig.getUser();
+            final long retweetedById = retweetUser.getId();
+            values.put(Activities.STATUS_RETWEETED_BY_USER_ID, retweetedById);
+            status = retweetedStatus;
+        } else if (orig.isQuote()) {
+            final Status quotedStatus = orig.getQuotedStatus();
+            final User quoteUser = orig.getUser();
+            final long quotedById = quoteUser.getId();
+            final String textHtml = TwitterContentUtils.formatStatusText(orig);
+            values.put(Activities.STATUS_QUOTE_TEXT_HTML, textHtml);
+            values.put(Activities.STATUS_QUOTE_TEXT_PLAIN, TwitterContentUtils.unescapeTwitterStatusText(orig.getText()));
+            values.put(Activities.STATUS_QUOTE_SOURCE, orig.getSource());
+            values.put(Activities.STATUS_QUOTED_BY_USER_ID, quotedById);
+            status = quotedStatus;
+        } else {
+            status = orig;
+        }
+        final User user = status.getUser();
+        final long userId = user.getId();
+        values.put(Activities.STATUS_USER_ID, userId);
+        final String textHtml = TwitterContentUtils.formatStatusText(status);
+        values.put(Activities.STATUS_TEXT_HTML, textHtml);
+        values.put(Activities.STATUS_TEXT_PLAIN, TwitterContentUtils.unescapeTwitterStatusText(status.getText()));
+        values.put(Activities.STATUS_SOURCE, status.getSource());
+        return values;
+    }
+
+
     public static ContentValues createStatusDraft(final ParcelableStatusUpdate status,
 			                                      final long[] accountIds) {
 		final ContentValues values = new ContentValues();
@@ -479,4 +547,32 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         return resultList.toArray(new ContentValues[resultList.size()]);
 	}
 
+    public static ContentValues makeCachedUserContentValues(final ParcelableUser user) {
+        if (user == null) return null;
+        final ContentValues values = new ContentValues();
+        values.put(CachedUsers.USER_ID, user.id);
+        values.put(CachedUsers.NAME, user.name);
+        values.put(CachedUsers.SCREEN_NAME, user.screen_name);
+        values.put(CachedUsers.PROFILE_IMAGE_URL, user.profile_image_url);
+        values.put(CachedUsers.CREATED_AT, user.created_at);
+        values.put(CachedUsers.IS_PROTECTED, user.is_protected);
+        values.put(CachedUsers.IS_VERIFIED, user.is_verified);
+        values.put(CachedUsers.LISTED_COUNT, user.listed_count);
+        values.put(CachedUsers.FAVORITES_COUNT, user.favorites_count);
+        values.put(CachedUsers.FOLLOWERS_COUNT, user.followers_count);
+        values.put(CachedUsers.FRIENDS_COUNT, user.friends_count);
+        values.put(CachedUsers.STATUSES_COUNT, user.statuses_count);
+        values.put(CachedUsers.LOCATION, user.location);
+        values.put(CachedUsers.DESCRIPTION_PLAIN, user.description_plain);
+        values.put(CachedUsers.DESCRIPTION_HTML, user.description_html);
+        values.put(CachedUsers.DESCRIPTION_EXPANDED, user.description_expanded);
+        values.put(CachedUsers.URL, user.url);
+        values.put(CachedUsers.URL_EXPANDED, user.url_expanded);
+        values.put(CachedUsers.PROFILE_BANNER_URL, user.profile_banner_url);
+        values.put(CachedUsers.IS_FOLLOWING, user.is_following);
+        values.put(CachedUsers.BACKGROUND_COLOR, user.background_color);
+        values.put(CachedUsers.LINK_COLOR, user.link_color);
+        values.put(CachedUsers.TEXT_COLOR, user.text_color);
+        return values;
+    }
 }

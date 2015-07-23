@@ -26,9 +26,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 
-import org.mariotaku.querybuilder.Columns;
-import org.mariotaku.querybuilder.Expression;
-import org.mariotaku.querybuilder.RawItemArray;
+import org.mariotaku.sqliteqb.library.Columns;
+import org.mariotaku.sqliteqb.library.Expression;
+import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.provider.TwidereDataStore.NetworkUsages;
 import de.vanita5.twittnuker.util.MathUtils;
 
