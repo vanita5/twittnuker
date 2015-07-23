@@ -364,7 +364,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         notificationBuilder.setContentText(item.text);
         notificationBuilder.setAutoCancel(true);
         notificationBuilder.setWhen(System.currentTimeMillis());
-        notificationBuilder.setSmallIcon(R.drawable.ic_stat_twittnuker);
+        notificationBuilder.setSmallIcon(R.drawable.ic_stat_draft);
         final Intent discardIntent = new Intent(context, BackgroundOperationService.class);
         discardIntent.setAction(INTENT_ACTION_DISCARD_DRAFT);
         discardIntent.setData(Uri.withAppendedPath(Drafts.CONTENT_URI, String.valueOf(draftId)));
