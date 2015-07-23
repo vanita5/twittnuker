@@ -117,6 +117,9 @@ import android.widget.Toast;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
+import org.mariotaku.restfu.RestAPIFactory;
+import org.mariotaku.restfu.RestClient;
+import org.mariotaku.restfu.http.Authorization;
 import org.mariotaku.sqliteqb.library.AllColumns;
 import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Columns.Column;
@@ -129,10 +132,6 @@ import org.mariotaku.sqliteqb.library.Selectable;
 import org.mariotaku.sqliteqb.library.Table;
 import org.mariotaku.sqliteqb.library.Tables;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
-import org.mariotaku.restfu.RestAPIFactory;
-import org.mariotaku.restfu.RestClient;
-import org.mariotaku.restfu.http.Authorization;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -161,6 +160,7 @@ import de.vanita5.twittnuker.fragment.support.ListsFragment;
 import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
 import de.vanita5.twittnuker.fragment.support.MutesUsersListFragment;
 import de.vanita5.twittnuker.fragment.support.SavedSearchesListFragment;
+import de.vanita5.twittnuker.fragment.support.ScheduledStatusesFragment;
 import de.vanita5.twittnuker.fragment.support.SearchFragment;
 import de.vanita5.twittnuker.fragment.support.SensitiveContentWarningDialogFragment;
 import de.vanita5.twittnuker.fragment.support.StatusFavoritersListFragment;
@@ -188,6 +188,7 @@ import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
 import de.vanita5.twittnuker.menu.SupportStatusShareProvider;
 import de.vanita5.twittnuker.model.AccountPreferences;
+import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
@@ -384,6 +385,7 @@ public final class Utils implements Constants {
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_SEARCH, null, LINK_ID_SEARCH);
 		LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_MUTES_USERS, null, LINK_ID_MUTES_USERS);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_MAP, null, LINK_ID_MAP);
+        LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_SCHEDULED_STATUSES, null, LINK_ID_SCHEDULED_STATUSES);
 
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_ACCOUNTS, null, LINK_ID_ACCOUNTS);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_DRAFTS, null, LINK_ID_DRAFTS);
@@ -888,6 +890,10 @@ public final class Utils implements Constants {
 				fragment = new MutesUsersListFragment();
 				break;
 			}
+            case LINK_ID_SCHEDULED_STATUSES: {
+                fragment = new ScheduledStatusesFragment();
+                break;
+            }
 			case LINK_ID_DIRECT_MESSAGES_CONVERSATION: {
 				fragment = new MessagesConversationFragment();
 				final String paramRecipientId = uri.getQueryParameter(QUERY_PARAM_RECIPIENT_ID);
@@ -1539,9 +1545,9 @@ public final class Utils implements Constants {
 		final ContentResolver resolver = context.getContentResolver();
         final String table = getTableNameByUri(uri);
         if (table == null) return new long[0];
-		final Cursor cur = ContentResolverUtils.query(resolver, uri, new String[] { Statuses.STATUS_ID },
-                buildStatusFilterWhereClause(table, null).getSQL(),
-                null, null);
+		final Cursor cur = ContentResolverUtils.query(resolver, uri, new String[]{Statuses.STATUS_ID},
+				buildStatusFilterWhereClause(table, null).getSQL(),
+				null, null);
 		if (cur == null) return new long[0];
 		final long[] ids = new long[cur.getCount()];
 		cur.moveToFirst();
@@ -2503,18 +2509,23 @@ public final class Utils implements Constants {
 	}
 
 	public static boolean isOfficialKeyAccount(final Context context, final long accountId) {
-		if (context == null) return false;
+        return getOfficialKeyType(context, accountId) != ConsumerKeyType.UNKNOWN;
+    }
+
+    @NonNull
+    public static ConsumerKeyType getOfficialKeyType(final Context context, final long accountId) {
+        if (context == null) return ConsumerKeyType.UNKNOWN;
 		final String[] projection = {Accounts.CONSUMER_KEY, Accounts.CONSUMER_SECRET};
         final String selection = Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL();
 		final Cursor c = context.getContentResolver().query(Accounts.CONTENT_URI, projection, selection, null, null);
         //noinspection TryFinallyCanBeTryWithResources
 		try {
 			if (c.moveToPosition(0))
-                return TwitterContentUtils.isOfficialKey(context, c.getString(0), c.getString(1));
+                return TwitterContentUtils.getOfficialKeyType(context, c.getString(0), c.getString(1));
 		} finally {
 			c.close();
 		}
-		return false;
+        return ConsumerKeyType.UNKNOWN;
 	}
 
     public static boolean isOfficialTwitterInstance(final Context context, final Twitter twitter) {
@@ -2718,15 +2729,25 @@ public final class Utils implements Constants {
         context.startActivity(Intent.createChooser(intent, null));
 	}
 
-	public static void openMutesUsers(final Activity activity, final long account_id) {
+    public static void openMutesUsers(final Activity activity, final long accountId) {
 		if (activity == null) return;
 		final Uri.Builder builder = new Uri.Builder();
 		builder.scheme(SCHEME_TWITTNUKER);
 		builder.authority(AUTHORITY_MUTES_USERS);
-		builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(account_id));
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
 		final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
         activity.startActivity(intent);
 	}
+
+    public static void openScheduledStatuses(final Activity activity, final long accountId) {
+        if (activity == null) return;
+        final Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_SCHEDULED_STATUSES);
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
+        final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
+        activity.startActivity(intent);
+    }
 
 	public static void openSavedSearches(final Activity activity, final long account_id) {
 		if (activity == null) return;
@@ -3252,30 +3273,30 @@ public final class Utils implements Constants {
         final int favoriteHighlight = resources.getColor(R.color.highlight_favorite);
 		final int loveHighlight = resources.getColor(R.color.highlight_love);
 		final boolean isMyRetweet = isMyRetweet(status);
-		final MenuItem delete = menu.findItem(MENU_DELETE);
+        final MenuItem delete = menu.findItem(R.id.delete);
 		if (delete != null) {
             delete.setVisible(isMyStatus(status));
 		}
-		final MenuItem retweet = menu.findItem(MENU_RETWEET);
+        final MenuItem retweet = menu.findItem(R.id.retweet);
 		if (retweet != null) {
             ActionIconDrawable.setMenuHighlight(retweet, new TwidereMenuInfo(isMyRetweet, retweetHighlight));
             retweet.setTitle(isMyRetweet ? R.string.cancel_retweet : R.string.retweet);
 		}
-		final MenuItem favorite = menu.findItem(MENU_FAVORITE);
+        final MenuItem favorite = menu.findItem(R.id.favorite);
 		if (favorite != null) {
             ActionIconDrawable.setMenuHighlight(favorite, new TwidereMenuInfo(status.is_favorite, favoriteHighlight));
             favorite.setTitle(status.is_favorite ? R.string.unfavorite : R.string.favorite);
 		}
-		final MenuItem love = menu.findItem(MENU_LOVE);
+		final MenuItem love = menu.findItem(R.id.love);
 	    if (love != null) {
 			ActionIconDrawable.setMenuHighlight(love, new TwidereMenuInfo(isMyRetweet && status.is_favorite, loveHighlight));
         }
-		final MenuItem translate = menu.findItem(MENU_TRANSLATE);
+		final MenuItem translate = menu.findItem(R.id.translate);
 		if (translate != null) {
             final boolean isOfficialKey = isOfficialCredentials(context, account);
             final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
             final boolean forcePrivateApis = prefs.getBoolean(KEY_FORCE_USING_PRIVATE_APIS, false);
-            MenuUtils.setMenuItemAvailability(menu, MENU_TRANSLATE, forcePrivateApis || isOfficialKey);
+            MenuUtils.setMenuItemAvailability(menu, R.id.translate, forcePrivateApis || isOfficialKey);
 		}
 		final MenuItem shareItem = menu.findItem(R.id.share);
         final ActionProvider shareProvider = MenuItemCompat.getActionProvider(shareItem);
@@ -3574,46 +3595,46 @@ public final class Utils implements Constants {
     public static boolean handleMenuItemClick(Context context, Fragment fragment, FragmentManager fm, AsyncTwitterWrapper twitter, ParcelableStatus status, MenuItem item) {
         final UserColorNameManager colorNameManager = UserColorNameManager.getInstance(context);
         switch (item.getItemId()) {
-            case MENU_COPY: {
+            case R.id.copy: {
                 if (ClipboardUtils.setText(context, status.text_plain)) {
                     showOkMessage(context, R.string.text_copied, false);
                 }
                 break;
             }
-            case MENU_RETWEET: {
+            case R.id.retweet: {
 				retweet(status, twitter);
                 break;
             }
-            case MENU_QUOTE: {
+            case R.id.quote: {
                 final Intent intent = new Intent(INTENT_ACTION_QUOTE);
                 intent.putExtra(EXTRA_STATUS, status);
                 context.startActivity(intent);
                 break;
             }
-            case MENU_REPLY: {
+            case R.id.reply: {
                 final Intent intent = new Intent(INTENT_ACTION_REPLY);
                 intent.putExtra(EXTRA_STATUS, status);
                 context.startActivity(intent);
                 break;
             }
-            case MENU_FAVORITE: {
+            case R.id.favorite: {
 				favorite(status, twitter);
                 break;
             }
-			case MENU_LOVE: {
+			case R.id.love: {
 				retweet(status, twitter);
 				favorite(status, twitter);
 				break;
 			}
-            case MENU_DELETE: {
+            case R.id.delete: {
                 DestroyStatusDialogFragment.show(fm, status);
                 break;
             }
-            case MENU_ADD_TO_FILTER: {
+            case R.id.add_to_filter: {
                 AddStatusFilterDialogFragment.show(fm, status);
                 break;
             }
-            case MENU_SET_COLOR: {
+            case R.id.set_color: {
                 final Intent intent = new Intent(context, ColorPickerDialogActivity.class);
                 final int color = colorNameManager.getUserColor(status.user_id, true);
                 if (color != 0) {
@@ -3628,7 +3649,7 @@ public final class Utils implements Constants {
                 }
                 break;
             }
-            case MENU_TRANSLATE: {
+            case R.id.translate: {
                 final ParcelableCredentials account
                         = ParcelableAccount.getCredentials(context, status.account_id);
                 if (isOfficialCredentials(context, account)) {
@@ -3651,7 +3672,7 @@ public final class Utils implements Constants {
                 }
                 break;
             }
-            case MENU_OPEN_WITH_ACCOUNT: {
+            case R.id.open_with_account: {
                 final Intent intent = new Intent(INTENT_ACTION_SELECT_ACCOUNT);
                 intent.setClass(context, AccountSelectorActivity.class);
                 intent.putExtra(EXTRA_SINGLE_SELECTION, true);

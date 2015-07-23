@@ -45,8 +45,8 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffsetListener;
+import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
-import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.util.ContentListScrollListener;
 import de.vanita5.twittnuker.util.ContentListScrollListener.ContentListSupport;
@@ -56,7 +56,7 @@ import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 
-public abstract class AbsContentRecyclerViewFragment<A extends IContentCardAdapter> extends BaseSupportFragment
+public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAdapter> extends BaseSupportFragment
         implements OnRefreshListener, DrawerCallback, RefreshScrollTopInterface, ControlBarOffsetListener,
         ContentListSupport {
 
@@ -222,7 +222,7 @@ public abstract class AbsContentRecyclerViewFragment<A extends IContentCardAdapt
             mItemDecoration = new DividerItemDecoration(context, mLayoutManager.getOrientation());
             mRecyclerView.addItemDecoration(mItemDecoration);
 		}
-		mRecyclerView.setAdapter((RecyclerView.Adapter) mAdapter);
+        mRecyclerView.setAdapter(mAdapter);
 
 		mScrollListener = new ContentListScrollListener(this);
 		mScrollListener.setTouchSlop(ViewConfiguration.get(context).getScaledTouchSlop());

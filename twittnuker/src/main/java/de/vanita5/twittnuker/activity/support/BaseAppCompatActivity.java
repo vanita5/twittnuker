@@ -31,6 +31,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
@@ -118,7 +119,7 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     @Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
-			case MENU_BACK: {
+            case R.id.back: {
 				onBackPressed();
 				return true;
 			}

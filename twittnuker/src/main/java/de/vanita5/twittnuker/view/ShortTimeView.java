@@ -27,17 +27,17 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.v7.widget.AppCompatTextView;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.view.themed.ThemedTextView;
 
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
 import static de.vanita5.twittnuker.util.Utils.formatSameDayTime;
 
-public class ShortTimeView extends AppCompatTextView implements Constants, OnSharedPreferenceChangeListener {
+public class ShortTimeView extends ThemedTextView implements Constants, OnSharedPreferenceChangeListener {
 
 	private static final long TICKER_DURATION = 5000L;
 

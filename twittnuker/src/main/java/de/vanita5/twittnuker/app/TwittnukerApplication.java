@@ -46,7 +46,6 @@ import com.nostra13.universalimageloader.utils.L;
 import com.squareup.okhttp.internal.Network;
 import com.squareup.otto.Bus;
 
-import org.acra.ACRA;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
 import de.vanita5.twittnuker.BuildConfig;
@@ -54,15 +53,16 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.AssistLauncherActivity;
 import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
+import de.vanita5.twittnuker.util.AbsLogger;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DebugModeUtils;
-import de.vanita5.twittnuker.util.ErrorLogger;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
+import de.vanita5.twittnuker.util.TwidereLogger;
 import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
@@ -259,8 +259,8 @@ public class TwittnukerApplication extends Application implements Constants,
     }
 
     private void initBugReport() {
-        ACRA.init(this);
-		ErrorLogger.setEnabled(BuildConfig.DEBUG);
+		AbsLogger.setImplementation(new TwidereLogger());
+		AbsLogger.init(this);
     }
 
 	private SharedPreferences getSharedPreferences() {

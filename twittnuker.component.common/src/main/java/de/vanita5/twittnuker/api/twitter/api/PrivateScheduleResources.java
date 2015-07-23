@@ -23,26 +23,36 @@
 package de.vanita5.twittnuker.api.twitter.api;
 
 import org.mariotaku.restfu.annotation.method.DELETE;
+import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.method.PUT;
 import org.mariotaku.restfu.annotation.param.Body;
 import org.mariotaku.restfu.annotation.param.Form;
+import org.mariotaku.restfu.annotation.param.MethodExtra;
 import org.mariotaku.restfu.annotation.param.Path;
+import org.mariotaku.restfu.annotation.param.Query;
 import org.mariotaku.restfu.http.BodyType;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ScheduledStatus;
+import de.vanita5.twittnuker.api.twitter.model.ScheduledStatusesList;
 import de.vanita5.twittnuker.api.twitter.model.StatusSchedule;
 
 public interface PrivateScheduleResources {
 
     @POST("/schedule/status/tweet.json")
     @Body(BodyType.FORM)
-    ScheduledStatus scheduleTweet(@Form StatusSchedule schedule);
+    ScheduledStatus scheduleTweet(@Form StatusSchedule schedule) throws TwitterException;
 
     @DELETE("/schedule/status/{id}.json")
-    ScheduledStatus destroyScheduleTweet(@Path("id") long id);
+    ScheduledStatus destroyScheduleTweet(@Path("id") long id) throws TwitterException;
 
     @PUT("/schedule/status/{id}.json")
     @Body(BodyType.FORM)
-    ScheduledStatus updateScheduleTweet(@Path("id") long id, @Form StatusSchedule schedule);
+    ScheduledStatus updateScheduleTweet(@Path("id") long id, @Form StatusSchedule schedule) throws TwitterException;
+
+    @GET("/schedule/status/list.json")
+    @MethodExtra(name = "extra_params", values = {"include_entities", "include_cards", "cards_platform"})
+    ScheduledStatusesList getScheduledStatusesList(@Query Paging paging, @Query("state") ScheduledStatus.State[] states) throws TwitterException;
 
 }

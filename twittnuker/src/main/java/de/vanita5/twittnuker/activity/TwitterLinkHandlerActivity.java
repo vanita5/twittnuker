@@ -14,7 +14,7 @@ import android.text.TextUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
-import de.vanita5.twittnuker.util.ErrorLogger;
+import de.vanita5.twittnuker.util.AbsLogger;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.util.List;
@@ -112,7 +112,7 @@ public class TwitterLinkHandlerActivity extends Activity implements Constants {
 		if (handledIntent != null) {
 			startActivity(handledIntent);
 		} else {
-            ErrorLogger.exception(new TwitterLinkException("Unable to handle twitter uri " + uri));
+            AbsLogger.error(new TwitterLinkException("Unable to handle twitter uri " + uri));
 			final String packageName = mPreferences.getString(KEY_FALLBACK_TWITTER_LINK_HANDLER, null);
 			final Intent fallbackIntent = new Intent(Intent.ACTION_VIEW, uri);
 			fallbackIntent.setPackage(packageName);

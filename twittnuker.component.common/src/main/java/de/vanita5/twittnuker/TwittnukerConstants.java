@@ -86,6 +86,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String AUTHORITY_DIRECT_MESSAGES_CONVERSATION = "direct_messages_conversation";
     String AUTHORITY_SEARCH = "search";
     String AUTHORITY_MAP = "map";
+    String AUTHORITY_SCHEDULED_STATUSES = "scheduled_statuses";
     String AUTHORITY_USER_LIST = "user_list";
     String AUTHORITY_USER_LIST_TIMELINE = "user_list_timeline";
     String AUTHORITY_USER_LIST_MEMBERS = "user_list_members";

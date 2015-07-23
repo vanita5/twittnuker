@@ -20,21 +20,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package de.vanita5.twittnuker.api.twitter.model;
 
-import org.acra.ACRA;
+public interface ExtendedProfile {
 
-public class ErrorLogger {
+    long getId();
 
-	private static boolean sEnabled;
+    Birthdate getBirthdate();
 
-	public static void setEnabled(boolean enabled) {
-		sEnabled = enabled;
-	}
+    interface Birthdate {
+        int getDay();
 
-	public static void exception(final Throwable t) {
-		if (!sEnabled) return;
-		ACRA.getErrorReporter().handleSilentException(t);
-	}
+        int getMonth();
+
+        int getYear();
+
+        Visibility getVisibility();
+
+        Visibility getYearVisibility();
+
+        enum Visibility {
+            MUTUALFOLLOW, PUBLIC, UNKNOWN;
+
+            public static Visibility parse(String s) {
+                if ("mutualfollow".equals(s)) return MUTUALFOLLOW;
+                if ("public".equals(s)) return PUBLIC;
+                return UNKNOWN;
+            }
+        }
+    }
 
 }

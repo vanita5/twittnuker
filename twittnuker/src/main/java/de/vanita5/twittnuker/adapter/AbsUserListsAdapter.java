@@ -79,6 +79,7 @@ public abstract class AbsUserListsAdapter<D> extends LoadMoreSupportAdapter<View
 		mCompactCards = compact;
 	}
 
+    @NonNull
 	@Override
 	public Context getContext() {
 		return mContext;
@@ -100,6 +101,7 @@ public abstract class AbsUserListsAdapter<D> extends LoadMoreSupportAdapter<View
 		return mTwitterWrapper;
 	}
 
+    @NonNull
 	@Override
 	public UserColorNameManager getUserColorNameManager() {
 		return mUserColorNameManager;
@@ -196,6 +198,7 @@ public abstract class AbsUserListsAdapter<D> extends LoadMoreSupportAdapter<View
 		return false;
 	}
 
+    @NonNull
 	@Override
 	public MediaLoaderWrapper getMediaLoader() {
 		return mMediaLoader;

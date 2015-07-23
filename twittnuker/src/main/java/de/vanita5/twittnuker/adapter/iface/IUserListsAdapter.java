@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.adapter.iface;
 
+import android.support.annotation.NonNull;
+
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.view.holder.UserListViewHolder.UserListClickListener;
@@ -40,6 +42,7 @@ public interface IUserListsAdapter<Data> extends IContentCardAdapter, UserListCl
 
 	boolean isNameFirst();
 
+    @NonNull
 	@Override
 	MediaLoaderWrapper getMediaLoader();
 

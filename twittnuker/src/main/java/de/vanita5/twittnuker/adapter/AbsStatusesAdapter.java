@@ -121,11 +121,13 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
         return mShowAccountsColor;
     }
 
+    @NonNull
     @Override
     public final MediaLoaderWrapper getMediaLoader() {
         return mMediaLoader;
     }
 
+    @NonNull
     @Override
     public final Context getContext() {
         return mContext;
@@ -152,6 +154,7 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
         return mTwitterWrapper;
     }
 
+    @NonNull
     @Override
     public UserColorNameManager getUserColorNameManager() {
         return mUserColorNameManager;

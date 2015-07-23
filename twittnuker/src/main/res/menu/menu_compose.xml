@@ -56,5 +56,10 @@
         android:checkable="true"
         android:title="@string/link_to_quoted_status"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/schedule"
+        android:icon="@drawable/ic_action_time"
+        android:title="@string/send_at"
+        app:showAsAction="never" />
 
 </menu>

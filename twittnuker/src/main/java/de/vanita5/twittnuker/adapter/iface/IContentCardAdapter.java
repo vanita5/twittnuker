@@ -31,8 +31,11 @@ import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
 public interface IContentCardAdapter extends ILoadMoreSupportAdapter {
+
+    @NonNull
 	Context getContext();
 
+    @NonNull
     UserColorNameManager getUserColorNameManager();
 
     int getItemCount();
@@ -47,5 +50,6 @@ public interface IContentCardAdapter extends ILoadMoreSupportAdapter {
     @NonNull
 	AsyncTwitterWrapper getTwitterWrapper();
 
+    @NonNull
     MediaLoaderWrapper getMediaLoader();
 }

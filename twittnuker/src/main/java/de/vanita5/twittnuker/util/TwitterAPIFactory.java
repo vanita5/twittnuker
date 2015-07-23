@@ -326,6 +326,9 @@ public class TwitterAPIFactory implements TwittnukerConstants {
             case TWITTER_FOR_MAC: {
                 return "Twitter-Mac";
             }
+            case TWEETDECK: {
+                return "TweetDeck";
+            }
         }
         return "Twitter";
     }
@@ -338,6 +341,29 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         } catch (final PackageManager.NameNotFoundException e) {
             return TWITTNUKER_APP_NAME + " " + TWITTNUKER_PROJECT_URL;
         }
+    }
+
+    public static Endpoint getOAuthEndpoint(String apiUrlFormat, boolean sameOAuthSigningUrl) {
+        String endpointUrl, signEndpointUrl;
+        endpointUrl = getApiUrl(apiUrlFormat, "api", null);
+        if (!sameOAuthSigningUrl) {
+            signEndpointUrl = getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", null);
+        } else {
+            signEndpointUrl = endpointUrl;
+        }
+        return new OAuthEndpoint(endpointUrl, signEndpointUrl);
+    }
+
+    public static Endpoint getRestEndpoint(String apiUrlFormat, boolean sameOAuthSigningUrl, boolean noVersionSuffix) {
+        final String versionSuffix = noVersionSuffix ? null : "1.1";
+        String endpointUrl, signEndpointUrl;
+        endpointUrl = getApiUrl(apiUrlFormat, "api", versionSuffix);
+        if (!sameOAuthSigningUrl) {
+            signEndpointUrl = getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", versionSuffix);
+        } else {
+            signEndpointUrl = endpointUrl;
+        }
+        return new OAuthEndpoint(endpointUrl, signEndpointUrl);
     }
 
     public static class TwidereRequestInfoFactory implements RequestInfoFactory {
