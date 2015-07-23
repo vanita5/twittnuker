@@ -351,6 +351,8 @@ public final class Utils implements Constants {
 				VIRTUAL_TABLE_ID_CACHED_USERS_WITH_SCORE);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Drafts.CONTENT_PATH_UNSENT,
 				VIRTUAL_TABLE_ID_DRAFTS_UNSENT);
+		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Drafts.CONTENT_PATH_NOTIFICATIONS,
+				VIRTUAL_TABLE_ID_DRAFTS_NOTIFICATIONS);
 		CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, PushNotifications.CONTENT_PATH,
 				TABLE_ID_PUSH_NOTIFICATIONS);
 
@@ -3507,7 +3509,7 @@ public final class Utils implements Constants {
     }
 
 	public static boolean useShareScreenshot() {
-		return false;
+        return Boolean.parseBoolean("false");
 	}
 
 	private static Drawable getMetadataDrawable(final PackageManager pm, final ActivityInfo info, final String key) {

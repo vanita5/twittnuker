@@ -22,12 +22,10 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -45,15 +43,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.Action;
 import android.support.v4.util.LongSparseArray;
 import android.support.v7.internal.view.SupportMenuInflater;
 import android.support.v7.widget.ActionMenuView;
@@ -574,19 +570,16 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
             @Override
             public boolean animateMove(ViewHolder holder, int fromX, int fromY, int toX, int toY) {
-                Log.d(LOGTAG, String.format("animateMove"));
                 return false;
             }
 
             @Override
             public boolean animateChange(ViewHolder oldHolder, ViewHolder newHolder, int fromLeft, int fromTop, int toLeft, int toTop) {
-                Log.d(LOGTAG, String.format("animateChange"));
                 return false;
             }
 
             @Override
             public void endAnimation(ViewHolder item) {
-                Log.d(LOGTAG, String.format("endAnimation"));
             }
 
             @Override
@@ -763,26 +756,9 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 	}
 
     private void displayNewDraftNotification(String text, Uri draftUri) {
-        final NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setTicker(getString(R.string.draft_saved));
-        builder.setContentTitle(getString(R.string.draft_saved));
-        if (TextUtils.isEmpty(text)) {
-            builder.setContentText(getString(R.string.empty_content));
-        } else {
-        	builder.setContentText(text);
-        }
-        builder.setSmallIcon(R.drawable.ic_stat_info);
-        builder.setAutoCancel(true);
-        final Intent draftsIntent = new Intent(this, DraftsFragment.class);
-        builder.setContentIntent(PendingIntent.getActivity(this, 0, draftsIntent, PendingIntent.FLAG_UPDATE_CURRENT));
-        final Intent serviceIntent = new Intent(this, BackgroundOperationService.class);
-        serviceIntent.setAction(INTENT_ACTION_DISCARD_DRAFT);
-        serviceIntent.setData(draftUri);
-        final Action.Builder actionBuilder = new Action.Builder(R.drawable.ic_action_delete, getString(R.string.discard),
-                PendingIntent.getService(this, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT));
-        builder.addAction(actionBuilder.build());
-        nm.notify(draftUri.toString(), NOTIFICATION_ID_DRAFTS, builder.build());
+        final ContentValues values = new ContentValues();
+        values.put(BaseColumns._ID, draftUri.getLastPathSegment());
+        getContentResolver().insert(Drafts.CONTENT_URI_NOTIFICATIONS, values);
     }
 
     private ParcelableMediaUpdate[] getMedia() {

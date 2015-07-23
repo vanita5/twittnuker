@@ -27,6 +27,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
@@ -47,7 +50,9 @@ public class DraftItem implements Parcelable {
 	};
 
 	public final long[] account_ids;
-	public final long _id, in_reply_to_status_id, timestamp;
+    public final long _id;
+    public final long in_reply_to_status_id;
+    public final long timestamp;
 	public final String text;
     public final ParcelableMediaUpdate[] media;
 	public final boolean is_possibly_sensitive;
