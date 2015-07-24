@@ -744,6 +744,15 @@ public class ThemeUtils implements Constants {
         return d;
     }
 
+	public static Drawable getWindowContentOverlay(final Context context) {
+        final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.windowContentOverlay});
+        try {
+            return a.getDrawable(0);
+        } finally {
+            a.recycle();
+        }
+    }
+
     public static Drawable getWindowContentOverlay(final Context context, int themeRes) {
         @SuppressWarnings("ConstantConditions")
         final TypedArray a = context.obtainStyledAttributes(null, new int[]{android.R.attr.windowContentOverlay}, 0, themeRes);
