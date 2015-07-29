@@ -56,9 +56,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.mariotaku.querybuilder.Columns.Column;
-import org.mariotaku.querybuilder.Expression;
-import org.mariotaku.querybuilder.OrderBy;
+import org.mariotaku.sqliteqb.library.Columns.Column;
+import org.mariotaku.sqliteqb.library.Expression;
+import org.mariotaku.sqliteqb.library.OrderBy;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.QuickSearchBarActivity.SuggestionItem;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;

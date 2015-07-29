@@ -58,9 +58,9 @@ import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.DragSortListView.DropListener;
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
-import org.mariotaku.querybuilder.Columns.Column;
-import org.mariotaku.querybuilder.Expression;
-import org.mariotaku.querybuilder.RawItemArray;
+import org.mariotaku.sqliteqb.library.Columns.Column;
+import org.mariotaku.sqliteqb.library.Expression;
+import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
@@ -104,7 +104,7 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
 	@Override
 	public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
 		switch (item.getItemId()) {
-			case MENU_DELETE: {
+            case R.id.delete: {
                 final long[] itemIds = mListView.getCheckedItemIds();
                 final Expression where = Expression.in(new Column(Tabs._ID), new RawItemArray(itemIds));
 				mResolver.delete(Tabs.CONTENT_URI, where.getSQL(), null);

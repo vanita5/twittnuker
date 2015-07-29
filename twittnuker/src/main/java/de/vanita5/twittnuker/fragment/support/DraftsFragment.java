@@ -59,9 +59,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.mariotaku.querybuilder.Columns.Column;
-import org.mariotaku.querybuilder.Expression;
-import org.mariotaku.querybuilder.RawItemArray;
+import org.mariotaku.sqliteqb.library.Columns.Column;
+import org.mariotaku.sqliteqb.library.Expression;
+import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
@@ -110,7 +110,7 @@ public class DraftsFragment extends BaseSupportFragment implements Constants, Lo
     @Override
 	public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
 		switch (item.getItemId()) {
-			case MENU_DELETE: {
+            case R.id.delete: {
 				final DeleteDraftsConfirmDialogFragment f = new DeleteDraftsConfirmDialogFragment();
 				final Bundle args = new Bundle();
 				args.putLongArray(EXTRA_IDS, mListView.getCheckedItemIds());
@@ -118,7 +118,7 @@ public class DraftsFragment extends BaseSupportFragment implements Constants, Lo
                 f.show(getChildFragmentManager(), "delete_drafts_confirm");
 				break;
 			}
-			case MENU_SEND: {
+            case R.id.send: {
 				final Cursor c = mAdapter.getCursor();
 				if (c == null || c.isClosed()) return false;
 				final SparseBooleanArray checked = mListView.getCheckedItemPositions();

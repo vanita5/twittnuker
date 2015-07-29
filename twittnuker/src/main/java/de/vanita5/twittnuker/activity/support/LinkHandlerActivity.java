@@ -156,7 +156,7 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
     @Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
-			case MENU_HOME: {
+            case android.R.id.home: {
 				if (mFinishOnly) {
 					finish();
 				} else {
@@ -522,6 +522,10 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
             }
             case LINK_ID_PROFILE_EDITOR: {
                 setTitle(R.string.edit_profile);
+                break;
+            }
+            case LINK_ID_SCHEDULED_STATUSES: {
+                setTitle(getString(R.string.scheduled_statuses));
                 break;
             }
             default: {

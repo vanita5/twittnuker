@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.adapter.iface;
 
+import android.support.annotation.NonNull;
+
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
@@ -38,6 +40,7 @@ public interface IActivitiesAdapter<Data> extends IContentCardAdapter, IGapSuppo
     @PreviewStyle
     int getMediaPreviewStyle();
 
+    @NonNull
     @Override
     MediaLoaderWrapper getMediaLoader();
 

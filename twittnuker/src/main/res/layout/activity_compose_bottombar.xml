@@ -70,7 +70,7 @@
 
     </RelativeLayout>
 
-    <HorizontalScrollView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_toEndOf="@+id/account_selector_button"
@@ -85,7 +85,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
     android:background="@null"/>
-    </HorizontalScrollView>
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/send"

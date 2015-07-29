@@ -123,6 +123,16 @@ public class ParcelableUserList implements Parcelable, Comparable<ParcelableUser
 		subscribers_count = list.getSubscriberCount();
 	}
 
+    public static ParcelableUserList[] fromUserLists(UserList[] userLists, long accountId) {
+        if (userLists == null) return null;
+        int size = userLists.length;
+        final ParcelableUserList[] result = new ParcelableUserList[size];
+        for (int i = 0; i < size; i++) {
+            result[i] = new ParcelableUserList(userLists[i], accountId);
+        }
+        return result;
+    }
+
 	@Override
     public int compareTo(@NonNull final ParcelableUserList another) {
 		final long diff = position - another.position;
@@ -181,5 +191,4 @@ public class ParcelableUserList implements Parcelable, Comparable<ParcelableUser
         out.writeLong(members_count);
         out.writeLong(subscribers_count);
 	}
-
 }

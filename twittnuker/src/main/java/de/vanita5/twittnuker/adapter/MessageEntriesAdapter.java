@@ -51,7 +51,7 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.MessageEntryViewHolder;
 
-public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Constants,
+public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> implements Constants,
         IContentCardAdapter, OnClickListener, OnReadStateChangeListener {
 
     public static final int ITEM_VIEW_TYPE_MESSAGE = 0;
@@ -70,8 +70,6 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
     private final AsyncTwitterWrapper mTwitterWrapper;
 
     private final boolean mDisplayProfileImage;
-    private boolean mLoadMoreSupported;
-    private boolean mLoadMoreIndicatorVisible;
     private boolean mShowAccountsColor;
 	private Cursor mCursor;
 	private MessageEntriesAdapterListener mListener;
@@ -101,6 +99,7 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
         };
     }
 
+    @NonNull
     @Override
 	public Context getContext() {
 		return mContext;
@@ -133,40 +132,16 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
         return new DirectMessageEntry(c);
     }
 
+    @NonNull
     @Override
     public MediaLoaderWrapper getMediaLoader() {
         return mImageLoader;
     }
 
+    @NonNull
     @Override
     public UserColorNameManager getUserColorNameManager() {
         return mUserColorNameManager;
-    }
-
-    @Override
-    public boolean isLoadMoreIndicatorVisible() {
-        return mLoadMoreIndicatorVisible;
-    }
-
-    @Override
-    public void setLoadMoreIndicatorVisible(boolean enabled) {
-        if (mLoadMoreIndicatorVisible == enabled) return;
-        mLoadMoreIndicatorVisible = enabled && mLoadMoreSupported;
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public boolean isLoadMoreSupported() {
-        return mLoadMoreSupported;
-    }
-
-    @Override
-    public void setLoadMoreSupported(boolean supported) {
-        mLoadMoreSupported = supported;
-        if (!supported) {
-            mLoadMoreIndicatorVisible = false;
-        }
-        notifyDataSetChanged();
     }
 
     @Override
@@ -225,7 +200,7 @@ public class MessageEntriesAdapter extends Adapter<ViewHolder> implements Consta
 
     @Override
     public final int getItemCount() {
-        return getMessagesCount() + (mLoadMoreIndicatorVisible ? 1 : 0);
+        return getMessagesCount() + (isLoadMoreIndicatorVisible() ? 1 : 0);
     }
 
 	public void onMessageClick(int position) {

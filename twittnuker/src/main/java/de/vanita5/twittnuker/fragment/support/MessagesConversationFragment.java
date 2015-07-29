@@ -74,9 +74,9 @@ import com.github.johnpersano.supertoasts.SuperToast.OnDismissListener;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-import org.mariotaku.querybuilder.Columns.Column;
-import org.mariotaku.querybuilder.Expression;
-import org.mariotaku.querybuilder.OrderBy;
+import org.mariotaku.sqliteqb.library.Columns.Column;
+import org.mariotaku.sqliteqb.library.Expression;
+import org.mariotaku.sqliteqb.library.OrderBy;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.activity.support.ThemedImagePickerActivity;
@@ -114,13 +114,13 @@ import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.view.ComposeEditText;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import de.vanita5.twittnuker.view.ComposeEditText;
 import me.uucky.colorpicker.internal.EffectViewHelper;
 
 import static de.vanita5.twittnuker.util.Utils.buildDirectMessageConversationUri;
@@ -389,6 +389,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     public void onStop() {
         mMessagesListView.removeOnScrollListener(mScrollListener);
         final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
+        assert bus != null;
         bus.unregister(this);
         if (mPopupMenu != null) {
             mPopupMenu.dismiss();
@@ -413,14 +414,14 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        MenuUtils.setMenuItemAvailability(menu, MENU_DELETE_ALL, mRecipient != null && Utils.isOfficialCredentials(getActivity(), mAccount));
+        MenuUtils.setMenuItemAvailability(menu, R.id.delete_all, mRecipient != null && Utils.isOfficialCredentials(getActivity(), mAccount));
         updateRecipientInfo();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case MENU_DELETE_ALL: {
+            case R.id.delete_all: {
 
                 return true;
             }
@@ -512,11 +513,11 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 			final long message_id = mSelectedDirectMessage.id;
 			final long account_id = mSelectedDirectMessage.account_id;
 			switch (item.getItemId()) {
-				case MENU_DELETE: {
+                case R.id.delete: {
 					mTwitterWrapper.destroyDirectMessageAsync(account_id, message_id);
 					break;
 				}
-				case MENU_COPY: {
+                case R.id.copy: {
 					if (ClipboardUtils.setText(getActivity(), mSelectedDirectMessage.text_plain)) {
 						showOkMessage(getActivity(), R.string.text_copied, false);
 					}
@@ -741,7 +742,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         mPopupMenu = new PopupMenu(context, view);
         mPopupMenu.inflate(R.menu.action_direct_message);
         final Menu menu = mPopupMenu.getMenu();
-        final MenuItem view_profile_item = menu.findItem(MENU_VIEW_PROFILE);
+        final MenuItem view_profile_item = menu.findItem(R.id.view_profile);
         if (view_profile_item != null && dm != null) {
             view_profile_item.setVisible(dm.account_id != dm.sender_id);
         }

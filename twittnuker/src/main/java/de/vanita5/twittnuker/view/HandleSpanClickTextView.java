@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.view;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatTextView;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -32,7 +31,9 @@ import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-public class HandleSpanClickTextView extends AppCompatTextView {
+import de.vanita5.twittnuker.view.themed.ThemedTextView;
+
+public class HandleSpanClickTextView extends ThemedTextView {
 
     private boolean mLongClickPerformed;
 

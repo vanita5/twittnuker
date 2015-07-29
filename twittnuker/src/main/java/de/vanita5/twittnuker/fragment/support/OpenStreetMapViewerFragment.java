@@ -101,7 +101,7 @@ public class OpenStreetMapViewerFragment extends BaseSupportFragment implements 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
-            case MENU_CENTER: {
+            case R.id.center: {
                 moveToCenter(mLatitude, mLongitude);
                 break;
             }

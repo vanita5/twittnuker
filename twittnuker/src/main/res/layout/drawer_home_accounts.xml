@@ -21,7 +21,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<de.vanita5.twittnuker.view.LeftDrawerFrameLayout
+<de.vanita5.twittnuker.view.DrawerContentFrameLayout
     android:id="@+id/left_drawer_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -37,4 +37,4 @@
 		android:layout_height="match_parent"
         tools:layout="@layout/fragment_accounts_dashboard"/>
 
-</de.vanita5.twittnuker.view.LeftDrawerFrameLayout>
+</de.vanita5.twittnuker.view.DrawerContentFrameLayout>

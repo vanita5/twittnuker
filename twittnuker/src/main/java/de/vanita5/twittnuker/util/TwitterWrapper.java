@@ -32,6 +32,7 @@ import org.mariotaku.restfu.http.mime.FileTypedData;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
@@ -256,6 +257,31 @@ public class TwitterWrapper implements Constants {
 		}
 
         StatusListResponse(final long accountId, final long maxId, final long sinceId, final List<Status> list,
+                           final boolean truncated, final Exception exception) {
+            super(accountId, maxId, sinceId, list, exception);
+            this.truncated = truncated;
+        }
+
+    }
+
+    public static final class ActivityListResponse extends TwitterListResponse<Activity> {
+
+        public final boolean truncated;
+
+        public ActivityListResponse(final long accountId, final Exception exception) {
+            this(accountId, -1, -1, null, false, exception);
+        }
+
+        public ActivityListResponse(final long accountId, final List<Activity> list) {
+            this(accountId, -1, -1, list, false, null);
+        }
+
+        public ActivityListResponse(final long accountId, final long maxId, final long sinceId,
+                                  final List<Activity> list, final boolean truncated) {
+            this(accountId, maxId, sinceId, list, truncated, null);
+        }
+
+        ActivityListResponse(final long accountId, final long maxId, final long sinceId, final List<Activity> list,
 						   final boolean truncated, final Exception exception) {
             super(accountId, maxId, sinceId, list, exception);
 			this.truncated = truncated;

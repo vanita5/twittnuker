@@ -845,7 +845,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final AsyncTwitterWrapper twitter = fragment.getTwitterWrapper();
             final FragmentActivity activity = fragment.getActivity();
             final FragmentManager fm = fragment.getFragmentManager();
-            if (item.getItemId() == MENU_RETWEET) {
+            if (item.getItemId() == R.id.retweet) {
                 RetweetQuoteDialogFragment.show(fm, status);
                 return true;
             }
@@ -1086,6 +1086,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             return RecyclerView.NO_POSITION;
 		}
 
+        @NonNull
         @Override
         public Context getContext() {
             return mContext;
@@ -1112,6 +1113,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             return mDisplayProfileImage;
         }
 
+        @NonNull
         @Override
         public MediaLoaderWrapper getMediaLoader() {
             return mImageLoader;
@@ -1196,6 +1198,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             return mMediaLoadingHandler;
         }
 
+        @NonNull
         @Override
         public UserColorNameManager getUserColorNameManager() {
             return mUserColorNameManager;

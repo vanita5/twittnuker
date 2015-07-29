@@ -22,11 +22,15 @@
 
 package de.vanita5.twittnuker.api.twitter.api;
 
+import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.Body;
 import org.mariotaku.restfu.annotation.param.Path;
+import org.mariotaku.restfu.annotation.param.Query;
 import org.mariotaku.restfu.http.BodyType;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.model.PrivateDirectMessages;
 import de.vanita5.twittnuker.api.twitter.model.ResponseCode;
 
 @SuppressWarnings("RedundantThrows")
@@ -40,4 +44,9 @@ public interface PrivateDirectMessagesResources extends PrivateResources {
     @Body(BodyType.FORM)
     ResponseCode destroyDirectMessagesConversation(@Path("account_id") long accountId, @Path("user_id") long userId) throws TwitterException;
 
+    @GET("/dm/user_updates.json")
+    PrivateDirectMessages getUserUpdates(@Query Paging paging);
+
+    @GET("/dm/user_inbox.json")
+    PrivateDirectMessages getUserInbox(@Query Paging paging);
 }

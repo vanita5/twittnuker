@@ -33,11 +33,11 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.view.themed.ThemedTextView;
 
-public class NameView extends TextView {
+public class NameView extends ThemedTextView {
 
 	private boolean mNameFirst;
 

@@ -40,6 +40,7 @@ import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
+import de.vanita5.twittnuker.api.twitter.model.ExtendedProfile;
 import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
 import de.vanita5.twittnuker.api.twitter.model.HashtagEntity;
 import de.vanita5.twittnuker.api.twitter.model.IDs;
@@ -54,6 +55,8 @@ import de.vanita5.twittnuker.api.twitter.model.Relationship;
 import de.vanita5.twittnuker.api.twitter.model.ResponseCode;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
+import de.vanita5.twittnuker.api.twitter.model.ScheduledStatus;
+import de.vanita5.twittnuker.api.twitter.model.ScheduledStatusesList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.StatusActivitySummary;
 import de.vanita5.twittnuker.api.twitter.model.StatusDeletionNotice;
@@ -71,6 +74,7 @@ import de.vanita5.twittnuker.api.twitter.model.impl.ActivityImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.CardEntityImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.DirectMessageImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.ErrorInfoImpl;
+import de.vanita5.twittnuker.api.twitter.model.impl.ExtendedProfileImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.HashtagEntityImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.IDsImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.Indices;
@@ -85,6 +89,8 @@ import de.vanita5.twittnuker.api.twitter.model.impl.RelationshipImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.RelationshipWrapper;
 import de.vanita5.twittnuker.api.twitter.model.impl.ResponseListImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.SavedSearchImpl;
+import de.vanita5.twittnuker.api.twitter.model.impl.ScheduledStatusImpl;
+import de.vanita5.twittnuker.api.twitter.model.impl.ScheduledStatusesListWrapper;
 import de.vanita5.twittnuker.api.twitter.model.impl.StatusActivitySummaryImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.StatusDeletionNoticeImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.StatusImpl;
@@ -155,6 +161,8 @@ public class TwitterConverter implements Converter {
         TypeConverterMapper.register(Activity.class, ActivityImpl.class, ActivityImpl.MAPPER);
         TypeConverterMapper.register(Warning.class, WarningImpl.class);
         TypeConverterMapper.register(StatusDeletionNotice.class, StatusDeletionNoticeImpl.class);
+        TypeConverterMapper.register(ScheduledStatus.class, ScheduledStatusImpl.class);
+        TypeConverterMapper.register(ExtendedProfile.class, ExtendedProfileImpl.class);
 
         LoganSquare.registerTypeConverter(Indices.class, Indices.CONVERTER);
         LoganSquare.registerTypeConverter(GeoLocation.class, GeoLocation.CONVERTER);
@@ -163,11 +171,13 @@ public class TwitterConverter implements Converter {
         LoganSquare.registerTypeConverter(MediaEntity.Type.class, EnumConverter.get(MediaEntity.Type.class));
         LoganSquare.registerTypeConverter(UserList.Mode.class, EnumConverter.get(UserList.Mode.class));
         LoganSquare.registerTypeConverter(Activity.Action.class, EnumConverter.get(Activity.Action.class));
+        LoganSquare.registerTypeConverter(ScheduledStatus.State.class, EnumConverter.get(ScheduledStatus.State.class));
 
         registerWrapper(QueryResult.class, QueryResultWrapper.class);
         registerWrapper(PageableResponseList.class, PageableResponseListWrapper.class);
         registerWrapper(Relationship.class, RelationshipWrapper.class);
         registerWrapper(CardEntity.BindingValue.class, CardEntityImpl.BindingValueWrapper.class);
+        registerWrapper(ScheduledStatusesList.class, ScheduledStatusesListWrapper.class);
     }
 
 	@Override

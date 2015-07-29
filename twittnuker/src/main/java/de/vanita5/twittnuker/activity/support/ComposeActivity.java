@@ -97,11 +97,12 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.fragment.support.DraftsFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.fragment.support.ViewStatusDialogFragment;
+import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
@@ -110,7 +111,6 @@ import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
-import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.text.MarkForDeleteSpan;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -126,6 +126,7 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
+import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ActionIconView;
@@ -392,34 +393,34 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 	@Override
     public boolean onMenuItemClick(final MenuItem item) {
         switch (item.getItemId()) {
-            case MENU_TAKE_PHOTO: {
+            case R.id.take_photo: {
                 takePhoto();
                 break;
             }
-            case MENU_ADD_IMAGE: {
+            case R.id.add_image: {
 				pickImage();
                 break;
             }
-            case MENU_ADD_LOCATION: {
+            case R.id.add_location: {
                 toggleLocation();
                 break;
             }
-            case MENU_DRAFTS: {
+            case R.id.drafts: {
                 Utils.openDrafts(this);
                 break;
             }
-            case MENU_DELETE: {
+            case R.id.delete: {
                 AsyncTaskUtils.executeTask(new DeleteImageTask(this));
                 break;
             }
-            case MENU_TOGGLE_SENSITIVE: {
+            case R.id.toggle_sensitive: {
                 if (!hasMedia()) return false;
                 mIsPossiblySensitive = !mIsPossiblySensitive;
                 setMenu();
                 updateTextCount();
                 break;
             }
-            case MENU_VIEW: {
+            case R.id.view: {
                 if (mInReplyToStatus == null) return false;
                 final DialogFragment fragment = new ViewStatusDialogFragment();
                 final Bundle args = new Bundle();
@@ -594,7 +595,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         });
         mAccountsAdapter = new AccountIconsAdapter(this);
         mAccountSelector.setAdapter(mAccountsAdapter);
-        mAccountsAdapter.setAccounts(ParcelableAccount.getAccounts(this, false, false));
+        mAccountsAdapter.setAccounts(ParcelableCredentials.getCredentialsArray(this, false, false));
 
 		mMediaPreviewAdapter = new MediaPreviewAdapter(this);
         mMediaPreviewGrid.setAdapter(mMediaPreviewAdapter);
@@ -693,6 +694,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 final MarkForDeleteSpan[] deletes = s.getSpans(0, s.length(), MarkForDeleteSpan.class);
                 for (MarkForDeleteSpan delete : deletes) {
                     s.delete(s.getSpanStart(delete), s.getSpanEnd(delete));
+                    s.removeSpan(delete);
                 }
             }
         });
@@ -954,6 +956,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         final ParcelableAccount[] accounts = mAccountsAdapter.getSelectedAccounts();
         setSelectedAccounts(accounts);
         mEditText.setAccountId(accounts.length > 0 ? accounts[0].account_id : Utils.getDefaultAccountId(this));
+        setMenu();
 //        mAccountActionProvider.setSelectedAccounts(mAccountsAdapter.getSelectedAccounts());
     }
 
@@ -1016,18 +1019,28 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
          * Has media & Not reply: [[Take photo][Add image]][Medias menu][Attach location][Drafts]
          * Is reply: [Medias menu][View status][Attach location][Drafts]
          */
-        MenuUtils.setMenuItemAvailability(menu, MENU_TAKE_PHOTO, true); //always
-        MenuUtils.setMenuItemAvailability(menu, MENU_ADD_IMAGE, true); //always
-        MenuUtils.setMenuItemAvailability(menu, MENU_VIEW, hasInReplyTo);
+        MenuUtils.setMenuItemAvailability(menu, R.id.take_photo, true); //always
+        MenuUtils.setMenuItemAvailability(menu, R.id.add_image, true); //always
+        MenuUtils.setMenuItemAvailability(menu, R.id.view, hasInReplyTo);
         MenuUtils.setMenuItemAvailability(menu, R.id.media_menu, hasMedia);
-        MenuUtils.setMenuItemAvailability(menu, MENU_TOGGLE_SENSITIVE, hasMedia);
+        MenuUtils.setMenuItemAvailability(menu, R.id.toggle_sensitive, hasMedia);
         MenuUtils.setMenuItemAvailability(menu, R.id.link_to_quoted_status, isQuote());
 
-        MenuUtils.setMenuItemChecked(menu, MENU_TOGGLE_SENSITIVE, hasMedia && mIsPossiblySensitive);
+        MenuUtils.setMenuItemChecked(menu, R.id.toggle_sensitive, hasMedia && mIsPossiblySensitive);
         MenuUtils.setMenuItemChecked(menu, R.id.link_to_quoted_status, mPreferences.getBoolean(KEY_LINK_TO_QUOTED_TWEET));
         ThemeUtils.resetCheatSheet(mMenuBar);
 //        mMenuBar.show();
 	}
+
+    private boolean isScheduleSupported() {
+        for (ParcelableCredentials account : mAccountsAdapter.getSelectedAccounts()) {
+            if (TwitterContentUtils.getOfficialKeyType(this, account.consumer_key, account.consumer_secret)
+                    != ConsumerKeyType.TWEETDECK) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private void setProgressVisible(final boolean visible) {
         mSetProgressVisibleRunnable = new SetProgressVisibleRunnable(this, visible);
@@ -1174,18 +1187,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
             return;
 		}
         final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
-//        if (mRecentLocation == null && attachLocation) {
-//            final Location location;
-//            if (mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-//                location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//            } else {
-//                location = null;
-//            }
-//            if (location != null) {
-//                mRecentLocation = new ParcelableLocation(location);
-//            }
-//            setRecentLocation();
-//        }
         final long[] accountIds = mAccountsAdapter.getSelectedAccountIds();
         final boolean isQuote = isQuote();
         final ParcelableLocation statusLocation = attachLocation ? mRecentLocation : null;
@@ -1264,7 +1265,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         private final LongSparseArray<Boolean> mSelection;
         private final boolean mNameFirst;
 
-        private ParcelableAccount[] mAccounts;
+        private ParcelableCredentials[] mAccounts;
 
         public AccountIconsAdapter(ComposeActivity activity) {
             setHasStableIds(true);
@@ -1308,16 +1309,16 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         }
 
         @NonNull
-        public ParcelableAccount[] getSelectedAccounts() {
-            if (mAccounts == null) return new ParcelableAccount[0];
-            final ParcelableAccount[] temp = new ParcelableAccount[mAccounts.length];
+        public ParcelableCredentials[] getSelectedAccounts() {
+            if (mAccounts == null) return new ParcelableCredentials[0];
+            final ParcelableCredentials[] temp = new ParcelableCredentials[mAccounts.length];
             int selectedCount = 0;
-            for (ParcelableAccount account : mAccounts) {
+            for (ParcelableCredentials account : mAccounts) {
                 if (mSelection.get(account.account_id, false)) {
                     temp[selectedCount++] = account;
                 }
             }
-            final ParcelableAccount[] result = new ParcelableAccount[selectedCount];
+            final ParcelableCredentials[] result = new ParcelableCredentials[selectedCount];
             System.arraycopy(temp, 0, result, 0, result.length);
             return result;
         }
@@ -1344,7 +1345,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
             return mAccounts != null ? mAccounts.length : 0;
 	    }
 
-        public void setAccounts(ParcelableAccount[] accounts) {
+        public void setAccounts(ParcelableCredentials[] accounts) {
             mAccounts = accounts;
             notifyDataSetChanged();
         }

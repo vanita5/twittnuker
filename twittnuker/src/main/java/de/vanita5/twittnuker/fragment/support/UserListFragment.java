@@ -280,15 +280,15 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 	@Override
     public void onPrepareOptionsMenu(Menu menu) {
         final ParcelableUserList userList = mUserList;
-        setMenuItemAvailability(menu, MENU_INFO, userList != null);
+        setMenuItemAvailability(menu, R.id.info, userList != null);
         if (userList != null) {
         	final boolean isMyList = userList.user_id == userList.account_id;
             final boolean isFollowing = userList.is_following;
-        	setMenuItemAvailability(menu, MENU_EDIT, isMyList);
-            setMenuItemAvailability(menu, MENU_FOLLOW, !isMyList);
-			setMenuItemAvailability(menu, MENU_ADD, isMyList);
-			setMenuItemAvailability(menu, MENU_DELETE, isMyList);
-            final MenuItem followItem = menu.findItem(MENU_FOLLOW);
+            setMenuItemAvailability(menu, R.id.edit, isMyList);
+            setMenuItemAvailability(menu, R.id.follow, !isMyList);
+            setMenuItemAvailability(menu, R.id.add, isMyList);
+            setMenuItemAvailability(menu, R.id.delete, isMyList);
+            final MenuItem followItem = menu.findItem(R.id.follow);
             if (isFollowing) {
                 followItem.setIcon(R.drawable.ic_action_cancel);
                 followItem.setTitle(R.string.unsubscribe);
@@ -300,10 +300,10 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
             extensionsIntent.setExtrasClassLoader(getActivity().getClassLoader());
             extensionsIntent.putExtra(EXTRA_USER_LIST, userList);
         } else {
-            setMenuItemAvailability(menu, MENU_EDIT, false);
-            setMenuItemAvailability(menu, MENU_FOLLOW, false);
-            setMenuItemAvailability(menu, MENU_ADD, false);
-            setMenuItemAvailability(menu, MENU_DELETE, false);
+            setMenuItemAvailability(menu, R.id.edit, false);
+            setMenuItemAvailability(menu, R.id.follow, false);
+            setMenuItemAvailability(menu, R.id.add, false);
+            setMenuItemAvailability(menu, R.id.delete, false);
 		}
 	}
 
@@ -313,7 +313,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 		final ParcelableUserList userList = mUserList;
 		if (twitter == null || userList == null) return false;
 		switch (item.getItemId()) {
-			case MENU_ADD: {
+            case R.id.add: {
 				if (userList.user_id != userList.account_id) return false;
 				final Intent intent = new Intent(INTENT_ACTION_SELECT_USER);
 				intent.setClass(getActivity(), UserListSelectorActivity.class);
@@ -321,12 +321,12 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 				startActivityForResult(intent, REQUEST_SELECT_USER);
 				break;
 			}
-			case MENU_DELETE: {
+            case R.id.delete: {
 				if (userList.user_id != userList.account_id) return false;
 				DestroyUserListDialogFragment.show(getFragmentManager(), userList);
 				break;
 			}
-			case MENU_EDIT: {
+            case R.id.edit: {
 				final Bundle args = new Bundle();
 				args.putLong(EXTRA_ACCOUNT_ID, userList.account_id);
 				args.putString(EXTRA_LIST_NAME, userList.name);
@@ -338,7 +338,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 				f.show(getFragmentManager(), "edit_user_list_details");
 				return true;
 			}
-			case MENU_FOLLOW: {
+            case R.id.follow: {
 				if (userList.is_following) {
 					DestroyUserListSubscriptionDialogFragment.show(getFragmentManager(), userList);
 				} else {
@@ -346,7 +346,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 				}
 				return true;
 			}
-            case MENU_OPEN_WITH_ACCOUNT: {
+            case R.id.open_with_account: {
                 final Intent intent = new Intent(INTENT_ACTION_SELECT_ACCOUNT);
                 intent.setClass(getActivity(), AccountSelectorActivity.class);
                 intent.putExtra(EXTRA_SINGLE_SELECTION, true);
