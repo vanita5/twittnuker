@@ -149,7 +149,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 			final TextView screenNameView = (TextView) statusContentView.findViewById(R.id.screen_name);
 			final TextView textView = (TextView) statusContentView.findViewById(R.id.text);
 			final TextView timeSourceView = (TextView) statusContentView.findViewById(R.id.time_source);
-            final View retweetedByContainer = statusContentView.findViewById(R.id.retweeted_by_container);
+            final View retweetedByContainer = statusContentView.findViewById(R.id.retweeted_by);
 
             retweetedByContainer.setVisibility(View.GONE);
 

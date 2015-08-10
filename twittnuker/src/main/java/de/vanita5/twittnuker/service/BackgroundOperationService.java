@@ -48,7 +48,6 @@ import com.twitter.Extractor;
 import org.mariotaku.restfu.http.ContentType;
 import org.mariotaku.restfu.http.mime.FileTypedData;
 import org.mariotaku.sqliteqb.library.Expression;
-import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.Twitter;
@@ -216,7 +215,8 @@ public class BackgroundOperationService extends IntentService implements Constan
         final long draftId = ParseUtils.parseLong(uri.getLastPathSegment(), -1);
         if (draftId == -1) return;
         final Expression where = Expression.equals(Drafts._ID, draftId);
-        final Cursor c = getContentResolver().query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.getSQL(), null, null);
+        final ContentResolver cr = getContentResolver();
+        final Cursor c = cr.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.getSQL(), null, null);
         final DraftItem.CursorIndices i = new DraftItem.CursorIndices(c);
         final DraftItem item;
         try {
@@ -225,6 +225,7 @@ public class BackgroundOperationService extends IntentService implements Constan
         } finally {
             c.close();
         }
+        cr.delete(Drafts.CONTENT_URI, where.getSQL(), null);
         if (item.action_type == Drafts.ACTION_UPDATE_STATUS || item.action_type <= 0) {
             updateStatuses(new ParcelableStatusUpdate(this, item));
         } else if (item.action_type == Drafts.ACTION_SEND_DIRECT_MESSAGE) {
@@ -343,8 +344,6 @@ public class BackgroundOperationService extends IntentService implements Constan
 				if (exception instanceof TwitterException
 						&& ((TwitterException) exception).getErrorCode() == StatusCodeMessageUtils.STATUS_IS_DUPLICATE) {
 					showErrorMessage(getString(R.string.status_is_duplicate), false);
-//				} else if (exception instanceof  ShortenException) {
-//					//saveDrafts(item, failed_account_ids, false);
 				} else {
                     final ContentValues accountIdsValues = new ContentValues();
                     accountIdsValues.put(Drafts.ACCOUNT_IDS, ListUtils.toString(failedAccountIds, ',', false));
