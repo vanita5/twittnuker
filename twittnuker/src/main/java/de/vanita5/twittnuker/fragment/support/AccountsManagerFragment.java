@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,11 +53,12 @@ import de.vanita5.twittnuker.util.Utils;
 
 import java.util.ArrayList;
 
-public class AccountsManagerFragment extends BaseSupportFragment implements LoaderCallbacks<Cursor>, DropListener, OnSharedPreferenceChangeListener {
+public class AccountsManagerFragment extends BaseSupportFragment implements LoaderCallbacks<Cursor>,
+        DropListener, OnSharedPreferenceChangeListener, AdapterView.OnItemClickListener {
 
     private static final String FRAGMENT_TAG_ACCOUNT_DELETION = "account_deletion";
 
-	private AccountsAdapter mAdapter;
+    private AccountsAdapter mAdapter;
     private SharedPreferences mPreferences;
     private ParcelableAccount mSelectedAccount;
 
@@ -72,20 +74,20 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
         mProgressContainer.setVisibility(shown ? View.GONE : View.VISIBLE);
     }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.add_account: {
-				final Intent intent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
-				intent.setClass(getActivity(), SignInActivity.class);
-				startActivity(intent);
-				break;
-			}
-		}
-		return super.onOptionsItemSelected(item);
-	}
+                final Intent intent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
+                intent.setClass(getActivity(), SignInActivity.class);
+                startActivity(intent);
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-	@Override
+    @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         switch (requestCode) {
             case REQUEST_SET_COLOR: {
@@ -104,10 +106,10 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.menu_accounts_manager, menu);
-	}
+        inflater.inflate(R.menu.menu_accounts_manager, menu);
+    }
 
-	@Override
+    @Override
     public boolean onContextItemSelected(MenuItem item) {
         final ContextMenuInfo menuInfo = item.getMenuInfo();
         if (!(menuInfo instanceof AdapterContextMenuInfo)) return false;
@@ -134,6 +136,13 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
         return false;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        final ParcelableAccount account = mAdapter.getAccount(position);
+        Utils.openUserProfile(getActivity(), account.account_id, account.account_id, account.screen_name,
+                null);
+    }
+
 
     public static final class AccountDeletionDialogFragment extends BaseSupportDialogFragment implements
             DialogInterface.OnClickListener {
@@ -141,18 +150,18 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
         @Override
         public void onClick(final DialogInterface dialog, final int which) {
             final Bundle args = getArguments();
-            final long account_id = args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-            if (account_id < 0) return;
+            final long accountId = args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
+            if (accountId < 0) return;
             final ContentResolver resolver = getContentResolver();
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE: {
-                    resolver.delete(Accounts.CONTENT_URI, Accounts.ACCOUNT_ID + " = " + account_id, null);
+                    resolver.delete(Accounts.CONTENT_URI, Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL(), null);
                     // Also delete tweets related to the account we previously
                     // deleted.
-                    resolver.delete(Statuses.CONTENT_URI, Statuses.ACCOUNT_ID + " = " + account_id, null);
-                    resolver.delete(Mentions.CONTENT_URI, Mentions.ACCOUNT_ID + " = " + account_id, null);
-                    resolver.delete(Inbox.CONTENT_URI, DirectMessages.ACCOUNT_ID + " = " + account_id, null);
-                    resolver.delete(Outbox.CONTENT_URI, DirectMessages.ACCOUNT_ID + " = " + account_id, null);
+                    resolver.delete(Statuses.CONTENT_URI, Expression.equals(Statuses.ACCOUNT_ID, accountId).getSQL(), null);
+                    resolver.delete(Mentions.CONTENT_URI, Expression.equals(Mentions.ACCOUNT_ID, accountId).getSQL(), null);
+                    resolver.delete(Inbox.CONTENT_URI, Expression.equals(DirectMessages.ACCOUNT_ID, accountId).getSQL(), null);
+                    resolver.delete(Outbox.CONTENT_URI, Expression.equals(DirectMessages.ACCOUNT_ID, accountId).getSQL(), null);
                     break;
                 }
             }
@@ -201,47 +210,48 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
     }
 
     @Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		setHasOptionsMenu(true);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
         final FragmentActivity activity = getActivity();
         mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
         mAdapter = new AccountsAdapter(activity);
         Utils.configBaseAdapter(activity, mAdapter);
-		mAdapter.setSortEnabled(true);
+        mAdapter.setSortEnabled(true);
         mListView.setAdapter(mAdapter);
         mListView.setDragEnabled(true);
         mListView.setDropListener(this);
+        mListView.setOnItemClickListener(this);
         mListView.setOnCreateContextMenuListener(this);
         mListView.setEmptyView(mEmptyView);
         mEmptyText.setText(R.string.no_account);
         mEmptyIcon.setImageResource(R.drawable.ic_info_error_generic);
-		getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(0, null, this);
         setListShown(false);
-	}
+    }
 
-	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         return inflater.inflate(R.layout.layout_draggable_list_with_empty_view, container, false);
-	}
+    }
 
-	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		final Uri uri = Accounts.CONTENT_URI;
-		return new CursorLoader(getActivity(), uri, Accounts.COLUMNS, null, null, Accounts.SORT_POSITION);
-	}
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        final Uri uri = Accounts.CONTENT_URI;
+        return new CursorLoader(getActivity(), uri, Accounts.COLUMNS, null, null, Accounts.SORT_POSITION);
+    }
 
-	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         setListShown(true);
-		mAdapter.changeCursor(cursor);
-	}
+        mAdapter.changeCursor(cursor);
+    }
 
-	@Override
-	public void onLoaderReset(Loader<Cursor> loader) {
-		mAdapter.changeCursor(null);
-	}
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.changeCursor(null);
+    }
 
     @Override
     public void drop(int from, int to) {

@@ -110,10 +110,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static de.vanita5.twittnuker.util.Utils.openUserFavorites;
-import static de.vanita5.twittnuker.util.Utils.openUserLists;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-
 public class AccountsDashboardFragment extends BaseSupportFragment implements LoaderCallbacks<Cursor>,
         OnSharedPreferenceChangeListener, ImageLoadingListener, OnClickListener, KeyboardShortcutCallback, AdapterView.OnItemClickListener {
 
@@ -231,7 +227,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
                 final FragmentActivity activity = getActivity();
                 final Bundle activityOption = Utils.makeSceneTransitionOption(activity,
                         new Pair<View, String>(mAccountProfileImageView, UserFragment.TRANSITION_NAME_PROFILE_IMAGE));
-                openUserProfile(activity, account.account_id, account.account_id,
+                Utils.openUserProfile(activity, account.account_id, account.account_id,
                         account.screen_name, activityOption);
                 break;
             }
@@ -304,11 +300,11 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 					break;
 				}
                 case R.id.favorites: {
-					openUserFavorites(getActivity(), account.account_id, account.account_id, account.screen_name);
+                    Utils.openUserFavorites(getActivity(), account.account_id, account.account_id, account.screen_name);
 					break;
 				}
                 case R.id.lists: {
-					openUserLists(getActivity(), account.account_id, account.account_id, account.screen_name);
+                    Utils.openUserLists(getActivity(), account.account_id, account.account_id, account.screen_name);
 					break;
 				}
                 case R.id.edit: {
