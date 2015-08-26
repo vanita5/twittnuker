@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.model;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -159,5 +160,17 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         ParcelableActivityParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static class CursorIndices extends ObjectCursor.CursorIndices<ParcelableActivity> {
+
+        public CursorIndices(@NonNull Cursor cursor) {
+            super(cursor);
+        }
+
+        @Override
+        public ParcelableActivity newObject(Cursor cursor) {
+            throw new UnsupportedOperationException();
+        }
     }
 }
