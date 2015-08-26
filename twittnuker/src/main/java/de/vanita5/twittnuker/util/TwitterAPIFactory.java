@@ -88,111 +88,111 @@ import static android.text.TextUtils.isEmpty;
 
 public class TwitterAPIFactory implements TwittnukerConstants {
 
-	public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities) {
-		if (context == null) return null;
-		return getDefaultTwitterInstance(context, includeEntities, true);
-	}
+    public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities) {
+        if (context == null) return null;
+        return getDefaultTwitterInstance(context, includeEntities, true);
+    }
 
-	public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities,
-													final boolean includeRetweets) {
-		if (context == null) return null;
-		return getTwitterInstance(context, Utils.getDefaultAccountId(context), includeEntities, includeRetweets);
-	}
+    public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities,
+                                                    final boolean includeRetweets) {
+        if (context == null) return null;
+        return getTwitterInstance(context, Utils.getDefaultAccountId(context), includeEntities, includeRetweets);
+    }
 
-	public static Twitter getTwitterInstance(final Context context, final long accountId,
-											 final boolean includeEntities) {
-		return getTwitterInstance(context, accountId, includeEntities, true);
-	}
+    public static Twitter getTwitterInstance(final Context context, final long accountId,
+                                             final boolean includeEntities) {
+        return getTwitterInstance(context, accountId, includeEntities, true);
+    }
 
-	@Nullable
-	public static Twitter getTwitterInstance(final Context context, final long accountId,
-											 final boolean includeEntities,
-											 final boolean includeRetweets) {
-		return getTwitterInstance(context, accountId, includeEntities, includeRetweets, Twitter.class);
-	}
+    @Nullable
+    public static Twitter getTwitterInstance(final Context context, final long accountId,
+                                             final boolean includeEntities,
+                                             final boolean includeRetweets) {
+        return getTwitterInstance(context, accountId, includeEntities, includeRetweets, Twitter.class);
+    }
 
-	@Nullable
-	public static <T> T getTwitterInstance(final Context context, final long accountId,
-										   final boolean includeEntities,
-										   final boolean includeRetweets, Class<T> cls) {
-		if (context == null) return null;
-		final ParcelableCredentials credentials = ParcelableCredentials.getCredentials(context, accountId);
-		return getInstance(context, credentials, cls);
-	}
+    @Nullable
+    public static <T> T getTwitterInstance(final Context context, final long accountId,
+                                           final boolean includeEntities,
+                                           final boolean includeRetweets, Class<T> cls) {
+        if (context == null) return null;
+        final ParcelableCredentials credentials = ParcelableCredentials.getCredentials(context, accountId);
+        return getInstance(context, credentials, cls);
+    }
 
-	public static RestHttpClient getDefaultHttpClient(final Context context) {
-		if (context == null) return null;
-		final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		return createHttpClient(context, prefs);
-	}
+    public static RestHttpClient getDefaultHttpClient(final Context context) {
+        if (context == null) return null;
+        final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return createHttpClient(context, prefs);
+    }
 
-	public static RestHttpClient createHttpClient(final Context context, final SharedPreferences prefs) {
-		final int connectionTimeout = prefs.getInt(KEY_CONNECTION_TIMEOUT, 10);
-		final boolean ignoreSslError = prefs.getBoolean(KEY_IGNORE_SSL_ERROR, false);
-		final boolean enableProxy = prefs.getBoolean(KEY_ENABLE_PROXY, false);
+    public static RestHttpClient createHttpClient(final Context context, final SharedPreferences prefs) {
+        final int connectionTimeout = prefs.getInt(KEY_CONNECTION_TIMEOUT, 10);
+        final boolean ignoreSslError = prefs.getBoolean(KEY_IGNORE_SSL_ERROR, false);
+        final boolean enableProxy = prefs.getBoolean(KEY_ENABLE_PROXY, false);
 
-		final OkHttpClient client = new OkHttpClient();
-		client.setConnectTimeout(connectionTimeout, TimeUnit.SECONDS);
+        final OkHttpClient client = new OkHttpClient();
+        client.setConnectTimeout(connectionTimeout, TimeUnit.SECONDS);
         final long connectionTimeoutMillis = TimeUnit.MILLISECONDS.convert(connectionTimeout, TimeUnit.SECONDS);
         final SSLSocketFactory sslSocketFactory;
-		if (ignoreSslError) {
+        if (ignoreSslError) {
             sslSocketFactory = SSLCertificateSocketFactory.getInsecure((int) connectionTimeoutMillis, null);
             if (sslSocketFactory instanceof SSLCertificateSocketFactory) {
 
             }
             client.setSslSocketFactory(sslSocketFactory);
-		}
-		if (enableProxy) {
-			client.setProxy(getProxy(prefs));
-		}
+        }
+        if (enableProxy) {
+            client.setProxy(getProxy(prefs));
+        }
         Internal.instance.setNetwork(client, TwittnukerApplication.getInstance(context).getNetwork());
         return new OkHttpRestClient(context, client);
-	}
+    }
 
 
-	public static Proxy getProxy(final SharedPreferences prefs) {
-		final String proxyHost = prefs.getString(KEY_PROXY_HOST, null);
-		final int proxyPort = ParseUtils.parseInt(prefs.getString(KEY_PROXY_PORT, "-1"));
-		if (!isEmpty(proxyHost) && proxyPort >= 0 && proxyPort < 65535) {
-			final SocketAddress addr = InetSocketAddress.createUnresolved(proxyHost, proxyPort);
-			return new Proxy(Proxy.Type.HTTP, addr);
-		}
-		return Proxy.NO_PROXY;
-	}
+    public static Proxy getProxy(final SharedPreferences prefs) {
+        final String proxyHost = prefs.getString(KEY_PROXY_HOST, null);
+        final int proxyPort = ParseUtils.parseInt(prefs.getString(KEY_PROXY_PORT, "-1"));
+        if (!isEmpty(proxyHost) && proxyPort >= 0 && proxyPort < 65535) {
+            final SocketAddress addr = InetSocketAddress.createUnresolved(proxyHost, proxyPort);
+            return new Proxy(Proxy.Type.HTTP, addr);
+        }
+        return Proxy.NO_PROXY;
+    }
 
-	public static <T> T getInstance(final Context context, final Endpoint endpoint, final Authorization auth, Class<T> cls) {
-		final RestAPIFactory factory = new RestAPIFactory();
-		final String userAgent;
-		if (auth instanceof OAuthAuthorization) {
-			final String consumerKey = ((OAuthAuthorization) auth).getConsumerKey();
-			final String consumerSecret = ((OAuthAuthorization) auth).getConsumerSecret();
-			final ConsumerKeyType officialKeyType = TwitterContentUtils.getOfficialKeyType(context, consumerKey, consumerSecret);
-			if (officialKeyType != ConsumerKeyType.UNKNOWN) {
+    public static <T> T getInstance(final Context context, final Endpoint endpoint, final Authorization auth, Class<T> cls) {
+        final RestAPIFactory factory = new RestAPIFactory();
+        final String userAgent;
+        if (auth instanceof OAuthAuthorization) {
+            final String consumerKey = ((OAuthAuthorization) auth).getConsumerKey();
+            final String consumerSecret = ((OAuthAuthorization) auth).getConsumerSecret();
+            final ConsumerKeyType officialKeyType = TwitterContentUtils.getOfficialKeyType(context, consumerKey, consumerSecret);
+            if (officialKeyType != ConsumerKeyType.UNKNOWN) {
                 userAgent = getUserAgentName(officialKeyType);
-			} else {
+            } else {
                 userAgent = getTwidereUserAgent(context);
-			}
-		} else {
+            }
+        } else {
             userAgent = getTwidereUserAgent(context);
-		}
-		factory.setClient(getDefaultHttpClient(context));
-		factory.setConverter(new TwitterConverter());
-		factory.setEndpoint(endpoint);
-		factory.setAuthorization(auth);
+        }
+        factory.setClient(getDefaultHttpClient(context));
+        factory.setConverter(new TwitterConverter());
+        factory.setEndpoint(endpoint);
+        factory.setAuthorization(auth);
         factory.setRequestInfoFactory(new TwidereRequestInfoFactory());
         factory.setHttpRequestFactory(new TwidereHttpRequestFactory(userAgent));
         factory.setExceptionFactory(new TwidereExceptionFactory());
-		return factory.build(cls);
-	}
+        return factory.build(cls);
+    }
 
-	public static <T> T getInstance(final Context context, final Endpoint endpoint, final ParcelableCredentials credentials, Class<T> cls) {
+    public static <T> T getInstance(final Context context, final Endpoint endpoint, final ParcelableCredentials credentials, Class<T> cls) {
         return TwitterAPIFactory.getInstance(context, endpoint, getAuthorization(credentials), cls);
-	}
+    }
 
-	static <T> T getInstance(final Context context, final ParcelableCredentials credentials, final Class<T> cls) {
-		if (credentials == null) return null;
+    static <T> T getInstance(final Context context, final ParcelableCredentials credentials, final Class<T> cls) {
+        if (credentials == null) return null;
         return TwitterAPIFactory.getInstance(context, getEndpoint(credentials, cls), credentials, cls);
-	}
+    }
 
     public static Endpoint getEndpoint(ParcelableCredentials credentials, Class<?> cls) {
         final String apiUrlFormat;
@@ -379,6 +379,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
             sExtraParams.put("include_reply_count", "true");
             sExtraParams.put("include_descendent_reply_count", "true");
             sExtraParams.put("full_text", "true");
+            sExtraParams.put("model_version", "7");
         }
 
 

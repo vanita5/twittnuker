@@ -38,64 +38,66 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
+import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.view.ActionIconView;
+
 import org.oshkimaadziig.george.androidutils.SpanFormatter;
 
 public class ActivityTitleSummaryViewHolder extends ViewHolder {
 
-	private final AbsActivitiesAdapter adapter;
+    private final AbsActivitiesAdapter adapter;
     private final ActionIconView activityTypeView;
-	private final TextView titleView;
-	private final TextView summaryView;
-	private final ViewGroup profileImagesContainer;
-	private final TextView profileImageMoreNumber;
-	private final ImageView[] profileImageViews;
+    private final TextView titleView;
+    private final TextView summaryView;
+    private final ViewGroup profileImagesContainer;
+    private final TextView profileImageMoreNumber;
+    private final ImageView[] profileImageViews;
 
-	public ActivityTitleSummaryViewHolder(AbsActivitiesAdapter adapter, View itemView) {
-		super(itemView);
-		this.adapter = adapter;
+    public ActivityTitleSummaryViewHolder(AbsActivitiesAdapter adapter, View itemView) {
+        super(itemView);
+        this.adapter = adapter;
         activityTypeView = (ActionIconView) itemView.findViewById(R.id.activity_type);
-		titleView = (TextView) itemView.findViewById(R.id.title);
-		summaryView = (TextView) itemView.findViewById(R.id.summary);
+        titleView = (TextView) itemView.findViewById(R.id.title);
+        summaryView = (TextView) itemView.findViewById(R.id.summary);
 
-		profileImagesContainer = (ViewGroup) itemView.findViewById(R.id.profile_images_container);
-		profileImageViews = new ImageView[5];
-		profileImageViews[0] = (ImageView) itemView.findViewById(R.id.activity_profile_image_0);
-		profileImageViews[1] = (ImageView) itemView.findViewById(R.id.activity_profile_image_1);
-		profileImageViews[2] = (ImageView) itemView.findViewById(R.id.activity_profile_image_2);
-		profileImageViews[3] = (ImageView) itemView.findViewById(R.id.activity_profile_image_3);
-		profileImageViews[4] = (ImageView) itemView.findViewById(R.id.activity_profile_image_4);
-		profileImageMoreNumber = (TextView) itemView.findViewById(R.id.activity_profile_image_more_number);
-	}
+        profileImagesContainer = (ViewGroup) itemView.findViewById(R.id.profile_images_container);
+        profileImageViews = new ImageView[5];
+        profileImageViews[0] = (ImageView) itemView.findViewById(R.id.activity_profile_image_0);
+        profileImageViews[1] = (ImageView) itemView.findViewById(R.id.activity_profile_image_1);
+        profileImageViews[2] = (ImageView) itemView.findViewById(R.id.activity_profile_image_2);
+        profileImageViews[3] = (ImageView) itemView.findViewById(R.id.activity_profile_image_3);
+        profileImageViews[4] = (ImageView) itemView.findViewById(R.id.activity_profile_image_4);
+        profileImageMoreNumber = (TextView) itemView.findViewById(R.id.activity_profile_image_more_number);
+    }
 
-	public void displayActivity(ParcelableActivity activity) {
-		final Context context = adapter.getContext();
+    public void displayActivity(ParcelableActivity activity) {
+        final Context context = adapter.getContext();
         final Resources resources = adapter.getContext().getResources();
-		switch (activity.action) {
-			case ParcelableActivity.ACTION_FOLLOW: {
+        switch (activity.action) {
+            case Activity.ACTION_FOLLOW: {
                 activityTypeView.setImageResource(R.drawable.ic_activity_action_follow);
                 activityTypeView.setColorFilter(resources.getColor(R.color.highlight_follow), Mode.SRC_ATOP);
                 titleView.setText(getTitleStringAboutMe(R.string.activity_about_me_follow,
                         R.string.activity_about_me_follow_multi, activity.sources));
-				displayUserProfileImages(activity.sources);
-				summaryView.setVisibility(View.GONE);
-				break;
-			}
-			case ParcelableActivity.ACTION_FAVORITE: {
+                displayUserProfileImages(activity.sources);
+                summaryView.setVisibility(View.GONE);
+                break;
+            }
+            case Activity.ACTION_FAVORITE: {
                 activityTypeView.setImageResource(R.drawable.ic_activity_action_favorite);
                 activityTypeView.setColorFilter(resources.getColor(R.color.highlight_favorite), Mode.SRC_ATOP);
                 titleView.setText(getTitleStringAboutMe(R.string.activity_about_me_favorite,
                         R.string.activity_about_me_favorite_multi, activity.sources));
-				displayUserProfileImages(activity.sources);
-				summaryView.setText(activity.target_statuses[0].text_unescaped);
-				summaryView.setVisibility(View.VISIBLE);
-				break;
-			}
-			case ParcelableActivity.ACTION_RETWEET: {
+                displayUserProfileImages(activity.sources);
+                summaryView.setText(activity.target_statuses[0].text_unescaped);
+                summaryView.setVisibility(View.VISIBLE);
+                break;
+            }
+            case Activity.ACTION_RETWEET: {
                 activityTypeView.setImageResource(R.drawable.ic_activity_action_retweet);
                 activityTypeView.setColorFilter(resources.getColor(R.color.highlight_retweet), Mode.SRC_ATOP);
                 titleView.setText(getTitleStringAboutMe(R.string.activity_about_me_retweet,
@@ -105,17 +107,17 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder {
                 summaryView.setVisibility(View.VISIBLE);
                 break;
             }
-            case ParcelableActivity.ACTION_FAVORITED_RETWEET: {
+            case Activity.ACTION_FAVORITED_RETWEET: {
                 activityTypeView.setImageResource(R.drawable.ic_activity_action_favorite);
                 activityTypeView.setColorFilter(resources.getColor(R.color.highlight_favorite), Mode.SRC_ATOP);
                 titleView.setText(getTitleStringAboutMe(R.string.activity_about_me_favorited_retweet,
                         R.string.activity_about_me_favorited_retweet_multi, activity.sources));
-				displayUserProfileImages(activity.sources);
-				summaryView.setText(activity.target_statuses[0].text_unescaped);
-				summaryView.setVisibility(View.VISIBLE);
-				break;
-			}
-            case ParcelableActivity.ACTION_RETWEETED_RETWEET: {
+                displayUserProfileImages(activity.sources);
+                summaryView.setText(activity.target_statuses[0].text_unescaped);
+                summaryView.setVisibility(View.VISIBLE);
+                break;
+            }
+            case Activity.ACTION_RETWEETED_RETWEET: {
                 activityTypeView.setImageResource(R.drawable.ic_activity_action_retweet);
                 activityTypeView.setColorFilter(resources.getColor(R.color.highlight_retweet), Mode.SRC_ATOP);
                 titleView.setText(getTitleStringAboutMe(R.string.activity_about_me_retweeted_retweet,
@@ -125,7 +127,7 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder {
                 summaryView.setVisibility(View.VISIBLE);
                 break;
             }
-            case ParcelableActivity.ACTION_LIST_MEMBER_ADDED: {
+            case Activity.ACTION_LIST_MEMBER_ADDED: {
                 activityTypeView.setImageResource(R.drawable.ic_activity_action_list_added);
                 activityTypeView.setColorFilter(activityTypeView.getDefaultColor(), Mode.SRC_ATOP);
                 if (activity.sources.length == 1 && activity.target_object_user_lists != null
@@ -248,7 +250,7 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder {
             nOthers.setSpan(new StyleSpan(Typeface.BOLD), 0, nOthers.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             final String format = context.getString(stringResMulti);
             return SpanFormatter.format(configuration.locale, format, firstSourceName, nOthers, firstTargetName);
-		}
-	}
+        }
+    }
 
 }
