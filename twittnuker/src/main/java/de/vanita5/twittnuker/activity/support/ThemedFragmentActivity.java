@@ -53,15 +53,15 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
 
     // Data fields
-	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
+    private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
             mCurrentActionBarColor;
-	@ShapeStyle
-	private int mProfileImageStyle;
+    @ShapeStyle
+    private int mProfileImageStyle;
     private String mCurrentThemeBackgroundOption;
     private String mCurrentThemeFontFamily;
 
     @NonNull
-	@Override
+    @Override
     public LayoutInflater getLayoutInflater() {
         final LayoutInflater inflater = super.getLayoutInflater();
         if (inflater.getFactory() == null) {
@@ -116,32 +116,32 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     }
 
     @Override
-	public String getThemeFontFamily() {
-		return ThemeUtils.getThemeFontFamily(this);
-	}
+    public String getThemeFontFamily() {
+        return ThemeUtils.getThemeFontFamily(this);
+    }
 
-	@Override
+    @Override
     @ShapeStyle
     public int getCurrentProfileImageStyle() {
         return mProfileImageStyle;
     }
 
     @Override
-	public final void restart() {
+    public final void restart() {
         Utils.restartActivity(this);
-	}
+    }
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
         if (BuildConfig.DEBUG) {
-			StrictModeUtils.detectAllVmPolicy();
-			StrictModeUtils.detectAllThreadPolicy();
-		}
-		super.onCreate(savedInstanceState);
+            StrictModeUtils.detectAllVmPolicy();
+            StrictModeUtils.detectAllThreadPolicy();
+        }
+        super.onCreate(savedInstanceState);
         mKeyboardShortcutsHandler = TwittnukerApplication.getInstance(this).getKeyboardShortcutsHandler();
-	}
+    }
 
-	@Override
+    @Override
     public void setTheme(int resid) {
         super.setTheme(mCurrentThemeResource = getThemeResourceId());
         if (shouldApplyWindowBackground()) {
@@ -152,12 +152,12 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
 
     @Override
     protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resId, boolean first) {
-		mCurrentThemeColor = getThemeColor();
+        mCurrentThemeColor = getThemeColor();
         mCurrentThemeFontFamily = getThemeFontFamily();
-		mCurrentActionBarColor = getActionBarColor();
+        mCurrentActionBarColor = getActionBarColor();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
-		mProfileImageStyle = Utils.getProfileImageStyle(this);
+        mProfileImageStyle = Utils.getProfileImageStyle(this);
         super.onApplyThemeResource(theme, resId, first);
     }
 
@@ -172,16 +172,21 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     }
 
     @Override
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
+        return false;
+    }
+
+    @Override
     public boolean onKeyUp(int keyCode, @NonNull KeyEvent event) {
-        if (handleKeyboardShortcutSingle(mKeyboardShortcutsHandler, keyCode, event)) return true;
-        return super.onKeyUp(keyCode, event);
+        handleKeyboardShortcutSingle(mKeyboardShortcutsHandler, keyCode, event);
+        return isKeyboardShortcutHandled(mKeyboardShortcutsHandler, keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (handleKeyboardShortcutRepeat(mKeyboardShortcutsHandler, keyCode, event.getRepeatCount(), event))
             return true;
-        return super.onKeyDown(keyCode, event);
+        return isKeyboardShortcutHandled(mKeyboardShortcutsHandler, keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
     @Override

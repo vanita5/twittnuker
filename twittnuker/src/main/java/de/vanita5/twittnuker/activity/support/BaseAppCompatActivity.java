@@ -81,22 +81,22 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
         return ThemeUtils.getNoActionBarThemeResource(this);
     }
 
-	public TwittnukerApplication getTwittnukerApplication() {
-		return (TwittnukerApplication) getApplication();
-	}
+    public TwittnukerApplication getTwittnukerApplication() {
+        return (TwittnukerApplication) getApplication();
+    }
 
-	public AsyncTwitterWrapper getTwitterWrapper() {
-		return getTwittnukerApplication() != null ? getTwittnukerApplication().getTwitterWrapper() : null;
-	}
+    public AsyncTwitterWrapper getTwitterWrapper() {
+        return getTwittnukerApplication() != null ? getTwittnukerApplication().getTwitterWrapper() : null;
+    }
 
-	public boolean isVisible() {
-		return mIsVisible;
-	}
+    public boolean isVisible() {
+        return mIsVisible;
+    }
 
-	@Override
+    @Override
     public void onFitSystemWindows(Rect insets) {
         if (mSystemWindowsInsets == null)
-        	mSystemWindowsInsets = new Rect(insets);
+            mSystemWindowsInsets = new Rect(insets);
         else {
             mSystemWindowsInsets.set(insets);
         }
@@ -106,34 +106,39 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     @Override
     public boolean onKeyUp(int keyCode, @NonNull KeyEvent event) {
         if (handleKeyboardShortcutSingle(mKeyboardShortcutsHandler, keyCode, event)) return true;
-        return super.onKeyUp(keyCode, event);
+        return isKeyboardShortcutHandled(mKeyboardShortcutsHandler, keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (handleKeyboardShortcutRepeat(mKeyboardShortcutsHandler, keyCode, event.getRepeatCount(), event))
             return true;
-        return super.onKeyDown(keyCode, event);
+        return isKeyboardShortcutHandled(mKeyboardShortcutsHandler, keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
     @Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.back: {
-				onBackPressed();
-				return true;
-			}
-		}
-		return super.onOptionsItemSelected(item);
-	}
+                onBackPressed();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-	@Override
-	public void startActivity(final Intent intent) {
-		super.startActivity(intent);
-	}
+    @Override
+    public void startActivity(final Intent intent) {
+        super.startActivity(intent);
+    }
 
     @Override
     public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
         return false;
     }
 
@@ -142,46 +147,46 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
         return false;
     }
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mKeyboardShortcutsHandler = TwittnukerApplication.getInstance(this).getKeyboardShortcutsHandler();
-	}
+    }
 
 
-	@Override
+    @Override
     protected void onStart() {
         super.onStart();
         mIsVisible = true;
-	}
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		mInstanceStateSaved = false;
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mInstanceStateSaved = false;
+    }
 
-	@Override
+    @Override
     protected void onPause() {
         super.onPause();
     }
 
     @Override
-	protected void onSaveInstanceState(final Bundle outState) {
-		mInstanceStateSaved = true;
-		super.onSaveInstanceState(outState);
-	}
+    protected void onSaveInstanceState(final Bundle outState) {
+        mInstanceStateSaved = true;
+        super.onSaveInstanceState(outState);
+    }
 
-	@Override
+    @Override
     public void startActivityForResult(final Intent intent, final int requestCode) {
         super.startActivityForResult(intent, requestCode);
-	}
+    }
 
-	@Override
-	protected void onStop() {
-		mIsVisible = false;
-		super.onStop();
-	}
+    @Override
+    protected void onStop() {
+        mIsVisible = false;
+        super.onStop();
+    }
 
     @Override
     public void setControlBarOffset(float offset) {

@@ -29,7 +29,6 @@
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
     android:focusable="true"
-    android:focusableInTouchMode="false"
     android:orientation="vertical"
     android:splitMotionEvents="false">
 
@@ -189,7 +188,7 @@
         android:id="@+id/quote_indicator"
         android:layout_width="@dimen/element_spacing_small"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/counts_container"
+        android:layout_alignBottom="@+id/quote_original_link"
         android:layout_alignTop="@+id/quoted_name_container"
         android:layout_marginLeft="@dimen/element_spacing_normal"
         android:layout_marginStart="@dimen/element_spacing_normal"

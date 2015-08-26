@@ -164,6 +164,25 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
     }
 
     @Override
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
+        String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+        if (ACTION_NAVIGATION_REFRESH.equals(action)) {
+            return true;
+        }
+        if (action == null) {
+            action = handler.getKeyAction(CONTEXT_TAG_STATUS, keyCode, event);
+        }
+        if (action == null) return false;
+        switch (action) {
+            case ACTION_STATUS_REPLY:
+            case ACTION_STATUS_RETWEET:
+            case ACTION_STATUS_FAVORITE:
+                return true;
+        }
+        return mNavigationHelper.isKeyboardShortcutHandled(handler, keyCode, event);
+    }
+
+    @Override
     public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, final int keyCode, final int repeatCount,
                                                 @NonNull final KeyEvent event) {
         return mNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);

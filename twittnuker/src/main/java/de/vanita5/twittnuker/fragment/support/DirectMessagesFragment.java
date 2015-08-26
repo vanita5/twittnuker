@@ -48,6 +48,7 @@ import com.squareup.otto.Subscribe;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
@@ -80,11 +81,11 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
         implements LoaderCallbacks<Cursor>, MessageEntriesAdapterListener, KeyboardShortcutCallback {
 
     // Listeners
-	private final SupportFragmentReloadCursorObserver mReloadContentObserver = new SupportFragmentReloadCursorObserver(
-			this, 0, this);
+    private final SupportFragmentReloadCursorObserver mReloadContentObserver = new SupportFragmentReloadCursorObserver(
+            this, 0, this);
 
     // Utility classes
-	private MultiSelectManager mMultiSelectManager;
+    private MultiSelectManager mMultiSelectManager;
     private RemoveUnreadCountsTask mRemoveUnreadCountsTask;
     private RecyclerViewNavigationHelper mNavigationHelper;
 
@@ -132,16 +133,22 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
     @Override
     public boolean handleKeyboardShortcutSingle(@NonNull final KeyboardShortcutsHandler handler,
                                                 final int keyCode, @NonNull final KeyEvent event) {
-        String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
         if (ACTION_NAVIGATION_REFRESH.equals(action)) {
             triggerRefresh();
             return true;
         }
         return false;
-	}
+    }
+
+    @Override
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+        return ACTION_NAVIGATION_REFRESH.equals(action) || mNavigationHelper.isKeyboardShortcutHandled(handler, keyCode, event);
+    }
 
 
-	@Override
+    @Override
     public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
         final Uri uri = DirectMessages.ConversationEntries.CONTENT_URI;
         final long[] accountIds = getAccountIds();
@@ -203,19 +210,19 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
     }
 
     @Override
-	public boolean scrollToStart() {
+    public boolean scrollToStart() {
         final boolean result = super.scrollToStart();
         if (result) {
-			final AsyncTwitterWrapper twitter = getTwitterWrapper();
-			final int tabPosition = getTabPosition();
-			if (twitter != null && tabPosition >= 0) {
-				twitter.clearUnreadCountAsync(tabPosition);
-			}
+            final AsyncTwitterWrapper twitter = getTwitterWrapper();
+            final int tabPosition = getTabPosition();
+            if (twitter != null && tabPosition >= 0) {
+                twitter.clearUnreadCountAsync(tabPosition);
+            }
         }
         return result;
-	}
+    }
 
-	@Override
+    @Override
     public boolean triggerRefresh() {
         AsyncTaskUtils.executeTask(new AsyncTask<Object, Object, long[][]>() {
 
@@ -312,10 +319,10 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
         }
     }
 
-	protected long getAccountId() {
-		final Bundle args = getArguments();
-		return args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-	}
+    protected long getAccountId() {
+        final Bundle args = getArguments();
+        return args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
+    }
 
     protected long[] getAccountIds() {
         final Bundle args = getArguments();
@@ -334,23 +341,23 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
         setRefreshing(twitter != null && (twitter.isReceivedDirectMessagesRefreshing() || twitter.isSentDirectMessagesRefreshing()));
     }
 
-	private void addReadPosition(final int firstVisibleItem) {
-		if (mFirstVisibleItem != firstVisibleItem) {
-			mReadPositions.add(firstVisibleItem);
-		}
-		mFirstVisibleItem = firstVisibleItem;
-	}
+    private void addReadPosition(final int firstVisibleItem) {
+        if (mFirstVisibleItem != firstVisibleItem) {
+            mReadPositions.add(firstVisibleItem);
+        }
+        mFirstVisibleItem = firstVisibleItem;
+    }
 
     private void addUnreadCountsToRemove(final long accountId, final long id) {
         if (mUnreadCountsToRemove.indexOfKey(accountId) < 0) {
             final Set<Long> counts = new HashSet<>();
-			counts.add(id);
+            counts.add(id);
             mUnreadCountsToRemove.put(accountId, counts);
-		} else {
+        } else {
             final Set<Long> counts = mUnreadCountsToRemove.get(accountId);
-			counts.add(id);
-		}
-	}
+            counts.add(id);
+        }
+    }
 
     private void loadMoreMessages() {
         if (isRefreshing()) return;
@@ -378,42 +385,42 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
         });
     }
 
-	private void removeUnreadCounts() {
+    private void removeUnreadCounts() {
         if (mRemoveUnreadCountsTask != null && mRemoveUnreadCountsTask.getStatus() == AsyncTask.Status.RUNNING)
             return;
-		mRemoveUnreadCountsTask = new RemoveUnreadCountsTask(mReadPositions, this);
+        mRemoveUnreadCountsTask = new RemoveUnreadCountsTask(mReadPositions, this);
         AsyncTaskUtils.executeTask(mRemoveUnreadCountsTask);
-	}
+    }
 
     static class RemoveUnreadCountsTask extends AsyncTask<Object, Object, Object> {
-		private final Set<Integer> read_positions;
+        private final Set<Integer> read_positions;
         private final MessageEntriesAdapter adapter;
-		private final DirectMessagesFragment fragment;
+        private final DirectMessagesFragment fragment;
 
-		RemoveUnreadCountsTask(final Set<Integer> read_positions, final DirectMessagesFragment fragment) {
+        RemoveUnreadCountsTask(final Set<Integer> read_positions, final DirectMessagesFragment fragment) {
             this.read_positions = Collections.synchronizedSet(new HashSet<>(read_positions));
-			this.fragment = fragment;
+            this.fragment = fragment;
             adapter = fragment.getAdapter();
-		}
+        }
 
-		@Override
+        @Override
         protected Object doInBackground(final Object... params) {
-			for (final int pos : read_positions) {
+            for (final int pos : read_positions) {
                 final DirectMessageEntry entry = adapter.getEntry(pos);
                 final long id = entry.conversation_id, account_id = entry.account_id;
-				fragment.addUnreadCountsToRemove(account_id, id);
-			}
-			return null;
-		}
+                fragment.addUnreadCountsToRemove(account_id, id);
+            }
+            return null;
+        }
 
-		@Override
+        @Override
         protected void onPostExecute(final Object result) {
-			final AsyncTwitterWrapper twitter = fragment.getTwitterWrapper();
-			if (twitter != null) {
-				twitter.removeUnreadCountsAsync(fragment.getTabPosition(), fragment.getUnreadCountsToRemove());
-			}
-		}
+            final AsyncTwitterWrapper twitter = fragment.getTwitterWrapper();
+            if (twitter != null) {
+                twitter.removeUnreadCountsAsync(fragment.getTabPosition(), fragment.getUnreadCountsToRemove());
+            }
+        }
 
-	}
+    }
 
 }

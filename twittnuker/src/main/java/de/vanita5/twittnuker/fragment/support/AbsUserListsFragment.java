@@ -44,103 +44,108 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.UserListViewHolder;
 
 abstract class AbsUserListsFragment<Data> extends AbsContentRecyclerViewFragment<AbsUserListsAdapter<Data>>
-		implements LoaderCallbacks<Data>, AbsUserListsAdapter.UserListAdapterListener, KeyboardShortcutCallback {
+        implements LoaderCallbacks<Data>, AbsUserListsAdapter.UserListAdapterListener, KeyboardShortcutCallback {
 
     private RecyclerViewNavigationHelper mNavigationHelper;
 
-	private long mNextCursor;
-	private long mPrevCursor;
+    private long mNextCursor;
+    private long mPrevCursor;
 
-	public final Data getData() {
-		return getAdapter().getData();
-	}
+    public final Data getData() {
+        return getAdapter().getData();
+    }
 
-	@Override
-	public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
+    @Override
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
         return mNavigationHelper.handleKeyboardShortcutSingle(handler, keyCode, event);
-	}
+    }
 
-	@Override
-	public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
+    @Override
+    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
         return mNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
-	}
+    }
 
-	@Override
-	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+    @Override
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
+        return mNavigationHelper.isKeyboardShortcutHandled(handler, keyCode, event);
+    }
 
-		final FragmentActivity activity = getActivity();
-		final AbsUserListsAdapter<Data> adapter = getAdapter();
-		final RecyclerView recyclerView = getRecyclerView();
-		final LinearLayoutManager layoutManager = getLayoutManager();
-		adapter.setListener(this);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        final FragmentActivity activity = getActivity();
+        final AbsUserListsAdapter<Data> adapter = getAdapter();
+        final RecyclerView recyclerView = getRecyclerView();
+        final LinearLayoutManager layoutManager = getLayoutManager();
+        adapter.setListener(this);
 
         mNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter,
                 this);
-		final Bundle loaderArgs = new Bundle(getArguments());
-		loaderArgs.putBoolean(EXTRA_FROM_USER, true);
-		getLoaderManager().initLoader(0, loaderArgs, this);
-	}
+        final Bundle loaderArgs = new Bundle(getArguments());
+        loaderArgs.putBoolean(EXTRA_FROM_USER, true);
+        getLoaderManager().initLoader(0, loaderArgs, this);
+    }
 
-	@Override
-	public final Loader<Data> onCreateLoader(int id, Bundle args) {
-		final boolean fromUser = args.getBoolean(EXTRA_FROM_USER);
-		args.remove(EXTRA_FROM_USER);
-		return onCreateUserListsLoader(getActivity(), args, fromUser);
-	}
+    @Override
+    public final Loader<Data> onCreateLoader(int id, Bundle args) {
+        final boolean fromUser = args.getBoolean(EXTRA_FROM_USER);
+        args.remove(EXTRA_FROM_USER);
+        return onCreateUserListsLoader(getActivity(), args, fromUser);
+    }
 
-	@Override
-	public void onLoadFinished(Loader<Data> loader, Data data) {
-		final AbsUserListsAdapter<Data> adapter = getAdapter();
-		adapter.setData(data);
-		if (!(loader instanceof IExtendedLoader) || ((IExtendedLoader) loader).isFromUser()) {
-			adapter.setLoadMoreSupported(hasMoreData(data));
-			setRefreshEnabled(true);
-		}
-		if (loader instanceof IExtendedLoader) {
-			((IExtendedLoader) loader).setFromUser(false);
-		}
-		if (loader instanceof ICursorSupportLoader) {
-			mNextCursor = ((ICursorSupportLoader) loader).getNextCursor();
-			mPrevCursor = ((ICursorSupportLoader) loader).getNextCursor();
-		}
-		showContent();
-	}
+    @Override
+    public void onLoadFinished(Loader<Data> loader, Data data) {
+        final AbsUserListsAdapter<Data> adapter = getAdapter();
+        adapter.setData(data);
+        if (!(loader instanceof IExtendedLoader) || ((IExtendedLoader) loader).isFromUser()) {
+            adapter.setLoadMoreSupported(hasMoreData(data));
+            setRefreshEnabled(true);
+        }
+        if (loader instanceof IExtendedLoader) {
+            ((IExtendedLoader) loader).setFromUser(false);
+        }
+        if (loader instanceof ICursorSupportLoader) {
+            mNextCursor = ((ICursorSupportLoader) loader).getNextCursor();
+            mPrevCursor = ((ICursorSupportLoader) loader).getNextCursor();
+        }
+        showContent();
+    }
 
-	@Override
-	public void onLoaderReset(Loader<Data> loader) {
-		if (loader instanceof IExtendedLoader) {
-			((IExtendedLoader) loader).setFromUser(false);
-		}
-	}
+    @Override
+    public void onLoaderReset(Loader<Data> loader) {
+        if (loader instanceof IExtendedLoader) {
+            ((IExtendedLoader) loader).setFromUser(false);
+        }
+    }
 
-	@Override
-	public void onUserListClick(UserListViewHolder holder, int position) {
-		final ParcelableUserList userList = getAdapter().getUserList(position);
-		if (userList == null) return;
-		Utils.openUserListDetails(getActivity(), userList);
-	}
+    @Override
+    public void onUserListClick(UserListViewHolder holder, int position) {
+        final ParcelableUserList userList = getAdapter().getUserList(position);
+        if (userList == null) return;
+        Utils.openUserListDetails(getActivity(), userList);
+    }
 
-	public long getPrevCursor() {
-		return mPrevCursor;
-	}
+    public long getPrevCursor() {
+        return mPrevCursor;
+    }
 
-	public long getNextCursor() {
-		return mNextCursor;
-	}
+    public long getNextCursor() {
+        return mNextCursor;
+    }
 
-	@Override
-	public boolean onUserListLongClick(UserListViewHolder holder, int position) {
-		return true;
-	}
+    @Override
+    public boolean onUserListLongClick(UserListViewHolder holder, int position) {
+        return true;
+    }
 
-	protected ParcelableUserList getSelectedUserList() {
-		//TODO return selected
-		return null;
-	}
+    protected ParcelableUserList getSelectedUserList() {
+        //TODO return selected
+        return null;
+    }
 
-	protected abstract boolean hasMoreData(Data data);
+    protected abstract boolean hasMoreData(Data data);
 
-	protected abstract Loader<Data> onCreateUserListsLoader(Context context, Bundle args, boolean fromUser);
+    protected abstract Loader<Data> onCreateUserListsLoader(Context context, Bundle args, boolean fromUser);
 
 }
