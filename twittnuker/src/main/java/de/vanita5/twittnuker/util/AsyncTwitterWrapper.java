@@ -46,7 +46,6 @@ import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
 import org.mariotaku.sqliteqb.library.SQLFunctions;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.Twitter;
@@ -77,6 +76,7 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox;
@@ -836,9 +836,11 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
                 }
                 // I bet you don't want to see this user in your auto complete list.
-                //TODO insert to blocked users data
-//                final Expression where = Expression.equals(CachedUsers.USER_ID, user_id);
-//                mResolver.delete(CachedUsers.CONTENT_URI, where.getSQL(), null);
+                final ContentValues values = new ContentValues();
+                values.put(CachedRelationships.ACCOUNT_ID, account_id);
+                values.put(CachedRelationships.USER_ID, user_id);
+                values.put(CachedRelationships.BLOCKING, true);
+                mResolver.insert(CachedRelationships.CONTENT_URI, values);
                 return SingleResponse.getInstance(new ParcelableUser(user, account_id), null);
             } catch (final TwitterException e) {
                 return SingleResponse.getInstance(null, e);
@@ -1983,7 +1985,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected Uri getDatabaseUri() {
             return Statuses.CONTENT_URI;
         }
-
 
         @Override
         protected void onPostExecute(final List<StatusListResponse> result) {

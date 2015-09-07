@@ -40,7 +40,7 @@ import static de.vanita5.twittnuker.util.Utils.getBestBannerUrl;
 
 public class MediaLoaderWrapper implements Constants {
 
-	private final ImageLoader mImageLoader;
+    private final ImageLoader mImageLoader;
     private final DisplayImageOptions mProfileImageDisplayOptions;
     private final DisplayImageOptions mDashboardProfileImageDisplayOptions;
     private final DisplayImageOptions mOvalProfileImageDisplayOptions;
@@ -54,24 +54,24 @@ public class MediaLoaderWrapper implements Constants {
         profileOptsBuilder.cacheInMemory(true);
         profileOptsBuilder.cacheOnDisk(true);
         profileOptsBuilder.bitmapConfig(Bitmap.Config.ARGB_8888);
-		profileOptsBuilder.resetViewBeforeLoading(true);
+        profileOptsBuilder.resetViewBeforeLoading(true);
         final DisplayImageOptions.Builder ovalProfileOptsBuilder = new DisplayImageOptions.Builder();
         ovalProfileOptsBuilder.cacheInMemory(true);
         ovalProfileOptsBuilder.cacheOnDisk(true);
         ovalProfileOptsBuilder.bitmapConfig(Bitmap.Config.ARGB_8888);
         ovalProfileOptsBuilder.displayer(new OvalBitmapDisplayer());
         ovalProfileOptsBuilder.resetViewBeforeLoading(true);
-		final DisplayImageOptions.Builder imageOptsBuilder = new DisplayImageOptions.Builder();
-		imageOptsBuilder.cacheInMemory(true);
-		imageOptsBuilder.cacheOnDisk(true);
-		imageOptsBuilder.bitmapConfig(Bitmap.Config.RGB_565);
-		imageOptsBuilder.resetViewBeforeLoading(true);
-		final DisplayImageOptions.Builder bannerOptsBuilder = new DisplayImageOptions.Builder();
+        final DisplayImageOptions.Builder imageOptsBuilder = new DisplayImageOptions.Builder();
+        imageOptsBuilder.cacheInMemory(true);
+        imageOptsBuilder.cacheOnDisk(true);
+        imageOptsBuilder.bitmapConfig(Bitmap.Config.RGB_565);
+        imageOptsBuilder.resetViewBeforeLoading(true);
+        final DisplayImageOptions.Builder bannerOptsBuilder = new DisplayImageOptions.Builder();
         bannerOptsBuilder.resetViewBeforeLoading(true);
         bannerOptsBuilder.showImageOnLoading(android.R.color.transparent);
-		bannerOptsBuilder.cacheInMemory(true);
-		bannerOptsBuilder.cacheOnDisk(true);
-		bannerOptsBuilder.bitmapConfig(Bitmap.Config.RGB_565);
+        bannerOptsBuilder.cacheInMemory(true);
+        bannerOptsBuilder.cacheOnDisk(true);
+        bannerOptsBuilder.bitmapConfig(Bitmap.Config.RGB_565);
         bannerOptsBuilder.displayer(new FadeInBitmapDisplayer(200, true, true, true));
         final DisplayImageOptions.Builder dashboardProfileOptsBuilder = new DisplayImageOptions.Builder();
         dashboardProfileOptsBuilder.cacheInMemory(true);
@@ -80,38 +80,42 @@ public class MediaLoaderWrapper implements Constants {
 
         mProfileImageDisplayOptions = profileOptsBuilder.build();
         mOvalProfileImageDisplayOptions = ovalProfileOptsBuilder.build();
-		mImageDisplayOptions = imageOptsBuilder.build();
-		mBannerDisplayOptions = bannerOptsBuilder.build();
+        mImageDisplayOptions = imageOptsBuilder.build();
+        mBannerDisplayOptions = bannerOptsBuilder.build();
         mDashboardProfileImageDisplayOptions = dashboardProfileOptsBuilder.build();
-	}
+    }
 
-	public void clearFileCache() {
-		mImageLoader.clearDiskCache();
-	}
+    public ImageLoader getImageLoader() {
+        return mImageLoader;
+    }
 
-	public void clearMemoryCache() {
-		mImageLoader.clearMemoryCache();
-	}
+    public void clearFileCache() {
+        mImageLoader.clearDiskCache();
+    }
+
+    public void clearMemoryCache() {
+        mImageLoader.clearMemoryCache();
+    }
 
     public void displayPreviewImage(final String uri, final ImageView view) {
         mImageLoader.displayImage(uri, view, mImageDisplayOptions);
-	}
+    }
 
     public void displayPreviewImage(final ImageView view, final String url, final MediaLoadingHandler loadingHandler) {
-		mImageLoader.displayImage(url, view, mImageDisplayOptions, loadingHandler, loadingHandler);
-	}
+        mImageLoader.displayImage(url, view, mImageDisplayOptions, loadingHandler, loadingHandler);
+    }
 
-	public void displayPreviewImageWithCredentials(final ImageView view, final String url, final long accountId,
+    public void displayPreviewImageWithCredentials(final ImageView view, final String url, final long accountId,
                                                    final MediaLoadingHandler loadingHandler) {
         if (accountId <= 0) {
             displayPreviewImage(view, url, loadingHandler);
             return;
         }
-		final DisplayImageOptions.Builder b = new DisplayImageOptions.Builder();
-		b.cloneFrom(mImageDisplayOptions);
-		b.extraForDownloader(new AccountExtra(accountId));
-		mImageLoader.displayImage(url, view, b.build(), loadingHandler, loadingHandler);
-	}
+        final DisplayImageOptions.Builder b = new DisplayImageOptions.Builder();
+        b.cloneFrom(mImageDisplayOptions);
+        b.extraForDownloader(new AccountExtra(accountId));
+        mImageLoader.displayImage(url, view, b.build(), loadingHandler, loadingHandler);
+    }
 
     public void displayProfileBanner(final ImageView view, final String url,
                                      final ImageLoadingListener listener) {
@@ -124,10 +128,10 @@ public class MediaLoaderWrapper implements Constants {
 
     public void displayProfileBanner(final ImageView view, final String baseUrl, final int width) {
         displayProfileBanner(view, getBestBannerUrl(baseUrl, width));
-	}
+    }
 
-	public void displayProfileImage(final ImageView view, final String url) {
-		mImageLoader.displayImage(url, view, mProfileImageDisplayOptions);
+    public void displayProfileImage(final ImageView view, final String url) {
+        mImageLoader.displayImage(url, view, mProfileImageDisplayOptions);
     }
 
     public void displayDashboardProfileImage(final ImageView view, final String url, Drawable drawableOnLoading) {
@@ -153,10 +157,10 @@ public class MediaLoaderWrapper implements Constants {
 
     public void displayProfileImage(final ImageView view, final String url, final ImageLoadingListener listener) {
         mImageLoader.displayImage(url, view, mProfileImageDisplayOptions, listener);
-	}
+    }
 
-	public void loadProfileImage(final String url, final ImageLoadingListener listener) {
-		mImageLoader.loadImage(url, mProfileImageDisplayOptions, listener);
+    public void loadProfileImage(final String url, final ImageLoadingListener listener) {
+        mImageLoader.loadImage(url, mProfileImageDisplayOptions, listener);
     }
 
     public void displayOvalProfileImage(final String url, final ImageView view) {
@@ -165,5 +169,5 @@ public class MediaLoaderWrapper implements Constants {
 
     public void cancelDisplayTask(ImageView imageView) {
         mImageLoader.cancelDisplayTask(imageView);
-	}
+    }
 }

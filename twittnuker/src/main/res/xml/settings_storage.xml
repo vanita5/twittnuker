@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:app="http://schemas.android.com/apk/res-auto"
-                  android:key="settings_storage"
-                  android:title="@string/storage">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:key="settings_storage"
+    android:title="@string/storage">
 
     <PreferenceCategory
         android:key="category_storage"
@@ -15,21 +15,29 @@
             android:title="@string/database_item_limit"
             app:max="500"
             app:min="50"
-            app:step="10"/>
+            app:step="10" />
+
+        <de.vanita5.twittnuker.preference.SeekBarDialogPreference
+            android:defaultValue="512"
+            android:key="cache_size_limit"
+            android:title="@string/cache_size_limit"
+            app:max="1024"
+            app:min="100"
+            app:step="50" />
 
         <de.vanita5.twittnuker.preference.ClearSearchHistoryPreference
             android:key="clear_search_history"
-            android:title="@string/clear_search_history"/>
+            android:title="@string/clear_search_history" />
 
         <de.vanita5.twittnuker.preference.ClearCachePreference
             android:key="clear_cache"
             android:summary="@string/clear_cache_summary"
-            android:title="@string/clear_cache"/>
+            android:title="@string/clear_cache" />
 
         <de.vanita5.twittnuker.preference.ClearDatabasesPreference
             android:key="clear_databases"
             android:summary="@string/clear_databases_summary"
-            android:title="@string/clear_databases"/>
+            android:title="@string/clear_databases" />
 
     </PreferenceCategory>
 

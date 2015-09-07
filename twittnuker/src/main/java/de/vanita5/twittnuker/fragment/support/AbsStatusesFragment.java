@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.RecyclerViewUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.imageloader.PauseRecyclerViewOnScrollListener;
 import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
@@ -91,7 +92,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
                     getFragmentManager(), getTwitterWrapper(), status, item);
         }
     };
-    private OnScrollListener mOnScrollListener = new OnScrollListener() {
+    private final OnScrollListener mOnScrollListener = new OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -100,6 +101,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
             }
         }
     };
+    private OnScrollListener mPauseOnScrollListener;
 
     protected AbsStatusesFragment() {
         mStatusesBusCallback = createMessageBusCallback();
@@ -193,6 +195,18 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
         final boolean fromUser = args.getBoolean(EXTRA_FROM_USER);
         args.remove(EXTRA_FROM_USER);
         return onCreateStatusesLoader(getActivity(), args, fromUser);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser) {
+            final LinearLayoutManager layoutManager = getLayoutManager();
+            if (layoutManager != null) {
+                saveReadPosition(layoutManager.findFirstVisibleItemPosition());
+            }
+        }
     }
 
     @Override
@@ -357,6 +371,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
         super.onStart();
         final RecyclerView recyclerView = getRecyclerView();
         recyclerView.addOnScrollListener(mOnScrollListener);
+        recyclerView.addOnScrollListener(mPauseOnScrollListener);
         final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
         assert bus != null;
         bus.register(mStatusesBusCallback);
@@ -368,6 +383,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
         assert bus != null;
         bus.unregister(mStatusesBusCallback);
         final RecyclerView recyclerView = getRecyclerView();
+        recyclerView.removeOnScrollListener(mPauseOnScrollListener);
         recyclerView.removeOnScrollListener(mOnScrollListener);
         super.onStop();
     }
@@ -400,6 +416,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
                 adapter, this);
 
         adapter.setListener(this);
+        mPauseOnScrollListener = new PauseRecyclerViewOnScrollListener(adapter.getMediaLoader().getImageLoader(), false, true);
 
         final Bundle loaderArgs = new Bundle(getArguments());
         loaderArgs.putBoolean(EXTRA_FROM_USER, true);
