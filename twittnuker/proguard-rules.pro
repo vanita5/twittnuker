@@ -123,7 +123,13 @@
 
 # Osmdroid
 -dontwarn org.osmdroid.**
--dontwarn org.apache.http.entity.**
+
+# Android 6 (API 23)
+-dontwarn org.apache.http.**
+-dontwarn android.net.http.AndroidHttpClient
+-dontwarn retrofit.client.ApacheClient$GenericEntityHttpRequest
+-dontwarn retrofit.client.ApacheClient$GenericHttpRequest
+-dontwarn retrofit.client.ApacheClient$TypedOutputEntity
 
 # slf4j
 -keep class org.slf4j.** { *; }
@@ -133,3 +139,7 @@
 
 #JacksonXML
 -dontwarn java.beans.**
+
+-keep public class com.google.android.gms.* { public *; }
+-dontwarn com.google.android.gms.**
+-dontwarn com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView

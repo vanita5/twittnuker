@@ -112,7 +112,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
 
     public abstract boolean getStatuses(long[] accountIds, long[] maxIds, long[] sinceIds);
 
-	@Override
+    @Override
     public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
         String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
         if (ACTION_NAVIGATION_REFRESH.equals(action)) {
@@ -186,9 +186,9 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
     public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, final int keyCode, final int repeatCount,
                                                 @NonNull final KeyEvent event) {
         return mNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
-	}
+    }
 
-	@Override
+    @Override
     public final Loader<Data> onCreateLoader(int id, Bundle args) {
         final boolean fromUser = args.getBoolean(EXTRA_FROM_USER);
         args.remove(EXTRA_FROM_USER);
@@ -267,7 +267,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
         getStatuses(accountIds, maxIds, sinceIds);
     }
 
-	@Override
+    @Override
     public void onMediaClick(StatusViewHolder holder, View view, ParcelableMedia media, int position) {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final ParcelableStatus status = adapter.getStatus(position);
@@ -348,8 +348,8 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
             Utils.openUserProfile(activity, status.account_id, status.quoted_by_user_id,
                     status.quoted_by_user_screen_name, options);
         } else {
-			Utils.openUserProfile(activity, status.account_id, status.user_id, status.user_screen_name, options);
-		}
+            Utils.openUserProfile(activity, status.account_id, status.user_id, status.user_screen_name, options);
+        }
     }
 
     @Override
@@ -413,15 +413,15 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
 
     protected abstract long[] getAccountIds();
 
-	protected Data getAdapterData() {
+    protected Data getAdapterData() {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         return adapter.getData();
-	}
+    }
 
     protected void setAdapterData(Data data) {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         adapter.setData(data);
-	}
+    }
 
     protected String getReadPositionTag() {
         return null;
@@ -473,5 +473,5 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
             adapter.notifyDataSetChanged();
         }
 
-	}
+    }
 }

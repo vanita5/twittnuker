@@ -850,6 +850,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                             status.user_screen_name, null);
                     break;
                 }
+                case R.id.quote_original_link: {
+                    Utils.openStatus(adapter.getContext(), status.account_id, status.quote_id);
+                }
             }
         }
 
@@ -885,6 +888,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             favoritesContainer.setOnClickListener(this);
             retweetedByView.setOnClickListener(this);
             locationView.setOnClickListener(this);
+            quoteOriginalLink.setOnClickListener(this);
 
             final float defaultTextSize = adapter.getTextSize();
             nameView.setTextSize(defaultTextSize * 1.25f);
