@@ -169,7 +169,7 @@
         </RelativeLayout>
 
         <de.vanita5.twittnuker.view.HandleSpanClickTextView
-            android:id="@+id/quote_text"
+            android:id="@+id/quoted_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/profile_container"
@@ -201,7 +201,7 @@
             android:id="@+id/quoted_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/quote_text"
+            android:layout_below="@id/quoted_text"
             android:layout_toEndOf="@+id/quote_indicator"
             android:layout_toRightOf="@+id/quote_indicator"
             android:orientation="horizontal"

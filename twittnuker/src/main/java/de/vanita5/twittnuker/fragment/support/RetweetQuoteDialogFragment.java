@@ -60,22 +60,22 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapt
 import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 
 public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implements
-		Constants, DialogInterface.OnClickListener {
+        Constants, DialogInterface.OnClickListener {
 
-	public static final String FRAGMENT_TAG = "retweet_quote";
+    public static final String FRAGMENT_TAG = "retweet_quote";
     private ComposeMaterialEditText mEditComment;
     private PopupMenu mPopupMenu;
     private View mCommentMenu;
     private TwidereValidator mValidator;
     private SharedPreferencesWrapper mPreferences;
 
-	@Override
-	public void onClick(final DialogInterface dialog, final int which) {
+    @Override
+    public void onClick(final DialogInterface dialog, final int which) {
         final ParcelableStatus status = getStatus();
         if (status == null) return;
-		switch (which) {
+        switch (which) {
             case DialogInterface.BUTTON_POSITIVE: {
-				final AsyncTwitterWrapper twitter = getTwitterWrapper();
+                final AsyncTwitterWrapper twitter = getTwitterWrapper();
                 if (twitter == null) return;
                 retweetOrQuote(twitter, status);
                 break;
@@ -94,36 +94,36 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
         }
     }
 
-	@NonNull
-	@Override
-	public Dialog onCreateDialog(final Bundle savedInstanceState) {
-		final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
-		final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
-		final Context context = builder.getContext();
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(final Bundle savedInstanceState) {
+        final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+        final Context context = builder.getContext();
         mValidator = new TwidereValidator(context);
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE, SharedPreferenceConstants.class);
-		final LayoutInflater inflater = LayoutInflater.from(context);
+        final LayoutInflater inflater = LayoutInflater.from(context);
         @SuppressLint("InflateParams") final View view = inflater.inflate(R.layout.dialog_status_quote_retweet, null);
         final StatusViewHolder holder = new StatusViewHolder(new DummyStatusHolderAdapter(context), view.findViewById(R.id.item_content));
-		final ParcelableStatus status = getStatus();
+        final ParcelableStatus status = getStatus();
 
         assert status != null;
 
-		builder.setView(view);
-		builder.setTitle(R.string.retweet_quote_confirm_title);
+        builder.setView(view);
+        builder.setTitle(R.string.retweet_quote_confirm_title);
         if (isMyRetweet(status)) {
             builder.setPositiveButton(R.string.cancel_retweet, this);
         } else if (!status.user_is_protected) {
             builder.setPositiveButton(R.string.retweet, this);
         }
-		builder.setNeutralButton(R.string.quote, this);
-		builder.setNegativeButton(android.R.string.cancel, null);
+        builder.setNeutralButton(R.string.quote, this);
+        builder.setNegativeButton(android.R.string.cancel, null);
 
         holder.displayStatus(status, null, false, true);
 
-		view.findViewById(R.id.item_menu).setVisibility(View.GONE);
-		view.findViewById(R.id.action_buttons).setVisibility(View.GONE);
-		view.findViewById(R.id.item_content).setFocusable(false);
+        view.findViewById(R.id.item_menu).setVisibility(View.GONE);
+        view.findViewById(R.id.action_buttons).setVisibility(View.GONE);
+        view.findViewById(R.id.item_content).setFocusable(false);
         view.findViewById(R.id.comment_container).setVisibility(status.user_is_protected ? View.GONE : View.VISIBLE);
         mEditComment = (ComposeMaterialEditText) view.findViewById(R.id.edit_comment);
         mEditComment.setAccountId(status.account_id);
@@ -140,15 +140,15 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
 
         final boolean sendByEnter = mPreferences.getBoolean(KEY_QUICK_SEND);
         final EditTextEnterHandler enterHandler = EditTextEnterHandler.attach(mEditComment, new EditTextEnterHandler.EnterListener() {
-			@Override
-			public void onHitEnter() {
-				final AsyncTwitterWrapper twitter = getTwitterWrapper();
-				final ParcelableStatus status = getStatus();
-				if (twitter == null || status == null) return;
+            @Override
+            public void onHitEnter() {
+                final AsyncTwitterWrapper twitter = getTwitterWrapper();
+                final ParcelableStatus status = getStatus();
+                if (twitter == null || status == null) return;
                 retweetOrQuote(twitter, status);
                 dismiss();
-			}
-		}, sendByEnter);
+            }
+        }, sendByEnter);
         enterHandler.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -174,35 +174,35 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
         mPopupMenu = new PopupMenu(context, mCommentMenu, Gravity.NO_GRAVITY,
                 R.attr.actionOverflowMenuStyle, 0);
         mCommentMenu.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mPopupMenu.show();
-			}
-		});
+            @Override
+            public void onClick(View v) {
+                mPopupMenu.show();
+            }
+        });
         mCommentMenu.setOnTouchListener(mPopupMenu.getDragToOpenListener());
         mPopupMenu.inflate(R.menu.menu_dialog_comment);
         final Menu menu = mPopupMenu.getMenu();
         MenuUtils.setMenuItemAvailability(menu, R.id.quote_original_status,
-				status.retweet_id > 0 || status.quote_id > 0);
+                status.retweet_id > 0 || status.quoted_id > 0);
         mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				if (item.isCheckable()) {
-					item.setChecked(!item.isChecked());
-					return true;
-				}
-				return false;
-			}
-		});
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.isCheckable()) {
+                    item.setChecked(!item.isChecked());
+                    return true;
+                }
+                return false;
+            }
+        });
 
-		return builder.create();
-	}
+        return builder.create();
+    }
 
-	private ParcelableStatus getStatus() {
-		final Bundle args = getArguments();
-		if (!args.containsKey(EXTRA_STATUS)) return null;
-		return args.getParcelable(EXTRA_STATUS);
-	}
+    private ParcelableStatus getStatus() {
+        final Bundle args = getArguments();
+        if (!args.containsKey(EXTRA_STATUS)) return null;
+        return args.getParcelable(EXTRA_STATUS);
+    }
 
     private void retweetOrQuote(AsyncTwitterWrapper twitter, ParcelableStatus status) {
         if (mEditComment.length() > 0) {
@@ -211,15 +211,12 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
             final MenuItem linkToQuotedStatus = menu.findItem(R.id.link_to_quoted_status);
             final Uri statusLink;
             final long inReplyToStatusId;
-            if (!status.is_quote) {
+            if (!status.is_quote || !quoteOriginalStatus.isChecked()) {
                 inReplyToStatusId = status.id;
                 statusLink = LinkCreator.getTwitterStatusLink(status.user_screen_name, status.id);
-            } else if (quoteOriginalStatus.isChecked()) {
-                inReplyToStatusId = status.quote_id;
-                statusLink = LinkCreator.getTwitterStatusLink(status.user_screen_name, status.quote_id);
             } else {
-                inReplyToStatusId = status.id;
-                statusLink = LinkCreator.getTwitterStatusLink(status.quoted_by_user_screen_name, status.id);
+                inReplyToStatusId = status.quoted_id;
+                statusLink = LinkCreator.getTwitterStatusLink(status.quoted_user_screen_name, status.quoted_id);
             }
             final String commentText = mEditComment.getText() + " " + statusLink;
             twitter.updateStatusAsync(new long[]{status.account_id}, commentText, null, null,
@@ -231,12 +228,12 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
         }
     }
 
-	public static RetweetQuoteDialogFragment show(final FragmentManager fm, final ParcelableStatus status) {
-		final Bundle args = new Bundle();
-		args.putParcelable(EXTRA_STATUS, status);
-		final RetweetQuoteDialogFragment f = new RetweetQuoteDialogFragment();
-		f.setArguments(args);
-		f.show(fm, FRAGMENT_TAG);
-		return f;
-	}
+    public static RetweetQuoteDialogFragment show(final FragmentManager fm, final ParcelableStatus status) {
+        final Bundle args = new Bundle();
+        args.putParcelable(EXTRA_STATUS, status);
+        final RetweetQuoteDialogFragment f = new RetweetQuoteDialogFragment();
+        f.setArguments(args);
+        f.show(fm, FRAGMENT_TAG);
+        return f;
+    }
 }
