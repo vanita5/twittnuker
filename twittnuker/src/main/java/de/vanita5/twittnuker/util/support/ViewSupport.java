@@ -29,6 +29,7 @@ import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -45,14 +46,14 @@ public final class ViewSupport {
         }
     }
 
-	@SuppressWarnings("deprecation")
-	public static void setBackground(final View view, final Drawable background) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-			view.setBackgroundDrawable(background);
-		} else {
-			ViewAccessorJB.setBackground(view, background);
-		}
-	}
+    @SuppressWarnings("deprecation")
+    public static void setBackground(final View view, final Drawable background) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            view.setBackgroundDrawable(background);
+        } else {
+            ViewAccessorJB.setBackground(view, background);
+        }
+    }
 
     public static void setButtonTintList(CompoundButton view, ColorStateList list) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
@@ -114,11 +115,32 @@ public final class ViewSupport {
         return null;
     }
 
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	static class ViewAccessorJB {
-		static void setBackground(final View view, final Drawable background) {
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
-			view.setBackground(background);
+    public static void setForeground(View view, Drawable foreground) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            return;
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            ViewAccessorICS.setForeground(view, foreground);
+        } else {
+            view.setForeground(foreground);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    static class ViewAccessorJB {
+        static void setBackground(final View view, final Drawable background) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
+            view.setBackground(background);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    static class ViewAccessorICS {
+        static void setForeground(final View view, final Drawable foreground) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) return;
+            if (view instanceof FrameLayout) {
+                //noinspection RedundantCast
+                ((FrameLayout) view).setForeground(foreground);
+            }
         }
     }
 
@@ -161,13 +183,13 @@ public final class ViewSupport {
         static void setProgressTintList(final ProgressBar view, final ColorStateList list) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
             view.setProgressTintList(list);
-		}
+        }
 
         public static ColorStateList getButtonTintList(CompoundButton view) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return null;
             return view.getButtonTintList();
         }
-	}
+    }
 
 
 }
