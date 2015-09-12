@@ -320,6 +320,8 @@ public interface SharedPreferenceConstants {
     String KEY_HIDE_CARD_ACTIONS = "hide_card_actions";
     @Preference(type = INT, hasDefault = true, defaultInt = 512)
     String KEY_CACHE_SIZE_LIMIT = "cache_size_limit";
+    @Preference(type = BOOLEAN,hasDefault = true,defaultBoolean = true)
+    String KEY_BUG_REPORTS = "bug_reports";
 
     //GCM Push
     @Preference(type = STRING)
