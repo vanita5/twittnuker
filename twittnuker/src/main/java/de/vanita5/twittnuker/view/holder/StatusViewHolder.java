@@ -36,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.ArrayUtils;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.ContentCardClickListener;
@@ -123,24 +124,24 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         }
     }
 
-	public void displaySampleStatus() {
+    public void displaySampleStatus() {
         profileImageView.setVisibility(adapter.isProfileImageEnabled() ? View.VISIBLE : View.GONE);
         profileImageView.setImageResource(R.mipmap.ic_launcher);
         nameView.setName(TWIDERE_PREVIEW_NAME);
         nameView.setScreenName("@" + TWIDERE_PREVIEW_SCREEN_NAME);
         nameView.updateText();
         if (adapter.getLinkHighlightingStyle() == VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
-        	textView.setText(Html.fromHtml(TWIDERE_PREVIEW_TEXT_HTML));
+            textView.setText(Html.fromHtml(TWIDERE_PREVIEW_TEXT_HTML));
             adapter.getTwidereLinkify().applyAllLinks(textView, -1, -1, false, adapter.getLinkHighlightingStyle());
         } else {
             textView.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
         }
         textView.setMovementMethod(null);
-		timeView.setTime(System.currentTimeMillis());
+        timeView.setTime(System.currentTimeMillis());
         mediaPreview.setVisibility(adapter.isMediaPreviewEnabled() ? View.VISIBLE : View.GONE);
         mediaPreview.displayMedia(R.drawable.nyan_stars_background);
         extraTypeView.setImageResource(R.drawable.ic_action_gallery);
-	}
+    }
 
     public void displayStatus(final ParcelableStatus status, final boolean displayInReplyTo) {
         displayStatus(status, null, displayInReplyTo, true);
@@ -176,7 +177,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         } else {
             replyRetweetView.setVisibility(View.GONE);
             replyRetweetIcon.setVisibility(View.GONE);
-	    }
+        }
 
 
         if (status.is_quote && ArrayUtils.isEmpty(status.media)) {
@@ -188,15 +189,16 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             quotedNameView.setName(status.quoted_user_name);
             quotedNameView.setScreenName("@" + status.quoted_user_screen_name);
 
-            if (adapter.getLinkHighlightingStyle() == VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
-                final String text = status.quoted_text_unescaped;
-                quotedTextView.setText(text);
-            } else {
+            if (adapter.getLinkHighlightingStyle() != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE
+                    && !TextUtils.isEmpty(status.quoted_text_html)) {
                 final Spanned text = Html.fromHtml(status.quoted_text_html);
                 quotedTextView.setText(text);
                 linkify.applyAllLinks(quotedTextView, status.account_id, getLayoutPosition(),
                         status.is_possibly_sensitive, adapter.getLinkHighlightingStyle());
                 quotedTextView.setMovementMethod(null);
+            } else {
+                final String text = status.quoted_text_unescaped;
+                quotedTextView.setText(text);
             }
 
             quoteIndicator.setColor(manager.getUserColor(status.user_id, false));
@@ -245,9 +247,9 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
 
         if (adapter.shouldShowAccountsColor()) {
             itemContent.drawEnd(Utils.getAccountColor(context, status.account_id));
-		} else {
+        } else {
             itemContent.drawEnd();
-		}
+        }
 
         final ParcelableMedia[] media = status.is_quote && ArrayUtils.isEmpty(status.media) ? status.quoted_media : status.media;
 
@@ -258,9 +260,9 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
                 mediaPreview.setVisibility(View.VISIBLE);
                 mediaPreview.displayMedia(media, loader, status.account_id, this,
                         adapter.getMediaLoadingHandler());
-			} else {
-				mediaPreview.setVisibility(View.GONE);
-			}
+            } else {
+                mediaPreview.setVisibility(View.GONE);
+            }
         } else {
             mediaPreview.setVisibility(View.GONE);
         }
@@ -281,7 +283,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             replyCountView.setText(Utils.getLocalizedNumber(locale, reply_count));
         } else {
             replyCountView.setText(null);
-	    }
+        }
 
         if (twitter.isDestroyingStatus(status.account_id, status.my_retweet_id)) {
             retweetCountView.setActivated(false);
@@ -291,7 +293,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             retweetCountView.setActivated(creatingRetweet || Utils.isMyRetweet(status.account_id,
                     status.retweeted_by_user_id, status.my_retweet_id));
             retweet_count = status.retweet_count + (creatingRetweet ? 1 : 0);
-	    }
+        }
         if (retweet_count > 0) {
             retweetCountView.setText(Utils.getLocalizedNumber(locale, retweet_count));
         } else {
@@ -304,7 +306,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             final boolean creatingFavorite = twitter.isCreatingFavorite(status.account_id, status.id);
             favoriteCountView.setActivated(creatingFavorite || status.is_favorite);
             favorite_count = status.favorite_count + (creatingFavorite ? 1 : 0);
-	    }
+        }
         if (favorite_count > 0) {
             favoriteCountView.setText(Utils.getLocalizedNumber(locale, favorite_count));
         } else {
@@ -337,21 +339,21 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             case R.id.item_content: {
                 statusClickListener.onStatusClick(this, position);
                 break;
-		    }
+            }
             case R.id.item_menu: {
                 statusClickListener.onItemMenuClick(this, v, position);
                 break;
-	        }
+            }
             case R.id.profile_image: {
                 statusClickListener.onUserProfileClick(this, position);
                 break;
-	        }
+            }
             case R.id.reply_count:
             case R.id.retweet_count:
             case R.id.favorite_count: {
                 statusClickListener.onItemActionClick(this, v.getId(), position);
                 break;
-	        }
+            }
         }
     }
 
@@ -548,17 +550,17 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         }
 
         @Override
+        public void setLoadMoreIndicatorVisible(boolean enabled) {
+
+        }
+
+        @Override
         public boolean isLoadMoreSupported() {
             return false;
         }
 
         @Override
         public void setLoadMoreSupported(boolean supported) {
-
-        }
-
-        @Override
-        public void setLoadMoreIndicatorVisible(boolean enabled) {
 
         }
 
@@ -585,6 +587,10 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         @Override
         public boolean isMediaPreviewEnabled() {
             return displayMediaPreview;
+        }
+
+        public void setMediaPreviewEnabled(boolean enabled) {
+            displayMediaPreview = enabled;
         }
 
         @Override
@@ -615,10 +621,6 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         @Override
         public boolean shouldShowAccountsColor() {
             return false;
-        }
-
-        public void setMediaPreviewEnabled(boolean enabled) {
-            displayMediaPreview = enabled;
         }
 
         @Override
