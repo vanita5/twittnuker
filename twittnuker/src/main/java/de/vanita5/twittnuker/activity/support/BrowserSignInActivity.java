@@ -32,6 +32,7 @@ import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -43,7 +44,6 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import org.mariotaku.restfu.http.Authorization;
-import org.mariotaku.restfu.http.Endpoint;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
@@ -262,8 +262,8 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity {
                 }
                 return;
             }
-            //TODO
-//            mActivity.loadUrl(data.getAuthorizationURL());
+            final OAuthEndpoint endpoint = new OAuthEndpoint(TwitterAPIFactory.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", null));
+            mActivity.loadUrl(endpoint.construct("/oauth/authorize", Pair.create("oauth_token", data.getOauthToken())));
         }
 
         @Override
