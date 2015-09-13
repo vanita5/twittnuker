@@ -19,6 +19,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.util.LongSparseArray;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -36,7 +37,9 @@ import android.widget.TextView;
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.DragSortListView.DropListener;
 
+import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Expression;
+import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.SignInActivity;
@@ -50,17 +53,20 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.collection.CompactHashSet;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class AccountsManagerFragment extends BaseSupportFragment implements LoaderCallbacks<Cursor>,
-        DropListener, OnSharedPreferenceChangeListener, AdapterView.OnItemClickListener {
+        DropListener, OnSharedPreferenceChangeListener, AdapterView.OnItemClickListener, AccountsAdapter.OnAccountToggleListener {
 
     private static final String FRAGMENT_TAG_ACCOUNT_DELETION = "account_deletion";
 
     private AccountsAdapter mAdapter;
     private SharedPreferences mPreferences;
     private ParcelableAccount mSelectedAccount;
+    private LongSparseArray<Boolean> mActivatedState = new LongSparseArray<>();
 
     private DragSortListView mListView;
     private View mEmptyView;
@@ -143,42 +149,34 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
                 null);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        saveActivatedState();
+    }
 
-    public static final class AccountDeletionDialogFragment extends BaseSupportDialogFragment implements
-            DialogInterface.OnClickListener {
-
-        @Override
-        public void onClick(final DialogInterface dialog, final int which) {
-            final Bundle args = getArguments();
-            final long accountId = args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-            if (accountId < 0) return;
-            final ContentResolver resolver = getContentResolver();
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE: {
-                    resolver.delete(Accounts.CONTENT_URI, Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL(), null);
-                    // Also delete tweets related to the account we previously
-                    // deleted.
-                    resolver.delete(Statuses.CONTENT_URI, Expression.equals(Statuses.ACCOUNT_ID, accountId).getSQL(), null);
-                    resolver.delete(Mentions.CONTENT_URI, Expression.equals(Mentions.ACCOUNT_ID, accountId).getSQL(), null);
-                    resolver.delete(Inbox.CONTENT_URI, Expression.equals(DirectMessages.ACCOUNT_ID, accountId).getSQL(), null);
-                    resolver.delete(Outbox.CONTENT_URI, Expression.equals(DirectMessages.ACCOUNT_ID, accountId).getSQL(), null);
-                    break;
-                }
+    private void saveActivatedState() {
+        final Set<Long> trueIds = new CompactHashSet<>(), falseIds = new CompactHashSet<>();
+        for (int i = 0, j = mActivatedState.size(); i < j; i++) {
+            if (mActivatedState.valueAt(i)) {
+                trueIds.add(mActivatedState.keyAt(i));
+            } else {
+                falseIds.add(mActivatedState.keyAt(i));
             }
         }
+        final ContentResolver cr = getContentResolver();
+        final ContentValues values = new ContentValues();
+        values.put(Accounts.IS_ACTIVATED, true);
+        Expression where = Expression.in(new Columns.Column(Accounts.ACCOUNT_ID), new RawItemArray(trueIds.toArray()));
+        cr.update(Accounts.CONTENT_URI, values, where.getSQL(), null);
+        values.put(Accounts.IS_ACTIVATED, false);
+        where = Expression.in(new Columns.Column(Accounts.ACCOUNT_ID), new RawItemArray(falseIds.toArray()));
+        cr.update(Accounts.CONTENT_URI, values, where.getSQL(), null);
+    }
 
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(final Bundle savedInstanceState) {
-            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
-            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
-            builder.setNegativeButton(android.R.string.cancel, null);
-            builder.setPositiveButton(android.R.string.ok, this);
-            builder.setTitle(R.string.account_delete_confirm_title);
-            builder.setMessage(R.string.account_delete_confirm_message);
-            return builder.create();
-        }
-
+    @Override
+    public void onAccountToggle(long accountId, boolean state) {
+        mActivatedState.append(accountId, state);
     }
 
     @Override
@@ -191,7 +189,6 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
         mListContainer = view.findViewById(R.id.list_container);
         mProgressContainer = view.findViewById(R.id.progress_container);
     }
-
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
@@ -219,6 +216,8 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
         mAdapter = new AccountsAdapter(activity);
         Utils.configBaseAdapter(activity, mAdapter);
         mAdapter.setSortEnabled(true);
+        mAdapter.setSwitchEnabled(true);
+        mAdapter.setOnAccountToggleListener(this);
         mListView.setAdapter(mAdapter);
         mListView.setDragEnabled(true);
         mListView.setDropListener(this);
@@ -262,7 +261,6 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
         saveAccountPositions();
     }
 
-
     private void saveAccountPositions() {
         final ContentResolver cr = getContentResolver();
         final ArrayList<Integer> positions = mAdapter.getCursorPositions();
@@ -289,5 +287,42 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
 
     private void updateDefaultAccount() {
         mAdapter.notifyDataSetChanged();
+    }
+
+    public static final class AccountDeletionDialogFragment extends BaseSupportDialogFragment implements
+            DialogInterface.OnClickListener {
+
+        @Override
+        public void onClick(final DialogInterface dialog, final int which) {
+            final Bundle args = getArguments();
+            final long accountId = args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
+            if (accountId < 0) return;
+            final ContentResolver resolver = getContentResolver();
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE: {
+                    resolver.delete(Accounts.CONTENT_URI, Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL(), null);
+                    // Also delete tweets related to the account we previously
+                    // deleted.
+                    resolver.delete(Statuses.CONTENT_URI, Expression.equals(Statuses.ACCOUNT_ID, accountId).getSQL(), null);
+                    resolver.delete(Mentions.CONTENT_URI, Expression.equals(Mentions.ACCOUNT_ID, accountId).getSQL(), null);
+                    resolver.delete(Inbox.CONTENT_URI, Expression.equals(DirectMessages.ACCOUNT_ID, accountId).getSQL(), null);
+                    resolver.delete(Outbox.CONTENT_URI, Expression.equals(DirectMessages.ACCOUNT_ID, accountId).getSQL(), null);
+                    break;
+                }
+            }
+        }
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(final Bundle savedInstanceState) {
+            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+            builder.setNegativeButton(android.R.string.cancel, null);
+            builder.setPositiveButton(android.R.string.ok, this);
+            builder.setTitle(R.string.account_delete_confirm_title);
+            builder.setMessage(R.string.account_delete_confirm_message);
+            return builder.create();
+        }
+
     }
 }

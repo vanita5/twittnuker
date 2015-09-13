@@ -74,10 +74,17 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
     private SharedPreferences mPreferences;
     private PopupMenu mPopupMenu;
     private ReadStateManager mReadStateManager;
+    private final OnScrollListener mOnScrollListener = new OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                final LinearLayoutManager layoutManager = getLayoutManager();
+                saveReadPosition(layoutManager.findFirstVisibleItemPosition());
+            }
+        }
+    };
     private RecyclerViewNavigationHelper mNavigationHelper;
-
     private ParcelableStatus mSelectedStatus;
-
     private OnMenuItemClickListener mOnStatusMenuItemClickListener = new OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
@@ -90,15 +97,6 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
             }
             return Utils.handleMenuItemClick(getActivity(), AbsStatusesFragment.this,
                     getFragmentManager(), getTwitterWrapper(), status, item);
-        }
-    };
-    private final OnScrollListener mOnScrollListener = new OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                final LinearLayoutManager layoutManager = getLayoutManager();
-                saveReadPosition(layoutManager.findFirstVisibleItemPosition());
-            }
         }
     };
     private OnScrollListener mPauseOnScrollListener;
@@ -224,7 +222,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
         } else {
             lastVisiblePos = layoutManager.findFirstVisibleItemPosition();
         }
-        if (lastVisiblePos != RecyclerView.NO_POSITION) {
+        if (lastVisiblePos != RecyclerView.NO_POSITION && lastVisiblePos < adapter.getItemCount()) {
             lastReadId = adapter.getStatusId(lastVisiblePos);
             final View positionView = layoutManager.findViewByPosition(lastVisiblePos);
             lastVisibleTop = positionView != null ? positionView.getTop() : 0;

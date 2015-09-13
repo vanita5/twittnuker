@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.view.holder;
 
 import android.view.View;
-import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,26 +32,26 @@ import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 
 public class AccountViewHolder {
 
-	public final ImageView profile_image;
-	public final TextView name, screen_name;
-	public final CheckBox checkbox;
-	private final ColorLabelRelativeLayout content;
-	private final View drag_handle;
+    public final ImageView profileImage;
+    public final TextView name, screenName;
+    public final CompoundButton toggle;
+    private final ColorLabelRelativeLayout content;
+    private final View dragHandle;
 
-	public AccountViewHolder(final View view) {
-		content = (ColorLabelRelativeLayout) view;
-		name = (TextView) view.findViewById(android.R.id.text1);
-		screen_name = (TextView) view.findViewById(android.R.id.text2);
-		profile_image = (ImageView) view.findViewById(android.R.id.icon);
-		checkbox = (CheckBox) view.findViewById(android.R.id.checkbox);
-		drag_handle = view.findViewById(R.id.drag_handle);
-	}
+    public AccountViewHolder(final View view) {
+        content = (ColorLabelRelativeLayout) view;
+        name = (TextView) view.findViewById(android.R.id.text1);
+        screenName = (TextView) view.findViewById(android.R.id.text2);
+        profileImage = (ImageView) view.findViewById(android.R.id.icon);
+        toggle = (CompoundButton) view.findViewById(android.R.id.toggle);
+        dragHandle = view.findViewById(R.id.drag_handle);
+    }
 
-	public void setAccountColor(final int color) {
-		content.drawEnd(color);
-	}
+    public void setAccountColor(final int color) {
+        content.drawEnd(color);
+    }
 
-	public void setSortEnabled(boolean enabled) {
-		drag_handle.setVisibility(enabled ? View.VISIBLE : View.GONE);
-	}
+    public void setSortEnabled(boolean enabled) {
+        dragHandle.setVisibility(enabled ? View.VISIBLE : View.GONE);
+    }
 }

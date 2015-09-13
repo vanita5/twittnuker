@@ -80,6 +80,7 @@ dependencies {
     compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.1'
     compile 'com.github.mariotaku:PickNCrop:44b09cbc69'
     compile 'com.diogobernardino:williamchart:2.0.1'
+    compile 'com.lnikkila:extendedtouchview:0.1.0'
     compile 'com.google.android.gms:play-services:7.8.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.7'
