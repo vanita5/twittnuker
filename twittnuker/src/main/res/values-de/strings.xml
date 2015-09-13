@@ -687,6 +687,8 @@
     <string name="on_mobile_network">Über Mobilfunknetz</string>
     <string name="set_consumer_key_secret_message">Twittnuker hat das Token Limit erreicht. Du musst eine App unter https://apps.twitter.com/ erstellen und Consumer Key und Secret hier einfügen.\nAndernfalls kannst du dich vermutlich nicht mehr einloggen.</string>
     <string name="bug_reports">Fehler Benachrichtigungen</string>
+    <string name="invalid_consumer_key">Ungültiger Consumer Key</string>
+    <string name="invalid_consumer_secret">Ungültiges Consumer Secret</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

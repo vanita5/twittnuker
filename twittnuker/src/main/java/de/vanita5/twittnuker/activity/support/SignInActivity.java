@@ -62,6 +62,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.meizu.flyme.reflect.StatusBarProxy;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.mariotaku.restfu.http.Authorization;
 import org.mariotaku.restfu.http.Endpoint;
@@ -98,6 +99,7 @@ import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
+import de.vanita5.twittnuker.util.view.ConsumerKeySecretValidator;
 import de.vanita5.twittnuker.view.TintedStatusNativeActionModeAwareLayout;
 import de.vanita5.twittnuker.view.iface.TintedStatusLayout;
 
@@ -368,7 +370,7 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
         }
         saveEditedText();
         setDefaultAPI();
-        final OAuthToken consumerKey = new OAuthToken(mConsumerKey, mConsumerSecret);
+        final OAuthToken consumerKey = TwitterAPIFactory.getOAuthToken(mConsumerKey, mConsumerSecret);
         final String apiUrlFormat = TextUtils.isEmpty(mAPIUrlFormat) ? DEFAULT_TWITTER_API_URL_FORMAT : mAPIUrlFormat;
         mTask = new SignInTask(this, mUsername, mPassword, mAuthType, consumerKey, apiUrlFormat,
                 mSameOAuthSigningUrl, mNoVersionSuffix);
@@ -383,7 +385,7 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
         saveEditedText();
         setDefaultAPI();
         final String verifier = intent.getStringExtra(EXTRA_OAUTH_VERIFIER);
-        final OAuthToken consumerKey = new OAuthToken(mConsumerKey, mConsumerSecret);
+        final OAuthToken consumerKey = TwitterAPIFactory.getOAuthToken(mConsumerKey, mConsumerSecret);
         final OAuthToken requestToken = new OAuthToken(intent.getStringExtra(EXTRA_REQUEST_TOKEN),
                 intent.getStringExtra(EXTRA_REQUEST_TOKEN_SECRET));
         final String apiUrlFormat = TextUtils.isEmpty(mAPIUrlFormat) ? DEFAULT_TWITTER_API_URL_FORMAT : mAPIUrlFormat;
@@ -593,11 +595,13 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
                 Endpoint endpoint = TwitterAPIFactory.getOAuthEndpoint(apiUrlFormat, "api", null,
                         sameOauthSigningUrl);
                 final TwitterOAuth oauth = TwitterAPIFactory.getInstance(context, endpoint,
-                        new OAuthAuthorization(consumerKey.getOauthToken(), consumerKey.getOauthTokenSecret()), TwitterOAuth.class);
+                        new OAuthAuthorization(consumerKey.getOauthToken(),
+                                consumerKey.getOauthTokenSecret()), TwitterOAuth.class);
                 final OAuthToken accessToken = oauth.getAccessToken(requestToken, oauthVerifier);
                 final long userId = accessToken.getUserId();
                 if (userId <= 0) return new SignInResponse(false, false, null);
-                final OAuthAuthorization auth = new OAuthAuthorization(consumerKey.getOauthToken(), consumerKey.getOauthTokenSecret(), accessToken);
+                final OAuthAuthorization auth = new OAuthAuthorization(consumerKey.getOauthToken(),
+                        consumerKey.getOauthTokenSecret(), accessToken);
                 endpoint = TwitterAPIFactory.getOAuthEndpoint(apiUrlFormat, "api", versionSuffix,
                         sameOauthSigningUrl);
                 final Twitter twitter = TwitterAPIFactory.getInstance(context, endpoint,
@@ -841,8 +845,10 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
             dialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(DialogInterface dialog) {
-                    final EditText editConsumerKey = (EditText) ((Dialog) dialog).findViewById(R.id.consumer_key);
-                    final EditText editConsumerSecret = (EditText) ((Dialog) dialog).findViewById(R.id.consumer_secret);
+                    final MaterialEditText editConsumerKey = (MaterialEditText) ((Dialog) dialog).findViewById(R.id.consumer_key);
+                    final MaterialEditText editConsumerSecret = (MaterialEditText) ((Dialog) dialog).findViewById(R.id.consumer_secret);
+                    editConsumerKey.addValidator(new ConsumerKeySecretValidator(getString(R.string.invalid_consumer_key)));
+                    editConsumerSecret.addValidator(new ConsumerKeySecretValidator(getString(R.string.invalid_consumer_secret)));
                     final SharedPreferences prefs = SharedPreferencesWrapper.getInstance(getActivity(), SHARED_PREFERENCES_NAME, MODE_PRIVATE);
                     editConsumerKey.setText(prefs.getString(KEY_CONSUMER_KEY, null));
                     editConsumerSecret.setText(prefs.getString(KEY_CONSUMER_SECRET, null));
