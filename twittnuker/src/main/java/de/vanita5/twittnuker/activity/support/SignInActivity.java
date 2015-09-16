@@ -83,7 +83,6 @@ import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
-import de.vanita5.twittnuker.util.AbsLogger;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
@@ -463,7 +462,6 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
                 startActivity(intent);
                 finish();
             } else {
-                AbsLogger.error(result.exception);
                 if (result.exception instanceof AuthenticityTokenException) {
                     Toast.makeText(this, R.string.wrong_api_key, Toast.LENGTH_SHORT).show();
                 } else if (result.exception instanceof WrongUserPassException) {

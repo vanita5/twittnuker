@@ -82,12 +82,7 @@ import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
 import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
-@ReportsCrashes(formUri = "https://vanita5.cloudant.com/acra-twittnuker/_design/acra-storage/_update/report",
-        reportType = HttpSender.Type.JSON,
-        httpMethod = HttpSender.Method.PUT,
-        formUriBasicAuthLogin = "ionstoweneringstantleare",
-        formUriBasicAuthPassword = "MNNNyLKyTDvuaqbaCtOkqdMC",
-        buildConfigClass = BuildConfig.class)
+//TODO Crash Report
 public class TwittnukerApplication extends Application implements Constants,
         OnSharedPreferenceChangeListener {
 
@@ -111,8 +106,6 @@ public class TwittnukerApplication extends Application implements Constants,
     private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
     private UserColorNameManager mUserColorNameManager;
 
-    private String mDefaultUserAgent;
-
     @NonNull
     public static TwittnukerApplication getInstance(@NonNull final Context context) {
         return (TwittnukerApplication) context.getApplicationContext();
@@ -121,10 +114,6 @@ public class TwittnukerApplication extends Application implements Constants,
     public AsyncTaskManager getAsyncTaskManager() {
         if (mAsyncTaskManager != null) return mAsyncTaskManager;
         return mAsyncTaskManager = AsyncTaskManager.getInstance();
-    }
-
-    public String getDefaultUserAgent() {
-        return mDefaultUserAgent;
     }
 
     public DiskCache getDiskCache() {
@@ -237,7 +226,6 @@ public class TwittnukerApplication extends Application implements Constants,
         super.onCreate();
         initDebugMode();
         initBugReport();
-        mDefaultUserAgent = UserAgentUtils.getDefaultUserAgentString(this);
         mHandler = new Handler();
         mMessageBus = new Bus();
         initializeAsyncTask();

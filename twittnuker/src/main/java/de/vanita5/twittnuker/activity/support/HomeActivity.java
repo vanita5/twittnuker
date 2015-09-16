@@ -151,7 +151,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     private View mEmptyTabHint;
     private View mActionsButton;
     private View mActionBarWithOverlay;
-    private FrameLayout mLeftDrawerContainer;
     private TintedStatusFrameLayout mHomeContent;
 
     private UpdateUnreadCountTask mUpdateUnreadCountTask;
@@ -297,18 +296,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             }
         }
         return handler.handleKey(this, null, keyCode, event);
-    }
-
-    @Override
-    public void setControlBarOffset(float offset) {
-        mActionBarWithOverlay.setTranslationY(mTabColumns > 1 ? 0 : getControlBarHeight() * (offset - 1));
-        final ViewGroup.LayoutParams lp = mActionsButton.getLayoutParams();
-        if (lp instanceof MarginLayoutParams) {
-            mActionsButton.setTranslationY((((MarginLayoutParams) lp).bottomMargin + mActionsButton.getHeight()) * (1 - offset));
-        } else {
-            mActionsButton.setTranslationY(mActionsButton.getHeight() * (1 - offset));
-        }
-        notifyControlBarOffsetChanged();
     }
 
     @Override
@@ -639,6 +626,18 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         }
         final float totalHeight = getControlBarHeight();
         return 1 + mActionBarWithOverlay.getTranslationY() / totalHeight;
+    }
+
+    @Override
+    public void setControlBarOffset(float offset) {
+        mActionBarWithOverlay.setTranslationY(mTabColumns > 1 ? 0 : getControlBarHeight() * (offset - 1));
+        final ViewGroup.LayoutParams lp = mActionsButton.getLayoutParams();
+        if (lp instanceof MarginLayoutParams) {
+            mActionsButton.setTranslationY((((MarginLayoutParams) lp).bottomMargin + mActionsButton.getHeight()) * (1 - offset));
+        } else {
+            mActionsButton.setTranslationY(mActionsButton.getHeight() * (1 - offset));
+        }
+        notifyControlBarOffsetChanged();
     }
 
     @Override
