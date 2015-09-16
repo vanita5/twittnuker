@@ -482,6 +482,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         private boolean sensitiveContentEnabled;
         private boolean hideCardActions;
         private boolean displayMediaPreview;
+        private boolean shouldShowAccountsColor;
 
         public DummyStatusHolderAdapter(Context context) {
             this.context = context;
@@ -493,6 +494,10 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             manager = app.getUserColorNameManager();
             linkify = new TwidereLinkify(null);
             updateOptions();
+        }
+
+        public void setShouldShowAccountsColor(boolean shouldShowAccountsColor) {
+            this.shouldShowAccountsColor = shouldShowAccountsColor;
         }
 
         @NonNull
@@ -620,7 +625,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
 
         @Override
         public boolean shouldShowAccountsColor() {
-            return false;
+            return shouldShowAccountsColor;
         }
 
         @Override

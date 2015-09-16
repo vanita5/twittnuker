@@ -104,7 +104,9 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE, SharedPreferenceConstants.class);
         final LayoutInflater inflater = LayoutInflater.from(context);
         @SuppressLint("InflateParams") final View view = inflater.inflate(R.layout.dialog_status_quote_retweet, null);
-        final StatusViewHolder holder = new StatusViewHolder(new DummyStatusHolderAdapter(context), view.findViewById(R.id.item_content));
+        final DummyStatusHolderAdapter adapter = new DummyStatusHolderAdapter(context);
+        adapter.setShouldShowAccountsColor(true);
+        final StatusViewHolder holder = new StatusViewHolder(adapter, view.findViewById(R.id.item_content));
         final ParcelableStatus status = getStatus();
 
         assert status != null;
