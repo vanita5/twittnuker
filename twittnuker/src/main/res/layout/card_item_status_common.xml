@@ -169,7 +169,7 @@
         </RelativeLayout>
 
         <de.vanita5.twittnuker.view.HandleSpanClickTextView
-            android:id="@+id/quoted_text"
+            android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/profile_container"
@@ -181,7 +181,7 @@
             android:paddingRight="@dimen/element_spacing_normal"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorPrimary"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:text="@string/sample_status_text"
             tools:visibility="visible"/>
 
@@ -189,11 +189,11 @@
             android:id="@+id/quote_indicator"
             android:layout_width="@dimen/element_spacing_small"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/text"
+            android:layout_alignBottom="@+id/quoted_text"
             android:layout_alignTop="@+id/quoted_name"
             android:layout_marginLeft="@dimen/element_spacing_normal"
             android:layout_marginStart="@dimen/element_spacing_normal"
-            android:background="?android:dividerHorizontal"
+            android:background="?quoteIndicatorBackgroundColor"
             android:visibility="gone"
             tools:visibility="visible"/>
 
@@ -201,7 +201,7 @@
             android:id="@+id/quoted_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/quoted_text"
+            android:layout_below="@+id/text"
             android:layout_toEndOf="@+id/quote_indicator"
             android:layout_toRightOf="@+id/quote_indicator"
             android:orientation="horizontal"
@@ -213,11 +213,28 @@
             app:nv_secondaryTextColor="?android:textColorSecondary"
             tools:visibility="visible"/>
 
+        <de.vanita5.twittnuker.view.HandleSpanClickTextView
+            android:id="@+id/quoted_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/quoted_name"
+            android:layout_marginBottom="@dimen/element_spacing_normal"
+            android:layout_marginTop="@dimen/element_spacing_normal"
+            android:layout_toEndOf="@+id/quote_indicator"
+            android:layout_toRightOf="@+id/quote_indicator"
+            android:paddingLeft="@dimen/element_spacing_normal"
+            android:paddingRight="@dimen/element_spacing_normal"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="?android:attr/textColorPrimary"
+            android:visibility="gone"
+            tools:text="@string/sample_status_text"
+            tools:visibility="visible" />
+
         <de.vanita5.twittnuker.view.CardMediaContainer
             android:id="@+id/media_preview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/quoted_name"
+            android:layout_below="@+id/quoted_text"
             android:layout_marginTop="@dimen/element_spacing_normal"
             android:layout_toEndOf="@+id/quote_indicator"
             android:layout_toRightOf="@+id/quote_indicator"
@@ -228,28 +245,13 @@
 
         </de.vanita5.twittnuker.view.CardMediaContainer>
 
-        <de.vanita5.twittnuker.view.HandleSpanClickTextView
-            android:id="@+id/text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/media_preview"
-            android:layout_marginBottom="@dimen/element_spacing_normal"
-            android:layout_marginTop="@dimen/element_spacing_normal"
-            android:layout_toEndOf="@+id/quote_indicator"
-            android:layout_toRightOf="@+id/quote_indicator"
-            android:paddingLeft="@dimen/element_spacing_normal"
-            android:paddingRight="@dimen/element_spacing_normal"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:attr/textColorPrimary"
-            tools:text="@string/sample_status_text"/>
-
         <LinearLayout
             android:id="@+id/action_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/profile_container"
             android:layout_alignStart="@+id/profile_container"
-            android:layout_below="@+id/text"
+            android:layout_below="@+id/media_preview"
             android:layout_marginTop="@dimen/element_spacing_minus_small"
             android:gravity="center_vertical|start"
             android:orientation="horizontal">
