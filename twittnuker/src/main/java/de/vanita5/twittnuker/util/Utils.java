@@ -2669,11 +2669,18 @@ public final class Utils implements Constants {
         return result;
     }
 
-
     public static void openMediaDirectly(final Context context, final long accountId,
                                          final ParcelableStatus status, final ParcelableMedia current,
-                                         final ParcelableMedia[] media, Bundle options) {
-        openMediaDirectly(context, accountId, status, null, current, media, options);
+                                         final Bundle options) {
+        openMediaDirectly(context, accountId, status, null, current, getPrimaryMedia(status), options);
+    }
+
+    public static ParcelableMedia[] getPrimaryMedia(ParcelableStatus status) {
+        if (status.is_quote && ArrayUtils.isEmpty(status.media)) {
+            return status.quoted_media;
+        } else {
+            return status.media;
+        }
     }
 
     public static void openMediaDirectly(final Context context, final long accountId,
