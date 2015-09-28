@@ -454,7 +454,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
             if (cause != null) {
                 te = new TwitterException(cause);
             } else {
-                te = new TwitterException();
+                te = TwitterConverter.parseTwitterException(response);
             }
             te.setResponse(response);
             return te;
