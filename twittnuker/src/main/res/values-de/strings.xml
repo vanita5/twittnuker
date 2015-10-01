@@ -436,7 +436,7 @@
     <string name="created_by">Erstellt von <xliff:g id="created_by">%s</xliff:g></string>
     <string name="add_to_list">Liste hinzufügen</string>
     <string name="account_delete_confirm_title">Account löschen</string>
-    <string name="account_delete_confirm_message">Dieser Account wird von Twittnuker gelöscht.</string>
+    <string name="account_delete_confirm_message">Dieser Account wird aus Twittnuker entfernt.</string>
     <string name="theme">Theme</string>
     <string name="theme_dark">Dunkel</string>
     <string name="theme_light">Hell</string>
