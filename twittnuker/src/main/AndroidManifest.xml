@@ -21,10 +21,9 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<manifest
-    package="de.vanita5.twittnuker"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    package="de.vanita5.twittnuker"
     android:installLocation="auto">
 
     <uses-sdk/>
@@ -226,9 +225,9 @@
         </activity>
         <activity
             android:name=".activity.SettingsActivity"
+            android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/settings"
             android:theme="@style/Theme.Twidere.Dark"
-            android:icon="@drawable/ic_action_twittnuker"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MANAGE_NETWORK_USAGE"/>
@@ -265,8 +264,8 @@
             android:theme="@style/Theme.Twidere.Light.NoDisplay"/>
         <activity
             android:name=".activity.support.LinkHandlerActivity"
-            android:theme="@style/Theme.Twidere.Dark.DialogWhenLarge.NoActionBar"
             android:icon="@drawable/ic_action_twittnuker"
+            android:theme="@style/Theme.Twidere.Dark.DialogWhenLarge.NoActionBar"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -278,14 +277,14 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <category android:name="android.intent.category.DEFAULT"/>
 
-                <data android:scheme="twittnuker" />
+                <data android:scheme="twittnuker"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.support.MediaViewerActivity"
-            android:icon="@drawable/ic_action_twittnuker"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
+            android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/media"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Twidere.Viewer">
@@ -302,8 +301,8 @@
         </activity>
         <activity
             android:name=".activity.support.FileSelectorActivity"
-            android:icon="@drawable/ic_action_twittnuker"
             android:exported="false"
+            android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/pick_file"
             android:theme="@style/Theme.Twidere.Light.NoDisplay"
             android:windowSoftInputMode="adjustResize">
@@ -316,22 +315,22 @@
         </activity>
         <activity
             android:name=".activity.support.ThemedImagePickerActivity"
-            android:icon="@drawable/ic_action_twittnuker"
             android:exported="false"
+            android:icon="@drawable/ic_action_twittnuker"
             android:theme="@style/Theme.Twidere.Light.NoDisplay"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <action android:name="de.vanita5.twittnuker.PICK_IMAGE" />
-                <action android:name="de.vanita5.twittnuker.TAKE_PHOTO" />
+                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="de.vanita5.twittnuker.PICK_IMAGE"/>
+                <action android:name="de.vanita5.twittnuker.TAKE_PHOTO"/>
 
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.support.CustomTabEditorActivity"
-            android:icon="@drawable/ic_action_twittnuker"
             android:exported="false"
+            android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/add_tab"
             android:theme="@style/Theme.Twidere.Dark.Dialog"
             android:windowSoftInputMode="adjustResize">
@@ -390,35 +389,35 @@
         </activity>
         <activity
             android:name=".activity.TwitterLinkHandlerActivity"
-            android:icon="@drawable/ic_action_twittnuker"
             android:excludeFromRecents="true"
+            android:icon="@drawable/ic_action_twittnuker"
             android:taskAffinity=":twittnuker_twitter_link_handler"
             android:theme="@style/Theme.Launcher">
             <intent-filter>
                 <data
                     android:host="twitter.com"
-                    android:scheme="http"
-                    android:pathPrefix="/"/>
+                    android:pathPrefix="/"
+                    android:scheme="http"/>
                 <data
                     android:host="twitter.com"
-                    android:scheme="https"
-                    android:pathPrefix="/"/>
+                    android:pathPrefix="/"
+                    android:scheme="https"/>
                 <data
                     android:host="www.twitter.com"
-                    android:scheme="http"
-                    android:pathPrefix="/"/>
+                    android:pathPrefix="/"
+                    android:scheme="http"/>
                 <data
                     android:host="www.twitter.com"
-                    android:scheme="https"
-                    android:pathPrefix="/"/>
+                    android:pathPrefix="/"
+                    android:scheme="https"/>
                 <data
                     android:host="mobile.twitter.com"
-                    android:scheme="http"
-                    android:pathPrefix="/"/>
+                    android:pathPrefix="/"
+                    android:scheme="http"/>
                 <data
                     android:host="mobile.twitter.com"
-                    android:scheme="https"
-                    android:pathPrefix="/"/>
+                    android:pathPrefix="/"
+                    android:scheme="https"/>
 
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
@@ -430,8 +429,8 @@
         <activity
             android:name=".activity.AssistLauncherActivity"
             android:enabled="false"
-            android:icon="@drawable/ic_action_twittnuker"
             android:excludeFromRecents="true"
+            android:icon="@drawable/ic_action_twittnuker"
             android:taskAffinity=":twittnuker_assist_launcher"
             android:theme="@style/Theme.Launcher">
             <intent-filter>
@@ -445,13 +444,13 @@
                 android:resource="@drawable/ic_assist_twidere"/>
         </activity>
         <activity
-                android:name=".activity.KeyboardShortcutPreferenceCompatActivity"
-                android:theme="@style/Theme.Twidere.Dark.Dialog" />
+            android:name=".activity.KeyboardShortcutPreferenceCompatActivity"
+            android:theme="@style/Theme.Twidere.Dark.Dialog"/>
         <activity
             android:name=".activity.TestActivity"
             android:enabled="false"
-            android:label="@string/twidere_test"
             android:icon="@drawable/ic_action_twittnuker"
+            android:label="@string/twidere_test"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -519,6 +518,14 @@
                     android:scheme="android_secret_code"/>
             </intent-filter>
         </receiver>
+        <!--
+        <receiver android:name=".receiver.PowerStateReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BATTERY_LOW" />
+                <action android:name="android.intent.action.BATTERY_OKAY" />
+            </intent-filter>
+        </receiver>
+        -->
         <receiver
             android:name="de.vanita5.twittnuker.receiver.GCMReceiver"
             android:enabled="true"
