@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
+import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 
 public abstract class AbsActivitiesFragment<Data> extends AbsContentRecyclerViewFragment<AbsActivitiesAdapter<Data>>
@@ -67,6 +68,11 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentRecyclerView
         final long[] accountIds = {activity.account_id};
         final long[] maxIds = {activity.min_position};
         getActivities(accountIds, maxIds, null);
+    }
+
+    @Override
+    public void onActivityClick(ActivityTitleSummaryViewHolder holder, int position) {
+
     }
 
     @Override

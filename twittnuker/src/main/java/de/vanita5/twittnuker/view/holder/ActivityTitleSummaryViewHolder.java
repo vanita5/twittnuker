@@ -46,10 +46,13 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.view.ActionIconView;
+import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 import org.oshkimaadziig.george.androidutils.SpanFormatter;
 
-public class ActivityTitleSummaryViewHolder extends ViewHolder {
+public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.OnClickListener {
+
+    private final IColorLabelView itemContent;
 
     private final AbsActivitiesAdapter adapter;
     private final ActionIconView activityTypeView;
@@ -58,10 +61,14 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder {
     private final ViewGroup profileImagesContainer;
     private final TextView profileImageMoreNumber;
     private final ImageView[] profileImageViews;
+    private ActivityClickListener activityClickListener;
 
     public ActivityTitleSummaryViewHolder(AbsActivitiesAdapter adapter, View itemView) {
         super(itemView);
         this.adapter = adapter;
+
+        itemContent = (IColorLabelView) itemView.findViewById(R.id.item_content);
+
         activityTypeView = (ActionIconView) itemView.findViewById(R.id.activity_type);
         titleView = (TextView) itemView.findViewById(R.id.title);
         summaryView = (TextView) itemView.findViewById(R.id.summary);
@@ -177,7 +184,6 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder {
 
     public void displayActivitiesByFriends(ParcelableActivity activity) {
         final Context context = adapter.getContext();
-        final Resources resources = adapter.getContext().getResources();
         switch (activity.action) {
             case Activity.ACTION_FOLLOW: {
                 activityTypeView.setImageResource(R.drawable.ic_activity_action_follow);
@@ -314,4 +320,31 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder {
         }
     }
 
+    public void setOnClickListeners() {
+        setActivityClickListener(adapter);
+    }
+
+    public void setActivityClickListener(ActivityClickListener listener) {
+        activityClickListener = listener;
+        ((View) itemContent).setOnClickListener(this);
+//        ((View) itemContent).setOnLongClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (activityClickListener == null) return;
+        final int position = getLayoutPosition();
+        switch (v.getId()) {
+            case R.id.item_content: {
+                activityClickListener.onActivityClick(this, position);
+                break;
+            }
+        }
+    }
+
+    public interface ActivityClickListener {
+
+        void onActivityClick(ActivityTitleSummaryViewHolder holder, int position);
+    }
 }
