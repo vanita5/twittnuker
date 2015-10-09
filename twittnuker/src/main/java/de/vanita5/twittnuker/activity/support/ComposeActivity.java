@@ -119,7 +119,6 @@ import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.text.MarkForDeleteSpan;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener;
@@ -167,7 +166,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     // Utility classes
     private final Extractor mExtractor = new Extractor();
     private TwidereValidator mValidator;
-    private AsyncTwitterWrapper mTwitterWrapper;
     private LocationManager mLocationManager;
     private SharedPreferencesWrapper mPreferences;
     private ContentResolver mResolver;
@@ -537,7 +535,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 Context.MODE_PRIVATE, SharedPreferenceConstants.class);
 
         final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
-        mTwitterWrapper = app.getTwitterWrapper();
         mResolver = getContentResolver();
         mValidator = new TwidereValidator(this);
         mImageLoader = app.getMediaLoaderWrapper();

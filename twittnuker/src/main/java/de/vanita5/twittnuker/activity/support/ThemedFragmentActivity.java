@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.StrictModeUtils;
@@ -46,11 +47,15 @@ import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
+import javax.inject.Inject;
+
 public abstract class ThemedFragmentActivity extends FragmentActivity implements Constants,
         IThemedActivity, KeyboardShortcutCallback {
 
     // Utility classes
     private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
+    @Inject
+    protected AsyncTwitterWrapper mTwitterWrapper;
 
     // Data fields
     private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
@@ -138,6 +143,7 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
             StrictModeUtils.detectAllThreadPolicy();
         }
         super.onCreate(savedInstanceState);
+        DaggerThemedFragmentActivityComponent.builder().applicationModule(TwittnukerApplication.getModule(this)).build().inject(this);
         mKeyboardShortcutsHandler = TwittnukerApplication.getInstance(this).getKeyboardShortcutsHandler();
     }
 

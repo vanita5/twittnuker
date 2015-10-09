@@ -22,41 +22,46 @@
 
 package de.vanita5.twittnuker.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter;
 
-public abstract class LoadMoreSupportAdapter<VH extends ViewHolder> extends Adapter<VH>
-		implements ILoadMoreSupportAdapter {
+public abstract class LoadMoreSupportAdapter<VH extends ViewHolder> extends BaseAdapter<VH>
+        implements ILoadMoreSupportAdapter {
 
-	private boolean mLoadMoreSupported;
-	private boolean mLoadMoreIndicatorVisible;
+    private boolean mLoadMoreSupported;
+    private boolean mLoadMoreIndicatorVisible;
 
-	@Override
-	public final boolean isLoadMoreIndicatorVisible() {
-		return mLoadMoreIndicatorVisible;
-	}
+    public LoadMoreSupportAdapter(Context context) {
+        super(context);
+    }
 
-	@Override
-	public final void setLoadMoreIndicatorVisible(boolean enabled) {
-		if (mLoadMoreIndicatorVisible == enabled) return;
-		mLoadMoreIndicatorVisible = enabled && mLoadMoreSupported;
-		notifyDataSetChanged();
-	}
+    @Override
+    public final boolean isLoadMoreIndicatorVisible() {
+        return mLoadMoreIndicatorVisible;
+    }
 
-	@Override
-	public final boolean isLoadMoreSupported() {
-		return mLoadMoreSupported;
-	}
+    @Override
+    public final void setLoadMoreIndicatorVisible(boolean enabled) {
+        if (mLoadMoreIndicatorVisible == enabled) return;
+        mLoadMoreIndicatorVisible = enabled && mLoadMoreSupported;
+        notifyDataSetChanged();
+    }
 
-	@Override
-	public final void setLoadMoreSupported(boolean supported) {
-		mLoadMoreSupported = supported;
-		if (!supported) {
-			mLoadMoreIndicatorVisible = false;
-		}
-		notifyDataSetChanged();
-	}
+    @Override
+    public final boolean isLoadMoreSupported() {
+        return mLoadMoreSupported;
+    }
+
+    @Override
+    public final void setLoadMoreSupported(boolean supported) {
+        mLoadMoreSupported = supported;
+        if (!supported) {
+            mLoadMoreIndicatorVisible = false;
+        }
+        notifyDataSetChanged();
+    }
 
 }

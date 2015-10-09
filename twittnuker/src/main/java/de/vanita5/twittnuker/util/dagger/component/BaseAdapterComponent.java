@@ -20,26 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'com.android.application'
-apply from: rootProject.file('global.gradle')
+package de.vanita5.twittnuker.util.dagger.component;
 
-android {
-    defaultConfig {
-        applicationId "de.vanita5.twittnuker.launcher.compose"
-        minSdkVersion 14
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
+import android.support.v7.widget.RecyclerView;
 
-dependencies {
-    compile project(':twittnuker.component.common')
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+import de.vanita5.twittnuker.adapter.BaseAdapter;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+
+import dagger.Component;
+
+@Component(modules = ApplicationModule.class)
+public interface BaseAdapterComponent {
+    void inject(BaseAdapter<RecyclerView.ViewHolder> object);
 }

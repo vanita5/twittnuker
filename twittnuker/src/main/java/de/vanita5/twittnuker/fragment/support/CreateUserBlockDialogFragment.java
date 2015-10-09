@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,6 +29,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
@@ -41,30 +41,30 @@ import de.vanita5.twittnuker.util.UserColorNameManager;
 
 public class CreateUserBlockDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
 
-	public static final String FRAGMENT_TAG = "create_user_block";
+    public static final String FRAGMENT_TAG = "create_user_block";
 
-	@Override
-	public void onClick(final DialogInterface dialog, final int which) {
-		switch (which) {
-			case DialogInterface.BUTTON_POSITIVE:
-				final ParcelableUser user = getUser();
-				final AsyncTwitterWrapper twitter = getTwitterWrapper();
-				if (user == null || twitter == null) return;
-				twitter.createBlockAsync(user.account_id, user.id);
-				break;
-			default:
-				break;
-		}
-	}
+    @Override
+    public void onClick(final DialogInterface dialog, final int which) {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                final ParcelableUser user = getUser();
+                final AsyncTwitterWrapper twitter = mTwitterWrapper;
+                if (user == null || twitter == null) return;
+                twitter.createBlockAsync(user.account_id, user.id);
+                break;
+            default:
+                break;
+        }
+    }
 
-	@NonNull
-	@Override
-	public Dialog onCreateDialog(final Bundle savedInstanceState) {
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(final Bundle savedInstanceState) {
         final FragmentActivity activity = getActivity();
         final Context wrapped = ThemeUtils.getDialogThemedContext(activity);
         final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
-		final ParcelableUser user = getUser();
-		if (user != null) {
+        final ParcelableUser user = getUser();
+        if (user != null) {
             final UserColorNameManager manager = UserColorNameManager.getInstance(activity);
             final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(activity,
                     SharedPreferencesWrapper.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE,
@@ -73,24 +73,24 @@ public class CreateUserBlockDialogFragment extends BaseSupportDialogFragment imp
             final String displayName = manager.getDisplayName(user, nameFirst, false);
             builder.setTitle(getString(R.string.block_user, displayName));
             builder.setMessage(getString(R.string.block_user_confirm_message, displayName));
-		}
-		builder.setPositiveButton(android.R.string.ok, this);
-		builder.setNegativeButton(android.R.string.cancel, null);
-		return builder.create();
-	}
+        }
+        builder.setPositiveButton(android.R.string.ok, this);
+        builder.setNegativeButton(android.R.string.cancel, null);
+        return builder.create();
+    }
 
-	private ParcelableUser getUser() {
-		final Bundle args = getArguments();
-		if (!args.containsKey(EXTRA_USER)) return null;
-		return args.getParcelable(EXTRA_USER);
-	}
+    private ParcelableUser getUser() {
+        final Bundle args = getArguments();
+        if (!args.containsKey(EXTRA_USER)) return null;
+        return args.getParcelable(EXTRA_USER);
+    }
 
-	public static CreateUserBlockDialogFragment show(final FragmentManager fm, final ParcelableUser user) {
-		final Bundle args = new Bundle();
-		args.putParcelable(EXTRA_USER, user);
-		final CreateUserBlockDialogFragment f = new CreateUserBlockDialogFragment();
-		f.setArguments(args);
-		f.show(fm, FRAGMENT_TAG);
-		return f;
-	}
+    public static CreateUserBlockDialogFragment show(final FragmentManager fm, final ParcelableUser user) {
+        final Bundle args = new Bundle();
+        args.putParcelable(EXTRA_USER, user);
+        final CreateUserBlockDialogFragment f = new CreateUserBlockDialogFragment();
+        f.setArguments(args);
+        f.show(fm, FRAGMENT_TAG);
+        return f;
+    }
 }

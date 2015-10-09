@@ -59,6 +59,8 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.StatusClickListener;
 
+import javax.inject.Inject;
+
 public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<ViewHolder> implements Constants,
         IActivitiesAdapter<Data>, StatusClickListener, OnLinkClickListener {
 
@@ -72,7 +74,6 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
     private final LayoutInflater mInflater;
     private final MediaLoaderWrapper mImageLoader;
     private final MediaLoadingHandler mLoadingHandler;
-    private final AsyncTwitterWrapper mTwitterWrapper;
     private final int mCardBackgroundColor;
     private final int mTextSize;
     private final int mProfileImageStyle, mMediaPreviewStyle, mLinkHighlightingStyle;
@@ -86,13 +87,13 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
     private ActivityAdapterListener mActivityAdapterListener;
 
     protected AbsActivitiesAdapter(final Context context, boolean compact) {
+        super(context);
         mContext = context;
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
         mInflater = LayoutInflater.from(context);
         mImageLoader = app.getMediaLoaderWrapper();
         mLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
-        mTwitterWrapper = app.getTwitterWrapper();
         mUserColorNameManager = app.getUserColorNameManager();
         final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
                 SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);

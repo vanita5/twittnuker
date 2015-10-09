@@ -20,26 +20,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'com.android.application'
-apply from: rootProject.file('global.gradle')
+package de.vanita5.twittnuker.util.dagger.component;
 
-android {
-    defaultConfig {
-        applicationId "de.vanita5.twittnuker.launcher.compose"
-        minSdkVersion 14
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
+import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 
-dependencies {
-    compile project(':twittnuker.component.common')
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+import dagger.Component;
+
+@Component(modules = ApplicationModule.class)
+public interface BaseAppCompatActivityComponent {
+    void inject(BaseAppCompatActivity object);
 }

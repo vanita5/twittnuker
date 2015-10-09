@@ -115,7 +115,7 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
 
     @Override
     public boolean isRefreshing() {
-        final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        final AsyncTwitterWrapper twitter = mTwitterWrapper;
         return twitter != null && (twitter.isReceivedDirectMessagesRefreshing() || twitter.isSentDirectMessagesRefreshing());
     }
 
@@ -213,7 +213,7 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
     public boolean scrollToStart() {
         final boolean result = super.scrollToStart();
         if (result) {
-            final AsyncTwitterWrapper twitter = getTwitterWrapper();
+            final AsyncTwitterWrapper twitter = mTwitterWrapper;
             final int tabPosition = getTabPosition();
             if (twitter != null && tabPosition >= 0) {
                 twitter.clearUnreadCountAsync(tabPosition);
@@ -236,7 +236,7 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
 
             @Override
             protected void onPostExecute(final long[][] result) {
-                final AsyncTwitterWrapper twitter = getTwitterWrapper();
+                final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (twitter == null) return;
                 twitter.getReceivedDirectMessagesAsync(result[0], null, result[1]);
                 twitter.getSentDirectMessagesAsync(result[0], null, null);
@@ -337,7 +337,7 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
     }
 
     protected void updateRefreshState() {
-        final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        final AsyncTwitterWrapper twitter = mTwitterWrapper;
         setRefreshing(twitter != null && (twitter.isReceivedDirectMessagesRefreshing() || twitter.isSentDirectMessagesRefreshing()));
     }
 
@@ -376,7 +376,7 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
 
             @Override
             protected void onPostExecute(final long[][] result) {
-                final AsyncTwitterWrapper twitter = getTwitterWrapper();
+                final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (twitter == null) return;
                 twitter.getReceivedDirectMessagesAsync(result[0], result[1], null);
                 twitter.getSentDirectMessagesAsync(result[0], result[2], null);
@@ -415,7 +415,7 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
 
         @Override
         protected void onPostExecute(final Object result) {
-            final AsyncTwitterWrapper twitter = fragment.getTwitterWrapper();
+            final AsyncTwitterWrapper twitter = fragment.mTwitterWrapper;
             if (twitter != null) {
                 twitter.removeUnreadCountsAsync(fragment.getTabPosition(), fragment.getUnreadCountsToRemove());
             }

@@ -38,10 +38,13 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCal
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
+import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 @SuppressLint("Registered")
 public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Constants,
@@ -50,6 +53,12 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
 
     // Utility classes
     private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
+    @Inject
+    protected ActivityStack mActivityStack;
+    @Inject
+    protected AsyncTwitterWrapper mTwitterWrapper;
+    @Inject
+    protected ReadStateManager mReadStateManager;
 
     // Registered listeners
     private ArrayList<ControlBarOffsetListener> mControlBarOffsetListeners = new ArrayList<>();
@@ -83,10 +92,6 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
 
     public TwittnukerApplication getTwittnukerApplication() {
         return (TwittnukerApplication) getApplication();
-    }
-
-    public AsyncTwitterWrapper getTwitterWrapper() {
-        return getTwittnukerApplication() != null ? getTwittnukerApplication().getTwitterWrapper() : null;
     }
 
     public boolean isVisible() {
@@ -150,6 +155,7 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerBaseAppCompatActivityComponent.builder().applicationModule(TwittnukerApplication.getModule(this)).build().inject(this);
         mKeyboardShortcutsHandler = TwittnukerApplication.getInstance(this).getKeyboardShortcutsHandler();
     }
 
@@ -157,6 +163,7 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     @Override
     protected void onStart() {
         super.onStart();
+        mActivityStack.dispatchStart(this);
         mIsVisible = true;
     }
 
@@ -185,6 +192,7 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     @Override
     protected void onStop() {
         mIsVisible = false;
+        mActivityStack.dispatchStop(this);
         super.onStop();
     }
 

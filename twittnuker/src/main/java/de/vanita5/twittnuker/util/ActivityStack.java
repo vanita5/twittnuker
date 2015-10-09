@@ -20,26 +20,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'com.android.application'
-apply from: rootProject.file('global.gradle')
+package de.vanita5.twittnuker.util;
 
-android {
-    defaultConfig {
-        applicationId "de.vanita5.twittnuker.launcher.compose"
-        minSdkVersion 14
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
 
-dependencies {
-    compile project(':twittnuker.component.common')
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+import android.app.Activity;
+
+import java.util.HashSet;
+
+public class ActivityStack {
+
+    private final HashSet<Integer> mInternalStack = new HashSet<>();
+
+    public void dispatchStart(Activity activity) {
+        mInternalStack.add(System.identityHashCode(activity));
+    }
+
+    public void dispatchStop(Activity activity) {
+        mInternalStack.remove(System.identityHashCode(activity));
+    }
+
+    public int size() {
+        return mInternalStack.size();
+    }
+
+    public boolean isEmpty() {
+        return mInternalStack.isEmpty();
+    }
+
+
 }

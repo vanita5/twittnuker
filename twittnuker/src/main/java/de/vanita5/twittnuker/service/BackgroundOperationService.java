@@ -85,6 +85,7 @@ import de.vanita5.twittnuker.util.StatusShortenerInterface;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.component.DaggerBackgroundOperationServiceComponent;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener;
 
@@ -95,6 +96,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createMessageDraft;
@@ -110,7 +113,8 @@ public class BackgroundOperationService extends IntentService implements Constan
     private SharedPreferences mPreferences;
     private ContentResolver mResolver;
     private NotificationManager mNotificationManager;
-    private AsyncTwitterWrapper mTwitter;
+    @Inject
+    AsyncTwitterWrapper mTwitter;
 
     private MediaUploaderInterface mUploader;
     private StatusShortenerInterface mShortener;
@@ -124,13 +128,13 @@ public class BackgroundOperationService extends IntentService implements Constan
     @Override
     public void onCreate() {
         super.onCreate();
+        DaggerBackgroundOperationServiceComponent.builder().applicationModule(TwittnukerApplication.getModule(this)).build().inject(this);
         final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
         mHandler = new Handler();
         mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
         mValidator = new TwidereValidator(this);
         mResolver = getContentResolver();
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mTwitter = app.getTwitterWrapper();
         final String uploaderComponent = mPreferences.getString(KEY_MEDIA_UPLOADER, null);
         final String shortenerComponent = mPreferences.getString(KEY_STATUS_SHORTENER, null);
         mUseUploader = !ServicePickerPreference.isNoneValue(uploaderComponent);
@@ -218,6 +222,7 @@ public class BackgroundOperationService extends IntentService implements Constan
         final Expression where = Expression.equals(Drafts._ID, draftId);
         final ContentResolver cr = getContentResolver();
         final Cursor c = cr.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.getSQL(), null, null);
+        if (c == null) return;
         final DraftItem.CursorIndices i = new DraftItem.CursorIndices(c);
         final DraftItem item;
         try {
@@ -315,7 +320,7 @@ public class BackgroundOperationService extends IntentService implements Constan
             final ContentValues draftValues = ContentValuesCreator.createStatusDraft(item,
                     ParcelableAccount.getAccountIds(item.accounts));
             final Uri draftUri = mResolver.insert(Drafts.CONTENT_URI, draftValues);
-            final long draftId = ParseUtils.parseLong(draftUri.getLastPathSegment(), -1);
+            final long draftId = draftUri != null ? ParseUtils.parseLong(draftUri.getLastPathSegment(), -1) : -1;
             mTwitter.addSendingDraftId(draftId);
             final List<SingleResponse<ParcelableStatus>> result = updateStatus(builder, item);
             boolean failed = false;

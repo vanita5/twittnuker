@@ -54,6 +54,7 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.component.DaggerGeneralComponent;
 import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.ForegroundColorView;
@@ -62,6 +63,8 @@ import de.vanita5.twittnuker.view.ShortTimeView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
@@ -469,7 +472,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         private final SharedPreferencesWrapper preferences;
         private final MediaLoaderWrapper loader;
         private final MediaLoadingHandler handler;
-        private final AsyncTwitterWrapper twitter;
+        @Inject
+        AsyncTwitterWrapper twitter;
         private final TwidereLinkify linkify;
         private final UserColorNameManager manager;
 
@@ -485,12 +489,12 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         private boolean shouldShowAccountsColor;
 
         public DummyStatusHolderAdapter(Context context) {
+            DaggerGeneralComponent.builder().applicationModule(TwittnukerApplication.getModule(context)).build().inject(this);
             this.context = context;
             preferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
             final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
             loader = app.getMediaLoaderWrapper();
             handler = new MediaLoadingHandler(R.id.media_preview_progress);
-            twitter = app.getTwitterWrapper();
             manager = app.getUserColorNameManager();
             linkify = new TwidereLinkify(null);
             updateOptions();

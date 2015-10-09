@@ -98,8 +98,8 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         LoaderCallbacks<SingleResponse<ParcelableUserList>>, SystemWindowsInsetsCallback,
         SupportFragmentCallback {
 
-	private MediaLoaderWrapper mProfileImageLoader;
-	private AsyncTwitterWrapper mTwitterWrapper;
+    private MediaLoaderWrapper mProfileImageLoader;
+    private AsyncTwitterWrapper mTwitterWrapper;
 
     private ViewPager mViewPager;
     private TabPagerIndicator mPagerIndicator;
@@ -110,46 +110,46 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
     private UserColorNameManager mUserColorNameManager;
     private SharedPreferencesWrapper mPreferences;
 
-	private ParcelableUserList mUserList;
-	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
+    private ParcelableUserList mUserList;
+    private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
 
-		@Override
-		public void onReceive(final Context context, final Intent intent) {
-			if (getActivity() == null || !isAdded() || isDetached()) return;
-			final String action = intent.getAction();
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            if (getActivity() == null || !isAdded() || isDetached()) return;
+            final String action = intent.getAction();
             final ParcelableUserList userList = intent.getParcelableExtra(EXTRA_USER_LIST);
             if (userList == null || mUserList == null)
                 return;
-			if (BROADCAST_USER_LIST_DETAILS_UPDATED.equals(action)) {
+            if (BROADCAST_USER_LIST_DETAILS_UPDATED.equals(action)) {
                 if (userList.id == mUserList.id) {
-					getUserListInfo(true);
-				}
-			} else if (BROADCAST_USER_LIST_SUBSCRIBED.equals(action) || BROADCAST_USER_LIST_UNSUBSCRIBED.equals(action)) {
+                    getUserListInfo(true);
+                }
+            } else if (BROADCAST_USER_LIST_SUBSCRIBED.equals(action) || BROADCAST_USER_LIST_UNSUBSCRIBED.equals(action)) {
                 if (userList.id == mUserList.id) {
-					getUserListInfo(true);
-				}
-			}
-		}
-	};
+                    getUserListInfo(true);
+                }
+            }
+        }
+    };
 
-	public void displayUserList(final ParcelableUserList userList) {
+    public void displayUserList(final ParcelableUserList userList) {
         final FragmentActivity activity = getActivity();
         if (activity == null) return;
-		getLoaderManager().destroyLoader(0);
-		mUserList = userList;
+        getLoaderManager().destroyLoader(0);
+        mUserList = userList;
 
         if (userList != null) {
-			final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
-			final String displayName = mUserColorNameManager.getDisplayName(userList, nameFirst, false);
-			final String description = userList.description;
+            final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
+            final String displayName = mUserColorNameManager.getDisplayName(userList, nameFirst, false);
+            final String description = userList.description;
             final TwidereLinkify linkify = new TwidereLinkify(new OnLinkClickHandler(activity,
-                	getMultiSelectManager()));
+                    getMultiSelectManager()));
             activity.setTitle(userList.name);
         } else {
             activity.setTitle(R.string.user_list);
         }
-		invalidateOptionsMenu();
-	}
+        invalidateOptionsMenu();
+    }
 
     @Override
     public Fragment getCurrentVisibleFragment() {
@@ -168,29 +168,29 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         return false;
     }
 
-	public void getUserListInfo(final boolean omit_intent_extra) {
-		final LoaderManager lm = getLoaderManager();
-		lm.destroyLoader(0);
-		final Bundle args = new Bundle(getArguments());
-		args.putBoolean(EXTRA_OMIT_INTENT_EXTRA, omit_intent_extra);
-		if (!mUserListLoaderInitialized) {
-			lm.initLoader(0, args, this);
-			mUserListLoaderInitialized = true;
-		} else {
-			lm.restartLoader(0, args, this);
-		}
-	}
+    public void getUserListInfo(final boolean omit_intent_extra) {
+        final LoaderManager lm = getLoaderManager();
+        lm.destroyLoader(0);
+        final Bundle args = new Bundle(getArguments());
+        args.putBoolean(EXTRA_OMIT_INTENT_EXTRA, omit_intent_extra);
+        if (!mUserListLoaderInitialized) {
+            lm.initLoader(0, args, this);
+            mUserListLoaderInitialized = true;
+        } else {
+            lm.restartLoader(0, args, this);
+        }
+    }
 
-	@Override
-	public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-		switch (requestCode) {
-			case REQUEST_SELECT_USER: {
-				if (resultCode != Activity.RESULT_OK || !data.hasExtra(EXTRA_USER) || mTwitterWrapper == null
-						|| mUserList == null) return;
-				final ParcelableUser user = data.getParcelableExtra(EXTRA_USER);
-				mTwitterWrapper.addUserListMembersAsync(mUserList.account_id, mUserList.id, user);
-				return;
-			}
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        switch (requestCode) {
+            case REQUEST_SELECT_USER: {
+                if (resultCode != Activity.RESULT_OK || !data.hasExtra(EXTRA_USER) || mTwitterWrapper == null
+                        || mUserList == null) return;
+                final ParcelableUser user = data.getParcelableExtra(EXTRA_USER);
+                mTwitterWrapper.addUserListMembersAsync(mUserList.account_id, mUserList.id, user);
+                return;
+            }
             case REQUEST_SELECT_ACCOUNT: {
                 final ParcelableUserList userList = mUserList;
                 if (userList == null) return;
@@ -199,14 +199,14 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
                     final long accountId = data.getLongExtra(EXTRA_ID, -1);
                     openUserListDetails(getActivity(), accountId, userList.id, userList.user_id,
                             userList.user_screen_name, userList.name);
-		        }
+                }
                 break;
             }
         }
-		super.onActivityResult(requestCode, resultCode, data);
-	}
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
-	@Override
+    @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_content_pages, container, false);
     }
@@ -216,7 +216,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         super.onActivityCreated(savedInstanceState);
         final FragmentActivity activity = getActivity();
         final TwittnukerApplication application = TwittnukerApplication.getInstance(activity);
-        mTwitterWrapper = application.getTwitterWrapper();
         mProfileImageLoader = application.getMediaLoaderWrapper();
         mUserColorNameManager = application.getUserColorNameManager();
         mPreferences = SharedPreferencesWrapper.getInstance(activity, SHARED_PREFERENCES_NAME,
@@ -244,45 +243,45 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
         getUserListInfo(false);
         setupUserPages();
-	}
+    }
 
     private ParcelableUserList getUserList() {
         return mUserList;
     }
 
-	@Override
+    @Override
     public void onStart() {
         super.onStart();
         final IntentFilter filter = new IntentFilter(BROADCAST_USER_LIST_DETAILS_UPDATED);
         filter.addAction(BROADCAST_USER_LIST_SUBSCRIBED);
         filter.addAction(BROADCAST_USER_LIST_UNSUBSCRIBED);
         registerReceiver(mStatusReceiver, filter);
-	}
+    }
 
-	@Override
+    @Override
     public void onStop() {
         unregisterReceiver(mStatusReceiver);
         super.onStop();
-	}
+    }
 
-	@Override
-	public void onDestroyView() {
-		mUserList = null;
-		getLoaderManager().destroyLoader(0);
-		super.onDestroyView();
-	}
+    @Override
+    public void onDestroyView() {
+        mUserList = null;
+        getLoaderManager().destroyLoader(0);
+        super.onDestroyView();
+    }
 
-	@Override
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_user_list, menu);
-	}
+    }
 
-	@Override
+    @Override
     public void onPrepareOptionsMenu(Menu menu) {
         final ParcelableUserList userList = mUserList;
         setMenuItemAvailability(menu, R.id.info, userList != null);
         if (userList != null) {
-        	final boolean isMyList = userList.user_id == userList.account_id;
+            final boolean isMyList = userList.user_id == userList.account_id;
             final boolean isFollowing = userList.is_following;
             setMenuItemAvailability(menu, R.id.edit, isMyList);
             setMenuItemAvailability(menu, R.id.follow, !isMyList);
@@ -292,10 +291,10 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
             if (isFollowing) {
                 followItem.setIcon(R.drawable.ic_action_cancel);
                 followItem.setTitle(R.string.unsubscribe);
-			} else {
+            } else {
                 followItem.setIcon(R.drawable.ic_action_add);
                 followItem.setTitle(R.string.subscribe);
-			}
+            }
             final Intent extensionsIntent = new Intent(INTENT_ACTION_EXTENSION_OPEN_USER_LIST);
             extensionsIntent.setExtrasClassLoader(getActivity().getClassLoader());
             extensionsIntent.putExtra(EXTRA_USER_LIST, userList);
@@ -304,48 +303,48 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
             setMenuItemAvailability(menu, R.id.follow, false);
             setMenuItemAvailability(menu, R.id.add, false);
             setMenuItemAvailability(menu, R.id.delete, false);
-		}
-	}
+        }
+    }
 
-	@Override
+    @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-		final AsyncTwitterWrapper twitter = getTwitterWrapper();
-		final ParcelableUserList userList = mUserList;
-		if (twitter == null || userList == null) return false;
-		switch (item.getItemId()) {
+        final AsyncTwitterWrapper twitter = mTwitterWrapper;
+        final ParcelableUserList userList = mUserList;
+        if (twitter == null || userList == null) return false;
+        switch (item.getItemId()) {
             case R.id.add: {
-				if (userList.user_id != userList.account_id) return false;
-				final Intent intent = new Intent(INTENT_ACTION_SELECT_USER);
-				intent.setClass(getActivity(), UserListSelectorActivity.class);
-				intent.putExtra(EXTRA_ACCOUNT_ID, userList.account_id);
-				startActivityForResult(intent, REQUEST_SELECT_USER);
-				break;
-			}
+                if (userList.user_id != userList.account_id) return false;
+                final Intent intent = new Intent(INTENT_ACTION_SELECT_USER);
+                intent.setClass(getActivity(), UserListSelectorActivity.class);
+                intent.putExtra(EXTRA_ACCOUNT_ID, userList.account_id);
+                startActivityForResult(intent, REQUEST_SELECT_USER);
+                break;
+            }
             case R.id.delete: {
-				if (userList.user_id != userList.account_id) return false;
-				DestroyUserListDialogFragment.show(getFragmentManager(), userList);
-				break;
-			}
+                if (userList.user_id != userList.account_id) return false;
+                DestroyUserListDialogFragment.show(getFragmentManager(), userList);
+                break;
+            }
             case R.id.edit: {
-				final Bundle args = new Bundle();
-				args.putLong(EXTRA_ACCOUNT_ID, userList.account_id);
-				args.putString(EXTRA_LIST_NAME, userList.name);
-				args.putString(EXTRA_DESCRIPTION, userList.description);
-				args.putBoolean(EXTRA_IS_PUBLIC, userList.is_public);
-				args.putLong(EXTRA_LIST_ID, userList.id);
-				final DialogFragment f = new EditUserListDialogFragment();
-				f.setArguments(args);
-				f.show(getFragmentManager(), "edit_user_list_details");
-				return true;
-			}
+                final Bundle args = new Bundle();
+                args.putLong(EXTRA_ACCOUNT_ID, userList.account_id);
+                args.putString(EXTRA_LIST_NAME, userList.name);
+                args.putString(EXTRA_DESCRIPTION, userList.description);
+                args.putBoolean(EXTRA_IS_PUBLIC, userList.is_public);
+                args.putLong(EXTRA_LIST_ID, userList.id);
+                final DialogFragment f = new EditUserListDialogFragment();
+                f.setArguments(args);
+                f.show(getFragmentManager(), "edit_user_list_details");
+                return true;
+            }
             case R.id.follow: {
-				if (userList.is_following) {
-					DestroyUserListSubscriptionDialogFragment.show(getFragmentManager(), userList);
-				} else {
-					twitter.createUserListSubscriptionAsync(userList.account_id, userList.id);
-				}
-				return true;
-			}
+                if (userList.is_following) {
+                    DestroyUserListSubscriptionDialogFragment.show(getFragmentManager(), userList);
+                } else {
+                    twitter.createUserListSubscriptionAsync(userList.account_id, userList.id);
+                }
+                return true;
+            }
             case R.id.open_with_account: {
                 final Intent intent = new Intent(INTENT_ACTION_SELECT_ACCOUNT);
                 intent.setClass(getActivity(), AccountSelectorActivity.class);
@@ -353,28 +352,28 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
                 startActivityForResult(intent, REQUEST_SELECT_ACCOUNT);
                 break;
             }
-			default: {
-				if (item.getIntent() != null) {
-					try {
-						startActivity(item.getIntent());
-					} catch (final ActivityNotFoundException e) {
-						if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
-						return false;
-					}
-				}
-				break;
-			}
-		}
-		return true;
-	}
+            default: {
+                if (item.getIntent() != null) {
+                    try {
+                        startActivity(item.getIntent());
+                    } catch (final ActivityNotFoundException e) {
+                        if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
+                        return false;
+                    }
+                }
+                break;
+            }
+        }
+        return true;
+    }
 
-	@Override
+    @Override
     public void onClick(final View view) {
         switch (view.getId()) {
             case R.id.error_container: {
                 getUserListInfo(true);
                 break;
-	        }
+            }
             case R.id.profile_image: {
                 if (mUserList == null) return;
                 openUserProfile(getActivity(), mUserList.account_id,
@@ -385,7 +384,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 
     }
 
-	@Override
+    @Override
     public Loader<SingleResponse<ParcelableUserList>> onCreateLoader(final int id, final Bundle args) {
         setProgressBarIndeterminateVisibility(true);
         final long accountId = args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
@@ -396,9 +395,9 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         final boolean omitIntentExtra = args == null || args.getBoolean(EXTRA_OMIT_INTENT_EXTRA, true);
         return new ParcelableUserListLoader(getActivity(), omitIntentExtra, getArguments(), accountId, listId,
                 listName, userId, screenName);
-	}
+    }
 
-	@Override
+    @Override
     public void onLoadFinished(final Loader<SingleResponse<ParcelableUserList>> loader,
                                final SingleResponse<ParcelableUserList> data) {
         if (data == null) return;
@@ -422,7 +421,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
         mPagerIndicator = (TabPagerIndicator) view.findViewById(R.id.view_pager_tabs);
         mPagerOverlay = view.findViewById(R.id.pager_window_overlay);
-	}
+    }
 
     private void setupUserPages() {
         final Bundle args = getArguments(), tabArgs = new Bundle();
@@ -458,130 +457,128 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         }
     }
 
-	public static class EditUserListDialogFragment extends BaseSupportDialogFragment implements
-			DialogInterface.OnClickListener {
+    public static class EditUserListDialogFragment extends BaseSupportDialogFragment implements
+            DialogInterface.OnClickListener {
 
         private MaterialEditText mEditName, mEditDescription;
-		private CheckBox mPublicCheckBox;
-		private String mName, mDescription;
-		private long mAccountId;
-		private long mListId;
-		private boolean mIsPublic;
-		private AsyncTwitterWrapper mTwitterWrapper;
+        private CheckBox mPublicCheckBox;
+        private String mName, mDescription;
+        private long mAccountId;
+        private long mListId;
+        private boolean mIsPublic;
 
-		@Override
-		public void onClick(final DialogInterface dialog, final int which) {
-			if (mAccountId <= 0) return;
-			switch (which) {
-				case DialogInterface.BUTTON_POSITIVE: {
-					mName = ParseUtils.parseString(mEditName.getText());
-					mDescription = ParseUtils.parseString(mEditDescription.getText());
-					mIsPublic = mPublicCheckBox.isChecked();
-					if (mName == null || mName.length() <= 0) return;
+        @Override
+        public void onClick(final DialogInterface dialog, final int which) {
+            if (mAccountId <= 0) return;
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE: {
+                    mName = ParseUtils.parseString(mEditName.getText());
+                    mDescription = ParseUtils.parseString(mEditDescription.getText());
+                    mIsPublic = mPublicCheckBox.isChecked();
+                    if (mName == null || mName.length() <= 0) return;
                     final UserListUpdate update = new UserListUpdate();
                     update.setMode(mIsPublic ? UserList.Mode.PUBLIC : UserList.Mode.PRIVATE);
                     update.setName(mName);
                     update.setDescription(mDescription);
                     mTwitterWrapper.updateUserListDetails(mAccountId, mListId, update);
-					break;
-				}
-			}
+                    break;
+                }
+            }
 
-		}
+        }
 
         @NonNull
-		@Override
-		public Dialog onCreateDialog(final Bundle savedInstanceState) {
-			mTwitterWrapper = getApplication().getTwitterWrapper();
-			final Bundle bundle = savedInstanceState == null ? getArguments() : savedInstanceState;
-			mAccountId = bundle != null ? bundle.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-			mListId = bundle != null ? bundle.getLong(EXTRA_LIST_ID, -1) : -1;
-			mName = bundle != null ? bundle.getString(EXTRA_LIST_NAME) : null;
-			mDescription = bundle != null ? bundle.getString(EXTRA_DESCRIPTION) : null;
+        @Override
+        public Dialog onCreateDialog(final Bundle savedInstanceState) {
+            final Bundle bundle = savedInstanceState == null ? getArguments() : savedInstanceState;
+            mAccountId = bundle != null ? bundle.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
+            mListId = bundle != null ? bundle.getLong(EXTRA_LIST_ID, -1) : -1;
+            mName = bundle != null ? bundle.getString(EXTRA_LIST_NAME) : null;
+            mDescription = bundle != null ? bundle.getString(EXTRA_DESCRIPTION) : null;
             mIsPublic = bundle == null || bundle.getBoolean(EXTRA_IS_PUBLIC, true);
             final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
             final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
             final View view = LayoutInflater.from(wrapped).inflate(R.layout.dialog_user_list_detail_editor, null);
-			builder.setView(view);
+            builder.setView(view);
             mEditName = (MaterialEditText) view.findViewById(R.id.name);
             mEditName.addValidator(new UserListNameValidator(getString(R.string.invalid_list_name)));
             mEditDescription = (MaterialEditText) view.findViewById(R.id.description);
-			mPublicCheckBox = (CheckBox) view.findViewById(R.id.is_public);
-			if (mName != null) {
-				mEditName.setText(mName);
-			}
-			if (mDescription != null) {
-				mEditDescription.setText(mDescription);
-			}
-			mPublicCheckBox.setChecked(mIsPublic);
-			builder.setTitle(R.string.user_list);
-			builder.setPositiveButton(android.R.string.ok, this);
-			builder.setNegativeButton(android.R.string.cancel, this);
-			return builder.create();
-		}
+            mPublicCheckBox = (CheckBox) view.findViewById(R.id.is_public);
+            if (mName != null) {
+                mEditName.setText(mName);
+            }
+            if (mDescription != null) {
+                mEditDescription.setText(mDescription);
+            }
+            mPublicCheckBox.setChecked(mIsPublic);
+            builder.setTitle(R.string.user_list);
+            builder.setPositiveButton(android.R.string.ok, this);
+            builder.setNegativeButton(android.R.string.cancel, this);
+            return builder.create();
+        }
 
-		@Override
-		public void onSaveInstanceState(final Bundle outState) {
-			outState.putLong(EXTRA_ACCOUNT_ID, mAccountId);
-			outState.putLong(EXTRA_LIST_ID, mListId);
-			outState.putString(EXTRA_LIST_NAME, mName);
-			outState.putString(EXTRA_DESCRIPTION, mDescription);
-			outState.putBoolean(EXTRA_IS_PUBLIC, mIsPublic);
-			super.onSaveInstanceState(outState);
-		}
+        @Override
+        public void onSaveInstanceState(final Bundle outState) {
+            outState.putLong(EXTRA_ACCOUNT_ID, mAccountId);
+            outState.putLong(EXTRA_LIST_ID, mListId);
+            outState.putString(EXTRA_LIST_NAME, mName);
+            outState.putString(EXTRA_DESCRIPTION, mDescription);
+            outState.putBoolean(EXTRA_IS_PUBLIC, mIsPublic);
+            super.onSaveInstanceState(outState);
+        }
 
-	}
+    }
 
-	static class ParcelableUserListLoader extends AsyncTaskLoader<SingleResponse<ParcelableUserList>> {
+    static class ParcelableUserListLoader extends AsyncTaskLoader<SingleResponse<ParcelableUserList>> {
 
-		private final boolean mOmitIntentExtra;
-		private final Bundle mExtras;
-		private final long mAccountId, mUserId;
+        private final boolean mOmitIntentExtra;
+        private final Bundle mExtras;
+        private final long mAccountId, mUserId;
         private final long mListId;
-		private final String mScreenName, mListName;
+        private final String mScreenName, mListName;
 
-		private ParcelableUserListLoader(final Context context, final boolean omitIntentExtra, final Bundle extras,
+        private ParcelableUserListLoader(final Context context, final boolean omitIntentExtra, final Bundle extras,
                                          final long accountId, final long listId, final String listName, final long userId,
-				final String screenName) {
-			super(context);
-			mOmitIntentExtra = omitIntentExtra;
-			mExtras = extras;
-			mAccountId = accountId;
-			mUserId = userId;
-			mListId = listId;
-			mScreenName = screenName;
-			mListName = listName;
-		}
+                                         final String screenName) {
+            super(context);
+            mOmitIntentExtra = omitIntentExtra;
+            mExtras = extras;
+            mAccountId = accountId;
+            mUserId = userId;
+            mListId = listId;
+            mScreenName = screenName;
+            mListName = listName;
+        }
 
-		@Override
-		public SingleResponse<ParcelableUserList> loadInBackground() {
-			if (!mOmitIntentExtra && mExtras != null) {
-				final ParcelableUserList cache = mExtras.getParcelable(EXTRA_USER_LIST);
-				if (cache != null) return SingleResponse.getInstance(cache);
-			}
+        @Override
+        public SingleResponse<ParcelableUserList> loadInBackground() {
+            if (!mOmitIntentExtra && mExtras != null) {
+                final ParcelableUserList cache = mExtras.getParcelable(EXTRA_USER_LIST);
+                if (cache != null) return SingleResponse.getInstance(cache);
+            }
             final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId, true);
-			if (twitter == null) return SingleResponse.getInstance();
-			try {
-				final UserList list;
-				if (mListId > 0) {
-					list = twitter.showUserList(mListId);
-				} else if (mUserId > 0) {
-					list = twitter.showUserList(mListName, mUserId);
-				} else if (mScreenName != null) {
-					list = twitter.showUserList(mListName, mScreenName);
-				} else
-					return SingleResponse.getInstance();
+            if (twitter == null) return SingleResponse.getInstance();
+            try {
+                final UserList list;
+                if (mListId > 0) {
+                    list = twitter.showUserList(mListId);
+                } else if (mUserId > 0) {
+                    list = twitter.showUserList(mListName, mUserId);
+                } else if (mScreenName != null) {
+                    list = twitter.showUserList(mListName, mScreenName);
+                } else
+                    return SingleResponse.getInstance();
                 return SingleResponse.getInstance(new ParcelableUserList(list, mAccountId));
-			} catch (final TwitterException e) {
+            } catch (final TwitterException e) {
                 return SingleResponse.getInstance(e);
-			}
-		}
+            }
+        }
 
-		@Override
-		public void onStartLoading() {
-			forceLoad();
-		}
+        @Override
+        public void onStartLoading() {
+            forceLoad();
+        }
 
-	}
+    }
 
 }

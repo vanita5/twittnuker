@@ -26,6 +26,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
@@ -34,59 +35,66 @@ import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.dagger.component.DaggerGeneralComponent;
+
+import javax.inject.Inject;
 
 public class BaseFragment extends Fragment implements Constants {
 
+    @Inject
+    protected AsyncTwitterWrapper mTwitterWrapper;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        DaggerGeneralComponent.builder().applicationModule(TwittnukerApplication.getModule(context)).build().inject(this);
+    }
+
     public TwittnukerApplication getApplication() {
-		final Activity activity = getActivity();
-		if (activity != null) return (TwittnukerApplication) activity.getApplication();
-		return null;
-	}
+        final Activity activity = getActivity();
+        if (activity != null) return (TwittnukerApplication) activity.getApplication();
+        return null;
+    }
 
-	public ContentResolver getContentResolver() {
-		final Activity activity = getActivity();
-		if (activity != null) return activity.getContentResolver();
-		return null;
-	}
+    public ContentResolver getContentResolver() {
+        final Activity activity = getActivity();
+        if (activity != null) return activity.getContentResolver();
+        return null;
+    }
 
-	public MultiSelectManager getMultiSelectManager() {
-		final TwittnukerApplication app = getApplication();
-		return app != null ? app.getMultiSelectManager() : null;
-	}
+    public MultiSelectManager getMultiSelectManager() {
+        final TwittnukerApplication app = getApplication();
+        return app != null ? app.getMultiSelectManager() : null;
+    }
 
-	public SharedPreferences getSharedPreferences(final String name, final int mode) {
-		final Activity activity = getActivity();
-		if (activity != null) return activity.getSharedPreferences(name, mode);
-		return null;
-	}
+    public SharedPreferences getSharedPreferences(final String name, final int mode) {
+        final Activity activity = getActivity();
+        if (activity != null) return activity.getSharedPreferences(name, mode);
+        return null;
+    }
 
-	public Object getSystemService(final String name) {
-		final Activity activity = getActivity();
-		if (activity != null) return activity.getSystemService(name);
-		return null;
-	}
+    public Object getSystemService(final String name) {
+        final Activity activity = getActivity();
+        if (activity != null) return activity.getSystemService(name);
+        return null;
+    }
 
-	public AsyncTwitterWrapper getTwitterWrapper() {
-		final TwittnukerApplication app = getApplication();
-		return app != null ? app.getTwitterWrapper() : null;
-	}
+    public void registerReceiver(final BroadcastReceiver receiver, final IntentFilter filter) {
+        final Activity activity = getActivity();
+        if (activity == null) return;
+        activity.registerReceiver(receiver, filter);
+    }
 
-	public void registerReceiver(final BroadcastReceiver receiver, final IntentFilter filter) {
-		final Activity activity = getActivity();
-		if (activity == null) return;
-		activity.registerReceiver(receiver, filter);
-	}
-
-	public void setProgressBarIndeterminateVisibility(final boolean visible) {
-		final Activity activity = getActivity();
-		if (activity instanceof BaseAppCompatActivity) {
+    public void setProgressBarIndeterminateVisibility(final boolean visible) {
+        final Activity activity = getActivity();
+        if (activity instanceof BaseAppCompatActivity) {
             activity.setProgressBarIndeterminateVisibility(visible);
-		}
-	}
+        }
+    }
 
-	public void unregisterReceiver(final BroadcastReceiver receiver) {
-		final Activity activity = getActivity();
-		if (activity == null) return;
-		activity.unregisterReceiver(receiver);
-	}
+    public void unregisterReceiver(final BroadcastReceiver receiver) {
+        final Activity activity = getActivity();
+        if (activity == null) return;
+        activity.unregisterReceiver(receiver);
+    }
 }

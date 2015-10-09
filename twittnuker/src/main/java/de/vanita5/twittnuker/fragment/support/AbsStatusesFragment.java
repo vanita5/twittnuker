@@ -73,7 +73,6 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
     private final Object mStatusesBusCallback;
     private SharedPreferences mPreferences;
     private PopupMenu mPopupMenu;
-    private ReadStateManager mReadStateManager;
     private final OnScrollListener mOnScrollListener = new OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -96,7 +95,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
                 return true;
             }
             return Utils.handleMenuItemClick(getActivity(), AbsStatusesFragment.this,
-                    getFragmentManager(), getTwitterWrapper(), status, item);
+                    getFragmentManager(), mTwitterWrapper, status, item);
         }
     };
     private OnScrollListener mPauseOnScrollListener;
@@ -152,7 +151,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
                 return true;
             }
             case ACTION_STATUS_FAVORITE: {
-                final AsyncTwitterWrapper twitter = getTwitterWrapper();
+                final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (status.is_favorite) {
                     twitter.destroyFavoriteAsync(status.account_id, status.id);
                 } else {
@@ -308,7 +307,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
                 break;
             }
             case R.id.favorite_count: {
-                final AsyncTwitterWrapper twitter = getTwitterWrapper();
+                final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (twitter == null) return;
                 if (status.is_favorite) {
                     twitter.destroyFavoriteAsync(status.account_id, status.id);
@@ -402,7 +401,6 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mReadStateManager = getReadStateManager();
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final RecyclerView recyclerView = getRecyclerView();
         final LinearLayoutManager layoutManager = getLayoutManager();

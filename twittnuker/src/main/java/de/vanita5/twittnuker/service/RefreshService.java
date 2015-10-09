@@ -41,8 +41,11 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.dagger.component.DaggerRefreshServiceComponent;
 
 import java.util.Arrays;
+
+import javax.inject.Inject;
 
 import static de.vanita5.twittnuker.util.ParseUtils.parseInt;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
@@ -59,7 +62,8 @@ public class RefreshService extends Service implements Constants {
     private SharedPreferencesWrapper mPreferences;
 
     private AlarmManager mAlarmManager;
-    private AsyncTwitterWrapper mTwitterWrapper;
+    @Inject
+    AsyncTwitterWrapper mTwitterWrapper;
     private PendingIntent mPendingRefreshHomeTimelineIntent, mPendingRefreshMentionsIntent,
             mPendingRefreshDirectMessagesIntent, mPendingRefreshTrendsIntent;
 
@@ -141,9 +145,9 @@ public class RefreshService extends Service implements Constants {
     @Override
     public void onCreate() {
         super.onCreate();
+        DaggerRefreshServiceComponent.builder().applicationModule(TwittnukerApplication.getModule(this)).build().inject(this);
         mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
-        mTwitterWrapper = app.getTwitterWrapper();
         mPreferences = SharedPreferencesWrapper.getInstance(app, SHARED_PREFERENCES_NAME, MODE_PRIVATE);
         mPendingRefreshHomeTimelineIntent = PendingIntent.getBroadcast(this, 0, new Intent(
                 BROADCAST_REFRESH_HOME_TIMELINE), 0);

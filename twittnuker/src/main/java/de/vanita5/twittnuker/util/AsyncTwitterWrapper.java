@@ -285,11 +285,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         return true;
     }
 
-    public static AsyncTwitterWrapper getInstance(final Context context) {
-        final TwittnukerApplication application = TwittnukerApplication.getInstance(context);
-        return application.getTwitterWrapper();
-    }
-
     public int getLocalTrendsAsync(final long accountId, final int woeid) {
         mAsyncTaskManager.cancel(mGetLocalTrendsTaskId);
         final GetLocalTrendsTask task = new GetLocalTrendsTask(accountId, woeid);

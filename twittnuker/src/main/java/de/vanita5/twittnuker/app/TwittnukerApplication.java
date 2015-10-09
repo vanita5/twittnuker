@@ -55,20 +55,18 @@ import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.AbsLogger;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
-import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.TwidereLogger;
-import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.VideoLoader;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache;
 import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
 import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator;
@@ -93,7 +91,6 @@ public class TwittnukerApplication extends Application implements Constants,
     private ImageLoader mImageLoader;
     private AsyncTaskManager mAsyncTaskManager;
     private SharedPreferences mPreferences;
-    private AsyncTwitterWrapper mTwitterWrapper;
     private MultiSelectManager mMultiSelectManager;
     private TwidereImageDownloader mImageDownloader, mFullImageDownloader;
     private DiskCache mDiskCache, mFullDiskCache;
@@ -102,9 +99,9 @@ public class TwittnukerApplication extends Application implements Constants,
     private SQLiteDatabase mDatabase;
     private Bus mMessageBus;
     private VideoLoader mVideoLoader;
-    private ReadStateManager mReadStateManager;
     private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
     private UserColorNameManager mUserColorNameManager;
+    private ApplicationModule mApplicationModule;
 
     @NonNull
     public static TwittnukerApplication getInstance(@NonNull final Context context) {
@@ -143,11 +140,6 @@ public class TwittnukerApplication extends Application implements Constants,
     public Network getNetwork() {
         if (mNetwork != null) return mNetwork;
         return mNetwork = new TwidereHostAddressResolver(this);
-    }
-
-    public ReadStateManager getReadStateManager() {
-        if (mReadStateManager != null) return mReadStateManager;
-        return mReadStateManager = new ReadStateManager(this);
     }
 
     public KeyboardShortcutsHandler getKeyboardShortcutsHandler() {
@@ -213,11 +205,6 @@ public class TwittnukerApplication extends Application implements Constants,
         return mSQLiteOpenHelper = new TwidereSQLiteOpenHelper(this, DATABASES_NAME, DATABASES_VERSION);
     }
 
-    public AsyncTwitterWrapper getTwitterWrapper() {
-        if (mTwitterWrapper != null) return mTwitterWrapper;
-        return mTwitterWrapper = new AsyncTwitterWrapper(this);
-    }
-
     @Override
     public void onCreate() {
         if (BuildConfig.DEBUG) {
@@ -252,7 +239,9 @@ public class TwittnukerApplication extends Application implements Constants,
     private void initBugReport() {
         final SharedPreferences preferences = getSharedPreferences();
         if (!preferences.getBoolean(KEY_BUG_REPORTS, true)) return;
-        AbsLogger.setImplementation(new TwidereLogger());
+        if (!BuildConfig.DEBUG) {
+            AbsLogger.setImplementation(new TwidereLogger());
+        }
         AbsLogger.init(this);
     }
 
@@ -319,4 +308,12 @@ public class TwittnukerApplication extends Application implements Constants,
         }
     }
 
+    public static ApplicationModule getModule(Context context) {
+        return getInstance(context).getApplicationModule();
+    }
+
+    private ApplicationModule getApplicationModule() {
+        if (mApplicationModule != null) return mApplicationModule;
+        return mApplicationModule = new ApplicationModule(this);
+    }
 }

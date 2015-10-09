@@ -48,8 +48,20 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
+import de.vanita5.twittnuker.util.dagger.component.DaggerGeneralComponent;
+
+import javax.inject.Inject;
 
 public class BaseSupportFragment extends Fragment implements IBaseFragment, Constants {
+
+    @Inject
+    protected AsyncTwitterWrapper mTwitterWrapper;
+    @Inject
+    protected ReadStateManager mReadStateManager;
+
+    public BaseSupportFragment() {
+
+    }
 
     @Override
     public final void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -58,70 +70,66 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
         requestFitSystemWindows();
     }
 
-	public BaseSupportFragment() {
-
-	}
-
-    public TwittnukerApplication getApplication() {
-		final Activity activity = getActivity();
-		if (activity != null) return (TwittnukerApplication) activity.getApplication();
-		return null;
-	}
-
-	public ContentResolver getContentResolver() {
-		final Activity activity = getActivity();
-		if (activity != null) return activity.getContentResolver();
-		return null;
-	}
-
-	public MultiSelectManager getMultiSelectManager() {
-		return getApplication() != null ? getApplication().getMultiSelectManager() : null;
-	}
-
-	public SharedPreferences getSharedPreferences(final String name, final int mode) {
-		final Activity activity = getActivity();
-		if (activity != null) return activity.getSharedPreferences(name, mode);
-		return null;
-	}
-
-	public Object getSystemService(final String name) {
-		final Activity activity = getActivity();
-		if (activity != null) return activity.getSystemService(name);
-		return null;
-	}
-
-	public AsyncTwitterWrapper getTwitterWrapper() {
-		return getApplication() != null ? getApplication().getTwitterWrapper() : null;
-	}
-
-    public ReadStateManager getReadStateManager() {
-        return getApplication() != null ? getApplication().getReadStateManager() : null;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        DaggerGeneralComponent.builder().applicationModule(TwittnukerApplication.getModule(context)).build().inject(this);
     }
 
-	public void invalidateOptionsMenu() {
+
+    public TwittnukerApplication getApplication() {
+        final Activity activity = getActivity();
+        if (activity != null) return (TwittnukerApplication) activity.getApplication();
+        return null;
+    }
+
+    public ContentResolver getContentResolver() {
+        final Activity activity = getActivity();
+        if (activity != null) return activity.getContentResolver();
+        return null;
+    }
+
+    public MultiSelectManager getMultiSelectManager() {
+        return getApplication() != null ? getApplication().getMultiSelectManager() : null;
+    }
+
+    public SharedPreferences getSharedPreferences(final String name, final int mode) {
+        final Activity activity = getActivity();
+        if (activity != null) return activity.getSharedPreferences(name, mode);
+        return null;
+    }
+
+    public Object getSystemService(final String name) {
+        final Activity activity = getActivity();
+        if (activity != null) return activity.getSystemService(name);
+        return null;
+    }
+
+
+    public void invalidateOptionsMenu() {
         final FragmentActivity activity = getActivity();
-		if (activity == null) return;
+        if (activity == null) return;
         activity.supportInvalidateOptionsMenu();
-	}
+    }
 
-	public void registerReceiver(final BroadcastReceiver receiver, final IntentFilter filter) {
-		final Activity activity = getActivity();
-		if (activity == null) return;
-		activity.registerReceiver(receiver, filter);
-	}
+    public void registerReceiver(final BroadcastReceiver receiver, final IntentFilter filter) {
+        final Activity activity = getActivity();
+        if (activity == null) return;
+        activity.registerReceiver(receiver, filter);
+    }
 
-	public void setProgressBarIndeterminateVisibility(final boolean visible) {
-		final Activity activity = getActivity();
-		if (activity instanceof BaseAppCompatActivity) {
+    public void setProgressBarIndeterminateVisibility(final boolean visible) {
+        final Activity activity = getActivity();
+        if (activity instanceof BaseAppCompatActivity) {
             activity.setProgressBarIndeterminateVisibility(visible);
-		}
-	}
+        }
+    }
 
-	public void unregisterReceiver(final BroadcastReceiver receiver) {
-		final Activity activity = getActivity();
-		if (activity == null) return;
-		activity.unregisterReceiver(receiver);
-	}
+    public void unregisterReceiver(final BroadcastReceiver receiver) {
+        final Activity activity = getActivity();
+        if (activity == null) return;
+        activity.unregisterReceiver(receiver);
+    }
 
     @Override
     public Bundle getExtraConfiguration() {

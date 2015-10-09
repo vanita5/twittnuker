@@ -52,16 +52,17 @@ import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
+import javax.inject.Inject;
+
 public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewHolder> implements Constants,
         IStatusesAdapter<D> {
 
     public static final int ITEM_VIEW_TYPE_STATUS = 2;
 
-	private final Context mContext;
-	private final LayoutInflater mInflater;
+    private final Context mContext;
+    private final LayoutInflater mInflater;
     private final MediaLoaderWrapper mMediaLoader;
     private final MediaLoadingHandler mLoadingHandler;
-    private final AsyncTwitterWrapper mTwitterWrapper;
     private final TwidereLinkify mLinkify;
     private final UserColorNameManager mUserColorNameManager;
 
@@ -86,15 +87,15 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     private boolean mShowInReplyTo;
     private boolean mShowAccountsColor;
 
-	public AbsStatusesAdapter(Context context, boolean compact) {
-		mContext = context;
+    public AbsStatusesAdapter(Context context, boolean compact) {
+        super(context);
+        mContext = context;
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
-		mInflater = LayoutInflater.from(context);
+        mInflater = LayoutInflater.from(context);
         mMediaLoader = app.getMediaLoaderWrapper();
         mUserColorNameManager = app.getUserColorNameManager();
         mLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
-        mTwitterWrapper = app.getTwitterWrapper();
         final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
                 SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mTextSize = preferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
@@ -116,7 +117,7 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     @Override
     public abstract void setData(D data);
 
-	@Override
+    @Override
     public boolean shouldShowAccountsColor() {
         return mShowAccountsColor;
     }
@@ -208,18 +209,18 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     @Override
     public final void onStatusClick(StatusViewHolder holder, int position) {
         if (mStatusAdapterListener == null) return;
-		mStatusAdapterListener.onStatusClick(holder, position);
-	}
+        mStatusAdapterListener.onStatusClick(holder, position);
+    }
 
     @Override
     public void onMediaClick(StatusViewHolder holder, View view, final ParcelableMedia media, int position) {
         if (mStatusAdapterListener == null) return;
         mStatusAdapterListener.onMediaClick(holder, view, media, position);
-	}
+    }
 
     @Override
     public void onUserProfileClick(final StatusViewHolder holder, final int position) {
-        if (mStatusAdapterListener==null)return;
+        if (mStatusAdapterListener == null) return;
         final ParcelableStatus status = getStatus(position);
         if (status == null) return;
         mStatusAdapterListener.onUserProfileClick(holder, status, position);
@@ -240,9 +241,9 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     }
 
     @Override
-	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-		switch (viewType) {
-			case ITEM_VIEW_TYPE_STATUS: {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case ITEM_VIEW_TYPE_STATUS: {
                 final View view;
                 if (mCompactCards) {
                     view = mInflater.inflate(R.layout.card_item_status_compact, parent, false);
@@ -257,61 +258,61 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
                 holder.setOnClickListeners();
                 holder.setupViewOptions();
                 return holder;
-			}
+            }
             case ITEM_VIEW_TYPE_GAP: {
                 final View view = mInflater.inflate(R.layout.card_item_gap, parent, false);
                 return new GapViewHolder(this, view);
             }
-			case ITEM_VIEW_TYPE_LOAD_INDICATOR: {
-				final View view = mInflater.inflate(R.layout.card_item_load_indicator, parent, false);
-				return new LoadIndicatorViewHolder(view);
-			}
-		}
-		throw new IllegalStateException("Unknown view type " + viewType);
-	}
-
-	@Override
-	public void onBindViewHolder(ViewHolder holder, int position) {
-		switch (holder.getItemViewType()) {
-			case ITEM_VIEW_TYPE_STATUS: {
-				bindStatus(((StatusViewHolder) holder), position);
-				break;
-			}
-		}
+            case ITEM_VIEW_TYPE_LOAD_INDICATOR: {
+                final View view = mInflater.inflate(R.layout.card_item_load_indicator, parent, false);
+                return new LoadIndicatorViewHolder(view);
+            }
+        }
+        throw new IllegalStateException("Unknown view type " + viewType);
     }
 
     @Override
-	public int getItemViewType(int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        switch (holder.getItemViewType()) {
+            case ITEM_VIEW_TYPE_STATUS: {
+                bindStatus(((StatusViewHolder) holder), position);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
         if (position == getStatusesCount()) {
-			return ITEM_VIEW_TYPE_LOAD_INDICATOR;
+            return ITEM_VIEW_TYPE_LOAD_INDICATOR;
         } else if (isGapItem(position)) {
             return ITEM_VIEW_TYPE_GAP;
-		}
-		return ITEM_VIEW_TYPE_STATUS;
-	}
+        }
+        return ITEM_VIEW_TYPE_STATUS;
+    }
 
-	@Override
-	public final int getItemCount() {
+    @Override
+    public final int getItemCount() {
         return getStatusesCount() + (isLoadMoreIndicatorVisible() ? 1 : 0);
-	}
+    }
 
-	@Override
+    @Override
     public final void onGapClick(ViewHolder holder, int position) {
         if (mStatusAdapterListener == null) return;
-		mStatusAdapterListener.onGapClick((GapViewHolder) holder, position);
-	}
+        mStatusAdapterListener.onGapClick((GapViewHolder) holder, position);
+    }
 
     @Override
     public void onItemActionClick(ViewHolder holder, int id, int position) {
         if (mStatusAdapterListener == null) return;
-		mStatusAdapterListener.onStatusActionClick((StatusViewHolder) holder, id, position);
-	}
+        mStatusAdapterListener.onStatusActionClick((StatusViewHolder) holder, id, position);
+    }
 
     @Override
     public void onItemMenuClick(ViewHolder holder, View menuView, int position) {
         if (mStatusAdapterListener == null) return;
-		mStatusAdapterListener.onStatusMenuClick((StatusViewHolder) holder, menuView, position);
-	}
+        mStatusAdapterListener.onStatusMenuClick((StatusViewHolder) holder, menuView, position);
+    }
 
     public void setListener(StatusAdapterListener listener) {
         mStatusAdapterListener = listener;

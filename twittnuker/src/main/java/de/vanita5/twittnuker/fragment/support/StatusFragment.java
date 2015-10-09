@@ -194,7 +194,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final ParcelableStatus status = mSelectedStatus;
             if (status == null) return false;
             return Utils.handleMenuItemClick(getActivity(), StatusFragment.this,
-                    getFragmentManager(), getTwitterWrapper(), status, item);
+                    getFragmentManager(), mTwitterWrapper, status, item);
         }
     };
 
@@ -312,7 +312,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 break;
             }
             case R.id.favorite_count: {
-                final AsyncTwitterWrapper twitter = getTwitterWrapper();
+                final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (twitter == null) return;
                 if (status.is_favorite) {
                     twitter.destroyFavoriteAsync(status.account_id, status.id);
@@ -397,7 +397,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 return true;
             }
             case ACTION_STATUS_FAVORITE: {
-                final AsyncTwitterWrapper twitter = getTwitterWrapper();
+                final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (status.is_favorite) {
                     twitter.destroyFavoriteAsync(status.account_id, status.id);
                 } else {
@@ -854,7 +854,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final StatusFragment fragment = adapter.getFragment();
             final ParcelableStatus status = adapter.getStatus(layoutPosition);
             if (status == null || fragment == null) return false;
-            final AsyncTwitterWrapper twitter = fragment.getTwitterWrapper();
+            final AsyncTwitterWrapper twitter = fragment.mTwitterWrapper;
             final FragmentActivity activity = fragment.getActivity();
             final FragmentManager fm = fragment.getFragmentManager();
             if (item.getItemId() == R.id.retweet) {
@@ -1137,7 +1137,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         @NonNull
         @Override
         public AsyncTwitterWrapper getTwitterWrapper() {
-            return mFragment.getTwitterWrapper();
+            return mFragment.mTwitterWrapper;
         }
 
         @Override
@@ -1437,7 +1437,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         public long getItemId(int position) {
             final ParcelableStatus status = getStatus(position);
             if (status != null) return status.id;
-            return getItemType(position) * 100 + position;
+            return getItemType(position);
         }
 
         @Override

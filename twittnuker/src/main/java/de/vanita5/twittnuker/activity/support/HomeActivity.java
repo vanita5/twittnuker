@@ -46,7 +46,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayoutTrojan;
-import android.support.v7.app.ThemedAppCompatDelegateFactory;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -88,7 +87,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
@@ -130,6 +128,7 @@ import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 public class HomeActivity extends BaseAppCompatActivity implements OnClickListener, OnPageChangeListener,
         SupportFragmentCallback, OnLongClickListener {
 
+    private static final String EXTRA_SESSION_EVENT = "session_event";
     private final Handler mHandler = new Handler();
 
     private final ContentObserver mAccountChangeObserver = new AccountChangeObserver(this, mHandler);
@@ -138,10 +137,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
     private SharedPreferences mPreferences;
 
-    private AsyncTwitterWrapper mTwitterWrapper;
-
     private MultiSelectEventHandler mMultiSelectHandler;
-    private ReadStateManager mReadStateManager;
 
     private SupportTabsAdapter mPagerAdapter;
 

@@ -69,6 +69,7 @@ import org.mariotaku.sqliteqb.library.SetValue;
 import org.mariotaku.sqliteqb.library.query.SQLInsertQuery;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import org.mariotaku.sqliteqb.library.query.SQLUpdateQuery;
+
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -118,6 +119,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import static de.vanita5.twittnuker.util.Utils.clearAccountColor;
 import static de.vanita5.twittnuker.util.Utils.clearAccountName;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
@@ -127,40 +130,43 @@ import static de.vanita5.twittnuker.util.Utils.getTableNameById;
 import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
 
 public final class TwidereDataProvider extends ContentProvider implements Constants, OnSharedPreferenceChangeListener,
-		LazyLoadCallback {
+        LazyLoadCallback {
 
     public static final String TAG_OLDEST_MESSAGES = "oldest_messages";
-	private ContentResolver mContentResolver;
-	private SQLiteDatabaseWrapper mDatabaseWrapper;
+    private ContentResolver mContentResolver;
+    private SQLiteDatabaseWrapper mDatabaseWrapper;
 
-	@Nullable
-	private NotificationManager mNotificationManager;
+    @Nullable
+    private NotificationManager mNotificationManager;
 
-    private ReadStateManager mReadStateManager;
-	private SharedPreferencesWrapper mPreferences;
-	private ImagePreloader mImagePreloader;
-	private Network mNetwork;
-	private NotificationHelper mNotificationHelper;
-	private Handler mHandler;
+    @Inject
+    ReadStateManager mReadStateManager;
+    @Inject
+    AsyncTwitterWrapper mTwitterWrapper;
+    private SharedPreferencesWrapper mPreferences;
+    private ImagePreloader mImagePreloader;
+    private Network mNetwork;
+    private NotificationHelper mNotificationHelper;
+    private Handler mHandler;
 
-	private boolean mNameFirst;
+    private boolean mNameFirst;
 
-	@Override
-	public int bulkInsert(final Uri uri, @NonNull final ContentValues[] valuesArray) {
-		try {
-			final int tableId = getTableId(uri);
-			final String table = getTableNameById(tableId);
-			switch (tableId) {
-				case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
-				case TABLE_ID_DIRECT_MESSAGES:
-				case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
+    @Override
+    public int bulkInsert(@NonNull final Uri uri, @NonNull final ContentValues[] valuesArray) {
+        try {
+            final int tableId = getTableId(uri);
+            final String table = getTableNameById(tableId);
+            switch (tableId) {
+                case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
+                case TABLE_ID_DIRECT_MESSAGES:
+                case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
                 case TABLE_ID_NETWORK_USAGES:
-					return 0;
-			}
-			int result = 0;
+                    return 0;
+            }
+            int result = 0;
             final long[] newIds = new long[valuesArray.length];
             if (table != null) {
-				mDatabaseWrapper.beginTransaction();
+                mDatabaseWrapper.beginTransaction();
                 if (tableId == TABLE_ID_CACHED_USERS) {
                     for (final ContentValues values : valuesArray) {
                         final Expression where = Expression.equals(CachedUsers.USER_ID,
@@ -186,78 +192,78 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 } else {
                     for (final ContentValues values : valuesArray) {
                         newIds[result++] = mDatabaseWrapper.insert(table, null, values);
-				    }
+                    }
                 }
-				mDatabaseWrapper.setTransactionSuccessful();
-				mDatabaseWrapper.endTransaction();
-			}
-			if (result > 0) {
-				onDatabaseUpdated(tableId, uri);
-			}
+                mDatabaseWrapper.setTransactionSuccessful();
+                mDatabaseWrapper.endTransaction();
+            }
+            if (result > 0) {
+                onDatabaseUpdated(tableId, uri);
+            }
             onNewItemsInserted(uri, tableId, valuesArray, newIds);
-			return result;
-		} catch (final SQLException e) {
-			throw new IllegalStateException(e);
-		}
-	}
+            return result;
+        } catch (final SQLException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
 
-	@Override
-	public int delete(final Uri uri, final String selection, final String[] selectionArgs) {
-		try {
-			final int tableId = getTableId(uri);
-			final String table = getTableNameById(tableId);
-			switch (tableId) {
-				case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
-				case TABLE_ID_DIRECT_MESSAGES:
-				case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
-					return 0;
-				case VIRTUAL_TABLE_ID_NOTIFICATIONS: {
-					final List<String> segments = uri.getPathSegments();
-					if (segments.size() == 1) {
-						clearNotification();
-					} else if (segments.size() == 2) {
-						final int notificationType = ParseUtils.parseInt(segments.get(1));
-						clearNotification(notificationType, 0);
-					} else if (segments.size() == 3) {
-						final int notificationType = ParseUtils.parseInt(segments.get(1));
-						final long accountId = ParseUtils.parseLong(segments.get(2));
-						clearNotification(notificationType, accountId);
-					}
-					return 1;
-				}
-				case VIRTUAL_TABLE_ID_UNREAD_COUNTS: {
-					return 0;
-				}
-			}
-			if (table == null) return 0;
-			final int result = mDatabaseWrapper.delete(table, selection, selectionArgs);
-			if (result > 0) {
-				onDatabaseUpdated(tableId, uri);
-			}
-			return result;
-		} catch (final SQLException e) {
-			throw new IllegalStateException(e);
-		}
-	}
+    @Override
+    public int delete(@NonNull final Uri uri, final String selection, final String[] selectionArgs) {
+        try {
+            final int tableId = getTableId(uri);
+            final String table = getTableNameById(tableId);
+            switch (tableId) {
+                case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
+                case TABLE_ID_DIRECT_MESSAGES:
+                case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
+                    return 0;
+                case VIRTUAL_TABLE_ID_NOTIFICATIONS: {
+                    final List<String> segments = uri.getPathSegments();
+                    if (segments.size() == 1) {
+                        clearNotification();
+                    } else if (segments.size() == 2) {
+                        final int notificationType = ParseUtils.parseInt(segments.get(1));
+                        clearNotification(notificationType, 0);
+                    } else if (segments.size() == 3) {
+                        final int notificationType = ParseUtils.parseInt(segments.get(1));
+                        final long accountId = ParseUtils.parseLong(segments.get(2));
+                        clearNotification(notificationType, accountId);
+                    }
+                    return 1;
+                }
+                case VIRTUAL_TABLE_ID_UNREAD_COUNTS: {
+                    return 0;
+                }
+            }
+            if (table == null) return 0;
+            final int result = mDatabaseWrapper.delete(table, selection, selectionArgs);
+            if (result > 0) {
+                onDatabaseUpdated(tableId, uri);
+            }
+            return result;
+        } catch (final SQLException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
-	@Override
-	public String getType(final Uri uri) {
-		return null;
-	}
+    @Override
+    public String getType(@NonNull final Uri uri) {
+        return null;
+    }
 
-	@Override
-	public Uri insert(final Uri uri, final ContentValues values) {
-		try {
-			final int tableId = getTableId(uri);
-			final String table = getTableNameById(tableId);
-			switch (tableId) {
-				case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
-				case TABLE_ID_DIRECT_MESSAGES:
-				case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
-					return null;
-			}
-			final long rowId;
+    @Override
+    public Uri insert(@NonNull final Uri uri, final ContentValues values) {
+        try {
+            final int tableId = getTableId(uri);
+            final String table = getTableNameById(tableId);
+            switch (tableId) {
+                case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
+                case TABLE_ID_DIRECT_MESSAGES:
+                case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
+                    return null;
+            }
+            final long rowId;
             if (tableId == TABLE_ID_CACHED_USERS) {
                 final Expression where = Expression.equals(CachedUsers.USER_ID,
                         values.getAsLong(CachedUsers.USER_ID));
@@ -328,16 +334,16 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                         SQLiteDatabase.CONFLICT_REPLACE);
             } else if (table != null) {
                 rowId = mDatabaseWrapper.insert(table, null, values);
-			} else {
+            } else {
                 return null;
-			}
-			onDatabaseUpdated(tableId, uri);
+            }
+            onDatabaseUpdated(tableId, uri);
             onNewItemsInserted(uri, tableId, values, rowId);
-			return Uri.withAppendedPath(uri, String.valueOf(rowId));
-		} catch (final SQLException e) {
-			throw new IllegalStateException(e);
-		}
-	}
+            return Uri.withAppendedPath(uri, String.valueOf(rowId));
+        } catch (final SQLException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     private long showDraftNotification(Uri queryUri, ContentValues values) {
         if (values == null) return -1;
@@ -382,29 +388,29 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 PendingIntent.getService(context, 0, sendIntent, PendingIntent.FLAG_ONE_SHOT));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         notificationBuilder.setContentIntent(PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT));
-		getNotificationManager().notify(Uri.withAppendedPath(Drafts.CONTENT_URI, String.valueOf(draftId)).toString(),
+        getNotificationManager().notify(Uri.withAppendedPath(Drafts.CONTENT_URI, String.valueOf(draftId)).toString(),
                 NOTIFICATION_ID_DRAFTS, notificationBuilder.build());
         return draftId;
     }
 
-	@Override
-	public boolean onCreate() {
-		final Context context = getContext();
-		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
+    @Override
+    public boolean onCreate() {
+        final Context context = getContext();
+        DaggerTwidereDataProviderComponent.builder().applicationModule(TwittnukerApplication.getModule(context)).build().inject(this);
+        final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mHandler = new Handler(Looper.getMainLooper());
         mDatabaseWrapper = new SQLiteDatabaseWrapper(this);
         mNetwork = app.getNetwork();
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
         updatePreferences();
-		mReadStateManager = app.getReadStateManager();
-		mImagePreloader = new ImagePreloader(context, app.getImageLoader());
-		mNotificationHelper = new NotificationHelper(context);
-		// final GetWritableDatabaseTask task = new
-		// GetWritableDatabaseTask(context, helper, mDatabaseWrapper);
+        mImagePreloader = new ImagePreloader(context, app.getImageLoader());
+        mNotificationHelper = new NotificationHelper(context);
+        // final GetWritableDatabaseTask task = new
+        // GetWritableDatabaseTask(context, helper, mDatabaseWrapper);
         // task.executeTask();
-		return true;
-	}
+        return true;
+    }
 
     @Override
     public SQLiteDatabase onCreateSQLiteDatabase() {
@@ -413,99 +419,98 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         return helper.getWritableDatabase();
     }
 
-	@Override
+    @Override
     public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
         updatePreferences();
     }
 
     @Override
-	public ParcelFileDescriptor openFile(final Uri uri, final String mode) throws FileNotFoundException {
-		if (uri == null || mode == null) throw new IllegalArgumentException();
-		final int table_id = getTableId(uri);
-		switch (table_id) {
-			case VIRTUAL_TABLE_ID_CACHED_IMAGES: {
-				return getCachedImageFd(uri.getQueryParameter(QUERY_PARAM_URL));
-			}
-			case VIRTUAL_TABLE_ID_CACHE_FILES: {
-				return getCacheFileFd(uri.getLastPathSegment());
-			}
-		}
-		return null;
-	}
+    public ParcelFileDescriptor openFile(@NonNull final Uri uri, @NonNull final String mode) throws FileNotFoundException {
+        final int table_id = getTableId(uri);
+        switch (table_id) {
+            case VIRTUAL_TABLE_ID_CACHED_IMAGES: {
+                return getCachedImageFd(uri.getQueryParameter(QUERY_PARAM_URL));
+            }
+            case VIRTUAL_TABLE_ID_CACHE_FILES: {
+                return getCacheFileFd(uri.getLastPathSegment());
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public Cursor query(final Uri uri, final String[] projection, final String selection, final String[] selectionArgs,
-			final String sortOrder) {
-		try {
-			final int tableId = getTableId(uri);
-			final String table = getTableNameById(tableId);
-			switch (tableId) {
-				case VIRTUAL_TABLE_ID_DATABASE_READY: {
-					if (mDatabaseWrapper.isReady())
-						return new MatrixCursor(projection != null ? projection : new String[0]);
-					return null;
-				}
-				case VIRTUAL_TABLE_ID_ALL_PREFERENCES: {
-					return getPreferencesCursor(mPreferences, null);
-				}
-				case VIRTUAL_TABLE_ID_PREFERENCES: {
-					return getPreferencesCursor(mPreferences, uri.getLastPathSegment());
-				}
-				case VIRTUAL_TABLE_ID_DNS: {
-					return getDNSCursor(uri.getLastPathSegment());
-				}
-				case VIRTUAL_TABLE_ID_CACHED_IMAGES: {
-					return getCachedImageCursor(uri.getQueryParameter(QUERY_PARAM_URL));
-				}
-				case VIRTUAL_TABLE_ID_NOTIFICATIONS: {
-					final List<String> segments = uri.getPathSegments();
-					if (segments.size() == 2)
-						return getNotificationsCursor(ParseUtils.parseInt(segments.get(1), -1));
-					else
-						return getNotificationsCursor();
-				}
-				case VIRTUAL_TABLE_ID_UNREAD_COUNTS: {
-					final List<String> segments = uri.getPathSegments();
-					if (segments.size() == 2)
-						return getUnreadCountsCursor(ParseUtils.parseInt(segments.get(1), -1));
-					else
-						return getUnreadCountsCursor();
-				}
-				case VIRTUAL_TABLE_ID_UNREAD_COUNTS_BY_TYPE: {
-					final List<String> segments = uri.getPathSegments();
-					if (segments.size() != 3) return null;
-					return getUnreadCountsCursorByType(segments.get(2));
-				}
-				case TABLE_ID_DIRECT_MESSAGES_CONVERSATION: {
-					final List<String> segments = uri.getPathSegments();
-					if (segments.size() != 4) return null;
-					final long accountId = ParseUtils.parseLong(segments.get(2));
-					final long conversationId = ParseUtils.parseLong(segments.get(3));
+    @Override
+    public Cursor query(@NonNull final Uri uri, final String[] projection, final String selection, final String[] selectionArgs,
+                        final String sortOrder) {
+        try {
+            final int tableId = getTableId(uri);
+            final String table = getTableNameById(tableId);
+            switch (tableId) {
+                case VIRTUAL_TABLE_ID_DATABASE_READY: {
+                    if (mDatabaseWrapper.isReady())
+                        return new MatrixCursor(projection != null ? projection : new String[0]);
+                    return null;
+                }
+                case VIRTUAL_TABLE_ID_ALL_PREFERENCES: {
+                    return getPreferencesCursor(mPreferences, null);
+                }
+                case VIRTUAL_TABLE_ID_PREFERENCES: {
+                    return getPreferencesCursor(mPreferences, uri.getLastPathSegment());
+                }
+                case VIRTUAL_TABLE_ID_DNS: {
+                    return getDNSCursor(uri.getLastPathSegment());
+                }
+                case VIRTUAL_TABLE_ID_CACHED_IMAGES: {
+                    return getCachedImageCursor(uri.getQueryParameter(QUERY_PARAM_URL));
+                }
+                case VIRTUAL_TABLE_ID_NOTIFICATIONS: {
+                    final List<String> segments = uri.getPathSegments();
+                    if (segments.size() == 2)
+                        return getNotificationsCursor(ParseUtils.parseInt(segments.get(1), -1));
+                    else
+                        return getNotificationsCursor();
+                }
+                case VIRTUAL_TABLE_ID_UNREAD_COUNTS: {
+                    final List<String> segments = uri.getPathSegments();
+                    if (segments.size() == 2)
+                        return getUnreadCountsCursor(ParseUtils.parseInt(segments.get(1), -1));
+                    else
+                        return getUnreadCountsCursor();
+                }
+                case VIRTUAL_TABLE_ID_UNREAD_COUNTS_BY_TYPE: {
+                    final List<String> segments = uri.getPathSegments();
+                    if (segments.size() != 3) return null;
+                    return getUnreadCountsCursorByType(segments.get(2));
+                }
+                case TABLE_ID_DIRECT_MESSAGES_CONVERSATION: {
+                    final List<String> segments = uri.getPathSegments();
+                    if (segments.size() != 4) return null;
+                    final long accountId = ParseUtils.parseLong(segments.get(2));
+                    final long conversationId = ParseUtils.parseLong(segments.get(3));
                     final SQLSelectQuery query = ConversationQueryBuilder.buildByConversationId(projection,
-							accountId, conversationId, selection, sortOrder);
+                            accountId, conversationId, selection, sortOrder);
                     final Cursor c = mDatabaseWrapper.rawQuery(query.getSQL(), selectionArgs);
-					setNotificationUri(c, DirectMessages.CONTENT_URI);
-					return c;
-				}
-				case TABLE_ID_DIRECT_MESSAGES_CONVERSATION_SCREEN_NAME: {
-					final List<String> segments = uri.getPathSegments();
-					if (segments.size() != 4) return null;
-					final long accountId = ParseUtils.parseLong(segments.get(2));
-					final String screenName = segments.get(3);
+                    setNotificationUri(c, DirectMessages.CONTENT_URI);
+                    return c;
+                }
+                case TABLE_ID_DIRECT_MESSAGES_CONVERSATION_SCREEN_NAME: {
+                    final List<String> segments = uri.getPathSegments();
+                    if (segments.size() != 4) return null;
+                    final long accountId = ParseUtils.parseLong(segments.get(2));
+                    final String screenName = segments.get(3);
                     final SQLSelectQuery query = ConversationQueryBuilder.buildByScreenName(projection,
-							accountId, screenName, selection, sortOrder);
+                            accountId, screenName, selection, sortOrder);
                     final Cursor c = mDatabaseWrapper.rawQuery(query.getSQL(), selectionArgs);
-					setNotificationUri(c, DirectMessages.CONTENT_URI);
-					return c;
-				}
+                    setNotificationUri(c, DirectMessages.CONTENT_URI);
+                    return c;
+                }
                 case VIRTUAL_TABLE_ID_CACHED_USERS_WITH_RELATIONSHIP: {
                     final long accountId = ParseUtils.parseLong(uri.getLastPathSegment(), -1);
                     final SQLSelectQuery query = CachedUsersQueryBuilder.withRelationship(projection,
-							selection, sortOrder, accountId);
+                            selection, sortOrder, accountId);
                     final Cursor c = mDatabaseWrapper.rawQuery(query.getSQL(), selectionArgs);
                     setNotificationUri(c, CachedUsers.CONTENT_URI);
                     return c;
-			    }
+                }
                 case VIRTUAL_TABLE_ID_CACHED_USERS_WITH_SCORE: {
                     final long accountId = ParseUtils.parseLong(uri.getLastPathSegment(), -1);
                     final SQLSelectQuery query = CachedUsersQueryBuilder.withScore(projection,
@@ -515,8 +520,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     return c;
                 }
                 case VIRTUAL_TABLE_ID_DRAFTS_UNSENT: {
-                    final TwittnukerApplication app = TwittnukerApplication.getInstance(getContext());
-                    final AsyncTwitterWrapper twitter = app.getTwitterWrapper();
+                    final AsyncTwitterWrapper twitter = mTwitterWrapper;
                     final RawItemArray sendingIds = new RawItemArray(twitter.getSendingDraftIds());
                     final Expression where;
                     if (selection != null) {
@@ -531,117 +535,118 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     return c;
                 }
             }
-			if (table == null) return null;
-			final Cursor c = mDatabaseWrapper.query(table, projection, selection, selectionArgs, null, null, sortOrder);
-			setNotificationUri(c, getNotificationUri(tableId, uri));
-			return c;
-		} catch (final SQLException e) {
-			throw new IllegalStateException(e);
-		}
-	}
+            if (table == null) return null;
+            final Cursor c = mDatabaseWrapper.query(table, projection, selection, selectionArgs, null, null, sortOrder);
+            setNotificationUri(c, getNotificationUri(tableId, uri));
+            return c;
+        } catch (final SQLException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
-	@Override
-	public int update(final Uri uri, final ContentValues values, final String selection, final String[] selectionArgs) {
-		try {
-			final int tableId = getTableId(uri);
-			final String table = getTableNameById(tableId);
-			int result = 0;
-			if (table != null) {
-				switch (tableId) {
-					case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
-					case TABLE_ID_DIRECT_MESSAGES:
-					case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
+    @Override
+    public int update(@NonNull final Uri uri, final ContentValues values, final String selection, final String[] selectionArgs) {
+        try {
+            final int tableId = getTableId(uri);
+            final String table = getTableNameById(tableId);
+            int result = 0;
+            if (table != null) {
+                switch (tableId) {
+                    case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
+                    case TABLE_ID_DIRECT_MESSAGES:
+                    case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
                     case TABLE_ID_NETWORK_USAGES:
-						return 0;
-				}
-				result = mDatabaseWrapper.update(table, values, selection, selectionArgs);
-			}
-			if (result > 0) {
-				onDatabaseUpdated(tableId, uri);
-			}
-			return result;
-		} catch (final SQLException e) {
-			throw new IllegalStateException(e);
-		}
-	}
+                        return 0;
+                }
+                result = mDatabaseWrapper.update(table, values, selection, selectionArgs);
+            }
+            if (result > 0) {
+                onDatabaseUpdated(tableId, uri);
+            }
+            return result;
+        } catch (final SQLException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
-	private void clearNotification() {
+    private void clearNotification() {
         getNotificationManager().cancelAll();
-	}
+    }
 
-	private void clearNotification(final int notificationType, final long accountId) {
+    private void clearNotification(final int notificationType, final long accountId) {
 
-	}
+    }
 
-	/**
-	 * //TODO
-	 *
-	 * Creates notifications for mentions and DMs
-	 * @param pref
-	 * @param type
-	 * @param build
-	 */
-	private void createNotifications(final AccountPreferences pref, final String type,
-									 final Object o_status, final boolean build) {
-		if (mPreferences.getBoolean(KEY_ENABLE_PUSH, false)) return;
-		NotificationContent notification = null;
+    /**
+     * //TODO
+     * <p/>
+     * Creates notifications for mentions and DMs
+     *
+     * @param pref
+     * @param type
+     * @param build
+     */
+    private void createNotifications(final AccountPreferences pref, final String type,
+                                     final Object o_status, final boolean build) {
+        if (mPreferences.getBoolean(KEY_ENABLE_PUSH, false)) return;
+        NotificationContent notification = null;
 
-		if (o_status instanceof ParcelableStatus) {
-			ParcelableStatus status = (ParcelableStatus) o_status;
-			notification = new NotificationContent();
-			notification.setAccountId(status.account_id);
-			notification.setFromUser(status.user_screen_name);
-			notification.setType(type);
-			notification.setMessage(status.text_unescaped);
-			notification.setTimestamp(status.timestamp);
-			notification.setProfileImageUrl(status.user_profile_image_url);
-			notification.setOriginalStatus(status);
-		} else if (o_status instanceof ParcelableDirectMessage) {
-			ParcelableDirectMessage dm = (ParcelableDirectMessage) o_status;
-			notification = new NotificationContent();
-			notification.setAccountId(dm.account_id);
-			notification.setFromUser(dm.sender_screen_name);
-			notification.setType(type);
-			notification.setMessage(dm.text_unescaped);
-			notification.setTimestamp(dm.timestamp);
-			notification.setProfileImageUrl(dm.sender_profile_image_url);
-			notification.setOriginalMessage(dm);
-		}
-		if (notification != null) {
-			mNotificationHelper.cachePushNotification(notification);
-		}
-		if (build) mNotificationHelper.buildNotificationByType(notification, pref, false);
-	}
+        if (o_status instanceof ParcelableStatus) {
+            ParcelableStatus status = (ParcelableStatus) o_status;
+            notification = new NotificationContent();
+            notification.setAccountId(status.account_id);
+            notification.setFromUser(status.user_screen_name);
+            notification.setType(type);
+            notification.setMessage(status.text_unescaped);
+            notification.setTimestamp(status.timestamp);
+            notification.setProfileImageUrl(status.user_profile_image_url);
+            notification.setOriginalStatus(status);
+        } else if (o_status instanceof ParcelableDirectMessage) {
+            ParcelableDirectMessage dm = (ParcelableDirectMessage) o_status;
+            notification = new NotificationContent();
+            notification.setAccountId(dm.account_id);
+            notification.setFromUser(dm.sender_screen_name);
+            notification.setType(type);
+            notification.setMessage(dm.text_unescaped);
+            notification.setTimestamp(dm.timestamp);
+            notification.setProfileImageUrl(dm.sender_profile_image_url);
+            notification.setOriginalMessage(dm);
+        }
+        if (notification != null) {
+            mNotificationHelper.cachePushNotification(notification);
+        }
+        if (build) mNotificationHelper.buildNotificationByType(notification, pref, false);
+    }
 
-	private Cursor getCachedImageCursor(final String url) {
-		if (BuildConfig.DEBUG) {
-			Log.d(LOGTAG, String.format("getCachedImageCursor(%s)", url));
-		}
-		final MatrixCursor c = new MatrixCursor(TwidereDataStore.CachedImages.MATRIX_COLUMNS);
-		final File file = mImagePreloader.getCachedImageFile(url);
-		if (url != null && file != null) {
-			c.addRow(new String[] { url, file.getPath() });
-		}
-		return c;
-	}
+    private Cursor getCachedImageCursor(final String url) {
+        if (BuildConfig.DEBUG) {
+            Log.d(LOGTAG, String.format("getCachedImageCursor(%s)", url));
+        }
+        final MatrixCursor c = new MatrixCursor(TwidereDataStore.CachedImages.MATRIX_COLUMNS);
+        final File file = mImagePreloader.getCachedImageFile(url);
+        if (url != null && file != null) {
+            c.addRow(new String[]{url, file.getPath()});
+        }
+        return c;
+    }
 
-	private ParcelFileDescriptor getCachedImageFd(final String url) throws FileNotFoundException {
-		if (BuildConfig.DEBUG) {
-			Log.d(LOGTAG, String.format("getCachedImageFd(%s)", url));
-		}
-		final File file = mImagePreloader.getCachedImageFile(url);
-		if (file == null) return null;
-		return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
-	}
+    private ParcelFileDescriptor getCachedImageFd(final String url) throws FileNotFoundException {
+        if (BuildConfig.DEBUG) {
+            Log.d(LOGTAG, String.format("getCachedImageFd(%s)", url));
+        }
+        final File file = mImagePreloader.getCachedImageFile(url);
+        if (file == null) return null;
+        return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+    }
 
-	private ParcelFileDescriptor getCacheFileFd(final String name) throws FileNotFoundException {
-		if (name == null) return null;
-		final Context mContext = getContext();
-		final File cacheDir = mContext.getCacheDir();
-		final File file = new File(cacheDir, name);
-		if (!file.exists()) return null;
-		return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
-	}
+    private ParcelFileDescriptor getCacheFileFd(final String name) throws FileNotFoundException {
+        if (name == null) return null;
+        final Context mContext = getContext();
+        final File cacheDir = mContext.getCacheDir();
+        final File file = new File(cacheDir, name);
+        if (!file.exists()) return null;
+        return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+    }
 
     private ContentResolver getContentResolver() {
         if (mContentResolver != null) return mContentResolver;
@@ -649,20 +654,20 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         return mContentResolver = context.getContentResolver();
     }
 
-	private Cursor getDNSCursor(final String host) {
-		final MatrixCursor c = new MatrixCursor(TwidereDataStore.DNS.MATRIX_COLUMNS);
-		try {
+    private Cursor getDNSCursor(final String host) {
+        final MatrixCursor c = new MatrixCursor(TwidereDataStore.DNS.MATRIX_COLUMNS);
+        try {
             final InetAddress[] addresses = mNetwork.resolveInetAddresses(host);
             for (InetAddress address : addresses) {
                 c.addRow(new String[]{host, address.getHostAddress()});
-			}
+            }
         } catch (final IOException ignore) {
             if (BuildConfig.DEBUG) {
                 Log.w(LOGTAG, ignore);
             }
-		}
-		return c;
-	}
+        }
+        return c;
+    }
 
     private NotificationManager getNotificationManager() {
         if (mNotificationManager != null) return mNotificationManager;
@@ -670,74 +675,73 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         return mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
-	private Cursor getNotificationsCursor() {
-		final MatrixCursor c = new MatrixCursor(TwidereDataStore.Notifications.MATRIX_COLUMNS);
-		return c;
-	}
+    private Cursor getNotificationsCursor() {
+        final MatrixCursor c = new MatrixCursor(TwidereDataStore.Notifications.MATRIX_COLUMNS);
+        return c;
+    }
 
-	private Cursor getNotificationsCursor(final int id) {
-		final MatrixCursor c = new MatrixCursor(TwidereDataStore.Notifications.MATRIX_COLUMNS);
-		return c;
-	}
+    private Cursor getNotificationsCursor(final int id) {
+        final MatrixCursor c = new MatrixCursor(TwidereDataStore.Notifications.MATRIX_COLUMNS);
+        return c;
+    }
 
-	private Cursor getUnreadCountsCursor() {
-		final MatrixCursor c = new MatrixCursor(TwidereDataStore.UnreadCounts.MATRIX_COLUMNS);
-		return c;
-	}
+    private Cursor getUnreadCountsCursor() {
+        final MatrixCursor c = new MatrixCursor(TwidereDataStore.UnreadCounts.MATRIX_COLUMNS);
+        return c;
+    }
 
-	private Cursor getUnreadCountsCursor(final int position) {
-		final MatrixCursor c = new MatrixCursor(TwidereDataStore.UnreadCounts.MATRIX_COLUMNS);
+    private Cursor getUnreadCountsCursor(final int position) {
+        final MatrixCursor c = new MatrixCursor(TwidereDataStore.UnreadCounts.MATRIX_COLUMNS);
 
-		return c;
-	}
+        return c;
+    }
 
-	private Cursor getUnreadCountsCursorByType(final String type) {
-		final MatrixCursor c = new MatrixCursor(TwidereDataStore.UnreadCounts.MATRIX_COLUMNS);
-		return c;
-	}
+    private Cursor getUnreadCountsCursorByType(final String type) {
+        final MatrixCursor c = new MatrixCursor(TwidereDataStore.UnreadCounts.MATRIX_COLUMNS);
+        return c;
+    }
 
-	private void notifyContentObserver(final Uri uri) {
+    private void notifyContentObserver(final Uri uri) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-				final ContentResolver cr = getContentResolver();
-				if (uri == null || cr == null) return;
-				cr.notifyChange(uri, null);
-			}
+                final ContentResolver cr = getContentResolver();
+                if (uri == null || cr == null) return;
+                cr.notifyChange(uri, null);
+            }
         });
     }
 
 
-	private void notifyUnreadCountChanged(final int position) {
-		final Context context = getContext();
+    private void notifyUnreadCountChanged(final int position) {
+        final Context context = getContext();
         final Bus bus = TwittnukerApplication.getInstance(context).getMessageBus();
         if (bus != null) {
-			mHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					bus.post(new UnreadCountUpdatedEvent(position));
-				}
-			});
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    bus.post(new UnreadCountUpdatedEvent(position));
+                }
+            });
         }
-		notifyContentObserver(UnreadCounts.CONTENT_URI);
-	}
+        notifyContentObserver(UnreadCounts.CONTENT_URI);
+    }
 
-	private void onDatabaseUpdated(final int tableId, final Uri uri) {
-		if (uri == null) return;
-		switch (tableId) {
-			case TABLE_ID_ACCOUNTS: {
-				clearAccountColor();
-				clearAccountName();
-				break;
-			}
-		}
-		notifyContentObserver(getNotificationUri(tableId, uri));
-	}
+    private void onDatabaseUpdated(final int tableId, final Uri uri) {
+        if (uri == null) return;
+        switch (tableId) {
+            case TABLE_ID_ACCOUNTS: {
+                clearAccountColor();
+                clearAccountName();
+                break;
+            }
+        }
+        notifyContentObserver(getNotificationUri(tableId, uri));
+    }
 
 
     private void onNewItemsInserted(final Uri uri, final int tableId, final ContentValues values, final long newId) {
         onNewItemsInserted(uri, tableId, new ContentValues[]{values}, new long[]{newId});
-
     }
 
     private void onNewItemsInserted(final Uri uri, final int tableId, final ContentValues[] valuesArray, final long[] newIds) {
@@ -745,9 +749,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         if (uri == null || valuesArray == null || valuesArray.length == 0 || context == null)
             return;
         preloadImages(valuesArray);
-		if (!uri.getBooleanQueryParameter(QUERY_PARAM_NOTIFY, true)) return;
+        if (!uri.getBooleanQueryParameter(QUERY_PARAM_NOTIFY, true)) return;
         switch (tableId) {
-			case TABLE_ID_STATUSES: {
+            case TABLE_ID_STATUSES: {
 //                final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(context,
 //                        getAccountIds(context));
 //                assert prefs != null;
@@ -755,10 +759,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 //                    if (!pref.isHomeTimelineNotificationEnabled()) continue;
 //                    showTimelineNotification(pref, getPositionTag(TAB_TYPE_HOME_TIMELINE, pref.getAccountId()));
 //                }
-				notifyUnreadCountChanged(NOTIFICATION_ID_HOME_TIMELINE);
-				break;
-			}
-			case TABLE_ID_MENTIONS: {
+                notifyUnreadCountChanged(NOTIFICATION_ID_HOME_TIMELINE);
+                break;
+            }
+            case TABLE_ID_MENTIONS: {
                 final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(context,
                         getAccountIds(context));
                 assert prefs != null;
@@ -766,10 +770,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     if (!pref.isMentionsNotificationEnabled()) continue;
                     showMentionsNotification(pref, getPositionTag(TAB_TYPE_MENTIONS_TIMELINE, pref.getAccountId()));
                 }
-				notifyUnreadCountChanged(NOTIFICATION_ID_MENTIONS_TIMELINE);
-				break;
-			}
-			case TABLE_ID_DIRECT_MESSAGES_INBOX: {
+                notifyUnreadCountChanged(NOTIFICATION_ID_MENTIONS_TIMELINE);
+                break;
+            }
+            case TABLE_ID_DIRECT_MESSAGES_INBOX: {
                 final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(context,
                         getAccountIds(context));
                 assert prefs != null;
@@ -778,18 +782,18 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     final StringLongPair[] pairs = mReadStateManager.getPositionPairs(TAB_TYPE_DIRECT_MESSAGES);
                     showMessagesNotification(pref, pairs, valuesArray);
                 }
-				notifyUnreadCountChanged(NOTIFICATION_ID_DIRECT_MESSAGES);
-				break;
-			}
+                notifyUnreadCountChanged(NOTIFICATION_ID_DIRECT_MESSAGES);
+                break;
+            }
             case TABLE_ID_DRAFTS: {
                 break;
-	        }
+            }
         }
     }
 
     private long getPositionTag(String tag, long accountId) {
         final long position = mReadStateManager.getPosition(Utils.getReadPositionTagWithAccounts(tag,
-				accountId));
+                accountId));
         if (position != -1) return position;
         return mReadStateManager.getPosition(tag);
     }
@@ -820,7 +824,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     idxUserId = userCursor.getColumnIndex(Statuses.USER_NAME);
             final long statusId = statusCursor.moveToFirst() ? statusCursor.getLong(idxStatusId) : -1;
             final String notificationTitle = resources.getQuantityString(R.plurals.N_new_statuses,
-					statusesCount, statusesCount);
+                    statusesCount, statusesCount);
             final String notificationContent;
             userCursor.moveToFirst();
             final String displayName = mNameFirst ? userCursor.getString(idxUserName) : "@" + userCursor.getString(idxUserScreenName);
@@ -873,7 +877,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     Expression.equals(Statuses.IS_FOLLOWING, 1));
         } else {
             selection = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
-                	Expression.greaterThan(Statuses.STATUS_ID, position));
+                    Expression.greaterThan(Statuses.STATUS_ID, position));
         }
         final String filteredSelection = Utils.buildStatusFilterWhereClause(Mentions.TABLE_NAME,
                 selection).getSQL();
@@ -889,7 +893,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             final int usersCount = userCursor.getCount();
             final int statusesCount = statusCursor.getCount();
             if (statusesCount == 0 || usersCount == 0) return;
-			final String accountName = Utils.getAccountName(context, accountId);
+            final String accountName = Utils.getAccountName(context, accountId);
             final String accountScreenName = Utils.getAccountScreenName(context, accountId);
             final int idxStatusText = statusCursor.getColumnIndex(Statuses.TEXT_UNESCAPED),
                     idxStatusId = statusCursor.getColumnIndex(Statuses.STATUS_ID),
@@ -932,7 +936,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             if (mNameFirst) {
                 style.setSummaryText(accountName);
             } else {
-				style.setSummaryText("@" + accountScreenName);
+                style.setSummaryText("@" + accountScreenName);
             }
 
             // Setup notification
@@ -940,9 +944,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setAutoCancel(true);
             builder.setSmallIcon(R.drawable.ic_stat_mention);
             builder.setTicker(notificationTitle);
-			builder.setContentTitle(notificationTitle);
-			builder.setContentText(notificationContent);
-			builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
+            builder.setContentTitle(notificationTitle);
+            builder.setContentText(notificationContent);
+            builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
             builder.setContentIntent(getContentIntent(context, AUTHORITY_MENTIONS, accountId));
             builder.setDeleteIntent(getDeleteIntent(context, AUTHORITY_MENTIONS, accountId, statusId));
             builder.setNumber(statusesCount);
@@ -1006,15 +1010,15 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             notificationDefaults |= NotificationCompat.DEFAULT_LIGHTS;
         }
         if (!isNotificationsSilent(getContext())) {
-			if (AccountPreferences.isNotificationHasVibration(defaultFlags)) {
-				notificationDefaults |= NotificationCompat.DEFAULT_VIBRATE;
+            if (AccountPreferences.isNotificationHasVibration(defaultFlags)) {
+                notificationDefaults |= NotificationCompat.DEFAULT_VIBRATE;
             } else {
                 notificationDefaults &= ~NotificationCompat.DEFAULT_VIBRATE;
-			}
-			if (AccountPreferences.isNotificationHasRingtone(defaultFlags)) {
-				notificationDefaults |= NotificationCompat.DEFAULT_SOUND;
-				builder.setSound(pref.getNotificationRingtone(), AudioManager.STREAM_NOTIFICATION);
-			}
+            }
+            if (AccountPreferences.isNotificationHasRingtone(defaultFlags)) {
+                notificationDefaults |= NotificationCompat.DEFAULT_SOUND;
+                builder.setSound(pref.getNotificationRingtone(), AudioManager.STREAM_NOTIFICATION);
+            }
         } else {
             notificationDefaults &= ~(NotificationCompat.DEFAULT_VIBRATE | NotificationCompat.DEFAULT_SOUND);
         }
@@ -1053,10 +1057,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         orExpressions.add(Expression.notIn(new Column(DirectMessages.SENDER_ID), new RawItemArray(senderIds.toArray())));
         final Expression selection = Expression.and(
                 Expression.equals(DirectMessages.ACCOUNT_ID, accountId),
-				Expression.greaterThan(DirectMessages.MESSAGE_ID, prevOldestId),
-				Expression.or(orExpressions.toArray(new Expression[orExpressions.size()]))
+                Expression.greaterThan(DirectMessages.MESSAGE_ID, prevOldestId),
+                Expression.or(orExpressions.toArray(new Expression[orExpressions.size()]))
         );
-		final String filteredSelection = selection.getSQL();
+        final String filteredSelection = selection.getSQL();
         final String[] userProjection = {DirectMessages.SENDER_ID, DirectMessages.SENDER_NAME,
                 DirectMessages.SENDER_SCREEN_NAME};
         final String[] messageProjection = {DirectMessages.MESSAGE_ID, DirectMessages.SENDER_ID,
@@ -1087,7 +1091,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     messagesCount, messagesCount);
             final String notificationContent;
             userCursor.moveToFirst();
-            final String displayName =  mNameFirst ? userCursor.getString(idxUserName) : "@" + userCursor.getString(idxUserScreenName);
+            final String displayName = mNameFirst ? userCursor.getString(idxUserName) : "@" + userCursor.getString(idxUserScreenName);
             if (usersCount == 1) {
                 if (messagesCount == 1) {
                     notificationContent = context.getString(R.string.notification_direct_message, displayName);
@@ -1109,13 +1113,13 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     when = messageCursor.getLong(idxMessageTimestamp);
                 }
                 if (i < 5) {
-					final SpannableStringBuilder sb = new SpannableStringBuilder();
-					sb.append(mNameFirst ? messageCursor.getString(idxMessageUserName) : "@" + messageCursor.getString(idxMessageUserScreenName));
-					sb.setSpan(new StyleSpan(Typeface.BOLD), 0, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-					sb.append(' ');
-					sb.append(messageCursor.getString(idxMessageText));
-					style.addLine(sb);
-				}
+                    final SpannableStringBuilder sb = new SpannableStringBuilder();
+                    sb.append(mNameFirst ? messageCursor.getString(idxMessageUserName) : "@" + messageCursor.getString(idxMessageUserScreenName));
+                    sb.setSpan(new StyleSpan(Typeface.BOLD), 0, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    sb.append(' ');
+                    sb.append(messageCursor.getString(idxMessageText));
+                    style.addLine(sb);
+                }
                 final long userId = messageCursor.getLong(idxMessageUserId);
                 final long messageId = messageCursor.getLong(idxMessageId);
                 idsMap.put(userId, Math.max(idsMap.get(userId, -1L), messageId));
@@ -1123,7 +1127,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             if (mNameFirst) {
                 style.setSummaryText(accountName);
             } else {
-				style.setSummaryText("@" + accountScreenName);
+                style.setSummaryText("@" + accountScreenName);
             }
             final StringLongPair[] positions = new StringLongPair[idsMap.size()];
             for (int i = 0, j = idsMap.size(); i < j; i++) {
@@ -1156,118 +1160,118 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         }
     }
 
-	private void preloadImages(final ContentValues... values) {
-		if (values == null) return;
-		for (final ContentValues v : values) {
-			if (mPreferences.getBoolean(KEY_PRELOAD_PROFILE_IMAGES, false)) {
-				mImagePreloader.preloadImage(v.getAsString(Statuses.USER_PROFILE_IMAGE_URL));
-				mImagePreloader.preloadImage(v.getAsString(DirectMessages.SENDER_PROFILE_IMAGE_URL));
-				mImagePreloader.preloadImage(v.getAsString(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL));
-			}
-			if (mPreferences.getBoolean(KEY_PRELOAD_PREVIEW_IMAGES, false)) {
-				final String textHtml = v.getAsString(Statuses.TEXT_HTML);
-				for (final String link : MediaPreviewUtils.getSupportedLinksInStatus(textHtml)) {
-					mImagePreloader.preloadImage(link);
-				}
-			}
-		}
-	}
+    private void preloadImages(final ContentValues... values) {
+        if (values == null) return;
+        for (final ContentValues v : values) {
+            if (mPreferences.getBoolean(KEY_PRELOAD_PROFILE_IMAGES, false)) {
+                mImagePreloader.preloadImage(v.getAsString(Statuses.USER_PROFILE_IMAGE_URL));
+                mImagePreloader.preloadImage(v.getAsString(DirectMessages.SENDER_PROFILE_IMAGE_URL));
+                mImagePreloader.preloadImage(v.getAsString(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL));
+            }
+            if (mPreferences.getBoolean(KEY_PRELOAD_PREVIEW_IMAGES, false)) {
+                final String textHtml = v.getAsString(Statuses.TEXT_HTML);
+                for (final String link : MediaPreviewUtils.getSupportedLinksInStatus(textHtml)) {
+                    mImagePreloader.preloadImage(link);
+                }
+            }
+        }
+    }
 
-	private void setNotificationUri(final Cursor c, final Uri uri) {
+    private void setNotificationUri(final Cursor c, final Uri uri) {
         final ContentResolver cr = getContentResolver();
         if (cr == null || c == null || uri == null) return;
         c.setNotificationUri(cr, uri);
-	}
+    }
 
     private void updatePreferences() {
         mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, false);
     }
 
     private static Cursor getPreferencesCursor(final SharedPreferencesWrapper preferences, final String key) {
-		final MatrixCursor c = new MatrixCursor(TwidereDataStore.Preferences.MATRIX_COLUMNS);
+        final MatrixCursor c = new MatrixCursor(TwidereDataStore.Preferences.MATRIX_COLUMNS);
         final Map<String, Object> map = new HashMap<>();
-		final Map<String, ?> all = preferences.getAll();
-		if (key == null) {
-			map.putAll(all);
-		} else {
-			map.put(key, all.get(key));
-		}
-		for (final Map.Entry<String, ?> item : map.entrySet()) {
-			final Object value = item.getValue();
-			final int type = getPreferenceType(value);
-			c.addRow(new Object[] { item.getKey(), ParseUtils.parseString(value), type });
-		}
-		return c;
-	}
+        final Map<String, ?> all = preferences.getAll();
+        if (key == null) {
+            map.putAll(all);
+        } else {
+            map.put(key, all.get(key));
+        }
+        for (final Map.Entry<String, ?> item : map.entrySet()) {
+            final Object value = item.getValue();
+            final int type = getPreferenceType(value);
+            c.addRow(new Object[]{item.getKey(), ParseUtils.parseString(value), type});
+        }
+        return c;
+    }
 
-	private static int getPreferenceType(final Object object) {
-		if (object == null)
-			return Preferences.TYPE_NULL;
-		else if (object instanceof Boolean)
-			return Preferences.TYPE_BOOLEAN;
-		else if (object instanceof Integer)
-			return Preferences.TYPE_INTEGER;
-		else if (object instanceof Long)
-			return Preferences.TYPE_LONG;
-		else if (object instanceof Float)
-			return Preferences.TYPE_FLOAT;
-		else if (object instanceof String) return Preferences.TYPE_STRING;
-		return Preferences.TYPE_INVALID;
-	}
+    private static int getPreferenceType(final Object object) {
+        if (object == null)
+            return Preferences.TYPE_NULL;
+        else if (object instanceof Boolean)
+            return Preferences.TYPE_BOOLEAN;
+        else if (object instanceof Integer)
+            return Preferences.TYPE_INTEGER;
+        else if (object instanceof Long)
+            return Preferences.TYPE_LONG;
+        else if (object instanceof Float)
+            return Preferences.TYPE_FLOAT;
+        else if (object instanceof String) return Preferences.TYPE_STRING;
+        return Preferences.TYPE_INVALID;
+    }
 
 
-	private static int getUnreadCount(final List<UnreadItem> set, final long... accountIds) {
-		if (set == null || set.isEmpty()) return 0;
-		int count = 0;
-		for (final UnreadItem item : set.toArray(new UnreadItem[set.size()])) {
+    private static int getUnreadCount(final List<UnreadItem> set, final long... accountIds) {
+        if (set == null || set.isEmpty()) return 0;
+        int count = 0;
+        for (final UnreadItem item : set.toArray(new UnreadItem[set.size()])) {
             if (item != null && ArrayUtils.contains(accountIds, item.account_id)) {
-				count++;
-			}
-		}
-		return count;
-	}
+                count++;
+            }
+        }
+        return count;
+    }
 
-	private static boolean shouldReplaceOnConflict(final int table_id) {
-		switch (table_id) {
-			case TABLE_ID_CACHED_HASHTAGS:
-			case TABLE_ID_CACHED_STATUSES:
-			case TABLE_ID_CACHED_USERS:
+    private static boolean shouldReplaceOnConflict(final int table_id) {
+        switch (table_id) {
+            case TABLE_ID_CACHED_HASHTAGS:
+            case TABLE_ID_CACHED_STATUSES:
+            case TABLE_ID_CACHED_USERS:
             case TABLE_ID_CACHED_RELATIONSHIPS:
             case TABLE_ID_SEARCH_HISTORY:
-			case TABLE_ID_FILTERED_USERS:
-			case TABLE_ID_FILTERED_KEYWORDS:
-			case TABLE_ID_FILTERED_SOURCES:
-			case TABLE_ID_FILTERED_LINKS:
-				return true;
-		}
-		return false;
-	}
+            case TABLE_ID_FILTERED_USERS:
+            case TABLE_ID_FILTERED_KEYWORDS:
+            case TABLE_ID_FILTERED_SOURCES:
+            case TABLE_ID_FILTERED_LINKS:
+                return true;
+        }
+        return false;
+    }
 
-	@SuppressWarnings("unused")
+    @SuppressWarnings("unused")
     private static class GetWritableDatabaseTask extends AsyncTask<Object, Object, SQLiteDatabase> {
-		private final Context mContext;
-		private final SQLiteOpenHelper mHelper;
-		private final SQLiteDatabaseWrapper mWrapper;
+        private final Context mContext;
+        private final SQLiteOpenHelper mHelper;
+        private final SQLiteDatabaseWrapper mWrapper;
 
-		GetWritableDatabaseTask(final Context context, final SQLiteOpenHelper helper,
-				final SQLiteDatabaseWrapper wrapper) {
-			mContext = context;
-			mHelper = helper;
-			mWrapper = wrapper;
-		}
+        GetWritableDatabaseTask(final Context context, final SQLiteOpenHelper helper,
+                                final SQLiteDatabaseWrapper wrapper) {
+            mContext = context;
+            mHelper = helper;
+            mWrapper = wrapper;
+        }
 
-		@Override
-		protected SQLiteDatabase doInBackground(final Object... params) {
-			return mHelper.getWritableDatabase();
-		}
+        @Override
+        protected SQLiteDatabase doInBackground(final Object... params) {
+            return mHelper.getWritableDatabase();
+        }
 
-		@Override
-		protected void onPostExecute(final SQLiteDatabase result) {
-			mWrapper.setSQLiteDatabase(result);
-			if (result != null) {
-				mContext.sendBroadcast(new Intent(BROADCAST_DATABASE_READY));
-			}
-		}
-	}
+        @Override
+        protected void onPostExecute(final SQLiteDatabase result) {
+            mWrapper.setSQLiteDatabase(result);
+            if (result != null) {
+                mContext.sendBroadcast(new Intent(BROADCAST_DATABASE_READY));
+            }
+        }
+    }
 
 }
