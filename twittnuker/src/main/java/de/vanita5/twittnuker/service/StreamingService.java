@@ -57,6 +57,7 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -128,7 +129,7 @@ public class StreamingService extends Service implements Constants {
         mPreferences = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mResolver = getContentResolver();
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mTwitterWrapper = TwittnukerApplication.getModule(this).getAsyncTwitterWrapper();
+        mTwitterWrapper = ApplicationModule.get(this).getAsyncTwitterWrapper();
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);

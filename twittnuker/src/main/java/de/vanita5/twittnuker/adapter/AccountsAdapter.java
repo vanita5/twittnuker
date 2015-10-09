@@ -39,11 +39,16 @@ import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccount.Indices;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 import de.vanita5.twittnuker.view.holder.AccountViewHolder;
+
+import javax.inject.Inject;
 
 public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Constants, IBaseAdapter {
 
-    private final MediaLoaderWrapper mImageLoader;
+    @Inject
+    MediaLoaderWrapper mImageLoader;
     private final SharedPreferences mPreferences;
 
     private boolean mDisplayProfileImage;
@@ -65,8 +70,7 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
     public AccountsAdapter(final Context context) {
         super(context, R.layout.list_item_account, null, new String[]{Accounts.NAME},
                 new int[]{android.R.id.text1}, 0);
-        final TwittnukerApplication application = TwittnukerApplication.getInstance(context);
-        mImageLoader = application.getMediaLoaderWrapper();
+        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
         mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 

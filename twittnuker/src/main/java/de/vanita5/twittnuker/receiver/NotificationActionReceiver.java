@@ -11,6 +11,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.NotificationHelper;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 
 public class NotificationActionReceiver extends BroadcastReceiver implements Constants {
 
@@ -25,7 +26,7 @@ public class NotificationActionReceiver extends BroadcastReceiver implements Con
                 break;
             }
             case INTENT_ACTION_RETWEET: {
-                AsyncTwitterWrapper twitter = TwittnukerApplication.getModule(context).getAsyncTwitterWrapper();
+                AsyncTwitterWrapper twitter = ApplicationModule.get(context).getAsyncTwitterWrapper();
 
                 final ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
                 if (twitter == null || status == null) return;
@@ -35,7 +36,7 @@ public class NotificationActionReceiver extends BroadcastReceiver implements Con
                 break;
             }
             case INTENT_ACTION_FAVORITE: {
-                AsyncTwitterWrapper twitter = TwittnukerApplication.getModule(context).getAsyncTwitterWrapper();
+                AsyncTwitterWrapper twitter = ApplicationModule.get(context).getAsyncTwitterWrapper();
                 final ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
                 if (twitter == null || status == null) return;
                 Utils.favorite(status, twitter);

@@ -126,7 +126,6 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MathUtils;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -180,7 +179,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private static final String TAB_TYPE_MEDIA = "media";
     private static final String TAB_TYPE_FAVORITES = "favorites";
 
-    private MediaLoaderWrapper mMediaLoader;
     private UserColorNameManager mUserColorNameManager;
     private SharedPreferencesWrapper mPreferences;
 
@@ -695,7 +693,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 ThemeUtils.getUserThemeBackgroundAlpha(activity));
         mActionBarShadowColor = 0xA0000000;
         final TwittnukerApplication app = TwittnukerApplication.getInstance(activity);
-        mMediaLoader = app.getMediaLoaderWrapper();
         final Bundle args = getArguments();
         long accountId = -1, userId = -1;
         String screenName = null;

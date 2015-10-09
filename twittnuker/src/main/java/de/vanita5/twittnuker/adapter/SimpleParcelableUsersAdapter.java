@@ -30,7 +30,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
@@ -41,69 +40,64 @@ import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
 
 public class SimpleParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUser> implements IBaseAdapter {
 
-    private final MediaLoaderWrapper mImageLoader;
-	private final Context mContext;
-    private final UserColorNameManager mUserColorNameManager;
+    private final Context mContext;
 
-	public SimpleParcelableUsersAdapter(final Context context) {
+    public SimpleParcelableUsersAdapter(final Context context) {
         this(context, R.layout.list_item_user);
     }
 
     public SimpleParcelableUsersAdapter(final Context context, final int layoutRes) {
         super(context, layoutRes);
-		mContext = context;
-		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-        mImageLoader = app.getMediaLoaderWrapper();
-        mUserColorNameManager = app.getUserColorNameManager();
-		configBaseAdapter(context, this);
-	}
+        mContext = context;
+        configBaseAdapter(context, this);
+    }
 
-	@Override
-	public long getItemId(final int position) {
-		return getItem(position) != null ? getItem(position).id : -1;
-	}
+    @Override
+    public long getItemId(final int position) {
+        return getItem(position) != null ? getItem(position).id : -1;
+    }
 
-	@Override
-	public View getView(final int position, final View convertView, final ViewGroup parent) {
-		final View view = super.getView(position, convertView, parent);
-		final Object tag = view.getTag();
-		final TwoLineWithIconViewHolder holder;
-		if (tag instanceof TwoLineWithIconViewHolder) {
-			holder = (TwoLineWithIconViewHolder) tag;
-		} else {
-			holder = new TwoLineWithIconViewHolder(view);
-			view.setTag(holder);
-		}
+    @Override
+    public View getView(final int position, final View convertView, final ViewGroup parent) {
+        final View view = super.getView(position, convertView, parent);
+        final Object tag = view.getTag();
+        final TwoLineWithIconViewHolder holder;
+        if (tag instanceof TwoLineWithIconViewHolder) {
+            holder = (TwoLineWithIconViewHolder) tag;
+        } else {
+            holder = new TwoLineWithIconViewHolder(view);
+            view.setTag(holder);
+        }
 
-		final ParcelableUser user = getItem(position);
+        final ParcelableUser user = getItem(position);
 
-		holder.text1.setCompoundDrawablesWithIntrinsicBounds(0, 0,
-				getUserTypeIconRes(user.is_verified, user.is_protected), 0);
-		holder.text1.setText(user.name);
-		holder.text2.setText("@" + user.screen_name);
+        holder.text1.setCompoundDrawablesWithIntrinsicBounds(0, 0,
+                getUserTypeIconRes(user.is_verified, user.is_protected), 0);
+        holder.text1.setText(user.name);
+        holder.text2.setText("@" + user.screen_name);
         holder.icon.setVisibility(isProfileImageDisplayed() ? View.VISIBLE : View.GONE);
         if (isProfileImageDisplayed()) {
             mImageLoader.displayProfileImage(holder.icon, user.profile_image_url);
         } else {
             mImageLoader.cancelDisplayTask(holder.icon);
-		}
-		return view;
-	}
+        }
+        return view;
+    }
 
-	public void setData(final List<ParcelableUser> data) {
-		setData(data, false);
-	}
+    public void setData(final List<ParcelableUser> data) {
+        setData(data, false);
+    }
 
     public void setData(final List<ParcelableUser> data, final boolean clearOld) {
         if (clearOld) {
-			clear();
-		}
-		if (data == null) return;
-		for (final ParcelableUser user : data) {
+            clear();
+        }
+        if (data == null) return;
+        for (final ParcelableUser user : data) {
             if (clearOld || findItemPosition(user.id) < 0) {
-				add(user);
-			}
-		}
-	}
+                add(user);
+            }
+        }
+    }
 
 }

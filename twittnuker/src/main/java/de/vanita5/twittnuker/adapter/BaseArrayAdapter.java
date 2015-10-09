@@ -32,102 +32,108 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 
 import java.util.Collection;
 
+import javax.inject.Inject;
+
 public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter, OnSharedPreferenceChangeListener {
 
-	private final TwidereLinkify mLinkify;
+    private final TwidereLinkify mLinkify;
 
-	private float mTextSize;
+    private float mTextSize;
     private int mLinkHighlightOption;
 
-	private boolean mDisplayProfileImage, mDisplayNameFirst, mShowAccountColor;
+    private boolean mDisplayProfileImage, mDisplayNameFirst, mShowAccountColor;
 
-	private final SharedPreferences mColorPrefs;
-	private final MediaLoaderWrapper mImageLoader;
+    private final SharedPreferences mColorPrefs;
+    @Inject
+    protected MediaLoaderWrapper mImageLoader;
 
-	public BaseArrayAdapter(final Context context, final int layoutRes) {
-		this(context, layoutRes, null);
-	}
+    public BaseArrayAdapter(final Context context, final int layoutRes) {
+        this(context, layoutRes, null);
+    }
 
-	public BaseArrayAdapter(final Context context, final int layoutRes, final Collection<? extends T> collection) {
-		super(context, layoutRes, collection);
-		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
+    public BaseArrayAdapter(final Context context, final int layoutRes, final Collection<? extends T> collection) {
+        super(context, layoutRes, collection);
+        //noinspection unchecked
+        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject((BaseArrayAdapter<Object>) this);
+        final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mLinkify = new TwidereLinkify(new OnLinkClickHandler(context, app.getMultiSelectManager()));
-		mImageLoader = app.getMediaLoaderWrapper();
-		mColorPrefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mColorPrefs.registerOnSharedPreferenceChangeListener(this);
-	}
-	
-	@Override
-	public MediaLoaderWrapper getImageLoader() {
-		return mImageLoader;
-	}
+        mColorPrefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mColorPrefs.registerOnSharedPreferenceChangeListener(this);
+    }
 
-	@Override
-	public final int getLinkHighlightOption() {
-		return mLinkHighlightOption;
-	}
+    @Override
+    public MediaLoaderWrapper getImageLoader() {
+        return mImageLoader;
+    }
 
-	public final TwidereLinkify getLinkify() {
-		return mLinkify;
-	}
+    @Override
+    public final int getLinkHighlightOption() {
+        return mLinkHighlightOption;
+    }
 
-	@Override
-	public final float getTextSize() {
-		return mTextSize;
-	}
+    public final TwidereLinkify getLinkify() {
+        return mLinkify;
+    }
 
-	@Override
-	public final boolean isDisplayNameFirst() {
-		return mDisplayNameFirst;
-	}
+    @Override
+    public final float getTextSize() {
+        return mTextSize;
+    }
 
-	@Override
+    @Override
+    public final boolean isDisplayNameFirst() {
+        return mDisplayNameFirst;
+    }
+
+    @Override
     public final boolean isProfileImageDisplayed() {
-		return mDisplayProfileImage;
-	}
+        return mDisplayProfileImage;
+    }
 
-	@Override
-	public final boolean isShowAccountColor() {
-		return mShowAccountColor;
-	}
+    @Override
+    public final boolean isShowAccountColor() {
+        return mShowAccountColor;
+    }
 
-	@Override
+    @Override
     public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
         if (KEY_DISPLAY_PROFILE_IMAGE.equals(key) || KEY_MEDIA_PREVIEW_STYLE.equals(key)
                 || KEY_DISPLAY_SENSITIVE_CONTENTS.equals(key)) {
-		notifyDataSetChanged();
-	    }
+            notifyDataSetChanged();
+        }
     }
 
-	@Override
-	public final void setDisplayNameFirst(final boolean nameFirst) {
-		mDisplayNameFirst = nameFirst;
-	}
+    @Override
+    public final void setDisplayNameFirst(final boolean nameFirst) {
+        mDisplayNameFirst = nameFirst;
+    }
 
-	@Override
-	public final void setDisplayProfileImage(final boolean display) {
-		mDisplayProfileImage = display;
-	}
+    @Override
+    public final void setDisplayProfileImage(final boolean display) {
+        mDisplayProfileImage = display;
+    }
 
-	@Override
-	public final void setLinkHighlightOption(final String option) {
+    @Override
+    public final void setLinkHighlightOption(final String option) {
         final int optionInt = Utils.getLinkHighlightingStyleInt(option);
-		mLinkify.setHighlightOption(optionInt);
-		if (optionInt == mLinkHighlightOption) return;
-		mLinkHighlightOption = optionInt;
-	}
+        mLinkify.setHighlightOption(optionInt);
+        if (optionInt == mLinkHighlightOption) return;
+        mLinkHighlightOption = optionInt;
+    }
 
-	@Override
-	public final void setShowAccountColor(final boolean show) {
-		mShowAccountColor = show;
-	}
+    @Override
+    public final void setShowAccountColor(final boolean show) {
+        mShowAccountColor = show;
+    }
 
-	@Override
-	public final void setTextSize(final float textSize) {
-		mTextSize = textSize;
-	}
+    @Override
+    public final void setTextSize(final float textSize) {
+        mTextSize = textSize;
+    }
 
 }

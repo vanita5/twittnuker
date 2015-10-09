@@ -29,68 +29,72 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 
 import java.util.Collection;
 
+import javax.inject.Inject;
+
 public class AccountsSpinnerAdapter extends ArrayAdapter<ParcelableCredentials> {
 
-	private final MediaLoaderWrapper mImageLoader;
-	private final boolean mDisplayProfileImage;
+    @Inject
+    MediaLoaderWrapper mImageLoader;
+    private final boolean mDisplayProfileImage;
     private final Context mContext;
     private String mDummyItemText;
 
-	public AccountsSpinnerAdapter(final Context context) {
+    public AccountsSpinnerAdapter(final Context context) {
         this(context, R.layout.list_item_user);
     }
 
     public AccountsSpinnerAdapter(final Context context, int itemViewResource) {
         super(context, itemViewResource);
+        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
         mContext = context;
-		mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
         mDisplayProfileImage = context.getSharedPreferences(MessagesConversationFragment.SHARED_PREFERENCES_NAME,
                 Context.MODE_PRIVATE).getBoolean(MessagesConversationFragment.KEY_DISPLAY_PROFILE_IMAGE, true);
-	}
+    }
 
     public AccountsSpinnerAdapter(final Context context, final Collection<ParcelableCredentials> accounts) {
-		this(context);
-		addAll(accounts);
+        this(context);
+        addAll(accounts);
     }
 
     @Override
     public long getItemId(int position) {
         return getItem(position).account_id;
-	}
+    }
 
-	@Override
-	public View getDropDownView(final int position, final View convertView, final ViewGroup parent) {
-		final View view = super.getDropDownView(position, convertView, parent);
-		bindView(view, getItem(position));
-		return view;
-	}
+    @Override
+    public View getDropDownView(final int position, final View convertView, final ViewGroup parent) {
+        final View view = super.getDropDownView(position, convertView, parent);
+        bindView(view, getItem(position));
+        return view;
+    }
 
-	@Override
-	public View getView(final int position, final View convertView, final ViewGroup parent) {
-		final View view = super.getView(position, convertView, parent);
-		bindView(view, getItem(position));
-		return view;
-	}
+    @Override
+    public View getView(final int position, final View convertView, final ViewGroup parent) {
+        final View view = super.getView(position, convertView, parent);
+        bindView(view, getItem(position));
+        return view;
+    }
 
     private void bindView(final View view, final ParcelableCredentials item) {
-		final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-		final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
-		final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
-		if (!item.is_dummy) {
+        final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+        final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+        final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
+        if (!item.is_dummy) {
             if (text1 != null) {
                 text1.setVisibility(View.VISIBLE);
-			    text1.setText(item.name);
+                text1.setText(item.name);
             }
             if (text2 != null) {
                 text2.setVisibility(View.VISIBLE);
-			    text2.setText(String.format("@%s", item.screen_name));
+                text2.setText(String.format("@%s", item.screen_name));
             }
             if (icon != null) {
                 icon.setVisibility(View.VISIBLE);
@@ -104,8 +108,8 @@ public class AccountsSpinnerAdapter extends ArrayAdapter<ParcelableCredentials> 
         } else {
             if (text1 != null) {
                 text1.setVisibility(View.VISIBLE);
-            	text1.setText(mDummyItemText);
-			}
+                text1.setText(mDummyItemText);
+            }
             if (text2 != null) {
                 text2.setVisibility(View.GONE);
             }
@@ -113,7 +117,7 @@ public class AccountsSpinnerAdapter extends ArrayAdapter<ParcelableCredentials> 
                 icon.setVisibility(View.GONE);
             }
         }
-	}
+    }
 
 
     public void setDummyItemText(int textRes) {

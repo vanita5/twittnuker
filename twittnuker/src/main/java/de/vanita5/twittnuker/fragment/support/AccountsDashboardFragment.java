@@ -136,7 +136,6 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
     private View mNoAccountContainer;
 
     private Context mThemedContext;
-    private MediaLoaderWrapper mImageLoader;
     private AccountToggleProvider mAccountActionProvider;
     private final SupportFragmentReloadCursorObserver mReloadContentObserver = new SupportFragmentReloadCursorObserver(
             this, 0, this) {
@@ -414,7 +413,6 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         if (view == null) throw new AssertionError();
         final Context context = view.getContext();
         final TwittnukerApplication application = TwittnukerApplication.getInstance(context);
-        mImageLoader = application.getMediaLoaderWrapper();
         mListView.setItemsCanFocus(true);
         mListView.setHorizontalScrollBarEnabled(false);
         mListView.setVerticalScrollBarEnabled(false);
@@ -593,9 +591,9 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
                 clickedDrawable = clickedImageView.getDrawable();
                 clickedColors = clickedImageView.getBorderColors();
                 final ParcelableAccount oldSelectedAccount = mAccountsAdapter.getSelectedAccount();
-                mImageLoader.displayDashboardProfileImage(clickedImageView,
+                mMediaLoader.displayDashboardProfileImage(clickedImageView,
                         oldSelectedAccount.profile_image_url, profileDrawable);
-//                mImageLoader.displayDashboardProfileImage(profileImageView,
+//                mMediaLoader.displayDashboardProfileImage(profileImageView,
 //                        account.profile_image_url, clickedDrawable);
                 clickedImageView.setBorderColors(profileImageView.getBorderColors());
                 mSwitchAccountAnimationPlaying = true;
@@ -644,7 +642,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         }
         mAccountProfileNameView.setText(account.name);
         mAccountProfileScreenNameView.setText("@" + account.screen_name);
-        mImageLoader.displayDashboardProfileImage(mAccountProfileImageView,
+        mMediaLoader.displayDashboardProfileImage(mAccountProfileImageView,
                 account.profile_image_url, profileImageSnapshot);
         mAccountProfileImageView.setBorderColors(account.color);
         final int bannerWidth = mAccountProfileBannerView.getWidth();
@@ -654,9 +652,9 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         final String bannerUrl = Utils.getBestBannerUrl(account.profile_banner_url, width);
         final ImageView bannerView = mAccountProfileBannerView;
         if (bannerView.getDrawable() == null || !CompareUtils.objectEquals(bannerUrl, bannerView.getTag())) {
-            mImageLoader.displayProfileBanner(mAccountProfileBannerView, bannerUrl, this);
+            mMediaLoader.displayProfileBanner(mAccountProfileBannerView, bannerUrl, this);
         } else {
-            mImageLoader.cancelDisplayTask(mAccountProfileBannerView);
+            mMediaLoader.cancelDisplayTask(mAccountProfileBannerView);
         }
     }
 
@@ -733,7 +731,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 
         AccountSelectorAdapter(Context context, LayoutInflater inflater, AccountsDashboardFragment fragment) {
             mInflater = inflater;
-            mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
+            mImageLoader = fragment.mMediaLoader;
             mFragment = fragment;
             setHasStableIds(true);
         }

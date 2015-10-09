@@ -42,15 +42,12 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Conversati
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
-import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ReadStateManager.OnReadStateChangeListener;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.MessageEntryViewHolder;
-
-import javax.inject.Inject;
 
 public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> implements Constants,
         IContentCardAdapter, OnClickListener, OnReadStateChangeListener {
@@ -60,7 +57,6 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
 
     private final Context mContext;
     private final LayoutInflater mInflater;
-    private final MediaLoaderWrapper mImageLoader;
     private final MultiSelectManager mMultiSelectManager;
     private final int mTextSize;
     private final int mProfileImageStyle;
@@ -80,7 +76,6 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
         mInflater = LayoutInflater.from(context);
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mMultiSelectManager = app.getMultiSelectManager();
-        mImageLoader = app.getMediaLoaderWrapper();
         final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
                 SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
@@ -133,7 +128,7 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
     @NonNull
     @Override
     public MediaLoaderWrapper getMediaLoader() {
-        return mImageLoader;
+        return mMediaLoader;
     }
 
     @NonNull

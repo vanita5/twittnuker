@@ -45,9 +45,11 @@ import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 
 import javax.inject.Inject;
@@ -58,6 +60,8 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
     protected AsyncTwitterWrapper mTwitterWrapper;
     @Inject
     protected ReadStateManager mReadStateManager;
+    @Inject
+    protected MediaLoaderWrapper mMediaLoader;
 
     public BaseSupportFragment() {
 
@@ -73,7 +77,7 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        DaggerGeneralComponent.builder().applicationModule(TwittnukerApplication.getModule(context)).build().inject(this);
+        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
     }
 
 

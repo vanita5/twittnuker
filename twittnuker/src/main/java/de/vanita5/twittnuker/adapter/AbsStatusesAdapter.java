@@ -52,8 +52,6 @@ import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
-import javax.inject.Inject;
-
 public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewHolder> implements Constants,
         IStatusesAdapter<D> {
 
@@ -61,7 +59,6 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
 
     private final Context mContext;
     private final LayoutInflater mInflater;
-    private final MediaLoaderWrapper mMediaLoader;
     private final MediaLoadingHandler mLoadingHandler;
     private final TwidereLinkify mLinkify;
     private final UserColorNameManager mUserColorNameManager;
@@ -93,7 +90,6 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
         mInflater = LayoutInflater.from(context);
-        mMediaLoader = app.getMediaLoaderWrapper();
         mUserColorNameManager = app.getUserColorNameManager();
         mLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
         final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,

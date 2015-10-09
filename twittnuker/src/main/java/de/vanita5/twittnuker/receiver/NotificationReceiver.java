@@ -30,11 +30,11 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 
 public class NotificationReceiver extends BroadcastReceiver implements Constants {
     @Override
@@ -48,7 +48,7 @@ public class NotificationReceiver extends BroadcastReceiver implements Constants
                 final String tag = getPositionTag(uri.getLastPathSegment());
                 if (tag == null) return;
                 final long accountId = ParseUtils.parseLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID), -1);
-                final ReadStateManager manager = TwittnukerApplication.getModule(context).getReadStateManager();
+                final ReadStateManager manager = ApplicationModule.get(context).getReadStateManager();
                 final String paramReadPosition, paramReadPositions;
                 if (!TextUtils.isEmpty(paramReadPosition = uri.getQueryParameter(QUERY_PARAM_READ_POSITION))) {
                     manager.setPosition(Utils.getReadPositionTagWithAccounts(tag, accountId),

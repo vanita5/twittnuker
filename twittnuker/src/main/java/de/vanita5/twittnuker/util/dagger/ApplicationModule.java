@@ -22,10 +22,20 @@
 
 package de.vanita5.twittnuker.util.dagger;
 
+import android.content.Context;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.utils.L;
+
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ReadStateManager;
+import de.vanita5.twittnuker.util.VideoLoader;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,37 +46,64 @@ public class ApplicationModule {
     private final ActivityTracker activityTracker;
     private final AsyncTwitterWrapper asyncTwitterWrapper;
     private final ReadStateManager readStateManager;
+    private final MediaLoaderWrapper mediaLoaderWrapper;
+    private final ImageLoader imageLoader;
+    private final VideoLoader videoLoader;
 
     public ApplicationModule(TwittnukerApplication application) {
         activityTracker = new ActivityTracker();
         asyncTwitterWrapper = new AsyncTwitterWrapper(application);
         readStateManager = new ReadStateManager(application);
+        imageLoader = createImageLoader(application);
+        videoLoader = new VideoLoader(application);
+        mediaLoaderWrapper = new MediaLoaderWrapper(imageLoader, videoLoader);
+    }
+
+    public static ApplicationModule get(Context context) {
+        return TwittnukerApplication.getInstance(context).getApplicationModule();
     }
 
     @Provides
-    ActivityTracker provideActivityStack() {
-        return activityTracker;
+    public ImageLoader getImageLoader() {
+        return imageLoader;
     }
 
     @Provides
-    AsyncTwitterWrapper provideAsyncTwitterWrapper() {
-        return asyncTwitterWrapper;
+    public VideoLoader getVideoLoader() {
+        return videoLoader;
     }
 
     @Provides
-    ReadStateManager provideReadStateManager() {
-        return readStateManager;
-    }
-
     public ActivityTracker getActivityTracker() {
         return activityTracker;
     }
 
+    @Provides
     public AsyncTwitterWrapper getAsyncTwitterWrapper() {
         return asyncTwitterWrapper;
     }
 
+    @Provides
     public ReadStateManager getReadStateManager() {
         return readStateManager;
+    }
+
+    @Provides
+    public MediaLoaderWrapper getMediaLoaderWrapper() {
+        return mediaLoaderWrapper;
+    }
+
+    private static ImageLoader createImageLoader(TwittnukerApplication application) {
+        final ImageLoader loader = ImageLoader.getInstance();
+        final ImageLoaderConfiguration.Builder cb = new ImageLoaderConfiguration.Builder(application);
+        cb.threadPriority(Thread.NORM_PRIORITY - 2);
+        cb.denyCacheImageMultipleSizesInMemory();
+        cb.tasksProcessingOrder(QueueProcessingType.LIFO);
+        // cb.memoryCache(new ImageMemoryCache(40));
+        cb.diskCache(application.getDiskCache());
+        cb.imageDownloader(application.getImageDownloader());
+        L.writeDebugLogs(BuildConfig.DEBUG);
+        loader.init(cb.build());
+        return loader;
     }
 }

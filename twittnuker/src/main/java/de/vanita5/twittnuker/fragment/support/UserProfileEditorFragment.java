@@ -83,18 +83,18 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         OnClickListener, LoaderCallbacks<SingleResponse<ParcelableUser>>,
         KeyboardShortcutsHandler.TakeAllKeyboardShortcut {
 
-	private static final int LOADER_ID_USER = 1;
+    private static final int LOADER_ID_USER = 1;
 
-	private static final int REQUEST_UPLOAD_PROFILE_IMAGE = 1;
-	private static final int REQUEST_UPLOAD_PROFILE_BANNER_IMAGE = 2;
+    private static final int REQUEST_UPLOAD_PROFILE_IMAGE = 1;
+    private static final int REQUEST_UPLOAD_PROFILE_BANNER_IMAGE = 2;
     private static final int REQUEST_PICK_LINK_COLOR = 3;
     private static final int REQUEST_PICK_BACKGROUND_COLOR = 4;
 
     private static final int RESULT_REMOVE_BANNER = 101;
     private static final String UPDATE_PROFILE_DIALOG_FRAGMENT_TAG = "update_profile";
 
-	private MediaLoaderWrapper mLazyImageLoader;
-	private AsyncTaskManager mAsyncTaskManager;
+    private MediaLoaderWrapper mMediaLoader;
+    private AsyncTaskManager mAsyncTaskManager;
     private AsyncTask<Object, Object, ?> mTask;
     private ImageView mProfileImageView;
     private ImageView mProfileBannerView;
@@ -108,12 +108,12 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
     private View mEditProfileBanner;
     private View mSetLinkColor, mSetBackgroundColor;
     private ForegroundColorView mLinkColor, mBackgroundColor;
-	private long mAccountId;
-	private ParcelableUser mUser;
-	private boolean mUserInfoLoaderInitialized;
-	private boolean mGetUserInfoCalled;
+    private long mAccountId;
+    private ParcelableUser mUser;
+    private boolean mUserInfoLoaderInitialized;
+    private boolean mGetUserInfoCalled;
 
-	@Override
+    @Override
     public void beforeTextChanged(final CharSequence s, final int length, final int start, final int end) {
     }
 
@@ -226,7 +226,6 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         setHasOptionsMenu(true);
         final TwittnukerApplication application = TwittnukerApplication.getInstance(getActivity());
         mAsyncTaskManager = application.getAsyncTaskManager();
-        mLazyImageLoader = application.getMediaLoaderWrapper();
         final Bundle args = getArguments();
         final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
         mAccountId = accountId;
@@ -274,10 +273,10 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
 
     @Override
     public void onSizeChanged(final View view, final int w, final int h, final int oldw, final int oldh) {
-	}
+    }
 
     @Nullable
-	@Override
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_user_profile_editor, container, false);
     }
@@ -305,26 +304,26 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         if (resultCode == FragmentActivity.RESULT_CANCELED) return;
-		switch (requestCode) {
-			case REQUEST_UPLOAD_PROFILE_BANNER_IMAGE: {
+        switch (requestCode) {
+            case REQUEST_UPLOAD_PROFILE_BANNER_IMAGE: {
                 if (mTask != null && mTask.getStatus() == Status.RUNNING) return;
                 if (resultCode == RESULT_REMOVE_BANNER) {
                     mTask = new RemoveProfileBannerTaskInternal(mAccountId);
                 } else {
                     mTask = new UpdateProfileBannerImageTaskInternal(getActivity(), mAsyncTaskManager, mAccountId, data.getData(), true);
                 }
-				break;
-			}
-			case REQUEST_UPLOAD_PROFILE_IMAGE: {
+                break;
+            }
+            case REQUEST_UPLOAD_PROFILE_IMAGE: {
                 if (mTask != null && mTask.getStatus() == Status.RUNNING) return;
                 mTask = new UpdateProfileImageTaskInternal(getActivity(), mAsyncTaskManager, mAccountId, data.getData(), true);
-				break;
-			}
+                break;
+            }
             case REQUEST_PICK_LINK_COLOR: {
                 if (resultCode == ColorPickerDialogActivity.RESULT_OK) {
                     mLinkColor.setColor(data.getIntExtra(EXTRA_COLOR, 0));
                     updateDoneButton();
-		        }
+                }
                 break;
             }
             case REQUEST_PICK_BACKGROUND_COLOR: {
@@ -336,45 +335,45 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
             }
         }
 
-	}
+    }
 
-	private void displayUser(final ParcelableUser user) {
-		if (!mGetUserInfoCalled) return;
-		mGetUserInfoCalled = false;
-		mUser = user;
+    private void displayUser(final ParcelableUser user) {
+        if (!mGetUserInfoCalled) return;
+        mGetUserInfoCalled = false;
+        mUser = user;
         if (user != null) {
             mProgressContainer.setVisibility(View.GONE);
             mEditProfileContent.setVisibility(View.VISIBLE);
-			mEditName.setText(user.name);
-			mEditDescription.setText(user.description_expanded);
-			mEditLocation.setText(user.location);
-			mEditUrl.setText(isEmpty(user.url_expanded) ? user.url : user.url_expanded);
-			mLazyImageLoader.displayProfileImage(mProfileImageView, user.profile_image_url);
-			final int def_width = getResources().getDisplayMetrics().widthPixels;
-            mLazyImageLoader.displayProfileBanner(mProfileBannerView, user.profile_banner_url, def_width);
+            mEditName.setText(user.name);
+            mEditDescription.setText(user.description_expanded);
+            mEditLocation.setText(user.location);
+            mEditUrl.setText(isEmpty(user.url_expanded) ? user.url : user.url_expanded);
+            mMediaLoader.displayProfileImage(mProfileImageView, user.profile_image_url);
+            final int def_width = getResources().getDisplayMetrics().widthPixels;
+            mMediaLoader.displayProfileBanner(mProfileBannerView, user.profile_banner_url, def_width);
             mLinkColor.setColor(user.link_color);
             mBackgroundColor.setColor(user.background_color);
-		} else {
+        } else {
             mProgressContainer.setVisibility(View.GONE);
             mEditProfileContent.setVisibility(View.GONE);
-		}
+        }
         updateDoneButton();
-	}
+    }
 
-	private void getUserInfo() {
+    private void getUserInfo() {
         if (getActivity() == null || isDetached()) return;
         final LoaderManager lm = getLoaderManager();
-		lm.destroyLoader(LOADER_ID_USER);
-		mGetUserInfoCalled = true;
-		if (mUserInfoLoaderInitialized) {
-			lm.restartLoader(LOADER_ID_USER, null, this);
-		} else {
-			lm.initLoader(LOADER_ID_USER, null, this);
-			mUserInfoLoaderInitialized = true;
-		}
-	}
+        lm.destroyLoader(LOADER_ID_USER);
+        mGetUserInfoCalled = true;
+        if (mUserInfoLoaderInitialized) {
+            lm.restartLoader(LOADER_ID_USER, null, this);
+        } else {
+            lm.initLoader(LOADER_ID_USER, null, this);
+            mUserInfoLoaderInitialized = true;
+        }
+    }
 
-	private void setUpdateState(final boolean start) {
+    private void setUpdateState(final boolean start) {
         final FragmentManager fm = getChildFragmentManager();
         final Fragment f = fm.findFragmentByTag(UPDATE_PROFILE_DIALOG_FRAGMENT_TAG);
         if (!start && f instanceof DialogFragment) {
@@ -384,14 +383,14 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
             df.show(fm, UPDATE_PROFILE_DIALOG_FRAGMENT_TAG);
             df.setCancelable(false);
         }
-	}
+    }
 
-	private static boolean stringEquals(final CharSequence str1, final CharSequence str2) {
-		if (str1 == null || str2 == null) return str1 == str2;
+    private static boolean stringEquals(final CharSequence str1, final CharSequence str2) {
+        if (str1 == null || str2 == null) return str1 == str2;
         if (str1.length() != str2.length()) return false;
         for (int i = 0, j = str1.length(); i < j; i++) {
             if (str1.charAt(i) != str2.charAt(i)) return false;
-	    }
+        }
         return true;
     }
 
@@ -483,7 +482,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
                 @Override
                 public void run() {
                     final DialogFragment df = SupportProgressDialogFragment.show(mFragment.getActivity(), DIALOG_FRAGMENT_TAG);
-					df.setCancelable(false);
+                    df.setCancelable(false);
                 }
             });
             super.onPreExecute();
@@ -497,77 +496,77 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
 
         RemoveProfileBannerTaskInternal(final long account_id) {
             this.account_id = account_id;
-		}
+        }
 
-		@Override
+        @Override
         protected SingleResponse<Boolean> doInBackground(final Object... params) {
             return TwitterWrapper.deleteProfileBannerImage(getActivity(), account_id);
         }
 
         @Override
         protected void onPostExecute(final SingleResponse<Boolean> result) {
-			super.onPostExecute(result);
+            super.onPostExecute(result);
             if (result.getData() != null && result.getData()) {
-			getUserInfo();
+                getUserInfo();
                 Toast.makeText(getActivity(), R.string.profile_banner_image_updated, Toast.LENGTH_SHORT).show();
             } else {
                 Utils.showErrorMessage(getActivity(), R.string.action_removing_profile_banner_image,
                         result.getException(), true);
-		    }
+            }
             setUpdateState(false);
         }
 
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			setUpdateState(true);
-		}
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            setUpdateState(true);
+        }
 
-	}
+    }
 
     private class UpdateProfileBannerImageTaskInternal extends UpdateProfileBannerImageTask {
 
         public UpdateProfileBannerImageTaskInternal(final Context context, final AsyncTaskManager manager,
-				final long account_id, final Uri image_uri, final boolean delete_image) {
-			super(context, manager, account_id, image_uri, delete_image);
-		}
+                                                    final long account_id, final Uri image_uri, final boolean delete_image) {
+            super(context, manager, account_id, image_uri, delete_image);
+        }
 
-		@Override
-		protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
-			super.onPostExecute(result);
-			setUpdateState(false);
+        @Override
+        protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
+            super.onPostExecute(result);
+            setUpdateState(false);
             getUserInfo();
-		}
+        }
 
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			setUpdateState(true);
-		}
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            setUpdateState(true);
+        }
 
-	}
+    }
 
     private class UpdateProfileImageTaskInternal extends UpdateProfileImageTask {
 
         public UpdateProfileImageTaskInternal(final Context context, final AsyncTaskManager manager,
                                               final long account_id, final Uri image_uri, final boolean delete_image) {
             super(context, manager, account_id, image_uri, delete_image);
-		}
+        }
 
-		@Override
+        @Override
         protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
-			super.onPostExecute(result);
+            super.onPostExecute(result);
             if (result != null && result.getData() != null) {
                 displayUser(result.getData());
-			}
-			setUpdateState(false);
-		}
+            }
+            setUpdateState(false);
+        }
 
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			setUpdateState(true);
-		}
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            setUpdateState(true);
+        }
 
-	}
+    }
 }

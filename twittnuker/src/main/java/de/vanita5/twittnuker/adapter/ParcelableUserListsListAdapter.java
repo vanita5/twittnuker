@@ -33,7 +33,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
@@ -49,55 +48,53 @@ import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 public class ParcelableUserListsListAdapter extends BaseArrayAdapter<ParcelableUserList> implements IBaseCardAdapter,
         OnClickListener {
 
-	private final Context mContext;
-    private final MediaLoaderWrapper mImageLoader;
-	private final MultiSelectManager mMultiSelectManager;
-	private final Locale mLocale;
+    private final Context mContext;
+    private final MultiSelectManager mMultiSelectManager;
+    private final Locale mLocale;
     private final UserColorNameManager mUserColorNameManager;
 
-	public ParcelableUserListsListAdapter(final Context context) {
+    public ParcelableUserListsListAdapter(final Context context) {
         this(context, Utils.isCompactCards(context));
-	}
+    }
 
     public ParcelableUserListsListAdapter(final Context context, final boolean compactCards) {
-		super(context, getItemResource(compactCards));
-		mContext = context;
-		mLocale = context.getResources().getConfiguration().locale;
-		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-        mImageLoader = app.getMediaLoaderWrapper();
-		mMultiSelectManager = app.getMultiSelectManager();
+        super(context, getItemResource(compactCards));
+        mContext = context;
+        mLocale = context.getResources().getConfiguration().locale;
+        final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
+        mMultiSelectManager = app.getMultiSelectManager();
         mUserColorNameManager = app.getUserColorNameManager();
-		configBaseCardAdapter(context, this);
-	}
+        configBaseCardAdapter(context, this);
+    }
 
-	public void appendData(final List<ParcelableUserList> data) {
-		setData(data, false);
-	}
+    public void appendData(final List<ParcelableUserList> data) {
+        setData(data, false);
+    }
 
-	@Override
-	public long getItemId(final int position) {
-		return getItem(position) != null ? getItem(position).id : -1;
-	}
+    @Override
+    public long getItemId(final int position) {
+        return getItem(position) != null ? getItem(position).id : -1;
+    }
 
-	@Override
-	public View getView(final int position, final View convertView, final ViewGroup parent) {
-		final View view = super.getView(position, convertView, parent);
-		final Object tag = view.getTag();
+    @Override
+    public View getView(final int position, final View convertView, final ViewGroup parent) {
+        final View view = super.getView(position, convertView, parent);
+        final Object tag = view.getTag();
         final UserListViewListHolder holder;
         if (tag instanceof UserListViewListHolder) {
             holder = (UserListViewListHolder) tag;
-		} else {
+        } else {
             holder = new UserListViewListHolder(view);
-			holder.profile_image.setOnClickListener(this);
+            holder.profile_image.setOnClickListener(this);
 //            holder.content.setOnOverflowIconClickListener(this);
-			view.setTag(holder);
-		}
+            view.setTag(holder);
+        }
 
-		holder.position = position;
+        holder.position = position;
 
         final ParcelableUserList userList = getItem(position);
         final String displayName = mUserColorNameManager.getDisplayName(userList, isDisplayNameFirst(), false);
-		holder.setTextSize(getTextSize());
+        holder.setTextSize(getTextSize());
         holder.name.setText(userList.name);
         holder.created_by.setText(mContext.getString(R.string.created_by, displayName));
         if (holder.description != null) {
@@ -115,44 +112,44 @@ public class ParcelableUserListsListAdapter extends BaseArrayAdapter<ParcelableU
             mImageLoader.displayProfileImage(holder.profile_image, userList.user_profile_image_url);
         } else {
             mImageLoader.cancelDisplayTask(holder.profile_image);
-		}
-		holder.profile_image.setTag(position);
-		return view;
-	}
+        }
+        holder.profile_image.setTag(position);
+        return view;
+    }
 
-	@Override
-	public void onClick(final View view) {
-		if (mMultiSelectManager.isActive()) return;
-		final Object tag = view.getTag();
-		final int position = tag instanceof Integer ? (Integer) tag : -1;
-		if (position == -1) return;
-		switch (view.getId()) {
-			case R.id.profile_image: {
-				if (mContext instanceof Activity) {
-					final ParcelableUserList item = getItem(position);
+    @Override
+    public void onClick(final View view) {
+        if (mMultiSelectManager.isActive()) return;
+        final Object tag = view.getTag();
+        final int position = tag instanceof Integer ? (Integer) tag : -1;
+        if (position == -1) return;
+        switch (view.getId()) {
+            case R.id.profile_image: {
+                if (mContext instanceof Activity) {
+                    final ParcelableUserList item = getItem(position);
                     openUserProfile(mContext, item.account_id, item.user_id, item.user_screen_name,
                             null);
-				}
-				break;
-			}
-		}
-	}
+                }
+                break;
+            }
+        }
+    }
 
-	public void setData(final List<ParcelableUserList> data, final boolean clear_old) {
-		if (clear_old) {
-			clear();
-		}
-		if (data == null) return;
-		for (final ParcelableUserList user : data) {
+    public void setData(final List<ParcelableUserList> data, final boolean clear_old) {
+        if (clear_old) {
+            clear();
+        }
+        if (data == null) return;
+        for (final ParcelableUserList user : data) {
             if (clear_old || findItemPosition(user.id) < 0) {
-				add(user);
-			}
-		}
-	}
+                add(user);
+            }
+        }
+    }
 
 
-	private static int getItemResource(final boolean compactCards) {
+    private static int getItemResource(final boolean compactCards) {
 //        return compactCards ? R.layout.card_item_user_list_compact : R.layout.card_item_user_list;
         return R.layout.list_item_user_list;
-	}
+    }
 }

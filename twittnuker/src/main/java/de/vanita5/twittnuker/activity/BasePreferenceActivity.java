@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
@@ -171,7 +172,7 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         }
         setupWindow();
         super.onCreate(savedInstanceState);
-        DaggerGeneralComponent.builder().applicationModule(TwittnukerApplication.getModule(this)).build().inject(this);
+        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(this)).build().inject(this);
         mKeyboardShortcutsHandler = TwittnukerApplication.getInstance(this).getKeyboardShortcutsHandler();
     }
 

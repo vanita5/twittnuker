@@ -55,6 +55,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.Log;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.okhttp.internal.Network;
 import com.squareup.otto.Bus;
 
@@ -107,6 +108,7 @@ import de.vanita5.twittnuker.util.TwidereQueryBuilder.CachedUsersQueryBuilder;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder.ConversationQueryBuilder;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.collection.CompactHashSet;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
 
@@ -144,6 +146,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     ReadStateManager mReadStateManager;
     @Inject
     AsyncTwitterWrapper mTwitterWrapper;
+    @Inject
+    ImageLoader mMediaLoader;
     private SharedPreferencesWrapper mPreferences;
     private ImagePreloader mImagePreloader;
     private Network mNetwork;
@@ -397,7 +401,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     @Override
     public boolean onCreate() {
         final Context context = getContext();
-        DaggerGeneralComponent.builder().applicationModule(TwittnukerApplication.getModule(context)).build().inject(this);
+        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mHandler = new Handler(Looper.getMainLooper());
         mDatabaseWrapper = new SQLiteDatabaseWrapper(this);
@@ -405,7 +409,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
         updatePreferences();
-        mImagePreloader = new ImagePreloader(context, app.getImageLoader());
+        mImagePreloader = new ImagePreloader(context, mMediaLoader);
         mNotificationHelper = new NotificationHelper(context);
         // final GetWritableDatabaseTask task = new
         // GetWritableDatabaseTask(context, helper, mDatabaseWrapper);

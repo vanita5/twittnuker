@@ -184,7 +184,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     private ShapedImageView mProfileImageView;
     private BadgeView mCountView;
     private View mAccountSelectorButton;
-    private MediaLoaderWrapper mImageLoader;
     private View mLocationContainer;
     private ActionIconView mLocationIcon;
     private TextView mLocationText;
@@ -537,7 +536,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
         mResolver = getContentResolver();
         mValidator = new TwidereValidator(this);
-        mImageLoader = app.getMediaLoaderWrapper();
         setContentView(R.layout.activity_compose);
         setFinishOnTouchOutside(false);
         final long[] defaultAccountIds = Utils.getAccountIds(this);
@@ -1278,7 +1276,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
             setHasStableIds(true);
             mActivity = activity;
             mInflater = activity.getLayoutInflater();
-            mImageLoader = TwittnukerApplication.getInstance(activity).getMediaLoaderWrapper();
+            mImageLoader = activity.mImageLoader;
             mSelection = new LongSparseArray<>();
             final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(activity,
                     SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE, SharedPreferenceConstants.class);
@@ -1545,9 +1543,9 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
         private final MediaLoaderWrapper mImageLoader;
 
-        public MediaPreviewAdapter(final Context context) {
-            super(context, R.layout.grid_item_media_editor);
-            mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
+        public MediaPreviewAdapter(final ComposeActivity activity) {
+            super(activity, R.layout.grid_item_media_editor);
+            mImageLoader = activity.mImageLoader;
         }
 
         public List<ParcelableMediaUpdate> getAsList() {

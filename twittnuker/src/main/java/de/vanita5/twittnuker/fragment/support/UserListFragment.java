@@ -79,7 +79,6 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.text.validator.UserListNameValidator;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.LinkCreator;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -97,9 +96,6 @@ import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 public class UserListFragment extends BaseSupportFragment implements OnClickListener,
         LoaderCallbacks<SingleResponse<ParcelableUserList>>, SystemWindowsInsetsCallback,
         SupportFragmentCallback {
-
-    private MediaLoaderWrapper mProfileImageLoader;
-    private AsyncTwitterWrapper mTwitterWrapper;
 
     private ViewPager mViewPager;
     private TabPagerIndicator mPagerIndicator;
@@ -216,7 +212,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         super.onActivityCreated(savedInstanceState);
         final FragmentActivity activity = getActivity();
         final TwittnukerApplication application = TwittnukerApplication.getInstance(activity);
-        mProfileImageLoader = application.getMediaLoaderWrapper();
         mUserColorNameManager = application.getUserColorNameManager();
         mPreferences = SharedPreferencesWrapper.getInstance(activity, SHARED_PREFERENCES_NAME,
                 Context.MODE_PRIVATE, SharedPreferenceConstants.class);

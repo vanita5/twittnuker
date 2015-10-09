@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
     public static final int MENU_GROUP = 201;
 
     public MultiSelectEventHandler(final BaseAppCompatActivity activity) {
-        DaggerGeneralComponent.builder().applicationModule(TwittnukerApplication.getModule(activity)).build().inject(this);
+        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(activity)).build().inject(this);
         mActivity = activity;
     }
 

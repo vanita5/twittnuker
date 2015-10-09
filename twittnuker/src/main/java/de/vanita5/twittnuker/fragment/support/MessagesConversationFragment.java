@@ -114,6 +114,7 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.view.ComposeEditText;
 
@@ -170,7 +171,6 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     private TwidereValidator mValidator;
     private SharedPreferencesWrapper mPreferences;
     private SharedPreferences mMessageDrafts;
-    private MediaLoaderWrapper mImageLoader;
     private UserColorNameManager mUserColorNameManager;
     private EffectViewHelper mEffectHelper;
 
@@ -239,7 +239,6 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
                 Context.MODE_PRIVATE, SharedPreferenceConstants.class);
         mUserColorNameManager = UserColorNameManager.getInstance(activity);
         mMessageDrafts = getSharedPreferences(MESSAGE_DRAFTS_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        mImageLoader = TwittnukerApplication.getInstance(activity).getMediaLoaderWrapper();
         mValidator = new TwidereValidator(activity);
 
         final View view = getView();
@@ -911,7 +910,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         private final ParcelableUser mRecipient;
 
         public SetReadStateTask(Context context, ParcelableCredentials account, ParcelableUser recipient) {
-            mReadStateManager = TwittnukerApplication.getModule(context).getReadStateManager();
+            mReadStateManager = ApplicationModule.get(context).getReadStateManager();
             mContext = context;
             mAccount = account;
             mRecipient = recipient;

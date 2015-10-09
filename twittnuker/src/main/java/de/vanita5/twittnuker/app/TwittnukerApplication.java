@@ -47,7 +47,6 @@ import com.squareup.okhttp.internal.Network;
 import com.squareup.otto.Bus;
 
 import org.acra.annotation.ReportsCrashes;
-import org.acra.sender.HttpSender;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.AssistLauncherActivity;
@@ -58,7 +57,6 @@ import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MathUtils;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.TwidereLogger;
@@ -87,8 +85,6 @@ public class TwittnukerApplication extends Application implements Constants,
     private static final String KEY_KEYBOARD_SHORTCUT_INITIALIZED = "keyboard_shortcut_initialized";
 
     private Handler mHandler;
-    private MediaLoaderWrapper mMediaLoaderWrapper;
-    private ImageLoader mImageLoader;
     private AsyncTaskManager mAsyncTaskManager;
     private SharedPreferences mPreferences;
     private MultiSelectManager mMultiSelectManager;
@@ -158,30 +154,11 @@ public class TwittnukerApplication extends Application implements Constants,
         return mImageDownloader = new TwidereImageDownloader(this, false);
     }
 
-    public ImageLoader getImageLoader() {
-        if (mImageLoader != null) return mImageLoader;
-        final ImageLoader loader = ImageLoader.getInstance();
-        final ImageLoaderConfiguration.Builder cb = new ImageLoaderConfiguration.Builder(this);
-        cb.threadPriority(Thread.NORM_PRIORITY - 2);
-        cb.denyCacheImageMultipleSizesInMemory();
-        cb.tasksProcessingOrder(QueueProcessingType.LIFO);
-        // cb.memoryCache(new ImageMemoryCache(40));
-        cb.diskCache(getDiskCache());
-        cb.imageDownloader(getImageDownloader());
-        L.writeDebugLogs(BuildConfig.DEBUG);
-        loader.init(cb.build());
-        return mImageLoader = loader;
-    }
 
     public VideoLoader getVideoLoader() {
         if (mVideoLoader != null) return mVideoLoader;
         final VideoLoader loader = new VideoLoader(this);
         return mVideoLoader = loader;
-    }
-
-    public MediaLoaderWrapper getMediaLoaderWrapper() {
-        if (mMediaLoaderWrapper != null) return mMediaLoaderWrapper;
-        return mMediaLoaderWrapper = new MediaLoaderWrapper(getImageLoader(), getVideoLoader());
     }
 
     @Nullable
@@ -254,9 +231,8 @@ public class TwittnukerApplication extends Application implements Constants,
 
     @Override
     public void onLowMemory() {
-        if (mMediaLoaderWrapper != null) {
-            mMediaLoaderWrapper.clearMemoryCache();
-        }
+        final ApplicationModule module = getApplicationModule();
+        module.getMediaLoaderWrapper().clearMemoryCache();
         super.onLowMemory();
     }
 
@@ -308,11 +284,7 @@ public class TwittnukerApplication extends Application implements Constants,
         }
     }
 
-    public static ApplicationModule getModule(Context context) {
-        return getInstance(context).getApplicationModule();
-    }
-
-    private ApplicationModule getApplicationModule() {
+    public ApplicationModule getApplicationModule() {
         if (mApplicationModule != null) return mApplicationModule;
         return mApplicationModule = new ApplicationModule(this);
     }

@@ -128,7 +128,6 @@ import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 public class HomeActivity extends BaseAppCompatActivity implements OnClickListener, OnPageChangeListener,
         SupportFragmentCallback, OnLongClickListener {
 
-    private static final String EXTRA_SESSION_EVENT = "session_event";
     private final Handler mHandler = new Handler();
 
     private final ContentObserver mAccountChangeObserver = new AccountChangeObserver(this, mHandler);
