@@ -48,7 +48,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
-import de.vanita5.twittnuker.util.dagger.component.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 
 import javax.inject.Inject;
 

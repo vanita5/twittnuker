@@ -43,7 +43,7 @@ import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
-import de.vanita5.twittnuker.util.dagger.component.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 
 import java.util.ArrayList;
 import java.util.Arrays;

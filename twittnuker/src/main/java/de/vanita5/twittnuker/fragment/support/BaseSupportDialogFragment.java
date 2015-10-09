@@ -33,7 +33,7 @@ import android.support.v4.app.DialogFragment;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.dagger.component.DaggerBaseSupportDialogFragmentComponent;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 
 import javax.inject.Inject;
 
@@ -73,7 +73,7 @@ public class BaseSupportDialogFragment extends DialogFragment implements Constan
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        DaggerBaseSupportDialogFragmentComponent.builder().applicationModule(TwittnukerApplication.getModule(context)).build().inject(this);
+        DaggerGeneralComponent.builder().applicationModule(TwittnukerApplication.getModule(context)).build().inject(this);
     }
 
     public void registerReceiver(final BroadcastReceiver receiver, final IntentFilter filter) {

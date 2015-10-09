@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TwidereCommands.Refresh;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.dagger.component.DaggerTwidereCommandProviderComponent;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 
 import javax.inject.Inject;
 
@@ -76,7 +76,7 @@ public class TwidereCommandProvider extends ContentProvider implements Constants
     @Override
     public boolean onCreate() {
         mContext = getContext();
-        DaggerTwidereCommandProviderComponent.builder().applicationModule(TwittnukerApplication.getModule(mContext)).build().inject(this);
+        DaggerGeneralComponent.builder().applicationModule(TwittnukerApplication.getModule(mContext)).build().inject(this);
         return true;
     }
 

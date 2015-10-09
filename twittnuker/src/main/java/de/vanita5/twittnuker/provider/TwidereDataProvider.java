@@ -107,6 +107,7 @@ import de.vanita5.twittnuker.util.TwidereQueryBuilder.CachedUsersQueryBuilder;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder.ConversationQueryBuilder;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.collection.CompactHashSet;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
 
 import java.io.File;
@@ -396,7 +397,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     @Override
     public boolean onCreate() {
         final Context context = getContext();
-        DaggerTwidereDataProviderComponent.builder().applicationModule(TwittnukerApplication.getModule(context)).build().inject(this);
+        DaggerGeneralComponent.builder().applicationModule(TwittnukerApplication.getModule(context)).build().inject(this);
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mHandler = new Handler(Looper.getMainLooper());
         mDatabaseWrapper = new SQLiteDatabaseWrapper(this);

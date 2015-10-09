@@ -20,13 +20,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.dagger.component;
+package de.vanita5.twittnuker.util;
 
-import dagger.Component;
-import de.vanita5.twittnuker.service.RefreshService;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 
-@Component(modules = ApplicationModule.class)
-public interface RefreshServiceComponent {
-    void inject(RefreshService object);
+import android.app.Activity;
+
+import org.apache.commons.collections.primitives.ArrayIntList;
+import org.apache.commons.collections.primitives.IntList;
+
+public class ActivityTracker {
+
+    private final IntList mInternalStack = new ArrayIntList();
+
+    public void dispatchStart(Activity activity) {
+        mInternalStack.add(System.identityHashCode(activity));
+    }
+
+    public void dispatchStop(Activity activity) {
+
+        final int hashCode = System.identityHashCode(activity);
+
+        mInternalStack.removeElement(hashCode);
+    }
+
+    private boolean isSwitchingInSameTask(int hashCode) {
+        return mInternalStack.lastIndexOf(hashCode) < mInternalStack.size() - 1;
+    }
+
+    public int size() {
+        return mInternalStack.size();
+    }
+
+    public boolean isEmpty() {
+        return mInternalStack.isEmpty();
+    }
+
 }

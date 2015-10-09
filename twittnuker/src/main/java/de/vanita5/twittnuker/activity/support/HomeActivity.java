@@ -353,9 +353,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             return;
         }
         mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        mTwitterWrapper = getTwitterWrapper();
         final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
-        mReadStateManager = app.getReadStateManager();
         mMultiSelectHandler = new MultiSelectEventHandler(this);
         mMultiSelectHandler.dispatchOnCreate();
         if (!Utils.hasAccount(this)) {
@@ -436,6 +434,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         final Bus bus = TwittnukerApplication.getInstance(this).getMessageBus();
         assert bus != null;
         bus.register(this);
+
         mReadStateManager.registerOnSharedPreferenceChangeListener(mReadStateChangeListener);
         updateUnreadCount();
 

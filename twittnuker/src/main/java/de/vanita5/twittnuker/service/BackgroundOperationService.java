@@ -85,7 +85,7 @@ import de.vanita5.twittnuker.util.StatusShortenerInterface;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.component.DaggerBackgroundOperationServiceComponent;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener;
 
@@ -128,7 +128,7 @@ public class BackgroundOperationService extends IntentService implements Constan
     @Override
     public void onCreate() {
         super.onCreate();
-        DaggerBackgroundOperationServiceComponent.builder().applicationModule(TwittnukerApplication.getModule(this)).build().inject(this);
+        DaggerGeneralComponent.builder().applicationModule(TwittnukerApplication.getModule(this)).build().inject(this);
         final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
         mHandler = new Handler();
         mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);

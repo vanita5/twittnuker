@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
-import de.vanita5.twittnuker.util.dagger.component.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 
 import javax.inject.Inject;
 

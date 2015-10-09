@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.util.dagger;
 
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.util.ActivityStack;
+import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ReadStateManager;
 
@@ -33,19 +33,19 @@ import dagger.Provides;
 @Module
 public class ApplicationModule {
 
-    private final ActivityStack activityStack;
+    private final ActivityTracker activityTracker;
     private final AsyncTwitterWrapper asyncTwitterWrapper;
     private final ReadStateManager readStateManager;
 
     public ApplicationModule(TwittnukerApplication application) {
-        activityStack = new ActivityStack();
+        activityTracker = new ActivityTracker();
         asyncTwitterWrapper = new AsyncTwitterWrapper(application);
         readStateManager = new ReadStateManager(application);
     }
 
     @Provides
-    ActivityStack provideActivityStack() {
-        return activityStack;
+    ActivityTracker provideActivityStack() {
+        return activityTracker;
     }
 
     @Provides
@@ -58,8 +58,8 @@ public class ApplicationModule {
         return readStateManager;
     }
 
-    public ActivityStack getActivityStack() {
-        return activityStack;
+    public ActivityTracker getActivityTracker() {
+        return activityTracker;
     }
 
     public AsyncTwitterWrapper getAsyncTwitterWrapper() {

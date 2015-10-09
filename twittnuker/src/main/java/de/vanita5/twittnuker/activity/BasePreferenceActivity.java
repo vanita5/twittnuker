@@ -45,28 +45,45 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
+
+import javax.inject.Inject;
 
 public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity implements Constants,
         IThemedActivity, KeyboardShortcutsHandler.KeyboardShortcutCallback {
 
     private TintedStatusFrameLayout mMainContent;
-
     private int mCurrentThemeResource, mCurrentThemeColor, mCurrentActionBarColor, mCurrentThemeBackgroundAlpha;
     @ShapeStyle
     private int mProfileImageStyle;
     private String mCurrentThemeBackgroundOption;
     private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
     private String mCurrentThemeFontFamily;
+    @Inject
+    protected ActivityTracker mActivityTracker;
 
-	@Override
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mActivityTracker.dispatchStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        mActivityTracker.dispatchStop(this);
+        super.onStop();
+    }
+
+    @Override
     public String getCurrentThemeFontFamily() {
         return mCurrentThemeFontFamily;
     }
@@ -81,7 +98,7 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         return mCurrentThemeBackgroundOption;
     }
 
-	@Override
+    @Override
     public int getCurrentThemeColor() {
         return mCurrentThemeColor;
     }
@@ -118,11 +135,11 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     }
 
     @Override
-	public final void restart() {
+    public final void restart() {
         Utils.restartActivity(this);
-	}
+    }
 
-	@Override
+    @Override
     public void onContentChanged() {
         super.onContentChanged();
         mMainContent = (TintedStatusFrameLayout) findViewById(R.id.main_content);
@@ -147,15 +164,16 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     }
 
     @Override
-	protected void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         if (BuildConfig.DEBUG) {
             StrictModeUtils.detectAllVmPolicy();
             StrictModeUtils.detectAllThreadPolicy();
         }
         setupWindow();
-		super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
+        DaggerGeneralComponent.builder().applicationModule(TwittnukerApplication.getModule(this)).build().inject(this);
         mKeyboardShortcutsHandler = TwittnukerApplication.getInstance(this).getKeyboardShortcutsHandler();
-	}
+    }
 
     @Override
     public boolean onKeyUp(int keyCode, @NonNull KeyEvent event) {
@@ -184,7 +202,7 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         settingsContent.removeAllViews();
         settingsContent.addView(view);
         super.setContentView(mainContent);
-	}
+    }
 
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
@@ -193,7 +211,7 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         settingsContent.removeAllViews();
         settingsContent.addView(view);
         super.setContentView(mainContent);
-	}
+    }
 
     @Override
     public void addContentView(View view, ViewGroup.LayoutParams params) {
@@ -210,11 +228,6 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
 
     protected boolean isActionBarOutlineEnabled() {
         return true;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 
     @Override
@@ -274,7 +287,7 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setupActionBar();
-	}
+    }
 
     protected boolean shouldApplyWindowBackground() {
         return true;
@@ -295,7 +308,7 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
 
         final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption()) ? getCurrentThemeBackgroundAlpha() : 0xFF;
         final int statusBarColor = getCurrentActionBarColor();
-		mMainContent.setColor(statusBarColor, alpha);
+        mMainContent.setColor(statusBarColor, alpha);
         StatusBarProxy.setStatusBarDarkIcon(getWindow(), TwidereColorUtils.getYIQLuminance(statusBarColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD);
 
         mMainContent.setDrawShadow(false);

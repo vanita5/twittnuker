@@ -20,14 +20,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.dagger.component;
+package de.vanita5.twittnuker.util.dagger;
+
+import android.support.v7.widget.RecyclerView;
+
+import de.vanita5.twittnuker.activity.BasePreferenceActivity;
+import de.vanita5.twittnuker.activity.BaseThemedActivity;
+import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
+import de.vanita5.twittnuker.activity.support.ThemedFragmentActivity;
+import de.vanita5.twittnuker.adapter.BaseAdapter;
+import de.vanita5.twittnuker.fragment.BaseFragment;
+import de.vanita5.twittnuker.fragment.BaseListFragment;
+import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
+import de.vanita5.twittnuker.provider.TwidereCommandProvider;
+import de.vanita5.twittnuker.provider.TwidereDataProvider;
+import de.vanita5.twittnuker.service.BackgroundOperationService;
+import de.vanita5.twittnuker.service.RefreshService;
+import de.vanita5.twittnuker.util.MultiSelectEventHandler;
+import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
 import dagger.Component;
-import de.vanita5.twittnuker.fragment.BaseFragment;
-import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
-import de.vanita5.twittnuker.util.MultiSelectEventHandler;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
 @Component(modules = ApplicationModule.class)
 public interface GeneralComponent {
@@ -38,4 +51,26 @@ public interface GeneralComponent {
     void inject(BaseSupportFragment object);
 
     void inject(MultiSelectEventHandler object);
+
+    void inject(BasePreferenceActivity object);
+
+    void inject(BaseThemedActivity object);
+
+    void inject(BaseSupportDialogFragment object);
+
+    void inject(RefreshService object);
+
+    void inject(ThemedFragmentActivity object);
+
+    void inject(TwidereCommandProvider object);
+
+    void inject(TwidereDataProvider object);
+
+    void inject(BaseListFragment object);
+
+    void inject(BaseAppCompatActivity object);
+
+    void inject(BackgroundOperationService object);
+
+    void inject(BaseAdapter<RecyclerView.ViewHolder> object);
 }
