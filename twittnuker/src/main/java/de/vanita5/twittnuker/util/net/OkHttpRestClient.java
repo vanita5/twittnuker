@@ -46,6 +46,7 @@ import org.mariotaku.restfu.http.RestHttpRequest;
 import org.mariotaku.restfu.http.RestHttpResponse;
 import org.mariotaku.restfu.http.RestQueuedRequest;
 import org.mariotaku.restfu.http.mime.TypedData;
+import de.vanita5.twittnuker.util.DebugModeUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -55,7 +56,6 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.vanita5.twittnuker.util.DebugModeUtils;
 import okio.BufferedSink;
 import okio.Okio;
 
@@ -69,7 +69,12 @@ public class OkHttpRestClient implements RestHttpClient {
         DebugModeUtils.initForHttpClient(client);
     }
 
+    public OkHttpClient getClient() {
+        return client;
+    }
+
     @NonNull
+
     @Override
     public RestHttpResponse execute(RestHttpRequest restHttpRequest) throws IOException {
         final Call call = newCall(restHttpRequest);

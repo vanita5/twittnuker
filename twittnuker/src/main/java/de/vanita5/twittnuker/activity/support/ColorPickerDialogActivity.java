@@ -39,10 +39,16 @@ public class ColorPickerDialogActivity extends BaseSupportDialogActivity impleme
         return ThemeUtils.getNoDisplayThemeResource(this);
     }
 
-	@Override
-	public void onCancelled() {
-		finish();
-	}
+    @Override
+    public void onCancelled() {
+        finish();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setVisible(true);
+    }
 
     @Override
     public void onColorCleared() {
@@ -50,32 +56,32 @@ public class ColorPickerDialogActivity extends BaseSupportDialogActivity impleme
         finish();
     }
 
-	@Override
-	public void onColorSelected(final int color) {
-		final Intent intent = new Intent();
-		intent.putExtra(EXTRA_COLOR, color);
-		setResult(RESULT_OK, intent);
-		finish();
-	}
+    @Override
+    public void onColorSelected(final int color) {
+        final Intent intent = new Intent();
+        intent.putExtra(EXTRA_COLOR, color);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
 
-	@Override
-	public void onDismissed() {
-		finish();
-	}
+    @Override
+    public void onDismissed() {
+        finish();
+    }
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		if (savedInstanceState == null) {
-			final Intent intent = getIntent();
-			final ColorPickerDialogFragment f = new ColorPickerDialogFragment();
-			final Bundle args = new Bundle();
-			args.putInt(EXTRA_COLOR, intent.getIntExtra(EXTRA_COLOR, Color.WHITE));
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            final Intent intent = getIntent();
+            final ColorPickerDialogFragment f = new ColorPickerDialogFragment();
+            final Bundle args = new Bundle();
+            args.putInt(EXTRA_COLOR, intent.getIntExtra(EXTRA_COLOR, Color.WHITE));
             args.putBoolean(EXTRA_CLEAR_BUTTON, intent.getBooleanExtra(EXTRA_CLEAR_BUTTON, false));
-			args.putBoolean(EXTRA_ALPHA_SLIDER, intent.getBooleanExtra(EXTRA_ALPHA_SLIDER, true));
-			f.setArguments(args);
-			f.show(getSupportFragmentManager(), "color_picker_dialog");
-		}
-	}
+            args.putBoolean(EXTRA_ALPHA_SLIDER, intent.getBooleanExtra(EXTRA_ALPHA_SLIDER, true));
+            f.setArguments(args);
+            f.show(getSupportFragmentManager(), "color_picker_dialog");
+        }
+    }
 
 }

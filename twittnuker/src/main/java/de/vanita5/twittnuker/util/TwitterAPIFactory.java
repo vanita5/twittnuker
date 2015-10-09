@@ -132,11 +132,17 @@ public class TwitterAPIFactory implements TwittnukerConstants {
     }
 
     public static RestHttpClient createHttpClient(final Context context, final Network network, final SharedPreferences prefs) {
+        final OkHttpClient client = new OkHttpClient();
+        updateHttpClientConfiguration(prefs, client);
+        Internal.instance.setNetwork(client, network);
+        return new OkHttpRestClient(context, client);
+    }
+
+    public static void updateHttpClientConfiguration(final SharedPreferences prefs, final OkHttpClient client) {
         final int connectionTimeout = prefs.getInt(KEY_CONNECTION_TIMEOUT, 10);
         final boolean ignoreSslError = prefs.getBoolean(KEY_IGNORE_SSL_ERROR, false);
         final boolean enableProxy = prefs.getBoolean(KEY_ENABLE_PROXY, false);
 
-        final OkHttpClient client = new OkHttpClient();
         client.setConnectTimeout(connectionTimeout, TimeUnit.SECONDS);
         final long connectionTimeoutMillis = TimeUnit.MILLISECONDS.convert(connectionTimeout, TimeUnit.SECONDS);
         final SSLSocketFactory sslSocketFactory;
@@ -150,8 +156,6 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         if (enableProxy) {
             client.setProxy(getProxy(prefs));
         }
-        Internal.instance.setNetwork(client, network);
-        return new OkHttpRestClient(context, client);
     }
 
 
@@ -180,7 +184,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         } else {
             userAgent = getTwidereUserAgent(context);
         }
-        factory.setClient(getDefaultHttpClient(context));
+        factory.setClient(ApplicationModule.get(context).getRestHttpClient());
         factory.setConverter(new TwitterConverter());
         factory.setEndpoint(endpoint);
         factory.setAuthorization(auth);

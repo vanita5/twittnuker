@@ -36,55 +36,61 @@ import static android.os.Environment.getExternalStorageDirectory;
 
 public class FileSelectorActivity extends BaseSupportDialogActivity implements FileSelectorDialogFragment.Callback {
 
-	@Override
-	public int getThemeResourceId() {
-		return ThemeUtils.getNoDisplayThemeResource(this);
-	}
+    @Override
+    public int getThemeResourceId() {
+        return ThemeUtils.getNoDisplayThemeResource(this);
+    }
 
-	@Override
-	public void onCancelled(final DialogFragment df) {
-		if (!isFinishing()) {
-			finish();
-		}
-	}
+    @Override
+    public void onCancelled(final DialogFragment df) {
+        if (!isFinishing()) {
+            finish();
+        }
+    }
 
-	@Override
-	public void onDismissed(final DialogFragment df) {
-		if (!isFinishing()) {
-			finish();
-		}
-	}
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setVisible(true);
+    }
 
-	@Override
-	public void onFilePicked(final File file) {
-		final Intent intent = new Intent();
-		intent.setData(Uri.fromFile(file));
-		setResult(RESULT_OK, intent);
-		finish();
-	}
+    @Override
+    public void onDismissed(final DialogFragment df) {
+        if (!isFinishing()) {
+            finish();
+        }
+    }
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		final Intent intent = getIntent();
-		final Uri data = intent.getData();
-		File initialDirectory = data != null ? new File(data.getPath()) : getExternalStorageDirectory();
-		if (initialDirectory == null) {
-			initialDirectory = new File("/");
-		}
-		final String action = intent.getAction();
-		if (!INTENT_ACTION_PICK_FILE.equals(action) && !INTENT_ACTION_PICK_DIRECTORY.equals(action)) {
-			finish();
-			return;
-		}
+    @Override
+    public void onFilePicked(final File file) {
+        final Intent intent = new Intent();
+        intent.setData(Uri.fromFile(file));
+        setResult(RESULT_OK, intent);
+        finish();
+    }
 
-		final FileSelectorDialogFragment f = new FileSelectorDialogFragment();
-		final Bundle args = new Bundle();
-		args.putString(EXTRA_ACTION, action);
-		args.putString(EXTRA_PATH, initialDirectory.getAbsolutePath());
-		args.putStringArray(EXTRA_FILE_EXTENSIONS, intent.getStringArrayExtra(EXTRA_FILE_EXTENSIONS));
-		f.setArguments(args);
-		f.show(getSupportFragmentManager(), "select_file");
-	}
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        final Intent intent = getIntent();
+        final Uri data = intent.getData();
+        File initialDirectory = data != null ? new File(data.getPath()) : getExternalStorageDirectory();
+        if (initialDirectory == null) {
+            initialDirectory = new File("/");
+        }
+        final String action = intent.getAction();
+        if (!INTENT_ACTION_PICK_FILE.equals(action) && !INTENT_ACTION_PICK_DIRECTORY.equals(action)) {
+            finish();
+            return;
+        }
+
+        final FileSelectorDialogFragment f = new FileSelectorDialogFragment();
+        final Bundle args = new Bundle();
+        args.putString(EXTRA_ACTION, action);
+        args.putString(EXTRA_PATH, initialDirectory.getAbsolutePath());
+        args.putStringArray(EXTRA_FILE_EXTENSIONS, intent.getStringArrayExtra(EXTRA_FILE_EXTENSIONS));
+        f.setArguments(args);
+        f.show(getSupportFragmentManager(), "select_file");
+    }
 
 }

@@ -31,7 +31,6 @@ import android.util.Pair;
 
 import com.nostra13.universalimageloader.core.assist.ContentLengthInputStream;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.squareup.okhttp.internal.Network;
 
 import org.mariotaku.restfu.RestRequestInfo;
 import org.mariotaku.restfu.annotation.method.GET;
@@ -70,21 +69,22 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
     private final Context mContext;
     private final SharedPreferencesWrapper mPreferences;
     private final String mUserAgent;
-    private RestHttpClient mClient;
+    private final RestHttpClient mClient;
     private final String mTwitterProfileImageSize;
 
-    public TwidereImageDownloader(final Context context) {
+    public TwidereImageDownloader(final Context context, final RestHttpClient client) {
         super(context);
         mContext = context;
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME,
                 Context.MODE_PRIVATE, SharedPreferenceConstants.class);
         mTwitterProfileImageSize = context.getString(R.string.profile_image_size);
         mUserAgent = UserAgentUtils.getDefaultUserAgentString(context);
+        mClient = client;
         reloadConnectivitySettings();
     }
 
     public void reloadConnectivitySettings() {
-        mClient = TwitterAPIFactory.getDefaultHttpClient(mContext);
+        //
     }
 
     @Override
