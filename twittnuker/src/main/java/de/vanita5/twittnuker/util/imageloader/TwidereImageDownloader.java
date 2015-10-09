@@ -31,6 +31,7 @@ import android.util.Pair;
 
 import com.nostra13.universalimageloader.core.assist.ContentLengthInputStream;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import com.squareup.okhttp.internal.Network;
 
 import org.mariotaku.restfu.RestRequestInfo;
 import org.mariotaku.restfu.annotation.method.GET;
@@ -80,7 +81,6 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
         mTwitterProfileImageSize = context.getString(R.string.profile_image_size);
         mUserAgent = UserAgentUtils.getDefaultUserAgentString(context);
         reloadConnectivitySettings();
-
     }
 
     public void reloadConnectivitySettings() {

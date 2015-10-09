@@ -33,8 +33,6 @@ import com.squareup.otto.Bus;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
 import de.vanita5.twittnuker.util.message.VideoLoadFinishedEvent;
 
 import java.io.File;
@@ -49,12 +47,12 @@ public class VideoLoader {
     private final AsyncTaskManager mTaskManager;
     private final Bus mBus;
 
-    public VideoLoader(Context context) {
+    public VideoLoader(Context context, ImageDownloader downloader, AsyncTaskManager manager) {
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mContext = context;
         mDiskCache = app.getDiskCache();
-        mImageDownloader = new TwidereImageDownloader(context);
-        mTaskManager = ApplicationModule.get(context).getAsyncTaskManager();
+        mImageDownloader = downloader;
+        mTaskManager = manager;
         mBus = app.getMessageBus();
     }
 
