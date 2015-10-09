@@ -75,7 +75,7 @@ public class NotificationHelper implements Constants {
 			final int idxFromUser = c.getColumnIndex(PushNotifications.FROM_USER);
 			final int idxType = c.getColumnIndex(PushNotifications.NOTIFICATION_TYPE);
 
-			while(!c.isAfterLast()) {
+			while (!c.isAfterLast()) {
 				NotificationContent notification = new NotificationContent();
 				notification.setAccountId(c.getLong(idxAccountId));
 				notification.setMessage(c.getString(idxMessage));
@@ -127,7 +127,7 @@ public class NotificationHelper implements Constants {
 		notificationManager.cancel(getAccountNotificationId(NOTIFICATION_ID_PUSH, accountId));
 
 		List<NotificationContent> pendingNotifications = getCachedNotifications(accountId);
-		long[] accountIdArray = { accountId };
+		long[] accountIdArray = {accountId};
 
 		//we trigger rebuilding the notification by just calling buildNotificationByType()
 		//with the last notification from the db
@@ -415,19 +415,19 @@ public class NotificationHelper implements Constants {
 		if (mSharedPreferences.getBoolean(KEY_PEBBLE_NOTIFICATIONS, false)
 				&& !TextUtils.isEmpty(message)) {
 
-            final String app_name = mContext.getString(R.string.app_name);
+			final String app_name = mContext.getString(R.string.app_name);
 
-            final HashMap<String, String> data = new HashMap<>();
-            data.put("title", app_name);
+			final HashMap<String, String> data = new HashMap<>();
+			data.put("title", app_name);
 			data.put("body", message);
 
 			final JSONObject jsonData = new JSONObject(data);
 
 			final String notificationData = new JSONArray().put(jsonData).toString();
 
-            final Intent intent = new Intent(INTENT_ACTION_PEBBLE_NOTIFICATION);
+			final Intent intent = new Intent(INTENT_ACTION_PEBBLE_NOTIFICATION);
 			intent.putExtra("messageType", "PEBBLE_ALERT");
-            intent.putExtra("sender", app_name);
+			intent.putExtra("sender", app_name);
 			intent.putExtra("notificationData", notificationData);
 
 			mContext.getApplicationContext().sendBroadcast(intent);
