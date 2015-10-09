@@ -27,8 +27,15 @@ import android.content.Context;
 import android.content.Intent;
 
 public class PowerStateReceiver extends BroadcastReceiver {
+    private static boolean serviceReceiverStarted;
+
+    public static void setServiceReceiverStarted(boolean started) {
+        PowerStateReceiver.serviceReceiverStarted = started;
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (serviceReceiverStarted) return;
         //
     }
 }
