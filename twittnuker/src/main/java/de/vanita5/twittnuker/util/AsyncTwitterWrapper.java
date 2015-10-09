@@ -90,6 +90,7 @@ import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.util.collection.LongSparseMap;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
@@ -129,8 +130,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
     public AsyncTwitterWrapper(final Context context) {
         mContext = context;
-        final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-        mAsyncTaskManager = app.getAsyncTaskManager();
+        mAsyncTaskManager = ApplicationModule.get(context).getAsyncTaskManager();
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME,
                 Context.MODE_PRIVATE, SharedPreferenceConstants.class);
         mResolver = context.getContentResolver();

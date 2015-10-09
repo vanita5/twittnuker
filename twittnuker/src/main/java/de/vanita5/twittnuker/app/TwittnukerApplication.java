@@ -38,11 +38,6 @@ import android.support.annotation.Nullable;
 
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.download.ImageDownloader;
-import com.nostra13.universalimageloader.utils.L;
 import com.squareup.okhttp.internal.Network;
 import com.squareup.otto.Bus;
 
@@ -53,7 +48,6 @@ import de.vanita5.twittnuker.activity.AssistLauncherActivity;
 import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.AbsLogger;
-import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MathUtils;
@@ -62,13 +56,11 @@ import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.TwidereLogger;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.VideoLoader;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache;
-import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
 import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator;
-import de.vanita5.twittnuker.util.net.TwidereHostAddressResolver;
+import de.vanita5.twittnuker.util.net.TwidereNetwork;
 
 import java.io.File;
 import java.io.IOException;
@@ -85,16 +77,13 @@ public class TwittnukerApplication extends Application implements Constants,
     private static final String KEY_KEYBOARD_SHORTCUT_INITIALIZED = "keyboard_shortcut_initialized";
 
     private Handler mHandler;
-    private AsyncTaskManager mAsyncTaskManager;
     private SharedPreferences mPreferences;
     private MultiSelectManager mMultiSelectManager;
-    private TwidereImageDownloader mImageDownloader, mFullImageDownloader;
     private DiskCache mDiskCache, mFullDiskCache;
     private SQLiteOpenHelper mSQLiteOpenHelper;
     private Network mNetwork;
     private SQLiteDatabase mDatabase;
     private Bus mMessageBus;
-    private VideoLoader mVideoLoader;
     private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
     private UserColorNameManager mUserColorNameManager;
     private ApplicationModule mApplicationModule;
@@ -102,11 +91,6 @@ public class TwittnukerApplication extends Application implements Constants,
     @NonNull
     public static TwittnukerApplication getInstance(@NonNull final Context context) {
         return (TwittnukerApplication) context.getApplicationContext();
-    }
-
-    public AsyncTaskManager getAsyncTaskManager() {
-        if (mAsyncTaskManager != null) return mAsyncTaskManager;
-        return mAsyncTaskManager = AsyncTaskManager.getInstance();
     }
 
     public DiskCache getDiskCache() {
@@ -124,18 +108,13 @@ public class TwittnukerApplication extends Application implements Constants,
         return mUserColorNameManager = new UserColorNameManager(this);
     }
 
-    public ImageDownloader getFullImageDownloader() {
-        if (mFullImageDownloader != null) return mFullImageDownloader;
-        return mFullImageDownloader = new TwidereImageDownloader(this, true);
-    }
-
     public Handler getHandler() {
         return mHandler;
     }
 
     public Network getNetwork() {
         if (mNetwork != null) return mNetwork;
-        return mNetwork = new TwidereHostAddressResolver(this);
+        return mNetwork = new TwidereNetwork(this);
     }
 
     public KeyboardShortcutsHandler getKeyboardShortcutsHandler() {
@@ -147,18 +126,6 @@ public class TwittnukerApplication extends Application implements Constants,
             preferences.edit().putBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, true).apply();
         }
         return mKeyboardShortcutsHandler;
-    }
-
-    public ImageDownloader getImageDownloader() {
-        if (mImageDownloader != null) return mImageDownloader;
-        return mImageDownloader = new TwidereImageDownloader(this, false);
-    }
-
-
-    public VideoLoader getVideoLoader() {
-        if (mVideoLoader != null) return mVideoLoader;
-        final VideoLoader loader = new VideoLoader(this);
-        return mVideoLoader = loader;
     }
 
     @Nullable
@@ -253,12 +220,7 @@ public class TwittnukerApplication extends Application implements Constants,
     }
 
     public void reloadConnectivitySettings() {
-        if (mImageDownloader != null) {
-            mImageDownloader.reloadConnectivitySettings();
-        }
-        if (mFullImageDownloader != null) {
-            mFullImageDownloader.reloadConnectivitySettings();
-        }
+        ApplicationModule.get(this).getImageDownloader().reloadConnectivitySettings();
     }
 
     private DiskCache createDiskCache(final String dirName) {

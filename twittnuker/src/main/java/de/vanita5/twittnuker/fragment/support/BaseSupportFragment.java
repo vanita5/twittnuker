@@ -49,6 +49,7 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
+import de.vanita5.twittnuker.util.VideoLoader;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 
@@ -62,6 +63,8 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
     protected ReadStateManager mReadStateManager;
     @Inject
     protected MediaLoaderWrapper mMediaLoader;
+    @Inject
+    protected VideoLoader mVideoLoader;
 
     public BaseSupportFragment() {
 

@@ -150,7 +150,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     ImageLoader mMediaLoader;
     private SharedPreferencesWrapper mPreferences;
     private ImagePreloader mImagePreloader;
-    private Network mNetwork;
+    @Inject
+    Network mNetwork;
     private NotificationHelper mNotificationHelper;
     private Handler mHandler;
 
@@ -402,10 +403,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     public boolean onCreate() {
         final Context context = getContext();
         DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
-        final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mHandler = new Handler(Looper.getMainLooper());
         mDatabaseWrapper = new SQLiteDatabaseWrapper(this);
-        mNetwork = app.getNetwork();
         mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
         updatePreferences();

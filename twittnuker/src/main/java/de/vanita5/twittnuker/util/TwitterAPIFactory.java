@@ -68,6 +68,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.RequestType;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.net.OkHttpRestClient;
 
 import java.net.InetSocketAddress;
@@ -145,7 +146,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         if (enableProxy) {
             client.setProxy(getProxy(prefs));
         }
-        Internal.instance.setNetwork(client, TwittnukerApplication.getInstance(context).getNetwork());
+        Internal.instance.setNetwork(client, ApplicationModule.get(context).getNetwork());
         return new OkHttpRestClient(context, client);
     }
 

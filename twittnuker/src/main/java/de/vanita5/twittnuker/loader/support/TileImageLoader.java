@@ -38,7 +38,9 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.Exif;
 import de.vanita5.twittnuker.util.ImageValidator;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.imageloader.AccountExtra;
+import de.vanita5.twittnuker.util.imageloader.AccountFullImageExtra;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +64,7 @@ public class TileImageLoader extends AsyncTaskLoader<TileImageLoader.Result> {
         mUri = uri;
         mListener = listener;
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-        mDownloader = app.getFullImageDownloader();
+        mDownloader = ApplicationModule.get(context).getImageDownloader();
         mDiskCache = app.getFullDiskCache();
         final Resources res = context.getResources();
         final DisplayMetrics dm = res.getDisplayMetrics();
@@ -89,7 +91,7 @@ public class TileImageLoader extends AsyncTaskLoader<TileImageLoader.Result> {
             }
             try {
                 // from SD cache
-                final InputStream is = mDownloader.getStream(url, new AccountExtra(mAccountId));
+                final InputStream is = mDownloader.getStream(url, new AccountFullImageExtra(mAccountId));
                 if (is == null) return Result.nullInstance();
                 try {
                     final long length = is.available();
