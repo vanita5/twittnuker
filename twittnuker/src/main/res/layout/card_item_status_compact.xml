@@ -211,6 +211,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/quoted_text"
+                android:layout_marginBottom="@dimen/element_spacing_msmall"
                 android:layout_marginTop="@dimen/element_spacing_small"
                 android:layout_toEndOf="@+id/quote_indicator"
                 android:layout_toRightOf="@+id/quote_indicator"
