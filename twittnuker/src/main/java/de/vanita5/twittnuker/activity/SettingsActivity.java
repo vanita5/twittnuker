@@ -54,7 +54,6 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.view.ViewParent;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -283,9 +282,9 @@ public class SettingsActivity extends BasePreferenceActivity {
         }
         final ListView listView = getListView();
         if (listView != null) {
-            listView.setDivider(new EmptyDrawable());
-//            listView.setChoiceMode(isMultiPane() ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
-            listView.setDividerHeight(0);
+//            listView.setDivider(new EmptyDrawable());
+            listView.setChoiceMode(isMultiPane() ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
+//            listView.setDividerHeight(0);
             final LayoutParams lp = listView.getLayoutParams();
             if (lp instanceof MarginLayoutParams) {
                 final MarginLayoutParams mlp = (MarginLayoutParams) lp;
@@ -522,12 +521,6 @@ public class SettingsActivity extends BasePreferenceActivity {
             }
             holder.icon.setColorFilter(mActionIconColor, Mode.SRC_ATOP);
 
-            if (position > 0 && position <= getCount() - 1) {
-                final boolean prevCategory = getItemViewType(position - 1) == HEADER_TYPE_CATEGORY;
-                holder.content.setShowDividers(prevCategory ? LinearLayout.SHOW_DIVIDER_NONE : LinearLayout.SHOW_DIVIDER_END);
-            } else {
-                holder.content.setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);
-            }
         }
 
         private int getCategoriesCount(final int start, final int end) {
@@ -568,14 +561,12 @@ public class SettingsActivity extends BasePreferenceActivity {
         private static class HeaderViewHolder extends ViewListHolder {
             private final TextView title, summary;
             private final ImageView icon;
-            private final LinearLayout content;
 
             HeaderViewHolder(final View view) {
                 super(view);
                 title = (TextView) findViewById(android.R.id.title);
                 summary = (TextView) findViewById(android.R.id.summary);
                 icon = (ImageView) findViewById(android.R.id.icon);
-                content = (LinearLayout) findViewById(android.R.id.content);
             }
         }
 
