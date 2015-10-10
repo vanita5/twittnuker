@@ -54,7 +54,7 @@ public class VideoLoader {
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mContext = context;
         mDiskCache = app.getDiskCache();
-        mImageDownloader = new TwidereImageDownloader(context, client, false);
+        mImageDownloader = new TwidereImageDownloader(context, client);
         mTaskManager = manager;
         mBus = bus;
     }

@@ -38,6 +38,7 @@ import android.support.annotation.NonNull;
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
 import com.squareup.okhttp.internal.Network;
+import com.squareup.otto.Bus;
 
 import org.acra.annotation.ReportsCrashes;
 import de.vanita5.twittnuker.BuildConfig;

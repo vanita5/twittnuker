@@ -914,9 +914,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (result.hasData()) {
                 final ParcelableStatus status = result.getData();
 
-
-                final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
-                assert bus != null;
                 bus.post(new FavoriteCreatedEvent(status));
                 Utils.showOkMessage(mContext, R.string.status_favorited, false);
             } else {
@@ -1544,8 +1541,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (result.hasData()) {
                 final ParcelableStatus status = result.getData();
 
-                final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
-                assert bus != null;
                 bus.post(new FavoriteDestroyedEvent(status));
                 Utils.showInfoMessage(mContext, R.string.status_unfavorited, false);
             } else {
@@ -2585,8 +2580,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
                     mResolver.update(uri, values, where.getSQL(), null);
                 }
-                final Bus bus = TwittnukerApplication.getInstance(mContext).getMessageBus();
-                assert bus != null;
                 bus.post(new StatusRetweetedEvent(status));
                 Utils.showOkMessage(mContext, R.string.status_retweeted, false);
             } else {
