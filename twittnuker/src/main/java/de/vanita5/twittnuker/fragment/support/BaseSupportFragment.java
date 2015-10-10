@@ -39,6 +39,8 @@ import android.support.v4.view.LayoutInflaterFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.squareup.otto.Bus;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
@@ -65,6 +67,8 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
     protected MediaLoaderWrapper mMediaLoader;
     @Inject
     protected VideoLoader mVideoLoader;
+    @Inject
+    protected Bus mBus;
 
     public BaseSupportFragment() {
 

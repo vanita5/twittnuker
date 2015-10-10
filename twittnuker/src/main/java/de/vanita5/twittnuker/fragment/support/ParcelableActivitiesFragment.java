@@ -26,11 +26,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.squareup.otto.Bus;
-
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 
 import java.util.List;
@@ -50,14 +47,12 @@ public abstract class ParcelableActivitiesFragment extends AbsActivitiesFragment
     @Override
     public void onStart() {
         super.onStart();
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        bus.register(this);
+        mBus.register(this);
     }
 
     @Override
     public void onStop() {
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        bus.unregister(this);
+        mBus.unregister(this);
         super.onStop();
     }
 

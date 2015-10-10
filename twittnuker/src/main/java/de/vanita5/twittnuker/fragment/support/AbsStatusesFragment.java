@@ -49,14 +49,12 @@ import com.squareup.otto.Subscribe;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter.StatusAdapterListener;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
-import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.RecyclerViewUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -365,16 +363,12 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
         final RecyclerView recyclerView = getRecyclerView();
         recyclerView.addOnScrollListener(mOnScrollListener);
         recyclerView.addOnScrollListener(mPauseOnScrollListener);
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.register(mStatusesBusCallback);
+        mBus.register(mStatusesBusCallback);
     }
 
     @Override
     public void onStop() {
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.unregister(mStatusesBusCallback);
+        mBus.unregister(mStatusesBusCallback);
         final RecyclerView recyclerView = getRecyclerView();
         recyclerView.removeOnScrollListener(mPauseOnScrollListener);
         recyclerView.removeOnScrollListener(mOnScrollListener);

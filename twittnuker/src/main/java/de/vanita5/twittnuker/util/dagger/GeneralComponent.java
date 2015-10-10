@@ -42,6 +42,7 @@ import de.vanita5.twittnuker.provider.TwidereCommandProvider;
 import de.vanita5.twittnuker.provider.TwidereDataProvider;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.service.RefreshService;
+import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
@@ -88,4 +89,6 @@ public interface GeneralComponent {
     void inject(BaseArrayAdapter<Object> object);
 
     void inject(DraftsAdapter object);
+
+    void inject(ManagedAsyncTask<Object, Object, Object> object);
 }

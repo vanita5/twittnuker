@@ -42,7 +42,6 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.mariotaku.sqliteqb.library.Columns.Column;
@@ -56,7 +55,6 @@ import de.vanita5.twittnuker.adapter.MessageEntriesAdapter;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter.DirectMessageEntry;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter.MessageEntriesAdapterListener;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox;
@@ -278,8 +276,7 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
         super.onStart();
         final ContentResolver resolver = getContentResolver();
         resolver.registerContentObserver(Accounts.CONTENT_URI, true, mReloadContentObserver);
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        bus.register(this);
+        mBus.register(this);
         final MessageEntriesAdapter adapter = getAdapter();
         adapter.updateReadState();
         updateRefreshState();
@@ -287,8 +284,7 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
 
     @Override
     public void onStop() {
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        bus.unregister(this);
+        mBus.unregister(this);
         final ContentResolver resolver = getContentResolver();
         resolver.unregisterContentObserver(mReloadContentObserver);
         super.onStop();

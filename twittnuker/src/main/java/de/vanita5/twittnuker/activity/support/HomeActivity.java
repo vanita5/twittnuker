@@ -62,7 +62,6 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.Toast;
 
 import com.meizu.flyme.reflect.StatusBarProxy;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -114,7 +113,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 import static de.vanita5.twittnuker.util.Utils.cleanDatabasesByItemLimit;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
@@ -127,7 +125,6 @@ import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
 public class HomeActivity extends BaseAppCompatActivity implements OnClickListener, OnPageChangeListener,
         SupportFragmentCallback, OnLongClickListener {
-
     private final Handler mHandler = new Handler();
 
     private final ContentObserver mAccountChangeObserver = new AccountChangeObserver(this, mHandler);
@@ -430,9 +427,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONSTART));
         final ContentResolver resolver = getContentResolver();
         resolver.registerContentObserver(Accounts.CONTENT_URI, true, mAccountChangeObserver);
-        final Bus bus = TwittnukerApplication.getInstance(this).getMessageBus();
-        assert bus != null;
-        bus.register(this);
+        mBus.register(this);
 
         mReadStateManager.registerOnSharedPreferenceChangeListener(mReadStateChangeListener);
         updateUnreadCount();
@@ -478,9 +473,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     protected void onStop() {
         mMultiSelectHandler.dispatchOnStop();
         mReadStateManager.unregisterOnSharedPreferenceChangeListener(mReadStateChangeListener);
-        final Bus bus = TwittnukerApplication.getInstance(this).getMessageBus();
-        assert bus != null;
-        bus.unregister(this);
+        mBus.unregister(this);
         final ContentResolver resolver = getContentResolver();
         resolver.unregisterContentObserver(mAccountChangeObserver);
         mPreferences.edit().putInt(KEY_SAVED_TAB_POSITION, mViewPager.getCurrentItem()).apply();
@@ -494,6 +487,11 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     }
 
     public void notifyAccountsChanged() {
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Subscribe

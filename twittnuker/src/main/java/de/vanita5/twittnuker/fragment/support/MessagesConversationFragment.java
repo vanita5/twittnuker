@@ -71,7 +71,6 @@ import android.widget.TextView;
 import com.github.johnpersano.supertoasts.SuperToast;
 import com.github.johnpersano.supertoasts.SuperToast.Duration;
 import com.github.johnpersano.supertoasts.SuperToast.OnDismissListener;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.mariotaku.sqliteqb.library.Columns.Column;
@@ -85,7 +84,6 @@ import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.loader.support.UserSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -106,7 +104,6 @@ import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.TakeAllKeyboardShortcut;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ReadStateManager;
@@ -356,9 +353,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     @Override
     public void onStart() {
         super.onStart();
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.register(this);
+        mBus.register(this);
         updateEmptyText();
         mMessagesListView.addOnScrollListener(mScrollListener);
         mScrollListener.reset();
@@ -384,9 +379,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     @Override
     public void onStop() {
         mMessagesListView.removeOnScrollListener(mScrollListener);
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.unregister(this);
+        mBus.unregister(this);
         if (mPopupMenu != null) {
             mPopupMenu.dismiss();
         }

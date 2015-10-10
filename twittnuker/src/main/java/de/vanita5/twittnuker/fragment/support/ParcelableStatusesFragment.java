@@ -27,12 +27,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
@@ -66,32 +64,28 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
 
     @Override
     public boolean getStatuses(long[] accountIds, final long[] maxIds, final long[] sinceIds) {
-		final Bundle args = new Bundle(getArguments());
-		if (maxIds != null) {
-			args.putLong(EXTRA_MAX_ID, maxIds[0]);
+        final Bundle args = new Bundle(getArguments());
+        if (maxIds != null) {
+            args.putLong(EXTRA_MAX_ID, maxIds[0]);
             args.putBoolean(EXTRA_MAKE_GAP, false);
-		}
-		if (sinceIds != null) {
-			args.putLong(EXTRA_SINCE_ID, sinceIds[0]);
-		}
+        }
+        if (sinceIds != null) {
+            args.putLong(EXTRA_SINCE_ID, sinceIds[0]);
+        }
         args.putBoolean(EXTRA_FROM_USER, true);
-		getLoaderManager().restartLoader(0, args, this);
+        getLoaderManager().restartLoader(0, args, this);
         return true;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.register(this);
+        mBus.register(this);
     }
 
     @Override
     public void onStop() {
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.unregister(this);
+        mBus.unregister(this);
         super.onStop();
     }
 
@@ -221,6 +215,6 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
             updateRetweetedStatuses(event.status);
         }
 
-	}
+    }
 
 }

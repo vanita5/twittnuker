@@ -30,6 +30,8 @@ import android.support.annotation.NonNull;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
+import com.squareup.otto.Bus;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
@@ -62,6 +64,8 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     protected AsyncTwitterWrapper mTwitterWrapper;
     @Inject
     protected ReadStateManager mReadStateManager;
+    @Inject
+    protected Bus mBus;
 
     // Registered listeners
     private ArrayList<ControlBarOffsetListener> mControlBarOffsetListeners = new ArrayList<>();

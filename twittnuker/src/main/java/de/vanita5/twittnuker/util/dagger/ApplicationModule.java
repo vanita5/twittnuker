@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util.dagger;
 
 import android.content.Context;
+import android.os.Looper;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -30,6 +31,8 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.utils.L;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.internal.Network;
+import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
 
 import org.mariotaku.restfu.http.RestHttpClient;
 
@@ -66,18 +69,25 @@ public class ApplicationModule {
     private final AsyncTaskManager asyncTaskManager;
     private final Network network;
     private final RestHttpClient restHttpClient;
+    private final Bus bus;
 
     public ApplicationModule(TwittnukerApplication application) {
+        if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
+            throw new RuntimeException("Module must be created inside main thread");
+        }
         sharedPreferences = SharedPreferencesWrapper.getInstance(application, Constants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         activityTracker = new ActivityTracker();
+        bus = new Bus(ThreadEnforcer.MAIN);
         asyncTaskManager = AsyncTaskManager.getInstance();
-        asyncTwitterWrapper = new AsyncTwitterWrapper(application, asyncTaskManager);
         readStateManager = new ReadStateManager(application);
         network = new TwidereNetwork(application);
+
+
+        asyncTwitterWrapper = new AsyncTwitterWrapper(application, asyncTaskManager, bus);
         restHttpClient = TwitterAPIFactory.getDefaultHttpClient(application, network);
         imageDownloader = new TwidereImageDownloader(application, restHttpClient);
         imageLoader = createImageLoader(application, imageDownloader);
-        videoLoader = new VideoLoader(application, imageDownloader, asyncTaskManager);
+        videoLoader = new VideoLoader(application, restHttpClient, asyncTaskManager, bus);
         mediaLoaderWrapper = new MediaLoaderWrapper(imageLoader, videoLoader);
     }
 
@@ -102,6 +112,11 @@ public class ApplicationModule {
     @Provides
     public RestHttpClient getRestHttpClient() {
         return restHttpClient;
+    }
+
+    @Provides
+    public Bus getBus() {
+        return bus;
     }
 
     @Provides

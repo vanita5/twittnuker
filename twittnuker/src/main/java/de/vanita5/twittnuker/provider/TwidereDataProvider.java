@@ -154,6 +154,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     private ImagePreloader mImagePreloader;
     @Inject
     Network mNetwork;
+    @Inject
+    Bus mBus;
     private NotificationHelper mNotificationHelper;
     private Handler mHandler;
 
@@ -866,15 +868,12 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
     private void notifyUnreadCountChanged(final int position) {
         final Context context = getContext();
-        final Bus bus = TwittnukerApplication.getInstance(context).getMessageBus();
-        if (bus != null) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    bus.post(new UnreadCountUpdatedEvent(position));
-                }
-            });
-        }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+            mBus.post(new UnreadCountUpdatedEvent(position));
+            }
+        });
         notifyContentObserver(UnreadCounts.CONTENT_URI);
     }
 

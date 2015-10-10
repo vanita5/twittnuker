@@ -35,12 +35,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.squareup.otto.Bus;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter.ActivityAdapterListener;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -119,16 +116,12 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentRecyclerView
     @Override
     public void onStart() {
         super.onStart();
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.register(mStatusesBusCallback);
+        mBus.register(mStatusesBusCallback);
     }
 
     @Override
     public void onStop() {
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.unregister(mStatusesBusCallback);
+        mBus.unregister(mStatusesBusCallback);
         super.onStop();
     }
 

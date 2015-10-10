@@ -35,11 +35,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.adapter.TrendsAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
@@ -126,16 +124,12 @@ public class TrendsSuggestionsFragment extends AbsContentListViewFragment<Trends
     public void onStart() {
         super.onStart();
         getLoaderManager().restartLoader(0, null, this);
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.register(this);
+        mBus.register(this);
     }
 
     @Override
     public void onStop() {
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.unregister(this);
+        mBus.unregister(this);
         super.onStop();
     }
 

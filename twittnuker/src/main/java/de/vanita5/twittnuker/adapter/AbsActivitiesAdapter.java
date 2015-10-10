@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.adapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.CardView;
@@ -309,6 +310,7 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
             case Activity.ACTION_RETWEETED_RETWEET:
             case Activity.ACTION_RETWEETED_MENTION:
             case Activity.ACTION_FAVORITED_MENTION:
+            case Activity.ACTION_LIST_CREATED:
             case Activity.ACTION_LIST_MEMBER_ADDED: {
                 return ITEM_VIEW_TYPE_TITLE_SUMMARY;
             }

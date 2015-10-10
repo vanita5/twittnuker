@@ -30,9 +30,12 @@ import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.nostra13.universalimageloader.utils.IoUtils;
 import com.squareup.otto.Bus;
 
+import org.mariotaku.restfu.http.RestHttpClient;
+
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
+import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
 import de.vanita5.twittnuker.util.message.VideoLoadFinishedEvent;
 
 import java.io.File;
@@ -47,13 +50,13 @@ public class VideoLoader {
     private final AsyncTaskManager mTaskManager;
     private final Bus mBus;
 
-    public VideoLoader(Context context, ImageDownloader downloader, AsyncTaskManager manager) {
+    public VideoLoader(Context context, RestHttpClient client, AsyncTaskManager manager, Bus bus) {
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mContext = context;
         mDiskCache = app.getDiskCache();
-        mImageDownloader = downloader;
+        mImageDownloader = new TwidereImageDownloader(context, client, false);
         mTaskManager = manager;
-        mBus = app.getMessageBus();
+        mBus = bus;
     }
 
     public File getCachedVideoFile(final String url, boolean loadIfNotFound) {
@@ -73,10 +76,14 @@ public class VideoLoader {
 
 
     public int loadVideo(String uri, VideoLoadingListener listener) {
+        return loadVideo(uri, false, listener);
+    }
+
+    public int loadVideo(String uri, boolean forceReload, VideoLoadingListener listener) {
         if (mTaskManager.hasRunningTasksForTag(uri)) {
             return 0;
         }
-        return mTaskManager.add(new PreLoadVideoTask(mContext, this, listener, uri), true);
+        return mTaskManager.add(new PreLoadVideoTask(mContext, this, listener, uri, forceReload), true);
     }
 
     private void notifyTaskFinish(String uri, boolean succeeded) {
@@ -101,12 +108,16 @@ public class VideoLoader {
         private final VideoLoader mPreLoader;
         private final VideoLoadingListener mListener;
         private final String mUri;
+        private final boolean mForceReload;
 
-        private PreLoadVideoTask(final Context context, final VideoLoader preLoader, VideoLoadingListener listener, final String uri) {
-            super(context, preLoader.mTaskManager, uri);
+        private PreLoadVideoTask(final Context context, final VideoLoader preLoader,
+                                 final VideoLoadingListener listener, final String uri,
+                                 boolean forceReload) {
+            super(context, uri);
             mPreLoader = preLoader;
             mListener = listener;
             mUri = uri;
+            mForceReload = forceReload;
         }
 
         @Override
@@ -120,7 +131,7 @@ public class VideoLoader {
         protected SingleResponse<File> doInBackground(Object... params) {
             final DiskCache diskCache = mPreLoader.mDiskCache;
             final File cachedFile = diskCache.get(mUri);
-            if (cachedFile != null && cachedFile.isFile() && cachedFile.length() > 0)
+            if (!mForceReload && cachedFile != null && cachedFile.isFile() && cachedFile.length() > 0)
                 return SingleResponse.getInstance(cachedFile);
             InputStream is = null;
             try {
