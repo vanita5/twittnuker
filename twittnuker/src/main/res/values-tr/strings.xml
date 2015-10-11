@@ -466,7 +466,7 @@
     <string name="unsubscribe_from_user_list_confirm_message"><xliff:g id="name">%s</xliff:g> listesi üyeliğinden çıkılsın mı? Daha sonra tekrar üye olabilirsiniz.</string>
     <string name="destroy_status">Tweeti sil</string>
     <string name="destroy_status_confirm_message">Bu tweeti sil?</string>
-    <string name="twidere_test">Twidere test</string>
+    <string name="twidere_test">Twittnuker test</string>
     <string name="unread_count">Okunmamış sayısı</string>
     <string name="developed_by">Tarafından geliştirildi</string>
     <string name="project_account">Proje şifresi</string>

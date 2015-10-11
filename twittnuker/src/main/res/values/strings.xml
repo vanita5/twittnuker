@@ -780,6 +780,8 @@
     <string name="pebble_notifications_summary">Send Notifications to your Pebble</string>
     <string name="no_account">No account</string>
 
+    <string name="search">Search</string>
+
 
     <string name="read_from_bottom_summary_off"></string>
 
