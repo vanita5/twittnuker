@@ -372,11 +372,11 @@
         <activity
             android:name=".activity.support.DataExportActivity"
             android:label="@string/export_settings"
-            android:theme="@android:style/Theme.NoDisplay"/>
+            android:theme="@style/Theme.Twidere.Light.NoDisplay" />
         <activity
             android:name=".activity.support.DataImportActivity"
             android:label="@string/import_settings"
-            android:theme="@android:style/Theme.NoDisplay"/>
+            android:theme="@style/Theme.Twidere.Light.NoDisplay" />
         <activity
             android:name=".activity.support.ActivityPickerActivity"
             android:icon="@drawable/ic_action_twittnuker"
