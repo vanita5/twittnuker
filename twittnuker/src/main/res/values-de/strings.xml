@@ -681,6 +681,11 @@
     <string name="pause">Pause</string>
     <string name="jump_to_top">Nach oben springen</string>
     <string name="dark_theme">Dunkles Theme</string>
+
+    <string name="wizard_hint_title_location_requirement">Standort Berechtigung</string>
+    <string name="wizard_hint_summary_location_requirement">Twittnuker benötigt Berechtigungen, wenn du Tweets mit Standort senden möchtest.</string>
+    <string name="wizard_hint_title_storage_requirement">Speicher Berechtigung</string>
+    <string name="wizard_hint_summary_storage_requirement">Twittnuker benötigt Berechtigungen, wenn du Bilder und Videos speichern möchtest.</string>
     <string name="crop_image">Bild zuschneiden</string>
     <string name="usage_label_sent">Gesendet</string>
     <string name="usage_label_received">Empfangen</string>
