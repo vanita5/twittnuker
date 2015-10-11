@@ -60,7 +60,8 @@ import static de.vanita5.twittnuker.util.Utils.shouldStopAutoRefreshOnBatteryLow
 
 public class RefreshService extends Service implements Constants {
 
-    private SharedPreferencesWrapper mPreferences;
+    @Inject
+    SharedPreferencesWrapper mPreferences;
 
     private AlarmManager mAlarmManager;
     @Inject
@@ -149,7 +150,6 @@ public class RefreshService extends Service implements Constants {
         DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(this)).build().inject(this);
         mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
-        mPreferences = SharedPreferencesWrapper.getInstance(app, SHARED_PREFERENCES_NAME, MODE_PRIVATE);
         mPendingRefreshHomeTimelineIntent = PendingIntent.getBroadcast(this, 0, new Intent(
                 BROADCAST_REFRESH_HOME_TIMELINE), 0);
         mPendingRefreshMentionsIntent = PendingIntent.getBroadcast(this, 0, new Intent(BROADCAST_REFRESH_MENTIONS), 0);

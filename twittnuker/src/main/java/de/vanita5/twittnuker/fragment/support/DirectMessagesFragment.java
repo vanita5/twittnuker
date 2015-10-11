@@ -47,7 +47,6 @@ import com.squareup.otto.Subscribe;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
@@ -73,6 +72,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 
 public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<MessageEntriesAdapter>
@@ -82,8 +83,6 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
     private final SupportFragmentReloadCursorObserver mReloadContentObserver = new SupportFragmentReloadCursorObserver(
             this, 0, this);
 
-    // Utility classes
-    private MultiSelectManager mMultiSelectManager;
     private RemoveUnreadCountsTask mRemoveUnreadCountsTask;
     private RecyclerViewNavigationHelper mNavigationHelper;
 
@@ -251,7 +250,6 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
         final View view = getView();
         if (view == null) throw new AssertionError();
         final Context viewContext = view.getContext();
-        mMultiSelectManager = getMultiSelectManager();
         final MessageEntriesAdapter adapter = getAdapter();
         final RecyclerView recyclerView = getRecyclerView();
         final LinearLayoutManager layoutManager = getLayoutManager();

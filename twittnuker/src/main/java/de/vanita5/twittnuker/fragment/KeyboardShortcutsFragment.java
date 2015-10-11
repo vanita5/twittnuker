@@ -53,21 +53,17 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.KeyboardShortcutPreferenceCompatActivity;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutSpec;
 
 public class KeyboardShortcutsFragment extends BasePreferenceFragment implements KeyboardShortcutConstants {
 
-    private KeyboardShortcutsHandler mKeyboardShortcutHandler;
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         final Activity activity = getActivity();
-        mKeyboardShortcutHandler = TwittnukerApplication.getInstance(activity).getKeyboardShortcutsHandler();
         final PreferenceScreen defaultScreen = getPreferenceScreen();
         final PreferenceScreen preferenceScreen;
         if (defaultScreen != null) {
@@ -312,13 +308,12 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment implements
 
     }
 
-    public static class ResetKeyboardShortcutConfirmDialogFragment extends DialogFragment implements OnClickListener {
+    public static class ResetKeyboardShortcutConfirmDialogFragment extends BaseDialogFragment implements OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE: {
-                    TwittnukerApplication app = TwittnukerApplication.getInstance(getActivity());
-                    app.getKeyboardShortcutsHandler().reset();
+                    mKeyboardShortcutsHandler.reset();
                     break;
                 }
             }

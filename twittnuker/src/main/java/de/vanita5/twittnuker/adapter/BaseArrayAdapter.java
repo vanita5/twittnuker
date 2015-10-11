@@ -29,8 +29,10 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
@@ -42,6 +44,8 @@ import javax.inject.Inject;
 public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter, OnSharedPreferenceChangeListener {
 
     private final TwidereLinkify mLinkify;
+    @Inject
+    protected UserColorNameManager mUserColorNameManager;
 
     private float mTextSize;
     private int mLinkHighlightOption;
@@ -51,6 +55,8 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
     private final SharedPreferences mColorPrefs;
     @Inject
     protected MediaLoaderWrapper mImageLoader;
+    @Inject
+    protected MultiSelectManager mMultiSelectManager;
 
     public BaseArrayAdapter(final Context context, final int layoutRes) {
         this(context, layoutRes, null);
@@ -61,7 +67,7 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
         //noinspection unchecked
         DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject((BaseArrayAdapter<Object>) this);
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-        mLinkify = new TwidereLinkify(new OnLinkClickHandler(context, app.getMultiSelectManager()));
+        mLinkify = new TwidereLinkify(new OnLinkClickHandler(context, mMultiSelectManager));
         mColorPrefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mColorPrefs.registerOnSharedPreferenceChangeListener(this);
     }

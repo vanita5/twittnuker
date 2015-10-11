@@ -33,7 +33,6 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutSpec;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -43,7 +42,6 @@ public class KeyboardShortcutPreferenceCompatActivity extends BaseThemedActivity
     public static final String EXTRA_CONTEXT_TAG = "context_tag";
     public static final String EXTRA_KEY_ACTION = "key_action";
 
-    private KeyboardShortcutsHandler mKeyboardShortcutHandler;
     private TextView mKeysLabel, mConflictLabel;
 
     private KeyboardShortcutSpec mKeySpec;
@@ -73,7 +71,6 @@ public class KeyboardShortcutPreferenceCompatActivity extends BaseThemedActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mKeyboardShortcutHandler = TwittnukerApplication.getInstance(this).getKeyboardShortcutsHandler();
         setContentView(R.layout.activity_keyboard_shortcut_input);
         setTitle(KeyboardShortcutsHandler.getActionLabel(this, getKeyAction()));
 

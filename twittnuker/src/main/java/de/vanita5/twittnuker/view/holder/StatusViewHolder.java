@@ -36,7 +36,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.ArrayUtils;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.ContentCardClickListener;
@@ -471,13 +470,14 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
 
         private final Context context;
         private final SharedPreferencesWrapper preferences;
-        @Inject
-        MediaLoaderWrapper loader;
+        private final TwidereLinkify linkify;
         private final MediaLoadingHandler handler;
         @Inject
+        MediaLoaderWrapper loader;
+        @Inject
         AsyncTwitterWrapper twitter;
-        private final TwidereLinkify linkify;
-        private final UserColorNameManager manager;
+        @Inject
+        UserColorNameManager manager;
 
         private int profileImageStyle;
         private int mediaPreviewStyle;
@@ -496,7 +496,6 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             preferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
             final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
             handler = new MediaLoadingHandler(R.id.media_preview_progress);
-            manager = app.getUserColorNameManager();
             linkify = new TwidereLinkify(null);
             updateOptions();
         }

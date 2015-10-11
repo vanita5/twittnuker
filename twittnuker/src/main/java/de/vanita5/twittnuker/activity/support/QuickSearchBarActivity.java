@@ -63,7 +63,6 @@ import org.mariotaku.sqliteqb.library.OrderBy;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.QuickSearchBarActivity.SuggestionItem;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -433,9 +432,8 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         SuggestionsAdapter(QuickSearchBarActivity activity) {
             mActivity = activity;
             mImageLoader = activity.mImageLoader;
+            mUserColorNameManager = activity.mUserColorNameManager;
             mInflater = LayoutInflater.from(activity);
-            final TwittnukerApplication application = TwittnukerApplication.getInstance(activity);
-            mUserColorNameManager = application.getUserColorNameManager();
         }
 
         public boolean canDismiss(int position) {
@@ -534,7 +532,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         private final long mAccountId;
         private final String mQuery;
 
-        public SuggestionsLoader(Context context, long accountId, String query) {
+        public SuggestionsLoader(QuickSearchBarActivity context, long accountId, String query) {
             super(context);
             mAccountId = accountId;
             mQuery = query;

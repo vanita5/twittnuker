@@ -49,6 +49,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -60,7 +61,6 @@ import android.support.v7.widget.ActionMenuView.OnMenuItemClickListener;
 import android.support.v7.widget.FixedLinearLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ItemDecoration;
 import android.support.v7.widget.RecyclerView.State;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -100,8 +100,7 @@ import com.twitter.Extractor;
 
 import org.mariotaku.dynamicgridview.DraggableArrayAdapter;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
+import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.fragment.support.ViewStatusDialogFragment;
@@ -127,12 +126,11 @@ import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.PermissionUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
-import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ActionIconView;
 import de.vanita5.twittnuker.view.BadgeView;
@@ -167,7 +165,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     private final Extractor mExtractor = new Extractor();
     private TwidereValidator mValidator;
     private LocationManager mLocationManager;
-    private SharedPreferencesWrapper mPreferences;
     private ContentResolver mResolver;
     private AsyncTask<Object, Object, ?> mTask;
     private SupportMenuInflater mMenuInflater;
@@ -293,9 +290,9 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     @Override
     protected void onStop() {
         saveAccountSelection();
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission_group.LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+        try {
             mLocationManager.removeUpdates(this);
+        } catch (SecurityException ignore) {
         }
         super.onStop();
     }
@@ -535,10 +532,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        mPreferences = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME,
-                Context.MODE_PRIVATE, SharedPreferenceConstants.class);
-
-        final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
         mResolver = getContentResolver();
         mValidator = new TwidereValidator(this);
         setContentView(R.layout.activity_compose);
@@ -1009,16 +1002,15 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
     private boolean setComposeTitle(final Intent intent) {
         final String action = intent.getAction();
-        final UserColorNameManager manager = UserColorNameManager.getInstance(this);
         final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
         if (INTENT_ACTION_REPLY.equals(action)) {
             if (mInReplyToStatus == null) return false;
-            final String displayName = manager.getDisplayName(mInReplyToStatus.user_id, mInReplyToStatus.user_name,
+            final String displayName = mUserColorNameManager.getDisplayName(mInReplyToStatus.user_id, mInReplyToStatus.user_name,
                     mInReplyToStatus.user_screen_name, nameFirst, false);
             setTitle(getString(R.string.reply_to, displayName));
         } else if (INTENT_ACTION_QUOTE.equals(action)) {
             if (mInReplyToStatus == null) return false;
-            final String displayName = manager.getDisplayName(mInReplyToStatus.user_id, mInReplyToStatus.user_name,
+            final String displayName = mUserColorNameManager.getDisplayName(mInReplyToStatus.user_id, mInReplyToStatus.user_name,
                     mInReplyToStatus.user_screen_name, nameFirst, false);
             setTitle(getString(R.string.quote_user, displayName));
         } else if (INTENT_ACTION_EDIT_DRAFT.equals(action)) {
@@ -1026,7 +1018,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
             setTitle(R.string.edit_draft);
         } else if (INTENT_ACTION_MENTION.equals(action)) {
             if (mMentionUser == null) return false;
-            final String displayName = manager.getDisplayName(mMentionUser.id, mMentionUser.name,
+            final String displayName = mUserColorNameManager.getDisplayName(mMentionUser.id, mMentionUser.name,
                     mMentionUser.screen_name, nameFirst, false);
             setTitle(getString(R.string.mention_user, displayName));
         } else if (INTENT_ACTION_REPLY_MULTIPLE.equals(action)) {
@@ -1096,6 +1088,17 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         mFragmentResumed = false;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (PermissionUtils.getPermission(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                PermissionUtils.getPermission(permissions, grantResults, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            startLocationUpdateIfEnabled();
+        } else {
+            //TODO show permission denied message
+        }
+    }
+
     private static class SetProgressVisibleRunnable implements Runnable {
 
         private final ComposeActivity activity;
@@ -1136,34 +1139,32 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
      */
     private boolean startLocationUpdateIfEnabled() {
         final LocationManager lm = mLocationManager;
-        try {
-            final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION);
-            if (!attachLocation) {
+        final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION);
+        if (!attachLocation) {
+            try {
                 lm.removeUpdates(this);
-                return false;
+            } catch (SecurityException ignore) {
             }
-            final Criteria criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-            final String provider = lm.getBestProvider(criteria, true);
-            if (provider != null) {
+            return false;
+        }
+        final Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        final String provider = lm.getBestProvider(criteria, true);
+        if (provider != null) {
+            try {
                 mLocationText.setText(R.string.getting_location);
                 lm.requestLocationUpdates(provider, 0, 0, this);
-                final Location location;
-                if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                    location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                } else {
-                    location = lm.getLastKnownLocation(provider);
-                }
+                final Location location = Utils.getCachedLocation(this);
                 if (location != null) {
                     onLocationChanged(location);
                 }
-            } else {
-                Toast.makeText(this, R.string.cannot_get_location, Toast.LENGTH_SHORT).show();
+            } catch (SecurityException e) {
+                return false;
             }
-            return provider != null;
-        } catch (SecurityException e) {
-            return false;
+        } else {
+            Toast.makeText(this, R.string.cannot_get_location, Toast.LENGTH_SHORT).show();
         }
+        return provider != null;
     }
 
     private boolean takePhoto() {
@@ -1175,10 +1176,21 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     private void toggleLocation() {
         final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
         mPreferences.edit().putBoolean(KEY_ATTACH_LOCATION, !attachLocation).apply();
-        startLocationUpdateIfEnabled();
+        requestOrUpdateLocation();
         updateLocationState();
         setMenu();
         updateTextCount();
+    }
+
+    private void requestOrUpdateLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            startLocationUpdateIfEnabled();
+        } else {
+            final String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION};
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_REQUEST_PERMISSIONS);
+        }
     }
 
     private void updateLocationState() {
@@ -1287,30 +1299,26 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
     }
 
-    private static class AccountIconsAdapter extends Adapter<AccountIconViewHolder> {
+    private static class AccountIconsAdapter extends BaseRecyclerViewAdapter<AccountIconViewHolder> {
 
         private final ComposeActivity mActivity;
         private final LayoutInflater mInflater;
-        private final MediaLoaderWrapper mImageLoader;
         private final LongSparseArray<Boolean> mSelection;
         private final boolean mNameFirst;
 
         private ParcelableCredentials[] mAccounts;
 
         public AccountIconsAdapter(ComposeActivity activity) {
+            super(activity);
             setHasStableIds(true);
             mActivity = activity;
             mInflater = activity.getLayoutInflater();
-            mImageLoader = activity.mImageLoader;
             mSelection = new LongSparseArray<>();
-            final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(activity,
-                    SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE, SharedPreferenceConstants.class);
-            assert preferences != null;
-            mNameFirst = preferences.getBoolean(KEY_NAME_FIRST);
+            mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
         }
 
         public MediaLoaderWrapper getImageLoader() {
-            return mImageLoader;
+            return mMediaLoader;
         }
 
         @NonNull

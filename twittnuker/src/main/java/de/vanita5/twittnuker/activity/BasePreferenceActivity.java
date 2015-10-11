@@ -44,7 +44,6 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.StrictModeUtils;
@@ -67,7 +66,8 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     @ShapeStyle
     private int mProfileImageStyle;
     private String mCurrentThemeBackgroundOption;
-    private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
+    @Inject
+    protected KeyboardShortcutsHandler mKeyboardShortcutsHandler;
     private String mCurrentThemeFontFamily;
     @Inject
     protected ActivityTracker mActivityTracker;
@@ -174,7 +174,6 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         setupWindow();
         super.onCreate(savedInstanceState);
         DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(this)).build().inject(this);
-        mKeyboardShortcutsHandler = TwittnukerApplication.getInstance(this).getKeyboardShortcutsHandler();
     }
 
     @Override

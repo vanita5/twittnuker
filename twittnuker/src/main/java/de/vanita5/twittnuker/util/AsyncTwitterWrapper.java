@@ -64,7 +64,6 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableLocation;
@@ -90,6 +89,7 @@ import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.util.collection.LongSparseMap;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
@@ -128,11 +128,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
     private CopyOnWriteArraySet<Long> mSendingDraftIds = new CopyOnWriteArraySet<>();
 
-    public AsyncTwitterWrapper(final Context context, final AsyncTaskManager manager, Bus bus) {
+    public AsyncTwitterWrapper(final Context context, final AsyncTaskManager manager, final SharedPreferencesWrapper preferences, final Bus bus) {
         mContext = context;
         mAsyncTaskManager = manager;
-        mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME,
-                Context.MODE_PRIVATE, SharedPreferenceConstants.class);
+        mPreferences = preferences;
         mResolver = context.getContentResolver();
         mBus = bus;
     }
@@ -699,7 +698,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (result.hasData()) {
                 final User user = result.getData();
                 final TwittnukerApplication application = TwittnukerApplication.getInstance(mContext);
-                final UserColorNameManager manager = application.getUserColorNameManager();
+                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 final String message = mContext.getString(R.string.accepted_users_follow_request,
                         manager.getDisplayName(user, nameFirst, true));
@@ -754,7 +753,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 if (users.length == 1) {
                     final ParcelableUser user = users[0];
                     final TwittnukerApplication application = TwittnukerApplication.getInstance(mContext);
-                    final UserColorNameManager manager = application.getUserColorNameManager();
+                    final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                     final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                     final String displayName = manager.getDisplayName(user.id, user.name, user.screen_name, nameFirst, false);
                     message = mContext.getString(R.string.added_user_to_list, displayName, result.getData().name);
@@ -844,8 +843,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
             if (result.hasData()) {
-                final TwittnukerApplication application = TwittnukerApplication.getInstance(mContext);
-                final UserColorNameManager manager = application.getUserColorNameManager();
+                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 final String message = mContext.getString(R.string.blocked_user,
                         manager.getDisplayName(result.getData(), nameFirst, true));
@@ -962,8 +960,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (result.hasData()) {
                 final ParcelableUser user = result.getData();
                 final String message;
-                final TwittnukerApplication application = TwittnukerApplication.getInstance(mContext);
-                final UserColorNameManager manager = application.getUserColorNameManager();
+                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 if (user.is_protected) {
                     message = mContext.getString(R.string.sent_follow_request_to_user,
@@ -1072,8 +1069,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
             if (result.hasData()) {
-                final TwittnukerApplication application = TwittnukerApplication.getInstance(mContext);
-                final UserColorNameManager manager = application.getUserColorNameManager();
+                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 final String message = mContext.getString(R.string.muted_user,
                         manager.getDisplayName(result.getData(), nameFirst, true));
@@ -1251,8 +1247,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (succeed) {
                 if (users.length == 1) {
                     final ParcelableUser user = users[0];
-                    final TwittnukerApplication application = TwittnukerApplication.getInstance(mContext);
-                    final UserColorNameManager manager = application.getUserColorNameManager();
+                    final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                     final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                     final String displayName = manager.getDisplayName(user.id, user.name, user.screen_name, nameFirst, false);
                     message = mContext.getString(R.string.deleted_user_from_list, displayName, result.getData().name);
@@ -1310,8 +1305,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected void onPostExecute(final SingleResponse<User> result) {
             if (result.hasData()) {
                 final User user = result.getData();
-                final TwittnukerApplication application = TwittnukerApplication.getInstance(mContext);
-                final UserColorNameManager manager = application.getUserColorNameManager();
+                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 final String message = mContext.getString(R.string.denied_users_follow_request,
                         manager.getDisplayName(user, nameFirst, true));
@@ -1355,8 +1349,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
             if (result.hasData()) {
-                final TwittnukerApplication application = TwittnukerApplication.getInstance(mContext);
-                final UserColorNameManager manager = application.getUserColorNameManager();
+                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 final String message = mContext.getString(R.string.unblocked_user,
                         manager.getDisplayName(result.getData(), nameFirst, true));
@@ -1594,8 +1587,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
             if (result.hasData()) {
-                final TwittnukerApplication application = TwittnukerApplication.getInstance(mContext);
-                final UserColorNameManager manager = application.getUserColorNameManager();
+                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 final String message = mContext.getString(R.string.unfollowed_user,
                         manager.getDisplayName(result.getData(), nameFirst, true));
@@ -1637,8 +1629,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
             if (result.hasData()) {
-                final TwittnukerApplication application = TwittnukerApplication.getInstance(mContext);
-                final UserColorNameManager manager = application.getUserColorNameManager();
+                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 final String message = mContext.getString(R.string.unmuted_user,
                         manager.getDisplayName(result.getData(), nameFirst, true));
@@ -2160,12 +2151,15 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             final String[] projection = {SQLFunctions.COUNT()};
             final int rowsDeleted;
             final Cursor countCur = mResolver.query(uri, projection, countWhere, null, null);
-            if (countCur.moveToFirst()) {
-                rowsDeleted = countCur.getInt(0);
-            } else {
-                rowsDeleted = 0;
+            try {
+                if (countCur != null && countCur.moveToFirst()) {
+                    rowsDeleted = countCur.getInt(0);
+                } else {
+                    rowsDeleted = 0;
+                }
+            } finally {
+                Utils.closeSilently(countCur);
             }
-            countCur.close();
 
             // Insert a gap.
             final boolean deletedOldGap = rowsDeleted > 0 && ArrayUtils.contains(statusIds, maxId);

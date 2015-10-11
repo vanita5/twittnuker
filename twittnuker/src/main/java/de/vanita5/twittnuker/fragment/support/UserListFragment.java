@@ -68,8 +68,6 @@ import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
@@ -79,13 +77,9 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.text.validator.UserListNameValidator;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.LinkCreator;
-import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
-import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
@@ -103,8 +97,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 
     private SupportTabsAdapter mPagerAdapter;
     private boolean mUserListLoaderInitialized;
-    private UserColorNameManager mUserColorNameManager;
-    private SharedPreferencesWrapper mPreferences;
 
     private ParcelableUserList mUserList;
     private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
@@ -135,11 +127,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         mUserList = userList;
 
         if (userList != null) {
-            final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
-            final String displayName = mUserColorNameManager.getDisplayName(userList, nameFirst, false);
-            final String description = userList.description;
-            final TwidereLinkify linkify = new TwidereLinkify(new OnLinkClickHandler(activity,
-                    getMultiSelectManager()));
             activity.setTitle(userList.name);
         } else {
             activity.setTitle(R.string.user_list);
@@ -211,13 +198,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         final FragmentActivity activity = getActivity();
-        final TwittnukerApplication application = TwittnukerApplication.getInstance(activity);
-        mUserColorNameManager = application.getUserColorNameManager();
-        mPreferences = SharedPreferencesWrapper.getInstance(activity, SHARED_PREFERENCES_NAME,
-                Context.MODE_PRIVATE, SharedPreferenceConstants.class);
-
         setHasOptionsMenu(true);
-
 
         Utils.setNdefPushMessageCallback(activity, new CreateNdefMessageCallback() {
 

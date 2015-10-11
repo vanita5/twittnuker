@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedValues;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
@@ -66,8 +67,8 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
     private final SQLiteDatabase mDatabase;
     @Inject
     MediaLoaderWrapper mProfileImageLoader;
-    @NonNull
-    private final SharedPreferencesWrapper mPreferences;
+    @Inject
+    SharedPreferencesWrapper mPreferences;
 
     private final EditText mEditText;
 
@@ -86,7 +87,6 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
         DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
         mEditText = view;
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-        mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mResolver = context.getContentResolver();
         mDatabase = app.getSQLiteDatabase();
         mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);

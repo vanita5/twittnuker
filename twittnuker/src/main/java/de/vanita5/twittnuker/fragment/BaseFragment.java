@@ -31,10 +31,9 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 
@@ -44,6 +43,8 @@ public class BaseFragment extends Fragment implements Constants {
 
     @Inject
     protected AsyncTwitterWrapper mTwitterWrapper;
+    @Inject
+    protected SharedPreferencesWrapper mPreferences;
 
     @Override
     public void onAttach(Context context) {
@@ -63,11 +64,6 @@ public class BaseFragment extends Fragment implements Constants {
         return null;
     }
 
-    public MultiSelectManager getMultiSelectManager() {
-        final TwittnukerApplication app = getApplication();
-        return app != null ? app.getMultiSelectManager() : null;
-    }
-
     public SharedPreferences getSharedPreferences(final String name, final int mode) {
         final Activity activity = getActivity();
         if (activity != null) return activity.getSharedPreferences(name, mode);
@@ -84,13 +80,6 @@ public class BaseFragment extends Fragment implements Constants {
         final Activity activity = getActivity();
         if (activity == null) return;
         activity.registerReceiver(receiver, filter);
-    }
-
-    public void setProgressBarIndeterminateVisibility(final boolean visible) {
-        final Activity activity = getActivity();
-        if (activity instanceof BaseAppCompatActivity) {
-            activity.setProgressBarIndeterminateVisibility(visible);
-        }
     }
 
     public void unregisterReceiver(final BroadcastReceiver receiver) {

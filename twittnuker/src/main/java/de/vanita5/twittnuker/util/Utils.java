@@ -83,6 +83,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
+import android.system.ErrnoException;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -685,6 +686,12 @@ public final class Utils implements Constants {
         } catch (final IOException e) {
             return false;
         }
+        return true;
+    }
+
+    public static boolean closeSilently(final Cursor c) {
+        if (c == null) return false;
+        c.close();
         return true;
     }
 
@@ -2619,12 +2626,12 @@ public final class Utils implements Constants {
         context.startActivity(intent);
     }
 
-    public static void openMedia(final Context context, final ParcelableDirectMessage message, final ParcelableMedia current, Bundle options) {
+    public static void openMedia(final Context context, final ParcelableDirectMessage message, final ParcelableMedia current, @Nullable Bundle options) {
         openMedia(context, message.account_id, false, null, message, current, message.media, options);
     }
 
     public static void openMedia(final Context context, final ParcelableStatus status, final ParcelableMedia current, Bundle options) {
-        openMedia(context, status.account_id, status.is_possibly_sensitive, status, null, current, status.media, options);
+        openMedia(context, status.account_id, status.is_possibly_sensitive, status, null, current, getPrimaryMedia(status), options);
     }
 
     public static void openMedia(final Context context, final long accountId, final boolean isPossiblySensitive,
@@ -3896,6 +3903,11 @@ public final class Utils implements Constants {
                 && (!TWITTER_CONSUMER_KEY.equals(consumerKey) && !TWITTER_CONSUMER_SECRET.equals(consumerSecret));
     }
 
+    public static int getErrorNo(Throwable t) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return 0;
+        return UtilsL.getErrorNo(t);
+    }
+
     static class UtilsL {
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -3906,6 +3918,15 @@ public final class Utils implements Constants {
             final Transition transition = inflater.inflateTransition(transitionRes);
             window.setSharedElementEnterTransition(transition);
             window.setSharedElementExitTransition(transition);
+        }
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        public static int getErrorNo(Throwable t) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return 0;
+            if (t instanceof ErrnoException) {
+                return ((ErrnoException) t).errno;
+            }
+            return 0;
         }
     }
 
@@ -3926,28 +3947,28 @@ public final class Utils implements Constants {
 
     }
 
+    @Nullable
     public static GeoLocation getCachedGeoLocation(Context context) {
         final Location location = getCachedLocation(context);
         if (location == null) return null;
         return new GeoLocation(location.getLatitude(), location.getLongitude());
     }
 
+    @Nullable
     public static Location getCachedLocation(Context context) {
         Location location = null;
+        final LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (lm == null) return null;
         try {
-            final LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-            try {
-                location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            } catch (Exception ignore) {
+            location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        } catch (SecurityException ignore) {
 
-            }
-            if (location != null) return location;
-            try {
-                location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            } catch (Exception ignore) {
+        }
+        if (location != null) return location;
+        try {
+            location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        } catch (SecurityException ignore) {
 
-            }
-        } catch (Exception ignore) {
         }
         return location;
     }

@@ -40,7 +40,6 @@ import com.squareup.otto.Subscribe;
 import de.vanita5.twittnuker.adapter.TrendsAdapter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
@@ -50,7 +49,6 @@ import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
 public class TrendsSuggestionsFragment extends AbsContentListViewFragment<TrendsAdapter>
         implements LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
-    private MultiSelectManager mMultiSelectManager;
     private SharedPreferences mPreferences;
 
 
@@ -60,7 +58,6 @@ public class TrendsSuggestionsFragment extends AbsContentListViewFragment<Trends
     public void onActivityCreated(final Bundle savedInstanceState) {
         mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         super.onActivityCreated(savedInstanceState);
-        mMultiSelectManager = getMultiSelectManager();
         mAccountId = getDefaultAccountId(getActivity());
         getListView().setOnItemClickListener(this);
         getLoaderManager().initLoader(0, null, this);

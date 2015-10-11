@@ -30,12 +30,16 @@ import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.activity.support.ThemedFragmentActivity;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
-import de.vanita5.twittnuker.adapter.BaseAdapter;
+import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.adapter.BaseArrayAdapter;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
 import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
+import de.vanita5.twittnuker.fragment.BaseDialogFragment;
+import de.vanita5.twittnuker.fragment.BaseFiltersFragment;
 import de.vanita5.twittnuker.fragment.BaseFragment;
 import de.vanita5.twittnuker.fragment.BaseListFragment;
+import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
+import de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
 import de.vanita5.twittnuker.provider.TwidereCommandProvider;
@@ -78,7 +82,7 @@ public interface GeneralComponent {
 
     void inject(BackgroundOperationService object);
 
-    void inject(BaseAdapter<RecyclerView.ViewHolder> object);
+    void inject(BaseRecyclerViewAdapter<RecyclerView.ViewHolder> object);
 
     void inject(AccountsAdapter object);
 
@@ -91,4 +95,12 @@ public interface GeneralComponent {
     void inject(DraftsAdapter object);
 
     void inject(ManagedAsyncTask<Object, Object, Object> object);
+
+    void inject(BasePreferenceFragment object);
+
+    void inject(BaseDialogFragment object);
+
+    void inject(BaseFiltersFragment.FilteredUsersFragment.FilterUsersListAdapter object);
+
+    void inject(AccountsDashboardFragment.OptionItemsAdapter object);
 }

@@ -37,15 +37,16 @@ import android.view.View;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
@@ -57,13 +58,18 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
         IThemedActivity, KeyboardShortcutCallback {
 
     // Utility classes
-    private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
+    @Inject
+    protected KeyboardShortcutsHandler mKeyboardShortcutsHandler;
     @Inject
     protected AsyncTwitterWrapper mTwitterWrapper;
     @Inject
     protected ActivityTracker mActivityTracker;
     @Inject
     protected MediaLoaderWrapper mImageLoader;
+    @Inject
+    protected UserColorNameManager mUserColorNameManager;
+    @Inject
+    protected SharedPreferencesWrapper mPreferences;
 
     // Data fields
     private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
@@ -153,7 +159,6 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
         }
         super.onCreate(savedInstanceState);
         DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(this)).build().inject(this);
-        mKeyboardShortcutsHandler = TwittnukerApplication.getInstance(this).getKeyboardShortcutsHandler();
     }
 
     @Override

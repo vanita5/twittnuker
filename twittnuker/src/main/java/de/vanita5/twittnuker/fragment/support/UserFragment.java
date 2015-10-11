@@ -88,7 +88,6 @@ import com.meizu.flyme.reflect.StatusBarProxy;
 import com.squareup.otto.Subscribe;
 
 import org.mariotaku.sqliteqb.library.Expression;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
@@ -103,7 +102,6 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.FriendshipUpdate;
 import de.vanita5.twittnuker.api.twitter.model.Relationship;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
@@ -127,13 +125,11 @@ import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
-import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
@@ -177,9 +173,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private static final String TAB_TYPE_STATUSES = "statuses";
     private static final String TAB_TYPE_MEDIA = "media";
     private static final String TAB_TYPE_FAVORITES = "favorites";
-
-    private UserColorNameManager mUserColorNameManager;
-    private SharedPreferencesWrapper mPreferences;
 
     private ShapedImageView mProfileImageView;
     private ImageView mProfileTypeView;
@@ -488,7 +481,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final FragmentActivity activity = getActivity();
         if (user == null || user.id <= 0 || activity == null) return;
         final Resources resources = getResources();
-        final UserColorNameManager manager = UserColorNameManager.getInstance(activity);
         final LoaderManager lm = getLoaderManager();
         lm.destroyLoader(LOADER_ID_USER);
         lm.destroyLoader(LOADER_ID_FRIENDSHIP);
@@ -497,7 +489,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mHeaderErrorContainer.setVisibility(View.GONE);
         mProgressContainer.setVisibility(View.GONE);
         mUser = user;
-        final int userColor = manager.getUserColor(user.id, true);
+        final int userColor = mUserColorNameManager.getUserColor(user.id, true);
         mProfileImageView.setBorderColor(userColor != 0 ? userColor : Color.WHITE);
         mProfileNameContainer.drawEnd(Utils.getAccountColor(activity, user.account_id));
         mNameView.setText(user.name);
@@ -542,7 +534,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         if (relationship == null || relationship.getTargetUserId() != user.id) {
             getFriendship();
         }
-        activity.setTitle(manager.getDisplayName(user, mNameFirst, true));
+        activity.setTitle(mUserColorNameManager.getDisplayName(user, mNameFirst, true));
 
         Calendar cal = Calendar.getInstance();
         final int currentMonth = cal.get(Calendar.MONTH), currentDay = cal.get(Calendar.DAY_OF_MONTH);
@@ -629,16 +621,15 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         final ParcelableUser user = getUser();
-        final UserColorNameManager manager = UserColorNameManager.getInstance(getActivity());
         switch (requestCode) {
             case REQUEST_SET_COLOR: {
                 if (user == null) return;
                 if (resultCode == Activity.RESULT_OK) {
                     if (data == null) return;
                     final int color = data.getIntExtra(EXTRA_COLOR, Color.TRANSPARENT);
-                    manager.setUserColor(mUser.id, color);
+                    mUserColorNameManager.setUserColor(mUser.id, color);
                 } else if (resultCode == ColorPickerDialogActivity.RESULT_CLEARED) {
-                    manager.clearUserColor(mUser.id);
+                    mUserColorNameManager.clearUserColor(mUser.id);
                 }
                 break;
             }
@@ -666,9 +657,11 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mTintedStatusContent = (TintedStatusFrameLayout) activity.findViewById(R.id.main_content);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FragmentActivity) {
+            mTintedStatusContent = (TintedStatusFrameLayout) ((FragmentActivity) context).findViewById(R.id.main_content);
+        }
     }
 
     @Override
@@ -683,8 +676,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         setHasOptionsMenu(true);
         getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE)
                 .registerOnSharedPreferenceChangeListener(this);
-        mUserColorNameManager = UserColorNameManager.getInstance(activity);
-        mPreferences = SharedPreferencesWrapper.getInstance(activity, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE, SharedPreferenceConstants.class);
         mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
         mLocale = getResources().getConfiguration().locale;
         mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(activity,

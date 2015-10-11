@@ -32,12 +32,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.UserColorNameManager;
 
 public class CreateUserBlockDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
 
@@ -65,12 +62,8 @@ public class CreateUserBlockDialogFragment extends BaseSupportDialogFragment imp
         final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
         final ParcelableUser user = getUser();
         if (user != null) {
-            final UserColorNameManager manager = UserColorNameManager.getInstance(activity);
-            final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(activity,
-                    SharedPreferencesWrapper.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE,
-                    SharedPreferenceConstants.class);
-            final boolean nameFirst = prefs.getBoolean(KEY_NAME_FIRST);
-            final String displayName = manager.getDisplayName(user, nameFirst, false);
+            final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
+            final String displayName = mUserColorNameManager.getDisplayName(user, nameFirst, false);
             builder.setTitle(getString(R.string.block_user, displayName));
             builder.setMessage(getString(R.string.block_user_confirm_message, displayName));
         }

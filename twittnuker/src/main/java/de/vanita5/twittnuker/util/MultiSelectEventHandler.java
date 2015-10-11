@@ -37,7 +37,6 @@ import com.twitter.Extractor;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.menu.AccountActionProvider;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -63,12 +62,11 @@ import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert
 @SuppressLint("Registered")
 public class MultiSelectEventHandler implements Constants, ActionMode.Callback, MultiSelectManager.Callback {
 
-    private TwittnukerApplication mApplication;
-
     @Inject
     AsyncTwitterWrapper mTwitterWrapper;
 
-    private MultiSelectManager mMultiSelectManager;
+    @Inject
+    MultiSelectManager mMultiSelectManager;
 
     private ActionMode mActionMode;
 
@@ -87,8 +85,6 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
      * Call before super.onCreate
      */
     public void dispatchOnCreate() {
-        mApplication = mActivity.getTwittnukerApplication();
-        mMultiSelectManager = mApplication.getMultiSelectManager();
     }
 
     /**

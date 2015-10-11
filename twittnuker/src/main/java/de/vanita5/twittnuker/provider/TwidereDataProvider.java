@@ -71,7 +71,6 @@ import org.mariotaku.sqliteqb.library.SetValue;
 import org.mariotaku.sqliteqb.library.query.SQLInsertQuery;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import org.mariotaku.sqliteqb.library.query.SQLUpdateQuery;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -150,7 +149,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     private SQLiteDatabaseWrapper mDatabaseWrapper;
     @Nullable
     private NotificationManager mNotificationManager;
-    private SharedPreferencesWrapper mPreferences;
+    @Inject
+    SharedPreferencesWrapper mPreferences;
     private ImagePreloader mImagePreloader;
     @Inject
     Network mNetwork;
@@ -541,10 +541,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     @Override
     public boolean onCreate() {
         final Context context = getContext();
+        assert context != null;
         DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
         mHandler = new Handler(Looper.getMainLooper());
         mDatabaseWrapper = new SQLiteDatabaseWrapper(this);
-        mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
         updatePreferences();
         mImagePreloader = new ImagePreloader(context, mMediaLoader);

@@ -22,17 +22,35 @@
 
 package de.vanita5.twittnuker.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
+import de.vanita5.twittnuker.util.UserColorNameManager;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+
+import javax.inject.Inject;
 
 public class BasePreferenceFragment extends PreferenceFragment implements Constants {
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES_NAME);
+    @Inject
+    protected KeyboardShortcutsHandler mKeyboardShortcutHandler;
+    @Inject
+    protected UserColorNameManager mUserColorNameManager;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
+    }
+
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES_NAME);
     }
 
 }

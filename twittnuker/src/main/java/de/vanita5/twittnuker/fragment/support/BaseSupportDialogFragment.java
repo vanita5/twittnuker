@@ -33,6 +33,8 @@ import android.support.v4.app.DialogFragment;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 
@@ -40,9 +42,12 @@ import javax.inject.Inject;
 
 public class BaseSupportDialogFragment extends DialogFragment implements Constants {
 
-    public BaseSupportDialogFragment() {
-
-    }
+    @Inject
+    protected AsyncTwitterWrapper mTwitterWrapper;
+    @Inject
+    protected UserColorNameManager mUserColorNameManager;
+    @Inject
+    protected SharedPreferencesWrapper mPreferences;
 
     public TwittnukerApplication getApplication() {
         final Activity activity = getActivity();
@@ -68,9 +73,6 @@ public class BaseSupportDialogFragment extends DialogFragment implements Constan
         return null;
     }
 
-    @Inject
-    protected AsyncTwitterWrapper mTwitterWrapper;
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -81,12 +83,6 @@ public class BaseSupportDialogFragment extends DialogFragment implements Constan
         final Activity activity = getActivity();
         if (activity == null) return;
         activity.registerReceiver(receiver, filter);
-    }
-
-    public void setProgressBarIndeterminateVisibility(final boolean visible) {
-        final Activity activity = getActivity();
-        if (activity == null) return;
-        activity.setProgressBarIndeterminateVisibility(visible);
     }
 
     public void unregisterReceiver(final BroadcastReceiver receiver) {

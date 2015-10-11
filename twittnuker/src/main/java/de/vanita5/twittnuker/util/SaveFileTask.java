@@ -94,6 +94,7 @@ public class SaveFileTask extends AsyncTask<Object, Object, File> implements Con
             }
             return saveFile;
         } catch (final IOException e) {
+            final int errno = Utils.getErrorNo(e.getCause());
             Log.w(LOGTAG, "Failed to save file", e);
             return null;
         } finally {

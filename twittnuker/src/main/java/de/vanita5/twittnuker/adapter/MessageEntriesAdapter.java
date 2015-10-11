@@ -41,9 +41,7 @@ import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager.OnReadStateChangeListener;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
@@ -57,12 +55,10 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
 
     private final Context mContext;
     private final LayoutInflater mInflater;
-    private final MultiSelectManager mMultiSelectManager;
     private final int mTextSize;
     private final int mProfileImageStyle;
     private final int mMediaPreviewStyle;
     private final OnSharedPreferenceChangeListener mReadStateChangeListener;
-    private UserColorNameManager mUserColorNameManager;
 
     private final boolean mDisplayProfileImage;
     private boolean mShowAccountsColor;
@@ -75,14 +71,10 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
         mContext = context;
         mInflater = LayoutInflater.from(context);
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-        mMultiSelectManager = app.getMultiSelectManager();
-        final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
-                SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
-        mMediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
-        mDisplayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-        mTextSize = preferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
-        mUserColorNameManager = app.getUserColorNameManager();
+        mProfileImageStyle = Utils.getProfileImageStyle(mPreferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
+        mMediaPreviewStyle = Utils.getMediaPreviewStyle(mPreferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
+        mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
+        mTextSize = mPreferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
         mReadStateChangeListener = new OnSharedPreferenceChangeListener() {
 
             @Override

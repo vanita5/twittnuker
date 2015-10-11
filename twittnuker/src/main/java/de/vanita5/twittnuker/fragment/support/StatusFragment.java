@@ -76,13 +76,12 @@ import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter.StatusAdapterListener;
-import de.vanita5.twittnuker.adapter.BaseAdapter;
+import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.loader.support.ParcelableStatusLoader;
 import de.vanita5.twittnuker.loader.support.StatusRepliesLoader;
@@ -103,7 +102,6 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.RecyclerViewUtils;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.StatusActionModeCallback;
 import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler;
 import de.vanita5.twittnuker.util.StatusLinkClickHandler;
@@ -1017,7 +1015,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         }
     }
 
-    private static class StatusAdapter extends BaseAdapter<ViewHolder> implements IStatusesAdapter<List<ParcelableStatus>> {
+    private static class StatusAdapter extends BaseRecyclerViewAdapter<ViewHolder> implements IStatusesAdapter<List<ParcelableStatus>> {
 
         private static final int VIEW_TYPE_LIST_STATUS = 0;
         private static final int VIEW_TYPE_DETAIL_STATUS = 1;
@@ -1055,7 +1053,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final boolean mDisplayProfileImage;
         private final boolean mSensitiveContentEnabled;
         private final boolean mHideCardActions;
-        private final UserColorNameManager mUserColorNameManager;
         private boolean mLoadMoreSupported;
         private boolean mLoadMoreIndicatorVisible;
         private boolean mDetailMediaExpanded;
@@ -1071,27 +1068,24 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             setHasStableIds(true);
             final Context context = fragment.getActivity();
             final Resources res = context.getResources();
-            final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
-                    SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
             mItemCounts = new int[ITEM_TYPES_SUM];
             // There's always a space at the end of the list
             mItemCounts[ITEM_IDX_SPACE] = 1;
             mFragment = fragment;
             mContext = context;
             mInflater = LayoutInflater.from(context);
-            mUserColorNameManager = TwittnukerApplication.getInstance(context).getUserColorNameManager();
             mMediaLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
             mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
-            mNameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
-            mTextSize = preferences.getInt(KEY_TEXT_SIZE, res.getInteger(R.integer.default_text_size));
-            mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
-            mMediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
-            mLinkHighlightingStyle = Utils.getLinkHighlightingStyleInt(preferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));
+            mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, true);
+            mTextSize = mPreferences.getInt(KEY_TEXT_SIZE, res.getInteger(R.integer.default_text_size));
+            mProfileImageStyle = Utils.getProfileImageStyle(mPreferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
+            mMediaPreviewStyle = Utils.getMediaPreviewStyle(mPreferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
+            mLinkHighlightingStyle = Utils.getLinkHighlightingStyleInt(mPreferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));
             mIsCompact = compact;
-            mDisplayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-            mDisplayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
-            mSensitiveContentEnabled = preferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, true);
-            mHideCardActions = preferences.getBoolean(KEY_HIDE_CARD_ACTIONS, false);
+            mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
+            mDisplayMediaPreview = mPreferences.getBoolean(KEY_MEDIA_PREVIEW, false);
+            mSensitiveContentEnabled = mPreferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, true);
+            mHideCardActions = mPreferences.getBoolean(KEY_HIDE_CARD_ACTIONS, false);
             if (compact) {
                 mCardLayoutResource = R.layout.card_item_status_compact;
             } else {

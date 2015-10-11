@@ -51,7 +51,9 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.VideoLoader;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
@@ -60,6 +62,7 @@ import javax.inject.Inject;
 
 public class BaseSupportFragment extends Fragment implements IBaseFragment, Constants {
 
+    // Utility classes
     @Inject
     protected AsyncTwitterWrapper mTwitterWrapper;
     @Inject
@@ -72,6 +75,12 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
     protected Bus mBus;
     @Inject
     protected AsyncTaskManager mAsyncTaskManager;
+    @Inject
+    protected MultiSelectManager mMultiSelectManager;
+    @Inject
+    protected UserColorNameManager mUserColorNameManager;
+    @Inject
+    protected SharedPreferencesWrapper mPreferences;
 
     public BaseSupportFragment() {
 
@@ -101,10 +110,6 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
         final Activity activity = getActivity();
         if (activity != null) return activity.getContentResolver();
         return null;
-    }
-
-    public MultiSelectManager getMultiSelectManager() {
-        return getApplication() != null ? getApplication().getMultiSelectManager() : null;
     }
 
     public SharedPreferences getSharedPreferences(final String name, final int mode) {

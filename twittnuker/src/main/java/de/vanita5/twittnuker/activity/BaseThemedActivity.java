@@ -29,8 +29,8 @@ import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.ActivityTracker;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -51,6 +51,8 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     private int mProfileImageStyle;
     @Inject
     protected ActivityTracker mActivityTracker;
+    @Inject
+    protected KeyboardShortcutsHandler mKeyboardShortcutHandler;
 
     @Override
     protected void onStart() {

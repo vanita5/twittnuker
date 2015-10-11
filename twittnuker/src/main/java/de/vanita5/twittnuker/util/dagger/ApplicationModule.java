@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.util.dagger;
 
 import android.content.Context;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -35,17 +36,20 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
 import org.mariotaku.restfu.http.RestHttpClient;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.VideoLoader;
 import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
 import de.vanita5.twittnuker.util.net.OkHttpRestClient;
@@ -70,12 +74,16 @@ public class ApplicationModule {
     private final Network network;
     private final RestHttpClient restHttpClient;
     private final Bus bus;
+    private final MultiSelectManager multiSelectManager;
+    private final UserColorNameManager userColorNameManager;
+    private final KeyboardShortcutsHandler keyboardShortcutsHandler;
 
     public ApplicationModule(TwittnukerApplication application) {
         if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
             throw new RuntimeException("Module must be created inside main thread");
         }
-        sharedPreferences = SharedPreferencesWrapper.getInstance(application, Constants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = SharedPreferencesWrapper.getInstance(application, Constants.SHARED_PREFERENCES_NAME,
+                Context.MODE_PRIVATE, SharedPreferenceConstants.class);
         activityTracker = new ActivityTracker();
         bus = new Bus(ThreadEnforcer.MAIN);
         asyncTaskManager = AsyncTaskManager.getInstance();
@@ -83,15 +91,18 @@ public class ApplicationModule {
         network = new TwidereNetwork(application);
 
 
-        asyncTwitterWrapper = new AsyncTwitterWrapper(application, asyncTaskManager, bus);
+        asyncTwitterWrapper = new AsyncTwitterWrapper(application, asyncTaskManager, sharedPreferences, bus);
         restHttpClient = TwitterAPIFactory.getDefaultHttpClient(application, network);
         imageDownloader = new TwidereImageDownloader(application, restHttpClient);
         imageLoader = createImageLoader(application, imageDownloader);
         videoLoader = new VideoLoader(application, restHttpClient, asyncTaskManager, bus);
         mediaLoaderWrapper = new MediaLoaderWrapper(imageLoader, videoLoader);
+        multiSelectManager = new MultiSelectManager();
+        userColorNameManager = new UserColorNameManager(application);
+        keyboardShortcutsHandler = new KeyboardShortcutsHandler(application);
     }
 
-    public static ApplicationModule get(Context context) {
+    public static ApplicationModule get(@NonNull Context context) {
         return TwittnukerApplication.getInstance(context).getApplicationModule();
     }
 
@@ -107,6 +118,26 @@ public class ApplicationModule {
         L.writeDebugLogs(BuildConfig.DEBUG);
         loader.init(cb.build());
         return loader;
+    }
+
+    @Provides
+    public KeyboardShortcutsHandler getKeyboardShortcutsHandler() {
+        return keyboardShortcutsHandler;
+    }
+
+    @Provides
+    public SharedPreferencesWrapper getSharedPreferences() {
+        return sharedPreferences;
+    }
+
+    @Provides
+    public UserColorNameManager getUserColorNameManager() {
+        return userColorNameManager;
+    }
+
+    @Provides
+    public MultiSelectManager getMultiSelectManager() {
+        return multiSelectManager;
     }
 
     @Provides

@@ -23,12 +23,11 @@
 package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter;
 
-public abstract class LoadMoreSupportAdapter<VH extends ViewHolder> extends BaseAdapter<VH>
+public abstract class LoadMoreSupportAdapter<VH extends ViewHolder> extends BaseRecyclerViewAdapter<VH>
         implements ILoadMoreSupportAdapter {
 
     private boolean mLoadMoreSupported;

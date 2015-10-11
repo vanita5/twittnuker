@@ -28,9 +28,7 @@ import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
 import java.util.List;
@@ -40,13 +38,10 @@ import static de.vanita5.twittnuker.util.Utils.configBaseAdapter;
 public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<ParcelableUserList> implements IBaseAdapter {
 
     private final Context mContext;
-    private UserColorNameManager mUserColorNameManager;
 
     public SimpleParcelableUserListsAdapter(final Context context) {
         super(context, R.layout.list_item_two_line);
         mContext = context;
-        final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-        mUserColorNameManager = app.getUserColorNameManager();
         configBaseAdapter(context, this);
     }
 

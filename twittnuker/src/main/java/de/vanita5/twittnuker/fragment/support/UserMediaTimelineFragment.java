@@ -17,8 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.BaseAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.loader.support.MediaTimelineLoader;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -154,7 +153,7 @@ public class UserMediaTimelineFragment extends BaseSupportFragment
         mAdapter.setData(null);
     }
 
-    private static class MediaTimelineAdapter extends BaseAdapter<MediaTimelineViewHolder> {
+    private static class MediaTimelineAdapter extends BaseRecyclerViewAdapter<MediaTimelineViewHolder> {
 
         private final LayoutInflater mInflater;
         private final MediaLoadingHandler mLoadingHandler;

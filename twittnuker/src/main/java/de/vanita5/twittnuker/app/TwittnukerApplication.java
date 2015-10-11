@@ -38,7 +38,6 @@ import android.support.annotation.NonNull;
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
 import com.squareup.okhttp.internal.Network;
-import com.squareup.otto.Bus;
 
 import org.acra.annotation.ReportsCrashes;
 import de.vanita5.twittnuker.BuildConfig;
@@ -48,12 +47,9 @@ import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.AbsLogger;
 import de.vanita5.twittnuker.util.DebugModeUtils;
-import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MathUtils;
-import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.TwidereLogger;
-import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
@@ -77,14 +73,11 @@ public class TwittnukerApplication extends Application implements Constants,
 
     private Handler mHandler;
     private SharedPreferences mPreferences;
-    private MultiSelectManager mMultiSelectManager;
     private DiskCache mDiskCache, mFullDiskCache;
     private SQLiteOpenHelper mSQLiteOpenHelper;
     private Network mNetwork;
     private SQLiteDatabase mDatabase;
-    private Bus mMessageBus;
-    private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
-    private UserColorNameManager mUserColorNameManager;
+
     private ApplicationModule mApplicationModule;
 
     @NonNull
@@ -102,10 +95,6 @@ public class TwittnukerApplication extends Application implements Constants,
         return mFullDiskCache = createDiskCache(DIR_NAME_FULL_IMAGE_CACHE);
     }
 
-    public UserColorNameManager getUserColorNameManager() {
-        if (mUserColorNameManager != null) return mUserColorNameManager;
-        return mUserColorNameManager = new UserColorNameManager(this);
-    }
 
     public Handler getHandler() {
         return mHandler;
@@ -116,21 +105,14 @@ public class TwittnukerApplication extends Application implements Constants,
         return mNetwork = new TwidereNetwork(this);
     }
 
-    public KeyboardShortcutsHandler getKeyboardShortcutsHandler() {
-        if (mKeyboardShortcutsHandler != null) return mKeyboardShortcutsHandler;
-        mKeyboardShortcutsHandler = new KeyboardShortcutsHandler(this);
+    public void initKeyboardShortcuts() {
         final SharedPreferences preferences = getSharedPreferences();
         if (!preferences.getBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, false)) {
-            mKeyboardShortcutsHandler.reset();
+            getApplicationModule().getKeyboardShortcutsHandler().reset();
             preferences.edit().putBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, true).apply();
         }
-        return mKeyboardShortcutsHandler;
     }
 
-    public MultiSelectManager getMultiSelectManager() {
-        if (mMultiSelectManager != null) return mMultiSelectManager;
-        return mMultiSelectManager = new MultiSelectManager();
-    }
 
     public SQLiteDatabase getSQLiteDatabase() {
         if (mDatabase != null) return mDatabase;
@@ -243,4 +225,5 @@ public class TwittnukerApplication extends Application implements Constants,
         if (mApplicationModule != null) return mApplicationModule;
         return mApplicationModule = new ApplicationModule(this);
     }
+
 }

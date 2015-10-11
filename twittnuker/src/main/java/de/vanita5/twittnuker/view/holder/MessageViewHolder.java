@@ -49,48 +49,48 @@ import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 
 public class MessageViewHolder extends ViewHolder implements OnMediaClickListener {
 
-	public final CardMediaContainer mediaContainer;
+    public final CardMediaContainer mediaContainer;
     public final TextView textView, time;
 
-	private final MessageBubbleView messageContent;
+    private final MessageBubbleView messageContent;
     protected final MessageConversationAdapter adapter;
 
-	private final int textColorPrimary, textColorPrimaryInverse, textColorSecondary, textColorSecondaryInverse;
+    private final int textColorPrimary, textColorPrimaryInverse, textColorSecondary, textColorSecondaryInverse;
     private final StatusActionModeCallback callback;
 
 
-	public MessageViewHolder(final MessageConversationAdapter adapter, final View itemView) {
-		super(itemView);
-		this.adapter = adapter;
-		final Context context = itemView.getContext();
-		final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.textColorPrimary,
-				android.R.attr.textColorPrimaryInverse, android.R.attr.textColorSecondary,
-				android.R.attr.textColorSecondaryInverse});
-		textColorPrimary = a.getColor(0, 0);
-		textColorPrimaryInverse = a.getColor(1, 0);
-		textColorSecondary = a.getColor(2, 0);
-		textColorSecondaryInverse = a.getColor(3, 0);
+    public MessageViewHolder(final MessageConversationAdapter adapter, final View itemView) {
+        super(itemView);
+        this.adapter = adapter;
+        final Context context = itemView.getContext();
+        final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.textColorPrimary,
+                android.R.attr.textColorPrimaryInverse, android.R.attr.textColorSecondary,
+                android.R.attr.textColorSecondaryInverse});
+        textColorPrimary = a.getColor(0, 0);
+        textColorPrimaryInverse = a.getColor(1, 0);
+        textColorSecondary = a.getColor(2, 0);
+        textColorSecondaryInverse = a.getColor(3, 0);
         a.recycle();
-		messageContent = (MessageBubbleView) itemView.findViewById(R.id.message_content);
+        messageContent = (MessageBubbleView) itemView.findViewById(R.id.message_content);
         textView = (TextView) itemView.findViewById(R.id.text);
-		time = (TextView) itemView.findViewById(R.id.time);
-		mediaContainer = (CardMediaContainer) itemView.findViewById(R.id.media_preview_container);
+        time = (TextView) itemView.findViewById(R.id.time);
+        mediaContainer = (CardMediaContainer) itemView.findViewById(R.id.media_preview_container);
         mediaContainer.setStyle(adapter.getMediaPreviewStyle());
         callback = new StatusActionModeCallback(textView, adapter.getContext());
-	}
+    }
 
-	public void displayMessage(Cursor cursor, CursorIndices indices) {
-		final Context context = adapter.getContext();
-		final TwidereLinkify linkify = adapter.getLinkify();
+    public void displayMessage(Cursor cursor, CursorIndices indices) {
+        final Context context = adapter.getContext();
+        final TwidereLinkify linkify = adapter.getLinkify();
         final MediaLoaderWrapper loader = adapter.getMediaLoader();
 
-		final long accountId = cursor.getLong(indices.account_id);
-		final long timestamp = cursor.getLong(indices.message_timestamp);
+        final long accountId = cursor.getLong(indices.account_id);
+        final long timestamp = cursor.getLong(indices.message_timestamp);
         final ParcelableMedia[] media = ParcelableMedia.fromSerializedJson(cursor.getString(indices.media));
         textView.setText(Html.fromHtml(cursor.getString(indices.text)));
         linkify.applyAllLinks(textView, accountId, false);
-		time.setText(Utils.formatToLongTimeString(context, timestamp));
-		mediaContainer.setVisibility(media != null && media.length > 0 ? View.VISIBLE : View.GONE);
+        time.setText(Utils.formatToLongTimeString(context, timestamp));
+        mediaContainer.setVisibility(media != null && media.length > 0 ? View.VISIBLE : View.GONE);
         mediaContainer.displayMedia(media, loader, accountId, true, this, adapter.getMediaLoadingHandler());
 
         textView.setTextIsSelectable(true);
@@ -100,39 +100,38 @@ public class MessageViewHolder extends ViewHolder implements OnMediaClickListene
 
     @Override
     public void onMediaClick(View view, ParcelableMedia media, long accountId) {
-        //TODO open media animation
-        Bundle options = null;
+        final Bundle options = Utils.createMediaViewerActivityOption(view);
         Utils.openMedia(adapter.getContext(), adapter.getDirectMessage(getAdapterPosition()), media, options);
-	}
+    }
 
-	public void setMessageColor(int color) {
-		final ColorStateList colorStateList = ColorStateList.valueOf(color);
-		messageContent.setBubbleColor(colorStateList);
-		final int textLuminancePrimary = TwidereColorUtils.getYIQLuminance(textColorPrimary);
-		final int textPrimaryDark, textPrimaryLight, textSecondaryDark, textSecondaryLight;
-		if (textLuminancePrimary < 128) {
-			textPrimaryDark = textColorPrimary;
-			textPrimaryLight = textColorPrimaryInverse;
-			textSecondaryDark = textColorSecondary;
-			textSecondaryLight = textColorSecondaryInverse;
-		} else {
-			textPrimaryDark = textColorPrimaryInverse;
-			textPrimaryLight = textColorPrimary;
-			textSecondaryDark = textColorSecondaryInverse;
-			textSecondaryLight = textColorSecondary;
-		}
+    public void setMessageColor(int color) {
+        final ColorStateList colorStateList = ColorStateList.valueOf(color);
+        messageContent.setBubbleColor(colorStateList);
+        final int textLuminancePrimary = TwidereColorUtils.getYIQLuminance(textColorPrimary);
+        final int textPrimaryDark, textPrimaryLight, textSecondaryDark, textSecondaryLight;
+        if (textLuminancePrimary < 128) {
+            textPrimaryDark = textColorPrimary;
+            textPrimaryLight = textColorPrimaryInverse;
+            textSecondaryDark = textColorSecondary;
+            textSecondaryLight = textColorSecondaryInverse;
+        } else {
+            textPrimaryDark = textColorPrimaryInverse;
+            textPrimaryLight = textColorPrimary;
+            textSecondaryDark = textColorSecondaryInverse;
+            textSecondaryLight = textColorSecondary;
+        }
         final int textContrastPrimary = TwidereColorUtils.getContrastYIQ(color,
                 ThemeUtils.ACCENT_COLOR_THRESHOLD, textPrimaryDark, textPrimaryLight);
         final int textContrastSecondary = TwidereColorUtils.getContrastYIQ(color,
                 ThemeUtils.ACCENT_COLOR_THRESHOLD, textSecondaryDark, textSecondaryLight);
         textView.setTextColor(textContrastPrimary);
         textView.setLinkTextColor(textContrastSecondary);
-		time.setTextColor(textContrastSecondary);
-	}
+        time.setTextColor(textContrastSecondary);
+    }
 
-	public void setTextSize(final float textSize) {
+    public void setTextSize(final float textSize) {
         textView.setTextSize(textSize);
-		time.setTextSize(textSize * 0.75f);
-	}
+        time.setTextSize(textSize * 0.75f);
+    }
 
 }
