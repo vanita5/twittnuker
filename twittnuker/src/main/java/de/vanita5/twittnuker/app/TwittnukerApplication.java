@@ -60,7 +60,6 @@ import de.vanita5.twittnuker.util.net.TwidereNetwork;
 import java.io.File;
 import java.io.IOException;
 
-import static de.vanita5.twittnuker.util.Utils.getBestCacheDir;
 import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
 import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
@@ -199,14 +198,16 @@ public class TwittnukerApplication extends Application implements Constants,
     }
 
     private DiskCache createDiskCache(final String dirName) {
-        final File cacheDir = getBestCacheDir(this, dirName);
+        final File cacheDir = Utils.getExternalCacheDir(this, dirName);
         final File fallbackCacheDir = getInternalCacheDir(this, dirName);
         final URLFileNameGenerator fileNameGenerator = new URLFileNameGenerator();
         final SharedPreferences preferences = getSharedPreferences();
         final int cacheSize = MathUtils.clamp(preferences.getInt(KEY_CACHE_SIZE_LIMIT, 512), 100, 1024);
         try {
-            return new LruDiskCache(cacheDir, fallbackCacheDir, fileNameGenerator,
-                    cacheSize * 1024 * 1024, 0);
+            final int cacheMaxSizeBytes = cacheSize * 1024 * 1024;
+            if (cacheDir != null)
+                return new LruDiskCache(cacheDir, fallbackCacheDir, fileNameGenerator, cacheMaxSizeBytes, 0);
+            return new LruDiskCache(fallbackCacheDir, null, fileNameGenerator, cacheMaxSizeBytes, 0);
         } catch (IOException e) {
             return new ReadOnlyDiskLRUNameCache(cacheDir, fallbackCacheDir, fileNameGenerator);
         }
