@@ -22,12 +22,18 @@
 
 package de.vanita5.twittnuker.activity.support;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 
 import de.vanita5.twittnuker.fragment.support.FileSelectorDialogFragment;
+import de.vanita5.twittnuker.util.PermissionUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.io.File;
@@ -35,6 +41,9 @@ import java.io.File;
 import static android.os.Environment.getExternalStorageDirectory;
 
 public class FileSelectorActivity extends BaseSupportDialogActivity implements FileSelectorDialogFragment.Callback {
+
+
+    private Runnable mResumeFragmentsRunnable;
 
     @Override
     public int getThemeResourceId() {
@@ -70,20 +79,66 @@ public class FileSelectorActivity extends BaseSupportDialogActivity implements F
     }
 
     @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        if (mResumeFragmentsRunnable != null) {
+            mResumeFragmentsRunnable.run();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, final @NonNull String[] permissions,
+                                           final @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_REQUEST_PERMISSIONS) {
+            mResumeFragmentsRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (PermissionUtils.getPermission(permissions, grantResults, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                            PermissionUtils.getPermission(permissions, grantResults, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        showPickFileDialog();
+                    } else {
+                        finishWithDeniedMessage();
+                    }
+                }
+            };
+        }
+    }
+
+    @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Intent intent = getIntent();
-        final Uri data = intent.getData();
-        File initialDirectory = data != null ? new File(data.getPath()) : getExternalStorageDirectory();
-        if (initialDirectory == null) {
-            initialDirectory = new File("/");
-        }
+
         final String action = intent.getAction();
         if (!INTENT_ACTION_PICK_FILE.equals(action) && !INTENT_ACTION_PICK_DIRECTORY.equals(action)) {
             finish();
             return;
         }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            showPickFileDialog();
+        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            final String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_REQUEST_PERMISSIONS);
+        } else {
+            finishWithDeniedMessage();
+        }
+    }
 
+    private void finishWithDeniedMessage() {
+        if (isFinishing()) return;
+        finish();
+    }
+
+    private void showPickFileDialog() {
+        final Intent intent = getIntent();
+        final Uri data = intent.getData();
+        final String action = intent.getAction();
+        File initialDirectory = data != null ? new File(data.getPath()) : getExternalStorageDirectory();
+        if (initialDirectory == null) {
+            initialDirectory = new File("/");
+        }
         final FileSelectorDialogFragment f = new FileSelectorDialogFragment();
         final Bundle args = new Bundle();
         args.putString(EXTRA_ACTION, action);

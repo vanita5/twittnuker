@@ -27,25 +27,24 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 
 /**
  * Public constants for Twittnuker
- * 
+ *
  * @author mariotaku
- * 
  */
 public interface TwittnukerConstants extends SharedPreferenceConstants,
-		IntentConstants, SecretConstants {
+        IntentConstants, SecretConstants {
 
-	String TWITTNUKER_APP_NAME = "Twittnuker";
-	String TWITTNUKER_PACKAGE_NAME = "de.vanita5.twittnuker";
-	String TWITTNUKER_PROJECT_URL = "https://github.com/vanita5/twittnuker";
-	String TWITTNUKER_PROJECT_EMAIL = "mail@twittnuker.org";
+    String TWITTNUKER_APP_NAME = "Twittnuker";
+    String TWITTNUKER_PACKAGE_NAME = "de.vanita5.twittnuker";
+    String TWITTNUKER_PROJECT_URL = "https://github.com/vanita5/twittnuker";
+    String TWITTNUKER_PROJECT_EMAIL = "mail@twittnuker.org";
 
-	String LOGTAG = TWITTNUKER_APP_NAME;
+    String LOGTAG = TWITTNUKER_APP_NAME;
 
-	String USER_COLOR_PREFERENCES_NAME = "user_colors";
-	String HOST_MAPPING_PREFERENCES_NAME = "host_mapping";
+    String USER_COLOR_PREFERENCES_NAME = "user_colors";
+    String HOST_MAPPING_PREFERENCES_NAME = "host_mapping";
     String MESSAGE_DRAFTS_PREFERENCES_NAME = "message_drafts";
     String SHARED_PREFERENCES_NAME = "preferences";
-	String SILENT_NOTIFICATIONS_PREFERENCE_NAME = "silent_notifications";
+    String SILENT_NOTIFICATIONS_PREFERENCE_NAME = "silent_notifications";
     String TIMELINE_POSITIONS_PREFERENCES_NAME = "timeline_positions";
     String ACCOUNT_PREFERENCES_NAME_PREFIX = "account_preferences_";
     String KEYBOARD_SHORTCUTS_PREFERENCES_NAME = "keyboard_shortcuts_preferences";
@@ -53,22 +52,22 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String DEFAULT_TWITTER_API_URL_FORMAT = "https://[DOMAIN.]twitter.com/";
     String DEFAULT_TWITTER_OAUTH_BASE_URL = "https://api.twitter.com/oauth/";
 
-	String SCHEME_HTTP = "http";
-	String SCHEME_HTTPS = "https";
+    String SCHEME_HTTP = "http";
+    String SCHEME_HTTPS = "https";
     String SCHEME_CONTENT = "content";
-	String SCHEME_TWITTNUKER = "twittnuker";
+    String SCHEME_TWITTNUKER = "twittnuker";
     String SCHEME_DATA = "data";
     String SCHEME_FILE = "file";
 
-	String SERVICE_SHORTENER_HOTOTIN = "hototin";
-	String SERVICE_SHORTENER_TWITLONGER = "twitlonger";
+    String SERVICE_SHORTENER_HOTOTIN = "hototin";
+    String SERVICE_SHORTENER_TWITLONGER = "twitlonger";
 
-	String SERVICE_UPLOADER_TWIPPLE = "twipple";
+    String SERVICE_UPLOADER_TWIPPLE = "twipple";
 
-	String PROTOCOL_HTTP = SCHEME_HTTP + "://";
+    String PROTOCOL_HTTP = SCHEME_HTTP + "://";
     String PROTOCOL_HTTPS = SCHEME_HTTPS + "://";
     String PROTOCOL_CONTENT = SCHEME_CONTENT + "://";
-	String PROTOCOL_TWITTNUKER = SCHEME_TWITTNUKER + "://";
+    String PROTOCOL_TWITTNUKER = SCHEME_TWITTNUKER + "://";
 
     String AUTHORITY_USER = "user";
     String AUTHORITY_HOME = "home";
@@ -139,7 +138,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String DEFAULT_PROTOCOL = PROTOCOL_HTTPS;
 
     String OAUTH_CALLBACK_OOB = "oob";
-	String OAUTH_CALLBACK_URL = PROTOCOL_TWITTNUKER + "com.twitter.oauth/";
+    String OAUTH_CALLBACK_URL = PROTOCOL_TWITTNUKER + "com.twitter.oauth/";
 
     int REQUEST_TAKE_PHOTO = 1;
     int REQUEST_PICK_IMAGE = 2;
@@ -150,7 +149,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     int REQUEST_SET_COLOR = 7;
     int REQUEST_SAVE_FILE = 8;
     int REQUEST_EDIT_IMAGE = 9;
-	int REQUEST_ADD_TAB = 11;
+    int REQUEST_ADD_TAB = 11;
     int REQUEST_EDIT_TAB = 12;
     int REQUEST_PICK_FILE = 13;
     int REQUEST_PICK_DIRECTORY = 14;
@@ -160,6 +159,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     int REQUEST_PICK_ACTIVITY = 18;
     int REQUEST_SETTINGS = 19;
     int REQUEST_OPEN_DOCUMENT = 20;
+    int REQUEST_REQUEST_PERMISSIONS = 30;
 
     int TABLE_ID_ACCOUNTS = 1;
     int TABLE_ID_STATUSES = 12;
@@ -179,8 +179,8 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     int TABLE_ID_SEARCH_HISTORY = 43;
     int TABLE_ID_DRAFTS = 51;
     int TABLE_ID_TABS = 52;
-	int TABLE_ID_PUSH_NOTIFICATIONS = 60;
-	int TABLE_ID_CACHED_USERS = 61;
+    int TABLE_ID_PUSH_NOTIFICATIONS = 60;
+    int TABLE_ID_CACHED_USERS = 61;
     int TABLE_ID_CACHED_STATUSES = 62;
     int TABLE_ID_CACHED_HASHTAGS = 63;
     int TABLE_ID_CACHED_RELATIONSHIPS = 64;
@@ -189,7 +189,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     int VIRTUAL_TABLE_ID_NOTIFICATIONS = 101;
     int VIRTUAL_TABLE_ID_PREFERENCES = 102;
     int VIRTUAL_TABLE_ID_ALL_PREFERENCES = 103;
-	int VIRTUAL_TABLE_ID_DNS = 105;
+    int VIRTUAL_TABLE_ID_DNS = 105;
     int VIRTUAL_TABLE_ID_CACHED_IMAGES = 106;
     int VIRTUAL_TABLE_ID_CACHE_FILES = 107;
     int VIRTUAL_TABLE_ID_UNREAD_COUNTS = 108;
@@ -203,48 +203,48 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     int NOTIFICATION_ID_MENTIONS_TIMELINE = 2;
     int NOTIFICATION_ID_DIRECT_MESSAGES = 3;
     int NOTIFICATION_ID_DRAFTS = 4;
-	int NOTIFICATION_ID_STREAMING = 6;
+    int NOTIFICATION_ID_STREAMING = 6;
     int NOTIFICATION_ID_UPDATE_STATUS = 101;
     int NOTIFICATION_ID_SEND_DIRECT_MESSAGE = 102;
-	int NOTIFICATION_ID_SHORTENING = 103;
-	int NOTIFICATION_ID_UPLOAD_MEDIA = 104;
-	int NOTIFICATION_ID_PUSH_ERROR = 299;
-	int NOTIFICATION_ID_PUSH = 301;
+    int NOTIFICATION_ID_SHORTENING = 103;
+    int NOTIFICATION_ID_UPLOAD_MEDIA = 104;
+    int NOTIFICATION_ID_PUSH_ERROR = 299;
+    int NOTIFICATION_ID_PUSH = 301;
 
-	String ICON_SPECIAL_TYPE_CUSTOMIZE = "_customize";
+    String ICON_SPECIAL_TYPE_CUSTOMIZE = "_customize";
 
-	String TASK_TAG_GET_HOME_TIMELINE = "get_home_tomeline";
-	String TASK_TAG_GET_MENTIONS = "get_mentions";
-	String TASK_TAG_GET_SENT_DIRECT_MESSAGES = "get_sent_direct_messages";
-	String TASK_TAG_GET_RECEIVED_DIRECT_MESSAGES = "get_received_direct_messages";
-	String TASK_TAG_GET_TRENDS = "get_trends";
-	String TASK_TAG_STORE_TRENDS = "store_trends";
+    String TASK_TAG_GET_HOME_TIMELINE = "get_home_tomeline";
+    String TASK_TAG_GET_MENTIONS = "get_mentions";
+    String TASK_TAG_GET_SENT_DIRECT_MESSAGES = "get_sent_direct_messages";
+    String TASK_TAG_GET_RECEIVED_DIRECT_MESSAGES = "get_received_direct_messages";
+    String TASK_TAG_GET_TRENDS = "get_trends";
+    String TASK_TAG_STORE_TRENDS = "store_trends";
 
-	String SERVICE_COMMAND_REFRESH_ALL = "refresh_all";
-	String SERVICE_COMMAND_GET_HOME_TIMELINE = "get_home_timeline";
-	String SERVICE_COMMAND_GET_MENTIONS = "get_mentions";
-	String SERVICE_COMMAND_GET_SENT_DIRECT_MESSAGES = "get_sent_direct_messages";
-	String SERVICE_COMMAND_GET_RECEIVED_DIRECT_MESSAGES = "get_received_direct_messages";
+    String SERVICE_COMMAND_REFRESH_ALL = "refresh_all";
+    String SERVICE_COMMAND_GET_HOME_TIMELINE = "get_home_timeline";
+    String SERVICE_COMMAND_GET_MENTIONS = "get_mentions";
+    String SERVICE_COMMAND_GET_SENT_DIRECT_MESSAGES = "get_sent_direct_messages";
+    String SERVICE_COMMAND_GET_RECEIVED_DIRECT_MESSAGES = "get_received_direct_messages";
 
-	String TAB_TYPE_HOME_TIMELINE = "home_timeline";
-	String TAB_TYPE_MENTIONS_TIMELINE = "mentions_timeline";
-	String TAB_TYPE_TRENDS_SUGGESTIONS = "trends_suggestions";
-	String TAB_TYPE_DIRECT_MESSAGES = "direct_messages";
-	String TAB_TYPE_FAVORITES = "favorites";
-	String TAB_TYPE_USER_TIMELINE = "user_timeline";
-	String TAB_TYPE_SEARCH_STATUSES = "search_statuses";
-	String TAB_TYPE_LIST_TIMELINE = "list_timeline";
-	String TAB_TYPE_ACTIVITIES_ABOUT_ME = "activities_about_me";
-	String TAB_TYPE_ACTIVITIES_BY_FRIENDS = "activities_by_friends";
-	String TAB_TYPE_RETWEETS_OF_ME = "retweets_of_me";
+    String TAB_TYPE_HOME_TIMELINE = "home_timeline";
+    String TAB_TYPE_MENTIONS_TIMELINE = "mentions_timeline";
+    String TAB_TYPE_TRENDS_SUGGESTIONS = "trends_suggestions";
+    String TAB_TYPE_DIRECT_MESSAGES = "direct_messages";
+    String TAB_TYPE_FAVORITES = "favorites";
+    String TAB_TYPE_USER_TIMELINE = "user_timeline";
+    String TAB_TYPE_SEARCH_STATUSES = "search_statuses";
+    String TAB_TYPE_LIST_TIMELINE = "list_timeline";
+    String TAB_TYPE_ACTIVITIES_ABOUT_ME = "activities_about_me";
+    String TAB_TYPE_ACTIVITIES_BY_FRIENDS = "activities_by_friends";
+    String TAB_TYPE_RETWEETS_OF_ME = "retweets_of_me";
 
 
-	int TAB_CODE_HOME_TIMELINE = 1;
-	int TAB_CODE_MENTIONS_TIMELINE = 2;
-	int TAB_CODE_DIRECT_MESSAGES = 4;
+    int TAB_CODE_HOME_TIMELINE = 1;
+    int TAB_CODE_MENTIONS_TIMELINE = 2;
+    int TAB_CODE_DIRECT_MESSAGES = 4;
 
-	int TWITTER_MAX_IMAGE_SIZE = 3145728;
-	int TWITTER_MAX_IMAGE_WIDTH = 1024;
-	int TWITTER_MAX_IMAGE_HEIGHT = 2048;
+    int TWITTER_MAX_IMAGE_SIZE = 3145728;
+    int TWITTER_MAX_IMAGE_WIDTH = 1024;
+    int TWITTER_MAX_IMAGE_HEIGHT = 2048;
 
 }

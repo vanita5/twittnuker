@@ -22,16 +22,15 @@
 
 package de.vanita5.twittnuker.activity.support;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.fragment.support.DataExportImportTypeSelectorDialogFragment;
-import de.vanita5.twittnuker.fragment.support.FileSelectorDialogFragment;
 import de.vanita5.twittnuker.util.DataImportExportUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
@@ -41,10 +40,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class DataExportActivity extends ThemedFragmentActivity implements FileSelectorDialogFragment.Callback,
-        DataExportImportTypeSelectorDialogFragment.Callback {
+public class DataExportActivity extends ThemedFragmentActivity implements DataExportImportTypeSelectorDialogFragment.Callback {
 
     private ExportSettingsTask mTask;
+    private Runnable mResumeFragmentsRunnable;
 
     @Override
     public int getThemeColor() {
@@ -62,7 +61,7 @@ public class DataExportActivity extends ThemedFragmentActivity implements FileSe
     }
 
     @Override
-    public void onCancelled(final DialogFragment df) {
+    public void onCancelled(DialogFragment df) {
         if (!isFinishing()) {
             finish();
         }
@@ -76,17 +75,39 @@ public class DataExportActivity extends ThemedFragmentActivity implements FileSe
     }
 
     @Override
-    public void onFilePicked(final File file) {
-        if (file == null) {
-            finish();
-            return;
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        if (mResumeFragmentsRunnable != null) {
+            mResumeFragmentsRunnable.run();
         }
-        final DialogFragment df = new DataExportImportTypeSelectorDialogFragment();
-        final Bundle args = new Bundle();
-        args.putString(EXTRA_PATH, file.getAbsolutePath());
-        args.putString(EXTRA_TITLE, getString(R.string.export_settings_type_dialog_title));
-        df.setArguments(args);
-        df.show(getSupportFragmentManager(), "select_export_type");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, final int resultCode, final Intent data) {
+        switch (requestCode) {
+            case REQUEST_PICK_DIRECTORY: {
+                mResumeFragmentsRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (resultCode == RESULT_OK) {
+                            final String path = data.getData().getPath();
+                            final DialogFragment df = new DataExportImportTypeSelectorDialogFragment();
+                            final Bundle args = new Bundle();
+                            args.putString(EXTRA_PATH, path);
+                            args.putString(EXTRA_TITLE, getString(R.string.export_settings_type_dialog_title));
+                            df.setArguments(args);
+                            df.show(getSupportFragmentManager(), "select_export_type");
+                        } else {
+                            if (!isFinishing()) {
+                                finish();
+                            }
+                        }
+                    }
+                };
+                return;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -111,14 +132,9 @@ public class DataExportActivity extends ThemedFragmentActivity implements FileSe
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
-            final File extStorage = Environment.getExternalStorageDirectory();
-            final String storagePath = extStorage != null ? extStorage.getAbsolutePath() : "/";
-            final FileSelectorDialogFragment f = new FileSelectorDialogFragment();
-            final Bundle args = new Bundle();
-            args.putString(EXTRA_ACTION, INTENT_ACTION_PICK_DIRECTORY);
-            args.putString(EXTRA_PATH, storagePath);
-            f.setArguments(args);
-            f.show(getSupportFragmentManager(), "select_file");
+            final Intent intent = new Intent(this, FileSelectorActivity.class);
+            intent.setAction(INTENT_ACTION_PICK_DIRECTORY);
+            startActivityForResult(intent, REQUEST_PICK_DIRECTORY);
         }
     }
 
