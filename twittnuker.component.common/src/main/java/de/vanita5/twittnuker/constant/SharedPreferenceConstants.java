@@ -162,7 +162,7 @@ public interface SharedPreferenceConstants {
     String KEY_QUOTE_FORMAT = "quote_format";
     @Preference(type = BOOLEAN)
     String KEY_REMEMBER_POSITION = "remember_position";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_READ_FROM_BOTTOM = "read_from_bottom";
     @Preference(type = INT, exportable = false)
     String KEY_SAVED_TAB_POSITION = "saved_tab_position";

@@ -683,7 +683,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             textSize = preferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
             nameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
             displayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-            displayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
+            displayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, true);
             sensitiveContentEnabled = preferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, false);
             hideCardActions = preferences.getBoolean(KEY_HIDE_CARD_ACTIONS, false);
             linkHighlightStyle = Utils.getLinkHighlightingStyleInt(preferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));

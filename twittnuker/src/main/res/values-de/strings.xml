@@ -508,7 +508,7 @@
     <string name="account_options">Account Einstellungen</string>
     <string name="show_in_timeline">Anzeigen</string>
     <string name="cards">Tweets</string>
-    <string name="no_tab">Kein Tab</string>
+    <string name="no_tab">Keine Tabs</string>
     <string name="user_protected_summary">Du musst anfragen dem Benutzer zu folgen, um seine Tweets lesen zu können</string>
     <string name="delete_user"><xliff:g id="name">%s</xliff:g> löschen</string>
     <string name="delete_users">Benutzer entfernen</string>
@@ -642,7 +642,7 @@
     <string name="from_name">Von <xliff:g id="name">%1$s</xliff:g></string>
     <string name="from_name_and_name">Von <xliff:g id="name">%1$s</xliff:g> und <xliff:g id="name">%2$s</xliff:g></string>
     <string name="from_name_and_N_others">Von <xliff:g id="name">%1$s</xliff:g> und <xliff:g id="name">%2$d</xliff:g> anderen</string>
-    <string name="activated_accounts">Aktivierte Accounts</string>
+    <string name="activated_accounts">Account</string>
     <string name="tweet_hashtag">Tweet #<xliff:g id="text">%1$s</xliff:g></string>
     <string name="tweet_from_name">Tweet von <xliff:g id="text">%1$s</xliff:g></string>
     <string name="share_status">Tweet teilen</string>
@@ -698,6 +698,7 @@
     <string name="invalid_consumer_secret">Ungültiges Consumer Secret</string>
     <string name="page_up">Seite hoch</string>
     <string name="page_down">Seite runter</string>
+    <string name="save_media_no_storage_permission_message">Es wird die Speicher Berechtigung benötigt, um Dateien zu speichern.</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

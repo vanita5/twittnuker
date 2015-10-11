@@ -16,6 +16,7 @@
 
 package de.vanita5.twittnuker.activity.support;
 
+import android.Manifest;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -53,6 +54,7 @@ import android.widget.ImageButton;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
@@ -76,6 +78,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MenuUtils;
+import de.vanita5.twittnuker.util.PermissionUtils;
 import de.vanita5.twittnuker.util.SaveFileTask;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -257,7 +260,7 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
         setTitle(String.format("%d / %d", mViewPager.getCurrentItem() + 1, mPagerAdapter.getCount()));
     }
 
-    public static class BaseImagePageFragment extends BaseSupportFragment
+    public static class BaseImagePageFragment extends AbsMediaPageFragment
             implements DownloadListener, LoaderCallbacks<Result>, OnClickListener {
 
         private SubsamplingScaleImageView mImageView;
@@ -390,7 +393,8 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
             startActivity(intent);
         }
 
-        private void saveToGallery() {
+        @Override
+        protected void saveToGallery() {
             if (mSaveFileTask != null && mSaveFileTask.getStatus() == Status.RUNNING) return;
             final File file = mImageFile;
             final boolean hasImage = file != null && file.exists();
@@ -456,7 +460,7 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
                     return true;
                 }
                 case R.id.save: {
-                    saveToGallery();
+                    requestAndSaveToGallery();
                     return true;
                 }
                 case R.id.refresh: {
@@ -573,7 +577,40 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
         }
     }
 
-    public static final class VideoPageFragment extends BaseSupportFragment
+    private static abstract class AbsMediaPageFragment extends BaseSupportFragment {
+        protected void requestAndSaveToGallery() {
+            if (PermissionUtils.hasPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                saveToGallery();
+            } else {
+                final String[] permissions;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+                } else {
+                    permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                }
+                requestPermissions(permissions, REQUEST_REQUEST_PERMISSIONS);
+            }
+        }
+
+        protected abstract void saveToGallery();
+
+        @Override
+        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+            switch (requestCode) {
+                case REQUEST_REQUEST_PERMISSIONS: {
+                    if (PermissionUtils.hasPermission(permissions, grantResults, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        saveToGallery();
+                    } else {
+                        Toast.makeText(getContext(), R.string.save_media_no_storage_permission_message, Toast.LENGTH_LONG).show();
+                    }
+                    return;
+                }
+            }
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    public static final class VideoPageFragment extends AbsMediaPageFragment
             implements VideoLoadingListener, OnPreparedListener, OnErrorListener, OnCompletionListener, OnClickListener {
 
         private static final String[] SUPPORTED_VIDEO_TYPES;
@@ -788,7 +825,8 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
             return args.getParcelable(EXTRA_MEDIA);
         }
 
-        private void saveToGallery() {
+        @Override
+        protected void saveToGallery() {
             if (mSaveFileTask != null && mSaveFileTask.getStatus() == Status.RUNNING) return;
             final File file = mVideoFile;
             final Pair<String, String> urlAndType = mVideoUrlAndType;
@@ -919,7 +957,7 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
         public boolean onOptionsItemSelected(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.save: {
-                    saveToGallery();
+                    requestAndSaveToGallery();
                     return true;
                 }
                 case R.id.refresh: {

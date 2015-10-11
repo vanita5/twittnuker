@@ -109,7 +109,6 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereValidator;
-import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
@@ -123,7 +122,6 @@ import java.util.Locale;
 import me.uucky.colorpicker.internal.EffectViewHelper;
 
 import static de.vanita5.twittnuker.util.Utils.buildDirectMessageConversationUri;
-import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 
 public class MessagesConversationFragment extends BaseSupportFragment implements
         LoaderCallbacks<Cursor>, OnClickListener, OnItemSelectedListener, MenuButtonClickListener,
@@ -506,7 +504,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
                 }
                 case R.id.copy: {
                     if (ClipboardUtils.setText(getActivity(), mSelectedDirectMessage.text_plain)) {
-                        showOkMessage(getActivity(), R.string.text_copied, false);
+                        Utils.showOkMessage(getActivity(), R.string.text_copied, false);
                     }
                     break;
                 }
@@ -656,11 +654,16 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         final EditTextEnterHandler queryEnterHandler = EditTextEnterHandler.attach(mEditUserQuery, new EnterListener() {
             @Override
             public boolean shouldCallListener() {
-                return true;
+                final FragmentActivity activity = getActivity();
+                if (!(activity instanceof BaseAppCompatActivity)) return false;
+                return ((BaseAppCompatActivity) activity).getKeyMetaState() == 0;
             }
 
             @Override
             public boolean onHitEnter() {
+                final FragmentActivity activity = getActivity();
+                if (!(activity instanceof BaseAppCompatActivity)) return false;
+                if (((BaseAppCompatActivity) activity).getKeyMetaState() != 0) return false;
                 final ParcelableCredentials account = (ParcelableCredentials) mAccountSpinner.getSelectedItem();
                 if (account == null) return false;
                 mEditText.setAccountId(account.account_id);

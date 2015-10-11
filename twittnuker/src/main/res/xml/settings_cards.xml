@@ -59,7 +59,7 @@
     </de.vanita5.twittnuker.preference.SummaryListPreference>
 
     <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="media_preview"
         android:order="26"
         android:title="@string/media_preview">

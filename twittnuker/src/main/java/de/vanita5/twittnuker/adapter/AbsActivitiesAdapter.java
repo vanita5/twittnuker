@@ -94,7 +94,7 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
         mMediaPreviewStyle = Utils.getMediaPreviewStyle(mPreferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
         mLinkHighlightingStyle = Utils.getLinkHighlightingStyleInt(mPreferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));
         mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-        mDisplayMediaPreview = mPreferences.getBoolean(KEY_MEDIA_PREVIEW, false);
+        mDisplayMediaPreview = mPreferences.getBoolean(KEY_MEDIA_PREVIEW, true);
         mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, true);
         mLinkify = new TwidereLinkify(this);
         mStatusAdapterDelegate = new DummyStatusHolderAdapter(context);

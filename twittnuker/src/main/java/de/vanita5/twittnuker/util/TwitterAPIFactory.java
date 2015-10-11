@@ -158,7 +158,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         if (enableProxy) {
             client.setProxy(getProxy(prefs));
         } else {
-            client.setProxy(Proxy.NO_PROXY);
+            client.setProxy(null);
         }
     }
 

@@ -747,6 +747,7 @@
     <string name="invalid_consumer_secret">Invalid consumer secret</string>
     <string name="page_up">Page up</string>
     <string name="page_down">Page down</string>
+    <string name="save_media_no_storage_permission_message">Storage permission is needed to save media.</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

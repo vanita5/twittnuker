@@ -561,7 +561,7 @@ public class ThemeUtils implements Constants {
     public static String getThemeFontFamily(final Context context) {
         if (context == null) return VALUE_THEME_FONT_FAMILY_REGULAR;
         final SharedPreferencesWrapper pref = getSharedPreferencesWrapper(context);
-        final String fontFamily = pref.getString(KEY_THEME_FONT_FAMILY, VALUE_THEME_FONT_FAMILY_REGULAR);
+        final String fontFamily = pref.getString(KEY_THEME_FONT_FAMILY, VALUE_THEME_FONT_FAMILY_LIGHT);
         if (!TextUtils.isEmpty(fontFamily)) return fontFamily;
         return VALUE_THEME_FONT_FAMILY_REGULAR;
     }

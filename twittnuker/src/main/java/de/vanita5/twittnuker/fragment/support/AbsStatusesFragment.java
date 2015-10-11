@@ -209,7 +209,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final SharedPreferences preferences = getSharedPreferences();
         final boolean rememberPosition = preferences.getBoolean(KEY_REMEMBER_POSITION, false);
-        final boolean readFromBottom = preferences.getBoolean(KEY_READ_FROM_BOTTOM, false);
+        final boolean readFromBottom = preferences.getBoolean(KEY_READ_FROM_BOTTOM, true);
         final long lastReadId;
         final int lastVisiblePos, lastVisibleTop;
         final String tag = getCurrentReadPositionTag();

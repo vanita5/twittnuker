@@ -94,7 +94,7 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
         mLinkHighlightingStyle = Utils.getLinkHighlightingStyleInt(mPreferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));
         mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, true);
         mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-        mDisplayMediaPreview = mPreferences.getBoolean(KEY_MEDIA_PREVIEW, false);
+        mDisplayMediaPreview = mPreferences.getBoolean(KEY_MEDIA_PREVIEW, true);
         mSensitiveContentEnabled = mPreferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, true);
         mHideCardActions = mPreferences.getBoolean(KEY_HIDE_CARD_ACTIONS, false);
         mLinkify = new TwidereLinkify(new StatusAdapterLinkClickHandler<>(this));

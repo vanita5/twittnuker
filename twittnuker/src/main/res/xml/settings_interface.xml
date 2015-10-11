@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:title="@string/settings_interface">
+    android:title="@string/settings_interface">
 
     <PreferenceCategory android:title="@string/font">
 
@@ -18,26 +17,26 @@
 
     </PreferenceCategory>
     <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
-		android:defaultValue="true"
-		android:key="unread_count"
-		android:title="@string/unread_count"
-		android:summary="@string/unread_count_summary">
+        android:defaultValue="true"
+        android:key="unread_count"
+        android:summary="@string/unread_count_summary"
+        android:title="@string/unread_count">
         <extra
             android:name="notify_change"
             android:value="true" />
     </de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
 
-	<de.vanita5.twittnuker.preference.AutoFixSwitchPreference
-		android:defaultValue="false"
-		android:key="leftside_compose_button"
-		android:summary="@string/leftside_compose_button_summary"
-		android:title="@string/leftside_compose_button"/>
+    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+        android:defaultValue="false"
+        android:key="leftside_compose_button"
+        android:summary="@string/leftside_compose_button_summary"
+        android:title="@string/leftside_compose_button" />
 
     <de.vanita5.twittnuker.preference.SummaryListPreference
         android:defaultValue="@string/default_tab_display_option"
         android:entries="@array/entries_tab_display_option"
         android:entryValues="@array/values_tab_display_option"
         android:key="tab_display_option"
-        android:title="@string/tab_display_option"/>
+        android:title="@string/tab_display_option" />
 
 </PreferenceScreen>
