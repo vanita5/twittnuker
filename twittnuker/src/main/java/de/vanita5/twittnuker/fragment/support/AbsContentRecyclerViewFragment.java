@@ -59,7 +59,7 @@ import de.vanita5.twittnuker.view.themed.AccentSwipeRefreshLayout;
 
 public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAdapter> extends BaseSupportFragment
         implements OnRefreshListener, DrawerCallback, RefreshScrollTopInterface, ControlBarOffsetListener,
-        ContentListSupport {
+        ContentListSupport, IControlBarActivity.ControlBarShowHideHelper.ControlBarAnimationListener {
 
     private View mProgressContainer;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -129,10 +129,15 @@ public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAd
     }
 
     @Override
+    public void onControlBarVisibleAnimationFinish(boolean visible) {
+        updateRefreshProgressOffset();
+    }
+
+    @Override
     public void setControlVisible(boolean visible) {
         final FragmentActivity activity = getActivity();
         if (activity instanceof IControlBarActivity) {
-            ((IControlBarActivity) activity).setControlBarVisibleAnimate(visible);
+            ((IControlBarActivity) activity).setControlBarVisibleAnimate(visible, this);
         }
     }
 
