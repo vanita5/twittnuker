@@ -46,6 +46,7 @@ import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
+import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
@@ -69,6 +70,8 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
     protected VideoLoader mVideoLoader;
     @Inject
     protected Bus mBus;
+    @Inject
+    protected AsyncTaskManager mAsyncTaskManager;
 
     public BaseSupportFragment() {
 

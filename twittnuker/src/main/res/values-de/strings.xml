@@ -691,12 +691,14 @@
     <string name="bug_reports">Fehler Benachrichtigungen</string>
     <string name="invalid_consumer_key">Ungültiger Consumer Key</string>
     <string name="invalid_consumer_secret">Ungültiges Consumer Secret</string>
+    <string name="page_up">Seite hoch</string>
+    <string name="page_down">Seite runter</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
     <string name="unread_count_summary">Zeigt die Anzahl an ungelesenen Tweets oder Nachrichten im Tab an</string>
-    <string name="link_to_quoted_status_summary">Fügt beim zitieren den Link zum originalen Tweet hinzu</string>
-    <string name="click_item_to_config">Account zum konfigurieren auswählen</string>
+    <string name="link_to_quoted_status_summary">Fügt beim Zitieren den Link zum originalen Tweet hinzu</string>
+    <string name="click_item_to_config">Account zum Konfigurieren auswählen</string>
     <string name="dark_drawer">Dunkles Sliding Menu</string>
     <string name="retweets_of_me">Meine Retweets</string>
 

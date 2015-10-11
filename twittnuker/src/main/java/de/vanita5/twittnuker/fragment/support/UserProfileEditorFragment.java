@@ -67,13 +67,11 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileBannerImageTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterValidatorMETLengthChecker;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.view.ForegroundColorView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
@@ -93,8 +91,6 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
     private static final int RESULT_REMOVE_BANNER = 101;
     private static final String UPDATE_PROFILE_DIALOG_FRAGMENT_TAG = "update_profile";
 
-    private MediaLoaderWrapper mMediaLoader;
-    private AsyncTaskManager mAsyncTaskManager;
     private AsyncTask<Object, Object, ?> mTask;
     private ImageView mProfileImageView;
     private ImageView mProfileBannerView;
@@ -224,7 +220,6 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-        mAsyncTaskManager = ApplicationModule.get(getContext()).getAsyncTaskManager();
         final Bundle args = getArguments();
         final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
         mAccountId = accountId;
