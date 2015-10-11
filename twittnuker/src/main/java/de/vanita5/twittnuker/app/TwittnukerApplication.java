@@ -157,9 +157,7 @@ public class TwittnukerApplication extends Application implements Constants,
     private void initBugReport() {
         final SharedPreferences preferences = getSharedPreferences();
         if (!preferences.getBoolean(KEY_BUG_REPORTS, true)) return;
-        if (!BuildConfig.DEBUG) {
-            AbsLogger.setImplementation(new TwidereLogger());
-        }
+        AbsLogger.setImplementation(new TwidereLogger());
         AbsLogger.init(this);
     }
 
