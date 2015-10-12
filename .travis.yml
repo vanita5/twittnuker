@@ -5,6 +5,7 @@ sudo: required
 env:
   global:
     MALLOC_ARENA_MAX=2
+    JAVA_OPTS="-Xmx2048m -UseGCOverheadLimit"
 
 jdk:
   - oraclejdk7
