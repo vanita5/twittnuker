@@ -197,6 +197,7 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.PebbleMessage;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
@@ -3963,6 +3964,32 @@ public final class Utils implements Constants {
             mListener.onMediaClick(v, (ParcelableMedia) v.getTag(), mAccountId);
         }
 
+    }
+
+    /**
+     * Send Notifications to Pebble smartwatches
+     *
+     * @param context Context
+     * @param message String
+     */
+    public static void sendPebbleNotification(final Context context, final String message) {
+        if (context == null || TextUtils.isEmpty(message)) return;
+        final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+
+        if (prefs.getBoolean(KEY_PEBBLE_NOTIFICATIONS, false)) {
+
+            final String appName = context.getString(R.string.app_name);
+
+            final List<PebbleMessage> messages = new ArrayList<>();
+            messages.add(new PebbleMessage(appName, message));
+
+            final Intent intent = new Intent(INTENT_ACTION_PEBBLE_NOTIFICATION);
+            intent.putExtra("messageType", "PEBBLE_ALERT");
+            intent.putExtra("sender", appName);
+            intent.putExtra("notificationData", JsonSerializer.serialize(messages, PebbleMessage.class));
+
+            context.getApplicationContext().sendBroadcast(intent);
+        }
     }
 
     @Nullable

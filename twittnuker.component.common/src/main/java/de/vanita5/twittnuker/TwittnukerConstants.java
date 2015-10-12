@@ -134,6 +134,10 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String QUERY_PARAM_RECIPIENT_ID = "recipient_id";
     String QUERY_PARAM_READ_POSITION = "param_read_position";
     String QUERY_PARAM_READ_POSITIONS = "param_read_positions";
+    String QUERY_PARAM_LIMIT = "limit";
+    String QUERY_PARAM_EXTRA_ID = "extra_id";
+    String QUERY_PARAM_TIMESTAMP = "timestamp";
+    String QUERY_PARAM_FROM_NOTIFICATION = "from_notification";
 
     String DEFAULT_PROTOCOL = PROTOCOL_HTTPS;
 

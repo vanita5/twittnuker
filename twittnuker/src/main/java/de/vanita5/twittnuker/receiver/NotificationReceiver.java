@@ -45,12 +45,14 @@ public class NotificationReceiver extends BroadcastReceiver implements Constants
             case BROADCAST_NOTIFICATION_DELETED: {
                 final Uri uri = intent.getData();
                 if (uri == null) return;
-                final String tag = getPositionTag(uri.getLastPathSegment());
-                if (tag == null) return;
+                final String type = uri.getLastPathSegment();
                 final long accountId = ParseUtils.parseLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID), -1);
-                final ReadStateManager manager = ApplicationModule.get(context).getReadStateManager();
+                final long timestamp = ParseUtils.parseLong(uri.getQueryParameter(QUERY_PARAM_TIMESTAMP), -1);
+                final ApplicationModule module = ApplicationModule.get(context);
+                final ReadStateManager manager = module.getReadStateManager();
                 final String paramReadPosition, paramReadPositions;
-                if (!TextUtils.isEmpty(paramReadPosition = uri.getQueryParameter(QUERY_PARAM_READ_POSITION))) {
+                final String tag = getPositionTag(type);
+                if (tag != null && !TextUtils.isEmpty(paramReadPosition = uri.getQueryParameter(QUERY_PARAM_READ_POSITION))) {
                     manager.setPosition(Utils.getReadPositionTagWithAccounts(tag, accountId),
                             ParseUtils.parseLong(paramReadPosition, -1));
                 } else if (!TextUtils.isEmpty(paramReadPositions = uri.getQueryParameter(QUERY_PARAM_READ_POSITIONS))) {

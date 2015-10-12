@@ -698,7 +698,11 @@
     <string name="invalid_consumer_secret">Ungültiges Consumer Secret</string>
     <string name="page_up">Seite hoch</string>
     <string name="page_down">Seite runter</string>
+    <string name="combined_notifications">Kompakte Notifications</string>
+    <string name="combined_notifications_summary_on">Notifications werden gruppiert dargestellt.</string>
+    <string name="combined_notifications_summary_off">Es werden separate Notifications erstellt.</string>
     <string name="save_media_no_storage_permission_message">Es wird die Speicher Berechtigung benötigt, um Dateien zu speichern.</string>
+    <string name="user_mentioned_you"><xliff:g id="name">%s</xliff:g> hat dich erwähnt</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

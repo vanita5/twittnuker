@@ -29,6 +29,13 @@
             android:title="@string/stream_notifications"/>
 
         <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+            android:defaultValue="true"
+            android:key="combined_notifications"
+            android:summaryOff="@string/combined_notifications_summary_off"
+            android:summaryOn="@string/combined_notifications_summary_on"
+            android:title="@string/combined_notifications" />
+
+        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
             android:defaultValue="false"
             android:key="pebble_notifications"
             android:dependency="stream_notifications"
