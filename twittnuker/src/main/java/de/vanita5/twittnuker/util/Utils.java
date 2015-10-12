@@ -3927,6 +3927,11 @@ public final class Utils implements Constants {
         return isOutOfMemory(cause);
     }
 
+    public static boolean hasOfficialAPIAccess(Context context, SharedPreferences preferences, ParcelableCredentials account) {
+        if (preferences.getBoolean(KEY_FORCE_USING_PRIVATE_APIS, false)) return true;
+        return isOfficialCredentials(context, account);
+    }
+
     static class UtilsL {
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)

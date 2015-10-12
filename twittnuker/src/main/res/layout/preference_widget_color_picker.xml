@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
@@ -21,13 +20,13 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<de.vanita5.twittnuker.view.SquareShapedImageView
-    android:id="@+id/color"
+<de.vanita5.twittnuker.view.ShapedImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/color"
     android:layout_width="@dimen/element_size_small"
     android:layout_height="@dimen/element_size_small"
     android:layout_gravity="center"
     android:adjustViewBounds="true"
     android:scaleType="centerCrop"
-    app:sivShape="circle"/>
+    app:sivShape="circle" />

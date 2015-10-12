@@ -33,13 +33,15 @@ import android.view.View;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.activity.iface.IAppCompatActivity;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
-public abstract class ThemedAppCompatActivity extends AppCompatActivity implements Constants, IThemedActivity {
+public abstract class ThemedAppCompatActivity extends AppCompatActivity implements Constants,
+        IThemedActivity, IAppCompatActivity {
 
     private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
             mCurrentActionBarColor;

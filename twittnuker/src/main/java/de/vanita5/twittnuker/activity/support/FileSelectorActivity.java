@@ -31,7 +31,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.widget.Toast;
 
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.support.FileSelectorDialogFragment;
 import de.vanita5.twittnuker.util.PermissionUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -128,6 +130,7 @@ public class FileSelectorActivity extends BaseSupportDialogActivity implements F
 
     private void finishWithDeniedMessage() {
         if (isFinishing()) return;
+        Toast.makeText(this, R.string.select_file_no_storage_permission_message, Toast.LENGTH_SHORT).show();
         finish();
     }
 

@@ -33,17 +33,17 @@ import java.util.List;
 
 public class StatusesListFragment extends ParcelableStatusesFragment {
 
-	@Override
+    @Override
     protected Loader<List<ParcelableStatus>> onCreateStatusesLoader(final Context context,
-                                                                 final Bundle args,
-                                                                 final boolean fromUser) {
+                                                                    final Bundle args,
+                                                                    final boolean fromUser) {
         return new IntentExtrasStatusesLoader(context, getArguments(), getAdapterData(), fromUser);
-	}
+    }
 
-	@Override
-	protected String[] getSavedStatusesFileArgs() {
-		return null;
-	}
+    @Override
+    protected String[] getSavedStatusesFileArgs() {
+        return null;
+    }
 
 //    @Override
 //    protected boolean shouldShowAccountColor() {

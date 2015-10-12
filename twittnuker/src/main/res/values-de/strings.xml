@@ -367,7 +367,7 @@
     <string name="preview_images">Vorschaubilder</string>
     <string name="preload_wifi_only">Vorladen nur mit WLAN</string>
     <string name="sign_in_method_introduction_title">Wie funktioniert das?</string>
-    <string name="sign_in_method_introduction">Die meisten Anwendungen öffnen einen externen Browser, um dort nach dem Benutzernamen und dem Passwort zu fragen. Dies ist manchmal sehr umständlich.\n\nTwittnuker öffnet keinen externen Browser, sondern verwendet einfacherere Methoden, um sich anzumelden. Twittnuker speichert niemals das Passwort, es ist daher völlig sicher!</string>
+    <string name="sign_in_method_introduction">Die meisten Twitter Apps öffnen einen externen Browser, um dort nach dem Benutzernamen und dem Passwort zu fragen. Dies ist manchmal sehr umständlich.\n\nTwittnuker öffnet keinen externen Browser, sondern verwendet einfacherere Methoden, um sich anzumelden. Twittnuker speichert niemals das Passwort, es ist daher völlig sicher!</string>
     <string name="quote_protected_status_notice">Es ist nicht empfohlen einen geschützten Tweet zu zitieren.</string>
     <string name="edit_draft">Bearbeite Entwurf</string>
     <string name="profile_image">Profilbild</string>
@@ -702,7 +702,10 @@
     <string name="combined_notifications_summary_on">Notifications werden gruppiert dargestellt.</string>
     <string name="combined_notifications_summary_off">Es werden separate Notifications erstellt.</string>
     <string name="save_media_no_storage_permission_message">Es wird die Speicher Berechtigung benötigt, um Dateien zu speichern.</string>
+    <string name="select_file_no_storage_permission_message">Es wird die Speicher Berechtigung benötigt, um Dateien zu speichern.</string>
     <string name="user_mentioned_you"><xliff:g id="name">%s</xliff:g> hat dich erwähnt</string>
+    <string name="cant_load_all_replies_message">Kann nicht alle Antworten laden. &lt;a href=\"#dialog\";&gt;Warum?&lt;/a&gt;</string>
+    <string name="cant_load_all_replies_explanation">Aufgrund Twitter\'s Beschränkungen für Drittanbieter Apps hat Twittnuker keinen Zugriff auf Antworten eines Tweets. Es kann nicht garantiert werden, dass Twittnuker wirklich alle Antworten lädt.</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

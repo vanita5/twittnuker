@@ -35,8 +35,8 @@ public class UserFavoritesFragment extends ParcelableStatusesFragment {
 
     @Override
     protected Loader<List<ParcelableStatus>> onCreateStatusesLoader(final Context context,
-                                                                 final Bundle args,
-                                                                 final boolean fromUser) {
+                                                                    final Bundle args,
+                                                                    final boolean fromUser) {
         setRefreshing(true);
         final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
         final long maxId = args.getLong(EXTRA_MAX_ID, -1);
@@ -56,6 +56,6 @@ public class UserFavoritesFragment extends ParcelableStatusesFragment {
         final long userId = args.getLong(EXTRA_USER_ID, -1);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
         return new String[]{AUTHORITY_USER_FAVORITES, "account" + accountId, "user" + userId, "name" + screenName};
-	}
+    }
 
 }

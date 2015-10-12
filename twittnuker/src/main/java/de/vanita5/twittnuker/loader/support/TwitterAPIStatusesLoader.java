@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.LoganSquareWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
@@ -54,26 +55,26 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader {
 
-	private final Context mContext;
-	private final long mAccountId;
-	private final long mMaxId, mSinceId;
-	private final Object[] mSavedStatusesFileArgs;
+    private final Context mContext;
+    private final long mAccountId;
+    private final long mMaxId, mSinceId;
+    private final Object[] mSavedStatusesFileArgs;
     private Comparator<ParcelableStatus> mComparator;
 
     public TwitterAPIStatusesLoader(final Context context, final long accountId, final long sinceId,
                                     final long maxId, final List<ParcelableStatus> data,
                                     final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {
         super(context, data, tabPosition, fromUser);
-		mContext = context;
+        mContext = context;
         mAccountId = accountId;
         mMaxId = maxId;
         mSinceId = sinceId;
         mSavedStatusesFileArgs = savedStatusesArgs;
-	}
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public final List<ParcelableStatus> loadInBackground() {
+    @SuppressWarnings("unchecked")
+    @Override
+    public final ListResponse<ParcelableStatus> loadInBackground() {
         final File serializationFile = getSerializationFile();
         List<ParcelableStatus> data = getData();
         if (data == null) {
@@ -88,37 +89,37 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
                 } else {
                     Collections.sort(data);
                 }
-                return new CopyOnWriteArrayList<>(data);
-			}
-		}
-        if (!isFromUser()) return data;
+                return ListResponse.getListInstance(new CopyOnWriteArrayList<>(data));
+            }
+        }
+        if (!isFromUser()) return ListResponse.getListInstance(data);
         final Twitter twitter = getTwitter();
         if (twitter == null) return null;
-		final List<Status> statuses;
-		final boolean truncated;
-		final Context context = getContext();
-		final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        final List<Status> statuses;
+        final boolean truncated;
+        final Context context = getContext();
+        final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         final int loadItemLimit = prefs.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
         final boolean noItemsBefore = data.isEmpty();
-		try {
-			final Paging paging = new Paging();
-			paging.setCount(loadItemLimit);
-			if (mMaxId > 0) {
-				paging.setMaxId(mMaxId);
-			}
-			if (mSinceId > 0) {
-				paging.setSinceId(mSinceId - 1);
-			}
+        try {
+            final Paging paging = new Paging();
+            paging.setCount(loadItemLimit);
+            if (mMaxId > 0) {
+                paging.setMaxId(mMaxId);
+            }
+            if (mSinceId > 0) {
+                paging.setSinceId(mSinceId - 1);
+            }
             statuses = new ArrayList<>();
             truncated = Utils.truncateStatuses(getStatuses(twitter, paging), statuses, mSinceId);
             if (!Utils.isOfficialTwitterInstance(context, twitter)) {
                 TwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
             }
-		} catch (final TwitterException e) {
-			// mHandler.post(new ShowErrorRunnable(e));
+        } catch (final TwitterException e) {
+            // mHandler.post(new ShowErrorRunnable(e));
             Log.w(LOGTAG, e);
-            return new CopyOnWriteArrayList<>(data);
-		}
+            return ListResponse.getListInstance(new CopyOnWriteArrayList<>(data), e);
+        }
 
         final long[] statusIds = new long[statuses.size()];
         long minId = -1;
@@ -130,7 +131,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
             if (minId == -1 || id < minId) {
                 minId = id;
                 minIdx = i;
-        	}
+            }
             statusIds[i] = id;
 
             if (deleteStatus(data, status.getId())) {
@@ -154,16 +155,16 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
             final ParcelableStatus status = array[i];
             if (shouldFilterStatus(db, status) && !status.is_gap && i != size - 1) {
                 deleteStatus(data, status.id);
-			}
-		}
+            }
+        }
         if (mComparator != null) {
             Collections.sort(data, mComparator);
         } else {
             Collections.sort(data);
         }
         saveCachedData(serializationFile, data);
-        return new CopyOnWriteArrayList<>(data);
-	}
+        return ListResponse.getListInstance(new CopyOnWriteArrayList<>(data));
+    }
 
     public final void setComparator(Comparator<ParcelableStatus> comparator) {
         mComparator = comparator;
@@ -174,11 +175,11 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
     protected abstract List<Status> getStatuses(@NonNull Twitter twitter, Paging paging) throws TwitterException;
 
     @Nullable
-	protected final Twitter getTwitter() {
+    protected final Twitter getTwitter() {
         return TwitterAPIFactory.getTwitterInstance(mContext, mAccountId, true, true);
-	}
+    }
 
-	protected abstract boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status);
+    protected abstract boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status);
 
     protected boolean isGapEnabled() {
         return true;

@@ -28,54 +28,56 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 
+import java.util.List;
+
 public abstract class ParcelableUserListsFragment extends AbsUserListsFragment<List<ParcelableUserList>> {
 
-	@Override
-	public boolean isRefreshing() {
-		final LoaderManager lm = getLoaderManager();
-		return lm.hasRunningLoaders();
-	}
+    @Override
+    public boolean isRefreshing() {
+        final LoaderManager lm = getLoaderManager();
+        return lm.hasRunningLoaders();
+    }
 
-	@NonNull
-	@Override
-	protected final ParcelableUserListsAdapter onCreateAdapter(Context context, boolean compact) {
-		return new ParcelableUserListsAdapter(context, compact);
-	}
+    @NonNull
+    @Override
+    protected final ParcelableUserListsAdapter onCreateAdapter(Context context, boolean compact) {
+        return new ParcelableUserListsAdapter(context, compact);
+    }
 
-	protected long getAccountId() {
-		final Bundle args = getArguments();
-		return args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-	}
+    protected long getAccountId() {
+        final Bundle args = getArguments();
+        return args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
+    }
 
-	@Override
-	protected boolean hasMoreData(List<ParcelableUserList> data) {
-		return data == null || !data.isEmpty();
-	}
+    @Override
+    protected boolean hasMoreData(List<ParcelableUserList> data) {
+        return data == null || !data.isEmpty();
+    }
 
-	@Override
-	public void onLoadFinished(Loader<List<ParcelableUserList>> loader, List<ParcelableUserList> data) {
-		super.onLoadFinished(loader, data);
-		setRefreshEnabled(true);
-		setRefreshing(false);
-		setLoadMoreIndicatorVisible(false);
-	}
+    @Override
+    public void onLoadFinished(Loader<List<ParcelableUserList>> loader, List<ParcelableUserList> data) {
+        super.onLoadFinished(loader, data);
+        setRefreshEnabled(true);
+        setRefreshing(false);
+        setLoadMoreIndicatorVisible(false);
+    }
 
-	@Override
-	public void onLoadMoreContents() {
-		super.onLoadMoreContents();
-		final Bundle loaderArgs = new Bundle(getArguments());
-		loaderArgs.putBoolean(EXTRA_FROM_USER, true);
-		loaderArgs.putLong(EXTRA_NEXT_CURSOR, getNextCursor());
-		getLoaderManager().restartLoader(0, loaderArgs, this);
-	}
+    @Override
+    public void onLoadMoreContents(boolean fromStart) {
+        if (fromStart) return;
+        //noinspection ConstantConditions
+        super.onLoadMoreContents(fromStart);
+        final Bundle loaderArgs = new Bundle(getArguments());
+        loaderArgs.putBoolean(EXTRA_FROM_USER, true);
+        loaderArgs.putLong(EXTRA_NEXT_CURSOR, getNextCursor());
+        getLoaderManager().restartLoader(0, loaderArgs, this);
+    }
 
-	protected void removeUsers(long... ids) {
-		//TODO remove from adapter
-	}
+    protected void removeUsers(long... ids) {
+        //TODO remove from adapter
+    }
 
 }

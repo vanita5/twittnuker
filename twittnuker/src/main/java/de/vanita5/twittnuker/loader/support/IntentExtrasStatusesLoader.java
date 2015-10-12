@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.os.Bundle;
 
+import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 import java.util.Collections;
@@ -32,23 +33,25 @@ import java.util.List;
 
 public class IntentExtrasStatusesLoader extends ParcelableStatusesLoader {
 
-	private final Bundle mExtras;
+    private final Bundle mExtras;
 
     public IntentExtrasStatusesLoader(final Context context, final Bundle extras,
                                       final List<ParcelableStatus> data, final boolean fromUser) {
         super(context, data, -1, fromUser);
-		mExtras = extras;
-	}
+        mExtras = extras;
+    }
 
-	@Override
-	public List<ParcelableStatus> loadInBackground() {
-		final List<ParcelableStatus> data = getData();
+    @Override
+    public ListResponse<ParcelableStatus> loadInBackground() {
+        final List<ParcelableStatus> data = getData();
         if (mExtras != null && mExtras.containsKey(EXTRA_STATUSES)) {
-			final List<ParcelableStatus> users = mExtras.getParcelableArrayList(EXTRA_STATUSES);
-            data.addAll(users);
-            Collections.sort(data);
-		}
-		return data;
-	}
+            final List<ParcelableStatus> users = mExtras.getParcelableArrayList(EXTRA_STATUSES);
+            if (data != null && users != null) {
+                data.addAll(users);
+                Collections.sort(data);
+            }
+        }
+        return ListResponse.getListInstance(data);
+    }
 
 }

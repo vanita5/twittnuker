@@ -174,7 +174,7 @@ public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAd
     }
 
     @Override
-    public void onLoadMoreContents() {
+    public void onLoadMoreContents(boolean fromStart) {
         setLoadMoreIndicatorVisible(true);
         setRefreshEnabled(false);
     }

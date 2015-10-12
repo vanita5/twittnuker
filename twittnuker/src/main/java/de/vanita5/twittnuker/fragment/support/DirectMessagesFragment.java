@@ -62,7 +62,6 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
-import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
@@ -71,8 +70,6 @@ import de.vanita5.twittnuker.util.message.GetMessagesTaskEvent;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.inject.Inject;
 
 import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 
@@ -98,7 +95,7 @@ public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<Messa
     }
 
     @Override
-    public void onLoadMoreContents() {
+    public void onLoadMoreContents(boolean fromStart) {
         loadMoreMessages();
     }
 

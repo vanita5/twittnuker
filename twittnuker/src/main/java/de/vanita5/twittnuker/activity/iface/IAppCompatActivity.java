@@ -20,30 +20,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.loader.support;
+package de.vanita5.twittnuker.activity.iface;
 
-import android.content.Context;
+import android.support.v7.app.ActionBar;
 
-import de.vanita5.twittnuker.model.ListResponse;
-import de.vanita5.twittnuker.model.ParcelableStatus;
-
-import java.util.List;
-
-public final class DummyParcelableStatusesLoader extends ParcelableStatusesLoader {
-
-    public DummyParcelableStatusesLoader(final Context context) {
-        this(context, null, false);
-    }
-
-    public DummyParcelableStatusesLoader(final Context context, final List<ParcelableStatus> data, boolean fromUser) {
-        super(context, data, -1, fromUser);
-    }
-
-    @Override
-    public ListResponse<ParcelableStatus> loadInBackground() {
-        final List<ParcelableStatus> data = getData();
-        if (data != null) return ListResponse.getListInstance(data);
-        return ListResponse.emptyListInstance();
-    }
-
+public interface IAppCompatActivity {
+    ActionBar getSupportActionBar();
 }

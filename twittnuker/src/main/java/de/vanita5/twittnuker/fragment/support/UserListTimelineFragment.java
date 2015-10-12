@@ -33,12 +33,12 @@ import java.util.List;
 
 public class UserListTimelineFragment extends ParcelableStatusesFragment {
 
-	@Override
+    @Override
     protected Loader<List<ParcelableStatus>> onCreateStatusesLoader(final Context context,
-                                                                 final Bundle args,
-                                                                 final boolean fromUser) {
+                                                                    final Bundle args,
+                                                                    final boolean fromUser) {
         setRefreshing(true);
-		if (args == null) return null;
+        if (args == null) return null;
         final long listId = args.getLong(EXTRA_LIST_ID, -1);
         final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
         final long maxId = args.getLong(EXTRA_MAX_ID, -1);
@@ -62,6 +62,6 @@ public class UserListTimelineFragment extends ParcelableStatusesFragment {
         final String listName = args.getString(EXTRA_LIST_NAME);
         return new String[]{AUTHORITY_USER_LIST_TIMELINE, "account" + accountId, "list_id" + listId,
                 "list_name" + listName, "user_id" + userId, "screen_name" + screenName};
-	}
+    }
 
 }

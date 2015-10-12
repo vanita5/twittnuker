@@ -39,6 +39,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
@@ -47,11 +48,19 @@ import javax.inject.Inject;
 
 public class BaseListFragment extends ListFragment implements Constants, OnScrollListener, RefreshScrollTopInterface {
 
+    @Inject
+    protected AsyncTwitterWrapper mTwitterWrapper;
+    @Inject
+    protected SharedPreferencesWrapper mPreferences;
     private boolean mActivityFirstCreated;
     private boolean mIsInstanceStateSaved;
-
     private boolean mReachedBottom, mNotReachedBottomBefore = true;
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(activity)).build().inject(this);
+    }
 
     public final TwittnukerApplication getApplication() {
         return TwittnukerApplication.getInstance(getActivity());
@@ -104,15 +113,6 @@ public class BaseListFragment extends ListFragment implements Constants, OnScrol
         mIsInstanceStateSaved = savedInstanceState != null;
         final ListView lv = getListView();
         lv.setOnScrollListener(this);
-    }
-
-    @Inject
-    protected AsyncTwitterWrapper mTwitterWrapper;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
     }
 
     @Override

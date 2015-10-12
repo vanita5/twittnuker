@@ -20,30 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.loader.support;
+package de.vanita5.twittnuker.model;
 
-import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.model.ListResponse;
-import de.vanita5.twittnuker.model.ParcelableStatus;
+public interface Response<Data> {
+    Data getData();
 
-import java.util.List;
+    Exception getException();
 
-public final class DummyParcelableStatusesLoader extends ParcelableStatusesLoader {
+    @NonNull
+    Bundle getExtras();
 
-    public DummyParcelableStatusesLoader(final Context context) {
-        this(context, null, false);
-    }
+    boolean hasData();
 
-    public DummyParcelableStatusesLoader(final Context context, final List<ParcelableStatus> data, boolean fromUser) {
-        super(context, data, -1, fromUser);
-    }
-
-    @Override
-    public ListResponse<ParcelableStatus> loadInBackground() {
-        final List<ParcelableStatus> data = getData();
-        if (data != null) return ListResponse.getListInstance(data);
-        return ListResponse.emptyListInstance();
-    }
-
+    boolean hasException();
 }

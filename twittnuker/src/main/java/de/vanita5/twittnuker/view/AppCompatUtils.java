@@ -20,30 +20,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.loader.support;
+package de.vanita5.twittnuker.view;
 
-import android.content.Context;
+import android.support.v7.app.ActionBar;
+import android.support.v7.internal.app.ToolbarActionBar;
+import android.support.v7.internal.widget.DecorToolbar;
+import android.support.v7.widget.Toolbar;
 
-import de.vanita5.twittnuker.model.ListResponse;
-import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.util.Utils;
 
-import java.util.List;
+public class AppCompatUtils {
 
-public final class DummyParcelableStatusesLoader extends ParcelableStatusesLoader {
-
-    public DummyParcelableStatusesLoader(final Context context) {
-        this(context, null, false);
-    }
-
-    public DummyParcelableStatusesLoader(final Context context, final List<ParcelableStatus> data, boolean fromUser) {
-        super(context, data, -1, fromUser);
-    }
-
-    @Override
-    public ListResponse<ParcelableStatus> loadInBackground() {
-        final List<ParcelableStatus> data = getData();
-        if (data != null) return ListResponse.getListInstance(data);
-        return ListResponse.emptyListInstance();
+    public static Toolbar findToolbarForActionBar(ActionBar actionBar) {
+        if (actionBar instanceof ToolbarActionBar) {
+            final Object decorToolbar = Utils.findFieldOfTypes(actionBar, ToolbarActionBar.class, DecorToolbar.class);
+            if (decorToolbar instanceof DecorToolbar) {
+                return (Toolbar) ((DecorToolbar) decorToolbar).getViewGroup();
+            }
+        }
+        return null;
     }
 
 }

@@ -33,36 +33,38 @@ import java.util.List;
 
 public class SearchUsersFragment extends ParcelableUsersFragment {
 
-	private int mPage = 1;
+    private int mPage = 1;
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		if (savedInstanceState != null) {
-			mPage = savedInstanceState.getInt(EXTRA_PAGE, 1);
-		}
-		super.onActivityCreated(savedInstanceState);
-	}
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            mPage = savedInstanceState.getInt(EXTRA_PAGE, 1);
+        }
+        super.onActivityCreated(savedInstanceState);
+    }
 
-	@Override
+    @Override
     public Loader<List<ParcelableUser>> onCreateUsersLoader(final Context context, final Bundle args, boolean fromUser) {
         if (args == null) return null;
         final long account_id = args.getLong(EXTRA_ACCOUNT_ID);
         final String query = args.getString(EXTRA_QUERY);
         final int page = args.getInt(EXTRA_PAGE, 1);
         return new UserSearchLoader(context, account_id, query, page, getData(), fromUser);
-	}
+    }
 
-	@Override
+    @Override
     public void onLoadFinished(final Loader<List<ParcelableUser>> loader, final List<ParcelableUser> data) {
         super.onLoadFinished(loader, data);
         if (loader instanceof UserSearchLoader) {
             mPage = ((UserSearchLoader) loader).getPage();
-		}
-	}
+        }
+    }
 
-	@Override
-    public void onLoadMoreContents() {
-        super.onLoadMoreContents();
+    @Override
+    public void onLoadMoreContents(boolean fromStart) {
+        if (fromStart) return;
+        //noinspection ConstantConditions
+        super.onLoadMoreContents(fromStart);
         final Bundle loaderArgs = new Bundle(getArguments());
         loaderArgs.putBoolean(EXTRA_FROM_USER, true);
         loaderArgs.putInt(EXTRA_PAGE, mPage + 1);
@@ -70,10 +72,10 @@ public class SearchUsersFragment extends ParcelableUsersFragment {
     }
 
     @Override
-	public void onSaveInstanceState(final Bundle outState) {
-		outState.putInt(EXTRA_PAGE, mPage);
-		super.onSaveInstanceState(outState);
-	}
+    public void onSaveInstanceState(final Bundle outState) {
+        outState.putInt(EXTRA_PAGE, mPage);
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public void onDestroyView() {

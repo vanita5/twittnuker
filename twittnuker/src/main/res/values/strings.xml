@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <string name="app_description">Your Twitter App</string>
     <string name="compose">Compose</string>
     <string name="add_account">Add account</string>
     <string name="settings">Settings</string>
@@ -373,7 +374,7 @@
     <string name="preview_images">Preview images</string>
     <string name="preload_wifi_only">Preload using Wi-Fi only</string>
     <string name="sign_in_method_introduction_title">How does it work?</string>
-    <string name="sign_in_method_introduction">Most clients like twicca open a browser asking you to type username and password, and then take you back to the clients. Sometimes this can become very inconvenient.\n\nTwittnuker uses simpler steps to sign in, without opening the browser. Don\'t worry about your password, Twittnuker will never store it, it\'s totally safe!</string>
+    <string name="sign_in_method_introduction">Most Twitter apps like twicca open a browser asking you to type username and password, and then take you back to the clients. Sometimes this can become very inconvenient.\n\nTwittnuker uses simpler steps to sign in, without opening the browser. Don\'t worry about your password, Twittnuker will never store it, it\'s totally safe!</string>
     <string name="quote_protected_status_notice">It\'s not recommended to quote protected tweets.</string>
     <string name="edit_draft">Edit draft</string>
     <string name="profile_image">Profile image</string>
@@ -751,7 +752,10 @@
     <string name="combined_notifications_summary_on">Notifications will be grouped</string>
     <string name="combined_notifications_summary_off">Notifications will be displayed separately</string>
     <string name="save_media_no_storage_permission_message">Storage permission is needed to save media.</string>
+    <string name="select_file_no_storage_permission_message">Storage permission is needed to select file.</string>
     <string name="user_mentioned_you"><xliff:g id="name">%s</xliff:g> mentioned you</string>
+    <string name="cant_load_all_replies_message">Can\'t load all replies. &lt;a href=\"#dialog\";&gt;Why?&lt;/a&gt;</string>
+    <string name="cant_load_all_replies_explanation">Due to Twitter\'s limitation to third party twitter apps, Twittnuker has no access to replies to a tweet, there\'s no guarantee that Twittnuker can load all replies to a tweet.</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

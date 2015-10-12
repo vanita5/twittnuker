@@ -72,6 +72,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.Response;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
@@ -498,7 +499,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         return mAsyncTaskManager.add(task, true);
     }
 
-    private static <T extends SingleResponse<?>> Exception getException(List<T> responses) {
+    private static <T extends Response<?>> Exception getException(List<T> responses) {
         for (T response : responses) {
             if (response.hasException()) return response.getException();
         }
@@ -1025,7 +1026,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected void onPostExecute(final ListResponse<Long> result) {
-            if (result.list != null) {
+            if (result.hasData()) {
                 Utils.showInfoMessage(mContext, R.string.users_blocked, false);
             } else {
                 Utils.showErrorMessage(mContext, R.string.action_blocking, result.getException(), true);
@@ -2461,7 +2462,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected void onPostExecute(final ListResponse<Long> result) {
             if (result != null) {
-                final String user_id_where = ListUtils.toString(result.list, ',', false);
+                final String user_id_where = ListUtils.toString(result.getData(), ',', false);
                 for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
                     final Expression where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, account_id),
                             new Expression(String.format(Locale.ROOT, "%s IN (%s)", Statuses.USER_ID, user_id_where)));
@@ -2607,7 +2608,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected SingleResponse<Boolean> doInBackground(final Object... args) {
             if (response == null) return SingleResponse.getInstance(false);
-            final List<Trends> messages = response.list;
+            final List<Trends> messages = response.getData();
             final ArrayList<String> hashtags = new ArrayList<>();
             final ArrayList<ContentValues> hashtagValues = new ArrayList<>();
             if (messages != null && messages.size() > 0) {
