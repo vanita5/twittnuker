@@ -38,6 +38,9 @@ android {
             res.srcDirs = [project.file("src/$name/res"), project.file("src/$name/res-svg2png")]
         }
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 configurations {
