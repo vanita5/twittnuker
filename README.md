@@ -78,6 +78,12 @@ Do you have more ideas on how to improve the app? Please let me know!
 * [Material-ish Progress](https://github.com/pnikosis/materialish-progress), Copyright 2014 Nico Hormazábal
 * [android-gif-drawable](https://github.com/koral--/android-gif-drawable/), Copyright 2015 koral--
 
+## Donate ##
+Paypal
+
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8PJGYL8TAE6SN"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="[paypal]" />
+
+
 
 ## License ##
 
