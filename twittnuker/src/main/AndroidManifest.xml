@@ -191,7 +191,7 @@
         </activity>
         <activity
             android:name=".activity.support.QuickSearchBarActivity"
-            android:label="@android:string/search_go"
+            android:label="@string/search"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Twidere.Dark.Dialog"
             android:windowSoftInputMode="adjustResize">
@@ -502,13 +502,13 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
-        <receiver
+        <areceiver
             android:name=".receiver.NotificationReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.NOTIFICATION_DELETED"/>
             </intent-filter>
-        </receiver>
+        </areceiver>
         <receiver
             android:name=".receiver.SecretCodeBroadcastReceiver"
             android:label="@string/twidere_test">
