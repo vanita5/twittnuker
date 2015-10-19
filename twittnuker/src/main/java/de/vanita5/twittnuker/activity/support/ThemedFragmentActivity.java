@@ -37,31 +37,51 @@ import android.view.View;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.util.ActivityTracker;
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
+
+import javax.inject.Inject;
 
 public abstract class ThemedFragmentActivity extends FragmentActivity implements Constants,
         IThemedActivity, KeyboardShortcutCallback {
 
     // Utility classes
-    private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
+    @Inject
+    protected KeyboardShortcutsHandler mKeyboardShortcutsHandler;
+    @Inject
+    protected AsyncTwitterWrapper mTwitterWrapper;
+    @Inject
+    protected ActivityTracker mActivityTracker;
+    @Inject
+    protected MediaLoaderWrapper mImageLoader;
+    @Inject
+    protected UserColorNameManager mUserColorNameManager;
+    @Inject
+    protected SharedPreferencesWrapper mPreferences;
 
     // Data fields
-	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
+    private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
             mCurrentActionBarColor;
-	@ShapeStyle
-	private int mProfileImageStyle;
+    @ShapeStyle
+    private int mProfileImageStyle;
     private String mCurrentThemeBackgroundOption;
     private String mCurrentThemeFontFamily;
+    private int mMetaState;
 
     @NonNull
-	@Override
+    @Override
     public LayoutInflater getLayoutInflater() {
         final LayoutInflater inflater = super.getLayoutInflater();
         if (inflater.getFactory() == null) {
@@ -116,32 +136,32 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     }
 
     @Override
-	public String getThemeFontFamily() {
-		return ThemeUtils.getThemeFontFamily(this);
-	}
+    public String getThemeFontFamily() {
+        return ThemeUtils.getThemeFontFamily(this);
+    }
 
-	@Override
+    @Override
     @ShapeStyle
     public int getCurrentProfileImageStyle() {
         return mProfileImageStyle;
     }
 
     @Override
-	public final void restart() {
+    public final void restart() {
         Utils.restartActivity(this);
-	}
+    }
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
         if (BuildConfig.DEBUG) {
-			StrictModeUtils.detectAllVmPolicy();
-			StrictModeUtils.detectAllThreadPolicy();
-		}
-		super.onCreate(savedInstanceState);
-        mKeyboardShortcutsHandler = TwittnukerApplication.getInstance(this).getKeyboardShortcutsHandler();
-	}
+            StrictModeUtils.detectAllVmPolicy();
+            StrictModeUtils.detectAllThreadPolicy();
+        }
+        super.onCreate(savedInstanceState);
+        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(this)).build().inject(this);
+    }
 
-	@Override
+    @Override
     public void setTheme(int resid) {
         super.setTheme(mCurrentThemeResource = getThemeResourceId());
         if (shouldApplyWindowBackground()) {
@@ -152,36 +172,47 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
 
     @Override
     protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resId, boolean first) {
-		mCurrentThemeColor = getThemeColor();
+        mCurrentThemeColor = getThemeColor();
         mCurrentThemeFontFamily = getThemeFontFamily();
-		mCurrentActionBarColor = getActionBarColor();
+        mCurrentActionBarColor = getActionBarColor();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
-		mProfileImageStyle = Utils.getProfileImageStyle(this);
+        mProfileImageStyle = Utils.getProfileImageStyle(this);
         super.onApplyThemeResource(theme, resId, first);
     }
 
     @Override
-    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
         return false;
     }
 
     @Override
-    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
+    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event, int metaState) {
+        return false;
+    }
+
+    @Override
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
         return false;
     }
 
     @Override
     public boolean onKeyUp(int keyCode, @NonNull KeyEvent event) {
-        if (handleKeyboardShortcutSingle(mKeyboardShortcutsHandler, keyCode, event)) return true;
-        return super.onKeyUp(keyCode, event);
+        if (KeyEvent.isModifierKey(keyCode)) {
+            mMetaState &= ~KeyboardShortcutsHandler.getMetaStateForKeyCode(keyCode);
+        }
+        handleKeyboardShortcutSingle(mKeyboardShortcutsHandler, keyCode, event, mMetaState);
+        return isKeyboardShortcutHandled(mKeyboardShortcutsHandler, keyCode, event, mMetaState) || super.onKeyUp(keyCode, event);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (handleKeyboardShortcutRepeat(mKeyboardShortcutsHandler, keyCode, event.getRepeatCount(), event))
+        if (KeyEvent.isModifierKey(keyCode)) {
+            mMetaState |= KeyboardShortcutsHandler.getMetaStateForKeyCode(keyCode);
+        }
+        if (handleKeyboardShortcutRepeat(mKeyboardShortcutsHandler, keyCode, event.getRepeatCount(), event, mMetaState))
             return true;
-        return super.onKeyDown(keyCode, event);
+        return isKeyboardShortcutHandled(mKeyboardShortcutsHandler, keyCode, event, mMetaState) || super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -192,4 +223,5 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     protected boolean shouldApplyWindowBackground() {
         return true;
     }
+
 }

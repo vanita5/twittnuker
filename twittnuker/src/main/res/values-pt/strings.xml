@@ -60,6 +60,8 @@
     <string name="view_user_profile">Perfil do usuário</string>
     <string name="browser">Navegador</string>
     <string name="pick_from_gallery">Selecionar da galeria</string>
+    <string name="source_camera">Câmera</string>
+    <string name="source_gallery">Galeria</string>
     <string name="statuses">Tweets</string>
     <string name="followers">Seguidores</string>
     <string name="following">Seguindo</string>
@@ -683,4 +685,7 @@
     <string name="next_tab">Separador seguinte</string>
     <string name="keyboard_shortcut_back">Atrás</string>
     <string name="press_again_to_close">Carregar outra vez para fechar</string>
+    <string name="user_list_details">Lista de detalhes</string>
+    <string name="delete_conversation">Deletar conversa</string>
+    <string name="delete_conversation_confirm_message">Deletar todas as mensagens dessa conversa?</string>
 </resources>

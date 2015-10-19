@@ -59,10 +59,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.OrderBy;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.QuickSearchBarActivity.SuggestionItem;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -93,16 +93,16 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         LoaderCallbacks<List<SuggestionItem>>, OnItemSelectedListener, OnItemClickListener,
         DismissCallbacks, OnFitSystemWindowsListener {
 
-	private Spinner mAccountSpinner;
-	private EditText mSearchQuery;
-	private View mSearchSubmit;
-	private ListView mSuggestionsList;
-	private SuggestionsAdapter mUsersSearchAdapter;
+    private Spinner mAccountSpinner;
+    private EditText mSearchQuery;
+    private View mSearchSubmit;
+    private ListView mSuggestionsList;
+    private SuggestionsAdapter mUsersSearchAdapter;
     private ExtendedRelativeLayout mMainContent;
     private Rect mSystemWindowsInsets = new Rect();
     private boolean mTextChanged;
 
-	@Override
+    @Override
     public boolean canDismiss(int position) {
         return mUsersSearchAdapter.canDismiss(position);
     }
@@ -119,7 +119,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         final ContentResolver cr = getContentResolver();
         final Long[] idsObject = ArrayUtils.toObject(ids);
         ContentResolverUtils.bulkDelete(cr, SearchHistory.CONTENT_URI, SearchHistory._ID, idsObject,
-				null, false);
+                null, false);
         getSupportLoaderManager().restartLoader(0, null, this);
     }
 
@@ -128,10 +128,10 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         return ThemeUtils.getUserAccentColor(this);
     }
 
-	@Override
-	public int getActionBarColor() {
-		return ThemeUtils.getActionBarColor(this);
-	}
+    @Override
+    public int getActionBarColor() {
+        return ThemeUtils.getActionBarColor(this);
+    }
 
     @Override
     public int getThemeResourceId() {
@@ -180,24 +180,24 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
     }
 
     @Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		final SuggestionItem item = mUsersSearchAdapter.getItem(position);
-		item.onItemClick(this, position);
-	}
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        final SuggestionItem item = mUsersSearchAdapter.getItem(position);
+        item.onItemClick(this, position);
+    }
 
-	@Override
+    @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		getSupportLoaderManager().restartLoader(0, null, this);
-	}
+        getSupportLoaderManager().restartLoader(0, null, this);
+    }
 
-	@Override
+    @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
-	}
+    }
 
-	@Override
-    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
-        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+    @Override
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
         if (ACTION_NAVIGATION_BACK.equals(action) && mSearchQuery.length() == 0) {
             if (!mTextChanged) {
                 onBackPressed();
@@ -206,140 +206,146 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
             }
             return true;
         }
-        return super.handleKeyboardShortcutSingle(handler, keyCode, event);
+        return super.handleKeyboardShortcutSingle(handler, keyCode, event, metaState);
     }
 
     @Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_quick_search_bar);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_quick_search_bar);
         final List<ParcelableCredentials> accounts = ParcelableAccount.getCredentialsList(this, false);
-		final AccountsSpinnerAdapter accountsSpinnerAdapter = new AccountsSpinnerAdapter(this, R.layout.spinner_item_account_icon);
-		accountsSpinnerAdapter.setDropDownViewResource(R.layout.list_item_user);
-		accountsSpinnerAdapter.addAll(accounts);
-		mAccountSpinner.setAdapter(accountsSpinnerAdapter);
-		mAccountSpinner.setOnItemSelectedListener(this);
-		if (savedInstanceState == null) {
-			final Intent intent = getIntent();
-			final int index = accountsSpinnerAdapter.findItemPosition(intent.getLongExtra(EXTRA_ACCOUNT_ID, -1));
-			if (index != -1) {
-				mAccountSpinner.setSelection(index);
-			}
-		}
+        final AccountsSpinnerAdapter accountsSpinnerAdapter = new AccountsSpinnerAdapter(this, R.layout.spinner_item_account_icon);
+        accountsSpinnerAdapter.setDropDownViewResource(R.layout.list_item_user);
+        accountsSpinnerAdapter.addAll(accounts);
+        mAccountSpinner.setAdapter(accountsSpinnerAdapter);
+        mAccountSpinner.setOnItemSelectedListener(this);
+        if (savedInstanceState == null) {
+            final Intent intent = getIntent();
+            final int index = accountsSpinnerAdapter.findItemPosition(intent.getLongExtra(EXTRA_ACCOUNT_ID, -1));
+            if (index != -1) {
+                mAccountSpinner.setSelection(index);
+            }
+        }
         mMainContent.setOnFitSystemWindowsListener(this);
-		mUsersSearchAdapter = new SuggestionsAdapter(this);
-		mSuggestionsList.setAdapter(mUsersSearchAdapter);
-		mSuggestionsList.setOnItemClickListener(this);
+        mUsersSearchAdapter = new SuggestionsAdapter(this);
+        mSuggestionsList.setAdapter(mUsersSearchAdapter);
+        mSuggestionsList.setOnItemClickListener(this);
         final SwipeDismissListViewTouchListener listener = new SwipeDismissListViewTouchListener(mSuggestionsList, this);
         mSuggestionsList.setOnTouchListener(listener);
         mSuggestionsList.setOnScrollListener(listener.makeScrollListener());
-		mSearchSubmit.setOnClickListener(this);
+        mSearchSubmit.setOnClickListener(this);
 
         EditTextEnterHandler.attach(mSearchQuery, new EnterListener() {
-			@Override
-			public void onHitEnter() {
-				doSearch();
-			}
-		}, true);
+            @Override
+            public boolean shouldCallListener() {
+                return true;
+            }
+
+            @Override
+            public boolean onHitEnter() {
+                doSearch();
+                return true;
+            }
+        }, true);
         mSearchQuery.addTextChangedListener(new TextWatcher() {
-			@Override
+            @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-			}
+            }
 
 
-			@Override
+            @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mTextChanged = true;
-			}
+            }
 
-			@Override
+            @Override
             public void afterTextChanged(Editable s) {
                 if (Utils.removeLineBreaks(s)) {
-				doSearch();
+                    doSearch();
                 } else {
                     getSupportLoaderManager().restartLoader(0, null, QuickSearchBarActivity.this);
-				}
-			}
+                }
+            }
         });
 
         getSupportLoaderManager().initLoader(0, null, this);
-	}
+    }
 
-	@Override
+    @Override
     protected void onResume() {
         super.onResume();
         updateWindowAttributes();
-	}
+    }
 
-	private void doSearch() {
-		if (isFinishing()) return;
-		final String query = ParseUtils.parseString(mSearchQuery.getText());
-		if (TextUtils.isEmpty(query)) return;
-		final long accountId = mAccountSpinner.getSelectedItemId();
-		Utils.openSearch(this, accountId, query);
-		finish();
-	}
+    private void doSearch() {
+        if (isFinishing()) return;
+        final String query = ParseUtils.parseString(mSearchQuery.getText());
+        if (TextUtils.isEmpty(query)) return;
+        final long accountId = mAccountSpinner.getSelectedItemId();
+        Utils.openSearch(this, accountId, query);
+        finish();
+    }
 
-	private long getAccountId() {
-		return mAccountSpinner.getSelectedItemId();
-	}
+    private long getAccountId() {
+        return mAccountSpinner.getSelectedItemId();
+    }
 
     private static int getHistorySize(CharSequence query) {
         return TextUtils.isEmpty(query) ? 3 : 2;
     }
 
-	private void updateWindowAttributes() {
-		final Window window = getWindow();
-		final WindowManager.LayoutParams attributes = window.getAttributes();
-		attributes.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+    private void updateWindowAttributes() {
+        final Window window = getWindow();
+        final WindowManager.LayoutParams attributes = window.getAttributes();
+        attributes.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
         attributes.y = mSystemWindowsInsets.top;
-		window.setAttributes(attributes);
-	}
+        window.setAttributes(attributes);
+    }
 
     interface SuggestionItem {
 
-		void bindView(SuggestionsAdapter adapter, View view, int position);
+        void bindView(SuggestionsAdapter adapter, View view, int position);
 
-		int getItemLayoutResource();
+        int getItemLayoutResource();
 
-		int getItemViewType();
+        int getItemViewType();
 
-		boolean isEnabled();
+        boolean isEnabled();
 
-		void onItemClick(QuickSearchBarActivity activity, int position);
+        void onItemClick(QuickSearchBarActivity activity, int position);
 
-	}
+    }
 
-	static abstract class BaseClickableItem implements SuggestionItem {
-		@Override
-		public final boolean isEnabled() {
-			return true;
-		}
+    static abstract class BaseClickableItem implements SuggestionItem {
+        @Override
+        public final boolean isEnabled() {
+            return true;
+        }
 
-	}
+    }
 
-	static class SavedSearchItem extends BaseClickableItem {
+    static class SavedSearchItem extends BaseClickableItem {
 
         static final int ITEM_VIEW_TYPE = 1;
-		private final String mQuery;
+        private final String mQuery;
 
-		public SavedSearchItem(String query) {
-			mQuery = query;
-		}
+        public SavedSearchItem(String query) {
+            mQuery = query;
+        }
 
-		@Override
-		public void bindView(SuggestionsAdapter adapter, View view, int position) {
-			final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
-			final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-			text1.setText(mQuery);
-			icon.setImageResource(R.drawable.ic_action_save);
+        @Override
+        public void bindView(SuggestionsAdapter adapter, View view, int position) {
+            final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
+            final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+            text1.setText(mQuery);
+            icon.setImageResource(R.drawable.ic_action_save);
             final View editQuery = view.findViewById(R.id.edit_query);
             editQuery.setTag(position);
             editQuery.setOnClickListener(adapter);
-		}
+        }
 
-		@Override
+        @Override
         public final int getItemLayoutResource() {
             return R.layout.list_item_suggestion_search;
         }
@@ -354,11 +360,11 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         }
 
         @Override
-		public void onItemClick(QuickSearchBarActivity activity, int position) {
-			Utils.openSearch(activity, activity.getAccountId(), mQuery);
-			activity.finish();
-		}
-	}
+        public void onItemClick(QuickSearchBarActivity activity, int position) {
+            Utils.openSearch(activity, activity.getAccountId(), mQuery);
+            activity.finish();
+        }
+    }
 
     static class SearchHistoryItem extends BaseClickableItem {
 
@@ -369,7 +375,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         public SearchHistoryItem(long cursorId, String query) {
             mCursorId = cursorId;
             mQuery = query;
-		}
+        }
 
         public long getCursorId() {
             return mCursorId;
@@ -379,16 +385,16 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
             return mQuery;
         }
 
-		@Override
-		public void bindView(SuggestionsAdapter adapter, View view, int position) {
-			final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
-			final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+        @Override
+        public void bindView(SuggestionsAdapter adapter, View view, int position) {
+            final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
+            final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
             text1.setText(mQuery);
             icon.setImageResource(R.drawable.ic_action_history);
             final View editQuery = view.findViewById(R.id.edit_query);
             editQuery.setTag(position);
             editQuery.setOnClickListener(adapter);
-		}
+        }
 
         @Override
         public final int getItemLayoutResource() {
@@ -418,87 +424,86 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
     public static class SuggestionsAdapter extends BaseAdapter implements OnClickListener {
 
         private final QuickSearchBarActivity mActivity;
-		private final LayoutInflater mInflater;
-		private final MediaLoaderWrapper mImageLoader;
+        private final LayoutInflater mInflater;
+        private final MediaLoaderWrapper mImageLoader;
         private final UserColorNameManager mUserColorNameManager;
-		private List<SuggestionItem> mData;
+        private List<SuggestionItem> mData;
 
         SuggestionsAdapter(QuickSearchBarActivity activity) {
             mActivity = activity;
+            mImageLoader = activity.mImageLoader;
+            mUserColorNameManager = activity.mUserColorNameManager;
             mInflater = LayoutInflater.from(activity);
-            final TwittnukerApplication application = TwittnukerApplication.getInstance(activity);
-            mImageLoader = application.getMediaLoaderWrapper();
-            mUserColorNameManager = application.getUserColorNameManager();
         }
 
         public boolean canDismiss(int position) {
             return getItemViewType(position) == SearchHistoryItem.ITEM_VIEW_TYPE;
-		}
+        }
 
-		public Context getContext() {
+        public Context getContext() {
             return mActivity;
-		}
+        }
 
-		@Override
-		public int getCount() {
-			if (mData == null) return 0;
-			return mData.size();
-		}
+        @Override
+        public int getCount() {
+            if (mData == null) return 0;
+            return mData.size();
+        }
 
-		@Override
-		public SuggestionItem getItem(int position) {
-			if (mData == null) return null;
-			return mData.get(position);
-		}
+        @Override
+        public SuggestionItem getItem(int position) {
+            if (mData == null) return null;
+            return mData.get(position);
+        }
 
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
 
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			final View view;
-			final SuggestionItem item = getItem(position);
-			if (convertView == null) {
-				view = mInflater.inflate(item.getItemLayoutResource(), parent, false);
-			} else {
-				view = convertView;
-			}
-			item.bindView(this, view, position);
-			return view;
-		}
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final View view;
+            final SuggestionItem item = getItem(position);
+            if (convertView == null) {
+                view = mInflater.inflate(item.getItemLayoutResource(), parent, false);
+            } else {
+                view = convertView;
+            }
+            item.bindView(this, view, position);
+            return view;
+        }
 
-		public MediaLoaderWrapper getImageLoader() {
-			return mImageLoader;
-		}
+        public MediaLoaderWrapper getImageLoader() {
+            return mImageLoader;
+        }
 
-		@Override
-		public boolean isEnabled(int position) {
-			return getItem(position).isEnabled();
-		}
+        @Override
+        public boolean isEnabled(int position) {
+            return getItem(position).isEnabled();
+        }
 
-		@Override
-		public int getItemViewType(int position) {
-			if (mData == null) return IGNORE_ITEM_VIEW_TYPE;
-			return mData.get(position).getItemViewType();
-		}
+        @Override
+        public int getItemViewType(int position) {
+            if (mData == null) return IGNORE_ITEM_VIEW_TYPE;
+            return mData.get(position).getItemViewType();
+        }
 
-		@Override
-		public int getViewTypeCount() {
-			return 4;
-		}
+        @Override
+        public int getViewTypeCount() {
+            return 4;
+        }
 
-		public void removeItemAt(int position) {
-			if (mData == null) return;
-			mData.remove(position);
-			notifyDataSetChanged();
-		}
+        public void removeItemAt(int position) {
+            if (mData == null) return;
+            mData.remove(position);
+            notifyDataSetChanged();
+        }
 
-		public void setData(List<SuggestionItem> data) {
-			mData = data;
-			notifyDataSetChanged();
-		}
+        public void setData(List<SuggestionItem> data) {
+            mData = data;
+            notifyDataSetChanged();
+        }
 
         public UserColorNameManager getUserColorNameManager() {
             return mUserColorNameManager;
@@ -518,27 +523,27 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
                 }
             }
         }
-	}
+    }
 
-	public static class SuggestionsLoader extends AsyncTaskLoader<List<SuggestionItem>> {
+    public static class SuggestionsLoader extends AsyncTaskLoader<List<SuggestionItem>> {
 
         private static final Pattern PATTERN_SCREEN_NAME = Pattern.compile("(?i)[@\uFF20]?([a-z0-9_]{1,20})");
 
-		private final long mAccountId;
-		private final String mQuery;
+        private final long mAccountId;
+        private final String mQuery;
 
-		public SuggestionsLoader(Context context, long accountId, String query) {
-			super(context);
-			mAccountId = accountId;
-			mQuery = query;
-		}
+        public SuggestionsLoader(QuickSearchBarActivity context, long accountId, String query) {
+            super(context);
+            mAccountId = accountId;
+            mQuery = query;
+        }
 
-		@Override
-		public List<SuggestionItem> loadInBackground() {
+        @Override
+        public List<SuggestionItem> loadInBackground() {
             final boolean emptyQuery = TextUtils.isEmpty(mQuery);
-			final Context context = getContext();
-			final ContentResolver resolver = context.getContentResolver();
-			final List<SuggestionItem> result = new ArrayList<>();
+            final Context context = getContext();
+            final ContentResolver resolver = context.getContentResolver();
+            final List<SuggestionItem> result = new ArrayList<>();
             final String[] historyProjection = {SearchHistory._ID, SearchHistory.QUERY};
             final Cursor historyCursor = resolver.query(SearchHistory.CONTENT_URI,
                     historyProjection, null, null, SearchHistory.DEFAULT_SORT_ORDER);
@@ -548,18 +553,17 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
             }
             historyCursor.close();
             if (!emptyQuery) {
-				final String queryEscaped = mQuery.replace("_", "^_");
-				final Expression selection = Expression.or(
-						Expression.likeRaw(new Column(CachedUsers.SCREEN_NAME), "?||'%'", "^"),
-						Expression.likeRaw(new Column(CachedUsers.NAME), "?||'%'", "^"));
-				final String[] selectionArgs = new String[]{queryEscaped, queryEscaped};
+                final String queryEscaped = mQuery.replace("_", "^_");
+                final Expression selection = Expression.or(
+                        Expression.likeRaw(new Column(CachedUsers.SCREEN_NAME), "?||'%'", "^"),
+                        Expression.likeRaw(new Column(CachedUsers.NAME), "?||'%'", "^"));
+                final String[] selectionArgs = new String[]{queryEscaped, queryEscaped};
                 final String[] order = {CachedUsers.LAST_SEEN, "score", CachedUsers.SCREEN_NAME, CachedUsers.NAME};
                 final boolean[] ascending = {false, false, true, true};
                 final OrderBy orderBy = new OrderBy(order, ascending);
                 final Uri uri = Uri.withAppendedPath(CachedUsers.CONTENT_URI_WITH_SCORE, String.valueOf(mAccountId));
-                final Cursor usersCursor = context.getContentResolver().query(uri,
-                        CachedUsers.COLUMNS, selection.getSQL(),
-						selectionArgs, orderBy.getSQL());
+                final Cursor usersCursor = context.getContentResolver().query(uri, CachedUsers.COLUMNS,
+                        selection.getSQL(), selectionArgs, orderBy.getSQL());
                 final CachedIndices usersIndices = new CachedIndices(usersCursor);
                 final int screenNamePos = result.size();
                 boolean hasName = false;
@@ -577,7 +581,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
                     if (m.matches()) {
                         result.add(screenNamePos, new UserScreenNameItem(m.group(1), mAccountId));
                     }
-				}
+                }
                 usersCursor.close();
             } else {
                 final String[] savedSearchesProjection = {SavedSearches.QUERY};
@@ -592,14 +596,14 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
                 }
                 savedSearchesCursor.close();
             }
-			return result;
-		}
+            return result;
+        }
 
-		@Override
-		protected void onStartLoading() {
-			forceLoad();
-		}
-	}
+        @Override
+        protected void onStartLoading() {
+            forceLoad();
+        }
+    }
 
     static class UserScreenNameItem extends BaseClickableItem {
 

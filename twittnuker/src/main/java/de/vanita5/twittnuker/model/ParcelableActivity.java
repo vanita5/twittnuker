@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.model;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -38,16 +39,6 @@ import java.util.Arrays;
 @ParcelablePlease(allFields = false)
 @JsonObject
 public class ParcelableActivity implements Comparable<ParcelableActivity>, Parcelable {
-
-    public final static int ACTION_FAVORITE = Activity.Action.ACTION_FAVORITE;
-    public final static int ACTION_FOLLOW = Activity.Action.ACTION_FOLLOW;
-    public final static int ACTION_MENTION = Activity.Action.ACTION_MENTION;
-    public final static int ACTION_REPLY = Activity.Action.ACTION_REPLY;
-    public final static int ACTION_RETWEET = Activity.Action.ACTION_RETWEET;
-    public final static int ACTION_LIST_MEMBER_ADDED = Activity.Action.ACTION_LIST_MEMBER_ADDED;
-    public final static int ACTION_LIST_CREATED = Activity.Action.ACTION_LIST_CREATED;
-    public final static int ACTION_FAVORITED_RETWEET = Activity.Action.ACTION_FAVORITED_RETWEET;
-    public final static int ACTION_RETWEETED_RETWEET = Activity.Action.ACTION_RETWEETED_RETWEET;
 
     public static final Creator<ParcelableActivity> CREATOR = new Creator<ParcelableActivity>() {
         @Override
@@ -97,6 +88,9 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
     @JsonField(name = "target_object_statuses")
     public ParcelableStatus[] target_object_statuses;
     @ParcelableThisPlease
+    @JsonField(name = "target_object_users")
+    public ParcelableUser[] target_object_users;
+    @ParcelableThisPlease
     @JsonField(name = "is_gap")
     public boolean is_gap;
 
@@ -104,17 +98,18 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
     }
 
     public ParcelableActivity(final Activity activity, final long account_id, boolean is_gap) {
-		this.account_id = account_id;
+        this.account_id = account_id;
         timestamp = activity.getCreatedAt().getTime();
-		action = activity.getAction().getActionId();
-		max_position = activity.getMaxPosition();
-		min_position = activity.getMinPosition();
+        action = activity.getAction().getActionId();
+        max_position = activity.getMaxPosition();
+        min_position = activity.getMinPosition();
         sources = ParcelableUser.fromUsers(activity.getSources(), account_id);
         target_users = ParcelableUser.fromUsers(activity.getTargetUsers(), account_id);
         target_user_lists = ParcelableUserList.fromUserLists(activity.getTargetUserLists(), account_id);
         target_statuses = ParcelableStatus.fromStatuses(activity.getTargetStatuses(), account_id);
         target_object_statuses = ParcelableStatus.fromStatuses(activity.getTargetObjectStatuses(), account_id);
         target_object_user_lists = ParcelableUserList.fromUserLists(activity.getTargetObjectUserLists(), account_id);
+        target_object_users = ParcelableUser.fromUsers(activity.getTargetObjectUsers(), account_id);
         this.is_gap = is_gap;
     }
 
@@ -122,32 +117,39 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
         ParcelableActivityParcelablePlease.readFromParcel(this, src);
     }
 
+    @Override
+    public String toString() {
+        return "ParcelableActivity{" +
+                "account_id=" + account_id +
+                ", timestamp=" + timestamp +
+                ", max_position=" + max_position +
+                ", min_position=" + min_position +
+                ", action=" + action +
+                ", sources=" + Arrays.toString(sources) +
+                ", target_users=" + Arrays.toString(target_users) +
+                ", target_statuses=" + Arrays.toString(target_statuses) +
+                ", target_user_lists=" + Arrays.toString(target_user_lists) +
+                ", target_object_user_lists=" + Arrays.toString(target_object_user_lists) +
+                ", target_object_statuses=" + Arrays.toString(target_object_statuses) +
+                ", target_object_users=" + Arrays.toString(target_object_users) +
+                ", is_gap=" + is_gap +
+                '}';
+    }
 
-	@Override
+    @Override
     public int compareTo(@NonNull final ParcelableActivity another) {
         final long delta = another.timestamp - timestamp;
-		if (delta < Integer.MIN_VALUE) return Integer.MIN_VALUE;
-		if (delta > Integer.MAX_VALUE) return Integer.MAX_VALUE;
-		return (int) delta;
-	}
+        if (delta < Integer.MIN_VALUE) return Integer.MIN_VALUE;
+        if (delta > Integer.MAX_VALUE) return Integer.MAX_VALUE;
+        return (int) delta;
+    }
 
-	@Override
-	public boolean equals(final Object that) {
-		if (!(that instanceof ParcelableActivity)) return false;
-		final ParcelableActivity activity = (ParcelableActivity) that;
-		return max_position == activity.max_position && min_position == activity.min_position;
-	}
-
-	@Override
-	public String toString() {
-        return "ParcelableActivity{account_id=" + account_id + ", timestamp=" + timestamp
-				+ ", max_position=" + max_position + ", min_position=" + min_position + ", action=" + action
-				+ ", sources=" + Arrays.toString(sources) + ", target_users=" + Arrays.toString(target_users)
-				+ ", target_statuses=" + Arrays.toString(target_statuses) + ", target_user_lists="
-				+ Arrays.toString(target_user_lists) + ", target_object_user_lists="
-				+ Arrays.toString(target_object_user_lists) + ", target_object_statuses="
-				+ Arrays.toString(target_object_statuses) + "}";
-	}
+    @Override
+    public boolean equals(final Object that) {
+        if (!(that instanceof ParcelableActivity)) return false;
+        final ParcelableActivity activity = (ParcelableActivity) that;
+        return max_position == activity.max_position && min_position == activity.min_position;
+    }
 
 
     @Override
@@ -158,5 +160,17 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         ParcelableActivityParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static class CursorIndices extends ObjectCursor.CursorIndices<ParcelableActivity> {
+
+        public CursorIndices(@NonNull Cursor cursor) {
+            super(cursor);
+        }
+
+        @Override
+        public ParcelableActivity newObject(Cursor cursor) {
+            throw new UnsupportedOperationException();
+        }
     }
 }

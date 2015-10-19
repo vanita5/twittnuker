@@ -37,50 +37,50 @@ import java.util.Set;
 
 public class ReadStateManager implements Constants {
 
-	private final SharedPreferencesWrapper mPreferences;
+    private final SharedPreferencesWrapper mPreferences;
 
-	public ReadStateManager(final Context context) {
-		mPreferences = SharedPreferencesWrapper.getInstance(context,
-				TIMELINE_POSITIONS_PREFERENCES_NAME, Context.MODE_PRIVATE);
-	}
+    public ReadStateManager(final Context context) {
+        mPreferences = SharedPreferencesWrapper.getInstance(context,
+                TIMELINE_POSITIONS_PREFERENCES_NAME, Context.MODE_PRIVATE);
+    }
 
-	public long getPosition(final String key) {
-		if (TextUtils.isEmpty(key)) return -1;
-		return mPreferences.getLong(key, -1);
-	}
+    public long getPosition(final String key) {
+        if (TextUtils.isEmpty(key)) return -1;
+        return mPreferences.getLong(key, -1);
+    }
 
-	@NonNull
-	public StringLongPair[] getPositionPairs(final String key) {
-		if (TextUtils.isEmpty(key)) return new StringLongPair[0];
-		final Set<String> set = mPreferences.getStringSet(key, null);
-		if (set == null) return new StringLongPair[0];
-		final StringLongPair[] pairs = new StringLongPair[set.size()];
-		int count = 0;
-		for (String entry : set) {
-			try {
-				pairs[count++] = StringLongPair.valueOf(entry);
-			} catch (NumberFormatException e) {
-				return new StringLongPair[0];
-			}
-		}
-		return pairs;
-	}
+    @NonNull
+    public StringLongPair[] getPositionPairs(final String key) {
+        if (TextUtils.isEmpty(key)) return new StringLongPair[0];
+        final Set<String> set = mPreferences.getStringSet(key, null);
+        if (set == null) return new StringLongPair[0];
+        final StringLongPair[] pairs = new StringLongPair[set.size()];
+        int count = 0;
+        for (String entry : set.toArray(new String[set.size()])) {
+            try {
+                pairs[count++] = StringLongPair.valueOf(entry);
+            } catch (NumberFormatException e) {
+                return new StringLongPair[0];
+            }
+        }
+        return pairs;
+    }
 
 
     public long getPosition(final String key, final long keyId) {
         return getPosition(key, String.valueOf(keyId));
     }
 
-	public long getPosition(final String key, final String keyId) {
-		if (TextUtils.isEmpty(key)) return -1;
+    public long getPosition(final String key, final String keyId) {
+        if (TextUtils.isEmpty(key)) return -1;
         final Set<String> set = mPreferences.getStringSet(key, null);
-		if (set == null) return -1;
-		final String prefix = keyId + ":";
-		for (String entry : set) {
-			if (entry.startsWith(prefix)) return StringLongPair.valueOf(entry).getValue();
-		}
-		return -1;
-	}
+        if (set == null) return -1;
+        final String prefix = keyId + ":";
+        for (String entry : set) {
+            if (entry.startsWith(prefix)) return StringLongPair.valueOf(entry).getValue();
+        }
+        return -1;
+    }
 
     public void registerOnSharedPreferenceChangeListener(OnSharedPreferenceChangeListener listener) {
         mPreferences.registerOnSharedPreferenceChangeListener(listener);
@@ -99,65 +99,65 @@ public class ReadStateManager implements Constants {
         return setPosition(key, String.valueOf(keyId), position, acceptOlder);
     }
 
-	public boolean setPosition(final String key, final String keyId, final long position, boolean acceptOlder) {
-		if (TextUtils.isEmpty(key)) return false;
-		Set<String> set = mPreferences.getStringSet(key, null);
-		if (set == null) {
-			set = new CompactHashSet<>();
-		}
-		String keyValue = null;
-		final String prefix = keyId + ":";
-		for (String entry : set) {
-			if (entry.startsWith(prefix)) {
-				keyValue = entry;
-				break;
-			}
-		}
-		final StringLongPair pair;
-		if (keyValue != null) {
-			// Found value
-			pair = StringLongPair.valueOf(keyValue);
-			if (!acceptOlder && pair.getValue() > position) return false;
-			set.remove(keyValue);
-			pair.setValue(position);
-		} else {
-			pair = new StringLongPair(keyId, position);
-		}
-		set.add(pair.toString());
-		final SharedPreferences.Editor editor = mPreferences.edit();
-		editor.putStringSet(key, set);
-		editor.apply();
-		return true;
-	}
+    public boolean setPosition(final String key, final String keyId, final long position, boolean acceptOlder) {
+        if (TextUtils.isEmpty(key)) return false;
+        Set<String> set = mPreferences.getStringSet(key, null);
+        if (set == null) {
+            set = new CompactHashSet<>();
+        }
+        String keyValue = null;
+        final String prefix = keyId + ":";
+        for (String entry : set) {
+            if (entry.startsWith(prefix)) {
+                keyValue = entry;
+                break;
+            }
+        }
+        final StringLongPair pair;
+        if (keyValue != null) {
+            // Found value
+            pair = StringLongPair.valueOf(keyValue);
+            if (!acceptOlder && pair.getValue() > position) return false;
+            set.remove(keyValue);
+            pair.setValue(position);
+        } else {
+            pair = new StringLongPair(keyId, position);
+        }
+        set.add(pair.toString());
+        final SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putStringSet(key, set);
+        editor.apply();
+        return true;
+    }
 
 
-	public boolean setPositionPairs(final String key, @Nullable final StringLongPair[] pairs) {
-		if (TextUtils.isEmpty(key)) return false;
-		final SharedPreferences.Editor editor = mPreferences.edit();
-		if (pairs == null) {
-			editor.remove(key);
-		} else {
-			final Set<String> set = new CompactHashSet<>();
-			for (StringLongPair pair : pairs) {
-				set.add(pair.toString());
-			}
-			editor.putStringSet(key, set);
-		}
-		editor.apply();
-		return true;
-	}
+    public boolean setPositionPairs(final String key, @Nullable final StringLongPair[] pairs) {
+        if (TextUtils.isEmpty(key)) return false;
+        final SharedPreferences.Editor editor = mPreferences.edit();
+        if (pairs == null) {
+            editor.remove(key);
+        } else {
+            final Set<String> set = new CompactHashSet<>();
+            for (StringLongPair pair : pairs) {
+                set.add(pair.toString());
+            }
+            editor.putStringSet(key, set);
+        }
+        editor.apply();
+        return true;
+    }
 
-	public boolean setPosition(final String key, final long id) {
-		return setPosition(key, id, false);
-	}
+    public boolean setPosition(final String key, final long id) {
+        return setPosition(key, id, false);
+    }
 
-	public boolean setPosition(final String key, final long id, boolean acceptOlder) {
-		if (TextUtils.isEmpty(key) || !acceptOlder && getPosition(key) > id) return false;
-		final SharedPreferences.Editor editor = mPreferences.edit();
-		editor.putLong(key, id);
-		editor.apply();
-		return true;
-	}
+    public boolean setPosition(final String key, final long id, boolean acceptOlder) {
+        if (TextUtils.isEmpty(key) || !acceptOlder && getPosition(key) > id) return false;
+        final SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putLong(key, id);
+        editor.apply();
+        return true;
+    }
 
     public interface OnReadStateChangeListener {
         void onReadStateChanged();

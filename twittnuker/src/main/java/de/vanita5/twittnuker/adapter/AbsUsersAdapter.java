@@ -33,10 +33,8 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
@@ -44,60 +42,51 @@ import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
 
 public abstract class AbsUsersAdapter<D> extends LoadMoreSupportAdapter<ViewHolder> implements Constants,
-		IUsersAdapter<D> {
+        IUsersAdapter<D> {
 
-	public static final int ITEM_VIEW_TYPE_USER = 2;
+    public static final int ITEM_VIEW_TYPE_USER = 2;
 
-	private final Context mContext;
-	private final LayoutInflater mInflater;
-	private final MediaLoaderWrapper mMediaLoader;
+    private final Context mContext;
+    private final LayoutInflater mInflater;
 
-	private final int mCardBackgroundColor;
-	private final boolean mCompactCards;
-	private final int mProfileImageStyle;
-	private final int mTextSize;
-	private final AsyncTwitterWrapper mTwitterWrapper;
-	private final boolean mDisplayProfileImage;
+    private final int mCardBackgroundColor;
+    private final boolean mCompactCards;
+    private final int mProfileImageStyle;
+    private final int mTextSize;
+    private final boolean mDisplayProfileImage;
 
-    private final UserColorNameManager mUserColorNameManager;
-
-	public AbsUsersAdapter(final Context context, final boolean compact) {
-		final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-		mContext = context;
+    public AbsUsersAdapter(final Context context, final boolean compact) {
+        super(context);
+        mContext = context;
         mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
-		mInflater = LayoutInflater.from(context);
-		mMediaLoader = app.getMediaLoaderWrapper();
-        mUserColorNameManager = app.getUserColorNameManager();
-		mTwitterWrapper = app.getTwitterWrapper();
-		final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
-				SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mTextSize = preferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
-		mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
-		mDisplayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-		mCompactCards = compact;
-	}
+        mInflater = LayoutInflater.from(context);
+        mTextSize = mPreferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
+        mProfileImageStyle = Utils.getProfileImageStyle(mPreferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
+        mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
+        mCompactCards = compact;
+    }
 
     @NonNull
-	@Override
-	public Context getContext() {
-		return mContext;
-	}
+    @Override
+    public Context getContext() {
+        return mContext;
+    }
 
-	@Override
-	public int getProfileImageStyle() {
-		return mProfileImageStyle;
-	}
+    @Override
+    public int getProfileImageStyle() {
+        return mProfileImageStyle;
+    }
 
-	@Override
-	public float getTextSize() {
-		return mTextSize;
-	}
+    @Override
+    public float getTextSize() {
+        return mTextSize;
+    }
 
-	@NonNull
-	@Override
-	public AsyncTwitterWrapper getTwitterWrapper() {
-		return mTwitterWrapper;
-	}
+    @NonNull
+    @Override
+    public AsyncTwitterWrapper getTwitterWrapper() {
+        return mTwitterWrapper;
+    }
 
     @NonNull
     @Override
@@ -105,61 +94,61 @@ public abstract class AbsUsersAdapter<D> extends LoadMoreSupportAdapter<ViewHold
         return mUserColorNameManager;
     }
 
-	@Override
-	public boolean isProfileImageEnabled() {
-		return mDisplayProfileImage;
-	}
+    @Override
+    public boolean isProfileImageEnabled() {
+        return mDisplayProfileImage;
+    }
 
-	public abstract D getData();
+    public abstract D getData();
 
     public boolean isUser(int position) {
         return position < getUsersCount();
     }
 
-	@Override
-	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-		switch (viewType) {
-			case ITEM_VIEW_TYPE_USER: {
-				final View view;
-				if (mCompactCards) {
-					view = mInflater.inflate(R.layout.card_item_user_compact, parent, false);
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case ITEM_VIEW_TYPE_USER: {
+                final View view;
+                if (mCompactCards) {
+                    view = mInflater.inflate(R.layout.card_item_user_compact, parent, false);
                     final View itemContent = view.findViewById(R.id.item_content);
                     itemContent.setBackgroundColor(mCardBackgroundColor);
-				} else {
-					view = mInflater.inflate(R.layout.card_item_user, parent, false);
+                } else {
+                    view = mInflater.inflate(R.layout.card_item_user, parent, false);
                     final CardView cardView = (CardView) view.findViewById(R.id.card);
                     cardView.setCardBackgroundColor(mCardBackgroundColor);
-				}
-				final UserViewHolder holder = new UserViewHolder(this, view);
+                }
+                final UserViewHolder holder = new UserViewHolder(this, view);
                 holder.setOnClickListeners();
                 holder.setupViewOptions();
-				return holder;
-			}
-			case ITEM_VIEW_TYPE_LOAD_INDICATOR: {
-				final View view = mInflater.inflate(R.layout.card_item_load_indicator, parent, false);
-				return new LoadIndicatorViewHolder(view);
-			}
-		}
-		throw new IllegalStateException("Unknown view type " + viewType);
-	}
+                return holder;
+            }
+            case ITEM_VIEW_TYPE_LOAD_INDICATOR: {
+                final View view = mInflater.inflate(R.layout.card_item_load_indicator, parent, false);
+                return new LoadIndicatorViewHolder(view);
+            }
+        }
+        throw new IllegalStateException("Unknown view type " + viewType);
+    }
 
-	@Override
-	public void onBindViewHolder(ViewHolder holder, int position) {
-		switch (holder.getItemViewType()) {
-			case ITEM_VIEW_TYPE_USER: {
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        switch (holder.getItemViewType()) {
+            case ITEM_VIEW_TYPE_USER: {
                 bindUser(((UserViewHolder) holder), position);
-				break;
-			}
-		}
-	}
+                break;
+            }
+        }
+    }
 
-	@Override
-	public int getItemViewType(int position) {
-		if (position == getUsersCount()) {
-			return ITEM_VIEW_TYPE_LOAD_INDICATOR;
-		}
-		return ITEM_VIEW_TYPE_USER;
-	}
+    @Override
+    public int getItemViewType(int position) {
+        if (position == getUsersCount()) {
+            return ITEM_VIEW_TYPE_LOAD_INDICATOR;
+        }
+        return ITEM_VIEW_TYPE_USER;
+    }
 
     @Override
     public void onItemActionClick(ViewHolder holder, int id, int position) {
@@ -186,16 +175,16 @@ public abstract class AbsUsersAdapter<D> extends LoadMoreSupportAdapter<ViewHold
         mUserAdapterListener = userAdapterListener;
     }
 
-	@Override
-	public boolean shouldShowAccountsColor() {
-		return false;
-	}
+    @Override
+    public boolean shouldShowAccountsColor() {
+        return false;
+    }
 
     @NonNull
-	@Override
-	public MediaLoaderWrapper getMediaLoader() {
-		return mMediaLoader;
-	}
+    @Override
+    public MediaLoaderWrapper getMediaLoader() {
+        return mMediaLoader;
+    }
 
     protected abstract void bindUser(UserViewHolder holder, int position);
 

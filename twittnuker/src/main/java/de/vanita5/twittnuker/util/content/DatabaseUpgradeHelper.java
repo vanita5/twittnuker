@@ -53,128 +53,129 @@ import static org.mariotaku.sqliteqb.library.SQLQueryBuilder.select;
 
 public final class DatabaseUpgradeHelper {
 
-	public static void safeUpgrade(final SQLiteDatabase db, final String table, final String[] newColNames,
+    public static void safeUpgrade(final SQLiteDatabase db, final String table, final String[] newColNames,
                                    final String[] newColTypes, final boolean dropDirectly,
                                    final Map<String, String> colAliases, final OnConflict onConflict,
                                    final Constraint... constraints) {
-		if (newColNames == null || newColTypes == null || newColNames.length != newColTypes.length)
-			throw new IllegalArgumentException("Invalid parameters for upgrading table " + table
-					+ ", length of columns and types not match.");
+        if (newColNames == null || newColTypes == null || newColNames.length != newColTypes.length)
+            throw new IllegalArgumentException("Invalid parameters for upgrading table " + table
+                    + ", length of columns and types not match.");
 
-		// First, create the table if not exists.
-		final NewColumn[] newCols = NewColumn.createNewColumns(newColNames, newColTypes);
+        // First, create the table if not exists.
+        final NewColumn[] newCols = NewColumn.createNewColumns(newColNames, newColTypes);
         final String createQuery = createTable(true, table).columns(newCols).constraint(constraints).buildSQL();
-		db.execSQL(createQuery);
-		
-		// We need to get all data from old table.
-		final String[] oldCols = getColumnNames(db, table);
+        db.execSQL(createQuery);
+
+        // We need to get all data from old table.
+        final String[] oldCols = getColumnNames(db, table);
         if (oldCols == null || TwidereArrayUtils.contentMatch(newColNames, oldCols)) return;
-		if (dropDirectly) {
-			db.beginTransaction();
-			db.execSQL(dropTable(true, table).getSQL());
-			db.execSQL(createQuery);
-			db.setTransactionSuccessful();
-			db.endTransaction();
-			return;
-		}
-		final String tempTable = String.format(Locale.US, "temp_%s_%d", table, System.currentTimeMillis());
-		db.beginTransaction();
-		db.execSQL(alterTable(table).renameTo(tempTable).buildSQL());
-		db.execSQL(createQuery);
-		final String[] notNullCols = getNotNullColumns(newCols);
-		final String insertQuery = createInsertDataQuery(table, tempTable, newColNames, oldCols, colAliases,
-				notNullCols, onConflict);
-		if (insertQuery != null) {
-			db.execSQL(insertQuery);
-		}
-		db.execSQL(dropTable(true, tempTable).getSQL());
-		db.setTransactionSuccessful();
-		db.endTransaction();
-	}
+        if (dropDirectly) {
+            db.beginTransaction();
+            db.execSQL(dropTable(true, table).getSQL());
+            db.execSQL(createQuery);
+            db.setTransactionSuccessful();
+            db.endTransaction();
+            return;
+        }
+        final String tempTable = String.format(Locale.US, "temp_%s_%d", table, System.currentTimeMillis());
+        db.beginTransaction();
+        db.execSQL(alterTable(table).renameTo(tempTable).buildSQL());
+        db.execSQL(createQuery);
+        final String[] notNullCols = getNotNullColumns(newCols);
+        final String insertQuery = createInsertDataQuery(table, tempTable, newColNames, oldCols, colAliases,
+                notNullCols, onConflict);
+        if (insertQuery != null) {
+            db.execSQL(insertQuery);
+        }
+        db.execSQL(dropTable(true, tempTable).getSQL());
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
 
-	public static void safeUpgrade(final SQLiteDatabase db, final String table, final String[] newColNames,
-                                   final String[] newColTypes, final boolean dropDirectly, final Map<String, String> colAliases, final Constraint... constraints) {
+    public static void safeUpgrade(final SQLiteDatabase db, final String table, final String[] newColNames,
+                                   final String[] newColTypes, final boolean dropDirectly,
+                                   final Map<String, String> colAliases, final Constraint... constraints) {
         safeUpgrade(db, table, newColNames, newColTypes, dropDirectly, colAliases, OnConflict.REPLACE, constraints);
-	}
+    }
 
-	private static String createInsertDataQuery(final String table, final String tempTable, final String[] newCols,
-												final String[] oldCols, final Map<String, String> colAliases, final String[] notNullCols,
-												final OnConflict onConflict) {
+    private static String createInsertDataQuery(final String table, final String tempTable, final String[] newCols,
+                                                final String[] oldCols, final Map<String, String> colAliases, final String[] notNullCols,
+                                                final OnConflict onConflict) {
         final SQLInsertQuery.Builder qb = insertInto(onConflict, table);
         final List<String> newInsertColsList = new ArrayList<>();
-		for (final String newCol : newCols) {
-			final String oldAliasedCol = colAliases != null ? colAliases.get(newCol) : null;
+        for (final String newCol : newCols) {
+            final String oldAliasedCol = colAliases != null ? colAliases.get(newCol) : null;
             if (ArrayUtils.contains(oldCols, newCol) || oldAliasedCol != null
                     && ArrayUtils.contains(oldCols, oldAliasedCol)) {
-				newInsertColsList.add(newCol);
-			}
-		}
-		final String[] newInsertCols = newInsertColsList.toArray(new String[newInsertColsList.size()]);
-		if (!TwidereArrayUtils.contains(newInsertCols, notNullCols)) return null;
-		qb.columns(newInsertCols);
-		final Columns.Column[] oldDataCols = new Columns.Column[newInsertCols.length];
-		for (int i = 0, j = oldDataCols.length; i < j; i++) {
-			final String newCol = newInsertCols[i];
-			final String oldAliasedCol = colAliases != null ? colAliases.get(newCol) : null;
+                newInsertColsList.add(newCol);
+            }
+        }
+        final String[] newInsertCols = newInsertColsList.toArray(new String[newInsertColsList.size()]);
+        if (!TwidereArrayUtils.contains(newInsertCols, notNullCols)) return null;
+        qb.columns(newInsertCols);
+        final Columns.Column[] oldDataCols = new Columns.Column[newInsertCols.length];
+        for (int i = 0, j = oldDataCols.length; i < j; i++) {
+            final String newCol = newInsertCols[i];
+            final String oldAliasedCol = colAliases != null ? colAliases.get(newCol) : null;
             if (oldAliasedCol != null && ArrayUtils.contains(oldCols, oldAliasedCol)) {
-				oldDataCols[i] = new Columns.Column(oldAliasedCol, newCol);
-			} else {
-				oldDataCols[i] = new Columns.Column(newCol);
-			}
-		}
-		final SQLSelectQuery.Builder selectOldBuilder = select(new Columns(oldDataCols));
-		selectOldBuilder.from(new Tables(tempTable));
-		qb.select(selectOldBuilder.build());
-		return qb.buildSQL();
-	}
+                oldDataCols[i] = new Columns.Column(oldAliasedCol, newCol);
+            } else {
+                oldDataCols[i] = new Columns.Column(newCol);
+            }
+        }
+        final SQLSelectQuery.Builder selectOldBuilder = select(new Columns(oldDataCols));
+        selectOldBuilder.from(new Tables(tempTable));
+        qb.select(selectOldBuilder.build());
+        return qb.buildSQL();
+    }
 
-	private static String[] getColumnNames(final SQLiteDatabase db, final String table) {
-		final Cursor cur = db.query(table, null, null, null, null, null, null, "1");
-		if (cur == null) return null;
-		try {
-			return cur.getColumnNames();
-		} finally {
-			cur.close();
-		}
-	}
+    private static String[] getColumnNames(final SQLiteDatabase db, final String table) {
+        final Cursor cur = db.query(table, null, null, null, null, null, null, "1");
+        if (cur == null) return null;
+        try {
+            return cur.getColumnNames();
+        } finally {
+            cur.close();
+        }
+    }
 
-	private static String getCreateSQL(final SQLiteDatabase db, final String table) {
-		final SQLSelectQuery.Builder qb = select(new Column("sql"));
-		qb.from(new Tables("sqlite_master"));
+    private static String getCreateSQL(final SQLiteDatabase db, final String table) {
+        final SQLSelectQuery.Builder qb = select(new Column("sql"));
+        qb.from(new Tables("sqlite_master"));
         qb.where(new Expression("type = ? AND name = ?"));
-		final Cursor c = db.rawQuery(qb.buildSQL(), new String[] { "table", table });
-		if (c == null) return null;
-		try {
-			if (c.moveToFirst()) return c.getString(0);
-			return null;
-		} finally {
-			c.close();
-		}
-	}
-	
-	private static String[] getNotNullColumns(final NewColumn[] newCols) {
-        if (newCols == null) return null;
-		final String[] notNullCols = new String[newCols.length];
-		int count = 0;
-		for (final NewColumn column : newCols) {
-			if (column.getType().endsWith(" NOT NULL")) {
-				notNullCols[count++] = column.getName();
-			}
-		}
-		return TwidereArrayUtils.subArray(notNullCols, 0, count);
-	}
+        final Cursor c = db.rawQuery(qb.buildSQL(), new String[]{"table", table});
+        if (c == null) return null;
+        try {
+            if (c.moveToFirst()) return c.getString(0);
+            return null;
+        } finally {
+            c.close();
+        }
+    }
 
-	private static Map<String, String> getTypeMapByCreateQuery(final String query) {
-		if (TextUtils.isEmpty(query)) return Collections.emptyMap();
-		final int start = query.indexOf("("), end = query.lastIndexOf(")");
-		if (start < 0 || end < 0) return Collections.emptyMap();
+    private static String[] getNotNullColumns(final NewColumn[] newCols) {
+        if (newCols == null) return null;
+        final String[] notNullCols = new String[newCols.length];
+        int count = 0;
+        for (final NewColumn column : newCols) {
+            if (column.getType().endsWith(" NOT NULL")) {
+                notNullCols[count++] = column.getName();
+            }
+        }
+        return TwidereArrayUtils.subArray(notNullCols, 0, count);
+    }
+
+    private static Map<String, String> getTypeMapByCreateQuery(final String query) {
+        if (TextUtils.isEmpty(query)) return Collections.emptyMap();
+        final int start = query.indexOf("("), end = query.lastIndexOf(")");
+        if (start < 0 || end < 0) return Collections.emptyMap();
         final HashMap<String, String> map = new HashMap<>();
-		for (final String segment : query.substring(start + 1, end).split(",")) {
-			final String trimmed = segment.trim().replaceAll(" +", " ");
-			final int idx = trimmed.indexOf(" ");
-			map.put(trimmed.substring(0, idx), trimmed.substring(idx + 1, trimmed.length()));
-		}
-		return map;
-	}
+        for (final String segment : query.substring(start + 1, end).split(",")) {
+            final String trimmed = segment.trim().replaceAll(" +", " ");
+            final int idx = trimmed.indexOf(" ");
+            map.put(trimmed.substring(0, idx), trimmed.substring(idx + 1, trimmed.length()));
+        }
+        return map;
+    }
 
 }

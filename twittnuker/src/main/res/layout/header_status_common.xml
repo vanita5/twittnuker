@@ -20,8 +20,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_content"
@@ -29,43 +28,30 @@
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
     android:focusable="true"
-    android:focusableInTouchMode="false"
     android:orientation="vertical"
     android:splitMotionEvents="false">
 
-    <LinearLayout
-        android:id="@+id/retweeted_by_container"
+    <de.vanita5.twittnuker.view.themed.ThemedTextView
+        android:id="@+id/retweeted_by"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/element_spacing_minus_normal"
         android:background="?selectableItemBackground"
-        android:clickable="true"
-        android:paddingLeft="@dimen/element_spacing_small"
-        android:paddingRight="@dimen/element_spacing_small"
-        tools:visiblity="visible">
-
-        <Space
-            android:layout_width="@dimen/element_spacing_large"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/padding_profile_image_detail_page"/>
-
-        <de.vanita5.twittnuker.view.themed.ThemedTextView
-            android:id="@+id/retweeted_by"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:minHeight="@dimen/element_size_small"
-            android:padding="@dimen/element_spacing_normal"
-            android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            tools:text="Retweeted by twittnuker"/>
-    </LinearLayout>
+        android:drawableLeft="@drawable/ic_indicator_retweet"
+        android:drawablePadding="4dp"
+        android:drawableStart="@drawable/ic_indicator_retweet"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/element_size_small"
+        android:padding="@dimen/element_spacing_normal"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="?android:textColorSecondary"
+        tools:text="Retweeted by twittnuker"/>
 
     <de.vanita5.twittnuker.view.ColorLabelRelativeLayout
         android:id="@+id/profile_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/retweeted_by_container"
+        android:layout_below="@+id/retweeted_by"
         android:background="?selectableItemBackground"
         android:padding="@dimen/element_spacing_small"
         app:ignorePadding="true">
@@ -180,7 +166,7 @@
 
 
     <de.vanita5.twittnuker.view.StatusTextView
-        android:id="@+id/quote_text"
+        android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/profile_container"
@@ -192,29 +178,27 @@
         android:paddingRight="@dimen/element_spacing_normal"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="?android:textColorPrimary"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:text="@string/sample_status_text"
         tools:visibility="visible"/>
-
 
     <de.vanita5.twittnuker.view.ForegroundColorView
         android:id="@+id/quote_indicator"
         android:layout_width="@dimen/element_spacing_small"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/counts_container"
+        android:layout_alignBottom="@+id/quote_original_link"
         android:layout_alignTop="@+id/quoted_name_container"
         android:layout_marginLeft="@dimen/element_spacing_normal"
         android:layout_marginStart="@dimen/element_spacing_normal"
-        android:background="?android:dividerHorizontal"
+        android:background="?quoteIndicatorBackgroundColor"
         android:visibility="gone"
         tools:visibility="visible"/>
-
 
     <LinearLayout
         android:id="@+id/quoted_name_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/quote_text"
+        android:layout_below="@+id/text"
         android:layout_toEndOf="@+id/quote_indicator"
         android:layout_toRightOf="@+id/quote_indicator"
         android:background="?selectableItemBackground"
@@ -247,11 +231,26 @@
             tools:text="\@username"/>
     </LinearLayout>
 
+    <de.vanita5.twittnuker.view.StatusTextView
+        android:id="@+id/quoted_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/quoted_name_container"
+        android:layout_margin="@dimen/element_spacing_normal"
+        android:layout_toEndOf="@+id/quote_indicator"
+        android:layout_toRightOf="@+id/quote_indicator"
+        android:singleLine="false"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="?android:textColorPrimary"
+        android:visibility="gone"
+        tools:text="@string/sample_status_text"
+        tools:visibility="visible" />
+
     <FrameLayout
         android:id="@+id/media_preview_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/quoted_name_container"
+        android:layout_below="@+id/quoted_text"
         android:layout_toEndOf="@+id/quote_indicator"
         android:layout_toRightOf="@+id/quote_indicator"
         tools:visibility="visible">
@@ -296,24 +295,11 @@
 
     </FrameLayout>
 
-    <de.vanita5.twittnuker.view.StatusTextView
-        android:id="@+id/text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/media_preview_container"
-        android:layout_margin="@dimen/element_spacing_normal"
-        android:layout_toEndOf="@+id/quote_indicator"
-        android:layout_toRightOf="@+id/quote_indicator"
-        android:singleLine="false"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:textColor="?android:textColorPrimary"
-        tools:text="@string/sample_status_text"/>
-
     <de.vanita5.twittnuker.view.TwitterCardContainer
         android:id="@+id/twitter_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/text"
+        android:layout_below="@+id/media_preview_container"
         android:layout_toEndOf="@+id/quote_indicator"
         android:layout_toRightOf="@+id/quote_indicator"
         android:visibility="gone"/>
@@ -336,15 +322,31 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="?android:textColorSecondary"/>
 
+    <de.vanita5.twittnuker.view.ActionIconThemedTextView
+        android:id="@+id/quote_original_link"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/location_view"
+        android:layout_toEndOf="@+id/quote_indicator"
+        android:layout_toRightOf="@+id/quote_indicator"
+        android:background="?selectableItemBackground"
+        android:drawableLeft="@drawable/ic_indicator_twitter"
+        android:drawablePadding="4dp"
+        android:drawableStart="@drawable/ic_indicator_twitter"
+        android:gravity="center_vertical"
+        android:padding="@dimen/element_spacing_normal"
+        android:singleLine="true"
+        android:text="@string/original_status"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="?android:textColorSecondary" />
+
     <LinearLayout
         android:id="@+id/counts_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/location_view"
+        android:layout_below="@+id/quote_original_link"
         android:layout_marginLeft="@dimen/element_spacing_small"
         android:layout_marginRight="@dimen/element_spacing_small"
-        android:layout_toEndOf="@+id/quote_indicator"
-        android:layout_toRightOf="@+id/quote_indicator"
         android:orientation="horizontal"
         android:splitMotionEvents="false">
 

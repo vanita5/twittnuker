@@ -85,7 +85,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.meizu.flyme.reflect.StatusBarProxy;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.mariotaku.sqliteqb.library.Expression;
@@ -103,7 +102,6 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.FriendshipUpdate;
 import de.vanita5.twittnuker.api.twitter.model.Relationship;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
@@ -125,16 +123,13 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MathUtils;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
-import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
@@ -159,18 +154,18 @@ import java.util.List;
 import java.util.Locale;
 
 public class UserFragment extends BaseSupportFragment implements OnClickListener,
-		OnLinkClickListener, OnSizeChangedListener, OnSharedPreferenceChangeListener,
+        OnLinkClickListener, OnSizeChangedListener, OnSharedPreferenceChangeListener,
         OnTouchListener, DrawerCallback, SupportFragmentCallback, SystemWindowsInsetsCallback,
         RefreshScrollTopInterface, OnPageChangeListener, KeyboardShortcutCallback {
 
     private static final ArgbEvaluator sArgbEvaluator = new ArgbEvaluator();
 
-	public static final String TRANSITION_NAME_PROFILE_IMAGE = "profile_image";
-	public static final String TRANSITION_NAME_PROFILE_TYPE = "profile_type";
+    public static final String TRANSITION_NAME_PROFILE_IMAGE = "profile_image";
+    public static final String TRANSITION_NAME_PROFILE_TYPE = "profile_type";
     public static final String TRANSITION_NAME_CARD = "card";
 
-	private static final int LOADER_ID_USER = 1;
-	private static final int LOADER_ID_FRIENDSHIP = 2;
+    private static final int LOADER_ID_USER = 1;
+    private static final int LOADER_ID_FRIENDSHIP = 2;
 
     private static final int TAB_POSITION_STATUSES = 0;
     private static final int TAB_POSITION_MEDIA = 1;
@@ -179,26 +174,22 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private static final String TAB_TYPE_MEDIA = "media";
     private static final String TAB_TYPE_FAVORITES = "favorites";
 
-    private MediaLoaderWrapper mMediaLoader;
-    private UserColorNameManager mUserColorNameManager;
-    private SharedPreferencesWrapper mPreferences;
-
     private ShapedImageView mProfileImageView;
-	private ImageView mProfileTypeView;
-	private ProfileBannerImageView mProfileBannerView;
+    private ImageView mProfileTypeView;
+    private ProfileBannerImageView mProfileBannerView;
     private View mProfileBirthdayBannerView;
-	private TextView mNameView, mScreenNameView, mDescriptionView, mLocationView, mURLView, mCreatedAtView,
-			mTweetCount, mFollowersCount, mFriendsCount, mHeaderErrorTextView;
-	private View mDescriptionContainer, mLocationContainer, mURLContainer, mTweetsContainer, mFollowersContainer,
-			mFriendsContainer;
+    private TextView mNameView, mScreenNameView, mDescriptionView, mLocationView, mURLView, mCreatedAtView,
+            mTweetCount, mFollowersCount, mFriendsCount, mHeaderErrorTextView;
+    private View mDescriptionContainer, mLocationContainer, mURLContainer, mTweetsContainer, mFollowersContainer,
+            mFriendsContainer;
     private ImageView mHeaderErrorIcon;
     private ColorLabelRelativeLayout mProfileNameContainer;
     private View mProgressContainer, mHeaderErrorContainer;
     private View mCardContent;
-	private View mProfileBannerSpace;
+    private View mProfileBannerSpace;
     private TintedStatusFrameLayout mTintedStatusContent;
     private HeaderDrawerLayout mHeaderDrawerLayout;
-	private ViewPager mViewPager;
+    private ViewPager mViewPager;
     private TabPagerIndicator mPagerIndicator;
     private View mPagerOverlay;
     private View mErrorOverlay;
@@ -214,7 +205,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
 
     private ActionBarDrawable mActionBarBackground;
-	private SupportTabsAdapter mPagerAdapter;
+    private SupportTabsAdapter mPagerAdapter;
 
     private ParcelableUser mUser;
     private Relationship mRelationship;
@@ -229,27 +220,27 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private boolean mHideBirthdayView;
 
 
-	private final LoaderCallbacks<SingleResponse<Relationship>> mFriendshipLoaderCallbacks = new LoaderCallbacks<SingleResponse<Relationship>>() {
+    private final LoaderCallbacks<SingleResponse<Relationship>> mFriendshipLoaderCallbacks = new LoaderCallbacks<SingleResponse<Relationship>>() {
 
-		@Override
-		public Loader<SingleResponse<Relationship>> onCreateLoader(final int id, final Bundle args) {
-			invalidateOptionsMenu();
+        @Override
+        public Loader<SingleResponse<Relationship>> onCreateLoader(final int id, final Bundle args) {
+            invalidateOptionsMenu();
             mFollowButton.setVisibility(View.GONE);
             mFollowProgress.setVisibility(View.VISIBLE);
             mFollowingYouIndicator.setVisibility(View.GONE);
-			final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
-			final long userId = args.getLong(EXTRA_USER_ID, -1);
+            final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+            final long userId = args.getLong(EXTRA_USER_ID, -1);
             return new RelationshipLoader(getActivity(), accountId, userId);
-		}
+        }
 
-		@Override
-		public void onLoaderReset(final Loader<SingleResponse<Relationship>> loader) {
+        @Override
+        public void onLoaderReset(final Loader<SingleResponse<Relationship>> loader) {
 
-		}
+        }
 
-		@Override
-		public void onLoadFinished(final Loader<SingleResponse<Relationship>> loader,
-								   final SingleResponse<Relationship> data) {
+        @Override
+        public void onLoadFinished(final Loader<SingleResponse<Relationship>> loader,
+                                   final SingleResponse<Relationship> data) {
             mFollowProgress.setVisibility(View.GONE);
             final ParcelableUser user = getUser();
             final Relationship relationship = data.getData();
@@ -259,55 +250,55 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     };
 
     private void showRelationship(ParcelableUser user, Relationship relationship) {
-		mRelationship = relationship;
-		if (user == null) return;
-		invalidateOptionsMenu();
-		final boolean isMyself = user.account_id == user.id;
-		if (isMyself) {
-			mFollowButton.setText(R.string.edit);
-			mFollowButton.setVisibility(View.VISIBLE);
-		} else if (relationship != null) {
-			mFollowButton.setEnabled(!relationship.isSourceBlockedByTarget());
-			if (relationship.isSourceBlockedByTarget()) {
-				mPagesErrorContainer.setVisibility(View.VISIBLE);
-				final String displayName = mUserColorNameManager.getDisplayName(user, mNameFirst, true);
-				mPagesErrorText.setText(getString(R.string.blocked_by_user_summary, displayName));
-				mPagesErrorIcon.setImageResource(R.drawable.ic_info_error_generic);
-				mPagesContent.setVisibility(View.GONE);
-			} else if (!relationship.isSourceFollowingTarget() && user.is_protected) {
-				mPagesErrorContainer.setVisibility(View.VISIBLE);
-				final String displayName = mUserColorNameManager.getDisplayName(user, mNameFirst, true);
-				mPagesErrorText.setText(getString(R.string.user_protected_summary, displayName));
-				mPagesErrorIcon.setImageResource(R.drawable.ic_info_locked);
-				mPagesContent.setVisibility(View.GONE);
-			} else {
-				mPagesErrorContainer.setVisibility(View.GONE);
-				mPagesErrorText.setText(null);
-				mPagesContent.setVisibility(View.VISIBLE);
-			}
-			if (relationship.isSourceBlockingTarget()) {
-				mFollowButton.setText(R.string.unblock);
-			} else if (relationship.isSourceFollowingTarget()) {
-				mFollowButton.setText(R.string.unfollow);
-			} else if (user.is_follow_request_sent) {
-				mFollowButton.setText(R.string.requested);
+        mRelationship = relationship;
+        if (user == null) return;
+        invalidateOptionsMenu();
+        final boolean isMyself = user.account_id == user.id;
+        if (isMyself) {
+            mFollowButton.setText(R.string.edit);
+            mFollowButton.setVisibility(View.VISIBLE);
+        } else if (relationship != null) {
+            mFollowButton.setEnabled(!relationship.isSourceBlockedByTarget());
+            if (relationship.isSourceBlockedByTarget()) {
+                mPagesErrorContainer.setVisibility(View.VISIBLE);
+                final String displayName = mUserColorNameManager.getDisplayName(user, mNameFirst, true);
+                mPagesErrorText.setText(getString(R.string.blocked_by_user_summary, displayName));
+                mPagesErrorIcon.setImageResource(R.drawable.ic_info_error_generic);
+                mPagesContent.setVisibility(View.GONE);
+            } else if (!relationship.isSourceFollowingTarget() && user.is_protected) {
+                mPagesErrorContainer.setVisibility(View.VISIBLE);
+                final String displayName = mUserColorNameManager.getDisplayName(user, mNameFirst, true);
+                mPagesErrorText.setText(getString(R.string.user_protected_summary, displayName));
+                mPagesErrorIcon.setImageResource(R.drawable.ic_info_locked);
+                mPagesContent.setVisibility(View.GONE);
             } else {
-				mFollowButton.setText(R.string.follow);
+                mPagesErrorContainer.setVisibility(View.GONE);
+                mPagesErrorText.setText(null);
+                mPagesContent.setVisibility(View.VISIBLE);
             }
-			mFollowButton.setCompoundDrawablePadding(Math.round(mFollowButton.getTextSize() * 0.25f));
+            if (relationship.isSourceBlockingTarget()) {
+                mFollowButton.setText(R.string.unblock);
+            } else if (relationship.isSourceFollowingTarget()) {
+                mFollowButton.setText(R.string.unfollow);
+            } else if (user.is_follow_request_sent) {
+                mFollowButton.setText(R.string.requested);
+            } else {
+                mFollowButton.setText(R.string.follow);
+            }
+            mFollowButton.setCompoundDrawablePadding(Math.round(mFollowButton.getTextSize() * 0.25f));
             mFollowingYouIndicator.setVisibility(relationship.isTargetFollowingSource() ? View.VISIBLE : View.GONE);
 
-			final ContentResolver resolver = getContentResolver();
+            final ContentResolver resolver = getContentResolver();
             final ContentValues cachedValues = ContentValuesCreator.makeCachedUserContentValues(user);
-			resolver.insert(CachedUsers.CONTENT_URI, cachedValues);
-			mFollowButton.setVisibility(View.VISIBLE);
-		} else {
-			mFollowButton.setText(null);
-			mFollowButton.setVisibility(View.GONE);
-			mPagesErrorContainer.setVisibility(View.GONE);
-			mPagesContent.setVisibility(View.VISIBLE);
-		}
-	}
+            resolver.insert(CachedUsers.CONTENT_URI, cachedValues);
+            mFollowButton.setVisibility(View.VISIBLE);
+        } else {
+            mFollowButton.setText(null);
+            mFollowButton.setVisibility(View.GONE);
+            mPagesErrorContainer.setVisibility(View.GONE);
+            mPagesContent.setVisibility(View.VISIBLE);
+        }
+    }
 
     private final LoaderCallbacks<SingleResponse<ParcelableUser>> mUserInfoLoaderCallbacks = new LoaderCallbacks<SingleResponse<ParcelableUser>>() {
 
@@ -485,66 +476,65 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         }
     }
 
-	public void displayUser(final ParcelableUser user) {
+    public void displayUser(final ParcelableUser user) {
         mUser = user;
         final FragmentActivity activity = getActivity();
         if (user == null || user.id <= 0 || activity == null) return;
         final Resources resources = getResources();
-        final UserColorNameManager manager = UserColorNameManager.getInstance(activity);
-		final LoaderManager lm = getLoaderManager();
-		lm.destroyLoader(LOADER_ID_USER);
-		lm.destroyLoader(LOADER_ID_FRIENDSHIP);
-		final boolean userIsMe = user.account_id == user.id;
+        final LoaderManager lm = getLoaderManager();
+        lm.destroyLoader(LOADER_ID_USER);
+        lm.destroyLoader(LOADER_ID_FRIENDSHIP);
+        final boolean userIsMe = user.account_id == user.id;
         mCardContent.setVisibility(View.VISIBLE);
         mHeaderErrorContainer.setVisibility(View.GONE);
-		mProgressContainer.setVisibility(View.GONE);
-		mUser = user;
-        final int userColor = manager.getUserColor(user.id, true);
+        mProgressContainer.setVisibility(View.GONE);
+        mUser = user;
+        final int userColor = mUserColorNameManager.getUserColor(user.id, true);
         mProfileImageView.setBorderColor(userColor != 0 ? userColor : Color.WHITE);
         mProfileNameContainer.drawEnd(Utils.getAccountColor(activity, user.account_id));
-		mNameView.setText(user.name);
-		final int typeIconRes = Utils.getUserTypeIconRes(user.is_verified, user.is_protected);
-		if (typeIconRes != 0) {
-			mProfileTypeView.setImageResource(typeIconRes);
-			mProfileTypeView.setVisibility(View.VISIBLE);
-		} else {
-			mProfileTypeView.setImageDrawable(null);
-			mProfileTypeView.setVisibility(View.GONE);
-		}
-		mScreenNameView.setText("@" + user.screen_name);
+        mNameView.setText(user.name);
+        final int typeIconRes = Utils.getUserTypeIconRes(user.is_verified, user.is_protected);
+        if (typeIconRes != 0) {
+            mProfileTypeView.setImageResource(typeIconRes);
+            mProfileTypeView.setVisibility(View.VISIBLE);
+        } else {
+            mProfileTypeView.setImageDrawable(null);
+            mProfileTypeView.setVisibility(View.GONE);
+        }
+        mScreenNameView.setText("@" + user.screen_name);
         mDescriptionContainer.setVisibility(TextUtils.isEmpty(user.description_html) ? View.GONE : View.VISIBLE);
         mDescriptionView.setText(user.description_html != null ? Html.fromHtml(user.description_html) : user.description_plain);
-		final TwidereLinkify linkify = new TwidereLinkify(this);
-		linkify.applyAllLinks(mDescriptionView, user.account_id, false);
-		mDescriptionView.setMovementMethod(null);
+        final TwidereLinkify linkify = new TwidereLinkify(this);
+        linkify.applyAllLinks(mDescriptionView, user.account_id, false);
+        mDescriptionView.setMovementMethod(null);
         mLocationContainer.setVisibility(TextUtils.isEmpty(user.location) ? View.GONE : View.VISIBLE);
-		mLocationView.setText(user.location);
+        mLocationView.setText(user.location);
         mURLContainer.setVisibility(TextUtils.isEmpty(user.url) && TextUtils.isEmpty(user.url_expanded) ? View.GONE : View.VISIBLE);
         mURLView.setText(TextUtils.isEmpty(user.url_expanded) ? user.url : user.url_expanded);
-		mURLView.setMovementMethod(null);
+        mURLView.setMovementMethod(null);
         final String createdAt = Utils.formatToLongTimeString(activity, user.created_at);
         final float daysSinceCreation = (System.currentTimeMillis() - user.created_at) / 1000 / 60 / 60 / 24;
         final int dailyTweets = Math.round(user.statuses_count / Math.max(1, daysSinceCreation));
         mCreatedAtView.setText(resources.getQuantityString(R.plurals.created_at_with_N_tweets_per_day, dailyTweets,
-				createdAt, dailyTweets));
-		mTweetCount.setText(Utils.getLocalizedNumber(mLocale, user.statuses_count));
-		mFollowersCount.setText(Utils.getLocalizedNumber(mLocale, user.followers_count));
-		mFriendsCount.setText(Utils.getLocalizedNumber(mLocale, user.friends_count));
+                createdAt, dailyTweets));
+        mTweetCount.setText(Utils.getLocalizedNumber(mLocale, user.statuses_count));
+        mFollowersCount.setText(Utils.getLocalizedNumber(mLocale, user.followers_count));
+        mFriendsCount.setText(Utils.getLocalizedNumber(mLocale, user.friends_count));
 
         mMediaLoader.displayProfileImage(mProfileImageView, Utils.getOriginalTwitterProfileImage(user.profile_image_url));
-		if (userColor != 0) {
+        if (userColor != 0) {
             setUiColor(userColor);
-		} else {
+        } else {
             setUiColor(user.link_color);
-		}
+        }
         final int defWidth = resources.getDisplayMetrics().widthPixels;
-		final int width = mBannerWidth > 0 ? mBannerWidth : defWidth;
+        final int width = mBannerWidth > 0 ? mBannerWidth : defWidth;
         mMediaLoader.displayProfileBanner(mProfileBannerView, user.profile_banner_url, width);
         final Relationship relationship = mRelationship;
         if (relationship == null || relationship.getTargetUserId() != user.id) {
-			getFriendship();
-		}
-        activity.setTitle(manager.getDisplayName(user, mNameFirst, true));
+            getFriendship();
+        }
+        activity.setTitle(mUserColorNameManager.getDisplayName(user, mNameFirst, true));
 
         Calendar cal = Calendar.getInstance();
         final int currentMonth = cal.get(Calendar.MONTH), currentDay = cal.get(Calendar.DAY_OF_MONTH);
@@ -555,9 +545,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             mProfileBirthdayBannerView.setVisibility(View.GONE);
         }
         updateTitleAlpha();
-		invalidateOptionsMenu();
+        invalidateOptionsMenu();
         updateSubtitle();
-	}
+    }
 
     @Override
     public Fragment getCurrentVisibleFragment() {
@@ -580,27 +570,27 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         return mUser;
     }
 
-	public void getUserInfo(final long accountId, final long userId, final String screenName,
-							final boolean omitIntentExtra) {
-		final LoaderManager lm = getLoaderManager();
-		lm.destroyLoader(LOADER_ID_USER);
-		lm.destroyLoader(LOADER_ID_FRIENDSHIP);
-		final Bundle args = new Bundle();
-		args.putLong(EXTRA_ACCOUNT_ID, accountId);
-		args.putLong(EXTRA_USER_ID, userId);
-		args.putString(EXTRA_SCREEN_NAME, screenName);
-		args.putBoolean(EXTRA_OMIT_INTENT_EXTRA, omitIntentExtra);
-		if (!mGetUserInfoLoaderInitialized) {
-			lm.initLoader(LOADER_ID_USER, args, mUserInfoLoaderCallbacks);
-			mGetUserInfoLoaderInitialized = true;
-		} else {
-			lm.restartLoader(LOADER_ID_USER, args, mUserInfoLoaderCallbacks);
-		}
-		if (accountId == -1 || userId == -1 && screenName == null) {
+    public void getUserInfo(final long accountId, final long userId, final String screenName,
+                            final boolean omitIntentExtra) {
+        final LoaderManager lm = getLoaderManager();
+        lm.destroyLoader(LOADER_ID_USER);
+        lm.destroyLoader(LOADER_ID_FRIENDSHIP);
+        final Bundle args = new Bundle();
+        args.putLong(EXTRA_ACCOUNT_ID, accountId);
+        args.putLong(EXTRA_USER_ID, userId);
+        args.putString(EXTRA_SCREEN_NAME, screenName);
+        args.putBoolean(EXTRA_OMIT_INTENT_EXTRA, omitIntentExtra);
+        if (!mGetUserInfoLoaderInitialized) {
+            lm.initLoader(LOADER_ID_USER, args, mUserInfoLoaderCallbacks);
+            mGetUserInfoLoaderInitialized = true;
+        } else {
+            lm.restartLoader(LOADER_ID_USER, args, mUserInfoLoaderCallbacks);
+        }
+        if (accountId == -1 || userId == -1 && screenName == null) {
             mCardContent.setVisibility(View.GONE);
             mHeaderErrorContainer.setVisibility(View.GONE);
-		}
-	}
+        }
+    }
 
     @Subscribe
     public void notifyFriendshipUpdated(FriendshipUpdatedEvent event) {
@@ -628,49 +618,50 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         updateRefreshState();
     }
 
-	@Override
-	public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         final ParcelableUser user = getUser();
-        final UserColorNameManager manager = UserColorNameManager.getInstance(getActivity());
-		switch (requestCode) {
-			case REQUEST_SET_COLOR: {
-				if (user == null) return;
-				if (resultCode == Activity.RESULT_OK) {
-					if (data == null) return;
-					final int color = data.getIntExtra(EXTRA_COLOR, Color.TRANSPARENT);
-                    manager.setUserColor(mUser.id, color);
-				} else if (resultCode == ColorPickerDialogActivity.RESULT_CLEARED) {
-                    manager.clearUserColor(mUser.id);
-				}
-				break;
-			}
-			case REQUEST_ADD_TO_LIST: {
-				if (user == null) return;
-				if (resultCode == Activity.RESULT_OK && data != null) {
-					final AsyncTwitterWrapper twitter = getTwitterWrapper();
-					final ParcelableUserList list = data.getParcelableExtra(EXTRA_USER_LIST);
-					if (list == null || twitter == null) return;
-					twitter.addUserListMembersAsync(user.account_id, list.id, user);
-				}
-				break;
-			}
-			case REQUEST_SELECT_ACCOUNT: {
-				if (user == null) return;
-				if (resultCode == Activity.RESULT_OK) {
-					if (data == null || !data.hasExtra(EXTRA_ID)) return;
-					final long accountId = data.getLongExtra(EXTRA_ID, -1);
+        switch (requestCode) {
+            case REQUEST_SET_COLOR: {
+                if (user == null) return;
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data == null) return;
+                    final int color = data.getIntExtra(EXTRA_COLOR, Color.TRANSPARENT);
+                    mUserColorNameManager.setUserColor(mUser.id, color);
+                } else if (resultCode == ColorPickerDialogActivity.RESULT_CLEARED) {
+                    mUserColorNameManager.clearUserColor(mUser.id);
+                }
+                break;
+            }
+            case REQUEST_ADD_TO_LIST: {
+                if (user == null) return;
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    final AsyncTwitterWrapper twitter = mTwitterWrapper;
+                    final ParcelableUserList list = data.getParcelableExtra(EXTRA_USER_LIST);
+                    if (list == null || twitter == null) return;
+                    twitter.addUserListMembersAsync(user.account_id, list.id, user);
+                }
+                break;
+            }
+            case REQUEST_SELECT_ACCOUNT: {
+                if (user == null) return;
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data == null || !data.hasExtra(EXTRA_ID)) return;
+                    final long accountId = data.getLongExtra(EXTRA_ID, -1);
                     Utils.openUserProfile(getActivity(), accountId, user.id, user.screen_name, null);
-				}
-				break;
-			}
-		}
+                }
+                break;
+            }
+        }
 
-	}
+    }
 
-	@Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mTintedStatusContent = (TintedStatusFrameLayout) activity.findViewById(R.id.main_content);
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FragmentActivity) {
+            mTintedStatusContent = (TintedStatusFrameLayout) ((FragmentActivity) context).findViewById(R.id.main_content);
+        }
     }
 
     @Override
@@ -685,8 +676,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         setHasOptionsMenu(true);
         getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE)
                 .registerOnSharedPreferenceChangeListener(this);
-        mUserColorNameManager = UserColorNameManager.getInstance(activity);
-        mPreferences = SharedPreferencesWrapper.getInstance(activity, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE, SharedPreferenceConstants.class);
         mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
         mLocale = getResources().getConfiguration().locale;
         mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(activity,
@@ -694,7 +683,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 ThemeUtils.getUserThemeBackgroundAlpha(activity));
         mActionBarShadowColor = 0xA0000000;
         final TwittnukerApplication app = TwittnukerApplication.getInstance(activity);
-        mMediaLoader = app.getMediaLoaderWrapper();
         final Bundle args = getArguments();
         long accountId = -1, userId = -1;
         String screenName = null;
@@ -767,7 +755,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mFollowButton.setOnClickListener(this);
         mProfileImageView.setOnClickListener(this);
         mProfileBannerView.setOnClickListener(this);
-		mTweetsContainer.setOnClickListener(this);
+        mTweetsContainer.setOnClickListener(this);
         mFollowersContainer.setOnClickListener(this);
         mFriendsContainer.setOnClickListener(this);
         mHeaderErrorIcon.setOnClickListener(this);
@@ -802,9 +790,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     @Override
     public void onStart() {
         super.onStart();
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.register(this);
+        mBus.register(this);
     }
 
     @Override
@@ -815,9 +801,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     @Override
     public void onStop() {
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.unregister(this);
+        mBus.unregister(this);
         super.onStop();
     }
 
@@ -838,17 +822,17 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     @Override
     public void onPrepareOptionsMenu(final Menu menu) {
-		final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        final AsyncTwitterWrapper twitter = mTwitterWrapper;
         final ParcelableUser user = getUser();
-		final Relationship relationship = mRelationship;
-		if (twitter == null || user == null) return;
+        final Relationship relationship = mRelationship;
+        if (twitter == null || user == null) return;
 
-		final boolean isMyself = user.account_id == user.id;
+        final boolean isMyself = user.account_id == user.id;
         final MenuItem mentionItem = menu.findItem(R.id.mention);
-		if (mentionItem != null) {
+        if (mentionItem != null) {
             final String displayName = mUserColorNameManager.getDisplayName(user, mNameFirst, true);
             mentionItem.setTitle(getString(R.string.mention_user_name, displayName));
-		}
+        }
         MenuUtils.setMenuItemAvailability(menu, R.id.mention, !isMyself);
         MenuUtils.setMenuItemAvailability(menu, R.id.incoming_friendships, isMyself);
         MenuUtils.setMenuItemAvailability(menu, R.id.saved_searches, isMyself);
@@ -867,40 +851,40 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 //            followItem.setTitle(null);
 //            followItem.setIcon(null);
 //        }
-		if (!isMyself && relationship != null) {
+        if (!isMyself && relationship != null) {
             MenuUtils.setMenuItemAvailability(menu, R.id.send_direct_message, relationship.canSourceDMTarget());
             MenuUtils.setMenuItemAvailability(menu, R.id.block, true);
             MenuUtils.setMenuItemAvailability(menu, R.id.mute_user, true);
             final MenuItem blockItem = menu.findItem(R.id.block);
-			if (blockItem != null) {
-				final boolean blocking = relationship.isSourceBlockingTarget();
+            if (blockItem != null) {
+                final boolean blocking = relationship.isSourceBlockingTarget();
                 ActionIconDrawable.setMenuHighlight(blockItem, new TwidereMenuInfo(blocking));
-				blockItem.setTitle(blocking ? R.string.unblock : R.string.block);
-			}
+                blockItem.setTitle(blocking ? R.string.unblock : R.string.block);
+            }
             final MenuItem muteItem = menu.findItem(R.id.mute_user);
-			if (muteItem != null) {
-				final boolean muting = relationship.isSourceMutingTarget();
+            if (muteItem != null) {
+                final boolean muting = relationship.isSourceMutingTarget();
                 ActionIconDrawable.setMenuHighlight(muteItem, new TwidereMenuInfo(muting));
-				muteItem.setTitle(muting ? R.string.unmute : R.string.mute);
-			}
+                muteItem.setTitle(muting ? R.string.unmute : R.string.mute);
+            }
             final MenuItem filterItem = menu.findItem(R.id.add_to_filter);
-			if (filterItem != null) {
-				final boolean filtering = Utils.isFilteringUser(getActivity(), user.id);
+            if (filterItem != null) {
+                final boolean filtering = Utils.isFilteringUser(getActivity(), user.id);
                 ActionIconDrawable.setMenuHighlight(filterItem, new TwidereMenuInfo(filtering));
-				filterItem.setTitle(filtering ? R.string.remove_from_filter : R.string.add_to_filter);
-			}
+                filterItem.setTitle(filtering ? R.string.remove_from_filter : R.string.add_to_filter);
+            }
             final MenuItem wantRetweetsItem = menu.findItem(R.id.enable_retweets);
             if (wantRetweetsItem != null) {
 
                 wantRetweetsItem.setChecked(relationship.isSourceWantRetweetsFromTarget());
             }
-		} else {
+        } else {
             MenuUtils.setMenuItemAvailability(menu, R.id.send_direct_message, false);
             MenuUtils.setMenuItemAvailability(menu, R.id.enable_retweets, false);
             MenuUtils.setMenuItemAvailability(menu, R.id.block, false);
             MenuUtils.setMenuItemAvailability(menu, R.id.mute_user, false);
             MenuUtils.setMenuItemAvailability(menu, R.id.report_spam, false);
-		}
+        }
         MenuUtils.setMenuItemAvailability(menu, R.id.muted_users, isMyself);
         MenuUtils.setMenuItemAvailability(menu, R.id.blocked_users, isMyself);
         final HeaderDrawerLayout drawer = mHeaderDrawerLayout;
@@ -914,105 +898,105 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-		final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        final AsyncTwitterWrapper twitter = mTwitterWrapper;
         final ParcelableUser user = getUser();
-		final Relationship relationship = mRelationship;
-		if (user == null || twitter == null) return false;
-		switch (item.getItemId()) {
+        final Relationship relationship = mRelationship;
+        if (user == null || twitter == null) return false;
+        switch (item.getItemId()) {
             case R.id.block: {
-				if (mRelationship != null) {
-					if (mRelationship.isSourceBlockingTarget()) {
-						twitter.destroyBlockAsync(user.account_id, user.id);
-					} else {
-						CreateUserBlockDialogFragment.show(getFragmentManager(), user);
-					}
-				}
-				break;
-			}
+                if (mRelationship != null) {
+                    if (mRelationship.isSourceBlockingTarget()) {
+                        twitter.destroyBlockAsync(user.account_id, user.id);
+                    } else {
+                        CreateUserBlockDialogFragment.show(getFragmentManager(), user);
+                    }
+                }
+                break;
+            }
             case R.id.report_spam: {
-				ReportSpamDialogFragment.show(getFragmentManager(), user);
-				break;
-			}
+                ReportSpamDialogFragment.show(getFragmentManager(), user);
+                break;
+            }
             case R.id.add_to_filter: {
-				final boolean filtering = Utils.isFilteringUser(getActivity(), user.id);
-				final ContentResolver cr = getContentResolver();
-				if (filtering) {
-					final Expression where = Expression.equals(Filters.Users.USER_ID, user.id);
-					cr.delete(Filters.Users.CONTENT_URI, where.getSQL(), null);
+                final boolean filtering = Utils.isFilteringUser(getActivity(), user.id);
+                final ContentResolver cr = getContentResolver();
+                if (filtering) {
+                    final Expression where = Expression.equals(Filters.Users.USER_ID, user.id);
+                    cr.delete(Filters.Users.CONTENT_URI, where.getSQL(), null);
                     Utils.showInfoMessage(getActivity(), R.string.message_user_unmuted, false);
-				} else {
+                } else {
                     cr.insert(Filters.Users.CONTENT_URI, ContentValuesCreator.createFilteredUser(user));
                     Utils.showInfoMessage(getActivity(), R.string.message_user_muted, false);
-				}
-				break;
-			}
+                }
+                break;
+            }
             case R.id.mute_user: {
-				if (mRelationship != null) {
-					if (mRelationship.isSourceMutingTarget()) {
-						twitter.destroyMuteAsync(user.account_id, user.id);
-					} else {
-						CreateUserMuteDialogFragment.show(getFragmentManager(), user);
-					}
-				}
-				break;
-			}
+                if (mRelationship != null) {
+                    if (mRelationship.isSourceMutingTarget()) {
+                        twitter.destroyMuteAsync(user.account_id, user.id);
+                    } else {
+                        CreateUserMuteDialogFragment.show(getFragmentManager(), user);
+                    }
+                }
+                break;
+            }
             case R.id.mention: {
-				final Intent intent = new Intent(INTENT_ACTION_MENTION);
-				final Bundle bundle = new Bundle();
-				bundle.putParcelable(EXTRA_USER, user);
-				intent.putExtras(bundle);
-				startActivity(intent);
-				break;
-			}
+                final Intent intent = new Intent(INTENT_ACTION_MENTION);
+                final Bundle bundle = new Bundle();
+                bundle.putParcelable(EXTRA_USER, user);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            }
             case R.id.send_direct_message: {
-				final Uri.Builder builder = new Uri.Builder();
-				builder.scheme(SCHEME_TWITTNUKER);
-				builder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
-				builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(user.account_id));
+                final Uri.Builder builder = new Uri.Builder();
+                builder.scheme(SCHEME_TWITTNUKER);
+                builder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
+                builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(user.account_id));
                 builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(user.id));
                 final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
                 intent.putExtra(EXTRA_ACCOUNT, ParcelableCredentials.getCredentials(getActivity(), user.account_id));
                 intent.putExtra(EXTRA_USER, user);
                 startActivity(intent);
-				break;
-			}
+                break;
+            }
             case R.id.set_color: {
-				final Intent intent = new Intent(getActivity(), ColorPickerDialogActivity.class);
+                final Intent intent = new Intent(getActivity(), ColorPickerDialogActivity.class);
                 intent.putExtra(EXTRA_COLOR, mUserColorNameManager.getUserColor(user.id, true));
-				intent.putExtra(EXTRA_ALPHA_SLIDER, false);
-				intent.putExtra(EXTRA_CLEAR_BUTTON, true);
-				startActivityForResult(intent, REQUEST_SET_COLOR);
-				break;
-			}
-			case R.id.add_to_list: {
-				final Intent intent = new Intent(INTENT_ACTION_SELECT_USER_LIST);
-				intent.setClass(getActivity(), UserListSelectorActivity.class);
-				intent.putExtra(EXTRA_ACCOUNT_ID, user.account_id);
+                intent.putExtra(EXTRA_ALPHA_SLIDER, false);
+                intent.putExtra(EXTRA_CLEAR_BUTTON, true);
+                startActivityForResult(intent, REQUEST_SET_COLOR);
+                break;
+            }
+            case R.id.add_to_list: {
+                final Intent intent = new Intent(INTENT_ACTION_SELECT_USER_LIST);
+                intent.setClass(getActivity(), UserListSelectorActivity.class);
+                intent.putExtra(EXTRA_ACCOUNT_ID, user.account_id);
                 intent.putExtra(EXTRA_SCREEN_NAME, Utils.getAccountScreenName(getActivity(), user.account_id));
-				startActivityForResult(intent, REQUEST_ADD_TO_LIST);
-				break;
-			}
+                startActivityForResult(intent, REQUEST_ADD_TO_LIST);
+                break;
+            }
             case R.id.open_with_account: {
-				final Intent intent = new Intent(INTENT_ACTION_SELECT_ACCOUNT);
-				intent.setClass(getActivity(), AccountSelectorActivity.class);
-				intent.putExtra(EXTRA_SINGLE_SELECTION, true);
-				startActivityForResult(intent, REQUEST_SELECT_ACCOUNT);
-				break;
-			}
+                final Intent intent = new Intent(INTENT_ACTION_SELECT_ACCOUNT);
+                intent.setClass(getActivity(), AccountSelectorActivity.class);
+                intent.putExtra(EXTRA_SINGLE_SELECTION, true);
+                startActivityForResult(intent, REQUEST_SELECT_ACCOUNT);
+                break;
+            }
             case R.id.follow: {
-				if (relationship == null) return false;
-				final boolean isFollowing = relationship.isSourceFollowingTarget();
-				final boolean isCreatingFriendship = twitter.isCreatingFriendship(user.account_id, user.id);
-				final boolean isDestroyingFriendship = twitter.isDestroyingFriendship(user.account_id, user.id);
-				if (!isCreatingFriendship && !isDestroyingFriendship) {
-					if (isFollowing) {
-						DestroyFriendshipDialogFragment.show(getFragmentManager(), user);
-					} else {
-						twitter.createFriendshipAsync(user.account_id, user.id);
-					}
-				}
-				return true;
-			}
+                if (relationship == null) return false;
+                final boolean isFollowing = relationship.isSourceFollowingTarget();
+                final boolean isCreatingFriendship = twitter.isCreatingFriendship(user.account_id, user.id);
+                final boolean isDestroyingFriendship = twitter.isDestroyingFriendship(user.account_id, user.id);
+                if (!isCreatingFriendship && !isDestroyingFriendship) {
+                    if (isFollowing) {
+                        DestroyFriendshipDialogFragment.show(getFragmentManager(), user);
+                    } else {
+                        twitter.createFriendshipAsync(user.account_id, user.id);
+                    }
+                }
+                return true;
+            }
             case R.id.enable_retweets: {
                 final boolean newState = !item.isChecked();
                 final FriendshipUpdate update = new FriendshipUpdate();
@@ -1045,19 +1029,19 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 Utils.openScheduledStatuses(getActivity(), user.account_id);
                 return true;
             }
-			default: {
-				if (item.getIntent() != null) {
-					try {
-						startActivity(item.getIntent());
-					} catch (final ActivityNotFoundException e) {
-						if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
-						return false;
-					}
-				}
-				break;
-			}
-		}
-		return true;
+            default: {
+                if (item.getIntent() != null) {
+                    try {
+                        startActivity(item.getIntent());
+                    } catch (final ActivityNotFoundException e) {
+                        if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
+                        return false;
+                    }
+                }
+                break;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -1109,9 +1093,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     @Override
-    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
-        if (handleFragmentKeyboardShortcutSingle(handler, keyCode, event)) return true;
-        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        if (handleFragmentKeyboardShortcutSingle(handler, keyCode, event, metaState)) return true;
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
         if (action != null) {
             switch (action) {
                 case ACTION_NAVIGATION_PREVIOUS_TAB: {
@@ -1130,28 +1114,53 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 }
             }
         }
-        return handler.handleKey(getActivity(), null, keyCode, event);
+        return handler.handleKey(getActivity(), null, keyCode, event, metaState);
+    }
+
+    @Override
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        if (isFragmentKeyboardShortcutHandled(handler, keyCode, event, metaState)) return true;
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
+        if (action != null) {
+            switch (action) {
+                case ACTION_NAVIGATION_PREVIOUS_TAB:
+                case ACTION_NAVIGATION_NEXT_TAB:
+                    return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean handleKeyboardShortcutRepeat(@NonNull final KeyboardShortcutsHandler handler,
                                                 final int keyCode, final int repeatCount,
-                                                @NonNull final KeyEvent event) {
-        return handleFragmentKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
+                                                @NonNull final KeyEvent event, int metaState) {
+        return handleFragmentKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState);
     }
 
-    private boolean handleFragmentKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
+    private boolean handleFragmentKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler,
+                                                         int keyCode, int repeatCount, @NonNull KeyEvent event, int metaState) {
         final Fragment fragment = getKeyboardShortcutRecipient();
         if (fragment instanceof KeyboardShortcutCallback) {
-            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState);
         }
         return false;
     }
 
-    private boolean handleFragmentKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
+    private boolean handleFragmentKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler,
+                                                         int keyCode, @NonNull KeyEvent event, int metaState) {
         final Fragment fragment = getKeyboardShortcutRecipient();
         if (fragment instanceof KeyboardShortcutCallback) {
-            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(handler, keyCode, event);
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(handler, keyCode, event, metaState);
+        }
+        return false;
+    }
+
+    private boolean isFragmentKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler,
+                                                      int keyCode, @NonNull KeyEvent event, int metaState) {
+        final Fragment fragment = getKeyboardShortcutRecipient();
+        if (fragment instanceof KeyboardShortcutCallback) {
+            return ((KeyboardShortcutCallback) fragment).isKeyboardShortcutHandled(handler, keyCode, event, metaState);
         }
         return false;
     }
@@ -1170,22 +1179,22 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     @Override
-	public void onClick(final View view) {
-		final FragmentActivity activity = getActivity();
+    public void onClick(final View view) {
+        final FragmentActivity activity = getActivity();
         final ParcelableUser user = getUser();
-		if (activity == null || user == null) return;
-		switch (view.getId()) {
+        if (activity == null || user == null) return;
+        switch (view.getId()) {
             case R.id.error_container: {
-				getUserInfo(true);
-				break;
-			}
+                getUserInfo(true);
+                break;
+            }
             case R.id.follow: {
                 if (user.id == user.account_id) {
                     Utils.openProfileEditor(getActivity(), user.account_id);
                     break;
                 }
                 final Relationship relationship = mRelationship;
-                final AsyncTwitterWrapper twitter = getTwitterWrapper();
+                final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (relationship == null || twitter == null) return;
                 if (relationship.isSourceBlockingTarget()) {
                     twitter.destroyBlockAsync(user.account_id, user.id);
@@ -1196,119 +1205,117 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 }
                 break;
             }
-			case R.id.profile_image: {
+            case R.id.profile_image: {
                 final String url = Utils.getOriginalTwitterProfileImage(user.profile_image_url);
                 final ParcelableMedia[] media = {ParcelableMedia.newImage(url, url)};
-                //TODO open media animation
-                Bundle options = null;
+                Bundle options = Utils.createMediaViewerActivityOption(view);
                 Utils.openMedia(activity, user.account_id, false, null, media, options);
-				break;
-			}
-			case R.id.profile_banner: {
+                break;
+            }
+            case R.id.profile_banner: {
                 if (user.profile_banner_url == null) return;
                 final String url = user.profile_banner_url + "/ipad_retina";
                 final ParcelableMedia[] media = {ParcelableMedia.newImage(url, url)};
-                //TODO open media animation
-                Bundle options = null;
+                Bundle options = Utils.createMediaViewerActivityOption(view);
                 Utils.openMedia(activity, user.account_id, false, null, media, options);
-				break;
-			}
-			case R.id.tweets_container: {
+                break;
+            }
+            case R.id.tweets_container: {
                 Utils.openUserTimeline(getActivity(), user.account_id, user.id, user.screen_name);
-				break;
-			}
-			case R.id.followers_container: {
+                break;
+            }
+            case R.id.followers_container: {
                 Utils.openUserFollowers(getActivity(), user.account_id, user.id, user.screen_name);
-				break;
-			}
-			case R.id.friends_container: {
+                break;
+            }
+            case R.id.friends_container: {
                 Utils.openUserFriends(getActivity(), user.account_id, user.id, user.screen_name);
-				break;
-			}
-			case R.id.name_container: {
-				if (user.account_id != user.id) return;
+                break;
+            }
+            case R.id.name_container: {
+                if (user.account_id != user.id) return;
                 Utils.openProfileEditor(getActivity(), user.account_id);
-				break;
-			}
+                break;
+            }
             case R.id.profile_birthday_banner: {
                 mHideBirthdayView = true;
                 mProfileBirthdayBannerView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
                 mProfileBirthdayBannerView.setVisibility(View.GONE);
                 break;
             }
-		}
+        }
 
-	}
+    }
 
-	@Override
+    @Override
     public void onLinkClick(final String link, final String orig, final long accountId, long extraId, final int type,
                             final boolean sensitive, int start, int end) {
         final ParcelableUser user = getUser();
-		if (user == null) return;
-		switch (type) {
-			case TwidereLinkify.LINK_TYPE_MENTION: {
+        if (user == null) return;
+        switch (type) {
+            case TwidereLinkify.LINK_TYPE_MENTION: {
                 Utils.openUserProfile(getActivity(), user.account_id, -1, link, null);
-				break;
-			}
-			case TwidereLinkify.LINK_TYPE_HASHTAG: {
+                break;
+            }
+            case TwidereLinkify.LINK_TYPE_HASHTAG: {
                 Utils.openTweetSearch(getActivity(), user.account_id, "#" + link);
-				break;
-			}
-			case TwidereLinkify.LINK_TYPE_LINK: {
-				final Uri uri = Uri.parse(link);
-				final Intent intent;
-				if (uri.getScheme() != null) {
-					intent = new Intent(Intent.ACTION_VIEW, uri);
-				} else {
-					intent = new Intent(Intent.ACTION_VIEW, uri.buildUpon().scheme("http").build());
-				}
-				startActivity(intent);
-				break;
-			}
-			case TwidereLinkify.LINK_TYPE_LIST: {
-				if (link == null) break;
-				final String[] mentionList = link.split("/");
-				if (mentionList.length != 2) {
-					break;
-				}
-				break;
-			}
-			case TwidereLinkify.LINK_TYPE_STATUS: {
+                break;
+            }
+            case TwidereLinkify.LINK_TYPE_LINK: {
+                final Uri uri = Uri.parse(link);
+                final Intent intent;
+                if (uri.getScheme() != null) {
+                    intent = new Intent(Intent.ACTION_VIEW, uri);
+                } else {
+                    intent = new Intent(Intent.ACTION_VIEW, uri.buildUpon().scheme("http").build());
+                }
+                startActivity(intent);
+                break;
+            }
+            case TwidereLinkify.LINK_TYPE_LIST: {
+                if (link == null) break;
+                final String[] mentionList = link.split("/");
+                if (mentionList.length != 2) {
+                    break;
+                }
+                break;
+            }
+            case TwidereLinkify.LINK_TYPE_STATUS: {
                 Utils.openStatus(getActivity(), accountId, ParseUtils.parseLong(link));
-				break;
-			}
-		}
-	}
+                break;
+            }
+        }
+    }
 
-	@Override
-	public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-		if (mUser == null || !ParseUtils.parseString(mUser.id).equals(key)) return;
-		displayUser(mUser);
-	}
+    @Override
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
+        if (mUser == null || !ParseUtils.parseString(mUser.id).equals(key)) return;
+        displayUser(mUser);
+    }
 
-	@Override
-	public void onSizeChanged(final View view, final int w, final int h, final int oldw, final int oldh) {
-		mBannerWidth = w;
-		if (w != oldw || h != oldh) {
-			requestFitSystemWindows();
-		}
-	}
+    @Override
+    public void onSizeChanged(final View view, final int w, final int h, final int oldw, final int oldh) {
+        mBannerWidth = w;
+        if (w != oldw || h != oldh) {
+            requestFitSystemWindows();
+        }
+    }
 
-	@Override
-	public boolean onTouch(final View v, final MotionEvent event) {
+    @Override
+    public boolean onTouch(final View v, final MotionEvent event) {
         if (mProfileBirthdayBannerView.getVisibility() == View.VISIBLE) {
             return mProfileBirthdayBannerView.dispatchTouchEvent(event);
         }
-		return mProfileBannerView.dispatchTouchEvent(event);
-	}
+        return mProfileBannerView.dispatchTouchEvent(event);
+    }
 
-	@Override
+    @Override
     public boolean scrollToStart() {
         final Fragment fragment = getCurrentVisibleFragment();
         if (!(fragment instanceof RefreshScrollTopInterface)) return false;
         ((RefreshScrollTopInterface) fragment).scrollToStart();
         return true;
-	}
+    }
 
     @Override
     public boolean triggerRefresh() {
@@ -1324,27 +1331,27 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 //        tintedStatus.setDrawShadow(shown);
     }
 
-	private void getFriendship() {
+    private void getFriendship() {
         mRelationship = null;
         final ParcelableUser user = getUser();
-		final LoaderManager lm = getLoaderManager();
-		lm.destroyLoader(LOADER_ID_FRIENDSHIP);
-		final Bundle args = new Bundle();
-		args.putLong(EXTRA_ACCOUNT_ID, user.account_id);
-		args.putLong(EXTRA_USER_ID, user.id);
-		if (!mGetFriendShipLoaderInitialized) {
-			lm.initLoader(LOADER_ID_FRIENDSHIP, args, mFriendshipLoaderCallbacks);
-			mGetFriendShipLoaderInitialized = true;
-		} else {
-			lm.restartLoader(LOADER_ID_FRIENDSHIP, args, mFriendshipLoaderCallbacks);
-		}
-	}
+        final LoaderManager lm = getLoaderManager();
+        lm.destroyLoader(LOADER_ID_FRIENDSHIP);
+        final Bundle args = new Bundle();
+        args.putLong(EXTRA_ACCOUNT_ID, user.account_id);
+        args.putLong(EXTRA_USER_ID, user.id);
+        if (!mGetFriendShipLoaderInitialized) {
+            lm.initLoader(LOADER_ID_FRIENDSHIP, args, mFriendshipLoaderCallbacks);
+            mGetFriendShipLoaderInitialized = true;
+        } else {
+            lm.restartLoader(LOADER_ID_FRIENDSHIP, args, mFriendshipLoaderCallbacks);
+        }
+    }
 
-	private void getUserInfo(final boolean omitIntentExtra) {
-		final ParcelableUser user = mUser;
-		if (user == null) return;
-		getUserInfo(user.account_id, user.id, user.screen_name, omitIntentExtra);
-	}
+    private void getUserInfo(final boolean omitIntentExtra) {
+        final ParcelableUser user = mUser;
+        if (user == null) return;
+        getUserInfo(user.account_id, user.id, user.screen_name, omitIntentExtra);
+    }
 
     private static void setCompatToolbarOverlayAlpha(FragmentActivity activity, float alpha) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) return;
@@ -1362,7 +1369,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mUiColor = color;
         if (mActionBarBackground == null) {
             setupBaseActionBar();
-	    }
+        }
         final AppCompatActivity activity = (AppCompatActivity) getActivity();
         final IThemedActivity themed = (IThemedActivity) activity;
         final int themeRes = themed.getCurrentThemeResourceId();
@@ -1376,10 +1383,12 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             mActionBarBackground.setColor(actionBarColor);
         }
         ActivitySupport.setTaskDescription(activity, new TaskDescriptionCompat(null, null, actionBarColor));
-        mDescriptionView.setLinkTextColor(color);
+        final int optimalLinkColor = ThemeUtils.getOptimalLinkColor(color,
+                mDescriptionView.getCurrentTextColor());
+        mDescriptionView.setLinkTextColor(optimalLinkColor);
+        mLocationView.setLinkTextColor(optimalLinkColor);
+        mURLView.setLinkTextColor(optimalLinkColor);
         mProfileBannerView.setBackgroundColor(color);
-        mLocationView.setLinkTextColor(color);
-        mURLView.setLinkTextColor(color);
         ViewSupport.setBackground(mPagerIndicator, ThemeUtils.getActionBarStackedBackground(activity,
                 themeRes, actionBarColor, backgroundOption, true));
 
@@ -1388,7 +1397,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             final int offset = drawer.getPaddingTop() - drawer.getHeaderTop();
             updateScrollOffset(offset);
         }
-	}
+    }
 
     private void setupBaseActionBar() {
         final FragmentActivity activity = getActivity();
@@ -1402,7 +1411,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         if (!ThemeUtils.isWindowFloating(linkHandler, linkHandler.getCurrentThemeResourceId())
                 && ThemeUtils.isTransparentBackground(linkHandler.getCurrentThemeBackgroundOption())) {
 //            mActionBarBackground.setAlpha(ThemeUtils.getActionBarAlpha(linkHandler.getCurrentThemeBackgroundAlpha()));
-			mProfileBannerView.setAlpha(linkHandler.getCurrentThemeBackgroundAlpha() / 255f);
+            mProfileBannerView.setAlpha(linkHandler.getCurrentThemeBackgroundAlpha() / 255f);
         }
         actionBarContainer.setPrimaryBackground(mActionBarBackground);
     }
@@ -1411,7 +1420,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final Context context = getActivity();
         final Bundle args = getArguments(), tabArgs = new Bundle();
         final long accountId;
-		final ParcelableUser user = args.getParcelable(EXTRA_USER);
+        final ParcelableUser user = args.getParcelable(EXTRA_USER);
         if (user != null) {
             tabArgs.putLong(EXTRA_ACCOUNT_ID, accountId = user.account_id);
             tabArgs.putLong(EXTRA_USER_ID, user.id);
@@ -1421,16 +1430,16 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             tabArgs.putLong(EXTRA_ACCOUNT_ID, accountId);
             tabArgs.putLong(EXTRA_USER_ID, args.getLong(EXTRA_USER_ID, -1));
             tabArgs.putString(EXTRA_SCREEN_NAME, args.getString(EXTRA_SCREEN_NAME));
-			}
+        }
         mPagerAdapter.addTab(UserTimelineFragment.class, tabArgs, getString(R.string.statuses), R.drawable.ic_action_quote, TAB_TYPE_STATUSES, TAB_POSITION_STATUSES, null);
         if (Utils.isOfficialKeyAccount(context, accountId)) {
             mPagerAdapter.addTab(UserMediaTimelineFragment.class, tabArgs, getString(R.string.media), R.drawable.ic_action_gallery, TAB_TYPE_MEDIA, TAB_POSITION_MEDIA, null);
-	    }
+        }
         mPagerAdapter.addTab(UserFavoritesFragment.class, tabArgs, getString(R.string.favorites), R.drawable.ic_action_star, TAB_TYPE_FAVORITES, TAB_POSITION_FAVORITES, null);
-	}
+    }
 
     private void updateFollowProgressState() {
-        final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        final AsyncTwitterWrapper twitter = mTwitterWrapper;
         final ParcelableUser user = getUser();
         if (twitter == null || user == null) {
             mFollowButton.setVisibility(View.GONE);
@@ -1458,7 +1467,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private void updateRefreshState() {
         final ParcelableUser user = getUser();
         if (user == null) return;
-        final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        final AsyncTwitterWrapper twitter = mTwitterWrapper;
         final boolean is_creating_friendship = twitter != null
                 && twitter.isCreatingFriendship(user.account_id, user.id);
         final boolean is_destroying_friendship = twitter != null
@@ -1468,7 +1477,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     private void updateScrollOffset(int offset) {
-		final View space = mProfileBannerSpace;
+        final View space = mProfileBannerSpace;
         final ProfileBannerImageView profileBannerView = mProfileBannerView;
         final View profileBirthdayBannerView = mProfileBirthdayBannerView;
         final View profileBannerContainer = mProfileBannerContainer;
@@ -1481,7 +1490,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         profileBirthdayBannerView.setTranslationY(offset / 2);
 
         if (mActionBarBackground != null && mTintedStatusContent != null) {
-			mActionBarBackground.setFactor(factor);
+            mActionBarBackground.setFactor(factor);
             mTintedStatusContent.setFactor(factor);
 
             final float profileContentHeight = mProfileNameContainer.getHeight() + mProfileDetailsContainer.getHeight();
@@ -1507,7 +1516,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 stackedTabColor = ColorUtils.setAlphaComponent(stackedTabColor,
                         ThemeUtils.getActionBarAlpha(activity.getCurrentThemeBackgroundAlpha()));
             }
-			final int tabColor = (Integer) sArgbEvaluator.evaluate(tabOutlineAlphaFactor, stackedTabColor, mCardBackgroundColor);
+            final int tabColor = (Integer) sArgbEvaluator.evaluate(tabOutlineAlphaFactor, stackedTabColor, mCardBackgroundColor);
             ((ColorDrawable) tabBackground).setColor(tabColor);
             final boolean tabItemIsDark = TwidereColorUtils.getYIQLuminance(tabColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD;
 
@@ -1517,7 +1526,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 final int tabContrastColor = primaryColors[tabItemIsDark ? 0 : 1];
                 mPagerIndicator.setIconColor(tabContrastColor);
                 mPagerIndicator.setLabelColor(tabContrastColor);
-				mPagerIndicator.setStripColor(tabContrastColor);
+                mPagerIndicator.setStripColor(tabContrastColor);
                 mPagerIndicator.updateAppearance();
             }
             mPreviousTabItemIsDark = (tabItemIsDark ? 1 : -1);
@@ -1527,8 +1536,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             if (mPreviousActionBarItemIsDark == 0 || (actionItemIsDark ? 1 : -1) != mPreviousActionBarItemIsDark) {
                 StatusBarProxy.setStatusBarDarkIcon(activity.getWindow(), actionItemIsDark);
                 final int contrastForegroundColor = ThemeUtils.getContrastForegroundColor(activity, themeId, barColor);
-				final Toolbar actionBarView = activity.getActionBarToolbar();
-				if (actionBarView != null) {
+                final Toolbar actionBarView = activity.getActionBarToolbar();
+                if (actionBarView != null) {
                     actionBarView.setTitleTextColor(contrastForegroundColor);
                     actionBarView.setSubtitleTextColor(contrastForegroundColor);
                     ThemeUtils.setActionBarOverflowColor(actionBarView, contrastForegroundColor);
@@ -1536,8 +1545,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                             contrastForegroundColor, contrastForegroundColor);
                     if (actionBarView instanceof TwidereToolbar) {
                         ((TwidereToolbar) actionBarView).setItemColor(contrastForegroundColor);
-					}
-				}
+                    }
+                }
             }
             mPreviousActionBarItemIsDark = actionItemIsDark ? 1 : -1;
         }
@@ -1556,21 +1565,21 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             final TextView titleView = ViewSupport.findViewByText(actionBarView, actionBarView.getTitle());
             if (titleView != null) {
                 titleView.setAlpha(textAlpha);
-        	}
+            }
             final TextView subtitleView = ViewSupport.findViewByText(actionBarView, actionBarView.getSubtitle());
             if (subtitleView != null) {
                 subtitleView.setAlpha(textAlpha);
-        	}
+            }
         }
-	}
+    }
 
-	private static class ActionBarDrawable extends LayerDrawable {
+    private static class ActionBarDrawable extends LayerDrawable {
 
-		private final Drawable mShadowDrawable;
-		private final ColorDrawable mColorDrawable;
+        private final Drawable mShadowDrawable;
+        private final ColorDrawable mColorDrawable;
 
-		private float mFactor;
-		private int mColor;
+        private float mFactor;
+        private int mColor;
         private int mAlpha;
         private float mOutlineAlphaFactor;
 
@@ -1584,7 +1593,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
         public int getColor() {
             return mColor;
-		}
+        }
 
         public void setColor(int color) {
             mColor = color;
@@ -1592,40 +1601,40 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             setFactor(mFactor);
         }
 
-		@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-		@Override
-		public void getOutline(Outline outline) {
-			mColorDrawable.getOutline(outline);
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void getOutline(Outline outline) {
+            mColorDrawable.getOutline(outline);
             outline.setAlpha(mFactor * mOutlineAlphaFactor * 0.99f);
-		}
+        }
 
-		@Override
+        @Override
         public void setAlpha(int alpha) {
             mAlpha = alpha;
             setFactor(mFactor);
         }
 
         @Override
-		public int getIntrinsicWidth() {
-			return mColorDrawable.getIntrinsicWidth();
-		}
+        public int getIntrinsicWidth() {
+            return mColorDrawable.getIntrinsicWidth();
+        }
 
-		@Override
-		public int getIntrinsicHeight() {
-			return mColorDrawable.getIntrinsicHeight();
-		}
+        @Override
+        public int getIntrinsicHeight() {
+            return mColorDrawable.getIntrinsicHeight();
+        }
 
-		public void setFactor(float f) {
-			mFactor = f;
+        public void setFactor(float f) {
+            mFactor = f;
             mShadowDrawable.setAlpha(Math.round(mAlpha * MathUtils.clamp(1 - f, 0, 1)));
-			final boolean hasColor = mColor != 0;
+            final boolean hasColor = mColor != 0;
             mColorDrawable.setAlpha(hasColor ? Math.round(mAlpha * MathUtils.clamp(f, 0, 1)) : 0);
-		}
+        }
 
         public void setOutlineAlphaFactor(float f) {
             mOutlineAlphaFactor = f;
             invalidateSelf();
-		}
+        }
 
     }
 

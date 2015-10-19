@@ -29,24 +29,34 @@ import android.view.MotionEvent;
 
 public class ExtendedViewPager extends ViewPager {
 
-	public ExtendedViewPager(final Context context) {
-		this(context, null);
-	}
+    public ExtendedViewPager(final Context context) {
+        this(context, null);
+    }
 
-	public ExtendedViewPager(final Context context, final AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public ExtendedViewPager(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	@Override
-	public boolean onInterceptTouchEvent(final MotionEvent event) {
-		if (!isEnabled()) return false;
-		return super.onInterceptTouchEvent(event);
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (!isEnabled()) return false;
+        try {
+            return super.onTouchEvent(ev);
+        } catch (IllegalArgumentException ex) {
+            // Ignore
+        }
+        return false;
     }
 
     @Override
-    public boolean onTouchEvent(final MotionEvent event) {
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (!isEnabled()) return false;
-        return super.onTouchEvent(event);
-	}
-
+        try {
+            return super.onInterceptTouchEvent(ev);
+        } catch (IllegalArgumentException ex) {
+            // Ignore
+        }
+        return false;
+    }
 }

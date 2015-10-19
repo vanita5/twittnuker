@@ -50,23 +50,28 @@ abstract class AbsUsersFragment<Data> extends AbsContentRecyclerViewFragment<Abs
 
     private RecyclerViewNavigationHelper mNavigationHelper;
 
-	public final Data getData() {
-		return getAdapter().getData();
-	}
-
-	@Override
-    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
-        return mNavigationHelper.handleKeyboardShortcutSingle(handler, keyCode, event);
+    public final Data getData() {
+        return getAdapter().getData();
     }
 
     @Override
-    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
-        return mNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        return mNavigationHelper.handleKeyboardShortcutSingle(handler, keyCode, event, metaState);
     }
 
     @Override
-	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event, int metaState) {
+        return mNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState);
+    }
+
+    @Override
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        return mNavigationHelper.isKeyboardShortcutHandled(handler, keyCode, event, metaState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         final FragmentActivity activity = getActivity();
         final AbsUsersAdapter<Data> adapter = getAdapter();
@@ -76,12 +81,12 @@ abstract class AbsUsersFragment<Data> extends AbsContentRecyclerViewFragment<Abs
 
         mNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter,
                 this);
-		final Bundle loaderArgs = new Bundle(getArguments());
-		loaderArgs.putBoolean(EXTRA_FROM_USER, true);
-		getLoaderManager().initLoader(0, loaderArgs, this);
-	}
+        final Bundle loaderArgs = new Bundle(getArguments());
+        loaderArgs.putBoolean(EXTRA_FROM_USER, true);
+        getLoaderManager().initLoader(0, loaderArgs, this);
+    }
 
-	@Override
+    @Override
     public final Loader<Data> onCreateLoader(int id, Bundle args) {
         final boolean fromUser = args.getBoolean(EXTRA_FROM_USER);
         args.remove(EXTRA_FROM_USER);
@@ -90,24 +95,24 @@ abstract class AbsUsersFragment<Data> extends AbsContentRecyclerViewFragment<Abs
 
     @Override
     public void onLoadFinished(Loader<Data> loader, Data data) {
-		final AbsUsersAdapter<Data> adapter = getAdapter();
-		adapter.setData(data);
-		if (!(loader instanceof IExtendedLoader) || ((IExtendedLoader) loader).isFromUser()) {
-			adapter.setLoadMoreSupported(hasMoreData(data));
-			setRefreshEnabled(true);
-		}
-		if (loader instanceof IExtendedLoader) {
-			((IExtendedLoader) loader).setFromUser(false);
-		}
+        final AbsUsersAdapter<Data> adapter = getAdapter();
+        adapter.setData(data);
+        if (!(loader instanceof IExtendedLoader) || ((IExtendedLoader) loader).isFromUser()) {
+            adapter.setLoadMoreSupported(hasMoreData(data));
+            setRefreshEnabled(true);
+        }
+        if (loader instanceof IExtendedLoader) {
+            ((IExtendedLoader) loader).setFromUser(false);
+        }
         showContent();
-	}
+    }
 
-	@Override
-	public void onLoaderReset(Loader<Data> loader) {
-		if (loader instanceof IExtendedLoader) {
-			((IExtendedLoader) loader).setFromUser(false);
-		}
-	}
+    @Override
+    public void onLoaderReset(Loader<Data> loader) {
+        if (loader instanceof IExtendedLoader) {
+            ((IExtendedLoader) loader).setFromUser(false);
+        }
+    }
 
     @Override
     public void onUserClick(UserViewHolder holder, int position) {
@@ -116,8 +121,8 @@ abstract class AbsUsersFragment<Data> extends AbsContentRecyclerViewFragment<Abs
         final View profileImageView = holder.getProfileImageView();
         final View profileTypeView = holder.getProfileTypeView();
         final Bundle options = Utils.makeSceneTransitionOption(activity,
-				new Pair<>(profileImageView, UserFragment.TRANSITION_NAME_PROFILE_IMAGE),
-				new Pair<>(profileTypeView, UserFragment.TRANSITION_NAME_PROFILE_TYPE));
+                new Pair<>(profileImageView, UserFragment.TRANSITION_NAME_PROFILE_IMAGE),
+                new Pair<>(profileTypeView, UserFragment.TRANSITION_NAME_PROFILE_TYPE));
         Utils.openUserProfile(activity, user.account_id, user.id, user.screen_name, options);
     }
 
@@ -128,10 +133,10 @@ abstract class AbsUsersFragment<Data> extends AbsContentRecyclerViewFragment<Abs
         return true;
     }
 
-	protected ParcelableUser getSelectedUser() {
-		//TODO return selected
-		return null;
-	}
+    protected ParcelableUser getSelectedUser() {
+        //TODO return selected
+        return null;
+    }
 
     protected abstract boolean hasMoreData(Data data);
 

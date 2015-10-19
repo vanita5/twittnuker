@@ -28,20 +28,27 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.KeyEvent;
-import android.view.MenuItem;
+import android.view.MotionEvent;
+
+import com.squareup.otto.Bus;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
+import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
+import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 @SuppressLint("Registered")
 public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Constants,
@@ -49,7 +56,16 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
         KeyboardShortcutCallback {
 
     // Utility classes
-    private KeyboardShortcutsHandler mKeyboardShortcutsHandler;
+    @Inject
+    protected KeyboardShortcutsHandler mKeyboardShortcutsHandler;
+    @Inject
+    protected ActivityTracker mActivityTracker;
+    @Inject
+    protected AsyncTwitterWrapper mTwitterWrapper;
+    @Inject
+    protected ReadStateManager mReadStateManager;
+    @Inject
+    protected Bus mBus;
 
     // Registered listeners
     private ArrayList<ControlBarOffsetListener> mControlBarOffsetListeners = new ArrayList<>();
@@ -58,6 +74,7 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     private boolean mInstanceStateSaved;
     private boolean mIsVisible;
     private Rect mSystemWindowsInsets;
+    private int mKeyMetaState;
 
     @Override
     public boolean getSystemWindowsInsets(Rect insets) {
@@ -81,22 +98,18 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
         return ThemeUtils.getNoActionBarThemeResource(this);
     }
 
-	public TwittnukerApplication getTwittnukerApplication() {
-		return (TwittnukerApplication) getApplication();
-	}
+    public TwittnukerApplication getTwittnukerApplication() {
+        return (TwittnukerApplication) getApplication();
+    }
 
-	public AsyncTwitterWrapper getTwitterWrapper() {
-		return getTwittnukerApplication() != null ? getTwittnukerApplication().getTwitterWrapper() : null;
-	}
+    public boolean isVisible() {
+        return mIsVisible;
+    }
 
-	public boolean isVisible() {
-		return mIsVisible;
-	}
-
-	@Override
+    @Override
     public void onFitSystemWindows(Rect insets) {
         if (mSystemWindowsInsets == null)
-        	mSystemWindowsInsets = new Rect(insets);
+            mSystemWindowsInsets = new Rect(insets);
         else {
             mSystemWindowsInsets.set(insets);
         }
@@ -104,84 +117,93 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     }
 
     @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        final int keyCode = event.getKeyCode();
+        if (KeyEvent.isModifierKey(keyCode)) {
+            final int action = event.getAction();
+            if (action == MotionEvent.ACTION_DOWN) {
+                mKeyMetaState |= KeyboardShortcutsHandler.getMetaStateForKeyCode(keyCode);
+            } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+                mKeyMetaState &= ~KeyboardShortcutsHandler.getMetaStateForKeyCode(keyCode);
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Override
     public boolean onKeyUp(int keyCode, @NonNull KeyEvent event) {
-        if (handleKeyboardShortcutSingle(mKeyboardShortcutsHandler, keyCode, event)) return true;
-        return super.onKeyUp(keyCode, event);
+        if (handleKeyboardShortcutSingle(mKeyboardShortcutsHandler, keyCode, event, mKeyMetaState))
+            return true;
+        return isKeyboardShortcutHandled(mKeyboardShortcutsHandler, keyCode, event, mKeyMetaState) || super.onKeyUp(keyCode, event);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (handleKeyboardShortcutRepeat(mKeyboardShortcutsHandler, keyCode, event.getRepeatCount(), event))
+        if (handleKeyboardShortcutRepeat(mKeyboardShortcutsHandler, keyCode, event.getRepeatCount(), event, mKeyMetaState))
             return true;
-        return super.onKeyDown(keyCode, event);
+        return isKeyboardShortcutHandled(mKeyboardShortcutsHandler, keyCode, event, mKeyMetaState) || super.onKeyDown(keyCode, event);
     }
 
     @Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
-            case R.id.back: {
-				onBackPressed();
-				return true;
-			}
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public void startActivity(final Intent intent) {
-		super.startActivity(intent);
-	}
+    public void startActivity(final Intent intent) {
+        super.startActivity(intent);
+    }
 
     @Override
-    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
         return false;
     }
 
     @Override
-    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
         return false;
     }
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-        mKeyboardShortcutsHandler = TwittnukerApplication.getInstance(this).getKeyboardShortcutsHandler();
-	}
+    @Override
+    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event, int metaState) {
+        return false;
+    }
+
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(this)).build().inject(this);
+    }
 
 
-	@Override
+    @Override
     protected void onStart() {
         super.onStart();
         mIsVisible = true;
-	}
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		mInstanceStateSaved = false;
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mInstanceStateSaved = false;
+    }
 
-	@Override
+    @Override
     protected void onPause() {
         super.onPause();
     }
 
     @Override
-	protected void onSaveInstanceState(final Bundle outState) {
-		mInstanceStateSaved = true;
-		super.onSaveInstanceState(outState);
-	}
+    protected void onSaveInstanceState(final Bundle outState) {
+        mInstanceStateSaved = true;
+        super.onSaveInstanceState(outState);
+    }
 
-	@Override
+    @Override
     public void startActivityForResult(final Intent intent, final int requestCode) {
         super.startActivityForResult(intent, requestCode);
-	}
+    }
 
-	@Override
-	protected void onStop() {
-		mIsVisible = false;
-		super.onStop();
-	}
+    @Override
+    protected void onStop() {
+        mIsVisible = false;
+        super.onStop();
+    }
 
     @Override
     public void setControlBarOffset(float offset) {
@@ -190,6 +212,11 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
 
     @Override
     public void setControlBarVisibleAnimate(boolean visible) {
+
+    }
+
+    @Override
+    public void setControlBarVisibleAnimate(boolean visible, ControlBarShowHideHelper.ControlBarAnimationListener listener) {
 
     }
 
@@ -219,6 +246,10 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     @Override
     public void unregisterControlBarOffsetListener(ControlBarOffsetListener listener) {
         mControlBarOffsetListeners.remove(listener);
+    }
+
+    public int getKeyMetaState() {
+        return mKeyMetaState;
     }
 
 }

@@ -43,148 +43,147 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 
 import java.util.List;
 
 public abstract class AccountsListPreference extends PreferenceCategory implements Constants {
 
-	private static final int[] ATTRS = { R.attr.switchKey, R.attr.switchDefault };
+    private static final int[] ATTRS = {R.attr.switchKey, R.attr.switchDefault};
     @Nullable
-	private final String mSwitchKey;
-	private final boolean mSwitchDefault;
+    private final String mSwitchKey;
+    private final boolean mSwitchDefault;
 
-	public AccountsListPreference(final Context context) {
-		this(context, null);
-	}
+    public AccountsListPreference(final Context context) {
+        this(context, null);
+    }
 
-	public AccountsListPreference(final Context context, final AttributeSet attrs) {
-		this(context, attrs, android.R.attr.preferenceCategoryStyle);
-	}
+    public AccountsListPreference(final Context context, final AttributeSet attrs) {
+        this(context, attrs, android.R.attr.preferenceCategoryStyle);
+    }
 
-	public AccountsListPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-		final TypedArray a = context.obtainStyledAttributes(attrs, ATTRS);
-		mSwitchKey = a.getString(0);
-		mSwitchDefault = a.getBoolean(1, false);
-		a.recycle();
-	}
+    public AccountsListPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+        final TypedArray a = context.obtainStyledAttributes(attrs, ATTRS);
+        mSwitchKey = a.getString(0);
+        mSwitchDefault = a.getBoolean(1, false);
+        a.recycle();
+    }
 
-	public void setAccountsData(final List<ParcelableAccount> accounts) {
-		removeAll();
-		for (final ParcelableAccount account : accounts) {
+    public void setAccountsData(final List<ParcelableAccount> accounts) {
+        removeAll();
+        for (final ParcelableAccount account : accounts) {
             final AccountItemPreference preference = new AccountItemPreference(getContext(), account,
                     mSwitchKey, mSwitchDefault);
-			setupPreference(preference, account);
-			addPreference(preference);
-		}
-		final Preference preference = new Preference(getContext());
-		preference.setLayoutResource(R.layout.settings_layout_click_to_config);
-		addPreference(preference);
-	}
+            setupPreference(preference, account);
+            addPreference(preference);
+        }
+        final Preference preference = new Preference(getContext());
+        preference.setLayoutResource(R.layout.settings_layout_click_to_config);
+        addPreference(preference);
+    }
 
-	@Override
+    @Override
     protected void onAttachedToHierarchy(@NonNull final PreferenceManager preferenceManager) {
-		super.onAttachedToHierarchy(preferenceManager);
+        super.onAttachedToHierarchy(preferenceManager);
         AsyncTaskUtils.executeTask(new LoadAccountsTask(this));
-	}
+    }
 
-	protected abstract void setupPreference(AccountItemPreference preference, ParcelableAccount account);
+    protected abstract void setupPreference(AccountItemPreference preference, ParcelableAccount account);
 
-	public static final class AccountItemPreference extends Preference implements ImageLoadingListener,
+    public static final class AccountItemPreference extends Preference implements ImageLoadingListener,
             OnSharedPreferenceChangeListener {
 
-		private final ParcelableAccount mAccount;
-		private final SharedPreferences mSwitchPreference;
+        private final ParcelableAccount mAccount;
+        private final SharedPreferences mSwitchPreference;
         private final MediaLoaderWrapper mImageLoader;
 
-		public AccountItemPreference(final Context context, final ParcelableAccount account, final String switchKey,
-				final boolean switchDefault) {
-			super(context);
-			final String switchPreferenceName = ACCOUNT_PREFERENCES_NAME_PREFIX + account.account_id;
-			mAccount = account;
-			mSwitchPreference = context.getSharedPreferences(switchPreferenceName, Context.MODE_PRIVATE);
-            final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-            mImageLoader = app.getMediaLoaderWrapper();
-			mSwitchPreference.registerOnSharedPreferenceChangeListener(this);
-		}
+        public AccountItemPreference(final Context context, final ParcelableAccount account, final String switchKey,
+                                     final boolean switchDefault) {
+            super(context);
+            final String switchPreferenceName = ACCOUNT_PREFERENCES_NAME_PREFIX + account.account_id;
+            mAccount = account;
+            mSwitchPreference = context.getSharedPreferences(switchPreferenceName, Context.MODE_PRIVATE);
+            mImageLoader = ApplicationModule.get(context).getMediaLoaderWrapper();
+            mSwitchPreference.registerOnSharedPreferenceChangeListener(this);
+        }
 
-		@Override
-		public void onLoadingCancelled(final String imageUri, final View view) {
+        @Override
+        public void onLoadingCancelled(final String imageUri, final View view) {
 //            setIcon(R.drawable.ic_profile_image_default);
-		}
+        }
 
-		@Override
-		public void onLoadingComplete(final String imageUri, final View view, final Bitmap loadedImage) {
+        @Override
+        public void onLoadingComplete(final String imageUri, final View view, final Bitmap loadedImage) {
             final Bitmap roundedBitmap = BitmapUtils.getCircleBitmap(loadedImage);
             setIcon(new BitmapDrawable(getContext().getResources(), roundedBitmap));
-		}
+        }
 
-		@Override
-		public void onLoadingFailed(final String imageUri, final View view, final FailReason failReason) {
+        @Override
+        public void onLoadingFailed(final String imageUri, final View view, final FailReason failReason) {
 //            setIcon(R.drawable.ic_profile_image_default);
-		}
+        }
 
-		@Override
-		public void onLoadingStarted(final String imageUri, final View view) {
+        @Override
+        public void onLoadingStarted(final String imageUri, final View view) {
 //            setIcon(R.drawable.ic_profile_image_default);
-		}
+        }
 
-		@Override
-		public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
+        @Override
+        public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
             notifyChanged();
-		}
+        }
 
-		@Override
+        @Override
         protected void onAttachedToHierarchy(@NonNull final PreferenceManager preferenceManager) {
-			super.onAttachedToHierarchy(preferenceManager);
-			setTitle(mAccount.name);
-			setSummary(String.format("@%s", mAccount.screen_name));
+            super.onAttachedToHierarchy(preferenceManager);
+            setTitle(mAccount.name);
+            setSummary(String.format("@%s", mAccount.screen_name));
 //            setIcon(R.drawable.ic_profile_image_default);
             mImageLoader.loadProfileImage(mAccount.profile_image_url, this);
-		}
+        }
 
-		@Override
+        @Override
         protected void onBindView(@NonNull final View view) {
-			super.onBindView(view);
+            super.onBindView(view);
 //            final View iconView = view.findViewById(android.R.id.icon);
 //            if (iconView instanceof ImageView) {
 //                final ImageView imageView = (ImageView) iconView;
 //                imageView.setScaleType(ScaleType.CENTER_CROP);
 //            }
-			final View titleView = view.findViewById(android.R.id.title);
-			if (titleView instanceof TextView) {
-				((TextView) titleView).setSingleLine(true);
-			}
-			final View summaryView = view.findViewById(android.R.id.summary);
-			if (summaryView instanceof TextView) {
-				((TextView) summaryView).setSingleLine(true);
-			}
+            final View titleView = view.findViewById(android.R.id.title);
+            if (titleView instanceof TextView) {
+                ((TextView) titleView).setSingleLine(true);
+            }
+            final View summaryView = view.findViewById(android.R.id.summary);
+            if (summaryView instanceof TextView) {
+                ((TextView) summaryView).setSingleLine(true);
+            }
         }
-	}
+    }
 
     private static class LoadAccountsTask extends AsyncTask<Object, Object, List<ParcelableAccount>> {
 
-		private final AccountsListPreference mPreference;
+        private final AccountsListPreference mPreference;
 
-		public LoadAccountsTask(final AccountsListPreference preference) {
-			mPreference = preference;
-		}
+        public LoadAccountsTask(final AccountsListPreference preference) {
+            mPreference = preference;
+        }
 
-		@Override
-		protected List<ParcelableAccount> doInBackground(final Object... params) {
+        @Override
+        protected List<ParcelableAccount> doInBackground(final Object... params) {
             return ParcelableAccount.getAccountsList(mPreference.getContext(), false);
-		}
+        }
 
-		@Override
-		protected void onPostExecute(final List<ParcelableAccount> result) {
-			mPreference.setAccountsData(result);
-		}
+        @Override
+        protected void onPostExecute(final List<ParcelableAccount> result) {
+            mPreference.setAccountsData(result);
+        }
 
-	}
+    }
 
 }

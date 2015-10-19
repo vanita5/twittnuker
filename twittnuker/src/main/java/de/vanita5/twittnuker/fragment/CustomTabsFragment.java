@@ -89,44 +89,42 @@ import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<Cursor>,
         MultiChoiceModeListener, OnItemClickListener {
 
-	private ContentResolver mResolver;
+    private ContentResolver mResolver;
 
     private CustomTabsAdapter mAdapter;
 
-	private DragSortListView mListView;
+    private DragSortListView mListView;
     private View mEmptyView;
     private View mListContainer, mProgressContainer;
     private TextView mEmptyText;
     private ImageView mEmptyIcon;
-    private SharedPreferencesWrapper mPreferences;
 
 
-	@Override
-	public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
-		switch (item.getItemId()) {
+    @Override
+    public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.delete: {
                 final long[] itemIds = mListView.getCheckedItemIds();
                 final Expression where = Expression.in(new Column(Tabs._ID), new RawItemArray(itemIds));
-				mResolver.delete(Tabs.CONTENT_URI, where.getSQL(), null);
-				break;
-			}
-		}
-		mode.finish();
-		return true;
-	}
+                mResolver.delete(Tabs.CONTENT_URI, where.getSQL(), null);
+                break;
+            }
+        }
+        mode.finish();
+        return true;
+    }
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-        mPreferences = SharedPreferencesWrapper.getInstance(getActivity(), SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		setHasOptionsMenu(true);
-		mResolver = getContentResolver();
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+        mResolver = getContentResolver();
         final View view = getView();
         if (view == null) throw new AssertionError();
         final Context context = view.getContext();
         mAdapter = new CustomTabsAdapter(context);
-		mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-		mListView.setMultiChoiceModeListener(this);
+        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        mListView.setMultiChoiceModeListener(this);
         mListView.setOnItemClickListener(this);
         mListView.setAdapter(mAdapter);
         mListView.setEmptyView(mEmptyView);
@@ -142,11 +140,11 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
         });
         mEmptyText.setText(R.string.no_tab);
         mEmptyIcon.setImageResource(R.drawable.ic_info_tab);
-		getLoaderManager().initLoader(0, null, this);
-		setListShown(false);
-	}
+        getLoaderManager().initLoader(0, null, this);
+        setListShown(false);
+    }
 
-	@Override
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         final Cursor c = mAdapter.getCursor();
         c.moveToPosition(mAdapter.getCursorPosition(position));
@@ -177,95 +175,95 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
     }
 
     @Override
-	public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-		switch (requestCode) {
-			case REQUEST_ADD_TAB: {
-				if (resultCode == Activity.RESULT_OK) {
-					final ContentValues values = new ContentValues();
-					values.put(Tabs.NAME, data.getStringExtra(EXTRA_NAME));
-					values.put(Tabs.ICON, data.getStringExtra(EXTRA_ICON));
-					values.put(Tabs.TYPE, data.getStringExtra(EXTRA_TYPE));
-					values.put(Tabs.ARGUMENTS, data.getStringExtra(EXTRA_ARGUMENTS));
-					values.put(Tabs.EXTRAS, data.getStringExtra(EXTRA_EXTRAS));
-					values.put(Tabs.POSITION, mAdapter.getCount());
-					mResolver.insert(Tabs.CONTENT_URI, values);
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        switch (requestCode) {
+            case REQUEST_ADD_TAB: {
+                if (resultCode == Activity.RESULT_OK) {
+                    final ContentValues values = new ContentValues();
+                    values.put(Tabs.NAME, data.getStringExtra(EXTRA_NAME));
+                    values.put(Tabs.ICON, data.getStringExtra(EXTRA_ICON));
+                    values.put(Tabs.TYPE, data.getStringExtra(EXTRA_TYPE));
+                    values.put(Tabs.ARGUMENTS, data.getStringExtra(EXTRA_ARGUMENTS));
+                    values.put(Tabs.EXTRAS, data.getStringExtra(EXTRA_EXTRAS));
+                    values.put(Tabs.POSITION, mAdapter.getCount());
+                    mResolver.insert(Tabs.CONTENT_URI, values);
                     SettingsActivity.setShouldNotifyChange(getActivity());
-				}
-				break;
-			}
-			case REQUEST_EDIT_TAB: {
-				if (resultCode == Activity.RESULT_OK && data.hasExtra(EXTRA_ID)) {
-					final ContentValues values = new ContentValues();
-					values.put(Tabs.NAME, data.getStringExtra(EXTRA_NAME));
-					values.put(Tabs.ICON, data.getStringExtra(EXTRA_ICON));
-					values.put(Tabs.EXTRAS, data.getStringExtra(EXTRA_EXTRAS));
+                }
+                break;
+            }
+            case REQUEST_EDIT_TAB: {
+                if (resultCode == Activity.RESULT_OK && data.hasExtra(EXTRA_ID)) {
+                    final ContentValues values = new ContentValues();
+                    values.put(Tabs.NAME, data.getStringExtra(EXTRA_NAME));
+                    values.put(Tabs.ICON, data.getStringExtra(EXTRA_ICON));
+                    values.put(Tabs.EXTRAS, data.getStringExtra(EXTRA_EXTRAS));
                     final String where = Expression.equals(Tabs._ID, data.getLongExtra(EXTRA_ID, -1)).getSQL();
-					mResolver.update(Tabs.CONTENT_URI, values, where, null);
+                    mResolver.update(Tabs.CONTENT_URI, values, where, null);
                     SettingsActivity.setShouldNotifyChange(getActivity());
-				}
-				break;
-			}
-		}
-		super.onActivityResult(requestCode, resultCode, data);
-	}
+                }
+                break;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
-	@Override
-	public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
+    @Override
+    public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
         mode.getMenuInflater().inflate(R.menu.action_multi_select_items, menu);
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
-		return new CursorLoader(getActivity(), Tabs.CONTENT_URI, Tabs.COLUMNS, null, null, Tabs.DEFAULT_SORT_ORDER);
-	}
+    @Override
+    public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
+        return new CursorLoader(getActivity(), Tabs.CONTENT_URI, Tabs.COLUMNS, null, null, Tabs.DEFAULT_SORT_ORDER);
+    }
 
-	@Override
+    @Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-		inflater.inflate(R.menu.menu_custom_tabs, menu);
-		final Resources res = getResources();
-		final boolean hasOfficialKeyAccounts = Utils.hasAccountSignedWithOfficialKeys(getActivity());
+        inflater.inflate(R.menu.menu_custom_tabs, menu);
+        final Resources res = getResources();
+        final boolean hasOfficialKeyAccounts = Utils.hasAccountSignedWithOfficialKeys(getActivity());
         final boolean forcePrivateAPI = mPreferences.getBoolean(KEY_FORCE_USING_PRIVATE_APIS, false);
         final long[] accountIds = getAccountIds(getActivity());
-		final MenuItem itemAdd = menu.findItem(R.id.add_submenu);
-		if (itemAdd != null && itemAdd.hasSubMenu()) {
-			final SubMenu subMenu = itemAdd.getSubMenu();
-			subMenu.clear();
-			final HashMap<String, CustomTabConfiguration> map = getConfigurationMap();
+        final MenuItem itemAdd = menu.findItem(R.id.add_submenu);
+        if (itemAdd != null && itemAdd.hasSubMenu()) {
+            final SubMenu subMenu = itemAdd.getSubMenu();
+            subMenu.clear();
+            final HashMap<String, CustomTabConfiguration> map = getConfigurationMap();
             final List<Entry<String, CustomTabConfiguration>> tabs = new ArrayList<>(
-					map.entrySet());
-			Collections.sort(tabs, CustomTabConfigurationComparator.SINGLETON);
-			for (final Entry<String, CustomTabConfiguration> entry : tabs) {
-				final String type = entry.getKey();
-				final CustomTabConfiguration conf = entry.getValue();
+                    map.entrySet());
+            Collections.sort(tabs, CustomTabConfigurationComparator.SINGLETON);
+            for (final Entry<String, CustomTabConfiguration> entry : tabs) {
+                final String type = entry.getKey();
+                final CustomTabConfiguration conf = entry.getValue();
 
                 final boolean isOfficialKeyAccountRequired = TAB_TYPE_ACTIVITIES_ABOUT_ME.equals(type)
-						|| TAB_TYPE_ACTIVITIES_BY_FRIENDS.equals(type);
-				final boolean accountIdRequired = conf.getAccountRequirement() == CustomTabConfiguration.ACCOUNT_REQUIRED;
+                        || TAB_TYPE_ACTIVITIES_BY_FRIENDS.equals(type);
+                final boolean accountIdRequired = conf.getAccountRequirement() == CustomTabConfiguration.ACCOUNT_REQUIRED;
 
-				final Intent intent = new Intent(INTENT_ACTION_ADD_TAB);
-				intent.setClass(getActivity(), CustomTabEditorActivity.class);
-				intent.putExtra(EXTRA_TYPE, type);
+                final Intent intent = new Intent(INTENT_ACTION_ADD_TAB);
+                intent.setClass(getActivity(), CustomTabEditorActivity.class);
+                intent.putExtra(EXTRA_TYPE, type);
                 intent.putExtra(EXTRA_OFFICIAL_KEY_ONLY, isOfficialKeyAccountRequired);
 
-				final MenuItem subItem = subMenu.add(conf.getDefaultTitle());
+                final MenuItem subItem = subMenu.add(conf.getDefaultTitle());
                 final boolean disabledByNoAccount = accountIdRequired && accountIds.length == 0;
                 final boolean disabledByNoOfficialKey = !forcePrivateAPI && isOfficialKeyAccountRequired && !hasOfficialKeyAccounts;
                 final boolean disabledByDuplicateTab = conf.isSingleTab() && isTabAdded(getActivity(), type);
                 final boolean shouldDisable = disabledByDuplicateTab || disabledByNoOfficialKey || disabledByNoAccount;
-				subItem.setVisible(!shouldDisable);
-				subItem.setEnabled(!shouldDisable);
+                subItem.setVisible(!shouldDisable);
+                subItem.setEnabled(!shouldDisable);
                 final Drawable icon = ResourcesCompat.getDrawable(res, conf.getDefaultIcon(), null);
-				subItem.setIcon(icon);
-				subItem.setIntent(intent);
-			}
-		}
+                subItem.setIcon(icon);
+                subItem.setIntent(intent);
+            }
+        }
     }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         return inflater.inflate(R.layout.layout_draggable_list_with_empty_view, container, false);
-	}
+    }
 
     @Override
     public void onDestroyActionMode(final ActionMode mode) {
@@ -306,105 +304,105 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
     public boolean onPrepareActionMode(final ActionMode mode, final Menu menu) {
         updateTitle(mode);
         return true;
-	}
+    }
 
-	@Override
-	public void onStop() {
-		super.onStop();
-	}
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 
-	private void saveTabPositions() {
-		final ArrayList<Integer> positions = mAdapter.getCursorPositions();
-		final Cursor c = mAdapter.getCursor();
-		if (positions != null && c != null && !c.isClosed()) {
-			final int idIdx = c.getColumnIndex(Tabs._ID);
-			for (int i = 0, j = positions.size(); i < j; i++) {
-				c.moveToPosition(positions.get(i));
-				final long id = c.getLong(idIdx);
-				final ContentValues values = new ContentValues();
-				values.put(Tabs.POSITION, i);
+    private void saveTabPositions() {
+        final ArrayList<Integer> positions = mAdapter.getCursorPositions();
+        final Cursor c = mAdapter.getCursor();
+        if (positions != null && c != null && !c.isClosed()) {
+            final int idIdx = c.getColumnIndex(Tabs._ID);
+            for (int i = 0, j = positions.size(); i < j; i++) {
+                c.moveToPosition(positions.get(i));
+                final long id = c.getLong(idIdx);
+                final ContentValues values = new ContentValues();
+                values.put(Tabs.POSITION, i);
                 final String where = Expression.equals(Tabs._ID, id).getSQL();
-				mResolver.update(Tabs.CONTENT_URI, values, where, null);
-			}
-		}
+                mResolver.update(Tabs.CONTENT_URI, values, where, null);
+            }
+        }
         SettingsActivity.setShouldNotifyChange(getActivity());
-	}
+    }
 
-	private void updateTitle(final ActionMode mode) {
-		if (mListView == null || mode == null || getActivity() == null) return;
-		final int count = mListView.getCheckedItemCount();
-		mode.setTitle(getResources().getQuantityString(R.plurals.Nitems_selected, count, count));
-	}
+    private void updateTitle(final ActionMode mode) {
+        if (mListView == null || mode == null || getActivity() == null) return;
+        final int count = mListView.getCheckedItemCount();
+        mode.setTitle(getResources().getQuantityString(R.plurals.Nitems_selected, count, count));
+    }
 
     public static class CustomTabsAdapter extends SimpleDragSortCursorAdapter {
 
         private final int mIconColor;
-		private CursorIndices mIndices;
+        private CursorIndices mIndices;
 
-		public CustomTabsAdapter(final Context context) {
-			super(context, R.layout.list_item_custom_tab, null, new String[0], new int[0], 0);
+        public CustomTabsAdapter(final Context context) {
+            super(context, R.layout.list_item_custom_tab, null, new String[0], new int[0], 0);
             mIconColor = ThemeUtils.getThemeForegroundColor(context);
-		}
+        }
 
-		@Override
-		public void bindView(final View view, final Context context, final Cursor cursor) {
-			super.bindView(view, context, cursor);
-			final TwoLineWithIconViewHolder holder = (TwoLineWithIconViewHolder) view.getTag();
-			final String type = cursor.getString(mIndices.type);
-			final String name = cursor.getString(mIndices.name);
+        @Override
+        public void bindView(final View view, final Context context, final Cursor cursor) {
+            super.bindView(view, context, cursor);
+            final TwoLineWithIconViewHolder holder = (TwoLineWithIconViewHolder) view.getTag();
+            final String type = cursor.getString(mIndices.type);
+            final String name = cursor.getString(mIndices.name);
             final String iconKey = cursor.getString(mIndices.icon);
-			if (isTabTypeValid(type)) {
+            if (isTabTypeValid(type)) {
                 final String typeName = getTabTypeName(context, type);
                 holder.text1.setText(TextUtils.isEmpty(name) ? typeName : name);
                 holder.text1.setPaintFlags(holder.text1.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-				holder.text2.setVisibility(View.VISIBLE);
+                holder.text2.setVisibility(View.VISIBLE);
                 holder.text2.setText(typeName);
             } else {
                 holder.text1.setText(name);
                 holder.text1.setPaintFlags(holder.text1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 holder.text2.setText(R.string.invalid_tab);
             }
-			final Drawable icon = getTabIconDrawable(context, getTabIconObject(iconKey));
+            final Drawable icon = getTabIconDrawable(context, getTabIconObject(iconKey));
             holder.icon.setVisibility(View.VISIBLE);
             if (icon != null) {
                 holder.icon.setImageDrawable(icon);
-			} else {
+            } else {
                 holder.icon.setImageResource(R.drawable.ic_action_list);
-			}
+            }
             holder.icon.setColorFilter(mIconColor, Mode.SRC_ATOP);
-		}
+        }
 
-		@Override
-		public void changeCursor(final Cursor cursor) {
-			if (cursor != null) {
-				mIndices = new CursorIndices(cursor);
-			}
-			super.changeCursor(cursor);
-		}
+        @Override
+        public void changeCursor(final Cursor cursor) {
+            if (cursor != null) {
+                mIndices = new CursorIndices(cursor);
+            }
+            super.changeCursor(cursor);
+        }
 
-		@Override
-		public View newView(final Context context, final Cursor cursor, final ViewGroup parent) {
-			final View view = super.newView(context, cursor, parent);
-			final Object tag = view.getTag();
-			if (!(tag instanceof TwoLineWithIconViewHolder)) {
-				final TwoLineWithIconViewHolder holder = new TwoLineWithIconViewHolder(view);
-				view.setTag(holder);
-			}
-			return view;
-		}
+        @Override
+        public View newView(final Context context, final Cursor cursor, final ViewGroup parent) {
+            final View view = super.newView(context, cursor, parent);
+            final Object tag = view.getTag();
+            if (!(tag instanceof TwoLineWithIconViewHolder)) {
+                final TwoLineWithIconViewHolder holder = new TwoLineWithIconViewHolder(view);
+                view.setTag(holder);
+            }
+            return view;
+        }
 
-		static class CursorIndices {
-			final int _id, name, icon, type, arguments;
+        static class CursorIndices {
+            final int _id, name, icon, type, arguments;
 
-			CursorIndices(final Cursor mCursor) {
-				_id = mCursor.getColumnIndex(Tabs._ID);
-				icon = mCursor.getColumnIndex(Tabs.ICON);
-				name = mCursor.getColumnIndex(Tabs.NAME);
-				type = mCursor.getColumnIndex(Tabs.TYPE);
-				arguments = mCursor.getColumnIndex(Tabs.ARGUMENTS);
-			}
-		}
+            CursorIndices(final Cursor mCursor) {
+                _id = mCursor.getColumnIndex(Tabs._ID);
+                icon = mCursor.getColumnIndex(Tabs.ICON);
+                name = mCursor.getColumnIndex(Tabs.NAME);
+                type = mCursor.getColumnIndex(Tabs.TYPE);
+                arguments = mCursor.getColumnIndex(Tabs.ARGUMENTS);
+            }
+        }
 
-	}
+    }
 
 }

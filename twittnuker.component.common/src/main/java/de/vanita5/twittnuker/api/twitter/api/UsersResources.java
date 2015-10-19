@@ -31,6 +31,7 @@ import org.mariotaku.restfu.annotation.param.Part;
 import org.mariotaku.restfu.annotation.param.Query;
 import org.mariotaku.restfu.http.BodyType;
 import org.mariotaku.restfu.http.mime.FileTypedData;
+
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.AccountSettings;
 import de.vanita5.twittnuker.api.twitter.model.Category;
@@ -80,7 +81,7 @@ public interface UsersResources {
     User destroyMute(@Query("screen_name") String screenName) throws TwitterException;
 
     @GET("/account/settings.json")
-	AccountSettings getAccountSettings() throws TwitterException;
+    AccountSettings getAccountSettings() throws TwitterException;
 
     @GET("/blocks/ids.json")
     IDs getBlocksIDs(@Query Paging paging) throws TwitterException;
@@ -88,7 +89,7 @@ public interface UsersResources {
     @GET("/blocks/list.json")
     PageableResponseList<User> getBlocksList(@Query Paging paging) throws TwitterException;
 
-	ResponseList<User> getMemberSuggestions(String categorySlug) throws TwitterException;
+    ResponseList<User> getMemberSuggestions(String categorySlug) throws TwitterException;
 
     @GET("/mutes/users/ids.json")
     IDs getMutesUsersIDs(Paging paging) throws TwitterException;
@@ -96,16 +97,16 @@ public interface UsersResources {
     @GET("/mutes/users/list.json")
     PageableResponseList<User> getMutesUsersList(@Query Paging paging) throws TwitterException;
 
-	ResponseList<Category> getSuggestedUserCategories() throws TwitterException;
+    ResponseList<Category> getSuggestedUserCategories() throws TwitterException;
 
-	ResponseList<User> getUserSuggestions(String categorySlug) throws TwitterException;
+    ResponseList<User> getUserSuggestions(String categorySlug) throws TwitterException;
 
     @POST("/users/lookup.json")
     @Body(BodyType.FORM)
-    ResponseList<User> lookupUsers(@Form("id") long[] ids) throws TwitterException;
+    ResponseList<User> lookupUsers(@Form("user_id") long[] ids) throws TwitterException;
 
     @GET("/users/lookup.json")
-    ResponseList<User> lookupUsers(@Form("id") String[] screenNames) throws TwitterException;
+    ResponseList<User> lookupUsers(@Form("screen_name") String[] screenNames) throws TwitterException;
 
     @POST("/account/remove_profile_banner.json")
     @Body(BodyType.FORM)
@@ -139,9 +140,9 @@ public interface UsersResources {
     @POST("/account/update_profile_banner.json")
     @Body(BodyType.MULTIPART)
     ResponseCode updateProfileBannerImage(@Part("banner") FileTypedData data, @Part("width") int width,
-                                  @Part("height") int height, @Part("offset_left") int offsetLeft,
-                                  @Part("offset_top") int offsetTop)
-			throws TwitterException;
+                                          @Part("height") int height, @Part("offset_left") int offsetLeft,
+                                          @Part("offset_top") int offsetTop)
+            throws TwitterException;
 
     @POST("/account/update_profile_banner.json")
     @Body(BodyType.MULTIPART)
@@ -152,5 +153,5 @@ public interface UsersResources {
     User updateProfileImage(@Part("image") FileTypedData data) throws TwitterException;
 
     @GET("/account/verify_credentials.json")
-	User verifyCredentials() throws TwitterException;
+    User verifyCredentials() throws TwitterException;
 }

@@ -42,7 +42,6 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:focusable="true"
-            android:focusableInTouchMode="false"
             android:scrollbars="vertical"/>
 
     </de.vanita5.twittnuker.view.themed.AccentSwipeRefreshLayout>

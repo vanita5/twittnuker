@@ -26,6 +26,7 @@ import android.support.annotation.NonNull;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.bluelinelabs.logansquare.annotation.OnJsonParseComplete;
 
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
@@ -38,6 +39,7 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 import de.vanita5.twittnuker.api.twitter.util.TwitterDateConverter;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -48,295 +50,298 @@ import java.util.Date;
 public class StatusImpl extends TwitterResponseImpl implements Status {
 
     @JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
-	Date createdAt;
+    Date createdAt;
 
-	@JsonField(name = "id")
-	long id;
+    @JsonField(name = "id")
+    long id;
 
-	@JsonField(name = "text")
-	String text;
+    @JsonField(name = "text")
+    String text;
 
-	@JsonField(name = "source")
-	String source;
+    @JsonField(name = "source")
+    String source;
 
-	@JsonField(name = "truncated")
-	boolean truncated;
+    @JsonField(name = "truncated")
+    boolean truncated;
 
-	@JsonField(name = "entities")
-	EntitiesImpl entities;
+    @JsonField(name = "entities")
+    EntitiesImpl entities;
 
-	@JsonField(name = "extended_entities")
-	EntitiesImpl extendedEntities;
+    @JsonField(name = "extended_entities")
+    EntitiesImpl extendedEntities;
 
-	@JsonField(name = "in_reply_to_status_id")
-	long inReplyToStatusId;
+    @JsonField(name = "in_reply_to_status_id")
+    long inReplyToStatusId;
 
-	@JsonField(name = "in_reply_to_user_id")
-	long inReplyToUserId;
+    @JsonField(name = "in_reply_to_user_id")
+    long inReplyToUserId;
 
-	@JsonField(name = "in_reply_to_screen_name")
-	String inReplyToScreenName;
+    @JsonField(name = "in_reply_to_screen_name")
+    String inReplyToScreenName;
 
-	@JsonField(name = "user")
-	UserImpl user;
+    @JsonField(name = "user")
+    UserImpl user;
 
-	@JsonField(name = "geo")
-	GeoLocation geo;
+    @JsonField(name = "geo")
+    GeoLocation geo;
 
-	@JsonField(name = "place")
-	Place place;
+    @JsonField(name = "place")
+    Place place;
 
-	@JsonField(name = "current_user_retweet")
-	CurrentUserRetweet currentUserRetweet;
+    @JsonField(name = "current_user_retweet")
+    CurrentUserRetweet currentUserRetweet;
 
-	@JsonField(name = "contributors")
-	long[] contributors;
+    @JsonField(name = "contributors")
+    long[] contributors;
 
-	@JsonField(name = "retweet_count")
-	long retweetCount;
+    @JsonField(name = "retweet_count")
+    long retweetCount;
 
-	@JsonField(name = "favorite_count")
-	long favoriteCount;
+    @JsonField(name = "favorite_count")
+    long favoriteCount;
 
-	@JsonField(name = "reply_count")
-	long replyCount;
+    @JsonField(name = "reply_count")
+    long replyCount;
 
-	@JsonField(name = "favorited")
-	boolean favorited;
-	@JsonField(name = "retweeted")
-	boolean retweeted;
-	@JsonField(name = "lang")
-	String lang;
+    @JsonField(name = "favorited")
+    boolean favorited;
+    @JsonField(name = "retweeted")
+    boolean retweeted;
+    @JsonField(name = "lang")
+    String lang;
 
-	@JsonField(name = "descendent_reply_count")
-	long descendentReplyCount;
+    @JsonField(name = "descendent_reply_count")
+    long descendentReplyCount;
 
-	@JsonField(name = "retweeted_status")
-	Status retweetedStatus;
+    @JsonField(name = "retweeted_status")
+    Status retweetedStatus;
 
-	@JsonField(name = "quoted_status")
-	Status quotedStatus;
+    @JsonField(name = "quoted_status")
+    Status quotedStatus;
 
-	@JsonField(name = "card")
-	CardEntity card;
+    @JsonField(name = "card")
+    CardEntity card;
 
-	@JsonField(name = "possibly_sensitive")
-	boolean possiblySensitive;
-
-	@Override
-	public User getUser() {
-		return user;
-	}
-
-	@Override
-	public String getInReplyToScreenName() {
-
-		return inReplyToScreenName;
-	}
-
-	@Override
-	public long getInReplyToUserId() {
-
-		return inReplyToUserId;
-	}
-
-	@Override
-	public long getInReplyToStatusId() {
-
-		return inReplyToStatusId;
-	}
-
-	@Override
-	public boolean isTruncated() {
-
-		return truncated;
-	}
-
-	@Override
-	public String getText() {
-
-		return text;
-	}
-
-	@Override
-	public String getSource() {
-
-		return source;
-	}
-
-	@Override
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	@Override
-	public long getId() {
-		return id;
-	}
-
-	@Override
-	public long getRetweetCount() {
-		return retweetCount;
-	}
-
-	@Override
-	public long getReplyCount() {
-		return replyCount;
-	}
-
-	@Override
-	public boolean isFavorited() {
-		return favorited;
-	}
-
-	@Override
-	public boolean isRetweet() {
-		return retweetedStatus != null;
-	}
-
-	@Override
-	public boolean isQuote() {
-		return quotedStatus != null;
-	}
-
-	@Override
-	public boolean isRetweetedByMe() {
-		return currentUserRetweet != null;
-	}
-
-	@Override
-	public long getFavoriteCount() {
-		return favoriteCount;
-	}
-
-	@Override
-	public GeoLocation getGeoLocation() {
-		return geo;
-	}
-
-	@Override
-	public long getCurrentUserRetweet() {
-		if (currentUserRetweet == null) return -1;
-		return currentUserRetweet.id;
-	}
-
-
-	@Override
-	public Status getQuotedStatus() {
-		return quotedStatus;
-	}
-
-	@Override
-	public Status getRetweetedStatus() {
-		return retweetedStatus;
-	}
-
-	@Override
-	public long getDescendentReplyCount() {
-		return descendentReplyCount;
-	}
-
-	@Override
-	public Place getPlace() {
-		return place;
-	}
-
-	@Override
-	public CardEntity getCard() {
-		return card;
-	}
-
-	@Override
-	public boolean isPossiblySensitive() {
-		return possiblySensitive;
-	}
-
-	@Override
-	public MediaEntity[] getExtendedMediaEntities() {
-		if (extendedEntities == null) return null;
-		return extendedEntities.getMedia();
-	}
-
-	@Override
-	public HashtagEntity[] getHashtagEntities() {
-		if (entities == null) return null;
-		return entities.getHashtags();
-	}
-
-	@Override
-	public MediaEntity[] getMediaEntities() {
-		if (entities == null) return null;
-		return entities.getMedia();
-	}
-
-	@Override
-	public UrlEntity[] getUrlEntities() {
-		if (entities == null) return null;
-		return entities.getUrls();
-	}
-
-	@Override
-	public UserMentionEntity[] getUserMentionEntities() {
-		if (entities == null) return null;
-		return entities.getUserMentions();
-	}
-
-	@Override
-	public long[] getContributors() {
-		return contributors;
-	}
-
-
-	@Override
-	public int compareTo(@NonNull final Status that) {
-		final long delta = id - that.getId();
-		if (delta < Integer.MIN_VALUE)
-			return Integer.MIN_VALUE;
-		else if (delta > Integer.MAX_VALUE) return Integer.MAX_VALUE;
-		return (int) delta;
-	}
-
-	@Override
-	public String toString() {
-		return "StatusImpl{" +
-				"createdAt=" + createdAt +
-				", id=" + id +
-				", text='" + text + '\'' +
-				", source='" + source + '\'' +
-				", truncated=" + truncated +
-				", entities=" + entities +
-				", extendedEntities=" + extendedEntities +
-				", inReplyToStatusId=" + inReplyToStatusId +
-				", inReplyToUserId=" + inReplyToUserId +
-				", inReplyToScreenName='" + inReplyToScreenName + '\'' +
-				", user=" + user +
-				", geo=" + geo +
-				", place=" + place +
-				", currentUserRetweet=" + currentUserRetweet +
-				", contributors=" + Arrays.toString(contributors) +
-				", retweetCount=" + retweetCount +
-				", favoriteCount=" + favoriteCount +
-				", replyCount=" + replyCount +
-				", favorited=" + favorited +
-				", retweeted=" + retweeted +
-				", lang='" + lang + '\'' +
-				", descendentReplyCount=" + descendentReplyCount +
-				", retweetedStatus=" + retweetedStatus +
-				", quotedStatus=" + quotedStatus +
-				", card=" + card +
-				", possiblySensitive=" + possiblySensitive +
-				'}';
-	}
+    @JsonField(name = "possibly_sensitive")
+    boolean possiblySensitive;
 
     public static void setQuotedStatus(Status status, Status quoted) {
         if (!(status instanceof StatusImpl)) return;
         ((StatusImpl) status).quotedStatus = quoted;
     }
 
-	@JsonObject
-	static class CurrentUserRetweet {
-		@JsonField(name = "id")
-		long id;
+    @Override
+    public User getUser() {
+        return user;
+    }
 
-	}
+    @Override
+    public String getInReplyToScreenName() {
+
+        return inReplyToScreenName;
+    }
+
+    @Override
+    public long getInReplyToUserId() {
+
+        return inReplyToUserId;
+    }
+
+    @Override
+    public long getInReplyToStatusId() {
+
+        return inReplyToStatusId;
+    }
+
+    @Override
+    public boolean isTruncated() {
+
+        return truncated;
+    }
+
+    @Override
+    public String getText() {
+
+        return text;
+    }
+
+    @Override
+    public String getSource() {
+
+        return source;
+    }
+
+    @Override
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public long getRetweetCount() {
+        return retweetCount;
+    }
+
+    @Override
+    public long getReplyCount() {
+        return replyCount;
+    }
+
+    @Override
+    public boolean isFavorited() {
+        return favorited;
+    }
+
+    @Override
+    public boolean isRetweet() {
+        return retweetedStatus != null;
+    }
+
+    @Override
+    public boolean isQuote() {
+        return quotedStatus != null;
+    }
+
+    @Override
+    public boolean isRetweetedByMe() {
+        return currentUserRetweet != null;
+    }
+
+    @Override
+    public long getFavoriteCount() {
+        return favoriteCount;
+    }
+
+    @Override
+    public GeoLocation getGeoLocation() {
+        return geo;
+    }
+
+    @Override
+    public long getCurrentUserRetweet() {
+        if (currentUserRetweet == null) return -1;
+        return currentUserRetweet.id;
+    }
+
+    @Override
+    public Status getQuotedStatus() {
+        return quotedStatus;
+    }
+
+    @Override
+    public Status getRetweetedStatus() {
+        return retweetedStatus;
+    }
+
+    @Override
+    public long getDescendentReplyCount() {
+        return descendentReplyCount;
+    }
+
+    @Override
+    public Place getPlace() {
+        return place;
+    }
+
+    @Override
+    public CardEntity getCard() {
+        return card;
+    }
+
+    @Override
+    public boolean isPossiblySensitive() {
+        return possiblySensitive;
+    }
+
+    @Override
+    public MediaEntity[] getExtendedMediaEntities() {
+        if (extendedEntities == null) return null;
+        return extendedEntities.getMedia();
+    }
+
+    @Override
+    public HashtagEntity[] getHashtagEntities() {
+        if (entities == null) return null;
+        return entities.getHashtags();
+    }
+
+    @Override
+    public MediaEntity[] getMediaEntities() {
+        if (entities == null) return null;
+        return entities.getMedia();
+    }
+
+    @Override
+    public UrlEntity[] getUrlEntities() {
+        if (entities == null) return null;
+        return entities.getUrls();
+    }
+
+    @Override
+    public UserMentionEntity[] getUserMentionEntities() {
+        if (entities == null) return null;
+        return entities.getUserMentions();
+    }
+
+    @Override
+    public long[] getContributors() {
+        return contributors;
+    }
+
+    @Override
+    public int compareTo(@NonNull final Status that) {
+        final long delta = id - that.getId();
+        if (delta < Integer.MIN_VALUE)
+            return Integer.MIN_VALUE;
+        else if (delta > Integer.MAX_VALUE) return Integer.MAX_VALUE;
+        return (int) delta;
+    }
+
+    @Override
+    public String toString() {
+        return "StatusImpl{" +
+                "createdAt=" + createdAt +
+                ", id=" + id +
+                ", text='" + text + '\'' +
+                ", source='" + source + '\'' +
+                ", truncated=" + truncated +
+                ", entities=" + entities +
+                ", extendedEntities=" + extendedEntities +
+                ", inReplyToStatusId=" + inReplyToStatusId +
+                ", inReplyToUserId=" + inReplyToUserId +
+                ", inReplyToScreenName='" + inReplyToScreenName + '\'' +
+                ", user=" + user +
+                ", geo=" + geo +
+                ", place=" + place +
+                ", currentUserRetweet=" + currentUserRetweet +
+                ", contributors=" + Arrays.toString(contributors) +
+                ", retweetCount=" + retweetCount +
+                ", favoriteCount=" + favoriteCount +
+                ", replyCount=" + replyCount +
+                ", favorited=" + favorited +
+                ", retweeted=" + retweeted +
+                ", lang='" + lang + '\'' +
+                ", descendentReplyCount=" + descendentReplyCount +
+                ", retweetedStatus=" + retweetedStatus +
+                ", quotedStatus=" + quotedStatus +
+                ", card=" + card +
+                ", possiblySensitive=" + possiblySensitive +
+                '}';
+    }
+
+    @OnJsonParseComplete
+    void onJsonParseComplete() throws IOException {
+        if (id <= 0 || text == null) throw new IOException("Malformed Status object");
+    }
+
+    @JsonObject
+    static class CurrentUserRetweet {
+        @JsonField(name = "id")
+        long id;
+
+    }
 }

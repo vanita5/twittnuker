@@ -36,13 +36,13 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallb
 
 public class RecyclerViewNavigationHelper implements KeyboardShortcutCallback {
 
-	private int positionBackup;
+    private int positionBackup;
     @NonNull
-	private final RecyclerView view;
+    private final RecyclerView view;
     @NonNull
-	private final LinearLayoutManager manager;
+    private final LinearLayoutManager manager;
     @NonNull
-	private final Adapter<ViewHolder> adapter;
+    private final Adapter<ViewHolder> adapter;
     @Nullable
     private final RefreshScrollTopInterface iface;
 
@@ -50,18 +50,18 @@ public class RecyclerViewNavigationHelper implements KeyboardShortcutCallback {
                                         @NonNull final LinearLayoutManager manager,
                                         @NonNull final Adapter<ViewHolder> adapter,
                                         @Nullable final RefreshScrollTopInterface iface) {
-		this.view = view;
-		this.manager = manager;
-		this.adapter = adapter;
+        this.view = view;
+        this.manager = manager;
+        this.adapter = adapter;
         this.iface = iface;
-	}
+    }
 
     @Override
     public boolean handleKeyboardShortcutRepeat(@NonNull final KeyboardShortcutsHandler handler,
                                                 final int keyCode, final int repeatCount,
-                                                @NonNull final KeyEvent event) {
-        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
-		if (action == null) return false;
+                                                @NonNull final KeyEvent event, int metaState) {
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
+        if (action == null) return false;
         final int direction;
         switch (action) {
             case ACTION_NAVIGATION_PREVIOUS: {
@@ -72,38 +72,45 @@ public class RecyclerViewNavigationHelper implements KeyboardShortcutCallback {
                 direction = 1;
                 break;
             }
+            case ACTION_NAVIGATION_PAGE_DOWN: {
+                RecyclerViewUtils.pageScroll(view, manager, 1);
+                return true;
+            }
+            case ACTION_NAVIGATION_PAGE_UP: {
+                RecyclerViewUtils.pageScroll(view, manager, -1);
+                return true;
+            }
             default: {
                 return false;
             }
         }
-		final LinearLayoutManager layoutManager = this.manager;
-		final View focusedChild = RecyclerViewUtils.findRecyclerViewChild(view, layoutManager.getFocusedChild());
-		final int position;
-        final int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-        final int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+        final View focusedChild = RecyclerViewUtils.findRecyclerViewChild(view, manager.getFocusedChild());
+        final int position;
+        final int firstVisibleItemPosition = manager.findFirstVisibleItemPosition();
+        final int lastVisibleItemPosition = manager.findLastVisibleItemPosition();
         final int itemCount = adapter.getItemCount();
         final boolean backupOutsideRange = positionBackup > lastVisibleItemPosition || positionBackup < firstVisibleItemPosition;
-		if (focusedChild != null) {
-			position = view.getChildLayoutPosition(focusedChild);
+        if (focusedChild != null) {
+            position = view.getChildLayoutPosition(focusedChild);
         } else if (firstVisibleItemPosition == 0) {
-			position = -1;
+            position = -1;
         } else if (lastVisibleItemPosition == itemCount - 1) {
-				position = itemCount;
+            position = itemCount;
         } else if (direction > 0 && backupOutsideRange) {
             position = firstVisibleItemPosition;
         } else if (direction < 0 && backupOutsideRange) {
             position = lastVisibleItemPosition;
-		} else {
-			position = positionBackup;
-		}
-		positionBackup = position;
-        RecyclerViewUtils.focusNavigate(view, layoutManager, position, direction);
+        } else {
+            position = positionBackup;
+        }
+        positionBackup = position;
+        RecyclerViewUtils.focusNavigate(view, manager, position, direction);
         return true;
     }
 
     @Override
-    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
-        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
         if (action == null) return false;
         switch (action) {
             case ACTION_NAVIGATION_TOP: {
@@ -113,6 +120,21 @@ public class RecyclerViewNavigationHelper implements KeyboardShortcutCallback {
                 return true;
             }
         }
-		return false;
-	}
+        return false;
+    }
+
+    @Override
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
+        if (action == null) return false;
+        switch (action) {
+            case ACTION_NAVIGATION_PREVIOUS:
+            case ACTION_NAVIGATION_NEXT:
+            case ACTION_NAVIGATION_TOP:
+            case ACTION_NAVIGATION_PAGE_DOWN:
+            case ACTION_NAVIGATION_PAGE_UP:
+                return true;
+        }
+        return false;
+    }
 }

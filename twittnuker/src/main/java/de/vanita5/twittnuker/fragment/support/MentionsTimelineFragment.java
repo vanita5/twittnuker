@@ -49,33 +49,33 @@ public class MentionsTimelineFragment extends CursorStatusesFragment {
 
     @Override
     public boolean isRefreshing() {
-        final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        final AsyncTwitterWrapper twitter = mTwitterWrapper;
         return twitter != null && twitter.isMentionsTimelineRefreshing();
     }
 
-	@Override
+    @Override
     protected int getNotificationType() {
         return NOTIFICATION_ID_MENTIONS_TIMELINE;
-	}
+    }
 
-	@Override
+    @Override
     protected boolean isFilterEnabled() {
         return true;
-	}
+    }
 
-	@Override
+    @Override
     protected void updateRefreshState() {
-        final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        final AsyncTwitterWrapper twitter = mTwitterWrapper;
         if (twitter == null) return;
         setRefreshing(twitter.isMentionsTimelineRefreshing());
     }
 
     @Override
     public boolean getStatuses(long[] accountIds, long[] maxIds, long[] sinceIds) {
-        final AsyncTwitterWrapper twitter = getTwitterWrapper();
+        final AsyncTwitterWrapper twitter = mTwitterWrapper;
         if (twitter == null) return false;
         return twitter.getMentionsTimelineAsync(accountIds, maxIds, sinceIds);
-	}
+    }
 
     @Override
     public void setUserVisibleHint(final boolean isVisibleToUser) {

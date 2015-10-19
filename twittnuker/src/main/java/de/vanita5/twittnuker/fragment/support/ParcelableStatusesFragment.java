@@ -27,12 +27,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
@@ -49,56 +47,52 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
     private long mLastId;
 
     public final void deleteStatus(final long statusId) {
-        final List<ParcelableStatus> data = getAdapterData();
-        if (statusId <= 0 || data == null) return;
+        final List<ParcelableStatus> list = getAdapterData();
+        if (statusId <= 0 || list == null) return;
         final Set<ParcelableStatus> dataToRemove = new HashSet<>();
-        for (int i = 0, j = data.size(); i < j; i++) {
-            final ParcelableStatus status = data.get(i);
+        for (int i = 0, j = list.size(); i < j; i++) {
+            final ParcelableStatus status = list.get(i);
             if (status.id == statusId || status.retweet_id > 0 && status.retweet_id == statusId) {
                 dataToRemove.add(status);
             } else if (status.my_retweet_id == statusId) {
-                data.set(i, new ParcelableStatus(status, -1, status.retweet_count - 1));
+                list.set(i, new ParcelableStatus(status, -1, status.retweet_count - 1));
             }
         }
-        data.removeAll(dataToRemove);
-        setAdapterData(data);
+        list.removeAll(dataToRemove);
+        setAdapterData(list);
     }
 
     @Override
     public boolean getStatuses(long[] accountIds, final long[] maxIds, final long[] sinceIds) {
-		final Bundle args = new Bundle(getArguments());
-		if (maxIds != null) {
-			args.putLong(EXTRA_MAX_ID, maxIds[0]);
+        final Bundle args = new Bundle(getArguments());
+        if (maxIds != null) {
+            args.putLong(EXTRA_MAX_ID, maxIds[0]);
             args.putBoolean(EXTRA_MAKE_GAP, false);
-		}
-		if (sinceIds != null) {
-			args.putLong(EXTRA_SINCE_ID, sinceIds[0]);
-		}
+        }
+        if (sinceIds != null) {
+            args.putLong(EXTRA_SINCE_ID, sinceIds[0]);
+        }
         args.putBoolean(EXTRA_FROM_USER, true);
-		getLoaderManager().restartLoader(0, args, this);
+        getLoaderManager().restartLoader(0, args, this);
         return true;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.register(this);
+        mBus.register(this);
     }
 
     @Override
     public void onStop() {
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.unregister(this);
+        mBus.unregister(this);
         super.onStop();
     }
 
     @Override
-    protected boolean hasMoreData(List<ParcelableStatus> data) {
-        if (data == null || data.isEmpty()) return false;
-        return (mLastId != (mLastId = data.get(data.size() - 1).id));
+    protected boolean hasMoreData(List<ParcelableStatus> list) {
+        if (list == null || list.isEmpty()) return false;
+        return (mLastId != (mLastId = list.get(list.size() - 1).id));
     }
 
     @Override
@@ -127,8 +121,10 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
 
 
     @Override
-    public void onLoadMoreContents() {
-        super.onLoadMoreContents();
+    public void onLoadMoreContents(boolean fromStart) {
+        if (fromStart) return;
+        //noinspection ConstantConditions
+        super.onLoadMoreContents(fromStart);
         final IStatusesAdapter<List<ParcelableStatus>> adapter = getAdapter();
         final long[] maxIds = new long[]{adapter.getStatusId(adapter.getStatusesCount() - 1)};
         getStatuses(null, maxIds, null);
@@ -136,7 +132,7 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
 
     public final void replaceStatus(final ParcelableStatus status) {
         final List<ParcelableStatus> data = getAdapterData();
-        if (status == null || data == null) return;
+        if (status == null || data == null || data.isEmpty()) return;
         for (int i = 0, j = data.size(); i < j; i++) {
             if (status.equals(data.get(i))) {
                 data.set(i, status);
@@ -221,6 +217,6 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
             updateRetweetedStatuses(event.status);
         }
 
-	}
+    }
 
 }

@@ -39,7 +39,6 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
-import org.mariotaku.restfu.Utils;
 import org.mariotaku.restfu.http.ContentType;
 import org.mariotaku.restfu.http.RestHttpCallback;
 import org.mariotaku.restfu.http.RestHttpClient;
@@ -49,6 +48,7 @@ import org.mariotaku.restfu.http.RestQueuedRequest;
 import org.mariotaku.restfu.http.mime.TypedData;
 import de.vanita5.twittnuker.util.DebugModeUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -57,10 +57,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import okio.BufferedSink;
+import okio.Okio;
 
 public class OkHttpRestClient implements RestHttpClient {
 
-	private final OkHttpClient client;
+    private final OkHttpClient client;
 
     public OkHttpRestClient(Context context, OkHttpClient client) {
         this.client = client;
@@ -68,15 +69,20 @@ public class OkHttpRestClient implements RestHttpClient {
         DebugModeUtils.initForHttpClient(client);
     }
 
+    public OkHttpClient getClient() {
+        return client;
+    }
+
     @NonNull
-	@Override
+
+    @Override
     public RestHttpResponse execute(RestHttpRequest restHttpRequest) throws IOException {
         final Call call = newCall(restHttpRequest);
         return new OkRestHttpResponse(call.execute());
     }
 
     private Call newCall(final RestHttpRequest restHttpRequest) throws MalformedURLException {
-		final Request.Builder builder = new Request.Builder();
+        final Request.Builder builder = new Request.Builder();
         builder.method(restHttpRequest.getMethod(), RestToOkBody.wrap(restHttpRequest.getBody()));
         final HttpUrl httpUrl = HttpUrl.parse(restHttpRequest.getUrl());
         if (httpUrl == null) {
@@ -84,11 +90,11 @@ public class OkHttpRestClient implements RestHttpClient {
         }
         builder.url(httpUrl);
         final List<Pair<String, String>> headers = restHttpRequest.getHeaders();
-		if (headers != null) {
+        if (headers != null) {
             for (Pair<String, String> header : headers) {
                 builder.addHeader(header.first, header.second);
-			}
-		}
+            }
+        }
         builder.tag(restHttpRequest.getExtra());
         return client.newCall(builder.build());
     }
@@ -132,129 +138,132 @@ public class OkHttpRestClient implements RestHttpClient {
             }
         });
         return new OkHttpQueuedRequest(client, call);
-	}
+    }
 
-	private static class RestToOkBody extends RequestBody {
-		private final TypedData body;
+    private static class RestToOkBody extends RequestBody {
+        private final TypedData body;
 
-		public RestToOkBody(TypedData body) {
-			this.body = body;
-		}
+        public RestToOkBody(TypedData body) {
+            this.body = body;
+        }
 
-		@Override
-		public MediaType contentType() {
+        @Override
+        public MediaType contentType() {
             final ContentType contentType = body.contentType();
             if (contentType == null) return null;
             return MediaType.parse(contentType.toHeader());
-		}
+        }
 
-		@Override
-		public void writeTo(BufferedSink sink) throws IOException {
-			body.writeTo(sink.outputStream());
-		}
+        @Override
+        public void writeTo(BufferedSink sink) throws IOException {
+            body.writeTo(sink.outputStream());
+        }
 
         @Override
         public long contentLength() throws IOException {
             return body.length();
         }
 
-		@Nullable
-		public static RequestBody wrap(@Nullable TypedData body) {
-			if (body == null) return null;
-			return new RestToOkBody(body);
-		}
-	}
+        @Nullable
+        public static RequestBody wrap(@Nullable TypedData body) {
+            if (body == null) return null;
+            return new RestToOkBody(body);
+        }
+    }
 
     private static class OkRestHttpResponse extends RestHttpResponse {
-		private final Response response;
-		private TypedData body;
+        private final Response response;
+        private TypedData body;
 
         public OkRestHttpResponse(Response response) {
-			this.response = response;
-		}
+            this.response = response;
+        }
 
-		@Override
-		public int getStatus() {
-			return response.code();
-		}
+        @Override
+        public int getStatus() {
+            return response.code();
+        }
 
-		@Override
+        @Override
         public List<Pair<String, String>> getHeaders() {
-			final Headers headers = response.headers();
+            final Headers headers = response.headers();
             final ArrayList<Pair<String, String>> headersList = new ArrayList<>();
-			for (int i = 0, j = headers.size(); i < j; i++) {
+            for (int i = 0, j = headers.size(); i < j; i++) {
                 headersList.add(Pair.create(headers.name(i), headers.value(i)));
-			}
-			return headersList;
-		}
+            }
+            return headersList;
+        }
 
-		@Override
-		public String getHeader(String name) {
-			return response.header(name);
-		}
+        @Override
+        public String getHeader(String name) {
+            return response.header(name);
+        }
 
-		@Override
+        @Override
         public String[] getHeaders(String name) {
-			final List<String> values = response.headers(name);
+            final List<String> values = response.headers(name);
             return values.toArray(new String[values.size()]);
-		}
+        }
 
-		@Override
-		public TypedData getBody() {
-			if (body != null) return body;
-			return body = new OkToRestBody(response.body());
-		}
+        @Override
+        public TypedData getBody() {
+            if (body != null) return body;
+            return body = new OkToRestBody(response.body());
+        }
 
-		@Override
-		public void close() throws IOException {
-			if (body != null) {
-				body.close();
-				body = null;
-			}
-		}
-	}
+        @Override
+        public void close() throws IOException {
+            if (body != null) {
+                body.close();
+                body = null;
+            }
+        }
+    }
 
-	private static class OkToRestBody implements TypedData {
+    private static class OkToRestBody implements TypedData {
 
-		private final ResponseBody body;
+        private final ResponseBody body;
 
-		public OkToRestBody(ResponseBody body) {
-			this.body = body;
-		}
+        public OkToRestBody(ResponseBody body) {
+            this.body = body;
+        }
 
-		@Override
-		public ContentType contentType() {
+        @Override
+        public ContentType contentType() {
             final MediaType mediaType = body.contentType();
             if (mediaType == null) return null;
             return ContentType.parse(mediaType.toString());
-		}
+        }
 
-		@Override
-		public String contentEncoding() {
-			return null;
-		}
+        @Override
+        public String contentEncoding() {
+            return null;
+        }
 
-		@Override
-		public long length() throws IOException {
-			return body.contentLength();
-		}
+        @Override
+        public long length() throws IOException {
+            return body.contentLength();
+        }
 
-		@Override
-        public void writeTo(@NonNull OutputStream os) throws IOException {
-            Utils.copyStream(stream(), os);
-		}
+        @Override
+        public long writeTo(@NonNull OutputStream os) throws IOException {
+            final BufferedSink sink = Okio.buffer(Okio.sink(os));
+            final long result = sink.writeAll(body.source());
+            sink.flush();
+            return result;
+        }
 
         @NonNull
-		@Override
-		public InputStream stream() throws IOException {
-			return body.byteStream();
-		}
+        @Override
+        public InputStream stream() throws IOException {
+            return body.byteStream();
+        }
 
-		@Override
-		public void close() throws IOException {
-			body.close();
-		}
-	}
+        @Override
+        public void close() throws IOException {
+            body.close();
+        }
+    }
 
     private static class DummyRequest implements RestQueuedRequest {
 

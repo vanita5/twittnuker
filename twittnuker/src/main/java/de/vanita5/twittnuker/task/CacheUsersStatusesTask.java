@@ -55,17 +55,17 @@ public class CacheUsersStatusesTask extends AsyncTask<TwitterListResponse<Status
     }
 
     @SafeVarargs
-	@Override
+    @Override
     protected final Object doInBackground(final TwitterListResponse<de.vanita5.twittnuker.api.twitter.model.Status>... args) {
         if (args == null || args.length == 0) return null;
         final ContentResolver resolver = context.getContentResolver();
-		final Extractor extractor = new Extractor();
+        final Extractor extractor = new Extractor();
 
         for (final TwitterListResponse<de.vanita5.twittnuker.api.twitter.model.Status> response : args) {
-            if (response == null || response.list == null) {
-				continue;
-			}
-            final List<de.vanita5.twittnuker.api.twitter.model.Status> list = response.list;
+            if (response == null || !response.hasData()) {
+                continue;
+            }
+            final List<de.vanita5.twittnuker.api.twitter.model.Status> list = response.getData();
             for (int bulkIdx = 0, totalSize = list.size(); bulkIdx < totalSize; bulkIdx += 100) {
                 for (int idx = bulkIdx, end = Math.min(totalSize, bulkIdx + ContentResolverUtils.MAX_BULK_COUNT); idx < end; idx++) {
                     final de.vanita5.twittnuker.api.twitter.model.Status status = list.get(idx);
@@ -77,23 +77,23 @@ public class CacheUsersStatusesTask extends AsyncTask<TwitterListResponse<Status
                     statusesValues.add(createStatus(status, response.accountId));
                     final String text = TwitterContentUtils.unescapeTwitterStatusText(status.getText());
                     for (final String hashtag : extractor.extractHashtags(text)) {
-						final ContentValues values = new ContentValues();
-						values.put(CachedHashtags.NAME, hashtag);
-						hashTagValues.add(values);
-					}
+                        final ContentValues values = new ContentValues();
+                        values.put(CachedHashtags.NAME, hashtag);
+                        hashTagValues.add(values);
+                    }
                     usersValues.add(createCachedUser(status.getUser()));
                     if (status.isRetweet()) {
                         usersValues.add(createCachedUser(status.getRetweetedStatus().getUser()));
                     }
 
                     bulkInsert(resolver, CachedStatuses.CONTENT_URI, statusesValues);
-        			bulkInsert(resolver, CachedHashtags.CONTENT_URI, hashTagValues);
-        			bulkInsert(resolver, CachedUsers.CONTENT_URI, usersValues);
+                    bulkInsert(resolver, CachedHashtags.CONTENT_URI, hashTagValues);
+                    bulkInsert(resolver, CachedUsers.CONTENT_URI, usersValues);
                 }
             }
         }
 
-		return null;
-	}
+        return null;
+    }
 
 }

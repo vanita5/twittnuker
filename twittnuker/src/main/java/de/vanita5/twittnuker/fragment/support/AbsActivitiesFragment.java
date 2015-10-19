@@ -35,33 +35,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.squareup.otto.Bus;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter.ActivityAdapterListener;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
+import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 
 public abstract class AbsActivitiesFragment<Data> extends AbsContentRecyclerViewFragment<AbsActivitiesAdapter<Data>>
         implements LoaderCallbacks<Data>, OnRefreshListener, DrawerCallback, RefreshScrollTopInterface,
         ActivityAdapterListener, KeyboardShortcutsHandler.KeyboardShortcutCallback {
 
-	private final Object mStatusesBusCallback;
+    private final Object mStatusesBusCallback;
     private SharedPreferences mPreferences;
     private RecyclerViewNavigationHelper mNavigationHelper;
 
-	protected AbsActivitiesFragment() {
-		mStatusesBusCallback = createMessageBusCallback();
-	}
+    protected AbsActivitiesFragment() {
+        mStatusesBusCallback = createMessageBusCallback();
+    }
 
-		@Override
+    @Override
     public void onGapClick(GapViewHolder holder, int position) {
         final ParcelableActivity activity = getAdapter().getActivity(position);
         final long[] accountIds = {activity.account_id};
@@ -70,106 +68,112 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentRecyclerView
     }
 
     @Override
-    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
-        return mNavigationHelper.handleKeyboardShortcutSingle(handler, keyCode, event);
+    public void onActivityClick(ActivityTitleSummaryViewHolder holder, int position) {
+
+    }
+
+    @Override
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        return mNavigationHelper.handleKeyboardShortcutSingle(handler, keyCode, event, metaState);
     }
 
     @Override
     public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, final int keyCode, final int repeatCount,
-                                                @NonNull final KeyEvent event) {
-        return mNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
+                                                @NonNull final KeyEvent event, int metaState) {
+        return mNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState);
     }
 
-	public SharedPreferences getSharedPreferences() {
-		if (mPreferences != null) return mPreferences;
-		return mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-	}
+    @Override
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, final int keyCode, @NonNull final KeyEvent event, int metaState) {
+        return mNavigationHelper.isKeyboardShortcutHandled(handler, keyCode, event, metaState);
+    }
+
+    public SharedPreferences getSharedPreferences() {
+        if (mPreferences != null) return mPreferences;
+        return mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+    }
 
     public abstract int getActivities(long[] accountIds, long[] maxIds, long[] sinceIds);
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_content_recyclerview, container, false);
-	}
+    }
 
-	@Override
-	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         final AbsActivitiesAdapter<Data> adapter = getAdapter();
         mNavigationHelper = new RecyclerViewNavigationHelper(getRecyclerView(), getLayoutManager(),
                 adapter, this);
-		final View view = getView();
-		if (view == null) throw new AssertionError();
+        final View view = getView();
+        if (view == null) throw new AssertionError();
         adapter.setListener(this);
-		getLoaderManager().initLoader(0, getArguments(), this);
+        getLoaderManager().initLoader(0, getArguments(), this);
         showProgress();
-	}
+    }
 
-	@Override
-	public void onStart() {
-		super.onStart();
-		final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-		bus.register(mStatusesBusCallback);
-	}
+    @Override
+    public void onStart() {
+        super.onStart();
+        mBus.register(mStatusesBusCallback);
+    }
 
-	@Override
-	public void onStop() {
-		final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-		bus.unregister(mStatusesBusCallback);
-		super.onStop();
-	}
+    @Override
+    public void onStop() {
+        mBus.unregister(mStatusesBusCallback);
+        super.onStop();
+    }
 
-	@Override
-	public void onLoadFinished(Loader<Data> loader, Data data) {
-		setRefreshing(false);
+    @Override
+    public void onLoadFinished(Loader<Data> loader, Data data) {
+        setRefreshing(false);
         getAdapter().setData(data);
         showContent();
-	}
+    }
 
-	@Override
-	public void onLoaderReset(Loader<Data> loader) {
-	}
+    @Override
+    public void onLoaderReset(Loader<Data> loader) {
+    }
 
-	@Override
-	public void onRefresh() {
-		triggerRefresh();
-	}
+    @Override
+    public void onRefresh() {
+        triggerRefresh();
+    }
 
 
-	@Override
-	public boolean scrollToStart() {
+    @Override
+    public boolean scrollToStart() {
         final boolean result = super.scrollToStart();
         if (result) {
-			final AsyncTwitterWrapper twitter = getTwitterWrapper();
-			final int tabPosition = getTabPosition();
-			if (twitter != null && tabPosition != -1) {
-				twitter.clearUnreadCountAsync(tabPosition);
-			}
+            final AsyncTwitterWrapper twitter = mTwitterWrapper;
+            final int tabPosition = getTabPosition();
+            if (twitter != null && tabPosition != -1) {
+                twitter.clearUnreadCountAsync(tabPosition);
+            }
         }
-		return true;
-	}
+        return true;
+    }
 
-	protected abstract long[] getAccountIds();
+    protected abstract long[] getAccountIds();
 
-	protected Data getAdapterData() {
+    protected Data getAdapterData() {
         return getAdapter().getData();
-	}
+    }
 
-	protected void setAdapterData(Data data) {
+    protected void setAdapterData(Data data) {
         getAdapter().setData(data);
-	}
+    }
 
-	protected Object createMessageBusCallback() {
-		return new StatusesBusCallback();
-	}
+    protected Object createMessageBusCallback() {
+        return new StatusesBusCallback();
+    }
 
-	protected final class StatusesBusCallback {
+    protected final class StatusesBusCallback {
 
-		protected StatusesBusCallback() {
-		}
+        protected StatusesBusCallback() {
+        }
 
 
-	}
+    }
 }

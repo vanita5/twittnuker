@@ -13,11 +13,12 @@
     <color name="bg_color_transparent_dark">#ff000000</color>
     <color name="bg_color_transparent_light">#ffffffff</color>
     <color name="bg_color_drawer_dark">#212121</color>
-	<color name="bg_color_drawer_transparent_dark">#c01a1a1a</color>
-	<color name="highlighted_text_holo_dark">#66b0b0b0</color>
-	<color name="highlighted_text_holo_light">#66b0b0b0</color>
-	<color name="text_link_holo_dark">#909090</color>
-	<color name="text_link_holo_light">#707070</color>
+    <color name="bg_color_drawer_light">#ffffff</color>
+    <color name="bg_color_drawer_transparent_dark">#c01a1a1a</color>
+    <color name="highlighted_text_holo_dark">#66b0b0b0</color>
+    <color name="highlighted_text_holo_light">#66b0b0b0</color>
+    <color name="text_link_holo_dark">#909090</color>
+    <color name="text_link_holo_light">#707070</color>
     <color name="accent_white">#ffffff</color>
     <color name="action_icon_dark">#99333333</color>
     <color name="action_icon_dark_disabled">#4D333333</color>
@@ -36,6 +37,9 @@
     <color name="background_color_card_item_light">#fafafa</color>
     <color name="background_color_action_bar_dark">#212121</color>
     <color name="bg_color_video_playback_progress">#A0000000</color>
+    <color name="drawer_banner_foreground">#80000000</color>
+    <color name="quote_indicator_background_dark">#40aaaaaa</color>
+    <color name="quote_indicator_background_light">#40333333</color>
 
     <color name="twittnuker_material_dark">@color/material_dark</color>
     <color name="twittnuker_material_light">@color/material_light</color>

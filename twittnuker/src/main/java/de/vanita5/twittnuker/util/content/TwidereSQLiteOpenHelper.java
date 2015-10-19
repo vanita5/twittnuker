@@ -68,50 +68,52 @@ import static de.vanita5.twittnuker.util.content.DatabaseUpgradeHelper.safeUpgra
 
 public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements Constants {
 
-	private final Context mContext;
+    private final Context mContext;
 
-	public TwidereSQLiteOpenHelper(final Context context, final String name, final int version) {
-		super(context, name, null, version);
-		mContext = context;
-	}
+    public TwidereSQLiteOpenHelper(final Context context, final String name, final int version) {
+        super(context, name, null, version);
+        mContext = context;
+    }
 
-	@Override
-	public void onCreate(final SQLiteDatabase db) {
-		db.beginTransaction();
-		db.execSQL(createTable(Accounts.TABLE_NAME, Accounts.COLUMNS, Accounts.TYPES, true));
-		db.execSQL(createTable(Statuses.TABLE_NAME, Statuses.COLUMNS, Statuses.TYPES, true));
-		db.execSQL(createTable(Mentions.TABLE_NAME, Mentions.COLUMNS, Mentions.TYPES, true));
-		db.execSQL(createTable(Drafts.TABLE_NAME, Drafts.COLUMNS, Drafts.TYPES, true));
-		db.execSQL(createTable(CachedUsers.TABLE_NAME, CachedUsers.COLUMNS, CachedUsers.TYPES, true));
-		db.execSQL(createTable(CachedStatuses.TABLE_NAME, CachedStatuses.COLUMNS, CachedStatuses.TYPES, true));
-		db.execSQL(createTable(CachedHashtags.TABLE_NAME, CachedHashtags.COLUMNS, CachedHashtags.TYPES, true));
-        db.execSQL(createTable(CachedRelationships.TABLE_NAME, CachedRelationships.COLUMNS, CachedRelationships.TYPES, true));
-		db.execSQL(createTable(Filters.Users.TABLE_NAME, Filters.Users.COLUMNS, Filters.Users.TYPES, true));
-		db.execSQL(createTable(Filters.Keywords.TABLE_NAME, Filters.Keywords.COLUMNS, Filters.Keywords.TYPES, true));
-		db.execSQL(createTable(Filters.Sources.TABLE_NAME, Filters.Sources.COLUMNS, Filters.Sources.TYPES, true));
-		db.execSQL(createTable(Filters.Links.TABLE_NAME, Filters.Links.COLUMNS, Filters.Links.TYPES, true));
-		db.execSQL(createTable(DirectMessages.Inbox.TABLE_NAME, DirectMessages.Inbox.COLUMNS,
-				DirectMessages.Inbox.TYPES, true));
-		db.execSQL(createTable(DirectMessages.Outbox.TABLE_NAME, DirectMessages.Outbox.COLUMNS,
-				DirectMessages.Outbox.TYPES, true));
-		db.execSQL(createTable(CachedTrends.Local.TABLE_NAME, CachedTrends.Local.COLUMNS, CachedTrends.Local.TYPES,
-				true));
-		db.execSQL(createTable(Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, true));
-		db.execSQL(createTable(SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true));
-		db.execSQL(createTable(SearchHistory.TABLE_NAME, SearchHistory.COLUMNS, SearchHistory.TYPES, true));
-		db.execSQL(createTable(NetworkUsages.TABLE_NAME, NetworkUsages.COLUMNS, NetworkUsages.TYPES, true, createNetworkUsagesConstraint()));
-		db.execSQL(createTable(PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES, true));
+    @Override
+    public void onCreate(final SQLiteDatabase db) {
+        db.beginTransaction();
+        db.execSQL(createTable(Accounts.TABLE_NAME, Accounts.COLUMNS, Accounts.TYPES, true));
+        db.execSQL(createTable(Statuses.TABLE_NAME, Statuses.COLUMNS, Statuses.TYPES, true));
+        db.execSQL(createTable(Mentions.TABLE_NAME, Mentions.COLUMNS, Mentions.TYPES, true));
+        db.execSQL(createTable(Drafts.TABLE_NAME, Drafts.COLUMNS, Drafts.TYPES, true));
+        db.execSQL(createTable(CachedUsers.TABLE_NAME, CachedUsers.COLUMNS, CachedUsers.TYPES, true));
+        db.execSQL(createTable(CachedStatuses.TABLE_NAME, CachedStatuses.COLUMNS, CachedStatuses.TYPES, true));
+        db.execSQL(createTable(CachedHashtags.TABLE_NAME, CachedHashtags.COLUMNS, CachedHashtags.TYPES, true));
+        db.execSQL(createTable(CachedRelationships.TABLE_NAME, CachedRelationships.COLUMNS, CachedRelationships.TYPES, true,
+                createConflictReplaceConstraint(CachedRelationships.ACCOUNT_ID, CachedRelationships.USER_ID)));
+        db.execSQL(createTable(Filters.Users.TABLE_NAME, Filters.Users.COLUMNS, Filters.Users.TYPES, true));
+        db.execSQL(createTable(Filters.Keywords.TABLE_NAME, Filters.Keywords.COLUMNS, Filters.Keywords.TYPES, true));
+        db.execSQL(createTable(Filters.Sources.TABLE_NAME, Filters.Sources.COLUMNS, Filters.Sources.TYPES, true));
+        db.execSQL(createTable(Filters.Links.TABLE_NAME, Filters.Links.COLUMNS, Filters.Links.TYPES, true));
+        db.execSQL(createTable(DirectMessages.Inbox.TABLE_NAME, DirectMessages.Inbox.COLUMNS,
+                DirectMessages.Inbox.TYPES, true));
+        db.execSQL(createTable(DirectMessages.Outbox.TABLE_NAME, DirectMessages.Outbox.COLUMNS,
+                DirectMessages.Outbox.TYPES, true));
+        db.execSQL(createTable(CachedTrends.Local.TABLE_NAME, CachedTrends.Local.COLUMNS, CachedTrends.Local.TYPES,
+                true));
+        db.execSQL(createTable(Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, true));
+        db.execSQL(createTable(SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true));
+        db.execSQL(createTable(SearchHistory.TABLE_NAME, SearchHistory.COLUMNS, SearchHistory.TYPES, true));
+        db.execSQL(createTable(NetworkUsages.TABLE_NAME, NetworkUsages.COLUMNS, NetworkUsages.TYPES, true,
+                createConflictReplaceConstraint(NetworkUsages.TIME_IN_HOURS, NetworkUsages.REQUEST_NETWORK, NetworkUsages.REQUEST_TYPE)));
+        db.execSQL(createTable(PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES, true));
 
-		createViews(db);
+        createViews(db);
         createTriggers(db);
-		createIndices(db);
+        createIndices(db);
 
-		db.setTransactionSuccessful();
-		db.endTransaction();
-	}
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
 
-    private Constraint createNetworkUsagesConstraint() {
-        return Constraint.unique(new Columns(NetworkUsages.TIME_IN_HOURS, NetworkUsages.REQUEST_NETWORK, NetworkUsages.REQUEST_TYPE), OnConflict.IGNORE);
+    private Constraint createConflictReplaceConstraint(String... columns) {
+        return Constraint.unique(new Columns(columns), OnConflict.IGNORE);
     }
 
     private void createIndices(SQLiteDatabase db) {
@@ -166,8 +168,8 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
                 .on(cachedHashtagsTable)
                 .forEachRow(true)
                 .actions(SQLQueryBuilder.deleteFrom(cachedHashtagsTable)
-						.where(Expression.like(new Column(CachedHashtags.NAME), new Column(Table.NEW, CachedHashtags.NAME)))
-						.build())
+                        .where(Expression.like(new Column(CachedHashtags.NAME), new Column(Table.NEW, CachedHashtags.NAME)))
+                        .build())
                 .buildSQL());
 
     }
@@ -175,9 +177,9 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
     private SQLQuery createDeleteDuplicateStatusTrigger(String triggerName, String tableName) {
         final Table table = new Table(tableName);
         final SQLDeleteQuery deleteOld = SQLQueryBuilder.deleteFrom(table).where(Expression.and(
-				Expression.equals(new Column(Statuses.ACCOUNT_ID), new Column(Table.NEW, Statuses.ACCOUNT_ID)),
-				Expression.equals(new Column(Statuses.STATUS_ID), new Column(Table.NEW, Statuses.STATUS_ID))
-		)).build();
+                Expression.equals(new Column(Statuses.ACCOUNT_ID), new Column(Table.NEW, Statuses.ACCOUNT_ID)),
+                Expression.equals(new Column(Statuses.STATUS_ID), new Column(Table.NEW, Statuses.STATUS_ID))
+        )).build();
         return SQLQueryBuilder.createTrigger(false, true, triggerName)
                 .type(Type.BEFORE).event(Event.INSERT).on(table).forEachRow(true)
                 .actions(deleteOld).build();
@@ -196,68 +198,69 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
     }
 
 
-	@Override
-	public void onDowngrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-		handleVersionChange(db, oldVersion, newVersion);
-	}
+    @Override
+    public void onDowngrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
+        handleVersionChange(db, oldVersion, newVersion);
+    }
 
-	@Override
-	public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-		handleVersionChange(db, oldVersion, newVersion);
-	}
+    @Override
+    public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
+        handleVersionChange(db, oldVersion, newVersion);
+    }
 
-	private void handleVersionChange(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
+    private void handleVersionChange(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         final HashMap<String, String> accountsAlias = new HashMap<>();
         final HashMap<String, String> filtersAlias = new HashMap<>();
         final HashMap<String, String> draftsAlias = new HashMap<>();
-		accountsAlias.put(Accounts.SCREEN_NAME, "username");
-		accountsAlias.put(Accounts.NAME, "username");
-		accountsAlias.put(Accounts.ACCOUNT_ID, "user_id");
-		accountsAlias.put(Accounts.COLOR, "user_color");
-		accountsAlias.put(Accounts.OAUTH_TOKEN_SECRET, "token_secret");
+        accountsAlias.put(Accounts.SCREEN_NAME, "username");
+        accountsAlias.put(Accounts.NAME, "username");
+        accountsAlias.put(Accounts.ACCOUNT_ID, "user_id");
+        accountsAlias.put(Accounts.COLOR, "user_color");
+        accountsAlias.put(Accounts.OAUTH_TOKEN_SECRET, "token_secret");
         accountsAlias.put(Accounts.API_URL_FORMAT, "rest_base_url");
         draftsAlias.put(Drafts.MEDIA, "media");
-		safeUpgrade(db, Accounts.TABLE_NAME, Accounts.COLUMNS, Accounts.TYPES, false, accountsAlias);
-		safeUpgrade(db, Statuses.TABLE_NAME, Statuses.COLUMNS, Statuses.TYPES, true, null);
-		safeUpgrade(db, Mentions.TABLE_NAME, Mentions.COLUMNS, Mentions.TYPES, true, null);
+        safeUpgrade(db, Accounts.TABLE_NAME, Accounts.COLUMNS, Accounts.TYPES, false, accountsAlias);
+        safeUpgrade(db, Statuses.TABLE_NAME, Statuses.COLUMNS, Statuses.TYPES, true, null);
+        safeUpgrade(db, Mentions.TABLE_NAME, Mentions.COLUMNS, Mentions.TYPES, true, null);
         safeUpgrade(db, Drafts.TABLE_NAME, Drafts.COLUMNS, Drafts.TYPES, false, draftsAlias);
-		safeUpgrade(db, CachedUsers.TABLE_NAME, CachedUsers.COLUMNS, CachedUsers.TYPES, true, null);
+        safeUpgrade(db, CachedUsers.TABLE_NAME, CachedUsers.COLUMNS, CachedUsers.TYPES, true, null);
         safeUpgrade(db, CachedStatuses.TABLE_NAME, CachedStatuses.COLUMNS, CachedStatuses.TYPES, true, null);
         safeUpgrade(db, CachedHashtags.TABLE_NAME, CachedHashtags.COLUMNS, CachedHashtags.TYPES, true, null);
-        safeUpgrade(db, CachedRelationships.TABLE_NAME, CachedRelationships.COLUMNS, CachedRelationships.TYPES, true, null);
-		safeUpgrade(db, Filters.Users.TABLE_NAME, Filters.Users.COLUMNS, Filters.Users.TYPES,
-				oldVersion < 49, null);
-		safeUpgrade(db, Filters.Keywords.TABLE_NAME, Filters.Keywords.COLUMNS, Filters.Keywords.TYPES,
-				oldVersion < 49, filtersAlias);
-		safeUpgrade(db, Filters.Sources.TABLE_NAME, Filters.Sources.COLUMNS, Filters.Sources.TYPES,
-				oldVersion < 49, filtersAlias);
-		safeUpgrade(db, Filters.Links.TABLE_NAME, Filters.Links.COLUMNS, Filters.Links.TYPES,
-				oldVersion < 49, filtersAlias);
-		safeUpgrade(db, DirectMessages.Inbox.TABLE_NAME, DirectMessages.Inbox.COLUMNS,
-				DirectMessages.Inbox.TYPES, true, null);
-		safeUpgrade(db, DirectMessages.Outbox.TABLE_NAME, DirectMessages.Outbox.COLUMNS,
-				DirectMessages.Outbox.TYPES, true, null);
-		safeUpgrade(db, CachedTrends.Local.TABLE_NAME, CachedTrends.Local.COLUMNS,
-				CachedTrends.Local.TYPES, true, null);
-		safeUpgrade(db, Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, false, null);
-		safeUpgrade(db, SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true, null);
-		safeUpgrade(db, SearchHistory.TABLE_NAME, SearchHistory.COLUMNS, SearchHistory.TYPES, true, null);
-		safeUpgrade(db, NetworkUsages.TABLE_NAME, NetworkUsages.COLUMNS, NetworkUsages.TYPES, true, null,
-				createNetworkUsagesConstraint());
-		safeUpgrade(db, PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES,
-				false, null);
+        safeUpgrade(db, CachedRelationships.TABLE_NAME, CachedRelationships.COLUMNS, CachedRelationships.TYPES, true, null,
+                createConflictReplaceConstraint(CachedRelationships.ACCOUNT_ID, CachedRelationships.USER_ID));
+        safeUpgrade(db, Filters.Users.TABLE_NAME, Filters.Users.COLUMNS, Filters.Users.TYPES,
+                oldVersion < 49, null);
+        safeUpgrade(db, Filters.Keywords.TABLE_NAME, Filters.Keywords.COLUMNS, Filters.Keywords.TYPES,
+                oldVersion < 49, filtersAlias);
+        safeUpgrade(db, Filters.Sources.TABLE_NAME, Filters.Sources.COLUMNS, Filters.Sources.TYPES,
+                oldVersion < 49, filtersAlias);
+        safeUpgrade(db, Filters.Links.TABLE_NAME, Filters.Links.COLUMNS, Filters.Links.TYPES,
+                oldVersion < 49, filtersAlias);
+        safeUpgrade(db, DirectMessages.Inbox.TABLE_NAME, DirectMessages.Inbox.COLUMNS,
+                DirectMessages.Inbox.TYPES, true, null);
+        safeUpgrade(db, DirectMessages.Outbox.TABLE_NAME, DirectMessages.Outbox.COLUMNS,
+                DirectMessages.Outbox.TYPES, true, null);
+        safeUpgrade(db, CachedTrends.Local.TABLE_NAME, CachedTrends.Local.COLUMNS,
+                CachedTrends.Local.TYPES, true, null);
+        safeUpgrade(db, Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, false, null);
+        safeUpgrade(db, SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true, null);
+        safeUpgrade(db, SearchHistory.TABLE_NAME, SearchHistory.COLUMNS, SearchHistory.TYPES, true, null);
+        safeUpgrade(db, NetworkUsages.TABLE_NAME, NetworkUsages.COLUMNS, NetworkUsages.TYPES, true, null,
+                createConflictReplaceConstraint(NetworkUsages.TIME_IN_HOURS, NetworkUsages.REQUEST_NETWORK, NetworkUsages.REQUEST_TYPE));
+        safeUpgrade(db, PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES,
+                false, null);
         db.beginTransaction();
         createViews(db);
         createTriggers(db);
         createIndices(db);
         db.setTransactionSuccessful();
         db.endTransaction();
-	}
+    }
 
-	private static String createTable(final String tableName, final String[] columns, final String[] types,
+    private static String createTable(final String tableName, final String[] columns, final String[] types,
                                       final boolean createIfNotExists, final Constraint... constraints) {
-		final SQLCreateTableQuery.Builder qb = SQLQueryBuilder.createTable(createIfNotExists, tableName);
-		qb.columns(NewColumn.createNewColumns(columns, types));
+        final SQLCreateTableQuery.Builder qb = SQLQueryBuilder.createTable(createIfNotExists, tableName);
+        qb.columns(NewColumn.createNewColumns(columns, types));
         qb.constraint(constraints);
         return qb.buildSQL();
     }
@@ -267,7 +270,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
         final SQLCreateIndexQuery.Builder qb = SQLQueryBuilder.createIndex(false, createIfNotExists);
         qb.name(indexName);
         qb.on(new Table(tableName), new Columns(columns));
-		return qb.buildSQL();
-	}
+        return qb.buildSQL();
+    }
 
 }

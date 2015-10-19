@@ -33,60 +33,62 @@ import java.util.List;
 
 public class ParcelableActivitiesAdapter extends AbsActivitiesAdapter<List<ParcelableActivity>> {
 
-	private List<ParcelableActivity> mData;
+    private List<ParcelableActivity> mData;
+    private final boolean mIsByFriends;
 
-    public ParcelableActivitiesAdapter(Context context, boolean compact) {
-        super(context,compact);
-	}
-
-	@Override
-	public boolean isGapItem(int position) {
-        return getActivity(position).is_gap && position != getActivityCount() - 1;
-	}
-
-
-	@Override
-	protected int getActivityAction(int position) {
-		return mData.get(position).action;
-	}
-
-	@Override
-	public ParcelableActivity getActivity(int position) {
-        if (position == getActivityCount()) return null;
-		return mData.get(position);
-	}
-
-	@Override
-	public void onItemActionClick(ViewHolder holder, int id, int position) {
-
-	}
-
-	@Override
-	public int getActivityCount() {
-		if (mData == null) return 0;
-		return mData.size();
-	}
-
-	@Override
-    public void onItemMenuClick(ViewHolder holder, View menuView, int position) {
-
-	}
+    public ParcelableActivitiesAdapter(Context context, boolean compact, boolean byFriends) {
+        super(context, compact);
+        mIsByFriends = byFriends;
+    }
 
     @Override
-	public void setData(List<ParcelableActivity> data) {
-		mData = data;
-		notifyDataSetChanged();
+    public boolean isGapItem(int position) {
+        return getActivity(position).is_gap && position != getActivityCount() - 1;
+    }
+
+
+    @Override
+    protected int getActivityAction(int position) {
+        return mData.get(position).action;
+    }
+
+    @Override
+    public ParcelableActivity getActivity(int position) {
+        if (position == getActivityCount()) return null;
+        return mData.get(position);
+    }
+
+    @Override
+    public void onItemActionClick(ViewHolder holder, int id, int position) {
+
+    }
+
+    @Override
+    public int getActivityCount() {
+        if (mData == null) return 0;
+        return mData.size();
+    }
+
+    @Override
+    public void onItemMenuClick(ViewHolder holder, View menuView, int position) {
+
+    }
+
+    @Override
+    public void setData(List<ParcelableActivity> data) {
+        mData = data;
+        notifyDataSetChanged();
     }
 
     @Override
     protected void bindTitleSummaryViewHolder(ActivityTitleSummaryViewHolder holder, int position) {
-        holder.displayActivity(getActivity(position));
-	}
+        holder.displayActivity(getActivity(position), mIsByFriends);
+    }
 
-	@Override
-	public List<ParcelableActivity> getData() {
-		return mData;
-	}
+    @Override
+    public List<ParcelableActivity> getData() {
+        return mData;
+    }
 
 
 }

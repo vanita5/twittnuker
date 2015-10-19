@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
@@ -24,17 +23,16 @@
 <de.vanita5.twittnuker.view.DrawerContentFrameLayout
     android:id="@+id/left_drawer_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:focusable="true"
-    android:focusableInTouchMode="false"
-	android:layout_height="match_parent">
+    android:layout_height="match_parent">
 
-	<fragment
-		android:id="@+id/left_drawer"
+    <fragment
+        android:id="@+id/left_drawer"
         class="de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment"
         android:layout_width="match_parent"
-		android:layout_height="match_parent"
-        tools:layout="@layout/fragment_accounts_dashboard"/>
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_accounts_dashboard" />
 
 </de.vanita5.twittnuker.view.DrawerContentFrameLayout>

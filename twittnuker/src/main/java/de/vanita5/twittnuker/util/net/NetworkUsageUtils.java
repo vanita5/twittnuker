@@ -40,10 +40,12 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.NetworkUsages;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.io.IOException;
+import java.util.List;
 
 public class NetworkUsageUtils implements Constants {
     public static void initForHttpClient(Context context, OkHttpClient client) {
-        client.networkInterceptors().add(new NetworkUsageInterceptor(context));
+        final List<Interceptor> interceptors = client.networkInterceptors();
+        interceptors.add(new NetworkUsageInterceptor(context));
     }
 
     private static int sNetworkType;

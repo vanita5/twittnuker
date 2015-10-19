@@ -32,66 +32,66 @@ import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 public class ColorLabelRelativeLayout extends RelativeLayout implements IColorLabelView {
 
-	private final Helper mHelper;
+    private final Helper mHelper;
 
-	public ColorLabelRelativeLayout(final Context context) {
-		this(context, null);
-	}
+    public ColorLabelRelativeLayout(final Context context) {
+        this(context, null);
+    }
 
-	public ColorLabelRelativeLayout(final Context context, final AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    public ColorLabelRelativeLayout(final Context context, final AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-	public ColorLabelRelativeLayout(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-		mHelper = new Helper(this, context, attrs, defStyle);
-	}
+    public ColorLabelRelativeLayout(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+        mHelper = new Helper(this, context, attrs, defStyle);
+    }
 
-	@Override
-	public void drawBackground(final int color) {
-		mHelper.drawBackground(color);
-	}
+    @Override
+    public void drawBackground(final int color) {
+        mHelper.drawBackground(color);
+    }
 
-	@Override
-	public void drawBottom(final int... colors) {
-		mHelper.drawBottom(colors);
-	}
+    @Override
+    public void drawBottom(final int... colors) {
+        mHelper.drawBottom(colors);
+    }
 
-	@Override
-	public void drawEnd(final int... colors) {
-		mHelper.drawEnd(colors);
-	}
+    @Override
+    public void drawEnd(final int... colors) {
+        mHelper.drawEnd(colors);
+    }
 
-	@Override
-	public void drawLabel(final int[] start, final int[] end, final int[] top, final int[] bottom, final int background) {
-		mHelper.drawLabel(start, end, top, bottom, background);
-	}
+    @Override
+    public void drawLabel(final int[] start, final int[] end, final int[] top, final int[] bottom, final int background) {
+        mHelper.drawLabel(start, end, top, bottom, background);
+    }
 
-	@Override
-	public void drawStart(final int... colors) {
-		mHelper.drawStart(colors);
-	}
+    @Override
+    public void drawStart(final int... colors) {
+        mHelper.drawStart(colors);
+    }
 
-	@Override
-	public void drawTop(final int... colors) {
-		mHelper.drawTop(colors);
-	}
+    @Override
+    public void drawTop(final int... colors) {
+        mHelper.drawTop(colors);
+    }
 
-	@Override
+    @Override
     public boolean isPaddingIgnored() {
         return mHelper.isPaddingIgnored();
-	}
+    }
 
-	@Override
+    @Override
     public void setIgnorePadding(final boolean ignorePadding) {
         mHelper.setIgnorePadding(ignorePadding);
-	}
+    }
 
-	@Override
+    @Override
     protected void dispatchDraw(@NonNull final Canvas canvas) {
-		mHelper.dispatchDrawBackground(canvas);
-		super.dispatchDraw(canvas);
-		mHelper.dispatchDrawLabels(canvas);
-	}
+        mHelper.dispatchDrawBackground(canvas);
+        super.dispatchDraw(canvas);
+        mHelper.dispatchDrawLabels(canvas);
+    }
 
 }

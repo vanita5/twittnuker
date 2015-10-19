@@ -1,4 +1,15 @@
 language: android
+
+sudo: required
+
+env:
+  global:
+    MALLOC_ARENA_MAX=2
+    JAVA_OPTS="-Xmx2048m -UseGCOverheadLimit"
+
+jdk:
+  - oraclejdk7
+
 android:
   components:
     # Uncomment the lines below if you want to
@@ -7,10 +18,10 @@ android:
     - tools
 
     # The BuildTools version used by your project
-    - build-tools-22.0.1
+    - build-tools-23.0.1
 
     # The SDK version used to compile your project
-    - android-22
+    - android-23
 
     # Additional components
     - extra-google-google_play_services
@@ -24,6 +35,6 @@ android:
 
 before_script:
   - "echo $JAVA_OPTS"
-  - "export JAVA_OPTS=-Xmx1024m"
+  - "export JAVA_OPTS=-Xmx2048m"
 
 script: ./gradlew svgToDrawable build --no-daemon

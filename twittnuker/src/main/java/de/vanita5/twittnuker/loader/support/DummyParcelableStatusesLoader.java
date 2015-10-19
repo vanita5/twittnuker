@@ -24,26 +24,26 @@ package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
 
+import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
-import java.util.Collections;
 import java.util.List;
 
 public final class DummyParcelableStatusesLoader extends ParcelableStatusesLoader {
 
-	public DummyParcelableStatusesLoader(final Context context) {
+    public DummyParcelableStatusesLoader(final Context context) {
         this(context, null, false);
-	}
+    }
 
     public DummyParcelableStatusesLoader(final Context context, final List<ParcelableStatus> data, boolean fromUser) {
         super(context, data, -1, fromUser);
-	}
+    }
 
-	@Override
-	public List<ParcelableStatus> loadInBackground() {
-		final List<ParcelableStatus> data = getData();
-		if (data != null) return data;
-		return Collections.emptyList();
-	}
+    @Override
+    public ListResponse<ParcelableStatus> loadInBackground() {
+        final List<ParcelableStatus> data = getData();
+        if (data != null) return ListResponse.getListInstance(data);
+        return ListResponse.emptyListInstance();
+    }
 
 }

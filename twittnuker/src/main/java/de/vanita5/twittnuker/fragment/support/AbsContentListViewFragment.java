@@ -50,201 +50,201 @@ import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 
 public abstract class AbsContentListViewFragment<A extends ListAdapter> extends BaseSupportFragment
-		implements OnRefreshListener, RefreshScrollTopInterface, ControlBarOffsetListener,
-		ContentListSupport {
+        implements OnRefreshListener, RefreshScrollTopInterface, ControlBarOffsetListener,
+        ContentListSupport {
 
-	private View mProgressContainer;
-	private SwipeRefreshLayout mSwipeRefreshLayout;
-	private ListView mListView;
-	private View mErrorContainer;
-	private ImageView mErrorIconView;
-	private TextView mErrorTextView;
+    private View mProgressContainer;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ListView mListView;
+    private View mErrorContainer;
+    private ImageView mErrorIconView;
+    private TextView mErrorTextView;
 
-	private A mAdapter;
+    private A mAdapter;
 
-	// Data fields
-	private Rect mSystemWindowsInsets = new Rect();
+    // Data fields
+    private Rect mSystemWindowsInsets = new Rect();
 
-	@Override
-	public void onControlBarOffsetChanged(IControlBarActivity activity, float offset) {
-		updateRefreshProgressOffset();
-	}
+    @Override
+    public void onControlBarOffsetChanged(IControlBarActivity activity, float offset) {
+        updateRefreshProgressOffset();
+    }
 
-	@Override
-	public void onRefresh() {
-		triggerRefresh();
-	}
+    @Override
+    public void onRefresh() {
+        triggerRefresh();
+    }
 
-	@Override
-	public void setUserVisibleHint(boolean isVisibleToUser) {
-		super.setUserVisibleHint(isVisibleToUser);
-		updateRefreshProgressOffset();
-	}
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        updateRefreshProgressOffset();
+    }
 
-	@Override
-	public boolean scrollToStart() {
-		mListView.setSelectionFromTop(0, 0);
+    @Override
+    public boolean scrollToStart() {
+        mListView.setSelectionFromTop(0, 0);
 //        mListView.stopScroll();
-		setControlVisible(true);
-		return true;
-	}
+        setControlVisible(true);
+        return true;
+    }
 
-	@Override
-	public void setControlVisible(boolean visible) {
-		final FragmentActivity activity = getActivity();
+    @Override
+    public void setControlVisible(boolean visible) {
+        final FragmentActivity activity = getActivity();
         if (activity instanceof IControlBarActivity) {
             ((IControlBarActivity) activity).setControlBarVisibleAnimate(visible);
-		}
-	}
+        }
+    }
 
-	@Override
-	public A getAdapter() {
-		return mAdapter;
-	}
+    @Override
+    public A getAdapter() {
+        return mAdapter;
+    }
 
-	@Override
-	public abstract boolean isRefreshing();
+    @Override
+    public abstract boolean isRefreshing();
 
-	public void setRefreshing(final boolean refreshing) {
-		final boolean currentRefreshing = mSwipeRefreshLayout.isRefreshing();
-		if (!currentRefreshing) {
-			updateRefreshProgressOffset();
-		}
-		if (refreshing == currentRefreshing) return;
-		mSwipeRefreshLayout.setRefreshing(refreshing);
-	}
+    public void setRefreshing(final boolean refreshing) {
+        final boolean currentRefreshing = mSwipeRefreshLayout.isRefreshing();
+        if (!currentRefreshing) {
+            updateRefreshProgressOffset();
+        }
+        if (refreshing == currentRefreshing) return;
+        mSwipeRefreshLayout.setRefreshing(refreshing);
+    }
 
-	@Override
-	public void onLoadMoreContents() {
-		setRefreshEnabled(false);
-	}
+    @Override
+    public void onLoadMoreContents(boolean fromStart) {
+        setRefreshEnabled(false);
+    }
 
-	public final ListView getListView() {
-		return mListView;
-	}
+    public final ListView getListView() {
+        return mListView;
+    }
 
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		if (activity instanceof IControlBarActivity) {
-			((IControlBarActivity) activity).registerControlBarOffsetListener(this);
-		}
-	}
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof IControlBarActivity) {
+            ((IControlBarActivity) activity).registerControlBarOffsetListener(this);
+        }
+    }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_content_listview, container, false);
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_content_listview, container, false);
+    }
 
-	@Override
-	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-		final View view = getView();
-		if (view == null) throw new AssertionError();
-		final Context context = view.getContext();
-		final boolean compact = Utils.isCompactCards(context);
-		final int backgroundColor = ThemeUtils.getThemeBackgroundColor(context);
-		final int colorRes = TwidereColorUtils.getContrastYIQ(backgroundColor,
-				R.color.bg_refresh_progress_color_light, R.color.bg_refresh_progress_color_dark);
-		mSwipeRefreshLayout.setOnRefreshListener(this);
-		mSwipeRefreshLayout.setProgressBackgroundColorSchemeResource(colorRes);
-		mAdapter = onCreateAdapter(context, compact);
-		mListView.setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-					updateRefreshProgressOffset();
-				}
-				return false;
-			}
-		});
-		mListView.setAdapter(mAdapter);
+        final View view = getView();
+        if (view == null) throw new AssertionError();
+        final Context context = view.getContext();
+        final boolean compact = Utils.isCompactCards(context);
+        final int backgroundColor = ThemeUtils.getThemeBackgroundColor(context);
+        final int colorRes = TwidereColorUtils.getContrastYIQ(backgroundColor,
+                R.color.bg_refresh_progress_color_light, R.color.bg_refresh_progress_color_dark);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setProgressBackgroundColorSchemeResource(colorRes);
+        mAdapter = onCreateAdapter(context, compact);
+        mListView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                    updateRefreshProgressOffset();
+                }
+                return false;
+            }
+        });
+        mListView.setAdapter(mAdapter);
 
-	}
+    }
 
-	@Override
-	public void onBaseViewCreated(View view, @Nullable Bundle savedInstanceState) {
-		super.onBaseViewCreated(view, savedInstanceState);
-		mProgressContainer = view.findViewById(R.id.progress_container);
-		mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
-		mListView = (ListView) view.findViewById(R.id.list_view);
-		mErrorContainer = view.findViewById(R.id.error_container);
-		mErrorIconView = (ImageView) view.findViewById(R.id.error_icon);
-		mErrorTextView = (TextView) view.findViewById(R.id.error_text);
-	}
+    @Override
+    public void onBaseViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onBaseViewCreated(view, savedInstanceState);
+        mProgressContainer = view.findViewById(R.id.progress_container);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
+        mListView = (ListView) view.findViewById(R.id.list_view);
+        mErrorContainer = view.findViewById(R.id.error_container);
+        mErrorIconView = (ImageView) view.findViewById(R.id.error_icon);
+        mErrorTextView = (TextView) view.findViewById(R.id.error_text);
+    }
 
-	@Override
-	public void onDetach() {
-		final FragmentActivity activity = getActivity();
-		if (activity instanceof IControlBarActivity) {
-			((IControlBarActivity) activity).unregisterControlBarOffsetListener(this);
-		}
-		super.onDetach();
-	}
+    @Override
+    public void onDetach() {
+        final FragmentActivity activity = getActivity();
+        if (activity instanceof IControlBarActivity) {
+            ((IControlBarActivity) activity).unregisterControlBarOffsetListener(this);
+        }
+        super.onDetach();
+    }
 
-	@Override
-	protected void fitSystemWindows(Rect insets) {
-		mListView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-		mErrorContainer.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-		mProgressContainer.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-		mSystemWindowsInsets.set(insets);
-		updateRefreshProgressOffset();
-	}
+    @Override
+    protected void fitSystemWindows(Rect insets) {
+        mListView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        mErrorContainer.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        mProgressContainer.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        mSystemWindowsInsets.set(insets);
+        updateRefreshProgressOffset();
+    }
 
-	public void setRefreshEnabled(boolean enabled) {
-		mSwipeRefreshLayout.setEnabled(enabled);
-	}
+    public void setRefreshEnabled(boolean enabled) {
+        mSwipeRefreshLayout.setEnabled(enabled);
+    }
 
-	@Override
-	public boolean triggerRefresh() {
-		return false;
-	}
+    @Override
+    public boolean triggerRefresh() {
+        return false;
+    }
 
-	@NonNull
-	protected abstract A onCreateAdapter(Context context, boolean compact);
+    @NonNull
+    protected abstract A onCreateAdapter(Context context, boolean compact);
 
-	protected final void showContent() {
-		mErrorContainer.setVisibility(View.GONE);
-		mProgressContainer.setVisibility(View.GONE);
-		mSwipeRefreshLayout.setVisibility(View.VISIBLE);
-	}
+    protected final void showContent() {
+        mErrorContainer.setVisibility(View.GONE);
+        mProgressContainer.setVisibility(View.GONE);
+        mSwipeRefreshLayout.setVisibility(View.VISIBLE);
+    }
 
-	protected final void showProgress() {
-		mErrorContainer.setVisibility(View.GONE);
-		mProgressContainer.setVisibility(View.VISIBLE);
-		mSwipeRefreshLayout.setVisibility(View.GONE);
-	}
+    protected final void showProgress() {
+        mErrorContainer.setVisibility(View.GONE);
+        mProgressContainer.setVisibility(View.VISIBLE);
+        mSwipeRefreshLayout.setVisibility(View.GONE);
+    }
 
-	protected final void showError(int icon, CharSequence text) {
-		mErrorContainer.setVisibility(View.VISIBLE);
-		mProgressContainer.setVisibility(View.GONE);
-		mSwipeRefreshLayout.setVisibility(View.GONE);
-		mErrorIconView.setImageResource(icon);
-		mErrorTextView.setText(text);
-	}
+    protected final void showError(int icon, CharSequence text) {
+        mErrorContainer.setVisibility(View.VISIBLE);
+        mProgressContainer.setVisibility(View.GONE);
+        mSwipeRefreshLayout.setVisibility(View.GONE);
+        mErrorIconView.setImageResource(icon);
+        mErrorTextView.setText(text);
+    }
 
-	protected final void showEmpty(int icon, CharSequence text) {
-		mErrorContainer.setVisibility(View.VISIBLE);
-		mProgressContainer.setVisibility(View.GONE);
-		mSwipeRefreshLayout.setVisibility(View.VISIBLE);
-		mErrorIconView.setImageResource(icon);
-		mErrorTextView.setText(text);
-	}
+    protected final void showEmpty(int icon, CharSequence text) {
+        mErrorContainer.setVisibility(View.VISIBLE);
+        mProgressContainer.setVisibility(View.GONE);
+        mSwipeRefreshLayout.setVisibility(View.VISIBLE);
+        mErrorIconView.setImageResource(icon);
+        mErrorTextView.setText(text);
+    }
 
-	protected void updateRefreshProgressOffset() {
-		final FragmentActivity activity = getActivity();
-		if (!(activity instanceof IControlBarActivity) || mSystemWindowsInsets.top == 0 || mSwipeRefreshLayout == null
-				|| isRefreshing()) {
-			return;
-		}
-		final float density = getResources().getDisplayMetrics().density;
-		final int progressCircleDiameter = mSwipeRefreshLayout.getProgressCircleDiameter();
-		final IControlBarActivity control = (IControlBarActivity) activity;
-		final int controlBarOffsetPixels = Math.round(control.getControlBarHeight() * (1 - control.getControlBarOffset()));
-		final int swipeStart = (mSystemWindowsInsets.top - controlBarOffsetPixels) - progressCircleDiameter;
-		// 64: SwipeRefreshLayout.DEFAULT_CIRCLE_TARGET
-		final int swipeDistance = Math.round(64 * density);
-		mSwipeRefreshLayout.setProgressViewOffset(false, swipeStart, swipeStart + swipeDistance);
-	}
+    protected void updateRefreshProgressOffset() {
+        final FragmentActivity activity = getActivity();
+        if (!(activity instanceof IControlBarActivity) || mSystemWindowsInsets.top == 0 || mSwipeRefreshLayout == null
+                || isRefreshing()) {
+            return;
+        }
+        final float density = getResources().getDisplayMetrics().density;
+        final int progressCircleDiameter = mSwipeRefreshLayout.getProgressCircleDiameter();
+        final IControlBarActivity control = (IControlBarActivity) activity;
+        final int controlBarOffsetPixels = Math.round(control.getControlBarHeight() * (1 - control.getControlBarOffset()));
+        final int swipeStart = (mSystemWindowsInsets.top - controlBarOffsetPixels) - progressCircleDiameter;
+        // 64: SwipeRefreshLayout.DEFAULT_CIRCLE_TARGET
+        final int swipeDistance = Math.round(64 * density);
+        mSwipeRefreshLayout.setProgressViewOffset(false, swipeStart, swipeStart + swipeDistance);
+    }
 }

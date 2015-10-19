@@ -44,7 +44,6 @@ import de.vanita5.twittnuker.util.collection.LongSparseMap;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -54,82 +53,82 @@ import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 public class TwitterContentUtils {
 
     public static final int TWITTER_BULK_QUERY_COUNT = 100;
-    private static final long ONE_MINUTE = TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES);
+    private static final Pattern PATTERN_TWITTER_STATUS_LINK = Pattern.compile("https?://twitter\\.com/(?:#!/)?(\\w+)/status(es)?/(\\d+)");
 
-	public static String formatDirectMessageText(final DirectMessage message) {
-		if (message == null) return null;
+    public static String formatDirectMessageText(final DirectMessage message) {
+        if (message == null) return null;
         final HtmlBuilder builder = new HtmlBuilder(message.getText(), false, true, true);
-		TwitterContentUtils.parseEntities(builder, message);
-		return builder.build().replace("\n", "<br/>");
-	}
+        TwitterContentUtils.parseEntities(builder, message);
+        return builder.build().replace("\n", "<br/>");
+    }
 
-	public static String formatExpandedUserDescription(final User user) {
-		if (user == null) return null;
-		final String text = user.getDescription();
-		if (text == null) return null;
-		final HtmlBuilder builder = new HtmlBuilder(text, false, true, true);
+    public static String formatExpandedUserDescription(final User user) {
+        if (user == null) return null;
+        final String text = user.getDescription();
+        if (text == null) return null;
+        final HtmlBuilder builder = new HtmlBuilder(text, false, true, true);
         final UrlEntity[] urls = user.getDescriptionEntities();
-		if (urls != null) {
+        if (urls != null) {
             for (final UrlEntity url : urls) {
                 final String expanded_url = url.getExpandedUrl();
-				if (expanded_url != null) {
-					builder.addLink(expanded_url, expanded_url, url.getStart(), url.getEnd());
-				}
-			}
-		}
-		return toPlainText(builder.build().replace("\n", "<br/>"));
-	}
+                if (expanded_url != null) {
+                    builder.addLink(expanded_url, expanded_url, url.getStart(), url.getEnd());
+                }
+            }
+        }
+        return toPlainText(builder.build().replace("\n", "<br/>"));
+    }
 
-	public static String formatStatusText(final Status status) {
-		if (status == null) return null;
+    public static String formatStatusText(final Status status) {
+        if (status == null) return null;
         final HtmlBuilder builder = new HtmlBuilder(status.getText(), false, true, true);
-		TwitterContentUtils.parseEntities(builder, status);
-		return builder.build().replace("\n", "<br/>");
-	}
+        TwitterContentUtils.parseEntities(builder, status);
+        return builder.build().replace("\n", "<br/>");
+    }
 
-	public static String formatUserDescription(final User user) {
-		if (user == null) return null;
-		final String text = user.getDescription();
-		if (text == null) return null;
-		final HtmlBuilder builder = new HtmlBuilder(text, false, true, true);
+    public static String formatUserDescription(final User user) {
+        if (user == null) return null;
+        final String text = user.getDescription();
+        if (text == null) return null;
+        final HtmlBuilder builder = new HtmlBuilder(text, false, true, true);
         final UrlEntity[] urls = user.getDescriptionEntities();
-		if (urls != null) {
+        if (urls != null) {
             for (final UrlEntity url : urls) {
                 final String expanded_url = url.getExpandedUrl();
-				if (expanded_url != null) {
+                if (expanded_url != null) {
                     builder.addLink(expanded_url, url.getDisplayUrl(), url.getStart(), url.getEnd());
-				}
-			}
-		}
-		return builder.build().replace("\n", "<br/>");
-	}
+                }
+            }
+        }
+        return builder.build().replace("\n", "<br/>");
+    }
 
-	@NonNull
-	public static String getInReplyToName(@NonNull final Status status) {
-		final Status orig = status.isRetweet() ? status.getRetweetedStatus() : status;
-		final long inReplyToUserId = status.getInReplyToUserId();
-		final UserMentionEntity[] entities = status.getUserMentionEntities();
-		if (entities == null) return orig.getInReplyToScreenName();
-		for (final UserMentionEntity entity : entities) {
-			if (inReplyToUserId == entity.getId()) return entity.getName();
-		}
-		return orig.getInReplyToScreenName();
-	}
+    @NonNull
+    public static String getInReplyToName(@NonNull final Status status) {
+        final Status orig = status.isRetweet() ? status.getRetweetedStatus() : status;
+        final long inReplyToUserId = status.getInReplyToUserId();
+        final UserMentionEntity[] entities = status.getUserMentionEntities();
+        if (entities == null) return orig.getInReplyToScreenName();
+        for (final UserMentionEntity entity : entities) {
+            if (inReplyToUserId == entity.getId()) return entity.getName();
+        }
+        return orig.getInReplyToScreenName();
+    }
 
-	public static boolean isOfficialKey(final Context context, final String consumerKey,
-										final String consumerSecret) {
-		if (context == null || consumerKey == null || consumerSecret == null) return false;
-		final String[] keySecrets = context.getResources().getStringArray(R.array.values_official_consumer_secret_crc32);
-		final CRC32 crc32 = new CRC32();
-		final byte[] consumerSecretBytes = consumerSecret.getBytes(Charset.forName("UTF-8"));
-		crc32.update(consumerSecretBytes, 0, consumerSecretBytes.length);
-		final long value = crc32.getValue();
-		crc32.reset();
-		for (final String keySecret : keySecrets) {
-			if (Long.parseLong(keySecret, 16) == value) return true;
-		}
-		return false;
-	}
+    public static boolean isOfficialKey(final Context context, final String consumerKey,
+                                        final String consumerSecret) {
+        if (context == null || consumerKey == null || consumerSecret == null) return false;
+        final String[] keySecrets = context.getResources().getStringArray(R.array.values_official_consumer_secret_crc32);
+        final CRC32 crc32 = new CRC32();
+        final byte[] consumerSecretBytes = consumerSecret.getBytes(Charset.forName("UTF-8"));
+        crc32.update(consumerSecretBytes, 0, consumerSecretBytes.length);
+        final long value = crc32.getValue();
+        crc32.reset();
+        for (final String keySecret : keySecrets) {
+            if (Long.parseLong(keySecret, 16) == value) return true;
+        }
+        return false;
+    }
 
     public static String getOfficialKeyName(final Context context, final String consumerKey,
                                             final String consumerSecret) {
@@ -173,8 +172,6 @@ public class TwitterContentUtils {
         return str.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">");
     }
 
-    private static final Pattern PATTERN_TWITTER_STATUS_LINK = Pattern.compile("https?://twitter\\.com/(?:#!/)?(\\w+)/status(es)?/(\\d+)");
-
     public static <T extends List<Status>> T getStatusesWithQuoteData(Twitter twitter, @NonNull T list) throws TwitterException {
         LongSparseMap<Status> quotes = new LongSparseMap<>();
         // Phase 1: collect all statuses contains a status link, and put it in the map
@@ -186,7 +183,10 @@ public class TwitterContentUtils {
             for (int i = entities.length - 1; i >= 0; i--) {
                 final Matcher m = PATTERN_TWITTER_STATUS_LINK.matcher(entities[i].getExpandedUrl());
                 if (!m.matches()) continue;
-                quotes.put(Long.parseLong(m.group(3)), status);
+                final long quoteId = ParseUtils.parseLong(m.group(3), -1);
+                if (quoteId > 0) {
+                    quotes.put(quoteId, status);
+                }
                 break;
             }
         }
@@ -219,34 +219,28 @@ public class TwitterContentUtils {
         return TextUtils.isEmpty(user.getProfileImageUrlHttps()) ? user.getProfileImageUrl() : user.getProfileImageUrlHttps();
     }
 
-	private static void parseEntities(final HtmlBuilder builder, final EntitySupport entities) {
-		// Format media.
-		final MediaEntity[] mediaEntities = entities.getMediaEntities();
-		if (mediaEntities != null) {
-			for (final MediaEntity mediaEntity : mediaEntities) {
-				final int start = mediaEntity.getStart(), end = mediaEntity.getEnd();
+    private static void parseEntities(final HtmlBuilder builder, final EntitySupport entities) {
+        // Format media.
+        final MediaEntity[] mediaEntities = entities.getMediaEntities();
+        if (mediaEntities != null) {
+            for (final MediaEntity mediaEntity : mediaEntities) {
+                final int start = mediaEntity.getStart(), end = mediaEntity.getEnd();
                 final String mediaUrl = TwitterContentUtils.getMediaUrl(mediaEntity);
-				if (mediaUrl != null && start >= 0 && end >= 0) {
+                if (mediaUrl != null && start >= 0 && end >= 0) {
                     builder.addLink(mediaUrl, mediaEntity.getDisplayUrl(), start, end);
-				}
-			}
-		}
+                }
+            }
+        }
         final UrlEntity[] urlEntities = entities.getUrlEntities();
-		if (urlEntities != null) {
+        if (urlEntities != null) {
             for (final UrlEntity urlEntity : urlEntities) {
-				final int start = urlEntity.getStart(), end = urlEntity.getEnd();
+                final int start = urlEntity.getStart(), end = urlEntity.getEnd();
                 final String expandedUrl = urlEntity.getExpandedUrl();
-				if (expandedUrl != null && start >= 0 && end >= 0) {
+                if (expandedUrl != null && start >= 0 && end >= 0) {
                     builder.addLink(expandedUrl, urlEntity.getDisplayUrl(), start, end);
-				}
-			}
-		}
-	}
-
-    public static void checkTime(long that, long current) {
-        if (that <= 0) return;
-        if ((that - current) > ONE_MINUTE) {
-            AbsLogger.error(new Exception("Wrong timestamp " + that + ", current " + current));
+                }
+            }
         }
     }
+
 }

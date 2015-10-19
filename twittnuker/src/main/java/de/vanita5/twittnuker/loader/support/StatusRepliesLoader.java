@@ -40,22 +40,22 @@ import static de.vanita5.twittnuker.util.Utils.shouldForceUsingPrivateAPIs;
 
 public class StatusRepliesLoader extends UserMentionsLoader {
 
-	private final long mInReplyToStatusId;
+    private final long mInReplyToStatusId;
 
-	public StatusRepliesLoader(final Context context, final long accountId, final String screenName,
-			final long statusId, final long maxId, final long sinceId, final List<ParcelableStatus> data,
+    public StatusRepliesLoader(final Context context, final long accountId, final String screenName,
+                               final long statusId, final long maxId, final long sinceId, final List<ParcelableStatus> data,
                                final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {
         super(context, accountId, screenName, maxId, sinceId, data, savedStatusesArgs, tabPosition,
                 fromUser, false);
-		mInReplyToStatusId = statusId;
-	}
+        mInReplyToStatusId = statusId;
+    }
 
     @NonNull
-	@Override
+    @Override
     public List<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
-		final Context context = getContext();
+        final Context context = getContext();
         final List<Status> result = new ArrayList<>();
-		if (shouldForceUsingPrivateAPIs(context) || isOfficialTwitterInstance(context, twitter)) {
+        if (shouldForceUsingPrivateAPIs(context) || isOfficialTwitterInstance(context, twitter)) {
             final List<Status> statuses = twitter.showConversation(mInReplyToStatusId, paging);
             for (final Status status : statuses) {
                 if (status.getId() > mInReplyToStatusId) {
@@ -64,14 +64,13 @@ public class StatusRepliesLoader extends UserMentionsLoader {
             }
         } else {
             final List<Status> statuses = super.getStatuses(twitter, paging);
-            // TODO null check
             for (final Status status : statuses) {
                 if (status.getInReplyToStatusId() == mInReplyToStatusId) {
                     result.add(status);
                 }
-			}
+            }
         }
         return result;
-	}
+    }
 
 }

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
@@ -21,11 +20,10 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
     android:baselineAligned="false">
 
@@ -45,28 +43,34 @@
         android:paddingStart="@dimen/element_spacing_msmall"
         android:paddingTop="@dimen/element_spacing_msmall">
 
-        <de.vanita5.twittnuker.view.SquareShapedImageView
-            android:id="@+id/account_profile_image"
-            style="?profileImageStyle"
+        <de.vanita5.twittnuker.view.SquareFrameLayout
+            android:id="@+id/account_profile_image_frame"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            app:sivBackgroundColor="?android:colorBackground"
-            app:sivBorder="true"
-            app:sivBorderWidth="@dimen/line_width_compose_account_profile_image"/>
+            android:layout_height="match_parent">
+
+            <de.vanita5.twittnuker.view.ShapedImageView
+                android:id="@+id/account_profile_image"
+                style="?profileImageStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                app:sivBackgroundColor="?android:colorBackground"
+                app:sivBorder="true"
+                app:sivBorderWidth="@dimen/line_width_compose_account_profile_image" />
+        </de.vanita5.twittnuker.view.SquareFrameLayout>
 
         <de.vanita5.twittnuker.view.BadgeView
             android:id="@+id/accounts_count"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignBottom="@id/account_profile_image"
-            android:layout_alignEnd="@id/account_profile_image"
-            android:layout_alignLeft="@id/account_profile_image"
-            android:layout_alignRight="@id/account_profile_image"
-            android:layout_alignStart="@id/account_profile_image"
-            android:layout_alignTop="@id/account_profile_image"
+            android:layout_alignBottom="@id/account_profile_image_frame"
+            android:layout_alignEnd="@id/account_profile_image_frame"
+            android:layout_alignLeft="@id/account_profile_image_frame"
+            android:layout_alignRight="@id/account_profile_image_frame"
+            android:layout_alignStart="@id/account_profile_image_frame"
+            android:layout_alignTop="@id/account_profile_image_frame"
             android:layout_gravity="center"
-            android:textColor="?android:colorForeground"/>
+            android:textColor="?android:colorForeground" />
 
     </RelativeLayout>
 
@@ -84,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-    android:background="@null"/>
+            android:background="@null" />
     </FrameLayout>
 
     <LinearLayout
@@ -121,7 +125,7 @@
             android:cropToPadding="false"
             android:padding="@dimen/element_spacing_xsmall"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_action_send"/>
+            android:src="@drawable/ic_action_send" />
 
     </LinearLayout>
 </RelativeLayout>

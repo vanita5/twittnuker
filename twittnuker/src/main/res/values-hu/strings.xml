@@ -44,6 +44,7 @@
     <string name="password">Jelszó</string>
     <string name="label_data_provider">Twittnuker adatbázis szolgáltató</string>
     <string name="label_refresh_service">Frissítő szolgáltatás</string>
+    <string name="label_streaming_service">Közvetítő szolgáltatás</string>
     <string name="label_background_operation_service">Háttér szolgáltatás</string>
     <string name="open_in_browser">Megnyitás böngészőben</string>
     <string name="tap_to_load_more">Érintse meg ha többet szeretne</string>
@@ -615,7 +616,11 @@
     <string name="state_blocking">Blokkolva</string>
     <string name="load_more">Még több betöltése</string>
     <string name="photo">Fotó</string>
+    <string name="camera">Kamera</string>
     <string name="gallery">Galéria</string>
+    <string name="source_camera">Kamera</string>
+    <string name="source_gallery">Galéria</string>
+    <string name="source_clipboard">Vágólap</string>
     <string name="remove">Eltávolít</string>
     <string name="load_media">Média betöltése</string>
     <string name="profile_text_color">Szöveg színe</string>
@@ -672,18 +677,32 @@
     <string name="N_statuses_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> tweet</string>
     <string name="N_statuses_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> tweet</string>
     <string name="N_favorites_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> kedvenc</string>
-    <string name="N_favorites_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> kedvenc</string>
-    <string name="drafts_hint_messages">Ide lesznek mentve az el nem küldött tweetjeid</string>
-    <string name="keyboard_shortcuts">Billentyűparancsok</string>
-    <string name="keyboard_shortcut_hint">Nyomj le billentyűket</string>
-    <string name="conflicts_with_name">Ütközik ezzel: <xliff:g id="name">%s</xliff:g></string>
-    <string name="overwrite">Felülírás</string>
-    <string name="navigation">Navigáció</string>
-    <string name="reset_to_default">Beállítás alapértelmezettre</string>
-    <string name="reset_keyboard_shortcuts_confirm">Alapértelmezettre állítsam a billentyűparancsokat?</string>
-    <string name="open_accounts_dashboard">Fiók áttekintés megnyitása</string>
-    <string name="previous_tab">Előző fül</string>
-    <string name="next_tab">Következő fül</string>
-    <string name="keyboard_shortcut_back">Vissza</string>
-    <string name="press_again_to_close">Nyomd meg újra a bezáráshoz</string>
+    <string name="name_not_set"><xliff:g id="name">%s</xliff:g> nincs beállítva</string>
+    <string name="swipe_down_to_refresh">Húzd le a frissítéshez</string>
+    <string name="app_restart_confirm">A Twittnuker újraindul a beállítások alkalmazásához.</string>
+    <string name="dont_restart">Ne induljon újra</string>
+    <string name="user_list_details">Részletek listázása</string>
+    <string name="invalid_list_name">Betűvel kell kezdődnie és csak betűket, számokat, \"-\" és \"_\" jelet tartalmazhat.</string>
+    <string name="delete_conversation">Beszélgetés törlése</string>
+    <string name="delete_conversation_confirm_message">Töröljem az összes elemét ennek a beszélgetésnek ?</string>
+    <string name="name_first_summary_on">Név megjelenítése először</string>
+    <string name="name_first_summary_off">\@Felhasználónév megjelenítése először</string>
+    <string name="comment_hint">Megjegyzés&#8230;</string>
+    <string name="comment">Megjegyzés</string>
+    <string name="enable_retweets">Retweetek engedélyezése</string>
+    <string name="disable_retweets">Retweetek tiltása</string>
+    <string name="play">Lejátszás</string>
+    <string name="pause">Szünet</string>
+    <string name="jump_to_top">Ugrás az tetejére</string>
+    <string name="streaming">Közvetítés</string>
+    <string name="dark_theme">Sötét téma</string>
+    <string name="wizard_hint_title_location_requirement">Tartozkodási hely engedélyezése</string>
+    <string name="wizard_hint_summary_location_requirement">A Twittnuker-nek tartózkodási hely engedélyre van szüksége helyszínt tartalmazó tweet küldéséhez.</string>
+    <string name="crop_image">Kép vágása</string>
+    <string name="usage_label_sent">Elküldött</string>
+    <string name="usage_label_received">Fogadott</string>
+    <string name="this_month">Ebben a hónapban</string>
+    <string name="media_preload">Média előtöltés</string>
+    <string name="on_mobile_network">Mobil adat hálózaton</string>
+    <string name="set_consumer_key_secret_message">Twittnuker lassan eléri a token korlátozást, létre kell majd hoznod egy alkalmazást a https://apps.twitter.com/ webhelyen és be kell illeszteni a lenti felhasználó kulcsot és jelszót.\nHa folytatod az alapértelmezett kulcs használatát, lehetséges, hogy nem tudsz majd bejelentkezni.</string>
 </resources>

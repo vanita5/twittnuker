@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -34,87 +35,87 @@ import de.vanita5.twittnuker.R;
 
 public class AccountPreferences implements Constants {
 
-	private final Context mContext;
-	private final long mAccountId;
-	private final SharedPreferences mPreferences;
+    private final Context mContext;
+    private final long mAccountId;
+    private final SharedPreferences mPreferences;
 
-	public AccountPreferences(final Context context, final long accountId) {
-		mContext = context;
-		mAccountId = accountId;
-		final String name = ACCOUNT_PREFERENCES_NAME_PREFIX + accountId;
-		mPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-	}
+    public AccountPreferences(final Context context, final long accountId) {
+        mContext = context;
+        mAccountId = accountId;
+        final String name = ACCOUNT_PREFERENCES_NAME_PREFIX + accountId;
+        mPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE);
+    }
 
-	public long getAccountId() {
-		return mAccountId;
-	}
+    public long getAccountId() {
+        return mAccountId;
+    }
 
-	public int getDefaultNotificationLightColor() {
+    public int getDefaultNotificationLightColor() {
         final ParcelableAccount a = ParcelableAccount.getAccount(mContext, mAccountId);
         return a != null ? a.color : mContext.getResources().getColor(R.color.branding_color);
-	}
+    }
 
-	public int getDirectMessagesNotificationType() {
+    public int getDirectMessagesNotificationType() {
         return mPreferences.getInt(KEY_NOTIFICATION_TYPE_DIRECT_MESSAGES, DEFAULT_NOTIFICATION_TYPE_DIRECT_MESSAGES);
-	}
+    }
 
-	public int getHomeTimelineNotificationType() {
-		return mPreferences.getInt(KEY_NOTIFICATION_TYPE_HOME, DEFAULT_NOTIFICATION_TYPE_HOME);
-	}
+    public int getHomeTimelineNotificationType() {
+        return mPreferences.getInt(KEY_NOTIFICATION_TYPE_HOME, DEFAULT_NOTIFICATION_TYPE_HOME);
+    }
 
-	public int getMentionsNotificationType() {
+    public int getMentionsNotificationType() {
         return mPreferences.getInt(KEY_NOTIFICATION_TYPE_MENTIONS, DEFAULT_NOTIFICATION_TYPE_MENTIONS);
-	}
+    }
 
-	public int getNotificationLightColor() {
-		return mPreferences.getInt(KEY_NOTIFICATION_LIGHT_COLOR, getDefaultNotificationLightColor());
-	}
+    public int getNotificationLightColor() {
+        return mPreferences.getInt(KEY_NOTIFICATION_LIGHT_COLOR, getDefaultNotificationLightColor());
+    }
 
-	public Uri getNotificationRingtone() {
-		final Uri def = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-		final String path = mPreferences.getString(KEY_NOTIFICATION_RINGTONE, null);
-		return TextUtils.isEmpty(path) ? def : Uri.parse(path);
-	}
+    public Uri getNotificationRingtone() {
+        final Uri def = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        final String path = mPreferences.getString(KEY_NOTIFICATION_RINGTONE, null);
+        return TextUtils.isEmpty(path) ? def : Uri.parse(path);
+    }
 
-	public boolean isAutoRefreshDirectMessagesEnabled() {
+    public boolean isAutoRefreshDirectMessagesEnabled() {
         return mPreferences.getBoolean(KEY_AUTO_REFRESH_DIRECT_MESSAGES, DEFAULT_AUTO_REFRESH_DIRECT_MESSAGES);
-	}
+    }
 
-	public boolean isAutoRefreshEnabled() {
-		return mPreferences.getBoolean(KEY_AUTO_REFRESH, DEFAULT_AUTO_REFRESH);
-	}
+    public boolean isAutoRefreshEnabled() {
+        return mPreferences.getBoolean(KEY_AUTO_REFRESH, DEFAULT_AUTO_REFRESH);
+    }
 
-	public boolean isAutoRefreshHomeTimelineEnabled() {
+    public boolean isAutoRefreshHomeTimelineEnabled() {
         return mPreferences.getBoolean(KEY_AUTO_REFRESH_HOME_TIMELINE, DEFAULT_AUTO_REFRESH_HOME_TIMELINE);
-	}
+    }
 
-	public boolean isAutoRefreshMentionsEnabled() {
-		return mPreferences.getBoolean(KEY_AUTO_REFRESH_MENTIONS, DEFAULT_AUTO_REFRESH_MENTIONS);
-	}
+    public boolean isAutoRefreshMentionsEnabled() {
+        return mPreferences.getBoolean(KEY_AUTO_REFRESH_MENTIONS, DEFAULT_AUTO_REFRESH_MENTIONS);
+    }
 
-	public boolean isAutoRefreshTrendsEnabled() {
-		return mPreferences.getBoolean(KEY_AUTO_REFRESH_TRENDS, DEFAULT_AUTO_REFRESH_TRENDS);
-	}
+    public boolean isAutoRefreshTrendsEnabled() {
+        return mPreferences.getBoolean(KEY_AUTO_REFRESH_TRENDS, DEFAULT_AUTO_REFRESH_TRENDS);
+    }
 
-	public boolean isDirectMessagesNotificationEnabled() {
-		return mPreferences.getBoolean(KEY_DIRECT_MESSAGES_NOTIFICATION, DEFAULT_DIRECT_MESSAGES_NOTIFICATION);
-	}
+    public boolean isDirectMessagesNotificationEnabled() {
+        return mPreferences.getBoolean(KEY_DIRECT_MESSAGES_NOTIFICATION, DEFAULT_DIRECT_MESSAGES_NOTIFICATION);
+    }
 
-	public boolean isMentionsNotificationEnabled() {
-		return mPreferences.getBoolean(KEY_MENTIONS_NOTIFICATION, DEFAULT_MENTIONS_NOTIFICATION);
-	}
+    public boolean isMentionsNotificationEnabled() {
+        return mPreferences.getBoolean(KEY_MENTIONS_NOTIFICATION, DEFAULT_MENTIONS_NOTIFICATION);
+    }
 
     public boolean isNotificationFollowingOnly() {
         return mPreferences.getBoolean(KEY_NOTIFICATION_FOLLOWING_ONLY, false);
     }
 
-	public boolean isNotificationEnabled() {
-		return mPreferences.getBoolean(KEY_NOTIFICATION, DEFAULT_NOTIFICATION);
-	}
+    public boolean isNotificationEnabled() {
+        return mPreferences.getBoolean(KEY_NOTIFICATION, DEFAULT_NOTIFICATION);
+    }
 
-	public boolean isPushEnabled() {
-		return mPreferences.getBoolean(KEY_ENABLE_PUSH, false);
-	}
+    public boolean isPushEnabled() {
+        return mPreferences.getBoolean(KEY_ENABLE_PUSH, false);
+    }
 
     public static AccountPreferences getAccountPreferences(final AccountPreferences[] prefs, final long accountId) {
         for (final AccountPreferences pref : prefs) {
@@ -123,70 +124,70 @@ public class AccountPreferences implements Constants {
         return null;
     }
 
-	public static AccountPreferences[] getAccountPreferences(final Context context, final long[] accountIds) {
-		if (context == null || accountIds == null) return null;
-		final AccountPreferences[] preferences = new AccountPreferences[accountIds.length];
-		for (int i = 0, j = preferences.length; i < j; i++) {
-			preferences[i] = new AccountPreferences(context, accountIds[i]);
-		}
-		return preferences;
-	}
+    public static AccountPreferences[] getAccountPreferences(final Context context, final long[] accountIds) {
+        if (context == null || accountIds == null) return null;
+        final AccountPreferences[] preferences = new AccountPreferences[accountIds.length];
+        for (int i = 0, j = preferences.length; i < j; i++) {
+            preferences[i] = new AccountPreferences(context, accountIds[i]);
+        }
+        return preferences;
+    }
 
-	public static long[] getAutoRefreshEnabledAccountIds(final Context context, final long[] accountIds) {
-		if (context == null || accountIds == null) return null;
-		final long[] temp = new long[accountIds.length];
-		int i = 0;
-		for (final long accountId : accountIds) {
-			if (new AccountPreferences(context, accountId).isAutoRefreshEnabled()) {
-				temp[i++] = accountId;
-			}
-		}
-		final long[] enabledIds = new long[i];
-		System.arraycopy(temp, 0, enabledIds, 0, i);
-		return enabledIds;
-	}
+    public static long[] getAutoRefreshEnabledAccountIds(final Context context, final long[] accountIds) {
+        if (context == null || accountIds == null) return null;
+        final long[] temp = new long[accountIds.length];
+        int i = 0;
+        for (final long accountId : accountIds) {
+            if (new AccountPreferences(context, accountId).isAutoRefreshEnabled()) {
+                temp[i++] = accountId;
+            }
+        }
+        final long[] enabledIds = new long[i];
+        System.arraycopy(temp, 0, enabledIds, 0, i);
+        return enabledIds;
+    }
+
+    @NonNull
+    public static AccountPreferences[] getNotificationEnabledPreferences(final Context context, final long[] accountIds) {
+        if (context == null || accountIds == null) return new AccountPreferences[0];
+        final AccountPreferences[] temp = new AccountPreferences[accountIds.length];
+        int i = 0;
+        for (final long accountId : accountIds) {
+            final AccountPreferences preference = new AccountPreferences(context, accountId);
+            if (preference.isNotificationEnabled()) {
+                temp[i++] = preference;
+            }
+        }
+        final AccountPreferences[] enabledIds = new AccountPreferences[i];
+        System.arraycopy(temp, 0, enabledIds, 0, i);
+        return enabledIds;
+    }
+
+    public static boolean isNotificationHasLight(final int flags) {
+        return (flags & VALUE_NOTIFICATION_FLAG_LIGHT) != 0;
+    }
+
+    public static boolean isNotificationHasRingtone(final int flags) {
+        return (flags & VALUE_NOTIFICATION_FLAG_RINGTONE) != 0;
+    }
+
+    public static boolean isNotificationHasVibration(final int flags) {
+        return (flags & VALUE_NOTIFICATION_FLAG_VIBRATION) != 0;
+    }
 
     @Nullable
-	public static AccountPreferences[] getNotificationEnabledPreferences(final Context context, final long[] accountIds) {
-		if (context == null || accountIds == null) return null;
-		final AccountPreferences[] temp = new AccountPreferences[accountIds.length];
-		int i = 0;
-		for (final long accountId : accountIds) {
-			final AccountPreferences preference = new AccountPreferences(context, accountId);
-			if (preference.isNotificationEnabled()) {
-				temp[i++] = preference;
-			}
-		}
-		final AccountPreferences[] enabledIds = new AccountPreferences[i];
-		System.arraycopy(temp, 0, enabledIds, 0, i);
-		return enabledIds;
-	}
-
-	@Nullable
-	public static AccountPreferences[] getPushEnabledPreferences(final Context context, final long[] accountIds) {
-		if (context == null || accountIds == null) return null;
-		final AccountPreferences[] temp = new AccountPreferences[accountIds.length];
-		int i = 0;
-		for (final long accountId : accountIds) {
-			final AccountPreferences preference = new AccountPreferences(context, accountId);
-			if (preference.isPushEnabled()) {
-				temp[i++] = preference;
-			}
-		}
-		final AccountPreferences[] enabledIds = new AccountPreferences[i];
-		System.arraycopy(temp, 0, enabledIds, 0, i);
-		return enabledIds;
-	}
-
-	public static boolean isNotificationHasLight(final int flags) {
-		return (flags & VALUE_NOTIFICATION_FLAG_LIGHT) != 0;
-	}
-
-	public static boolean isNotificationHasRingtone(final int flags) {
-		return (flags & VALUE_NOTIFICATION_FLAG_RINGTONE) != 0;
-	}
-
-	public static boolean isNotificationHasVibration(final int flags) {
-		return (flags & VALUE_NOTIFICATION_FLAG_VIBRATION) != 0;
-	}
+    public static AccountPreferences[] getPushEnabledPreferences(final Context context, final long[] accountIds) {
+        if (context == null || accountIds == null) return null;
+        final AccountPreferences[] temp = new AccountPreferences[accountIds.length];
+        int i = 0;
+        for (final long accountId : accountIds) {
+            final AccountPreferences preference = new AccountPreferences(context, accountId);
+            if (preference.isPushEnabled()) {
+                temp[i++] = preference;
+            }
+        }
+        final AccountPreferences[] enabledIds = new AccountPreferences[i];
+        System.arraycopy(temp, 0, enabledIds, 0, i);
+        return enabledIds;
+    }
 }

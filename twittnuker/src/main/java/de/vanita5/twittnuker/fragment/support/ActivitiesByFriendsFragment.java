@@ -33,9 +33,9 @@ import java.util.List;
 public class ActivitiesByFriendsFragment extends ParcelableActivitiesFragment {
 
 
-	@Override
-	public Loader<List<ParcelableActivity>> onCreateLoader(final int id, final Bundle args) {
-		setProgressBarIndeterminateVisibility(true);
+    @Override
+    public Loader<List<ParcelableActivity>> onCreateLoader(final int id, final Bundle args) {
+        setProgressBarIndeterminateVisibility(true);
         final long[] accountIds = args.getLongArray(EXTRA_ACCOUNT_IDS);
         final long[] sinceIds = args.getLongArray(EXTRA_SINCE_IDS);
         final long[] maxIds = args.getLongArray(EXTRA_MAX_IDS);
@@ -44,16 +44,21 @@ public class ActivitiesByFriendsFragment extends ParcelableActivitiesFragment {
         final long maxId = maxIds != null ? maxIds[0] : -1;
         return new ActivitiesByFriendsLoader(getActivity(), accountId, sinceId, maxId, getAdapterData(),
                 getSavedActivitiesFileArgs(), getTabPosition());
-	}
+    }
 
-	@Override
-	protected String[] getSavedActivitiesFileArgs() {
-		final Bundle args = getArguments();
-		if (args != null && args.containsKey(EXTRA_ACCOUNT_ID)) {
-			final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
-			return new String[] { AUTHORITY_ACTIVITIES_BY_FRIENDS, "account" + account_id };
-		}
-		return new String[] { AUTHORITY_ACTIVITIES_BY_FRIENDS };
-	}
+    @Override
+    protected boolean isByFriends() {
+        return true;
+    }
+
+    @Override
+    protected String[] getSavedActivitiesFileArgs() {
+        final Bundle args = getArguments();
+        if (args != null && args.containsKey(EXTRA_ACCOUNT_ID)) {
+            final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
+            return new String[]{AUTHORITY_ACTIVITIES_BY_FRIENDS, "account" + account_id};
+        }
+        return new String[]{AUTHORITY_ACTIVITIES_BY_FRIENDS};
+    }
 
 }

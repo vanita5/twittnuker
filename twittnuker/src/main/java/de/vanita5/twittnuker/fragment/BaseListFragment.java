@@ -26,6 +26,7 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -38,167 +39,168 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+
+import javax.inject.Inject;
 
 public class BaseListFragment extends ListFragment implements Constants, OnScrollListener, RefreshScrollTopInterface {
 
-	private boolean mActivityFirstCreated;
-	private boolean mIsInstanceStateSaved;
+    @Inject
+    protected AsyncTwitterWrapper mTwitterWrapper;
+    @Inject
+    protected SharedPreferencesWrapper mPreferences;
+    private boolean mActivityFirstCreated;
+    private boolean mIsInstanceStateSaved;
+    private boolean mReachedBottom, mNotReachedBottomBefore = true;
 
-	private boolean mReachedBottom, mNotReachedBottomBefore = true;
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(activity)).build().inject(this);
+    }
 
-	public final TwittnukerApplication getApplication() {
-		return TwittnukerApplication.getInstance(getActivity());
-	}
+    public final TwittnukerApplication getApplication() {
+        return TwittnukerApplication.getInstance(getActivity());
+    }
 
-	public final ContentResolver getContentResolver() {
-		final Activity activity = getActivity();
-		if (activity != null) return activity.getContentResolver();
-		return null;
-	}
+    public final ContentResolver getContentResolver() {
+        final Activity activity = getActivity();
+        if (activity != null) return activity.getContentResolver();
+        return null;
+    }
 
-	public final MultiSelectManager getMultiSelectManager() {
-        return getApplication().getMultiSelectManager();
-	}
+    public final SharedPreferences getSharedPreferences(final String name, final int mode) {
+        final Activity activity = getActivity();
+        if (activity != null) return activity.getSharedPreferences(name, mode);
+        return null;
+    }
 
-	public final SharedPreferences getSharedPreferences(final String name, final int mode) {
-		final Activity activity = getActivity();
-		if (activity != null) return activity.getSharedPreferences(name, mode);
-		return null;
-	}
+    public final Object getSystemService(final String name) {
+        final Activity activity = getActivity();
+        if (activity != null) return activity.getSystemService(name);
+        return null;
+    }
 
-	public final Object getSystemService(final String name) {
-		final Activity activity = getActivity();
-		if (activity != null) return activity.getSystemService(name);
-		return null;
-	}
+    public final int getTabPosition() {
+        final Bundle args = getArguments();
+        return args != null ? args.getInt(EXTRA_TAB_POSITION, -1) : -1;
+    }
 
-	public final int getTabPosition() {
-		final Bundle args = getArguments();
-		return args != null ? args.getInt(EXTRA_TAB_POSITION, -1) : -1;
-	}
+    public void invalidateOptionsMenu() {
+        final Activity activity = getActivity();
+        if (activity == null) return;
+        activity.invalidateOptionsMenu();
+    }
 
-	public AsyncTwitterWrapper getTwitterWrapper() {
-        return getApplication().getTwitterWrapper();
-	}
+    public boolean isActivityFirstCreated() {
+        return mActivityFirstCreated;
+    }
 
-	public void invalidateOptionsMenu() {
-		final Activity activity = getActivity();
-		if (activity == null) return;
-		activity.invalidateOptionsMenu();
-	}
+    public boolean isInstanceStateSaved() {
+        return mIsInstanceStateSaved;
+    }
 
-	public boolean isActivityFirstCreated() {
-		return mActivityFirstCreated;
-	}
+    public boolean isReachedBottom() {
+        return mReachedBottom;
+    }
 
-	public boolean isInstanceStateSaved() {
-		return mIsInstanceStateSaved;
-	}
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mIsInstanceStateSaved = savedInstanceState != null;
+        final ListView lv = getListView();
+        lv.setOnScrollListener(this);
+    }
 
-	public boolean isReachedBottom() {
-		return mReachedBottom;
-	}
+    @Override
+    public void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mActivityFirstCreated = true;
+    }
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		mIsInstanceStateSaved = savedInstanceState != null;
-		final ListView lv = getListView();
-		lv.setOnScrollListener(this);
-	}
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mActivityFirstCreated = true;
+    }
 
-	@Override
-	public void onAttach(final Activity activity) {
-		super.onAttach(activity);
-	}
+    public void onPostStart() {
+    }
 
-	@Override
-	public void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		mActivityFirstCreated = true;
-	}
+    @Override
+    public void onScroll(final AbsListView view, final int firstVisibleItem, final int visibleItemCount,
+                         final int totalItemCount) {
+        final boolean reached = firstVisibleItem + visibleItemCount >= totalItemCount
+                && totalItemCount >= visibleItemCount;
 
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		mActivityFirstCreated = true;
-	}
+        if (mReachedBottom != reached) {
+            mReachedBottom = reached;
+            if (mReachedBottom && mNotReachedBottomBefore) {
+                mNotReachedBottomBefore = false;
+                return;
+            }
+            if (mReachedBottom && getListAdapter().getCount() > visibleItemCount) {
+                onReachedBottom();
+            }
+        }
 
-	public void onPostStart() {
-	}
+    }
 
-	@Override
-	public void onScroll(final AbsListView view, final int firstVisibleItem, final int visibleItemCount,
-			final int totalItemCount) {
-		final boolean reached = firstVisibleItem + visibleItemCount >= totalItemCount
-				&& totalItemCount >= visibleItemCount;
+    @Override
+    public void onScrollStateChanged(final AbsListView view, final int scrollState) {
 
-		if (mReachedBottom != reached) {
-			mReachedBottom = reached;
-			if (mReachedBottom && mNotReachedBottomBefore) {
-				mNotReachedBottomBefore = false;
-				return;
-			}
-			if (mReachedBottom && getListAdapter().getCount() > visibleItemCount) {
-				onReachedBottom();
-			}
-		}
+    }
 
-	}
+    @Override
+    public void onStart() {
+        super.onStart();
+        onPostStart();
+    }
 
-	@Override
-	public void onScrollStateChanged(final AbsListView view, final int scrollState) {
+    @Override
+    public void onStop() {
+        mActivityFirstCreated = false;
+        super.onStop();
+    }
 
-	}
+    public void registerReceiver(final BroadcastReceiver receiver, final IntentFilter filter) {
+        final Activity activity = getActivity();
+        if (activity == null) return;
+        activity.registerReceiver(receiver, filter);
+    }
 
-	@Override
-	public void onStart() {
-		super.onStart();
-		onPostStart();
-	}
+    @Override
+    public boolean scrollToStart() {
+        Utils.scrollListToTop(getListView());
+        return true;
+    }
 
-	@Override
-	public void onStop() {
-		mActivityFirstCreated = false;
-		super.onStop();
-	}
+    public void setProgressBarIndeterminateVisibility(final boolean visible) {
+        final Activity activity = getActivity();
+        if (activity == null) return;
+        activity.setProgressBarIndeterminateVisibility(visible);
+    }
 
-	public void registerReceiver(final BroadcastReceiver receiver, final IntentFilter filter) {
-		final Activity activity = getActivity();
-		if (activity == null) return;
-		activity.registerReceiver(receiver, filter);
-	}
+    @Override
+    public void setSelection(final int position) {
+        Utils.scrollListToPosition(getListView(), position);
+    }
 
-	@Override
-	public boolean scrollToStart() {
-		Utils.scrollListToTop(getListView());
-		return true;
-	}
+    @Override
+    public boolean triggerRefresh() {
+        return false;
+    }
 
-	public void setProgressBarIndeterminateVisibility(final boolean visible) {
-		final Activity activity = getActivity();
-		if (activity == null) return;
-		activity.setProgressBarIndeterminateVisibility(visible);
-	}
+    public void unregisterReceiver(final BroadcastReceiver receiver) {
+        final Activity activity = getActivity();
+        if (activity == null) return;
+        activity.unregisterReceiver(receiver);
+    }
 
-	@Override
-	public void setSelection(final int position) {
-		Utils.scrollListToPosition(getListView(), position);
-	}
+    protected void onReachedBottom() {
 
-	@Override
-	public boolean triggerRefresh() {
-		return false;
-	}
-
-	public void unregisterReceiver(final BroadcastReceiver receiver) {
-		final Activity activity = getActivity();
-		if (activity == null) return;
-		activity.unregisterReceiver(receiver);
-	}
-
-	protected void onReachedBottom() {
-
-	}
+    }
 }

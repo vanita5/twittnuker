@@ -24,22 +24,24 @@ package de.vanita5.twittnuker.constant;
 
 public interface KeyboardShortcutConstants {
 
-	String CONTEXT_TAG_NAVIGATION = "navigation";
-	String CONTEXT_TAG_STATUS = "status";
-	String CONTEXT_TAG_HOME = "home";
+    String CONTEXT_TAG_NAVIGATION = "navigation";
+    String CONTEXT_TAG_STATUS = "status";
+    String CONTEXT_TAG_HOME = "home";
 
-	String ACTION_NAVIGATION_BACK = "navigation.back";
-	String ACTION_NAVIGATION_NEXT_TAB = "navigation.next_tab";
-	String ACTION_NAVIGATION_PREVIOUS_TAB = "navigation.previous_tab";
-	String ACTION_NAVIGATION_REFRESH = "navigation.refresh";
-	String ACTION_NAVIGATION_NEXT = "navigation.next";
-	String ACTION_NAVIGATION_PREVIOUS = "navigation.previous";
-	String ACTION_NAVIGATION_TOP = "navigation.top";
-	String ACTION_STATUS_FAVORITE = "status.favorite";
-	String ACTION_STATUS_RETWEET = "status.retweet";
-	String ACTION_STATUS_REPLY = "status.reply";
-	String ACTION_HOME_ACCOUNTS_DASHBOARD = "home.accounts_dashboard";
-	String ACTION_MESSAGE = "message";
-	String ACTION_SEARCH = "search";
-	String ACTION_COMPOSE = "compose";
+    String ACTION_NAVIGATION_BACK = "navigation.back";
+    String ACTION_NAVIGATION_NEXT_TAB = "navigation.next_tab";
+    String ACTION_NAVIGATION_PREVIOUS_TAB = "navigation.previous_tab";
+    String ACTION_NAVIGATION_REFRESH = "navigation.refresh";
+    String ACTION_NAVIGATION_NEXT = "navigation.next";
+    String ACTION_NAVIGATION_PREVIOUS = "navigation.previous";
+    String ACTION_NAVIGATION_PAGE_DOWN = "navigation.page_down";
+    String ACTION_NAVIGATION_PAGE_UP = "navigation.page_up";
+    String ACTION_NAVIGATION_TOP = "navigation.top";
+    String ACTION_STATUS_FAVORITE = "status.favorite";
+    String ACTION_STATUS_RETWEET = "status.retweet";
+    String ACTION_STATUS_REPLY = "status.reply";
+    String ACTION_HOME_ACCOUNTS_DASHBOARD = "home.accounts_dashboard";
+    String ACTION_MESSAGE = "message";
+    String ACTION_SEARCH = "search";
+    String ACTION_COMPOSE = "compose";
 }

@@ -27,7 +27,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,10 +41,7 @@ import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.MultiSelectManager;
-import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ReadStateManager.OnReadStateChangeListener;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
@@ -57,39 +53,28 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
     public static final int ITEM_VIEW_TYPE_MESSAGE = 0;
     public static final int ITEM_VIEW_TYPE_LOAD_INDICATOR = 1;
 
-	private final Context mContext;
-	private final LayoutInflater mInflater;
-	private final MediaLoaderWrapper mImageLoader;
-	private final MultiSelectManager mMultiSelectManager;
+    private final Context mContext;
+    private final LayoutInflater mInflater;
     private final int mTextSize;
     private final int mProfileImageStyle;
     private final int mMediaPreviewStyle;
-    private final ReadStateManager mReadStateManager;
     private final OnSharedPreferenceChangeListener mReadStateChangeListener;
-    private UserColorNameManager mUserColorNameManager;
-    private final AsyncTwitterWrapper mTwitterWrapper;
 
     private final boolean mDisplayProfileImage;
     private boolean mShowAccountsColor;
-	private Cursor mCursor;
-	private MessageEntriesAdapterListener mListener;
+    private Cursor mCursor;
+    private MessageEntriesAdapterListener mListener;
     private StringLongPair[] mPositionPairs;
 
     public MessageEntriesAdapter(final Context context) {
+        super(context);
         mContext = context;
         mInflater = LayoutInflater.from(context);
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-        mMultiSelectManager = app.getMultiSelectManager();
-        mImageLoader = app.getMediaLoaderWrapper();
-        mTwitterWrapper = app.getTwitterWrapper();
-        final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
-                SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
-        mMediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
-        mDisplayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-        mTextSize = preferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
-        mReadStateManager = app.getReadStateManager();
-        mUserColorNameManager = app.getUserColorNameManager();
+        mProfileImageStyle = Utils.getProfileImageStyle(mPreferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
+        mMediaPreviewStyle = Utils.getMediaPreviewStyle(mPreferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
+        mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
+        mTextSize = mPreferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
         mReadStateChangeListener = new OnSharedPreferenceChangeListener() {
 
             @Override
@@ -101,9 +86,9 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
 
     @NonNull
     @Override
-	public Context getContext() {
-		return mContext;
-	}
+    public Context getContext() {
+        return mContext;
+    }
 
     @Override
     public int getProfileImageStyle() {
@@ -135,7 +120,7 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
     @NonNull
     @Override
     public MediaLoaderWrapper getMediaLoader() {
-        return mImageLoader;
+        return mMediaLoader;
     }
 
     @NonNull
@@ -164,12 +149,12 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
     }
 
     @Override
-	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case ITEM_VIEW_TYPE_MESSAGE: {
-				final View view = mInflater.inflate(R.layout.list_item_message_entry, parent, false);
-				return new MessageEntryViewHolder(this, view);
-			}
+                final View view = mInflater.inflate(R.layout.list_item_message_entry, parent, false);
+                return new MessageEntryViewHolder(this, view);
+            }
             case ITEM_VIEW_TYPE_LOAD_INDICATOR: {
                 final View view = mInflater.inflate(R.layout.card_item_load_indicator, parent, false);
                 return new LoadIndicatorViewHolder(view);
@@ -178,17 +163,17 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
         throw new IllegalStateException("Unknown view type " + viewType);
     }
 
-	@Override
-	public void onBindViewHolder(ViewHolder holder, int position) {
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case ITEM_VIEW_TYPE_MESSAGE: {
-				final Cursor c = mCursor;
-				c.moveToPosition(position);
+                final Cursor c = mCursor;
+                c.moveToPosition(position);
                 ((MessageEntryViewHolder) holder).displayMessage(c, isUnread(c));
                 break;
             }
         }
-	}
+    }
 
     @Override
     public int getItemViewType(int position) {
@@ -203,10 +188,10 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
         return getMessagesCount() + (isLoadMoreIndicatorVisible() ? 1 : 0);
     }
 
-	public void onMessageClick(int position) {
-		if (mListener == null) return;
-		mListener.onEntryClick(position, getEntry(position));
-	}
+    public void onMessageClick(int position) {
+        if (mListener == null) return;
+        mListener.onEntryClick(position, getEntry(position));
+    }
 
     @Override
     public void onReadStateChanged() {
@@ -217,19 +202,19 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
         mListener.onUserClick(position, getEntry(position));
     }
 
-	public void setCursor(Cursor cursor) {
-		mCursor = cursor;
+    public void setCursor(Cursor cursor) {
+        mCursor = cursor;
         mReadStateManager.unregisterOnSharedPreferenceChangeListener(mReadStateChangeListener);
         if (cursor != null) {
             updateReadState();
             mReadStateManager.registerOnSharedPreferenceChangeListener(mReadStateChangeListener);
         }
-		notifyDataSetChanged();
-	}
+        notifyDataSetChanged();
+    }
 
     public void setListener(MessageEntriesAdapterListener listener) {
         mListener = listener;
-	}
+    }
 
     public void updateReadState() {
         mPositionPairs = mReadStateManager.getPositionPairs(TAB_TYPE_DIRECT_MESSAGES);
@@ -268,20 +253,20 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
         void onEntryClick(int position, DirectMessageEntry entry);
 
         void onUserClick(int position, DirectMessageEntry entry);
-	}
+    }
 
-	public static class DirectMessageEntry {
+    public static class DirectMessageEntry {
 
-		public final long account_id, conversation_id;
-		public final String screen_name, name;
+        public final long account_id, conversation_id;
+        public final String screen_name, name;
 
-		DirectMessageEntry(Cursor cursor) {
-			account_id = cursor.getLong(ConversationEntries.IDX_ACCOUNT_ID);
-			conversation_id = cursor.getLong(ConversationEntries.IDX_CONVERSATION_ID);
-			screen_name = cursor.getString(ConversationEntries.IDX_SCREEN_NAME);
-			name = cursor.getString(ConversationEntries.IDX_NAME);
-		}
+        DirectMessageEntry(Cursor cursor) {
+            account_id = cursor.getLong(ConversationEntries.IDX_ACCOUNT_ID);
+            conversation_id = cursor.getLong(ConversationEntries.IDX_CONVERSATION_ID);
+            screen_name = cursor.getString(ConversationEntries.IDX_SCREEN_NAME);
+            name = cursor.getString(ConversationEntries.IDX_NAME);
+        }
 
-	}
+    }
 
 }

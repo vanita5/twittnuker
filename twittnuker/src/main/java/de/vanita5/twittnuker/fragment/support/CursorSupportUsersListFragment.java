@@ -33,35 +33,35 @@ import java.util.List;
 
 public abstract class CursorSupportUsersListFragment extends ParcelableUsersFragment {
 
-	private long mNextCursor, mPrevCursor;
+    private long mNextCursor, mPrevCursor;
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		if (savedInstanceState != null) {
-			mNextCursor = savedInstanceState.getLong(EXTRA_NEXT_CURSOR, -1);
-			mPrevCursor = savedInstanceState.getLong(EXTRA_PREV_CURSOR, -1);
-		} else {
-			mNextCursor = -1;
-			mPrevCursor = -1;
-		}
-		super.onActivityCreated(savedInstanceState);
-	}
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            mNextCursor = savedInstanceState.getLong(EXTRA_NEXT_CURSOR, -1);
+            mPrevCursor = savedInstanceState.getLong(EXTRA_PREV_CURSOR, -1);
+        } else {
+            mNextCursor = -1;
+            mPrevCursor = -1;
+        }
+        super.onActivityCreated(savedInstanceState);
+    }
 
-	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
-		mNextCursor = -1;
-		mPrevCursor = -1;
-	}
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mNextCursor = -1;
+        mPrevCursor = -1;
+    }
 
-	@Override
-	public void onLoaderReset(final Loader<List<ParcelableUser>> loader) {
-		super.onLoaderReset(loader);
-		mNextCursor = -1;
-		mPrevCursor = -1;
-	}
+    @Override
+    public void onLoaderReset(final Loader<List<ParcelableUser>> loader) {
+        super.onLoaderReset(loader);
+        mNextCursor = -1;
+        mPrevCursor = -1;
+    }
 
-	@Override
+    @Override
     public void onLoadFinished(final Loader<List<ParcelableUser>> loader, final List<ParcelableUser> data) {
         super.onLoadFinished(loader, data);
         final BaseCursorSupportUsersLoader cursorLoader = (BaseCursorSupportUsersLoader) loader;
@@ -70,8 +70,10 @@ public abstract class CursorSupportUsersListFragment extends ParcelableUsersFrag
     }
 
     @Override
-    public void onLoadMoreContents() {
-        super.onLoadMoreContents();
+    public void onLoadMoreContents(boolean fromStart) {
+        if (fromStart) return;
+        //noinspection ConstantConditions
+        super.onLoadMoreContents(fromStart);
         final Bundle loaderArgs = new Bundle(getArguments());
         loaderArgs.putBoolean(EXTRA_FROM_USER, true);
         loaderArgs.putLong(EXTRA_NEXT_CURSOR, mNextCursor);
@@ -79,20 +81,20 @@ public abstract class CursorSupportUsersListFragment extends ParcelableUsersFrag
     }
 
     @Override
-	public void onSaveInstanceState(final Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putLong(EXTRA_NEXT_CURSOR, mNextCursor);
-		outState.putLong(EXTRA_PREV_CURSOR, mPrevCursor);
-	}
+    public void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(EXTRA_NEXT_CURSOR, mNextCursor);
+        outState.putLong(EXTRA_PREV_CURSOR, mPrevCursor);
+    }
 
-	protected final long getNextCursor() {
-		return mNextCursor;
-	}
+    protected final long getNextCursor() {
+        return mNextCursor;
+    }
 
-	protected final long getPrevCursor() {
-		return mPrevCursor;
-	}
+    protected final long getPrevCursor() {
+        return mPrevCursor;
+    }
 
-	@Override
+    @Override
     protected abstract BaseCursorSupportUsersLoader onCreateUsersLoader(final Context context, final Bundle args, boolean fromUser);
 }

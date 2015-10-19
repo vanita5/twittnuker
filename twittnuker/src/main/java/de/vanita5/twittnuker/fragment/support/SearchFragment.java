@@ -23,9 +23,9 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -90,7 +90,7 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
     @Override
     public boolean triggerRefresh(final int position) {
         return false;
-	}
+    }
 
     public String getQuery() {
         return getArguments().getString(EXTRA_QUERY);
@@ -109,9 +109,9 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
     }
 
     @Override
-    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
-        if (handleFragmentKeyboardShortcutSingle(handler, keyCode, event)) return true;
-        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        if (handleFragmentKeyboardShortcutSingle(handler, keyCode, event, metaState)) return true;
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
         if (action != null) {
             switch (action) {
                 case ACTION_NAVIGATION_PREVIOUS_TAB: {
@@ -130,22 +130,26 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
                 }
             }
         }
-        return handler.handleKey(getActivity(), null, keyCode, event);
+        return handler.handleKey(getActivity(), null, keyCode, event, metaState);
     }
 
-	@Override
-    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
-        return handleFragmentKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
-	}
+    @Override
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        if (isFragmentKeyboardShortcutHandled(handler, keyCode, event, metaState)) return true;
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
+        return ACTION_NAVIGATION_PREVIOUS_TAB.equals(action) || ACTION_NAVIGATION_NEXT_TAB.equals(action);
+    }
 
-	public void hideIndicator() {
-	}
+    @Override
+    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event, int metaState) {
+        return handleFragmentKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState);
+    }
 
-	@Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof IControlBarActivity) {
-            ((IControlBarActivity) activity).registerControlBarOffsetListener(this);
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof IControlBarActivity) {
+            ((IControlBarActivity) context).registerControlBarOffsetListener(this);
         }
     }
 
@@ -155,17 +159,17 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
     }
 
     @Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		setHasOptionsMenu(true);
-		final Bundle args = getArguments();
-		final FragmentActivity activity = getActivity();
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+        final Bundle args = getArguments();
+        final FragmentActivity activity = getActivity();
         mPagerAdapter = new SupportTabsAdapter(activity, getChildFragmentManager(), null, 1);
         mPagerAdapter.addTab(StatusesSearchFragment.class, args, getString(R.string.statuses), R.drawable.ic_action_twitter, 0, null);
         mPagerAdapter.addTab(SearchUsersFragment.class, args, getString(R.string.users), R.drawable.ic_action_user, 1, null);
         mViewPager.setAdapter(mPagerAdapter);
-		mViewPager.setOffscreenPageLimit(2);
-		mPagerIndicator.setViewPager(mViewPager);
+        mViewPager.setOffscreenPageLimit(2);
+        mPagerIndicator.setViewPager(mViewPager);
         mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
         mPagerIndicator.setOnPageChangeListener(this);
         ThemeUtils.initPagerIndicatorAsActionBarTab(activity, mPagerIndicator, mPagerWindowOverlay);
@@ -179,26 +183,26 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
             final int actionBarAlpha = isTransparent ? ThemeUtils.getActionBarAlpha(ThemeUtils.getUserThemeBackgroundAlpha(activity)) : 0xFF;
             mPagerIndicator.setAlpha(actionBarAlpha / 255f);
         }
-		if (savedInstanceState == null && args != null && args.containsKey(EXTRA_QUERY)) {
-			final String query = args.getString(EXTRA_QUERY);
-			final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),
-					RecentSearchProvider.AUTHORITY, RecentSearchProvider.MODE);
-			suggestions.saveRecentQuery(query, null);
+        if (savedInstanceState == null && args != null && args.containsKey(EXTRA_QUERY)) {
+            final String query = args.getString(EXTRA_QUERY);
+            final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getActivity(),
+                    RecentSearchProvider.AUTHORITY, RecentSearchProvider.MODE);
+            suggestions.saveRecentQuery(query, null);
             final ContentResolver cr = getContentResolver();
             final ContentValues values = new ContentValues();
             values.put(SearchHistory.QUERY, query);
             cr.insert(SearchHistory.CONTENT_URI, values);
-			if (activity instanceof LinkHandlerActivity) {
-				final ActionBar ab = activity.getActionBar();
-				if (ab != null) {
-					ab.setSubtitle(query);
-				}
-			}
-		}
+            if (activity instanceof LinkHandlerActivity) {
+                final ActionBar ab = activity.getActionBar();
+                if (ab != null) {
+                    ab.setSubtitle(query);
+                }
+            }
+        }
         updateTabOffset();
     }
 
-	@Override
+    @Override
     public void onDetach() {
         final FragmentActivity activity = getActivity();
         if (activity instanceof IControlBarActivity) {
@@ -209,26 +213,27 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
 
     @Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-		inflater.inflate(R.menu.menu_search, menu);
-	}
+        inflater.inflate(R.menu.menu_search, menu);
+    }
 
-	@Override
+    @Override
     public void onPrepareOptionsMenu(Menu menu) {
+        if (isDetached() || getActivity() == null) return;
         final MenuItem item = menu.findItem(R.id.compose);
         item.setTitle(getString(R.string.tweet_hashtag, getQuery()));
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.save: {
-			final AsyncTwitterWrapper twitter = getTwitterWrapper();
-			final Bundle args = getArguments();
-			if (twitter != null && args != null) {
+                final AsyncTwitterWrapper twitter = mTwitterWrapper;
+                final Bundle args = getArguments();
+                if (twitter != null && args != null) {
                     twitter.createSavedSearchAsync(getAccountId(), getQuery());
-			}
-			return true;
-		}
+                }
+                return true;
+            }
             case R.id.compose: {
                 final Intent intent = new Intent(getActivity(), ComposeActivity.class);
                 intent.setAction(INTENT_ACTION_COMPOSE);
@@ -237,19 +242,19 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
                 startActivity(intent);
                 break;
             }
-		}
-		return super.onOptionsItemSelected(item);
-	}
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-	@Override
+    @Override
     public void onBaseViewCreated(final View view, final Bundle savedInstanceState) {
         super.onBaseViewCreated(view, savedInstanceState);
         mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
         mPagerWindowOverlay = view.findViewById(R.id.pager_window_overlay);
         mPagerIndicator = (TabPagerIndicator) view.findViewById(R.id.view_pager_tabs);
-	}
+    }
 
-	@Override
+    @Override
     protected void fitSystemWindows(Rect insets) {
         final View view = getView();
         if (view != null) {
@@ -285,20 +290,20 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
     }
 
     @Override
-	public boolean scrollToStart() {
+    public boolean scrollToStart() {
         final Fragment fragment = getCurrentVisibleFragment();
         if (!(fragment instanceof RefreshScrollTopInterface)) return false;
         ((RefreshScrollTopInterface) fragment).scrollToStart();
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public boolean triggerRefresh() {
+    @Override
+    public boolean triggerRefresh() {
         final Fragment fragment = getCurrentVisibleFragment();
         if (!(fragment instanceof RefreshScrollTopInterface)) return false;
         ((RefreshScrollTopInterface) fragment).triggerRefresh();
-		return true;
-	}
+        return true;
+    }
 
     private int getControlBarHeight() {
         final FragmentActivity activity = getActivity();
@@ -318,18 +323,32 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
         return getCurrentVisibleFragment();
     }
 
-    private boolean handleFragmentKeyboardShortcutRepeat(KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
+    private boolean handleFragmentKeyboardShortcutRepeat(KeyboardShortcutsHandler handler, int keyCode,
+                                                         int repeatCount, @NonNull KeyEvent event, int metaState) {
         final Fragment fragment = getKeyboardShortcutRecipient();
         if (fragment instanceof KeyboardShortcutCallback) {
-            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(handler, keyCode,
+                    repeatCount, event, metaState);
         }
-		return false;
-	}
+        return false;
+    }
 
-    private boolean handleFragmentKeyboardShortcutSingle(KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
+    private boolean handleFragmentKeyboardShortcutSingle(KeyboardShortcutsHandler handler, int keyCode,
+                                                         @NonNull KeyEvent event, int metaState) {
         final Fragment fragment = getKeyboardShortcutRecipient();
         if (fragment instanceof KeyboardShortcutCallback) {
-            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(handler, keyCode, event);
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(handler, keyCode,
+                    event, metaState);
+        }
+        return false;
+    }
+
+    private boolean isFragmentKeyboardShortcutHandled(KeyboardShortcutsHandler handler, int keyCode,
+                                                      @NonNull KeyEvent event, int metaState) {
+        final Fragment fragment = getKeyboardShortcutRecipient();
+        if (fragment instanceof KeyboardShortcutCallback) {
+            return ((KeyboardShortcutCallback) fragment).isKeyboardShortcutHandled(handler, keyCode,
+                    event, metaState);
         }
         return false;
     }
@@ -342,7 +361,7 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
             final View view = activity.getWindow().findViewById(android.support.v7.appcompat.R.id.action_bar);
             if (view != null && controlBarHeight != 0) {
                 view.setAlpha(translationY / (float) controlBarHeight);
-        	}
+            }
         }
         mPagerIndicator.setTranslationY(translationY);
         mPagerWindowOverlay.setTranslationY(translationY);

@@ -1,8 +1,8 @@
-#Twittnuker - Android 4.0+ and 5.0+ Twitter Client#
+#Twittnuker - Android 4.0+ Twitter Client#
 
 [![Build Status](https://travis-ci.org/vanita5/twittnuker.svg?branch=f-droid)](https://travis-ci.org/vanita5/twittnuker)
 
-Twittnuker is a [free](https://www.gnu.org/philosophy/free-sw.html) Twitter Client for Android 4+ Smartphones with Android 5 (Lollipop) support and Material design, based on the [Twidere Project](https://github.com/mariotaku/twidere) with various improvements.
+Twittnuker is a [free](https://www.gnu.org/philosophy/free-sw.html) Twitter Client for Android 4.0+ Smartphones with Android 5 (Lollipop) support, Android 6 (Marshmallow) support and Material design, based on the [Twidere Project](https://github.com/mariotaku/twidere).
 
 Twidere updates will almost always be merged, so you can expect the latest features and bug fixes from Twidere in this fork, too!
 
@@ -11,40 +11,35 @@ Twidere updates will almost always be merged, so you can expect the latest featu
        src="https://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
 </a>
 
-## Features (Twittnuker exclusive) ##
+### Features ###
 
+* Android Material Design
 * Streaming
-* Additional image preview for various image hosters (If you are missing your favorite hoster, contact me!)
-* Tweet shortening via Hotot.in (more services may follow)
-* Hotot.in link expand (view Tweets shortened with hotot.in in full length!)
-* Love Button (Retweet + Favorite in one action)
-* Experimental Push Notifications. Documentation and installation guide will follow soon!
-
-
-### Features (via Twidere) ###
-
-* Android L Material Design
 * Custom tabs
 * Themes and many design customization options
-* Image preview (support for multiple images)
+* Image, GIF and video preview (support for multiple images)
 * Image viewer gallery and map viewer
-* Twitter Card support (YouTube, Vine, Soundcloud, GIF,... in-app preview)
-* Dual pane layout for Tablets
+* Twitter Quotes
+* Twitter Cards (YouTube, Vine, Soundcloud, GIF,... in-app preview)
+* Android Tablet support
+* Love Button (Retweet + Favorite in one action)
 * Profile banner (header) image support
 * Direct messages with conversation style
 * Filters (mute unwanted tweets)
 * Drafts feature
 * t.co link auto expanding
 * Multiple account support
+* Pebble notifications
 * Custom OAuth consumer key/secret
 * Direct login with user name and password (Don't worry! It's TOTALLY safe!)
 * Custom API Proxy (jtapi recommended, gtap and twip o mode works)
 * GZip compressing for API requests
 * TCP DNS query and custom host mapping to fight against censorship
+* Experimental Push Notifications. Documentation and installation guide will follow soon!
 * Many many many other configurations to fit your habit
 * Free, open source, NO ads, forever!
 
-Do you have more ideas on how to improve the app? Please let me know!
+Do you have more ideas on how to improve the app? Feel free to contribute!
 
 
 ## Credits ##
@@ -77,6 +72,12 @@ Do you have more ideas on how to improve the app? Please let me know!
 * [MaterialEditText](https://github.com/rengwuxian/MaterialEditText), Copyright 2014 rengwuxian
 * [Material-ish Progress](https://github.com/pnikosis/materialish-progress), Copyright 2014 Nico Hormazábal
 * [android-gif-drawable](https://github.com/koral--/android-gif-drawable/), Copyright 2015 koral--
+
+## Donate ##
+Paypal
+
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8PJGYL8TAE6SN"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="[paypal]" />
+
 
 
 ## License ##

@@ -64,7 +64,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.SourceAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.support.AbsContentListViewFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -74,76 +73,80 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+
+import javax.inject.Inject;
 
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 
 public abstract class BaseFiltersFragment extends AbsContentListViewFragment<SimpleCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>,
-		MultiChoiceModeListener {
+        MultiChoiceModeListener {
 
     private static final String EXTRA_AUTO_COMPLETE_TYPE = "auto_complete_type";
     private static final int AUTO_COMPLETE_TYPE_SOURCES = 2;
-	private final BroadcastReceiver mStateReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mStateReceiver = new BroadcastReceiver() {
 
-		@Override
-		public void onReceive(final Context context, final Intent intent) {
-			if (getActivity() == null || !isAdded() || isDetached()) return;
-			final String action = intent.getAction();
-			if (BROADCAST_FILTERS_UPDATED.equals(action)) {
-				getLoaderManager().restartLoader(0, null, BaseFiltersFragment.this);
-			}
-		}
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            if (getActivity() == null || !isAdded() || isDetached()) return;
+            final String action = intent.getAction();
+            if (BROADCAST_FILTERS_UPDATED.equals(action)) {
+                getLoaderManager().restartLoader(0, null, BaseFiltersFragment.this);
+            }
+        }
 
-	};
+    };
     private ContentResolver mResolver;
     private ActionMode mActionMode;
 
-	public abstract Uri getContentUri();
+    public abstract Uri getContentUri();
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-		mResolver = getContentResolver();
+        mResolver = getContentResolver();
         final ListView listView = getListView();
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(this);
-		getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(0, null, this);
         setRefreshEnabled(false);
         showProgress();
-	}
+    }
 
-	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-		final View view = super.onCreateView(inflater, container, savedInstanceState);
+    @Override
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+        final View view = super.onCreateView(inflater, container, savedInstanceState);
         assert view != null;
         final ListView listView = (ListView) view.findViewById(R.id.list_view);
-		final Resources res = getResources();
-		final float density = res.getDisplayMetrics().density;
-		final int padding = (int) density * 16;
+        final Resources res = getResources();
+        final float density = res.getDisplayMetrics().density;
+        final int padding = (int) density * 16;
         listView.setPadding(padding, 0, padding, 0);
-		return view;
-	}
+        return view;
+    }
 
-	@Override
-	public void onStart() {
-		super.onStart();
-		final IntentFilter filter = new IntentFilter(BROADCAST_FILTERS_UPDATED);
-		registerReceiver(mStateReceiver, filter);
-	}
+    @Override
+    public void onStart() {
+        super.onStart();
+        final IntentFilter filter = new IntentFilter(BROADCAST_FILTERS_UPDATED);
+        registerReceiver(mStateReceiver, filter);
+    }
 
-	@Override
-	public void onStop() {
-		unregisterReceiver(mStateReceiver);
-		super.onStop();
-	}
+    @Override
+    public void onStop() {
+        unregisterReceiver(mStateReceiver);
+        super.onStop();
+    }
 
-	@Override
-	public void setUserVisibleHint(final boolean isVisibleToUser) {
-		super.setUserVisibleHint(isVisibleToUser);
-		if (!isVisibleToUser && mActionMode != null) {
-			mActionMode.finish();
-		}
-	}
+    @Override
+    public void setUserVisibleHint(final boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (!isVisibleToUser && mActionMode != null) {
+            mActionMode.finish();
+        }
+    }
 
     @Override
     public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
@@ -244,16 +247,16 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
     @Override
     protected SimpleCursorAdapter onCreateAdapter(Context context, boolean compact) {
         return new FilterListAdapter(context);
-	}
+    }
 
-	protected abstract String[] getContentColumns();
+    protected abstract String[] getContentColumns();
 
-	private void updateTitle(final ActionMode mode) {
+    private void updateTitle(final ActionMode mode) {
         final ListView listView = getListView();
         if (listView == null || mode == null || getActivity() == null) return;
         final int count = listView.getCheckedItemCount();
-		mode.setTitle(getResources().getQuantityString(R.plurals.Nitems_selected, count, count));
-	}
+        mode.setTitle(getResources().getQuantityString(R.plurals.Nitems_selected, count, count));
+    }
 
     public static final class AddItemFragment extends BaseSupportDialogFragment implements OnClickListener {
 
@@ -326,46 +329,46 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
 
     }
 
-	public static final class FilteredKeywordsFragment extends BaseFiltersFragment {
+    public static final class FilteredKeywordsFragment extends BaseFiltersFragment {
 
-		@Override
+        @Override
         public Uri getContentUri() {
             return Filters.Keywords.CONTENT_URI;
         }
 
         @Override
-		public String[] getContentColumns() {
-			return Filters.Keywords.COLUMNS;
-		}
+        public String[] getContentColumns() {
+            return Filters.Keywords.COLUMNS;
+        }
 
 
-	}
+    }
 
-	public static final class FilteredLinksFragment extends BaseFiltersFragment {
+    public static final class FilteredLinksFragment extends BaseFiltersFragment {
 
-		@Override
-		public String[] getContentColumns() {
-			return Filters.Links.COLUMNS;
-		}
+        @Override
+        public String[] getContentColumns() {
+            return Filters.Links.COLUMNS;
+        }
 
-		@Override
-		public Uri getContentUri() {
-			return Filters.Links.CONTENT_URI;
-		}
+        @Override
+        public Uri getContentUri() {
+            return Filters.Links.CONTENT_URI;
+        }
 
-	}
+    }
 
-	public static final class FilteredSourcesFragment extends BaseFiltersFragment {
+    public static final class FilteredSourcesFragment extends BaseFiltersFragment {
 
-		@Override
-		public String[] getContentColumns() {
-			return Filters.Sources.COLUMNS;
-		}
+        @Override
+        public String[] getContentColumns() {
+            return Filters.Sources.COLUMNS;
+        }
 
-		@Override
-		public Uri getContentUri() {
-			return Filters.Sources.CONTENT_URI;
-		}
+        @Override
+        public Uri getContentUri() {
+            return Filters.Sources.CONTENT_URI;
+        }
 
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
@@ -383,12 +386,12 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
             return super.onOptionsItemSelected(item);
         }
 
-	}
+    }
 
-	public static final class FilteredUsersFragment extends BaseFiltersFragment {
+    public static final class FilteredUsersFragment extends BaseFiltersFragment {
 
 
-		@Override
+        @Override
         public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
             switch (requestCode) {
                 case REQUEST_SELECT_USER: {
@@ -400,54 +403,55 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
                     resolver.delete(Filters.Users.CONTENT_URI, Expression.equals(Filters.Users.USER_ID, user.id).getSQL(), null);
                     resolver.insert(Filters.Users.CONTENT_URI, values);
                     break;
-				}
-			}
-		}
+                }
+            }
+        }
 
-		private static final class FilterUsersListAdapter extends SimpleCursorAdapter {
+        public static final class FilterUsersListAdapter extends SimpleCursorAdapter {
 
-            private final UserColorNameManager mUserColorNameManager;
+            @Inject
+            UserColorNameManager mUserColorNameManager;
 
             private final boolean mNameFirst;
-			private int mUserIdIdx, mNameIdx, mScreenNameIdx;
+            private int mUserIdIdx, mNameIdx, mScreenNameIdx;
 
-			public FilterUsersListAdapter(final Context context) {
-				super(context, android.R.layout.simple_list_item_activated_1, null, new String[0], new int[0], 0);
-				final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
-						Context.MODE_PRIVATE);
-				mNameFirst = prefs.getBoolean(KEY_NAME_FIRST, true);
-                mUserColorNameManager = TwittnukerApplication.getInstance(context).getUserColorNameManager();
-			}
+            FilterUsersListAdapter(final Context context) {
+                super(context, android.R.layout.simple_list_item_activated_1, null, new String[0], new int[0], 0);
+                DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
+                final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
+                        Context.MODE_PRIVATE);
+                mNameFirst = prefs.getBoolean(KEY_NAME_FIRST, true);
+            }
 
-			@Override
+            @Override
             public void bindView(@NonNull final View view, final Context context, @NonNull final Cursor cursor) {
-				super.bindView(view, context, cursor);
-				final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+                super.bindView(view, context, cursor);
+                final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
                 final long userId = cursor.getLong(mUserIdIdx);
-				final String name = cursor.getString(mNameIdx);
+                final String name = cursor.getString(mNameIdx);
                 final String screenName = cursor.getString(mScreenNameIdx);
                 final String displayName = mUserColorNameManager.getDisplayName(userId, name, screenName,
                         mNameFirst, false);
                 text1.setText(displayName);
-			}
+            }
 
-			@Override
-			public Cursor swapCursor(final Cursor c) {
-				final Cursor old = super.swapCursor(c);
-				if (c != null) {
-					mUserIdIdx = c.getColumnIndex(Filters.Users.USER_ID);
-					mNameIdx = c.getColumnIndex(Filters.Users.NAME);
-					mScreenNameIdx = c.getColumnIndex(Filters.Users.SCREEN_NAME);
-				}
-				return old;
-			}
+            @Override
+            public Cursor swapCursor(final Cursor c) {
+                final Cursor old = super.swapCursor(c);
+                if (c != null) {
+                    mUserIdIdx = c.getColumnIndex(Filters.Users.USER_ID);
+                    mNameIdx = c.getColumnIndex(Filters.Users.NAME);
+                    mScreenNameIdx = c.getColumnIndex(Filters.Users.SCREEN_NAME);
+                }
+                return old;
+            }
 
-		}
+        }
 
         @Override
         public String[] getContentColumns() {
             return Filters.Users.COLUMNS;
-		}
+        }
 
         @Override
         public Uri getContentUri() {
@@ -474,5 +478,5 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
             return new FilterUsersListAdapter(getActivity());
         }
 
-	}
+    }
 }

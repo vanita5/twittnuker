@@ -53,21 +53,17 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.KeyboardShortcutPreferenceCompatActivity;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutSpec;
 
 public class KeyboardShortcutsFragment extends BasePreferenceFragment implements KeyboardShortcutConstants {
 
-    private KeyboardShortcutsHandler mKeyboardShortcutHandler;
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         final Activity activity = getActivity();
-        mKeyboardShortcutHandler = TwittnukerApplication.getInstance(activity).getKeyboardShortcutsHandler();
         final PreferenceScreen defaultScreen = getPreferenceScreen();
         final PreferenceScreen preferenceScreen;
         if (defaultScreen != null) {
@@ -78,12 +74,12 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment implements
         }
         setPreferenceScreen(preferenceScreen);
         addPreferences();
-	}
+    }
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.menu_keyboard_shortcuts, menu);
-	}
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_keyboard_shortcuts, menu);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -107,6 +103,8 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment implements
         final PreferenceCategory navigation = makeAndAddCategory(getString(R.string.navigation));
         navigation.addPreference(makePreferences(CONTEXT_TAG_NAVIGATION, ACTION_NAVIGATION_PREVIOUS));
         navigation.addPreference(makePreferences(CONTEXT_TAG_NAVIGATION, ACTION_NAVIGATION_NEXT));
+        navigation.addPreference(makePreferences(CONTEXT_TAG_NAVIGATION, ACTION_NAVIGATION_PAGE_DOWN));
+        navigation.addPreference(makePreferences(CONTEXT_TAG_NAVIGATION, ACTION_NAVIGATION_PAGE_UP));
         navigation.addPreference(makePreferences(CONTEXT_TAG_NAVIGATION, ACTION_NAVIGATION_PREVIOUS_TAB));
         navigation.addPreference(makePreferences(CONTEXT_TAG_NAVIGATION, ACTION_NAVIGATION_NEXT_TAB));
         navigation.addPreference(makePreferences(CONTEXT_TAG_NAVIGATION, ACTION_NAVIGATION_REFRESH));
@@ -134,7 +132,7 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment implements
         final KeyboardShortcutsHandler shortcutHandler = mKeyboardShortcutHandler;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             return new KeyboardShortcutPreferenceCompat(context, shortcutHandler, contextTag, action);
-    	}
+        }
         return new KeyboardShortcutPreference(context, shortcutHandler, contextTag, action);
     }
 
@@ -145,9 +143,10 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment implements
         private final OnSharedPreferenceChangeListener mPreferencesChangeListener;
         private TextView mKeysLabel, mConflictLabel;
         private KeyboardShortcutSpec mKeySpec;
+        private int mModifierStates;
 
         public KeyboardShortcutPreference(final Context context, final KeyboardShortcutsHandler handler,
-                                           @Nullable final String contextTag, @NonNull final String action) {
+                                          @Nullable final String contextTag, @NonNull final String action) {
             //noinspection ConstantConditions
             super(context, null);
             mKeyboardShortcutHandler = handler;
@@ -158,18 +157,28 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment implements
             setDialogTitle(KeyboardShortcutsHandler.getActionLabel(context, action));
             setTitle(KeyboardShortcutsHandler.getActionLabel(context, action));
             mPreferencesChangeListener = new OnSharedPreferenceChangeListener() {
-				@Override
+                @Override
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                     updateSummary();
-				}
+                }
             };
             updateSummary();
-		}
+        }
 
-		@Override
+        @Override
         public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-            if (event.getAction() != KeyEvent.ACTION_UP) return false;
-            final KeyboardShortcutSpec spec = KeyboardShortcutsHandler.getKeyboardShortcutSpec(mContextTag, keyCode, event);
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (KeyEvent.isModifierKey(keyCode)) {
+                    mModifierStates |= KeyboardShortcutsHandler.getMetaStateForKeyCode(keyCode);
+                }
+            } else if (event.getAction() != KeyEvent.ACTION_UP) {
+                return false;
+            }
+            if (KeyEvent.isModifierKey(keyCode)) {
+                mModifierStates &= ~KeyboardShortcutsHandler.getMetaStateForKeyCode(keyCode);
+            }
+            final KeyboardShortcutSpec spec = KeyboardShortcutsHandler.getKeyboardShortcutSpec(mContextTag,
+                    keyCode, event, KeyEvent.normalizeMetaState(mModifierStates | event.getMetaState()));
             if (spec == null || !spec.isValid()) {
                 Log.d(LOGTAG, String.format("Invalid key %s", event), new Exception());
                 return false;
@@ -241,7 +250,7 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment implements
         private void updateSummary() {
             final KeyboardShortcutSpec spec = mKeyboardShortcutHandler.findKey(mAction);
             setSummary(spec != null ? spec.toKeyString() : null);
-		}
+        }
 
 
     }
@@ -297,15 +306,14 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment implements
         }
 
 
-	}
+    }
 
-    public static class ResetKeyboardShortcutConfirmDialogFragment extends DialogFragment implements OnClickListener {
+    public static class ResetKeyboardShortcutConfirmDialogFragment extends BaseDialogFragment implements OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE: {
-                    TwittnukerApplication app = TwittnukerApplication.getInstance(getActivity());
-                    app.getKeyboardShortcutsHandler().reset();
+                    mKeyboardShortcutsHandler.reset();
                     break;
                 }
             }

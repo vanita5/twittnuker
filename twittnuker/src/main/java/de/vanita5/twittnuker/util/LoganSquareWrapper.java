@@ -19,16 +19,16 @@ import java.util.List;
 
 public class LoganSquareWrapper extends LoganSquare {
 
-	public static final String JSON_CACHE_DIR = "json_cache";
+    public static final String JSON_CACHE_DIR = "json_cache";
 
-	public static JSONObject convertJSONObject(final InputStream stream) throws IOException {
-		final String string = convertString(stream);
-		try {
-			return new JSONObject(string);
-		} catch (final JSONException e) {
-			throw new IOException(e);
-		}
-	}
+    public static JSONObject convertJSONObject(final InputStream stream) throws IOException {
+        final String string = convertString(stream);
+        try {
+            return new JSONObject(string);
+        } catch (final JSONException e) {
+            throw new IOException(e);
+        }
+    }
 
     public static <E> List<E> parseList(File file, Class<E> jsonObjectClass) throws IOException {
         final FileInputStream is = new FileInputStream(file);
@@ -40,28 +40,28 @@ public class LoganSquareWrapper extends LoganSquare {
         }
     }
 
-	public static String convertString(final InputStream stream) throws IOException {
-		if (stream == null) throw new FileNotFoundException();
-		final BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charset.defaultCharset()));
+    public static String convertString(final InputStream stream) throws IOException {
+        if (stream == null) throw new FileNotFoundException();
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charset.defaultCharset()));
         final StringBuilder buf = new StringBuilder();
         String line;
-		while ((line = reader.readLine()) != null) {
-			buf.append(line);
-			buf.append('\n');
-		}
-		reader.close();
-		return buf.toString();
-	}
+        while ((line = reader.readLine()) != null) {
+            buf.append(line);
+            buf.append('\n');
+        }
+        reader.close();
+        return buf.toString();
+    }
 
-	public static File getSerializationFile(final Context context, final Object... args) throws IOException {
-		if (context == null || args == null || args.length == 0) return null;
-		final File cache_dir = Utils.getBestCacheDir(context, JSON_CACHE_DIR);
-		if (!cache_dir.exists()) {
-			cache_dir.mkdirs();
-		}
-		final String filename = Utils.encodeQueryParams(TwidereArrayUtils.toString(args, '.', false));
-        return new File(cache_dir, filename + ".json");
-	}
+    public static File getSerializationFile(final Context context, final Object... args) throws IOException {
+        if (context == null || args == null || args.length == 0) return null;
+        final File cacheDir = Utils.getBestCacheDir(context, JSON_CACHE_DIR);
+        if (!cacheDir.exists()) {
+            AbsLogger.logIfFalse(cacheDir.mkdirs(), "Unable to create cache dir " + cacheDir);
+        }
+        final String filename = Utils.encodeQueryParams(TwidereArrayUtils.toString(args, '.', false));
+        return new File(cacheDir, filename + ".json");
+    }
 
 
 }

@@ -33,10 +33,10 @@ import java.util.List;
 
 public class UserTimelineFragment extends ParcelableStatusesFragment {
 
-	    @Override
+    @Override
     protected Loader<List<ParcelableStatus>> onCreateStatusesLoader(final Context context,
-                                                                 final Bundle args,
-                                                                 final boolean fromUser) {
+                                                                    final Bundle args,
+                                                                    final boolean fromUser) {
         setRefreshing(true);
         final List<ParcelableStatus> data = getAdapterData();
         final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
@@ -47,7 +47,7 @@ public class UserTimelineFragment extends ParcelableStatusesFragment {
         final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
         return new UserTimelineLoader(context, accountId, userId, screenName, sinceId, maxId, data,
                 getSavedStatusesFileArgs(), tabPosition, fromUser);
-	}
+    }
 
     @Override
     protected String[] getSavedStatusesFileArgs() {

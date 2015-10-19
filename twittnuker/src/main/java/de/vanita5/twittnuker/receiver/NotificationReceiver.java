@@ -30,57 +30,57 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 
 public class NotificationReceiver extends BroadcastReceiver implements Constants {
-	@Override
-	public void onReceive(Context context, Intent intent) {
+    @Override
+    public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
         if (action == null) return;
         switch (action) {
-			case BROADCAST_NOTIFICATION_DELETED: {
-				final Uri uri = intent.getData();
+            case BROADCAST_NOTIFICATION_DELETED: {
+                final Uri uri = intent.getData();
                 if (uri == null) return;
-				final String tag = getPositionTag(uri.getLastPathSegment());
-				if (tag == null) return;
-				final long accountId = ParseUtils.parseLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID), -1);
-				final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-				final ReadStateManager manager = app.getReadStateManager();
-				final String paramReadPosition, paramReadPositions;
-				if (!TextUtils.isEmpty(paramReadPosition = uri.getQueryParameter(QUERY_PARAM_READ_POSITION))) {
-					manager.setPosition(Utils.getReadPositionTagWithAccounts(tag, accountId),
-							ParseUtils.parseLong(paramReadPosition, -1));
-				} else if (!TextUtils.isEmpty(paramReadPositions = uri.getQueryParameter(QUERY_PARAM_READ_POSITIONS))) {
-					try {
-						final StringLongPair[] pairs = StringLongPair.valuesOf(paramReadPositions);
-						for (StringLongPair pair : pairs) {
-							manager.setPosition(tag, pair.getKey(), pair.getValue());
-						}
-					} catch (NumberFormatException ignore) {
+                final String type = uri.getQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE);
+                final long accountId = ParseUtils.parseLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID), -1);
+                final ApplicationModule module = ApplicationModule.get(context);
+                final ReadStateManager manager = module.getReadStateManager();
+                final String paramReadPosition, paramReadPositions;
+                final String tag = getPositionTag(type);
+                if (tag != null && !TextUtils.isEmpty(paramReadPosition = uri.getQueryParameter(QUERY_PARAM_READ_POSITION))) {
+                    manager.setPosition(Utils.getReadPositionTagWithAccounts(tag, accountId),
+                            ParseUtils.parseLong(paramReadPosition, -1));
+                } else if (!TextUtils.isEmpty(paramReadPositions = uri.getQueryParameter(QUERY_PARAM_READ_POSITIONS))) {
+                    try {
+                        final StringLongPair[] pairs = StringLongPair.valuesOf(paramReadPositions);
+                        for (StringLongPair pair : pairs) {
+                            manager.setPosition(tag, pair.getKey(), pair.getValue());
+                        }
+                    } catch (NumberFormatException ignore) {
 
-					}
-				}
-				break;
-			}
-		}
-	}
+                    }
+                }
+                break;
+            }
+        }
+    }
 
     private static String getPositionTag(@NonNull String type) {
-		switch (type) {
-			case AUTHORITY_HOME: {
+        switch (type) {
+            case AUTHORITY_HOME: {
                 return TAB_TYPE_HOME_TIMELINE;
-			}
-			case AUTHORITY_MENTIONS: {
+            }
+            case AUTHORITY_MENTIONS: {
                 return TAB_TYPE_MENTIONS_TIMELINE;
-			}
-			case AUTHORITY_DIRECT_MESSAGES: {
+            }
+            case AUTHORITY_DIRECT_MESSAGES: {
                 return TAB_TYPE_DIRECT_MESSAGES;
-			}
-		}
-		return null;
-	}
+            }
+        }
+        return null;
+    }
 }

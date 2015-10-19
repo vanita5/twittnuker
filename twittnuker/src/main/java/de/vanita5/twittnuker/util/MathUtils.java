@@ -25,13 +25,13 @@ package de.vanita5.twittnuker.util;
 public class MathUtils {
     public static float clamp(final float num, final float bound1, final float bound2) {
         final float max = Math.max(bound1, bound2), min = Math.min(bound1, bound2);
-		return Math.max(Math.min(num, max), min);
-	}
+        return Math.max(Math.min(num, max), min);
+    }
 
     public static int clamp(final int num, final int bound1, final int bound2) {
         final int max = Math.max(bound1, bound2), min = Math.min(bound1, bound2);
-		return Math.max(Math.min(num, max), min);
-	}
+        return Math.max(Math.min(num, max), min);
+    }
 
     // Returns the next power of two.
     // Returns the input if it is already power of 2.
@@ -49,17 +49,25 @@ public class MathUtils {
     }
 
     // Returns the previous power of two.
-	// Returns the input if it is already power of 2.
-	// Throws IllegalArgumentException if the input is <= 0
-	public static int prevPowerOf2(final int n) {
-		if (n <= 0) throw new IllegalArgumentException();
-		return Integer.highestOneBit(n);
-	}
+    // Returns the input if it is already power of 2.
+    // Throws IllegalArgumentException if the input is <= 0
+    public static int prevPowerOf2(final int n) {
+        if (n <= 0) throw new IllegalArgumentException();
+        return Integer.highestOneBit(n);
+    }
 
     public static double sum(double... doubles) {
         double sum = 0;
         for (double d : doubles) {
             sum += d;
+        }
+        return sum;
+    }
+
+    public static int sum(int[] ints) {
+        int sum = 0;
+        for (int i : ints) {
+            sum += i;
         }
         return sum;
     }

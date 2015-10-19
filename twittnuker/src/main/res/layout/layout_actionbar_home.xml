@@ -44,11 +44,4 @@
             app:tabHorizontalPadding="@dimen/element_spacing_normal" />
     </de.vanita5.twittnuker.view.TwidereToolbar>
 
-    <de.vanita5.twittnuker.view.TwidereActionBarContextView
-        android:id="@+id/action_context_bar"
-        style="?attr/actionModeStyle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:theme="?attr/actionBarTheme"
-        android:visibility="gone" />
 </merge>

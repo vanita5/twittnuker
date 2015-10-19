@@ -53,6 +53,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -63,17 +64,20 @@ import java.util.Map;
 import static android.text.TextUtils.isEmpty;
 
 public class HostMappingsListFragment extends BaseListFragment implements MultiChoiceModeListener,
-		OnSharedPreferenceChangeListener {
+        OnSharedPreferenceChangeListener {
 
-	private ListView mListView;
-	private HostMappingAdapter mAdapter;
-	private SharedPreferences mPreferences;
+    private static final String EXTRA_EDIT_MODE = "edit_mode";
+    private static final String EXTRA_HOST = "host";
+    private static final String EXTRA_ADDRESS = "address";
+    private static final String EXTRA_EXCLUDED = "excluded";
 
-	@Override
+    private ListView mListView;
+    private HostMappingAdapter mAdapter;
+
+    @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-        mPreferences = getSharedPreferences(HOST_MAPPING_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
         mAdapter = new HostMappingAdapter(getActivity());
         setListAdapter(mAdapter);
@@ -96,83 +100,95 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
     }
 
     @Override
-	public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
-		switch (item.getItemId()) {
+    public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.delete: {
-				final SharedPreferences.Editor editor = mPreferences.edit();
-				final SparseBooleanArray array = mListView.getCheckedItemPositions();
-				if (array == null) return false;
-				for (int i = 0, size = array.size(); i < size; i++) {
-					if (array.valueAt(i)) {
-						editor.remove(mAdapter.getItem(i));
-					}
-				}
-				editor.apply();
-				reloadHostMappings();
-				break;
-			}
-			default: {
-				return false;
-			}
-		}
-		mode.finish();
-		return true;
-	}
+                final SharedPreferences.Editor editor = mPreferences.edit();
+                final SparseBooleanArray array = mListView.getCheckedItemPositions();
+                if (array == null) return false;
+                for (int i = 0, size = array.size(); i < size; i++) {
+                    if (array.valueAt(i)) {
+                        editor.remove(mAdapter.getItem(i));
+                    }
+                }
+                editor.apply();
+                reloadHostMappings();
+                break;
+            }
+            default: {
+                return false;
+            }
+        }
+        mode.finish();
+        return true;
+    }
 
-	@Override
+    @Override
     public void onDestroyActionMode(final ActionMode mode) {
 
-	}
+    }
 
-	@Override
+    @Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-		inflater.inflate(R.menu.menu_host_mapping, menu);
-	}
+        inflater.inflate(R.menu.menu_host_mapping, menu);
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
-            case R.id.add:
-				final DialogFragment df = new AddMappingDialogFragment();
-				df.show(getFragmentManager(), "add_mapping");
-				break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        final String host = mAdapter.getItem(position);
+        final String address = mAdapter.getAddress(host);
+        final Bundle args = new Bundle();
+        args.putString(EXTRA_HOST, host);
+        args.putString(EXTRA_ADDRESS, address);
+        args.putBoolean(EXTRA_EXCLUDED, StringUtils.equals(host, address));
+        args.putBoolean(EXTRA_EDIT_MODE, true);
+        final DialogFragment df = new AddMappingDialogFragment();
+        df.setArguments(args);
+        df.show(getFragmentManager(), "add_mapping");
+    }
 
-	@Override
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add: {
+                    final DialogFragment df = new AddMappingDialogFragment();
+                    df.show(getFragmentManager(), "add_mapping");
+                    break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onItemCheckedStateChanged(final ActionMode mode, final int position, final long id,
                                           final boolean checked) {
-		updateTitle(mode);
-	}
+        updateTitle(mode);
+    }
 
-	@Override
-	public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-		reloadHostMappings();
-	}
+    @Override
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
+        reloadHostMappings();
+    }
 
-	public void reloadHostMappings() {
-		if (mAdapter == null) return;
-		mAdapter.reload();
-	}
+    public void reloadHostMappings() {
+        if (mAdapter == null) return;
+        mAdapter.reload();
+    }
 
-	private void updateTitle(final ActionMode mode) {
-		if (mListView == null || mode == null || getActivity() == null) return;
-		final int count = mListView.getCheckedItemCount();
-		mode.setTitle(getResources().getQuantityString(R.plurals.Nitems_selected, count, count));
-	}
+    private void updateTitle(final ActionMode mode) {
+        if (mListView == null || mode == null || getActivity() == null) return;
+        final int count = mListView.getCheckedItemCount();
+        mode.setTitle(getResources().getQuantityString(R.plurals.Nitems_selected, count, count));
+    }
 
-	public static class AddMappingDialogFragment extends BaseDialogFragment implements OnClickListener,
-	            OnShowListener, TextWatcher, OnCheckedChangeListener {
+    public static class AddMappingDialogFragment extends BaseDialogFragment implements OnClickListener,
+            OnShowListener, TextWatcher, OnCheckedChangeListener {
 
-		private static final String EXTRA_HOST = "host";
-		private static final String EXTRA_ADDRESS = "address";
-		private static final String EXTRA_EXCLUDED = "excluded";
 
-		private EditText mEditHost, mEditAddress;
-		private CheckBox mCheckExclude;
+        private EditText mEditHost, mEditAddress;
+        private CheckBox mCheckExclude;
 
-		@Override
+        @Override
         public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
 
         }
@@ -183,119 +199,123 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
         }
 
         @Override
-		public void afterTextChanged(final Editable s) {
+        public void afterTextChanged(final Editable s) {
 
-		}
+        }
 
-		@Override
+        @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             updateAddressField();
             updateButton();
-		}
+        }
 
-		@Override
-		public void onClick(final DialogInterface dialog, final int which) {
-			switch (which) {
-				case DialogInterface.BUTTON_POSITIVE: {
-					final String host = ParseUtils.parseString(mEditHost.getText());
-					final String address = mCheckExclude.isChecked() ? host : ParseUtils.parseString(mEditAddress.getText());
-					if (isEmpty(host) || isEmpty(address)) return;
-					final SharedPreferences prefs = getSharedPreferences(HOST_MAPPING_PREFERENCES_NAME,
-							Context.MODE_PRIVATE);
-					final SharedPreferences.Editor editor = prefs.edit();
-					editor.putString(host, address);
-					editor.apply();
-					break;
-				}
-			}
+        @Override
+        public void onClick(final DialogInterface dialog, final int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE: {
+                    final String host = ParseUtils.parseString(mEditHost.getText());
+                    final String address = mCheckExclude.isChecked() ? host : ParseUtils.parseString(mEditAddress.getText());
+                    if (isEmpty(host) || isEmpty(address)) return;
+                    final SharedPreferences prefs = getSharedPreferences(HOST_MAPPING_PREFERENCES_NAME,
+                            Context.MODE_PRIVATE);
+                    final SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString(host, address);
+                    editor.apply();
+                    break;
+                }
+            }
 
-		}
+        }
 
-		@Override
-		public Dialog onCreateDialog(final Bundle savedInstanceState) {
+        @Override
+        public Dialog onCreateDialog(final Bundle savedInstanceState) {
             final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
             final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
             @SuppressLint("InflateParams")
-			final View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_host_mapping, null);
-			builder.setView(view);
-			mEditHost = (EditText) view.findViewById(R.id.host);
-			mEditAddress = (EditText) view.findViewById(R.id.address);
-			mCheckExclude = (CheckBox) view.findViewById(R.id.exclude);
-			mEditHost.addTextChangedListener(this);
-			mEditAddress.addTextChangedListener(this);
-			mCheckExclude.setOnCheckedChangeListener(this);
-			final Bundle args = getArguments();
-			if (savedInstanceState == null && args != null) {
-				mEditHost.setText(args.getCharSequence(EXTRA_HOST));
-				mEditAddress.setText(args.getCharSequence(EXTRA_ADDRESS));
-				mCheckExclude.setChecked(args.getBoolean(EXTRA_EXCLUDED));
-			}
-			builder.setTitle(R.string.add_host_mapping);
-			builder.setPositiveButton(android.R.string.ok, this);
-			builder.setNegativeButton(android.R.string.cancel, null);
-			final AlertDialog dialog = builder.create();
-			dialog.setOnShowListener(this);
-			return dialog;
-		}
+            final View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_host_mapping, null);
+            builder.setView(view);
+            mEditHost = (EditText) view.findViewById(R.id.host);
+            mEditAddress = (EditText) view.findViewById(R.id.address);
+            mCheckExclude = (CheckBox) view.findViewById(R.id.exclude);
+            mEditHost.addTextChangedListener(this);
+            mEditAddress.addTextChangedListener(this);
+            mCheckExclude.setOnCheckedChangeListener(this);
+            final Bundle args = getArguments();
+            mEditHost.setEnabled(!args.getBoolean(EXTRA_EDIT_MODE, false));
+            if (savedInstanceState == null) {
+                mEditHost.setText(args.getCharSequence(EXTRA_HOST));
+                mEditAddress.setText(args.getCharSequence(EXTRA_ADDRESS));
+                mCheckExclude.setChecked(args.getBoolean(EXTRA_EXCLUDED));
+            }
+            builder.setTitle(R.string.add_host_mapping);
+            builder.setPositiveButton(android.R.string.ok, this);
+            builder.setNegativeButton(android.R.string.cancel, null);
+            final AlertDialog dialog = builder.create();
+            dialog.setOnShowListener(this);
+            return dialog;
+        }
 
-		@Override
-		public void onSaveInstanceState(@NonNull final Bundle outState) {
-			outState.putCharSequence(EXTRA_HOST, mEditHost.getText());
-			outState.putCharSequence(EXTRA_ADDRESS, mEditAddress.getText());
-			outState.putCharSequence(EXTRA_EXCLUDED, mEditAddress.getText());
-			super.onSaveInstanceState(outState);
-		}
+        @Override
+        public void onSaveInstanceState(@NonNull final Bundle outState) {
+            outState.putCharSequence(EXTRA_HOST, mEditHost.getText());
+            outState.putCharSequence(EXTRA_ADDRESS, mEditAddress.getText());
+            outState.putCharSequence(EXTRA_EXCLUDED, mEditAddress.getText());
+            super.onSaveInstanceState(outState);
+        }
 
-		@Override
-		public void onShow(final DialogInterface dialog) {
-			updateButton();
-		}
+        @Override
+        public void onShow(final DialogInterface dialog) {
+            updateButton();
+        }
 
         private void updateAddressField() {
             mEditAddress.setVisibility(mCheckExclude.isChecked() ? View.GONE : View.VISIBLE);
-		}
+        }
 
-		private void updateButton() {
-			final AlertDialog dialog = (AlertDialog) getDialog();
-			if (dialog == null) return;
-			final boolean hostValid = !isEmpty(mEditHost.getText());
-			final boolean addressValid = !isEmpty(mEditAddress.getText()) || mCheckExclude.isChecked();
-			final Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-			positiveButton.setEnabled(hostValid && addressValid);
-		}
-	}
+        private void updateButton() {
+            final AlertDialog dialog = (AlertDialog) getDialog();
+            if (dialog == null) return;
+            final boolean hostValid = !isEmpty(mEditHost.getText());
+            final boolean addressValid = !isEmpty(mEditAddress.getText()) || mCheckExclude.isChecked();
+            final Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            positiveButton.setEnabled(hostValid && addressValid);
+        }
+    }
 
-	static class HostMappingAdapter extends ArrayAdapter<String> {
+    static class HostMappingAdapter extends ArrayAdapter<String> {
 
-		private final SharedPreferences mPreferences;
+        private final SharedPreferences mHostMapping;
 
-		public HostMappingAdapter(final Context context) {
-			super(context, android.R.layout.simple_list_item_activated_2);
-			mPreferences = context.getSharedPreferences(HOST_MAPPING_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		}
+        public HostMappingAdapter(final Context context) {
+            super(context, android.R.layout.simple_list_item_activated_2);
+            mHostMapping = context.getSharedPreferences(HOST_MAPPING_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        }
 
-		@Override
-		public View getView(final int position, final View convertView, final ViewGroup parent) {
-			final View view = super.getView(position, convertView, parent);
-			final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-			final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
-			final String key = getItem(position);
-			text1.setText(key);
-			final String value = mPreferences.getString(key, null);
-			if (key.equals(value)) {
-				text2.setText(R.string.excluded);
-			} else {
-				text2.setText(value);
-			}
-			return view;
-		}
+        @Override
+        public View getView(final int position, final View convertView, final ViewGroup parent) {
+            final View view = super.getView(position, convertView, parent);
+            final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+            final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+            final String key = getItem(position);
+            text1.setText(key);
+            final String value = getAddress(key);
+            if (StringUtils.equals(key, value)) {
+                text2.setText(R.string.excluded);
+            } else {
+                text2.setText(value);
+            }
+            return view;
+        }
 
-		public void reload() {
-			clear();
-			final Map<String, ?> all = mPreferences.getAll();
-			addAll(all.keySet());
-		}
+        public void reload() {
+            clear();
+            final Map<String, ?> all = mHostMapping.getAll();
+            addAll(all.keySet());
+        }
 
-	}
+        public String getAddress(String key) {
+            return mHostMapping.getString(key, null);
+        }
+    }
 
 }

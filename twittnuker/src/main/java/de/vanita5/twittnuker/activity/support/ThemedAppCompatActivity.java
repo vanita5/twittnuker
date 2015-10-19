@@ -33,25 +33,27 @@ import android.view.View;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.activity.iface.IAppCompatActivity;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
-public abstract class ThemedAppCompatActivity extends AppCompatActivity implements Constants, IThemedActivity {
+public abstract class ThemedAppCompatActivity extends AppCompatActivity implements Constants,
+        IThemedActivity, IAppCompatActivity {
 
-	private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
-			mCurrentActionBarColor;
-	@ShapeStyle
-	private int mProfileImageStyle;
+    private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
+            mCurrentActionBarColor;
+    @ShapeStyle
+    private int mProfileImageStyle;
     private String mCurrentThemeBackgroundOption;
     private String mCurrentThemeFontFamily;
 
     private ThemedAppCompatDelegateFactory.ThemedAppCompatDelegate mDelegate;
     private Toolbar mToolbar;
 
-	@Override
+    @Override
     public String getCurrentThemeFontFamily() {
         return mCurrentThemeFontFamily;
     }
@@ -59,9 +61,9 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
     @Override
     public int getCurrentThemeBackgroundAlpha() {
         return mCurrentThemeBackgroundAlpha;
-	}
+    }
 
-	@Override
+    @Override
     public String getCurrentThemeBackgroundOption() {
         return mCurrentThemeBackgroundOption;
     }
@@ -72,62 +74,62 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
     }
 
     @Override
-	public final int getCurrentThemeResourceId() {
-		return mCurrentThemeResource;
-	}
+    public final int getCurrentThemeResourceId() {
+        return mCurrentThemeResource;
+    }
 
-	@Override
-	public final int getCurrentActionBarColor() {
-		return mCurrentActionBarColor;
-	}
+    @Override
+    public final int getCurrentActionBarColor() {
+        return mCurrentActionBarColor;
+    }
 
-	@Override
-	public int getThemeBackgroundAlpha() {
+    @Override
+    public int getThemeBackgroundAlpha() {
         return ThemeUtils.getUserThemeBackgroundAlpha(this);
-	}
+    }
 
-	@Override
+    @Override
     public String getThemeBackgroundOption() {
         return ThemeUtils.getThemeBackgroundOption(this);
-	}
+    }
 
-	@Override
-	public String getThemeFontFamily() {
-		return ThemeUtils.getThemeFontFamily(this);
-	}
+    @Override
+    public String getThemeFontFamily() {
+        return ThemeUtils.getThemeFontFamily(this);
+    }
 
-	@Override
+    @Override
     @ShapeStyle
     public int getCurrentProfileImageStyle() {
         return mProfileImageStyle;
     }
 
     @Override
-	public final void restart() {
+    public final void restart() {
         Utils.restartActivity(this);
-	}
+    }
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
         if (BuildConfig.DEBUG) {
-			StrictModeUtils.detectAllVmPolicy();
-			StrictModeUtils.detectAllThreadPolicy();
-		}
-		super.onCreate(savedInstanceState);
-	}
+            StrictModeUtils.detectAllVmPolicy();
+            StrictModeUtils.detectAllThreadPolicy();
+        }
+        super.onCreate(savedInstanceState);
+    }
 
-	@Override
+    @Override
     public void onSupportActionModeStarted(android.support.v7.view.ActionMode mode) {
         super.onSupportActionModeStarted(mode);
         ThemeUtils.applySupportActionModeColor(mode, this, getCurrentThemeResourceId(),
                 getCurrentThemeColor(), getThemeBackgroundOption(), true);
-	}
+    }
 
-	@Override
+    @Override
     public ThemedAppCompatDelegateFactory.ThemedAppCompatDelegate getDelegate() {
         if (mDelegate != null) return mDelegate;
         return mDelegate = ThemedAppCompatDelegateFactory.create(this, this);
-	}
+    }
 
     @Override
     public void setTheme(int resid) {
@@ -140,10 +142,10 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
 
     @Override
     protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resid, boolean first) {
-		mCurrentThemeColor = getThemeColor();
-		mCurrentActionBarColor = getActionBarColor();
-		mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
-		mProfileImageStyle = Utils.getProfileImageStyle(this);
+        mCurrentThemeColor = getThemeColor();
+        mCurrentActionBarColor = getActionBarColor();
+        mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
+        mProfileImageStyle = Utils.getProfileImageStyle(this);
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
         mCurrentThemeFontFamily = getThemeFontFamily();
         super.onApplyThemeResource(theme, resid, first);
@@ -168,7 +170,7 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
             return (Toolbar) actionBarView;
         }
         return null;
-	}
+    }
 
     protected boolean shouldApplyWindowBackground() {
         return true;

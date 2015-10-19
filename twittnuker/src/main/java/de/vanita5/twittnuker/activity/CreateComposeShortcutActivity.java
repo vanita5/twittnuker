@@ -32,16 +32,17 @@ import de.vanita5.twittnuker.R;
 
 public class CreateComposeShortcutActivity extends Activity implements Constants {
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		final Intent intent = new Intent();
-		final Intent launch_intent = new Intent(INTENT_ACTION_COMPOSE);
-		final ShortcutIconResource icon = Intent.ShortcutIconResource.fromContext(this, R.mipmap.ic_launcher);
-		intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, launch_intent);
-		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-		intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.compose));
-		setResult(RESULT_OK, intent);
-		finish();
-	}
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setVisible(true);
+        final Intent intent = new Intent();
+        final Intent launch_intent = new Intent(INTENT_ACTION_COMPOSE);
+        final ShortcutIconResource icon = Intent.ShortcutIconResource.fromContext(this, R.mipmap.ic_launcher);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, launch_intent);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.compose));
+        setResult(RESULT_OK, intent);
+        finish();
+    }
 }

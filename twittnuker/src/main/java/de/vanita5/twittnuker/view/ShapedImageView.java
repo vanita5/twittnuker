@@ -69,50 +69,50 @@ public class ShapedImageView extends ImageView {
     public static final int SHAPE_CIRCLE = 0x1;
     @ShapeStyle
     public static final int SHAPE_RECTANGLE = 0x2;
-	private static final int SHADOW_START_COLOR = 0x37000000;
-	private static final boolean OUTLINE_DRAW = false;
-	private final Matrix mMatrix;
-	private final RectF mSource;
-	private final RectF mDestination;
+    private static final int SHADOW_START_COLOR = 0x37000000;
+    private static final boolean OUTLINE_DRAW = false;
+    private final Matrix mMatrix;
+    private final RectF mSource;
+    private final RectF mDestination;
     private final RectF mTempDestination;
-	private final Paint mBitmapPaint;
+    private final Paint mBitmapPaint;
     private final Paint mSolidColorPaint;
-	private final Paint mBorderPaint;
+    private final Paint mBorderPaint;
     private final Paint mBackgroundPaint;
-	private boolean mBorderEnabled;
-	private Bitmap mShadowBitmap;
-	private float mShadowRadius;
-	private int mStyle;
-	private float mCornerRadius, mCornerRadiusRatio;
+    private boolean mBorderEnabled;
+    private Bitmap mShadowBitmap;
+    private float mShadowRadius;
+    private int mStyle;
+    private float mCornerRadius, mCornerRadiusRatio;
     private RectF mTransitionSource, mTransitionDestination;
     private int mStrokeWidth, mBorderAlpha;
     private int[] mBorderColors;
 
-	public ShapedImageView(Context context) {
-		this(context, null, 0);
-	}
+    public ShapedImageView(Context context) {
+        this(context, null, 0);
+    }
 
-	public ShapedImageView(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    public ShapedImageView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-	public ShapedImageView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
+    public ShapedImageView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
 
-		final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ShapedImageView, defStyle, 0);
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ShapedImageView, defStyle, 0);
 
-		mMatrix = new Matrix();
-		mSource = new RectF();
-		mDestination = new RectF();
+        mMatrix = new Matrix();
+        mSource = new RectF();
+        mDestination = new RectF();
         mTempDestination = new RectF();
 
         mBitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		mBitmapPaint.setFilterBitmap(true);
-		mBitmapPaint.setDither(true);
+        mBitmapPaint.setFilterBitmap(true);
+        mBitmapPaint.setDither(true);
         mSolidColorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-		mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		mBorderPaint.setStyle(Paint.Style.STROKE);
+        mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mBorderPaint.setStyle(Paint.Style.STROKE);
 
         mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -120,8 +120,8 @@ public class ShapedImageView extends ImageView {
             setBorderEnabled(a.getBoolean(R.styleable.ShapedImageView_sivBorder, false));
         } else if (a.hasValue(R.styleable.ShapedImageView_sivBorderColor)
                 || a.hasValue(R.styleable.ShapedImageView_sivBorderWidth)) {
-			setBorderEnabled(true);
-		}
+            setBorderEnabled(true);
+        }
         setBorderColor(a.getColor(R.styleable.ShapedImageView_sivBorderColor, Color.TRANSPARENT));
         setBorderWidth(a.getDimensionPixelSize(R.styleable.ShapedImageView_sivBorderWidth, 0));
         @ShapeStyle
@@ -132,17 +132,17 @@ public class ShapedImageView extends ImageView {
 
         if (useOutline()) {
             if (a.hasValue(R.styleable.ShapedImageView_sivElevation)) {
-				ViewCompat.setElevation(this,
+                ViewCompat.setElevation(this,
                         a.getDimensionPixelSize(R.styleable.ShapedImageView_sivElevation, 0));
-			}
-		} else {
+            }
+        } else {
             mShadowRadius = a.getDimensionPixelSize(R.styleable.ShapedImageView_sivElevation, 0);
-		}
+        }
         setBackgroundColor(a.getColor(R.styleable.ShapedImageView_sivBackgroundColor, 0));
-		a.recycle();
+        a.recycle();
 
-		initOutlineProvider();
-	}
+        initOutlineProvider();
+    }
 
     /**
      * Given the source bitmap and a canvas, draws the bitmap through a circular
@@ -187,16 +187,16 @@ public class ShapedImageView extends ImageView {
                     final float dstHeight = dest.width() / srcRatio;
                     mTempDestination.top = dest.centerY() - dstHeight / 2;
                     mTempDestination.bottom = dest.centerY() + dstHeight / 2;
-			    } else {
+                } else {
                     mTempDestination.set(dest);
-			    }
+                }
                 break;
-		    }
+            }
             default: {
                 mTempDestination.set(dest);
                 break;
-	        }
-	    }
+            }
+        }
 
         // Fit bitmap to bounds.
         mMatrix.setRectToRect(source, mTempDestination, ScaleToFit.CENTER);
@@ -215,7 +215,7 @@ public class ShapedImageView extends ImageView {
                 dest.inset(inset, inset);
                 canvas.drawRoundRect(dest, cornerRadius, cornerRadius, mBitmapPaint);
                 dest.inset(-inset, -inset);
-	        }
+            }
         } else {
             if (getStyle() == SHAPE_CIRCLE) {
                 final float circleRadius = Math.min(dest.width(), dest.height()) / 2f;
@@ -235,11 +235,11 @@ public class ShapedImageView extends ImageView {
     @ShapeStyle
     public int getStyle() {
         return mStyle;
-	}
+    }
 
     public void setStyle(@ShapeStyle final int style) {
         mStyle = style;
-	}
+    }
 
     public void setBorderColor(int color) {
         setBorderColorsInternal(Color.alpha(color), color);
@@ -252,7 +252,7 @@ public class ShapedImageView extends ImageView {
     public void setBorderEnabled(boolean enabled) {
         mBorderEnabled = enabled;
         invalidate();
-	}
+    }
 
     public void setBorderWidth(int width) {
         mBorderPaint.setStrokeWidth(width);
@@ -276,10 +276,10 @@ public class ShapedImageView extends ImageView {
         mTransitionSource = srcBounds;
     }
 
-	@Override
-	protected void onDraw(@NonNull Canvas canvas) {
-		mDestination.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(),
-				getHeight() - getPaddingBottom());
+    @Override
+    protected void onDraw(@NonNull Canvas canvas) {
+        mDestination.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(),
+                getHeight() - getPaddingBottom());
 
         if (getStyle() == SHAPE_CIRCLE) {
             canvas.drawOval(mDestination, mBackgroundPaint);
@@ -289,47 +289,47 @@ public class ShapedImageView extends ImageView {
         }
 
         if (OUTLINE_DRAW) {
-			super.onDraw(canvas);
-		} else {
-			final int contentLeft = getPaddingLeft(), contentTop = getPaddingTop(),
-					contentRight = getWidth() - getPaddingRight(),
-					contentBottom = getHeight() - getPaddingBottom();
-			final int contentWidth = contentRight - contentLeft,
-					contentHeight = contentBottom - contentTop;
-			final int size = Math.min(contentWidth, contentHeight);
-			if (mShadowBitmap != null) {
-				canvas.drawBitmap(mShadowBitmap, contentLeft + (contentWidth - size) / 2 - mShadowRadius,
-						contentTop + (contentHeight - size) / 2 - mShadowRadius, null);
-			}
-			Drawable drawable = getDrawable();
-			BitmapDrawable bitmapDrawable = null;
-			// support state list drawable by getting the current state
-			if (drawable instanceof StateListDrawable) {
-				if (drawable.getCurrent() != null) {
-					bitmapDrawable = (BitmapDrawable) drawable.getCurrent();
-				}
+            super.onDraw(canvas);
+        } else {
+            final int contentLeft = getPaddingLeft(), contentTop = getPaddingTop(),
+                    contentRight = getWidth() - getPaddingRight(),
+                    contentBottom = getHeight() - getPaddingBottom();
+            final int contentWidth = contentRight - contentLeft,
+                    contentHeight = contentBottom - contentTop;
+            final int size = Math.min(contentWidth, contentHeight);
+            if (mShadowBitmap != null) {
+                canvas.drawBitmap(mShadowBitmap, contentLeft + (contentWidth - size) / 2 - mShadowRadius,
+                        contentTop + (contentHeight - size) / 2 - mShadowRadius, null);
+            }
+            Drawable drawable = getDrawable();
+            BitmapDrawable bitmapDrawable = null;
+            // support state list drawable by getting the current state
+            if (drawable instanceof StateListDrawable) {
+                if (drawable.getCurrent() != null) {
+                    bitmapDrawable = (BitmapDrawable) drawable.getCurrent();
+                }
             } else if (drawable instanceof BitmapDrawable) {
-				bitmapDrawable = (BitmapDrawable) drawable;
+                bitmapDrawable = (BitmapDrawable) drawable;
             } else if (drawable instanceof ColorDrawable) {
                 mSolidColorPaint.setColor(((ColorDrawable) drawable).getColor());
             } else {
                 mSolidColorPaint.setColor(0);
-			}
+            }
 
             Bitmap bitmap = null;
             if (bitmapDrawable != null) {
                 bitmap = bitmapDrawable.getBitmap();
-			}
+            }
             if (bitmap != null) {
                 mSource.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
-			}
-			drawBitmapWithCircleOnCanvas(bitmap, canvas, mSource, mDestination);
-		}
-
-		// Then draw the border.
-		if (mBorderEnabled) {
-            drawBorder(canvas, mDestination);
             }
+            drawBitmapWithCircleOnCanvas(bitmap, canvas, mSource, mDestination);
+        }
+
+        // Then draw the border.
+        if (mBorderEnabled) {
+            drawBorder(canvas, mDestination);
+        }
     }
 
     @Override
@@ -341,10 +341,10 @@ public class ShapedImageView extends ImageView {
         mBitmapPaint.setColorFilter(cf);
     }
 
-	@Override
-	 protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		super.onSizeChanged(w, h, oldw, oldh);
-	}
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+    }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
@@ -425,7 +425,7 @@ public class ShapedImageView extends ImageView {
         return 0;
     }
 
-	private void initOutlineProvider() {
+    private void initOutlineProvider() {
         if (!useOutline()) return;
         ViewSupport.setClipToOutline(this, true);
         ViewSupport.setOutlineProvider(this, new CircularOutlineProvider());
@@ -466,23 +466,24 @@ public class ShapedImageView extends ImageView {
         updateShadowBitmap();
     }
 
-	private void updateShadowBitmap() {
+    private void updateShadowBitmap() {
         if (useOutline()) return;
-		final int width = getWidth(), height = getHeight();
-		if (width <= 0 || height <= 0) return;
-		final int contentLeft = getPaddingLeft(), contentTop = getPaddingTop(),
-				contentRight = width - getPaddingRight(),
-				contentBottom = height - getPaddingBottom();
-		final int contentWidth = contentRight - contentLeft,
-				contentHeight = contentBottom - contentTop;
-		final float radius = mShadowRadius, dy = radius * 1.5f / 2;
-		final int size = Math.round(Math.min(contentWidth, contentHeight) + radius * 2);
-		mShadowBitmap = Bitmap.createBitmap(size, Math.round(size + dy), Config.ARGB_8888);
-		Canvas canvas = new Canvas(mShadowBitmap);
-		final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        final int width = getWidth(), height = getHeight();
+        if (width <= 0 || height <= 0) return;
+        final int contentLeft = getPaddingLeft(), contentTop = getPaddingTop(),
+                contentRight = width - getPaddingRight(),
+                contentBottom = height - getPaddingBottom();
+        final int contentWidth = contentRight - contentLeft,
+                contentHeight = contentBottom - contentTop;
+        final float radius = mShadowRadius, dy = radius * 1.5f / 2;
+        final int size = Math.round(Math.min(contentWidth, contentHeight) + radius * 2);
+        mShadowBitmap = Bitmap.createBitmap(size, Math.round(size + dy), Config.ARGB_8888);
+        if (mShadowBitmap == null) return;
+        Canvas canvas = new Canvas(mShadowBitmap);
+        final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(0xFF000000 | mBackgroundPaint.getColor());
-		paint.setShadowLayer(radius, 0, radius * 1.5f / 2, SHADOW_START_COLOR);
-		final RectF rect = new RectF(radius, radius, size - radius, size - radius);
+        paint.setShadowLayer(radius, 0, radius * 1.5f / 2, SHADOW_START_COLOR);
+        final RectF rect = new RectF(radius, radius, size - radius, size - radius);
         if (getStyle() == SHAPE_CIRCLE) {
             canvas.drawOval(rect, paint);
             paint.setShadowLayer(0, 0, 0, 0);
@@ -495,7 +496,7 @@ public class ShapedImageView extends ImageView {
             paint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
             canvas.drawRoundRect(rect, cr, cr, paint);
         }
-		invalidate();
+        invalidate();
     }
 
     private boolean useOutline() {
@@ -508,10 +509,10 @@ public class ShapedImageView extends ImageView {
     }
 
     private static class CircularOutlineProvider extends ViewOutlineProviderCompat {
-		@Override
+        @Override
         public void getOutline(View view, OutlineCompat outline) {
             final int viewWidth = view.getWidth(), viewHeight = view.getHeight();
-			final int contentLeft = view.getPaddingLeft(), contentTop = view.getPaddingTop(),
+            final int contentLeft = view.getPaddingLeft(), contentTop = view.getPaddingTop(),
                     contentRight = viewWidth - view.getPaddingRight(),
                     contentBottom = viewHeight - view.getPaddingBottom();
             final ShapedImageView imageView = (ShapedImageView) view;
@@ -527,6 +528,6 @@ public class ShapedImageView extends ImageView {
                 final float radius = imageView.getCalculatedCornerRadius();
                 outline.setRoundRect(contentLeft, contentTop, contentRight, contentBottom, radius);
             }
-		}
-	}
+        }
+    }
 }

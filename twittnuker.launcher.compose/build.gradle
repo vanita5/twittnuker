@@ -27,7 +27,7 @@ android {
     defaultConfig {
         applicationId "de.vanita5.twittnuker.launcher.compose"
         minSdkVersion 14
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }

@@ -33,7 +33,6 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
@@ -41,18 +40,22 @@ import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import java.io.File;
 import java.io.IOException;
 
+import okio.BufferedSink;
+import okio.Okio;
+import okio.Source;
+
 import static android.text.TextUtils.isEmpty;
 
 public class SaveFileTask extends AsyncTask<Object, Object, File> implements Constants {
 
-	private static final String PROGRESS_FRAGMENT_TAG = "progress";
+    private static final String PROGRESS_FRAGMENT_TAG = "progress";
 
     private final File source, destination;
-	private final Activity activity;
+    private final Activity activity;
     private final String mimeType;
 
     public SaveFileTask(final Activity activity, final File source, final String mimeType, final File destination) {
-		this.activity = activity;
+        this.activity = activity;
         this.source = source;
         this.mimeType = mimeType;
         this.destination = destination;
@@ -66,68 +69,83 @@ public class SaveFileTask extends AsyncTask<Object, Object, File> implements Con
         final File pubDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         final File saveDir = new File(pubDir, "Twidere");
         return new SaveFileTask(activity, source, mimeType, saveDir);
-	}
-
-	@Override
-	protected File doInBackground(final Object... args) {
-        if (source == null) return null;
-        return saveFile(activity, source, mimeType, destination);
-	}
-
-	@Override
-	protected void onCancelled() {
-		final FragmentManager fm = activity.getFragmentManager();
-		final DialogFragment fragment = (DialogFragment) fm.findFragmentByTag(PROGRESS_FRAGMENT_TAG);
-		if (fragment != null && fragment.isVisible()) {
-			fragment.dismiss();
-		}
-		super.onCancelled();
-	}
-
-	@Override
-	protected void onPostExecute(final File result) {
-		final FragmentManager fm = activity.getFragmentManager();
-		final DialogFragment fragment = (DialogFragment) fm.findFragmentByTag(PROGRESS_FRAGMENT_TAG);
-		if (fragment != null) {
-			fragment.dismiss();
-		}
-		super.onPostExecute(result);
-		if (result != null && result.exists()) {
-            Toast.makeText(activity, R.string.saved_to_gallery, Toast.LENGTH_SHORT).show();
-		} else {
-            Toast.makeText(activity, R.string.error_occurred, Toast.LENGTH_SHORT).show();
-		}
-	}
-
-	@Override
-	protected void onPreExecute() {
-		final DialogFragment fragment = new ProgressDialogFragment();
-		fragment.setCancelable(false);
-		fragment.show(activity.getFragmentManager(), PROGRESS_FRAGMENT_TAG);
-		super.onPreExecute();
-	}
+    }
 
     public static File saveFile(final Context context, final File source, final String mimeType, final File destination) {
         if (context == null && source == null) return null;
-		try {
+        Source ioSrc = null;
+        BufferedSink sink = null;
+        try {
             final String name = source.getName();
-			if (isEmpty(name)) return null;
-			final MimeTypeMap map = MimeTypeMap.getSingleton();
-			final String extension = map.getExtensionFromMimeType(mimeType);
-			if (extension == null) return null;
-            final String nameToSave = name.contains(".") ? name : name + "." + extension;
+            if (isEmpty(name)) return null;
+            final MimeTypeMap map = MimeTypeMap.getSingleton();
+            final String extension = map.getExtensionFromMimeType(mimeType);
+            if (extension == null) return null;
+            final String nameToSave = getFileNameWithExtension(name, extension);
             if (!destination.isDirectory() && !destination.mkdirs()) return null;
             final File saveFile = new File(destination, nameToSave);
-            FileUtils.copyFile(source, saveFile);
-			if (mimeType != null) {
-				MediaScannerConnection.scanFile(context, new String[] { saveFile.getPath() },
-						new String[] { mimeType }, null);
-			}
-			return saveFile;
-		} catch (final IOException e) {
-			if (BuildConfig.DEBUG) Log.w(LOGTAG, "Failed to save file", e);
-			return null;
-		}
-	}
+            ioSrc = Okio.source(source);
+            sink = Okio.buffer(Okio.sink(saveFile));
+            sink.writeAll(ioSrc);
+            sink.flush();
+            if (mimeType != null) {
+                MediaScannerConnection.scanFile(context, new String[]{saveFile.getPath()},
+                        new String[]{mimeType}, null);
+            }
+            return saveFile;
+        } catch (final IOException e) {
+            final int errno = Utils.getErrorNo(e.getCause());
+            Log.w(LOGTAG, "Failed to save file", e);
+            return null;
+        } finally {
+            Utils.closeSilently(sink);
+            Utils.closeSilently(ioSrc);
+        }
+    }
+
+    private static String getFileNameWithExtension(String name, String extension) {
+        int lastDotIdx = name.lastIndexOf('.');
+        if (lastDotIdx < 0) return name + "." + extension;
+        return name.substring(0, lastDotIdx) + "." + extension;
+    }
+
+    @Override
+    protected File doInBackground(final Object... args) {
+        if (source == null) return null;
+        return saveFile(activity, source, mimeType, destination);
+    }
+
+    @Override
+    protected void onCancelled() {
+        final FragmentManager fm = activity.getFragmentManager();
+        final DialogFragment fragment = (DialogFragment) fm.findFragmentByTag(PROGRESS_FRAGMENT_TAG);
+        if (fragment != null && fragment.isVisible()) {
+            fragment.dismiss();
+        }
+        super.onCancelled();
+    }
+
+    @Override
+    protected void onPostExecute(final File result) {
+        final FragmentManager fm = activity.getFragmentManager();
+        final DialogFragment fragment = (DialogFragment) fm.findFragmentByTag(PROGRESS_FRAGMENT_TAG);
+        if (fragment != null) {
+            fragment.dismiss();
+        }
+        super.onPostExecute(result);
+        if (result != null && result.exists()) {
+            Toast.makeText(activity, R.string.saved_to_gallery, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(activity, R.string.error_occurred, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onPreExecute() {
+        final DialogFragment fragment = new ProgressDialogFragment();
+        fragment.setCancelable(false);
+        fragment.show(activity.getFragmentManager(), PROGRESS_FRAGMENT_TAG);
+        super.onPreExecute();
+    }
 
 }

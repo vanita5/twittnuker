@@ -5,15 +5,15 @@
     <style name="Widget.Twidere.Viewer.ActionBar" parent="Widget.AppCompat.ActionBar">
         <item name="background">@drawable/bg_viewer_actionbar</item>
         <item name="backgroundSplit">@drawable/bg_viewer_actionbar</item>
-	</style>
+    </style>
 
 
-	<style name="Animation.Twidere.Activity" parent="android:Animation.Activity">
-		<item name="android:activityOpenEnterAnimation">@anim/activity_open_enter</item>
-		<item name="android:activityOpenExitAnimation">@anim/activity_open_exit</item>
-		<item name="android:activityCloseEnterAnimation">@anim/activity_close_enter</item>
-		<item name="android:activityCloseExitAnimation">@anim/activity_close_exit</item>
-	</style>
+    <style name="Animation.Twidere.Activity" parent="android:Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/activity_open_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/activity_open_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/activity_close_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_close_exit</item>
+    </style>
 
     <style name="Widget.CardActionButton" parent="Widget.Base.ImageButton">
         <item name="android:background">?selectableItemBackground</item>
@@ -83,4 +83,24 @@
         <!--<item name="android:background"></item>-->
         <!--<item name="android:backgroundSplit"></item>-->
     </style>
+
+
+    <style name="Widget.Dark.TextView.ListSeparator" parent="Widget.Base.TextView.Dark">
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+        <item name="android:textColor">?colorAccent</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">@dimen/element_spacing_normal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Widget.Light.TextView.ListSeparator" parent="Widget.Base.TextView.Light">
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+        <item name="android:textColor">?colorAccent</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">@dimen/element_spacing_normal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 </resources>

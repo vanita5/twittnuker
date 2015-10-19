@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,68 +29,62 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.UserColorNameManager;
 
 public class DestroyFriendshipDialogFragment extends BaseSupportDialogFragment implements
-		DialogInterface.OnClickListener {
+        DialogInterface.OnClickListener {
 
-	public static final String FRAGMENT_TAG = "destroy_friendship";
+    public static final String FRAGMENT_TAG = "destroy_friendship";
 
-	@Override
-	public void onClick(final DialogInterface dialog, final int which) {
-		switch (which) {
-			case DialogInterface.BUTTON_POSITIVE:
-				final ParcelableUser user = getUser();
-				final AsyncTwitterWrapper twitter = getTwitterWrapper();
-				if (user == null || twitter == null) return;
-				twitter.destroyFriendshipAsync(user.account_id, user.id);
-				break;
-			default:
-				break;
-		}
-	}
+    @Override
+    public void onClick(final DialogInterface dialog, final int which) {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                final ParcelableUser user = getUser();
+                final AsyncTwitterWrapper twitter = mTwitterWrapper;
+                if (user == null || twitter == null) return;
+                twitter.destroyFriendshipAsync(user.account_id, user.id);
+                break;
+            default:
+                break;
+        }
+    }
 
     @NonNull
-	@Override
-	public Dialog onCreateDialog(final Bundle savedInstanceState) {
+    @Override
+    public Dialog onCreateDialog(final Bundle savedInstanceState) {
         final FragmentActivity activity = getActivity();
         final Context wrapped = ThemeUtils.getDialogThemedContext(activity);
         final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
-		final ParcelableUser user = getUser();
-		if (user != null) {
-            final UserColorNameManager manager = UserColorNameManager.getInstance(activity);
-            final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(activity,
-                    SharedPreferencesWrapper.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE,
-                    SharedPreferenceConstants.class);
-            final boolean nameFirst = prefs.getBoolean(KEY_NAME_FIRST);
-            final String displayName = manager.getDisplayName(user, nameFirst, true);
+        final ParcelableUser user = getUser();
+        if (user != null) {
+            final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
+            final String displayName = mUserColorNameManager.getDisplayName(user, nameFirst, true);
             builder.setTitle(getString(R.string.unfollow_user, displayName));
             builder.setMessage(getString(R.string.unfollow_user_confirm_message, displayName));
-		}
-		builder.setPositiveButton(android.R.string.ok, this);
-		builder.setNegativeButton(android.R.string.cancel, null);
-		return builder.create();
-	}
+        }
+        builder.setPositiveButton(android.R.string.ok, this);
+        builder.setNegativeButton(android.R.string.cancel, null);
+        return builder.create();
+    }
 
-	private ParcelableUser getUser() {
-		final Bundle args = getArguments();
-		if (!args.containsKey(EXTRA_USER)) return null;
-		return args.getParcelable(EXTRA_USER);
-	}
+    private ParcelableUser getUser() {
+        final Bundle args = getArguments();
+        if (!args.containsKey(EXTRA_USER)) return null;
+        return args.getParcelable(EXTRA_USER);
+    }
 
-	public static DestroyFriendshipDialogFragment show(final FragmentManager fm, final ParcelableUser user) {
-		final Bundle args = new Bundle();
-		args.putParcelable(EXTRA_USER, user);
-		final DestroyFriendshipDialogFragment f = new DestroyFriendshipDialogFragment();
-		f.setArguments(args);
-		f.show(fm, FRAGMENT_TAG);
-		return f;
-	}
+    public static DestroyFriendshipDialogFragment show(final FragmentManager fm, final ParcelableUser user) {
+        final Bundle args = new Bundle();
+        args.putParcelable(EXTRA_USER, user);
+        final DestroyFriendshipDialogFragment f = new DestroyFriendshipDialogFragment();
+        f.setArguments(args);
+        f.show(fm, FRAGMENT_TAG);
+        return f;
+    }
 }

@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.activity.support;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -33,6 +34,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff.Mode;
@@ -47,9 +49,11 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.LongSparseArray;
 import android.support.v7.internal.view.SupportMenuInflater;
 import android.support.v7.widget.ActionMenuView;
@@ -57,7 +61,6 @@ import android.support.v7.widget.ActionMenuView.OnMenuItemClickListener;
 import android.support.v7.widget.FixedLinearLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ItemDecoration;
 import android.support.v7.widget.RecyclerView.State;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -66,7 +69,10 @@ import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.CharacterStyle;
 import android.text.style.ImageSpan;
+import android.text.style.MetricAffectingSpan;
+import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.ActionMode.Callback;
@@ -94,8 +100,7 @@ import com.twitter.Extractor;
 
 import org.mariotaku.dynamicgridview.DraggableArrayAdapter;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
+import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.fragment.support.ViewStatusDialogFragment;
@@ -113,7 +118,6 @@ import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.text.MarkForDeleteSpan;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener;
@@ -122,12 +126,11 @@ import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.PermissionUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
-import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ActionIconView;
 import de.vanita5.twittnuker.view.BadgeView;
@@ -151,20 +154,18 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         OnMenuItemClickListener, OnClickListener, OnLongClickListener, Callback {
 
     // Constants
-	private static final String FAKE_IMAGE_LINK = "https://www.example.com/fake_image.jpg";
-	private static final String EXTRA_IS_POSSIBLY_SENSITIVE = "is_possibly_sensitive";
-	private static final String EXTRA_SHOULD_SAVE_ACCOUNTS = "should_save_accounts";
-	private static final String EXTRA_ORIGINAL_TEXT = "original_text";
+    private static final String FAKE_IMAGE_LINK = "https://www.example.com/fake_image.jpg";
+    private static final String EXTRA_IS_POSSIBLY_SENSITIVE = "is_possibly_sensitive";
+    private static final String EXTRA_SHOULD_SAVE_ACCOUNTS = "should_save_accounts";
+    private static final String EXTRA_ORIGINAL_TEXT = "original_text";
     private static final String EXTRA_SHARE_SCREENSHOT = "share_screenshot";
     private static final String DISCARD_STATUS_DIALOG_FRAGMENT_TAG = "discard_status";
 
     // Utility classes
     private final Extractor mExtractor = new Extractor();
-	private TwidereValidator mValidator;
-	private AsyncTwitterWrapper mTwitterWrapper;
-	private LocationManager mLocationManager;
-	private SharedPreferencesWrapper mPreferences;
-	private ContentResolver mResolver;
+    private TwidereValidator mValidator;
+    private LocationManager mLocationManager;
+    private ContentResolver mResolver;
     private AsyncTask<Object, Object, ?> mTask;
     private SupportMenuInflater mMenuInflater;
 
@@ -176,11 +177,10 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     private StatusTextCountView mSendTextCountView;
     private RecyclerView mAccountSelector;
     private View mAccountSelectorContainer;
-	private DraftItem mDraftItem;
+    private DraftItem mDraftItem;
     private ShapedImageView mProfileImageView;
     private BadgeView mCountView;
     private View mAccountSelectorButton;
-    private MediaLoaderWrapper mImageLoader;
     private View mLocationContainer;
     private ActionIconView mLocationIcon;
     private TextView mLocationText;
@@ -201,11 +201,12 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     private boolean mTextChanged;
     private SetProgressVisibleRunnable mSetProgressVisibleRunnable;
     private boolean mFragmentResumed;
+    private int mKeyMetaState;
 
-	@Override
-	public int getThemeColor() {
+    @Override
+    public int getThemeColor() {
         return ThemeUtils.getUserAccentColor(this);
-	}
+    }
 
     @Override
     public int getActionBarColor() {
@@ -218,49 +219,49 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     }
 
     @Override
-	public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
-		switch (requestCode) {
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+        switch (requestCode) {
             case REQUEST_TAKE_PHOTO:
             case REQUEST_PICK_IMAGE:
-			case REQUEST_OPEN_DOCUMENT: {
-				if (resultCode == Activity.RESULT_OK) {
-					final Uri src = intent.getData();
-					mTask = AsyncTaskUtils.executeTask(new AddMediaTask(this, src,
+            case REQUEST_OPEN_DOCUMENT: {
+                if (resultCode == Activity.RESULT_OK) {
+                    final Uri src = intent.getData();
+                    mTask = AsyncTaskUtils.executeTask(new AddMediaTask(this, src,
                             createTempImageUri(), ParcelableMedia.TYPE_IMAGE, true));
-				}
-				break;
-			}
-			case REQUEST_EDIT_IMAGE: {
-				if (resultCode == Activity.RESULT_OK) {
-					final Uri uri = intent.getData();
+                }
+                break;
+            }
+            case REQUEST_EDIT_IMAGE: {
+                if (resultCode == Activity.RESULT_OK) {
+                    final Uri uri = intent.getData();
                     if (uri == null) {
-						break;
-					}
-					setMenu();
-					updateTextCount();
-				}
-				break;
-			}
-		}
+                        break;
+                    }
+                    setMenu();
+                    updateTextCount();
+                }
+                break;
+            }
+        }
 
-	}
+    }
 
-	@Override
-	public void onBackPressed() {
+    @Override
+    public void onBackPressed() {
         if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING) return;
-		final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
-		final boolean textChanged = text != null && !text.isEmpty() && !text.equals(mOriginalText);
-		final boolean isEditingDraft = INTENT_ACTION_EDIT_DRAFT.equals(getIntent().getAction());
+        final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
+        final boolean textChanged = text != null && !text.isEmpty() && !text.equals(mOriginalText);
+        final boolean isEditingDraft = INTENT_ACTION_EDIT_DRAFT.equals(getIntent().getAction());
         if (textChanged || hasMedia() || isEditingDraft) {
             saveToDrafts();
             Toast.makeText(this, R.string.status_saved_to_draft, Toast.LENGTH_SHORT).show();
             finish();
         } else {
             mTask = AsyncTaskUtils.executeTask(new DiscardTweetTask(this));
-		}
-	}
+        }
+    }
 
-	@Override
+    @Override
     public void onSaveInstanceState(final Bundle outState) {
         outState.putLongArray(EXTRA_ACCOUNT_IDS, mAccountsAdapter.getSelectedAccountIds());
         outState.putParcelableArrayList(EXTRA_MEDIA, new ArrayList<Parcelable>(getMediaList()));
@@ -279,7 +280,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         super.onStart();
         mImageUploaderUsed = !ServicePickerPreference.isNoneValue(mPreferences.getString(KEY_MEDIA_UPLOADER, null));
         mStatusShortenerUsed = !ServicePickerPreference.isNoneValue(mPreferences.getString(KEY_STATUS_SHORTENER, null));
-        startLocationUpdateIfEnabled();
+        requestOrUpdateLocation();
         setMenu();
         updateTextCount();
         final int textSize = mPreferences.getInt(KEY_TEXT_SIZE, Utils.getDefaultTextSize(this));
@@ -289,20 +290,18 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     @Override
     protected void onStop() {
         saveAccountSelection();
-        mLocationManager.removeUpdates(this);
+        try {
+            mLocationManager.removeUpdates(this);
+        } catch (SecurityException ignore) {
+        }
         super.onStop();
     }
 
     @Override
-	public void onClick(final View view) {
-		switch (view.getId()) {
+    public void onClick(final View view) {
+        switch (view.getId()) {
             case R.id.send: {
-                if (isQuotingProtectedStatus()) {
-                    new RetweetProtectedStatusWarnFragment().show(getSupportFragmentManager(),
-                            "retweet_protected_status_warning_message");
-                } else {
-                    updateStatus();
-                }
+                confirmAndUpdateStatus();
                 break;
             }
             case R.id.account_selector_container: {
@@ -321,6 +320,15 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         }
     }
 
+    private void confirmAndUpdateStatus() {
+        if (isQuotingProtectedStatus()) {
+            new RetweetProtectedStatusWarnFragment().show(getSupportFragmentManager(),
+                    "retweet_protected_status_warning_message");
+        } else {
+            updateStatus();
+        }
+    }
+
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         final Window window = getWindow();
@@ -335,15 +343,16 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                     contentView.getPaddingRight(), contentView.getPaddingBottom());
             return true;
         }
+        // Offset content view
         final int statusBarHeight = rect.top;
         contentView.getWindowVisibleDisplayFrame(rect);
         final int paddingTop = statusBarHeight + actionBarHeight - rect.top;
         contentView.setPadding(contentView.getPaddingLeft(), paddingTop,
                 contentView.getPaddingRight(), contentView.getPaddingBottom());
-		return true;
-	}
+        return true;
+    }
 
-	@Override
+    @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
         return true;
     }
@@ -362,35 +371,35 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     }
 
     @Override
-	public void onLocationChanged(final Location location) {
+    public void onLocationChanged(final Location location) {
         setRecentLocation(ParcelableLocation.fromLocation(location));
     }
 
-	@Override
+    @Override
     public void onStatusChanged(final String provider, final int status, final Bundle extras) {
 
     }
 
-	@Override
+    @Override
     public void onProviderEnabled(final String provider) {
-	}
+    }
 
-	@Override
-	public void onProviderDisabled(final String provider) {
-	}
+    @Override
+    public void onProviderDisabled(final String provider) {
+    }
 
-	@Override
+    @Override
     public boolean onLongClick(final View v) {
         switch (v.getId()) {
             case R.id.send: {
                 Utils.showMenuItemToast(v, getString(R.string.send), true);
                 return true;
             }
-	    }
+        }
         return false;
-	}
+    }
 
-	@Override
+    @Override
     public boolean onMenuItemClick(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.take_photo: {
@@ -398,7 +407,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 break;
             }
             case R.id.add_image: {
-				pickImage();
+                pickImage();
                 break;
             }
             case R.id.add_location: {
@@ -440,23 +449,23 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
             }
         }
         return true;
-	}
+    }
 
-	@Override
-	public boolean onTouchEvent(final MotionEvent event) {
-		switch (event.getActionMasked()) {
-			case MotionEvent.ACTION_DOWN: {
+    @Override
+    public boolean onTouchEvent(final MotionEvent event) {
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN: {
                 final Rect rect = new Rect();
                 getWindow().getDecorView().getHitRect(rect);
                 if (!rect.contains(Math.round(event.getX()), Math.round(event.getY()))) {
-					onBackPressed();
-					return true;
-				}
-				break;
-			}
-		}
-		return super.onTouchEvent(event);
-	}
+                    onBackPressed();
+                    return true;
+                }
+                break;
+            }
+        }
+        return super.onTouchEvent(event);
+    }
 
     @Override
     public void onContentChanged() {
@@ -485,26 +494,26 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         return mMenuInflater;
     }
 
-	public void removeAllMedia(final List<ParcelableMediaUpdate> list) {
-		mMediaPreviewAdapter.removeAll(list);
+    public void removeAllMedia(final List<ParcelableMediaUpdate> list) {
+        mMediaPreviewAdapter.removeAll(list);
         updateMediaPreview();
-	}
+    }
 
-	public void saveToDrafts() {
-		final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
-		final ParcelableStatusUpdate.Builder builder = new ParcelableStatusUpdate.Builder();
+    public void saveToDrafts() {
+        final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
+        final ParcelableStatusUpdate.Builder builder = new ParcelableStatusUpdate.Builder();
         builder.accounts(ParcelableAccount.getAccounts(this, mAccountsAdapter.getSelectedAccountIds()));
-		builder.text(text);
-		builder.inReplyToStatusId(mInReplyToStatusId);
-		builder.location(mRecentLocation);
-		builder.isPossiblySensitive(mIsPossiblySensitive);
-		if (hasMedia()) {
-			builder.media(getMedia());
-		}
+        builder.text(text);
+        builder.inReplyToStatusId(mInReplyToStatusId);
+        builder.location(mRecentLocation);
+        builder.isPossiblySensitive(mIsPossiblySensitive);
+        if (hasMedia()) {
+            builder.media(getMedia());
+        }
         final ContentValues values = ContentValuesCreator.createStatusDraft(builder.build());
         final Uri draftUri = mResolver.insert(Drafts.CONTENT_URI, values);
         displayNewDraftNotification(text, draftUri);
-	}
+    }
 
     public void setSelectedAccounts(ParcelableAccount... accounts) {
         if (accounts.length == 1) {
@@ -520,28 +529,29 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         }
     }
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        mPreferences = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME,
-                Context.MODE_PRIVATE, SharedPreferenceConstants.class);
+    @Override
+    public void onActionModeStarted(ActionMode mode) {
+        super.onActionModeStarted(mode);
+        ThemeUtils.applyColorFilterToMenuIcon(mode.getMenu(), ThemeUtils.getContrastActionBarItemColor(this),
+                0, 0, Mode.MULTIPLY);
+    }
 
-        final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
-        mTwitterWrapper = app.getTwitterWrapper();
-		mResolver = getContentResolver();
-		mValidator = new TwidereValidator(this);
-        mImageLoader = app.getMediaLoaderWrapper();
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mResolver = getContentResolver();
+        mValidator = new TwidereValidator(this);
         setContentView(R.layout.activity_compose);
-		setFinishOnTouchOutside(false);
+        setFinishOnTouchOutside(false);
         final long[] defaultAccountIds = Utils.getAccountIds(this);
         if (defaultAccountIds.length <= 0) {
-			final Intent intent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
-			intent.setClass(this, SignInActivity.class);
-			startActivity(intent);
-			finish();
-			return;
-		}
+            final Intent intent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
+            intent.setClass(this, SignInActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
         mMenuBar.setOnMenuItemClickListener(this);
         setupEditText();
         mAccountSelectorContainer.setOnClickListener(this);
@@ -597,58 +607,58 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         mAccountSelector.setAdapter(mAccountsAdapter);
         mAccountsAdapter.setAccounts(ParcelableCredentials.getCredentialsArray(this, false, false));
 
-		mMediaPreviewAdapter = new MediaPreviewAdapter(this);
+        mMediaPreviewAdapter = new MediaPreviewAdapter(this);
         mMediaPreviewGrid.setAdapter(mMediaPreviewAdapter);
 
-		final Intent intent = getIntent();
+        final Intent intent = getIntent();
 
 
-		if (savedInstanceState != null) {
-			// Restore from previous saved state
+        if (savedInstanceState != null) {
+            // Restore from previous saved state
             mAccountsAdapter.setSelectedAccountIds(savedInstanceState.getLongArray(EXTRA_ACCOUNT_IDS));
-			mIsPossiblySensitive = savedInstanceState.getBoolean(EXTRA_IS_POSSIBLY_SENSITIVE);
-			final ArrayList<ParcelableMediaUpdate> mediaList = savedInstanceState.getParcelableArrayList(EXTRA_MEDIA);
+            mIsPossiblySensitive = savedInstanceState.getBoolean(EXTRA_IS_POSSIBLY_SENSITIVE);
+            final ArrayList<ParcelableMediaUpdate> mediaList = savedInstanceState.getParcelableArrayList(EXTRA_MEDIA);
             if (mediaList != null) {
                 addMedia(mediaList);
-			}
-			mInReplyToStatus = savedInstanceState.getParcelable(EXTRA_STATUS);
-			mInReplyToStatusId = savedInstanceState.getLong(EXTRA_STATUS_ID);
-			mMentionUser = savedInstanceState.getParcelable(EXTRA_USER);
-			mDraftItem = savedInstanceState.getParcelable(EXTRA_DRAFT);
-			mShouldSaveAccounts = savedInstanceState.getBoolean(EXTRA_SHOULD_SAVE_ACCOUNTS);
-			mOriginalText = savedInstanceState.getString(EXTRA_ORIGINAL_TEXT);
-		} else {
+            }
+            mInReplyToStatus = savedInstanceState.getParcelable(EXTRA_STATUS);
+            mInReplyToStatusId = savedInstanceState.getLong(EXTRA_STATUS_ID);
+            mMentionUser = savedInstanceState.getParcelable(EXTRA_USER);
+            mDraftItem = savedInstanceState.getParcelable(EXTRA_DRAFT);
+            mShouldSaveAccounts = savedInstanceState.getBoolean(EXTRA_SHOULD_SAVE_ACCOUNTS);
+            mOriginalText = savedInstanceState.getString(EXTRA_ORIGINAL_TEXT);
+        } else {
             // The context was first created
-			final int notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1);
-			if (notificationId != -1) {
-				NotificationManager notificationManager =
-						(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				if (notificationManager != null) {
-					notificationManager.cancel(notificationId);
-				}
-			}
-			if (!handleIntent(intent)) {
-				handleDefaultIntent(intent);
-			}
+            final int notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1);
+            if (notificationId != -1) {
+                NotificationManager notificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                if (notificationManager != null) {
+                    notificationManager.cancel(notificationId);
+                }
+            }
+            if (!handleIntent(intent)) {
+                handleDefaultIntent(intent);
+            }
             final long[] accountIds = mAccountsAdapter.getSelectedAccountIds();
             if (accountIds.length == 0) {
                 final long[] idsInPrefs = TwidereArrayUtils.parseLongArray(
-						mPreferences.getString(KEY_COMPOSE_ACCOUNTS, null), ',');
+                        mPreferences.getString(KEY_COMPOSE_ACCOUNTS, null), ',');
                 final long[] intersection = TwidereArrayUtils.intersection(idsInPrefs, defaultAccountIds);
                 mAccountsAdapter.setSelectedAccountIds(intersection.length > 0 ? intersection : defaultAccountIds);
-			}
-			mOriginalText = ParseUtils.parseString(mEditText.getText());
-		}
-		if (!setComposeTitle(intent)) {
-			setTitle(R.string.compose);
-		}
+            }
+            mOriginalText = ParseUtils.parseString(mEditText.getText());
+        }
+        if (!setComposeTitle(intent)) {
+            setTitle(R.string.compose);
+        }
 
         final Menu menu = mMenuBar.getMenu();
         getMenuInflater().inflate(R.menu.menu_compose, menu);
         ThemeUtils.wrapMenuIcon(mMenuBar);
 
-		mSendView.setOnClickListener(this);
-		mSendView.setOnLongClickListener(this);
+        mSendView.setOnClickListener(this);
+        mSendView.setOnLongClickListener(this);
         setMenu();
         updateLocationState();
         updateMediaPreview();
@@ -657,12 +667,32 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         mTextChanged = false;
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        final int keyCode = event.getKeyCode();
+        if (KeyEvent.isModifierKey(keyCode)) {
+            final int action = event.getAction();
+            if (action == MotionEvent.ACTION_DOWN) {
+                mKeyMetaState |= KeyboardShortcutsHandler.getMetaStateForKeyCode(keyCode);
+            } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+                mKeyMetaState &= ~KeyboardShortcutsHandler.getMetaStateForKeyCode(keyCode);
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
     private void setupEditText() {
         final boolean sendByEnter = mPreferences.getBoolean(KEY_QUICK_SEND);
         EditTextEnterHandler.attach(mEditText, new EnterListener() {
-			@Override
-            public void onHitEnter() {
-                updateStatus();
+            @Override
+            public boolean shouldCallListener() {
+                return mKeyMetaState == 0;
+            }
+
+            @Override
+            public boolean onHitEnter() {
+                confirmAndUpdateStatus();
+                return true;
             }
         }, sendByEnter);
         mEditText.addTextChangedListener(new TextWatcher() {
@@ -682,10 +712,10 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                         final Intent intent = ThemedImagePickerActivity.withThemed(ComposeActivity.this)
                                 .getImage(Uri.parse(imageSpans[0].getSource())).build();
                         startActivityForResult(intent, REQUEST_PICK_IMAGE);
-						((Spannable) s).setSpan(new MarkForDeleteSpan(), start, start + count,
-								Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-					}
-				}
+                        ((Spannable) s).setSpan(new MarkForDeleteSpan(), start, start + count,
+                                Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    }
+                }
             }
 
             @Override
@@ -696,19 +726,26 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                     s.delete(s.getSpanStart(delete), s.getSpanEnd(delete));
                     s.removeSpan(delete);
                 }
+                for (Object span : s.getSpans(0, s.length(), CharacterStyle.class)) {
+                    if (span instanceof URLSpan) {
+                        s.removeSpan(span);
+                    } else if (span instanceof MetricAffectingSpan) {
+                        s.removeSpan(span);
+                    }
+                }
             }
         });
         mEditText.setCustomSelectionActionModeCallback(this);
     }
 
     @Override
-	protected void onTitleChanged(final CharSequence title, final int color) {
-		super.onTitleChanged(title, color);
-	}
+    protected void onTitleChanged(final CharSequence title, final int color) {
+        super.onTitleChanged(title, color);
+    }
 
     @Override
-    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
-        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
         if (ACTION_NAVIGATION_BACK.equals(action)) {
             if (mEditText.length() == 0 && !mTextChanged) {
                 if (!mNavigateBackPressed) {
@@ -729,33 +766,33 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
             }
             return true;
         }
-        return super.handleKeyboardShortcutSingle(handler, keyCode, event);
+        return super.handleKeyboardShortcutSingle(handler, keyCode, event, metaState);
     }
 
     @Override
-    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
-        return super.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
+    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event, int metaState) {
+        return super.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState);
     }
 
-	private void addMedia(final ParcelableMediaUpdate media) {
-		mMediaPreviewAdapter.add(media);
+    private void addMedia(final ParcelableMediaUpdate media) {
+        mMediaPreviewAdapter.add(media);
         updateMediaPreview();
-	}
+    }
 
     private void addMedia(final List<ParcelableMediaUpdate> media) {
         mMediaPreviewAdapter.addAll(media);
         updateMediaPreview();
-	}
+    }
 
-	private void clearMedia() {
-		mMediaPreviewAdapter.clear();
+    private void clearMedia() {
+        mMediaPreviewAdapter.clear();
         updateMediaPreview();
-	}
+    }
 
-	private Uri createTempImageUri() {
-		final File file = new File(getCacheDir(), "tmp_image_" + System.currentTimeMillis());
-		return Uri.fromFile(file);
-	}
+    private Uri createTempImageUri() {
+        final File file = new File(getCacheDir(), "tmp_image_" + System.currentTimeMillis());
+        return Uri.fromFile(file);
+    }
 
     private void displayNewDraftNotification(String text, Uri draftUri) {
         final ContentValues values = new ContentValues();
@@ -765,16 +802,16 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
     private ParcelableMediaUpdate[] getMedia() {
         final List<ParcelableMediaUpdate> list = getMediaList();
-		return list.toArray(new ParcelableMediaUpdate[list.size()]);
-	}
+        return list.toArray(new ParcelableMediaUpdate[list.size()]);
+    }
 
     private List<ParcelableMediaUpdate> getMediaList() {
-		return mMediaPreviewAdapter.getAsList();
-	}
+        return mMediaPreviewAdapter.getAsList();
+    }
 
-	private boolean handleDefaultIntent(final Intent intent) {
-		if (intent == null) return false;
-		final String action = intent.getAction();
+    private boolean handleDefaultIntent(final Intent intent) {
+        if (intent == null) return false;
+        final String action = intent.getAction();
         final boolean hasAccountIds;
         if (intent.hasExtra(EXTRA_ACCOUNT_IDS)) {
             mAccountsAdapter.setSelectedAccountIds(intent.getLongArrayExtra(EXTRA_ACCOUNT_IDS));
@@ -787,14 +824,14 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         }
         mShouldSaveAccounts = !Intent.ACTION_SEND.equals(action)
                 && !Intent.ACTION_SEND_MULTIPLE.equals(action) && !hasAccountIds;
-		final Uri data = intent.getData();
-		final CharSequence extraSubject = intent.getCharSequenceExtra(Intent.EXTRA_SUBJECT);
-		final CharSequence extraText = intent.getCharSequenceExtra(Intent.EXTRA_TEXT);
-		final Uri extraStream = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        final Uri data = intent.getData();
+        final CharSequence extraSubject = intent.getCharSequenceExtra(Intent.EXTRA_SUBJECT);
+        final CharSequence extraText = intent.getCharSequenceExtra(Intent.EXTRA_TEXT);
+        final Uri extraStream = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         //TODO handle share_screenshot extra (Bitmap)
-		if (extraStream != null) {
+        if (extraStream != null) {
             AsyncTaskUtils.executeTask(new AddMediaTask(this, extraStream, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false));
-		} else if (data != null) {
+        } else if (data != null) {
             AsyncTaskUtils.executeTask(new AddMediaTask(this, data, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false));
         } else if (intent.hasExtra(EXTRA_SHARE_SCREENSHOT) && Utils.useShareScreenshot()) {
             final Bitmap bitmap = intent.getParcelableExtra(EXTRA_SHARE_SCREENSHOT);
@@ -804,56 +841,56 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 } catch (IOException e) {
                     // ignore
                     bitmap.recycle();
-		        }
+                }
             }
         }
         mEditText.setText(Utils.getShareStatus(this, extraSubject, extraText));
         final int selectionEnd = mEditText.length();
         mEditText.setSelection(selectionEnd);
-		return true;
-	}
+        return true;
+    }
 
-	private boolean handleEditDraftIntent(final DraftItem draft) {
-		if (draft == null) return false;
-		mEditText.setText(draft.text);
+    private boolean handleEditDraftIntent(final DraftItem draft) {
+        if (draft == null) return false;
+        mEditText.setText(draft.text);
         final int selectionEnd = mEditText.length();
         mEditText.setSelection(selectionEnd);
         mAccountsAdapter.setSelectedAccountIds(draft.account_ids);
-		if (draft.media != null) {
-			addMedia(Arrays.asList(draft.media));
-		}
-		mIsPossiblySensitive = draft.is_possibly_sensitive;
-		mInReplyToStatusId = draft.in_reply_to_status_id;
-		return true;
-	}
+        if (draft.media != null) {
+            addMedia(Arrays.asList(draft.media));
+        }
+        mIsPossiblySensitive = draft.is_possibly_sensitive;
+        mInReplyToStatusId = draft.in_reply_to_status_id;
+        return true;
+    }
 
-	private boolean handleIntent(final Intent intent) {
-		final String action = intent.getAction();
+    private boolean handleIntent(final Intent intent) {
+        final String action = intent.getAction();
         if (action == null) return false;
-		mShouldSaveAccounts = false;
-		mMentionUser = intent.getParcelableExtra(EXTRA_USER);
-		mInReplyToStatus = intent.getParcelableExtra(EXTRA_STATUS);
-		mInReplyToStatusId = mInReplyToStatus != null ? mInReplyToStatus.id : -1;
+        mShouldSaveAccounts = false;
+        mMentionUser = intent.getParcelableExtra(EXTRA_USER);
+        mInReplyToStatus = intent.getParcelableExtra(EXTRA_STATUS);
+        mInReplyToStatusId = mInReplyToStatus != null ? mInReplyToStatus.id : -1;
         switch (action) {
             case INTENT_ACTION_REPLY: {
-			    return handleReplyIntent(mInReplyToStatus);
+                return handleReplyIntent(mInReplyToStatus);
             }
             case INTENT_ACTION_QUOTE: {
-			    return handleQuoteIntent(mInReplyToStatus);
+                return handleQuoteIntent(mInReplyToStatus);
             }
             case INTENT_ACTION_EDIT_DRAFT: {
                 mDraftItem = intent.getParcelableExtra(EXTRA_DRAFT);
                 return handleEditDraftIntent(mDraftItem);
             }
             case INTENT_ACTION_MENTION: {
-			    return handleMentionIntent(mMentionUser);
+                return handleMentionIntent(mMentionUser);
             }
             case INTENT_ACTION_REPLY_MULTIPLE: {
                 final String[] screenNames = intent.getStringArrayExtra(EXTRA_SCREEN_NAMES);
                 final long accountId = intent.getLongExtra(EXTRA_ACCOUNT_ID, -1);
                 final long inReplyToUserId = intent.getLongExtra(EXTRA_IN_REPLY_TO_ID, -1);
                 return handleReplyMultipleIntent(screenNames, accountId, inReplyToUserId);
-		}
+            }
             case INTENT_ACTION_COMPOSE_TAKE_PHOTO: {
                 return takePhoto();
             }
@@ -861,40 +898,37 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 return pickImage();
             }
         }
-		// Unknown action or no intent extras
-		return false;
-	}
+        // Unknown action or no intent extras
+        return false;
+    }
 
-	private boolean handleMentionIntent(final ParcelableUser user) {
-		if (user == null || user.id <= 0) return false;
+    private boolean handleMentionIntent(final ParcelableUser user) {
+        if (user == null || user.id <= 0) return false;
         final String my_screen_name = Utils.getAccountScreenName(this, user.account_id);
         if (TextUtils.isEmpty(my_screen_name)) return false;
-		mEditText.setText("@" + user.screen_name + " ");
-		final int selection_end = mEditText.length();
-		mEditText.setSelection(selection_end);
+        mEditText.setText("@" + user.screen_name + " ");
+        final int selection_end = mEditText.length();
+        mEditText.setSelection(selection_end);
         mAccountsAdapter.setSelectedAccountIds(user.account_id);
-		return true;
-	}
+        return true;
+    }
 
-	private boolean handleQuoteIntent(final ParcelableStatus status) {
-		if (status == null || status.id <= 0) return false;
-		mEditText.setText(Utils.getQuoteStatus(this, status.id, status.user_screen_name, status.text_plain));
-		mEditText.setSelection(0);
+    private boolean handleQuoteIntent(final ParcelableStatus status) {
+        if (status == null || status.id <= 0) return false;
+        mEditText.setText(Utils.getQuoteStatus(this, status.id, status.user_screen_name, status.text_plain));
+        mEditText.setSelection(0);
         mAccountsAdapter.setSelectedAccountIds(status.account_id);
-		return true;
-	}
+        return true;
+    }
 
-	private boolean handleReplyIntent(final ParcelableStatus status) {
-		if (status == null || status.id <= 0) return false;
+    private boolean handleReplyIntent(final ParcelableStatus status) {
+        if (status == null || status.id <= 0) return false;
         final String myScreenName = Utils.getAccountScreenName(this, status.account_id);
         if (TextUtils.isEmpty(myScreenName)) return false;
         int selectionStart = 0;
-        if (status.is_quote) {
-            mEditText.append("@" + status.quoted_by_user_screen_name + " ");
-            selectionStart = mEditText.length();
-        }
-		mEditText.append("@" + status.user_screen_name + " ");
-        if (!status.is_quote) {
+        mEditText.append("@" + status.user_screen_name + " ");
+        // If status is not sent by our self, just include our screen name into selection.
+        if (status.account_id != status.user_id) {
             selectionStart = mEditText.length();
         }
         if (status.is_retweet) {
@@ -905,15 +939,15 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         for (final String mention : mentions) {
             if (mention.equalsIgnoreCase(status.user_screen_name) || mention.equalsIgnoreCase(myScreenName)
                     || mention.equalsIgnoreCase(status.retweeted_by_user_screen_name)) {
-				continue;
-			}
+                continue;
+            }
             mEditText.append("@" + mention + " ");
-		}
-		final int selectionEnd = mEditText.length();
-		mEditText.setSelection(selectionStart, selectionEnd);
+        }
+        final int selectionEnd = mEditText.length();
+        mEditText.setSelection(selectionStart, selectionEnd);
         mAccountsAdapter.setSelectedAccountIds(status.account_id);
-		return true;
-	}
+        return true;
+    }
 
     private boolean handleReplyMultipleIntent(final String[] screenNames, final long accountId,
                                               final long inReplyToStatusId) {
@@ -921,20 +955,20 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         final String myScreenName = Utils.getAccountScreenName(this, accountId);
         if (TextUtils.isEmpty(myScreenName)) return false;
         for (final String screenName : screenNames) {
-              if (screenName.equalsIgnoreCase(myScreenName)) {
-				continue;
-			}
+            if (screenName.equalsIgnoreCase(myScreenName)) {
+                continue;
+            }
             mEditText.append("@" + screenName + " ");
-		}
+        }
         mEditText.setSelection(mEditText.length());
         mAccountsAdapter.setSelectedAccountIds(accountId);
         mInReplyToStatusId = inReplyToStatusId;
-		return true;
-	}
+        return true;
+    }
 
-	private boolean hasMedia() {
-		return !mMediaPreviewAdapter.isEmpty();
-	}
+    private boolean hasMedia() {
+        return !mMediaPreviewAdapter.isEmpty();
+    }
 
     private boolean isQuote() {
         return INTENT_ACTION_QUOTE.equals(getIntent().getAction());
@@ -942,15 +976,15 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
     private boolean isQuotingProtectedStatus() {
         if (!isQuote() || mInReplyToStatus == null) return false;
-		return mInReplyToStatus.user_is_protected && mInReplyToStatus.account_id != mInReplyToStatus.user_id;
+        return mInReplyToStatus.user_is_protected && mInReplyToStatus.account_id != mInReplyToStatus.user_id;
     }
 
-	private boolean noReplyContent(final String text) {
-		if (text == null) return true;
-		final String action = getIntent().getAction();
-		final boolean is_reply = INTENT_ACTION_REPLY.equals(action) || INTENT_ACTION_REPLY_MULTIPLE.equals(action);
-		return is_reply && text.equals(mOriginalText);
-	}
+    private boolean noReplyContent(final String text) {
+        if (text == null) return true;
+        final String action = getIntent().getAction();
+        final boolean is_reply = INTENT_ACTION_REPLY.equals(action) || INTENT_ACTION_REPLY_MULTIPLE.equals(action);
+        return is_reply && text.equals(mOriginalText);
+    }
 
     private void notifyAccountSelectionChanged() {
         final ParcelableAccount[] accounts = mAccountsAdapter.getSelectedAccounts();
@@ -962,9 +996,9 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
     private boolean pickImage() {
         final Intent intent = ThemedImagePickerActivity.withThemed(this).pickImage().build();
-		startActivityForResult(intent, REQUEST_PICK_IMAGE);
+        startActivityForResult(intent, REQUEST_PICK_IMAGE);
         return true;
-	}
+    }
 
     private void saveAccountSelection() {
         if (!mShouldSaveAccounts) return;
@@ -977,39 +1011,38 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         mAccountSelectorContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-	private boolean setComposeTitle(final Intent intent) {
-		final String action = intent.getAction();
-        final UserColorNameManager manager = UserColorNameManager.getInstance(this);
+    private boolean setComposeTitle(final Intent intent) {
+        final String action = intent.getAction();
         final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
-		if (INTENT_ACTION_REPLY.equals(action)) {
-			if (mInReplyToStatus == null) return false;
-            final String displayName = manager.getDisplayName(mInReplyToStatus.user_id, mInReplyToStatus.user_name,
+        if (INTENT_ACTION_REPLY.equals(action)) {
+            if (mInReplyToStatus == null) return false;
+            final String displayName = mUserColorNameManager.getDisplayName(mInReplyToStatus.user_id, mInReplyToStatus.user_name,
                     mInReplyToStatus.user_screen_name, nameFirst, false);
             setTitle(getString(R.string.reply_to, displayName));
-		} else if (INTENT_ACTION_QUOTE.equals(action)) {
-			if (mInReplyToStatus == null) return false;
-            final String displayName = manager.getDisplayName(mInReplyToStatus.user_id, mInReplyToStatus.user_name,
+        } else if (INTENT_ACTION_QUOTE.equals(action)) {
+            if (mInReplyToStatus == null) return false;
+            final String displayName = mUserColorNameManager.getDisplayName(mInReplyToStatus.user_id, mInReplyToStatus.user_name,
                     mInReplyToStatus.user_screen_name, nameFirst, false);
             setTitle(getString(R.string.quote_user, displayName));
-		} else if (INTENT_ACTION_EDIT_DRAFT.equals(action)) {
-			if (mDraftItem == null) return false;
-			setTitle(R.string.edit_draft);
-		} else if (INTENT_ACTION_MENTION.equals(action)) {
-			if (mMentionUser == null) return false;
-            final String displayName = manager.getDisplayName(mMentionUser.id, mMentionUser.name,
+        } else if (INTENT_ACTION_EDIT_DRAFT.equals(action)) {
+            if (mDraftItem == null) return false;
+            setTitle(R.string.edit_draft);
+        } else if (INTENT_ACTION_MENTION.equals(action)) {
+            if (mMentionUser == null) return false;
+            final String displayName = mUserColorNameManager.getDisplayName(mMentionUser.id, mMentionUser.name,
                     mMentionUser.screen_name, nameFirst, false);
             setTitle(getString(R.string.mention_user, displayName));
-		} else if (INTENT_ACTION_REPLY_MULTIPLE.equals(action)) {
-			setTitle(R.string.reply);
-		} else if (Intent.ACTION_SEND.equals(action) || Intent.ACTION_SEND_MULTIPLE.equals(action)) {
-			setTitle(R.string.share);
-		} else {
-			setTitle(R.string.compose);
-		}
-		return true;
-	}
+        } else if (INTENT_ACTION_REPLY_MULTIPLE.equals(action)) {
+            setTitle(R.string.reply);
+        } else if (Intent.ACTION_SEND.equals(action) || Intent.ACTION_SEND_MULTIPLE.equals(action)) {
+            setTitle(R.string.share);
+        } else {
+            setTitle(R.string.compose);
+        }
+        return true;
+    }
 
-	private void setMenu() {
+    private void setMenu() {
         if (mMenuBar == null) return;
         final Menu menu = mMenuBar.getMenu();
         final boolean hasMedia = hasMedia(), hasInReplyTo = mInReplyToStatus != null;
@@ -1030,7 +1063,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         MenuUtils.setMenuItemChecked(menu, R.id.link_to_quoted_status, mPreferences.getBoolean(KEY_LINK_TO_QUOTED_TWEET));
         ThemeUtils.resetCheatSheet(mMenuBar);
 //        mMenuBar.show();
-	}
+    }
 
     private boolean isScheduleSupported() {
         for (ParcelableCredentials account : mAccountsAdapter.getSelectedAccounts()) {
@@ -1066,6 +1099,17 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         mFragmentResumed = false;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (PermissionUtils.getPermission(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                PermissionUtils.getPermission(permissions, grantResults, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            startLocationUpdateIfEnabled();
+        } else {
+            Toast.makeText(this, R.string.cannot_get_location, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private static class SetProgressVisibleRunnable implements Runnable {
 
         private final ComposeActivity activity;
@@ -1088,7 +1132,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 df.setCancelable(false);
             }
         }
-	}
+    }
 
     private void setRecentLocation(ParcelableLocation location) {
         if (location != null) {
@@ -1107,48 +1151,57 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     private boolean startLocationUpdateIfEnabled() {
         final LocationManager lm = mLocationManager;
         try {
-            final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION);
-            if (!attachLocation) {
-                lm.removeUpdates(this);
-                return false;
-            }
-            final Criteria criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-            final String provider = lm.getBestProvider(criteria, true);
-            if (provider != null) {
+            lm.removeUpdates(this);
+        } catch (SecurityException ignore) {
+        }
+        final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION);
+        if (!attachLocation) {
+            return false;
+        }
+        final Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        final String provider = lm.getBestProvider(criteria, true);
+        if (provider != null) {
+            try {
                 mLocationText.setText(R.string.getting_location);
                 lm.requestLocationUpdates(provider, 0, 0, this);
-                final Location location;
-                if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                    location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                } else {
-                    location = lm.getLastKnownLocation(provider);
-                }
+                final Location location = Utils.getCachedLocation(this);
                 if (location != null) {
                     onLocationChanged(location);
                 }
-            } else {
-                Toast.makeText(this, R.string.cannot_get_location, Toast.LENGTH_SHORT).show();
+            } catch (SecurityException e) {
+                return false;
             }
-            return provider != null;
-        } catch (SecurityException e) {
-            return false;
+        } else {
+            Toast.makeText(this, R.string.cannot_get_location, Toast.LENGTH_SHORT).show();
         }
+        return provider != null;
     }
 
     private boolean takePhoto() {
         final Intent intent = ThemedImagePickerActivity.withThemed(this).takePhoto().build();
-		startActivityForResult(intent, REQUEST_TAKE_PHOTO);
+        startActivityForResult(intent, REQUEST_TAKE_PHOTO);
         return true;
-	}
+    }
 
     private void toggleLocation() {
         final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
         mPreferences.edit().putBoolean(KEY_ATTACH_LOCATION, !attachLocation).apply();
-        startLocationUpdateIfEnabled();
+        requestOrUpdateLocation();
         updateLocationState();
         setMenu();
         updateTextCount();
+    }
+
+    private void requestOrUpdateLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            startLocationUpdateIfEnabled();
+        } else {
+            final String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION};
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_REQUEST_PERMISSIONS);
+        }
     }
 
     private void updateLocationState() {
@@ -1163,69 +1216,69 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     }
 
     private void updateMediaPreview() {
-		final int count = mMediaPreviewAdapter.getCount();
-		final Resources res = getResources();
-		final int maxColumns = res.getInteger(R.integer.grid_column_image_preview);
+        final int count = mMediaPreviewAdapter.getCount();
+        final Resources res = getResources();
+        final int maxColumns = res.getInteger(R.integer.grid_column_image_preview);
         mMediaPreviewGrid.setNumColumns(MathUtils.clamp(count, maxColumns, 1));
-	}
+    }
 
-	private void updateStatus() {
-		if (isFinishing()) return;
-		final boolean hasMedia = hasMedia();
-		final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
-		final int tweetLength = mValidator.getTweetLength(text), maxLength = mValidator.getMaxTweetLength();
-		if (!mStatusShortenerUsed && tweetLength > maxLength) {
-			mEditText.setError(getString(R.string.error_message_status_too_long));
+    private void updateStatus() {
+        if (isFinishing()) return;
+        final boolean hasMedia = hasMedia();
+        final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
+        final int tweetLength = mValidator.getTweetLength(text), maxLength = mValidator.getMaxTweetLength();
+        if (!mStatusShortenerUsed && tweetLength > maxLength) {
+            mEditText.setError(getString(R.string.error_message_status_too_long));
             final int textLength = mEditText.length();
             mEditText.setSelection(textLength - (tweetLength - maxLength), textLength);
-			return;
+            return;
         } else if (!hasMedia && (TextUtils.isEmpty(text) || noReplyContent(text))) {
-			mEditText.setError(getString(R.string.error_message_no_content));
-			return;
+            mEditText.setError(getString(R.string.error_message_no_content));
+            return;
         } else if (mAccountsAdapter.isSelectionEmpty()) {
             mEditText.setError(getString(R.string.no_account_selected));
             return;
-		}
+        }
         final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
         final long[] accountIds = mAccountsAdapter.getSelectedAccountIds();
         final boolean isQuote = isQuote();
         final ParcelableLocation statusLocation = attachLocation ? mRecentLocation : null;
-		final boolean linkToQuotedTweet = mPreferences.getBoolean(KEY_LINK_TO_QUOTED_TWEET, true);
-		final long inReplyToStatusId = !isQuote || linkToQuotedTweet ? mInReplyToStatusId : -1;
-		final boolean isPossiblySensitive = hasMedia && mIsPossiblySensitive;
+        final boolean linkToQuotedTweet = mPreferences.getBoolean(KEY_LINK_TO_QUOTED_TWEET, true);
+        final long inReplyToStatusId = !isQuote || linkToQuotedTweet ? mInReplyToStatusId : -1;
+        final boolean isPossiblySensitive = hasMedia && mIsPossiblySensitive;
         mTwitterWrapper.updateStatusAsync(accountIds, text, statusLocation, getMedia(), inReplyToStatusId,
-				isPossiblySensitive);
-		if (mPreferences.getBoolean(KEY_NO_CLOSE_AFTER_TWEET_SENT, false)
-				&& (mInReplyToStatus == null || mInReplyToStatusId <= 0)) {
-			mIsPossiblySensitive = false;
-			mShouldSaveAccounts = true;
-			mInReplyToStatus = null;
-			mMentionUser = null;
-			mDraftItem = null;
-			mInReplyToStatusId = -1;
-			mOriginalText = null;
-			mEditText.setText(null);
-			clearMedia();
-			final Intent intent = new Intent(INTENT_ACTION_COMPOSE);
-			setIntent(intent);
-			setComposeTitle(intent);
-			handleIntent(intent);
-			setMenu();
-			updateTextCount();
-		} else {
-			setResult(Activity.RESULT_OK);
-			finish();
-		}
-	}
+                isPossiblySensitive);
+        if (mPreferences.getBoolean(KEY_NO_CLOSE_AFTER_TWEET_SENT, false)
+                && (mInReplyToStatus == null || mInReplyToStatusId <= 0)) {
+            mIsPossiblySensitive = false;
+            mShouldSaveAccounts = true;
+            mInReplyToStatus = null;
+            mMentionUser = null;
+            mDraftItem = null;
+            mInReplyToStatusId = -1;
+            mOriginalText = null;
+            mEditText.setText(null);
+            clearMedia();
+            final Intent intent = new Intent(INTENT_ACTION_COMPOSE);
+            setIntent(intent);
+            setComposeTitle(intent);
+            handleIntent(intent);
+            setMenu();
+            updateTextCount();
+        } else {
+            setResult(Activity.RESULT_OK);
+            finish();
+        }
+    }
 
-	private void updateTextCount() {
+    private void updateTextCount() {
         if (mSendTextCountView == null || mEditText == null) return;
         final String textOrig = ParseUtils.parseString(mEditText.getText());
         final String text = hasMedia() && textOrig != null ? mImageUploaderUsed ? Utils.getImageUploadStatus(
-		    new String[] { FAKE_IMAGE_LINK }, textOrig) : textOrig + " " + FAKE_IMAGE_LINK : textOrig;
-		final int validatedCount = text != null ? mValidator.getTweetLength(text) : 0;
+                new String[]{FAKE_IMAGE_LINK}, textOrig) : textOrig + " " + FAKE_IMAGE_LINK : textOrig;
+        final int validatedCount = text != null ? mValidator.getTweetLength(text) : 0;
         mSendTextCountView.setTextCount(validatedCount);
-	}
+    }
 
     static class AccountIconViewHolder extends ViewHolder implements OnClickListener {
 
@@ -1257,31 +1310,27 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
     }
 
-    private static class AccountIconsAdapter extends Adapter<AccountIconViewHolder> {
+    private static class AccountIconsAdapter extends BaseRecyclerViewAdapter<AccountIconViewHolder> {
 
         private final ComposeActivity mActivity;
         private final LayoutInflater mInflater;
-        private final MediaLoaderWrapper mImageLoader;
         private final LongSparseArray<Boolean> mSelection;
         private final boolean mNameFirst;
 
         private ParcelableCredentials[] mAccounts;
 
         public AccountIconsAdapter(ComposeActivity activity) {
+            super(activity);
             setHasStableIds(true);
             mActivity = activity;
             mInflater = activity.getLayoutInflater();
-            mImageLoader = TwittnukerApplication.getInstance(activity).getMediaLoaderWrapper();
             mSelection = new LongSparseArray<>();
-            final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(activity,
-                    SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE, SharedPreferenceConstants.class);
-            assert preferences != null;
-            mNameFirst = preferences.getBoolean(KEY_NAME_FIRST);
+            mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
         }
 
         public MediaLoaderWrapper getImageLoader() {
-            return mImageLoader;
-		}
+            return mMediaLoader;
+        }
 
         @NonNull
         public long[] getSelectedAccountIds() {
@@ -1291,12 +1340,12 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
             for (ParcelableAccount account : mAccounts) {
                 if (mSelection.get(account.account_id, false)) {
                     temp[selectedCount++] = account.account_id;
-			    }
+                }
             }
             final long[] result = new long[selectedCount];
             System.arraycopy(temp, 0, result, 0, result.length);
             return result;
-		}
+        }
 
         public void setSelectedAccountIds(long... accountIds) {
             mSelection.clear();
@@ -1331,19 +1380,19 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         public AccountIconViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             final View view = mInflater.inflate(R.layout.adapter_item_compose_account, parent, false);
             return new AccountIconViewHolder(this, view);
-		}
+        }
 
         @Override
         public void onBindViewHolder(AccountIconViewHolder holder, int position) {
             final ParcelableAccount account = mAccounts[position];
             final boolean isSelected = mSelection.get(account.account_id, false);
             holder.showAccount(this, account, isSelected);
-		}
+        }
 
         @Override
         public int getItemCount() {
             return mAccounts != null ? mAccounts.length : 0;
-	    }
+        }
 
         public void setAccounts(ParcelableCredentials[] accounts) {
             mAccounts = accounts;
@@ -1393,80 +1442,80 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
     private static class AddMediaTask extends AsyncTask<Object, Object, Boolean> {
 
-		private final ComposeActivity activity;
-		private final int media_type;
-		private final Uri src, dst;
-		private final boolean delete_src;
+        private final ComposeActivity activity;
+        private final int media_type;
+        private final Uri src, dst;
+        private final boolean delete_src;
 
-		AddMediaTask(final ComposeActivity activity, final Uri src, final Uri dst, final int media_type,
-					 final boolean delete_src) {
-			this.activity = activity;
-			this.src = src;
-			this.dst = dst;
-			this.media_type = media_type;
-			this.delete_src = delete_src;
-		}
+        AddMediaTask(final ComposeActivity activity, final Uri src, final Uri dst, final int media_type,
+                     final boolean delete_src) {
+            this.activity = activity;
+            this.src = src;
+            this.dst = dst;
+            this.media_type = media_type;
+            this.delete_src = delete_src;
+        }
 
-		@Override
-		protected Boolean doInBackground(final Object... params) {
+        @Override
+        protected Boolean doInBackground(final Object... params) {
             InputStream is = null;
             OutputStream os = null;
-			try {
-				final ContentResolver resolver = activity.getContentResolver();
+            try {
+                final ContentResolver resolver = activity.getContentResolver();
                 is = resolver.openInputStream(src);
                 os = resolver.openOutputStream(dst);
                 Utils.copyStream(is, os);
-				if (ContentResolver.SCHEME_FILE.equals(src.getScheme()) && delete_src) {
+                if (ContentResolver.SCHEME_FILE.equals(src.getScheme()) && delete_src) {
                     final File file = new File(src.getPath());
                     if (!file.delete()) {
                         Log.d(LOGTAG, String.format("Unable to delete %s", file));
-				    }
+                    }
                 }
             } catch (final IOException e) {
                 Log.w(LOGTAG, e);
-				return false;
+                return false;
             } finally {
                 Utils.closeSilently(os);
                 Utils.closeSilently(is);
-			}
-			return true;
-		}
+            }
+            return true;
+        }
 
         Uri getSrc() {
             return src;
         }
 
-		@Override
-		protected void onPostExecute(final Boolean result) {
+        @Override
+        protected void onPostExecute(final Boolean result) {
             activity.setProgressVisible(false);
-			activity.addMedia(new ParcelableMediaUpdate(dst.toString(), media_type));
-			activity.setMenu();
-			activity.updateTextCount();
-			if (!result) {
+            activity.addMedia(new ParcelableMediaUpdate(dst.toString(), media_type));
+            activity.setMenu();
+            activity.updateTextCount();
+            if (!result) {
                 Toast.makeText(activity, R.string.error_occurred, Toast.LENGTH_SHORT).show();
-			}
-		}
+            }
+        }
 
-		@Override
-		protected void onPreExecute() {
+        @Override
+        protected void onPreExecute() {
             activity.setProgressVisible(true);
-		}
-	}
+        }
+    }
 
     private static class DeleteImageTask extends AsyncTask<Object, Object, Boolean> {
 
-		final ComposeActivity mActivity;
+        final ComposeActivity mActivity;
         private final ParcelableMediaUpdate[] mMedia;
 
-		DeleteImageTask(final ComposeActivity activity, final ParcelableMediaUpdate... media) {
-			this.mActivity = activity;
+        DeleteImageTask(final ComposeActivity activity, final ParcelableMediaUpdate... media) {
+            this.mActivity = activity;
             this.mMedia = media;
-		}
+        }
 
-		@Override
-		protected Boolean doInBackground(final Object... params) {
+        @Override
+        protected Boolean doInBackground(final Object... params) {
             if (mMedia == null) return false;
-			try {
+            try {
                 for (final ParcelableMediaUpdate media : mMedia) {
                     if (media.uri == null) continue;
                     final Uri uri = Uri.parse(media.uri);
@@ -1474,40 +1523,40 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                         final File file = new File(uri.getPath());
                         if (!file.delete()) {
                             Log.d(LOGTAG, String.format("Unable to delete %s", file));
-					    }
-				    }
+                        }
+                    }
                 }
-			} catch (final Exception e) {
-				return false;
-			}
-			return true;
-		}
+            } catch (final Exception e) {
+                return false;
+            }
+            return true;
+        }
 
-		@Override
-		protected void onPostExecute(final Boolean result) {
+        @Override
+        protected void onPostExecute(final Boolean result) {
             mActivity.setProgressVisible(false);
             mActivity.removeAllMedia(Arrays.asList(mMedia));
-			mActivity.setMenu();
-			if (!result) {
+            mActivity.setMenu();
+            if (!result) {
                 Toast.makeText(mActivity, R.string.error_occurred, Toast.LENGTH_SHORT).show();
-			}
-		}
+            }
+        }
 
-		@Override
-		protected void onPreExecute() {
+        @Override
+        protected void onPreExecute() {
             mActivity.setProgressVisible(true);
-		}
-	}
+        }
+    }
 
     private static class DiscardTweetTask extends AsyncTask<Object, Object, Object> {
 
         final ComposeActivity mActivity;
 
-		DiscardTweetTask(final ComposeActivity activity) {
+        DiscardTweetTask(final ComposeActivity activity) {
             this.mActivity = activity;
-		}
+        }
 
-		@Override
+        @Override
         protected Object doInBackground(final Object... params) {
             for (final ParcelableMediaUpdate media : mActivity.getMediaList()) {
                 if (media.uri == null) continue;
@@ -1517,44 +1566,44 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                     if (!file.delete()) {
                         Log.d(LOGTAG, String.format("Unable to delete %s", file));
                     }
-			    }
-		    }
-			return null;
-		}
+                }
+            }
+            return null;
+        }
 
-		@Override
+        @Override
         protected void onPostExecute(final Object result) {
             mActivity.setProgressVisible(false);
             mActivity.finish();
-		}
+        }
 
-		@Override
-		protected void onPreExecute() {
+        @Override
+        protected void onPreExecute() {
             mActivity.setProgressVisible(true);
-		}
-	}
+        }
+    }
 
-	private static class MediaPreviewAdapter extends DraggableArrayAdapter<ParcelableMediaUpdate> {
+    private static class MediaPreviewAdapter extends DraggableArrayAdapter<ParcelableMediaUpdate> {
 
-		private final MediaLoaderWrapper mImageLoader;
+        private final MediaLoaderWrapper mImageLoader;
 
-		public MediaPreviewAdapter(final Context context) {
-			super(context, R.layout.grid_item_media_editor);
-			mImageLoader = TwittnukerApplication.getInstance(context).getMediaLoaderWrapper();
-		}
+        public MediaPreviewAdapter(final ComposeActivity activity) {
+            super(activity, R.layout.grid_item_media_editor);
+            mImageLoader = activity.mImageLoader;
+        }
 
         public List<ParcelableMediaUpdate> getAsList() {
             return Collections.unmodifiableList(getObjects());
         }
 
-		@Override
-		public View getView(final int position, final View convertView, final ViewGroup parent) {
-			final View view = super.getView(position, convertView, parent);
-			final ParcelableMediaUpdate media = getItem(position);
-			final ImageView image = (ImageView) view.findViewById(R.id.image);
-			mImageLoader.displayPreviewImage(media.uri, image);
-			return view;
-		}
+        @Override
+        public View getView(final int position, final View convertView, final ViewGroup parent) {
+            final View view = super.getView(position, convertView, parent);
+            final ParcelableMediaUpdate media = getItem(position);
+            final ImageView image = (ImageView) view.findViewById(R.id.image);
+            mImageLoader.displayPreviewImage(media.uri, image);
+            return view;
+        }
 
 
     }
@@ -1569,7 +1618,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 case DialogInterface.BUTTON_POSITIVE: {
                     if (activity instanceof ComposeActivity) {
                         ((ComposeActivity) activity).updateStatus();
-	                }
+                    }
                     break;
                 }
             }

@@ -71,12 +71,12 @@ import android.widget.TextView;
 import com.github.johnpersano.supertoasts.SuperToast;
 import com.github.johnpersano.supertoasts.SuperToast.Duration;
 import com.github.johnpersano.supertoasts.SuperToast.OnDismissListener;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.OrderBy;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.activity.support.ThemedImagePickerActivity;
@@ -84,7 +84,6 @@ import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.loader.support.UserSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -105,14 +104,13 @@ import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.TakeAllKeyboardShortcut;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereValidator;
-import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.view.ComposeEditText;
 
@@ -124,7 +122,6 @@ import java.util.Locale;
 import me.uucky.colorpicker.internal.EffectViewHelper;
 
 import static de.vanita5.twittnuker.util.Utils.buildDirectMessageConversationUri;
-import static de.vanita5.twittnuker.util.Utils.showOkMessage;
 
 public class MessagesConversationFragment extends BaseSupportFragment implements
         LoaderCallbacks<Cursor>, OnClickListener, OnItemSelectedListener, MenuButtonClickListener,
@@ -166,29 +163,25 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     private PanelShowHideListener mScrollListener;
 
     // Utility classes
-	private TwidereValidator mValidator;
-	private AsyncTwitterWrapper mTwitterWrapper;
+    private TwidereValidator mValidator;
     private SharedPreferencesWrapper mPreferences;
     private SharedPreferences mMessageDrafts;
-    private ReadStateManager mReadStateManager;
-    private MediaLoaderWrapper mImageLoader;
-    private UserColorNameManager mUserColorNameManager;
     private EffectViewHelper mEffectHelper;
 
     // Views
     private RecyclerView mMessagesListView;
     private ListView mUsersSearchList;
     private ComposeEditText mEditText;
-	private View mSendButton;
-	private ImageView mAddImageButton;
+    private View mSendButton;
+    private ImageView mAddImageButton;
     private View mConversationContainer, mRecipientSelectorContainer;
-	private Spinner mAccountSpinner;
+    private Spinner mAccountSpinner;
     private EditText mEditUserQuery;
     private View mUsersSearchProgress;
     private View mQueryButton;
     private View mUsersSearchEmpty;
     private TextView mUsersSearchEmptyText;
-	private PopupMenu mPopupMenu;
+    private PopupMenu mPopupMenu;
     private View mInputPanelShadowCompat;
 
     // Adapters
@@ -198,9 +191,9 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     // Data fields
     private boolean mSearchUsersLoaderInitialized;
     private boolean mNavigateBackPressed;
-	private ParcelableDirectMessage mSelectedDirectMessage;
-	private boolean mLoaderInitialized;
-	private String mImageUri;
+    private ParcelableDirectMessage mSelectedDirectMessage;
+    private boolean mLoaderInitialized;
+    private String mImageUri;
     private ParcelableCredentials mAccount;
     private ParcelableUser mRecipient;
     private boolean mTextChanged, mQueryTextChanged;
@@ -211,7 +204,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         updateRefreshState();
     }
 
-	@Override
+    @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         switch (requestCode) {
             case REQUEST_PICK_IMAGE: {
@@ -232,17 +225,13 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     }
 
     @Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         final BaseAppCompatActivity activity = (BaseAppCompatActivity) getActivity();
         mPreferences = SharedPreferencesWrapper.getInstance(activity, SHARED_PREFERENCES_NAME,
                 Context.MODE_PRIVATE, SharedPreferenceConstants.class);
-        mUserColorNameManager = UserColorNameManager.getInstance(activity);
         mMessageDrafts = getSharedPreferences(MESSAGE_DRAFTS_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        mImageLoader = TwittnukerApplication.getInstance(activity).getMediaLoaderWrapper();
-        mReadStateManager = getReadStateManager();
-        mTwitterWrapper = getTwitterWrapper();
         mValidator = new TwidereValidator(activity);
 
         final View view = getView();
@@ -302,17 +291,17 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         setupEditQuery();
         setupEditText();
 
-		mSendButton.setOnClickListener(this);
-		mAddImageButton.setOnClickListener(this);
-		mSendButton.setEnabled(false);
-		if (savedInstanceState != null) {
+        mSendButton.setOnClickListener(this);
+        mAddImageButton.setOnClickListener(this);
+        mSendButton.setEnabled(false);
+        if (savedInstanceState != null) {
             final ParcelableCredentials account = savedInstanceState.getParcelable(EXTRA_ACCOUNT);
             final ParcelableUser recipient = savedInstanceState.getParcelable(EXTRA_USER);
             showConversation(account, recipient);
-			mEditText.setText(savedInstanceState.getString(EXTRA_TEXT));
-			mImageUri = savedInstanceState.getString(EXTRA_IMAGE_URI);
-		} else {
-			final Bundle args = getArguments();
+            mEditText.setText(savedInstanceState.getString(EXTRA_TEXT));
+            mImageUri = savedInstanceState.getString(EXTRA_IMAGE_URI);
+        } else {
+            final Bundle args = getArguments();
             final ParcelableCredentials account;
             final ParcelableUser recipient;
             if (args != null) {
@@ -329,7 +318,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
                 } else {
                     account = null;
                     recipient = null;
-		        }
+                }
                 showConversation(account, recipient);
                 if (account != null && recipient != null) {
                     final String key = getDraftsTextKey(account.account_id, recipient.id);
@@ -338,48 +327,38 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
             }
         }
         mEditText.setSelection(mEditText.length());
-//        mEditText.setMaxCharacters(mValidator.getMaxTweetLength());
-//        mEditText.setLengthChecker(new METLengthChecker() {
-//            @Override
-//            public int getLength(CharSequence text) {
-//                return mValidator.getTweetLength(String.valueOf(text));
-//            }
-//        });
-        // TODO show text length
         final boolean isValid = mAccount != null && mRecipient != null;
-		mConversationContainer.setVisibility(isValid ? View.VISIBLE : View.GONE);
-		mRecipientSelectorContainer.setVisibility(isValid ? View.GONE : View.VISIBLE);
+        mConversationContainer.setVisibility(isValid ? View.VISIBLE : View.GONE);
+        mRecipientSelectorContainer.setVisibility(isValid ? View.GONE : View.VISIBLE);
 
         mUsersSearchList.setVisibility(View.GONE);
         mUsersSearchProgress.setVisibility(View.GONE);
 
         mQueryTextChanged = false;
         mTextChanged = false;
-	}
+    }
 
-	@Override
+    @Override
     public void onStart() {
         super.onStart();
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.register(this);
+        mBus.register(this);
         updateEmptyText();
         mMessagesListView.addOnScrollListener(mScrollListener);
         mScrollListener.reset();
     }
 
-	@Override
+    @Override
     public void onResume() {
         super.onResume();
-		updateAddImageButton();
-	}
+        updateAddImageButton();
+    }
 
-	@Override
+    @Override
     public void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mEditText != null) {
             outState.putCharSequence(EXTRA_TEXT, mEditText.getText());
-    	}
+        }
         outState.putParcelable(EXTRA_ACCOUNT, mAccount);
         outState.putParcelable(EXTRA_USER, mRecipient);
         outState.putString(EXTRA_IMAGE_URI, mImageUri);
@@ -388,9 +367,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     @Override
     public void onStop() {
         mMessagesListView.removeOnScrollListener(mScrollListener);
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.unregister(this);
+        mBus.unregister(this);
         if (mPopupMenu != null) {
             mPopupMenu.dismiss();
         }
@@ -463,17 +440,17 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     }
 
     @Override
-	public void onClick(final View view) {
-		switch (view.getId()) {
-			case R.id.send: {
-				sendDirectMessage();
-				break;
-			}
-			case R.id.add_image: {
+    public void onClick(final View view) {
+        switch (view.getId()) {
+            case R.id.send: {
+                sendDirectMessage();
+                break;
+            }
+            case R.id.add_image: {
                 final Intent intent = ThemedImagePickerActivity.withThemed(getActivity()).build();
-				startActivityForResult(intent, REQUEST_PICK_IMAGE);
-				break;
-			}
+                startActivityForResult(intent, REQUEST_PICK_IMAGE);
+                break;
+            }
             case R.id.query_button: {
                 final ParcelableCredentials account = (ParcelableCredentials) mAccountSpinner.getSelectedItem();
                 searchUsers(account.account_id, ParseUtils.parseString(mEditUserQuery.getText()), false);
@@ -482,62 +459,62 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         }
     }
 
-	@Override
-	public void onItemSelected(final AdapterView<?> parent, final View view, final int pos, final long id) {
+    @Override
+    public void onItemSelected(final AdapterView<?> parent, final View view, final int pos, final long id) {
         final ParcelableCredentials account = (ParcelableCredentials) mAccountSpinner.getSelectedItem();
-		if (account != null) {
+        if (account != null) {
             mAccount = account;
             updateRecipientInfo();
-		}
-	}
+        }
+    }
 
-	@Override
+    @Override
     public void onNothingSelected(final AdapterView<?> view) {
 
-	}
+    }
 
-	@Override
-	public void onMenuButtonClick(final View button, final int position, final long id) {
-		mSelectedDirectMessage = mAdapter.findItem(id);
-		showMenu(button, mSelectedDirectMessage);
-	}
+    @Override
+    public void onMenuButtonClick(final View button, final int position, final long id) {
+        mSelectedDirectMessage = mAdapter.findItem(id);
+        showMenu(button, mSelectedDirectMessage);
+    }
 
-	@Override
+    @Override
     public void onLoaderReset(final Loader<Cursor> loader) {
         mAdapter.setCursor(null);
     }
 
     @Override
-	public boolean onMenuItemClick(final MenuItem item) {
-		if (mSelectedDirectMessage != null) {
-			final long message_id = mSelectedDirectMessage.id;
-			final long account_id = mSelectedDirectMessage.account_id;
-			switch (item.getItemId()) {
+    public boolean onMenuItemClick(final MenuItem item) {
+        if (mSelectedDirectMessage != null) {
+            final long message_id = mSelectedDirectMessage.id;
+            final long account_id = mSelectedDirectMessage.account_id;
+            switch (item.getItemId()) {
                 case R.id.delete: {
-					mTwitterWrapper.destroyDirectMessageAsync(account_id, message_id);
-					break;
-				}
+                    mTwitterWrapper.destroyDirectMessageAsync(account_id, message_id);
+                    break;
+                }
                 case R.id.copy: {
-					if (ClipboardUtils.setText(getActivity(), mSelectedDirectMessage.text_plain)) {
-						showOkMessage(getActivity(), R.string.text_copied, false);
-					}
-					break;
-				}
-				default:
-					return false;
-			}
-		}
-		return true;
-	}
+                    if (ClipboardUtils.setText(getActivity(), mSelectedDirectMessage.text_plain)) {
+                        Utils.showOkMessage(getActivity(), R.string.text_copied, false);
+                    }
+                    break;
+                }
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
 
-	@Override
+    @Override
     public void onLoadFinished(final Loader<Cursor> loader, final Cursor cursor) {
         mAdapter.setCursor(cursor);
     }
 
     @Override
-    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
-        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
         if (ACTION_NAVIGATION_BACK.equals(action)) {
             final boolean showingConversation = isShowingConversation();
             final EditText editText = showingConversation ? mEditText : mEditUserQuery;
@@ -567,7 +544,13 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     }
 
     @Override
-    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
+        return ACTION_NAVIGATION_BACK.equals(action);
+    }
+
+    @Override
+    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event, int metaState) {
         return false;
     }
 
@@ -612,7 +595,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
             mSearchUsersLoaderInitialized = true;
             lm.initLoader(LOADER_ID_SEARCH_USERS, args, mSearchLoadersCallback);
         }
-	}
+    }
 
 //    @Override
 //    public void onRefreshFromEnd() {
@@ -655,23 +638,34 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
             mTwitterWrapper.sendDirectMessageAsync(account.account_id, recipient.id, message, mImageUri);
             mEditText.setText(null);
             mImageUri = null;
-			updateAddImageButton();
-		}
+            updateAddImageButton();
+        }
     }
 
     private void setupEditQuery() {
         final EditTextEnterHandler queryEnterHandler = EditTextEnterHandler.attach(mEditUserQuery, new EnterListener() {
-			@Override
-            public void onHitEnter() {
+            @Override
+            public boolean shouldCallListener() {
+                final FragmentActivity activity = getActivity();
+                if (!(activity instanceof BaseAppCompatActivity)) return false;
+                return ((BaseAppCompatActivity) activity).getKeyMetaState() == 0;
+            }
+
+            @Override
+            public boolean onHitEnter() {
+                final FragmentActivity activity = getActivity();
+                if (!(activity instanceof BaseAppCompatActivity)) return false;
+                if (((BaseAppCompatActivity) activity).getKeyMetaState() != 0) return false;
                 final ParcelableCredentials account = (ParcelableCredentials) mAccountSpinner.getSelectedItem();
-                if (account == null) return;
+                if (account == null) return false;
                 mEditText.setAccountId(account.account_id);
                 searchUsers(account.account_id, ParseUtils.parseString(mEditUserQuery.getText()), false);
-			}
+                return true;
+            }
         }, true);
         queryEnterHandler.addTextChangedListener(new TextWatcher() {
 
-			@Override
+            @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
@@ -709,8 +703,14 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     private void setupEditText() {
         EditTextEnterHandler.attach(mEditText, new EnterListener() {
             @Override
-            public void onHitEnter() {
+            public boolean shouldCallListener() {
+                return true;
+            }
+
+            @Override
+            public boolean onHitEnter() {
                 sendDirectMessage();
+                return true;
             }
         }, mPreferences.getBoolean(KEY_QUICK_SEND, false));
         mEditText.addTextChangedListener(new TextWatcher() {
@@ -730,14 +730,14 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
             public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
                 if (mSendButton == null || s == null) return;
                 mSendButton.setEnabled(mValidator.isValidTweet(s.toString()));
-			}
+            }
         });
     }
 
     private void showMenu(final View view, final ParcelableDirectMessage dm) {
-		if (mPopupMenu != null) {
-			mPopupMenu.dismiss();
-		}
+        if (mPopupMenu != null) {
+            mPopupMenu.dismiss();
+        }
         final Context context = getActivity();
         mPopupMenu = new PopupMenu(context, view);
         mPopupMenu.inflate(R.menu.action_direct_message);
@@ -748,7 +748,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         }
         mPopupMenu.setOnMenuItemClickListener(this);
         mPopupMenu.show();
-	}
+    }
 
     private void updateActionBar() {
         final BaseAppCompatActivity activity = (BaseAppCompatActivity) getActivity();
@@ -756,7 +756,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         if (actionBar == null) return;
         actionBar.setDisplayOptions(mRecipient != null ? ActionBar.DISPLAY_SHOW_TITLE : ActionBar.DISPLAY_SHOW_CUSTOM,
                 ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM);
-	}
+    }
 
     private void updateAddImageButton() {
         mAddImageButton.setActivated(mImageUri != null);
@@ -780,6 +780,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 
     private void updateRecipientInfo() {
         final FragmentActivity activity = getActivity();
+        if (activity == null) return;
         if (mRecipient != null) {
             activity.setTitle(mUserColorNameManager.getDisplayName(mRecipient,
                     mPreferences.getBoolean(KEY_NAME_FIRST), true));
@@ -799,7 +800,6 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 //        if (twitter == null || !getUserVisibleHint()) return;
 //        final boolean refreshing = twitter.isReceivedDirectMessagesRefreshing()
 //                || twitter.isSentDirectMessagesRefreshing();
-//        setProgressBarIndeterminateVisibility(refreshing);
 //        setRefreshing(refreshing);
     }
 
@@ -883,13 +883,16 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
             return builder.create();
         }
 
+
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE: {
-                    final ParcelableCredentials account = getArguments().getParcelable(EXTRA_ACCOUNT);
-                    final ParcelableUser user = getArguments().getParcelable(EXTRA_USER);
-                    final AsyncTwitterWrapper twitter = getTwitterWrapper();
+                    final Bundle args = getArguments();
+                    final ParcelableCredentials account = args.getParcelable(EXTRA_ACCOUNT);
+                    final ParcelableUser user = args.getParcelable(EXTRA_USER);
+                    if (account == null || user == null) return;
+                    final AsyncTwitterWrapper twitter = mTwitterWrapper;
                     twitter.destroyMessageConversationAsync(account.account_id, user.id);
                     break;
                 }
@@ -897,15 +900,15 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         }
     }
 
-    private static class SetReadStateTask extends AsyncTask<Object, Object, Cursor> {
+    static class SetReadStateTask extends AsyncTask<Object, Object, Cursor> {
         private final Context mContext;
         private final ReadStateManager mReadStateManager;
         private final ParcelableCredentials mAccount;
         private final ParcelableUser mRecipient;
 
         public SetReadStateTask(Context context, ParcelableCredentials account, ParcelableUser recipient) {
+            mReadStateManager = ApplicationModule.get(context).getReadStateManager();
             mContext = context;
-            mReadStateManager = TwittnukerApplication.getInstance(context).getReadStateManager();
             mAccount = account;
             mRecipient = recipient;
         }
@@ -928,7 +931,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
                 final int messageIdIdx = cursor.getColumnIndex(ConversationEntries.MESSAGE_ID);
                 final String key = mAccount.account_id + "-" + mRecipient.id;
                 mReadStateManager.setPosition(TAB_TYPE_DIRECT_MESSAGES, key, cursor.getLong(messageIdIdx), false);
-    		}
+            }
             cursor.close();
         }
     }

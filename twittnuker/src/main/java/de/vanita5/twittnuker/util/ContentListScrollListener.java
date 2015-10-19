@@ -31,9 +31,9 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter;
 
 public class ContentListScrollListener extends OnScrollListener {
 
-	private int mScrollState;
-	private int mScrollSum;
-	private int mTouchSlop;
+    private int mScrollState;
+    private int mScrollSum;
+    private int mTouchSlop;
 
     private ContentListSupport mContentListSupport;
 
@@ -41,33 +41,33 @@ public class ContentListScrollListener extends OnScrollListener {
         mContentListSupport = contentListSupport;
     }
 
-	@Override
-	public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+    @Override
+    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         if (mScrollState != RecyclerView.SCROLL_STATE_IDLE) {
             notifyScrollStateChanged(recyclerView);
         }
-		mScrollState = newState;
-	}
-
-	@Override
-	public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-		//Reset mScrollSum when scrolling in reverse direction
-		if (dy * mScrollSum < 0) {
-			mScrollSum = 0;
-		}
-		mScrollSum += dy;
-		if (Math.abs(mScrollSum) > mTouchSlop) {
-            mContentListSupport.setControlVisible(dy < 0);
-			mScrollSum = 0;
-		}
-        if (recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
-            notifyScrollStateChanged(recyclerView);
-		}
+        mScrollState = newState;
     }
 
-	public void setTouchSlop(int touchSlop) {
-		mTouchSlop = touchSlop;
-	}
+    @Override
+    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        //Reset mScrollSum when scrolling in reverse direction
+        if (dy * mScrollSum < 0) {
+            mScrollSum = 0;
+        }
+        mScrollSum += dy;
+        if (Math.abs(mScrollSum) > mTouchSlop) {
+            mContentListSupport.setControlVisible(dy < 0);
+            mScrollSum = 0;
+        }
+        if (recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
+            notifyScrollStateChanged(recyclerView);
+        }
+    }
+
+    public void setTouchSlop(int touchSlop) {
+        mTouchSlop = touchSlop;
+    }
 
     private void notifyScrollStateChanged(RecyclerView recyclerView) {
         final Object adapter = mContentListSupport.getAdapter();
@@ -75,9 +75,12 @@ public class ContentListScrollListener extends OnScrollListener {
         final ILoadMoreSupportAdapter loadMoreAdapter = (ILoadMoreSupportAdapter) adapter;
         final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         if (!mContentListSupport.isRefreshing() && loadMoreAdapter.isLoadMoreSupported()
-                && !loadMoreAdapter.isLoadMoreIndicatorVisible()
-                && layoutManager.findLastVisibleItemPosition() == layoutManager.getItemCount() - 1) {
-            mContentListSupport.onLoadMoreContents();
+                && !loadMoreAdapter.isLoadMoreIndicatorVisible()) {
+            if (layoutManager.findLastVisibleItemPosition() == layoutManager.getItemCount() - 1) {
+                mContentListSupport.onLoadMoreContents(false);
+            } else if (layoutManager.findFirstVisibleItemPosition() == 0) {
+                mContentListSupport.onLoadMoreContents(true);
+            }
         }
     }
 
@@ -85,11 +88,11 @@ public class ContentListScrollListener extends OnScrollListener {
 
         Object getAdapter();
 
-		boolean isRefreshing();
+        boolean isRefreshing();
 
-        void onLoadMoreContents();
+        void onLoadMoreContents(boolean fromStart);
 
-		void setControlVisible(boolean visible);
+        void setControlVisible(boolean visible);
 
-	}
+    }
 }

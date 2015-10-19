@@ -30,6 +30,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import de.vanita5.twittnuker.activity.iface.IAppCompatActivity;
+
 /**
  * A {@link android.preference.PreferenceActivity} which implements and proxies the necessary calls
  * to be used with AppCompat.
@@ -37,12 +39,14 @@ import android.view.ViewGroup;
  * This technique can be used with an {@link android.app.Activity} class, not just
  * {@link android.preference.PreferenceActivity}.
  */
-public abstract class AppCompatPreferenceActivity extends PreferenceActivity implements AppCompatCallback {
-	private AppCompatDelegate mDelegate;
+public abstract class AppCompatPreferenceActivity extends PreferenceActivity
+        implements AppCompatCallback, IAppCompatActivity {
+    private AppCompatDelegate mDelegate;
 
-	public ActionBar getSupportActionBar() {
-		return getDelegate().getSupportActionBar();
-	}
+    @Override
+    public ActionBar getSupportActionBar() {
+        return getDelegate().getSupportActionBar();
+    }
 
     /**
      * Notifies the Activity that a support action mode has been started.
@@ -68,92 +72,92 @@ public abstract class AppCompatPreferenceActivity extends PreferenceActivity imp
         return getDelegate().startSupportActionMode(callback);
     }
 
-	public void setSupportActionBar(@Nullable Toolbar toolbar) {
-		getDelegate().setSupportActionBar(toolbar);
-	}
+    public void setSupportActionBar(@Nullable Toolbar toolbar) {
+        getDelegate().setSupportActionBar(toolbar);
+    }
 
-	public boolean supportRequestWindowFeature(int featureId) {
-		return getDelegate().requestWindowFeature(featureId);
-	}
+    public boolean supportRequestWindowFeature(int featureId) {
+        return getDelegate().requestWindowFeature(featureId);
+    }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		getDelegate().installViewFactory();
-		getDelegate().onCreate(savedInstanceState);
-		super.onCreate(savedInstanceState);
-	}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        getDelegate().installViewFactory();
+        getDelegate().onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
+    }
 
-	@Override
-	protected void onStop() {
-		super.onStop();
-		getDelegate().onStop();
-	}
+    @Override
+    protected void onStop() {
+        super.onStop();
+        getDelegate().onStop();
+    }
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		getDelegate().onDestroy();
-	}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getDelegate().onDestroy();
+    }
 
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		getDelegate().onPostCreate(savedInstanceState);
-	}
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        getDelegate().onPostCreate(savedInstanceState);
+    }
 
-	@Override
-	protected void onPostResume() {
-		super.onPostResume();
-		getDelegate().onPostResume();
-	}
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        getDelegate().onPostResume();
+    }
 
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		getDelegate().onConfigurationChanged(newConfig);
-	}
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        getDelegate().onConfigurationChanged(newConfig);
+    }
 
-	@Override
-	public void setContentView(@LayoutRes int layoutResID) {
-		getDelegate().setContentView(layoutResID);
-	}
+    @Override
+    public void setContentView(@LayoutRes int layoutResID) {
+        getDelegate().setContentView(layoutResID);
+    }
 
-	@Override
-	public void setContentView(View view) {
-		getDelegate().setContentView(view);
-	}
+    @Override
+    public void setContentView(View view) {
+        getDelegate().setContentView(view);
+    }
 
-	@Override
-	public void setContentView(View view, ViewGroup.LayoutParams params) {
-		getDelegate().setContentView(view, params);
-	}
+    @Override
+    public void setContentView(View view, ViewGroup.LayoutParams params) {
+        getDelegate().setContentView(view, params);
+    }
 
-	@Override
-	public void addContentView(View view, ViewGroup.LayoutParams params) {
-		getDelegate().addContentView(view, params);
-	}
+    @Override
+    public void addContentView(View view, ViewGroup.LayoutParams params) {
+        getDelegate().addContentView(view, params);
+    }
 
-	@Override
-	public void invalidateOptionsMenu() {
-		getDelegate().invalidateOptionsMenu();
-	}
+    @Override
+    public void invalidateOptionsMenu() {
+        getDelegate().invalidateOptionsMenu();
+    }
 
-	@NonNull
-	@Override
-	public MenuInflater getMenuInflater() {
-		return getDelegate().getMenuInflater();
-	}
+    @NonNull
+    @Override
+    public MenuInflater getMenuInflater() {
+        return getDelegate().getMenuInflater();
+    }
 
-	@Override
-	protected void onTitleChanged(CharSequence title, int color) {
-		super.onTitleChanged(title, color);
-		getDelegate().setTitle(title);
-	}
+    @Override
+    protected void onTitleChanged(CharSequence title, int color) {
+        super.onTitleChanged(title, color);
+        getDelegate().setTitle(title);
+    }
 
     public AppCompatDelegate getDelegate() {
-		if (mDelegate == null) {
+        if (mDelegate == null) {
             mDelegate = AppCompatDelegate.create(this, this);
-		}
-		return mDelegate;
-	}
+        }
+        return mDelegate;
+    }
 }

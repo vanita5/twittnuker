@@ -37,95 +37,103 @@ import java.util.ArrayList;
 
 public class EditTextEnterHandler implements View.OnKeyListener, OnEditorActionListener, TextWatcher {
 
-	@Nullable
-	private EnterListener listener;
-	private boolean enabled;
-	private ArrayList<TextWatcher> textWatchers;
+    @Nullable
+    private EnterListener listener;
+    private boolean enabled;
+    private ArrayList<TextWatcher> textWatchers;
+    private boolean appendText;
 
-	public EditTextEnterHandler(@Nullable EnterListener listener, boolean enabled) {
-		this.listener = listener;
-		this.enabled = enabled;
-	}
+    public EditTextEnterHandler(@Nullable EnterListener listener, boolean enabled) {
+        this.listener = listener;
+        this.enabled = enabled;
+    }
 
-	public void addTextChangedListener(TextWatcher watcher) {
-		if (textWatchers == null) {
-			textWatchers = new ArrayList<>();
-		}
-		textWatchers.add(watcher);
-	}
+    public void addTextChangedListener(TextWatcher watcher) {
+        if (textWatchers == null) {
+            textWatchers = new ArrayList<>();
+        }
+        textWatchers.add(watcher);
+    }
 
-	public static EditTextEnterHandler attach(@NonNull EditText editText, @Nullable EnterListener listener, boolean enabled) {
-		final EditTextEnterHandler enterHandler = new EditTextEnterHandler(listener, enabled);
-		editText.setOnKeyListener(enterHandler);
-		editText.setOnEditorActionListener(enterHandler);
-		editText.addTextChangedListener(enterHandler);
-		return enterHandler;
-	}
+    public static EditTextEnterHandler attach(@NonNull EditText editText, @Nullable EnterListener listener, boolean enabled) {
+        final EditTextEnterHandler enterHandler = new EditTextEnterHandler(listener, enabled);
+        editText.setOnKeyListener(enterHandler);
+        editText.setOnEditorActionListener(enterHandler);
+        editText.addTextChangedListener(enterHandler);
+        return enterHandler;
+    }
 
-	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-		if (textWatchers == null) return;
-		for (TextWatcher textWatcher : textWatchers) {
-			textWatcher.beforeTextChanged(s, start, count, after);
-		}
-	}
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        if (textWatchers != null) {
+            for (TextWatcher textWatcher : textWatchers) {
+                textWatcher.beforeTextChanged(s, start, count, after);
+            }
+        }
+    }
 
-	@Override
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
-		if (textWatchers == null) return;
-		for (TextWatcher textWatcher : textWatchers) {
-			textWatcher.onTextChanged(s, start, before, count);
-		}
-	}
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        if (textWatchers != null) {
+            for (TextWatcher textWatcher : textWatchers) {
+                textWatcher.onTextChanged(s, start, before, count);
+            }
+        }
+        appendText = count > before;
+    }
 
-	@Override
-	public void afterTextChanged(final Editable s) {
-		final int length = s.length();
-		if (enabled && length > 0 && s.charAt(length - 1) == '\n') {
-			s.delete(length - 1, length);
-			if (listener != null) {
-				listener.onHitEnter();
-			}
-		} else if (textWatchers != null) {
-			for (TextWatcher textWatcher : textWatchers) {
-				textWatcher.afterTextChanged(s);
-			}
-		}
-	}
+    @Override
+    public void afterTextChanged(final Editable s) {
+        final int length = s.length();
+        if (enabled && length > 0 && s.charAt(length - 1) == '\n' && appendText) {
+            if (shouldCallListener()) {
+                s.delete(length - 1, length);
+                dispatchHitEnter();
+            }
+        } else if (textWatchers != null) {
+            for (TextWatcher textWatcher : textWatchers) {
+                textWatcher.afterTextChanged(s);
+            }
+        }
+    }
 
-	@Override
-	public boolean onEditorAction(final TextView view, final int actionId, final KeyEvent event) {
-		if (!enabled) return false;
-		if (event != null && actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_DOWN) {
-			if (listener != null) {
-				listener.onHitEnter();
-			}
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean onEditorAction(final TextView view, final int actionId, final KeyEvent event) {
+        if (!enabled) return false;
+        if (event != null && actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (shouldCallListener()) return dispatchHitEnter();
+        }
+        return false;
+    }
 
-	@Override
-	public boolean onKey(View v, int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_ENTER && enabled && event.getAction() == KeyEvent.ACTION_DOWN) {
-			if (listener != null) {
-				listener.onHitEnter();
-			}
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER && enabled && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (shouldCallListener()) return dispatchHitEnter();
+        }
+        return false;
+    }
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
+    private boolean dispatchHitEnter() {
+        return listener != null && listener.onHitEnter();
+    }
 
-	public void setListener(@Nullable EnterListener listener) {
-		this.listener = listener;
-	}
+    private boolean shouldCallListener() {
+        return listener != null && listener.shouldCallListener();
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setListener(@Nullable EnterListener listener) {
+        this.listener = listener;
+    }
 
     public interface EnterListener {
-		void onHitEnter();
-	}
+        boolean shouldCallListener();
+
+        boolean onHitEnter();
+    }
 
 }

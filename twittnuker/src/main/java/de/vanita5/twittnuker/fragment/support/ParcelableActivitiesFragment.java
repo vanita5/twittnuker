@@ -26,52 +26,47 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.squareup.otto.Bus;
-
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 
 import java.util.List;
 
 public abstract class ParcelableActivitiesFragment extends AbsActivitiesFragment<List<ParcelableActivity>> {
 
-	@Override
+    @Override
     public int getActivities(long[] accountIds, final long[] maxIds, final long[] sinceIds) {
-		final Bundle args = new Bundle(getArguments());
-		args.putLongArray(EXTRA_ACCOUNT_IDS, accountIds);
-		args.putLongArray(EXTRA_MAX_IDS, maxIds);
-		args.putLongArray(EXTRA_SINCE_IDS, sinceIds);
-		getLoaderManager().restartLoader(0, args, this);
-		return -1;
-	}
+        final Bundle args = new Bundle(getArguments());
+        args.putLongArray(EXTRA_ACCOUNT_IDS, accountIds);
+        args.putLongArray(EXTRA_MAX_IDS, maxIds);
+        args.putLongArray(EXTRA_SINCE_IDS, sinceIds);
+        getLoaderManager().restartLoader(0, args, this);
+        return -1;
+    }
 
-	@Override
-	public void onStart() {
-		super.onStart();
-		final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-		bus.register(this);
-	}
+    @Override
+    public void onStart() {
+        super.onStart();
+        mBus.register(this);
+    }
 
-	@Override
-	public void onStop() {
-		final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-		bus.unregister(this);
-		super.onStop();
-	}
+    @Override
+    public void onStop() {
+        mBus.unregister(this);
+        super.onStop();
+    }
 
-	@Override
-    public void onLoadMoreContents() {
-		final IActivitiesAdapter<List<ParcelableActivity>> adapter = getAdapter();
-		final long[] maxIds = new long[]{adapter.getActivity(adapter.getActivityCount() - 1).min_position};
+    @Override
+    public void onLoadMoreContents(boolean fromStart) {
+        final IActivitiesAdapter<List<ParcelableActivity>> adapter = getAdapter();
+        final long[] maxIds = new long[]{adapter.getActivity(adapter.getActivityCount() - 1).min_position};
         getActivities(getAccountIds(), maxIds, null);
-	}
+    }
 
-	@Override
-	public boolean triggerRefresh() {
-		final IActivitiesAdapter<List<ParcelableActivity>> adapter = getAdapter();
-		final long[] accountIds = getAccountIds();
+    @Override
+    public boolean triggerRefresh() {
+        final IActivitiesAdapter<List<ParcelableActivity>> adapter = getAdapter();
+        final long[] accountIds = getAccountIds();
 //        if (adapter.getActivityCount() > 0) {
 //            final long[] sinceIds = new long[]{adapter.getActivity(0).max_position};
 //            getActivities(accountIds, null, sinceIds);
@@ -79,8 +74,8 @@ public abstract class ParcelableActivitiesFragment extends AbsActivitiesFragment
 //            getActivities(accountIds, null, null);
 //        }
         getActivities(accountIds, null, null);
-		return true;
-	}
+        return true;
+    }
 
     @Override
     public boolean isRefreshing() {
@@ -95,15 +90,17 @@ public abstract class ParcelableActivitiesFragment extends AbsActivitiesFragment
     @NonNull
     @Override
     protected ParcelableActivitiesAdapter onCreateAdapter(final Context context, final boolean compact) {
-        return new ParcelableActivitiesAdapter(context, compact);
+        return new ParcelableActivitiesAdapter(context, compact, isByFriends());
     }
 
-	protected long getAccountId() {
-		final Bundle args = getArguments();
-		return args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-	}
+    protected abstract boolean isByFriends();
 
-	protected abstract String[] getSavedActivitiesFileArgs();
+    protected long getAccountId() {
+        final Bundle args = getArguments();
+        return args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
+    }
+
+    protected abstract String[] getSavedActivitiesFileArgs();
 
 
 }

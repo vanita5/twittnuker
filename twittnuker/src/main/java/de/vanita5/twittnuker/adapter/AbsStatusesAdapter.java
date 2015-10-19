@@ -33,13 +33,11 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -57,13 +55,10 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
 
     public static final int ITEM_VIEW_TYPE_STATUS = 2;
 
-	private final Context mContext;
-	private final LayoutInflater mInflater;
-    private final MediaLoaderWrapper mMediaLoader;
+    private final Context mContext;
+    private final LayoutInflater mInflater;
     private final MediaLoadingHandler mLoadingHandler;
-    private final AsyncTwitterWrapper mTwitterWrapper;
     private final TwidereLinkify mLinkify;
-    private final UserColorNameManager mUserColorNameManager;
 
     private StatusAdapterListener mStatusAdapterListener;
 
@@ -86,27 +81,22 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     private boolean mShowInReplyTo;
     private boolean mShowAccountsColor;
 
-	public AbsStatusesAdapter(Context context, boolean compact) {
-		mContext = context;
-        final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
+    public AbsStatusesAdapter(Context context, boolean compact) {
+        super(context);
+        mContext = context;
         mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
-		mInflater = LayoutInflater.from(context);
-        mMediaLoader = app.getMediaLoaderWrapper();
-        mUserColorNameManager = app.getUserColorNameManager();
+        mInflater = LayoutInflater.from(context);
         mLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
-        mTwitterWrapper = app.getTwitterWrapper();
-        final SharedPreferencesWrapper preferences = SharedPreferencesWrapper.getInstance(context,
-                SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        mTextSize = preferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
+        mTextSize = mPreferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
         mCompactCards = compact;
-        mProfileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
-        mMediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
-        mLinkHighlightingStyle = Utils.getLinkHighlightingStyleInt(preferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));
-        mNameFirst = preferences.getBoolean(KEY_NAME_FIRST, true);
-        mDisplayProfileImage = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-        mDisplayMediaPreview = preferences.getBoolean(KEY_MEDIA_PREVIEW, false);
-        mSensitiveContentEnabled = preferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, true);
-        mHideCardActions = preferences.getBoolean(KEY_HIDE_CARD_ACTIONS, false);
+        mProfileImageStyle = Utils.getProfileImageStyle(mPreferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
+        mMediaPreviewStyle = Utils.getMediaPreviewStyle(mPreferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
+        mLinkHighlightingStyle = Utils.getLinkHighlightingStyleInt(mPreferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));
+        mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, true);
+        mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
+        mDisplayMediaPreview = mPreferences.getBoolean(KEY_MEDIA_PREVIEW, true);
+        mSensitiveContentEnabled = mPreferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, true);
+        mHideCardActions = mPreferences.getBoolean(KEY_HIDE_CARD_ACTIONS, false);
         mLinkify = new TwidereLinkify(new StatusAdapterLinkClickHandler<>(this));
         setShowInReplyTo(true);
     }
@@ -116,7 +106,7 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     @Override
     public abstract void setData(D data);
 
-	@Override
+    @Override
     public boolean shouldShowAccountsColor() {
         return mShowAccountsColor;
     }
@@ -208,18 +198,18 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     @Override
     public final void onStatusClick(StatusViewHolder holder, int position) {
         if (mStatusAdapterListener == null) return;
-		mStatusAdapterListener.onStatusClick(holder, position);
-	}
+        mStatusAdapterListener.onStatusClick(holder, position);
+    }
 
     @Override
     public void onMediaClick(StatusViewHolder holder, View view, final ParcelableMedia media, int position) {
         if (mStatusAdapterListener == null) return;
         mStatusAdapterListener.onMediaClick(holder, view, media, position);
-	}
+    }
 
     @Override
     public void onUserProfileClick(final StatusViewHolder holder, final int position) {
-        if (mStatusAdapterListener==null)return;
+        if (mStatusAdapterListener == null) return;
         final ParcelableStatus status = getStatus(position);
         if (status == null) return;
         mStatusAdapterListener.onUserProfileClick(holder, status, position);
@@ -240,9 +230,9 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     }
 
     @Override
-	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-		switch (viewType) {
-			case ITEM_VIEW_TYPE_STATUS: {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case ITEM_VIEW_TYPE_STATUS: {
                 final View view;
                 if (mCompactCards) {
                     view = mInflater.inflate(R.layout.card_item_status_compact, parent, false);
@@ -257,61 +247,61 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
                 holder.setOnClickListeners();
                 holder.setupViewOptions();
                 return holder;
-			}
+            }
             case ITEM_VIEW_TYPE_GAP: {
                 final View view = mInflater.inflate(R.layout.card_item_gap, parent, false);
                 return new GapViewHolder(this, view);
             }
-			case ITEM_VIEW_TYPE_LOAD_INDICATOR: {
-				final View view = mInflater.inflate(R.layout.card_item_load_indicator, parent, false);
-				return new LoadIndicatorViewHolder(view);
-			}
-		}
-		throw new IllegalStateException("Unknown view type " + viewType);
-	}
-
-	@Override
-	public void onBindViewHolder(ViewHolder holder, int position) {
-		switch (holder.getItemViewType()) {
-			case ITEM_VIEW_TYPE_STATUS: {
-				bindStatus(((StatusViewHolder) holder), position);
-				break;
-			}
-		}
+            case ITEM_VIEW_TYPE_LOAD_INDICATOR: {
+                final View view = mInflater.inflate(R.layout.card_item_load_indicator, parent, false);
+                return new LoadIndicatorViewHolder(view);
+            }
+        }
+        throw new IllegalStateException("Unknown view type " + viewType);
     }
 
     @Override
-	public int getItemViewType(int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        switch (holder.getItemViewType()) {
+            case ITEM_VIEW_TYPE_STATUS: {
+                bindStatus(((StatusViewHolder) holder), position);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
         if (position == getStatusesCount()) {
-			return ITEM_VIEW_TYPE_LOAD_INDICATOR;
+            return ITEM_VIEW_TYPE_LOAD_INDICATOR;
         } else if (isGapItem(position)) {
             return ITEM_VIEW_TYPE_GAP;
-		}
-		return ITEM_VIEW_TYPE_STATUS;
-	}
+        }
+        return ITEM_VIEW_TYPE_STATUS;
+    }
 
-	@Override
-	public final int getItemCount() {
+    @Override
+    public final int getItemCount() {
         return getStatusesCount() + (isLoadMoreIndicatorVisible() ? 1 : 0);
-	}
+    }
 
-	@Override
+    @Override
     public final void onGapClick(ViewHolder holder, int position) {
         if (mStatusAdapterListener == null) return;
-		mStatusAdapterListener.onGapClick((GapViewHolder) holder, position);
-	}
+        mStatusAdapterListener.onGapClick((GapViewHolder) holder, position);
+    }
 
     @Override
     public void onItemActionClick(ViewHolder holder, int id, int position) {
         if (mStatusAdapterListener == null) return;
-		mStatusAdapterListener.onStatusActionClick((StatusViewHolder) holder, id, position);
-	}
+        mStatusAdapterListener.onStatusActionClick((StatusViewHolder) holder, id, position);
+    }
 
     @Override
     public void onItemMenuClick(ViewHolder holder, View menuView, int position) {
         if (mStatusAdapterListener == null) return;
-		mStatusAdapterListener.onStatusMenuClick((StatusViewHolder) holder, menuView, position);
-	}
+        mStatusAdapterListener.onStatusMenuClick((StatusViewHolder) holder, menuView, position);
+    }
 
     public void setListener(StatusAdapterListener listener) {
         mStatusAdapterListener = listener;

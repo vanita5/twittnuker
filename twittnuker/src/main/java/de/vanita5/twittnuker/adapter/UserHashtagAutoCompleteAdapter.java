@@ -47,116 +47,121 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedValues;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 import de.vanita5.twittnuker.view.ProfileImageView;
+
+import javax.inject.Inject;
+
 
 public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implements Constants {
 
-	private static final String[] FROM = new String[0];
-	private static final int[] TO = new int[0];
+    private static final String[] FROM = new String[0];
+    private static final int[] TO = new int[0];
 
     @NonNull
-	private final ContentResolver mResolver;
+    private final ContentResolver mResolver;
     @NonNull
-	private final SQLiteDatabase mDatabase;
-    @NonNull
-	private final MediaLoaderWrapper mProfileImageLoader;
-	@NonNull
-	private final SharedPreferencesWrapper mPreferences;
+    private final SQLiteDatabase mDatabase;
+    @Inject
+    MediaLoaderWrapper mProfileImageLoader;
+    @Inject
+    SharedPreferencesWrapper mPreferences;
 
-	private final EditText mEditText;
+    private final EditText mEditText;
 
-	private final boolean mDisplayProfileImage;
+    private final boolean mDisplayProfileImage;
 
-	private int mProfileImageUrlIdx, mNameIdx, mScreenNameIdx, mUserIdIdx;
-	private char mToken = '@';
+    private int mProfileImageUrlIdx, mNameIdx, mScreenNameIdx, mUserIdIdx;
+    private char mToken = '@';
     private long mAccountId;
 
-	public UserHashtagAutoCompleteAdapter(final Context context) {
-		this(context, null);
-	}
+    public UserHashtagAutoCompleteAdapter(final Context context) {
+        this(context, null);
+    }
 
-	public UserHashtagAutoCompleteAdapter(final Context context, final EditText view) {
+    public UserHashtagAutoCompleteAdapter(final Context context, final EditText view) {
         super(context, R.layout.list_item_auto_complete, null, FROM, TO, 0);
-		mEditText = view;
+        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
+        mEditText = view;
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-        mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mResolver = context.getContentResolver();
-        mProfileImageLoader = app.getMediaLoaderWrapper();
+        mResolver = context.getContentResolver();
         mDatabase = app.getSQLiteDatabase();
         mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-	}
+    }
 
-	public UserHashtagAutoCompleteAdapter(final EditText view) {
-		this(view.getContext(), view);
-	}
+    public UserHashtagAutoCompleteAdapter(final EditText view) {
+        this(view.getContext(), view);
+    }
 
-	@Override
-	public void bindView(final View view, final Context context, final Cursor cursor) {
-		if (isCursorClosed()) return;
-		final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-		final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+    @Override
+    public void bindView(final View view, final Context context, final Cursor cursor) {
+        if (isCursorClosed()) return;
+        final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+        final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
         final ProfileImageView icon = (ProfileImageView) view.findViewById(android.R.id.icon);
 
         // Clear images in order to prevent images in recycled view shown.
-		icon.setImageDrawable(null);
+        icon.setImageDrawable(null);
 
-		if (mScreenNameIdx != -1 && mNameIdx != -1 && mUserIdIdx != -1) {
-			text1.setText(cursor.getString(mNameIdx));
-			text2.setText("@" + cursor.getString(mScreenNameIdx));
-		} else {
-			text1.setText("#" + cursor.getString(mNameIdx));
-			text2.setText(R.string.hashtag);
-		}
-		icon.setVisibility(mDisplayProfileImage ? View.VISIBLE : View.GONE);
-		if (mProfileImageUrlIdx != -1) {
+        if (mScreenNameIdx != -1 && mNameIdx != -1 && mUserIdIdx != -1) {
+            text1.setText(cursor.getString(mNameIdx));
+            text2.setText("@" + cursor.getString(mScreenNameIdx));
+        } else {
+            text1.setText("#" + cursor.getString(mNameIdx));
+            text2.setText(R.string.hashtag);
+        }
+        icon.setVisibility(mDisplayProfileImage ? View.VISIBLE : View.GONE);
+        if (mProfileImageUrlIdx != -1) {
             if (mDisplayProfileImage) {
                 final String profileImageUrl = cursor.getString(mProfileImageUrlIdx);
                 mProfileImageLoader.displayProfileImage(icon, profileImageUrl);
-			} else {
+            } else {
                 mProfileImageLoader.cancelDisplayTask(icon);
-			}
+            }
             icon.clearColorFilter();
-		} else {
+        } else {
             icon.setImageResource(R.drawable.ic_action_hashtag);
             icon.setColorFilter(text1.getCurrentTextColor(), Mode.SRC_ATOP);
-		}
-		super.bindView(view, context, cursor);
-	}
+        }
+        super.bindView(view, context, cursor);
+    }
 
-	public void closeCursor() {
-		final Cursor cursor = getCursor();
-		if (cursor == null) return;
-		if (!cursor.isClosed()) {
-			cursor.close();
-		}
-	}
+    public void closeCursor() {
+        final Cursor cursor = getCursor();
+        if (cursor == null) return;
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+    }
 
-	@Override
-	public CharSequence convertToString(final Cursor cursor) {
-		if (isCursorClosed()) return null;
-		return cursor.getString(mScreenNameIdx != -1 ? mScreenNameIdx : mNameIdx);
-	}
+    @Override
+    public CharSequence convertToString(final Cursor cursor) {
+        if (isCursorClosed()) return null;
+        return cursor.getString(mScreenNameIdx != -1 ? mScreenNameIdx : mNameIdx);
+    }
 
-	public boolean isCursorClosed() {
-		final Cursor cursor = getCursor();
-		return cursor == null || cursor.isClosed();
-	}
+    public boolean isCursorClosed() {
+        final Cursor cursor = getCursor();
+        return cursor == null || cursor.isClosed();
+    }
 
-	@Override
-	public Cursor runQueryOnBackgroundThread(final CharSequence constraint) {
-		char token = mToken;
-		if (mEditText != null && constraint != null) {
-			final CharSequence text = mEditText.getText();
-			token = text.charAt(mEditText.getSelectionEnd() - constraint.length() - 1);
-		}
-		if (isAtSymbol(token) == isAtSymbol(mToken)) {
-			final FilterQueryProvider filter = getFilterQueryProvider();
-			if (filter != null) return filter.runQuery(constraint);
-		}
-		mToken = token;
+    @Override
+    public Cursor runQueryOnBackgroundThread(final CharSequence constraint) {
+        char token = mToken;
+        if (mEditText != null && constraint != null) {
+            final CharSequence text = mEditText.getText();
+            token = text.charAt(mEditText.getSelectionEnd() - constraint.length() - 1);
+        }
+        if (isAtSymbol(token) == isAtSymbol(mToken)) {
+            final FilterQueryProvider filter = getFilterQueryProvider();
+            if (filter != null) return filter.runQuery(constraint);
+        }
+        mToken = token;
         final String constraintEscaped = constraint != null ? constraint.toString().replaceAll("_", "^_") : null;
-		if (isAtSymbol(token)) {
+        if (isAtSymbol(token)) {
             final Expression selection;
             final String[] selectionArgs;
             if (constraintEscaped != null) {
@@ -175,39 +180,39 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
             return cursor;
         } else {
             final String selection = constraintEscaped != null ? CachedHashtags.NAME + " LIKE ?||'%' ESCAPE '^'"
-					: null;
+                    : null;
             final String[] selectionArgs = constraintEscaped != null ? new String[]{constraintEscaped} : null;
             final Cursor cursor = mDatabase.query(true, CachedHashtags.TABLE_NAME, CachedHashtags.COLUMNS, selection, selectionArgs,
-					null, null, CachedHashtags.NAME, null);
+                    null, null, CachedHashtags.NAME, null);
             if (BuildConfig.DEBUG && cursor == null) throw new NullPointerException();
             return cursor;
-		}
-	}
+        }
+    }
 
 
     public void setAccountId(long accountId) {
         mAccountId = accountId;
     }
 
-	@Override
-	public Cursor swapCursor(final Cursor cursor) {
-		if (cursor != null) {
-			mNameIdx = cursor.getColumnIndex(CachedValues.NAME);
-			mScreenNameIdx = cursor.getColumnIndex(CachedUsers.SCREEN_NAME);
-			mUserIdIdx = cursor.getColumnIndex(CachedUsers.USER_ID);
-			mProfileImageUrlIdx = cursor.getColumnIndex(CachedUsers.PROFILE_IMAGE_URL);
-		}
-		return super.swapCursor(cursor);
-	}
+    @Override
+    public Cursor swapCursor(final Cursor cursor) {
+        if (cursor != null) {
+            mNameIdx = cursor.getColumnIndex(CachedValues.NAME);
+            mScreenNameIdx = cursor.getColumnIndex(CachedUsers.SCREEN_NAME);
+            mUserIdIdx = cursor.getColumnIndex(CachedUsers.USER_ID);
+            mProfileImageUrlIdx = cursor.getColumnIndex(CachedUsers.PROFILE_IMAGE_URL);
+        }
+        return super.swapCursor(cursor);
+    }
 
 
-	private static boolean isAtSymbol(final char character) {
-		switch (character) {
-			case '\uff20':
-			case '@':
-				return true;
-		}
-		return false;
-	}
+    private static boolean isAtSymbol(final char character) {
+        switch (character) {
+            case '\uff20':
+            case '@':
+                return true;
+        }
+        return false;
+    }
 
 }

@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -55,14 +54,16 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
+import de.vanita5.twittnuker.view.iface.IExtendedView;
+import de.vanita5.twittnuker.view.themed.AccentSwipeRefreshLayout;
 
 public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAdapter> extends BaseSupportFragment
         implements OnRefreshListener, DrawerCallback, RefreshScrollTopInterface, ControlBarOffsetListener,
-        ContentListSupport {
+        ContentListSupport, IControlBarActivity.ControlBarShowHideHelper.ControlBarAnimationListener {
 
-	private View mProgressContainer;
-	private SwipeRefreshLayout mSwipeRefreshLayout;
-	private RecyclerView mRecyclerView;
+    private View mProgressContainer;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mRecyclerView;
     private View mErrorContainer;
     private ImageView mErrorIconView;
     private TextView mErrorTextView;
@@ -71,42 +72,42 @@ public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAd
     private A mAdapter;
 
     // Callbacks and listeners
-	private SimpleDrawerCallback mDrawerCallback;
-	private ContentListScrollListener mScrollListener;
+    private SimpleDrawerCallback mDrawerCallback;
+    private ContentListScrollListener mScrollListener;
 
     // Data fields
     private Rect mSystemWindowsInsets = new Rect();
     private DividerItemDecoration mItemDecoration;
 
     @Override
-	public boolean canScroll(float dy) {
-		return mDrawerCallback.canScroll(dy);
-	}
+    public boolean canScroll(float dy) {
+        return mDrawerCallback.canScroll(dy);
+    }
 
     @Override
-	public void cancelTouch() {
-		mDrawerCallback.cancelTouch();
-	}
+    public void cancelTouch() {
+        mDrawerCallback.cancelTouch();
+    }
 
     @Override
-	public void fling(float velocity) {
-		mDrawerCallback.fling(velocity);
-	}
+    public void fling(float velocity) {
+        mDrawerCallback.fling(velocity);
+    }
 
     @Override
-	public boolean isScrollContent(float x, float y) {
-		return mDrawerCallback.isScrollContent(x, y);
-	}
+    public boolean isScrollContent(float x, float y) {
+        return mDrawerCallback.isScrollContent(x, y);
+    }
 
-	@Override
-	public void onControlBarOffsetChanged(IControlBarActivity activity, float offset) {
-		updateRefreshProgressOffset();
-	}
+    @Override
+    public void onControlBarOffsetChanged(IControlBarActivity activity, float offset) {
+        updateRefreshProgressOffset();
+    }
 
-	@Override
-	public void onRefresh() {
-		triggerRefresh();
-	}
+    @Override
+    public void onRefresh() {
+        triggerRefresh();
+    }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -115,47 +116,52 @@ public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAd
     }
 
     @Override
-	public void scrollBy(float dy) {
-		mDrawerCallback.scrollBy(dy);
-	}
-
-	@Override
-	public boolean scrollToStart() {
-		mLayoutManager.scrollToPositionWithOffset(0, 0);
-		mRecyclerView.stopScroll();
-		setControlVisible(true);
-		return true;
-	}
+    public void scrollBy(float dy) {
+        mDrawerCallback.scrollBy(dy);
+    }
 
     @Override
-	public void setControlVisible(boolean visible) {
-		final FragmentActivity activity = getActivity();
+    public boolean scrollToStart() {
+        mLayoutManager.scrollToPositionWithOffset(0, 0);
+        mRecyclerView.stopScroll();
+        setControlVisible(true);
+        return true;
+    }
+
+    @Override
+    public void onControlBarVisibleAnimationFinish(boolean visible) {
+        updateRefreshProgressOffset();
+    }
+
+    @Override
+    public void setControlVisible(boolean visible) {
+        final FragmentActivity activity = getActivity();
         if (activity instanceof IControlBarActivity) {
-            ((IControlBarActivity) activity).setControlBarVisibleAnimate(visible);
-		}
-	}
+            ((IControlBarActivity) activity).setControlBarVisibleAnimate(visible, this);
+        }
+    }
 
     @Override
-	public boolean shouldLayoutHeaderBottom() {
-		return mDrawerCallback.shouldLayoutHeaderBottom();
-	}
+    public boolean shouldLayoutHeaderBottom() {
+        return mDrawerCallback.shouldLayoutHeaderBottom();
+    }
 
     @Override
-	public void topChanged(int offset) {
-		mDrawerCallback.topChanged(offset);
-	}
+    public void topChanged(int offset) {
+        mDrawerCallback.topChanged(offset);
+    }
 
     @Override
-	public A getAdapter() {
-		return mAdapter;
-	}
+    public A getAdapter() {
+        return mAdapter;
+    }
 
     @Override
-	public abstract boolean isRefreshing();
+    public abstract boolean isRefreshing();
 
-	public LinearLayoutManager getLayoutManager() {
-		return mLayoutManager;
-	}
+    public LinearLayoutManager getLayoutManager() {
+        return mLayoutManager;
+    }
 
     public void setRefreshing(final boolean refreshing) {
         final boolean currentRefreshing = mSwipeRefreshLayout.isRefreshing();
@@ -165,70 +171,83 @@ public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAd
         if (refreshing == currentRefreshing) return;
         final boolean layoutRefreshing = refreshing && !mAdapter.isLoadMoreIndicatorVisible();
         mSwipeRefreshLayout.setRefreshing(layoutRefreshing);
-	}
+    }
 
     @Override
-	public void onLoadMoreContents() {
-		setLoadMoreIndicatorVisible(true);
-		setRefreshEnabled(false);
-	}
+    public void onLoadMoreContents(boolean fromStart) {
+        setLoadMoreIndicatorVisible(true);
+        setRefreshEnabled(false);
+    }
 
-	public final RecyclerView getRecyclerView() {
-		return mRecyclerView;
-	}
+    public final RecyclerView getRecyclerView() {
+        return mRecyclerView;
+    }
 
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		if (activity instanceof IControlBarActivity) {
-			((IControlBarActivity) activity).registerControlBarOffsetListener(this);
-		}
-	}
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof IControlBarActivity) {
+            ((IControlBarActivity) context).registerControlBarOffsetListener(this);
+        }
+    }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_content_recyclerview, container, false);
-	}
+    }
 
-	@Override
-	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		mDrawerCallback = new SimpleDrawerCallback(mRecyclerView);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mDrawerCallback = new SimpleDrawerCallback(mRecyclerView);
 
-		final View view = getView();
-		if (view == null) throw new AssertionError();
-		final Context context = view.getContext();
-		final boolean compact = Utils.isCompactCards(context);
-		final int backgroundColor = ThemeUtils.getThemeBackgroundColor(context);
-		final int colorRes = TwidereColorUtils.getContrastYIQ(backgroundColor,
-				R.color.bg_refresh_progress_color_light, R.color.bg_refresh_progress_color_dark);
-		mSwipeRefreshLayout.setOnRefreshListener(this);
-		mSwipeRefreshLayout.setProgressBackgroundColorSchemeResource(colorRes);
-		mAdapter = onCreateAdapter(context, compact);
-		mLayoutManager = new FixedLinearLayoutManager(context);
-		mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-		mRecyclerView.setLayoutManager(mLayoutManager);
-		mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                    updateRefreshProgressOffset();
+        final View view = getView();
+        if (view == null) throw new AssertionError();
+        final Context context = view.getContext();
+        final boolean compact = Utils.isCompactCards(context);
+        final int backgroundColor = ThemeUtils.getThemeBackgroundColor(context);
+        final int colorRes = TwidereColorUtils.getContrastYIQ(backgroundColor,
+                R.color.bg_refresh_progress_color_light, R.color.bg_refresh_progress_color_dark);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setProgressBackgroundColorSchemeResource(colorRes);
+        mAdapter = onCreateAdapter(context, compact);
+        mLayoutManager = new FixedLinearLayoutManager(context);
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        if (mSwipeRefreshLayout instanceof AccentSwipeRefreshLayout) {
+            ((AccentSwipeRefreshLayout) mSwipeRefreshLayout).setTouchInterceptor(new IExtendedView.TouchInterceptor() {
+                @Override
+                public boolean dispatchTouchEvent(View view, MotionEvent event) {
+                    return false;
                 }
-                return false;
-            }
-        });
-		if (compact) {
+
+                @Override
+                public boolean onInterceptTouchEvent(View view, MotionEvent event) {
+                    if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                        updateRefreshProgressOffset();
+                    }
+                    return false;
+                }
+
+                @Override
+                public boolean onTouchEvent(View view, MotionEvent event) {
+                    return false;
+                }
+
+            });
+        }
+        if (compact) {
             mItemDecoration = new DividerItemDecoration(context, mLayoutManager.getOrientation());
             mRecyclerView.addItemDecoration(mItemDecoration);
-		}
+        }
         mRecyclerView.setAdapter(mAdapter);
 
-		mScrollListener = new ContentListScrollListener(this);
-		mScrollListener.setTouchSlop(ViewConfiguration.get(context).getScaledTouchSlop());
-	}
+        mScrollListener = new ContentListScrollListener(this);
+        mScrollListener.setTouchSlop(ViewConfiguration.get(context).getScaledTouchSlop());
+    }
 
-	@Override
+    @Override
     public void onStart() {
         super.onStart();
         mRecyclerView.addOnScrollListener(mScrollListener);
@@ -241,59 +260,59 @@ public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAd
     }
 
     @Override
-	public void onBaseViewCreated(View view, @Nullable Bundle savedInstanceState) {
-		super.onBaseViewCreated(view, savedInstanceState);
-		mProgressContainer = view.findViewById(R.id.progress_container);
-		mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
-		mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+    public void onBaseViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onBaseViewCreated(view, savedInstanceState);
+        mProgressContainer = view.findViewById(R.id.progress_container);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_layout);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mErrorContainer = view.findViewById(R.id.error_container);
         mErrorIconView = (ImageView) view.findViewById(R.id.error_icon);
         mErrorTextView = (TextView) view.findViewById(R.id.error_text);
-	}
+    }
 
-	@Override
-	public void onDetach() {
-		final FragmentActivity activity = getActivity();
-		if (activity instanceof IControlBarActivity) {
-			((IControlBarActivity) activity).unregisterControlBarOffsetListener(this);
-		}
-		super.onDetach();
-	}
+    @Override
+    public void onDetach() {
+        final FragmentActivity activity = getActivity();
+        if (activity instanceof IControlBarActivity) {
+            ((IControlBarActivity) activity).unregisterControlBarOffsetListener(this);
+        }
+        super.onDetach();
+    }
 
     @NonNull
     protected Rect getExtraContentPadding() {
         return new Rect();
     }
 
-	@Override
-	protected void fitSystemWindows(Rect insets) {
+    @Override
+    protected void fitSystemWindows(Rect insets) {
         final Rect extraPadding = getExtraContentPadding();
         mRecyclerView.setPadding(insets.left + extraPadding.left, insets.top + extraPadding.top,
                 insets.right + extraPadding.right, insets.bottom + extraPadding.bottom);
         mErrorContainer.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-		mProgressContainer.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-		mSystemWindowsInsets.set(insets);
-		updateRefreshProgressOffset();
-	}
+        mProgressContainer.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        mSystemWindowsInsets.set(insets);
+        updateRefreshProgressOffset();
+    }
 
-	public void setLoadMoreIndicatorVisible(boolean visible) {
+    public void setLoadMoreIndicatorVisible(boolean visible) {
         if (mItemDecoration != null) {
             mItemDecoration.setDecorationEndOffset(visible ? 1 : 0);
         }
-		mAdapter.setLoadMoreIndicatorVisible(visible);
-	}
+        mAdapter.setLoadMoreIndicatorVisible(visible);
+    }
 
-	public void setRefreshEnabled(boolean enabled) {
-		mSwipeRefreshLayout.setEnabled(enabled);
-	}
+    public void setRefreshEnabled(boolean enabled) {
+        mSwipeRefreshLayout.setEnabled(enabled);
+    }
 
     @Override
     public boolean triggerRefresh() {
         return false;
     }
 
-	@NonNull
-	protected abstract A onCreateAdapter(Context context, boolean compact);
+    @NonNull
+    protected abstract A onCreateAdapter(Context context, boolean compact);
 
     protected final void showContent() {
         mErrorContainer.setVisibility(View.GONE);
@@ -321,21 +340,24 @@ public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAd
         mSwipeRefreshLayout.setVisibility(View.VISIBLE);
         mErrorIconView.setImageResource(icon);
         mErrorTextView.setText(text);
-	}
+    }
 
-	protected void updateRefreshProgressOffset() {
+    protected void updateRefreshProgressOffset() {
         final FragmentActivity activity = getActivity();
-        if (!(activity instanceof IControlBarActivity) || mSystemWindowsInsets.top == 0 || mSwipeRefreshLayout == null
+        final Rect insets = this.mSystemWindowsInsets;
+        final SwipeRefreshLayout layout = this.mSwipeRefreshLayout;
+        if (!(activity instanceof IControlBarActivity) || insets.top == 0 || layout == null
                 || isRefreshing()) {
             return;
         }
-		final float density = getResources().getDisplayMetrics().density;
-		final int progressCircleDiameter = mSwipeRefreshLayout.getProgressCircleDiameter();
+        final int progressCircleDiameter = layout.getProgressCircleDiameter();
+        if (progressCircleDiameter == 0) return;
+        final float density = getResources().getDisplayMetrics().density;
         final IControlBarActivity control = (IControlBarActivity) activity;
         final int controlBarOffsetPixels = Math.round(control.getControlBarHeight() * (1 - control.getControlBarOffset()));
-        final int swipeStart = (mSystemWindowsInsets.top - controlBarOffsetPixels) - progressCircleDiameter;
-		// 64: SwipeRefreshLayout.DEFAULT_CIRCLE_TARGET
-		final int swipeDistance = Math.round(64 * density);
-		mSwipeRefreshLayout.setProgressViewOffset(false, swipeStart, swipeStart + swipeDistance);
-	}
+        final int swipeStart = (insets.top - controlBarOffsetPixels) - progressCircleDiameter;
+        // 64: SwipeRefreshLayout.DEFAULT_CIRCLE_TARGET
+        final int swipeDistance = Math.round(64 * density);
+        layout.setProgressViewOffset(false, swipeStart, swipeStart + swipeDistance);
+    }
 }

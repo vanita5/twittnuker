@@ -37,44 +37,44 @@ import static de.vanita5.twittnuker.util.Utils.createStatusShareIntent;
 
 public class SupportStatusShareProvider extends ActionProvider implements Constants {
 
-	private final Context mContext;
-	private ParcelableStatus mStatus;
+    private final Context mContext;
+    private ParcelableStatus mStatus;
 
-	public SupportStatusShareProvider(Context context) {
-		super(context);
-		mContext = context;
-	}
+    public SupportStatusShareProvider(Context context) {
+        super(context);
+        mContext = context;
+    }
 
-	@Override
+    @Override
     public View onCreateActionView() {
-		return null;
-	}
+        return null;
+    }
 
-	@Override
+    @Override
     public View onCreateActionView(MenuItem forItem) {
-		return null;
+        return null;
     }
 
     @Override
     public boolean onPerformDefaultAction() {
         return true;
-	}
+    }
 
-	@Override
-	public boolean hasSubMenu() {
-		return true;
-	}
+    @Override
+    public boolean hasSubMenu() {
+        return true;
+    }
 
-	@Override
-	public void onPrepareSubMenu(SubMenu subMenu) {
+    @Override
+    public void onPrepareSubMenu(SubMenu subMenu) {
         final ParcelableStatus status = mStatus;
         if (status == null) return;
         final Intent shareIntent = createStatusShareIntent(mContext, status);
-		subMenu.removeGroup(MENU_GROUP_STATUS_SHARE);
-		addIntentToMenu(mContext, subMenu, shareIntent, MENU_GROUP_STATUS_SHARE);
-	}
+        subMenu.removeGroup(MENU_GROUP_STATUS_SHARE);
+        addIntentToMenu(mContext, subMenu, shareIntent, MENU_GROUP_STATUS_SHARE);
+    }
 
     public void setStatus(ParcelableStatus status) {
         mStatus = status;
-	}
+    }
 }

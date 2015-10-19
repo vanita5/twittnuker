@@ -32,6 +32,7 @@ import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -43,10 +44,10 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import org.mariotaku.restfu.http.Authorization;
-import org.mariotaku.restfu.http.Endpoint;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -62,236 +63,236 @@ import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
 
 @SuppressLint("SetJavaScriptEnabled")
-public class BrowserSignInActivity extends BaseSupportDialogActivity  {
+public class BrowserSignInActivity extends BaseSupportDialogActivity {
 
-	private static final String INJECT_CONTENT = "javascript:window.injector.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');";
+    private static final String INJECT_CONTENT = "javascript:window.injector.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');";
 
-	private SharedPreferences mPreferences;
+    private SharedPreferences mPreferences;
 
-	private WebView mWebView;
-	private View mProgressContainer;
+    private WebView mWebView;
+    private View mProgressContainer;
 
-	private WebSettings mWebSettings;
+    private WebSettings mWebSettings;
 
     private OAuthToken mRequestToken;
 
-	private GetRequestTokenTask mTask;
+    private GetRequestTokenTask mTask;
 
-	@Override
+    @Override
     public void onContentChanged() {
         super.onContentChanged();
-		mWebView = (WebView) findViewById(R.id.webview);
-		mProgressContainer = findViewById(R.id.progress_container);
-	}
+        mWebView = (WebView) findViewById(R.id.webview);
+        mProgressContainer = findViewById(R.id.progress_container);
+    }
 
-	@Override
-	public void onDestroy() {
-		getLoaderManager().destroyLoader(0);
-		super.onDestroy();
-	}
+    @Override
+    public void onDestroy() {
+        getLoaderManager().destroyLoader(0);
+        super.onDestroy();
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home: {
-				finish();
-				return true;
-			}
-		}
-		return super.onOptionsItemSelected(item);
-	}
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		super.onCreate(savedInstanceState);
-		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		setContentView(R.layout.activity_browser_sign_in);
-		mWebView.setWebViewClient(new AuthorizationWebViewClient(this));
-		mWebView.setVerticalScrollBarEnabled(false);
-		mWebView.addJavascriptInterface(new InjectorJavaScriptInterface(this), "injector");
-		mWebSettings = mWebView.getSettings();
-		mWebSettings.setLoadsImagesAutomatically(true);
-		mWebSettings.setJavaScriptEnabled(true);
-		mWebSettings.setBlockNetworkImage(false);
-		mWebSettings.setSaveFormData(true);
-		getRequestToken();
-	}
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        super.onCreate(savedInstanceState);
+        mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        setContentView(R.layout.activity_browser_sign_in);
+        mWebView.setWebViewClient(new AuthorizationWebViewClient(this));
+        mWebView.setVerticalScrollBarEnabled(false);
+        mWebView.addJavascriptInterface(new InjectorJavaScriptInterface(this), "injector");
+        mWebSettings = mWebView.getSettings();
+        mWebSettings.setLoadsImagesAutomatically(true);
+        mWebSettings.setJavaScriptEnabled(true);
+        mWebSettings.setBlockNetworkImage(false);
+        mWebSettings.setSaveFormData(true);
+        getRequestToken();
+    }
 
-	private void getRequestToken() {
+    private void getRequestToken() {
         if (mRequestToken != null || mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING)
             return;
-		mTask = new GetRequestTokenTask(this);
+        mTask = new GetRequestTokenTask(this);
         AsyncTaskUtils.executeTask(mTask);
-	}
+    }
 
-	private void loadUrl(final String url) {
-		if (mWebView == null) return;
-		mWebView.loadUrl(url);
-	}
+    private void loadUrl(final String url) {
+        if (mWebView == null) return;
+        mWebView.loadUrl(url);
+    }
 
-	private String readOAuthPin(final String html) {
-		try {
-			return OAuthPasswordAuthenticator.readOAuthPINFromHtml(new StringReader(html));
+    private String readOAuthPin(final String html) {
+        try {
+            return OAuthPasswordAuthenticator.readOAuthPINFromHtml(new StringReader(html));
         } catch (final XmlPullParserException | IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	private void setLoadProgressShown(final boolean shown) {
-		mProgressContainer.setVisibility(shown ? View.VISIBLE : View.GONE);
-	}
+    private void setLoadProgressShown(final boolean shown) {
+        mProgressContainer.setVisibility(shown ? View.VISIBLE : View.GONE);
+    }
 
     private void setRequestToken(final OAuthToken token) {
-		mRequestToken = token;
-	}
+        mRequestToken = token;
+    }
 
-	static class AuthorizationWebViewClient extends WebViewClient {
-		private final BrowserSignInActivity mActivity;
+    static class AuthorizationWebViewClient extends WebViewClient {
+        private final BrowserSignInActivity mActivity;
 
-		AuthorizationWebViewClient(final BrowserSignInActivity activity) {
-			mActivity = activity;
-		}
+        AuthorizationWebViewClient(final BrowserSignInActivity activity) {
+            mActivity = activity;
+        }
 
-		@Override
-		public void onPageFinished(final WebView view, final String url) {
-			super.onPageFinished(view, url);
-			view.loadUrl(INJECT_CONTENT);
-			mActivity.setLoadProgressShown(false);
-		}
+        @Override
+        public void onPageFinished(final WebView view, final String url) {
+            super.onPageFinished(view, url);
+            view.loadUrl(INJECT_CONTENT);
+            mActivity.setLoadProgressShown(false);
+        }
 
-		@Override
-		public void onPageStarted(final WebView view, final String url, final Bitmap favicon) {
-			super.onPageStarted(view, url, favicon);
-			mActivity.setLoadProgressShown(true);
-		}
+        @Override
+        public void onPageStarted(final WebView view, final String url, final Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            mActivity.setLoadProgressShown(true);
+        }
 
-		@Override
+        @Override
         public void onLoadResource(WebView view, String url) {
             super.onLoadResource(view, url);
         }
 
         @Override
-		public void onReceivedError(final WebView view, final int errorCode, final String description,
-				final String failingUrl) {
-			super.onReceivedError(view, errorCode, description, failingUrl);
-			Toast.makeText(mActivity, R.string.error_occurred, Toast.LENGTH_SHORT).show();
-			mActivity.finish();
-		}
+        public void onReceivedError(final WebView view, final int errorCode, final String description,
+                                    final String failingUrl) {
+            super.onReceivedError(view, errorCode, description, failingUrl);
+            Toast.makeText(mActivity, R.string.error_occurred, Toast.LENGTH_SHORT).show();
+            mActivity.finish();
+        }
 
-		@Override
+        @Override
         public void onReceivedSslError(final WebView view, @NonNull final SslErrorHandler handler, final SslError error) {
-			if (mActivity.mPreferences.getBoolean(KEY_IGNORE_SSL_ERROR, false)) {
-				handler.proceed();
-			} else {
-				handler.cancel();
-			}
-		}
+            if (mActivity.mPreferences.getBoolean(KEY_IGNORE_SSL_ERROR, false)) {
+                handler.proceed();
+            } else {
+                handler.cancel();
+            }
+        }
 
-		@Override
-		public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
-			final Uri uri = Uri.parse(url);
-			if (url.startsWith(OAUTH_CALLBACK_URL)) {
-				final String oauth_verifier = uri.getQueryParameter(EXTRA_OAUTH_VERIFIER);
+        @Override
+        public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
+            final Uri uri = Uri.parse(url);
+            if (url.startsWith(OAUTH_CALLBACK_URL)) {
+                final String oauth_verifier = uri.getQueryParameter(EXTRA_OAUTH_VERIFIER);
                 final OAuthToken requestToken = mActivity.mRequestToken;
                 if (oauth_verifier != null && requestToken != null) {
-					final Intent intent = new Intent();
-					intent.putExtra(EXTRA_OAUTH_VERIFIER, oauth_verifier);
+                    final Intent intent = new Intent();
+                    intent.putExtra(EXTRA_OAUTH_VERIFIER, oauth_verifier);
                     intent.putExtra(EXTRA_REQUEST_TOKEN, requestToken.getOauthToken());
                     intent.putExtra(EXTRA_REQUEST_TOKEN_SECRET, requestToken.getOauthTokenSecret());
-					mActivity.setResult(RESULT_OK, intent);
-					mActivity.finish();
-				}
-				return true;
-			}
-			return false;
-		}
+                    mActivity.setResult(RESULT_OK, intent);
+                    mActivity.finish();
+                }
+                return true;
+            }
+            return false;
+        }
 
-	}
+    }
 
     static class GetRequestTokenTask extends AsyncTask<Object, Object, OAuthToken> {
 
-		private final String mConsumerKey, mConsumerSecret;
-		private final TwittnukerApplication mApplication;
-		private final SharedPreferences mPreferences;
-		private final BrowserSignInActivity mActivity;
+        private final String mConsumerKey, mConsumerSecret;
+        private final TwittnukerApplication mApplication;
+        private final SharedPreferences mPreferences;
+        private final BrowserSignInActivity mActivity;
 
-		public GetRequestTokenTask(final BrowserSignInActivity activity) {
-			mActivity = activity;
-			mApplication = TwittnukerApplication.getInstance(activity);
-			mPreferences = activity.getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-			final Intent intent = activity.getIntent();
-			mConsumerKey = intent.getStringExtra(Accounts.CONSUMER_KEY);
-			mConsumerSecret = intent.getStringExtra(Accounts.CONSUMER_SECRET);
-		}
+        public GetRequestTokenTask(final BrowserSignInActivity activity) {
+            mActivity = activity;
+            mApplication = TwittnukerApplication.getInstance(activity);
+            mPreferences = activity.getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+            final Intent intent = activity.getIntent();
+            mConsumerKey = intent.getStringExtra(Accounts.CONSUMER_KEY);
+            mConsumerSecret = intent.getStringExtra(Accounts.CONSUMER_SECRET);
+        }
 
-		@Override
+        @Override
         protected OAuthToken doInBackground(final Object... params) {
             final String defConsumerKey = getNonEmptyString(mPreferences, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY);
             final String defConsumerSecret = getNonEmptyString(mPreferences, KEY_CONSUMER_SECRET,
-					TWITTER_CONSUMER_SECRET);
+                    TWITTER_CONSUMER_SECRET);
             final String consumerKey, consumerSecret;
-			if (!isEmpty(mConsumerKey) && !isEmpty(mConsumerSecret)) {
+            if (!isEmpty(mConsumerKey) && !isEmpty(mConsumerSecret)) {
                 consumerKey = mConsumerKey;
                 consumerSecret = mConsumerSecret;
-			} else {
+            } else {
                 consumerKey = defConsumerKey;
                 consumerSecret = defConsumerSecret;
-			}
-			try {
-                final Endpoint endpoint = new Endpoint(TwitterAPIFactory.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", "oauth"));
+            }
+            try {
+                final OAuthEndpoint endpoint = new OAuthEndpoint(TwitterAPIFactory.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", null));
                 final Authorization auth = new OAuthAuthorization(consumerKey, consumerSecret);
                 final TwitterOAuth twitter = TwitterAPIFactory.getInstance(mActivity, endpoint, auth, TwitterOAuth.class);
                 return twitter.getRequestToken(OAUTH_CALLBACK_OOB);
             } catch (final Exception e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
+                e.printStackTrace();
+            }
+            return null;
+        }
 
-		@Override
+        @Override
         protected void onPostExecute(final OAuthToken data) {
-			mActivity.setLoadProgressShown(false);
-			mActivity.setRequestToken(data);
-			if (data == null) {
+            mActivity.setLoadProgressShown(false);
+            mActivity.setRequestToken(data);
+            if (data == null) {
                 if (!mActivity.isFinishing()) {
                     Toast.makeText(mActivity, R.string.error_occurred, Toast.LENGTH_SHORT).show();
                     mActivity.finish();
                 }
-				return;
-			}
-            //TODO
-//            mActivity.loadUrl(data.getAuthorizationURL());
-		}
+                return;
+            }
+            final OAuthEndpoint endpoint = new OAuthEndpoint(TwitterAPIFactory.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", null));
+            mActivity.loadUrl(endpoint.construct("/oauth/authorize", Pair.create("oauth_token", data.getOauthToken())));
+        }
 
-		@Override
-		protected void onPreExecute() {
-			mActivity.setLoadProgressShown(true);
-		}
+        @Override
+        protected void onPreExecute() {
+            mActivity.setLoadProgressShown(true);
+        }
 
-	}
+    }
 
-	static class InjectorJavaScriptInterface {
+    static class InjectorJavaScriptInterface {
 
-		private final BrowserSignInActivity mActivity;
+        private final BrowserSignInActivity mActivity;
 
-		InjectorJavaScriptInterface(final BrowserSignInActivity activity) {
-			mActivity = activity;
-		}
+        InjectorJavaScriptInterface(final BrowserSignInActivity activity) {
+            mActivity = activity;
+        }
 
-		@JavascriptInterface
-		public void processHTML(final String html) {
+        @JavascriptInterface
+        public void processHTML(final String html) {
             final String oauthVerifier = mActivity.readOAuthPin(html);
             final OAuthToken requestToken = mActivity.mRequestToken;
             if (oauthVerifier != null && requestToken != null) {
-				final Intent intent = new Intent();
+                final Intent intent = new Intent();
                 intent.putExtra(EXTRA_OAUTH_VERIFIER, oauthVerifier);
                 intent.putExtra(EXTRA_REQUEST_TOKEN, requestToken.getOauthToken());
                 intent.putExtra(EXTRA_REQUEST_TOKEN_SECRET, requestToken.getOauthTokenSecret());
-				mActivity.setResult(RESULT_OK, intent);
-				mActivity.finish();
-			}
-		}
-	}
+                mActivity.setResult(RESULT_OK, intent);
+                mActivity.finish();
+            }
+        }
+    }
 }

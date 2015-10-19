@@ -29,22 +29,32 @@ import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
+import de.vanita5.twittnuker.util.ActivityTracker;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 import de.vanita5.twittnuker.view.ShapedImageView;
+
+import javax.inject.Inject;
 
 public abstract class BaseThemedActivity extends Activity implements IThemedActivity {
 
     private int mCurrentThemeResource;
     private int mCurrentThemeColor;
     private int mCurrentThemeBackgroundAlpha;
-	private int mCurrentActionBarColor;
-	private String mCurrentThemeFontFamily;
+    private int mCurrentActionBarColor;
+    private String mCurrentThemeFontFamily;
     private String mCurrentThemeBackgroundOption;
     private int mProfileImageStyle;
+    @Inject
+    protected ActivityTracker mActivityTracker;
+    @Inject
+    protected KeyboardShortcutsHandler mKeyboardShortcutHandler;
 
-	@Override
+    @Override
     public String getCurrentThemeFontFamily() {
         return mCurrentThemeFontFamily;
     }
@@ -64,15 +74,15 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
         return mCurrentThemeColor;
     }
 
-	@Override
-	public int getCurrentActionBarColor() {
-		return mCurrentActionBarColor;
-	}
+    @Override
+    public int getCurrentActionBarColor() {
+        return mCurrentActionBarColor;
+    }
 
-	@Override
-	public final int getCurrentThemeResourceId() {
-		return mCurrentThemeResource;
-	}
+    @Override
+    public final int getCurrentThemeResourceId() {
+        return mCurrentThemeResource;
+    }
 
     @Override
     public int getThemeBackgroundAlpha() {
@@ -82,38 +92,39 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     @Override
     public abstract int getThemeColor();
 
-	@Override
-	public abstract int getActionBarColor();
+    @Override
+    public abstract int getActionBarColor();
 
-	@Override
-	public String getThemeFontFamily() {
-		return ThemeUtils.getThemeFontFamily(this);
-	}
+    @Override
+    public String getThemeFontFamily() {
+        return ThemeUtils.getThemeFontFamily(this);
+    }
 
     @Override
     public abstract int getThemeResourceId();
 
-	@Override
+    @Override
     @ShapedImageView.ShapeStyle
     public int getCurrentProfileImageStyle() {
         return mProfileImageStyle;
     }
 
     @Override
-	public final void restart() {
+    public final void restart() {
         Utils.restartActivity(this);
-	}
+    }
 
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
         if (BuildConfig.DEBUG) {
-			StrictModeUtils.detectAllVmPolicy();
-			StrictModeUtils.detectAllThreadPolicy();
-		}
-		super.onCreate(savedInstanceState);
-		setActionBarBackground();
-	}
+            StrictModeUtils.detectAllVmPolicy();
+            StrictModeUtils.detectAllThreadPolicy();
+        }
+        super.onCreate(savedInstanceState);
+        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(this)).build().inject(this);
+        setActionBarBackground();
+    }
 
     private void setActionBarBackground() {
     }
@@ -130,9 +141,9 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
 
     @Override
     protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resId, boolean first) {
-		mCurrentThemeColor = getThemeColor();
-		mCurrentActionBarColor = getActionBarColor();
-		mCurrentThemeFontFamily = getThemeFontFamily();
+        mCurrentThemeColor = getThemeColor();
+        mCurrentActionBarColor = getActionBarColor();
+        mCurrentThemeFontFamily = getThemeFontFamily();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
         mProfileImageStyle = Utils.getProfileImageStyle(this);

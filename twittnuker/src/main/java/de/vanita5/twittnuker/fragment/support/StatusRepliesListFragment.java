@@ -33,29 +33,29 @@ import java.util.List;
 
 public class StatusRepliesListFragment extends StatusesSearchFragment {
 
-	@Override
+    @Override
     protected Loader<List<ParcelableStatus>> onCreateStatusesLoader(final Context context,
-                                                                 final Bundle args,
-                                                                 final boolean fromUser) {
-		final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
-		final String screenName = args.getString(EXTRA_SCREEN_NAME);
-		final long statusId = args.getLong(EXTRA_STATUS_ID, -1);
-		final long maxId = args.getLong(EXTRA_MAX_ID, -1);
-		final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
-		final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
+                                                                    final Bundle args,
+                                                                    final boolean fromUser) {
+        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final String screenName = args.getString(EXTRA_SCREEN_NAME);
+        final long statusId = args.getLong(EXTRA_STATUS_ID, -1);
+        final long maxId = args.getLong(EXTRA_MAX_ID, -1);
+        final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
+        final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
         return new StatusRepliesLoader(getActivity(), accountId, screenName, statusId, maxId,
                 sinceId, getAdapterData(), getSavedStatusesFileArgs(), tabPosition, fromUser);
-	}
+    }
 
-	@Override
-	protected String[] getSavedStatusesFileArgs() {
-		final Bundle args = getArguments();
-		if (args == null) return null;
-		final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
-		final String screenName = args.getString(EXTRA_SCREEN_NAME);
-		final long statusId = args.getLong(EXTRA_STATUS_ID);
-		return new String[] { AUTHORITY_STATUS_REPLIES, "account" + accountId, "screen_name" + screenName,
-				"status_id" + statusId };
-	}
+    @Override
+    protected String[] getSavedStatusesFileArgs() {
+        final Bundle args = getArguments();
+        if (args == null) return null;
+        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final String screenName = args.getString(EXTRA_SCREEN_NAME);
+        final long statusId = args.getLong(EXTRA_STATUS_ID);
+        return new String[]{AUTHORITY_STATUS_REPLIES, "account" + accountId, "screen_name" + screenName,
+                "status_id" + statusId};
+    }
 
 }

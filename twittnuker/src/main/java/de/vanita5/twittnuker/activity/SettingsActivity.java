@@ -54,7 +54,6 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.view.ViewParent;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -78,7 +77,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 
     private static final int RESULT_SETTINGS_CHANGED = 10;
 
-	private HeaderAdapter mAdapter;
+    private HeaderAdapter mAdapter;
 
     private boolean mShouldNotifyChange;
     private TwidereActionModeForChildListener mTwidereActionModeForChildListener;
@@ -94,10 +93,10 @@ public class SettingsActivity extends BasePreferenceActivity {
         return mAdapter = new HeaderAdapter(this);
     }
 
-	@Override
+    @Override
     public int getThemeColor() {
         return ThemeUtils.getUserAccentColor(this);
-	}
+    }
 
     @Override
     public int getActionBarColor() {
@@ -139,7 +138,7 @@ public class SettingsActivity extends BasePreferenceActivity {
     @Override
     public void onHeaderClick(@NonNull final Header header, final int position) {
         super.onHeaderClick(header, position);
-	}
+    }
 
     /**
      * {@inheritDoc}
@@ -155,7 +154,7 @@ public class SettingsActivity extends BasePreferenceActivity {
         }
     }
 
-	@Override
+    @Override
     public void switchToHeader(final String fragmentName, final Bundle args) {
         if (fragmentName == null) return;
         super.switchToHeader(fragmentName, args);
@@ -165,37 +164,37 @@ public class SettingsActivity extends BasePreferenceActivity {
     public void switchToHeader(@NonNull final Header header) {
         if (header.fragment == null && header.intent == null) return;
         super.switchToHeader(header);
-	}
+    }
 
-	@Override
+    @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         if (!isTopSettings()) return false;
         getMenuInflater().inflate(R.menu.menu_settings, menu);
-		return true;
-	}
+        return true;
+    }
 
     private boolean isTopSettings() {
         return getIntent().getStringExtra(EXTRA_SHOW_FRAGMENT) == null;
     }
 
     @Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.import_settings: {
-				final Intent intent = new Intent(this, DataImportActivity.class);
-				startActivity(intent);
-				return true;
-			}
+                final Intent intent = new Intent(this, DataImportActivity.class);
+                startActivity(intent);
+                return true;
+            }
             case R.id.export_settings: {
-				final Intent intent = new Intent(this, DataExportActivity.class);
-				startActivity(intent);
-				return true;
-			}
-		}
-		return super.onOptionsItemSelected(item);
-	}
+                final Intent intent = new Intent(this, DataExportActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-	@Override
+    @Override
     public void finish() {
         if (shouldNotifyChange()) {
             final Intent data = new Intent();
@@ -210,33 +209,39 @@ public class SettingsActivity extends BasePreferenceActivity {
     }
 
     @Override
-	public void setListAdapter(final ListAdapter adapter) {
-		if (adapter == null) {
-			super.setListAdapter(null);
-		} else {
-			super.setListAdapter(getHeaderAdapter());
-		}
-	}
+    public void setListAdapter(final ListAdapter adapter) {
+        if (adapter == null) {
+            super.setListAdapter(null);
+        } else {
+            super.setListAdapter(getHeaderAdapter());
+        }
+    }
 
     @Override
-    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
-        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
         if (ACTION_NAVIGATION_BACK.equals(action)) {
-            navigateUp();
+            onBackPressed();
             return true;
         }
-        return super.handleKeyboardShortcutSingle(handler, keyCode, event);
+        return super.handleKeyboardShortcutSingle(handler, keyCode, event, metaState);
     }
 
     @Override
-    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
-        return super.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        final String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
+        return ACTION_NAVIGATION_BACK.equals(action);
     }
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
+    @Override
+    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event, int metaState) {
+        return super.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState);
+    }
+
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
 //        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
-		super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
@@ -251,7 +256,7 @@ public class SettingsActivity extends BasePreferenceActivity {
         ViewSupport.setOutlineProvider(actionBarContainer, ViewOutlineProviderCompat.BACKGROUND);
         final View windowOverlay = findViewById(R.id.window_overlay);
         ViewSupport.setBackground(windowOverlay, ThemeUtils.getNormalWindowContentOverlay(this, getCurrentThemeResourceId()));
-		setIntent(getIntent().addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
+        setIntent(getIntent().addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
 
 
         final String backgroundOption = getCurrentThemeBackgroundOption();
@@ -264,22 +269,20 @@ public class SettingsActivity extends BasePreferenceActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateUp();
+                onBackPressed();
             }
         });
 
         final ActionBar actionBar = getSupportActionBar();
-		if (actionBar != null) {
-			actionBar.setDisplayHomeAsUpEnabled(true);
-		}
-		if (savedInstanceState != null) {
-			invalidateHeaders();
-		}
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        if (savedInstanceState != null) {
+            invalidateHeaders();
+        }
         final ListView listView = getListView();
         if (listView != null) {
-            listView.setDivider(new EmptyDrawable());
-//            listView.setChoiceMode(isMultiPane() ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
-            listView.setDividerHeight(0);
+            listView.setChoiceMode(isMultiPane() ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
             final LayoutParams lp = listView.getLayoutParams();
             if (lp instanceof MarginLayoutParams) {
                 final MarginLayoutParams mlp = (MarginLayoutParams) lp;
@@ -288,7 +291,7 @@ public class SettingsActivity extends BasePreferenceActivity {
                 mlp.rightMargin = 0;
                 mlp.bottomMargin = 0;
                 listView.setLayoutParams(mlp);
-	        }
+            }
             final ViewParent listParent = listView.getParent();
             if (listParent instanceof ViewGroup) {
                 ((ViewGroup) listParent).setPadding(0, 0, 0, 0);
@@ -312,15 +315,11 @@ public class SettingsActivity extends BasePreferenceActivity {
         return mShouldNotifyChange;
     }
 
-    private void navigateUp() {
+    @Override
+    public void onBackPressed() {
         if (mTwidereActionModeForChildListener.finishExisting()) {
             return;
         }
-        onBackPressed();
-    }
-
-    @Override
-    public void onBackPressed() {
         if (isTopSettings() && shouldNotifyChange()) {
             final RestartConfirmDialogFragment df = new RestartConfirmDialogFragment();
             df.show(getFragmentManager().beginTransaction(), "restart_confirm");
@@ -366,29 +365,23 @@ public class SettingsActivity extends BasePreferenceActivity {
 
         static final int HEADER_TYPE_NORMAL = 0;
         static final int HEADER_TYPE_CATEGORY = 1;
-        static final int HEADER_TYPE_SPACE = 2;
 
-		private final Resources mResources;
+        private final Resources mResources;
         private final int mActionIconColor;
         private final ArrayList<Header> mHeaders;
         private final LayoutInflater mInflater;
-        private int mCategoriesCount;
-        private boolean mFirstItemIsCategory;
 
-		public HeaderAdapter(final Context context) {
+        public HeaderAdapter(final Context context) {
             mInflater = LayoutInflater.from(context);
             mHeaders = new ArrayList<>();
-			mResources = context.getResources();
+            mResources = context.getResources();
             mActionIconColor = ThemeUtils.getThemeForegroundColor(context);
-		}
+        }
 
         private static int getHeaderType(final Header header) {
             if (header.fragment != null || header.intent != null)
                 return HEADER_TYPE_NORMAL;
-            else if (header.title != null || header.titleRes != 0)
-                return HEADER_TYPE_CATEGORY;
-            else
-                return HEADER_TYPE_SPACE;
+            else return HEADER_TYPE_CATEGORY;
 
         }
 
@@ -409,24 +402,12 @@ public class SettingsActivity extends BasePreferenceActivity {
 
         @Override
         public int getCount() {
-            return mHeaders.size() + mCategoriesCount + (mFirstItemIsCategory ? 0 : 1);
+            return mHeaders.size();
         }
 
         @Override
         public Header getItem(final int position) {
-            if (position == getCount() - 1) return new Header();
-            final int realPosition = mFirstItemIsCategory ? position + 1 : position;
-            int categoriesCount = 0;
-            int i;
-            for (i = 0; i + categoriesCount < realPosition; i++) {
-                if (getHeaderType(mHeaders.get(i)) == HEADER_TYPE_CATEGORY) {
-                    categoriesCount++;
-                }
-            }
-            if (i + categoriesCount == realPosition && getHeaderType(mHeaders.get(i)) == HEADER_TYPE_CATEGORY) {
-                return new Header();
-            }
-            return mHeaders.get(realPosition - categoriesCount);
+            return mHeaders.get(position);
         }
 
         @Override
@@ -435,30 +416,21 @@ public class SettingsActivity extends BasePreferenceActivity {
         }
 
         @Override
-		public View getView(final int position, final View convertView, final ViewGroup parent) {
-			final Header header = getItem(position);
-			final int viewType = getHeaderType(header);
+        public View getView(final int position, final View convertView, final ViewGroup parent) {
+            final Header header = getItem(position);
+            final int viewType = getHeaderType(header);
             final View view = convertView != null ? convertView : inflateItemView(viewType, parent);
-			switch (viewType) {
-				case HEADER_TYPE_CATEGORY: {
+            switch (viewType) {
+                case HEADER_TYPE_CATEGORY: {
                     bindCategoryHeader(view, position, header);
-					break;
-				}
-                case HEADER_TYPE_SPACE: {
                     break;
                 }
-				default: {
+                default: {
                     bindHeader(view, position, header);
                     break;
                 }
             }
             return view;
-        }
-
-        @Override
-        public void notifyDataSetChanged() {
-            updateCategoriesInfo();
-            super.notifyDataSetChanged();
         }
 
         @Override
@@ -516,12 +488,6 @@ public class SettingsActivity extends BasePreferenceActivity {
             }
             holder.icon.setColorFilter(mActionIconColor, Mode.SRC_ATOP);
 
-            if (position > 0 && position <= getCount() - 1) {
-                final boolean prevCategory = getItemViewType(position - 1) == HEADER_TYPE_CATEGORY;
-                holder.content.setShowDividers(prevCategory ? LinearLayout.SHOW_DIVIDER_NONE : LinearLayout.SHOW_DIVIDER_END);
-            } else {
-                holder.content.setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);
-            }
         }
 
         private int getCategoriesCount(final int start, final int end) {
@@ -539,40 +505,28 @@ public class SettingsActivity extends BasePreferenceActivity {
             switch (viewType) {
                 case HEADER_TYPE_CATEGORY: {
                     layoutRes = R.layout.list_item_preference_header_category;
-					break;
-				}
-                case HEADER_TYPE_SPACE: {
-                    layoutRes = R.layout.list_item_preference_header_space;
                     break;
-			    }
+                }
                 default: {
                     layoutRes = R.layout.list_item_preference_header_item;
                     break;
-		        }
+                }
             }
             return mInflater.inflate(layoutRes, parent, false);
         }
 
-        private void updateCategoriesInfo() {
-            mFirstItemIsCategory = !mHeaders.isEmpty()
-                    && getHeaderType(mHeaders.get(0)) == HEADER_TYPE_CATEGORY;
-            mCategoriesCount = getCategoriesCount(0, mHeaders.size());
-		}
-
         private static class HeaderViewHolder extends ViewListHolder {
-			private final TextView title, summary;
-			private final ImageView icon;
-            private final LinearLayout content;
+            private final TextView title, summary;
+            private final ImageView icon;
 
-			HeaderViewHolder(final View view) {
-				super(view);
-				title = (TextView) findViewById(android.R.id.title);
-				summary = (TextView) findViewById(android.R.id.summary);
-				icon = (ImageView) findViewById(android.R.id.icon);
-                content = (LinearLayout) findViewById(android.R.id.content);
-			}
-		}
+            HeaderViewHolder(final View view) {
+                super(view);
+                title = (TextView) findViewById(android.R.id.title);
+                summary = (TextView) findViewById(android.R.id.summary);
+                icon = (ImageView) findViewById(android.R.id.icon);
+            }
+        }
 
-	}
+    }
 
 }

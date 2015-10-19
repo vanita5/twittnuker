@@ -43,23 +43,21 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter.StatusAdapterListener;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
-import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.RecyclerViewUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.imageloader.PauseRecyclerViewOnScrollListener;
 import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
@@ -72,11 +70,17 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
     private final Object mStatusesBusCallback;
     private SharedPreferences mPreferences;
     private PopupMenu mPopupMenu;
-    private ReadStateManager mReadStateManager;
+    private final OnScrollListener mOnScrollListener = new OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                final LinearLayoutManager layoutManager = getLayoutManager();
+                saveReadPosition(layoutManager.findFirstVisibleItemPosition());
+            }
+        }
+    };
     private RecyclerViewNavigationHelper mNavigationHelper;
-
     private ParcelableStatus mSelectedStatus;
-
     private OnMenuItemClickListener mOnStatusMenuItemClickListener = new OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
@@ -88,18 +92,10 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
                 return true;
             }
             return Utils.handleMenuItemClick(getActivity(), AbsStatusesFragment.this,
-                    getFragmentManager(), getTwitterWrapper(), status, item);
+                    getFragmentManager(), mTwitterWrapper, status, item);
         }
     };
-    private OnScrollListener mOnScrollListener = new OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                final LinearLayoutManager layoutManager = getLayoutManager();
-                saveReadPosition(layoutManager.findFirstVisibleItemPosition());
-            }
-        }
-    };
+    private OnScrollListener mPauseOnScrollListener;
 
     protected AbsStatusesFragment() {
         mStatusesBusCallback = createMessageBusCallback();
@@ -112,64 +108,84 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
 
     public abstract boolean getStatuses(long[] accountIds, long[] maxIds, long[] sinceIds);
 
-	@Override
-    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
-        String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+    @Override
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
         if (ACTION_NAVIGATION_REFRESH.equals(action)) {
             triggerRefresh();
             return true;
         }
-        final RecyclerView mRecyclerView = getRecyclerView();
+        final RecyclerView recyclerView = getRecyclerView();
         final LinearLayoutManager layoutManager = getLayoutManager();
-        final View focusedChild = RecyclerViewUtils.findRecyclerViewChild(mRecyclerView, layoutManager.getFocusedChild());
-        final int position;
-        if (focusedChild != null && focusedChild.getParent() == mRecyclerView) {
-            position = mRecyclerView.getChildLayoutPosition(focusedChild);
-        } else {
-            return false;
+        if (recyclerView == null || layoutManager == null) return false;
+        final View focusedChild = RecyclerViewUtils.findRecyclerViewChild(recyclerView,
+                layoutManager.getFocusedChild());
+        int position = -1;
+        if (focusedChild != null && focusedChild.getParent() == recyclerView) {
+            position = recyclerView.getChildLayoutPosition(focusedChild);
         }
-        if (position == -1) return false;
-        final ParcelableStatus status = getAdapter().getStatus(position);
-        if (status == null) return false;
-        if (keyCode == KeyEvent.KEYCODE_ENTER) {
-            Utils.openStatus(getActivity(), status, null);
+        if (position != -1) {
+            final ParcelableStatus status = getAdapter().getStatus(position);
+            if (status == null) return false;
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                Utils.openStatus(getActivity(), status, null);
+                return true;
+            }
+            if (action == null) {
+                action = handler.getKeyAction(CONTEXT_TAG_STATUS, keyCode, event, metaState);
+            }
+            if (action == null) return false;
+            switch (action) {
+                case ACTION_STATUS_REPLY: {
+                    final Intent intent = new Intent(INTENT_ACTION_REPLY);
+                    intent.putExtra(EXTRA_STATUS, status);
+                    startActivity(intent);
+                    return true;
+                }
+                case ACTION_STATUS_RETWEET: {
+                    RetweetQuoteDialogFragment.show(getFragmentManager(), status);
+                    return true;
+                }
+                case ACTION_STATUS_FAVORITE: {
+                    final AsyncTwitterWrapper twitter = mTwitterWrapper;
+                    if (status.is_favorite) {
+                        twitter.destroyFavoriteAsync(status.account_id, status.id);
+                    } else {
+                        twitter.createFavoriteAsync(status.account_id, status.id);
+                    }
+                    return true;
+                }
+            }
+        }
+        return mNavigationHelper.handleKeyboardShortcutSingle(handler, keyCode, event, metaState);
+    }
+
+    @Override
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        String action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
+        if (ACTION_NAVIGATION_REFRESH.equals(action)) {
             return true;
         }
         if (action == null) {
-            action = handler.getKeyAction(CONTEXT_TAG_STATUS, keyCode, event);
+            action = handler.getKeyAction(CONTEXT_TAG_STATUS, keyCode, event, metaState);
         }
         if (action == null) return false;
         switch (action) {
-            case ACTION_STATUS_REPLY: {
-                final Intent intent = new Intent(INTENT_ACTION_REPLY);
-                intent.putExtra(EXTRA_STATUS, status);
-                startActivity(intent);
+            case ACTION_STATUS_REPLY:
+            case ACTION_STATUS_RETWEET:
+            case ACTION_STATUS_FAVORITE:
                 return true;
-            }
-            case ACTION_STATUS_RETWEET: {
-                RetweetQuoteDialogFragment.show(getFragmentManager(), status);
-                return true;
-            }
-            case ACTION_STATUS_FAVORITE: {
-                final AsyncTwitterWrapper twitter = getTwitterWrapper();
-                if (status.is_favorite) {
-                    twitter.destroyFavoriteAsync(status.account_id, status.id);
-                } else {
-                    twitter.createFavoriteAsync(status.account_id, status.id);
-                }
-                return true;
-            }
         }
-        return mNavigationHelper.handleKeyboardShortcutSingle(handler, keyCode, event);
+        return mNavigationHelper.isKeyboardShortcutHandled(handler, keyCode, event, metaState);
     }
 
     @Override
     public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, final int keyCode, final int repeatCount,
-                                                @NonNull final KeyEvent event) {
-        return mNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
-	}
+                                                @NonNull final KeyEvent event, int metaState) {
+        return mNavigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState);
+    }
 
-	@Override
+    @Override
     public final Loader<Data> onCreateLoader(int id, Bundle args) {
         final boolean fromUser = args.getBoolean(EXTRA_FROM_USER);
         args.remove(EXTRA_FROM_USER);
@@ -177,11 +193,23 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser) {
+            final LinearLayoutManager layoutManager = getLayoutManager();
+            if (layoutManager != null) {
+                saveReadPosition(layoutManager.findFirstVisibleItemPosition());
+            }
+        }
+    }
+
+    @Override
     public final void onLoadFinished(Loader<Data> loader, Data data) {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final SharedPreferences preferences = getSharedPreferences();
         final boolean rememberPosition = preferences.getBoolean(KEY_REMEMBER_POSITION, false);
-        final boolean readFromBottom = preferences.getBoolean(KEY_READ_FROM_BOTTOM, false);
+        final boolean readFromBottom = preferences.getBoolean(KEY_READ_FROM_BOTTOM, true);
         final long lastReadId;
         final int lastVisiblePos, lastVisibleTop;
         final String tag = getCurrentReadPositionTag();
@@ -191,7 +219,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
         } else {
             lastVisiblePos = layoutManager.findFirstVisibleItemPosition();
         }
-        if (lastVisiblePos != RecyclerView.NO_POSITION) {
+        if (lastVisiblePos != RecyclerView.NO_POSITION && lastVisiblePos < adapter.getItemCount()) {
             lastReadId = adapter.getStatusId(lastVisiblePos);
             final View positionView = layoutManager.findViewByPosition(lastVisiblePos);
             lastVisibleTop = positionView != null ? positionView.getTop() : 0;
@@ -248,7 +276,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
         getStatuses(accountIds, maxIds, sinceIds);
     }
 
-	@Override
+    @Override
     public void onMediaClick(StatusViewHolder holder, View view, ParcelableMedia media, int position) {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final ParcelableStatus status = adapter.getStatus(position);
@@ -276,7 +304,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
                 break;
             }
             case R.id.favorite_count: {
-                final AsyncTwitterWrapper twitter = getTwitterWrapper();
+                final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (twitter == null) return;
                 if (status.is_favorite) {
                     twitter.destroyFavoriteAsync(status.account_id, status.id);
@@ -325,12 +353,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
         final Bundle options = Utils.makeSceneTransitionOption(activity,
                 new Pair<>(profileImageView, UserFragment.TRANSITION_NAME_PROFILE_IMAGE),
                 new Pair<>(profileTypeView, UserFragment.TRANSITION_NAME_PROFILE_TYPE));
-        if (status.is_quote) {
-            Utils.openUserProfile(activity, status.account_id, status.quoted_by_user_id,
-                    status.quoted_by_user_screen_name, options);
-        } else {
-			Utils.openUserProfile(activity, status.account_id, status.user_id, status.user_screen_name, options);
-		}
+        Utils.openUserProfile(activity, status.account_id, status.user_id, status.user_screen_name, options);
     }
 
     @Override
@@ -338,17 +361,15 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
         super.onStart();
         final RecyclerView recyclerView = getRecyclerView();
         recyclerView.addOnScrollListener(mOnScrollListener);
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.register(mStatusesBusCallback);
+        recyclerView.addOnScrollListener(mPauseOnScrollListener);
+        mBus.register(mStatusesBusCallback);
     }
 
     @Override
     public void onStop() {
-        final Bus bus = TwittnukerApplication.getInstance(getActivity()).getMessageBus();
-        assert bus != null;
-        bus.unregister(mStatusesBusCallback);
+        mBus.unregister(mStatusesBusCallback);
         final RecyclerView recyclerView = getRecyclerView();
+        recyclerView.removeOnScrollListener(mPauseOnScrollListener);
         recyclerView.removeOnScrollListener(mOnScrollListener);
         super.onStop();
     }
@@ -373,7 +394,6 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mReadStateManager = getReadStateManager();
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final RecyclerView recyclerView = getRecyclerView();
         final LinearLayoutManager layoutManager = getLayoutManager();
@@ -381,6 +401,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
                 adapter, this);
 
         adapter.setListener(this);
+        mPauseOnScrollListener = new PauseRecyclerViewOnScrollListener(adapter.getMediaLoader().getImageLoader(), false, true);
 
         final Bundle loaderArgs = new Bundle(getArguments());
         loaderArgs.putBoolean(EXTRA_FROM_USER, true);
@@ -394,15 +415,15 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
 
     protected abstract long[] getAccountIds();
 
-	protected Data getAdapterData() {
+    protected Data getAdapterData() {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         return adapter.getData();
-	}
+    }
 
     protected void setAdapterData(Data data) {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         adapter.setData(data);
-	}
+    }
 
     protected String getReadPositionTag() {
         return null;
@@ -454,5 +475,5 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
             adapter.notifyDataSetChanged();
         }
 
-	}
+    }
 }

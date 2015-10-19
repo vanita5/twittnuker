@@ -46,7 +46,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayoutTrojan;
-import android.support.v7.app.ThemedAppCompatDelegateFactory;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -63,7 +62,6 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.Toast;
 
 import com.meizu.flyme.reflect.StatusBarProxy;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -71,7 +69,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
@@ -87,7 +84,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
@@ -115,7 +111,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 import static de.vanita5.twittnuker.util.Utils.cleanDatabasesByItemLimit;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
@@ -128,36 +123,31 @@ import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
 public class HomeActivity extends BaseAppCompatActivity implements OnClickListener, OnPageChangeListener,
         SupportFragmentCallback, OnLongClickListener {
+    private final Handler mHandler = new Handler();
 
-	private final Handler mHandler = new Handler();
-
-	private final ContentObserver mAccountChangeObserver = new AccountChangeObserver(this, mHandler);
+    private final ContentObserver mAccountChangeObserver = new AccountChangeObserver(this, mHandler);
 
     private ParcelableAccount mSelectedAccountToSearch;
 
-	private SharedPreferences mPreferences;
+    private SharedPreferences mPreferences;
 
-	private AsyncTwitterWrapper mTwitterWrapper;
+    private MultiSelectEventHandler mMultiSelectHandler;
 
-	private MultiSelectEventHandler mMultiSelectHandler;
-    private ReadStateManager mReadStateManager;
+    private SupportTabsAdapter mPagerAdapter;
 
-	private SupportTabsAdapter mPagerAdapter;
-
-	private ExtendedViewPager mViewPager;
+    private ExtendedViewPager mViewPager;
     private TabPagerIndicator mTabIndicator;
     private DrawerLayout mDrawerLayout;
-	private View mEmptyTabHint;
+    private View mEmptyTabHint;
     private View mActionsButton;
     private View mActionBarWithOverlay;
-    private FrameLayout mLeftDrawerContainer;
     private TintedStatusFrameLayout mHomeContent;
 
-	private UpdateUnreadCountTask mUpdateUnreadCountTask;
+    private UpdateUnreadCountTask mUpdateUnreadCountTask;
 
-	private boolean isStreamingServiceRunning = false;
+    private boolean isStreamingServiceRunning = false;
 
-	private boolean mPushEnabled;
+    private boolean mPushEnabled;
     private Toolbar mActionBar;
 
     private OnSharedPreferenceChangeListener mReadStateChangeListener = new OnSharedPreferenceChangeListener() {
@@ -170,10 +160,10 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     private int mTabColumns;
     private View mActionBarContainer;
 
-	public void closeAccountsDrawer() {
+    public void closeAccountsDrawer() {
         if (mDrawerLayout == null) return;
         mDrawerLayout.closeDrawers();
-	}
+    }
 
     public long[] getActivatedAccountIds() {
         final Fragment fragment = getLeftDrawerFragment();
@@ -183,14 +173,14 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         return Utils.getActivatedAccountIds(this);
     }
 
-	@Override
-	public Fragment getCurrentVisibleFragment() {
+    @Override
+    public Fragment getCurrentVisibleFragment() {
         final int currentItem = mViewPager.getCurrentItem();
         if (currentItem < 0 || currentItem >= mPagerAdapter.getCount()) return null;
         return (Fragment) mPagerAdapter.instantiateItem(mViewPager, currentItem);
-	}
+    }
 
-	@Override
+    @Override
     public boolean triggerRefresh(final int position) {
         final Fragment f = (Fragment) mPagerAdapter.instantiateItem(mViewPager, position);
         if (!(f instanceof RefreshScrollTopInterface)) return false;
@@ -206,7 +196,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         return super.getSystemWindowsInsets(insets);
     }
 
-	@Override
+    @Override
     public boolean getSystemWindowsInsets(Rect insets) {
         final int height = mTabIndicator != null ? mTabIndicator.getHeight() : 0;
         insets.top = (height != 0 ? height : ThemeUtils.getActionBarHeight(this));
@@ -216,14 +206,19 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     @Override
     public void setControlBarVisibleAnimate(boolean visible) {
         mControlBarShowHideHelper.setControlBarVisibleAnimate(visible);
-	}
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
+    @Override
+    public void setControlBarVisibleAnimate(boolean visible, ControlBarShowHideHelper.ControlBarAnimationListener listener) {
+        mControlBarShowHideHelper.setControlBarVisibleAnimate(visible, listener);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home: {
-				final FragmentManager fm = getSupportFragmentManager();
-				final int count = fm.getBackStackEntryCount();
+                final FragmentManager fm = getSupportFragmentManager();
+                final int count = fm.getBackStackEntryCount();
                 if (mDrawerLayout.isDrawerOpen(GravityCompat.START) || mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
                     mDrawerLayout.closeDrawers();
                     return true;
@@ -234,21 +229,21 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                 return true;
             }
             case R.id.search: {
-				openSearchView(mSelectedAccountToSearch);
-				return true;
-			}
+                openSearchView(mSelectedAccountToSearch);
+                return true;
+            }
             case R.id.actions: {
                 triggerActionsClick();
                 return true;
             }
-		}
-		return super.onOptionsItemSelected(item);
-	}
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-	@Override
-    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event) {
-        if (handleFragmentKeyboardShortcutSingle(handler, keyCode, event)) return true;
-        String action = handler.getKeyAction(CONTEXT_TAG_HOME, keyCode, event);
+    @Override
+    public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        if (handleFragmentKeyboardShortcutSingle(handler, keyCode, event, metaState)) return true;
+        String action = handler.getKeyAction(CONTEXT_TAG_HOME, keyCode, event, metaState);
         if (action != null) {
             switch (action) {
                 case ACTION_HOME_ACCOUNTS_DASHBOARD: {
@@ -262,7 +257,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                 }
             }
         }
-        action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event);
+        action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState);
         if (action != null) {
             switch (action) {
                 case ACTION_NAVIGATION_PREVIOUS_TAB: {
@@ -295,48 +290,69 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                 }
             }
         }
-        return handler.handleKey(this, null, keyCode, event);
+        return handler.handleKey(this, null, keyCode, event, metaState);
     }
 
     @Override
-    public void setControlBarOffset(float offset) {
-        mActionBarWithOverlay.setTranslationY(mTabColumns > 1 ? 0 : getControlBarHeight() * (offset - 1));
-        final ViewGroup.LayoutParams lp = mActionsButton.getLayoutParams();
-        if (lp instanceof MarginLayoutParams) {
-            mActionsButton.setTranslationY((((MarginLayoutParams) lp).bottomMargin + mActionsButton.getHeight()) * (1 - offset));
-        } else {
-            mActionsButton.setTranslationY(mActionsButton.getHeight() * (1 - offset));
+    public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
+        if (isFragmentKeyboardShortcutHandled(handler, keyCode, event, metaState)) return true;
+        return super.isKeyboardShortcutHandled(handler, keyCode, event, metaState);
+    }
+
+    @Override
+    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event, int metaState) {
+        if (handleFragmentKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState))
+            return true;
+        return super.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, @NonNull KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_MENU: {
+                final DrawerLayout drawer = mDrawerLayout;
+                if (isDrawerOpen()) {
+                    drawer.closeDrawers();
+                } else {
+                    drawer.openDrawer(Gravity.LEFT);
+                }
+                return true;
+            }
+            case KeyEvent.KEYCODE_BACK: {
+                final DrawerLayout drawer = mDrawerLayout;
+                if (isDrawerOpen()) {
+                    drawer.closeDrawers();
+                    return true;
+                }
+            }
         }
-        notifyControlBarOffsetChanged();
+        return super.onKeyUp(keyCode, event);
     }
 
-    @Override
-    public boolean handleKeyboardShortcutRepeat(@NonNull KeyboardShortcutsHandler handler, int keyCode, int repeatCount, @NonNull KeyEvent event) {
-        if (handleFragmentKeyboardShortcutRepeat(handler, keyCode, repeatCount, event)) return true;
-        return super.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
-	}
+    private boolean isDrawerOpen() {
+        final DrawerLayout drawer = mDrawerLayout;
+        if (drawer == null) return false;
+        return drawer.isDrawerOpen(GravityCompat.START) || drawer.isDrawerOpen(GravityCompat.END);
+    }
 
     /**
      * Called when the context is first created.
      */
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
         final Window window = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-		super.onCreate(savedInstanceState);
-		if (!isDatabaseReady(this)) {
-			Toast.makeText(this, R.string.preparing_database_toast, Toast.LENGTH_SHORT).show();
-			finish();
-			return;
-		}
-		mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mTwitterWrapper = getTwitterWrapper();
-        final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
-        mReadStateManager = app.getReadStateManager();
-		mMultiSelectHandler = new MultiSelectEventHandler(this);
-		mMultiSelectHandler.dispatchOnCreate();
+        super.onCreate(savedInstanceState);
+        if (!isDatabaseReady(this)) {
+            Toast.makeText(this, R.string.preparing_database_toast, Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mMultiSelectHandler = new MultiSelectEventHandler(this);
+        mMultiSelectHandler.dispatchOnCreate();
         if (!Utils.hasAccount(this)) {
             final Intent signInIntent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
             signInIntent.setClass(this, SignInActivity.class);
@@ -346,14 +362,14 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         } else {
             notifyAccountsChanged();
         }
-		final Intent intent = getIntent();
-		if (openSettingsWizard()) {
-			finish();
-			return;
-		}
-		setContentView(R.layout.activity_home);
+        final Intent intent = getIntent();
+        if (openSettingsWizard()) {
+            finish();
+            return;
+        }
+        setContentView(R.layout.activity_home);
         setSupportActionBar(mActionBar);
-		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONCREATE));
+        sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONCREATE));
         final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
         int tabDisplayOptionInt = getTabDisplayOptionInt(this);
 
@@ -361,8 +377,8 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
         mHomeContent.setOnFitSystemWindowsListener(this);
         mPagerAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), mTabIndicator, mTabColumns);
-		mPushEnabled = isPushEnabled(this);
-		mViewPager.setAdapter(mPagerAdapter);
+        mPushEnabled = isPushEnabled(this);
+        mViewPager.setAdapter(mPagerAdapter);
 //        mViewPager.setOffscreenPageLimit(3);
         mTabIndicator.setViewPager(mViewPager);
         mTabIndicator.setOnPageChangeListener(this);
@@ -385,78 +401,52 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         final View windowOverlay = findViewById(R.id.window_overlay);
         ViewSupport.setBackground(windowOverlay, ThemeUtils.getNormalWindowContentOverlay(this, getCurrentThemeResourceId()));
 
-		setupSlidingMenu();
+        setupSlidingMenu();
         setupBars();
-		initUnreadCount();
-		updateActionsButton();
-		updateSlidingMenuTouchMode();
-        getDelegate().setKeyListener(new ThemedAppCompatDelegateFactory.KeyListener() {
-            @Override
-            public boolean onKeyDown(int keyCode, KeyEvent event) {
-                return false;
-            }
+        initUnreadCount();
+        updateActionsButton();
+        updateSlidingMenuTouchMode();
 
-            @Override
-            public boolean onKeyUp(int keyCode, KeyEvent event) {
-                // Steal MENU key event
-                switch (keyCode) {
-                    case KeyEvent.KEYCODE_MENU: {
-                        if (mDrawerLayout != null) {
-                            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                                mDrawerLayout.closeDrawers();
-                            } else {
-                                mDrawerLayout.openDrawer(GravityCompat.START);
-                            }
-                            return true;
-                        }
-                        break;
-                    }
-                }
-                return false;
-            }
-        });
-
-		if (savedInstanceState == null) {
-			if (refreshOnStart) {
+        if (savedInstanceState == null) {
+            if (refreshOnStart) {
                 mTwitterWrapper.refreshAll(getActivatedAccountIds());
-			}
-			if (intent.getBooleanExtra(EXTRA_OPEN_ACCOUNTS_DRAWER, false)) {
-				openAccountsDrawer();
-			}
-		}
+            }
+            if (intent.getBooleanExtra(EXTRA_OPEN_ACCOUNTS_DRAWER, false)) {
+                openAccountsDrawer();
+            }
+        }
         setupHomeTabs();
 
         final int initialTabPosition = handleIntent(intent, savedInstanceState == null);
         setTabPosition(initialTabPosition);
     }
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		mMultiSelectHandler.dispatchOnStart();
-		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONSTART));
-		final ContentResolver resolver = getContentResolver();
-		resolver.registerContentObserver(Accounts.CONTENT_URI, true, mAccountChangeObserver);
-        final Bus bus = TwittnukerApplication.getInstance(this).getMessageBus();
-        assert bus != null;
-        bus.register(this);
-        mReadStateManager.registerOnSharedPreferenceChangeListener(mReadStateChangeListener);
-		updateUnreadCount();
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mMultiSelectHandler.dispatchOnStart();
+        sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONSTART));
+        final ContentResolver resolver = getContentResolver();
+        resolver.registerContentObserver(Accounts.CONTENT_URI, true, mAccountChangeObserver);
+        mBus.register(this);
 
-		if (mPushEnabled != isPushEnabled(this) || mPushEnabled && !isPushRegistered()) {
-			mPushEnabled = isPushEnabled(this);
-			if (mPushEnabled) {
-				GCMHelper.registerIfNotAlreadyDone(this);
-			} else {
-				GCMHelper.unregisterGCM(this);
-			}
-		}
-		if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) {
-			startStreamingService();
-		} else {
-			stopStreamingService();
-		}
-	}
+        mReadStateManager.registerOnSharedPreferenceChangeListener(mReadStateChangeListener);
+        updateUnreadCount();
+
+        if (mPushEnabled != isPushEnabled(this) || mPushEnabled && !isPushRegistered()) {
+            mPushEnabled = isPushEnabled(this);
+            if (mPushEnabled) {
+                GCMHelper.registerIfNotAlreadyDone(this);
+            } else {
+                GCMHelper.unregisterGCM(this);
+            }
+        }
+        if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) {
+            startStreamingService();
+        } else {
+            stopStreamingService();
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -480,26 +470,29 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         super.onPause();
     }
 
-	@Override
-	protected void onStop() {
-		mMultiSelectHandler.dispatchOnStop();
+    @Override
+    protected void onStop() {
+        mMultiSelectHandler.dispatchOnStop();
         mReadStateManager.unregisterOnSharedPreferenceChangeListener(mReadStateChangeListener);
-        final Bus bus = TwittnukerApplication.getInstance(this).getMessageBus();
-        assert bus != null;
-        bus.unregister(this);
-		final ContentResolver resolver = getContentResolver();
-		resolver.unregisterContentObserver(mAccountChangeObserver);
-		mPreferences.edit().putInt(KEY_SAVED_TAB_POSITION, mViewPager.getCurrentItem()).apply();
-		sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONSTOP));
+        mBus.unregister(this);
+        final ContentResolver resolver = getContentResolver();
+        resolver.unregisterContentObserver(mAccountChangeObserver);
+        mPreferences.edit().putInt(KEY_SAVED_TAB_POSITION, mViewPager.getCurrentItem()).apply();
+        sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONSTOP));
 
-		super.onStop();
-	}
+        super.onStop();
+    }
 
     public ViewPager getViewPager() {
         return mViewPager;
     }
 
     public void notifyAccountsChanged() {
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Subscribe
@@ -600,22 +593,12 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     @Override
     protected void onDestroy() {
 
-		stopStreamingService();
+        stopStreamingService();
 
         // Delete unused items in databases.
         cleanDatabasesByItemLimit(this);
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONDESTROY));
         super.onDestroy();
-    }
-
-    @Override
-    public void onBackPressed() {
-        //TODO handle secondary drawer
-        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawers();
-            return;
-        }
-        super.onBackPressed();
     }
 
     @Override
@@ -632,6 +615,18 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         }
         final float totalHeight = getControlBarHeight();
         return 1 + mActionBarWithOverlay.getTranslationY() / totalHeight;
+    }
+
+    @Override
+    public void setControlBarOffset(float offset) {
+        mActionBarWithOverlay.setTranslationY(mTabColumns > 1 ? 0 : getControlBarHeight() * (offset - 1));
+        final ViewGroup.LayoutParams lp = mActionsButton.getLayoutParams();
+        if (lp instanceof MarginLayoutParams) {
+            mActionsButton.setTranslationY((((MarginLayoutParams) lp).bottomMargin + mActionsButton.getHeight()) * (1 - offset));
+        } else {
+            mActionsButton.setTranslationY(mActionsButton.getHeight() * (1 - offset));
+        }
+        notifyControlBarOffsetChanged();
     }
 
     @Override
@@ -666,48 +661,61 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
     private boolean handleFragmentKeyboardShortcutRepeat(final KeyboardShortcutsHandler handler,
                                                          final int keyCode, final int repeatCount,
-                                                         @NonNull final KeyEvent event) {
+                                                         @NonNull final KeyEvent event, int metaState) {
         final Fragment fragment = getKeyboardShortcutRecipient();
         if (fragment instanceof KeyboardShortcutCallback) {
-            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event);
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(handler, keyCode,
+                    repeatCount, event, metaState);
         }
         return false;
     }
 
     private boolean handleFragmentKeyboardShortcutSingle(final KeyboardShortcutsHandler handler,
-                                                         final int keyCode, @NonNull final KeyEvent event) {
+                                                         final int keyCode, @NonNull final KeyEvent event,
+                                                         int metaState) {
         final Fragment fragment = getKeyboardShortcutRecipient();
         if (fragment instanceof KeyboardShortcutCallback) {
-            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(handler, keyCode, event);
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(handler, keyCode,
+                    event, metaState);
         }
         return false;
     }
 
-	private int handleIntent(final Intent intent, final boolean firstCreate) {
-		// use packge's class loader to prevent BadParcelException
-		intent.setExtrasClassLoader(getClassLoader());
-		// reset intent
-		setIntent(new Intent(this, HomeActivity.class));
-		final String action = intent.getAction();
-		if (Intent.ACTION_SEARCH.equals(action)) {
-			final String query = intent.getStringExtra(SearchManager.QUERY);
-			final Bundle appSearchData = intent.getBundleExtra(SearchManager.APP_DATA);
-			final long accountId;
-			if (appSearchData != null && appSearchData.containsKey(EXTRA_ACCOUNT_ID)) {
-				accountId = appSearchData.getLong(EXTRA_ACCOUNT_ID, -1);
-			} else {
-				accountId = getDefaultAccountId(this);
-			}
-			openSearch(this, accountId, query);
-			return -1;
-		}
+    private boolean isFragmentKeyboardShortcutHandled(final KeyboardShortcutsHandler handler,
+                                                      final int keyCode, @NonNull final KeyEvent event, int metaState) {
+        final Fragment fragment = getKeyboardShortcutRecipient();
+        if (fragment instanceof KeyboardShortcutCallback) {
+            return ((KeyboardShortcutCallback) fragment).isKeyboardShortcutHandled(handler, keyCode,
+                    event, metaState);
+        }
+        return false;
+    }
+
+    private int handleIntent(final Intent intent, final boolean firstCreate) {
+        // use packge's class loader to prevent BadParcelException
+        intent.setExtrasClassLoader(getClassLoader());
+        // reset intent
+        setIntent(new Intent(this, HomeActivity.class));
+        final String action = intent.getAction();
+        if (Intent.ACTION_SEARCH.equals(action)) {
+            final String query = intent.getStringExtra(SearchManager.QUERY);
+            final Bundle appSearchData = intent.getBundleExtra(SearchManager.APP_DATA);
+            final long accountId;
+            if (appSearchData != null && appSearchData.containsKey(EXTRA_ACCOUNT_ID)) {
+                accountId = appSearchData.getLong(EXTRA_ACCOUNT_ID, -1);
+            } else {
+                accountId = getDefaultAccountId(this);
+            }
+            openSearch(this, accountId, query);
+            return -1;
+        }
         final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
-		final long[] refreshedIds = intent.getLongArrayExtra(EXTRA_REFRESH_IDS);
-		if (refreshedIds != null) {
-			mTwitterWrapper.refreshAll(refreshedIds);
-		} else if (firstCreate && refreshOnStart) {
-			mTwitterWrapper.refreshAll();
-		}
+        final long[] refreshedIds = intent.getLongArrayExtra(EXTRA_REFRESH_IDS);
+        if (refreshedIds != null) {
+            mTwitterWrapper.refreshAll(refreshedIds);
+        } else if (firstCreate && refreshOnStart) {
+            mTwitterWrapper.refreshAll();
+        }
 
         final Uri uri = intent.getData();
         final String tabType = uri != null ? Utils.matchTabType(uri) : null;
@@ -724,17 +732,17 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                 }
             }
         }
-		if (initialTab != -1 && mViewPager != null) {
-			// clearNotification(initial_tab);
-		}
-		final Intent extraIntent = intent.getParcelableExtra(EXTRA_EXTRA_INTENT);
-		if (extraIntent != null && firstCreate) {
-			extraIntent.setExtrasClassLoader(getClassLoader());
+        if (initialTab != -1 && mViewPager != null) {
+            // clearNotification(initial_tab);
+        }
+        final Intent extraIntent = intent.getParcelableExtra(EXTRA_EXTRA_INTENT);
+        if (extraIntent != null && firstCreate) {
+            extraIntent.setExtrasClassLoader(getClassLoader());
             startActivity(extraIntent);
-		}
-		return initialTab;
-	}
-	
+        }
+        return initialTab;
+    }
+
     private boolean hasAccountId(Bundle args, long accountId) {
         if (args == null) return false;
         if (args.containsKey(EXTRA_ACCOUNT_ID)) {
@@ -745,49 +753,49 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         return false;
     }
 
-	private void initUnreadCount() {
+    private void initUnreadCount() {
         for (int i = 0, j = mTabIndicator.getCount(); i < j; i++) {
             mTabIndicator.setBadge(i, 0);
-		}
-	}
+        }
+    }
 
-	private boolean isPushRegistered() {
-		final SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-		return preferences != null && preferences.getBoolean(KEY_PUSH_REGISTERED, false);
-	}
+    private boolean isPushRegistered() {
+        final SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+        return preferences != null && preferences.getBoolean(KEY_PUSH_REGISTERED, false);
+    }
 
-	private void openAccountsDrawer() {
+    private void openAccountsDrawer() {
         if (mDrawerLayout == null) return;
         mDrawerLayout.openDrawer(GravityCompat.START);
-	}
+    }
 
-	private boolean openSettingsWizard() {
+    private boolean openSettingsWizard() {
         if (mPreferences == null || mPreferences.getBoolean(KEY_SETTINGS_WIZARD_COMPLETED, false))
             return false;
-		startActivity(new Intent(this, SettingsWizardActivity.class));
-		return true;
-	}
+        startActivity(new Intent(this, SettingsWizardActivity.class));
+        return true;
+    }
 
     private void setTabPosition(final int initialTab) {
         final boolean rememberPosition = mPreferences.getBoolean(KEY_REMEMBER_POSITION, true);
         if (initialTab >= 0) {
             mViewPager.setCurrentItem(MathUtils.clamp(initialTab, mPagerAdapter.getCount(), 0));
         } else if (rememberPosition) {
-			final int position = mPreferences.getInt(KEY_SAVED_TAB_POSITION, 0);
-			mViewPager.setCurrentItem(MathUtils.clamp(position, mPagerAdapter.getCount(), 0));
-		}
-	}
+            final int position = mPreferences.getInt(KEY_SAVED_TAB_POSITION, 0);
+            mViewPager.setCurrentItem(MathUtils.clamp(position, mPagerAdapter.getCount(), 0));
+        }
+    }
 
     private void setupBars() {
         final int themeColor = getThemeColor();
-		final int actionBarColor = getActionBarColor();
+        final int actionBarColor = getActionBarColor();
         final int themeResId = getCurrentThemeResourceId();
         final String backgroundOption = getCurrentThemeBackgroundOption();
         final boolean isTransparent = ThemeUtils.isTransparentBackground(backgroundOption);
         final int actionBarAlpha = isTransparent ? ThemeUtils.getActionBarAlpha(ThemeUtils.getUserThemeBackgroundAlpha(this)) : 0xFF;
         final IHomeActionButton homeActionButton = (IHomeActionButton) mActionsButton;
         mTabIndicator.setItemContext(ThemeUtils.getActionBarThemedContext(this, themeResId, actionBarColor));
-        ViewSupport.setBackground(mActionBarContainer	, ThemeUtils.getActionBarBackground(this, themeResId, actionBarColor,
+        ViewSupport.setBackground(mActionBarContainer, ThemeUtils.getActionBarBackground(this, themeResId, actionBarColor,
                 backgroundOption, true));
         final int actionItemColor = ThemeUtils.getContrastForegroundColor(this, getCurrentThemeResourceId(), actionBarColor);
         final int[] foregroundColors = new int[2];
@@ -796,8 +804,8 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         homeActionButton.setButtonColor(actionBarColor);
         homeActionButton.setIconColor(actionItemColor, Mode.SRC_ATOP);
         mTabIndicator.setStripColor(themeColor);
-		mTabIndicator.setIconColor(actionItemColor);
-		mTabIndicator.setLabelColor(actionItemColor);
+        mTabIndicator.setIconColor(actionItemColor);
+        mTabIndicator.setLabelColor(actionItemColor);
         ActivitySupport.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
         mHomeContent.setDrawColor(true);
         mHomeContent.setDrawShadow(false);
@@ -806,7 +814,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         mHomeContent.setFactor(1);
         mActionBarWithOverlay.setAlpha(actionBarAlpha / 255f);
         mActionsButton.setAlpha(actionBarAlpha / 255f);
-	}
+    }
 
     private void setupHomeTabs() {
         mPagerAdapter.clear();
@@ -817,7 +825,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 //        mViewPager.setOffscreenPageLimit(mPagerAdapter.getCount() / 2);
     }
 
-	private void setupSlidingMenu() {
+    private void setupSlidingMenu() {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow_start, GravityCompat.START);
         final Window window = getWindow();
         ThemeUtils.applyWindowBackground(this, mHomeContent, getCurrentThemeResourceId(),
@@ -842,26 +850,26 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         }
     }
 
-	private void updateActionsButton() {
-		if (mViewPager == null || mPagerAdapter == null) return;
-		final int icon, title;
-		final int position = mViewPager.getCurrentItem();
-		final SupportTabSpec tab = mPagerAdapter.getTab(position);
-		if (tab == null) {
-			title = R.string.compose;
-			icon = R.drawable.ic_action_status_compose;
-		} else {
-			if (classEquals(DirectMessagesFragment.class, tab.cls)) {
+    private void updateActionsButton() {
+        if (mViewPager == null || mPagerAdapter == null) return;
+        final int icon, title;
+        final int position = mViewPager.getCurrentItem();
+        final SupportTabSpec tab = mPagerAdapter.getTab(position);
+        if (tab == null) {
+            title = R.string.compose;
+            icon = R.drawable.ic_action_status_compose;
+        } else {
+            if (classEquals(DirectMessagesFragment.class, tab.cls)) {
                 icon = R.drawable.ic_action_add;
                 title = R.string.new_direct_message;
-			} else if (classEquals(TrendsSuggestionsFragment.class, tab.cls)) {
-				icon = R.drawable.ic_action_search;
-				title = android.R.string.search_go;
-			} else {
-				icon = R.drawable.ic_action_status_compose;
-				title = R.string.compose;
-			}
-		}
+            } else if (classEquals(TrendsSuggestionsFragment.class, tab.cls)) {
+                icon = R.drawable.ic_action_search;
+                title = android.R.string.search_go;
+            } else {
+                icon = R.drawable.ic_action_status_compose;
+                title = R.string.compose;
+            }
+        }
         if (mActionsButton instanceof IHomeActionButton) {
             final IHomeActionButton hab = (IHomeActionButton) mActionsButton;
             hab.setIcon(icon);
@@ -869,14 +877,14 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         }
     }
 
-	private void updateActionsButtonStyle() {
-		final boolean leftsideComposeButton = mPreferences.getBoolean(KEY_LEFTSIDE_COMPOSE_BUTTON, false);
+    private void updateActionsButtonStyle() {
+        final boolean leftsideComposeButton = mPreferences.getBoolean(KEY_LEFTSIDE_COMPOSE_BUTTON, false);
         final FrameLayout.LayoutParams lp = (LayoutParams) mActionsButton.getLayoutParams();
         lp.gravity = Gravity.BOTTOM | (leftsideComposeButton ? Gravity.LEFT : Gravity.RIGHT);
         mActionsButton.setLayoutParams(lp);
-	}
+    }
 
-	private void updateSlidingMenuTouchMode() {
+    private void updateSlidingMenuTouchMode() {
 //        if (mViewPager == null || mSlidingMenu == null) return;
 //        final int position = mViewPager.getCurrentItem();
 //        final boolean pagingEnabled = mViewPager.isEnabled();
@@ -884,59 +892,59 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 //        final int mode = !pagingEnabled || atFirstOrLast ? SlidingMenu.TOUCHMODE_FULLSCREEN
 //                : SlidingMenu.TOUCHMODE_MARGIN;
 //        mSlidingMenu.setTouchModeAbove(mode);
-	}
+    }
 
-	private void startStreamingService() {
-		if (!isStreamingServiceRunning) {
-			final Intent serviceIntent = new Intent(this, StreamingService.class);
-			startService(serviceIntent);
-			isStreamingServiceRunning = true;
-		}
-		sendBroadcast(new Intent(BROADCAST_REFRESH_STREAMING_SERVICE));
-	}
+    private void startStreamingService() {
+        if (!isStreamingServiceRunning) {
+            final Intent serviceIntent = new Intent(this, StreamingService.class);
+            startService(serviceIntent);
+            isStreamingServiceRunning = true;
+        }
+        sendBroadcast(new Intent(BROADCAST_REFRESH_STREAMING_SERVICE));
+    }
 
-	private void stopStreamingService() {
-		if (isStreamingServiceRunning) {
-			final Intent serviceIntent = new Intent(this, StreamingService.class);
-			stopService(serviceIntent);
-			isStreamingServiceRunning = false;
-		}
-	}
+    private void stopStreamingService() {
+        if (isStreamingServiceRunning) {
+            final Intent serviceIntent = new Intent(this, StreamingService.class);
+            stopService(serviceIntent);
+            isStreamingServiceRunning = false;
+        }
+    }
 
-	private static final class AccountChangeObserver extends ContentObserver {
-		private final HomeActivity mActivity;
+    private static final class AccountChangeObserver extends ContentObserver {
+        private final HomeActivity mActivity;
 
-		public AccountChangeObserver(final HomeActivity activity, final Handler handler) {
-			super(handler);
-			mActivity = activity;
-		}
+        public AccountChangeObserver(final HomeActivity activity, final Handler handler) {
+            super(handler);
+            mActivity = activity;
+        }
 
-		@Override
-		public void onChange(final boolean selfChange) {
-			onChange(selfChange, null);
-		}
+        @Override
+        public void onChange(final boolean selfChange) {
+            onChange(selfChange, null);
+        }
 
-		@Override
-		public void onChange(final boolean selfChange, final Uri uri) {
-			mActivity.notifyAccountsChanged();
-			mActivity.updateUnreadCount();
-		}
-	}
+        @Override
+        public void onChange(final boolean selfChange, final Uri uri) {
+            mActivity.notifyAccountsChanged();
+            mActivity.updateUnreadCount();
+        }
+    }
 
     private static class UpdateUnreadCountTask extends AsyncTask<Object, Object, Map<SupportTabSpec, Integer>> {
-		private final Context mContext;
+        private final Context mContext;
         private final ReadStateManager mReadStateManager;
-		private final TabPagerIndicator mIndicator;
+        private final TabPagerIndicator mIndicator;
         private final List<SupportTabSpec> mTabs;
 
         UpdateUnreadCountTask(final Context context, final ReadStateManager manager, final TabPagerIndicator indicator, final List<SupportTabSpec> tabs) {
             mContext = context;
             mReadStateManager = manager;
-			mIndicator = indicator;
+            mIndicator = indicator;
             mTabs = Collections.unmodifiableList(tabs);
-		}
+        }
 
-		@Override
+        @Override
         protected Map<SupportTabSpec, Integer> doInBackground(final Object... params) {
             final Map<SupportTabSpec, Integer> result = new HashMap<>();
             for (SupportTabSpec spec : mTabs) {
@@ -959,18 +967,18 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                         break;
                     }
                 }
-			}
-			return result;
-		}
+            }
+            return result;
+        }
 
-		@Override
+        @Override
         protected void onPostExecute(final Map<SupportTabSpec, Integer> result) {
             mIndicator.clearBadge();
             for (Entry<SupportTabSpec, Integer> entry : result.entrySet()) {
                 final SupportTabSpec key = entry.getKey();
                 mIndicator.setBadge(key.position, entry.getValue());
-			}
-		}
+            }
+        }
 
     }
 

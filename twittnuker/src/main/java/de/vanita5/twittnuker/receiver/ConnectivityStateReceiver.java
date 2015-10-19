@@ -30,21 +30,22 @@ import android.util.Log;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 
 import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
 public class ConnectivityStateReceiver extends BroadcastReceiver implements Constants {
 
-	private static final String RECEIVER_LOGTAG = LOGTAG + "." + "Connectivity";
+    private static final String RECEIVER_LOGTAG = LOGTAG + "." + "Connectivity";
 
-	@Override
-	public void onReceive(final Context context, final Intent intent) {
-		if (BuildConfig.DEBUG) {
-			Log.d(RECEIVER_LOGTAG, String.format("Received Broadcast %s", intent));
-		}
-		if (!ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) return;
-		startRefreshServiceIfNeeded(context);
-		//TODO start streaming here?
-	}
+    @Override
+    public void onReceive(final Context context, final Intent intent) {
+        if (BuildConfig.DEBUG) {
+            Log.d(RECEIVER_LOGTAG, String.format("Received Broadcast %s", intent));
+        }
+        if (!ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) return;
+        ApplicationModule.get(context).reloadConnectivitySettings();
+        startRefreshServiceIfNeeded(context);
+        //TODO start streaming here?
+    }
 }
