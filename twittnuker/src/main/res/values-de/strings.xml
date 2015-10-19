@@ -558,8 +558,8 @@
     <string name="theme_font_family">Theme Font Family</string>
     <string name="accept">Akzeptieren</string>
     <string name="deny">Ablehnen</string>
-    <string name="accepted_users_follow_request"><xliff:g id="user">%s</xliff:g>\'s Folgeanfrage angenommen.</string>
-    <string name="denied_users_follow_request"><xliff:g id="user">%s</xliff:g>\'s Folgeanfrage abgelehnt.</string>
+    <string name="accepted_users_follow_request"><xliff:g id="user">%s</xliff:g>s Folgeanfrage angenommen.</string>
+    <string name="denied_users_follow_request"><xliff:g id="user">%s</xliff:g>s Folgeanfrage abgelehnt.</string>
     <string name="import_settings">Einstellungen importieren</string>
     <string name="export_settings">Einstellungen exportieren</string>
     <string name="export_settings_type_dialog_title">Einstellungen exportieren&#8230;</string>
@@ -705,7 +705,7 @@
     <string name="select_file_no_storage_permission_message">Es wird die Speicher Berechtigung benötigt, um Dateien zu speichern.</string>
     <string name="user_mentioned_you"><xliff:g id="name">%s</xliff:g> hat dich erwähnt</string>
     <string name="cant_load_all_replies_message">Kann nicht alle Antworten laden. &lt;a href=\"#dialog\";&gt;Warum?&lt;/a&gt;</string>
-    <string name="cant_load_all_replies_explanation">Aufgrund Twitter\'s Beschränkungen für Drittanbieter Apps hat Twittnuker keinen Zugriff auf Antworten eines Tweets. Es kann nicht garantiert werden, dass Twittnuker wirklich alle Antworten lädt.</string>
+    <string name="cant_load_all_replies_explanation">Aufgrund Twitters Beschränkungen für Drittanbieter Apps hat Twittnuker keinen Zugriff auf Antworten eines Tweets. Es kann nicht garantiert werden, dass Twittnuker wirklich alle Antworten lädt.</string>
     <string name="current_status">Aktueller Tweet</string>
 
     <!-- Twittnuker -->
