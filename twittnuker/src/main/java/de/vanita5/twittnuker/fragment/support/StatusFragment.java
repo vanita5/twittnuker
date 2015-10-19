@@ -67,6 +67,7 @@ import android.text.style.URLSpan;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -104,6 +105,7 @@ import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
+import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.RecyclerViewUtils;
 import de.vanita5.twittnuker.util.StatusActionModeCallback;
@@ -266,6 +268,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
         final View view = getView();
         if (view == null) throw new AssertionError();
         final Context context = view.getContext();
@@ -559,6 +562,32 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             //TODO show errors
             setState(STATE_ERROR);
         }
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.current_status: {
+                if (mStatusAdapter.getStatus() != null) {
+                    final int position = mStatusAdapter.getFirstPositionOfItem(StatusAdapter.ITEM_IDX_STATUS);
+                    mRecyclerView.smoothScrollToPosition(position);
+                }
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuUtils.setMenuItemAvailability(menu, R.id.current_status, mStatusAdapter.getStatus() != null);
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_status, menu);
     }
 
     private void setConversation(List<ParcelableStatus> data) {
@@ -902,7 +931,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final StatusFragment fragment = adapter.getFragment();
             final FragmentActivity activity = fragment.getActivity();
             final MenuInflater inflater = activity.getMenuInflater();
-            inflater.inflate(R.menu.menu_status, menuBar.getMenu());
+            inflater.inflate(R.menu.menu_detail_status, menuBar.getMenu());
             ThemeUtils.wrapMenuIcon(menuBar, MENU_GROUP_STATUS_SHARE);
             mediaPreviewLoad.setOnClickListener(this);
             profileContainer.setOnClickListener(this);

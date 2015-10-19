@@ -706,6 +706,7 @@
     <string name="user_mentioned_you"><xliff:g id="name">%s</xliff:g> hat dich erwähnt</string>
     <string name="cant_load_all_replies_message">Kann nicht alle Antworten laden. &lt;a href=\"#dialog\";&gt;Warum?&lt;/a&gt;</string>
     <string name="cant_load_all_replies_explanation">Aufgrund Twitter\'s Beschränkungen für Drittanbieter Apps hat Twittnuker keinen Zugriff auf Antworten eines Tweets. Es kann nicht garantiert werden, dass Twittnuker wirklich alle Antworten lädt.</string>
+    <string name="current_status">Aktueller Tweet</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
