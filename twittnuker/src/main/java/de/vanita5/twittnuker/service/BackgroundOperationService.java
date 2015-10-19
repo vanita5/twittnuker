@@ -449,8 +449,11 @@ public class BackgroundOperationService extends IntentService implements Constan
         if (statusUpdate.accounts.length == 0) return Collections.emptyList();
 
         try {
-            if (mUseUploader && mUploader == null) throw new UploaderNotFoundException(this);
-            if (mUseShortener && mShortener == null) throw new ShortenerNotFoundException(this);
+//            if (mUseUploader && mUploader == null) throw new UploaderNotFoundException(this);
+//            if (mUseShortener && mShortener == null) throw new ShortenerNotFoundException(this);
+
+            if (mUseUploader && mUploader == null) mUseUploader = false;
+            if (mUseShortener && mShortener == null) mUseShortener = false;
 
             final boolean hasMedia = statusUpdate.media != null && statusUpdate.media.length > 0;
 

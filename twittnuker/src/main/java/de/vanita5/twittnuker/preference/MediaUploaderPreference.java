@@ -40,25 +40,25 @@ import java.util.ArrayList;
 public class MediaUploaderPreference extends DialogPreference implements Constants {
 
     private final ServiceSpec TWITTER_SERVICE = new ServiceSpec(getContext().getString(R.string.image_uploader_default), null);
-	private final ServiceSpec TWIPPLE_SERVICE = new ServiceSpec(getContext().getString(R.string.image_uploader_twipple), SERVICE_UPLOADER_TWIPPLE);
+    private final ServiceSpec TWIPPLE_SERVICE = new ServiceSpec(getContext().getString(R.string.image_uploader_twipple), SERVICE_UPLOADER_TWIPPLE); //FIXME
 
-    private final ServiceSpec[] AVAILABLE_SERVICES = { TWITTER_SERVICE, TWIPPLE_SERVICE };
+    private final ServiceSpec[] AVAILABLE_SERVICES = {TWITTER_SERVICE};
 
-	private SharedPreferences mPreferences;
+    private SharedPreferences mPreferences;
 
-	private ServiceSpec[] mAvailableImageUploaders;
+    private ServiceSpec[] mAvailableImageUploaders;
 
-	public MediaUploaderPreference(final Context context) {
-		this(context, null);
-	}
+    public MediaUploaderPreference(final Context context) {
+        this(context, null);
+    }
 
-	public MediaUploaderPreference(final Context context, final AttributeSet attrs) {
-		this(context, attrs, android.R.attr.preferenceStyle);
-	}
+    public MediaUploaderPreference(final Context context, final AttributeSet attrs) {
+        this(context, attrs, android.R.attr.preferenceStyle);
+    }
 
-	public MediaUploaderPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public MediaUploaderPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
     @Override
     protected View onCreateView(ViewGroup parent) {
@@ -69,42 +69,42 @@ public class MediaUploaderPreference extends DialogPreference implements Constan
     }
 
     @Override
-	public void onClick(final DialogInterface dialog, final int which) {
-		final SharedPreferences.Editor editor = getEditor();
-		if (editor == null) return;
-		final ServiceSpec spec = mAvailableImageUploaders[which];
-		if (spec != null) {
-			editor.putString(KEY_MEDIA_UPLOADER, spec.service);
-			editor.commit();
-		}
+    public void onClick(final DialogInterface dialog, final int which) {
+        final SharedPreferences.Editor editor = getEditor();
+        if (editor == null) return;
+        final ServiceSpec spec = mAvailableImageUploaders[which];
+        if (spec != null) {
+            editor.putString(KEY_MEDIA_UPLOADER, spec.service);
+            editor.commit();
+        }
         setSummary(spec.name);
-		dialog.dismiss();
-	}
+        dialog.dismiss();
+    }
 
-	@Override
-	public void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
-		super.onPrepareDialogBuilder(builder);
-		if (mPreferences == null) return;
-		final String component = mPreferences.getString(KEY_MEDIA_UPLOADER, null);
-		final ArrayList<ServiceSpec> specs = new ArrayList<ServiceSpec>();
+    @Override
+    public void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
+        super.onPrepareDialogBuilder(builder);
+        if (mPreferences == null) return;
+        final String component = mPreferences.getString(KEY_MEDIA_UPLOADER, null);
+        final ArrayList<ServiceSpec> specs = new ArrayList<ServiceSpec>();
         for (ServiceSpec spec : AVAILABLE_SERVICES) {
             specs.add(spec);
         }
-		mAvailableImageUploaders = specs.toArray(new ServiceSpec[specs.size()]);
-		builder.setSingleChoiceItems(mAvailableImageUploaders, getIndex(component), MediaUploaderPreference.this);
-		builder.setNegativeButton(android.R.string.cancel, null);
-	}
+        mAvailableImageUploaders = specs.toArray(new ServiceSpec[specs.size()]);
+        builder.setSingleChoiceItems(mAvailableImageUploaders, getIndex(component), MediaUploaderPreference.this);
+        builder.setNegativeButton(android.R.string.cancel, null);
+    }
 
-	private int getIndex(final String cls) {
-		if (mAvailableImageUploaders == null) return -1;
-		if (cls == null) return 0;
-		final int count = mAvailableImageUploaders.length;
-		for (int i = 0; i < count; i++) {
-			final ServiceSpec spec = mAvailableImageUploaders[i];
-			if (cls.equals(spec.service)) return i;
-		}
-		return -1;
-	}
+    private int getIndex(final String cls) {
+        if (mAvailableImageUploaders == null) return -1;
+        if (cls == null) return 0;
+        final int count = mAvailableImageUploaders.length;
+        for (int i = 0; i < count; i++) {
+            final ServiceSpec spec = mAvailableImageUploaders[i];
+            if (cls.equals(spec.service)) return i;
+        }
+        return -1;
+    }
 
     private String getServiceName(String service) {
         if (service == null) return getContext().getString(R.string.image_uploader_default);
