@@ -1208,8 +1208,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             case R.id.profile_image: {
                 final String url = Utils.getOriginalTwitterProfileImage(user.profile_image_url);
                 final ParcelableMedia[] media = {ParcelableMedia.newImage(url, url)};
-                //TODO open media animation
-                Bundle options = null;
+                Bundle options = Utils.createMediaViewerActivityOption(view);
                 Utils.openMedia(activity, user.account_id, false, null, media, options);
                 break;
             }
@@ -1217,8 +1216,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 if (user.profile_banner_url == null) return;
                 final String url = user.profile_banner_url + "/ipad_retina";
                 final ParcelableMedia[] media = {ParcelableMedia.newImage(url, url)};
-                //TODO open media animation
-                Bundle options = null;
+                Bundle options = Utils.createMediaViewerActivityOption(view);
                 Utils.openMedia(activity, user.account_id, false, null, media, options);
                 break;
             }

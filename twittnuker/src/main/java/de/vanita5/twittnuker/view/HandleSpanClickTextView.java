@@ -37,57 +37,63 @@ public class HandleSpanClickTextView extends ThemedTextView {
 
     private boolean mLongClickPerformed;
 
-	public HandleSpanClickTextView(final Context context) {
-		super(context);
-	}
+    public HandleSpanClickTextView(final Context context) {
+        super(context);
+    }
 
-	public HandleSpanClickTextView(final Context context, final AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public HandleSpanClickTextView(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public HandleSpanClickTextView(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public HandleSpanClickTextView(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	@Override
+    @Override
     public boolean onTouchEvent(@NonNull final MotionEvent event) {
-		final Spannable buffer = SpannableString.valueOf(getText());
-		final int action = event.getAction();
-		if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
-			int x = (int) event.getX();
-			int y = (int) event.getY();
+        final Spannable buffer = SpannableString.valueOf(getText());
+        final int action = event.getAction();
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
+            int x = (int) event.getX();
+            int y = (int) event.getY();
 
-			x -= getTotalPaddingLeft();
-			y -= getTotalPaddingTop();
+            x -= getTotalPaddingLeft();
+            y -= getTotalPaddingTop();
 
-			x += getScrollX();
-			y += getScrollY();
+            x += getScrollX();
+            y += getScrollY();
 
-			final Layout layout = getLayout();
-			final int line = layout.getLineForVertical(y);
-			final int off = layout.getOffsetForHorizontal(line, x);
+            final Layout layout = getLayout();
+            final int line = layout.getLineForVertical(y);
+            final int off;
+            try {
+                off = layout.getOffsetForHorizontal(line, x);
+            } catch (IndexOutOfBoundsException e) {
+                throw new IndexOutOfBoundsException("Line count " + layout.getLineCount() +
+                        ", line for y " + y + " is " + line + ", x is " + x);
+            }
             final float lineWidth = layout.getLineWidth(line);
 
-			final ClickableSpan[] links = buffer.getSpans(off, off, ClickableSpan.class);
+            final ClickableSpan[] links = buffer.getSpans(off, off, ClickableSpan.class);
 
-			if (links.length != 0 && x <= lineWidth) {
-				final ClickableSpan link = links[0];
-				if (action == MotionEvent.ACTION_UP) {
-					setClickable(false);
+            if (links.length != 0 && x <= lineWidth) {
+                final ClickableSpan link = links[0];
+                if (action == MotionEvent.ACTION_UP) {
+                    setClickable(false);
                     if (!mLongClickPerformed) {
-                    	link.onClick(this);
+                        link.onClick(this);
                     }
-					return true;
+                    return true;
                 } else {
                     mLongClickPerformed = false;
-					setClickable(true);
-				}
-			} else {
+                    setClickable(true);
+                }
+            } else {
                 setClickable(false);
-			}
-		}
-		return super.onTouchEvent(event);
-	}
+            }
+        }
+        return super.onTouchEvent(event);
+    }
 
 
     @Override

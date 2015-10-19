@@ -12,8 +12,8 @@ android {
         applicationId "de.vanita5.twittnuker"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 14
-        versionName "0.7.0"
+        versionCode 15
+        versionName "0.7.1"
         //multiDexEnabled false
     }
     compileOptions {
@@ -87,7 +87,7 @@ dependencies {
     compile 'com.makeramen:roundedimageview:2.1.1'
     compile 'com.soundcloud.android:android-crop:1.0.1@aar'
     compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.1'
-    compile 'com.github.mariotaku:PickNCrop:44b09cbc69'
+    compile 'com.github.mariotaku:PickNCrop:1dff3ed574'
     compile 'com.diogobernardino:williamchart:2.0.1'
     compile 'com.lnikkila:extendedtouchview:0.1.0'
     compile 'com.google.android.gms:play-services:8.1.0'

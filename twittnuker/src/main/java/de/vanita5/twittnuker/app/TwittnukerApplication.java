@@ -148,6 +148,8 @@ public class TwittnukerApplication extends Application implements Constants,
         startRefreshServiceIfNeeded(this);
 
         reloadConnectivitySettings();
+
+        registerActivityLifecycleCallbacks(getApplicationModule().getActivityTracker());
     }
 
     private void initDebugMode() {

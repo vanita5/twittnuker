@@ -24,24 +24,15 @@ package de.vanita5.twittnuker.util;
 
 
 import android.app.Activity;
+import android.app.Application;
+import android.os.Bundle;
 
 import org.apache.commons.collections.primitives.ArrayIntList;
 import org.apache.commons.collections.primitives.IntList;
 
-public class ActivityTracker {
+public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
 
     private final IntList mInternalStack = new ArrayIntList();
-
-    public void dispatchStart(Activity activity) {
-        mInternalStack.add(System.identityHashCode(activity));
-    }
-
-    public void dispatchStop(Activity activity) {
-
-        final int hashCode = System.identityHashCode(activity);
-
-        mInternalStack.removeElement(hashCode);
-    }
 
     private boolean isSwitchingInSameTask(int hashCode) {
         return mInternalStack.lastIndexOf(hashCode) < mInternalStack.size() - 1;
@@ -55,4 +46,40 @@ public class ActivityTracker {
         return mInternalStack.isEmpty();
     }
 
+    @Override
+    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onActivityStarted(Activity activity) {
+        mInternalStack.add(System.identityHashCode(activity));
+    }
+
+    @Override
+    public void onActivityResumed(Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityPaused(Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityStopped(Activity activity) {
+        final int hashCode = System.identityHashCode(activity);
+
+        mInternalStack.removeElement(hashCode);
+    }
+
+    @Override
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+    }
+
+    @Override
+    public void onActivityDestroyed(Activity activity) {
+
+    }
 }

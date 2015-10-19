@@ -28,13 +28,11 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 
 import com.squareup.otto.Bus;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
@@ -147,17 +145,6 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     }
 
     @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.back: {
-                onBackPressed();
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void startActivity(final Intent intent) {
         super.startActivity(intent);
     }
@@ -187,7 +174,6 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     @Override
     protected void onStart() {
         super.onStart();
-        mActivityTracker.dispatchStart(this);
         mIsVisible = true;
     }
 
@@ -216,7 +202,6 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     @Override
     protected void onStop() {
         mIsVisible = false;
-        mActivityTracker.dispatchStop(this);
         super.onStop();
     }
 
