@@ -23,7 +23,7 @@ public class GoogleAccountDialog extends DialogFragment {
 		builder.setTitle(R.string.select_account);
 		final Account[] accounts = AccountManager.get(getActivity())
 				.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
-		if (accounts != null) {
+		if (accounts != null && accounts.length > 0) {
 			final int size = accounts.length;
 			String[] names = new String[size];
 
