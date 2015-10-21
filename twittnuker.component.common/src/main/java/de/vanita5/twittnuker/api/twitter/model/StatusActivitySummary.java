@@ -22,20 +22,25 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.StatusActivitySummaryImpl;
+
+@Implementation(StatusActivitySummaryImpl.class)
 public interface StatusActivitySummary extends TwitterResponse {
 
-	long getDescendentReplyCount();
+    long getDescendentReplyCount();
 
-	IDs getFavoriters();
+    IDs getFavoriters();
 
-	long getFavoritersCount();
+    long getFavoritersCount();
 
-	IDs getRepliers();
+    IDs getRepliers();
 
-	long getRepliersCount();
+    long getRepliersCount();
 
-	IDs getRetweeters();
+    IDs getRetweeters();
 
-	long getRetweetersCount();
+    long getRetweetersCount();
 
 }

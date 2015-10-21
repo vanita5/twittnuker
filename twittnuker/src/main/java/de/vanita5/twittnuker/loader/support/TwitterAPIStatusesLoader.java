@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.LoganSquareWrapper;
+import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -188,7 +188,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
     private List<ParcelableStatus> getCachedData(final File file) {
         if (file == null) return null;
         try {
-            return LoganSquareWrapper.parseList(file, ParcelableStatus.class);
+            return JsonSerializer.parseList(file, ParcelableStatus.class);
         } catch (final IOException e) {
             Log.w(LOGTAG, e);
         }
@@ -198,7 +198,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
     private File getSerializationFile() {
         if (mSavedStatusesFileArgs == null) return null;
         try {
-            return LoganSquareWrapper.getSerializationFile(mContext, mSavedStatusesFileArgs);
+            return JsonSerializer.getSerializationFile(mContext, mSavedStatusesFileArgs);
         } catch (final IOException e) {
             e.printStackTrace();
         }

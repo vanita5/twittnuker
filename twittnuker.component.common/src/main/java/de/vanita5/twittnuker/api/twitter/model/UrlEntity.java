@@ -22,50 +22,55 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.UrlEntityImpl;
+
 /**
  * A data interface representing one single URL entity.
  *
  * @author Mocel - mocel at guma.jp
  * @since Twitter4J 2.1.9
  */
-public interface UrlEntity  {
+@Implementation(UrlEntityImpl.class)
+public interface UrlEntity {
 
-	/**
-	 * Returns the display URL if mentioned URL is shorten.
-	 *
-	 * @return the display URL if mentioned URL is shorten, or null if no
-	 *         shorten URL was mentioned.
-	 */
-	String getDisplayUrl();
+    /**
+     * Returns the display URL if mentioned URL is shorten.
+     *
+     * @return the display URL if mentioned URL is shorten, or null if no
+     * shorten URL was mentioned.
+     */
+    String getDisplayUrl();
 
-	/**
-	 * Returns the index of the end character of the URL mentioned in the tweet.
-	 *
-	 * @return the index of the end character of the URL mentioned in the tweet
-	 */
-	int getEnd();
+    /**
+     * Returns the index of the end character of the URL mentioned in the tweet.
+     *
+     * @return the index of the end character of the URL mentioned in the tweet
+     */
+    int getEnd();
 
-	/**
-	 * Returns the expanded URL if mentioned URL is shorten.
-	 *
-	 * @return the expanded URL if mentioned URL is shorten, or null if no
-	 *         shorten URL was mentioned.
-	 */
-	String getExpandedUrl();
+    /**
+     * Returns the expanded URL if mentioned URL is shorten.
+     *
+     * @return the expanded URL if mentioned URL is shorten, or null if no
+     * shorten URL was mentioned.
+     */
+    String getExpandedUrl();
 
-	/**
-	 * Returns the index of the start character of the URL mentioned in the
-	 * tweet.
-	 *
-	 * @return the index of the start character of the URL mentioned in the
-	 *         tweet
-	 */
-	int getStart();
+    /**
+     * Returns the index of the start character of the URL mentioned in the
+     * tweet.
+     *
+     * @return the index of the start character of the URL mentioned in the
+     * tweet
+     */
+    int getStart();
 
-	/**
-	 * Returns the URL mentioned in the tweet.
-	 *
-	 * @return the mentioned URL
-	 */
-	String getUrl();
+    /**
+     * Returns the URL mentioned in the tweet.
+     *
+     * @return the mentioned URL
+     */
+    String getUrl();
 }

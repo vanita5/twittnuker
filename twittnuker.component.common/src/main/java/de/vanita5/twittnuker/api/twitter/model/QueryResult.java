@@ -22,21 +22,26 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Wrapper;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.QueryResultWrapper;
+
 /**
  * A data interface representing search API response
- * 
+ *
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
+@Wrapper(QueryResultWrapper.class)
 public interface QueryResult extends ResponseList<Status> {
-	double getCompletedIn();
+    double getCompletedIn();
 
-	long getMaxId();
+    long getMaxId();
 
-	String getQuery();
+    String getQuery();
 
-	int getResultsPerPage();
+    int getResultsPerPage();
 
-	long getSinceId();
+    long getSinceId();
 
-	String getWarning();
+    String getWarning();
 }

@@ -34,37 +34,37 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
  * Created by mariotaku on 15/5/7.
  */
 @JsonObject
-public class QueryResultWrapper extends TwitterResponseImpl implements Wrapper<QueryResult> {
+public class QueryResultWrapper extends TwitterResponseImpl implements TwitterModelWrapper<QueryResult> {
 
-	@JsonField(name = "previous_cursor")
-	long previousCursor;
-	@JsonField(name = "next_cursor")
-	long nextCursor;
+    @JsonField(name = "previous_cursor")
+    long previousCursor;
+    @JsonField(name = "next_cursor")
+    long nextCursor;
 
-	@JsonField(name = "search_metadata")
-	SearchMetadata metadata;
+    @JsonField(name = "search_metadata")
+    SearchMetadata metadata;
 
-	@JsonField(name = "statuses")
-	ArrayList<Status> statuses;
+    @JsonField(name = "statuses")
+    ArrayList<Status> statuses;
 
-	@Override
-	public QueryResult getWrapped(Object extra) {
-		return new QueryResultImpl(statuses, metadata);
-	}
+    @Override
+    public QueryResult getWrapped(Object extra) {
+        return new QueryResultImpl(statuses, metadata);
+    }
 
-	@JsonObject
-	static class SearchMetadata {
-		@JsonField(name = "max_id")
-		long maxId;
-		@JsonField(name = "since_id")
-		long sinceId;
-		@JsonField(name = "count")
-		int count;
-		@JsonField(name = "completed_in")
-		double completedIn;
-		@JsonField(name = "query")
-		String query;
-		@JsonField(name = "warning")
-		String warning;
-	}
+    @JsonObject
+    static class SearchMetadata {
+        @JsonField(name = "max_id")
+        long maxId;
+        @JsonField(name = "since_id")
+        long sinceId;
+        @JsonField(name = "count")
+        int count;
+        @JsonField(name = "completed_in")
+        double completedIn;
+        @JsonField(name = "query")
+        String query;
+        @JsonField(name = "warning")
+        String warning;
+    }
 }

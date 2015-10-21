@@ -22,23 +22,30 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+import org.mariotaku.library.logansquare.extension.annotation.Wrapper;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.CardEntityImpl;
+
 import java.util.Map;
 
 /**
  * Created by mariotaku on 14/12/31.
  */
+@Implementation(CardEntityImpl.class)
 public interface CardEntity {
 
-	String getName();
+    String getName();
 
     String getUrl();
 
     User[] getUsers();
 
-	BindingValue getBindingValue(String key);
+    BindingValue getBindingValue(String key);
 
     Map<String, BindingValue> getBindingValues();
 
+    @Wrapper(CardEntityImpl.BindingValueWrapper.class)
     interface BindingValue {
 
         String TYPE_STRING = "STRING";
@@ -46,26 +53,26 @@ public interface CardEntity {
         String TYPE_USER = "USER";
         String TYPE_BOOLEAN = "BOOLEAN";
 
-	}
+    }
 
 
     interface UserValue extends BindingValue {
-		long getUserId();
-	}
+        long getUserId();
+    }
 
     interface StringValue extends BindingValue {
-		String getValue();
-	}
+        String getValue();
+    }
 
     interface BooleanValue extends BindingValue {
         boolean getValue();
     }
 
     interface ImageValue extends BindingValue {
-		int getWidth();
+        int getWidth();
 
-		int getHeight();
+        int getHeight();
 
-		String getUrl();
-	}
+        String getUrl();
+    }
 }

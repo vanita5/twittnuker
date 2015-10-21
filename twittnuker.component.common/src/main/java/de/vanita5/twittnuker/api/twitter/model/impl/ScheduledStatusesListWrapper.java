@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.api.twitter.model.ScheduledStatusesList;
 import java.util.ArrayList;
 
 @JsonObject
-public class ScheduledStatusesListWrapper implements Wrapper<ScheduledStatusesList> {
+public class ScheduledStatusesListWrapper implements TwitterModelWrapper<ScheduledStatusesList> {
 
     @JsonField(name = "results")
     ArrayList<ScheduledStatus> list;

@@ -20,20 +20,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model;
+package de.vanita5.twittnuker.util;
 
+import android.net.Uri;
 
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+import java.util.List;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.ErrorInfoImpl;
+import de.vanita5.twittnuker.Constants;
 
-/**
- * Created by mariotaku on 15/5/7.
- */
-@Implementation(ErrorInfoImpl.class)
-public interface ErrorInfo {
+public class UriExtraUtils implements Constants {
 
-    int getCode();
+    public static void addExtra(Uri.Builder builder, String key, Object value) {
+        builder.appendQueryParameter(QUERY_PARAM_EXTRA, key + "=" + String.valueOf(value));
+    }
 
-    String getMessage();
+    public static String getExtra(Uri uri, String key) {
+        return getExtra(uri.getQueryParameters(QUERY_PARAM_EXTRA), key);
+    }
+
+    public static String getExtra(List<String> extras, String key) {
+        for (String extra : extras) {
+            final int i = extra.indexOf(key + "=");
+            if (i == 0) {
+                return extra.substring(i);
+            }
+        }
+        return null;
+    }
+
 }

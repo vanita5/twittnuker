@@ -22,34 +22,39 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.PlaceImpl;
+
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.1.1
  */
+@Implementation(PlaceImpl.class)
 public interface Place extends TwitterResponse, Comparable<Place> {
-	GeoLocation[][] getBoundingBoxCoordinates();
+    GeoLocation[][] getBoundingBoxCoordinates();
 
-	String getBoundingBoxType();
+    String getBoundingBoxType();
 
-	Place[] getContainedWithIn();
+    Place[] getContainedWithIn();
 
-	String getCountry();
+    String getCountry();
 
-	String getCountryCode();
+    String getCountryCode();
 
-	String getFullName();
+    String getFullName();
 
-	GeoLocation[][] getGeometryCoordinates();
+    GeoLocation[][] getGeometryCoordinates();
 
-	String getGeometryType();
+    String getGeometryType();
 
-	String getId();
+    String getId();
 
-	String getName();
+    String getName();
 
-	String getPlaceType();
+    String getPlaceType();
 
-	String getStreetAddress();
+    String getStreetAddress();
 
-	String getUrl();
+    String getUrl();
 }

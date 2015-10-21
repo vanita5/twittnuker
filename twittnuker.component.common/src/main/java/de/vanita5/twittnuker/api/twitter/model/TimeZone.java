@@ -22,11 +22,16 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.TimeZoneImpl;
+
 /**
  * @author Alessandro Bahgat - ale.bahgat at gmail.com
  */
+@Implementation(TimeZoneImpl.class)
 public interface TimeZone {
-	String getName();
+    String getName();
 
     String getTzInfoName();
 

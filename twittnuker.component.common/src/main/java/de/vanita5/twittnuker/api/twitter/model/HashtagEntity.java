@@ -22,33 +22,36 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import java.io.Serializable;
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.HashtagEntityImpl;
 
 /**
  * A data interface representing one single Hashtag entity.
- * 
+ *
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.1.9
  */
-public interface HashtagEntity  {
-	/**
-	 * Returns the index of the end character of the hashtag.
-	 * 
-	 * @return the index of the end character of the hashtag
-	 */
-	int getEnd();
+@Implementation(HashtagEntityImpl.class)
+public interface HashtagEntity {
+    /**
+     * Returns the index of the end character of the hashtag.
+     *
+     * @return the index of the end character of the hashtag
+     */
+    int getEnd();
 
-	/**
-	 * Returns the index of the start character of the hashtag.
-	 * 
-	 * @return the index of the start character of the hashtag
-	 */
-	int getStart();
+    /**
+     * Returns the index of the start character of the hashtag.
+     *
+     * @return the index of the start character of the hashtag
+     */
+    int getStart();
 
-	/**
-	 * Returns the text of the hashtag without #.
-	 * 
-	 * @return the text of the hashtag
-	 */
-	String getText();
+    /**
+     * Returns the text of the hashtag without #.
+     *
+     * @return the text of the hashtag
+     */
+    String getText();
 }

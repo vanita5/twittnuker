@@ -22,5 +22,10 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Wrapper;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.ScheduledStatusesListWrapper;
+
+@Wrapper(ScheduledStatusesListWrapper.class)
 public interface ScheduledStatusesList extends ResponseList<ScheduledStatus> {
 }

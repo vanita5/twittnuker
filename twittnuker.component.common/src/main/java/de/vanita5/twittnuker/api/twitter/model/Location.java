@@ -22,27 +22,33 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.LocationImpl;
+
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
+@Implementation(LocationImpl.class)
 public interface Location {
-	String getCountryCode();
+    String getCountryCode();
 
-	String getCountryName();
+    String getCountryName();
 
-	String getName();
+    String getName();
 
-	String getUrl();
+    String getUrl();
 
-	int getWoeid();
+    int getWoeid();
 
-	PlaceType getPlaceType();
+    PlaceType getPlaceType();
 
-	interface PlaceType {
+    @Implementation(LocationImpl.PlaceTypeImpl.class)
+    interface PlaceType {
 
-		int getCode();
+        int getCode();
 
-		String getName();
+        String getName();
 
-	}
+    }
 }

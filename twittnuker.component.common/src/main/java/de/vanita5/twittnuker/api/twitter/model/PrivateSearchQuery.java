@@ -22,18 +22,10 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.restfu.http.SimpleValueMap;
 
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
-
-import de.vanita5.twittnuker.api.twitter.model.impl.ErrorInfoImpl;
-
-/**
- * Created by mariotaku on 15/5/7.
- */
-@Implementation(ErrorInfoImpl.class)
-public interface ErrorInfo {
-
-    int getCode();
-
-    String getMessage();
+public class PrivateSearchQuery extends SimpleValueMap {
+    public void setQuery(String query) {
+        put("q", query);
+    }
 }

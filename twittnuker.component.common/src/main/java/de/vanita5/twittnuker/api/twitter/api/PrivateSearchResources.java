@@ -20,20 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model;
+package de.vanita5.twittnuker.api.twitter.api;
 
+import org.mariotaku.restfu.annotation.method.GET;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.PrivateSearchQuery;
+import de.vanita5.twittnuker.api.twitter.model.PrivateSearchResult;
 
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+public interface PrivateSearchResources {
 
-import de.vanita5.twittnuker.api.twitter.model.impl.ErrorInfoImpl;
+    @GET("/search/universal.json")
+    PrivateSearchResult searchTweets(PrivateSearchQuery query) throws TwitterException;
 
-/**
- * Created by mariotaku on 15/5/7.
- */
-@Implementation(ErrorInfoImpl.class)
-public interface ErrorInfo {
-
-    int getCode();
-
-    String getMessage();
 }

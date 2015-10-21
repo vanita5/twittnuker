@@ -22,13 +22,27 @@
 
 package de.vanita5.twittnuker.api.twitter.model.impl;
 
-import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
+import com.bluelinelabs.logansquare.JsonMapper;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 
-/**
- * Created by mariotaku on 15/5/7.
- */
-public interface Wrapper<T> extends TwitterResponse {
+import java.io.IOException;
 
-	T getWrapped(Object extra);
+public class IndicesMapper extends JsonMapper<Indices> {
+    @Override
+    public Indices parse(JsonParser jsonParser) throws IOException {
+        final int start, end;
+        if (!jsonParser.isExpectedStartArrayToken()) throw new IOException("Malformed indices");
+        start = jsonParser.nextIntValue(-1);
+        end = jsonParser.nextIntValue(-1);
+        if (jsonParser.nextToken() != JsonToken.END_ARRAY)
+            throw new IOException("Malformed indices");
+        return new Indices(start, end);
+    }
 
+    @Override
+    public void serialize(Indices object, JsonGenerator generator, boolean writeStartAndEnd) throws IOException {
+        throw new UnsupportedOperationException();
+    }
 }

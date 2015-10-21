@@ -22,23 +22,27 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.TrendsImpl;
+
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * A data class representing Trends.
- * 
+ *
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.0.2
  */
-
+@Implementation(TrendsImpl.class)
 public interface Trends extends TwitterResponse, Comparable<Trends>, Serializable {
-	Date getAsOf();
+    Date getAsOf();
 
     Date getCreatedAt();
 
-	Location[] getLocations();
+    Location[] getLocations();
 
-	Trend[] getTrends();
+    Trend[] getTrends();
 
 }

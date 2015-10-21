@@ -22,19 +22,14 @@
 
 package de.vanita5.twittnuker.api.twitter.model.impl;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
 
 import org.mariotaku.restfu.http.RestHttpResponse;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.api.twitter.model.User;
 
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -44,167 +39,153 @@ import java.util.Map;
 public class CardEntityImpl implements CardEntity {
 
 
-	@JsonField(name = "name")
-	String name;
+    @JsonField(name = "name")
+    String name;
 
-	@JsonField(name = "url")
-	String url;
+    @JsonField(name = "url")
+    String url;
 
-	@JsonField(name = "binding_values")
-	Map<String, BindingValue> bindingValues;
+    @JsonField(name = "binding_values")
+    Map<String, BindingValue> bindingValues;
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public String getUrl() {
-		return url;
-	}
+    @Override
+    public String getUrl() {
+        return url;
+    }
 
-	@Override
-	public User[] getUsers() {
-		return new User[0];
-	}
+    @Override
+    public User[] getUsers() {
+        return new User[0];
+    }
 
-	@Override
-	public BindingValue getBindingValue(String key) {
-		return bindingValues.get(key);
-	}
+    @Override
+    public BindingValue getBindingValue(String key) {
+        return bindingValues.get(key);
+    }
 
-	@Override
-	public Map<String, BindingValue> getBindingValues() {
-		return bindingValues;
-	}
+    @Override
+    public Map<String, BindingValue> getBindingValues() {
+        return bindingValues;
+    }
 
-	@JsonObject
-	static class ImageValueImpl implements ImageValue {
-		@JsonField(name = "width")
-		int width;
-		@JsonField(name = "height")
-		int height;
-		@JsonField(name = "url")
-		String url;
+    @JsonObject
+    static class ImageValueImpl implements ImageValue {
+        @JsonField(name = "width")
+        int width;
+        @JsonField(name = "height")
+        int height;
+        @JsonField(name = "url")
+        String url;
 
-		@Override
-		public int getWidth() {
-			return width;
-		}
+        @Override
+        public int getWidth() {
+            return width;
+        }
 
-		@Override
-		public int getHeight() {
-			return height;
-		}
+        @Override
+        public int getHeight() {
+            return height;
+        }
 
-		@Override
-		public String getUrl() {
-			return url;
-		}
+        @Override
+        public String getUrl() {
+            return url;
+        }
 
-	}
+    }
 
-	static class BooleanValueImpl implements BooleanValue {
+    static class BooleanValueImpl implements BooleanValue {
 
-		public BooleanValueImpl(boolean value) {
-			this.value = value;
-		}
+        public BooleanValueImpl(boolean value) {
+            this.value = value;
+        }
 
-		private boolean value;
+        private boolean value;
 
-		@Override
-		public boolean getValue() {
-			return value;
-		}
-	}
+        @Override
+        public boolean getValue() {
+            return value;
+        }
+    }
 
-	static class StringValueImpl implements StringValue {
-		private final String value;
+    static class StringValueImpl implements StringValue {
+        private final String value;
 
-		public StringValueImpl(String value) {
-			this.value = value;
-		}
+        public StringValueImpl(String value) {
+            this.value = value;
+        }
 
-		@Override
-		public String getValue() {
-			return value;
-		}
-	}
+        @Override
+        public String getValue() {
+            return value;
+        }
+    }
 
-	@JsonObject
-	static class UserValueImpl implements UserValue {
+    @JsonObject
+    static class UserValueImpl implements UserValue {
 
-		@JsonField(name = "id")
-		long userId;
+        @JsonField(name = "id")
+        long userId;
 
-		@Override
-		public long getUserId() {
-			return userId;
-		}
-	}
+        @Override
+        public long getUserId() {
+            return userId;
+        }
+    }
 
-	@JsonObject
-	public static class BindingValueWrapper implements Wrapper<BindingValue> {
+    @JsonObject
+    public static class BindingValueWrapper implements TwitterModelWrapper<BindingValue> {
 
-        public static final TypeConverter<BindingValue> CONVERTER = new TypeConverter<BindingValue>() {
-            @Override
-            public BindingValue parse(JsonParser jsonParser) throws IOException {
-                final BindingValueWrapper wrapper = LoganSquare.mapperFor(BindingValueWrapper.class).parse(jsonParser);
-                if (wrapper == null) return null;
-                return wrapper.getWrapped(null);
+        @JsonField(name = "type")
+        String type;
+        @JsonField(name = "boolean_value")
+        boolean booleanValue;
+        @JsonField(name = "string_value")
+        String stringValue;
+        @JsonField(name = "image_value")
+        ImageValueImpl imageValue;
+        @JsonField(name = "user_value")
+        UserValueImpl userValue;
+
+
+        @Override
+        public BindingValue getWrapped(Object extra) {
+            if (type == null) return null;
+            switch (type) {
+                case BindingValue.TYPE_BOOLEAN: {
+                    return new BooleanValueImpl(booleanValue);
+                }
+                case BindingValue.TYPE_STRING: {
+                    return new StringValueImpl(stringValue);
+                }
+                case BindingValue.TYPE_IMAGE: {
+                    return imageValue;
+                }
+                case BindingValue.TYPE_USER: {
+                    return userValue;
+                }
             }
+            return null;
+        }
 
-            @Override
-            public void serialize(BindingValue object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) throws IOException {
-                throw new UnsupportedOperationException();
-            }
-        };
+        @Override
+        public void processResponseHeader(RestHttpResponse resp) {
 
-		@JsonField(name = "type")
-		String type;
-		@JsonField(name = "boolean_value")
-		boolean booleanValue;
-		@JsonField(name = "string_value")
-		String stringValue;
-		@JsonField(name = "image_value")
-		ImageValueImpl imageValue;
-		@JsonField(name = "user_value")
-		UserValueImpl userValue;
+        }
 
+        @Override
+        public int getAccessLevel() {
+            return 0;
+        }
 
-		@Override
-		public BindingValue getWrapped(Object extra) {
-			if (type == null) return null;
-			switch (type) {
-				case BindingValue.TYPE_BOOLEAN: {
-					return new BooleanValueImpl(booleanValue);
-				}
-				case BindingValue.TYPE_STRING: {
-					return new StringValueImpl(stringValue);
-				}
-				case BindingValue.TYPE_IMAGE: {
-					return imageValue;
-				}
-				case BindingValue.TYPE_USER: {
-					return userValue;
-				}
-			}
-			return null;
-		}
-
-		@Override
-		public void processResponseHeader(RestHttpResponse resp) {
-
-		}
-
-		@Override
-		public int getAccessLevel() {
-			return 0;
-		}
-
-		@Override
-		public RateLimitStatus getRateLimitStatus() {
-			return null;
-		}
-	}
+        @Override
+        public RateLimitStatus getRateLimitStatus() {
+            return null;
+        }
+    }
 }

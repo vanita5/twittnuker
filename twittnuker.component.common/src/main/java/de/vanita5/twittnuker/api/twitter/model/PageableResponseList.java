@@ -22,11 +22,16 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Wrapper;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.PageableResponseListWrapper;
+
 /**
  * ResponseList with cursor support.
  *
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
+@Wrapper(PageableResponseListWrapper.class)
 public interface PageableResponseList<T > extends ResponseList<T>, CursorSupport {
 
 }

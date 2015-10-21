@@ -22,27 +22,32 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.UserListImpl;
+
 import java.util.Date;
 
+@Implementation(UserListImpl.class)
 public interface UserList extends Comparable<UserList>, TwitterResponse {
     Mode getMode();
 
-	String getDescription();
+    String getDescription();
 
 
-	String getFullName();
+    String getFullName();
 
 
-	long getId();
+    long getId();
 
 
     long getMemberCount();
 
 
-	String getName();
+    String getName();
 
 
-	String getSlug();
+    String getSlug();
 
 
     long getSubscriberCount();
@@ -51,12 +56,12 @@ public interface UserList extends Comparable<UserList>, TwitterResponse {
     String getUri();
 
 
-	User getUser();
+    User getUser();
 
 
     Date getCreatedAt();
 
-	boolean isFollowing();
+    boolean isFollowing();
 
     enum Mode {
         PUBLIC("public"), PRIVATE("private");
@@ -73,7 +78,7 @@ public interface UserList extends Comparable<UserList>, TwitterResponse {
                     return PUBLIC;
                 case "private":
                     return PRIVATE;
-			}
+            }
             throw new UnsupportedOperationException();
         }
 

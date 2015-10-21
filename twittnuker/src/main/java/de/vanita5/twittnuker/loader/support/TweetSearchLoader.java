@@ -26,11 +26,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 import java.util.List;
@@ -39,7 +39,7 @@ import static de.vanita5.twittnuker.util.Utils.isFiltered;
 
 public class TweetSearchLoader extends TwitterAPIStatusesLoader {
 
-	private final String mQuery;
+    private final String mQuery;
     private final boolean mGapEnabled;
 
     public TweetSearchLoader(final Context context, final long accountId, final String query,
@@ -47,26 +47,26 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
                              final String[] savedStatusesArgs, final int tabPosition, boolean fromUser,
                              boolean makeGap) {
         super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
-		mQuery = query;
+        mQuery = query;
         mGapEnabled = makeGap;
-	}
+    }
 
     @NonNull
-	@Override
+    @Override
     public List<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
-		final SearchQuery query = new SearchQuery(processQuery(mQuery));
+        final SearchQuery query = new SearchQuery(processQuery(mQuery));
         query.paging(paging);
         return twitter.search(query);
-	}
+    }
 
-	protected String processQuery(final String query) {
-		return String.format("%s", query);
-	}
+    protected String processQuery(final String query) {
+        return String.format("%s", query);
+    }
 
-	@Override
-	protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
+    @Override
+    protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
         return isFiltered(database, status, true);
-	}
+    }
 
     @Override
     protected boolean isGapEnabled() {

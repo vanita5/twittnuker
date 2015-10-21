@@ -20,20 +20,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model;
+package de.vanita5.twittnuker.api.twitter.model.impl;
 
+import de.vanita5.twittnuker.api.twitter.model.PrivateSearchResult;
 
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
-
-import de.vanita5.twittnuker.api.twitter.model.impl.ErrorInfoImpl;
-
-/**
- * Created by mariotaku on 15/5/7.
- */
-@Implementation(ErrorInfoImpl.class)
-public interface ErrorInfo {
-
-    int getCode();
-
-    String getMessage();
+public class PrivateSearchResultImpl implements PrivateSearchResult {
 }

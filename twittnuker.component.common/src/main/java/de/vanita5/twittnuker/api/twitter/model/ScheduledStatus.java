@@ -22,8 +22,14 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.EnumClass;
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.ScheduledStatusImpl;
+
 import java.util.Date;
 
+@Implementation(ScheduledStatusImpl.class)
 public interface ScheduledStatus {
 
     long getUserId();
@@ -44,6 +50,7 @@ public interface ScheduledStatus {
 
     State getState();
 
+    @EnumClass
     enum State {
         SCHEDULED("scheduled"), FAILED("failed"), CANCELED("canceled");
 

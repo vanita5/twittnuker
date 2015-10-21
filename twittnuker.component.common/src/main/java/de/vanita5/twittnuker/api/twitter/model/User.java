@@ -22,205 +22,210 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.UserImpl;
+
 import java.util.Date;
 
 /**
  * A data interface representing Basic user information element
- * 
+ *
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
+@Implementation(UserImpl.class)
 public interface User extends Comparable<User>, TwitterResponse {
-	Date getCreatedAt();
+    Date getCreatedAt();
 
-	boolean isDefaultProfile();
+    boolean isDefaultProfile();
 
-	/**
-	 * Returns the description of the user
-	 * 
-	 * @return the description of the user
-	 */
-	String getDescription();
+    /**
+     * Returns the description of the user
+     *
+     * @return the description of the user
+     */
+    String getDescription();
 
-	UrlEntity[] getDescriptionEntities();
+    UrlEntity[] getDescriptionEntities();
 
-	long getFavouritesCount();
+    long getFavouritesCount();
 
-	boolean isFollowedBy();
+    boolean isFollowedBy();
 
-	/**
-	 * Returns the number of followers
-	 * 
-	 * @return the number of followers
-	 * @since Twitter4J 1.0.4
-	 */
-	long getFollowersCount();
+    /**
+     * Returns the number of followers
+     *
+     * @return the number of followers
+     * @since Twitter4J 1.0.4
+     */
+    long getFollowersCount();
 
-	long getFriendsCount();
+    long getFriendsCount();
 
-	boolean hasCustomTimelines();
+    boolean hasCustomTimelines();
 
-	/**
-	 * Returns the id of the user
-	 * 
-	 * @return the id of the user
-	 */
-	long getId();
+    /**
+     * Returns the id of the user
+     *
+     * @return the id of the user
+     */
+    long getId();
 
-	/**
-	 * Returns the preferred language of the user
-	 * 
-	 * @return the preferred language of the user
-	 * @since Twitter4J 2.1.2
-	 */
-	String getLang();
+    /**
+     * Returns the preferred language of the user
+     *
+     * @return the preferred language of the user
+     * @since Twitter4J 2.1.2
+     */
+    String getLang();
 
-	/**
-	 * Returns the number of public lists the user is listed on, or -1 if the
-	 * count is unavailable.
-	 * 
-	 * @return the number of public lists the user is listed on.
-	 * @since Twitter4J 2.1.4
-	 */
-	long getListedCount();
+    /**
+     * Returns the number of public lists the user is listed on, or -1 if the
+     * count is unavailable.
+     *
+     * @return the number of public lists the user is listed on.
+     * @since Twitter4J 2.1.4
+     */
+    long getListedCount();
 
-	/**
-	 * Returns the location of the user
-	 * 
-	 * @return the location of the user
-	 */
-	String getLocation();
+    /**
+     * Returns the location of the user
+     *
+     * @return the location of the user
+     */
+    String getLocation();
 
-	/**
-	 * Returns the name of the user
-	 * 
-	 * @return the name of the user
-	 */
-	String getName();
+    /**
+     * Returns the name of the user
+     *
+     * @return the name of the user
+     */
+    String getName();
 
-	boolean isNeedsPhoneVerification();
+    boolean isNeedsPhoneVerification();
 
-	boolean isNotifications();
+    boolean isNotifications();
 
-	String getProfileBackgroundColor();
+    String getProfileBackgroundColor();
 
-	String getProfileBackgroundImageUrl();
+    String getProfileBackgroundImageUrl();
 
-	String getProfileBackgroundImageUrlHttps();
+    String getProfileBackgroundImageUrlHttps();
 
-	String getProfileBannerImageUrl();
+    String getProfileBannerImageUrl();
 
-	/**
-	 * Returns the profile image url of the user
-	 * 
-	 * @return the profile image url of the user
-	 */
+    /**
+     * Returns the profile image url of the user
+     *
+     * @return the profile image url of the user
+     */
     String getProfileImageUrl();
 
-	/**
-	 * Returns the profile image url of the user, served over SSL
-	 * 
-	 * @return the profile image url of the user, served over SSL
-	 */
-	String getProfileImageUrlHttps();
+    /**
+     * Returns the profile image url of the user, served over SSL
+     *
+     * @return the profile image url of the user, served over SSL
+     */
+    String getProfileImageUrlHttps();
 
-	String getProfileLinkColor();
+    String getProfileLinkColor();
 
-	String getProfileLocation();
+    String getProfileLocation();
 
-	String getProfileSidebarBorderColor();
+    String getProfileSidebarBorderColor();
 
-	String getProfileSidebarFillColor();
+    String getProfileSidebarFillColor();
 
-	String getProfileTextColor();
+    String getProfileTextColor();
 
-	/**
-	 * Returns the screen name of the user
-	 * 
-	 * @return the screen name of the user
-	 */
-	String getScreenName();
+    /**
+     * Returns the screen name of the user
+     *
+     * @return the screen name of the user
+     */
+    String getScreenName();
 
-	/**
-	 * Returns the current status of the user<br>
-	 * This can be null if the instance if from Status.getUser().
-	 * 
-	 * @return current status of the user
-	 * @since Twitter4J 2.1.1
-	 */
-	Status getStatus();
+    /**
+     * Returns the current status of the user<br>
+     * This can be null if the instance if from Status.getUser().
+     *
+     * @return current status of the user
+     * @since Twitter4J 2.1.1
+     */
+    Status getStatus();
 
-	long getStatusesCount();
+    long getStatusesCount();
 
-	long getMediaCount();
+    long getMediaCount();
 
-	boolean isSuspended();
+    boolean isSuspended();
 
-	String getTimeZone();
+    String getTimeZone();
 
-	/**
-	 * Returns the url of the user
-	 * 
-	 * @return the url of the user
-	 */
+    /**
+     * Returns the url of the user
+     *
+     * @return the url of the user
+     */
     String getUrl();
 
-	UrlEntity[] getUrlEntities();
+    UrlEntity[] getUrlEntities();
 
-	int getUtcOffset();
+    int getUtcOffset();
 
-	boolean canMediaTag();
+    boolean canMediaTag();
 
-	/**
-	 * Tests if the user is enabling contributors
-	 * 
-	 * @return if the user is enabling contributors
-	 * @since Twitter4J 2.1.2
-	 */
-	boolean isContributorsEnabled();
+    /**
+     * Tests if the user is enabling contributors
+     *
+     * @return if the user is enabling contributors
+     * @since Twitter4J 2.1.2
+     */
+    boolean isContributorsEnabled();
 
-	boolean isDefaultProfileImage();
+    boolean isDefaultProfileImage();
 
-	boolean isFollowing();
+    boolean isFollowing();
 
-	/**
-	 * Returns true if the authenticating user has requested to follow this
-	 * user, otherwise false.
-	 * 
-	 * @return true if the authenticating user has requested to follow this
-	 *         user.
-	 * @since Twitter4J 2.1.4
-	 */
-	boolean isFollowRequestSent();
+    /**
+     * Returns true if the authenticating user has requested to follow this
+     * user, otherwise false.
+     *
+     * @return true if the authenticating user has requested to follow this
+     * user.
+     * @since Twitter4J 2.1.4
+     */
+    boolean isFollowRequestSent();
 
-	/**
-	 * @return the user is enabling geo location
-	 * @since Twitter4J 2.0.10
-	 */
-	boolean isGeoEnabled();
+    /**
+     * @return the user is enabling geo location
+     * @since Twitter4J 2.0.10
+     */
+    boolean isGeoEnabled();
 
-	boolean isProfileBackgroundTiled();
+    boolean isProfileBackgroundTiled();
 
-	boolean isProfileUseBackgroundImage();
+    boolean isProfileUseBackgroundImage();
 
-	/**
-	 * Test if the user status is protected
-	 * 
-	 * @return true if the user status is protected
-	 */
-	boolean isProtected();
+    /**
+     * Test if the user status is protected
+     *
+     * @return true if the user status is protected
+     */
+    boolean isProtected();
 
-	boolean isTranslationEnabled();
+    boolean isTranslationEnabled();
 
-	/**
-	 * @return returns true if the user is a translator
-	 * @since Twitter4J 2.1.9
-	 */
-	boolean isTranslator();
+    /**
+     * @return returns true if the user is a translator
+     * @since Twitter4J 2.1.9
+     */
+    boolean isTranslator();
 
-	/**
-	 * @return returns true if the user is a verified celebrity
-	 * @since Twitter4J 2.0.10
-	 */
-	boolean isVerified();
+    /**
+     * @return returns true if the user is a verified celebrity
+     * @since Twitter4J 2.0.10
+     */
+    boolean isVerified();
 
 }

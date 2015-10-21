@@ -22,18 +22,25 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import com.bluelinelabs.logansquare.JsonMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+import java.io.IOException;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.ErrorInfoImpl;
+import de.vanita5.twittnuker.api.twitter.model.impl.GeoPoint;
 
-/**
- * Created by mariotaku on 15/5/7.
- */
-@Implementation(ErrorInfoImpl.class)
-public interface ErrorInfo {
+public class GeoLocationMapper extends JsonMapper<GeoLocation> {
+    @Override
+    public GeoLocation parse(JsonParser jsonParser) throws IOException {
+        final GeoPoint geoPoint = LoganSquare.mapperFor(GeoPoint.class).parse(jsonParser);
+        if (geoPoint == null) return null;
+        return geoPoint.getGeoLocation();
+    }
 
-    int getCode();
-
-    String getMessage();
+    @Override
+    public void serialize(GeoLocation object, JsonGenerator generator, boolean writeStartAndEnd) throws IOException {
+        throw new UnsupportedOperationException();
+    }
 }

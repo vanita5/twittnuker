@@ -22,18 +22,23 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.TrendImpl;
+
 /**
  * A data interface representing Trend.
- * 
+ *
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.0.2
  */
+@Implementation(TrendImpl.class)
 public interface Trend {
 
-	String getName();
+    String getName();
 
-	String getQuery();
+    String getQuery();
 
-	String getUrl();
+    String getUrl();
 
 }

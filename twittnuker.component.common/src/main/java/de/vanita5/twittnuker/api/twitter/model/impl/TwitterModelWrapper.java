@@ -20,20 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model;
+package de.vanita5.twittnuker.api.twitter.model.impl;
 
+import org.mariotaku.library.logansquare.extension.ModelWrapper;
 
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
-
-import de.vanita5.twittnuker.api.twitter.model.impl.ErrorInfoImpl;
+import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
 
 /**
  * Created by mariotaku on 15/5/7.
  */
-@Implementation(ErrorInfoImpl.class)
-public interface ErrorInfo {
+public interface TwitterModelWrapper<T> extends ModelWrapper<T>, TwitterResponse {
 
-    int getCode();
+    T getWrapped(Object extra);
 
-    String getMessage();
 }
