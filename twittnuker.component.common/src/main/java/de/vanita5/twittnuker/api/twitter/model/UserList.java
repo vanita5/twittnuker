@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.EnumClass;
 import org.mariotaku.library.logansquare.extension.annotation.Implementation;
 
 import de.vanita5.twittnuker.api.twitter.model.impl.UserListImpl;
@@ -63,6 +64,7 @@ public interface UserList extends Comparable<UserList>, TwitterResponse {
 
     boolean isFollowing();
 
+    @EnumClass
     enum Mode {
         PUBLIC("public"), PRIVATE("private");
 
