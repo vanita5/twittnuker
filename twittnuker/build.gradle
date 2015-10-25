@@ -102,6 +102,7 @@ dependencies {
     compile 'com.sprylab.android.texturevideoview:texturevideoview:1.0.1'
     compile 'com.squareup:tape:1.2.3'
     compile 'commons-primitives:commons-primitives:1.0'
+    compile 'org.sufficientlysecure:donations:2.4'
 
     // libraries for f-droid
     compile 'org.osmdroid:osmdroid-android:4.3'
