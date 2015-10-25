@@ -92,6 +92,7 @@ public final class JSONObjectType {
         } else if (json.get("event") != null) {
             String event;
             event = json.get("event").asToken().asString();
+            if (event == null) return Type.UNKNOWN;
             if ("favorite".equals(event)) {
                 return Type.FAVORITE;
             } else if ("unfavorite".equals(event)) {
