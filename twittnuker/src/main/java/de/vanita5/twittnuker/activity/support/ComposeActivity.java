@@ -445,6 +445,16 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 mPreferences.edit().putBoolean(KEY_LINK_TO_QUOTED_TWEET, newValue).apply();
                 break;
             }
+            case R.id.add_hashtag: {
+                final int selectionEnd = mEditText.getSelectionEnd() + 1;
+                final String withHashtag =
+                        mEditText.getText().subSequence(0, mEditText.getSelectionEnd()) +
+                        "#" +
+                        mEditText.getText().subSequence(mEditText.getSelectionEnd(), mEditText.length());
+                mEditText.setText(withHashtag);
+                mEditText.setSelection(selectionEnd);
+                break;
+            }
             default: {
                 break;
             }
